@@ -1,0 +1,79 @@
+Simulation verification run: 2026-09-05T04:46:30.362484+00:00
+Command: npm test -- --silent=false --reporter=verbose
+Movement regression: 17 of 18 new cases failed before the facing fix; all 18 pass afterward.
+b259c9e3a8a5f9459898fd672b1b04e581c95db8bbea62dd09de92cae982a000  src/core/simulation.ts
+72c1f517592f0e64218f1c19e40cffe0e5bd2e411a393c8005aad337ee3844bd  src/core/content.ts
+7f7f2b3febeb7f002242bb132746649e549c2ac2d1383873470e94b45e60761b  tests/simulation.test.ts
+8d8a1b7ad480a563ab7d4cfa9096abf7141a9c829dc56cff99d7b2cc27b28793  tests/skirmish.test.ts
+
+
+> orcs-vs-fairies@0.1.0 test
+> vitest run --silent=false --reporter=verbose
+
+
+ RUN  v4.1.11 /home/morgana/Projects/orcs-vs-Fairies
+
+ ✓ tests/simulation.test.ts > ownership and command validation > cannot move another player's units or spend from their buildings 3ms
+ ✓ tests/simulation.test.ts > ownership and command validation > rejects hidden targets, friendly attacks, and non-finite movement 1ms
+ ✓ tests/simulation.test.ts > ownership and command validation > reserves resources once and rejects unaffordable repeated recruitment 2ms
+ ✓ tests/simulation.test.ts > ownership and command validation > reserves queued population across buildings and enforces production roles 3ms
+ ✓ tests/simulation.test.ts > economy and settlement > harvests finite wood, then deposits it only after returning 11ms
+ ✓ tests/simulation.test.ts > economy and settlement > harvests finite ore, then deposits it only after returning 8ms
+ ✓ tests/simulation.test.ts > economy and settlement > charges construction once, needs a nearby worker, and adds capacity on completion 11ms
+ ✓ tests/simulation.test.ts > economy and settlement > does not allow overlapping, hidden, out-of-bounds or resource-covered buildings 1ms
+ ✓ tests/simulation.test.ts > economy and settlement > recruits after the full training time without charging a second time 4ms
+ ✓ tests/simulation.test.ts > economy and settlement > repairs damage while paying for available work and never overspends 1ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > faces actual direct-approach displacement in octant +0 1ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > faces actual direct-approach displacement in octant 1 0ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > faces actual direct-approach displacement in octant 2 0ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > faces actual direct-approach displacement in octant 3 0ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > faces actual direct-approach displacement in octant 4 0ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > faces actual direct-approach displacement in octant 5 0ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > faces actual direct-approach displacement in octant 6 0ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > faces actual direct-approach displacement in octant 7 0ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > keeps facing actual routed displacement through exact waypoint arrivals in octant +0 3ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > keeps facing actual routed displacement through exact waypoint arrivals in octant 1 2ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > keeps facing actual routed displacement through exact waypoint arrivals in octant 2 2ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > keeps facing actual routed displacement through exact waypoint arrivals in octant 3 3ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > keeps facing actual routed displacement through exact waypoint arrivals in octant 4 2ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > keeps facing actual routed displacement through exact waypoint arrivals in octant 5 2ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > keeps facing actual routed displacement through exact waypoint arrivals in octant 6 2ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > keeps facing actual routed displacement through exact waypoint arrivals in octant 7 2ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > faces the actual 'horizontal' slide when a cached diagonal route becomes obstructed 1ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > faces the actual 'vertical' slide when a cached diagonal route becomes obstructed 1ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > faces a stationary target to the east when attacking without moving 1ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > faces a stationary target to the southeast when attacking without moving 1ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > faces a stationary target to the south when attacking without moving 1ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > faces a stationary target to the southwest when attacking without moving 0ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > faces a stationary target to the west when attacking without moving 0ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > faces a stationary target to the northwest when attacking without moving 0ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > faces a stationary target to the north when attacking without moving 0ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > faces a stationary target to the northeast when attacking without moving 0ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > retains explored terrain while removing current sight after a scout leaves 0ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > walks around a building without crossing its footprint 8ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > routes around ore when clear grid endpoints have an obstructed connecting edge 4ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > damages enemies, removes dead combatants, and awards a win only on HQ destruction 1ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > accumulates momentum through fighting and loses it outside combat 8ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > conjures temporary doubles with a cooldown and without consuming population 13ms
+ ✓ tests/simulation.test.ts > vision, movement and combat > heals only nearby allies at a completed healing grove 7ms
+ ✓ tests/simulation.test.ts > AI fairness and editable content > resumes AI construction after builder loss when the player chooses orcs 160ms
+ ✓ tests/simulation.test.ts > AI fairness and editable content > resumes AI construction after builder loss when the player chooses fairies 247ms
+ ✓ tests/simulation.test.ts > AI fairness and editable content > cannot conjure resources or construction when its economy is empty 47ms
+ ✓ tests/simulation.test.ts > AI fairness and editable content > ignores unseen enemy positions when choosing orders 1ms
+ ✓ tests/simulation.test.ts > AI fairness and editable content > applies roster stats and reassigned abilities from content without core changes 2ms
+stdout | tests/skirmish.test.ts > completes a real orcs AI-vs-AI skirmish
+{"faction":"orcs","seconds":503.8000000000803,"winner":0,"trained":[40,42],"deposited":[512,520],"attacks":[454,447],"built":[["hq","barracks","depot","tower"],["hq","barracks","depot","tower"]]}
+
+ ✓ tests/skirmish.test.ts > completes a real orcs AI-vs-AI skirmish 3820ms
+stdout | tests/skirmish.test.ts > completes a real fairies AI-vs-AI skirmish
+{"faction":"fairies","seconds":537.0000000000593,"winner":0,"trained":[44,40],"deposited":[578,509],"attacks":[1142,163],"built":[["hq","barracks","depot","tower"],["hq","barracks","depot","tower"]]}
+
+ ✓ tests/skirmish.test.ts > completes a real fairies AI-vs-AI skirmish 3446ms
+
+ Test Files  2 passed (2)
+      Tests  50 passed (50)
+   Start at  21:46:30
+   Duration  7.49s (transform 111ms, setup 0ms, import 150ms, tests 7.84s, environment 0ms)
+
+
+Exit code: 0

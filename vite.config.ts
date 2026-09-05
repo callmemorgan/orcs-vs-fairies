@@ -1,0 +1,4 @@
+import { defineConfig } from 'vite';
+import { mkdirSync, writeFileSync, appendFileSync } from 'node:fs';
+export default defineConfig({server:{host:'127.0.0.1',port:5173,strictPort:true},build:{chunkSizeWarningLimit:1600},plugins:[{name:'local-qa-evidence',configureServer:installEvidence,configurePreviewServer:installEvidence}]});
+function installEvidence(server:any){server.middlewares.use('/__qa', (req,res)=>{if(req.method!=='POST'){res.statusCode=405;res.end();return;}let body='';req.on('data',chunk=>{body+=chunk;if(body.length>500000)req.destroy();});req.on('end',()=>{try{const data=JSON.parse(body);mkdirSync('work',{recursive:true});writeFileSync('work/browser-latest.json',JSON.stringify(data,null,2));appendFileSync('work/browser-session.jsonl',JSON.stringify(data)+'\n');res.end('ok');}catch{res.statusCode=400;res.end('invalid');}});});}

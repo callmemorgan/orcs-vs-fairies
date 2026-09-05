@@ -1,0 +1,11 @@
+# Fairy browser match with complete artwork
+
+On 2026-09-05, a normal Wild Court skirmish in the local production build ended in player victory at 346.2 game seconds (5:46). The browser displayed Victory after the enemy stronghold fell. Clicking New skirmish reset time to 00:00, resources to 420 wood / 220 ore, population to 6 / 12, and selection to empty. The fresh match was then paused at 13 seconds.
+
+The match used bundle `index-CW6Rj39Y.js`, a 1920×1080 viewport, and all 31 final art assets. `fairies-final-art-session.jsonl` contains 76 telemetry snapshots beginning at 2.65 seconds and ending with the victory state. All snapshots report loaded complete artwork. `fairies-final-art-victory.json` records winner 0; `fairies-final-art-restart.json` records the fresh paused match. These read-only telemetry files supplement the browser interaction record; they do not establish which UI buttons were clicked by themselves.
+
+Play used drag selection and resource canopy clicks, worker recruitment, wood and ore gathering, two Bloomspires, a Thornwatch, three Moonwells, and all three combat roles. Control groups recalled headquarters, production buildings, a builder and a Moonwell. F2 repeatedly gathered the combat army, attack-move advanced through the center, right-click focused an enemy building, and minimap clicks and Space moved the camera. No resources, orders, simulation steps or outcome were injected outside player controls.
+
+Veil Doubles produced visible temporary copies and displayed its cooldown. The initial Thornblade fell to 71 / 140 HP during the first engagement; after retreating into Moonwell range, it recovered to 118 and then 124 HP. Moonwell healing is passive; selecting it correctly offered no Q button. The first army lost units during the advance, and replacements trained at home were brought forward with F2.
+
+The match is shorter than the 10–15 minute target. This is evidence of a working fairy economy, combat loop, victory and end-screen restart, not a pacing pass or a claim of comprehensive faction balance. The earlier complete-art orc defeat remains separate evidence. Preparatory idle fairy runs preceding this restart are excluded from this session file.

@@ -1,0 +1,11 @@
+# Placeholder gameplay gate — 2026-09-04
+
+The root played an actual browser match at http://127.0.0.1:4173/?qa=1 in the in-app browser, viewport 1920x1080, against the normal AI. This was the production snapshot with script index-DF4oqLA7.js, before the later reviewed source fixes. All player actions used normal canvas/DOM controls; there was no injected money, damage, outcome or automated player controller.
+
+Observed sequence: select orcs and begin; drag-select workers; right-click trees and ore; see stockpiles rise after return trips; select worker and place War Foundry; place Timber Yard; select headquarters and queue workers; assign and recall control groups 1 and 2; queue Ironjaw, Boltspitter and Wardrum; build Watchtower; group combat units; use minimap to move camera; A then click for attack-move; observe fighting and deaths; recover from destroyed depot by building another; right-click unfinished construction to resume work. Enemy attacks destroyed the headquarters at simulation time 450.30 seconds and the interface displayed Defeat. Click New skirmish reset clock to 00:00, resources to 420 wood/220 ore, population to 6/12 and selection to empty.
+
+The captured terminal state is placeholder-orcs-defeat.json. It records winner 1 and actual match state. The screenshot and accessibility observations are in the current task's browser tool transcript. Live telemetry is in work/browser-session.jsonl; this includes the earlier interrupted development match as well as the stable production match, so it must not be treated as one uninterrupted run.
+
+This proves a complete placeholder gameplay loop and permits Blender asset production. It does not prove a player victory, both faction browser matches, final art, final source behavior or the 100-unit performance target. The match was shorter than the target 10–15 minutes; the player lost after committing forces piecemeal and losing supply. Balance and pacing remain under evaluation.
+
+Known source issues discovered during this gate were addressed after the production snapshot: abandoned AI construction, attack facing, resource-edge path stalls, enemy selection disclosure after loss of vision, and ability labels tied to one faction. These changes still need a new production build and browser validation. Automated tests support rule correctness but do not replace that validation.
