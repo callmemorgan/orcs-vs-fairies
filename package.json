@@ -7,12 +7,17 @@
     "dev": "vite --host 127.0.0.1",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:ladder": "vitest run --config vitest.ladder.config.ts && python3 scripts/ladder/report.py",
+    "build:cli": "esbuild src/cli/main.ts --bundle --platform=node --format=esm --outfile=dist-cli/rts.js",
+    "cli": "node dist-cli/rts.js"
   },
   "dependencies": {
     "phaser": "4.2.1"
   },
   "devDependencies": {
+    "@types/node": "^22.20.1",
+    "esbuild": "^0.28.2",
     "typescript": "~5.9.3",
     "vite": "^7.3.0",
     "vitest": "^4.0.0"

@@ -7,11 +7,16 @@ ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'public/assets'
 def validate():
     m=json.loads((OUT/'manifest.json').read_text());assert m['schemaVersion']==1
-    required_units=[f'{f}-{r}' for f in ['orc','fairy'] for r in ['worker','melee','ranged','special']]
-    required_buildings=[f'{f}-{r}' for f in ['orc','fairy'] for r in ['hq','depot','barracks','tower']]
-    required_env=['tile-grass-'+str(i) for i in range(4)]+['tile-dirt-'+str(i) for i in range(3)]+['tile-stone','tree-pine','tree-oak','ore','stump','ruin-pillar','ruin-ring']
+    required_units=[f'{f}-{r}' for f in ['orc','fairy','dwarf','undead','tideborn','automata'] for r in ['worker','melee','ranged','special']]
+    required_buildings=[f'{f}-{r}' for f in ['orc','fairy','dwarf','undead','tideborn','automata'] for r in ['hq','depot','barracks','tower']]
+    required_env=['tile-grass-'+str(i) for i in range(4)]+['tile-dirt-'+str(i) for i in range(3)]+['tile-stone','tree-pine','tree-oak','ore','stump','ruin-pillar','ruin-ring','flowers','crystal','reeds','tile-water','tile-shallows','tile-mud','tile-rock','tile-bridge']
     missing=[i for i in required_units+required_buildings+required_env if i not in m['assets']]
     assert not missing,f'Missing assets: {missing}'
+    for faction in ('orcs','fairies','dwarves','undead','tideborn','automata'):
+        portrait=m.get('portraits',{}).get(faction)
+        assert portrait,f'Missing portrait: {faction}'
+        with Image.open(OUT/Path(portrait).name) as image:
+            assert image.convert('RGBA').getchannel('A').getbbox(),f'Empty portrait: {faction}'
     frames={};sheets={};decoded=0
     for page in m['atlases']:
         image=Image.open(OUT/Path(page['image']).name).convert('RGBA');sheets[page['key']]=image
@@ -25,6 +30,7 @@ def validate():
             assert crop.getchannel('A').getbbox(),f'Empty {name}'
             frames[name]=(record,hashlib.sha256(crop.tobytes()).hexdigest())
     for aid in required_units+required_buildings:
+        with Image.open(OUT/f'selection-{aid}.png') as portrait:assert portrait.convert('RGBA').getchannel('A').getbbox(),f'Empty selection artwork: {aid}'
         a=m['assets'][aid];w,h=a['width'],a['height'];x,y=a['anchor'];assert 0<=x<=w and 0<=y<=h
         expected=['idle','walk','attack','death'] if aid in required_units else ['idle','construction','death']
         for state in expected:

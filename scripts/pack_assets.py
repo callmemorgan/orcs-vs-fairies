@@ -5,6 +5,27 @@ from pathlib import Path
 from PIL import Image
 
 ROOT=Path(__file__).resolve().parents[1]
+def pack_portraits(source:Path,out:Path,kinds=('units',)):
+    # Selection portraits are crops of Blender renders, never concept-art substitutes.
+    portraits={}
+    for faction,unit in {'orcs':'orc-melee','fairies':'fairy-special','dwarves':'dwarf-melee','undead':'undead-special','tideborn':'tideborn-special','automata':'automata-special'}.items():
+        path=source/'units'/unit/'idle-0-00.png'
+        if 'units' not in kinds or not path.exists():continue
+        with Image.open(path) as im:
+            im=im.convert('RGBA');bounds=im.getchannel('A').getbbox()
+            if not bounds:raise ValueError(f'Empty portrait source: {path}')
+            im=im.crop((max(0,bounds[0]-4),max(0,bounds[1]-4),min(im.width,bounds[2]+4),min(im.height,bounds[3]+4)))
+            filename=f'portrait-{faction}.png';im.save(out/filename,optimize=True)
+            portraits[faction]=f'/assets/{filename}'
+    for kind in ('units','buildings'):
+        if kind not in kinds:continue
+        for path in sorted((source/kind).glob('*/idle-0-00.png')):
+            with Image.open(path) as im:
+                im=im.convert('RGBA');bounds=im.getchannel('A').getbbox()
+                if not bounds:raise ValueError(f'Empty selection portrait: {path}')
+                im=im.crop(bounds);im.thumbnail((128,128));im.save(out/f'selection-{path.parent.name}.png',optimize=True)
+    return portraits
+
 def pack(source:Path,out:Path,kinds=('units','buildings','environment')):
     out.mkdir(parents=True,exist_ok=True)
     manifest={'schemaVersion':1,'projection':{'tileWidth':64,'tileHeight':32},'atlases':[], 'assets':{}}
@@ -59,6 +80,7 @@ def pack(source:Path,out:Path,kinds=('units','buildings','environment')):
                 if im.size!=(item['width'],item['height']):raise ValueError(f'{path} wrong dimensions')
                 im.convert('RGBA').save(out/filename,optimize=True)
             manifest['assets'][item['id']]={**item,'kind':'environment','image':f'/assets/{filename}'}
+    manifest['portraits']=pack_portraits(source,out,kinds)
     (out/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
     print(json.dumps({'assets':len(manifest['assets']),'atlasPages':len(manifest['atlases']),'output':str(out)}))
     return manifest

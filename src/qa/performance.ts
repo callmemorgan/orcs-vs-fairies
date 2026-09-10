@@ -9,7 +9,7 @@ export const PERFORMANCE_SAMPLE_MS = 60_000;
 
 /** Synthetic render workload. Never use this fixture as match-outcome evidence. */
 export function createPerformanceGame(): GameState {
-  const state = createGame('orcs', 4127);
+  const state = createGame('orcs', 4127); state.terrain.fill('grass');state.controllers=['external','external'];
   state.entities = [];
   // Keep peripheral deposits, but leave a clear central combat area.
   state.resources = state.resources.filter(r => r.x < 18 || r.x > 30 || r.y < 18 || r.y > 30);

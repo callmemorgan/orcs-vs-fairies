@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import type { Entity, GameState, BuildingRole, UnitRole } from '../core/types';
+import type { Entity, GameState, FactionId, BuildingRole, UnitRole } from '../core/types';
 import { FACTIONS } from '../core/content';
 
 interface Animation {frames:number;fps:number;loop:boolean;directions:Record<string,string[]>}
@@ -13,14 +13,17 @@ export default class ArtRuntime {
   private frames=new Map<string,string>();
   private terrain:Phaser.GameObjects.RenderTexture|null=null;
   private complete=false;
+  private requiredIds=new Set<string>();
   public renderedUnits=0;
   constructor(private scene:Phaser.Scene,public enabled=true){}
-  preload(){
+  preload(factions:FactionId[]){
+    this.requiredIds=new Set(factions.flatMap(id=>[...Object.values(FACTIONS[id].units),...Object.values(FACTIONS[id].buildings)].map(a=>a.id)));
     if(!this.enabled)return;
     this.scene.load.once('filecomplete-json-rts-manifest',(_key:string,_type:string,data:Manifest)=>{
       if(data.schemaVersion!==1)return;
       this.manifest=data;
-      for(const atlas of data.atlases)this.scene.load.atlas(atlas.key,atlas.image,atlas.data);
+      const pages=new Set([...this.requiredIds].flatMap(id=>data.assets[id]?.pages??[]));
+      for(const atlas of data.atlases)if(pages.has(atlas.key))this.scene.load.atlas(atlas.key,atlas.image,atlas.data);
       for(const [id,asset] of Object.entries(data.assets))if(asset.kind==='environment'&&asset.image)this.scene.load.image(`env:${id}`,asset.image);
     });
     this.scene.load.json('rts-manifest','/assets/manifest.json');
@@ -29,11 +32,13 @@ export default class ArtRuntime {
     if(!this.manifest)return;
     let unique=true;
     for(const atlas of this.manifest.atlases){if(!this.scene.textures.exists(atlas.key))continue;for(const name of this.scene.textures.get(atlas.key).getFrameNames()){if(this.frames.has(name))unique=false;this.frames.set(name,atlas.key);}}
-    const factionIds=Object.values(FACTIONS).flatMap(f=>[...Object.values(f.units),...Object.values(f.buildings)].map(a=>a.id));
-    const environmentIds=['tile-grass-0','tile-grass-1','tile-grass-2','tile-grass-3','tile-dirt-0','tile-dirt-1','tile-dirt-2','tile-stone','tree-pine','tree-oak','ore','stump','ruin-pillar','ruin-ring','flowers'];
-    this.complete=unique&&factionIds.every(id=>!!this.manifest!.assets[id])&&environmentIds.every(id=>this.hasEnvironment(id))&&this.manifest.atlases.every(a=>this.scene.textures.exists(a.key))&&Object.entries(this.manifest.assets).every(([id,a])=>a.kind==='environment'?this.hasEnvironment(id):!!a.animations&&Object.values(a.animations).every(animation=>Object.values(animation.directions).every(names=>names.length===animation.frames&&names.every(name=>a.pages?.includes(this.frames.get(name)??'')))));
+    const factionIds=[...this.requiredIds];
+    const environmentIds=['tile-grass-0','tile-grass-1','tile-grass-2','tile-grass-3','tile-dirt-0','tile-dirt-1','tile-dirt-2','tile-stone','tree-pine','tree-oak','ore','stump','ruin-pillar','ruin-ring','flowers','crystal','reeds','tile-water','tile-shallows','tile-mud','tile-rock','tile-bridge'];
+    this.complete=unique&&factionIds.every(id=>!!this.manifest!.assets[id])&&environmentIds.every(id=>this.hasEnvironment(id))&&Object.entries(this.manifest.assets).filter(([id,a])=>a.kind==='environment'||this.requiredIds.has(id)).every(([id,a])=>a.kind==='environment'?this.hasEnvironment(id):!!a.animations&&Object.values(a.animations).every(animation=>Object.values(animation.directions).every(names=>names.length===animation.frames&&names.every(name=>a.pages?.includes(this.frames.get(name)??'')))));
   }
   get loaded(){return this.complete;}
+  get loadedAtlasPages(){return this.manifest?.atlases.filter(a=>this.scene.textures.exists(a.key)).length??0;}
+  get decodedAtlasMiB(){return (this.manifest?.atlases.reduce((sum,a)=>{if(!this.scene.textures.exists(a.key))return sum;const source=this.scene.textures.get(a.key).source[0];return sum+source.width*source.height*4;},0)??0)/1048576;}
   get assetCount(){return this.manifest?Object.keys(this.manifest.assets).length:0;}
   hasEnvironment(id:string){return this.manifest?.assets[id]?.kind==='environment'&&this.scene.textures.exists(`env:${id}`);}
   begin(){this.seen.clear();this.renderedUnits=0;}
@@ -87,15 +92,16 @@ export default class ArtRuntime {
   ground(state:GameState,project:(x:number,y:number)=>{x:number;y:number}){
     this.terrain?.destroy();this.terrain=null;
     if(!this.hasEnvironment('tile-grass-0'))return;
-    const rt=this.scene.add.renderTexture(0,0,3240,1700).setOrigin(0,0).setDepth(-100);this.terrain=rt;
+    const left=project(0,state.height).x-64,top=-80;
+    const rt=this.scene.add.renderTexture(left,top,(state.width+state.height)*32+128,(state.width+state.height)*16+320).setOrigin(0,0).setDepth(-100);this.terrain=rt;
 
     for(let y=0;y<state.height;y++)for(let x=0;x<state.width;x++){
       const n=((x*73856093)^(y*19349663)^(state.seed||7))>>>0;
-      const path=Math.abs(x-y)<2||Math.abs(x+y-47)<1.5&&Math.abs(x-y)<14;
-      let id=Math.hypot(x-23.5,y-23.5)<3?'tile-stone':path?`tile-dirt-${n%3}`:`tile-grass-${n%4}`;
+      const terrain=state.terrain[y*state.width+x];
+      let id=terrain==='grass'?`tile-grass-${n%4}`:terrain==='road'?`tile-dirt-${n%3}`:`tile-${terrain}`;
       if(!this.hasEnvironment(id))id='tile-grass-0';
       const asset=this.manifest!.assets[id],p=project(x+.5,y+.5);
-      rt.stamp(`env:${id}`,undefined,p.x-asset.anchor[0],p.y-asset.anchor[1],{originX:0,originY:0});
+      rt.stamp(`env:${id}`,undefined,p.x-left-asset.anchor[0],p.y-top-asset.anchor[1],{originX:0,originY:0});
     }
     rt.render();
   }

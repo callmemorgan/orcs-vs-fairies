@@ -1,5 +1,6 @@
+import { PlayerView } from '../core/observation';
 import { ABILITIES, FACTIONS } from '../core/content';
-import type { BuildingRole, Cost, Entity, FactionId, GameState, UnitRole } from '../core/types';
+import type { BuildingRole, Cost, Entity, FactionId, GameState, MapSize, UnitRole } from '../core/types';
 import './style.css';
 
 export interface HudCallbacks {
@@ -9,12 +10,13 @@ export interface HudCallbacks {
 }
 const icons:Record<string,string> = {worker:'⚒',melee:'⚔',ranged:'➶',special:'✧',hq:'♜',depot:'▣',barracks:'⚑',tower:'♖'};
 const escape = (value:string) => value.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
-const costText = (cost:Cost) => `${cost.wood} wood · ${cost.ore} ore`;
-export function mountShell(root:HTMLElement,onStart:(faction:FactionId)=>void) {
+const costText = (cost:Cost) => `${cost.wood} wood · ${cost.ore} ore${cost.crystal?` · ${cost.crystal} crystal`:""}`;
+export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:FactionId,mapSize:MapSize,seed:number)=>void) {
   let faction:FactionId='orcs';
   let callbacks:HudCallbacks|undefined;
   let paused=false;
   let state:GameState|undefined;
+  const playerView=new PlayerView(0);
   let actionsKey='';
   let noticeUntil=0;
   const actions:Array<{button:HTMLButtonElement; cost?:Cost; train?:boolean; entity?:Entity; ability?:boolean}> = [];
@@ -27,27 +29,22 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId)=>void) {
         <h1>Orcs <span>vs</span> Fairies</h1>
         <p class="menu-intro">Iron at the forest's edge. Magic beneath its roots.<br>Choose your banner. Build your army. Claim the wood.</p>
         <div class="faction-grid">
-          <button class="faction-card orc-card selected" data-faction="orcs" aria-pressed="true">
-            <span class="crest">⚔</span><span class="eyebrow">THE ORCS</span><strong>Ironclad</strong>
-            <span class="faction-summary">Raise iron strongholds and commit armored troops to battle. Sustained combat builds their momentum.</span>
-            <span class="faction-trait">ARMOR &nbsp; / &nbsp; MOMENTUM</span>
-          </button>
-          <button class="faction-card fairy-card" data-faction="fairies" aria-pressed="false">
-            <span class="crest">✧</span><span class="eyebrow">THE FAIRIES</span><strong>Wild Court</strong>
-            <span class="faction-summary">Grow a living settlement. Strike with swift warriors, conjure illusions, and recover beneath healing groves.</span>
-            <span class="faction-trait">MOBILITY &nbsp; / &nbsp; ILLUSIONS</span>
-          </button>
+          ${Object.values(FACTIONS).map(f=>`<button class="faction-card ${f.id}-card ${f.id==='orcs'?'selected':''}" data-faction="${f.id}" aria-pressed="${f.id==='orcs'}"><img class="faction-portrait" src="/assets/portrait-${f.id}.png" alt="" /><strong>${escape(f.name)}</strong><span class="faction-summary">${escape(f.description)}</span><span class="faction-trait">${escape(f.subtitle)}</span></button>`).join('')}
         </div>
+        <div class="match-settings"><label class="opponent-label" for="opponent">AI opponent</label>
+        <select id="opponent">${Object.values(FACTIONS).map(f=>`<option value="${f.id}" ${f.id==='fairies'?'selected':''}>${escape(f.id[0].toUpperCase()+f.id.slice(1))} · ${escape(f.name)}</option>`).join('')}</select>
+        <label for="map-size">Map size</label><select id="map-size"><option value="small">Small · 36 × 36</option><option value="medium" selected>Medium · 48 × 48</option><option value="large">Large · 64 × 64</option></select><label for="map-seed">Seed</label><input id="map-seed" type="number" min="0" max="4294967295" step="1" value="4127" /></div>
         <button class="primary begin-match">Begin skirmish <span>→</span></button>
-        <p class="match-caption">ELDERWOOD &nbsp; · &nbsp; SINGLE PLAYER VS AI &nbsp; · &nbsp; 10–15 MIN</p>
+        <p class="match-caption">ELDERWOOD &nbsp; · &nbsp; SINGLE PLAYER VS AI &nbsp; · &nbsp; SEEDED SKIRMISH</p>
         <div class="menu-guide"><span><kbd>Drag</kbd> Select army</span><span><kbd>Right click</kbd> Give orders</span><span><kbd>A</kbd> Attack-move</span><span><kbd>Arrows</kbd> Pan camera</span></div>
-        <p class="menu-objective">Gather wood and ore, build your settlement, then destroy the enemy stronghold.</p>
+        <p class="menu-objective">Gather wood, ore and crystal, build your settlement, then destroy the enemy stronghold.</p>
       </div>
     </section>
     <section class="war-hud" hidden aria-label="Game controls">
       <header class="resource-bar panel"><div class="banner"><span class="banner-icon">⚑</span><div><small>YOUR BANNER</small><strong id="faction-name"></strong></div></div>
         <div class="resource" title="Workers gather wood from trees"><span class="wood-symbol">♠</span><div><small>WOOD</small><b id="wood">0</b></div></div>
         <div class="resource" title="Workers gather ore from deposits"><span class="ore-symbol">◆</span><div><small>ORE</small><b id="ore">0</b></div></div>
+        <div class="resource" title="Crystal funds advanced troops and defensive towers"><span class="crystal-symbol">◆</span><div><small>CRYSTAL</small><b id="crystal">0</b></div></div>
         <div class="resource" title="Build a depot to raise your population limit"><span>⚑</span><div><small>ARMY</small><b id="population">0 / 0</b></div></div>
         <div class="match-clock" id="clock">00:00</div><button id="sound-button" class="small-button" aria-pressed="false">Mute sound</button><button id="pause-button" class="small-button">Pause</button><button id="restart-button" class="small-button">Restart</button>
       </header>
@@ -70,8 +67,12 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId)=>void) {
     faction=button.dataset.faction as FactionId;
     root.querySelectorAll('[data-faction]').forEach(card=>{const active=(card as HTMLElement).dataset.faction===faction;card.classList.toggle('selected',active);card.setAttribute('aria-pressed',String(active));});
   }));
-  el('.begin-match').addEventListener('click',()=>onStart(faction));
-  const togglePause=()=>{if(!callbacks||state?.winner!==null)return;paused=!paused;callbacks.pause();};
+  el('.begin-match').addEventListener('click',()=>{
+    const input=el<HTMLInputElement>('#map-seed'),seed=Number(input.value);input.setCustomValidity('');
+    if(!input.value.trim()||!Number.isSafeInteger(seed)||seed<0||seed>4294967295){input.setCustomValidity('Enter a whole-number seed from 0 to 4294967295.');input.reportValidity();return;}
+    onStart(faction,el<HTMLSelectElement>('#opponent').value as FactionId,el<HTMLSelectElement>('#map-size').value as MapSize,seed);
+  });
+  const togglePause=()=>{if(!callbacks||(state?.winner!==null||state?.draw))return;paused=!paused;callbacks.pause();};
   el('#pause-button').addEventListener('click',togglePause);
   el('#sound-button').addEventListener('click',()=>callbacks?.toggleMuted());
   el('#resume-button').addEventListener('click',togglePause);
@@ -82,8 +83,8 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId)=>void) {
   function drawMinimap(s:GameState) {
     const cw=map.width/s.width,ch=map.height/s.height;
     ctx.fillStyle='#070e10';ctx.fillRect(0,0,map.width,map.height);
-    for(const i of s.explored[0]){ctx.fillStyle=s.visible[0].has(i)?'#45654a':'#22342d';ctx.fillRect((i%s.width)*cw,Math.floor(i/s.width)*ch,Math.ceil(cw),Math.ceil(ch));}
-    for(const r of s.resources){const i=Math.floor(r.y)*s.width+Math.floor(r.x);if(r.amount<=0||!s.explored[0].has(i))continue;ctx.fillStyle=r.kind==='wood'?'#688c53':'#b49c76';ctx.fillRect(r.x*cw-1,r.y*ch-1,2,2);}
+    for(const i of s.explored[0]){ctx.fillStyle=s.visible[0].has(i)?({grass:'#45654a',road:'#8e8058',mud:'#69593f',water:'#316579',shallows:'#609690',rock:'#7c8386',bridge:'#b49a6b'}[s.terrain[i]]):'#22342d';ctx.fillRect((i%s.width)*cw,Math.floor(i/s.width)*ch,Math.ceil(cw),Math.ceil(ch));}
+    for(const r of playerView.resourcesFor(s)){const i=Math.floor(r.y)*s.width+Math.floor(r.x);if(r.amount<=0||!s.explored[0].has(i))continue;ctx.fillStyle=r.kind==='wood'?'#688c53':r.kind==='crystal'?'#b497e7':'#b49c76';ctx.fillRect(r.x*cw-1,r.y*ch-1,2,2);}
     for(const e of s.entities){if(e.hp<=0||e.side===1&&!s.visible[0].has(Math.floor(e.y)*s.width+Math.floor(e.x)))continue;ctx.fillStyle=e.side===0?'#d0eb96':'#ee785a';const size=e.kind==='building'?5:3;ctx.fillRect(e.x*cw-size/2,e.y*ch-size/2,size,size);}
   }
   return {
@@ -91,18 +92,19 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId)=>void) {
     showGame:()=>{reset();menu.hidden=true;hud.hidden=false;},
     notice,
     update:(s:GameState,selected:number[],cb:HudCallbacks)=>{
-      state=s;callbacks=cb;const player=s.players[0],definition=FACTIONS[player.faction];
+      state=s;callbacks=cb;if(!menu.hidden)return;const player=s.players[0],definition=FACTIONS[player.faction];
       setText('#sound-button',cb.isMuted()?'Enable sound':'Mute sound');el('#sound-button').setAttribute('aria-pressed',String(cb.isMuted()));
-      setText('#faction-name',definition.name);setText('#wood',Math.floor(player.wood).toString());setText('#ore',Math.floor(player.ore).toString());setText('#population',`${player.population} / ${player.cap}`);
+      setText('#faction-name',definition.name);setText('#wood',Math.floor(player.wood).toString());setText('#ore',Math.floor(player.ore).toString());setText('#crystal',Math.floor(player.crystal).toString());setText('#population',`${player.population} / ${player.cap}`);
+      el('.objective-tag').textContent=`Destroy the enemy stronghold · ${s.mapSize} · seed ${s.seed}`;
       setText('#clock',`${Math.floor(s.time/60).toString().padStart(2,'0')}:${Math.floor(s.time%60).toString().padStart(2,'0')}`);
       if(performance.now()>noticeUntil)el('.notice').hidden=true;
       const entities=s.entities.filter(e=>selected.includes(e.id)&&e.hp>0&&(e.side===0||s.visible[0].has(Math.floor(e.y)*s.width+Math.floor(e.x))));const own=entities.filter(e=>e.side===0);const first=entities[0];
       const entityDef=first?(first.kind==='unit'?FACTIONS[s.players[first.side].faction].units[first.role as UnitRole]:FACTIONS[s.players[first.side].faction].buildings[first.role as BuildingRole]):null;
       setText('#selection-count',entities.length?`${entities.length} SELECTED`:'NO UNITS');
       setText('#selection-name',entities.length>1?`${entities.length} units selected`:entityDef?.name??'Your command awaits');
-      setText('#portrait',first?icons[first.role]:'⚑');
+      const portraitId=entityDef?.id??'';if(el('#portrait').dataset.asset!==portraitId){el('#portrait').dataset.asset=portraitId;el('#portrait').innerHTML=portraitId?`<img src="/assets/selection-${portraitId}.png" alt="${escape(entityDef!.name)}" />`:'⚑';}
       el('.health-track').hidden=!first;
-      if(first){el('#health-fill').style.width=`${Math.max(0,first.hp/first.maxHp)*100}%`;setText('#selection-status',`${Math.ceil(first.hp)} / ${first.maxHp} health${first.progress<1?` · Building ${Math.floor(first.progress*100)}%`:first.kind==='unit'?` · ${first.order.type==='idle'?'Ready':first.order.type==='hold'?'Holding position':first.order.type}`:''}${first.side===1?' · Enemy':''}`);}
+      if(first){el('#health-fill').style.width=`${Math.max(0,first.hp/first.maxHp)*100}%`;setText('#selection-status',`${Math.ceil(first.hp)} / ${first.maxHp} health${first.progress<1?` · Building ${Math.floor(first.progress*100)}%`:first.kind==='unit'?` · ${first.order.type==='idle'?'Ready':first.order.type==='hold'?'Holding position':first.order.type}`:''}${first.entrenchedAt!==undefined?(s.time-first.entrenchedAt>=3?' · Emplaced':' · Preparing emplacement'):''}${first.maxShield?` · Shield ${Math.ceil(first.shield??0)}/${first.maxShield}`:''}${(first.surgeUntil??0)>s.time?' · Surging':''}${first.raised?' · Raised · '+Math.ceil(first.expires-s.time)+'s remaining':''}${first.side===1?' · Enemy':''}`);}
       else setText('#selection-status','Select a worker to gather resources or raise your first buildings.');
       setText('#selection-description',entityDef?.description??'');
       const casters=own.filter(e=>e.kind==='unit'&&!e.illusion&&definition.units[e.role as UnitRole]?.ability);
@@ -119,13 +121,13 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId)=>void) {
         setText('#command-hint',own.length?'YOUR ORDERS':'SELECT A UNIT');
       }
       const reserved=s.entities.filter(e=>e.side===0&&e.hp>0).reduce((sum,e)=>sum+e.queue.length,0);
-      for(const action of actions){const insufficient=action.cost&&(player.wood<action.cost.wood||player.ore<action.cost.ore);action.button.disabled=!!insufficient||!!(action.train&&(player.population+reserved>=player.cap||action.entity!.progress<1||action.entity!.queue.length>=5))||paused||s.winner!==null;
+      for(const action of actions){const insufficient=action.cost&&(player.wood<action.cost.wood||player.ore<action.cost.ore||player.crystal<action.cost.crystal);action.button.disabled=!!insufficient||!!(action.train&&(player.population+reserved>=player.cap||action.entity!.progress<1||action.entity!.queue.length>=5))||paused||s.winner!==null||s.draw;
         if(action.ability){const remaining=Math.max(0,Math.ceil(Math.min(...casters.map(e=>(e.abilityReadyAt??0)-s.time))));action.button.disabled ||= remaining>0;action.button.querySelector('strong')!.textContent=remaining>0?`${abilityName} · ${remaining}s`:`${abilityName} [Q]`;}
       }
       const producer=own.find(e=>e.queue.length>0);const queue=el('#production-queue');
       if(producer){queue.innerHTML=`<span class="queue-label">RECRUITING</span> ${producer.queue.map((role,i)=>`<span class="queue-item">${escape(definition.units[role].name)}${i===0?` <b>${Math.floor(producer.trainProgress*100)}%</b>`:''}</span>`).join('')}`;}else queue.textContent='';
-      overlay.hidden=!paused&&s.winner===null;
-      if(!overlay.hidden){const ended=s.winner!==null;setText('#overlay-title',ended?s.winner===0?'Victory':'Defeat':'Battle paused');setText('#overlay-eyebrow',ended?'THE BATTLE IS OVER':'SKIRMISH');setText('#overlay-description',ended?s.winner===0?'The enemy stronghold has fallen. The Elderwood is yours.':'Your stronghold has fallen. Raise your banner and try again.':'Take a moment to plan your next move.');el('#resume-button').hidden=ended;}
+      overlay.hidden=!paused&&s.winner===null&&!s.draw;
+      if(!overlay.hidden){const ended=s.winner!==null||s.draw;setText('#overlay-title',ended?s.draw?'Draw':s.winner===0?'Victory':'Defeat':'Battle paused');setText('#overlay-eyebrow',ended?'THE BATTLE IS OVER':'SKIRMISH');setText('#overlay-description',ended?s.draw?'Both strongholds fell in the same exchange.':s.winner===0?'The enemy stronghold has fallen. The Elderwood is yours.':'Your stronghold has fallen. Raise your banner and try again.':'Take a moment to plan your next move.');el('#resume-button').hidden=ended;}
       setText('#pause-button',paused?'Resume':'Pause');drawMinimap(s);
     }
   };
