@@ -1,92 +1,91 @@
 # Orcs vs Fairies
 
-A fantasy real-time strategy game with visually and mechanically distinct orc and fairy factions.
+A browser RTS with six playable factions, seeded maps, three resources and a terminal interface for game-playing agents. Build a settlement, gather resources, recruit an army and destroy the enemy stronghold. Any faction can face any other, including itself.
 
-The local skirmish includes the complete Blender-rendered world assets and both factions against AI. Browser verification covers victory, defeat, restart and the RTS controls. The current Fairy defensive match ended at 13:25 with continuous telemetry; earlier faction matches provide additional outcome evidence. All 61 rule tests pass, and the production build reproduces byte-for-byte. The current 100-unit/1080p measurement is 58.53 FPS against the 60 FPS target. Orc-favored combat balance and visual overlap remain documented limitations. See docs/KNOWN_LIMITATIONS.md and docs/REQUIREMENTS.md for the evidence and scope.
+The game uses Phaser, TypeScript and Vite. Its simulation runs independently of the renderer. All factions have four unit types and four building types, with Blender-rendered models, eight-direction unit animations and selection artwork. ImageGen references and editable Blender sources are included.
 
-## Agreed direction
-
-- Browser delivery, single player against AI.
-- Warcraft-style base building, resource gathering, and small armies.
-- Painterly 2D artwork with a fixed isometric camera.
-- Generated images establish visual references before production assets.
-- Make the gameplay work with placeholders first, then create and render the game assets in Blender and integrate them.
-
-## Technology
-
-Phaser 4.2.1 with TypeScript and Vite. Keep the simulation independent from rendering so economy, combat, pathfinding, and AI can be tested without a browser. Browser tests must also exercise the actual player controls.
-
-Blender source scenes and Python scripts produce transparent sprite sheets from a consistent orthographic camera, lighting setup, scale, and ground anchor. Moving units use eight facing directions and idle, movement, attack, and death animations. Export metadata alongside the images. Use stylized materials and lighting to match the generated painterly references; inspect the sprites at actual gameplay size.
-
-## First milestone
-
-One complete skirmish map, either faction playable against the other, with a target match length of 10–15 minutes. Each faction has a worker, three combat unit types, and four building types: headquarters, resource drop-off, production, and defense.
-
-Include resource gathering, construction, production queues, population limits, selection and drag selection, right-click orders, attack-move, control groups, camera pan and zoom, minimap, fog of war, win/loss, and restart. The AI must gather, build, recruit, and attack using the same economy and visibility rules as the player.
-
-Agreed initial identity: orcs use armored industrial silhouettes and gain momentum through sustained combat; fairies use woodland silhouettes, mobility, illusions, and healing groves. These are initial content choices, not permanent engine constraints. The milestone roster is one worker and three combat roles per faction.
-
-## Architecture requirements
-
-Keep faction definitions separate from the core RTS systems. Define rosters, costs, stats, construction rules, ability assignments, presentation references, and AI preferences as validated content data with stable identifiers. Core movement, economy, production, targeting, and combat must not branch on faction names.
-
-Implement abilities through reusable behaviors and effects, with explicit code extensions for mechanics that existing behaviors cannot express. Avoid building a general-purpose ability language in the first milestone. Changing faction identity should primarily change content definitions and assets; a genuinely new mechanic may still require code.
-
-Separate simulation state and player/AI commands from Phaser presentation. Both human and AI players use the same command validation and game rules. Simulation positions and navigation use world coordinates; isometric projection belongs to presentation. Asset manifests map content identifiers to sprite sheets, animation clips, facing directions, and anchors, so replacing art does not change gameplay rules.
-
-Use a fixed simulation step and seeded randomness to make core behavior reproducible in tests. This supports debugging and later features but does not promise multiplayer compatibility. Verify that an alternate faction configuration can change a roster, an ability assignment, and its artwork without modifying core systems, then verify the resulting behavior in the running game.
-
-## Milestone scope
-
-Build a complete browser-playable skirmish of Orcs vs Fairies in this directory using Phaser and TypeScript. Follow the agreed art and gameplay direction. Generate reference sheets for both factions and the battlefield, then implement and verify a full match with placeholder assets. After the gameplay works, create reproducible Blender sources and render scripts for the scoped world assets, integrate the rendered sprites, and visually inspect both factions in play. Deliver a local playable build, editable sources, asset regeneration instructions, and evidence from real browser matches as both factions. Verify selection, orders, harvesting, construction, recruitment, combat, fog of war, AI, victory, defeat, and restart. Target 60 FPS at 1080p with 100 total units on this computer and report measured performance. Do not call the milestone complete with placeholder world assets or failed core gameplay checks.
-
-Exclusions for this milestone: multiplayer, campaign, heroes, save/load, mobile controls, and public deployment. Basic combat and interface audio is in scope. These exclusions define this milestone, not the eventual game.
-
-## Sources
-
-- Phaser: https://phaser.io/
-- Phaser documentation: https://docs.phaser.io/
-- Blender CLI: https://docs.blender.org/manual/en/latest/advanced/command_line/arguments.html
-
-## Local development
+## Run locally
 
 Use Node.js 22 or later and npm.
 
-```bash
+```sh
 npm ci
-npm run dev
-```
-
-Open http://127.0.0.1:5173 in a desktop browser. Both factions use the complete Blender-rendered artwork.
-
-```bash
-npm test
 npm run build
 npm run preview -- --port 4173
 ```
 
-The production preview at http://127.0.0.1:4173 does not reload when source changes. Rebuild and reload it to test updated source. Browser verification uses this fixed build so an in-progress match is not interrupted by development updates.
+Open [the production preview](http://127.0.0.1:4173). Rebuild and reload after changing source. For development with live reload, run `npm run dev` and open [the development server](http://127.0.0.1:5173).
 
-For local QA only, adding `?qa=1` on the numeric loopback host records read-only game snapshots in `work/browser-session.jsonl` through the local Vite middleware. It does not grant resources, issue commands or change outcomes. Production builds need no backend for ordinary play. The latest snapshot is not a standalone proof of the actions that preceded it; use the browser observations and gate record together.
+Choose your faction, AI opponent, map size and seed in the menu. Small maps are 36 × 36 tiles, medium 48 × 48 and large 64 × 64. A seed reproduces the terrain and resource layout. Starting locations and resource placement are rotationally symmetric.
+
+## Factions and resources
+
+| Faction | Defining behavior |
+| --- | --- |
+| Ironclad (Orcs) | Armored troops build Fury through sustained attacks. |
+| Wild Court (Fairies) | Fast troops, temporary illusion doubles and healing Moonwells. |
+| Deepforge (Dwarves) | Troops emplace for armor and damage; cannons also gain range. Moving packs up the position. |
+| Ashen Host (Undead) | Cheap ranks protect Gravecallers, who consume nearby corpses to raise temporary warriors. |
+| Tideborn | Troops cross mud and shallows quickly. Tidecallers heal nearby allies and grant a short movement burst. |
+| Automata | Shields recharge after a break in combat. Ward Engines restore nearby friendly shields. |
+
+Wood and ore fund the opening economy and basic troops. Crystal funds special units and defensive towers. Workers return all three resources to a completed headquarters or depot. The limited home crystal deposits give armies a reason to contest deposits farther out.
+
+Roads speed movement; mud and shallows slow most factions. Bridges cross water, while deep water and cliffs block movement. Buildings require visible grass or road across their entire footprint. Fog hides unseen enemies and terrain; resource deposits retain their last observed amounts until seen again.
 
 ## Controls
 
-Drag to select units, Shift to add to selection, and right-click to move, harvest, repair or attack. Press A then click for attack-move. Use arrows or W/S/D to pan; A pans left when no units are selected. Middle-drag pans, mouse wheel zooms, and Space centers the headquarters. Ctrl+number saves a control group; number recalls it. X stops current orders (units may pursue nearby enemies); H holds position and attacks only within weapon range. Q activates their available abilities, and Escape cancels placement or attack-move. Build and recruitment commands appear in the bottom-right panel for the selected worker or production building.
+Drag to select units, Shift to add to selection, and right-click to move, gather, repair or attack. A then click orders attack-move. F2 selects your combat units. X cancels orders; H holds position without pursuing enemies. Q activates selected abilities. Escape cancels placement or attack-move.
 
-## Asset tools
+Use arrows or W/S/D to pan; A pans left when no units are selected. Middle-drag pans, the mouse wheel zooms, and Space centers the headquarters. Ctrl+number saves a control group; number recalls it. Click the minimap to center the camera.
 
-The image reference is in `art/reference/`. Blender model scripts and editable scenes are in `art/blender/`; the production process and export coordinates are documented in `docs/ART_PIPELINE.md`.
+Construction and recruitment appear in the command panel when a worker or production building is selected. The resource bar shows wood, ore, crystal and population. Depots increase capacity. The sound toggle controls synthesized interface and combat cues and persists across reloads.
 
-```bash
-python3 -m venv .venv
-.venv/bin/python -m pip install -r requirements-assets.txt
-.venv/bin/python scripts/check_asset_packer.py
-.venv/bin/python scripts/pack_assets.py
-.venv/bin/python scripts/validate_assets.py
+## Terminal agents
+
+The persistent CLI accepts newline-delimited JSON for starting, observing, commanding, advancing and obtaining results. It defaults to controlling side 1, the computer's usual side, against the built-in AI. Its observations omit hidden enemies and enemy economy or production details. Commands use the ordinary ownership, visibility, cost and population checks.
+
+```sh
+npm run build:cli
+node dist-cli/rts.js --log work/my-match.ndjson
 ```
 
-Packing requires complete rendered input under `art/blender/raw/`. The validator checks all scoped assets and animations. The full generation command has completed successfully; see docs/evidence/ASSET_REPRODUCTION.md for validation and measured render differences.
+The Python example plays a complete match through those observations and commands:
 
-The complete serial Blender render and packing command is documented in [Regenerating assets](docs/REGENERATING_ASSETS.md).
+```sh
+python3 scripts/agents/example_agent.py \
+  --faction automata --opponent tideborn --map-size small --seed 4127 \
+  --log work/automata-match.ndjson
+node dist-cli/rts.js --replay work/automata-match.ndjson
+```
 
-Press F2 to select all living combat units without selecting workers. Mute sound toggles the synthesized interface and combat cues; the preference persists across reloads. Sound starts after a player gesture.
+See [the protocol and examples](docs/TERMINAL_AGENTS.md). The [six-faction CLI evidence](docs/evidence/terminal-v6/summary.json) includes complete games and verified command replays.
+
+## Verification and evidence
+
+```sh
+npm test
+npm run build
+npm run build:cli
+LADDER_RUN=six-factions-my-run npm run test:ladder
+```
+
+The ladder covers all 36 ordered faction pairings on three map sizes and two seeds, for 216 games. Each run preserves its source snapshot and refuses to overwrite an existing run. `LADDER_SEEDS` and `LADDER_SIZES` accept comma-separated subsets. Reports include outcomes, lengths, side advantages, resource use, timeouts and suspected movement stalls. These deterministic AI samples do not establish competitive balance.
+
+See [the expansion report](docs/EXPANSION_DAY.md), [the final ladder](docs/evidence/six-factions-final-v6/REPORT.md), and [remaining limitations](docs/KNOWN_LIMITATIONS.md). The original [64-game ladder](docs/evidence/ladder-64/REPORT.md) remains unchanged. Earlier four-faction and two-faction evidence is historical.
+
+For local QA, `?qa=1` on the numeric loopback host records read-only snapshots through the Vite middleware to `work/browser-session.jsonl`. It does not issue commands or alter the economy. Ordinary play needs no backend. A snapshot alone does not prove the preceding player actions; browser observations and the evidence record provide that context.
+
+## Assets and architecture
+
+```sh
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements-assets.txt
+./scripts/generate_assets.sh
+```
+
+Use `--pack-only` to reuse complete rendered frames. The serial generator covers all six factions and terrain assets, then packs and validates the output. [Regeneration instructions](docs/REGENERATING_ASSETS.md) describe dependencies, targeted model revisions and expected outputs. Reference sheets are in `art/reference/`; source scripts and editable scenes are in `art/blender/`.
+
+Faction data defines rosters, costs, stats, abilities, shields, terrain speed and AI composition. Core simulation positions use world coordinates; the isometric projection belongs to the renderer. Browser players, built-in AI and terminal agents share command validation. Only the two factions in a match load their animation atlases, reducing texture use compared with loading all six.
+
+Multiplayer, campaign, heroes, save/load, mobile controls and public deployment are outside this build. Replay verifies a command history against the same simulation version; it is not a cross-version save format.

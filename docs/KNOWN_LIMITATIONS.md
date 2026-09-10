@@ -1,5 +1,15 @@
 # Known limitations
 
+The current six-faction build passes 179 regression tests and completes all 216 games in the [final ladder](evidence/six-factions-final-v6/REPORT.md). Automata won 5 of 60 cross-faction games and Tideborn 21 of 60. These factions need further balance and AI work. Mirror results favor side 0 by 24–12; opposing Gravecallers can claim the same corpse in entity order. Simultaneous damage and alternating AI decisions do not remove that remaining ordering risk.
+
+One large-map Dwarf mirror triggered a 20-second movement-stall diagnostic. No game timed out at 45 minutes, but the longest lasted 30:47. The ladder checks coordinates for finite values and map bounds every five seconds; it does not prove that every move avoids every obstacle. Navigation regressions separately exercise collision and crowd cases.
+
+The complete atlas set decodes to 737.9 MiB. Selective loading reduced the observed Automata–Fairies match to about 253.65 MiB of atlases, still substantial. No new controlled 100-unit performance benchmark was run. Browser checks do not constitute a complete human match for each faction and size.
+
+Terminal replay compares post-request simulation state hashes on the same version, not response bytes, runtime caches or a cross-version save format. The local decision trail retains its original malformed rows separately; repaired and reconstructed entries should not be treated as exact action timestamps. The [expansion report](EXPANSION_DAY.md) describes current evidence. Everything below is historical.
+
+## Original two-faction milestone (historical)
+
 The current production build is `index-9PMVYv2m.js`. All 61 rule tests pass, and an isolated build reproduced all 67 output files. The final Fairy browser match ended in defeat at 13:25 with uninterrupted telemetry, no pauses, healing, tower repairs, rebuilding and restart. See evidence/FAIRIES_HOLD_MATCH.md and evidence/COMPLETION_AUDIT.md for acceptance evidence and its limits.
 
 The current maintained 100-unit scene measured 58.5255 FPS at a 1920 by 1080 viewport, canvas and drawing buffer, slightly below the 60 FPS target. Exactly 100 living, visible, on-screen final sprites remained throughout the valid 60-second sample. The reported device pixel ratio was 1.5. The earlier 144 FPS result was not reproduced. See evidence/PERFORMANCE_CURRENT.md.

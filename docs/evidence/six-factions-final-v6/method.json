@@ -1,0 +1,31 @@
+{
+  "games": 216,
+  "seeds": [
+    4127,
+    91873
+  ],
+  "sizes": [
+    "small",
+    "medium",
+    "large"
+  ],
+  "seedIsUsed": true,
+  "stepSeconds": 0.05,
+  "controllers": [
+    "ai",
+    "ai"
+  ],
+  "decisionIntervalSeconds": 1,
+  "decisionOrder": "Alternates each pulse; both receive their first decision on the same tick.",
+  "maxMinutes": 45,
+  "drawPolicy": "Simultaneous stronghold loss is a draw. No winner at 45 minutes is a timeout, with no tiebreak.",
+  "pathfindingMetric": "Sample movement orders every 5s. Flag >20s with <0.35 tile displacement while >1.5 tiles from destination and no visible enemy within 10 tiles. This is a diagnostic suspicion, not proof of an unreachable path.",
+  "sourceSha256": {
+    "src/core/types.ts": "0e0a48306c92f89dca974722c9fcdd3149a662ab22d57c99494a07362713fd0d",
+    "src/core/content.ts": "0ef5fed4b7b9efd72ae3dde73dc78b896c4f2c575f2bdee3d2c0ccd740964a98",
+    "src/core/simulation.ts": "06c558f2b7ca3c260b5942387d39008ef5a91f49f668b75f8c40b3e36c9ac220",
+    "src/core/maps.ts": "39ae3037b9540960526c8854ce8c92bb9229ee8b9cf35ccae7238a094079a8a2",
+    "src/core/navigation.ts": "ce7c664ff7a667819a42c0a047f2c729a6ae2893ddece16645469f1a497305a9",
+    "scripts/ladder/ladder.test.ts": "f0aacd05504b11e3ddaefe2d7f9bd38b25803209133ce9fc00f16f978152b4e9"
+  }
+}

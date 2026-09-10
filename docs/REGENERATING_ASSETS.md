@@ -34,7 +34,7 @@ Logs are written under `work/asset-generation/`. Every Blender invocation uses `
 
 Raw environment images and their manifest go to `art/blender/raw/environment/`. Units and buildings use `art/blender/raw/{units,buildings}/{assetId}/` with `meta.json` and named animation frames. Editable scenes go to `art/blender/scenes/`. Packed PNGs, Phaser atlas JSON and the runtime manifest go to `public/assets/`. The wrapper does not rebuild Vite's `dist`; run the project's production build separately after asset generation.
 
-The pack-only option requires complete raw frames for both factions. It cannot turn representative samples into a complete export. Missing frames fail packing, and missing required IDs fail validation. A failed pack can leave partly updated output, so rerun after resolving the error before using the build.
+The pack-only option requires complete raw frames for all six factions. It cannot turn representative samples into a complete export. Missing frames fail packing, and missing required IDs fail validation. A failed pack can leave partly updated output, so rerun after resolving the error before using the build.
 
 For a targeted model revision, run the corresponding generator directly, then repack all assets:
 
@@ -52,10 +52,26 @@ Environment supports `--all`, `--sample` and `--asset`. Buildings also supports 
 
 ## Expected size and verification limits
 
-The current animation metadata specifies 4 idle, 8 walk, 6 attack and 6 death frames per unit direction. Eight units in eight directions therefore require 1,536 unit PNGs. Eight buildings with one idle, three construction and one death frame require another 40 PNGs. The environment generator declares 15 static images. A full export produces 1,591 final raw PNGs, plus 31 editable scenes. Temporary supersampled PNGs are removed by successful renders; an interrupted render may leave one behind.
+The current export contains 24 units in eight directions, with four idle, eight walk, six attack and six death frames per direction. That is 4,608 unit PNGs. Twenty-four buildings have one idle, three construction and one death frame, adding 120 PNGs. Twenty-two static environment images bring the total to 4,750 raw images and 70 editable scenes. Temporary supersampled PNGs are removed after successful renders.
 
-At the current unit generator's dimensions (160×192 for orcs and 192×192 for fairies), and the building metadata's 384×384 or 256×384 dimensions, the uncompressed unit/building frame pixels total approximately 216.75 MiB. Applying the current packer's two-pixel borders and page layout projects 24 atlas pages and approximately 230.59 MiB of decoded atlas pixels, before environment textures, mipmaps or other GPU overhead. These are calculations from generator dimensions and animation metadata, not measured browser memory. PNG disk sizes vary with the render content. Existing raw metadata can describe older sample dimensions until a full export refreshes every unit; do not use a mixed sample directory as a final memory measurement.
+The packed manifest contains 70 assets, 4,728 animation frames and 72 atlas pages. The complete atlas set decodes to 737.90 MiB before environment textures, render targets and other GPU overhead. A match loads only its participating factions, including one copy for a mirror match. The browser QA record reports the pages and decoded atlas size loaded for that match. These pixel counts are not a measurement of total process or GPU memory.
 
-The validator prints the measured decoded atlas size after packing. It checks required IDs, frame coverage, atlas bounds, nonempty alpha and changing frames for multi-frame animations. It does not establish visual quality, correct movement direction, gameplay readability, animation timing or the target frame rate. Those require visual inspection and browser play with the final assets loaded.
+The validator checks required IDs, frame coverage, atlas bounds, nonempty alpha, changing frames for multi-frame animations, faction portraits and selection artwork for all 48 unit/building types. Visual review and browser play remain necessary to check direction, animation timing, readability and frame rate.
 
-The complete wrapper ran to exit code 0 and validated all 31 assets. See [Asset reproduction evidence](evidence/ASSET_REPRODUCTION.md) for the command, logs, hashes and decoded-pixel comparison. Repeating the process produced the same IDs and metadata, with small rendered pixel differences even on this computer; byte-identical PNG output is not guaranteed.
+The original two-faction full-wrapper reproduction is retained in [historical asset reproduction evidence](evidence/ASSET_REPRODUCTION.md). The six-faction expansion rendered the new production set with `world_expansion.py --all`, then ran the pack-and-validation wrapper. It did not rerender every unchanged earlier faction during this expansion. Repeated Blender renders need not be byte-identical.
+
+## Expansion generators
+
+The wrapper runs `environment`, `buildings`, `units`, `expansion`, then `world_expansion`, so additional terrain entries merge after the base environment manifest is generated. `expansion.py` supplies Dwarf and Undead models. `world_expansion.py` supplies Tideborn, Automata, crystal deposits, reeds and the water, shallows, mud, rock and bridge tiles.
+
+```sh
+blender --background --factory-startup --python-exit-code 1 \
+  --python art/blender/world_expansion.py -- --all
+# Or revise one complete asset:
+blender --background --factory-startup --python-exit-code 1 \
+  --python art/blender/world_expansion.py -- --asset automata-special
+./scripts/generate_assets.sh --pack-only
+npm run build
+```
+
+`--sample` renders only representative frames. It is useful for visual review but cannot replace a complete animation export. The packer also creates six faction portraits and 48 selection portraits by cropping the rendered idle frames. ImageGen references are design inputs; the delivered gameplay sprites are Blender renders.

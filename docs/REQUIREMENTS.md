@@ -1,4 +1,8 @@
-# Completion evidence
+# Requirements and verification
+
+The current six-faction scope and evidence are documented in [EXPANSION_DAY.md](EXPANSION_DAY.md). Implementation and integration checks passed; remaining balance, movement, fairness and performance limits are documented in [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md). The checklist below belongs to the original two-faction milestone.
+
+## Original two-faction milestone (historical)
 
 This checklist tracks the full objective. Unchecked items are not complete.
 
