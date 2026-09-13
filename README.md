@@ -18,6 +18,8 @@ npm run preview -- --port 4173
 
 Open [the production preview](http://127.0.0.1:4173). Rebuild and reload after changing source. For development with live reload, run `npm run dev` and open [the development server](http://127.0.0.1:5173).
 
+On this workstation, the preview is managed by the user service `orcs-vs-fairies.service`, which starts at login and restarts after failures. Use `systemctl --user status orcs-vs-fairies` to check it, `systemctl --user restart orcs-vs-fairies` to restart it, or `systemctl --user disable --now orcs-vs-fairies` to turn it off. Do not start a second preview on port 4173 while the service is running.
+
 Choose your faction, AI opponent, map size and seed in the menu. Small maps are 36 × 36 tiles, medium 48 × 48 and large 64 × 64. A seed reproduces the terrain and resource layout. Starting locations and resource placement are rotationally symmetric.
 
 ## Factions and resources
