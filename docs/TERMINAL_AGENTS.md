@@ -29,6 +29,8 @@ Unexplored terrain is `null`. Resource entries retain their last observed amount
 
 Map seed, dimensions, faction choices and starting locations are public match setup. An agent is expected to use the observations for its decisions; knowing a reproducible seed can theoretically let any player reconstruct the map. There is no hidden server secret in this local game.
 
+Your own production buildings expose their optional `rally: {x, y}` destination in observations. Enemy rally points remain private.
+
 ## Commands
 
 Wrap one ordinary game command in `{"op":"command","command":...}`. IDs refer to entities or resource nodes in observations. Only your living, non-illusion units accept unit orders. Commands cannot override the controlled side.
@@ -41,7 +43,10 @@ Wrap one ordinary game command in `{"op":"command","command":...}`. IDs refer to
 | `gather` | `ids`, `target` | Workers gather a currently visible wood, ore or crystal node and return loads to a completed HQ or depot. |
 | `build` | `ids`, `role`, `x`, `y` | Workers place and construct `hq`, `depot`, `barracks` or `tower`. Costs are paid on placement. The entire footprint must be visible and buildable. |
 | `repair` | `ids`, `target` | Workers resume a friendly foundation or repair a damaged friendly building. Repairs consume wood. |
+| `setRally` | `ids`, `x`, `y` | Set an open-ground destination on your HQs or barracks. Newly produced units receive a move order to that point. |
+| `clearRally` | `ids` | Remove rally points from your production buildings. |
 | `train` | `id`, `role` | A completed HQ trains `worker`; a completed barracks trains `melee`, `ranged` or `special`. Costs and population slots are reserved immediately. |
+| `cancelTrain` | `id`, `index` | Cancel one entry in your building’s recruitment queue (zero-based index). Refunds the full cost and releases reserved supply. Canceling index 0 resets production progress. |
 | `hold` | `ids` | Defend within weapon range without pursuing. |
 | `stop` | `ids` | Cancel orders. Idle troops may pursue nearby enemies. |
 | `ability` | `ids` | Activate eligible selected abilities, subject to cooldown and target requirements. |

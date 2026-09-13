@@ -1,0 +1,31 @@
+import {describe,it,expect} from 'vitest';
+import {createGame,issueCommand,stepGame,canPlace} from '../src/core/simulation';
+import {FACTIONS} from '../src/core/content';
+import {walkable} from '../src/core/navigation';
+import {PlayerView} from '../src/core/observation';
+import type {FactionId} from '../src/core/types';
+const factions: FactionId[]=['orcs','fairies','dwarves','undead','tideborn','automata'];
+function setup(faction:FactionId='orcs'){
+ const s=createGame(faction,4127,'fairies',{controllers:['external','external']});const hq=s.entities.find(e=>e.side===0&&e.role==='hq')!;
+ const point=[...s.visible[0]].map(i=>({x:i%s.width+.5,y:Math.floor(i/s.width)+.5})).find(p=>walkable(s,p.x,p.y)&&Math.hypot(p.x-hq.x,p.y-hq.y)>5)!;
+ return {s,hq,point};
+}
+describe('production rally points',()=>{
+ it.each(factions)('sends a newly produced %s worker toward its rally',f=>{const {s,hq,point}=setup(f);const old=new Set(s.entities.map(e=>e.id));expect(issueCommand(s,0,{type:'setRally',ids:[hq.id],...point})).toBe(true);expect(issueCommand(s,0,{type:'train',id:hq.id,role:'worker'})).toBe(true);let produced;for(let i=0;i<600&&!produced;i++){stepGame(s,.05);produced=s.entities.find(e=>!old.has(e.id)&&e.side===0);}expect(produced?.order).toEqual({type:'move',...point});expect(hq.rally).toEqual(point);});
+ it('rallies all three military roles from a barracks',()=>{
+  const {s}=setup();Object.assign(s.players[0],{wood:2000,ore:2000,crystal:2000});
+  const locations=[...s.visible[0]].map(i=>({x:i%s.width+.5,y:Math.floor(i/s.width)+.5}));
+  const site=locations.find(p=>canPlace(s,0,'barracks',p.x,p.y))!;
+  const worker=s.entities.find(e=>e.side===0&&e.role==='worker')!;
+  expect(issueCommand(s,0,{type:'build',ids:[worker.id],role:'barracks',...site})).toBe(true);
+  const b=s.entities.find(e=>e.side===0&&e.role==='barracks')!;b.progress=1;b.hp=b.maxHp;
+  const point=locations.find(p=>walkable(s,p.x,p.y)&&Math.hypot(p.x-b.x,p.y-b.y)>5)!;
+  expect(issueCommand(s,0,{type:'setRally',ids:[b.id],...point})).toBe(true);
+  for(const role of ['melee','ranged','special'] as const)expect(issueCommand(s,0,{type:'train',id:b.id,role})).toBe(true);
+  const seen=new Set(s.entities.map(e=>e.id)),roles:string[]=[];
+  for(let i=0;i<Math.ceil((FACTIONS.orcs.units.melee.trainTime+FACTIONS.orcs.units.ranged.trainTime+FACTIONS.orcs.units.special.trainTime+1)/.05)&&roles.length<3;i++){stepGame(s,.05);for(const e of s.entities){if(!seen.has(e.id)){seen.add(e.id);roles.push(e.role);expect(e.order).toEqual({type:'move',...point});}}}
+  expect(roles).toEqual(['melee','ranged','special']);
+ });
+ it('clears a point and keeps it private to its owner',()=>{const {s,hq,point}=setup();issueCommand(s,0,{type:'setRally',ids:[hq.id],...point});expect(new PlayerView(0).observe(s).entities.find(e=>e.id===hq.id)).toHaveProperty('rally',point);s.visible[1]=new Set(s.visible[0]);expect(new PlayerView(1).observe(s).entities.find(e=>e.id===hq.id)).not.toHaveProperty('rally');expect(issueCommand(s,0,{type:'clearRally',ids:[hq.id]})).toBe(true);expect(hq.rally).toBeUndefined();});
+ it('rejects enemy buildings, units, invalid coordinates and blocked tiles',()=>{const {s,hq,point}=setup();const worker=s.entities.find(e=>e.side===0&&e.role==='worker')!;expect(issueCommand(s,1,{type:'setRally',ids:[hq.id],...point})).toBe(false);expect(issueCommand(s,0,{type:'setRally',ids:[worker.id],...point})).toBe(false);for(const p of [{x:NaN,y:1},{x:-1,y:1},{x:s.width+1,y:1},{x:hq.x,y:hq.y}])expect(issueCommand(s,0,{type:'setRally',ids:[hq.id],...p})).toBe(false);expect(hq.rally).toBeUndefined();});
+});

@@ -145,6 +145,12 @@ export default class GameScene extends Phaser.Scene {
     if(this.buildRole){this.setBuildRole(null);return;}
     const world=this.cameras.main.getWorldPoint(p.x,p.y);const pos=unproject(world.x,world.y);const hit=this.hit(world.x,world.y);
     let ok=false;
+    const producers=this.state.entities.filter(e=>this.selected.includes(e.id)&&e.side===0&&e.kind==='building'&&(e.role==='hq'||e.role==='barracks'));
+    if(producers.length&&!attack){
+      ok=issueCommand(this.state,0,{type:'setRally',ids:producers.map(e=>e.id),x:pos.x,y:pos.y});
+      this.options.onNotice(ok?'Rally point set. New units will move here.':'Choose open ground for the rally point.');
+      if(!this.state.entities.some(e=>this.selected.includes(e.id)&&e.side===0&&e.kind==='unit')){if(ok)this.audio?.play('order');return;}
+    }
     if(hit&&hit.side===1)ok=issueCommand(this.state,0,{type:'attack',ids:this.selected,target:hit.id});
     else if(hit&&hit.side===0&&hit.kind==='building'&&hit.hp<hit.maxHp)ok=issueCommand(this.state,0,{type:'repair',ids:this.selected,target:hit.id});
     else {
@@ -305,6 +311,13 @@ export default class GameScene extends Phaser.Scene {
     }
     if(this.drag&&Math.hypot(p.x-this.drag.x,p.y-this.drag.y)>6&&!this.buildRole){g.lineStyle(1,0xe5dca6).strokeRect(this.drag.wx,this.drag.wy,world.x-this.drag.wx,world.y-this.drag.wy);g.fillStyle(0xd6e9a5,.12).fillRect(this.drag.wx,this.drag.wy,world.x-this.drag.wx,world.y-this.drag.wy);}
     if(this.buildRole){const pos=unproject(world.x,world.y);const x=Math.floor(pos.x)+.5,y=Math.floor(pos.y)+.5,q=project(x,y);const valid=canPlace(this.state,0,this.buildRole,x,y);const size=FACTIONS[this.state.players[0].faction].buildings[this.buildRole].size;this.diamond(g,q.x,q.y,size*64,size*32,valid?0xa6d99a:0xe27964,.5);}
+    for(const building of this.state.entities){
+      if(building.side!==0||building.hp<=0||!building.rally||!this.selected.includes(building.id))continue;
+      const from=project(building.x,building.y),to=project(building.rally.x,building.rally.y);
+      g.lineStyle(1,0xe4c578,.55).lineBetween(from.x,from.y,to.x,to.y);
+      g.lineStyle(2,0xe4c578,1).strokeEllipse(to.x,to.y,22,11).lineBetween(to.x,to.y,to.x,to.y-32);
+      g.fillStyle(0xe4c578,1).fillTriangle(to.x,to.y-32,to.x+18,to.y-26,to.x,to.y-20);
+    }
     this.markers=this.markers.filter(m=>this.time.now-m.born<700);for(const m of this.markers){const age=(this.time.now-m.born)/700;g.lineStyle(2,m.attack?0xe38b6b:0xf0dfa3,1-age).strokeEllipse(m.x,m.y,15+age*35,7+age*17);}
     this.game.canvas.style.cursor=this.buildRole||this.attackMode?'crosshair':'default';
   }

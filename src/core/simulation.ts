@@ -42,6 +42,19 @@ export function canPlace(s:GameState,side:Side,role:BuildingRole,x:number,y:numb
 function assign(s:GameState,e:Entity,order:Entity['order']):void{if(order.type!=='hold')e.entrenchedAt=undefined;e.order=order;e.path=[];runtime(s).routes.delete(e.id);runtime(s).returning.delete(e.id);}
 export function issueCommand(s:GameState,side:Side,c:Command):boolean{
  if(isGameOver(s))return false;const p=s.players[side],f=FACTIONS[p.faction];
+ if(c.type==='setRally'||c.type==='clearRally'){
+  const producers=s.entities.filter(e=>c.ids.includes(e.id)&&e.side===side&&alive(e)&&e.kind==='building'&&(e.role==='hq'||e.role==='barracks'));
+  if(!producers.length)return false;
+  if(c.type==='setRally'&&(!Number.isFinite(c.x)||!Number.isFinite(c.y)||c.x<.5||c.y<.5||c.x>s.width-.5||c.y>s.height-.5||!walkable(s,c.x,c.y)))return false;
+  for(const e of producers){if(c.type==='clearRally')delete e.rally;else e.rally={x:c.x,y:c.y};}return true;
+ }
+ if(c.type==='cancelTrain'){
+  const e=s.entities.find(e=>e.id===c.id&&e.side===side&&alive(e)&&e.kind==='building');
+  if(!e||!Number.isInteger(c.index)||c.index<0||c.index>=e.queue.length)return false;
+  const cost=f.units[e.queue[c.index]].cost;
+  e.queue.splice(c.index,1);if(c.index===0)e.trainProgress=0;
+  p.wood+=cost.wood;p.ore+=cost.ore;p.crystal+=cost.crystal;return true;
+ }
  if(c.type==='train'){
  const e=s.entities.find(e=>e.id===c.id&&e.side===side&&alive(e)&&e.kind==='building'&&e.progress===1);const d=f.units[c.role];if(!e||!d||(c.role==='worker'?e.role!=='hq':e.role!=='barracks')||e.queue.length>=5||p.wood<d.cost.wood||p.ore<d.cost.ore||p.crystal<d.cost.crystal||p.population+reserved(s,side)>=p.cap)return false;
  p.wood-=d.cost.wood;p.ore-=d.cost.ore;p.crystal-=d.cost.crystal;e.queue.push(c.role);return true;
@@ -148,7 +161,7 @@ function construct(s:GameState,e:Entity,id:number,dt:number):void{
 function production(s:GameState,e:Entity,dt:number):void{
  if(e.progress<1||!e.queue.length)return;const role=e.queue[0],d=FACTIONS[s.players[e.side].faction].units[role];if(s.players[e.side].population>=s.players[e.side].cap)return;e.trainProgress+=dt/d.trainTime;
  if(e.trainProgress>=1){let point:Vec|undefined;const r=radius(s,e)+1;for(let i=0;i<24;i++){const angle=i/24*Math.PI*2+(e.side===0?0:Math.PI),p={x:e.x+Math.cos(angle)*r,y:e.y+Math.sin(angle)*r};if(walkable(s,p.x,p.y)){point=p;break;}}
- if(!point)return;const u=spawn(s,e.side,'unit',role,point.x,point.y);e.trainProgress=0;e.queue.shift();emit(s,'train',u);updatePopulation(s);}
+ if(!point)return;const u=spawn(s,e.side,'unit',role,point.x,point.y);e.trainProgress=0;e.queue.shift();emit(s,'train',u);updatePopulation(s);if(e.rally)issueCommand(s,e.side,{type:'move',ids:[u.id],...e.rally});}
 }
 function separateUnits(s:GameState):void{
  const units=s.entities.filter(e=>e.kind==='unit'&&alive(e));for(let i=0;i<units.length;i++)for(let j=i+1;j<units.length;j++){const a=units[i],b=units[j],d=distance(a,b);if(d>=.58)continue;const dx=d>.001?(a.x-b.x)/d:(a.id%2?1:-1),dy=d>.001?(a.y-b.y)/d:.3,push=(.58-d)*.22;const ax=a.x+dx*push,ay=a.y+dy*push,bx=b.x-dx*push,by=b.y-dy*push;if(walkable(s,ax,ay)){a.x=ax;a.y=ay;}if(walkable(s,bx,by)){b.x=bx;b.y=by;}}

@@ -11,10 +11,11 @@ const finite=(v:unknown):v is number=>typeof v==='number'&&Number.isFinite(v);
 const keys=(o:Record<string,unknown>,allowed:string[])=>Object.keys(o).every(k=>allowed.includes(k));
 function validateCommand(v:unknown):v is Command{
  if(!record(v)||typeof v.type!=='string')return false;
+ if(v.type==='cancelTrain')return keys(v,['type','id','index'])&&integer(v.id)&&integer(v.index);
  if(v.type==='train')return keys(v,['type','id','role'])&&integer(v.id)&&roles.includes(v.role as string);
  if(!Array.isArray(v.ids)||!v.ids.length||v.ids.length>100||!v.ids.every(integer))return false;
- if(['stop','hold','ability'].includes(v.type))return keys(v,['type','ids']);
- if(['move','attackMove'].includes(v.type))return keys(v,['type','ids','x','y'])&&finite(v.x)&&finite(v.y);
+ if(['stop','hold','ability','clearRally'].includes(v.type))return keys(v,['type','ids']);
+ if(['move','attackMove','setRally'].includes(v.type))return keys(v,['type','ids','x','y'])&&finite(v.x)&&finite(v.y);
  if(['attack','gather','repair'].includes(v.type))return keys(v,['type','ids','target'])&&integer(v.target);
  return v.type==='build'&&keys(v,['type','ids','role','x','y'])&&buildings.includes(v.role as string)&&finite(v.x)&&finite(v.y);
 }
