@@ -75,3 +75,7 @@ npm run build
 ```
 
 `--sample` renders only representative frames. It is useful for visual review but cannot replace a complete animation export. The packer also creates six faction portraits and 48 selection portraits by cropping the rendered idle frames. ImageGen references are design inputs; the delivered gameplay sprites are Blender renders.
+
+## Command console artwork
+
+The HUD reuses `selection-*.png` and `portrait-*.png` from the existing Blender renders. `art/blender/ui_orders.py` creates the brass Halt plaque and Hold shield, saves their editable scenes in `art/models/`, and renders `public/assets/ui-halt.png` and `ui-hold.png`. The full generation wrapper includes these icons. To regenerate only these two images, run `blender --background --factory-startup --python-exit-code 1 --python art/blender/ui_orders.py`. Check all 56 UI images with `.venv/bin/python scripts/check_ui_art.py`. The ImageGen layout reference and its prompt are in `art/reference/rts-ui-command-bar*`; they are not used as production sprites.

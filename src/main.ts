@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import GameScene, { project } from './game/GameScene';
+import GameScene, { project, unproject } from './game/GameScene';
 import { createPerformanceGame, countPerformanceUnits, FrameCollector, PERFORMANCE_CENTER } from './qa/performance';
 import { createGame, issueCommand } from './core/simulation';
 import { mountShell } from './ui/Hud';
@@ -21,12 +21,18 @@ const callbacks:HudCallbacks={
  train:role=>{if(!scene)return;const id=scene.selected.find(id=>scene!.state.entities.some(e=>e.id===id&&e.side===0&&e.kind==='building'&&e.role===(role==='worker'?'hq':'barracks')));if(id===undefined||!issueCommand(scene.state,0,{type:'train',id,role}))shell.notice('Cannot recruit: check resources, population, and production building.');},
  ability:()=>{if(scene&&!issueCommand(scene.state,0,{type:'ability',ids:scene.selected}))shell.notice('No selected ability is ready or has an eligible target.');},
  hold:()=>{scene?.holdPosition();},
+ attackMove:()=>scene?.beginAttackMove(),
+ select:ids=>scene?.selectEntities(ids),
  stop:()=>{if(scene)issueCommand(scene.state,0,{type:'stop',ids:scene.selected});},
  pause:()=>{if(scene)scene.paused=!scene.paused;},
  restart:()=>{scene!.paused=true;shell.showMenu();},
  toggleMuted:()=>scene?.toggleMuted(),
  isMuted:()=>scene?.muted??false,
- center:(x,y)=>scene?.centerOn(x,y)
+ center:(x,y)=>scene?.centerOn(x,y),
+ groups:()=>scene?.controlGroups()??{},
+ recallGroup:group=>scene?.recallGroup(group),
+ cameraCorners:()=>{if(!scene?.cameras?.main)return [];const c=scene.cameras.main;const {top,bottom}=shell.battlefieldBounds();return [[0,top],[innerWidth,top],[innerWidth,bottom],[0,bottom]].map(([x,y])=>{const p=c.getWorldPoint(x,y);return unproject(p.x,p.y);});}
+
 };
 function start(next:FactionId,nextOpponent:FactionId=opponent,mapSize:MapSize="medium",seed=4127){
  if(game){const previous=game;game=undefined;scene=undefined;previous.events.once(Phaser.Core.Events.DESTROY,()=>start(next,nextOpponent,mapSize,seed));previous.destroy(true);return;}
@@ -34,7 +40,7 @@ function start(next:FactionId,nextOpponent:FactionId=opponent,mapSize:MapSize="m
  const state=benchmark?createPerformanceGame():createGame(faction,seed,opponent,{mapSize});
  if(benchmark){collector=new FrameCollector();benchmarkCentered=false;}
  if(scene&&game){scene.restart(state);shell.update(state,[],callbacks);return;}
- scene=new GameScene({state,onSelection:ids=>shell.update(scene!.state,ids,callbacks),onNotice:text=>shell.notice(text)});
+ scene=new GameScene({state,onSelection:ids=>shell.update(scene!.state,ids,callbacks),onNotice:text=>shell.notice(text),onReady:()=>shell.ready(),viewBounds:()=>shell.battlefieldBounds()});
  game=new Phaser.Game({type:Phaser.AUTO,parent:'game-canvas',backgroundColor:'#14201e',antialias:true,roundPixels:false,scale:{mode:Phaser.Scale.RESIZE,width:'100%',height:'100%'},scene:[scene],render:{pixelArt:false},fps:{target:60}});
  if(benchmark)game.events.on('postrender',()=>{
   if(!scene||!game||!scene.cameras.main||scene.state.time<=0)return;

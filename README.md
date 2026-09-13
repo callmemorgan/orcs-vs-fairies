@@ -39,7 +39,9 @@ Drag to select units, Shift to add to selection, and right-click to move, gather
 
 Use arrows or W/S/D to pan; A pans left when no units are selected. Middle-drag pans, the mouse wheel zooms, and Space centers the headquarters. Ctrl+number saves a control group; number recalls it. Click the minimap to center the camera.
 
-Construction and recruitment appear in the command panel when a worker or production building is selected. The resource bar shows wood, ore, crystal and population. Depots increase capacity. The sound toggle controls synthesized interface and combat cues and persists across reloads.
+Construction and recruitment appear as illustrated commands when a worker or production building is selected. Z/C/B/V trigger the displayed construction slots; Z/C/B trigger recruitment slots. Mixed selections have Build and Recruit tabs. Hover or focus a command for its description, cost, shortcut and unavailable reason. The selection bar shows portraits, health, construction and recruitment progress. Click a roster portrait to select that unit, or Shift-click to remove it. Saved groups also have clickable buttons.
+
+The resource bar shows wood, ore, crystal, population and places reserved by recruitment. Depots increase capacity. The sound toggle controls synthesized interface and combat cues and persists across reloads. The desktop UI supports 1280 × 720 and larger screens. See the [UI overhaul report and before/after screenshots](docs/UI_OVERHAUL.md).
 
 ## Terminal agents
 

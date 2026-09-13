@@ -13,7 +13,7 @@ const CAMERA_TAP:Record<string,readonly [number,number]> = {
 };
 export function project(x:number,y:number) { return {x:OX+(x-y)*TILE_W/2,y:OY+(x+y)*TILE_H/2}; }
 export function unproject(x:number,y:number) { return {x:((x-OX)/32+(y-OY)/16)/2,y:((y-OY)/16-(x-OX)/32)/2}; }
-interface Options {state:GameState;onSelection:(ids:number[])=>void;onNotice:(text:string)=>void}
+interface Options {state:GameState;onSelection:(ids:number[])=>void;onNotice:(text:string)=>void;onReady?:()=>void;viewBounds?:()=>{top:number;bottom:number}}
 export default class GameScene extends Phaser.Scene {
   public state:GameState;
   public selected:number[]=[];
@@ -100,9 +100,14 @@ export default class GameScene extends Phaser.Scene {
     });
     this.events.once(Phaser.Scenes.Events.SHUTDOWN,()=>this.input.keyboard?.removeAllListeners('keydown'));
     this.drawFog();
+    this.options.onReady?.();
   }
+  public controlGroups(){return Object.fromEntries(Object.entries(this.groups).map(([key,ids])=>[key,ids.filter(id=>this.state.entities.some(e=>e.id===id&&e.hp>0))]));}
+  public recallGroup(key:string){const ids=this.controlGroups()[key];if(ids)this.select(ids);}
+  public selectEntities(ids:number[]){this.select(ids.filter(id=>this.state.entities.some(e=>e.id===id&&e.hp>0&&this.visible(e))));}
+  public beginAttackMove(){if(this.paused||this.state.winner!==null||this.state.draw||!this.selected.length)return;this.attackMode=true;this.buildRole=null;this.options.onNotice('Attack move: click a destination.');}
   public setBuildRole(role:BuildingRole|null){this.buildRole=role;this.attackMode=false;}
-  public centerOn(x:number,y:number){const q=project(x,y);this.cameras.main.centerOn(q.x,q.y);}
+  public centerOn(x:number,y:number){const q=project(x,y),camera=this.cameras.main;camera.centerOn(q.x,q.y);const bounds=this.options.viewBounds?.();if(bounds)camera.scrollY+=(camera.height/2-(bounds.top+bounds.bottom)/2)/camera.zoom;}
   public restart(state:GameState){this.audio?.reset();this.resultSoundPlayed=false;this.art.reset();this.state=state;this.playerView=new PlayerView(0);this.paused=false;this.accumulated=0;this.attackedNoticeAt.clear();this.buildingAlertAt=-Infinity;this.workerAlertAt=-Infinity;this.groups={};this.markers=[];this.combatEffects=[];this.setBuildRole(null);this.select([]);this.drawGround();this.drawFog();this.centerOn(this.state.starts[0].x,this.state.starts[0].y);}
   public holdPosition(){if(this.paused||(this.state.winner!==null||this.state.draw)||!issueCommand(this.state,0,{type:'hold',ids:this.selected}))return false;this.attackMode=false;this.setBuildRole(null);this.audio?.play('order');this.options.onNotice('Holding position: attack in range without pursuing.');return true;}
   private select(ids:number[],audible=true){const changed=ids.length!==this.selected.length||ids.some((id,index)=>id!==this.selected[index]);this.selected=ids;this.options.onSelection(ids);if(audible&&changed&&ids.length)this.audio?.play('selection');}
