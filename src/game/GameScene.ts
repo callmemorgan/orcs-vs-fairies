@@ -13,7 +13,7 @@ const CAMERA_TAP:Record<string,readonly [number,number]> = {
 };
 export function project(x:number,y:number) { return {x:OX+(x-y)*TILE_W/2,y:OY+(x+y)*TILE_H/2}; }
 export function unproject(x:number,y:number) { return {x:((x-OX)/32+(y-OY)/16)/2,y:((y-OY)/16-(x-OX)/32)/2}; }
-interface Options {state:GameState;onSelection:(ids:number[])=>void;onNotice:(text:string)=>void;onReady?:()=>void;viewBounds?:()=>{top:number;bottom:number}}
+interface Options {pixelDensity?:number;state:GameState;onSelection:(ids:number[])=>void;onNotice:(text:string)=>void;onReady?:()=>void;viewBounds?:()=>{top:number;bottom:number}}
 export default class GameScene extends Phaser.Scene {
   public state:GameState;
   public selected:number[]=[];
@@ -45,6 +45,7 @@ export default class GameScene extends Phaser.Scene {
   private combatEffects:{from:{x:number;y:number};to:{x:number;y:number};born:number;color:number;heavy:boolean}[]=[];
   private markers:{x:number;y:number;born:number;attack:boolean}[]=[];
   constructor(options:Options) {super({key:'world'});this.options=options;this.state=options.state;}
+  private get pixelDensity(){return this.options.pixelDensity??1;}
   preload(){this.art=new ArtRuntime(this,new URLSearchParams(location.search).get('art')!=='placeholder');this.art.preload(this.state.players.map(p=>p.faction));}
   create() {
     this.audio=new GameAudio();
@@ -54,7 +55,7 @@ export default class GameScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor('#131f22');
     this.ground=this.add.graphics().setDepth(-101);this.actors=this.add.graphics().setDepth(0);this.fog=this.add.graphics().setDepth(100000);this.overlay=this.add.graphics().setDepth(100001);
     this.drawGround();
-    this.cameras.main.setBounds(OX-this.state.height*32-64,-80,(this.state.width+this.state.height)*32+128,(this.state.width+this.state.height)*16+320).setZoom(1);
+    this.cameras.main.setBounds(OX-this.state.height*32-64,-80,(this.state.width+this.state.height)*32+128,(this.state.width+this.state.height)*16+320).setZoom(this.pixelDensity);
     this.centerOn(this.state.starts[0].x,this.state.starts[0].y);
     this.input.mouse?.disableContextMenu();
     this.keys=this.input.keyboard!.addKeys('W,A,S,D,UP,DOWN,LEFT,RIGHT,SPACE,SHIFT') as Record<string,Phaser.Input.Keyboard.Key>;
@@ -84,7 +85,7 @@ export default class GameScene extends Phaser.Scene {
       }
       if(this.attackMode){this.attackMode=false;this.order(p,true);return;}
       let ids:number[]=[];
-      if(Math.hypot(p.x-drag.x,p.y-drag.y)>6){
+      if(Math.hypot(p.x-drag.x,p.y-drag.y)>6*this.pixelDensity){
         const x1=Math.min(drag.wx,world.x),x2=Math.max(drag.wx,world.x),y1=Math.min(drag.wy,world.y),y2=Math.max(drag.wy,world.y);
         ids=this.state.entities.filter(e=>{const q=project(e.x,e.y);return e.side===0&&e.kind==='unit'&&e.hp>0&&q.x>=x1&&q.x<=x2&&q.y>=y1&&q.y<=y2;}).map(e=>e.id);
       } else {const hit=this.hit(world.x,world.y);if(hit?.side===0)ids=[hit.id];}
@@ -96,7 +97,7 @@ export default class GameScene extends Phaser.Scene {
     window.addEventListener('blur',clearPointerDrag);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN,()=>window.removeEventListener('blur',clearPointerDrag));
     this.input.on('wheel',(_p:Phaser.Input.Pointer,_o:unknown,_dx:number,dy:number)=>{
-      this.cameras.main.setZoom(Phaser.Math.Clamp(this.cameras.main.zoom-dy*.001,0.55,1.8));
+      this.cameras.main.setZoom(Phaser.Math.Clamp(this.cameras.main.zoom-dy*.001*this.pixelDensity,0.55*this.pixelDensity,1.8*this.pixelDensity));
     });
     this.events.once(Phaser.Scenes.Events.SHUTDOWN,()=>this.input.keyboard?.removeAllListeners('keydown'));
     this.drawFog();
@@ -123,7 +124,7 @@ export default class GameScene extends Phaser.Scene {
     const direction=CAMERA_TAP[e.code]??(e.code==='KeyA'&&!this.selected.length?[-1,0]:undefined);
     if(direction&&!e.ctrlKey&&!e.metaKey&&!e.altKey){
       e.preventDefault();
-      if(!e.repeat){const c=this.cameras.main,step=48/c.zoom;c.scrollX+=direction[0]*step;c.scrollY+=direction[1]*step;}
+      if(!e.repeat){const c=this.cameras.main,step=48*this.pixelDensity/c.zoom;c.scrollX+=direction[0]*step;c.scrollY+=direction[1]*step;}
       return;
     }
     if((this.paused||(this.state.winner!==null||this.state.draw))&&['KeyA','KeyQ','KeyF','KeyX','KeyH'].includes(e.code))return;
@@ -160,7 +161,7 @@ export default class GameScene extends Phaser.Scene {
       while(this.accumulated>=.05){stepGame(this.state,.05);this.accumulated-=.05;this.processEvents();}
     }
     const living=this.selected.filter(id=>this.state.entities.some(e=>e.id===id&&e.hp>0&&this.visible(e)));if(living.length!==this.selected.length)this.select(living,false);
-    const k=this.keys,c=this.cameras.main,s=Math.min(delta,40)*.75/c.zoom;
+    const k=this.keys,c=this.cameras.main,s=Math.min(delta,40)*.75*this.pixelDensity/c.zoom;
     if(k.LEFT.isDown||(k.A.isDown&&!this.selected.length))c.scrollX-=s;
     if(k.RIGHT.isDown||k.D.isDown)c.scrollX+=s;
     if(k.UP.isDown||k.W.isDown)c.scrollY-=s;

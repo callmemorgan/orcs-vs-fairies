@@ -2,6 +2,8 @@
 
 A browser RTS with six playable factions, seeded maps, three resources and a terminal interface for game-playing agents. Build a settlement, gather resources, recruit an army and destroy the enemy stronghold. Any faction can face any other, including itself.
 
+The battlefield renders at the display pixel density (up to 2×), with crisp texture sampling when zoomed. Density is chosen when a match starts; start a new match after moving to a display with a different scale.
+
 The game uses Phaser, TypeScript and Vite. Its simulation runs independently of the renderer. All factions have four unit types and four building types, with Blender-rendered models, eight-direction unit animations and selection artwork. ImageGen references and editable Blender sources are included.
 
 ## Run locally

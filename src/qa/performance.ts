@@ -62,6 +62,7 @@ export interface FrameMetadata {
   canvas: { width: number; height: number };
   drawingBuffer: { width: number; height: number };
   devicePixelRatio: number;
+  renderDensity?: number;
   documentVisible: boolean;
   artLoaded: boolean;
   paused: boolean;
@@ -123,6 +124,9 @@ export class FrameCollector {
     return this.duration >= this.sampleMs ? 'complete' : 'sampling';
   }
   private inspect(metadata: FrameMetadata) {
+    const density=metadata.renderDensity??1;
+    if(!Number.isFinite(density)||density<1||density>2)this.invalid.add('Render density was invalid');
+    if(this.firstMetadata&&density!==(this.firstMetadata.renderDensity??1))this.invalid.add('Render density changed during sampling');
     const snapshot = structuredClone(metadata);
     this.firstMetadata ??= snapshot; this.lastMetadata = snapshot;
     this.minimum ??= { ...metadata.units }; this.maximum ??= { ...metadata.units };
@@ -136,7 +140,7 @@ export class FrameCollector {
     if (!metadata.artLoaded) this.invalid.add('Final artwork was not loaded during sampling');
     for (const key of ['viewport', 'canvas', 'drawingBuffer'] as const) {
       if (!Number.isFinite(metadata[key].width) || !Number.isFinite(metadata[key].height) || metadata[key].width <= 0 || metadata[key].height <= 0) this.invalid.add(`${key} dimensions were invalid`);
-      if (metadata[key].width !== 1920 || metadata[key].height !== 1080) this.invalid.add(`${key} was not 1920×1080`);
+      if (metadata[key].width !== Math.round(1920*(key==='drawingBuffer'?(metadata.renderDensity??1):1)) || metadata[key].height !== Math.round(1080*(key==='drawingBuffer'?(metadata.renderDensity??1):1))) this.invalid.add(`${key} did not match the 1920×1080 viewport and render density`);
       if (metadata[key].width !== this.firstMetadata[key].width || metadata[key].height !== this.firstMetadata[key].height) this.invalid.add(`${key} dimensions changed during sampling`);
     }
     if (!Number.isFinite(metadata.devicePixelRatio) || metadata.devicePixelRatio <= 0) this.invalid.add('Device pixel ratio was invalid');

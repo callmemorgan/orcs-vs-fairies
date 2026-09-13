@@ -14,6 +14,7 @@ let opponent:FactionId='fairies';
 const benchmark=location.hostname==='127.0.0.1'&&new URLSearchParams(location.search).get('benchmark')==='1';
 let collector=new FrameCollector();
 let benchmarkCentered=false;
+let renderDensity=1;
 const root=document.querySelector<HTMLElement>('#app')!;
 const shell=mountShell(root,start);
 const callbacks:HudCallbacks={
@@ -31,7 +32,7 @@ const callbacks:HudCallbacks={
  center:(x,y)=>scene?.centerOn(x,y),
  groups:()=>scene?.controlGroups()??{},
  recallGroup:group=>scene?.recallGroup(group),
- cameraCorners:()=>{if(!scene?.cameras?.main)return [];const c=scene.cameras.main;const {top,bottom}=shell.battlefieldBounds();return [[0,top],[innerWidth,top],[innerWidth,bottom],[0,bottom]].map(([x,y])=>{const p=c.getWorldPoint(x,y);return unproject(p.x,p.y);});}
+ cameraCorners:()=>{if(!scene?.cameras?.main)return [];const c=scene.cameras.main;const {top,bottom}=shell.battlefieldBounds();return [[0,top],[innerWidth,top],[innerWidth,bottom],[0,bottom]].map(([x,y])=>{const p=c.getWorldPoint(x*renderDensity,y*renderDensity);return unproject(p.x,p.y);});}
 
 };
 function start(next:FactionId,nextOpponent:FactionId=opponent,mapSize:MapSize="medium",seed=4127){
@@ -40,8 +41,15 @@ function start(next:FactionId,nextOpponent:FactionId=opponent,mapSize:MapSize="m
  const state=benchmark?createPerformanceGame():createGame(faction,seed,opponent,{mapSize});
  if(benchmark){collector=new FrameCollector();benchmarkCentered=false;}
  if(scene&&game){scene.restart(state);shell.update(state,[],callbacks);return;}
- scene=new GameScene({state,onSelection:ids=>shell.update(scene!.state,ids,callbacks),onNotice:text=>shell.notice(text),onReady:()=>shell.ready(),viewBounds:()=>shell.battlefieldBounds()});
- game=new Phaser.Game({type:Phaser.AUTO,parent:'game-canvas',backgroundColor:'#14201e',antialias:true,roundPixels:false,scale:{mode:Phaser.Scale.RESIZE,width:'100%',height:'100%'},scene:[scene],render:{pixelArt:false},fps:{target:60}});
+ // Phaser scales the canvas in CSS; use a physical-pixel game size and
+ // matching camera zoom so high-DPI displays do not stretch a low-res buffer.
+ renderDensity=Math.min(2,Math.max(1,window.devicePixelRatio||1));
+ scene=new GameScene({state,pixelDensity:renderDensity,onSelection:ids=>shell.update(scene!.state,ids,callbacks),onNotice:text=>shell.notice(text),onReady:()=>shell.ready(),viewBounds:()=>{const b=shell.battlefieldBounds();return {top:b.top*renderDensity,bottom:b.bottom*renderDensity};}});
+ game=new Phaser.Game({type:Phaser.AUTO,parent:'game-canvas',backgroundColor:'#14201e',antialias:true,roundPixels:false,scale:{mode:Phaser.Scale.FIT,width:Math.round(innerWidth*renderDensity),height:Math.round(innerHeight*renderDensity)},scene:[scene],render:{pixelArt:false,smoothPixelArt:true},fps:{target:60}});
+ const currentGame=game,density=renderDensity;
+ const resize=()=>currentGame.scale.setGameSize(Math.round(innerWidth*density),Math.round(innerHeight*density));
+ window.addEventListener('resize',resize);
+ currentGame.events.once(Phaser.Core.Events.DESTROY,()=>window.removeEventListener('resize',resize));
  if(benchmark)game.events.on('postrender',()=>{
   if(!scene||!game||!scene.cameras.main||scene.state.time<=0)return;
   if(!benchmarkCentered){scene.centerOn(PERFORMANCE_CENTER.x,PERFORMANCE_CENTER.y);benchmarkCentered=true;return;}
@@ -51,7 +59,7 @@ function start(next:FactionId,nextOpponent:FactionId=opponent,mapSize:MapSize="m
    units:countPerformanceUnits(scene.state,e=>{const p=project(e.x,e.y);return camera.worldView.contains(p.x,p.y);}),
    viewport:{width:innerWidth,height:innerHeight},canvas:{width:rect.width,height:rect.height},
    drawingBuffer:{width:gl?.drawingBufferWidth??canvas.width,height:gl?.drawingBufferHeight??canvas.height},
-   devicePixelRatio,documentVisible:document.visibilityState==='visible',artLoaded:scene.artStatus.loaded&&scene.artStatus.assets===70&&scene.artStatus.renderedUnits===100,paused:scene.paused
+   devicePixelRatio,renderDensity,documentVisible:document.visibilityState==='visible',artLoaded:scene.artStatus.loaded&&scene.artStatus.assets===70&&scene.artStatus.renderedUnits===100,paused:scene.paused
   });
   if(phase==='complete')scene.paused=true;
  });
@@ -63,7 +71,7 @@ Object.defineProperty(window,'rts',{get:()=>scene?{state:scene.state,selected:[.
 if(location.hostname==='127.0.0.1'&&new URLSearchParams(location.search).has('qa'))setInterval(()=>{
  if(!scene||!game)return;
  const s=scene.state;
- void fetch('/__qa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({at:new Date().toISOString(),time:s.time,fps:game.loop.actualFps,viewport:{width:game.scale.width,height:game.scale.height},art:scene.artStatus,audio:scene.audioStatus,camera:{x:scene.cameras.main.scrollX,y:scene.cameras.main.scrollY,zoom:scene.cameras.main.zoom},benchmark:benchmark?collector.summary():undefined,paused:scene.paused,mapSize:s.mapSize,seed:s.seed,draw:s.draw,winner:s.winner,selected:scene.selected,players:s.players,entities:s.entities.map(({path,...e})=>e),resources:s.resources,visible:s.visible.map(x=>x.size)})}).catch(()=>{});
+ void fetch('/__qa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({at:new Date().toISOString(),time:s.time,fps:game.loop.actualFps,viewport:{width:innerWidth,height:innerHeight},drawingBuffer:{width:game.canvas.width,height:game.canvas.height},renderDensity,art:scene.artStatus,audio:scene.audioStatus,camera:{x:scene.cameras.main.scrollX,y:scene.cameras.main.scrollY,zoom:scene.cameras.main.zoom},benchmark:benchmark?collector.summary():undefined,paused:scene.paused,mapSize:s.mapSize,seed:s.seed,draw:s.draw,winner:s.winner,selected:scene.selected,players:s.players,entities:s.entities.map(({path,...e})=>e),resources:s.resources,visible:s.visible.map(x=>x.size)})}).catch(()=>{});
 },5000);
 if(benchmark){
  const status=document.createElement('div');status.id='benchmark-status';status.style.cssText='position:fixed;top:90px;left:50%;transform:translateX(-50%);z-index:9999;background:#101c18;color:#eee;padding:12px;pointer-events:none';document.body.append(status);
