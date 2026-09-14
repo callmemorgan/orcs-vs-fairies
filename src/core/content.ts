@@ -1,4 +1,4 @@
-import type { FactionId, FactionDef, UnitDef, UnitRole, BuildingDef, BuildingRole } from './types';
+import type { FactionId, FactionDef, UnitDef, UnitRole, BuildingDef, BuildingRole, UpgradeDef } from './types';
 export const ECONOMY = { harvestPerSecond: 2.28 } as const;
 
 const unit=(id:string,name:string,role:UnitRole,wood:number,ore:number,hp:number,damage:number,armor:number,range:number,speed:number,cooldown:number,trainTime:number,ability:UnitDef['ability'],description:string):UnitDef=>({id,name,role,cost:{wood,ore,crystal:role==='special'?12:0},hp,damage,armor,range,speed,cooldown,trainTime,sight:role==='ranged'?9:7,ability,description});
@@ -71,3 +71,8 @@ export const ABILITIES={
  illusion:{name:'Veil Doubles',description:'Conjure two short-lived doubles that draw attacks and deal reduced damage.',cooldown:35},
  heal:{name:'Renewal',description:'Restore health to nearby friendly units.',cooldown:18}
 } as const;
+
+export const UPGRADES:Record<UpgradeDef['id'],UpgradeDef>={
+ 'worker-harvest':{id:'worker-harvest',name:'Harvest Drills',description:'Workers gather 30% faster.',cost:{wood:100,ore:50,crystal:0},researchTime:30,building:'hq',appliesTo:'worker',effects:{gather:1.3}},
+ 'worker-speed':{id:'worker-speed',name:'Courier Training',description:'Workers move 20% faster.',cost:{wood:75,ore:50,crystal:0},researchTime:25,building:'hq',appliesTo:'worker',effects:{speed:1.2}},
+};

@@ -16,7 +16,7 @@ function fixture(faction: FactionId = 'orcs'): GameState {
 function add(s: GameState, side: Side, kind: Entity['kind'], role: UnitRole | BuildingRole, x: number, y: number): Entity {
   const faction = FACTIONS[s.players[side].faction];
   const def = kind === 'unit' ? faction.units[role as UnitRole] : faction.buildings[role as BuildingRole];
-  const e: Entity = { id: s.nextId++, side, kind, role, x, y, hp: def.hp, maxHp: def.hp, order: { type: 'idle' }, cooldown: 0, progress: 1, queue: [], trainProgress: 0, facing: 0, animation: 'idle', animTime: 0, momentum: 0, illusion: false, expires: 0, carried: 0, carriedKind: 'wood', path: [] };
+  const e: Entity = { id: s.nextId++, side, kind, role, x, y, hp: def.hp, maxHp: def.hp, order: { type: 'idle' }, cooldown: 0, progress: 1, queue: [], trainProgress: 0, researchProgress: 0, facing: 0, animation: 'idle', animTime: 0, momentum: 0, illusion: false, expires: 0, carried: 0, carriedKind: 'wood', path: [] };
   s.entities.push(e);
   refreshVisibility(s);
   return e;

@@ -29,7 +29,7 @@ Unexplored terrain is `null`. Resource entries retain their last observed amount
 
 Map seed, dimensions, faction choices and starting locations are public match setup. An agent is expected to use the observations for its decisions; knowing a reproducible seed can theoretically let any player reconstruct the map. There is no hidden server secret in this local game.
 
-Your own production buildings expose their optional `rally: {x, y}` destination in observations. Enemy rally points remain private.
+Your own production buildings expose their optional `rally: {x, y}` destination in observations. Enemy rally points remain private. Own buildings also expose `research` and `researchProgress` while an upgrade is under way; completed upgrades appear in `player.upgrades`, and upgrade definitions in `content.upgrades`. Enemy research remains private.
 
 ## Commands
 
@@ -47,6 +47,7 @@ Wrap one ordinary game command in `{"op":"command","command":...}`. IDs refer to
 | `clearRally` | `ids` | Remove rally points from your production buildings. |
 | `train` | `id`, `role` | A completed HQ trains `worker`; a completed barracks trains `melee`, `ranged` or `special`. Costs and population slots are reserved immediately. |
 | `cancelTrain` | `id`, `index` | Cancel one entry in your building’s recruitment queue (zero-based index). Refunds the full cost and releases reserved supply. Canceling index 0 resets production progress. |
+| `research` | `id`, `upgrade` | A completed building starts one upgrade, paid in full up front. The headquarters offers `worker-harvest` and `worker-speed`; already-owned upgrades and busy buildings are rejected. Research is lost if the building falls before completion. |
 | `hold` | `ids` | Defend within weapon range without pursuing. |
 | `stop` | `ids` | Cancel orders. Idle troops may pursue nearby enemies. |
 | `ability` | `ids` | Activate eligible selected abilities, subject to cooldown and target requirements. |

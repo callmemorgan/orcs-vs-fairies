@@ -17,7 +17,7 @@ export function createPerformanceGame(): GameState {
     const faction = FACTIONS[state.players[side].faction];
     const def = kind === 'unit' ? faction.units[role as UnitRole] : faction.buildings[role as BuildingRole];
     const hp = kind === 'unit' ? 1_000_000 : def.hp;
-    const entity: Entity = { id: state.nextId++, side, kind, role, x, y, hp, maxHp: hp, order: { type: 'idle' }, cooldown: 0, progress: 1, queue: [], trainProgress: 0, facing: side === 0 ? 0 : 4, animation: 'idle', animTime: 0, momentum: 0, illusion: false, expires: 0, carried: 0, carriedKind: 'wood', path: [] };
+    const entity: Entity = { id: state.nextId++, side, kind, role, x, y, hp, maxHp: hp, order: { type: 'idle' }, cooldown: 0, progress: 1, queue: [], trainProgress: 0, researchProgress: 0, facing: side === 0 ? 0 : 4, animation: 'idle', animTime: 0, momentum: 0, illusion: false, expires: 0, carried: 0, carriedKind: 'wood', path: [] };
     state.entities.push(entity);
     return entity;
   };

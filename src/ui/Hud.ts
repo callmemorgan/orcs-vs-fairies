@@ -1,12 +1,12 @@
 import { PlayerView } from '../core/observation';
-import { ABILITIES, FACTIONS } from '../core/content';
-import type { BuildingRole, Cost, Entity, FactionId, GameState, MapSize, UnitRole } from '../core/types';
+import { ABILITIES, FACTIONS, UPGRADES } from '../core/content';
+import type { BuildingRole, Cost, Entity, FactionId, GameState, MapSize, UnitRole, UpgradeId } from '../core/types';
 import './style.css';
 import { createTooltip } from './Tooltip';
 import { abilityTargetReason } from './availability';
 
 export interface HudCallbacks {
-  build:(role:BuildingRole)=>void; train:(role:UnitRole)=>void; cancelTrain:(id:number,index:number,expectedQueue:string)=>void; ability:()=>void; clearRally:()=>void;
+  build:(role:BuildingRole)=>void; train:(role:UnitRole)=>void; cancelTrain:(id:number,index:number,expectedQueue:string)=>void; research:(upgrade:UpgradeId)=>void; ability:()=>void; clearRally:()=>void;
   stop:()=>void; hold:()=>void; attackMove:()=>void; select:(ids:number[])=>void; pause:()=>void; restart:()=>void; center:(x:number,y:number)=>void;
   toggleMuted:()=>void; isMuted:()=>boolean;
   cameraCorners:()=>Array<{x:number;y:number}>; groups:()=>Record<string,number[]>; recallGroup:(group:string)=>void;
@@ -25,7 +25,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
   let actionsKey='';
   let actionMode:'build'|'recruit'='build';
   let noticeUntil=0;
-  const actions:Array<{button:HTMLButtonElement; cost?:Cost; train?:boolean; entity?:Entity; ability?:boolean; description:string; name:string; hotkey?:string}> = [];
+  const actions:Array<{button:HTMLButtonElement; cost?:Cost; train?:boolean; entity?:Entity; ability?:boolean; upgrade?:UpgradeId; description:string; name:string; hotkey?:string}> = [];
   root.innerHTML=`
   <main class="war-shell">
     <div id="game-canvas" aria-label="Skirmish battlefield"></div>
@@ -118,9 +118,9 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
       setText('#selection-name',entities.length>1?`${entities.length} selected`:entityDef?.name??'Your command awaits');
       const portraitId=entityDef?.id??'';if(el('#portrait').dataset.asset!==portraitId){el('#portrait').dataset.asset=portraitId;el('#portrait').innerHTML=portraitId?`<img src="/assets/selection-${portraitId}.png" alt="${escape(entityDef!.name)}" />`:'⚑';}
       el('.health-track').hidden=!first;
-      if(first){el('#health-fill').style.width=`${Math.max(0,first.hp/first.maxHp)*100}%`;setText('#selection-status',`${Math.ceil(first.hp)} / ${first.maxHp} health${first.progress<1?` · Building ${Math.floor(first.progress*100)}%`:first.kind==='unit'?` · ${first.order.type==='idle'?'Ready':first.order.type==='hold'?'Holding position':first.order.type}`:''}${first.entrenchedAt!==undefined?(s.time-first.entrenchedAt>=3?' · Emplaced':' · Preparing emplacement'):''}${first.maxShield?` · Shield ${Math.ceil(first.shield??0)}/${first.maxShield}`:''}${(first.surgeUntil??0)>s.time?' · Surging':''}${first.raised?' · Raised · '+Math.ceil(first.expires-s.time)+'s remaining':''}${first.rally?' · Rally set':''}${first.side===1?' · Enemy':''}`);}
+      if(first){el('#health-fill').style.width=`${Math.max(0,first.hp/first.maxHp)*100}%`;setText('#selection-status',`${Math.ceil(first.hp)} / ${first.maxHp} health${first.progress<1?` · Building ${Math.floor(first.progress*100)}%`:first.kind==='unit'?` · ${first.order.type==='idle'?'Ready':first.order.type==='hold'?'Holding position':first.order.type}`:''}${first.entrenchedAt!==undefined?(s.time-first.entrenchedAt>=3?' · Emplaced':' · Preparing emplacement'):''}${first.maxShield?` · Shield ${Math.ceil(first.shield??0)}/${first.maxShield}`:''}${(first.surgeUntil??0)>s.time?' · Surging':''}${first.raised?' · Raised · '+Math.ceil(first.expires-s.time)+'s remaining':''}${first.rally?' · Rally set':''}${first.research?` · Researching ${UPGRADES[first.research].name} ${Math.floor(first.researchProgress*100)}%`:''}${first.side===1?' · Enemy':''}`);}
       else setText('#selection-status','Select a worker to gather resources or raise your first buildings.');
-      const construction=el('.construction-track');construction.hidden=!first||first.progress>=1;if(first)construction.querySelector<HTMLElement>('i')!.style.width=`${first.progress*100}%`;
+      const construction=el('.construction-track');construction.hidden=!first||(first.progress>=1&&!first.research);if(first)construction.querySelector<HTMLElement>('i')!.style.width=`${(first.progress<1?first.progress:first.researchProgress)*100}%`;
       if(entities.length>1){const hp=entities.reduce((total,e)=>total+e.hp,0),maxHp=entities.reduce((total,e)=>total+e.maxHp,0);el('#health-fill').style.width=`${hp/maxHp*100}%`;setText('#selection-status',`${Math.ceil(hp)} / ${maxHp} group health`);construction.hidden=true;}
       else if(first?.kind==='unit'){const gatherTarget=first.order.type==='gather'?first.order.target:undefined;const resource=s.resources.find(r=>r.id===gatherTarget);const status=resource?`Gathering ${resource.kind}`:({idle:'Ready',hold:'Holding position',move:'Moving',attackMove:'Advancing',attack:'Attacking',build:'Building'} as Record<string,string>)[first.order.type]??first.order.type;el('#selection-status').textContent=el('#selection-status').textContent!.replace(/ · (Ready|Holding position|idle|hold|move|attackMove|attack|gather|build)/,` · ${status}`);}
       const groupHost=el('#saved-groups'),groups=cb.groups();const groupKey=JSON.stringify(groups);
@@ -151,6 +151,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
         if(hasWorkers&&(!selectedProducer||actionMode==='build'))for(const [index,role] of (['hq','depot','barracks','tower'] as BuildingRole[]).entries()){const d=definition.buildings[role];add(d.name,art(d.id),`${d.description} • ${d.buildTime}s construction`,()=>callbacks?.build(role),d.cost,false,undefined,['Z','C','B','V'][index]);}
         const producer=selectedProducer;
         if(producer&&(!hasWorkers||actionMode==='recruit'))for(const [index,role] of ((producer.role==='hq'?['worker']:['melee','ranged','special']) as UnitRole[]).entries()){const d=definition.units[role];add(d.name,art(d.id),`${d.description} • ${d.trainTime}s recruitment`,()=>callbacks?.train(role),d.cost,true,producer,['Z','C','B'][index]);}
+        if(producer&&(!hasWorkers||actionMode==='recruit')){const recruitSlots=producer.role==='hq'?1:3;for(const [index,u] of Object.values(UPGRADES).filter(u=>u.building===producer.role).entries()){add(u.name,art(definition.units[u.appliesTo].id),`${u.description} • ${u.researchTime}s research`,()=>callbacks?.research(u.id),u.cost,false,producer,['Z','C','B','V'][recruitSlots+index]);actions[actions.length-1].upgrade=u.id;}}
         if(selectedProducer&&(!hasWorkers||actionMode==='recruit')&&own.some(e=>e.rally))add('Clear rally','/assets/ui-halt.png','Remove the rally point. New recruits will wait outside this building.',()=>callbacks?.clearRally());
         if(own.some(e=>e.kind==='unit')){add('Attack move',art(definition.units.melee.id),'Move to a destination and fight enemies along the way. Click a destination after choosing this order.',()=>callbacks?.attackMove(),undefined,false,undefined,'A');add('Halt','/assets/ui-halt.png','Stop current orders. Units may pursue nearby enemies.',()=>callbacks?.stop(),undefined,false,undefined,'X');add('Hold position','/assets/ui-hold.png','Attack enemies in weapon range without pursuing.',()=>callbacks?.hold(),undefined,false,undefined,'H');if(casters.length){add(abilityName,art(definition.units[casters[0].role as UnitRole].id),abilityIds.map(id=>`${ABILITIES[id].name}: ${ABILITIES[id].description} (${ABILITIES[id].cooldown}s cooldown)`).join(' • '),()=>callbacks?.ability(),undefined,false,undefined,'Q');actions[actions.length-1].ability=true;}}
         setText('#command-hint',hasWorkers&&selectedProducer?'':own.length?'YOUR ORDERS':'SELECT A UNIT');
@@ -162,6 +163,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
         const missing=action.cost?(['wood','ore','crystal'] as const).filter(kind=>player[kind]<action.cost![kind]).map(kind=>`${Math.ceil(action.cost![kind]-player[kind])} ${kind}`):[];
         let reason=missing.length?`Need ${missing.join(', ')}`:'';
         if(action.train){if(action.entity!.progress<1)reason='Under construction';else if(action.entity!.queue.length>=5)reason='Queue full';else if(player.population+reserved>=player.cap)reason='Build a depot for supply';}
+        if(action.upgrade){if(action.entity!.progress<1)reason='Under construction';else if(action.entity!.research)reason=`Researching ${UPGRADES[action.entity!.research].name}`;else if(player.upgrades.includes(action.upgrade))reason='Researched';}
         if(action.ability){const remaining=Math.max(0,Math.ceil(Math.min(...casters.map(e=>(e.abilityReadyAt??0)-s.time))));if(remaining>0)reason=`${remaining}s cooldown`;else reason=abilityTargetReason(s,casters);action.button.style.setProperty('--cooldown',`${remaining?Math.min(100,remaining/Math.max(...abilityIds.map(id=>ABILITIES[id].cooldown))*100):0}%`);}
         if(paused)reason='Battle paused';if(s.winner!==null||s.draw)reason='Match ended';
         action.button.setAttribute('aria-disabled',String(!!reason));action.button.classList.toggle('unavailable',!!reason);
