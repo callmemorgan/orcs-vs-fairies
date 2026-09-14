@@ -31,6 +31,16 @@ it('uses a narrow passage between buildings without taking a long detour',()=>{
  expect(worker.order.type).toBe('idle');expect(worker.x).toBeGreaterThan(25);
 });
 
+it('assigns group movement to units with a destination when another slot is boxed in water',()=>{
+ const s=createGame('orcs');s.terrain.fill('grass');s.resources=[];s.players[1].wood=s.players[1].ore=0;
+ const first=s.entities.find(e=>e.side===0&&e.role==='melee')!;s.entities=s.entities.filter(e=>e.kind==='building');
+ const boxed={...structuredClone(first),id:s.nextId++,x:10,y:20,order:{type:'hold' as const}},open={...structuredClone(first),id:s.nextId++,x:11,y:20,order:{type:'idle' as const}};
+ s.entities.push(boxed,open);
+ for(let y=0;y<s.height;y++)for(let x=0;x<27;x++)s.terrain[y*s.width+x]='water';
+ expect(issueCommand(s,0,{type:'move',ids:[boxed.id,open.id],x:20.9,y:20.5})).toBe(true);
+ expect(boxed.order.type).toBe('hold');expect(open.order.type).toBe('move');
+});
+
 it('moves a crowded group around a building and finishes the formation order',()=>{
  const s=createGame('orcs');s.terrain.fill('grass');const first=s.entities.find(e=>e.side===0&&e.role==='worker')!,template=s.entities.find(e=>e.role==='hq')!;
  s.entities=s.entities.filter(e=>e.kind==='building');s.players[1].wood=s.players[1].ore=0;s.resources=[];
