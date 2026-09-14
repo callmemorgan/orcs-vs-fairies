@@ -1,4 +1,4 @@
-import { PlayerView } from '../core/observation';
+import { observedHealth, PlayerView } from '../core/observation';
 import { ABILITIES, FACTIONS, UPGRADES } from '../core/content';
 import type { BuildingRole, Cost, Entity, FactionId, GameState, MapSize, UnitRole, UpgradeId } from '../core/types';
 import './style.css';
@@ -88,7 +88,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
   el('#resume-button').addEventListener('click',togglePause);
   el('#restart-button').addEventListener('click',()=>{reset();callbacks?.restart();});
   el('#overlay-restart').addEventListener('click',()=>{reset();callbacks?.restart();});
-  window.addEventListener('keydown',event=>{if(menu.hidden&&!overlay.hidden)return;if(!menu.hidden||event.repeat||event.ctrlKey||event.metaKey||event.altKey||(event.target as HTMLElement).closest('input,textarea,select'))return;const key=event.key.toUpperCase();if(!['Z','C','B','V'].includes(key))return;const action=actions.find(a=>a.hotkey===key);if(action){event.preventDefault();action.button.click();}});
+  window.addEventListener('keydown',event=>{if(menu.hidden&&!overlay.hidden)return;if(!menu.hidden||event.repeat||event.ctrlKey||event.metaKey||event.altKey||(event.target as HTMLElement).closest('input,textarea,select'))return;const key=event.key.toUpperCase();if(!['Z','C','B'].includes(key))return;const action=actions.find(a=>a.hotkey===key);if(action){event.preventDefault();action.button.click();}});
   const map=el<HTMLCanvasElement>('#minimap'),ctx=map.getContext('2d')!;
   map.addEventListener('click',event=>{if(!state)return;const rect=map.getBoundingClientRect();callbacks?.center((event.clientX-rect.left)/rect.width*state.width,(event.clientY-rect.top)/rect.height*state.height);});
   function drawMinimap(s:GameState) {
@@ -112,7 +112,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
       el('.objective-tag').textContent=`Destroy the enemy stronghold · ${s.mapSize} · seed ${s.seed}`;
       setText('#clock',`${Math.floor(s.time/60).toString().padStart(2,'0')}:${Math.floor(s.time%60).toString().padStart(2,'0')}`);
       if(performance.now()>noticeUntil)el('.notice').hidden=true;
-      const entities=s.entities.filter(e=>selected.includes(e.id)&&e.hp>0&&(e.side===0||s.visible[0].has(Math.floor(e.y)*s.width+Math.floor(e.x))));const own=entities.filter(e=>e.side===0);const first=entities[0];
+      const entities=s.entities.filter(e=>selected.includes(e.id)&&e.hp>0&&(e.side===0||s.visible[0].has(Math.floor(e.y)*s.width+Math.floor(e.x)))).map(e=>e.side===0?e:{...e,...observedHealth(s,0,e)});const own=entities.filter(e=>e.side===0);const first=entities[0];
       const entityDef=first?(first.kind==='unit'?FACTIONS[s.players[first.side].faction].units[first.role as UnitRole]:FACTIONS[s.players[first.side].faction].buildings[first.role as BuildingRole]):null;
       setText('#selection-count',entities.length?`${entities.length} SELECTED`:'NO UNITS');
       setText('#selection-name',entities.length>1?`${entities.length} selected`:entityDef?.name??'Your command awaits');
@@ -148,7 +148,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
       if(key!==actionsKey){
         actionsKey=key;actions.length=0;const container=el('#action-buttons');container.replaceChildren();
         const add=(name:string,asset:string,description:string,run:()=>void,cost?:Cost,train=false,entity?:Entity,hotkey?:string)=>{const button=document.createElement('button');button.className='action-button';button.setAttribute('aria-label',name);button.innerHTML=`<img class="action-icon" src="${asset}" alt=""/>${hotkey?`<kbd>${hotkey}</kbd>`:''}<strong>${escape(name)}</strong>${cost?`<small>${costMarkup(cost)}</small>`:''}<span class="action-state"></span>`;button.addEventListener('click',()=>{if(button.getAttribute('aria-disabled')!=='true')run();});container.append(button);actions.push({button,cost,train,entity,description,name,hotkey});};
-        if(hasWorkers&&(!selectedProducer||actionMode==='build'))for(const [index,role] of (['hq','depot','barracks','tower'] as BuildingRole[]).entries()){const d=definition.buildings[role];add(d.name,art(d.id),`${d.description} • ${d.buildTime}s construction`,()=>callbacks?.build(role),d.cost,false,undefined,['Z','C','B','V'][index]);}
+        if(hasWorkers&&(!selectedProducer||actionMode==='build'))for(const [index,role] of (['depot','barracks','tower'] as BuildingRole[]).entries()){const d=definition.buildings[role];add(d.name,art(d.id),`${d.description} • ${d.buildTime}s construction`,()=>callbacks?.build(role),d.cost,false,undefined,['Z','C','B'][index]);}
         const producer=selectedProducer;
         if(producer&&(!hasWorkers||actionMode==='recruit'))for(const [index,role] of ((producer.role==='hq'?['worker']:['melee','ranged','special']) as UnitRole[]).entries()){const d=definition.units[role];add(d.name,art(d.id),`${d.description} • ${d.trainTime}s recruitment`,()=>callbacks?.train(role),d.cost,true,producer,['Z','C','B'][index]);}
         if(producer&&(!hasWorkers||actionMode==='recruit')){const recruitSlots=producer.role==='hq'?1:3;for(const [index,u] of Object.values(UPGRADES).filter(u=>u.building===producer.role).entries()){add(u.name,art(definition.units[u.appliesTo].id),`${u.description} • ${u.researchTime}s research`,()=>callbacks?.research(u.id),u.cost,false,producer,['Z','C','B','V'][recruitSlots+index]);actions[actions.length-1].upgrade=u.id;}}
@@ -174,7 +174,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
       const queueKey=producers.map(e=>`${e.id}:${e.queue.join(',')}`).join(';');
       if(queue.dataset.key!==queueKey){queue.dataset.key=queueKey;queue.innerHTML=producers.map(producer=>`<div class="queue-row" data-producer="${producer.id}"><span class="queue-label">RECRUITING</span>${producer.queue.map((role,i)=>`<button type="button" class="queue-item" data-index="${i}" aria-label="Cancel ${escape(definition.units[role].name)} in queue slot ${i+1}" data-tooltip="${escape(`<h3>${definition.units[role].name}</h3><p>${i===0?'In production':'Queued'} • ${definition.units[role].trainTime}s recruitment</p><p>Click to cancel. Full refund: ${costText(definition.units[role].cost)}.</p>`)}"><img src="${art(definition.units[role].id)}" alt="${escape(definition.units[role].name)}"/>${i===0?'<b></b><span class="queue-progress"><i></i></span>':`<em>${i+1}</em>`}</button>`).join('')}</div>`).join('');}
       for(const producer of producers){const row=queue.querySelector<HTMLElement>(`[data-producer="${producer.id}"]`)!;for(const button of Array.from(row.querySelectorAll<HTMLButtonElement>('.queue-item'))){button.disabled=paused||s.winner!==null||s.draw;const expected=JSON.stringify(producer.queue);button.onclick=()=>callbacks?.cancelTrain(producer.id,Number(button.dataset.index),expected);}}
-      for(const producer of producers){const row=queue.querySelector<HTMLElement>(`[data-producer="${producer.id}"]`)!;row.querySelector('b')!.textContent=`${Math.ceil((1-producer.trainProgress)*definition.units[producer.queue[0]].trainTime)}s`;row.querySelector<HTMLElement>('.queue-progress i')!.style.width=`${producer.trainProgress*100}%`;}
+      for(const producer of producers){const row=queue.querySelector<HTMLElement>(`[data-producer="${producer.id}"]`)!;row.querySelector('b')!.textContent=`${Math.max(0,Math.ceil((1-producer.trainProgress)*definition.units[producer.queue[0]].trainTime))}s`;row.querySelector<HTMLElement>('.queue-progress i')!.style.width=`${producer.trainProgress*100}%`;}
       tooltip.refresh();
       overlay.hidden=!paused&&s.winner===null&&!s.draw;
       if(!overlay.hidden){const ended=s.winner!==null||s.draw;setText('#overlay-title',ended?s.draw?'Draw':s.winner===0?'Victory':'Defeat':'Battle paused');setText('#overlay-eyebrow',ended?'THE BATTLE IS OVER':'SKIRMISH');setText('#overlay-description',ended?s.draw?'Both strongholds fell in the same exchange.':s.winner===0?'The enemy stronghold has fallen. The Elderwood is yours.':'Your stronghold has fallen. Raise your banner and try again.':'Take a moment to plan your next move.');el('#resume-button').hidden=ended;}

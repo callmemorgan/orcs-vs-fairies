@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { FACTIONS } from '../src/core/content';
+import { walkable } from '../src/core/navigation';
 import { canPlace, createGame, isVisible, issueCommand, refreshVisibility, runAI, stepGame } from '../src/core/simulation';
 import type { BuildingRole, Entity, FactionId, GameState, Side, UnitRole } from '../src/core/types';
 
@@ -105,6 +106,46 @@ describe('economy and settlement', () => {
     s.resources.push({ id: s.nextId++, x: 12, y: 12, kind: 'wood', amount: 30, maxAmount: 30 });
     expect(canPlace(s, 0, 'depot', 12, 12)).toBe(false);
   });
+  it('rejects placing or building a second HQ without charging wood', () => {
+    const s = fixture(); const worker = add(s, 0, 'unit', 'worker', 12, 12); const wood = s.players[0].wood;
+    expect(canPlace(s, 0, 'hq', 14, 14)).toBe(false);
+    expect(issueCommand(s, 0, { type: 'build', ids: [worker.id], role: 'hq', x: 14, y: 14 })).toBe(false);
+    expect(s.players[0].wood).toBe(wood);
+    expect(s.entities.filter(e => e.side === 0 && e.role === 'hq')).toHaveLength(1);
+  });
+  it('does not place a building on an enemy or move that unit', () => {
+    const s = fixture(); const worker = add(s, 0, 'unit', 'worker', 10, 12);
+    const enemy = add(s, 1, 'unit', 'worker', 12, 12); const wood = s.players[0].wood;
+    expect(canPlace(s, 0, 'depot', 12, 12)).toBe(false);
+    expect(issueCommand(s, 0, { type: 'build', ids: [worker.id], role: 'depot', x: 12, y: 12 })).toBe(false);
+    expect(enemy.x).toBe(12); expect(enemy.y).toBe(12); expect(s.players[0].wood).toBe(wood);
+  });
+  it('shoves an overlapping friendly worker out of a new footprint', () => {
+    const s = fixture(); const worker = add(s, 0, 'unit', 'worker', 12, 12); const wood = s.players[0].wood;
+    expect(canPlace(s, 0, 'depot', 12, 12)).toBe(true);
+    expect(issueCommand(s, 0, { type: 'build', ids: [worker.id], role: 'depot', x: 12, y: 12 })).toBe(true);
+    expect(s.players[0].wood).toBe(wood - 100);
+    expect(Math.abs(worker.x - 12) >= 1.35 || Math.abs(worker.y - 12) >= 1.35).toBe(true);
+  });
+  it('keeps a shoved worker outside a barracks corner when nearby ore blocks earlier candidates', () => {
+    const s = fixture(); const worker = add(s, 0, 'unit', 'worker', 20.5, 20.5);
+    s.resources = [{ id: s.nextId++, x: 23.3, y: 20.5, kind: 'ore', amount: 100, maxAmount: 100 },
+      { id: s.nextId++, x: 23, y: 21.7, kind: 'ore', amount: 100, maxAmount: 100 }];
+    expect(canPlace(s, 0, 'barracks', 20.5, 20.5)).toBe(true);
+    expect(issueCommand(s, 0, { type: 'build', ids: [worker.id], role: 'barracks', x: 20.5, y: 20.5 })).toBe(true);
+    expect(walkable(s, worker.x, worker.y)).toBe(true);
+    expect(issueCommand(s, 0, { type: 'move', ids: [worker.id], x: 18, y: 24 })).toBe(true);
+    advance(s, 5);
+    expect(Math.hypot(worker.x - 18, worker.y - 24)).toBeLessThan(.5);
+  });
+  it('does not spend or spawn when an overlapping friendly cannot be shoved', () => {
+    const s = fixture(); const worker = add(s, 0, 'unit', 'worker', 14, 14); const wood = s.players[0].wood;
+    for (let y = 0; y < s.height; y++) for (let x = 0; x < s.width; x++) if ((x < 13 || x > 14 || y < 13 || y > 14) && Math.abs(x + .5 - 14) < 8 && Math.abs(y + .5 - 14) < 8) s.terrain[y * s.width + x] = 'water';
+    expect(canPlace(s, 0, 'depot', 14, 14)).toBe(true);
+    expect(issueCommand(s, 0, { type: 'build', ids: [worker.id], role: 'depot', x: 14, y: 14 })).toBe(false);
+    expect(s.players[0].wood).toBe(wood); expect(worker.x).toBe(14); expect(worker.y).toBe(14);
+    expect(s.entities.some(e => e.role === 'depot')).toBe(false);
+  });
   it('recruits after the full training time without charging a second time', () => {
     const s = fixture(); const before = s.players[0].wood;
     expect(issueCommand(s, 0, { type: 'train', id: hq(s).id, role: 'worker' })).toBe(true);
@@ -112,6 +153,26 @@ describe('economy and settlement', () => {
     advance(s, 7); const recruited = s.entities.filter(e => e.side === 0 && e.kind === 'unit');
     expect(recruited).toHaveLength(1); expect(recruited[0].role).toBe('worker');
     expect(s.players[0].wood).toBe(before - 50); expect(hq(s).queue).toHaveLength(0);
+  });
+  it('still recruits when the inner spawn ring is blocked but a farther cell is free', () => {
+    const s = fixture(); const hall = hq(s); const inner = FACTIONS.orcs.buildings.hq.size / 2 + 1;
+    for (let i = 0; i < 24; i++) {
+      const angle = i / 24 * Math.PI * 2, x = hall.x + Math.cos(angle) * inner, y = hall.y + Math.sin(angle) * inner;
+      add(s, 0, 'building', 'tower', x, y);
+    }
+    expect(issueCommand(s, 0, { type: 'train', id: hall.id, role: 'worker' })).toBe(true);
+    advance(s, FACTIONS.orcs.units.worker.trainTime + 1);
+    const recruited = s.entities.filter(e => e.side === 0 && e.kind === 'unit' && e.hp > 0);
+    expect(recruited).toHaveLength(1); expect(walkable(s, recruited[0].x, recruited[0].y)).toBe(true);
+    expect(hall.queue).toHaveLength(0);
+  });
+  it('refunds a queued worker when no spawn cell exists in the wider search', () => {
+    const s = fixture(); const hall = hq(s); const before = s.players[0].wood;
+    for (let y = 0; y < s.height; y++) for (let x = 0; x < s.width; x++) if (Math.hypot(x + .5 - hall.x, y + .5 - hall.y) < 10) s.terrain[y * s.width + x] = 'water';
+    expect(issueCommand(s, 0, { type: 'train', id: hall.id, role: 'worker' })).toBe(true);
+    advance(s, FACTIONS.orcs.units.worker.trainTime + 1);
+    expect(s.entities.filter(e => e.side === 0 && e.kind === 'unit')).toHaveLength(0);
+    expect(s.players[0].wood).toBe(before); expect(hall.queue).toEqual([]); expect(hall.trainProgress).toBe(0);
   });
   it('pauses a paid recruitment queue after capacity loss and resumes when capacity returns', () => {
     const s = fixture(); const depot = add(s, 0, 'building', 'depot', 14, 8);
@@ -266,6 +327,11 @@ describe('vision, movement and combat', () => {
     advance(s, 5); expect(s.winner).toBe(0); expect(enemyHQ.hp).toBe(0);
     expect(issueCommand(s, 0, { type: 'move', ids: [attacker.id], x: 2, y: 2 })).toBe(false);
   });
+  it('does not treat an unfinished HQ as a surviving stronghold', () => {
+    const s = fixture(); hq(s).hp = 0;
+    const foundation = add(s, 0, 'building', 'hq', 16, 16); foundation.progress = 0;
+    stepGame(s, .05); expect(s.winner).toBe(1); expect(foundation.hp).toBeGreaterThan(0);
+  });
   it('accumulates momentum through fighting and loses it outside combat', () => {
     const s = fixture(); const fighter = add(s, 0, 'unit', 'melee', 20, 20);
     add(s, 1, 'building', 'depot', 22, 20);
@@ -298,6 +364,16 @@ describe('vision, movement and combat', () => {
     advance(s, 20); expect(s.entities.filter(e => e.illusion && e.hp > 0)).toHaveLength(0);
     advance(s, 16); expect(issueCommand(s, 0, { type: 'ability', ids: [caster.id] })).toBe(true);
   });
+  it('places veil doubles on walkable ground when an offset is blocked', () => {
+    const s = fixture('fairies'); const caster = add(s, 0, 'unit', 'special', 12, 12);
+    for (let y = 0; y < s.height; y++) for (let x = 0; x < 12; x++) s.terrain[y * s.width + x] = 'water';
+    stepGame(s, .05);
+    expect(issueCommand(s, 0, { type: 'ability', ids: [caster.id] })).toBe(true);
+    const clones = s.entities.filter(e => e.illusion);
+    expect(clones.length).toBeGreaterThanOrEqual(1);
+    expect(clones.every(e => walkable(s, e.x, e.y))).toBe(true);
+    expect(issueCommand(s, 0, { type: 'ability', ids: [caster.id] })).toBe(false);
+  });
   it('heals only nearby allies at a completed healing grove', () => {
     const s = fixture('fairies'); add(s, 0, 'building', 'depot', 15, 15);
     const ally = add(s, 0, 'unit', 'worker', 17, 15); ally.hp -= 30;
@@ -312,6 +388,15 @@ describe('vision, movement and combat', () => {
     advance(s, 4); expect(ally.hp).toBe(ally.maxHp - 30); expect(enemy.hp).toBe(enemy.maxHp - 30);
     grove.progress = 1; advance(s, 4);
     expect(ally.hp).toBeCloseTo(ally.maxHp - 20, 6); expect(enemy.hp).toBe(enemy.maxHp - 30);
+  });
+  it('does not heal illusions at a completed grove', () => {
+    const s = fixture('fairies'); add(s, 0, 'building', 'depot', 15, 15);
+    const ally = add(s, 0, 'unit', 'worker', 17, 15); ally.hp -= 30;
+    const caster = add(s, 0, 'unit', 'special', 15, 17);
+    expect(issueCommand(s, 0, { type: 'ability', ids: [caster.id] })).toBe(true);
+    const clone = s.entities.find(e => e.illusion)!; clone.hp = Math.max(1, clone.hp - 20);
+    const cloneHp = clone.hp, allyHp = ally.hp;
+    advance(s, 4); expect(ally.hp).toBeGreaterThan(allyHp); expect(clone.hp).toBe(cloneHp);
   });
 });
 

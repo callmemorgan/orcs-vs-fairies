@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import type { Entity, GameState, FactionId, BuildingRole, UnitRole } from '../core/types';
+import type { Entity, GameState, FactionId, BuildingRole, UnitRole, Side } from '../core/types';
 import { FACTIONS } from '../core/content';
 
 interface Animation {frames:number;fps:number;loop:boolean;directions:Record<string,string[]>}
@@ -70,7 +70,7 @@ export default class ArtRuntime {
     const asset=this.manifest?.assets[id];if(!asset||!this.hasEnvironment(id))return false;
     return this.place(key,asset,`env:${id}`,undefined,x,y,y);
   }
-  entity(e:Entity,state:GameState,x:number,y:number){
+  entity(e:Entity,state:GameState,x:number,y:number,viewSide:Side=0){
     const faction=FACTIONS[state.players[e.side].faction];
     const id=e.kind==='unit'?faction.units[e.role as UnitRole].id:faction.buildings[e.role as BuildingRole].id;
     const asset=this.manifest?.assets[id];if(!asset?.animations)return false;
@@ -87,7 +87,7 @@ export default class ArtRuntime {
     else {const tick=Math.floor(e.animTime*Math.max(1,animation.fps));const working=name==='attack'&&e.role==='worker'&&['gather','build','repair'].includes(e.order.type);index=animation.loop||working?tick%frames.length:Math.min(tick,frames.length-1);}
     const frame=frames[index],texture=this.frames.get(frame);if(!texture)return false;
     if(e.kind==='unit'&&e.hp>0)this.renderedUnits++;
-    return this.place(`entity:${e.id}`,asset,texture,frame,x,y,y,e.illusion?.55:1);
+    return this.place(`entity:${e.id}`,asset,texture,frame,x,y,y,e.illusion&&e.side===viewSide?.55:1);
   }
   ground(state:GameState,project:(x:number,y:number)=>{x:number;y:number}){
     this.terrain?.destroy();this.terrain=null;

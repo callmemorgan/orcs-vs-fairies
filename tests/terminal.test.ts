@@ -1,7 +1,8 @@
 import { expect, it } from 'vitest';
 import { TerminalSession, replayMatch } from '../src/cli/session';
+import { FACTIONS } from '../src/core/content';
 import { PlayerView } from '../src/core/observation';
-import { createGame, refreshVisibility, stepGame } from '../src/core/simulation';
+import { createGame, issueCommand, refreshVisibility, stepGame } from '../src/core/simulation';
 import type { Entity } from '../src/core/types';
 const result=(s:TerminalSession,input:unknown)=>(s.handle(input) as {result:any}).result;
 it('starts the computer side externally and returns only its visible player state',()=>{
@@ -45,4 +46,20 @@ it('advances the same simulation as direct engine steps and verifies determinist
 });
 it('filters events outside the controlled player vision',()=>{
  const s=createGame('orcs'),view=new PlayerView(0);s.events=[{type:'build',side:1,x:40,y:40,source:999},{type:'gather',side:0,x:8,y:8,source:2,amount:18,resource:'ore'}];expect(view.events(s)).toHaveLength(1);expect(view.events(s)[0].source).toBe(2);
+});
+it('hides enemy veil doubles as ordinary full-health units of that role',()=>{
+ const s=createGame('orcs',4127,'fairies',{controllers:['external','external']});
+ const scout=s.entities.find(e=>e.side===0&&e.role==='melee')!,weaver=s.entities.find(e=>e.side===1&&e.role==='melee')!,def=FACTIONS.fairies.units.special;
+ weaver.role='special';weaver.hp=def.hp;weaver.maxHp=def.hp;weaver.x=scout.x+1;weaver.y=scout.y;
+ expect(issueCommand(s,1,{type:'ability',ids:[weaver.id]})).toBe(true);refreshVisibility(s);
+ const clones=s.entities.filter(e=>e.illusion&&e.side===1);expect(clones).toHaveLength(2);
+ const owner=new PlayerView(1).observe(s),foe=new PlayerView(0).observe(s);
+ for(const clone of clones){
+  const mine=owner.entities.find(e=>e.id===clone.id)!;expect(mine).toEqual(expect.objectContaining({illusion:true,maxHp:clone.maxHp,hp:clone.hp}));
+  const seen=foe.entities.find(e=>e.id===clone.id)!;expect(seen).toBeDefined();expect(seen).not.toHaveProperty('illusion');
+  expect(seen.maxHp).toBe(def.hp);expect(seen.maxHp).not.toBe(def.hp*.4);expect(seen.hp).toBeCloseTo(clone.hp*(def.hp/clone.maxHp));
+  expect(seen.hp/seen.maxHp).toBeCloseTo(clone.hp/clone.maxHp);
+  for(const hidden of ['queue','trainProgress','order','path','cooldown','carried'])expect(seen).not.toHaveProperty(hidden);
+ }
+ expect(foe.entities.find(e=>e.id===weaver.id)).not.toHaveProperty('illusion');
 });

@@ -28,4 +28,19 @@ describe('production rally points',()=>{
  });
  it('clears a point and keeps it private to its owner',()=>{const {s,hq,point}=setup();issueCommand(s,0,{type:'setRally',ids:[hq.id],...point});expect(new PlayerView(0).observe(s).entities.find(e=>e.id===hq.id)).toHaveProperty('rally',point);s.visible[1]=new Set(s.visible[0]);expect(new PlayerView(1).observe(s).entities.find(e=>e.id===hq.id)).not.toHaveProperty('rally');expect(issueCommand(s,0,{type:'clearRally',ids:[hq.id]})).toBe(true);expect(hq.rally).toBeUndefined();});
  it('rejects enemy buildings, units, invalid coordinates and blocked tiles',()=>{const {s,hq,point}=setup();const worker=s.entities.find(e=>e.side===0&&e.role==='worker')!;expect(issueCommand(s,1,{type:'setRally',ids:[hq.id],...point})).toBe(false);expect(issueCommand(s,0,{type:'setRally',ids:[worker.id],...point})).toBe(false);for(const p of [{x:NaN,y:1},{x:-1,y:1},{x:s.width+1,y:1},{x:hq.x,y:hq.y}])expect(issueCommand(s,0,{type:'setRally',ids:[hq.id],...p})).toBe(false);expect(hq.rally).toBeUndefined();});
+ it('rejects an unexplored tile even when the terrain is grass',()=>{
+  const {s,hq}=setup();const i=[...Array(s.width*s.height).keys()].find(k=>!s.explored[0].has(k))!;s.terrain[i]='grass';
+  expect(issueCommand(s,0,{type:'setRally',ids:[hq.id],x:i%s.width+.5,y:Math.floor(i/s.width)+.5})).toBe(false);expect(hq.rally).toBeUndefined();
+ });
+ it('rallies onto an explored fogged enemy building but still rejects a visible one',()=>{
+  const {s,hq}=setup();
+  const site=[...s.visible[0]].map(i=>({x:i%s.width+.5,y:Math.floor(i/s.width)+.5,key:i})).find(p=>walkable(s,p.x,p.y)&&Math.hypot(p.x-hq.x,p.y-hq.y)>5)!;
+  const enemy={...structuredClone(s.entities.find(e=>e.side===1&&e.role==='hq')!),id:s.nextId++,x:site.x,y:site.y};
+  s.entities.push(enemy);
+  expect(issueCommand(s,0,{type:'setRally',ids:[hq.id],x:site.x,y:site.y})).toBe(false);
+  s.visible[0].delete(site.key);
+  expect(s.explored[0].has(site.key)).toBe(true);
+  expect(issueCommand(s,0,{type:'setRally',ids:[hq.id],x:site.x,y:site.y})).toBe(true);
+  expect(hq.rally).toEqual({x:site.x,y:site.y});
+ });
 });

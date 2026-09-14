@@ -5,6 +5,7 @@ import type { GameState, BuildingRole, Entity, UnitRole } from '../core/types';
 import { canPlace, isVisible, issueCommand, stepGame } from '../core/simulation';
 import { PlayerView } from '../core/observation';
 import { FACTIONS } from '../core/content';
+import { captureDigitHotkeys } from '../ui/availability';
 
 const TILE_W = 64, TILE_H = 32, OX = 1600, OY = 80;
 const CAMERA_TAP:Record<string,readonly [number,number]> = {
@@ -115,7 +116,9 @@ export default class GameScene extends Phaser.Scene {
   private key(e:KeyboardEvent){
     if((e.target as HTMLElement)?.closest('input,textarea,select'))return;
     if(e.code==='Escape'){this.setBuildRole(null);this.attackMode=false;this.drag=null;return;}
+    const playable=captureDigitHotkeys(this.paused,this.state.winner!==null||this.state.draw);
     if(e.code==='F2'){
+      if(!playable)return;
       e.preventDefault();
       this.select(this.state.entities.filter(unit=>unit.side===0&&unit.kind==='unit'&&unit.role!=='worker'&&unit.hp>0).map(unit=>unit.id));
       return;
@@ -127,7 +130,7 @@ export default class GameScene extends Phaser.Scene {
       if(!e.repeat){const c=this.cameras.main,step=48*this.pixelDensity/c.zoom;c.scrollX+=direction[0]*step;c.scrollY+=direction[1]*step;}
       return;
     }
-    if((this.paused||(this.state.winner!==null||this.state.draw))&&['KeyA','KeyQ','KeyF','KeyX','KeyH'].includes(e.code))return;
+    if(!playable)return;
     if(e.code==='KeyA'&&!e.ctrlKey&&!e.metaKey&&this.selected.length){this.attackMode=true;this.buildRole=null;this.options.onNotice('Attack move: click a destination.');}
     if(e.code==='Space'){e.preventDefault();const hq=this.state.entities.find(v=>v.side===0&&v.role==='hq');if(hq)this.centerOn(hq.x,hq.y);}
     if(e.code==='KeyH'&&!e.ctrlKey&&!e.metaKey&&!e.altKey)this.holdPosition();
@@ -241,10 +244,10 @@ export default class GameScene extends Phaser.Scene {
         if(r.kind==='wood'){g.fillStyle(0x634d34).fillRect(p.x-3,p.y-25,6,28);g.fillStyle(0x274b3b).fillTriangle(p.x-22,p.y-17,p.x,p.y-67,p.x+22,p.y-17);g.fillStyle(0x3d6950).fillTriangle(p.x-18,p.y-28,p.x-2,p.y-68,p.x+12,p.y-28);g.fillStyle(0x71915b).fillTriangle(p.x-13,p.y-44,p.x-2,p.y-68,p.x+7,p.y-44);}
         else{g.fillStyle(0x53616a).fillTriangle(p.x-19,p.y+1,p.x-9,p.y-22,p.x+13,p.y-2);g.fillStyle(0x92adad).fillTriangle(p.x-9,p.y-22,p.x+3,p.y-25,p.x+13,p.y-2);g.fillStyle(0xb8cfba).fillTriangle(p.x+2,p.y-4,p.x+8,p.y-18,p.x+21,p.y+1);}continue;
       }
-      const e=obj.e,p=project(e.x,e.y);const faction=this.state.players[e.side].faction;const orc=faction==='orcs';const color=FACTIONS[faction].color;const selected=this.selected.includes(e.id);const dead=e.hp<=0;const alpha=dead?.35:e.illusion?.5:1;
+      const e=obj.e,p=project(e.x,e.y);const faction=this.state.players[e.side].faction;const orc=faction==='orcs';const color=FACTIONS[faction].color;const selected=this.selected.includes(e.id);const dead=e.hp<=0;const alpha=dead?.35:e.illusion&&e.side===this.playerView.side?.5:1;
       g.fillStyle(0x14201c,.38).fillEllipse(p.x+4,p.y+4,e.kind==='building'?70:27,e.kind==='building'?30:12);
       if(selected){g.lineStyle(2,e.side===0?0xe5d98e:0xec7269,1).strokeEllipse(p.x,p.y+2,e.kind==='building'?82:35,e.kind==='building'?39:17);}
-      if(this.art.entity(e,this.state,p.x,p.y))continue;
+      if(this.art.entity(e,this.state,p.x,p.y,this.playerView.side))continue;
       if(e.kind==='building'){
         const size=e.role==='hq'?1.25:e.role==='tower'?.75:1;const w=48*size,h=(e.role==='tower'?78:43)*size;const y=p.y;
         this.diamond(g,p.x,y,82*size,40*size,orc?0x4c5148:0x427357,alpha);
