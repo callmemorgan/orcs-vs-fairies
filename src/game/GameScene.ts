@@ -208,6 +208,7 @@ export default class GameScene extends Phaser.Scene {
           const entity=state.entities.find(e=>e.side===0&&e.kind==='unit'&&Math.hypot(e.x-event.x,e.y-event.y)<.1);
           this.options.onNotice(entity?`${faction.units[entity.role as UnitRole].name} ready.`:'Unit recruited.');
         }
+        if(event.type==='research'&&event.text?.endsWith('complete')){this.audio?.play('train');this.options.onNotice(`${event.text}.`);}
       }
     }
     if((state.winner!==null||state.draw)&&!this.resultSoundPlayed){this.resultSoundPlayed=true;this.audio?.play(state.winner===0?'victory':'defeat');}

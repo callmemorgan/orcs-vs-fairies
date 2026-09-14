@@ -45,6 +45,8 @@ Use arrows or W/S/D to pan; A pans left when no units are selected. Middle-drag 
 
 Construction and recruitment appear as illustrated commands when a worker or production building is selected. Z/C/B/V trigger the displayed construction slots; Z/C/B trigger recruitment slots. Mixed selections have Build and Recruit tabs. Hover or focus a command for its description, cost, shortcut and unavailable reason. The selection bar shows portraits, health, construction and recruitment progress. Click a recruitment queue portrait to cancel that entry for a full resource refund. Canceling the active entry resets progress for the next unit; canceling a waiting entry leaves active progress intact. Click a roster portrait to select that unit, or Shift-click to remove it. Saved groups also have clickable buttons.
 
+A selected headquarters also researches worker upgrades under the Recruit tab: Harvest Drills gathers 30% faster and Courier Training moves 20% faster. Research runs alongside recruitment and costs are paid up front.
+
 The resource bar shows wood, ore, crystal, population and places reserved by recruitment. Depots increase capacity. The sound toggle controls synthesized interface and combat cues and persists across reloads. The desktop UI supports 1280 × 720 and larger screens. See the [UI overhaul report and before/after screenshots](docs/UI_OVERHAUL.md).
 
 ## Terminal agents

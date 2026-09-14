@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { FACTIONS } from '../core/content';
+import { FACTIONS, UPGRADES } from '../core/content';
 import { PlayerView } from '../core/observation';
 import { createGame, isGameOver, issueCommand, stepGame } from '../core/simulation';
 import type { Command, FactionId, GameState, MapSize, Side } from '../core/types';
@@ -13,6 +13,7 @@ function validateCommand(v:unknown):v is Command{
  if(!record(v)||typeof v.type!=='string')return false;
  if(v.type==='cancelTrain')return keys(v,['type','id','index'])&&integer(v.id)&&integer(v.index);
  if(v.type==='train')return keys(v,['type','id','role'])&&integer(v.id)&&roles.includes(v.role as string);
+ if(v.type==='research')return keys(v,['type','id','upgrade'])&&integer(v.id)&&typeof v.upgrade==='string'&&Object.hasOwn(UPGRADES,v.upgrade);
  if(!Array.isArray(v.ids)||!v.ids.length||v.ids.length>100||!v.ids.every(integer))return false;
  if(['stop','hold','ability','clearRally'].includes(v.type))return keys(v,['type','ids']);
  if(['move','attackMove','setRally'].includes(v.type))return keys(v,['type','ids','x','y'])&&finite(v.x)&&finite(v.y);

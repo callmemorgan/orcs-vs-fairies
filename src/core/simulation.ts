@@ -1,7 +1,7 @@
-import { ECONOMY, FACTIONS } from './content';
+import { ECONOMY, FACTIONS, UPGRADES } from './content';
 import { walkable, segmentWalkable, openDestination, route } from './navigation';
 import { generateMap, terrainAt, TERRAIN } from './maps';
-import type { BuildingDef, BuildingRole, Command, Entity, FactionId, GameOptions, GameState, ResourceNode, Side, UnitDef, UnitRole, Vec } from './types';
+import type { BuildingDef, BuildingRole, Command, Entity, FactionId, GameOptions, GameState, ResourceNode, Side, UnitDef, UnitRole, UpgradeId, Vec } from './types';
 
 const distance = (a:Vec,b:Vec) => Math.hypot(a.x-b.x,a.y-b.y);
 const clamp=(n:number,a:number,b:number)=>Math.max(a,Math.min(b,n));
@@ -16,11 +16,11 @@ function near(s:GameState,a:Entity,b:Entity|ResourceNode,range:number):boolean{r
 function emit(s:GameState,type:GameState['events'][number]['type'],e:Vec & {side:Side;id?:number},target?:number,text?:string){const event:GameState['events'][number]={type,x:e.x,y:e.y,side:e.side,target,text,source:e.id};s.events.push(event);return event;}
 function spawn(s:GameState,side:Side,kind:Entity['kind'],role:UnitRole|BuildingRole,x:number,y:number,progress=1):Entity{
  const f=FACTIONS[s.players[side].faction];const def=kind==='unit'?f.units[role as UnitRole]:f.buildings[role as BuildingRole];
- const e:Entity={id:s.nextId++,side,kind,role,x,y,hp:progress===1?def.hp:Math.max(1,def.hp*.1),maxHp:def.hp,order:{type:'idle'},cooldown:0,progress,queue:[],trainProgress:0,facing:2,animation:'idle',animTime:0,momentum:0,illusion:false,expires:0,carried:0,carriedKind:'wood',path:[]};if(kind==='unit'&&(def as UnitDef).shield){e.maxShield=(def as UnitDef).shield;e.shield=e.maxShield;}s.entities.push(e);return e;
+ const e:Entity={id:s.nextId++,side,kind,role,x,y,hp:progress===1?def.hp:Math.max(1,def.hp*.1),maxHp:def.hp,order:{type:'idle'},cooldown:0,progress,queue:[],trainProgress:0,researchProgress:0,facing:2,animation:'idle',animTime:0,momentum:0,illusion:false,expires:0,carried:0,carriedKind:'wood',path:[]};if(kind==='unit'&&(def as UnitDef).shield){e.maxShield=(def as UnitDef).shield;e.shield=e.maxShield;}s.entities.push(e);return e;
 }
 export function createGame(faction:FactionId,seed=1977,opponent:FactionId=faction==='orcs'?'fairies':'orcs',options:GameOptions={}):GameState{
  const map=generateMap(seed,options.mapSize??'medium');
- const s:GameState={controllers:options.controllers??['human','ai'],mapSize:map.size,mapVersion:map.version,terrain:map.terrain,starts:map.starts,draw:false,tick:0,corpses:[],time:0,seed,width:map.width,height:map.height,entities:[],resources:[],players:[{faction,wood:420,ore:220,crystal:0,population:0,cap:12},{faction:opponent,wood:420,ore:220,crystal:0,population:0,cap:12}],winner:null,events:[],explored:[new Set(),new Set()],visible:[new Set(),new Set()],nextId:1};
+ const s:GameState={controllers:options.controllers??['human','ai'],mapSize:map.size,mapVersion:map.version,terrain:map.terrain,starts:map.starts,draw:false,tick:0,corpses:[],time:0,seed,width:map.width,height:map.height,entities:[],resources:[],players:[{faction,wood:420,ore:220,crystal:0,population:0,cap:12,upgrades:[]},{faction:opponent,wood:420,ore:220,crystal:0,population:0,cap:12,upgrades:[]}],winner:null,events:[],explored:[new Set(),new Set()],visible:[new Set(),new Set()],nextId:1};
  for(const side of [0,1] as Side[]){const {x,y}=s.starts[side],dir=side===0?1:-1;spawn(s,side,'building','hq',x,y);for(let i=0;i<5;i++)spawn(s,side,'unit','worker',x+(-2+i*.85)*dir,y+3*dir);spawn(s,side,'unit','melee',x+3*dir,y+dir);}
  for(const resource of map.resources)s.resources.push({...resource,id:s.nextId++});
  refreshVisibility(s);updatePopulation(s);return s;
@@ -75,6 +75,11 @@ export function issueCommand(s:GameState,side:Side,c:Command):boolean{
  if(c.type==='train'){
  const e=s.entities.find(e=>e.id===c.id&&e.side===side&&alive(e)&&e.kind==='building'&&e.progress===1);const d=f.units[c.role];if(!e||!d||(c.role==='worker'?e.role!=='hq':e.role!=='barracks')||e.queue.length>=5||p.wood<d.cost.wood||p.ore<d.cost.ore||p.crystal<d.cost.crystal||p.population+reserved(s,side)>=p.cap)return false;
  p.wood-=d.cost.wood;p.ore-=d.cost.ore;p.crystal-=d.cost.crystal;e.queue.push(c.role);return true;
+ }
+ if(c.type==='research'){
+ const e=s.entities.find(e=>e.id===c.id&&e.side===side&&alive(e)&&e.kind==='building'&&e.progress===1);const d=UPGRADES[c.upgrade];
+ if(!e||!d||d.building!==e.role||e.research||p.upgrades.includes(c.upgrade)||p.wood<d.cost.wood||p.ore<d.cost.ore||p.crystal<d.cost.crystal)return false;
+ p.wood-=d.cost.wood;p.ore-=d.cost.ore;p.crystal-=d.cost.crystal;e.research=c.upgrade;e.researchProgress=0;emit(s,'research',e,undefined,`${d.name} started`);return true;
  }
  const units=s.entities.filter(e=>c.ids.includes(e.id)&&e.side===side&&alive(e)&&e.kind==='unit'&&!e.illusion);
  if(!units.length)return false;
@@ -136,10 +141,13 @@ function walkTo(e:Entity,x:number,y:number):void{
  if(dx!==0||dy!==0)e.facing=(Math.round(Math.atan2(dy,dx)/(Math.PI/4))+8)%8;
  e.x=x;e.y=y;e.animation='walk';
 }
+function upgradeFactor(s:GameState,e:Entity,effect:'gather'|'speed'):number{
+ let factor=1;for(const id of s.players[e.side].upgrades){const u=UPGRADES[id];if(u.appliesTo===e.role)factor*=u.effects[effect]??1;}return factor;
+}
 function movementSpeed(s:GameState,e:Entity):number{
  const terrain=terrainAt(s,e.x,e.y);
  const terrainSpeed=FACTIONS[s.players[e.side].faction].terrainSpeeds?.[terrain]??TERRAIN[terrain].speed;
- return unitDef(s,e).speed*terrainSpeed*(e.illusion?1.08:1)*((e.surgeUntil??0)>s.time?1.25:1);
+ return unitDef(s,e).speed*terrainSpeed*upgradeFactor(s,e,'speed')*(e.illusion?1.08:1)*((e.surgeUntil??0)>s.time?1.25:1);
 }
 function move(s:GameState,e:Entity,to:Vec,dt:number,reach=.45):boolean{
  if(distance(e,to)<=reach){e.path=[];return true;}
@@ -175,7 +183,7 @@ function gather(s:GameState,e:Entity,target:number,dt:number):void{
  if(!node||node.amount<=0){const next=s.resources.filter(n=>n.amount>0&&n.kind===(node?.kind??e.carriedKind)&&isVisible(s,e.side,n.x,n.y)).sort((a,b)=>distance(e,a)-distance(e,b))[0];assign(s,e,next?{type:'gather',target:next.id}:{type:'idle'});return;}
  if(e.carried>0&&e.carriedKind!==node.kind){rt.returning.add(e.id);return;}
  if(distance(e,node)>1.2){move(s,e,node,dt,1.1);return;}
- e.animation='attack';e.carriedKind=node.kind;const amount=Math.min(node.amount,dt*ECONOMY.harvestPerSecond*(node.kind==='crystal'?.6:1),18-e.carried);node.amount-=amount;e.carried+=amount;
+ e.animation='attack';e.carriedKind=node.kind;const amount=Math.min(node.amount,dt*ECONOMY.harvestPerSecond*upgradeFactor(s,e,'gather')*(node.kind==='crystal'?.6:1),18-e.carried);node.amount-=amount;e.carried+=amount;
 }
 function construct(s:GameState,e:Entity,id:number,dt:number):void{
  const b=s.entities.find(b=>b.id===id&&alive(b)&&b.side===e.side&&b.kind==='building');if(!b){assign(s,e,{type:'idle'});return;}if(!near(s,e,b,1.2)){move(s,e,b,dt,radius(s,b)+1.1);return;}
@@ -210,7 +218,7 @@ export function stepGame(s:GameState,dt:number):void{
  s.events=[];if(isGameOver(s)||!Number.isFinite(dt)||dt<=0)return;dt=Math.min(dt,.25);s.time+=dt;s.tick++;const rt=runtime(s);rt.hits=[];rt.fog-=dt;if(rt.fog<=0){refreshVisibility(s);rt.fog=.2;}rt.ai-=dt;if(rt.ai<=0){for(const side of (rt.aiTurns++%2?[1,0]:[0,1]) as Side[])if(s.controllers[side]==='ai')runAI(s,side);rt.ai+=1;}
  for(const e of [...s.entities]){
  e.animTime+=dt;if(!alive(e)){if(e.kind==='building')refundQueue(s,e);continue;}if(e.expires&&s.time>=e.expires){die(s,e);continue;}e.cooldown=Math.max(0,e.cooldown-dt);if(e.animation!=='attack'||e.animTime>.4)e.animation='idle';e.momentum=Math.max(0,e.momentum-dt*.014);
- if(e.kind==='building'){if(e.progress===1&&buildingDef(s,e).ability==='heal')for(const ally of s.entities)if(ally.side===e.side&&alive(ally)&&ally.kind==='unit'&&!ally.illusion&&distance(ally,e)<6)ally.hp=Math.min(ally.maxHp,ally.hp+dt*2.5);production(s,e,dt);if(e.role==='tower'&&e.progress===1){const b=enemy(s,e,7);if(b)fight(s,e,b,dt);}continue;}
+ if(e.kind==='building'){if(e.progress===1&&buildingDef(s,e).ability==='heal')for(const ally of s.entities)if(ally.side===e.side&&alive(ally)&&ally.kind==='unit'&&!ally.illusion&&distance(ally,e)<6)ally.hp=Math.min(ally.maxHp,ally.hp+dt*2.5);if(e.research){e.researchProgress+=dt/UPGRADES[e.research].researchTime;if(e.researchProgress>=1){s.players[e.side].upgrades.push(e.research);emit(s,'research',e,undefined,`${UPGRADES[e.research].name} complete`);e.research=undefined;e.researchProgress=0;}}production(s,e,dt);if(e.role==='tower'&&e.progress===1){const b=enemy(s,e,7);if(b)fight(s,e,b,dt);}continue;}
  const d=unitDef(s,e);
  if(e.maxShield&&s.time-(e.lastDamagedAt??-6)>=6)e.shield=Math.min(e.maxShield,(e.shield??0)+4*dt);
  if(!e.illusion&&(d.ability==='raise'||d.ability==='ward'))useAbility(s,e);
@@ -250,6 +258,7 @@ export function runAI(s:GameState,side:Side=1):void{
   if(builder)issueCommand(s,side,{type:'repair',ids:[builder.id],target:site.id});
  }
  if(workers.length+ hq.queue.filter(r=>r==='worker').length<9&&hq.queue.length<2)issueCommand(s,side,{type:'train',id:hq.id,role:'worker'});
+ if(hq.progress===1&&!hq.research&&workers.length>=7)for(const id of Object.keys(UPGRADES) as UpgradeId[]){const u=UPGRADES[id];if(u.building==='hq'&&!p.upgrades.includes(id)&&p.wood>=u.cost.wood+120&&p.ore>=u.cost.ore+80&&p.crystal>=u.cost.crystal){issueCommand(s,side,{type:'research',id:hq.id,upgrade:id});break;}}
  const queued=reserved(s,side);let buildRole:BuildingRole|undefined;
  if(!buildings.some(b=>b.role==='barracks'))buildRole='barracks';else if(p.cap-p.population-queued<5&&p.cap<100&&!buildings.some(b=>b.role==='depot'&&b.progress<1))buildRole='depot';else if(s.time>100&&!buildings.some(b=>b.role==='tower'))buildRole='tower';else if(s.time>180&&buildings.filter(b=>b.role==='barracks').length<(s.time>420&&p.wood>500&&p.ore>180?3:2))buildRole='barracks';
  if(buildRole&&!workers.some(e=>e.order.type==='build')){const builder=workers[0];if(builder){const dir=side===0?1:-1;let placed=false;for(let r=5;r<=10&&!placed;r+=2)for(let i=0;i<16&&!placed;i++){const angle=i*Math.PI/8;const x=hq.x+Math.round(Math.cos(angle)*r)*dir,y=hq.y+Math.round(Math.sin(angle)*r)*dir;if(canPlace(s,side,buildRole,x,y))placed=issueCommand(s,side,{type:'build',ids:[builder.id],role:buildRole,x,y});}}}
