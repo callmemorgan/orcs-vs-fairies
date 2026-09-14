@@ -41,6 +41,7 @@ const callbacks:HudCallbacks={
 function retireGame(onDestroyed?:()=>void){
  if(retiring){retiring.events.once(Phaser.Core.Events.DESTROY,()=>onDestroyed?.());return;}
  if(!game){onDestroyed?.();return;}
+ if(scene){scene.paused=true;scene.input.keyboard?.removeAllListeners('keydown');}
  const previous=game;game=undefined;scene=undefined;retiring=previous;
  previous.events.once(Phaser.Core.Events.DESTROY,()=>{if(retiring===previous)retiring=undefined;onDestroyed?.();});
  previous.destroy(true);

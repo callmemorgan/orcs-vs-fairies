@@ -39,7 +39,8 @@ function shovePoint(s:GameState,x:number,y:number,size:number):Vec|undefined{
 function rallyWalkable(s:GameState,side:Side,x:number,y:number):boolean{
  const fogged=new Set<Entity>();for(const e of s.entities)if(e.kind==='building'&&alive(e)&&e.side!==side&&!isVisible(s,side,e.x,e.y))fogged.add(e);
  if(!fogged.size)return walkable(s,x,y);
- const kept=s.entities;s.entities=s.entities.filter(e=>!fogged.has(e));const ok=walkable(s,x,y);s.entities=kept;return ok;
+ const kept=s.entities;s.entities=kept.filter(e=>!fogged.has(e));
+ try{return walkable(s,x,y);}finally{s.entities=kept;}
 }
 function refundCost(s:GameState,side:Side,role:UnitRole):void{const cost=FACTIONS[s.players[side].faction].units[role].cost,p=s.players[side];p.wood+=cost.wood;p.ore+=cost.ore;p.crystal+=cost.crystal;}
 function refundQueue(s:GameState,e:Entity):void{if(!e.queue.length)return;for(const role of e.queue)refundCost(s,e.side,role);e.queue=[];e.trainProgress=0;}

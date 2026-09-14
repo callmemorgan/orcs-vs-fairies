@@ -55,7 +55,7 @@ it('hides enemy veil doubles as ordinary full-health units of that role',()=>{
  const clones=s.entities.filter(e=>e.illusion&&e.side===1);expect(clones).toHaveLength(2);
  const owner=new PlayerView(1).observe(s),foe=new PlayerView(0).observe(s);
  for(const clone of clones){
-  const mine=owner.entities.find(e=>e.id===clone.id)!;expect(mine.illusion).toBe(true);expect(mine.maxHp).toBe(clone.maxHp);expect(mine.hp).toBe(clone.hp);
+  const mine=owner.entities.find(e=>e.id===clone.id)!;expect(mine).toEqual(expect.objectContaining({illusion:true,maxHp:clone.maxHp,hp:clone.hp}));
   const seen=foe.entities.find(e=>e.id===clone.id)!;expect(seen).toBeDefined();expect(seen).not.toHaveProperty('illusion');
   expect(seen.maxHp).toBe(def.hp);expect(seen.maxHp).not.toBe(def.hp*.4);expect(seen.hp).toBeCloseTo(clone.hp*(def.hp/clone.maxHp));
   expect(seen.hp/seen.maxHp).toBeCloseTo(clone.hp/clone.maxHp);
