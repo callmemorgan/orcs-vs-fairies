@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createGame, issueCommand, isVisible } from '../src/core/simulation';
 import { walkable } from '../src/core/navigation';
-import { abilityTargetReason } from '../src/ui/availability';
+import { abilityTargetReason, captureDigitHotkeys } from '../src/ui/availability';
 import type { FactionId } from '../src/core/types';
 
 function casterGame(faction:FactionId){
@@ -44,5 +44,13 @@ describe('target explanations agree with actual ability commands',()=>{
     expect(abilityTargetReason(state,[caster])).toBe('');
     expect(issueCommand(state,0,{type:'ability',ids:[caster.id]})).toBe(true);
     expect(caster.surgeUntil).toBe(6);
+  });
+});
+describe('paused matches do not capture digit keys',()=>{
+  it('ignores digit hotkeys while paused or after the match ends',()=>{
+    expect(captureDigitHotkeys(false,false)).toBe(true);
+    expect(captureDigitHotkeys(true,false)).toBe(false);
+    expect(captureDigitHotkeys(false,true)).toBe(false);
+    expect(captureDigitHotkeys(true,true)).toBe(false);
   });
 });

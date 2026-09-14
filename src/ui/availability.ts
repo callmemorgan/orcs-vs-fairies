@@ -3,6 +3,9 @@ import { walkable } from '../core/navigation';
 import { isVisible } from '../core/simulation';
 import type { Entity, GameState, UnitRole } from '../core/types';
 
+/** Digit preventDefault is skipped while paused or finished so Ctrl+1-9 still switches browser tabs. */
+export function captureDigitHotkeys(paused:boolean,finished:boolean){return !paused&&!finished;}
+
 /** Explain target-dependent actions using the same radii and ownership as gameplay. */
 export function abilityTargetReason(state:GameState,casters:Entity[]):string {
   let reason='';

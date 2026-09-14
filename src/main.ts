@@ -9,6 +9,7 @@ import './ui/style.css';
 
 let game:Phaser.Game|undefined;
 let scene:GameScene|undefined;
+let retiring:Phaser.Game|undefined;
 let faction:FactionId='orcs';
 let opponent:FactionId='fairies';
 const benchmark=location.hostname==='127.0.0.1'&&new URLSearchParams(location.search).get('benchmark')==='1';
@@ -28,7 +29,7 @@ const callbacks:HudCallbacks={
  select:ids=>scene?.selectEntities(ids),
  stop:()=>{if(scene)issueCommand(scene.state,0,{type:'stop',ids:scene.selected});},
  pause:()=>{if(scene)scene.paused=!scene.paused;},
- restart:()=>{scene!.paused=true;shell.showMenu();},
+ restart:()=>{retireGame();shell.showMenu();},
  toggleMuted:()=>scene?.toggleMuted(),
  isMuted:()=>scene?.muted??false,
  center:(x,y)=>scene?.centerOn(x,y),
@@ -37,12 +38,18 @@ const callbacks:HudCallbacks={
  cameraCorners:()=>{if(!scene?.cameras?.main)return [];const c=scene.cameras.main;const {top,bottom}=shell.battlefieldBounds();return [[0,top],[innerWidth,top],[innerWidth,bottom],[0,bottom]].map(([x,y])=>{const p=c.getWorldPoint(x*renderDensity,y*renderDensity);return unproject(p.x,p.y);});}
 
 };
+function retireGame(onDestroyed?:()=>void){
+ if(retiring){retiring.events.once(Phaser.Core.Events.DESTROY,()=>onDestroyed?.());return;}
+ if(!game){onDestroyed?.();return;}
+ const previous=game;game=undefined;scene=undefined;retiring=previous;
+ previous.events.once(Phaser.Core.Events.DESTROY,()=>{if(retiring===previous)retiring=undefined;onDestroyed?.();});
+ previous.destroy(true);
+}
 function start(next:FactionId,nextOpponent:FactionId=opponent,mapSize:MapSize="medium",seed=4127){
- if(game){const previous=game;game=undefined;scene=undefined;previous.events.once(Phaser.Core.Events.DESTROY,()=>start(next,nextOpponent,mapSize,seed));previous.destroy(true);return;}
+ if(game||retiring){retireGame(()=>start(next,nextOpponent,mapSize,seed));return;}
  faction=next;opponent=nextOpponent;shell.showGame();
  const state=benchmark?createPerformanceGame():createGame(faction,seed,opponent,{mapSize});
  if(benchmark){collector=new FrameCollector();benchmarkCentered=false;}
- if(scene&&game){scene.restart(state);shell.update(state,[],callbacks);return;}
  // Phaser scales the canvas in CSS; use a physical-pixel game size and
  // matching camera zoom so high-DPI displays do not stretch a low-res buffer.
  renderDensity=Math.min(2,Math.max(1,window.devicePixelRatio||1));
