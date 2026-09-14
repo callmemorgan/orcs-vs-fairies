@@ -127,6 +127,17 @@ describe('economy and settlement', () => {
     expect(s.players[0].wood).toBe(wood - 100);
     expect(Math.abs(worker.x - 12) >= 1.35 || Math.abs(worker.y - 12) >= 1.35).toBe(true);
   });
+  it('keeps a shoved worker outside a barracks corner when nearby ore blocks earlier candidates', () => {
+    const s = fixture(); const worker = add(s, 0, 'unit', 'worker', 20.5, 20.5);
+    s.resources = [{ id: s.nextId++, x: 23.3, y: 20.5, kind: 'ore', amount: 100, maxAmount: 100 },
+      { id: s.nextId++, x: 23, y: 21.7, kind: 'ore', amount: 100, maxAmount: 100 }];
+    expect(canPlace(s, 0, 'barracks', 20.5, 20.5)).toBe(true);
+    expect(issueCommand(s, 0, { type: 'build', ids: [worker.id], role: 'barracks', x: 20.5, y: 20.5 })).toBe(true);
+    expect(walkable(s, worker.x, worker.y)).toBe(true);
+    expect(issueCommand(s, 0, { type: 'move', ids: [worker.id], x: 18, y: 24 })).toBe(true);
+    advance(s, 5);
+    expect(Math.hypot(worker.x - 18, worker.y - 24)).toBeLessThan(.5);
+  });
   it('does not spend or spawn when an overlapping friendly cannot be shoved', () => {
     const s = fixture(); const worker = add(s, 0, 'unit', 'worker', 14, 14); const wood = s.players[0].wood;
     for (let y = 0; y < s.height; y++) for (let x = 0; x < s.width; x++) if ((x < 13 || x > 14 || y < 13 || y > 14) && Math.abs(x + .5 - 14) < 8 && Math.abs(y + .5 - 14) < 8) s.terrain[y * s.width + x] = 'water';

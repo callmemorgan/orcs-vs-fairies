@@ -1,6 +1,14 @@
 import { ABILITIES, FACTIONS } from './content';
 import { isGameOver, isVisible } from './simulation';
-import type { GameEvent, GameState, ResourceNode, Side, UnitRole } from './types';
+import type { Entity, GameEvent, GameState, ResourceNode, Side, UnitRole } from './types';
+
+/** Health shown to a player, including enemy illusion disguises. */
+export function observedHealth(s:GameState,side:Side,e:Entity):Pick<Entity,'hp'|'maxHp'>{
+ const disguise=e.side!==side&&e.illusion&&e.kind==='unit';
+ const maxHp=disguise?FACTIONS[s.players[e.side].faction].units[e.role as UnitRole].hp:e.maxHp;
+ const hp=disguise&&e.maxHp?e.hp*(maxHp/e.maxHp):e.hp;
+ return {hp,maxHp};
+}
 
 /** Resource memory contains only values observed while a node was visible. */
 export class PlayerView {
@@ -20,9 +28,7 @@ export class PlayerView {
    map:{size:s.mapSize,width:s.width,height:s.height,version:s.mapVersion,seed:s.seed,starts:s.starts.map(p=>({...p})),terrain:s.terrain.map((t,i)=>s.explored[side].has(i)?t:null)},
    player:{...s.players[side]},opponent:{side:1-side,faction:s.players[side===0?1:0].faction},
    entities:s.entities.filter(e=>e.hp>0&&(e.side===side||isVisible(s,side,e.x,e.y))).map(e=>{
-    const disguise=e.side!==side&&e.illusion&&e.kind==='unit';
-    const maxHp=disguise?FACTIONS[s.players[e.side].faction].units[e.role as UnitRole].hp:e.maxHp;
-    const hp=disguise&&e.maxHp?e.hp*(maxHp/e.maxHp):e.hp;
+    const {hp,maxHp}=observedHealth(s,side,e);
     const publicFields={id:e.id,side:e.side,kind:e.kind,role:e.role,x:e.x,y:e.y,hp,maxHp,progress:e.progress,shield:e.shield,maxShield:e.maxShield,raised:e.raised,entrenchedAt:e.entrenchedAt,surgeUntil:e.surgeUntil};
     return e.side===side?{...publicFields,illusion:e.illusion,order:{...e.order},queue:[...e.queue],rally:e.rally?{...e.rally}:undefined,trainProgress:e.trainProgress,carried:e.carried,carriedKind:e.carriedKind,cooldown:e.cooldown,abilityReadyAt:e.abilityReadyAt,expires:e.expires}:publicFields;
    }),

@@ -34,7 +34,8 @@ function updatePopulation(s:GameState):void{for(const side of [0,1] as Side[]){c
 function reserved(s:GameState,side:Side):number{return s.entities.filter(e=>e.side===side&&alive(e)).reduce((v,e)=>v+e.queue.length,0);}
 function footprintOverlap(e:Entity,x:number,y:number,size:number):boolean{return Math.abs(e.x-x)<size/2+.35&&Math.abs(e.y-y)<size/2+.35;}
 function shovePoint(s:GameState,x:number,y:number,size:number):Vec|undefined{
- for(let ring=size/2+1;ring<size/2+5;ring+=.5)for(let i=0;i<32;i++){const a=i/32*Math.PI*2,px=x+Math.cos(a)*ring,py=y+Math.sin(a)*ring;if(walkable(s,px,py))return {x:px,y:py};}
+ // The building is not spawned yet; exclude its collision box, including navigation's .27 unit clearance.
+ for(let ring=size/2+1;ring<size/2+5;ring+=.5)for(let i=0;i<32;i++){const a=i/32*Math.PI*2,px=x+Math.cos(a)*ring,py=y+Math.sin(a)*ring;if((Math.abs(px-x)>=size/2+.27||Math.abs(py-y)>=size/2+.27)&&walkable(s,px,py))return {x:px,y:py};}
 }
 function rallyWalkable(s:GameState,side:Side,x:number,y:number):boolean{
  const fogged=new Set<Entity>();for(const e of s.entities)if(e.kind==='building'&&alive(e)&&e.side!==side&&!isVisible(s,side,e.x,e.y))fogged.add(e);

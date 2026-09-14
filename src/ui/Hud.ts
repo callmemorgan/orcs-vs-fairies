@@ -1,4 +1,4 @@
-import { PlayerView } from '../core/observation';
+import { observedHealth, PlayerView } from '../core/observation';
 import { ABILITIES, FACTIONS } from '../core/content';
 import type { BuildingRole, Cost, Entity, FactionId, GameState, MapSize, UnitRole } from '../core/types';
 import './style.css';
@@ -112,7 +112,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
       el('.objective-tag').textContent=`Destroy the enemy stronghold · ${s.mapSize} · seed ${s.seed}`;
       setText('#clock',`${Math.floor(s.time/60).toString().padStart(2,'0')}:${Math.floor(s.time%60).toString().padStart(2,'0')}`);
       if(performance.now()>noticeUntil)el('.notice').hidden=true;
-      const entities=s.entities.filter(e=>selected.includes(e.id)&&e.hp>0&&(e.side===0||s.visible[0].has(Math.floor(e.y)*s.width+Math.floor(e.x))));const own=entities.filter(e=>e.side===0);const first=entities[0];
+      const entities=s.entities.filter(e=>selected.includes(e.id)&&e.hp>0&&(e.side===0||s.visible[0].has(Math.floor(e.y)*s.width+Math.floor(e.x)))).map(e=>e.side===0?e:{...e,...observedHealth(s,0,e)});const own=entities.filter(e=>e.side===0);const first=entities[0];
       const entityDef=first?(first.kind==='unit'?FACTIONS[s.players[first.side].faction].units[first.role as UnitRole]:FACTIONS[s.players[first.side].faction].buildings[first.role as BuildingRole]):null;
       setText('#selection-count',entities.length?`${entities.length} SELECTED`:'NO UNITS');
       setText('#selection-name',entities.length>1?`${entities.length} selected`:entityDef?.name??'Your command awaits');
