@@ -79,3 +79,12 @@ npm run build
 ## Command console artwork
 
 The HUD reuses `selection-*.png` and `portrait-*.png` from the existing Blender renders. `art/blender/ui_orders.py` creates the brass Halt plaque and Hold shield, saves their editable scenes in `art/models/`, and renders `public/assets/ui-halt.png` and `ui-hold.png`. The full generation wrapper includes these icons. To regenerate only these two images, run `blender --background --factory-startup --python-exit-code 1 --python art/blender/ui_orders.py`. Check all 56 UI images with `.venv/bin/python scripts/check_ui_art.py`. The ImageGen layout reference and its prompt are in `art/reference/rts-ui-command-bar*`; they are not used as production sprites.
+
+
+## Three-age assets
+
+`art/blender/progression.py` renders faction pikes, mounted raiders and siege engines. Each has 192 frames across idle, walk, attack and death animations, on 224 × 224 canvases with a ground anchor at (112, 176). Run with `--asset orc-cavalry` to regenerate one model, `--sample` to inspect representative poses and all eight final death directions, or `--all` to regenerate all 18. The optional `--resume` skips existing frames; omit it after changing geometry or animation.
+
+`art/blender/fortifications.py --all` renders walls and gates for all six factions. `--asset orc-gate` targets one building. Gates include a separate `open` animation with a raised portcullis. Editable scenes are saved alongside the existing scenes.
+
+The main `scripts/generate_assets.sh` includes both generators. After rendering, use `.venv/bin/python scripts/progression/check_frames.py` to check every new unit frame for clipping, then run the normal packer and validator. The validator requires all seven unit roles, all six building roles, and the gate-open animation.

@@ -1,0 +1,24 @@
+Traceback (most recent call last):
+  File "/usr/share/blender/5.2/scripts/modules/addon_utils.py", line 544, in enable
+    mod.register()
+    ~~~~~~~~~~~~^^
+  File "/usr/share/blender/5.2/scripts/addons_core/bl_pkg/__init__.py", line 986, in register
+    _remote_asset_library_restore_backups()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/share/blender/5.2/scripts/addons_core/bl_pkg/__init__.py", line 580, in _remote_asset_library_restore_backups
+    from _bpy_internal.assets.remote_library import listing_downloader
+  File "/usr/share/blender/5.2/scripts/modules/_bpy_internal/assets/remote_library/listing_downloader.py", line 32, in <module>
+    from _bpy_internal.http import downloader as http_dl
+  File "/usr/share/blender/5.2/scripts/modules/_bpy_internal/http/downloader.py", line 51, in <module>
+    import cattrs
+ModuleNotFoundError: No module named 'cattrs'
+00:00.234  cycles           | WARNING HIPEW initialization failed: Error opening HIP dynamic library
+00:00.941  render           | Saved: '/home/morgana/Projects/orcs-vs-Fairies/art/blender/raw/units/orc-cavalry/idle-0-00.png.supersample.png'
+00:01.615  render           | Saved: '/home/morgana/Projects/orcs-vs-Fairies/art/blender/raw/units/orc-cavalry/attack-1-02.png.supersample.png'
+00:02.369  render           | Saved: '/home/morgana/Projects/orcs-vs-Fairies/art/blender/raw/units/orc-cavalry/death-0-05.png.supersample.png'
+Exception in module register(): /usr/share/blender/5.2/scripts/addons_core/bl_pkg/__init__.py
+Info: Saved as "unit-orc-cavalry.blend"
+UNIT COMPLETE orc-cavalry
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 10:50:22)
+
+Blender quit

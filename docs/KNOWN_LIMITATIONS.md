@@ -1,6 +1,18 @@
 # Known limitations
 
-The current six-faction build passes 179 regression tests and completes all 216 games in the [final ladder](evidence/six-factions-final-v6/REPORT.md). Automata won 5 of 60 cross-faction games and Tideborn 21 of 60. These factions need further balance and AI work. Mirror results favor side 0 by 24–12; opposing Gravecallers can claim the same corpse in entity order. Simultaneous damage and alternating AI decisions do not remove that remaining ordering risk.
+The three-age build passed the 237-test complete suite and 15 focused progression/interface tests after its final HUD change, including 36 complete AI matches covering all ordered faction pairings on the default map and seed. Additional full matches cover small, large and huge maps on different seeds. Every faction reached Citadel Age and used all combat roles across the main regression sample. This verifies progression and completion, not competitive balance. Orcs won all ten cross-faction games in that sample; Automata and Dwarves each won one of ten. More seeds and human play are needed before tuning around those results.
+
+The full atlas set now decodes to 1,448.63 MiB. Matches selectively load the two participating factions. Observed pairings decode 467.50–490.57 MiB of atlases. The final maintained 100-unit scene averaged 58.48 FPS at 1920 × 1080 and approximately 1× density, slightly below 60 FPS. This is not a high-DPI or low-memory-device result. Earlier measurements below apply to earlier artwork and render settings.
+
+AI scouts reached the new flank camps in the large-map diagnostic but did not mine them; the player expansion-and-delivery sequence passes a focused test. AI expansion favors nearer observed resources.
+
+New pikes, cavalry and siege have faction names and artwork but share their role's base combat statistics. The original rosters and faction mechanics still distinguish armies. Military research currently upgrades melee infantry; there are no branching exclusive technologies, naval units, trading, formations, diplomacy or save/load. Gates open manually and admit both sides while open. Wall construction is placed one segment at a time.
+
+See [three-age progression](THREE_AGES.md) for controls, rules and the current verification record.
+
+## Six-faction baseline before three-age progression
+
+The earlier six-faction build passed 179 regression tests and completes all 216 games in the [final ladder](evidence/six-factions-final-v6/REPORT.md). Automata won 5 of 60 cross-faction games and Tideborn 21 of 60. These factions need further balance and AI work. Mirror results favor side 0 by 24–12; opposing Gravecallers can claim the same corpse in entity order. Simultaneous damage and alternating AI decisions do not remove that remaining ordering risk.
 
 One large-map Dwarf mirror triggered a 20-second movement-stall diagnostic. No game timed out at 45 minutes, but the longest lasted 30:47. The ladder checks coordinates for finite values and map bounds every five seconds; it does not prove that every move avoids every obstacle. Navigation regressions separately exercise collision and crowd cases.
 

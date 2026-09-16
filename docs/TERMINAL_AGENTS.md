@@ -21,7 +21,7 @@ A process hosts one match. Start a new process to play another. `--log` requires
 {"op":"observe"}
 ```
 
-`faction` is the controlled faction, regardless of side. Faction IDs are `orcs`, `fairies`, `dwarves`, `undead`, `tideborn` and `automata`. `side` is 0 or 1. Map sizes are `small` (36 × 36), `medium` (48 × 48) and `large` (64 × 64). The seed must be an integer from 0 through 4294967295. Defaults are Orcs versus Fairies, side 1, medium, seed 4127.
+`faction` is the controlled faction, regardless of side. Faction IDs are `orcs`, `fairies`, `dwarves`, `undead`, `tideborn` and `automata`. `side` is 0 or 1. Map sizes are `small` (36 × 36), `medium` (48 × 48) `large` (64 × 64) and `huge` (88 × 88). The seed must be an integer from 0 through 4294967295. Defaults are Orcs versus Fairies, side 1, medium, seed 4127.
 
 The start reply is an observation. Observations include the controlled player's resource bank and population, own living entities, currently visible living enemies, explored terrain, visible and explored cell indices, observed resource deposits, visible corpses, faction definitions, abilities and the current result. Coordinates use simulation tiles, not screen pixels. A cell index is `floor(y) * width + floor(x)`.
 
@@ -29,7 +29,7 @@ Unexplored terrain is `null`. Resource entries retain their last observed amount
 
 Map seed, dimensions, faction choices and starting locations are public match setup. An agent is expected to use the observations for its decisions; knowing a reproducible seed can theoretically let any player reconstruct the map. There is no hidden server secret in this local game.
 
-Your own production buildings expose their optional `rally: {x, y}` destination in observations. Enemy rally points remain private. Own buildings also expose `research` and `researchProgress` while an upgrade is under way; completed upgrades appear in `player.upgrades`, and upgrade definitions in `content.upgrades`. Enemy research remains private.
+Your own production buildings expose their optional `rally: {x, y}` destination in observations. Enemy rally points remain private. Own buildings also expose `research` and `researchProgress` while an upgrade is under way; completed upgrades appear in `player.upgrades`, and upgrade definitions in `content.upgrades`. Enemy research remains private. `town-age` and `citadel-age` in `player.upgrades` determine the current age; neither means Settlement Age. Visible gates expose `gateOpen`.
 
 ## Commands
 
@@ -41,13 +41,14 @@ Wrap one ordinary game command in `{"op":"command","command":...}`. IDs refer to
 | `attackMove` | `ids`, `x`, `y` | Advance while engaging visible enemies. |
 | `attack` | `ids`, `target` | Attack a currently visible enemy entity. |
 | `gather` | `ids`, `target` | Workers gather a currently visible wood, ore or crystal node and return loads to a completed HQ or depot. |
-| `build` | `ids`, `role`, `x`, `y` | Workers place and construct `hq`, `depot`, `barracks` or `tower`. Costs are paid on placement. The entire footprint must be visible and buildable. |
+| `build` | `ids`, `role`, `x`, `y` | Workers place and construct `hq`, `depot`, `barracks`, `tower`, `wall` or `gate`. Expansion HQs, walls and gates require Town Age. Costs are paid on placement. The entire footprint must be visible and buildable. |
 | `repair` | `ids`, `target` | Workers resume a friendly foundation or repair a damaged friendly building. Repairs consume wood. |
 | `setRally` | `ids`, `x`, `y` | Set an open-ground destination on your HQs or barracks. Newly produced units receive a move order to that point. |
+| `toggleGate` | `ids` | Open or close completed owned gates. Open gates admit both sides; closing is rejected while a unit occupies the footprint. |
 | `clearRally` | `ids` | Remove rally points from your production buildings. |
-| `train` | `id`, `role` | A completed HQ trains `worker`; a completed barracks trains `melee`, `ranged` or `special`. Costs and population slots are reserved immediately. |
+| `train` | `id`, `role` | A completed HQ trains `worker`; a completed barracks trains `melee`, `ranged`, `special`, `spear`, `cavalry` or `siege`. Specialists and cavalry require Town Age; siege requires Citadel Age. Costs and population slots are reserved immediately. |
 | `cancelTrain` | `id`, `index` | Cancel one entry in your building’s recruitment queue (zero-based index). Refunds the full cost and releases reserved supply. Canceling index 0 resets production progress. |
-| `research` | `id`, `upgrade` | A completed building starts one upgrade, paid in full up front. The headquarters offers `worker-harvest` and `worker-speed`; already-owned upgrades and busy buildings are rejected. Research is lost if the building falls before completion. |
+| `research` | `id`, `upgrade` | A completed building starts one upgrade, paid in full up front. The headquarters offers `worker-harvest`, `worker-speed`, `town-age` and `citadel-age`; barracks offer `forged-weapons`, `tempered-armor` and `veteran-arms`. Definitions specify `age`, `requires`, `advancesTo` and effects. Owned upgrades, missing prerequisites, busy buildings and duplicate research elsewhere are rejected. Research is lost if the building falls before completion. |
 | `hold` | `ids` | Defend within weapon range without pursuing. |
 | `stop` | `ids` | Cancel orders. Idle troops may pursue nearby enemies. |
 | `ability` | `ids` | Activate eligible selected abilities, subject to cooldown and target requirements. |
