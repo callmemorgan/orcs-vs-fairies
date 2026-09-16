@@ -3,7 +3,8 @@ export const ECONOMY = { harvestPerSecond: 2.28 } as const;
 
 const unit=(id:string,name:string,role:UnitRole,wood:number,ore:number,hp:number,damage:number,armor:number,range:number,speed:number,cooldown:number,trainTime:number,ability:UnitDef['ability'],description:string):UnitDef=>({id,name,role,cost:{wood,ore,crystal:role==='special'?12:0},hp,damage,armor,range,speed,cooldown,trainTime,sight:role==='ranged'?9:7,ability,description});
 const building=(id:string,name:string,role:BuildingRole,wood:number,ore:number,hp:number,size:number,buildTime:number,description:string,ability?:'heal'):BuildingDef=>({id,name,role,cost:{wood,ore,crystal:role==='tower'?6:0},hp,size,buildTime,sight:role==='tower'?11:9,description,ability});
-export const FACTIONS:Record<FactionId,FactionDef>={
+type BaseFaction=Omit<FactionDef,'units'|'buildings'> & {units:Record<'worker'|'melee'|'ranged'|'special',UnitDef>;buildings:Record<'hq'|'depot'|'barracks'|'tower',BuildingDef>};
+const BASE_FACTIONS:Record<FactionId,BaseFaction>={
  orcs:{id:'orcs',name:'Ironclad',subtitle:'Strength in the struggle',color:0xd07745,accent:'#dba35d',description:'Armored warbands gather fury as they fight. Hold the line, build momentum, and break the enemy stronghold.',ai:{aggression:1,armySize:9,composition:{melee:.45,ranged:.35,special:.20}},units:{
  worker:unit('orc-worker','Scrapper','worker',50,0,85,5,1,1.3,2.1,1.4,12,undefined,'Harvest timber, ore and crystal. Raise and repair your settlement.'),
  melee:unit('orc-melee','Ironjaw','melee',70,25,175,15,3,1.4,1.8,1.15,36,'momentum','Armored front line. Sustained attacks build Fury, granting up to 40% damage and 15% attack speed.'),
@@ -62,6 +63,24 @@ export const FACTIONS:Record<FactionId,FactionDef>={
 
 };
 
+// The three shared battlefield roles have faction-specific names and materials in art.
+const expansionNames:Record<FactionId,[string,string,string]>={
+ orcs:['Boar Rider','Pikejaw','Iron Catapult'],fairies:['Stag Rider','Briar Pike','Thorn Trebuchet'],
+ dwarves:['Mountain Rider','Deep Pike','Stone Thrower'],undead:['Dread Rider','Bone Pike','Grave Catapult'],
+ tideborn:['Shell Rider','Reef Pike','Coral Mangonel'],automata:['Strider','Lance Sentinel','Siege Engine'],
+};
+export const FACTIONS:Record<FactionId,FactionDef>=Object.fromEntries(Object.entries(BASE_FACTIONS).map(([id,base])=>{
+ const faction=id as FactionId,prefix=base.units.worker.id.split('-')[0],names=expansionNames[faction];
+ return [id,{...base,buildings:{...base.buildings,
+  wall:{...building(`${prefix}-wall`,'Stone Wall','wall',30,25,1100,1,15,'A durable barrier. Siege engines break walls quickly.'),age:2},
+  gate:{...building(`${prefix}-gate`,'Town Gate','gate',90,65,1400,2,28,'Open to let armies pass. An open gate also admits enemies. Cannot close on a unit.'),age:2},
+ },units:{...base.units,special:{...base.units.special,age:2},
+  cavalry:{...unit(`${prefix}-cavalry`,names[0],'cavalry',100,65,210,18,2,1.5,3.5,1.3,42,undefined,'Fast raider. Strong against ranged troops; vulnerable to pikes.'),age:2,bonusAgainst:{ranged:1.7}},
+  spear:{...unit(`${prefix}-spear`,names[1],'spear',55,25,125,11,1,1.9,2.1,1.25,28,undefined,'Long pike infantry. Deals triple damage to cavalry.'),age:1,bonusAgainst:{cavalry:3}},
+  siege:{...unit(`${prefix}-siege`,names[2],'siege',180,140,185,28,2,8.5,1.05,3.8,65,undefined,'Long-range siege engine. Deals quadruple damage to buildings. Protect it from raiders.'),age:3,cost:{wood:180,ore:140,crystal:25},buildingDamageMultiplier:4,sight:11},
+ }}];
+})) as Record<FactionId,FactionDef>;
+
 export const ABILITIES={
  surge:{name:'Returning Tide',description:'Restore 35 HP to allies within 5 tiles and grant 25% movement speed for 6 seconds.',cooldown:20},
  ward:{name:'Restore Wards',description:'Restore 24 shield to friendly machines within 5 tiles.',cooldown:20},
@@ -73,6 +92,12 @@ export const ABILITIES={
 } as const;
 
 export const UPGRADES:Record<UpgradeDef['id'],UpgradeDef>={
+ 'town-age':{id:'town-age',name:'Town Age',description:'Unlock advanced troops, fortifications and expansion strongholds.',cost:{wood:260,ore:180,crystal:0},researchTime:65,building:'hq',appliesTo:'worker',advancesTo:2,effects:{}},
+ 'citadel-age':{id:'citadel-age',name:'Citadel Age',description:'Unlock siege engines and veteran military technology.',cost:{wood:420,ore:320,crystal:60},researchTime:90,building:'hq',appliesTo:'worker',age:2,requires:['town-age'],advancesTo:3,effects:{}},
+ 'forged-weapons':{id:'forged-weapons',name:'Forged Weapons',description:'Melee troops deal 20% more damage.',cost:{wood:100,ore:130,crystal:0},researchTime:35,building:'barracks',appliesTo:'melee',age:2,effects:{damage:1.2}},
+ 'tempered-armor':{id:'tempered-armor',name:'Tempered Armor',description:'Melee troops gain 2 armor.',cost:{wood:80,ore:150,crystal:0},researchTime:40,building:'barracks',appliesTo:'melee',age:2,effects:{armor:2}},
+ 'veteran-arms':{id:'veteran-arms',name:'Veteran Arms',description:'Melee troops deal another 25% damage.',cost:{wood:160,ore:220,crystal:35},researchTime:50,building:'barracks',appliesTo:'melee',age:3,requires:['forged-weapons'],effects:{damage:1.25}},
+
  'worker-harvest':{id:'worker-harvest',name:'Harvest Drills',description:'Workers gather 30% faster.',cost:{wood:100,ore:50,crystal:0},researchTime:30,building:'hq',appliesTo:'worker',effects:{gather:1.3}},
  'worker-speed':{id:'worker-speed',name:'Courier Training',description:'Workers move 20% faster.',cost:{wood:75,ore:50,crystal:0},researchTime:25,building:'hq',appliesTo:'worker',effects:{speed:1.2}},
 };

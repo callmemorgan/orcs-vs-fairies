@@ -3,8 +3,8 @@ import { FACTIONS, UPGRADES } from '../core/content';
 import { PlayerView } from '../core/observation';
 import { createGame, isGameOver, issueCommand, stepGame } from '../core/simulation';
 import type { Command, FactionId, GameState, MapSize, Side } from '../core/types';
-const roles=['worker','melee','ranged','special'];
-const buildings=['hq','depot','barracks','tower'];
+const roles=['worker','melee','ranged','special','spear','cavalry','siege'];
+const buildings=['hq','depot','barracks','tower','wall','gate'];
 const record=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v);
 const integer=(v:unknown):v is number=>Number.isSafeInteger(v);
 const finite=(v:unknown):v is number=>typeof v==='number'&&Number.isFinite(v);
@@ -15,7 +15,7 @@ function validateCommand(v:unknown):v is Command{
  if(v.type==='train')return keys(v,['type','id','role'])&&integer(v.id)&&roles.includes(v.role as string);
  if(v.type==='research')return keys(v,['type','id','upgrade'])&&integer(v.id)&&typeof v.upgrade==='string'&&Object.hasOwn(UPGRADES,v.upgrade);
  if(!Array.isArray(v.ids)||!v.ids.length||v.ids.length>100||!v.ids.every(integer))return false;
- if(['stop','hold','ability','clearRally'].includes(v.type))return keys(v,['type','ids']);
+ if(['stop','hold','ability','clearRally','toggleGate'].includes(v.type))return keys(v,['type','ids']);
  if(['move','attackMove','setRally'].includes(v.type))return keys(v,['type','ids','x','y'])&&finite(v.x)&&finite(v.y);
  if(['attack','gather','repair'].includes(v.type))return keys(v,['type','ids','target'])&&integer(v.target);
  return v.type==='build'&&keys(v,['type','ids','role','x','y'])&&buildings.includes(v.role as string)&&finite(v.x)&&finite(v.y);
@@ -37,7 +37,7 @@ export class TerminalSession {
    if(!keys(input,['op','faction','opponent','side','seed','mapSize']))throw new Error('Unknown start field.');
    const faction=input.faction??'orcs',opponent=input.opponent??'fairies',size=input.mapSize??'medium',seed=input.seed??4127,side=input.side??1;
    if(typeof faction!=='string'||!Object.hasOwn(FACTIONS,faction)||typeof opponent!=='string'||!Object.hasOwn(FACTIONS,opponent))throw new Error('Unknown faction.');
-   if(!['small','medium','large'].includes(size as string)||!integer(seed)||seed<0||seed>0xffffffff||(side!==0&&side!==1))throw new Error('Invalid map size, seed or side.');
+   if(!['small','medium','large','huge'].includes(size as string)||!integer(seed)||seed<0||seed>0xffffffff||(side!==0&&side!==1))throw new Error('Invalid map size, seed or side.');
    this.state=createGame((side===0?faction:opponent) as FactionId,seed,(side===1?faction:opponent) as FactionId,{mapSize:size as MapSize,controllers:side===0?['external','ai']:['ai','external']});
    this.view=new PlayerView(side);result=this.view.observe(this.state);
   }else{

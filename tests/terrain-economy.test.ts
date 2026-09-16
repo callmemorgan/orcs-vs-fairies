@@ -30,7 +30,7 @@ it('harvests crystal, returns it to the headquarters and emits the deposited amo
 it('requires and spends crystal for advanced recruitment while basic recruits need none',()=>{
  const s=flat(),worker=s.entities.find(e=>e.side===0&&e.role==='worker')!;
  refreshVisibility(s);expect(issueCommand(s,0,{type:'build',ids:[worker.id],role:'barracks',x:13.5,y:8.5})).toBe(true);
- const hall=s.entities.at(-1)!;hall.progress=1;
+ const hall=s.entities.at(-1)!;hall.progress=1;s.players[0].upgrades.push('town-age');
  expect(issueCommand(s,0,{type:'train',id:hall.id,role:'special'})).toBe(false);
  s.players[0].crystal=FACTIONS.orcs.units.special.cost.crystal;
  expect(issueCommand(s,0,{type:'train',id:hall.id,role:'special'})).toBe(true);expect(s.players[0].crystal).toBe(0);

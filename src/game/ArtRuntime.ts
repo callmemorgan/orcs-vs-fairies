@@ -74,7 +74,7 @@ export default class ArtRuntime {
     const faction=FACTIONS[state.players[e.side].faction];
     const id=e.kind==='unit'?faction.units[e.role as UnitRole].id:faction.buildings[e.role as BuildingRole].id;
     const asset=this.manifest?.assets[id];if(!asset?.animations)return false;
-    let name=e.hp<=0?'death':e.kind==='building'?(e.progress<1?'construction':'idle'):e.animation;
+    let name=e.hp<=0?'death':e.kind==='building'?(e.progress<1?'construction':e.gateOpen?'open':'idle'):e.animation;
     // The simulation's short attack marker must not truncate a longer rendered recovery.
     const attack=asset.animations.attack;
     if(e.kind==='unit'&&name==='idle'&&e.cooldown>0&&attack&&e.animTime<attack.frames/attack.fps)name='attack';

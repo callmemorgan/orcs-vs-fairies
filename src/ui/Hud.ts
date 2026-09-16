@@ -1,3 +1,5 @@
+import { technologyTree } from './TechnologyTree';
+import { researchRequirement, playerAge, AGE_NAMES } from '../core/progression';
 import { observedHealth, PlayerView } from '../core/observation';
 import { ABILITIES, FACTIONS, UPGRADES } from '../core/content';
 import type { BuildingRole, Cost, Entity, FactionId, GameState, MapSize, UnitRole, UpgradeId } from '../core/types';
@@ -6,7 +8,7 @@ import { createTooltip } from './Tooltip';
 import { abilityTargetReason } from './availability';
 
 export interface HudCallbacks {
-  build:(role:BuildingRole)=>void; train:(role:UnitRole)=>void; cancelTrain:(id:number,index:number,expectedQueue:string)=>void; research:(upgrade:UpgradeId)=>void; ability:()=>void; clearRally:()=>void;
+  build:(role:BuildingRole)=>void; train:(role:UnitRole)=>void; cancelTrain:(id:number,index:number,expectedQueue:string)=>void; research:(upgrade:UpgradeId,building?:number)=>void; ability:()=>void; clearRally:()=>void; toggleGate?:()=>void;
   stop:()=>void; hold:()=>void; attackMove:()=>void; select:(ids:number[])=>void; pause:()=>void; restart:()=>void; center:(x:number,y:number)=>void;
   toggleMuted:()=>void; isMuted:()=>boolean;
   cameraCorners:()=>Array<{x:number;y:number}>; groups:()=>Record<string,number[]>; recallGroup:(group:string)=>void;
@@ -23,9 +25,9 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
   let state:GameState|undefined;
   const playerView=new PlayerView(0);
   let actionsKey='';
-  let actionMode:'build'|'recruit'='build';
+  let actionMode:'build'|'recruit'|'orders'='build';
   let noticeUntil=0;
-  const actions:Array<{button:HTMLButtonElement; cost?:Cost; train?:boolean; entity?:Entity; ability?:boolean; upgrade?:UpgradeId; description:string; name:string; hotkey?:string}> = [];
+  const actions:Array<{button:HTMLButtonElement; cost?:Cost; train?:boolean; unitRole?:UnitRole; buildRole?:BuildingRole; entity?:Entity; ability?:boolean; upgrade?:UpgradeId; description:string; name:string; hotkey?:string}> = [];
   root.innerHTML=`
   <main class="war-shell">
     <div id="game-canvas" aria-label="Skirmish battlefield"></div>
@@ -39,11 +41,11 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
         </div>
         <div class="banner-brief"><strong id="banner-brief-name">Ironclad</strong><span id="banner-brief-description">${escape(FACTIONS.orcs.description)}</span></div><div class="match-settings"><label class="opponent-label" for="opponent">AI opponent</label>
         <select id="opponent">${Object.values(FACTIONS).map(f=>`<option value="${f.id}" ${f.id==='fairies'?'selected':''}>${escape(f.id[0].toUpperCase()+f.id.slice(1))} · ${escape(f.name)}</option>`).join('')}</select>
-        <label for="map-size">Map size</label><select id="map-size"><option value="small">Small · 36 × 36</option><option value="medium" selected>Medium · 48 × 48</option><option value="large">Large · 64 × 64</option></select><label for="map-seed">Seed</label><input id="map-seed" type="number" min="0" max="4294967295" step="1" value="4127" /></div>
+        <label for="map-size">Map size</label><select id="map-size"><option value="small">Small · 36 × 36</option><option value="medium" selected>Medium · 48 × 48</option><option value="large">Large · 64 × 64</option><option value="huge">Huge · 88 × 88</option></select><label for="map-seed">Seed</label><input id="map-seed" type="number" min="0" max="4294967295" step="1" value="4127" /></div>
         <button class="primary begin-match">Begin skirmish <span>→</span></button>
 
         <div class="menu-guide"><span><kbd>Drag</kbd> Select army</span><span><kbd>Right click</kbd> Give orders</span><span><kbd>A</kbd> Attack-move</span><span><kbd>Arrows</kbd> Pan camera</span></div>
-        <p class="menu-objective">Gather wood, ore and crystal, build your settlement, then destroy the enemy stronghold.</p>
+        <p class="menu-objective">Gather wood, ore and crystal, build your settlement, then destroy all enemy strongholds.</p>
       </div>
     </section>
     <section class="war-hud" hidden aria-label="Game controls">
@@ -52,19 +54,21 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
         <div class="resource" title="Workers gather ore from deposits"><span class="ore-symbol">◆</span><div><small>ORE</small><b id="ore">0</b></div></div>
         <div class="resource" title="Crystal funds advanced troops and defensive towers"><span class="crystal-symbol">◆</span><div><small>CRYSTAL</small><b id="crystal">0</b></div></div>
         <div class="resource" title="Build a depot to raise your population limit"><span>⚑</span><div><small id="supply-label">SUPPLY</small><b id="population">0 / 0</b></div></div>
-        <div class="match-clock" id="clock">00:00</div><button id="sound-button" class="small-button" aria-pressed="false">Mute sound</button><button id="pause-button" class="small-button">Pause</button><button id="restart-button" class="small-button">Restart</button>
+        <div class="match-clock" id="clock">00:00</div><button id="technology-button" class="small-button">Technologies</button><button id="sound-button" class="small-button" aria-pressed="false">Mute sound</button><button id="pause-button" class="small-button">Pause</button><button id="restart-button" class="small-button">Restart</button>
       </header>
-      <div class="objective-tag">Destroy the enemy stronghold</div>
+      <div class="objective-tag">Destroy all enemy strongholds</div>
       <div class="notice" role="status" aria-live="polite" hidden></div>
       <footer class="tactical-bar">
         <section class="minimap-panel panel"><div class="panel-label">ELDERWOOD <span>TACTICAL MAP</span></div><canvas id="minimap" width="216" height="216" title="Click to move your camera" aria-label="Tactical map; click to center the camera"></canvas></section>
         <section class="selection-panel panel"><div class="panel-label">SELECTION <span id="selection-count">NO UNITS</span></div><div class="selection-content"><div class="portrait" id="portrait">⚑</div><div class="selection-details"><h2 id="selection-name">Your command awaits</h2><div class="health-track" hidden><div id="health-fill"></div></div><div class="construction-track" hidden><i></i></div><p id="selection-status">Select a worker to gather resources or raise your first buildings.</p><p id="selection-description" hidden></p><div id="selection-stats"></div></div></div><div class="selection-roster" id="selection-roster"></div><div id="production-queue"></div><div class="saved-groups" id="saved-groups" aria-label="Control groups"></div><div class="key-guide"><span><kbd>F2</kbd> Army</span><span><kbd>Shift</kbd> Add selection</span><span><kbd>Ctrl + 1–9</kbd> Set group</span><span><kbd>1–9</kbd> Recall group</span><span><kbd>Space</kbd> Home</span></div></section>
-        <section class="command-panel panel"><div class="panel-label">ORDERS <span id="command-hint">SELECT A UNIT</span><nav id="command-tabs" aria-label="Command category" hidden><button data-mode="build">Build</button><button data-mode="recruit">Recruit</button></nav></div><div id="action-buttons"></div><div class="command-note"><span id="order-hint">Right-click to give orders</span> <span><kbd>Esc</kbd> Cancel</span></div></section>
+        <section class="command-panel panel"><div class="panel-label">ORDERS <span id="command-hint">SELECT A UNIT</span><nav id="command-tabs" aria-label="Command category" hidden><button data-mode="build">Build</button><button data-mode="recruit">Recruit</button><button data-mode="orders">Orders</button></nav></div><div id="action-buttons"></div><div class="command-note"><span id="order-hint">Right-click to give orders</span> <span><kbd>Esc</kbd> Cancel</span></div></section>
       </footer>
     </section>
     <div class="loading-battle" role="status" hidden><span>Preparing the battlefield…</span></div>
     <section class="game-overlay" hidden><div class="overlay-card panel"><div class="eyebrow" id="overlay-eyebrow">SKIRMISH</div><h2 id="overlay-title">Battle paused</h2><p id="overlay-description">Take a moment to plan your next move.</p><button id="resume-button" class="primary">Return to battle</button><button id="overlay-restart" class="small-button">New skirmish</button></div></section>
   </main>`;
+  const tree=technologyTree(root,(id,building)=>callbacks?.research(id,building));
+  root.querySelector<HTMLButtonElement>('#technology-button')!.onclick=()=>tree.open();
   const el=<T extends HTMLElement=HTMLElement>(selector:string)=>root.querySelector<T>(selector)!;
   const tooltip=createTooltip(root);
   const menu=el('.war-menu'),hud=el('.war-hud'),overlay=el('.game-overlay');
@@ -76,7 +80,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
     setText('#banner-brief-name',FACTIONS[faction].name);setText('#banner-brief-description',FACTIONS[faction].description);
     root.querySelectorAll('[data-faction]').forEach(card=>{const active=(card as HTMLElement).dataset.faction===faction;card.classList.toggle('selected',active);card.setAttribute('aria-pressed',String(active));});
   }));
-  root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach(button=>button.addEventListener('click',()=>{actionMode=button.dataset.mode as 'build'|'recruit';actionsKey='';}));
+  root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach(button=>button.addEventListener('click',()=>{actionMode=button.dataset.mode as 'build'|'recruit'|'orders';actionsKey='';}));
   el('.begin-match').addEventListener('click',()=>{
     const input=el<HTMLInputElement>('#map-seed'),seed=Number(input.value);input.setCustomValidity('');
     if(!input.value.trim()||!Number.isSafeInteger(seed)||seed<0||seed>4294967295){input.setCustomValidity('Enter a whole-number seed from 0 to 4294967295.');input.reportValidity();return;}
@@ -88,7 +92,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
   el('#resume-button').addEventListener('click',togglePause);
   el('#restart-button').addEventListener('click',()=>{reset();callbacks?.restart();});
   el('#overlay-restart').addEventListener('click',()=>{reset();callbacks?.restart();});
-  window.addEventListener('keydown',event=>{if(menu.hidden&&!overlay.hidden)return;if(!menu.hidden||event.repeat||event.ctrlKey||event.metaKey||event.altKey||(event.target as HTMLElement).closest('input,textarea,select'))return;const key=event.key.toUpperCase();if(!['Z','C','B'].includes(key))return;const action=actions.find(a=>a.hotkey===key);if(action){event.preventDefault();action.button.click();}});
+  window.addEventListener('keydown',event=>{if(menu.hidden&&!overlay.hidden)return;if(!menu.hidden||event.repeat||event.ctrlKey||event.metaKey||event.altKey||(event.target as HTMLElement).closest('input,textarea,select'))return;const key=event.key.toUpperCase();if(document.querySelector('dialog[open]'))return;if(!['Z','C','B','V','N','M'].includes(key))return;const action=actions.find(a=>a.hotkey===key);if(action){event.preventDefault();action.button.click();}});
   const map=el<HTMLCanvasElement>('#minimap'),ctx=map.getContext('2d')!;
   map.addEventListener('click',event=>{if(!state)return;const rect=map.getBoundingClientRect();callbacks?.center((event.clientX-rect.left)/rect.width*state.width,(event.clientY-rect.top)/rect.height*state.height);});
   function drawMinimap(s:GameState) {
@@ -100,16 +104,16 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
     const corners=callbacks?.cameraCorners()??[];if(corners.length){ctx.strokeStyle='#fff0b6';ctx.lineWidth=1.5;ctx.beginPath();corners.forEach((p,i)=>{if(i===0)ctx.moveTo(p.x*cw,p.y*ch);else ctx.lineTo(p.x*cw,p.y*ch);});ctx.closePath();ctx.stroke();}
   }
   return {
-    showMenu:()=>{reset();menu.hidden=false;hud.hidden=true;},
+    showMenu:()=>{tree.close();reset();menu.hidden=false;hud.hidden=true;},
     showGame:()=>{reset();menu.hidden=true;hud.hidden=false;el('.loading-battle').hidden=false;},
     ready:()=>{el('.loading-battle').hidden=true;},
     battlefieldBounds:()=>({top:el('.resource-bar').getBoundingClientRect().bottom,bottom:el('.tactical-bar').getBoundingClientRect().top}),
     notice,
     update:(s:GameState,selected:number[],cb:HudCallbacks)=>{
-      state=s;callbacks=cb;if(!menu.hidden)return;const player=s.players[0],definition=FACTIONS[player.faction];
+      state=s;callbacks=cb;tree.update(s,paused);if(!menu.hidden)return;const player=s.players[0],definition=FACTIONS[player.faction];
       setText('#sound-button',cb.isMuted()?'Enable sound':'Mute sound');el('#sound-button').setAttribute('aria-pressed',String(cb.isMuted()));
       setText('#faction-name',definition.name);el<HTMLImageElement>('#banner-portrait').src=`/assets/portrait-${player.faction}.png`;setText('#wood',Math.floor(player.wood).toString());setText('#ore',Math.floor(player.ore).toString());setText('#crystal',Math.floor(player.crystal).toString());setText('#population',`${player.population} / ${player.cap}`);
-      el('.objective-tag').textContent=`Destroy the enemy stronghold · ${s.mapSize} · seed ${s.seed}`;
+      el('.objective-tag').textContent=`${AGE_NAMES[playerAge(s.players[0])]} · Destroy all enemy strongholds · ${s.mapSize} · seed ${s.seed}`;
       setText('#clock',`${Math.floor(s.time/60).toString().padStart(2,'0')}:${Math.floor(s.time%60).toString().padStart(2,'0')}`);
       if(performance.now()>noticeUntil)el('.notice').hidden=true;
       const entities=s.entities.filter(e=>selected.includes(e.id)&&e.hp>0&&(e.side===0||s.visible[0].has(Math.floor(e.y)*s.width+Math.floor(e.x)))).map(e=>e.side===0?e:{...e,...observedHealth(s,0,e)});const own=entities.filter(e=>e.side===0);const first=entities[0];
@@ -118,7 +122,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
       setText('#selection-name',entities.length>1?`${entities.length} selected`:entityDef?.name??'Your command awaits');
       const portraitId=entityDef?.id??'';if(el('#portrait').dataset.asset!==portraitId){el('#portrait').dataset.asset=portraitId;el('#portrait').innerHTML=portraitId?`<img src="/assets/selection-${portraitId}.png" alt="${escape(entityDef!.name)}" />`:'⚑';}
       el('.health-track').hidden=!first;
-      if(first){el('#health-fill').style.width=`${Math.max(0,first.hp/first.maxHp)*100}%`;setText('#selection-status',`${Math.ceil(first.hp)} / ${first.maxHp} health${first.progress<1?` · Building ${Math.floor(first.progress*100)}%`:first.kind==='unit'?` · ${first.order.type==='idle'?'Ready':first.order.type==='hold'?'Holding position':first.order.type}`:''}${first.entrenchedAt!==undefined?(s.time-first.entrenchedAt>=3?' · Emplaced':' · Preparing emplacement'):''}${first.maxShield?` · Shield ${Math.ceil(first.shield??0)}/${first.maxShield}`:''}${(first.surgeUntil??0)>s.time?' · Surging':''}${first.raised?' · Raised · '+Math.ceil(first.expires-s.time)+'s remaining':''}${first.rally?' · Rally set':''}${first.research?` · Researching ${UPGRADES[first.research].name} ${Math.floor(first.researchProgress*100)}%`:''}${first.side===1?' · Enemy':''}`);}
+      if(first){el('#health-fill').style.width=`${Math.max(0,first.hp/first.maxHp)*100}%`;setText('#selection-status',`${Math.ceil(first.hp)} / ${first.maxHp} health${first.progress<1?` · Building ${Math.floor(first.progress*100)}%`:first.kind==='unit'?` · ${first.order.type==='idle'?'Ready':first.order.type==='hold'?'Holding position':first.order.type}`:''}${first.entrenchedAt!==undefined?(s.time-first.entrenchedAt>=3?' · Emplaced':' · Preparing emplacement'):''}${first.maxShield?` · Shield ${Math.ceil(first.shield??0)}/${first.maxShield}`:''}${(first.surgeUntil??0)>s.time?' · Surging':''}${first.raised?' · Raised · '+Math.ceil(first.expires-s.time)+'s remaining':''}${first.rally?' · Rally set':''}${first.role==='gate'?(first.gateOpen?' · Gate open':' · Gate closed'):''}${first.research?` · Researching ${UPGRADES[first.research].name} ${Math.floor(first.researchProgress*100)}%`:''}${first.side===1?' · Enemy':''}`);}
       else setText('#selection-status','Select a worker to gather resources or raise your first buildings.');
       const construction=el('.construction-track');construction.hidden=!first||(first.progress>=1&&!first.research);if(first)construction.querySelector<HTMLElement>('i')!.style.width=`${(first.progress<1?first.progress:first.researchProgress)*100}%`;
       if(entities.length>1){const hp=entities.reduce((total,e)=>total+e.hp,0),maxHp=entities.reduce((total,e)=>total+e.maxHp,0);el('#health-fill').style.width=`${hp/maxHp*100}%`;setText('#selection-status',`${Math.ceil(hp)} / ${maxHp} group health`);construction.hidden=true;}
@@ -131,7 +135,10 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
       el('#portrait').dataset.tooltip=entityDef?`<h3>${escape(entityDef.name)}</h3><p>${escape(entityDef.description)}</p>${first?.kind==='building'&&(first.role==='hq'||first.role==='barracks')?'<p>Right-click open ground to set a rally point for new units.</p>':''}`:'<h3>Select a unit</h3><p>Click a unit or drag across your army. Shift adds to your selection. F2 selects combat units.</p>';
       el('#portrait').tabIndex=0;
       const stats=el('#selection-stats');
-      stats.innerHTML=first?.kind==='unit'&&entityDef&&'damage' in entityDef?`<span title="Attack damage">ATK <b>${entityDef.damage}</b></span><span title="Armor">ARM <b>${entityDef.armor}</b></span><span title="Weapon range">RNG <b>${entityDef.range}</b></span>${first.carried?`<span>Carrying <b>${first.carried} ${first.carriedKind}</b></span>`:''}`:'';
+      const militaryTech=first?.side===0?player.upgrades.map(id=>UPGRADES[id]).filter(u=>u.appliesTo===first.role):[];
+      const damageFactor=militaryTech.reduce((factor,u)=>factor*(u.effects.damage??1),1),armorBonus=militaryTech.reduce((sum,u)=>sum+(u.effects.armor??0),0);
+      const statNumber=(value:number)=>Number(value.toFixed(1));
+      stats.innerHTML=first?.kind==='unit'&&entityDef&&'damage' in entityDef?`<span title="${first.side===0?'Attack damage with researched upgrades; combat bonuses apply separately':'Base attack damage; enemy research is private'}">ATK <b>${statNumber(entityDef.damage*damageFactor)}</b></span><span title="${first.side===0?'Armor with researched upgrades':'Base armor; enemy research is private'}">ARM <b>${entityDef.armor+armorBonus}</b></span><span title="Weapon range">RNG <b>${entityDef.range}</b></span>${first.carried?`<span>Carrying <b>${Math.floor(first.carried)} ${first.carriedKind}</b></span>`:''}`:'';
       const roster=el('#selection-roster');
       const rosterKey=entities.length>1?entities.map(e=>e.id).join(','):'';
       if(roster.dataset.ids!==rosterKey){roster.dataset.ids=rosterKey;roster.replaceChildren();if(entities.length>1)for(const e of entities){const d=e.kind==='unit'?FACTIONS[s.players[e.side].faction].units[e.role as UnitRole]:FACTIONS[s.players[e.side].faction].buildings[e.role as BuildingRole];const button=document.createElement('button');button.className='roster-unit';button.dataset.id=String(e.id);button.setAttribute('aria-label',`Select ${d.name} ${e.id}`);button.innerHTML=`<img src="${art(d.id)}" alt=""/><span class="mini-health"><i></i></span>`;button.addEventListener('click',event=>callbacks?.select(event.shiftKey?entities.filter(x=>x.id!==e.id).map(x=>x.id):[e.id]));roster.append(button);}}
@@ -142,18 +149,22 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
       const abilityName=abilityIds.length===1?ABILITIES[abilityIds[0]].name:'Use abilities';
       const hasWorkers=own.some(e=>e.kind==='unit'&&e.role==='worker');
       const selectedProducer=own.find(e=>e.kind==='building'&&(e.role==='hq'||e.role==='barracks'));
-      el('#command-tabs').hidden=!(hasWorkers&&selectedProducer);
-      root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===actionMode)));
-      const key=`${actionMode}:${player.faction}:${own.map(e=>`${e.id}/${e.progress>=1}/${!!e.rally}`).join(',')}:${abilityIds.join(',')}`;
+      const hasUnits=own.some(e=>e.kind==='unit');
+      if(actionMode==='build'&&!hasWorkers)actionMode=selectedProducer?'recruit':'orders';
+      if(actionMode==='recruit'&&!selectedProducer)actionMode=hasWorkers?'build':'orders';
+      if(actionMode==='orders'&&!hasUnits)actionMode=selectedProducer?'recruit':'build';
+      el('#command-tabs').hidden=!(hasWorkers||selectedProducer&&hasUnits);
+      root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach(b=>{b.hidden=b.dataset.mode==='build'?!hasWorkers:b.dataset.mode==='recruit'?!selectedProducer:!hasUnits;b.setAttribute('aria-pressed',String(b.dataset.mode===actionMode));});
+      const key=`${actionMode}:${player.faction}:${own.map(e=>`${e.id}/${e.progress>=1}/${!!e.rally}/${!!e.gateOpen}`).join(',')}:${abilityIds.join(',')}`;
       if(key!==actionsKey){
         actionsKey=key;actions.length=0;const container=el('#action-buttons');container.replaceChildren();
         const add=(name:string,asset:string,description:string,run:()=>void,cost?:Cost,train=false,entity?:Entity,hotkey?:string)=>{const button=document.createElement('button');button.className='action-button';button.setAttribute('aria-label',name);button.innerHTML=`<img class="action-icon" src="${asset}" alt=""/>${hotkey?`<kbd>${hotkey}</kbd>`:''}<strong>${escape(name)}</strong>${cost?`<small>${costMarkup(cost)}</small>`:''}<span class="action-state"></span>`;button.addEventListener('click',()=>{if(button.getAttribute('aria-disabled')!=='true')run();});container.append(button);actions.push({button,cost,train,entity,description,name,hotkey});};
-        if(hasWorkers&&(!selectedProducer||actionMode==='build'))for(const [index,role] of (['depot','barracks','tower'] as BuildingRole[]).entries()){const d=definition.buildings[role];add(d.name,art(d.id),`${d.description} • ${d.buildTime}s construction`,()=>callbacks?.build(role),d.cost,false,undefined,['Z','C','B'][index]);}
+        if(hasWorkers&&actionMode==='build')for(const [index,role] of (['depot','barracks','tower','hq','wall','gate'] as BuildingRole[]).entries()){const d=definition.buildings[role];add(d.name,art(d.id),`${d.description} • ${d.buildTime}s construction`,()=>callbacks?.build(role),d.cost,false,undefined,['Z','C','B','V','N','M'][index]);actions[actions.length-1].buildRole=role;}
         const producer=selectedProducer;
-        if(producer&&(!hasWorkers||actionMode==='recruit'))for(const [index,role] of ((producer.role==='hq'?['worker']:['melee','ranged','special']) as UnitRole[]).entries()){const d=definition.units[role];add(d.name,art(d.id),`${d.description} • ${d.trainTime}s recruitment`,()=>callbacks?.train(role),d.cost,true,producer,['Z','C','B'][index]);}
-        if(producer&&(!hasWorkers||actionMode==='recruit')){const recruitSlots=producer.role==='hq'?1:3;for(const [index,u] of Object.values(UPGRADES).filter(u=>u.building===producer.role).entries()){add(u.name,art(definition.units[u.appliesTo].id),`${u.description} • ${u.researchTime}s research`,()=>callbacks?.research(u.id),u.cost,false,producer,['Z','C','B','V'][recruitSlots+index]);actions[actions.length-1].upgrade=u.id;}}
-        if(selectedProducer&&(!hasWorkers||actionMode==='recruit')&&own.some(e=>e.rally))add('Clear rally','/assets/ui-halt.png','Remove the rally point. New recruits will wait outside this building.',()=>callbacks?.clearRally());
-        if(own.some(e=>e.kind==='unit')){add('Attack move',art(definition.units.melee.id),'Move to a destination and fight enemies along the way. Click a destination after choosing this order.',()=>callbacks?.attackMove(),undefined,false,undefined,'A');add('Halt','/assets/ui-halt.png','Stop current orders. Units may pursue nearby enemies.',()=>callbacks?.stop(),undefined,false,undefined,'X');add('Hold position','/assets/ui-hold.png','Attack enemies in weapon range without pursuing.',()=>callbacks?.hold(),undefined,false,undefined,'H');if(casters.length){add(abilityName,art(definition.units[casters[0].role as UnitRole].id),abilityIds.map(id=>`${ABILITIES[id].name}: ${ABILITIES[id].description} (${ABILITIES[id].cooldown}s cooldown)`).join(' • '),()=>callbacks?.ability(),undefined,false,undefined,'Q');actions[actions.length-1].ability=true;}}
+        if(producer&&actionMode==='recruit')for(const [index,role] of ((producer.role==='hq'?['worker']:['melee','ranged','special','spear','cavalry','siege']) as UnitRole[]).entries()){const d=definition.units[role];add(d.name,art(d.id),`${d.description} • ${d.trainTime}s recruitment`,()=>callbacks?.train(role),d.cost,true,producer,['Z','C','B','V','N','M'][index]);actions[actions.length-1].unitRole=role;actions[actions.length-1].description+=` • ${AGE_NAMES[d.age??1]}`;}
+        if(own.some(e=>e.role==='gate'&&e.progress===1))add(own.some(e=>e.role==='gate'&&e.progress===1&&e.gateOpen)?'Close gate':'Open gate',art(definition.buildings.gate.id),'Open gates admit both friendly and enemy troops. Closing requires an empty doorway.',()=>callbacks?.toggleGate?.());
+        if(selectedProducer&&actionMode==='recruit'&&own.some(e=>e.rally))add('Clear rally','/assets/ui-halt.png','Remove the rally point. New recruits will wait outside this building.',()=>callbacks?.clearRally());
+        if(hasUnits&&actionMode==='orders'){add('Attack move',art(definition.units.melee.id),'Move to a destination and fight enemies along the way. Click a destination after choosing this order.',()=>callbacks?.attackMove(),undefined,false,undefined,'A');add('Halt','/assets/ui-halt.png','Stop current orders. Units may pursue nearby enemies.',()=>callbacks?.stop(),undefined,false,undefined,'X');add('Hold position','/assets/ui-hold.png','Attack enemies in weapon range without pursuing.',()=>callbacks?.hold(),undefined,false,undefined,'H');if(casters.length){add(abilityName,art(definition.units[casters[0].role as UnitRole].id),abilityIds.map(id=>`${ABILITIES[id].name}: ${ABILITIES[id].description} (${ABILITIES[id].cooldown}s cooldown)`).join(' • '),()=>callbacks?.ability(),undefined,false,undefined,'Q');actions[actions.length-1].ability=true;}}
         setText('#command-hint',hasWorkers&&selectedProducer?'':own.length?'YOUR ORDERS':'SELECT A UNIT');
       }
       el('#order-hint').textContent=selectedProducer?'Right-click ground to set rally':'Right-click to give orders';
@@ -163,7 +174,9 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
         const missing=action.cost?(['wood','ore','crystal'] as const).filter(kind=>player[kind]<action.cost![kind]).map(kind=>`${Math.ceil(action.cost![kind]-player[kind])} ${kind}`):[];
         let reason=missing.length?`Need ${missing.join(', ')}`:'';
         if(action.train){if(action.entity!.progress<1)reason='Under construction';else if(action.entity!.queue.length>=5)reason='Queue full';else if(player.population+reserved>=player.cap)reason='Build a depot for supply';}
-        if(action.upgrade){if(action.entity!.progress<1)reason='Under construction';else if(action.entity!.research)reason=`Researching ${UPGRADES[action.entity!.research].name}`;else if(player.upgrades.includes(action.upgrade))reason='Researched';}
+        if(action.unitRole&&playerAge(player)<(definition.units[action.unitRole].age??1))reason=`Requires ${AGE_NAMES[definition.units[action.unitRole].age!]}`;
+        if(action.buildRole&&playerAge(player)<(action.buildRole==='hq'?2:definition.buildings[action.buildRole].age??1))reason='Requires Town Age';
+        if(action.upgrade){if(action.entity!.progress<1)reason='Under construction';else if(action.entity!.research)reason=`Researching ${UPGRADES[action.entity!.research].name}`;else reason=researchRequirement(s,0,action.upgrade)??reason;}
         if(action.ability){const remaining=Math.max(0,Math.ceil(Math.min(...casters.map(e=>(e.abilityReadyAt??0)-s.time))));if(remaining>0)reason=`${remaining}s cooldown`;else reason=abilityTargetReason(s,casters);action.button.style.setProperty('--cooldown',`${remaining?Math.min(100,remaining/Math.max(...abilityIds.map(id=>ABILITIES[id].cooldown))*100):0}%`);}
         if(paused)reason='Battle paused';if(s.winner!==null||s.draw)reason='Match ended';
         action.button.setAttribute('aria-disabled',String(!!reason));action.button.classList.toggle('unavailable',!!reason);
@@ -177,7 +190,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
       for(const producer of producers){const row=queue.querySelector<HTMLElement>(`[data-producer="${producer.id}"]`)!;row.querySelector('b')!.textContent=`${Math.max(0,Math.ceil((1-producer.trainProgress)*definition.units[producer.queue[0]].trainTime))}s`;row.querySelector<HTMLElement>('.queue-progress i')!.style.width=`${producer.trainProgress*100}%`;}
       tooltip.refresh();
       overlay.hidden=!paused&&s.winner===null&&!s.draw;
-      if(!overlay.hidden){const ended=s.winner!==null||s.draw;setText('#overlay-title',ended?s.draw?'Draw':s.winner===0?'Victory':'Defeat':'Battle paused');setText('#overlay-eyebrow',ended?'THE BATTLE IS OVER':'SKIRMISH');setText('#overlay-description',ended?s.draw?'Both strongholds fell in the same exchange.':s.winner===0?'The enemy stronghold has fallen. The Elderwood is yours.':'Your stronghold has fallen. Raise your banner and try again.':'Take a moment to plan your next move.');el('#resume-button').hidden=ended;}
+      if(!overlay.hidden){const ended=s.winner!==null||s.draw;setText('#overlay-title',ended?s.draw?'Draw':s.winner===0?'Victory':'Defeat':'Battle paused');setText('#overlay-eyebrow',ended?'THE BATTLE IS OVER':'SKIRMISH');setText('#overlay-description',ended?s.draw?'Both sides lost their last stronghold in the same exchange.':s.winner===0?'The last enemy stronghold has fallen. The Elderwood is yours.':'Your last stronghold has fallen. Raise your banner and try again.':'Take a moment to plan your next move.');el('#resume-button').hidden=ended;}
       setText('#pause-button',paused?'Resume':'Pause');drawMinimap(s);
     }
   };

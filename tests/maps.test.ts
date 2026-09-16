@@ -17,5 +17,5 @@ it('uses the seed reproducibly and changes terrain and resources between seeds',
  expect(new Set(a.terrain).size).toBeGreaterThanOrEqual(5);
 });
 it('rejects invalid sizes and seeds',()=>{
- expect(()=>generateMap(NaN)).toThrow();expect(()=>generateMap(-1)).toThrow();expect(()=>generateMap(1,'huge' as MapSize)).toThrow();
+ expect(()=>generateMap(NaN)).toThrow();expect(()=>generateMap(-1)).toThrow();expect(()=>generateMap(1,'endless' as MapSize)).toThrow();
 });

@@ -5,7 +5,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 p=argparse.ArgumentParser()
 p.add_argument('--faction',default='automata');p.add_argument('--opponent',default='tideborn')
-p.add_argument('--map-size',default='small',choices=['small','medium','large']);p.add_argument('--seed',type=int,default=4127)
+p.add_argument('--map-size',default='small',choices=['small','medium','large','huge']);p.add_argument('--seed',type=int,default=4127)
 p.add_argument('--side',type=int,default=1,choices=[0,1]);p.add_argument('--seconds',type=int,default=2700)
 p.add_argument('--log',type=Path,required=True);a=p.parse_args()
 a.log.parent.mkdir(parents=True,exist_ok=True)
@@ -33,6 +33,7 @@ def play(obs):
  hq=next((e for e in buildings if e['role']=='hq'),None)
  if not hq:return
  bank=obs['player'].copy();defs=obs['content']['faction'];nodes=[r for r in obs['resources'] if r['visible'] and r['amount']>0]
+ age=3 if 'citadel-age' in bank['upgrades'] else 2 if 'town-age' in bank['upgrades'] else 1
  queued=sum(len(e['queue']) for e in buildings)
  def afford(cost):return all(bank[k]>=cost[k] for k in ('wood','ore','crystal'))
  def pay(cost):
@@ -60,8 +61,19 @@ def play(obs):
    free=[w for w in workers if w['order']['type'] in ('idle','gather')]
    if free:command({'type':'repair','ids':[min(free,key=lambda w:distance(w,site))['id']],'target':site['id']})
  cost=defs['units']['worker']['cost']
- if len(workers)+hq['queue'].count('worker')<9 and len(hq['queue'])<2 and bank['population']+queued<bank['cap'] and afford(cost):
+ if len(workers)+hq['queue'].count('worker')<(13 if age==1 else 20) and len(hq['queue'])<2 and bank['population']+queued<bank['cap'] and afford(cost):
   if command({'type':'train','id':hq['id'],'role':'worker'}):pay(cost);queued+=1
+ # Choose research entirely from the public technology definitions.
+ active={e.get('research') for e in buildings}
+ if len(workers)>=7:
+  for b in [e for e in buildings if e['progress']==1 and not e.get('research')]:
+   for upgrade in ['worker-harvest','worker-speed','town-age','citadel-age','forged-weapons','tempered-armor','veteran-arms']:
+    tech=obs['content']['upgrades'][upgrade];cost=tech['cost']
+    if tech['building']!=b['role'] or upgrade in bank['upgrades'] or upgrade in active or tech.get('age',1)>age:continue
+    if any(required not in bank['upgrades'] for required in tech.get('requires',[])):continue
+    if bank['wood']>=cost['wood']+120 and bank['ore']>=cost['ore']+80 and afford(cost):
+     if command({'type':'research','id':b['id'],'upgrade':upgrade}):pay(cost);active.add(upgrade)
+     break
  role=None
  if not any(e['role']=='barracks' for e in buildings):role='barracks'
  elif bank['cap']-bank['population']-queued<5 and bank['cap']<100 and not any(e['role']=='depot' and e['progress']<1 for e in buildings):role='depot'
@@ -83,7 +95,9 @@ def play(obs):
     if placeable(x,y) and command({'type':'build','ids':[workers[0]['id']],'role':role,'x':x,'y':y}):pay(defs['buildings'][role]['cost']);done=True;break
  army=[e for e in own if e['kind']=='unit' and e['role']!='worker' and not e['illusion']]
  planned=[e['role'] for e in army if not e.get('raised')]+[r for e in buildings for r in e['queue'] if r!='worker']
- composition=defs['ai'].get('composition',{'melee':.45,'ranged':.35,'special':.20})
+ composition={**defs['ai'].get('composition',{'melee':.45,'ranged':.35,'special':.20}),'spear':.1,'cavalry':.16,'siege':.18}
+ composition={r:w for r,w in composition.items() if defs['units'][r].get('age',1)<=age}
+ total=sum(composition.values());composition={r:w/total for r,w in composition.items()}
  for b in [e for e in buildings if e['role']=='barracks' and e['progress']==1 and len(e['queue'])<2]:
   if bank['population']+queued>=bank['cap']:break
   choices=sorted(composition,key=lambda r:(len(planned)+1)*composition[r]-planned.count(r),reverse=True)

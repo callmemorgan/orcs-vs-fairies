@@ -9,7 +9,7 @@ const buildingRadius=(s:GameState,e:GameState['entities'][number])=>FACTIONS[s.p
 export function walkable(s:GameState,x:number,y:number):boolean{
  if(x<.35||y<.35||x>s.width-.35||y>s.height-.35)return false;
  for(let ty=Math.floor(y-.27);ty<=Math.floor(y+.27);ty++)for(let tx=Math.floor(x-.27);tx<=Math.floor(x+.27);tx++)if(!TERRAIN[terrainAt(s,tx+.5,ty+.5)].walkable)return false;
- for(const b of s.entities)if(b.hp>0&&b.kind==='building'){const r=buildingRadius(s,b);if(Math.abs(b.x-x)<r&&Math.abs(b.y-y)<r)return false;}
+ for(const b of s.entities)if(b.hp>0&&b.kind==='building'&&!b.gateOpen){const r=buildingRadius(s,b);if(Math.abs(b.x-x)<r&&Math.abs(b.y-y)<r)return false;}
  for(const r of s.resources)if(r.amount>0&&Math.hypot(r.x-x,r.y-y)<.7)return false;
  return true;
 }
@@ -24,7 +24,7 @@ export function segmentWalkable(s:GameState,a:Vec,b:Vec):boolean{
  }
 
  for(const r of s.resources){if(r.amount<=0)continue;const t=lengthSquared?clamp(((r.x-a.x)*dx+(r.y-a.y)*dy)/lengthSquared,0,1):0;if(Math.hypot(a.x+t*dx-r.x,a.y+t*dy-r.y)<.7)return false;}
- for(const obstacle of s.entities){if(obstacle.hp<=0||obstacle.kind!=='building')continue;const r=buildingRadius(s,obstacle);let enter=0,leave=1;
+ for(const obstacle of s.entities){if(obstacle.hp<=0||obstacle.kind!=='building'||obstacle.gateOpen)continue;const r=buildingRadius(s,obstacle);let enter=0,leave=1;
   for(const [origin,delta,center] of [[a.x,dx,obstacle.x],[a.y,dy,obstacle.y]]){if(delta===0){if(Math.abs(origin-center)>=r){enter=1;leave=0;break;}}else{const t1=(center-r-origin)/delta,t2=(center+r-origin)/delta;enter=Math.max(enter,Math.min(t1,t2));leave=Math.min(leave,Math.max(t1,t2));}}
   if(enter<leave)return false;
  }
@@ -41,7 +41,7 @@ export function openDestination(s:GameState,to:Vec,from:Vec):Vec|undefined{
 interface Grid {terrain:GameState['terrain'];signature:string;width:number;height:number;blocked:Uint8Array;edges:Map<number,boolean>}
 const grids=new WeakMap<GameState,Map<number,Grid>>();
 function gridFor(s:GameState,CELL:number):Grid{
- const buildings=s.entities.filter(e=>e.hp>0&&e.kind==='building');
+ const buildings=s.entities.filter(e=>e.hp>0&&e.kind==='building'&&!e.gateOpen);
  const resources=s.resources.filter(r=>r.amount>0);
  const signature=`${s.width},${s.height};${buildings.map(b=>`${b.id},${b.x},${b.y},${buildingRadius(s,b)}`).join(';')}|${resources.map(r=>`${r.id},${r.x},${r.y}`).join(';')}`;
  let caches=grids.get(s);if(!caches){caches=new Map();grids.set(s,caches);}

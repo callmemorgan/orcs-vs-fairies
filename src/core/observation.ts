@@ -29,7 +29,7 @@ export class PlayerView {
    player:{...s.players[side]},opponent:{side:1-side,faction:s.players[side===0?1:0].faction},
    entities:s.entities.filter(e=>e.hp>0&&(e.side===side||isVisible(s,side,e.x,e.y))).map(e=>{
     const {hp,maxHp}=observedHealth(s,side,e);
-    const publicFields={id:e.id,side:e.side,kind:e.kind,role:e.role,x:e.x,y:e.y,hp,maxHp,progress:e.progress,shield:e.shield,maxShield:e.maxShield,raised:e.raised,entrenchedAt:e.entrenchedAt,surgeUntil:e.surgeUntil};
+    const publicFields={id:e.id,side:e.side,kind:e.kind,role:e.role,x:e.x,y:e.y,hp,maxHp,progress:e.progress,gateOpen:e.gateOpen,shield:e.shield,maxShield:e.maxShield,raised:e.raised,entrenchedAt:e.entrenchedAt,surgeUntil:e.surgeUntil};
     return e.side===side?{...publicFields,illusion:e.illusion,order:{...e.order},queue:[...e.queue],rally:e.rally?{...e.rally}:undefined,trainProgress:e.trainProgress,research:e.research,researchProgress:e.researchProgress,carried:e.carried,carriedKind:e.carriedKind,cooldown:e.cooldown,abilityReadyAt:e.abilityReadyAt,expires:e.expires}:publicFields;
    }),
    resources:this.resourcesFor(s),

@@ -80,7 +80,7 @@ export default class GameScene extends Phaser.Scene {
       const pos=unproject(world.x,world.y);
       if(this.buildRole){
         const role=this.buildRole;
-        if(issueCommand(this.state,0,{type:'build',ids:this.selected,role,x:Math.floor(pos.x)+.5,y:Math.floor(pos.y)+.5})) {this.setBuildRole(null);this.options.onNotice('Construction ordered.');this.audio?.play('order');}
+        if(issueCommand(this.state,0,{type:'build',ids:this.selected,role,x:role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y:role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5})) {this.setBuildRole(null);this.options.onNotice('Construction ordered.');this.audio?.play('order');}
         else this.options.onNotice('Cannot build here. Select a worker and check resources and space.');
         return;
       }
@@ -114,6 +114,7 @@ export default class GameScene extends Phaser.Scene {
   public holdPosition(){if(this.paused||(this.state.winner!==null||this.state.draw)||!issueCommand(this.state,0,{type:'hold',ids:this.selected}))return false;this.attackMode=false;this.setBuildRole(null);this.audio?.play('order');this.options.onNotice('Holding position: attack in range without pursuing.');return true;}
   private select(ids:number[],audible=true){const changed=ids.length!==this.selected.length||ids.some((id,index)=>id!==this.selected[index]);this.selected=ids;this.options.onSelection(ids);if(audible&&changed&&ids.length)this.audio?.play('selection');}
   private key(e:KeyboardEvent){
+    if(document.querySelector('dialog[open]'))return;
     if((e.target as HTMLElement)?.closest('input,textarea,select'))return;
     if(e.code==='Escape'){this.setBuildRole(null);this.attackMode=false;this.drag=null;return;}
     const playable=captureDigitHotkeys(this.paused,this.state.winner!==null||this.state.draw);
@@ -170,7 +171,7 @@ export default class GameScene extends Phaser.Scene {
       while(this.accumulated>=.05){stepGame(this.state,.05);this.accumulated-=.05;this.processEvents();}
     }
     const living=this.selected.filter(id=>this.state.entities.some(e=>e.id===id&&e.hp>0&&this.visible(e)));if(living.length!==this.selected.length)this.select(living,false);
-    const k=this.keys,c=this.cameras.main,s=Math.min(delta,40)*.75*this.pixelDensity/c.zoom;
+    const k=this.keys,c=this.cameras.main,s=(document.querySelector('dialog[open]')?0:Math.min(delta,40))*.75*this.pixelDensity/c.zoom;
     if(k.LEFT.isDown||(k.A.isDown&&!this.selected.length))c.scrollX-=s;
     if(k.RIGHT.isDown||k.D.isDown)c.scrollX+=s;
     if(k.UP.isDown||k.W.isDown)c.scrollY-=s;
@@ -314,7 +315,7 @@ export default class GameScene extends Phaser.Scene {
       if(e.kind==='building'&&e.progress<1){g.fillStyle(0x182b2a,.8).fillRect(q.x-27,y+7,54,4);g.fillStyle(0xe4c578).fillRect(q.x-27,y+7,54*e.progress,4);}
     }
     if(this.drag&&Math.hypot(p.x-this.drag.x,p.y-this.drag.y)>6&&!this.buildRole){g.lineStyle(1,0xe5dca6).strokeRect(this.drag.wx,this.drag.wy,world.x-this.drag.wx,world.y-this.drag.wy);g.fillStyle(0xd6e9a5,.12).fillRect(this.drag.wx,this.drag.wy,world.x-this.drag.wx,world.y-this.drag.wy);}
-    if(this.buildRole){const pos=unproject(world.x,world.y);const x=Math.floor(pos.x)+.5,y=Math.floor(pos.y)+.5,q=project(x,y);const valid=canPlace(this.state,0,this.buildRole,x,y);const size=FACTIONS[this.state.players[0].faction].buildings[this.buildRole].size;this.diamond(g,q.x,q.y,size*64,size*32,valid?0xa6d99a:0xe27964,.5);}
+    if(this.buildRole){const pos=unproject(world.x,world.y);const x=this.buildRole==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y=this.buildRole==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5,q=project(x,y);const valid=canPlace(this.state,0,this.buildRole,x,y);const size=FACTIONS[this.state.players[0].faction].buildings[this.buildRole].size;this.diamond(g,q.x,q.y,size*64,size*32,valid?0xa6d99a:0xe27964,.5);}
     for(const building of this.state.entities){
       if(building.side!==0||building.hp<=0||!building.rally||!this.selected.includes(building.id))continue;
       const from=project(building.x,building.y),to=project(building.rally.x,building.rally.y);

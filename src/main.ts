@@ -23,7 +23,14 @@ const callbacks:HudCallbacks={
  build:role=>{scene?.setBuildRole(role);shell.notice('Choose a clear location on explored ground. Right-click to cancel.');},
  train:role=>{if(!scene)return;const id=scene.selected.find(id=>scene!.state.entities.some(e=>e.id===id&&e.side===0&&e.kind==='building'&&e.role===(role==='worker'?'hq':'barracks')));if(id===undefined||!issueCommand(scene.state,0,{type:'train',id,role}))shell.notice('Cannot recruit: check resources, population, and production building.');},
  cancelTrain:(id,index,expectedQueue)=>{if(!scene||scene.paused)return;const producer=scene.state.entities.find(e=>e.id===id);if(!producer||JSON.stringify(producer.queue)!==expectedQueue)return;if(issueCommand(scene.state,0,{type:'cancelTrain',id,index})){shell.update(scene.state,scene.selected,callbacks);shell.notice('Recruitment canceled. Resources refunded.');}},
- research:upgrade=>{if(!scene)return;const id=scene.selected.find(id=>scene!.state.entities.some(e=>e.id===id&&e.side===0&&e.kind==='building'&&e.role===UPGRADES[upgrade].building));if(id===undefined||!issueCommand(scene.state,0,{type:'research',id,upgrade}))shell.notice('Cannot research: check resources and the production building.');},
+ research:(upgrade,building)=>{if(!scene||scene.paused)return;const id=building??scene.selected.find(id=>scene!.state.entities.some(e=>e.id===id&&e.side===0&&e.kind==='building'&&e.role===UPGRADES[upgrade].building));if(id===undefined||!issueCommand(scene.state,0,{type:'research',id,upgrade}))shell.notice('Cannot research: check resources and the production building.');},
+ toggleGate:()=>{
+  if(!scene||scene.paused)return;
+  const gates=scene.state.entities.filter(e=>scene!.selected.includes(e.id)&&e.side===0&&e.role==='gate'&&e.hp>0&&e.progress===1),closing=gates.some(e=>e.gateOpen);
+  const ids=gates.filter(e=>!!e.gateOpen===closing).map(e=>e.id);
+  if(!issueCommand(scene.state,0,{type:'toggleGate',ids}))shell.notice('Clear the doorway before closing the gate.');
+  shell.update(scene.state,scene.selected,callbacks);
+ },
  clearRally:()=>{if(scene&&!scene.paused&&issueCommand(scene.state,0,{type:'clearRally',ids:scene.selected}))shell.update(scene.state,scene.selected,callbacks);},
  ability:()=>{if(scene&&!issueCommand(scene.state,0,{type:'ability',ids:scene.selected}))shell.notice('No selected ability is ready or has an eligible target.');},
  hold:()=>{scene?.holdPosition();},
@@ -71,7 +78,7 @@ function start(next:FactionId,nextOpponent:FactionId=opponent,mapSize:MapSize="m
    units:countPerformanceUnits(scene.state,e=>{const p=project(e.x,e.y);return camera.worldView.contains(p.x,p.y);}),
    viewport:{width:innerWidth,height:innerHeight},canvas:{width:rect.width,height:rect.height},
    drawingBuffer:{width:gl?.drawingBufferWidth??canvas.width,height:gl?.drawingBufferHeight??canvas.height},
-   devicePixelRatio,renderDensity,documentVisible:document.visibilityState==='visible',artLoaded:scene.artStatus.loaded&&scene.artStatus.assets===70&&scene.artStatus.renderedUnits===100,paused:scene.paused
+   devicePixelRatio,renderDensity,documentVisible:document.visibilityState==='visible',artLoaded:scene.artStatus.loaded&&scene.artStatus.renderedUnits===100,paused:scene.paused
   });
   if(phase==='complete')scene.paused=true;
  });

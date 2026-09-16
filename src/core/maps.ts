@@ -1,7 +1,7 @@
 import type { MapSize, ResourceKind, ResourceNode, TerrainKind, Vec } from './types';
 
-export const MAP_SIZES:Record<MapSize,number>={small:36,medium:48,large:64};
-export const MAP_VERSION=1;
+export const MAP_SIZES:Record<MapSize,number>={small:36,medium:48,large:64,huge:88};
+export const MAP_VERSION=2;
 export const TERRAIN:Record<TerrainKind,{name:string;walkable:boolean;buildable:boolean;speed:number}>={
  grass:{name:'Meadow',walkable:true,buildable:true,speed:1},
  road:{name:'Road',walkable:true,buildable:true,speed:1.15},
@@ -24,7 +24,7 @@ export function terrainAt(map:Pick<GeneratedMap,'width'|'height'|'terrain'>,x:nu
 
 export function generateMap(seed:number,size:MapSize='medium'):GeneratedMap{
  if(!Number.isSafeInteger(seed)||seed<0||seed>0xffffffff)throw new Error('Map seed must be an integer from 0 to 4294967295.');
- if(!(size in MAP_SIZES))throw new Error('Map size must be small, medium or large.');
+ if(!(size in MAP_SIZES))throw new Error('Map size must be small, medium, large or huge.');
  const width=MAP_SIZES[size],height=width,rng=seededRandom(seed),terrain:TerrainKind[]=Array(width*height).fill('grass');
  const base=size==='small'?7.5:8.5,starts:[Vec,Vec]=[{x:base,y:base},{x:width-base,y:height-base}];
  const map:GeneratedMap={size,seed,width,height,terrain,starts,resources:[],version:MAP_VERSION};
@@ -62,7 +62,7 @@ export function generateMap(seed:number,size:MapSize='medium'):GeneratedMap{
  };
  // Each side has the same modest crystal reserve; richer deposits are contested.
  for(const [dx,dy,kind,amount] of [[-4,4,'wood',2600],[-2,6,'wood',2600],[-5,1,'wood',2600],[5,-3,'ore',2800],[6,0,'ore',2800],[5,4,'crystal',180]] as const)addPair({x:base+dx,y:base+dy},kind,amount);
- const clusters=size==='small'?2:size==='medium'?3:5;
+ const clusters=size==='small'?2:size==='medium'?3:size==='large'?5:8;
  for(let i=0;i<clusters;i++){
   const t=.42+(i/Math.max(1,clusters-1))*.45;
   const p={x:Math.floor(base+(center.x-base)*t+(rng()-.5)*10)+.5,y:Math.floor(base+(center.y-base)*t+(rng()-.5)*10)+.5};
@@ -75,6 +75,16 @@ export function generateMap(seed:number,size:MapSize='medium'):GeneratedMap{
     for(let y=0;y<height;y++)for(let x=0;x<width;x++)if(terrain[y*width+x]==='road'||terrain[y*width+x]==='bridge'){const d=Math.hypot(q.x-x-.5,q.y-y-.5);if(d<best){best=d;nearest={x:x+.5,y:y+.5};}}
     if(nearest)carve(q,nearest,1.1);
    }
+  }
+ }
+ // Rich flank camps give larger maps an economic reason to explore away from the front.
+ // A clear center leaves room for an expansion HQ; deposits sit around its edge.
+ if(size==='large'||size==='huge'){
+  const camps=[{x:Math.floor(width*.23)+.5,y:Math.floor(width*.58)+.5}];
+  if(size==='huge')camps.push({x:Math.floor(width*.18)+.5,y:Math.floor(width*.37)+.5});
+  for(const camp of camps){
+   disk(camp.x,camp.y,6,6,'grass');carve(camp,flank,1.3);
+   for(const [dx,dy,kind,amount] of [[-4,-2,'wood',4000],[4,-2,'ore',3500],[0,4,'crystal',750]] as const)addPair({x:camp.x+dx,y:camp.y+dy},kind,amount);
   }
  }
  // Keep the edge impassable and every base pad buildable after branch carving.

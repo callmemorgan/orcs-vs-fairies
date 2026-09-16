@@ -30,7 +30,7 @@ export function createPerformanceGame(): GameState {
     state.players[side].population = 50;
     state.players[side].cap = 52;
   }
-  const roles: UnitRole[] = ['worker', 'melee', 'ranged', 'special'];
+  const roles: UnitRole[] = ['worker', 'melee', 'ranged', 'special', 'spear', 'cavalry', 'siege'];
   for (let i = 0; i < 50; i++) {
     const x = 20.2 + (i % 5) * 1.7, y = 20.2 + Math.floor(i / 5) * .85;
     const a = spawn(0, 'unit', roles[i % roles.length], x, y);

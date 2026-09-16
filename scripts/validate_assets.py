@@ -7,8 +7,8 @@ ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'public/assets'
 def validate():
     m=json.loads((OUT/'manifest.json').read_text());assert m['schemaVersion']==1
-    required_units=[f'{f}-{r}' for f in ['orc','fairy','dwarf','undead','tideborn','automata'] for r in ['worker','melee','ranged','special']]
-    required_buildings=[f'{f}-{r}' for f in ['orc','fairy','dwarf','undead','tideborn','automata'] for r in ['hq','depot','barracks','tower']]
+    required_units=[f'{f}-{r}' for f in ['orc','fairy','dwarf','undead','tideborn','automata'] for r in ['worker','melee','ranged','special','spear','cavalry','siege']]
+    required_buildings=[f'{f}-{r}' for f in ['orc','fairy','dwarf','undead','tideborn','automata'] for r in ['hq','depot','barracks','tower','wall','gate']]
     required_env=['tile-grass-'+str(i) for i in range(4)]+['tile-dirt-'+str(i) for i in range(3)]+['tile-stone','tree-pine','tree-oak','ore','stump','ruin-pillar','ruin-ring','flowers','crystal','reeds','tile-water','tile-shallows','tile-mud','tile-rock','tile-bridge']
     missing=[i for i in required_units+required_buildings+required_env if i not in m['assets']]
     assert not missing,f'Missing assets: {missing}'
@@ -33,6 +33,7 @@ def validate():
         with Image.open(OUT/f'selection-{aid}.png') as portrait:assert portrait.convert('RGBA').getchannel('A').getbbox(),f'Empty selection artwork: {aid}'
         a=m['assets'][aid];w,h=a['width'],a['height'];x,y=a['anchor'];assert 0<=x<=w and 0<=y<=h
         expected=['idle','walk','attack','death'] if aid in required_units else ['idle','construction','death']
+        if aid.endswith('-gate'):expected.append('open')
         for state in expected:
             anim=a['animations'][state]
             for d in range(8 if aid in required_units else 1):

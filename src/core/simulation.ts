@@ -1,3 +1,4 @@
+import { playerAge, researchRequirement } from './progression';
 import { ECONOMY, FACTIONS, UPGRADES } from './content';
 import { walkable, segmentWalkable, openDestination, route } from './navigation';
 import { generateMap, terrainAt, TERRAIN } from './maps';
@@ -5,9 +6,9 @@ import type { BuildingDef, BuildingRole, Command, Entity, FactionId, GameOptions
 
 const distance = (a:Vec,b:Vec) => Math.hypot(a.x-b.x,a.y-b.y);
 const clamp=(n:number,a:number,b:number)=>Math.max(a,Math.min(b,n));
-interface Runtime { fog:number; ai:number; aiTurns:number; hits:{source:Entity;target:Entity;amount:number;event:GameState['events'][number]}[]; routes:Map<number,{key:string;at:number}>; abilities:Map<number,number>; returning:Set<number>; aiWave:[number,number]; initialScoutDispatched:[boolean,boolean] }
+interface Runtime { fog:number; ai:number; aiTurns:number; hits:{source:Entity;target:Entity;amount:number;event:GameState['events'][number]}[]; routes:Map<number,{key:string;at:number}>; abilities:Map<number,number>; returning:Set<number>; aiWave:[number,number]; initialScoutDispatched:[boolean,boolean]; expansionScout:[number|null,number|null]; expansionScoutDispatched:[boolean,boolean]; knownEnemyBuildings:[Map<number,Vec & {role:string}>,Map<number,Vec & {role:string}>]; enemyStartCleared:[boolean,boolean]; searched:[Set<number>,Set<number>] }
 const runtimes=new WeakMap<GameState,Runtime>();
-function runtime(s:GameState):Runtime { let r=runtimes.get(s);if(!r){r={fog:0,ai:0,aiTurns:0,hits:[],routes:new Map(),abilities:new Map(),returning:new Set(),aiWave:[0,0],initialScoutDispatched:[false,false]};runtimes.set(s,r);}return r; }
+function runtime(s:GameState):Runtime { let r=runtimes.get(s);if(!r){r={fog:0,ai:0,aiTurns:0,hits:[],routes:new Map(),abilities:new Map(),returning:new Set(),aiWave:[0,0],initialScoutDispatched:[false,false],expansionScout:[null,null],expansionScoutDispatched:[false,false],knownEnemyBuildings:[new Map(),new Map()],enemyStartCleared:[false,false],searched:[new Set(),new Set()]};runtimes.set(s,r);}return r; }
 const alive=(e:Entity)=>e.hp>0;
 function unitDef(s:GameState,e:Entity):UnitDef{return FACTIONS[s.players[e.side].faction].units[e.role as UnitRole];}
 function buildingDef(s:GameState,e:Entity):BuildingDef{return FACTIONS[s.players[e.side].faction].buildings[e.role as BuildingRole];}
@@ -46,16 +47,24 @@ function rallyWalkable(s:GameState,side:Side,x:number,y:number):boolean{
 function refundCost(s:GameState,side:Side,role:UnitRole):void{const cost=FACTIONS[s.players[side].faction].units[role].cost,p=s.players[side];p.wood+=cost.wood;p.ore+=cost.ore;p.crystal+=cost.crystal;}
 function refundQueue(s:GameState,e:Entity):void{if(!e.queue.length)return;for(const role of e.queue)refundCost(s,e.side,role);e.queue=[];e.trainProgress=0;}
 export function canPlace(s:GameState,side:Side,role:BuildingRole,x:number,y:number):boolean{
- if(role==='hq')return false;const def=FACTIONS[s.players[side].faction].buildings[role];if(!def||!Number.isFinite(x)||!Number.isFinite(y))return false;const r=def.size/2;if(x-r<.5||y-r<.5||x+r>s.width-.5||y+r>s.height-.5)return false;
+ const def=FACTIONS[s.players[side].faction].buildings[role];if(!def||playerAge(s.players[side])<(role==='hq'?2:def.age??1)||!Number.isFinite(x)||!Number.isFinite(y))return false;const r=def.size/2;if(x-r<.5||y-r<.5||x+r>s.width-.5||y+r>s.height-.5)return false;
  for(const dx of [-r,0,r])for(const dy of [-r,0,r])if(!isVisible(s,side,x+dx,y+dy))return false;
  for(let ty=Math.floor(y-r);ty<Math.ceil(y+r);ty++)for(let tx=Math.floor(x-r);tx<Math.ceil(x+r);tx++)if(!TERRAIN[terrainAt(s,tx+.5,ty+.5)].buildable)return false;
- if(s.entities.some(e=>alive(e)&&e.kind==='building'&&Math.abs(e.x-x)<radius(s,e)+r+.4&&Math.abs(e.y-y)<radius(s,e)+r+.4))return false;
+ if(s.entities.some(e=>alive(e)&&e.kind==='building'&&Math.abs(e.x-x)<radius(s,e)+r+(['wall','gate'].includes(role)&&['wall','gate'].includes(e.role)?0:.4)&&Math.abs(e.y-y)<radius(s,e)+r+(['wall','gate'].includes(role)&&['wall','gate'].includes(e.role)?0:.4)))return false;
  if(s.entities.some(e=>alive(e)&&e.kind==='unit'&&e.side!==side&&footprintOverlap(e,x,y,def.size)))return false;
  if(s.resources.some(e=>e.amount>0&&Math.abs(e.x-x)<r+.8&&Math.abs(e.y-y)<r+.8))return false;return true;
 }
 function assign(s:GameState,e:Entity,order:Entity['order']):void{if(order.type!=='hold')e.entrenchedAt=undefined;e.order=order;e.path=[];runtime(s).routes.delete(e.id);runtime(s).returning.delete(e.id);}
 export function issueCommand(s:GameState,side:Side,c:Command):boolean{
  if(isGameOver(s))return false;const p=s.players[side],f=FACTIONS[p.faction];
+ if(c.type==='toggleGate'){
+  let changed=false;
+  for(const gate of s.entities.filter(e=>c.ids.includes(e.id)&&e.side===side&&alive(e)&&e.role==='gate'&&e.progress===1)){
+   if(gate.gateOpen&&s.entities.some(e=>alive(e)&&e.kind==='unit'&&footprintOverlap(e,gate.x,gate.y,buildingDef(s,gate).size)))continue;
+   gate.gateOpen=!gate.gateOpen;changed=true;
+  }
+  return changed;
+ }
  if(c.type==='setRally'||c.type==='clearRally'){
   const producers=s.entities.filter(e=>c.ids.includes(e.id)&&e.side===side&&alive(e)&&e.kind==='building'&&(e.role==='hq'||e.role==='barracks'));
   if(!producers.length)return false;
@@ -73,18 +82,18 @@ export function issueCommand(s:GameState,side:Side,c:Command):boolean{
   e.queue.splice(c.index,1);if(c.index===0)e.trainProgress=0;return true;
  }
  if(c.type==='train'){
- const e=s.entities.find(e=>e.id===c.id&&e.side===side&&alive(e)&&e.kind==='building'&&e.progress===1);const d=f.units[c.role];if(!e||!d||(c.role==='worker'?e.role!=='hq':e.role!=='barracks')||e.queue.length>=5||p.wood<d.cost.wood||p.ore<d.cost.ore||p.crystal<d.cost.crystal||p.population+reserved(s,side)>=p.cap)return false;
+ const e=s.entities.find(e=>e.id===c.id&&e.side===side&&alive(e)&&e.kind==='building'&&e.progress===1);const d=f.units[c.role];if(!e||!d||playerAge(p)<(d.age??1)||(c.role==='worker'?e.role!=='hq':e.role!=='barracks')||e.queue.length>=5||p.wood<d.cost.wood||p.ore<d.cost.ore||p.crystal<d.cost.crystal||p.population+reserved(s,side)>=p.cap)return false;
  p.wood-=d.cost.wood;p.ore-=d.cost.ore;p.crystal-=d.cost.crystal;e.queue.push(c.role);return true;
  }
  if(c.type==='research'){
  const e=s.entities.find(e=>e.id===c.id&&e.side===side&&alive(e)&&e.kind==='building'&&e.progress===1);const d=UPGRADES[c.upgrade];
- if(!e||!d||d.building!==e.role||e.research||p.upgrades.includes(c.upgrade)||p.wood<d.cost.wood||p.ore<d.cost.ore||p.crystal<d.cost.crystal)return false;
+ if(!e||!d||d.building!==e.role||e.research||researchRequirement(s,side,c.upgrade)||p.wood<d.cost.wood||p.ore<d.cost.ore||p.crystal<d.cost.crystal)return false;
  p.wood-=d.cost.wood;p.ore-=d.cost.ore;p.crystal-=d.cost.crystal;e.research=c.upgrade;e.researchProgress=0;emit(s,'research',e,undefined,`${d.name} started`);return true;
  }
  const units=s.entities.filter(e=>c.ids.includes(e.id)&&e.side===side&&alive(e)&&e.kind==='unit'&&!e.illusion);
  if(!units.length)return false;
  if(c.type==='build'){
- const workers=units.filter(e=>e.role==='worker');const d=f.buildings[c.role];if(!workers.length||!d||c.role==='hq'||p.wood<d.cost.wood||p.ore<d.cost.ore||p.crystal<d.cost.crystal||!canPlace(s,side,c.role,c.x,c.y))return false;
+ const workers=units.filter(e=>e.role==='worker');const d=f.buildings[c.role];if(!workers.length||!d||(c.role==='hq'&&playerAge(p)<2)||p.wood<d.cost.wood||p.ore<d.cost.ore||p.crystal<d.cost.crystal||!canPlace(s,side,c.role,c.x,c.y))return false;
  const overlapping=s.entities.filter(e=>e.kind==='unit'&&alive(e)&&e.side===side&&footprintOverlap(e,c.x,c.y,d.size));
  const shoves:{e:Entity;x:number;y:number}[]=[];
  for(const u of overlapping){const dest=shovePoint(s,c.x,c.y,d.size);if(!dest)return false;shoves.push({e:u,...dest});}
@@ -141,7 +150,7 @@ function walkTo(e:Entity,x:number,y:number):void{
  if(dx!==0||dy!==0)e.facing=(Math.round(Math.atan2(dy,dx)/(Math.PI/4))+8)%8;
  e.x=x;e.y=y;e.animation='walk';
 }
-function upgradeFactor(s:GameState,e:Entity,effect:'gather'|'speed'):number{
+function upgradeFactor(s:GameState,e:Entity,effect:'gather'|'speed'|'damage'):number{
  let factor=1;for(const id of s.players[e.side].upgrades){const u=UPGRADES[id];if(u.appliesTo===e.role)factor*=u.effects[effect]??1;}return factor;
 }
 function movementSpeed(s:GameState,e:Entity):number{
@@ -165,8 +174,8 @@ function move(s:GameState,e:Entity,to:Vec,dt:number,reach=.45):boolean{
 function emplaced(s:GameState,e:Entity):boolean{return e.entrenchedAt!==undefined&&s.time-e.entrenchedAt>=3;}
 function weaponRange(s:GameState,e:Entity):number{return e.kind==='building'?7:unitDef(s,e).range+(emplaced(s,e)&&e.role==='special'?3:0);}
 function damage(s:GameState,a:Entity,b:Entity):void{
- const d=a.kind==='unit'?unitDef(s,a):null;const armor=(b.kind==='unit'?unitDef(s,b).armor:3)+(emplaced(s,b)?2:0);
- const base=d?.damage??19;const bonus=d?.ability==='momentum'?1+a.momentum*.40:emplaced(s,a)?1.15:1;const hit=Math.max(1,base*bonus*(b.kind==='building'?(d?.buildingDamageMultiplier??1):1)-armor)*(a.illusion?.25:1);
+ const d=a.kind==='unit'?unitDef(s,a):null;const armor=(b.kind==='unit'?unitDef(s,b).armor:3)+(emplaced(s,b)?2:0)+s.players[b.side].upgrades.reduce((sum,id)=>sum+(UPGRADES[id].appliesTo===b.role?(UPGRADES[id].effects.armor??0):0),0);
+ const base=d?d.damage*upgradeFactor(s,a,'damage'):19;const bonus=d?.ability==='momentum'?1+a.momentum*.40:emplaced(s,a)?1.15:1;const hit=Math.max(1,base*bonus*(b.kind==='building'?(d?.buildingDamageMultiplier??1):(d?.bonusAgainst?.[b.role as UnitRole]??1))-armor)*(a.illusion?.25:1);
  a.cooldown=(d?.cooldown??1.4)/(d?.ability==='momentum'?1+a.momentum*.15:1);if(d?.ability==='momentum')a.momentum=Math.min(1,a.momentum+.15);a.animation='attack';a.animTime=0;const event=emit(s,'attack',a,b.id);runtime(s).hits.push({source:a,target:b,amount:hit,event});
 }
 function die(s:GameState,e:Entity):void{if(e.kind==='building')refundQueue(s,e);if(e.kind==='unit'&&!e.illusion&&!e.raised)s.corpses.push({id:e.id,x:e.x,y:e.y,expires:s.time+45});e.hp=0;e.animation='death';e.animTime=0;e.order={type:'idle'};e.path=[];emit(s,'death',e);}
@@ -236,7 +245,7 @@ export function stepGame(s:GameState,dt:number):void{
 /** AI issues exactly the commands accepted for humans, using current visibility only. */
 export function runAI(s:GameState,side:Side=1):void{
  if(isGameOver(s))return;const owned=s.entities.filter(e=>e.side===side&&alive(e)),workers=owned.filter(e=>e.kind==='unit'&&e.role==='worker'),buildings=owned.filter(e=>e.kind==='building'),hq=buildings.find(e=>e.role==='hq');if(!hq)return;
- const f=FACTIONS[s.players[side].faction],p=s.players[side];
+ const f=FACTIONS[s.players[side].faction],p=s.players[side],age=playerAge(p);
  const available=s.resources.filter(n=>n.amount>0&&isVisible(s,side,n.x,n.y));
  const wantCrystal=buildings.some(b=>b.role==='barracks')&&available.some(n=>n.kind==='crystal')?(p.crystal<40?2:p.crystal<100?1:0):0;
  const desired={wood:Math.max(1,Math.ceil((workers.length-wantCrystal)*.6)),ore:Math.max(1,workers.length-wantCrystal-Math.ceil((workers.length-wantCrystal)*.6)),crystal:wantCrystal};
@@ -257,19 +266,44 @@ export function runAI(s:GameState,side:Side=1):void{
   const builder=workers.filter(w=>w.order.type==='idle'||w.order.type==='gather').sort((a,b)=>distance(a,site)-distance(b,site))[0];
   if(builder)issueCommand(s,side,{type:'repair',ids:[builder.id],target:site.id});
  }
- if(workers.length+ hq.queue.filter(r=>r==='worker').length<9&&hq.queue.length<2)issueCommand(s,side,{type:'train',id:hq.id,role:'worker'});
- if(hq.progress===1&&!hq.research&&workers.length>=7)for(const id of Object.keys(UPGRADES) as UpgradeId[]){const u=UPGRADES[id];if(u.building==='hq'&&!p.upgrades.includes(id)&&p.wood>=u.cost.wood+120&&p.ore>=u.cost.ore+80&&p.crystal>=u.cost.crystal){issueCommand(s,side,{type:'research',id:hq.id,upgrade:id});break;}}
- const queued=reserved(s,side);let buildRole:BuildingRole|undefined;
- if(!buildings.some(b=>b.role==='barracks'))buildRole='barracks';else if(p.cap-p.population-queued<5&&p.cap<100&&!buildings.some(b=>b.role==='depot'&&b.progress<1))buildRole='depot';else if(s.time>100&&!buildings.some(b=>b.role==='tower'))buildRole='tower';else if(s.time>180&&buildings.filter(b=>b.role==='barracks').length<(s.time>420&&p.wood>500&&p.ore>180?3:2))buildRole='barracks';
- if(buildRole&&!workers.some(e=>e.order.type==='build')){const builder=workers[0];if(builder){const dir=side===0?1:-1;let placed=false;for(let r=5;r<=10&&!placed;r+=2)for(let i=0;i<16&&!placed;i++){const angle=i*Math.PI/8;const x=hq.x+Math.round(Math.cos(angle)*r)*dir,y=hq.y+Math.round(Math.sin(angle)*r)*dir;if(canPlace(s,side,buildRole,x,y))placed=issueCommand(s,side,{type:'build',ids:[builder.id],role:buildRole,x,y});}}}
- const army=owned.filter(e=>e.kind==='unit'&&e.role!=='worker'&&!e.illusion);
- for(const b of buildings.filter(e=>e.role==='barracks'&&e.progress===1&&e.queue.length<2)){const n=army.length+b.queue.length;let role:UnitRole=n%5===4?'special':n%3===1?'ranged':'melee';
- if(f.ai.composition){
-  const planned=[...army.filter(e=>!e.raised).map(e=>e.role),...buildings.flatMap(e=>e.queue).filter(r=>r!=='worker')];
-  const roles=['melee','ranged','special'] as const;
-  role=[...roles].sort((a,b)=>((planned.length+1)*f.ai.composition![b]-planned.filter(r=>r===b).length)-((planned.length+1)*f.ai.composition![a]-planned.filter(r=>r===a).length))[0];
+ if(workers.length+ hq.queue.filter(r=>r==='worker').length<(age===1?13:age===2?19:24)&&hq.queue.length<2)issueCommand(s,side,{type:'train',id:hq.id,role:'worker'});
+ if(hq.progress===1&&!hq.research&&workers.length>=7)for(const id of ['worker-harvest','worker-speed','town-age','citadel-age'] as UpgradeId[]){const u=UPGRADES[id];if(u.building==='hq'&&!researchRequirement(s,side,id)&&p.wood>=u.cost.wood+120&&p.ore>=u.cost.ore+80&&p.crystal>=u.cost.crystal){issueCommand(s,side,{type:'research',id:hq.id,upgrade:id});break;}}
+ // Claim an observed outer deposit with a new production/drop-off center.
+ if(age>=2&&workers.length>=13&&buildings.filter(b=>b.role==='hq').length<2&&!workers.some(w=>w.order.type==='build')&&p.wood>=400&&p.ore>=220){
+  const deposit=available.filter(n=>n.amount>300&&distance(n,hq)>14&&!buildings.some(b=>(b.role==='hq'||b.role==='depot')&&distance(b,n)<8)).sort((a,b)=>distance(a,hq)-distance(b,hq))[0];
+  if(deposit){const builder=workers.filter(w=>w.order.type==='gather'||w.order.type==='idle').sort((a,b)=>distance(a,deposit)-distance(b,deposit))[0];
+   if(builder){let placed=false;for(let r=4;r<=7&&!placed;r++)for(let i=0;i<12&&!placed;i++){const x=Math.floor(deposit.x+Math.cos(i*Math.PI/6)*r)+.5,y=Math.floor(deposit.y+Math.sin(i*Math.PI/6)*r)+.5;if(canPlace(s,side,'hq',x,y))placed=issueCommand(s,side,{type:'build',ids:[builder.id],role:'hq',x,y});}}
+  }
  }
- issueCommand(s,side,{type:'train',id:b.id,role});}
+ const queued=reserved(s,side);let buildRole:BuildingRole|undefined;
+ if(!buildings.some(b=>b.role==='barracks'))buildRole='barracks';else if(p.cap-p.population-queued<5&&p.cap<100&&!buildings.some(b=>b.role==='depot'&&b.progress<1))buildRole='depot';else if(s.time>100&&!buildings.some(b=>b.role==='tower'))buildRole='tower';else if(s.time>180&&buildings.filter(b=>b.role==='barracks').length<(age===3&&p.wood>700&&p.ore>300?5:(age>=2||s.time>420)&&p.wood>400?3:2))buildRole='barracks';
+ if(buildRole&&!workers.some(e=>e.order.type==='build')){const builder=workers[0];if(builder){const dir=side===0?1:-1;let placed=false;for(let r=5;r<=10&&!placed;r+=2)for(let i=0;i<16&&!placed;i++){const angle=i*Math.PI/8;const x=hq.x+Math.round(Math.cos(angle)*r)*dir,y=hq.y+Math.round(Math.sin(angle)*r)*dir;if(canPlace(s,side,buildRole,x,y))placed=issueCommand(s,side,{type:'build',ids:[builder.id],role:buildRole,x,y});}}}
+ // A short defensive screen beside the tower leaves a gate in the army's route.
+ if(age>=2&&p.wood>220&&p.ore>160&&!workers.some(w=>w.order.type==='build')){
+  const tower=buildings.find(b=>b.role==='tower'&&b.progress===1),builder=workers.find(w=>w.order.type==='gather'||w.order.type==='idle');
+  if(tower&&builder){const dir=side===0?1:-1;const slots:[BuildingRole,number,number][]=[['gate',0,3.5],['wall',-1.5,3.5],['wall',1.5,3.5],['wall',-2.5,3.5],['wall',2.5,3.5]];
+   for(const [role,dx,dy] of slots){const x=tower.x+dx*dir,y=tower.y+dy*dir;if(buildings.some(b=>Math.hypot(b.x-x,b.y-y)<.4))continue;if(canPlace(s,side,role,x,y)&&issueCommand(s,side,{type:'build',ids:[builder.id],role,x,y}))break;}
+  }
+ }
+ for(const gate of buildings.filter(b=>b.role==='gate'&&b.progress===1)){
+  const danger=s.entities.some(e=>e.side!==side&&alive(e)&&isVisible(s,side,e.x,e.y)&&distance(e,gate)<9);
+  if(!!gate.gateOpen===danger)issueCommand(s,side,{type:'toggleGate',ids:[gate.id]});
+ }
+ const army=owned.filter(e=>e.kind==='unit'&&e.role!=='worker'&&!e.illusion);
+ const visibleEnemy=s.entities.filter(e=>e.side!==side&&alive(e)&&e.kind==='unit'&&isVisible(s,side,e.x,e.y));
+ const planned=[...army.filter(e=>!e.raised).map(e=>e.role),...buildings.flatMap(e=>e.queue).filter(r=>r!=='worker')];
+ const weights:Partial<Record<UnitRole,number>>={...f.ai.composition,spear:visibleEnemy.some(e=>e.role==='cavalry')?.28:.1,cavalry:visibleEnemy.some(e=>e.role==='ranged')?.25:.16,siege:.18};
+ const roles=(Object.keys(f.units) as UnitRole[]).filter(r=>r!=='worker'&&(f.units[r].age??1)<=age);
+ for(const b of buildings.filter(e=>e.role==='barracks'&&e.progress===1)){
+  if(age>=2&&!b.research&&army.length>=5)for(const id of ['forged-weapons','tempered-armor','veteran-arms'] as UpgradeId[]){const d=UPGRADES[id];if(!researchRequirement(s,side,id)&&p.wood>d.cost.wood+180&&p.ore>d.cost.ore+120){issueCommand(s,side,{type:'research',id:b.id,upgrade:id});break;}}
+  if(b.queue.length>=2)continue;
+  // Maintain a small defensive force, then save enough to advance.
+  const nextAge:UpgradeId|undefined=age===1?'town-age':age===2?'citadel-age':undefined;
+  if(nextAge&&army.length>=7&&!hq.research&&s.time>(age===1?150:380)&&!visibleEnemy.some(e=>distance(e,hq)<14)&&p.wood<UPGRADES[nextAge].cost.wood+120)continue;
+  const total=roles.reduce((n,r)=>n+(weights[r]??.1),0);
+  const role=[...roles].sort((a,b)=>((planned.length+1)*(weights[b]??.1)/total-planned.filter(r=>r===b).length)-((planned.length+1)*(weights[a]??.1)/total-planned.filter(r=>r===a).length))[0];
+  if(issueCommand(s,side,{type:'train',id:b.id,role}))planned.push(role);
+ }
  // Emplace within firing distance, and pack up when the position has no targets.
  for(const unit of army.filter(e=>unitDef(s,e).ability==='entrench')){
  const target=enemy(s,unit,unitDef(s,unit).range+(unit.role==='special'?3:0),true);
@@ -277,8 +311,28 @@ export function runAI(s:GameState,side:Side=1):void{
  else if(!target&&unit.entrenchedAt!==undefined)issueCommand(s,side,{type:'ability',ids:[unit.id]});
  }
  const seen=s.entities.filter(e=>e.side!==side&&alive(e)&&isVisible(s,side,e.x,e.y));const threat=seen.find(e=>distance(e,hq)<12);const rt=runtime(s);
+ const remembered=rt.knownEnemyBuildings[side];
+ for(const [id,point] of remembered)if(isVisible(s,side,point.x,point.y)&&!seen.some(e=>e.id===id))remembered.delete(id);
+ for(const e of seen)if(e.kind==='building')remembered.set(e.id,{x:e.x,y:e.y,role:e.role});
+ const enemyStart=s.starts[side===0?1:0];if(isVisible(s,side,enemyStart.x,enemyStart.y)&&!seen.some(e=>e.role==='hq'&&distance(e,enemyStart)<4))rt.enemyStartCleared[side]=true;
+
+ if(age>=2&&(s.mapSize==='large'||s.mapSize==='huge')&&!rt.expansionScoutDispatched[side]&&army.length>=3){
+  const scout=army.find(e=>e.role==='cavalry')??army.find(e=>e.role==='melee');
+  const x=Math.floor(s.width*.23)+.5,y=Math.floor(s.height*.58)+.5;
+  if(scout&&issueCommand(s,side,{type:'move',ids:[scout.id],x:side===0?x:s.width-x,y:side===0?y:s.height-y})){rt.expansionScout[side]=scout.id;rt.expansionScoutDispatched[side]=true;}
+ }
+ if(rt.expansionScout[side]!==null&&!army.some(e=>e.id===rt.expansionScout[side]&&e.order.type==='move'))rt.expansionScout[side]=null;
+
  if(threat){const ready=army.filter(e=>e.order.type!=='attack'&&e.entrenchedAt===undefined);if(ready.length)issueCommand(s,side,{type:'attackMove',ids:ready.map(e=>e.id),x:threat.x,y:threat.y});}
  else if(army.length>=f.ai.armySize&&s.time-rt.aiWave[side]>Math.max(25,65/f.ai.aggression)){
- const target=seen.find(e=>e.kind==='building'&&e.role==='hq')??seen[0];const destination=target??s.starts[side===0?1:0];issueCommand(s,side,{type:'attackMove',ids:army.filter(e=>e.entrenchedAt===undefined).map(e=>e.id),x:destination.x,y:destination.y});rt.aiWave[side]=s.time;
+ const target=seen.find(e=>e.kind==='building'&&e.role==='hq')??[...remembered.values()].find(e=>e.role==='hq')??seen[0]??[...remembered.values()][0];
+ let destination:Vec=target??s.starts[side===0?1:0];
+ if(!target&&rt.enemyStartCleared[side]){
+  // Search the fog after clearing the known enemy base. Never inspect hidden HQs.
+  const origin=army[0],candidates:Vec[]=[];
+  for(let y=4.5;y<s.height-3;y+=6)for(let x=4.5;x<s.width-3;x+=6)if(!isVisible(s,side,x,y)&&!rt.searched[side].has(Math.floor(y)*s.width+Math.floor(x)))candidates.push({x,y});
+  if(candidates.length){destination=candidates.sort((a,b)=>distance(origin,a)-distance(origin,b))[0];rt.searched[side].add(Math.floor(destination.y)*s.width+Math.floor(destination.x));}else rt.searched[side].clear();
+ }
+issueCommand(s,side,{type:'attackMove',ids:army.filter(e=>e.entrenchedAt===undefined&&e.id!==rt.expansionScout[side]).map(e=>e.id),x:destination.x,y:destination.y});rt.aiWave[side]=s.time;
  }else if(!rt.initialScoutDispatched[side]&&s.time>65&&army.length&&army.every(e=>e.order.type==='idle')){const scout=army[0];if(issueCommand(s,side,{type:'attackMove',ids:[scout.id],x:hq.x+(s.starts[side===0?1:0].x-hq.x)*.7,y:hq.y+(s.starts[side===0?1:0].y-hq.y)*.7}))rt.initialScoutDispatched[side]=true;}
 }

@@ -37,7 +37,7 @@ fail() { printf 'Asset generation failed: %s\n' "$1" >&2; exit 1; }
 command -v flock >/dev/null 2>&1 || fail 'flock is missing; install util-linux before running this script.'
 if [[ "$pack_only" == false ]]; then
   command -v blender >/dev/null 2>&1 || fail 'Blender is missing from PATH.'
-  for generator in environment buildings units expansion world_expansion ui_orders; do
+  for generator in environment buildings units expansion world_expansion ui_orders progression fortifications; do
     [[ -f "art/blender/$generator.py" ]] || fail "Missing art/blender/$generator.py."
   done
   [[ -f art/blender/common.py ]] || fail 'Missing art/blender/common.py.'
@@ -54,7 +54,7 @@ trap 'printf "Asset generation stopped at line %s; inspect %s.\n" "$LINENO" "$lo
 
 if [[ "$pack_only" == false ]]; then
   blender --version | tee "$log_dir/blender-version.log"
-  for generator in environment buildings units expansion world_expansion ui_orders; do
+  for generator in environment buildings units expansion world_expansion ui_orders progression fortifications; do
     printf 'Generating %s assets...\n' "$generator"
     blender --background --factory-startup --python-exit-code 1 \
       --python "art/blender/$generator.py" -- --all 2>&1 | tee "$log_dir/$generator.log"
