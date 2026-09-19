@@ -37,9 +37,43 @@ with tempfile.TemporaryDirectory(prefix='ovf-packer-') as temp:
                 assert alpha==original.getpixel((x,y))[3],f'Alpha hit coordinate changed {name}/{x}/{y}'
                 if alpha:
                     assert (offset['x']-anchor[0]+cx,offset['y']-anchor[1]+cy)==(x-anchor[0],y-anchor[1])
+    # Targeted packing preserves unrelated records, pages and portraits, even
+    # when the checkout has no raw exports for those unchanged assets.
+    manifest_path=root/'out/manifest.json'
+    baseline=json.loads(manifest_path.read_text())
+    baseline['assets']['untouched']={'kind':'unit','pages':['untouched-0']}
+    baseline['atlases'].append({'key':'untouched-0','image':'/assets/untouched-0.png','data':'/assets/untouched-0.json'})
+    baseline['portraits']={'fairies':'/assets/portrait-fairies.png'}
+    baseline['assets']['grass']={'kind':'environment','image':'/assets/grass.png'}
+    manifest_path.write_text(json.dumps(baseline))
+    untouched=root/'out/untouched-0.png';untouched.write_bytes(b'untouched page sentinel')
+    before={p.name:p.read_bytes() for p in (root/'out').iterdir()}
+    with Image.open(asset/'idle-0-00.png') as image:
+        replacement=image.convert('RGBA');replacement.putpixel((6,7),(255,1,23,255));replacement.save(asset/'idle-0-00.png')
+    revised=pack(root/'raw',root/'out',asset_ids=['test-unit'])
+    assert revised==baseline
+    assert (root/'out/test-unit-0.png').read_bytes()!=before['test-unit-0.png']
+    record=json.loads((root/'out/test-unit-0.json').read_text())['frames']['test-unit/idle/0/0']
+    r,offset=record['frame'],record['spriteSourceSize']
+    with Image.open(root/'out/test-unit-0.png') as image:
+        assert image.getpixel((r['x']+6-offset['x'],r['y']+7-offset['y']))==(255,1,23,255)
+    assert untouched.read_bytes()==before[untouched.name]
+    assert len({p['key'] for p in revised['atlases']})==len(revised['atlases'])
+    for missing in (['not-rendered'],[]):
+        snapshot=manifest_path.read_bytes()
+        try:pack(root/'raw',root/'out',asset_ids=missing)
+        except ValueError:pass
+        else:raise AssertionError('missing targeted metadata accepted')
+        assert manifest_path.read_bytes()==snapshot
+    print('PASS: targeted replacement preserves unrelated assets, page order, portraits and bytes; rejects unknown and empty selections')
     # Missing frames must fail, not produce a partial final asset silently.
     (asset/'idle-7-01.png').unlink()
     try:pack(root/'raw',root/'bad-output')
     except FileNotFoundError:pass
     else:raise AssertionError('missing frame accepted')
+    snapshot={p.name:p.read_bytes() for p in (root/'out').iterdir()}
+    try:pack(root/'raw',root/'out',asset_ids=['test-unit'])
+    except FileNotFoundError:pass
+    else:raise AssertionError('missing targeted frame accepted')
+    assert {p.name:p.read_bytes() for p in (root/'out').iterdir()}==snapshot
     print('PASS: 16 trimmed frames reconstruct exact RGBA pixels; source dimensions, anchors, alpha hit coordinates, faint edges, and missing-frame rejection preserved')

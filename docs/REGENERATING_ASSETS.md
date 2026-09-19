@@ -52,11 +52,11 @@ Environment supports `--all`, `--sample` and `--asset`. Buildings also supports 
 
 ## Expected size and verification limits
 
-The current export contains 24 units in eight directions, with four idle, eight walk, six attack and six death frames per direction. That is 4,608 unit PNGs. Twenty-four buildings have one idle, three construction and one death frame, adding 120 PNGs. Twenty-two static environment images bring the total to 4,750 raw images and 70 editable scenes. Temporary supersampled PNGs are removed after successful renders.
+The current export contains 42 units in eight directions, with four idle, eight walk, six attack and six death frames per direction. That is 8,064 unit PNGs. Thirty-six buildings have one idle, three construction and one death frame; the six gates also have an open frame, giving 186 building PNGs. Twenty-two static environment images bring the total to 8,272 raw images and 100 editable gameplay scenes. Temporary supersampled PNGs are removed after successful renders.
 
-The packed manifest contains 70 assets, 4,728 animation frames and 72 atlas pages. The complete atlas set decodes to 737.90 MiB before environment textures, render targets and other GPU overhead. A match loads only its participating factions, including one copy for a mirror match. The browser QA record reports the pages and decoded atlas size loaded for that match. These pixel counts are not a measurement of total process or GPU memory.
+The packed manifest contains 100 assets, 8,250 animation frames and 138 atlas pages. The complete atlas set decodes to 1,448.63 MiB before environment textures, render targets and other GPU overhead. A match loads only its participating factions, including one copy for a mirror match. The browser QA record reports the pages and decoded atlas size loaded for that match. These pixel counts are not a measurement of total process or GPU memory.
 
-The validator checks required IDs, frame coverage, atlas bounds, nonempty alpha, changing frames for multi-frame animations, faction portraits and selection artwork for all 48 unit/building types. Visual review and browser play remain necessary to check direction, animation timing, readability and frame rate.
+The validator checks required IDs, frame coverage, atlas bounds, nonempty alpha, changing frames for multi-frame animations, faction portraits and selection artwork for all 78 unit/building types. Visual review and browser play remain necessary to check direction, animation timing, readability and frame rate.
 
 The original two-faction full-wrapper reproduction is retained in [historical asset reproduction evidence](evidence/ASSET_REPRODUCTION.md). The six-faction expansion rendered the new production set with `world_expansion.py --all`, then ran the pack-and-validation wrapper. It did not rerender every unchanged earlier faction during this expansion. Repeated Blender renders need not be byte-identical.
 
@@ -88,3 +88,29 @@ The HUD reuses `selection-*.png` and `portrait-*.png` from the existing Blender 
 `art/blender/fortifications.py --all` renders walls and gates for all six factions. `--asset orc-gate` targets one building. Gates include a separate `open` animation with a raised portcullis. Editable scenes are saved alongside the existing scenes.
 
 The main `scripts/generate_assets.sh` includes both generators. After rendering, use `.venv/bin/python scripts/progression/check_frames.py` to check every new unit frame for clipping, then run the normal packer and validator. The validator requires all seven unit roles, all six building roles, and the gate-open animation.
+
+### Faction-specific progression models
+
+`progression_models.py` builds all 18 progression units using the original faction bodies and palettes. Orcs ride tusked boars; Fairies ride antlered white stags; Dwarves ride curled-horn mountain rams; Undead ride skeletal horses; Tideborn ride shell crabs; Automata use four-legged Striders. The siege models use faction construction: iron-plated timber, a living-wood trebuchet, a riveted stone thrower, a coffin-and-bone catapult, a crab-mounted coral mangonel, and a crystal accelerator on six articulated legs. Pike troops retain their faction anatomy and carry distinct polearms and shields.
+
+For a targeted revision, render complete units, then pass their IDs to the packer. `--assets` requires an existing runtime manifest and preserves unrelated atlas pages, environment records, and portraits. It does not require raw exports for unchanged assets. Omit `--resume` after changing models or animation. `--states death` (or several state names) limits a targeted render to those animation states; use it only when geometry is unchanged and the remaining frames already match the current source.
+
+```sh
+blender --background --factory-startup --python-exit-code 1 \
+  --python art/blender/progression.py -- --asset fairy-cavalry
+.venv/bin/python scripts/pack_assets.py --assets fairy-cavalry
+.venv/bin/python scripts/validate_assets.py
+```
+
+For the complete progression roster, render `progression.py --all` and pack the 18 IDs:
+
+```sh
+.venv/bin/python scripts/pack_assets.py --assets \
+  {orc,fairy,dwarf,undead,tideborn,automata}-{spear,cavalry,siege}
+.venv/bin/python scripts/progression/check_frames.py --packed
+.venv/bin/python scripts/progression/review_assets.py
+.venv/bin/python scripts/check_asset_packer.py
+.venv/bin/python scripts/validate_assets.py
+```
+
+The review script writes a lineup, pose sheets, and animated GIFs under `work/faction-assets/review/`. Run the Vite development server and open `/scripts/progression/art-review.html?faction=fairies` to inspect the production atlases through `ArtRuntime`. Its faction selector covers all six factions; animation and frame controls show all eight directions. The page checks every progression frame's runtime lookup, anchor, and alpha hit test, and displays the actual selection portraits. This is a rendering fixture, not a gameplay or balance test. `progression.py --all --models-only` refreshes editable scenes and their four sets of named actions without touching rendered PNGs; it does not replace rendering after a geometry change.

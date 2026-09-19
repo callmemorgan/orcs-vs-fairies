@@ -1,0 +1,27 @@
+
+> orcs-vs-fairies@0.1.0 test
+> vitest run
+
+
+ RUN  v4.1.11 /home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c
+
+ ❯ tests/tideborn-automata.test.ts (8 tests | 2 failed) 11155ms
+   × tideborn AI gathers crystal and recruits its full roster 5727ms
+   × automata AI gathers crystal and recruits its full roster 5173ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/tideborn-automata.test.ts > tideborn AI gathers crystal and recruits its full roster
+ FAIL  tests/tideborn-automata.test.ts > automata AI gathers crystal and recruits its full roster
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/tideborn-automata.test.ts:32:47
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed | 15 passed (16)
+      Tests  2 failed | 237 passed (239)
+   Start at  15:51:23
+   Duration  318.90s (transform 1.16s, setup 0ms, import 2.03s, tests 338.68s, environment 422ms)

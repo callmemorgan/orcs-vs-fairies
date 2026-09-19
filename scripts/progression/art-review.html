@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Faction unit art review</title>
+<style>
+body{margin:0;background:#202d29;color:#eee5cc;font:15px system-ui}header{padding:16px 24px;background:#15211e}h1{font-size:20px;margin:0 0 8px}p{margin:8px 0;color:#bfc8bb}label{margin-right:18px}select,button,input{font:inherit}select,button{padding:5px 8px;background:#34463d;color:#eee5cc;border:1px solid #758477}#status{font:13px monospace}#canvas{width:1392px}canvas{display:block}#portraits{display:flex;gap:24px;padding:16px 24px}figure{margin:0;text-align:center;width:160px}figure img{height:100px;object-fit:contain;image-rendering:auto}figcaption{margin-top:6px}
+</style>
+</head>
+<body>
+<header>
+<h1>Faction unit art review</h1>
+<p>Production atlases rendered through the game's ArtRuntime. Eight directions per row; pikes, cavalry, then siege. This is an art fixture, not a match.</p>
+<label>Faction <select id="faction"><option>orcs</option><option>fairies</option><option>dwarves</option><option>undead</option><option>tideborn</option><option>automata</option></select></label>
+<label>Animation <select id="animation"><option>idle</option><option>walk</option><option>attack</option><option>death</option></select></label>
+<label>Frame <input id="frame" type="range" min="0" max="3" value="0"><output id="frame-value">0</output></label>
+<label><input id="playing" type="checkbox"> Play</label>
+<p id="status">Loading faction atlases…</p>
+</header>
+<div id="canvas"></div><div id="portraits"></div>
+<script type="module" src="./art-review.ts"></script>
+</body></html>
