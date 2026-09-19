@@ -5,12 +5,12 @@ from pathlib import Path
 from PIL import Image
 
 ROOT=Path(__file__).resolve().parents[1]
-def pack_portraits(source:Path,out:Path,kinds=('units',)):
+def pack_portraits(source:Path,out:Path,kinds=('units',),asset_ids=None):
     # Selection portraits are crops of Blender renders, never concept-art substitutes.
     portraits={}
     for faction,unit in {'orcs':'orc-melee','fairies':'fairy-special','dwarves':'dwarf-melee','undead':'undead-special','tideborn':'tideborn-special','automata':'automata-special'}.items():
         path=source/'units'/unit/'idle-0-00.png'
-        if 'units' not in kinds or not path.exists():continue
+        if 'units' not in kinds or not path.exists() or (asset_ids is not None and unit not in asset_ids):continue
         with Image.open(path) as im:
             im=im.convert('RGBA');bounds=im.getchannel('A').getbbox()
             if not bounds:raise ValueError(f'Empty portrait source: {path}')
@@ -20,19 +20,33 @@ def pack_portraits(source:Path,out:Path,kinds=('units',)):
     for kind in ('units','buildings'):
         if kind not in kinds:continue
         for path in sorted((source/kind).glob('*/idle-0-00.png')):
+            if asset_ids is not None and path.parent.name not in asset_ids:continue
             with Image.open(path) as im:
                 im=im.convert('RGBA');bounds=im.getchannel('A').getbbox()
                 if not bounds:raise ValueError(f'Empty selection portrait: {path}')
                 im=im.crop(bounds);im.thumbnail((128,128));im.save(out/f'selection-{path.parent.name}.png',optimize=True)
     return portraits
 
-def pack(source:Path,out:Path,kinds=('units','buildings','environment')):
+def pack(source:Path,out:Path,kinds=('units','buildings','environment'),asset_ids=None):
     out.mkdir(parents=True,exist_ok=True)
     manifest={'schemaVersion':1,'projection':{'tileWidth':64,'tileHeight':32},'atlases':[], 'assets':{}}
+    if asset_ids is not None:
+        asset_ids=set(asset_ids)
+        if not asset_ids:raise ValueError('Select at least one actor asset')
+        available={p.parent.name for kind in ('units','buildings') if kind in kinds for p in (source/kind).glob('*/meta.json')}
+        if asset_ids-available:raise ValueError(f'Missing actor metadata: {sorted(asset_ids-available)}')
+        # A targeted export must preserve the rest of the complete runtime manifest.
+        manifest=json.loads((out/'manifest.json').read_text())
+        atlas_order={page['key']:i for i,page in enumerate(manifest['atlases'])}
+        old_pages={page for aid in asset_ids for page in manifest['assets'].get(aid,{}).get('pages',[])}
+        manifest['atlases']=[page for page in manifest['atlases'] if page['key'] not in old_pages]
     for kind in ('units','buildings'):
         if kind not in kinds:continue
         for meta_path in sorted((source/kind).glob('*/meta.json')):
-            meta=json.loads(meta_path.read_text());asset=meta['id'];w,h=meta['width'],meta['height'];anchor=meta['anchor']
+            if asset_ids is not None and meta_path.parent.name not in asset_ids:continue
+            meta=json.loads(meta_path.read_text());asset=meta['id']
+            if asset!=meta_path.parent.name:raise ValueError(f'Asset ID does not match its directory: {meta_path}')
+            w,h=meta['width'],meta['height'];anchor=meta['anchor']
             files=[];animations={};visual_top=h
             for state,info in meta['animations'].items():
                 directions=8 if meta['kind']=='unit' else 1
@@ -71,7 +85,7 @@ def pack(source:Path,out:Path,kinds=('units','buildings','environment')):
                 manifest['atlases'].append({'key':page,'image':f'/assets/{page}.png','data':f'/assets/{page}.json'})
             manifest['assets'][asset]={'kind':meta['kind'],'width':w,'height':h,'anchor':anchor,'visualTop':visual_top,'pages':pages,'animations':animations}
     env=source/'environment'/'manifest.json'
-    if 'environment' in kinds and env.exists():
+    if asset_ids is None and 'environment' in kinds and env.exists():
         data=json.loads(env.read_text());entries=data.get('assets',data) if isinstance(data,dict) else data
         if isinstance(entries,dict):entries=[dict(v,id=k) for k,v in entries.items()]
         for item in entries:
@@ -80,9 +94,10 @@ def pack(source:Path,out:Path,kinds=('units','buildings','environment')):
                 if im.size!=(item['width'],item['height']):raise ValueError(f'{path} wrong dimensions')
                 im.convert('RGBA').save(out/filename,optimize=True)
             manifest['assets'][item['id']]={**item,'kind':'environment','image':f'/assets/{filename}'}
-    manifest['portraits']=pack_portraits(source,out,kinds)
+    manifest.setdefault('portraits',{}).update(pack_portraits(source,out,kinds,asset_ids))
+    if asset_ids is not None:manifest['atlases'].sort(key=lambda page:atlas_order.get(page['key'],len(atlas_order)))
     (out/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
     print(json.dumps({'assets':len(manifest['assets']),'atlasPages':len(manifest['atlases']),'output':str(out)}))
     return manifest
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--source',type=Path,default=ROOT/'art/blender/raw');p.add_argument('--out',type=Path,default=ROOT/'public/assets');p.add_argument('--kinds',nargs='+',choices=['units','buildings','environment'],default=['units','buildings','environment']);a=p.parse_args();pack(a.source,a.out,a.kinds)
+    p=argparse.ArgumentParser();p.add_argument('--source',type=Path,default=ROOT/'art/blender/raw');p.add_argument('--out',type=Path,default=ROOT/'public/assets');p.add_argument('--kinds',nargs='+',choices=['units','buildings','environment'],default=['units','buildings','environment']);p.add_argument('--assets',nargs='+',help='Replace only these actor IDs in an existing complete manifest');a=p.parse_args();pack(a.source,a.out,a.kinds,a.assets)
