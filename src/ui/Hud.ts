@@ -127,7 +127,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
       if(groupHost.dataset.key!==groupKey){groupHost.dataset.key=groupKey;groupHost.replaceChildren();for(const [key,ids] of Object.entries(groups)){if(!ids.length)continue;const button=document.createElement('button');button.className='group-shortcut';button.dataset.group=key;button.setAttribute('aria-label',`Recall group ${key}`);button.dataset.tooltip=`<h3>Control group ${key}</h3><p>${ids.length} ${ids.length===1?'unit':'units'} • Click or press ${key} to recall. Ctrl + ${key} replaces this group with your selection.</p>`;button.innerHTML=`<kbd>${key}</kbd><span>${ids.length}</span>`;button.addEventListener('click',()=>callbacks?.recallGroup(key));groupHost.append(button);}}
       for(const button of Array.from(groupHost.querySelectorAll<HTMLElement>('[data-group]'))){const ids=groups[button.dataset.group!]??[];button.classList.toggle('active',ids.length===selected.length&&ids.every(id=>selected.includes(id)));}
 
-      setText('#selection-description',entityDef?.description??'');
+      setText('#selection-description',entityDef?.description??'');el('#selection-description').hidden=!entityDef?.description;
       el('#portrait').dataset.tooltip=entityDef?`<h3>${escape(entityDef.name)}</h3><p>${escape(entityDef.description)}</p>${first?.kind==='building'&&(first.role==='hq'||first.role==='barracks')?'<p>Right-click open ground to set a rally point for new units.</p>':''}`:'<h3>Select a unit</h3><p>Click a unit or drag across your army. Shift adds to your selection. F2 selects combat units.</p>';
       el('#portrait').tabIndex=0;
       const stats=el('#selection-stats');

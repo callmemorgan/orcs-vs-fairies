@@ -46,6 +46,7 @@ export default class GameScene extends Phaser.Scene {
   private markers:{x:number;y:number;born:number;attack:boolean}[]=[];
   constructor(options:Options) {super({key:'world'});this.options=options;this.state=options.state;}
   private get pixelDensity(){return this.options.pixelDensity??1;}
+  private get dragThreshold(){return 6*this.pixelDensity;}
   preload(){this.art=new ArtRuntime(this,new URLSearchParams(location.search).get('art')!=='placeholder');this.art.preload(this.state.players.map(p=>p.faction));}
   create() {
     this.audio=new GameAudio();
@@ -85,7 +86,7 @@ export default class GameScene extends Phaser.Scene {
       }
       if(this.attackMode){this.attackMode=false;this.order(p,true);return;}
       let ids:number[]=[];
-      if(Math.hypot(p.x-drag.x,p.y-drag.y)>6*this.pixelDensity){
+      if(Math.hypot(p.x-drag.x,p.y-drag.y)>this.dragThreshold){
         const x1=Math.min(drag.wx,world.x),x2=Math.max(drag.wx,world.x),y1=Math.min(drag.wy,world.y),y2=Math.max(drag.wy,world.y);
         ids=this.state.entities.filter(e=>{const q=project(e.x,e.y);return e.side===0&&e.kind==='unit'&&e.hp>0&&q.x>=x1&&q.x<=x2&&q.y>=y1&&q.y<=y2;}).map(e=>e.id);
       } else {const hit=this.hit(world.x,world.y);if(hit?.side===0)ids=[hit.id];}
@@ -104,7 +105,7 @@ export default class GameScene extends Phaser.Scene {
     this.options.onReady?.();
   }
   public controlGroups(){return Object.fromEntries(Object.entries(this.groups).map(([key,ids])=>[key,ids.filter(id=>this.state.entities.some(e=>e.id===id&&e.hp>0))]));}
-  public recallGroup(key:string){const ids=this.controlGroups()[key];if(ids)this.select(ids);}
+  public recallGroup(key:string){const ids=this.controlGroups()[key];if(ids?.length)this.select(ids);}
   public selectEntities(ids:number[]){this.select(ids.filter(id=>this.state.entities.some(e=>e.id===id&&e.hp>0&&this.visible(e))));}
   public beginAttackMove(){if(this.paused||this.state.winner!==null||this.state.draw||!this.selected.length)return;this.attackMode=true;this.buildRole=null;this.options.onNotice('Attack move: click a destination.');}
   public setBuildRole(role:BuildingRole|null){this.buildRole=role;this.attackMode=false;}
@@ -136,7 +137,7 @@ export default class GameScene extends Phaser.Scene {
     if(/^Digit[0-9]$/.test(e.code)){
       e.preventDefault();const n=e.code.slice(-1);
       if(e.ctrlKey||e.metaKey){this.groups[n]=[...this.selected];this.options.onNotice(`Group ${n} assigned.`);}
-      else if(this.groups[n])this.select(this.groups[n].filter(id=>this.state.entities.some(v=>v.id===id&&v.hp>0)));
+      else this.recallGroup(n);
     }
   }
   private visible(e:Entity){return e.side===0||this.state.visible[0].has(Math.floor(e.y)*this.state.width+Math.floor(e.x));}
@@ -145,11 +146,13 @@ export default class GameScene extends Phaser.Scene {
     if(this.buildRole){this.setBuildRole(null);return;}
     const world=this.cameras.main.getWorldPoint(p.x,p.y);const pos=unproject(world.x,world.y);const hit=this.hit(world.x,world.y);
     let ok=false;
-    const producers=this.state.entities.filter(e=>this.selected.includes(e.id)&&e.side===0&&e.kind==='building'&&(e.role==='hq'||e.role==='barracks'));
-    if(producers.length&&!attack){
+    const own=this.state.entities.filter(e=>this.selected.includes(e.id)&&e.side===0&&e.hp>0);
+    const producers=own.filter(e=>e.kind==='building'&&(e.role==='hq'||e.role==='barracks'));
+    if(producers.length&&!attack&&!own.some(e=>e.kind==='unit')){
       ok=issueCommand(this.state,0,{type:'setRally',ids:producers.map(e=>e.id),x:pos.x,y:pos.y});
       this.options.onNotice(ok?'Rally point set. New units will move here.':'Choose open ground for the rally point.');
-      if(!this.state.entities.some(e=>this.selected.includes(e.id)&&e.side===0&&e.kind==='unit')){if(ok)this.audio?.play('order');return;}
+      if(ok)this.audio?.play('order');
+      return;
     }
     if(hit&&hit.side===1)ok=issueCommand(this.state,0,{type:'attack',ids:this.selected,target:hit.id});
     else if(hit&&hit.side===0&&hit.kind==='building'&&hit.hp<hit.maxHp)ok=issueCommand(this.state,0,{type:'repair',ids:this.selected,target:hit.id});
@@ -309,7 +312,7 @@ export default class GameScene extends Phaser.Scene {
       g.fillStyle(0x182426,.9).fillRect(q.x-w/2-1,y-1,w+2,5);g.fillStyle(e.side===0?0xa8cc85:0xd87560).fillRect(q.x-w/2,y,w*Math.max(0,e.hp/e.maxHp),3);
       if(e.kind==='building'&&e.progress<1){g.fillStyle(0x182b2a,.8).fillRect(q.x-27,y+7,54,4);g.fillStyle(0xe4c578).fillRect(q.x-27,y+7,54*e.progress,4);}
     }
-    if(this.drag&&Math.hypot(p.x-this.drag.x,p.y-this.drag.y)>6&&!this.buildRole){g.lineStyle(1,0xe5dca6).strokeRect(this.drag.wx,this.drag.wy,world.x-this.drag.wx,world.y-this.drag.wy);g.fillStyle(0xd6e9a5,.12).fillRect(this.drag.wx,this.drag.wy,world.x-this.drag.wx,world.y-this.drag.wy);}
+    if(this.drag&&Math.hypot(p.x-this.drag.x,p.y-this.drag.y)>this.dragThreshold&&!this.buildRole){g.lineStyle(1,0xe5dca6).strokeRect(this.drag.wx,this.drag.wy,world.x-this.drag.wx,world.y-this.drag.wy);g.fillStyle(0xd6e9a5,.12).fillRect(this.drag.wx,this.drag.wy,world.x-this.drag.wx,world.y-this.drag.wy);}
     if(this.buildRole){const pos=unproject(world.x,world.y);const x=Math.floor(pos.x)+.5,y=Math.floor(pos.y)+.5,q=project(x,y);const valid=canPlace(this.state,0,this.buildRole,x,y);const size=FACTIONS[this.state.players[0].faction].buildings[this.buildRole].size;this.diamond(g,q.x,q.y,size*64,size*32,valid?0xa6d99a:0xe27964,.5);}
     for(const building of this.state.entities){
       if(building.side!==0||building.hp<=0||!building.rally||!this.selected.includes(building.id))continue;
