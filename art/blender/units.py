@@ -74,6 +74,9 @@ def make_orc(asset,m):
             panel=profile('split red tabard',[(.14,.81),(.29,.79),(.3,.42),(.17,.47),(.10,.40)],.23,m['red']);panel.location.y=s*.18
             C.curve('tunic stitched hem',[(.31,s*.18-.09,.46),(.33,s*.18,.44),(.30,s*.18+.09,.46)],.012,m['gold'])
         C.beam('diagonal chest strap',(.25,-.30,1.3),(.28,.25,.86),.043,m['red'])
+        for j in range(6):
+            t=j/5
+            C.uv('chest strap brass stud',(.292+.03*t,-.27+.48*t,1.276-.39*t),(.016,.022,.017),m['gold'])
         for s in (-1,1):
             C.box('belt pouch',(-.05,s*.38,.77),(.2,.13,.22),m['leather'],.045)
     rig['torso']=group('POSE torso breathing',(0,0,.77),root,body)
@@ -96,9 +99,11 @@ def make_orc(asset,m):
             C.uv('shadowed eye socket',(.236,s*.13,1.703),(.035,.077,.059),m['skinShade'])
             C.uv('amber eye',(.264,s*.13,1.705),(.023,.040,.025),m['eye'])
             C.uv('slit pupil',(.283,s*.13,1.708),(.012,.013,.023),m['black'])
+            C.curve('sculpted cheek plane',[(.20,s*.21,1.65),(.27,s*.20,1.58),(.30,s*.15,1.55)],.021,m['skinLight'])
             C.beam('angry heavy brow',(.245,s*.065,1.75),(.205,s*.21,1.76),.038,m['skinLight'])
             C.curve('curved protruding tusk',[(.325,s*.15,1.43),(.40,s*.18,1.51),(.407,s*.18,1.59)],.024,m['ivory'])
-            ear=profile('long pointed ear',[(-.10,1.72),(-.22,1.86),(.06,1.78),(.06,1.61)],.09,m['skin']);ear.location.y=s*.25;ear.rotation_euler.x=s*.3
+            ear=profile('long pointed ear',[(-.10,0),(-.22,.14),(.06,.06),(.06,-.11)],.09,m['skin'])
+            ear.location=(0,s*.25,1.72);ear.rotation_euler.x=-s*.3
         if asset=='orc-melee':
             loft('beveled iron helmet',[(1.74,-.03,0,.235,.245),(1.89,-.04,0,.19,.215),(2.00,-.065,0,.06,.08)],m['iron'])
             C.beam('helmet ridge',(.18,0,1.76),(.04,0,1.98),.035,m['edge'])
@@ -123,6 +128,8 @@ def make_orc(asset,m):
                 if asset!='orc-worker':
                     spike=C.cone('forged shoulder spike',(-.13+j*.14,s*.42,1.52),.06,0,.24,m['edge']);spike.rotation_euler.x=s*.3
             C.box('layered wrist bracer',(.13,s*.49,.91),(.23,.25,.14),m['iron'],.035)
+            for z in (.87,.95):
+                C.curve('bracer leather lacing',[(.255,s*.40,z),(.273,s*.49,z+.012),(.248,s*.57,z)],.010,m['gold'])
             fingerhand('clenched weapon hand',(.23,s*.49,.79),.12,m['skinLight'])
             if asset=='orc-melee' and s==1:
                 shield=C.cone('round shield dark iron rim',(.29,s*.65,.95),.36,.36,.10,m['edge'],24);shield.rotation_euler.x=math.pi/2
@@ -207,7 +214,10 @@ def make_fairy(asset,m):
             C.curve('almond eye',[(.111,s*.035,1.641),(.113,s*.071,1.647),(.096,s*.093,1.638)],.012,m['black'])
             C.uv('eye glint',(.123,s*.060,1.645),(.008,.012,.008),m['magic'])
             C.beam('arched eyebrow',(.094,s*.031,1.681),(.084,s*.096,1.681),.011,hair)
-            ear=profile('pointed elven ear',[(-.02,1.58),(-.1,1.75),(.035,1.67)],.033,m['fairSkin']);ear.location.y=s*.125;ear.rotation_euler.x=s*.5
+            # Rotate around the attachment point, not the world origin. The old
+            # absolute-height profile swung the ears away from the head.
+            ear=profile('pointed elven ear',[(-.02,-.07),(-.1,.10),(.035,.02)],.033,m['fairSkin'])
+            ear.location=(0,s*.125,1.65);ear.rotation_euler.x=-s*.5
         C.curve('rose lips',[(.113,-.029,1.532),(.126,0,1.53),(.113,.029,1.532)],.008,m['red'])
         loft('sculpted hair cap',[(1.64,-.065,0,.12,.142),(1.75,-.067,0,.11,.135),(1.81,-.065,0,.05,.078)],hair)
         for s in (-1,1):

@@ -22,6 +22,9 @@ def skull(pos,scale,m):
         C.uv('deep eye socket',(x+.16*scale,y+s*.09*scale,z+.01*scale),(.044*scale,.068*scale,.061*scale),m['black'])
         C.uv('soul eye',(x+.188*scale,y+s*.09*scale,z+.01*scale),(.016*scale,.023*scale,.020*scale),m['soul'])
     for j in range(4):C.box('separate tooth',(x+.20*scale,y+(j-1.5)*.05*scale,z-.105*scale),(.06*scale,.034*scale,.07*scale),m['bone'],.004)
+    C.mesh('triangular nasal cavity',[(x+.197*scale,y-.027*scale,z-.02*scale),(x+.21*scale,y+.027*scale,z-.02*scale),(x+.22*scale,y,z-.09*scale)],[(0,1,2)],m['black'])
+    for s in (-1,1):
+        C.curve('sculpted cheekbone',[(x+.10*scale,y+s*.17*scale,z+.04*scale),(x+.19*scale,y+s*.16*scale,z-.05*scale),(x+.13*scale,y+s*.11*scale,z-.13*scale)],.025*scale,m['bone'])
 
 def unit(asset,m):
     dwarf=asset.startswith('dwarf');role=asset.split('-')[1];root=pivot('POSE root',(0,0,0));rig={'root':root}
@@ -78,13 +81,23 @@ def unit(asset,m):
                     C.uv('dark eye',(.22,s*.11,1.24),(.03,.032,.025),m['black'])
                     C.beam('heavy brow',(.235,s*.06,1.29),(.20,s*.17,1.29),.037,m['beard'])
                 for j in range(5):
-                    C.cone('braided beard',(.32, (j-2)*.075,.98),.035,.082,.48,m['beard'],8)
+                    y=(j-2)*.075
+                    # Interwoven locks have a tapered silhouette and real relief.
+                    for strand in range(2):
+                        pts=[]
+                        for k in range(15):
+                            t=k/14;phase=t*math.pi*5+strand*math.pi;r=.025*(1-t*.6)
+                            pts.append((.32+math.cos(phase)*r,y+math.sin(phase)*r,1.20-t*.43))
+                        C.curve('interwoven beard lock',pts,.027,m['beard'])
                     C.cone('beard gold clasp',(.32,(j-2)*.075,.79),.037,.037,.055,m['brass'],8)
                 if role=='worker':
                     C.cone('leather work cap',(.01,0,1.37),.25,.19,.12,m['leather'])
                     C.uv('mining lamp',(.24,0,1.39),(.06,.08,.065),m['brass'])
                 else:
-                    C.cone('forged helmet',(-.02,0,1.38),.27,.12,.23,m['steel'],12)
+                    loft('forged domed helmet',[(1.265,-.02,0,.26,.255),(1.36,-.035,0,.25,.25),(1.47,-.04,0,.18,.21),(1.50,-.055,0,.06,.10)],m['steel'],n=20)
+                    for s in (-1,1):
+                        C.curve('helmet rolled brow',[(.23,0,1.29),(.17,s*.18,1.29),(-.05,s*.25,1.29),(-.25,s*.10,1.30)],.016,m['brass'])
+                        C.box('hinged helmet cheek',(.02,s*.24,1.23),(.17,.04,.20),m['steel'],.035)
                     C.box('helmet crest',(-.06,0,1.52),(.28,.055,.12),m['brass'])
             else:
                 skull((.01,0,1.47),1,m)
@@ -284,7 +297,7 @@ def building(asset,m,state='idle',frame=0):
     if state=='construction':
         bpy.context.view_layer.update();limit=(1.0,1.8,2.5)[frame]
         for o in bpy.context.scene.objects:
-            if o.type=='MESH' and min((o.matrix_world @ __import__('mathutils').Vector(c)).z for c in o.bound_box)>limit:o.hide_render=True
+            if o.type in ('MESH', 'CURVE') and min((o.matrix_world @ __import__('mathutils').Vector(c)).z for c in o.bound_box)>limit:o.hide_render=True
         for x in (-s,s):
             for y in (-s,s):C.beam('construction upright',(x,y,.1),(x,y,limit+.15),.04,m['wood'])
         for y in (-s,s):C.beam('construction crossbar',(-s,y,limit),(s,y,limit),.04,m['wood'])

@@ -140,6 +140,8 @@ def animal_body(faction,m):
             C.mesh('boar pointed ear',[(.38,s*.19,1.01),(.26,s*.40,1.27),(.66,s*.27,1.07)],[(0,1,2)],m['fur'])
             C.uv('boar amber eye',(.75,s*.30,.91),(.055,.025,.038),m['eye'])
             C.box('boar iron cheek plate',(.44,s*.36,.80),(.36,.075,.31),m['steel'])
+            C.curve('boar leather bridle',[(.92,s*.22,.69),(.68,s*.32,1.02),(.38,s*.30,1.01)],.025,m['cloth'])
+            C.curve('boar sculpted jowl',[(.96,s*.23,.61),(.73,s*.31,.55),(.45,s*.29,.61)],.032,m['nose'])
         for i in range(6):C.cone('boar bristle',(-.67+i*.21,0,1.19),.065,0,.29,m['dark'],5)
         C.curve('boar curled tail',[(-.84,0,.8),(-1.03,.03,.97),(-1.0,.15,1.06),(-.91,.15,.98)],.035,m['fur'])
     elif faction=='fairy':
@@ -171,6 +173,9 @@ def animal_body(faction,m):
             C.curve('ram curled horn',points,.077,m['bone'])
             C.uv('ram amber eye',(.80,s*.185,1.23),(.037,.022,.032),m['eye'])
             C.box('ram brass barding',(.04,s*.42,.84),(.67,.06,.34),m['trim'])
+            for j in range(3):
+                x=-.20+j*.19
+                C.curve('ram layered fleece lock',[(x,s*.37,.98),(x+.065,s*.435,.88),(x+.035,s*.40,.77)],.038,m['fur'])
         C.box('ram steel forehead plate',(.75,0,1.38),(.25,.29,.08),m['steel'])
     elif faction=='undead':
         C.curve('horse exposed spine',[(-.74,0,.96),(-.22,0,1.10),(.40,0,1.02),(.53,0,1.55)],.07,m['bone'])
@@ -243,6 +248,9 @@ def mechanical_legs(rig,m,count=4,wide=False):
         def leg(hip=hip,knee=knee,foot=foot):
             C.uv('bronze hip bearing',hip,(.13,.13,.13),m['bronze'])
             C.beam('exposed piston',hip,knee,.065,m['bronze'])
+            a=Vector(hip);b=Vector(knee);v=b-a
+            C.beam('telescoping piston sleeve',a+v*.08,a+v*.46,.087,m['dark'])
+            C.beam('piston retaining collar',a+v*.43,a+v*.49,.097,m['bronze'])
             C.uv('black knee bearing',knee,(.10,.10,.10),m['dark'])
             C.beam('long ceramic shin',knee,foot,.095,m['ceramic'],6)
             C.beam('brass shin rail',(knee[0]+.06,knee[1],knee[2]),(foot[0]+.06,foot[1],foot[2]),.027,m['bronze'])
@@ -386,6 +394,10 @@ def siege(faction):
             mat=m['bone'] if faction=='undead' else m['coral'] if faction=='tideborn' else m['wood']
             a=(-.81,0,h-.35);b=(.86,0,h+.36)
             C.beam('faction throwing beam',a,b,.07 if faction=='fairy' else .10,mat)
+            va,vb=Vector(a),Vector(b);delta=vb-va
+            band=m['gold'] if faction in ('orc','fairy') else m['brass'] if faction=='dwarf' else m['bone'] if faction=='undead' else m['kelp']
+            for t in (.19,.26,.66,.73):
+                C.beam('throwing arm tension binding',va+delta*(t-.013),va+delta*(t+.013),.085 if faction=='fairy' else .115,band)
             if faction=='fairy':
                 C.uv('trebuchet amber counterweight',(-.72,0,h-.28),(.24,.23,.31),m['amber'])
                 for s in (-1,1):C.curve('trebuchet vine sling',[(.84,s*.03,h+.34),(1.0,s*.15,h+.1),(1.16,s*.15,h+.12)],.022,m['leaf'])
