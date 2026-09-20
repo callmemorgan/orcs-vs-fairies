@@ -34,6 +34,9 @@ def shell(name,pos,scale,m):
         t=i/48;a=t*math.pi*4;r=(.40-.34*t)*scale
         points.append((x+(.15+.30*t)*scale,y+math.cos(a)*r,z+math.sin(a)*r))
     C.curve(name+' spiral ridge',points,.027*scale,m['shellShade'])
+    for i in range(11):
+        a=i*math.tau/11
+        C.curve(name+' radial growth ridge',[(x-.13*scale,y+math.cos(a)*.30*scale,z+math.sin(a)*.30*scale),(x+.04*scale,y+math.cos(a)*.42*scale,z+math.sin(a)*.42*scale),(x+.19*scale,y+math.cos(a)*.34*scale,z+math.sin(a)*.34*scale)],.008*scale,m['shellShade'])
 
 def coral(name,pos,h,m):
     x,y,z=pos
@@ -98,6 +101,10 @@ def unit(asset,m):
                     C.uv('ivory eye',(.22,side*.16,1.46),(.047,.052,.046),m['shell'])
                     C.uv('black pupil',(.26,side*.17,1.465),(.023,.025,.024),m['dark'])
                     fin=C.mesh('cheek fin',[(-.06,side*.19,1.43),(-.25,side*.37,1.53),(-.19,side*.32,1.25)],[(0,1,2)],m['coral'])
+                    for j in range(3):
+                        C.beam('cheek fin ray',(-.05,side*.20,1.40),(-.23,side*.35,1.28+j*.11),.009,m['shellShade'])
+                    for j in range(3):
+                        C.curve('neck gill fold',[(-.12,side*.21,1.28-j*.045),(-.02,side*.245,1.27-j*.045),(.06,side*.21,1.26-j*.045)],.012,m['seaDark'])
                 if role=='special':
                     for side in (-1,1):coral('coral antler',(-.07,side*.16,1.54),.53,m)
                 elif role=='ranged':C.mesh('tall dorsal crest',[(-.13,-.02,1.48),(-.28,-.02,1.93),(.08,-.02,1.59),(-.13,.02,1.48),(-.28,.02,1.93),(.08,.02,1.59)],[(0,1,2),(3,5,4),(0,3,4,1)],m['coral'])
@@ -106,6 +113,11 @@ def unit(asset,m):
                 C.uv('round ceramic head',(.03,0,1.28),(.22,.23,.21),m['ceramic'])
                 eye=C.cone('bronze lens rim',(.23,0,1.29),.125,.125,.06,m['bronze'],16);eye.rotation_euler.y=math.pi/2
                 C.uv('single violet lens',(.27,0,1.29),(.025,.087,.087),m['glow'])
+                for a in range(6):
+                    t=a*math.tau/6
+                    C.uv('lens bezel screw',(.269,math.cos(t)*.107,1.29+math.sin(t)*.107),(.012,.012,.012),m['ceramic'])
+                for side in (-1,1):
+                    C.curve('ceramic head panel seam',[(-.08,side*.17,1.42),(.015,side*.226,1.29),(-.08,side*.17,1.13)],.010,m['bronze'])
                 if role=='ranged':crystal('prism crest',(-.05,0,1.46),.085,.32,m)
         rig['head']=group('POSE head',(0,0,1.16),rig['body'],head)
         for side in (-1,1):
@@ -180,6 +192,14 @@ def pose(rig,asset,state,frame,count,direction=0,key=False):
         elif asset=='automata-special':rig['weapon'].scale=(1+.12*math.sin(math.pi*t),)*3
         else:rig['weapon'].location.x-=[0,.01,.14,.08,.02,0][frame]
     if state=='death':root.rotation_euler.y=-1.47*t;root.location.z=.10*t;root.location.x=.35*t*math.cos(-direction*math.pi/4);root.location.y=.35*t*math.sin(-direction*math.pi/4)
+    if state=='death' and asset=='automata-special':
+        # A broad four-legged chassis tips beyond the infantry canvas when it
+        # rotates about its feet. Keep its collapsing footprint at the anchor.
+        bpy.context.view_layer.update()
+        bounds=[o.matrix_world@Vector(c) for o in bpy.context.scene.objects if o.type in ('MESH','CURVE') for c in o.bound_box]
+        root.location.x-=(min(v.x for v in bounds)+max(v.x for v in bounds))*.5*t
+        root.location.y-=(min(v.y for v in bounds)+max(v.y for v in bounds))*.5*t
+        root.location.z-=min(0,min(v.z for v in bounds))
     if key:
         for o in rig.values():
             for prop in ('location','rotation_euler','scale'):o.keyframe_insert(data_path=prop,frame=frame+1,group=state)
@@ -273,28 +293,85 @@ def building(asset,m,state='idle',frame=0):
         for y in (-r,r):C.beam('scaffold rail',(-r,y,limit),(r,y,limit),.04,m['wood'])
 
 def environment(asset,m):
+    # Environment-only materials and forms keep the faction models unchanged.
+    import random
+    import environment as E
+    from scenery_forms import branch, blade, fissure
+    rng=random.Random(901+sum(map(ord,asset)));E.R.seed(901+sum(map(ord,asset)))
     if asset=='crystal':
-        for i in range(11):
-            a=i*2.399;r=.14+(i%3)*.20;x,y=math.cos(a)*r,math.sin(a)*r
-            C.uv('outcrop stone',(x,y,.13),(.20,.18,.16),m['rock'],8,5)
-            if i<7:crystal('resource crystal',(x,y,.12),.10+(i%2)*.045,.42+(i%3)*.22,m)
+        violet=C.material('mineral amethyst','9675cc',roughness=.28)
+        light=C.material('amethyst pale growth face','c3a4ef',roughness=.3)
+        dark=C.material('amethyst shaded face','684c99',roughness=.35)
+        for i in range(9):
+            a=i*2.399;r=.11+(i%3)*.20;x,y=math.cos(a)*r,math.sin(a)*r
+            E.rock('crystal host matrix',(x,y,0),(.24,.20,.22),m['rock'])
+            if i>6:continue
+            radius=.10+(i%2)*.045;h=.48+(i%3)*.22;verts=[]
+            for z,rr,offset in ((0,.84,0),(h*.68,1,.025),(h*.89,.56,.04),(h,0,.06)):
+                for k in range(6):
+                    angle=k*math.tau/6
+                    verts.append((math.cos(angle)*radius*rr+offset,math.sin(angle)*radius*rr,z))
+            faces=[tuple(range(5,-1,-1))]
+            for row in range(3):
+                for k in range(6):faces.append((row*6+k,row*6+(k+1)%6,(row+1)*6+(k+1)%6,(row+1)*6+k))
+            obj=C.mesh('amethyst terminated crystal',verts,faces,violet);obj.data.materials.append(light);obj.data.materials.append(dark)
+            for f in obj.data.polygons:f.material_index=(f.index+i)%3
+            obj.location=(x,y,.10);obj.rotation_euler=(math.cos(a)*.17,math.sin(a)*.17,a)
+            for band in range(2):
+                z=h*(.27+band*.16);rr=radius*(.84+.16*z/(h*.68))
+                detail=C.curve('crystal growth striation',[(math.cos(k*math.tau/6)*rr+.025*z/(h*.68),math.sin(k*math.tau/6)*rr,z) for k in range(7)],.003,light);detail.parent=obj
+        for i in range(7):
+            a=i*2.4;E.rock('amethyst fallen splinter',(math.cos(a)*.65,math.sin(a)*.54,.015),(.045,.035,.11),violet)
     elif asset=='reeds':
-        for i in range(14):
-            a=i*2.399;r=.12+(i%3)*.12;x,y=math.cos(a)*r,math.sin(a)*r;h=.38+(i%5)*.08
-            C.curve('reed blade',[(x,y,0),(x,y,h*.6),(x+.10,y+.04,h)],.012,m['reed'])
-            if i%3==0:C.cone('reed head',(x+.06,y+.02,h*.85),.025,.025,.12,m['wood'],8)
+        pale=C.material('reed fresh leaf','a0ad68');seed=C.material('cattail velvet seed head','6b4e31')
+        for i in range(13):
+            a=i*2.399;r=.10+(i%3)*.12;x,y=math.cos(a)*r,math.sin(a)*r;h=.42+(i%5)*.09
+            tip=(x+math.cos(a)*.09,y+math.sin(a)*.09,h)
+            branch('jointed reed stalk',[(x,y,0),(x+.015,y,h*.55),tip],[.012,.010,.004],m['reed'],6)
+            for side in (-1,1):
+                angle=a+side*.8
+                blade('arching reed ribbon',[(x,y,h*.18),(x+math.cos(angle)*.12,y+math.sin(angle)*.12,h*.66),(x+math.cos(angle)*.26,y+math.sin(angle)*.26,h*.54)],[.004,.025,0],pale if side==1 else m['reed'])
+            if i%3==0:
+                C.uv('cattail seed cylinder',(tip[0],tip[1],h-.025),(.028,.028,.095),seed)
+                branch('cattail dry tip',[(tip[0],tip[1],h+.055),(tip[0],tip[1],h+.12)],[.007,.002],m['wood'],6)
     else:
-        kind=asset[5:];material={'water':'water','shallows':'shallow','mud':'mud','rock':'rock','bridge':'wood'}[kind]
-        C.box('terrain tile',(0,0,-.015),(1,1,.025),m[material],0)
+        kind=asset[5:];mat={'water':'water','shallows':'shallow','mud':'mud','rock':'rock','bridge':'wood'}[kind]
+        C.box('terrain tile',(0,0,-.015),(1,1,.025),m[mat],0)
         if kind=='bridge':
-            for i in range(7):C.box('timber plank',(0,-.45+i*.15,.025),(.99,.135,.05),m['wood'],.006)
-            for x in (-.40,.40):C.beam('bridge edge beam',(x,-.5,.05),(x,.5,.05),.035,m['bronze'])
+            worn=C.material('bridge worn heartwood','96794f');iron=C.material('bridge iron nails','3c443e',metallic=.5)
+            for x in (-.34,.34):C.box('bridge supporting sleeper',(x,0,.013),(.10,1,.08),m['wood'],.01)
+            for i in range(7):
+                y=-.45+i*.15
+                C.box('individual bridge plank',(0,y,.05),(.98,.132,.046),worn if i%3 else m['wood'],.006)
+                for j in range(2):fissure('plank long grain',[(-.43,y-.03+j*.05,.075),(-.13,y-.024+j*.05,.076),(.18,y-.032+j*.05,.075),(.44,y-.027+j*.05,.075)],m['wood'],.0025)
+                for x in (-.34,.34):C.cone('square cut iron nail',(x,y,.078),.012,.012,.006,iron,4)
+                if i%3==0:fissure('split board end',[(.49,y,.077),(.38,y+.008,.077),(.29,y+.006,.077)],iron,.003)
         elif kind in ('water','shallows'):
-            for j in range(3):C.curve('water ripple',[(-.36,-.30+j*.27,.004),(-.08,-.32+j*.27,.004),(.22,-.30+j*.27,.004)],.009,m['shallow' if kind=='water' else 'shellShade'])
+            tint=C.material('water soft reflected sky','71aeb0' if kind=='water' else '93bdb2',roughness=.3)
+            # Small wave crests remain inside the tile; the base fixes the shared edge.
+            for j in range(5):
+                y=-.36+j*.18;left=-.38+(j%2)*.09
+                fissure('curved water crest',[(left,y,.003),(left+.13,y-.014,.009),(left+.30,y+.005,.006),(left+.46,y-.012,.003)],tint,.004 if j%2 else .006)
+            if kind=='shallows':
+                for i in range(9):
+                    x,y=rng.uniform(-.4,.4),rng.uniform(-.4,.4)
+                    C.uv('sand under shallows',(x,y,.001),(.025,.018,.003),m['sand'],10,6)
         elif kind=='rock':
-            for i in range(4):o=C.box('cliff slab',((i%2-.5)*.43,(i//2-.5)*.43,.06+i*.015),(.46,.45,.14+(i%2)*.06),m['rock'],.025);o.rotation_euler.z=.08*(i-1)
+            face=C.material('weathered cliff face','82908b');seam=C.material('cliff sediment seam','4a5b59')
+            for i in range(4):
+                x,y=(i%2-.5)*.43,(i//2-.5)*.43
+                o=E.rock('broken layered bedrock',(x,y,.005),(.25,.25,.15+(i%2)*.06),face if i%2 else m['rock'])
+                for z in (.055,.095):fissure('rock bedding plane',[(x-.18,y-.20,z),(x,y-.245,z+.008),(x+.17,y-.19,z)],seam,.004)
         elif kind=='mud':
-            for i in range(4):C.uv('mud puddle',((i%2-.5)*.40,(i//2-.5)*.43,.001),(.16,.10,.006),m['seaDark'],8,4)
+            rim=C.material('dry mud rims','958064');wet=C.material('wet silt','4e655a',roughness=.24)
+            for i in range(5):
+                x,y=rng.uniform(-.28,.28),rng.uniform(-.30,.30);radius=rng.uniform(.09,.17)
+                verts=[(x,y,.006)]+[(x+math.cos(a)*radius*(1+.12*math.sin(a*3)),y+math.sin(a)*radius*.58,.005) for a in [j*math.tau/14 for j in range(14)]]
+                C.mesh('irregular shallow puddle',verts,[(0,j+1,(j+1)%14+1) for j in range(14)],wet)
+                fissure('puddle silt lip',verts[1:8],rim,.006)
+            for i in range(4):
+                x,y=-.36+i*.22,-.37
+                fissure('drying mud crack',[(x,y,.003),(x+.03,y+.12,.003),(x-.025,y+.20,.003)],m['wood'],.004)
 
 def export_unit(asset,sample=False):
     C.reset_scene();rig=unit(asset,palette());w=h=192;anchor=[96,144]

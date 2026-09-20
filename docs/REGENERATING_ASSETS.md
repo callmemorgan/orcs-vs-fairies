@@ -114,3 +114,34 @@ For the complete progression roster, render `progression.py --all` and pack the 
 ```
 
 The review script writes a lineup, pose sheets, and animated GIFs under `work/faction-assets/review/`. Run the Vite development server and open `/scripts/progression/art-review.html?faction=fairies` to inspect the production atlases through `ArtRuntime`. Its faction selector covers all six factions; animation and frame controls show all eight directions. The page checks every progression frame's runtime lookup, anchor, and alpha hit test, and displays the actual selection portraits. This is a rendering fixture, not a gameplay or balance test. `progression.py --all --models-only` refreshes editable scenes and their four sets of named actions without touching rendered PNGs; it does not replace rendering after a geometry change.
+
+## Modeling refinement pass
+
+The September 2026 pass adds rolled armor borders, peened fasteners, sewn cloth edges, braided Dwarf beards and domed helmets, skull cheekbones, Tideborn gills and shell growth ridges, mount bridles, and telescoping Automata pistons. Walls and gates now use faction materials, crests, buttresses and roof silhouettes. Trees have raised leaf midribs; mineral edges and cut stumps have modeled wear and grain. The two command icons have forged thickness, edging and inset details.
+
+`common.py` finishes every generated scene through `refinement.py` before camera setup. The finish pass is idempotent and parents its additions to the original mesh in local coordinates, preserving animation pivots and construction visibility. Rounded anatomical meshes use smooth normals and denser latitude rings; explicitly faceted crystal and masonry shapes retain their faces. Surface relief, metal roughness and ceramic coatings are shared material settings. Runtime sprite dimensions, projection, anchors and animation timing remain the same.
+
+Preserve the existing `public/assets` directory before a future art pass to make a visual comparison. After a complete render and pack, run:
+
+```sh
+.venv/bin/python scripts/review_refined_assets.py --baseline work/refinement/before/assets
+```
+
+This writes before/after contact sheets for every faction, terrain and command models under `work/refinement/review/`. It also compares the inventory and animation contracts, checks every actor frame for clipping, reconstructs packed frames against the raw exports, and reports assets whose images did not change. The art-review browser page now covers all seven unit roles and all building states (1,344 unit frames and 31 building frames per faction).
+
+To inspect the saved Blender scenes and render larger model portraits, run the following after generation finishes. It checks that every unit contains its own nonempty animation actions, that finishing details remain parented, and that a second finish pass adds no geometry:
+
+```sh
+blender --background --factory-startup --python-exit-code 1 \
+  --python art/blender/review_models.py -- --portraits
+```
+
+The `--repair-actions` option removes unused actions left by older multi-asset exports. New exports clear those actions when resetting the scene. Model portraits and the inventory report go under `work/refinement/models/`; they do not replace the production sprites. The packed review also writes pose sheets and building-state sheets, including construction stages and raised gates.
+
+After those two reviews finish, `.venv/bin/python scripts/refinement_gallery.py` assembles the larger portraits and matching-scale before/after pairs into `docs/evidence/model-refinement/`. Run it again after any targeted re-export so the delivery images match the final models.
+
+## Scenery review
+
+The environment models use `scenery_forms.py` for tapered branches, folded blades, pine fans and layered oak foliage. These helpers are confined to scenery generation. `environment.py` preserves the world expansion's environment entries when updating the raw manifest, so a targeted tree export does not drop the water, crystal or reed entries.
+
+After a scenery export, run `art/blender/review_scenery.py` in background Blender to inspect all 22 saved scenes and render larger portraits. `scripts/review_scenery.py --baseline work/scenery/before` compares every environment PNG, verifies raw/runtime pixels and unchanged dimensions, and checks that all other public assets are byte-identical to the baseline hashes. The browser fixture at `/scripts/scenery/art-review.html` checks all 22 assets through `ArtRuntime` and displays a forest clearing at native sprite scale. See [the scenery review](evidence/scenery-refinement/README.md) for results and publication steps.

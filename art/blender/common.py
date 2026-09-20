@@ -5,6 +5,9 @@ from bpy_extras.object_utils import world_to_camera_view
 
 def reset_scene():
     bpy.ops.object.select_all(action='SELECT'); bpy.ops.object.delete(use_global=False)
+    # Saved unit actions use fake users. Clear the previous model's actions
+    # along with its objects before building another independent asset.
+    for action in list(bpy.data.actions):bpy.data.actions.remove(action)
     for m in list(bpy.data.materials):
         if m.users==0:bpy.data.materials.remove(m)
 
@@ -19,6 +22,19 @@ def material(name,color,roughness=.8,metallic=0,emission=0):
     tex=n.new('ShaderNodeTexCoord');m.node_tree.links.new(tex.outputs['Generated'],noise.inputs['Vector'])
     ramp=n.new('ShaderNodeValToRGB');ramp.color_ramp.elements[0].position=.18;ramp.color_ramp.elements[0].color=(*(x*.65 for x in rgb),1);ramp.color_ramp.elements[1].position=.82;ramp.color_ramp.elements[1].color=(*(min(1,x*1.3+.008) for x in rgb),1)
     m.node_tree.links.new(noise.outputs['Fac'],ramp.inputs[0]);m.node_tree.links.new(ramp.outputs['Color'],p.inputs['Base Color'])
+    # Broad color variation and fine relief have separate scales. Keep relief
+    # shallow enough that a one-pixel silhouette never depends on shader noise.
+    grain=n.new('ShaderNodeTexNoise');grain.name='hand finished surface';grain.inputs['Scale'].default_value=38
+    grain.inputs['Detail'].default_value=2
+    m.node_tree.links.new(tex.outputs['Generated'],grain.inputs['Vector'])
+    bump=n.new('ShaderNodeBump');bump.inputs['Strength'].default_value=.16 if metallic else .12
+    bump.inputs['Distance'].default_value=.018 if metallic else .025
+    m.node_tree.links.new(grain.outputs['Fac'],bump.inputs['Height']);m.node_tree.links.new(bump.outputs['Normal'],p.inputs['Normal'])
+    if metallic:p.inputs['Roughness'].default_value=min(roughness,.48)
+    if any(word in name.lower() for word in ('skin','sea','fur','leaf','petal')):
+        p.inputs['Subsurface Weight'].default_value=.035
+    if any(word in name.lower() for word in ('ceramic','shell','ivory')):
+        p.inputs['Roughness'].default_value=.38;p.inputs['Coat Weight'].default_value=.18
     if emission:
         p.inputs['Emission Color'].default_value=(*rgb,1);p.inputs['Emission Strength'].default_value=emission
     return m
@@ -29,7 +45,8 @@ def mesh(name,vertices,faces,mat):
     return o
 
 def uv(name,loc,scale,mat,segments=12,rings=8):
-    bpy.ops.mesh.primitive_uv_sphere_add(segments=segments,ring_count=rings,location=loc);o=bpy.context.object;o.name=name;o.scale=scale
+    bpy.ops.mesh.primitive_uv_sphere_add(segments=max(20,segments),ring_count=max(12,rings),location=loc);o=bpy.context.object;o.name=name;o.scale=scale
+    for p in o.data.polygons:p.use_smooth=True
     if mat:o.data.materials.append(mat)
     return o
 
@@ -37,12 +54,16 @@ def box(name,loc,scale,mat,bevel=.04):
     bpy.ops.mesh.primitive_cube_add(size=1,location=loc);o=bpy.context.object;o.name=name;o.scale=scale;bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
     if mat:o.data.materials.append(mat)
     if bevel:
-        mod=o.modifiers.new('soft painted edges','BEVEL');mod.width=bevel;mod.segments=2
+        mod=o.modifiers.new('soft painted edges','BEVEL');mod.width=bevel;mod.segments=3
         mod=o.modifiers.new('corner normals','WEIGHTED_NORMAL')
+    o['model_primitive']='box'
     return o
 
 def cone(name,loc,radius1,radius2,depth,mat,vertices=12):
-    bpy.ops.mesh.primitive_cone_add(vertices=vertices,radius1=radius1,radius2=radius2,depth=depth,location=loc);o=bpy.context.object;o.name=name
+    # Explicit low-sided crystals and rock keep their facets; turned parts do not.
+    bpy.ops.mesh.primitive_cone_add(vertices=max(20,vertices) if vertices>=10 else vertices,radius1=radius1,radius2=radius2,depth=depth,location=loc);o=bpy.context.object;o.name=name
+    if vertices>=10:
+        for p in o.data.polygons:p.use_smooth=len(p.vertices)==4
     if mat:o.data.materials.append(mat)
     return o
 
@@ -58,7 +79,10 @@ def curve(name,points,radius,mat):
     return o
 
 def setup_render(width,height,anchor,samples=32):
+    from refinement import finish_scene
+    finish_scene()
     s=bpy.context.scene;s.render.engine='CYCLES';s.cycles.samples=samples;s.cycles.use_denoising=True
+    s.render.use_persistent_data=True
     try:
         prefs=bpy.context.preferences.addons['cycles'].preferences;prefs.compute_device_type='OPTIX';prefs.get_devices()
         for d in prefs.devices:d.use=d.type=='OPTIX'
