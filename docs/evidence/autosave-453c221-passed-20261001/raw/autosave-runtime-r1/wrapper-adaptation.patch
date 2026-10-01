@@ -1,0 +1,46 @@
+--- /home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-c074cc5-20261001/autosave-runtime-r1/run.py
++++ /home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/autosave-runtime-r1/run.py
+@@ -10,9 +10,9 @@
+ 
+ product = pathlib.Path('/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies')
+ proof = pathlib.Path('/home/morgana/Projects/orcs-vs-fairies-autosave-proof')
+-product_pin = 'c074cc5e610fc128d7b6ac894a61258d418463d4'
++product_pin = '453c2218af9973b9eca8fb78392435bd9d46a740'
+ proof_pin = '9e5fd2340b9a0823d1ab9f566c52b947a094278e'
+-parent = product / 'work/verification/ui-c074cc5-20261001'
++parent = product / 'work/verification/ui-453c221-20261001'
+ prepared = parent / 'prepared'
+ evidence = parent / 'autosave-browser-r1'
+ runtime = parent / 'autosave-runtime-r1'
+@@ -121,6 +121,31 @@
+     assert str(preview.pid) in receipt['listenersRunning'], 'Observed preview listener belongs to owned PID'
+     persist()
+     print(json.dumps({'previewPid': preview.pid, 'port': 5299, 'inputCount': before['inputCount']}), flush=True)
++    favicon_url = base + 'favicon.ico'
++    favicon_committed = subprocess.check_output(['git', '-C', str(product), 'show', product_pin + ':public/favicon.ico'])
++    favicon_expected = fingerprint(product / 'public/favicon.ico')
++    favicon_dist = fingerprint(prepared / 'dist/favicon.ico')
++    with urllib.request.urlopen(favicon_url, timeout=10) as response:
++        favicon_body = response.read()
++        favicon_status = response.status
++        favicon_headers = dict(response.headers)
++        favicon_final_url = response.url
++    (runtime / 'favicon-live.ico').write_bytes(favicon_body)
++    favicon_actual = fingerprint(runtime / 'favicon-live.ico')
++    favicon_receipt = {'productPin': product_pin, 'url': favicon_url, 'finalUrl': favicon_final_url,
++                       'observedAt': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
++                       'method': 'Direct owned-preview HTTP GET; no route mocking or observer filtering',
++                       'status': favicon_status, 'headers': favicon_headers, 'response': favicon_actual,
++                       'publicFile': favicon_expected, 'compiledFile': favicon_dist,
++                       'committed': {'bytes': len(favicon_committed), 'sha256': hashlib.sha256(favicon_committed).hexdigest()}}
++    save_json(runtime / 'favicon-live.json', favicon_receipt)
++    assert favicon_status == 200 and favicon_final_url == favicon_url, 'Live favicon must be served directly with status 200'
++    assert favicon_body == favicon_committed == (prepared / 'dist/favicon.ico').read_bytes(), 'Live favicon bytes must equal the committed and prepared asset'
++    assert favicon_actual == favicon_expected == favicon_dist == favicon_receipt['committed']
++    favicon_receipt['result'] = 'passed'
++    save_json(runtime / 'favicon-live.json', favicon_receipt)
++    receipt['faviconObservation'] = {'receipt': fingerprint(runtime / 'favicon-live.json'), 'body': favicon_actual}
++    persist()
+     run_step('browser', [node, str(proof / 'scripts/session-recovery/verify-autosave.mjs'), base,
+                         str(product), product_pin, str(evidence), proof_pin])
+     browser_receipt = json.loads((evidence / 'browser-proof.json').read_text())

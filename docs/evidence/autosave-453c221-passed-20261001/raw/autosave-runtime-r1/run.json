@@ -1,0 +1,161 @@
+{
+  "productPin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "proofPin": "9e5fd2340b9a0823d1ab9f566c52b947a094278e",
+  "port": 5299,
+  "base": "http://127.0.0.1:5299/",
+  "preparation": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/prepared",
+  "evidence": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/autosave-browser-r1",
+  "startedAt": "2026-10-01T20:55:03Z",
+  "steps": [
+    {
+      "name": "browser",
+      "args": [
+        "/home/morgana/.local/bin/node",
+        "/home/morgana/Projects/orcs-vs-fairies-autosave-proof/scripts/session-recovery/verify-autosave.mjs",
+        "http://127.0.0.1:5299/",
+        "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies",
+        "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/autosave-browser-r1",
+        "9e5fd2340b9a0823d1ab9f566c52b947a094278e"
+      ],
+      "startedAt": "2026-10-01T20:55:03Z",
+      "pid": 576399,
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T20:55:58Z"
+    },
+    {
+      "name": "authenticate-recovered",
+      "args": [
+        "/home/morgana/.local/bin/node",
+        "/home/morgana/Projects/orcs-vs-fairies-autosave-proof/scripts/session-recovery/native-downloads.mjs",
+        "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/autosave-browser-r1",
+        "native-recovered.json",
+        "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/autosave-browser-r1/browser-proof.json"
+      ],
+      "startedAt": "2026-10-01T20:55:58Z",
+      "pid": 617290,
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T20:55:58Z"
+    },
+    {
+      "name": "validate-recovered",
+      "args": [
+        "/home/morgana/.local/bin/node",
+        "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/prepared/modules/verify-native.mjs",
+        "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/autosave-browser-r1/native-recovered.json",
+        "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/autosave-runtime-r1/recovered-verification.json",
+        "453c2218af9973b9eca8fb78392435bd9d46a740"
+      ],
+      "startedAt": "2026-10-01T20:55:58Z",
+      "pid": 617297,
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T20:55:59Z"
+    },
+    {
+      "name": "authenticate-continued",
+      "args": [
+        "/home/morgana/.local/bin/node",
+        "/home/morgana/Projects/orcs-vs-fairies-autosave-proof/scripts/session-recovery/native-downloads.mjs",
+        "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/autosave-browser-r1",
+        "native-continued.json",
+        "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/autosave-browser-r1/browser-proof.json"
+      ],
+      "startedAt": "2026-10-01T20:55:59Z",
+      "pid": 623255,
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T20:55:59Z"
+    },
+    {
+      "name": "validate-continued",
+      "args": [
+        "/home/morgana/.local/bin/node",
+        "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/prepared/modules/verify-native.mjs",
+        "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/autosave-browser-r1/native-continued.json",
+        "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/autosave-runtime-r1/continued-verification.json",
+        "453c2218af9973b9eca8fb78392435bd9d46a740"
+      ],
+      "startedAt": "2026-10-01T20:55:59Z",
+      "pid": 623262,
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T20:56:01Z"
+    },
+    {
+      "name": "authenticate-imported",
+      "args": [
+        "/home/morgana/.local/bin/node",
+        "/home/morgana/Projects/orcs-vs-fairies-autosave-proof/scripts/session-recovery/native-downloads.mjs",
+        "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/autosave-browser-r1",
+        "native-imported.json",
+        "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/autosave-browser-r1/browser-proof.json"
+      ],
+      "startedAt": "2026-10-01T20:56:01Z",
+      "pid": 629649,
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T20:56:01Z"
+    },
+    {
+      "name": "validate-imported",
+      "args": [
+        "/home/morgana/.local/bin/node",
+        "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/prepared/modules/verify-native.mjs",
+        "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/autosave-browser-r1/native-imported.json",
+        "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/autosave-runtime-r1/imported-verification.json",
+        "453c2218af9973b9eca8fb78392435bd9d46a740"
+      ],
+      "startedAt": "2026-10-01T20:56:01Z",
+      "pid": 629656,
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T20:56:02Z"
+    }
+  ],
+  "result": "passed",
+  "node": {
+    "path": "/home/morgana/.local/bin/node",
+    "version": "v24.21.0"
+  },
+  "environment": {
+    "OVF_PROOF_DIST": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/prepared/dist",
+    "OVF_PROOF_MODULES": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/prepared/modules",
+    "OVF_PROOF_SCHEMA_MODULE": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/prepared/modules/schema.mjs",
+    "OVF_PLAYWRIGHT_MODULE": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs",
+    "OVF_CHROMIUM_EXECUTABLE": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome"
+  },
+  "listenersBefore": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\n",
+  "preview": {
+    "pid": 576379,
+    "args": [
+      "/home/morgana/.local/bin/node",
+      "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/node_modules/vite/bin/vite.js",
+      "preview",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "5299",
+      "--strictPort",
+      "--outDir",
+      "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/prepared/dist"
+    ],
+    "exitCode": 143,
+    "closed": true,
+    "pidAbsent": true
+  },
+  "listenersRunning": "State  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\nLISTEN 0      511        127.0.0.1:5299      0.0.0.0:*    users:((\"MainThread\",pid=576379,fd=22))\n",
+  "faviconObservation": {
+    "receipt": {
+      "bytes": 1127,
+      "sha256": "46c36201901a21ef7e1eeac8635aede1f0ca6972f8a8b9f7c1014a08a43f4207"
+    },
+    "body": {
+      "bytes": 32038,
+      "sha256": "5e0bf0f72488bc693d779cd7a3ebc7fdfca8db9916a6e3e0811fff59113253c2"
+    }
+  },
+  "browserReceipt": {
+    "bytes": 141561,
+    "sha256": "f0b6283ccb0f1fb38d648bd8575e145449cac9643da53d39418e0636585d5b83"
+  },
+  "listenersAfter": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\n",
+  "portClosed": true,
+  "frozenBytesUnchanged": true,
+  "finishedAt": "2026-10-01T20:56:03Z"
+}

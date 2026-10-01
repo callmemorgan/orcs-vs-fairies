@@ -1,0 +1,250 @@
+{
+  "kind": "independent-root-integration-admission-review",
+  "result": "passed",
+  "findingCount": 0,
+  "reviewer": "GPT-6",
+  "method": "Static Git object, per-commit diff, JSON semantic, byte-prefix, size and SHA-256 inspection. No tests, builds, games, browsers, servers, TypeScript, or repository modules executed.",
+  "base": "ce3faceca7e93a41f716d767aca6c56487b1830b",
+  "tip": "523f395e45a3823482fffae0dd774bd834c6b63f",
+  "head": "523f395e45a3823482fffae0dd774bd834c6b63f",
+  "mergeBase": "ce3faceca7e93a41f716d767aca6c56487b1830b",
+  "linearChain": [
+    "fd555e38b28b01259d941e93d15a937ec51a6cea",
+    "453c2218af9973b9eca8fb78392435bd9d46a740",
+    "463f5597e739a8206a78d8aa46fb567d259f88fe",
+    "523f395e45a3823482fffae0dd774bd834c6b63f"
+  ],
+  "knownNegativeSearch": {
+    "symbol": "THIS_SYMBOL_DOES_NOT_EXIST_OVF_99173",
+    "result": "no match"
+  },
+  "review": {
+    "path": "/tmp/ovf-root-523f395-integration-review-gpt56-sol.md",
+    "bytes": 9411,
+    "sha256": "000db3bde66a48240005731bb375bea4ad81c21abfdf2d72dd1743a9491e94f3"
+  },
+  "commits": [
+    {
+      "commit": "fd555e38b28b01259d941e93d15a937ec51a6cea",
+      "parent": "ce3faceca7e93a41f716d767aca6c56487b1830b",
+      "subject": "Retain current AI matrix and corrected native audit",
+      "changedFiles": 371,
+      "addedFiles": 370,
+      "modifiedFiles": 1,
+      "otherStatus": [],
+      "messageFooterValid": true
+    },
+    {
+      "commit": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "parent": "fd555e38b28b01259d941e93d15a937ec51a6cea",
+      "subject": "Add Orc favicon for browser requests",
+      "changedFiles": 1,
+      "addedFiles": 1,
+      "modifiedFiles": 0,
+      "otherStatus": [],
+      "messageFooterValid": true
+    },
+    {
+      "commit": "463f5597e739a8206a78d8aa46fb567d259f88fe",
+      "parent": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "subject": "Verify ranked seasons and retain favicon source admission",
+      "changedFiles": 21,
+      "addedFiles": 19,
+      "modifiedFiles": 2,
+      "otherStatus": [],
+      "messageFooterValid": true
+    },
+    {
+      "commit": "523f395e45a3823482fffae0dd774bd834c6b63f",
+      "parent": "463f5597e739a8206a78d8aa46fb567d259f88fe",
+      "subject": "Verify original AI and handicap requirements",
+      "changedFiles": 13,
+      "addedFiles": 11,
+      "modifiedFiles": 2,
+      "otherStatus": [],
+      "messageFooterValid": true
+    }
+  ],
+  "artifactAdmission": {
+    "fd555": {
+      "sourcePin": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+      "rawFiles": 352,
+      "rawBytes": 34535427,
+      "rawManifestFailures": 0,
+      "rawTreeMatchesManifest": true,
+      "sourceAndReviewFiles": 5,
+      "sourceAndReviewFailures": 0,
+      "autosaveReviewFilesExcludingRetention": 10,
+      "autosaveReviewFailures": 0,
+      "resultClaims": {
+        "canonicalMatrixResult": "108/108 passed",
+        "correctedNativeAuditResult": "passed",
+        "originalNativeAuditResult": "failed and preserved",
+        "actualNativeFilesLoadedResaved": 108,
+        "terminalEqualityRows": 2160,
+        "advancedTerminalTicks": 0,
+        "fullMatchHistoriesReplayed": false,
+        "ownerCheckoutHeldAtC86ForAdmission": true,
+        "originalBytesUnchanged": true,
+        "featureStatusesChanged": false
+      }
+    },
+    "favicon": {
+      "bytes": 32038,
+      "sha256": "5e0bf0f72488bc693d779cd7a3ebc7fdfca8db9916a6e3e0811fff59113253c2",
+      "blob": "82fa500660fbf8a022166b806cb5cdb372ad83d5",
+      "sourceBlob": "82fa500660fbf8a022166b806cb5cdb372ad83d5",
+      "matchesSourceCommit": true,
+      "soleChangedPath": true
+    },
+    "rankedSeason": {
+      "filesExcludingRetention": 5,
+      "hashFailures": 0,
+      "treeMatchesManifestPlusRetention": true,
+      "pins": {
+        "requirementId": 65,
+        "historicalSuitePin": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+        "coverageBridgePin": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+        "currentProductPin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "runtimeRerun": false
+      },
+      "acceptedReviewSha256": "e70f824041bcef42381c49a26db92f6ec305b557039088404097917ea4961b7d",
+      "acceptedAuditSha256": "e83eed2e36acfcde773054e347cb6c494711fdd2831776bce3b10b0d8ec3c9a2"
+    },
+    "faviconReview": {
+      "filesExcludingRetention": 12,
+      "hashFailures": 0,
+      "treeMatchesManifestPlusRetention": true,
+      "pins": {
+        "sourceCommit": "fe0680eab9b8aa3be225f346ddfb621cf84fc439",
+        "integratedProductPin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "previousProductPin": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+        "soleProductChange": "public/favicon.ico",
+        "assetBytes": 32038,
+        "assetSha256": "5e0bf0f72488bc693d779cd7a3ebc7fdfca8db9916a6e3e0811fff59113253c2",
+        "browserAcceptance": "pending fresh run",
+        "sourceBuildIdMayRemainUnchanged": true
+      },
+      "applicabilitySha256": "1d03c6e295ccb027dfa2872f4ec68c328cf32de9e5243bc3af7bdf038646345f",
+      "productDiffTrailingBlankLineExcludedFromFinding": true
+    },
+    "originalAi": {
+      "filesExcludingRetention": 10,
+      "hashFailures": 0,
+      "treeMatchesManifestPlusRetention": true,
+      "pinsAndCounts": {
+        "acceptedIds": [
+          51,
+          52,
+          54,
+          55,
+          56,
+          57,
+          58
+        ],
+        "remainInProgress": [
+          53
+        ],
+        "historicalSuitePin": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+        "coreEvidencePin": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "currentProductPin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "newTestsRun": false,
+        "admittedPassedCases": 388,
+        "mappedPassedReferences": 52,
+        "sourceBridgeInputs": 917
+      },
+      "coverageMapSha256": "deef9d6d77f2a82b7c048c17027e97afa0192f43ded2d07ef54c25d1d4a7cbcc",
+      "authenticationSha256": "48ffccd7dd42a55c743c0c8a7b9600ad3b174e4e8e3d72e52b87b07ca5c0f9f0",
+      "acceptedReviewSha256": "90299641aece7732c279c42c49fe66f6bf8b86767bb9b50de394aaa1df905788",
+      "acceptedAuditSha256": "83ed22462d31041828c125f875d0edd79287b7349a8e99b37a977896ba67a719"
+    }
+  },
+  "ledger": {
+    "fd555DecisionAppend": {
+      "parentIsExactPrefix": true,
+      "appendedRows": 1,
+      "endsWithNewline": true
+    },
+    "commit463": {
+      "changedRequirementIds": [
+        65
+      ],
+      "parentDecisionTrailIsExactPrefix": true,
+      "appendedDecisionRows": 2,
+      "endsWithNewline": true
+    },
+    "commit523": {
+      "changedRequirementIds": [
+        51,
+        52,
+        54,
+        55,
+        56,
+        57,
+        58
+      ],
+      "parentDecisionTrailIsExactPrefix": true,
+      "appendedDecisionRows": 1,
+      "endsWithNewline": true
+    },
+    "final": {
+      "total": 100,
+      "statusCounts": {
+        "in-progress": 38,
+        "verified": 62
+      },
+      "id53Status": "in-progress",
+      "id65Status": "verified",
+      "id90Status": "in-progress",
+      "acceptedAiStatuses": {
+        "51": "verified",
+        "52": "verified",
+        "54": "verified",
+        "55": "verified",
+        "56": "verified",
+        "57": "verified",
+        "58": "verified"
+      }
+    },
+    "allFinalEvidencePathsExist": true
+  },
+  "scope": {
+    "postFaviconOnlyDocs": true,
+    "postFaviconProductDiffPaths": [],
+    "requirement53ReviewedStatus": "in-progress",
+    "requirement90PromotedByThisRange": false
+  },
+  "behavioralInterrogation": {
+    "evidenceAndLedgers": {
+      "ordering": "none",
+      "failurePaths": "none",
+      "observability": "none",
+      "staleWrites": "none",
+      "testDelta": "none; no product behavior changed and each no-rerun claim is explicit"
+    },
+    "favicon": {
+      "ordering": "none",
+      "failurePaths": "none in program logic",
+      "observability": "none in code or telemetry",
+      "staleWrites": "none",
+      "testDelta": "Independent static ICO and source-pixel audit retained; fresh browser acceptance is explicitly pending in this range and supports no requirement promotion."
+    }
+  },
+  "assertions": {
+    "refs": true,
+    "commitCounts": true,
+    "fdRaw": true,
+    "fdAncillary": true,
+    "favicon": true,
+    "commit463Manifests": true,
+    "commit463Ledger": true,
+    "commit523Manifest": true,
+    "commit523Ledger": true,
+    "fdDecision": true,
+    "finalCounts": true,
+    "postFavicon": true,
+    "evidencePaths": true,
+    "commitMessageFooters": true
+  },
+  "failureNames": []
+}
