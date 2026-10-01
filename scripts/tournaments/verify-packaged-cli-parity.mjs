@@ -181,6 +181,7 @@ try {
   const middleTick = archive.initial.state.tick + Math.floor((archive.finalTick - archive.initial.state.tick) / 2);
   let checkpoint = { save: core.saveGame(state), actionIndex: 0, tickOffset: 0 };
   let checkpointChosen = middleTick === state.tick;
+  if (checkpointChosen) await json('continuation-checkpoint.json', checkpoint);
   for (const [actionIndex, action] of archive.actions.entries()) {
     if (action.type === 'command') {
       assert.equal(action.side, side);
