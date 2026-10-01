@@ -1,0 +1,80 @@
+{
+  "reviewedAt": "2026-10-01T22:25:54.035607+00:00",
+  "reviewer": "GPT-6",
+  "originalScreenshotCount": 35,
+  "allOriginalScreenshotsInspected": true,
+  "contactSheetsViewed": [
+    "/tmp/ovf-native-combat-453c221-retry-20261001-85q9lr0g/screenshot-qa/contact-01.png",
+    "/tmp/ovf-native-combat-453c221-retry-20261001-85q9lr0g/screenshot-qa/contact-02.png",
+    "/tmp/ovf-native-combat-453c221-retry-20261001-85q9lr0g/screenshot-qa/contact-03.png",
+    "/tmp/ovf-native-combat-453c221-retry-20261001-85q9lr0g/screenshot-qa/contact-04.png",
+    "/tmp/ovf-native-combat-453c221-retry-20261001-85q9lr0g/screenshot-qa/contact-05.png",
+    "/tmp/ovf-native-combat-453c221-retry-20261001-85q9lr0g/screenshot-qa/contact-06.png",
+    "/tmp/ovf-native-combat-453c221-retry-20261001-85q9lr0g/screenshot-qa/contact-07.png",
+    "/tmp/ovf-native-combat-453c221-retry-20261001-85q9lr0g/screenshot-qa/contact-08.png",
+    "/tmp/ovf-native-combat-453c221-retry-20261001-85q9lr0g/screenshot-qa/contact-09.png"
+  ],
+  "fullSizeScreenshotsViewed": [
+    "browser/native-acceptance-first-failure.png",
+    "browser/cover-rock-first-hit-replay.png"
+  ],
+  "findings": [
+    {
+      "kind": "pause overlay limits local outcome evidence",
+      "count": 11,
+      "screenshots": [
+        "charge-stationary-impact.png",
+        "cover-building-uncovered.png",
+        "flank-front.png",
+        "flank-rear.png",
+        "flank-side.png",
+        "friendly-fire-off-impact.png",
+        "friendly-fire-on-impact.png",
+        "shield-depletion-first-hit.png",
+        "shield-front-first-hit.png",
+        "shield-rear-first-hit.png",
+        "shield-turned-first-hit.png"
+      ],
+      "observed": "The native pause dialog blurs and covers the battlefield in every local outcome image."
+    },
+    {
+      "kind": "replay camera limits encounter evidence",
+      "count": 23,
+      "screenshots": [
+        "charge-stationary-impact-replay.png",
+        "cover-building-destroyed-replay.png",
+        "cover-building-first-hit-replay.png",
+        "cover-building-uncovered-replay.png",
+        "cover-none-first-hit-replay.png",
+        "cover-rock-first-hit-replay.png",
+        "flank-front-replay.png",
+        "flank-rear-replay.png",
+        "flank-side-replay.png",
+        "friendly-fire-off-flight-replay.png",
+        "friendly-fire-off-impact-replay.png",
+        "friendly-fire-on-flight-replay.png",
+        "friendly-fire-on-impact-replay.png",
+        "shield-depletion-empty-replay.png",
+        "shield-depletion-facing-replay.png",
+        "shield-depletion-first-hit-replay.png",
+        "shield-depletion-unprotected-replay.png",
+        "shield-front-facing-replay.png",
+        "shield-front-first-hit-replay.png",
+        "shield-rear-facing-replay.png",
+        "shield-rear-first-hit-replay.png",
+        "shield-turned-facing-replay.png",
+        "shield-turned-first-hit-replay.png"
+      ],
+      "observed": "Replay images center the headquarters; encounter actors are near or partly behind the lower selection/orders HUD. The full-size rock target is partly clipped."
+    },
+    {
+      "kind": "first failure supports diagnosis",
+      "screenshots": [
+        "native-acceptance-first-failure.png"
+      ],
+      "observed": "The selected Stag Rider is holding position in a visible patch; the enemy target is not rendered. Surface/clear/day context is visible."
+    }
+  ],
+  "blankOriginalScreenshotsObserved": false,
+  "scope": "Visual inspection only; cannot replace complete native history, damage/event or renderer acceptance. No feature promotions."
+}

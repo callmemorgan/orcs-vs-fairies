@@ -1,0 +1,7 @@
+The serial combat recipe at `453c221` passed preparation, helper compilation, fixture generation, production build, freeze and the first complete dist/public check. The browser stopped at the first charge encounter because target 52 was outside the selected rider's visible fog tiles. No native-history stage or final dist/public check ran. No complete encounter group or feature is admitted by this archive.
+
+All 251 non-tar files from the first seal are retained with their original bytes, including 106 native session downloads, 23 replays, 35 screenshots, fixtures, compiled helpers and raw logs. The external 127,692,800-byte historical tar remains unchanged; its exact bytes are not stored here. Its hash, path list and anchored Git provenance are retained. The earlier 90-file and 182-file failures remain separate.
+
+The static diagnosis identifies a fixture visibility error. A proposed fixture repair is separate and unexecuted. The visibility assertion correctly stopped hidden pointer input. The rock cover encounter recorded a public attack and 8.7 damage before this later failure. Its passing records do not complete this failed run.
+
+Visual inspection found limitations: local outcome screenshots show the pause overlay, and replay views often center headquarters with encounter actors near or behind the HUD. The images alone do not establish combat behavior. Actual native state, replay, pointer and download evidence remain available. Derived contact sheets and the inspection record are retained separately from the original files.

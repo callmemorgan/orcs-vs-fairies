@@ -1,0 +1,266 @@
+{
+  "scope": "Read-only native artifacts/source arithmetic only; no engine replay, build, fixture generation, browser or gameplay run for diagnosis",
+  "runtimePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "failure": {
+    "phase": "native direction encounters",
+    "message": "AssertionError [ERR_ASSERTION]: Native attack target #52 must be visible before pointer input\n    at attack (file:///home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/direction-defense.mjs:36:5)\n    at async Object.runDirectionDefense [as direction] (file:///home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/direction-defense.mjs:161:7)\n    at async file:///home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/verify-native-acceptance.mjs:82:88"
+  },
+  "checks": 75,
+  "downloads": 129,
+  "completeGroups": 0,
+  "lastState": {
+    "tick": 4,
+    "time": 0.2,
+    "source": {
+      "id": 51,
+      "side": 0,
+      "kind": "unit",
+      "role": "cavalry",
+      "x": 18.5,
+      "y": 24.5,
+      "level": 0,
+      "hp": 210,
+      "maxHp": 210,
+      "order": {
+        "type": "hold"
+      },
+      "cooldown": 0,
+      "progress": 1,
+      "queue": [],
+      "trainProgress": 0,
+      "researchProgress": 0,
+      "facing": 0,
+      "animation": "idle",
+      "animTime": 0.2,
+      "momentum": 0,
+      "illusion": false,
+      "expires": 0,
+      "carried": 0,
+      "carriedKind": "wood",
+      "path": [],
+      "definitionId": "fairy-cavalry",
+      "tactics": {
+        "morale": 100,
+        "recentLoss": 0
+      }
+    },
+    "target": {
+      "id": 52,
+      "side": 1,
+      "kind": "unit",
+      "role": "melee",
+      "x": 26,
+      "y": 24.5,
+      "level": 0,
+      "hp": 175,
+      "maxHp": 175,
+      "order": {
+        "type": "hold"
+      },
+      "cooldown": 999.8000000000002,
+      "progress": 1,
+      "queue": [],
+      "trainProgress": 0,
+      "researchProgress": 0,
+      "facing": 4,
+      "animation": "idle",
+      "animTime": 0.2,
+      "momentum": 0,
+      "illusion": false,
+      "expires": 0,
+      "carried": 0,
+      "carriedKind": "wood",
+      "path": [],
+      "definitionId": "orc-melee",
+      "tactics": {
+        "morale": 100,
+        "recentLoss": 0
+      }
+    },
+    "viewSide": 0,
+    "viewLevel": 0,
+    "selected": [
+      51
+    ],
+    "targetFogKey": 890,
+    "targetFogCenter": {
+      "x": 26.5,
+      "y": 24.5
+    },
+    "targetFogVisible": false,
+    "targetFogExplored": false,
+    "targetCenterDistance": 7.5,
+    "targetTileCenterDistance": 8.0
+  },
+  "initialFixtureFogVisible": false,
+  "initialFixtureFogExplored": false,
+  "nativeImport60FullGameAndReplayEqualFixture": true,
+  "chargeGeometry": [
+    {
+      "case": "charge-stationary",
+      "sourceX": 24.7,
+      "targetX": 26,
+      "targetCellCenterX": 26.5,
+      "targetCellDistance": 1.8000000000000007,
+      "initialVisible": true,
+      "candidateSourceX": 24.7,
+      "candidateCellDistance": 1.8000000000000007
+    },
+    {
+      "case": "charge-charge",
+      "sourceX": 18.5,
+      "targetX": 26,
+      "targetCellCenterX": 26.5,
+      "targetCellDistance": 8.0,
+      "initialVisible": false,
+      "candidateSourceX": 19.5,
+      "candidateCellDistance": 7.0
+    },
+    {
+      "case": "charge-stop",
+      "sourceX": 18.5,
+      "targetX": 26,
+      "targetCellCenterX": 26.5,
+      "targetCellDistance": 8.0,
+      "initialVisible": false,
+      "candidateSourceX": 18.5,
+      "candidateCellDistance": 8.0
+    },
+    {
+      "case": "charge-turn",
+      "sourceX": 18.5,
+      "targetX": 26,
+      "targetCellCenterX": 26.5,
+      "targetCellDistance": 8.0,
+      "initialVisible": false,
+      "candidateSourceX": 18.5,
+      "candidateCellDistance": 8.0
+    },
+    {
+      "case": "charge-pike-front",
+      "sourceX": 18.5,
+      "targetX": 26,
+      "targetCellCenterX": 26.5,
+      "targetCellDistance": 8.0,
+      "initialVisible": false,
+      "candidateSourceX": 19.5,
+      "candidateCellDistance": 7.0
+    },
+    {
+      "case": "charge-pike-rear",
+      "sourceX": 18.5,
+      "targetX": 26,
+      "targetCellCenterX": 26.5,
+      "targetCellDistance": 8.0,
+      "initialVisible": false,
+      "candidateSourceX": 19.5,
+      "candidateCellDistance": 7.0
+    }
+  ],
+  "errors": [],
+  "assetFailures": [],
+  "browser": {
+    "playwrightModule": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/index.mjs",
+    "browserVersion": "153.0.8010.12",
+    "executablePath": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome"
+  },
+  "rockChecks": [
+    {
+      "name": "Native import preserves cover-rock",
+      "fixtureSha256": "8d401fb637571d1013eed165411fb551c078d95ad67bd12dcdea308bd19b9137",
+      "authored": {
+        "map": "Seed 0, small forest world with two layers; flat grass, no resources or neutral actors.",
+        "calendar": "Day, season and weather lengths are 1,000,000 seconds. Seed 0 starts in clear daylight.",
+        "roster": "Human side zero, external opponent; normal headquarters and distant workers retained. Default combat troops removed; encounter troops use native built-in definitions.",
+        "undergroundWorker": "One owned worker starts on level one; every import must preserve it.",
+        "economy": "Starting age three and starting banks of 2,000 wood, 2,000 ore and 500 crystal.",
+        "cooldowns": "Non-firing targets, guards, workers and formation troops start with cooldown 1,000. First-hit shooters start with cooldown 3. No cooldown is changed after recording.",
+        "health": "Normal definition health except the explicitly listed wounded cover or casualty actor.",
+        "targetFacing": 4,
+        "rockLane": "Source and target y=23.9; rock tile (23,24), center y=24.5; 0.6-tile grazing cover with an observable target and unblocked firing ray.",
+        "description": "An independent native Mothbow first attack measures rock cover.",
+        "siegePreparation": "Thorn Trebuchet is unprepared; its normal area shell needs no purchased payload. The enemy target is three tiles from the building center, outside shell splash."
+      }
+    },
+    {
+      "name": "cover-rock-first-hit complete native round trip",
+      "gameSha256": "fb7709ca347467d63af195dac8e3c585d8db2c069a3ed609c9c84d6875637c99"
+    },
+    {
+      "name": "cover-rock-first-hit complete replay endpoint",
+      "tick": 66,
+      "checksum": "fbd890a4",
+      "commands": [
+        {
+          "type": "command",
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              51
+            ],
+            "target": 52,
+            "queued": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "Native ranged attack measures rock cover",
+      "damage": 8.699999999999989,
+      "tick": 66
+    }
+  ],
+  "rockPointer": [
+    {
+      "kind": "entity",
+      "button": "right",
+      "target": 52,
+      "tick": 4,
+      "selected": [
+        51
+      ],
+      "viewSide": 0,
+      "viewLevelBefore": 0,
+      "targetWorld": {
+        "x": 25.5,
+        "y": 23.9,
+        "level": 0
+      },
+      "targetFogKey": 853,
+      "targetFogVisible": true,
+      "screen": {
+        "x": 880,
+        "y": 479.5,
+        "zoom": 1,
+        "scaleX": 1,
+        "scaleY": 1,
+        "camera": {
+          "x": 771.2,
+          "y": 360.9,
+          "zoom": 1,
+          "width": 1440,
+          "height": 1000
+        },
+        "canvas": {
+          "left": 0,
+          "top": 0,
+          "width": 1440,
+          "height": 1000
+        }
+      }
+    }
+  ],
+  "artifactSha256": {
+    "browser/browser-native-acceptance.json": "e2769b8838bc77c32f87655e3eea901d5654ccbccc41cb7633b2d0393a6e3dad",
+    "browser/native-acceptance-first-failure.png": "e144b85ba38faa47a5437610ee6d2688d2b3f7ce23d5d2f6fa730f942ab53a52",
+    "browser/native-import-60-save.json": "eb4bb0a07f82d2e9538e9944135c4f1b38a2884263e1f9bcd1e2e22295902095",
+    "fixtures/direction/charge-charge.json": "b6656cf9b1c38d3b350664a25c948a1407df699da4852328e06185b07718daa7",
+    "frozen-inputs.json": "421b6b5c122889352250f3f8084e5f628e098a5d51a715c1f91cc4297d6b3b98",
+    "first-dist-receipt-retained.json": "df8fe736b28e44dc1789b24de1cb99b5ec9b37240d697f21e5f4235d78005be8",
+    "logs/06-browser.receipt.json": "474fa3adf6c1255e6e5ae58dfd57f4fa67eaa48b1d5675e5ea67de56c7f3b5f1",
+    "logs/05-preview-stop.receipt.json": "312b42f855b6185085672d0f96b924ffa4d48a577d5174503d9d6c576338e7ae"
+  },
+  "stage07NativeHistoryExecuted": false,
+  "stage08FinalDistPublicGateExecuted": false
+}
