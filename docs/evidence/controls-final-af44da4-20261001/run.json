@@ -1,0 +1,237 @@
+{
+  "sourcePin": "af44da406acf7ab44436e978cb1f571b93e28d23",
+  "schema": {
+    "saveVersion": 4,
+    "simulationRevision": "4.0.0",
+    "saveFormat": "orcs-vs-fairies-save",
+    "sessionVersion": 1,
+    "sessionFormat": "orcs-vs-fairies/session",
+    "replayVersion": 1,
+    "replayFormat": "orcs-vs-fairies/replay",
+    "replayChecksumVersion": 4,
+    "replayInitialSaveVersion": 4
+  },
+  "base": "http://127.0.0.1:5195/",
+  "outputRoot": "/tmp/ovf-controls-proof.XwAm0f",
+  "startedAt": "2026-10-01T16:56:37.920Z",
+  "steps": [
+    {
+      "name": "mounted",
+      "args": [
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "--config",
+        "scripts/controls-proof/mounted.vitest.config.ts",
+        "--configLoader",
+        "runner"
+      ],
+      "startedAt": "2026-10-01T16:56:37.921Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T16:56:40.606Z"
+    },
+    {
+      "name": "current-controls",
+      "args": [
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "--config",
+        "scripts/controls-proof/canonical.vitest.config.ts",
+        "--configLoader",
+        "runner"
+      ],
+      "startedAt": "2026-10-01T16:56:40.606Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T16:56:42.789Z"
+    },
+    {
+      "name": "display",
+      "args": [
+        "scripts/controls-proof/display.mjs",
+        "http://127.0.0.1:5195/",
+        "af44da406acf7ab44436e978cb1f571b93e28d23",
+        "/tmp/ovf-controls-proof.XwAm0f/display"
+      ],
+      "startedAt": "2026-10-01T16:56:43.066Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T16:57:10.505Z"
+    },
+    {
+      "name": "gamepad",
+      "args": [
+        "scripts/controls-proof/gamepad.mjs",
+        "http://127.0.0.1:5195/",
+        "af44da406acf7ab44436e978cb1f571b93e28d23",
+        "/tmp/ovf-controls-proof.XwAm0f/gamepad"
+      ],
+      "startedAt": "2026-10-01T16:57:10.505Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T16:57:21.520Z"
+    },
+    {
+      "name": "saves",
+      "args": [
+        "scripts/controls-proof/saves.mjs",
+        "http://127.0.0.1:5195/",
+        "af44da406acf7ab44436e978cb1f571b93e28d23",
+        "/tmp/ovf-controls-proof.XwAm0f/saves"
+      ],
+      "startedAt": "2026-10-01T16:57:21.520Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T16:59:40.762Z"
+    },
+    {
+      "name": "minimap",
+      "args": [
+        "scripts/verify_minimap_levels.mjs",
+        "http://127.0.0.1:5195/",
+        "af44da406acf7ab44436e978cb1f571b93e28d23",
+        "/tmp/ovf-controls-proof.XwAm0f/minimap"
+      ],
+      "startedAt": "2026-10-01T16:59:40.762Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T17:00:11.377Z"
+    },
+    {
+      "name": "native-display-native-display-final",
+      "args": [
+        "/tmp/ovf-controls-proof.XwAm0f/modules/verify-native.mjs",
+        "/tmp/ovf-controls-proof.XwAm0f/display/native-display-final.json",
+        "/tmp/ovf-controls-proof.XwAm0f/display/native-display-final-verification.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "startedAt": "2026-10-01T17:00:11.377Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T17:00:13.161Z"
+    },
+    {
+      "name": "native-gamepad-gamepad-native-session",
+      "args": [
+        "/tmp/ovf-controls-proof.XwAm0f/modules/verify-native.mjs",
+        "/tmp/ovf-controls-proof.XwAm0f/gamepad/gamepad-native-session.json",
+        "/tmp/ovf-controls-proof.XwAm0f/gamepad/gamepad-native-session-verification.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23",
+        "/tmp/ovf-controls-proof.XwAm0f/gamepad/browser-proof.json"
+      ],
+      "startedAt": "2026-10-01T17:00:13.161Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T17:00:14.860Z"
+    },
+    {
+      "name": "native-saves-native-manual",
+      "args": [
+        "/tmp/ovf-controls-proof.XwAm0f/modules/verify-native.mjs",
+        "/tmp/ovf-controls-proof.XwAm0f/saves/native-manual.json",
+        "/tmp/ovf-controls-proof.XwAm0f/saves/native-manual-verification.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "startedAt": "2026-10-01T17:00:14.860Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T17:00:16.748Z"
+    },
+    {
+      "name": "native-saves-native-loaded",
+      "args": [
+        "/tmp/ovf-controls-proof.XwAm0f/modules/verify-native.mjs",
+        "/tmp/ovf-controls-proof.XwAm0f/saves/native-loaded.json",
+        "/tmp/ovf-controls-proof.XwAm0f/saves/native-loaded-verification.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "startedAt": "2026-10-01T17:00:16.748Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T17:00:18.521Z"
+    },
+    {
+      "name": "native-saves-native-after-rejected-import",
+      "args": [
+        "/tmp/ovf-controls-proof.XwAm0f/modules/verify-native.mjs",
+        "/tmp/ovf-controls-proof.XwAm0f/saves/native-after-rejected-import.json",
+        "/tmp/ovf-controls-proof.XwAm0f/saves/native-after-rejected-import-verification.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "startedAt": "2026-10-01T17:00:18.521Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T17:00:20.332Z"
+    },
+    {
+      "name": "native-saves-native-before-pagehide",
+      "args": [
+        "/tmp/ovf-controls-proof.XwAm0f/modules/verify-native.mjs",
+        "/tmp/ovf-controls-proof.XwAm0f/saves/native-before-pagehide.json",
+        "/tmp/ovf-controls-proof.XwAm0f/saves/native-before-pagehide-verification.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "startedAt": "2026-10-01T17:00:20.332Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T17:00:23.065Z"
+    },
+    {
+      "name": "native-saves-native-pagehide-autosave",
+      "args": [
+        "/tmp/ovf-controls-proof.XwAm0f/modules/verify-native.mjs",
+        "/tmp/ovf-controls-proof.XwAm0f/saves/native-pagehide-autosave.json",
+        "/tmp/ovf-controls-proof.XwAm0f/saves/native-pagehide-autosave-verification.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "startedAt": "2026-10-01T17:00:23.065Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T17:00:25.890Z"
+    },
+    {
+      "name": "native-saves-native-recovered-autosave",
+      "args": [
+        "/tmp/ovf-controls-proof.XwAm0f/modules/verify-native.mjs",
+        "/tmp/ovf-controls-proof.XwAm0f/saves/native-recovered-autosave.json",
+        "/tmp/ovf-controls-proof.XwAm0f/saves/native-recovered-autosave-verification.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "startedAt": "2026-10-01T17:00:25.890Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T17:00:28.743Z"
+    },
+    {
+      "name": "native-saves-native-imported-fresh-browser",
+      "args": [
+        "/tmp/ovf-controls-proof.XwAm0f/modules/verify-native.mjs",
+        "/tmp/ovf-controls-proof.XwAm0f/saves/native-imported-fresh-browser.json",
+        "/tmp/ovf-controls-proof.XwAm0f/saves/native-imported-fresh-browser-verification.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "startedAt": "2026-10-01T17:00:28.743Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T17:00:30.384Z"
+    },
+    {
+      "name": "native-minimap-native-imported",
+      "args": [
+        "/tmp/ovf-controls-proof.XwAm0f/modules/verify-native.mjs",
+        "/tmp/ovf-controls-proof.XwAm0f/minimap/native-imported.json",
+        "/tmp/ovf-controls-proof.XwAm0f/minimap/native-imported-verification.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "startedAt": "2026-10-01T17:00:30.385Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T17:00:32.901Z"
+    },
+    {
+      "name": "native-minimap-native-final",
+      "args": [
+        "/tmp/ovf-controls-proof.XwAm0f/modules/verify-native.mjs",
+        "/tmp/ovf-controls-proof.XwAm0f/minimap/native-final.json",
+        "/tmp/ovf-controls-proof.XwAm0f/minimap/native-final-verification.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "startedAt": "2026-10-01T17:00:32.901Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T17:00:35.762Z"
+    }
+  ],
+  "result": "passed",
+  "preview": {
+    "pid": 2165760,
+    "port": 5195,
+    "distDir": "/tmp/ovf-controls-proof.XwAm0f/dist"
+  },
+  "previewClosed": true,
+  "listenersAfter": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess",
+  "finishedAt": "2026-10-01T17:00:37.697Z"
+}
