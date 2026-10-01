@@ -1,0 +1,30 @@
+{
+  "sourcePin": "4440bc8a623cc103583b2d92f78b4aafd26e3ca3",
+  "base": "http://127.0.0.1:5194/",
+  "buildId": "e8829a83cb97acc0181aadc79b9e7957f2591bb02310b4da053bf5516b083a01",
+  "fixture": {
+    "path": "docs/evidence/minimap-levels-20261001/level-alerts-session.json",
+    "sha256": "2bd0a52d2f90940c4bb1f5e707deb5b164f9b5fc824316176282e4a08aaae15e",
+    "tick": 0,
+    "time": 0,
+    "sessionVersion": 1,
+    "saveVersion": 3,
+    "replayVersion": 1,
+    "generator": "scripts/minimap-alerts/level-scenario.ts",
+    "generatorSha256": "9babcca0b92499d4d8315b0df55bf233518af502689264008cd058791ecd9f1b",
+    "regeneration": "Bundle and execute the current TypeScript generator before every proof; the captured historical bundle and save must not replace current SAVE_VERSION generation."
+  },
+  "method": "Strict native save imported through SessionTools; all subsequent actions are mouse/keyboard/DOM inputs; page evaluation only reads runtime, DOM or canvas pixels. Simulation and damage advance normally; no fixtures written into the runtime, clock overrides, commands or scene calls.",
+  "checks": [],
+  "errors": [],
+  "consoleErrors": [],
+  "failedRequests": [],
+  "httpErrors": [],
+  "startedAt": "2026-10-01T13:33:06.545Z",
+  "result": "failed",
+  "failure": {
+    "message": "page.waitForResponse: Timeout 30000ms exceeded while waiting for event \"response\"",
+    "stack": "page.waitForResponse: Timeout 30000ms exceeded while waiting for event \"response\"\n    at /home/morgana/.codex/worktrees/minimap-layer-alerts/orcs-vs-Fairies/scripts/verify_minimap_levels.mjs:37:29"
+  },
+  "browserClosed": true
+}
