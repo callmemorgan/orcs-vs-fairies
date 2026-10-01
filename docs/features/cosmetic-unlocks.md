@@ -49,3 +49,5 @@ npx esbuild scripts/competitions/verify-hosted.ts --bundle --platform=node --for
 node work/competitions/verify-hosted.mjs
 node scripts/verify_campaign_cosmetics.mjs
 ```
+
+For the final combined source, `scripts/scenarios/prove-campaign-cosmetic-reward.mjs` accepts the full frozen commit, an existing completed SAVE4 profile and a fresh output directory. It builds and starts the packaged server, checks the verified reward and banner equipment, then checks persistence and duplicate handling after restart. It records source, profile and server bundle hashes and retains failed attempts. It preserves the earlier cosmetic evidence and does not regenerate campaign gameplay. The canonical CUA browser proof separately exercises the visible claim and equipment controls.
