@@ -82,7 +82,7 @@ function proveSave(state:GameState,name:string) {
  }
  return {finalSaveFile,finalSaveVersion:finalSave.version,finalSaveSha256:sha256(savedBytes),finalStateSha256,finalReplayChecksum,saveRoundTrip,saveProof:{passed:saveRoundTrip&&checks.every(check=>check.equal&&check.terminalUnchanged!==false),roundTrip:{restoredStateSha256,restoredReplayChecksum},mode:terminal?'terminal-equality':'deterministic-continuation',stepSeconds,attemptedSteps:proofSteps,initialTick,finalTick:state.tick,advancedTicks:state.tick-initialTick,checks}};
 }
-it.concurrent.each(games)('$mapSize/$seed: $faction vs $opponent',({seed,mapSize,faction,opponent})=>{
+it.each(games)('$mapSize/$seed: $faction vs $opponent',({seed,mapSize,faction,opponent})=>{
  const s=createGame(faction,seed,opponent,{mapSize,controllers:['ai','ai']});
  const trained=[0,0],deposited:Record<ResourceKind,number>[]=[{wood:0,ore:0,crystal:0},{wood:0,ore:0,crystal:0}],hitsByRole:Record<string,number>[]=[{},{}],damageByRole:Record<string,number>[]=[{},{}];
  const built=[new Set<string>(),new Set<string>()],roles=[new Set<string>(),new Set<string>()],abilities:Record<string,number>[]=[{},{}];

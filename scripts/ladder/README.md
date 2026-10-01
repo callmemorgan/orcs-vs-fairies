@@ -29,6 +29,10 @@ simulation limit stays a timeout; the runner adds no winner or tiebreak. It keep
 the original economy, position and losing-stronghold assertions and summary
 metrics.
 
+Cases run serially. Each synchronous simulation and save proof gets its own
+120-second timer; concurrent cases on one JavaScript event loop can otherwise
+charge another case's synchronous work against that timer.
+
 Each run saves its method and reduced game reports at the output root. Complete
 final save envelopes, including private simulation runtime, are under `saves/`.
 Each game report names its save file and records the SHA-256 of its file bytes,
