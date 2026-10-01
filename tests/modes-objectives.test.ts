@@ -5,6 +5,7 @@ import {createMatch,issueCommand,stepGame,spawnEntity,refreshVisibility} from '.
 import {loadGame,saveGame} from '../src/core/saves';
 import {draftPlayers,legalDraftChoices,normalizeMatchRules} from '../src/core/match-rules';
 import {PlayerView} from '../src/core/observation';
+import {createScenario} from '../src/core/scenarios';
 import type {GameState,MatchRulesInput,Side} from '../src/core/types';
 function match(rules:MatchRulesInput={},teams:Side[]=[0,1]){return createMatch({map:{seed:4127,size:'small'},players:teams.map((teamId,id)=>({id:id as Side,teamId,factionId:id%2?'fairies' as const:'orcs' as const,controller:'external' as const})),rules});}
 function tick(state:GameState,count:number){for(let i=0;i<count&&!state.draw&&state.winner===null;i++)stepGame(state,.05);}
@@ -18,7 +19,10 @@ describe('saved match rules and objectives',()=>{
   expect(()=>normalizeMatchRules({disabledDefinitionIds:['foreign-missing']})).toThrow();expect(()=>normalizeMatchRules({relic:{count:1,required:2}})).toThrow();
  });
  it('lets scenario rules replace headquarters defeat and permits commands without a stronghold',()=>{
-  const state=match({mode:'scenario',standardDefeat:false});for(const hq of state.entities.filter(e=>e.role==='hq'))hq.hp=0;tick(state,5);
+  const {state}=createScenario({schemaVersion:1,id:'without-stronghold',title:'Hold the road',briefing:'Hold the supplied position.',successText:'Position held.',failureText:'Position lost.',faction:'orcs',opponent:'fairies',seed:4127,
+   map:{size:'small',width:36,height:36,terrain:Array(36*36).fill('grass'),starts:[{x:4,y:4},{x:31,y:31}],resources:[]},
+   army:[{label:'worker',side:0,kind:'unit',role:'worker',x:8,y:8,order:{type:'hold'}},{label:'enemy',side:1,kind:'unit',role:'melee',x:28,y:28,order:{type:'hold'}}],
+   objectives:[{id:'hold',text:'Hold until the signal.',success:{type:'time',seconds:30}}],events:[],rules:{fixedArmy:false,reinforcementBudget:3,resources:{wood:420,ore:220,crystal:0},timeLimit:60}});tick(state,5);
   expect(state.draw).toBe(false);expect(state.winner).toBeNull();expect(state.eliminated).toEqual([false,false]);const unit=state.entities.find(e=>e.side===0&&e.role==='worker')!;expect(issueCommand(state,0,{type:'move',ids:[unit.id],x:12,y:12})).toBe(true);
   expect(loadGame(saveGame(state)).rules.standardDefeat).toBe(false);
  });

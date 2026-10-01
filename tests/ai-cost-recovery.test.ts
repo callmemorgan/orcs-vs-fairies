@@ -1,5 +1,5 @@
 import {describe,expect,it} from 'vitest';
-import {contentHash,createContentBundle,factionFor} from '../src/core/content-registry';
+import {availableUnits,contentHash,createContentBundle,factionFor} from '../src/core/content-registry';
 import {exampleMod} from '../src/core/example-mod';
 import {FACTIONS} from '../src/core/content';
 import {captureRuntime,createMatch,issueCommand,refreshVisibility,restoreRuntime,runAI,stepGame} from '../src/core/simulation';
@@ -31,6 +31,7 @@ function assault(s:GameState,soldier:Entity){runAI(s,0);expect(captureRuntime(s)
 function regroup(s:GameState,soldier:Entity){runAI(s,0);expect(captureRuntime(s).retreating[0]).toHaveLength(1);expect(soldier.order.type).toBe('idle');}
 
 describe('full resource cost AI recovery',()=>{
+ it('makes a final assault when every recruit is excluded by the match rules',()=>{const {s,soldier}=fixture();Object.assign(s.players[0],{wood:500,ore:500});s.rules.disabledDefinitionIds=availableUnits(s,0).filter(unit=>unit.role!=='worker').map(unit=>unit.id);assault(s,soldier);});
  it('makes a final assault when ore is exhausted despite reachable wood income',()=>{const {s,soldier}=fixture();s.players[0].wood=500;node(s,'wood',1000);assault(s,soldier);});
  it('does not count optional cheap custom recruits when the selected defaults require crystal',()=>{const {s,soldier}=fixture(custom());Object.assign(s.players[0],{wood:500,ore:500});node(s,'wood',1000);assault(s,soldier);});
  it('retains recovery when every default cost can be collected and delivered',()=>{const {s,soldier}=fixture();node(s,'wood',70);const hq=s.entities.find(e=>e.side===0&&e.role==='hq')!;node(s,'ore',25,hq.x+5,hq.y+3);regroup(s,soldier);});

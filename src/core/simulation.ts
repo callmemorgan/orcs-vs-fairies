@@ -476,6 +476,14 @@ function pruneTeamAssignments(s:GameState):void {
  });
 }
 export function alliedAiStatus(s:GameState,side:Side){return alliedAiObservation(s,side,runtimes.get(s)?.teamAI??emptyTeamAiState());}
+/** Keep the faction's default recruits unless a draft or exclusion requires an admitted alternative. */
+function aiRecruitDefinitions(s:GameState,side:Side):UnitDef[] {
+ const age=playerAge(s.players[side]),available=availableUnits(s,side);
+ return Object.values(factionFor(s,side).units).flatMap(def=>{
+  const chosen=definitionAllowed(s,side,def.id)?def:available.find(candidate=>candidate.role===def.role&&!candidate.tags?.includes('hero')&&(candidate.age??1)<=age&&definitionAllowed(s,side,candidate.id));
+  return chosen&&(chosen.age??1)<=age?[chosen]:[];
+ });
+}
 /** Recovery considers only recruits the AI can select at its current age. */
 function hasRecoverableAiIncome(s:GameState,side:Side,owned=s.entities.filter(e=>e.side===side&&alive(e))):boolean {
  const scope=aiRecoveryScopes.get(s);if(!scope)return computeRecoverableAiIncome(s,side,owned);
@@ -491,9 +499,9 @@ function computeRecoverableAiIncome(s:GameState,side:Side,owned:Entity[]):boolea
  const p=s.players[side],f=factionFor(s,side),age=playerAge(p),buildings=owned.filter(e=>e.kind==='building');
  // Queued recruits have already been charged, including named custom definitions.
  if(p.population<p.cap&&buildings.some(b=>b.role==='barracks'&&b.progress===1&&b.queue.some(role=>role!=='worker')))return true;
- const barracks=buildings.find(b=>b.role==='barracks'),factoryCost=barracks?{wood:0,ore:0,crystal:0}:f.buildings.barracks.cost;
- if(!barracks&&buildingAgeRequired(f.buildings.barracks)>age)return false;
- const recruits=Object.values(f.units).filter(d=>d.role!=='worker'&&(d.age??1)<=age).map(d=>({...d,cost:{wood:d.cost.wood+factoryCost.wood,ore:d.cost.ore+factoryCost.ore,crystal:d.cost.crystal+factoryCost.crystal}}));
+ const barracks=buildings.find(b=>b.role==='barracks'),factory=f.buildings.barracks,factoryCost=barracks?{wood:0,ore:0,crystal:0}:factory.cost;
+ if(!barracks&&(buildingAgeRequired(factory)>age||!isNormalBuildingDefinition(factory)))return false;
+ const definitions=aiRecruitDefinitions(s,side),recruits=definitions.filter(d=>d.role!=='worker').map(d=>({...d,cost:{wood:d.cost.wood+factoryCost.wood,ore:d.cost.ore+factoryCost.ore,crystal:d.cost.crystal+factoryCost.crystal}}));
  if(!recruits.length)return false;
  const kinds=['wood','ore','crystal'] as const,bank:Cost={wood:p.wood,ore:p.ore,crystal:p.crystal};
  if(barracks?.progress===1&&recruits.some(d=>kinds.every(kind=>bank[kind]>=d.cost[kind])))return true;
@@ -516,10 +524,10 @@ function computeRecoverableAiIncome(s:GameState,side:Side,owned:Entity[]):boolea
   for(let ring=radius(s,producer)+1;ring<=radius(s,producer)+6;ring+=.5)for(const [dx,dy] of DIRECTIONS_24){const point={x:producer.x+dx*ring*direction,y:producer.y+dy*ring*direction,...(producer.level===undefined?{}:{level:producer.level})};if(walkable(view,point.x,point.y,levelOf(point)))return point;}
   return undefined;
  };
- const hqs=buildings.filter(b=>b.role==='hq'&&b.progress===1),worker=f.units.worker;
+ const hqs=buildings.filter(b=>b.role==='hq'&&b.progress===1),worker=definitions.find(d=>d.role==='worker');
  const paid=hqs.filter(b=>b.queue.includes('worker')&&p.population<p.cap).flatMap(b=>{const point=spawnPoint(b);return point?[point]:[];});
  const collectors:Vec[]=[...workers,...paid],budgets:{collectors:Vec[];bank:Cost}[]=collectors.length?[{collectors,bank}]:[];
- if(p.population+reserved(s,side)<p.cap&&(worker.age??1)<=age&&kinds.every(kind=>bank[kind]>=worker.cost[kind])){
+ if(worker&&p.population+reserved(s,side)<p.cap&&kinds.every(kind=>bank[kind]>=worker.cost[kind])){
   for(const producer of hqs.filter(b=>b.queue.length<5)){
    const point=spawnPoint(producer);if(point)budgets.push({collectors:[...collectors,point],bank:{wood:bank.wood-worker.cost.wood,ore:bank.ore-worker.cost.ore,crystal:bank.crystal-worker.cost.crystal}});
   }
@@ -567,7 +575,7 @@ function computeRecoverableAiIncome(s:GameState,side:Side,owned:Entity[]):boolea
  });
 }
 function coordinatedAiTeam(s:GameState,side:Side):boolean {
- return hasRecoverableAiIncome(s,side)&&playerSides(s).filter(other=>s.controllers[other]==='ai'&&!s.eliminated[other]&&isAllied(s,side,other)&&hasRecoverableAiIncome(s,other)).length>1;
+ return s.rules.mode==='annihilation'&&hasRecoverableAiIncome(s,side)&&playerSides(s).filter(other=>s.controllers[other]==='ai'&&!s.eliminated[other]&&isAllied(s,side,other)&&hasRecoverableAiIncome(s,other)).length>1;
 }
 function runTeamCoordination(s:GameState):void {
  const rt=runtime(s),reports:TeamAiReport[]=[];
@@ -639,7 +647,8 @@ export function runAI(s:GameState,side:Side=1):void{
   const builder=workers.filter(w=>w.order.type==='idle'||w.order.type==='gather').sort((a,b)=>distance(a,site)-distance(b,site))[0];
   if(builder)issueCommand(s,side,{type:'repair',ids:[builder.id],target:site.id});
  }
- if(workers.length+ hq.queue.filter(r=>r==='worker').length<(age===1?profile.workerTarget:age===2?profile.workerTarget+6:profile.workerTarget+11)&&hq.queue.length<profile.trainingQueue)issueCommand(s,side,{type:'train',id:hq.id,role:'worker'});
+ const recruitDefinitions=aiRecruitDefinitions(s,side),workerDefinition=recruitDefinitions.find(d=>d.role==='worker');
+ if(workerDefinition&&workers.length+ hq.queue.filter(r=>r==='worker').length<(age===1?profile.workerTarget:age===2?profile.workerTarget+6:profile.workerTarget+11)&&hq.queue.length<profile.trainingQueue)issueCommand(s,side,{type:'train',id:hq.id,role:'worker',...(workerDefinition.id===f.units.worker.id?{}:{definitionId:workerDefinition.id})});
  const researchPlan:UpgradeId[]=config.opening==='cavalry-raids'?['town-age','worker-harvest','worker-speed','citadel-age']:['worker-harvest','worker-speed','town-age','citadel-age'];
  if(hq.progress===1&&!hq.research&&workers.length>=7&&(config.personality!=='rush'||s.time>100))for(const id of researchPlan){const u=UPGRADES[id];if(u.building==='hq'&&!researchRequirement(s,side,id)&&p.wood>=u.cost.wood+120&&p.ore>=u.cost.ore+80&&p.crystal>=u.cost.crystal){issueCommand(s,side,{type:'research',id:hq.id,upgrade:id});break;}}
  // Claim an observed outer deposit with a new production/drop-off center.
@@ -669,7 +678,7 @@ export function runAI(s:GameState,side:Side=1):void{
  const planned=[...army.filter(e=>!e.raised).map(e=>e.role),...buildings.flatMap(e=>e.queue).filter(r=>r!=='worker')];
  rememberObservedUnits(rt.knownEnemyUnits[side],visibleEnemy,s.time);
  const weights=counterWeights(f,config,rt.knownEnemyUnits[side].values());
- const roles=(Object.keys(f.units) as UnitRole[]).filter(r=>r!=='worker'&&(f.units[r].age??1)<=age);
+ const roles=recruitDefinitions.filter(d=>d.role!=='worker').map(d=>d.role);
  for(const b of buildings.filter(e=>e.role==='barracks'&&e.progress===1)){
   if(age>=2&&!b.research&&army.length>=5)for(const id of ['forged-weapons','tempered-armor','veteran-arms'] as UpgradeId[]){const d=UPGRADES[id];if(!researchRequirement(s,side,id)&&p.wood>d.cost.wood+180&&p.ore>d.cost.ore+120){issueCommand(s,side,{type:'research',id:b.id,upgrade:id});break;}}
   if(b.queue.length>=profile.trainingQueue)continue;
@@ -678,7 +687,8 @@ export function runAI(s:GameState,side:Side=1):void{
   const nextAge:UpgradeId|undefined=age===1?'town-age':age===2?'citadel-age':undefined;
   if(nextAge&&army.length>=7&&!hq.research&&s.time>(age===1?150:380)&&!visibleEnemy.some(e=>distance(e,hq)<14)&&p.wood<UPGRADES[nextAge].cost.wood+120)continue;
   const role=chooseAiRecruit(roles,planned,weights);if(!role)continue;
-  if(issueCommand(s,side,{type:'train',id:b.id,role}))planned.push(role);
+  const definition=recruitDefinitions.find(d=>d.role===role)!;
+  if(issueCommand(s,side,{type:'train',id:b.id,role,...(definition.id===f.units[role].id?{}:{definitionId:definition.id})}))planned.push(role);
  }
  // Evaluate after spending and recruitment so newly paid fighters count.
  // Every required resource must be payable or recoverable through observed routes.

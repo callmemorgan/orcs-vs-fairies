@@ -1,0 +1,28 @@
+
+ RUN  v4.1.11 /home/morgana/Projects/orcs-vs-Fairies
+
+ ❯ tests/modes-objectives.test.ts (13 tests | 1 failed) 899ms
+     × lets scenario rules replace headquarters defeat and permits commands without a stronghold 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/modes-objectives.test.ts > saved match rules and objectives > lets scenario rules replace headquarters defeat and permits commands without a stronghold
+Error: Scenario matches require a bound scenario definition.
+ ❯ createMatch src/core/simulation.ts:86:54
+     84|  for(let i=0;i<c.players.length;i++)if(!Object.hasOwn(c.players,i))thr…
+     85|  const rules=normalizeMatchRules(c.rules===undefined?{}:c.rules,conten…
+     86|  if(rules.mode==='scenario'&&!options.scenario)throw new Error('Scenar…
+       |                                                      ^
+     87|  const slots=new Set<number>(),teams:Side[]=[],incomeFactors:number[]=…
+     88|  const definitions=c.players.map((value,i)=>{
+ ❯ match tests/modes-objectives.test.ts:9:68
+ ❯ tests/modes-objectives.test.ts:21:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 12 passed (13)
+      Tests  1 failed | 190 passed (191)
+   Start at  05:19:46
+   Duration  5.36s (transform 2.37s, setup 0ms, import 3.30s, tests 20.23s, environment 311ms)
+
