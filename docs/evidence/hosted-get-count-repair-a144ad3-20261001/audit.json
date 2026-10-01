@@ -1,0 +1,146 @@
+{
+  "auditKind": "independent static hosted GET-count helper candidate review",
+  "reviewerHarness": "Codex",
+  "reviewerModel": "GPT-5.6 Sol",
+  "base": "473ab17642211c3610aed648ae5f813b7680edc1",
+  "rootCurrent": "4b829cfe9c12c98c97419d25a8573e634df1b25d",
+  "candidateDirectory": "/tmp/ovf-hosted-get-count-candidate-473-pv79a6_z",
+  "executionBoundary": "File and Git-object reads only. No syntax command, module import, runtime, browser, build, test, server, dependency, checkout, or source edit.",
+  "result": "passed",
+  "checks": [
+    {
+      "name": "candidate artifact identities",
+      "passed": true,
+      "details": {
+        "diffSha256": "e43a69496f3860d8f21a94bdf5186c9d19539fd1635aaf8b49f2221f31ccaf8a",
+        "candidateSha256": "6c7757471a8435ef8ec3459e10a2114d7dd4e7d5907712c0cf2f1ab8fd650b8e",
+        "diagnosisSha256": "075ca895c6313e6672230dd3af8b42beb50955646288f9d8d4ad27b7a9aae0bb",
+        "originalSha256": "d844ab8547cbfc186ab98f62f727f7df46317c8e86a603e70fe11966fe59a30a"
+      }
+    },
+    {
+      "name": "base and current applicability",
+      "passed": true,
+      "details": {
+        "base": "473ab17642211c3610aed648ae5f813b7680edc1",
+        "rootCurrent": "4b829cfe9c12c98c97419d25a8573e634df1b25d",
+        "bytes": 48236,
+        "sha256": "d844ab8547cbfc186ab98f62f727f7df46317c8e86a603e70fe11966fe59a30a"
+      }
+    },
+    {
+      "name": "single helper transformation",
+      "passed": true,
+      "details": {
+        "oldOccurrenceCount": 1,
+        "originalBytes": 48236,
+        "candidateBytes": 48361
+      }
+    },
+    {
+      "name": "GET and mutation strictness",
+      "passed": true,
+      "details": {
+        "GET": "at least one observed request",
+        "nonGET": "exactly one observed request",
+        "retained": [
+          "response status",
+          "parsed data",
+          "mutation count",
+          "returned outcome"
+        ]
+      }
+    },
+    {
+      "name": "first failure record",
+      "passed": true,
+      "details": {
+        "resultSha256": "9e8677bf8b3c85ceef6a5c86c7c5a85df568db028fde849069408097dfd129bb",
+        "wireSha256": "6d1954af04651220996b3e5335c1b2f67749078ef24169ed31dfe5243c379af4",
+        "actor": {
+          "name": "4v4-side-3",
+          "hellos": [],
+          "commands": [],
+          "receipts": [],
+          "errors": [],
+          "uiActions": [
+            {
+              "method": "POST",
+              "path": "/api/auth/guest",
+              "attempt": 1,
+              "requested": true,
+              "preparatoryRequested": false,
+              "status": 200,
+              "mutations": 1
+            },
+            {
+              "method": "GET",
+              "path": "/api/lobbies",
+              "attempt": 1,
+              "requested": true,
+              "preparatoryRequested": false,
+              "status": 200,
+              "mutations": 2
+            }
+          ]
+        },
+        "postCount": 12,
+        "allPostsCountOne": true
+      }
+    },
+    {
+      "name": "source-supported but inconclusive overlap",
+      "passed": true,
+      "details": {
+        "sourceSha256": "91b8e98d7a3ec977186da829e7ba8aca7b3ddfead1fcf603e58a66bc672d597b",
+        "pollCanCallRefreshWithoutRunBusyAcquisition": true,
+        "manualRefreshUsesRun": true,
+        "wireHasTimestamp": false,
+        "wireHasInitiator": false,
+        "conclusion": "Overlap is source-supported but the retained evidence cannot identify the second request initiator.",
+        "manualRefreshLine": "  element<HTMLButtonElement>('[data-online=\"refresh\"]').onclick=()=>void run(refresh);",
+        "correction": "The first audit used an erroneous negative substring condition for the selector. Exact source inspection confirms manual refresh calls run(refresh) and the timer can call refresh without acquiring run busy state."
+      }
+    },
+    {
+      "name": "caller and original 61-64 assertions retained",
+      "passed": true,
+      "details": {
+        "scope": "Only uiResponse request-count assertion changed; guest/create/join status and returned-data checks plus hosted ownership, transfer, spectator, team, AI, and restart assertions remain byte-identical."
+      }
+    },
+    {
+      "name": "recorded syntax and held execution",
+      "passed": true,
+      "details": {
+        "syntaxCheck": {
+          "argv": [
+            "node",
+            "--check",
+            "/tmp/ovf-hosted-get-count-candidate-473-pv79a6_z/verify-hosted-teams-browser.mjs"
+          ],
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        "functionalRuns": 0,
+        "sourceEdits": 0,
+        "note": "Receipt authenticated; syntax was not rerun in this review."
+      }
+    }
+  ],
+  "findings": [],
+  "attention": [
+    "The timer/manual-refresh overlap is plausible from source but cannot be attributed conclusively because retained wire evidence has no request timestamps or initiators.",
+    "This review establishes source scope and applicability only; it does not establish runtime success."
+  ],
+  "failedChecks": [],
+  "firstAudit": {
+    "path": "/tmp/ovf-hosted-get-count-candidate-473-static-review-audit-first-gpt56-sol.json",
+    "sha256": "cbe67d43f083706a09de5fc41c66c1fa4e571255ac3d6ee50dd930a9d3c8a945",
+    "bytes": 5220,
+    "result": "failed",
+    "failedCheck": "source-supported but inconclusive overlap",
+    "cause": "Audit selector string condition was incorrect; source evidence itself matched."
+  }
+}

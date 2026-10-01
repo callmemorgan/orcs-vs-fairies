@@ -1,0 +1,195 @@
+{
+  "auditKind": "independent static admission of retained failed native combat run",
+  "reviewerHarness": "Codex",
+  "reviewerModel": "GPT-5.6 Sol",
+  "commit": "57c11c5bcf3f8bdefbecc9222da8c26f5c506372",
+  "parent": "a144ad3f3dddd0003f9553541908e2254f2444c6",
+  "result": "passed",
+  "admission": "failed browser run only; no completed group, native-history result, final asset gate, retry, or feature promotion",
+  "checks": [
+    {
+      "name": "commit scope",
+      "passed": true,
+      "details": {
+        "changedPaths": 273,
+        "evidenceFilesAdded": 272,
+        "otherChangedPaths": ["docs/features/decisions.tsv"],
+        "productCodePathsChanged": 0
+      }
+    },
+    {
+      "name": "manifest totals",
+      "passed": true,
+      "details": {
+        "originalFiles": 251,
+        "originalBytes": 76425524,
+        "derivedFiles": 19,
+        "derivedBytes": 6174250,
+        "manifestFiles": 270,
+        "manifestBytes": 82599774
+      }
+    },
+    {
+      "name": "all manifest-listed Git blobs",
+      "passed": true,
+      "details": {
+        "checked": 270,
+        "bytes": 82599774,
+        "mode": "100644",
+        "failures": []
+      }
+    },
+    {
+      "name": "all named source files",
+      "passed": true,
+      "details": {
+        "checked": 270,
+        "failures": []
+      }
+    },
+    {
+      "name": "sealed first-failure inventories",
+      "passed": true,
+      "details": {
+        "sealedManifestEntries": 252,
+        "nonTarEntries": 251,
+        "boundedIndexMatches": true,
+        "boundedTsvMatches": true,
+        "sealedManifestSha256": "59c62dbefae028c59c6aa126fa497d72102cd621273ca0ddcf18f9283427f67b"
+      }
+    },
+    {
+      "name": "external tar and immutable anchor",
+      "passed": true,
+      "details": {
+        "bytes": 127692800,
+        "sha256": "723929d66c764bd717118c4f9817b7a52f62c15ac3441e22b1e77c9244966e05",
+        "storedInGit": false,
+        "anchorRef": "refs/heads/codex/native-combat-preparation-87273ff",
+        "anchorPin": "87273ff035a7fe7342f37785d5e5274ebd9dde4f",
+        "archiveListedOrExtracted": false
+      }
+    },
+    {
+      "name": "earlier failed attempts",
+      "passed": true,
+      "details": {
+        "first": {"files": 90, "bytes": 18420495, "manifestSha256": "c7e53b7388b3a5cf59bec2db1845665751c61b8d06ba33fde83a8fcf9ebab816", "failures": []},
+        "second": {"files": 182, "bytes": 52216283, "manifestSha256": "a4e9eab3df8b3deb5320175e1b6bf0ff5e4701dd57ca7259356327993daacfc4", "failures": []}
+      }
+    },
+    {
+      "name": "stages 00 through 05 receipts",
+      "passed": true,
+      "details": {
+        "successfulReceipts": 6,
+        "productPin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "distFiles": 398,
+        "copiedPublicAssets": 394,
+        "frozenExecutableAssets": 4
+      }
+    },
+    {
+      "name": "actual browser failure transcript",
+      "passed": true,
+      "details": {
+        "receiptSha256": "474fa3adf6c1255e6e5ae58dfd57f4fa67eaa48b1d5675e5ea67de56c7f3b5f1",
+        "stdoutSha256": "06bb6a3277636e1dc6c2374a06b0c71be4f12123aeec463b8e4eb60b4d4f937b",
+        "stderrSha256": "0be74e1be7df38c4a43b58b715a19b42691569cfcf48a793ccc3aac21ea70294",
+        "exitCode": 1,
+        "failure": "Native attack target #52 must be visible before pointer input"
+      }
+    },
+    {
+      "name": "browser receipt semantics",
+      "passed": true,
+      "details": {
+        "completed": false,
+        "checks": 75,
+        "nativeDownloads": 129,
+        "completedGroups": 0,
+        "assetFailures": 0,
+        "browserErrors": 0,
+        "targetFogKey": 890,
+        "targetVisible": false,
+        "targetExplored": false
+      }
+    },
+    {
+      "name": "later stages and promotions remain absent",
+      "passed": true,
+      "details": {
+        "stage07NativeHistoryExecuted": false,
+        "stage08FinalDistPublicGateExecuted": false,
+        "featurePromotions": 0,
+        "postflightReadsCountAsStage08": false
+      }
+    },
+    {
+      "name": "postflight decision trail append",
+      "passed": true,
+      "details": {
+        "originalRows": 3,
+        "finalRows": 7,
+        "originalIsBytePrefix": true
+      }
+    },
+    {
+      "name": "root decision trail append",
+      "passed": true,
+      "details": {
+        "appendedRows": 1,
+        "parentIsBytePrefix": true
+      }
+    },
+    {
+      "name": "feature status unchanged",
+      "passed": true,
+      "details": {
+        "requirementsGitBlob": "a4baf0938a9dd3acb8d8a0ae3c280a0f60cf7406",
+        "verified": 64,
+        "inProgress": 36
+      }
+    },
+    {
+      "name": "product and fixture unchanged",
+      "passed": true,
+      "details": {
+        "productPathsChanged": 0,
+        "fixtureGitBlob": "3c25e9c72d0e7b4ab8f330f6be20cb04dfb450a3"
+      }
+    },
+    {
+      "name": "cleanup receipt",
+      "passed": true,
+      "details": {
+        "ownedPreviewAbsent": true,
+        "port5397Empty": true,
+        "protectedRootPidUnchanged": true,
+        "protectedPort4173Unchanged": true,
+        "protectedRootDistFilesUnchanged": 397,
+        "selectedBrowserProcesses": 0
+      }
+    },
+    {
+      "name": "commit footer",
+      "passed": true,
+      "details": {
+        "generatedWithCodex": true,
+        "coAuthoredBy": "GPT-6 <noreply@openai.com>"
+      }
+    }
+  ],
+  "findings": [],
+  "attentionFlags": [
+    "The 127,692,800-byte historical tar remains external to Git. Its bytes and anchor were checked, but it was not listed or extracted.",
+    "The final handoff 0c1d275a... and read-only verifier result 493d4912... were created after the commit and remain outside Git.",
+    "Visual evidence is limited by pause overlays and replay framing; state, pointer, replay and download records remain the primary evidence.",
+    "The later accepted fixture candidate and integration at f18a50d are outside this exact review, and no retry is admitted here."
+  ],
+  "preservedFirstAuditResult": {
+    "path": "/tmp/ovf-root-57c11c5-byte-readback-gpt56-sol.json",
+    "sha256": "0dd6acf1f461c91b9e03b50e698708735e6021110eefd5e71bd50ebc14caa573",
+    "falseFailure": "Broad tar object equality was false because retention.json adds a path key; common byte and hash fields match."
+  }
+}
