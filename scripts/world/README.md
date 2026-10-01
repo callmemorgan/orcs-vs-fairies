@@ -2,7 +2,10 @@
 
 Run these checks in an isolated checkout at the final reviewed source pin. The
 drivers authenticate source, public assets, build configuration and proof inputs
-against that commit. The native bundles must be rebuilt with its full SHA.
+against that commit. Preparation records the compiler inputs and bundle hashes.
+The current unbundled launcher checks the retained preparation receipt, rebuilds
+the selected module from authenticated inputs, and compares its bytes before
+execution. Commit and digest labels alone cannot authenticate a stale bundle.
 Historical SAVE3 captures remain migration controls; they do not certify SAVE4.
 
 The world browser drivers retain the existing menu, traversal, village, den,
@@ -22,16 +25,16 @@ port. Port 4173 belongs to the user's preview and must remain untouched.
 ```sh
 export OVF_PRODUCTION_SOURCE_COMMIT="$(git rev-parse HEAD)"
 world_proof_out="$PWD/work/verification/world-save4-final"
-mkdir -p "$world_proof_out/modules"
+mkdir -p "$world_proof_out/logs"
+export OVF_WORLD_MODULES="$world_proof_out/modules"
 npm run build
 npm run build:cli
 npm run build:server
 npm run build:tournament
-npx esbuild scripts/world/generate-browser-fixtures.ts --bundle --platform=node --format=esm --define:__OVF_WORLD_PROOF_PIN__="\"$OVF_PRODUCTION_SOURCE_COMMIT\"" --metafile="$world_proof_out/modules/generate.meta.json" --outfile="$world_proof_out/modules/generate.mjs"
-npx esbuild scripts/world/verify-native-export.ts --bundle --platform=node --format=esm --define:__OVF_WORLD_PROOF_PIN__="\"$OVF_PRODUCTION_SOURCE_COMMIT\"" --metafile="$world_proof_out/modules/native.meta.json" --outfile="$world_proof_out/modules/native.mjs"
-npx esbuild scripts/world/verify-cli.ts --bundle --platform=node --format=esm --define:__OVF_WORLD_PROOF_PIN__="\"$OVF_PRODUCTION_SOURCE_COMMIT\"" --metafile="$world_proof_out/modules/cli.meta.json" --outfile="$world_proof_out/modules/cli.mjs"
-node "$world_proof_out/modules/generate.mjs" "$world_proof_out/fixtures" "$OVF_PRODUCTION_SOURCE_COMMIT"
-node "$world_proof_out/modules/cli.mjs" "$world_proof_out/cli" "$OVF_PRODUCTION_SOURCE_COMMIT"
+node scripts/world/prepare.mjs "$OVF_PRODUCTION_SOURCE_COMMIT" "$OVF_WORLD_MODULES" > "$world_proof_out/logs/prepare-modules.json"
+export OVF_WORLD_PREPARATION_SHA256="$(node -p "JSON.parse(require('node:fs').readFileSync(process.argv[1],'utf8')).preparationSha256" "$world_proof_out/logs/prepare-modules.json")"
+node scripts/world/run-native.mjs "$OVF_PRODUCTION_SOURCE_COMMIT" "$OVF_WORLD_MODULES" "$OVF_WORLD_PREPARATION_SHA256" generate "$world_proof_out/fixtures"
+node scripts/world/run-native.mjs "$OVF_PRODUCTION_SOURCE_COMMIT" "$OVF_WORLD_MODULES" "$OVF_WORLD_PREPARATION_SHA256" cli "$world_proof_out/cli"
 npm run preview -- --port 5391 --strictPort
 ```
 
@@ -42,13 +45,26 @@ node scripts/verify_world.mjs http://127.0.0.1:5391 "$world_proof_out/browser"
 node scripts/verify_world_actions.mjs http://127.0.0.1:5391 "$world_proof_out/actions" "$world_proof_out/fixtures"
 ```
 
-Run `modules/native.mjs INPUT NEW_REPORT FULL_PIN` on each of the four generated
+Run the authenticated native launcher on each of the four generated
 fixtures, `cli/cli-world-session.json`, the four `browser/*-world-save.json`
 downloads, the four `actions/native-*-imported.json` downloads, and
 `actions/{world-browser-save,surface-world-save,thaw-world-save}.json`. Native bug
 report sessions also contain the matching current replay, and their build ID must
 equal the Vite source fingerprint. Stop the owned preview before collecting the
-final log hashes.
+final log hashes. Keep logs outside feature output directories. Each browser or
+fixture output must be new or empty, including on retries. Modules have a separate
+fresh preparation directory and cannot contain extra files.
+
+```sh
+node scripts/world/run-native.mjs "$OVF_PRODUCTION_SOURCE_COMMIT" "$OVF_WORLD_MODULES" "$OVF_WORLD_PREPARATION_SHA256" native INPUT_JSON NEW_REPORT_JSON
+```
+
+The launcher's fresh compilation also rejects a stale executable with current
+labels and rewritten sidecars. It authenticates its own unbundled helpers against
+Git before importing them, and checks source and prepared bytes again after the
+child exits. Retain the original `logs/prepare-modules.json`; changing its recorded
+receipt hash would lose the preparation chain. Direct execution of a module is
+not an accepted proof command.
 
 The focused native coverage is reproducible with:
 
@@ -68,9 +84,8 @@ Use the same frozen checkout and production build. Choose distinct fresh output
 directories beneath `world_proof_out`.
 
 ```sh
-npx esbuild scripts/mods/scenario.ts --bundle --platform=node --format=esm --loader:.svg=text --define:__OVF_WORLD_PROOF_PIN__="\"$OVF_PRODUCTION_SOURCE_COMMIT\"" --metafile="$world_proof_out/modules/mod-fixture.meta.json" --outfile="$world_proof_out/modules/mod-fixture.mjs"
-node "$world_proof_out/modules/mod-fixture.mjs" "$world_proof_out/mods"
-OVF_MOD_EVIDENCE_DIR="$world_proof_out/mods" node scripts/verify_mods.mjs http://127.0.0.1:5391
+node scripts/world/run-native.mjs "$OVF_PRODUCTION_SOURCE_COMMIT" "$OVF_WORLD_MODULES" "$OVF_WORLD_PREPARATION_SHA256" mod-fixture "$world_proof_out/mod-fixtures"
+OVF_MOD_FIXTURE_DIR="$world_proof_out/mod-fixtures" OVF_MOD_EVIDENCE_DIR="$world_proof_out/mods" node scripts/verify_mods.mjs http://127.0.0.1:5391
 OVF_EDITOR_EVIDENCE_DIR="$world_proof_out/map" OVF_EDITOR_PLAY=1 node scripts/verify_editors.mjs http://127.0.0.1:5391
 OVF_EDITOR_EVIDENCE_DIR="$world_proof_out/flat" node scripts/verify_scenario_editor.mjs http://127.0.0.1:5391
 OVF_EDITOR_EVIDENCE_DIR="$world_proof_out/layered" OVF_EDITOR_MAP_FIXTURE="$world_proof_out/map/two-level-map.json" node scripts/verify_layered_scenario_editor.mjs http://127.0.0.1:5391

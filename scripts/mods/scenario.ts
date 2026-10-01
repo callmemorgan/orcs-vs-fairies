@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createContentBundle } from '../../src/core/content-registry';
 import { exampleMod } from '../../src/core/example-mod';
@@ -8,10 +8,10 @@ import { walkable } from '../../src/core/navigation';
 import { createSessionFile, decodeSessionFile } from '../../src/core/session-storage';
 import { SAVE_VERSION, saveGame } from '../../src/core/saves';
 import { SIMULATION_REVISION } from '../../src/core/versions';
-import { worldSourceProof, worldBundleProof, sha } from '../world/proof-common.mjs';
+import { worldSourceProof, worldBundleProof, sha, freshWorldOutput } from '../world/proof-common.mjs';
 const provenance=await worldSourceProof(process.env.OVF_PRODUCTION_SOURCE_COMMIT??process.env.OVF_SOURCE_PIN),bundle=worldBundleProof(provenance);
-const out=resolve(process.argv[2]??process.env.OVF_MOD_EVIDENCE_DIR??'work/hundred-features/mods');
-mkdirSync(out,{recursive:true});
+const out=resolve(process.argv[2]??process.env.OVF_MOD_FIXTURE_DIR??'work/hundred-features/mod-fixtures');
+await freshWorldOutput(out);
 function write(name:string,value:unknown){writeFileSync(resolve(out,name),JSON.stringify(value,null,2),{flag:'wx'});}
 const state=createMatch({content:createContentBundle([exampleMod()]),map:{seed:4127,size:'small'},players:[{id:0,teamId:0,factionId:'lantern:keepers',controller:'human',handicap:{startingResources:{wood:2000,ore:1000,crystal:100}}},{id:1,teamId:1,factionId:'orcs',controller:'external'}]});
 const sentinel=state.entities.find(e=>e.definitionId==='lantern:sentinel')!,enemy=state.entities.find(e=>e.side===1&&e.role==='melee')!;

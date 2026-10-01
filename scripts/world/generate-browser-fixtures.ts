@@ -1,4 +1,4 @@
-import {mkdirSync,writeFileSync} from 'node:fs';
+import {writeFileSync} from 'node:fs';
 import {createGame,refreshVisibility,stepGame} from '../../src/core/simulation';
 import {FACTIONS} from '../../src/core/content';
 import {openDestination} from '../../src/core/navigation';
@@ -8,9 +8,9 @@ import {decodeSessionFile} from '../../src/core/session-storage';
 import {saveGame} from '../../src/core/saves';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {worldSourceProof,worldBundleProof,sha,checkCurrentSession} from './proof-common.mjs';
+import {worldSourceProof,worldBundleProof,sha,checkCurrentSession,freshWorldOutput} from './proof-common.mjs';
 import type {Entity,GameState,UnitRole} from '../../src/core/types';
-const out=process.argv[2]??'work/world-browser',provenance=await worldSourceProof(process.argv[3]),bundle=worldBundleProof(provenance);mkdirSync(out,{recursive:true});
+const out=process.argv[2]??'work/world-browser',provenance=await worldSourceProof(process.argv[3]),bundle=worldBundleProof(provenance);await freshWorldOutput(out);
 const fixtures:Record<string,unknown>={};
 const base=()=>createGame('orcs',4127,'fairies',{controllers:['human','human'],mapSize:'small',biome:'forest'});
 const place=(s:GameState,e:Entity,role:UnitRole,x:number,y:number,level:number)=>{const p=openDestination(s,{x,y,level},{x,y,level});if(!p)throw Error('Scenario placement has no legal point.');e.role=role;e.x=p.x;e.y=p.y;e.level=level;e.hp=e.maxHp=FACTIONS.orcs.units[role].hp;e.order={type:'hold'};};

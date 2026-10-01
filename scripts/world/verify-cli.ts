@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
-import {mkdirSync,readFileSync,writeFileSync} from 'node:fs';
+import {readFileSync,writeFileSync} from 'node:fs';
 import {join} from 'node:path';
 import {createMatch,issueCommand,stepGame} from '../../src/core/simulation';
 import {loadGame,saveGame} from '../../src/core/saves';
 import {MatchRecorder} from '../../src/core/replays';
 import {createSessionFile} from '../../src/core/session-storage';
-import {worldSourceProof,worldBundleProof,sha,checkCurrentSession} from './proof-common.mjs';
+import {worldSourceProof,worldBundleProof,sha,checkCurrentSession,freshWorldOutput} from './proof-common.mjs';
 import type {MatchConfig} from '../../src/core/types';
 
-const out=process.argv[2];assert(out,'Pass a new CLI evidence directory and optional full source pin');mkdirSync(out,{recursive:true});
+const out=process.argv[2];assert(out,'Pass a new CLI evidence directory and optional full source pin');await freshWorldOutput(out);
 const provenance=await worldSourceProof(process.argv[3]),bundle=worldBundleProof(provenance),cli='dist-cli/rts.js',cliSha256=sha(readFileSync(cli));
 const config:MatchConfig={map:{seed:4127,size:'small',biome:'forest'},players:[{id:0,teamId:0,factionId:'orcs',controller:'external'},{id:1,teamId:1,factionId:'fairies',controller:'external'}]};
 const native=createMatch(config),actor=native.entities.find(e=>e.side===0&&e.role==='melee')!,transition=native.world!.transitions[0],command={type:'traverse' as const,ids:[actor.id],transition:transition.id},recorder=new MatchRecorder(native);
