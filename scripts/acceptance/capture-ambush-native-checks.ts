@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { PlayerView } from '../../src/core/observation';
 import { ReplayPlayer } from '../../src/core/replays';
@@ -10,6 +10,7 @@ import type { SessionFile } from '../../src/core/session-storage';
 import { issueCommand, stepGame } from '../../src/core/simulation';
 import { SIMULATION_REVISION } from '../../src/core/versions';
 import type { GameState, Side } from '../../src/core/types';
+import { readAuthenticatedDownload } from './native-downloads';
 
 const nativeSaves = [
   'siege-crew-defeated', 'siege-mid-capture', 'siege-new-owner', 'siege-new-owner-moved',
@@ -73,11 +74,22 @@ function apply(state: GameState, actions: ReplayAction[]) {
 export function verifyCaptureAmbushNativeArtifacts(directory: string, manifest: {
   sourceCommit: string;
   scenarios: Record<string, { ids: Record<string, number | number[] | { x: number; y: number; level: number }> }>;
-}) {
+}, browserReceipt: { retainedNativeSaves: unknown }, downloads: Record<string, { bytes: number; sha256: string }>) {
   const out = resolve(directory), files = new Map<string, SessionFile>();
   const checks: Record<string, unknown>[] = [];
+  const expectedFiles = nativeSaves.map(name => `${name}-save.json`);
+  assert(browserReceipt && Array.isArray(browserReceipt.retainedNativeSaves), 'Capture browser receipt declares retained native saves');
+  const retained = browserReceipt.retainedNativeSaves;
+  assert(retained.every(name => typeof name === 'string'), 'Retained native save names must be strings');
+  assert.equal(retained.length, expectedFiles.length, 'Capture receipt retains all fifteen required native saves');
+  assert.equal(new Set(retained).size, retained.length, 'Capture receipt native save names must be unique');
+  assert.deepEqual([...retained].sort(), [...expectedFiles].sort(), 'Capture receipt native saves equal the fixed acceptance set');
+  assert(downloads && typeof downloads === 'object' && !Array.isArray(downloads), 'Authenticated native download map is required');
   for (const name of nativeSaves) {
-    const original = JSON.parse(readFileSync(resolve(out, `${name}-save.json`), 'utf8'));
+    const filename = `${name}-save.json`;
+    assert(Object.hasOwn(downloads, filename), `Required native capture save is an authenticated browser download: ${filename}`);
+    const { bytes, path } = readAuthenticatedDownload(out, filename, downloads);
+    const original = JSON.parse(bytes.toString('utf8'));
     const { state, file } = decodeNative(original); assert(file.replay);
     const replay = new ReplayPlayer(file.replay);
     try {
@@ -86,7 +98,7 @@ export function verifyCaptureAmbushNativeArtifacts(directory: string, manifest: 
     } finally { replay.dispose(); }
     assert(file.replay.actions.every(action => action.type !== 'command' || action.side === 0), 'Later native UI commands belong to the playable side; hostile initial orders are setup');
     files.set(name, file);
-    checks.push({ name, tick: state.tick, fullNativeRoundTrip: true, fullUnprojectedReplay: true, commands: file.replay.actions.filter(action => action.type === 'command') });
+    checks.push({ name, file: filename, authenticatedPath: path, sha256: downloads[filename].sha256, tick: state.tick, fullNativeRoundTrip: true, fullUnprojectedReplay: true, commands: file.replay.actions.filter(action => action.type === 'command') });
   }
 
   for (const [partialName, fullName] of [

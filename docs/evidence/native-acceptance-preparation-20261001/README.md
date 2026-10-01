@@ -29,7 +29,7 @@ These checks establish syntax and types. Native behavior, producer execution, bu
 
 ## Scheduled execution recipe
 
-Run from an isolated checkout at the full combined pin that includes these admitted scripts. Use a fresh evidence parent and retain command stdout, stderr, exit codes and executed binary identities. Build/generation outputs belong outside the checkout. Root assigns the preview slot and ensures another heavy proof is not running.
+Run from an isolated checkout at the full combined pin that includes these admitted scripts. Use a fresh evidence parent and retain command stdout, stderr, exit codes and executed binary identities. Helper bundles, generated fixtures and evidence belong outside the checkout. The production build writes its ignored `dist` directory inside the isolated checkout. Root assigns the preview slot and ensures another heavy proof is not running.
 
 ```sh
 ACCEPTANCE_ROOT="$PWD"
@@ -57,7 +57,8 @@ node scripts/acceptance/verify-native-acceptance.mjs \
   "$ACCEPTANCE_RUN/frozen-inputs.json" "$ACCEPTANCE_RUN/helpers/audit.mjs"
 node scripts/acceptance/verify-native-history.mjs \
   "$ACCEPTANCE_ROOT" "$ACCEPTANCE_RUN/helpers/audit.mjs" \
-  "$ACCEPTANCE_RUN/fixtures" "$ACCEPTANCE_RUN/browser" "$ACCEPTANCE_PIN"
+  "$ACCEPTANCE_RUN/fixtures" "$ACCEPTANCE_RUN/browser" "$ACCEPTANCE_PIN" \
+  "$ACCEPTANCE_RUN/frozen-inputs.json"
 ```
 
 An optional final comma-separated browser argument selects `direction`, `capture` or `specialists`. Each selected run requires a fresh browser output directory and receives its own history audit. A failed run retains its first receipt, last readable state and failure screenshot; diagnose it before changing production or rerunning. Close the owned preview, check the port has no listener, inspect every screenshot, retain source/download/artifact hashes and submit the final archive for independent admission. Root alone updates the canonical feature ledger and decision trail.

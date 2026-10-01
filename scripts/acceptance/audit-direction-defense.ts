@@ -8,13 +8,14 @@ import { loadGame, saveGame, SAVE_VERSION } from '../../src/core/saves';
 import { issueCommand, stepGame } from '../../src/core/simulation';
 import { SIMULATION_REVISION } from '../../src/core/versions';
 import type { GameState } from '../../src/core/types';
+import { readAuthenticatedDownload, type DownloadFingerprints } from './native-downloads';
 
 // Intended location: scripts/acceptance/audit-direction-defense.ts.
 // Run only after dispatch on the same frozen source as the native browser proof.
 // This audits the browser's original native human histories; no controller
 // projection or planning-wrapper parity is included here.
-export function verifyDirectionDefenseNativeArtifacts({ evidenceDir, fixturesDir, manifest, browserReceipt, outputPath, sourceCommit }: { evidenceDir: string; fixturesDir: string; manifest: any; browserReceipt: any; outputPath: string; sourceCommit: string }) {
-assert(evidenceDir && fixturesDir && manifest && browserReceipt && outputPath && /^[a-f0-9]{40}$/.test(sourceCommit ?? ''), 'Supply evidence/fixture directories, manifest, browser receipt, new report path and full frozen source commit.');
+export function verifyDirectionDefenseNativeArtifacts({ evidenceDir, fixturesDir, manifest, browserReceipt, downloads, outputPath, sourceCommit }: { evidenceDir: string; fixturesDir: string; manifest: any; browserReceipt: any; downloads: DownloadFingerprints; outputPath: string; sourceCommit: string }) {
+assert(evidenceDir && fixturesDir && manifest && browserReceipt && downloads && outputPath && /^[a-f0-9]{40}$/.test(sourceCommit ?? ''), 'Supply evidence/fixture directories, manifest, browser receipt, authenticated download fingerprints, new report path and full frozen source commit.');
 assert(!existsSync(outputPath), 'Audit report path must be new.');
 const receipt = browserReceipt;
 const caseNames = [
@@ -29,6 +30,69 @@ assert(caseNames.every(name => manifest.scenarios[name] && Object.hasOwn(receipt
 assert.equal(manifest.sourceCommit, sourceCommit); assert.equal(receipt.sourceCommit, sourceCommit);
 assert.equal(manifest.saveVersion, SAVE_VERSION); assert.equal(receipt.saveVersion, SAVE_VERSION);
 assert.equal(manifest.simulationRevision, SIMULATION_REVISION); assert.equal(receipt.simulationRevision, SIMULATION_REVISION);
+// These names and pairs follow every verified()/continuation() branch in
+// direction-defense.mjs. Authenticate the complete inventory before reading it.
+const expectedExportNames: string[] = [];
+const expectedContinuations: { name: string; checkpoint: string; final: string }[] = [];
+const expectExport = (name: string) => { expectedExportNames.push(name); return name; };
+const expectContinuation = (name: string, checkpoint: string, final: string) => expectedContinuations.push({ name, checkpoint: `${checkpoint}-save.json`, final: `${final}-save.json` });
+for (const kind of ['front', 'side', 'rear']) expectExport(`flank-${kind}`);
+for (const kind of ['front', 'turned', 'rear', 'depletion']) {
+  const name = `shield-${kind}`;
+  expectExport(`${name}-facing`); expectExport(`${name}-first-hit`);
+  expectContinuation(`${name} face-to-hit`, `${name}-facing`, `${name}-first-hit`);
+  if (kind === 'depletion') {
+    expectExport(`${name}-empty`); expectExport(`${name}-unprotected`);
+    expectContinuation('Natural guard depletion and following unprotected hit', `${name}-empty`, `${name}-unprotected`);
+  }
+}
+for (const kind of ['none', 'rock', 'building']) {
+  const name = `cover-${kind}`; expectExport(`${name}-first-hit`);
+  if (kind === 'building') {
+    expectExport(`${name}-destroyed`); expectExport(`${name}-uncovered`);
+    expectContinuation('Cover combat destruction and next uncovered hit', `${name}-first-hit`, `${name}-uncovered`);
+    expectContinuation('Destroyed-cover save resumes into uncovered hit', `${name}-destroyed`, `${name}-uncovered`);
+  }
+}
+for (const kind of ['off', 'on']) {
+  const name = `friendly-fire-${kind}`;
+  expectExport(`${name}-flight`); expectExport(`${name}-impact`);
+  expectContinuation(`${name} pending projectile`, `${name}-flight`, `${name}-impact`);
+}
+for (const kind of ['stationary', 'charge', 'stop', 'turn', 'pike-front', 'pike-rear']) {
+  const name = `charge-${kind}`;
+  if (kind !== 'stationary') expectExport(`${name}-moving`);
+  if (kind === 'stop' || kind === 'turn') {
+    expectExport(`${name}-interrupted`);
+    expectContinuation(`${name} moving save resumes through public interruption`, `${name}-moving`, `${name}-interrupted`);
+  }
+  expectExport(`${name}-impact`);
+  if (kind !== 'stationary') expectContinuation(`${name} native moving/interrupted checkpoint`, `${name}-${kind === 'stop' || kind === 'turn' ? 'interrupted' : 'moving'}`, `${name}-impact`);
+}
+for (const kind of ['line', 'wedge', 'square', 'loose']) {
+  const name = `formation-${kind}`;
+  expectExport(`${name}-settled`); expectExport(`${name}-casualty`); expectExport(`${name}-regrouped`);
+  expectContinuation(`${name} settled shape through combat casualty and regroup`, `${name}-settled`, `${name}-regrouped`);
+  expectContinuation(`${name} casualty save resumes regroup`, `${name}-casualty`, `${name}-regrouped`);
+}
+assert.equal(expectedExportNames.length, 47); assert.equal(expectedContinuations.length, 24);
+assert(Array.isArray(receipt.exports) && Array.isArray(receipt.continuations), 'Native direction/defense artifact inventories are required.');
+const exportInventory = receipt.exports.map((item: any) => {
+  assert(item && typeof item.name === 'string' && typeof item.file === 'string', 'Each native export has a name and filename.');
+  return [item.name, item.file];
+});
+assert.equal(new Set(exportInventory.map((item: string[]) => item[0])).size, exportInventory.length, 'Native export names must be unique.');
+assert.equal(new Set(exportInventory.map((item: string[]) => item[1])).size, exportInventory.length, 'Native export filenames must be unique.');
+const sortedInventory = (items: string[][]) => items.map(item => JSON.stringify(item)).sort();
+assert.deepEqual(sortedInventory(exportInventory), sortedInventory(expectedExportNames.map(name => [name, `${name}-save.json`])), 'Native direction/defense exports must match the complete browser-module inventory.');
+const continuationInventory = receipt.continuations.map((item: any) => {
+  assert(item && typeof item.name === 'string' && typeof item.checkpoint === 'string' && typeof item.final === 'string', 'Each native continuation has a name, checkpoint and endpoint filename.');
+  return [item.name, item.checkpoint, item.final];
+});
+assert.equal(new Set(continuationInventory.map((item: string[]) => item[0])).size, continuationInventory.length, 'Native continuation names must be unique.');
+assert.equal(new Set(continuationInventory.map((item: string[]) => JSON.stringify(item.slice(1)))).size, continuationInventory.length, 'Native continuation checkpoint/endpoint pairs must be unique.');
+assert.deepEqual(sortedInventory(continuationInventory), sortedInventory(expectedContinuations.map(item => [item.name, item.checkpoint, item.final])), 'Native direction/defense continuations must match the complete browser-module inventory.');
+for (const name of expectedExportNames) assert(Object.hasOwn(downloads, `${name}-save.json`), `${name}: authenticated browser download fingerprint is required.`);
 const sha = (value: unknown) => createHash('sha256').update(typeof value === 'string' || Buffer.isBuffer(value) ? value : JSON.stringify(value)).digest('hex');
 const near = (actual: number, expected: number, name: string) => assert(Math.abs(actual - expected) <= 1e-6, `${name}: expected ${expected}, got ${actual}`);
 const hp = (state: GameState, id: number) => state.entities.find(e => e.id === id)?.hp ?? 0;
@@ -37,7 +101,7 @@ const checkCommands = (archive: any, predicate: (command: any) => boolean, name:
 const report: any = { sourceCommit, saveVersion: SAVE_VERSION, simulationRevision: SIMULATION_REVISION, cases: [], continuations: [], scope: 'Full original native game envelopes and runtime; tick-by-tick behavior; native human commands. Planning wrappers and projected CLI controllers are outside this audit.' };
 const nativeFiles = new Map<string, ReturnType<typeof decodeSessionFile>['file']>();
 for (const item of receipt.exports) {
-  const path = resolve(evidenceDir, item.file), bytes = readFileSync(path), file = decodeSessionFile(bytes.toString()).file;
+  const { bytes } = readAuthenticatedDownload(evidenceDir, item.file, downloads), file = decodeSessionFile(bytes.toString()).file;
   assert(file.replay, `${item.file}: recorded native history`);
   assert.equal(file.game.version, SAVE_VERSION); assert.equal(file.replay.simulationRevision, SIMULATION_REVISION);
   assert.equal(file.game.state.tick, item.tick); nativeFiles.set(item.file, file);
@@ -58,7 +122,8 @@ function currentFormationOffset(kind: string, slot: number, count: number, spaci
 }
 for (const name of caseNames) {
   const fixture = manifest.scenarios[name];
-  const exported = receipt.exports.filter((item: any) => item.name === name || item.name.startsWith(`${name}-`)).at(-1);
+  const finalExportName = expectedExportNames.filter(exportName => exportName === name || exportName.startsWith(`${name}-`)).at(-1);
+  const exported = receipt.exports.find((item: any) => item.name === finalExportName);
   assert(exported, `${name}: actual native browser output`);
   const file = nativeFiles.get(exported.file)!, archive = file.replay!;
   const authored = decodeSessionFile(readFileSync(resolve(fixturesDir, fixture.file), 'utf8')).file;

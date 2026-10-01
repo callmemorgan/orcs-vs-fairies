@@ -11,6 +11,7 @@ import { issueCommand, stepGame } from '../../src/core/simulation';
 import { SIMULATION_REVISION } from '../../src/core/versions';
 import { observeNative, verifyCaptureAmbushNativeArtifacts } from './capture-ambush-native-checks';
 import { verifyDirectionDefenseNativeArtifacts } from './audit-direction-defense';
+import { readAuthenticatedDownload } from './native-downloads';
 export { observeNative };
 
 const digest = (bytes: string | Buffer) => createHash('sha256').update(bytes).digest('hex');
@@ -60,8 +61,8 @@ export function verifyNativeAcceptanceArtifacts({ evidenceDir, fixturesDir, mani
     return [digest(JSON.stringify(file.game)), name];
   }));
   const files = new Map<string, SessionFile>(), checks: any[] = [];
-  for (const [name, fingerprint] of Object.entries(receipt.downloads) as [string, any][]) {
-    const bytes = readFileSync(resolve(evidenceDir, name)); assert.equal(bytes.length, fingerprint.bytes); assert.equal(digest(bytes), fingerprint.sha256);
+  for (const name of Object.keys(receipt.downloads)) {
+    const { bytes } = readAuthenticatedDownload(evidenceDir, name, receipt.downloads);
     if (!name.endsWith('-save.json')) continue;
     const original = JSON.parse(bytes.toString()), decoded = decodeSessionFile(original);
     assert.equal(original.game.version, SAVE_VERSION); assert(original.replay);
@@ -94,8 +95,8 @@ export function verifyNativeAcceptanceArtifacts({ evidenceDir, fixturesDir, mani
     return { from, to, checkpointTick: partial.game.state.tick, finalTick: full.game.state.tick, suffix, completeNativeContinuation: true };
   });
   const groupAudits: any = {};
-  if (selectedGroups.includes('capture')) groupAudits.capture = verifyCaptureAmbushNativeArtifacts(evidenceDir, manifest);
-  if (selectedGroups.includes('direction')) groupAudits.direction = verifyDirectionDefenseNativeArtifacts({ evidenceDir, fixturesDir, manifest: { ...manifest, scenarios: Object.fromEntries(Object.entries(manifest.scenarios).filter(([, scenario]: [string, any]) => scenario.group === 'direction')) }, browserReceipt: receipt.groups.direction, outputPath: resolve(evidenceDir, 'direction-defense-native-checks.json'), sourceCommit });
+  if (selectedGroups.includes('capture')) groupAudits.capture = verifyCaptureAmbushNativeArtifacts(evidenceDir, manifest, receipt.groups.capture, receipt.downloads);
+  if (selectedGroups.includes('direction')) groupAudits.direction = verifyDirectionDefenseNativeArtifacts({ evidenceDir, fixturesDir, manifest: { ...manifest, scenarios: Object.fromEntries(Object.entries(manifest.scenarios).filter(([, scenario]: [string, any]) => scenario.group === 'direction')) }, browserReceipt: receipt.groups.direction, downloads:receipt.downloads, outputPath: resolve(evidenceDir, 'direction-defense-native-checks.json'), sourceCommit });
   const result = { sourceCommit, saveVersion: SAVE_VERSION, simulationRevision: SIMULATION_REVISION, completeNativeSaves: checks.length, checks, continuations, groupAudits };
   writeFileSync(resolve(evidenceDir, 'native-acceptance-history-checks.json'), `${JSON.stringify(result, null, 2)}\n`, { flag: 'wx' });
   return result;
