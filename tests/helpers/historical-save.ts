@@ -38,5 +38,14 @@ export function expectedHistoricalMigration(snapshot:any,eliminated=[false,false
  const pool=[...new Set(snapshot.state.players.flatMap((player:any)=>{const faction=FACTIONS[player.faction as BuiltinFactionId],units=faction.unitDefinitions??[...Object.values(faction.units),...BUILTIN_EXTRA_DEFINITIONS[player.faction as BuiltinFactionId].units],research={...UPGRADES,...Object.fromEntries((faction.research??[]).map(def=>[def.id,def]))};return [...units.filter(unit=>unit.role!=='worker'&&!unit.id.startsWith('economy:')).map(unit=>unit.id),...Object.keys(research).filter(id=>!['town-age','citadel-age'].includes(id))];}))];
  expected.state.draft={status:'complete',turn:0,remainingTicks:0,order:[],banned:[],picks:Array.from({length:count},()=>[]),pool};
  expected.state.objectives={hill:{x:Math.floor(snapshot.state.width/2)+.5,y:Math.floor(snapshot.state.height/2)+.5,ownerTeam:null,captureTeam:null,captureTicks:0,holdTicks:0,contested:false},relics:[],relicHoldTicks:Array(8).fill(0),survival:{wave:0,nextWaveTick:0,spawnedIds:[],phase:'waiting'}};
+ expected.state.friendlyFire=true;expected.state.projectiles=[];
+ expected.state.factionSystems={version:1,fury:Array(count).fill(0),terrainEffects:[]};
+ const zero=()=>({wood:0,ore:0,crystal:0});
+ expected.state.economy={version:1,groves:[],structures:[],caravans:[],cargo:[],tasks:[],salvage:[],markets:[],villages:[],contracts:[],specializations:[],workerWarehouses:[],deepSites:[],deathClaims:[],paidCosts:[],recruits:[],ledgers:Array.from({length:count},()=>({gathered:zero(),delivered:zero(),traded:zero(),raided:zero(),salvaged:zero(),contractRewards:zero()}))};
+ for(const entity of expected.state.entities)if(entity.kind==='unit'){
+  entity.tactics={morale:100,recentLoss:0};
+  if(entity.role==='siege')entity.tactics.siegeCrew={hp:42,maxHp:42,uncrewed:false};
+  if(entity.role==='melee'&&['dwarves','tideborn','automata'].includes(expected.state.players[entity.side].faction))entity.tactics.guard={value:40,max:40,lastDamagedAt:0};
+ }
  return expected;
 }

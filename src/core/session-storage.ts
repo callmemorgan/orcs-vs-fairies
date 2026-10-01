@@ -1,4 +1,5 @@
-import { saveGame, loadGame, SAVE_VERSION } from './saves';
+import { saveGame, decodeSaveSource, checksumSaveEnvelope, SAVE_VERSION } from './saves';
+import type { OriginalSaveEnvelope, SaveEnvelope } from './saves';
 import { decodeReplay, replayChecksum } from './replays';
 import { ECONOMY, FACTIONS, UPGRADES } from './content';
 import type { ReplayArchive } from './replays';
@@ -16,7 +17,7 @@ import { scenarioJson } from './scenario-validation';
 export interface StoragePort {getItem(key:string):string|null;setItem(key:string,value:string):void;removeItem(key:string):void}
 export interface SessionPlanning {version:1;players:PlanningRuntime[];automaticSides:Side[]}
 export type SessionScenarioProfile = {kind:'campaign';profile:CampaignProfile}|{kind:'conquest';profile:ConquestProfile};
-export interface SessionFile {format:'orcs-vs-fairies/session';version:1;game:ReturnType<typeof saveGame>;replay?:ReplayArchive;planning?:SessionPlanning;scenarioProfile?:SessionScenarioProfile}
+export interface SessionFile {format:'orcs-vs-fairies/session';version:1;game:SaveEnvelope|OriginalSaveEnvelope;replay?:ReplayArchive;planning?:SessionPlanning;scenarioProfile?:SessionScenarioProfile}
 export interface SaveSlot {id:string;name:string;updatedAt:string;time:number;faction:string;opponent:string;autosave:boolean;file:SessionFile}
 export interface AutosaveSettings {enabled:boolean;intervalSeconds:number}
 const STORAGE_KEY='orcs-vs-fairies:sessions:v1';
@@ -49,16 +50,20 @@ export function decodeSessionScenarioProfile(input:unknown,state:GameState):Sess
 export function createSessionFile(state:GameState,replay?:ReplayArchive,planning?:SessionPlanning,scenarioProfile?:SessionScenarioProfile):SessionFile {
   const game=saveGame(state);
   const file:SessionFile={format:'orcs-vs-fairies/session',version:1,game};
-  if(replay){const archive=decodeReplay(replay);if(archive.finalTick!==state.tick||archive.finalChecksum!==replayChecksum(state,archive.checksumVersion??archive.initial.version))throw new Error('Replay does not match this game.');file.replay=archive;}
+  if(replay){const archive=decodeReplay(replay);if(archive.initial.version!==SAVE_VERSION||archive.checksumVersion!==SAVE_VERSION||archive.finalTick!==state.tick||archive.finalChecksum!==checksumSaveEnvelope(game))throw new Error('Replay does not match this game.');file.replay=archive;}
   if(planning!==undefined)file.planning=decodeSessionPlanning(planning,state);
   if(scenarioProfile!==undefined){file.scenarioProfile=decodeSessionScenarioProfile(scenarioProfile,state);if(new TextEncoder().encode(JSON.stringify(file)).byteLength>MAX_BYTES)throw new Error('Save exceeds 20 MiB.');}
   return file;
 }
 
 export function decodeSessionFile(input:unknown):{file:SessionFile;state:GameState} {
-  if(typeof input==='string'){if(input.length>MAX_BYTES)throw new Error('Save exceeds 20 MiB.');try{input=JSON.parse(input);}catch{throw new Error('Invalid save JSON.');}}
+  if(typeof input==='string'){if(input.length>MAX_BYTES||new TextEncoder().encode(input).byteLength>MAX_BYTES)throw new Error('Save exceeds 20 MiB.');try{input=JSON.parse(input);}catch{throw new Error('Invalid save JSON.');}}
+  input=scenarioJson(input,{maxBytes:MAX_BYTES,maxNodes:2000000,maxArrayLength:100000});
   if(!record(input)||input.format!=='orcs-vs-fairies/session'||input.version!==1||Object.keys(input).some(k=>!['format','version','game','replay','planning','scenarioProfile'].includes(k)))throw new Error('Unsupported session file or version.');
-  const state=loadGame(input.game),planning=input.planning===undefined?undefined:decodeSessionPlanning(input.planning,state),profile=input.scenarioProfile===undefined?undefined:decodeSessionScenarioProfile(input.scenarioProfile,state),file=createSessionFile(state,input.replay===undefined?undefined:decodeReplay(input.replay),planning,profile);
+  const {original,state}=decodeSaveSource(input.game),file:SessionFile={format:'orcs-vs-fairies/session',version:1,game:original};
+  if(input.replay!==undefined){const archive=decodeReplay(input.replay),version=archive.checksumVersion??archive.initial.version;if(original.version!==version||archive.initial.version!==version||original.state.tick!==archive.finalTick||checksumSaveEnvelope(original)!==archive.finalChecksum)throw new Error('Replay does not match this original saved game.');file.replay=archive;}
+  if(input.planning!==undefined)file.planning=decodeSessionPlanning(input.planning,state);
+  if(input.scenarioProfile!==undefined)file.scenarioProfile=decodeSessionScenarioProfile(input.scenarioProfile,state);
   return {state,file};
 }
 

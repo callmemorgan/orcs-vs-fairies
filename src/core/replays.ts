@@ -1,7 +1,8 @@
 import { validateCommand } from './commands';
 import { subscribeSimulation } from './history-hooks';
 import { entityDefinition } from './content-registry';
-import { saveGame, loadGame, SAVE_VERSION } from './saves';
+import { saveGame, loadGame, decodeOriginalSaveEnvelope, SAVE_VERSION } from './saves';
+import type { OriginalSaveEnvelope, SaveEnvelope } from './saves';
 import { issueCommand, stepGame, isGameOver } from './simulation';
 import { LEGACY_SIMULATION_REVISIONS, SIMULATION_REVISION } from './versions';
 import type { BuildingRole, Command, Entity, GameEvent, GameState, Side, UnitRole } from './types';
@@ -12,7 +13,7 @@ export interface AnalysisSample {tick:number;time:number;players:ArmySample[]}
 export interface TechnologyTiming {side:Side;upgrade:string;tick:number;time:number}
 export interface ReplayArchive {
   format:'orcs-vs-fairies/replay';version:1;
-  initial:ReturnType<typeof saveGame>;
+  initial:SaveEnvelope|OriginalSaveEnvelope;
   actions:ReplayAction[];
   finalTick:number;finalChecksum:string;checksumVersion?:number;simulationRevision?:string;
   analysis:AnalysisSample[];
@@ -27,21 +28,8 @@ const exactKeys=(v:Record<string,unknown>,keys:string[])=>Object.keys(v).every(k
 
 /** A divergence check, not a signature or a claim of trusted authorship. */
 export function replayChecksum(state:GameState,version=SAVE_VERSION):string {
-  const saved=saveGame(state);
-  if(![1,2,SAVE_VERSION].includes(version))throw new Error('Replay checksum version is unsupported by this build.');
-  if(version===1&&state.players.length!==2)throw new Error('Legacy replay checksums require two players.');
-  const legacy=saved as unknown as {version:number;state:Record<string,unknown>;runtime:Record<string,unknown>};
-  legacy.version=version;
-  if(version<3){
-    delete legacy.state.aiConfigs;
-    for(const key of ['aiDecisionAt','aiDecisionTurns','aiBatchTurns','knownEnemyUnits','retreating','producedFighters'])delete legacy.runtime[key];
-  }
-  if(version===1){
-    // The two-player envelope remains readable; its checksum excludes fields added in v2.
-    for(const key of ['teams','incomeFactors','populationLimits','sharedVision','eliminated','winningTeam'])delete legacy.state[key];
-    delete legacy.runtime.clearedEnemyStarts;
-  }
-  const text=JSON.stringify(saved);let hash=2166136261;
+  if(version!==SAVE_VERSION)throw new Error('Historical replay checksums require the original serialized save envelope.');
+  const text=JSON.stringify(saveGame(state));let hash=2166136261;
   for(let i=0;i<text.length;i++){hash^=text.charCodeAt(i);hash=Math.imul(hash,16777619);}
   return (hash>>>0).toString(16).padStart(8,'0');
 }
@@ -57,7 +45,7 @@ function armySample(s:GameState,side:Side,losses:number,gathered:number,building
 }
 
 export class MatchRecorder {
-  private initial:ReturnType<typeof saveGame>;
+  private initial:SaveEnvelope|OriginalSaveEnvelope;
   private actions:ReplayAction[]=[];
   private samples:AnalysisSample[]=[];
   private losses:number[];
@@ -138,8 +126,8 @@ export class MatchRecorder {
 export function decodeReplay(input:unknown):ReplayArchive {
   if(typeof input==='string'){if(input.length>20*1024*1024)throw new Error('Replay exceeds 20 MiB.');try{input=JSON.parse(input);}catch{throw new Error('Invalid replay JSON.');}}
   if(!record(input)||!exactKeys(input,['format','version','initial','actions','finalTick','finalChecksum','analysis','technologies','checksumVersion','simulationRevision'])||input.format!==FORMAT||input.version!==1)throw new Error('Unsupported replay format or version.');
-  const initial=loadGame(input.initial);
-  if(!record(input.initial)||!integer(input.initial.version)||![1,2,SAVE_VERSION].includes(input.initial.version)||input.checksumVersion!==undefined&&input.checksumVersion!==input.initial.version)throw new Error('Replay checksum version must match its original save version.');
+  const initial=decodeOriginalSaveEnvelope(input.initial).state;
+  if(!record(input.initial)||!integer(input.initial.version)||![1,2,3,4].includes(input.initial.version)||input.checksumVersion!==undefined&&input.checksumVersion!==input.initial.version)throw new Error('Replay checksum version must match its original save version.');
   if(input.simulationRevision!==undefined&&(typeof input.simulationRevision!=='string'||!/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,63}$/.test(input.simulationRevision)))throw new Error('Invalid simulation rules revision.');
   const validSide=(side:unknown)=>integer(side)&&side<initial.players.length;
   if(!Array.isArray(input.actions)||input.actions.length>MAX_ACTIONS)throw new Error('Invalid replay actions.');

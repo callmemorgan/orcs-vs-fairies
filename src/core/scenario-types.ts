@@ -1,5 +1,5 @@
 import type { BuildingRole, Cost, Entity, FactionId, GameState, MapSize, ResourceKind, Side, TerrainKind, UnitDef, UnitRole, Vec } from './types';
-import type { SaveEnvelope } from './saves';
+import type { SaveEnvelope, OriginalSaveEnvelope } from './saves';
 import type { WorldMapData } from './world-types';
 import type { ContentBundle } from './content-registry';
 
@@ -129,7 +129,7 @@ export interface ScenarioRuntime {
 
 export interface ScenarioSession { definition: ScenarioDefinition; state: GameState; runtime: ScenarioRuntime; simulationRevision?: string }
 export interface ScenarioBinding { definition: ScenarioDefinition; runtime: ScenarioRuntime; simulationRevision?: string }
-export interface ScenarioCheckpoint { format: 'orcs-vs-fairies-scenario'; version: 1; definition: ScenarioDefinition; runtime: ScenarioRuntime; game: SaveEnvelope; simulationRevision?: string }
+export interface ScenarioCheckpoint { format: 'orcs-vs-fairies-scenario'; version: 1; definition: ScenarioDefinition; runtime: ScenarioRuntime; game: SaveEnvelope|OriginalSaveEnvelope; simulationRevision?: string }
 
 export interface CampaignChoice { id: string; text: string; consequence: string; chapter3: string }
 export interface CampaignDefinition {

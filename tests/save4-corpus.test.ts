@@ -1,0 +1,54 @@
+import { readFileSync } from 'node:fs';
+import { describe, expect, it } from 'vitest';
+import { checksumSaveEnvelope, decodeOriginalSaveEnvelope, decodeSaveSource, loadGame, saveGame, SAVE_VERSION } from '../src/core/saves';
+import { MatchRecorder, ReplayPlayer, decodeReplay, replayRulesCompatible } from '../src/core/replays';
+import { SaveRepository, createSessionFile, decodeSessionFile } from '../src/core/session-storage';
+import { decodeScenarioRecording, scenarioCheckpointChecksum } from '../src/core/scenario-recordings';
+import { restoreScenario, scenarioRulesCompatibility } from '../src/core/scenarios';
+import { SIMULATION_REVISION } from '../src/core/versions';
+
+const json=(path:string)=>JSON.parse(readFileSync(new URL(path,import.meta.url),'utf8'));
+const sessions=[
+ ['v1','../docs/evidence/roster-coop-integration-20261001/roster/historical-source-session-v1.json','2556964e'],
+ ['Lantern','../docs/evidence/content-root-integration-20261001/browser-save.json','cdac7c02'],
+ ['specialist','../docs/evidence/specialists-20261001/browser-save.json','49d3b724'],
+ ['world','../docs/evidence/world-combined-20261001/world-browser-save.json','44df0737'],
+] as const;
+
+describe('SAVE4 genuine historical corpus',()=>{
+ it.each(sessions)('preserves the %s original game/history pair through import and local storage',(_name,path,checksum)=>{
+  const source=json(path),gameText=JSON.stringify(source.game),initialText=JSON.stringify(source.replay.initial),{file,state}=decodeSessionFile(source);
+  expect(checksumSaveEnvelope(file.game)).toBe(checksum);expect(JSON.stringify(file.game)).toBe(gameText);expect(JSON.stringify(file.replay!.initial)).toBe(initialText);
+  expect(saveGame(state).version).toBe(4);expect(SAVE_VERSION).toBe(4);expect(SIMULATION_REVISION).toBe('4.0.0');
+  expect(state.projectiles).toBeDefined();expect(state.factionSystems).toBeDefined();expect(state.economy).toBeDefined();expect(state.entities.filter(e=>e.kind==='unit').every(e=>e.tactics)).toBe(true);
+  expect(JSON.stringify(decodeSessionFile(JSON.stringify(file)).file.game)).toBe(gameText);
+  const storage=new Map<string,string>(),repo=new SaveRepository({getItem:k=>storage.get(k)??null,setItem:(k,v)=>{storage.set(k,v);},removeItem:k=>{storage.delete(k);}}),id=repo.save('Historical match',file);
+  expect(JSON.stringify(repo.load(id).file.game)).toBe(gameText);expect(JSON.stringify(repo.load(id).file.replay!.initial)).toBe(initialText);
+  expect(replayRulesCompatible(file.replay!)).toBe(false);expect(()=>new ReplayPlayer(file.replay)).toThrow('simulation version');expect(()=>new MatchRecorder(state,file.replay)).toThrow('Older replay history');
+  expect(()=>createSessionFile(state,file.replay)).toThrow('does not match');
+  const recorder=new MatchRecorder(state),fresh=createSessionFile(state,recorder.export());recorder.dispose();const resumed=decodeSessionFile(fresh),player=new ReplayPlayer(fresh.replay);
+  expect(resumed.file.game.version).toBe(4);expect(resumed.file.replay!.initial.version).toBe(4);expect(resumed.file.replay!.simulationRevision).toBe('4.0.0');expect(saveGame(player.state)).toEqual(saveGame(state));player.dispose();
+  expect(JSON.stringify(source.game)).toBe(gameText);
+ });
+ it('authenticates the old content before admitting entity and queue definitions',()=>{
+  const source=json(sessions[1][1]),unit=source.game.state.entities.find((e:any)=>e.side===1&&e.kind==='unit');unit.role='special';unit.definitionId='core:orcs-commander';unit.hp=unit.maxHp=280;
+  expect(()=>decodeSaveSource(source.game)).toThrow('definition is absent');expect(()=>checksumSaveEnvelope(source.game)).toThrow('definition is absent');
+  const queued=json(sessions[1][1]),hq=queued.game.state.entities.find((e:any)=>e.side===1&&e.role==='hq');hq.queue=['worker'];hq.queueDefinitionIds=['economy:caravan'];hq.queuePaidCosts=[{wood:80,ore:30,crystal:0}];
+  expect(()=>decodeSaveSource(queued.game)).toThrow('definition is absent');
+ });
+ it('rejects mixed versions, altered checksums, altered ticks and reordered original game fields',()=>{
+  for(const mutate of [(s:any)=>s.game.version=4,(s:any)=>s.replay.checksumVersion=4,(s:any)=>s.replay.finalChecksum='00000000',(s:any)=>s.game.state.tick++,(s:any)=>s.game.state=Object.fromEntries(Object.entries(s.game.state).reverse())]){const source=json(sessions[0][1]);mutate(source);expect(()=>decodeSessionFile(source)).toThrow();}
+ });
+ it('keeps the scenario wrapper checksum separate from the nested core forwarding guard',()=>{
+  const final=json('./fixtures/scenario-save3-3.2/scenario-final.json'),recording=json('./fixtures/scenario-save3-3.2/scenario-recording.json'),before=JSON.stringify(recording.initial);
+  expect(scenarioCheckpointChecksum(final)).toBe('74458e1b');expect(JSON.stringify(decodeScenarioRecording(recording).initial)).toBe(before);expect(scenarioRulesCompatibility(restoreScenario(final)).compatible).toBe(false);
+  final.runtime.lastEvaluatedTick=final.game.state.tick;expect(scenarioCheckpointChecksum(final)).toBe('74458e1b');
+  const bound=json('./fixtures/scenario-save3-3.2/generic-bound-final.json');expect(checksumSaveEnvelope(bound)).toBe('8246aa1d');delete bound.state.scenario.runtime.lastEvaluatedTick;expect(()=>checksumSaveEnvelope(bound)).toThrow('runtime');
+ });
+ it('retains a real old wrong-owner summon for inspection and rejects ambiguous resume after its caster died',()=>{
+  const source=json('./fixtures/captured-gravecaller-save3.json'),proof=json('./fixtures/captured-gravecaller-save3-provenance.json'),before=JSON.stringify(source.game),original=decodeOriginalSaveEnvelope(source.game),archive=decodeReplay(source.replay);
+  expect(checksumSaveEnvelope(original)).toBe('37200660');expect(archive.finalChecksum).toBe(checksumSaveEnvelope(original));expect(archive.finalTick).toBe(original.state.tick);
+  expect(original.state.entities.some(e=>e.id===proof.casterId)).toBe(false);const raised=original.state.entities.find(e=>e.id===proof.raisedId)!;expect(raised.definitionFaction).toBeUndefined();expect(raised.definitionId).toBeUndefined();expect(raised.maxHp).toBe(175);expect(raised.hp).toBe(87.5);
+  expect(()=>loadGame(original)).toThrow('Legacy captured summon origin is absent');expect(()=>decodeSaveSource(original)).toThrow('cannot resume');expect(()=>decodeSessionFile(source)).toThrow('cannot resume');expect(JSON.stringify(original)).toBe(before);
+ });
+});

@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { createMatch, issueCommand, stepGame } from '../src/core/simulation';
 import { MatchRecorder, ReplayPlayer, decodeReplay, replayChecksum } from '../src/core/replays';
-import { loadGame, saveGame, SAVE_VERSION } from '../src/core/saves';
+import { loadGame, saveGame, checksumSaveEnvelope, SAVE_VERSION } from '../src/core/saves';
 import { createSessionFile, decodeSessionFile, SaveRepository } from '../src/core/session-storage';
 import type { FactionId, Side } from '../src/core/types';
 
@@ -47,7 +47,7 @@ describe('roster replay and session contracts',()=>{
   it.each([{version:1,hash:'5db9ad74'},{version:2,hash:'0d8ff1ef'}])('keeps genuine v$version saves readable but rejects their old playback rules',({version,hash})=>{
     const source=JSON.parse(readFileSync(new URL(`./fixtures/legacy-replay-v${version}.json`,import.meta.url),'utf8'));
     const archive=decodeReplay(source),state=loadGame(archive.initial);
-    expect(replayChecksum(state,version)).toBe(hash);
+    expect(checksumSaveEnvelope(archive.initial)).toBe(hash);expect(()=>replayChecksum(state,version)).toThrow('original serialized');
     expect(archive.initial.version).toBe(version);expect(archive.checksumVersion).toBe(version);
     expect(saveGame(state).version).toBe(SAVE_VERSION);
     expect(()=>new ReplayPlayer(archive)).toThrow(`simulation version ${version}`);

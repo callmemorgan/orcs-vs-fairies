@@ -1,4 +1,4 @@
-import { contentFactions, decodeContentBundle } from './content-registry';
+import { contentFactions, decodeContentBundle, decodeHistoricalContentBundle } from './content-registry';
 import { ABILITIES } from './content';
 import { MAP_SIZES, TERRAIN, generateMap } from './maps';
 import { generatedMapFromWorld, validateWorldMap } from './world-map';
@@ -76,7 +76,7 @@ export function scenarioJson(input: unknown, limits: { maxBytes?: number; maxNod
   return value;
 }
 
-export function validateScenario(input: unknown): ScenarioDefinition {
+export function validateScenario(input: unknown, options:{historicalContent?:boolean}={}): ScenarioDefinition {
   let raw = input;
   if (typeof raw === 'string') {
     if (raw.length > 2 * 1024 * 1024) bad('package', 'package exceeds 2 MiB');
@@ -86,7 +86,7 @@ export function validateScenario(input: unknown): ScenarioDefinition {
   const s = object(value, 'definition', ['schemaVersion', 'id', 'title', 'briefing', 'successText', 'failureText', 'faction', 'opponent', 'seed', 'army', 'objectives', 'events', 'rules'], ['content', 'map', 'escort', 'stealth', 'boss', 'requiredActions']);
   if (s.schemaVersion !== 1) bad('schemaVersion', 'unsupported version');
   identifier(s.id, 'id'); for (const key of ['title', 'briefing', 'successText', 'failureText']) text(s[key], key);
-  const content = s.content === undefined ? undefined : decodeContentBundle(s.content);
+  const content = s.content === undefined ? undefined : (options.historicalContent?decodeHistoricalContentBundle(s.content):decodeContentBundle(s.content));
   const factions = contentFactions(content);
   if (content) s.content = content;
   const faction = choice(s.faction, 'faction', Object.keys(factions)) as FactionId;

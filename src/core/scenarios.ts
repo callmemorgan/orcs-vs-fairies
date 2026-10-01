@@ -1,3 +1,4 @@
+import { migrateHistoricalContentBundle } from './content-registry';
 import { ABILITIES, FACTIONS } from './content';
 import { unitFor } from './content-registry';
 import { validateCommand } from './commands';
@@ -395,16 +396,19 @@ export function restoreScenario(input: unknown): ScenarioSession {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) throw new Error('Invalid scenario checkpoint.');
   const envelope = scenarioJson(raw, { maxBytes: 18 * 1024 * 1024, maxNodes: 1000000, maxArrayLength: 100000 }) as ScenarioCheckpoint;
   if (Object.keys(envelope).some(key => !['format', 'version', 'definition', 'runtime', 'game', 'simulationRevision'].includes(key)) || envelope.format !== 'orcs-vs-fairies-scenario' || envelope.version !== 1 || envelope.simulationRevision !== undefined && (typeof envelope.simulationRevision !== 'string' || !/^\d+\.\d+\.\d+$/.test(envelope.simulationRevision) || envelope.simulationRevision.length > 80)) throw new Error('Unsupported scenario checkpoint.');
-  const definition = validateScenario(envelope.definition), state = loadGame(envelope.game), runtime = scenarioJson(envelope.runtime) as ScenarioRuntime;
+  const historical=envelope.game.version<4;
+  let definition=validateScenario(envelope.definition,{historicalContent:historical});
+  if(historical&&definition.content)definition=validateScenario({...definition,content:migrateHistoricalContentBundle(definition.content)});
+  const state = loadGame(envelope.game), runtime = scenarioJson(envelope.runtime) as ScenarioRuntime;
   if (runtime && !Object.hasOwn(runtime, 'lastEvaluatedTick')) runtime.lastEvaluatedTick = state.tick;
   validateRuntime(definition, state, runtime);
   const session = { definition, state, runtime, ...(envelope.simulationRevision === undefined ? {} : { simulationRevision: envelope.simulationRevision }) }; bindScenarioState(session); return session;
 }
 
-export function validateScenarioBinding(input: unknown, state: GameState): ScenarioBinding {
+export function validateScenarioBinding(input: unknown, state: GameState, historicalContent=false): ScenarioBinding {
   const binding = scenarioJson(input) as ScenarioBinding;
   if (!binding || typeof binding !== 'object' || Array.isArray(binding) || Object.keys(binding).some(key => !['definition', 'runtime', 'simulationRevision'].includes(key)) || !Object.hasOwn(binding, 'definition') || !Object.hasOwn(binding, 'runtime') || binding.simulationRevision !== undefined && (typeof binding.simulationRevision !== 'string' || !/^\d+\.\d+\.\d+$/.test(binding.simulationRevision) || binding.simulationRevision.length > 80)) throw new Error('Invalid saved scenario binding.');
-  const definition = validateScenario(binding.definition); validateRuntime(definition, state, binding.runtime);
+  const definition = validateScenario(binding.definition,{historicalContent}); validateRuntime(definition, state, binding.runtime);
   return { definition, runtime: binding.runtime, ...(binding.simulationRevision === undefined ? {} : { simulationRevision: binding.simulationRevision }) };
 }
 

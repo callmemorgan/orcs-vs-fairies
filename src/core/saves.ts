@@ -1,10 +1,13 @@
 import { normalizeMatchRules, createDraft, draftPlayers, definitionAllowed, validateDraftState, validateObjectiveState, validateSavedRules, validateModeRoster } from './match-rules';
 import { emptyObjectives } from './objectives';
 import { validateEconomyState } from './economy-validation';
+import { createEconomyState } from './economy-common';
+import { initializeTactics } from './tactics';
+import { initializeFactionSystems } from './faction-systems';
 import { normalizeAiConfig } from './ai-policy';
 import { validateScenarioBinding } from './scenarios';
 import { validateSpecialists } from './specialist-validation';
-import { availableBuildings, availableUnits, buildingFor, contentFactions, decodeContentBundle, entityDefinition, upgradesFor } from './content-registry';
+import { availableBuildings, availableUnits, buildingFor, contentFactions, decodeContentBundle, decodeHistoricalContentBundle, migrateHistoricalContentBundle, entityDefinition, upgradesFor } from './content-registry';
 import type { Entity, Side, UnitDef } from './types';
 import { MAP_VERSION, TERRAIN } from './maps';
 import { validateWorldState } from './world-validation';
@@ -13,12 +16,12 @@ import { captureRuntime, MAX_ORDER_QUEUE, restoreRuntime } from './simulation';
 import type { RuntimeSnapshot } from './simulation';
 import type { GameState, TeamId } from './types';
 
-export const SAVE_VERSION=3;
+export const SAVE_VERSION=4;
 export const MAX_SAVE_BYTES=16*1024*1024;
 type SerializedState=Omit<GameState,'explored'|'visible'> & {explored:number[][];visible:number[][]};
 export interface SaveEnvelope {format:'orcs-vs-fairies-save';version:typeof SAVE_VERSION;state:SerializedState;runtime:RuntimeSnapshot}
 /** The imported representation remains separate from the migrated live state. */
-export interface OriginalSaveEnvelope {format:'orcs-vs-fairies-save';version:1|2|3|4;state:Record<string,unknown>;runtime:Record<string,unknown>}
+export interface OriginalSaveEnvelope {format:'orcs-vs-fairies-save';version:1|2|3|4;state:Record<string,unknown> & Pick<SerializedState,'tick'|'time'|'players'|'entities'|'nextId'>;runtime:Record<string,unknown>}
 const MAX_ID=0x7fffffff,MAX_VALUE=1e12,MAX_PLAYERS=8,MAX_ENTITIES=8192,MAX_RESOURCES=8192;
 const STATE_FIELDS=['controllers','mapSize','mapVersion','terrain','starts','draw','tick','corpses','time','seed','width','height','entities','resources','players','winner','events','explored','visible','nextId'];
 const TEAM_FIELDS=['teams','incomeFactors','populationLimits','sharedVision','eliminated','winningTeam'];
@@ -43,7 +46,7 @@ function choice(value:unknown,path:string,choices:readonly string[]):string {if(
 function list(value:unknown,path:string,max:number,length?:number):unknown[] {if(!Array.isArray(value)||value.length>max||(length!==undefined&&value.length!==length))bad(path,'invalid array length');return value;}
 function optionalNumber(record:RecordValue,key:string,path:string,min=0,max=MAX_VALUE,integer=false):void {if(record[key]!==undefined)number(record[key],`${path}.${key}`,min,max,integer);}
 function optionalFlag(record:RecordValue,key:string,path:string):void {if(record[key]!==undefined)flag(record[key],`${path}.${key}`);}
-interface Context {state:GameState;levels:number;width:number;height:number;cells:number;time:number;nextId:number;playerCount:number;maxEntities:number;entityIds:Set<number>;entities:Map<number,RecordValue>;resourceIds:Set<number>;eventCount:number}
+interface Context {version:1|2|3|4;state:GameState;levels:number;width:number;height:number;cells:number;time:number;nextId:number;playerCount:number;maxEntities:number;entityIds:Set<number>;entities:Map<number,RecordValue>;resourceIds:Set<number>;eventCount:number}
 function id(value:unknown,path:string,c:Context):number {return number(value,path,1,c.nextId-1,true);}
 function point(value:unknown,path:string,c:Context):void {const p=object(value,path,['x','y'],['level']);number(p.x,`${path}.x`,0,c.width);number(p.y,`${path}.y`,0,c.height);optionalNumber(p,'level',path,0,c.levels-1,true);}
 function coordinates(value:RecordValue,path:string,c:Context):void {number(value.x,`${path}.x`,0,c.width);number(value.y,`${path}.y`,0,c.height);optionalNumber(value,'level',path,0,c.levels-1,true);}
@@ -88,7 +91,7 @@ function validateEntity(value:unknown,path:string,c:Context):void {
   const original=contentFactions(c.state.content)[(e.definitionFaction??c.state.players[e.side as Side].faction) as string],definition=entityDefinition(c.state,e as unknown as Entity);
   // Grove decoys inherit the template's raised flag, with scaled health and expiry.
   const healthFactor=e.illusion ? .4 : 1,lifetime=e.illusion?15:35;
-  if(e.kind!=='unit'||e.role!=='melee'||!(original.unitDefinitions??Object.values(original.units)).some(d=>d.ability==='raise')||!(original.unitDefinitions??Object.values(original.units)).some(d=>d.role==='melee'&&d.id===definition.id)||e.maxHp!==definition.hp*healthFactor||(e.expires as number)<=0||(e.expires as number)>c.time+lifetime+1e-8)bad(`${path}.raised`,'raised troops require an admitted raising faction melee definition and their summon lifetime');
+  if(e.kind!=='unit'||e.role!=='melee'||c.version===4&&!(original.unitDefinitions??Object.values(original.units)).some(d=>d.ability==='raise')||!(original.unitDefinitions??Object.values(original.units)).some(d=>d.role==='melee'&&d.id===definition.id)||e.maxHp!==definition.hp*healthFactor||(e.expires as number)<=0||(e.expires as number)>c.time+lifetime+1e-8)bad(`${path}.raised`,'raised troops require an admitted raising faction melee definition and their summon lifetime');
  }
  if(e.lastAttacker!==undefined)id(e.lastAttacker,`${path}.lastAttacker`,c);
  for(const key of ['abilityReadyAt','entrenchedAt','lastDamagedAt','surgeUntil','shield','maxShield'])optionalNumber(e,key,path);
@@ -140,9 +143,9 @@ function playersArray(value:unknown,path:string,c:Context,check:(v:unknown,p:str
 function entries(value:unknown,path:string,max:number,c:Context,check:(v:unknown,p:string)=>void):void {
  const seen=new Set<number>();list(value,path,max).forEach((entry,i)=>{const p=`${path}[${i}]`,parts=list(entry,p,2,2),key=id(parts[0],`${p}[0]`,c);if(seen.has(key))bad(path,'duplicate map key');seen.add(key);check(parts[1],`${p}[1]`);});
 }
-function validateRuntime(value:unknown,c:Context,version:1|2|3,teams?:TeamId[]):void {
+function validateRuntime(value:unknown,c:Context,version:1|2|3|4,teams?:TeamId[]):void {
  const fields=['fog','ai','aiTurns','hits','routes','abilities','returning','queuedGather','aiWave','initialScoutDispatched','expansionScout','expansionScoutDispatched','knownEnemyBuildings','enemyStartCleared','searched'];
- const path='runtime',r=object(value,path,version===1?fields:version===2?[...fields,'clearedEnemyStarts']:[...fields,'clearedEnemyStarts','aiBatchTurns','aiDecisionAt','aiDecisionTurns','knownEnemyUnits','retreating','producedFighters'],version===3?['teamAI']:[]);
+ const path='runtime',r=object(value,path,version===1?fields:version===2?[...fields,'clearedEnemyStarts']:[...fields,'clearedEnemyStarts','aiBatchTurns','aiDecisionAt','aiDecisionTurns','knownEnemyUnits','retreating','producedFighters'],version>=3?['teamAI']:[]);
  number(r.fog,'runtime.fog',-.25,.2);number(r.ai,'runtime.ai',-.25,1);number(r.aiTurns,'runtime.aiTurns',0,MAX_VALUE,true);
  list(r.hits,'runtime.hits',c.maxEntities).forEach((v,i)=>{const p=`runtime.hits[${i}]`,h=object(v,p,['source','target','amount','event']);for(const key of ['source','target'])if(!c.entityIds.has(id(h[key],`${p}.${key}`,c)))bad(`${p}.${key}`,'missing hit entity');number(h.amount,`${p}.amount`,0,1e9);number(h.event,`${p}.event`,0,c.eventCount-1,true);});
  entries(r.routes,'runtime.routes',MAX_ID,c,(v,p)=>{const route=object(v,p,['key','at']);if(typeof route.key!=='string'||route.key.length>128)bad(`${p}.key`,'invalid route key');number(route.at,`${p}.at`,0,c.time);});
@@ -155,7 +158,7 @@ function validateRuntime(value:unknown,c:Context,version:1|2|3,teams?:TeamId[]):
  playersArray(r.knownEnemyBuildings,'runtime.knownEnemyBuildings',c,(v,p)=>entries(v,p,c.maxEntities,c,(value,q)=>{const b=object(value,q,['x','y','role'],['level']);coordinates(b,q,c);choice(b.role,`${q}.role`,BUILDING_ROLES);}));
  playersArray(r.searched,'runtime.searched',c,(v,p)=>uniqueIds(list(v,p,c.cells),p,c.cells-1));
  if(version>=2)playersArray(r.clearedEnemyStarts,'runtime.clearedEnemyStarts',c,(v,p)=>uniqueIds(list(v,p,c.playerCount),p,c.playerCount-1));
- if(version===3){
+ if(version>=3){
   number(r.aiBatchTurns,'runtime.aiBatchTurns',0,MAX_VALUE,true);
   playersArray(r.aiDecisionAt,'runtime.aiDecisionAt',c,(v,p)=>number(v,p,0,c.time+3));
   for(const key of ['aiDecisionTurns','producedFighters'])playersArray(r[key],`runtime.${key}`,c,(v,p)=>number(v,p,0,MAX_VALUE,true));
@@ -165,16 +168,16 @@ function validateRuntime(value:unknown,c:Context,version:1|2|3,teams?:TeamId[]):
  }
 
 }
-function validate(envelope:unknown,version:1|2|3):void {
+function validate(envelope:unknown,version:1|2|3|4):void {
  const save=object(envelope,'save',['format','version','state','runtime']);if(save.format!=='orcs-vs-fairies-save')bad('format','unknown save format');if(save.version!==version)bad('version',`unsupported version ${String(save.version)}`);
- const s=object(save.state,'state',version===1?STATE_FIELDS:version===2?[...STATE_FIELDS,...TEAM_FIELDS]:[...STATE_FIELDS,...TEAM_FIELDS,'aiConfigs'],version===3?['content','world','specialists','rules','objectives','draft','scenario','economy','friendlyFire','projectiles','factionSystems']:[]);
- if(s.content!==undefined)s.content=decodeContentBundle(s.content);
+ const s=object(save.state,'state',version===1?STATE_FIELDS:version===2?[...STATE_FIELDS,...TEAM_FIELDS]:[...STATE_FIELDS,...TEAM_FIELDS,'aiConfigs'],version>=3?['content','world','specialists','rules','objectives','draft','scenario','economy','friendlyFire','projectiles','factionSystems']:[]);
+ if(s.content!==undefined)s.content=version<4?decodeHistoricalContentBundle(s.content):decodeContentBundle(s.content);
  const playerCount=list(s.players,'state.players',version===1?2:MAX_PLAYERS,version===1?2:undefined).length;
  if(playerCount===0)bad('state.players','expected between 1 and 8 players');
  const width=number(s.width,'state.width',8,256,true),height=number(s.height,'state.height',8,256,true),nextId=number(s.nextId,'state.nextId',1,MAX_ID,true);
  const levels=s.world===undefined?1:Array.isArray((s.world as RecordValue).levels)?((s.world as RecordValue).levels as unknown[]).length:0;if(levels<1||levels>2)bad('world.levels','expected1 or2 levels');
- const c:Context={state:s as unknown as GameState,levels,width,height,cells:width*height*levels,time:number(s.time,'state.time'),nextId,playerCount,maxEntities:version===1?4096:MAX_ENTITIES,entityIds:new Set(),entities:new Map(),resourceIds:new Set(),eventCount:0};
- if(version===3)playersArray(s.aiConfigs,'state.aiConfigs',c,(v,p)=>{const config=object(v,p,['difficulty','personality','opening']);choice(config.difficulty,`${p}.difficulty`,['easy','normal','hard']);choice(config.personality,`${p}.personality`,['balanced','rush','fortify','expand','raid']);choice(config.opening,`${p}.opening`,['infantry-rush','tower-defense','fast-expansion','cavalry-raids']);});
+ const c:Context={version,state:s as unknown as GameState,levels,width,height,cells:width*height*levels,time:number(s.time,'state.time'),nextId,playerCount,maxEntities:version===1?4096:MAX_ENTITIES,entityIds:new Set(),entities:new Map(),resourceIds:new Set(),eventCount:0};
+ if(version>=3)playersArray(s.aiConfigs,'state.aiConfigs',c,(v,p)=>{const config=object(v,p,['difficulty','personality','opening']);choice(config.difficulty,`${p}.difficulty`,['easy','normal','hard']);choice(config.personality,`${p}.personality`,['balanced','rush','fortify','expand','raid']);choice(config.opening,`${p}.opening`,['infantry-rush','tower-defense','fast-expansion','cavalry-raids']);});
  playersArray(s.controllers,'state.controllers',c,(v,p)=>choice(v,p,['human','ai','external']));choice(s.mapSize,'state.mapSize',['small','medium','large','huge']);number(s.mapVersion,'state.mapVersion',1,MAP_VERSION,true);
  list(s.terrain,'state.terrain',width*height,width*height).forEach((v,i)=>choice(v,`state.terrain[${i}]`,Object.keys(TERRAIN)));playersArray(s.starts,'state.starts',c,(v,p)=>point(v,p,c));flag(s.draw,'state.draw');number(s.tick,'state.tick',0,MAX_VALUE,true);number(s.time,'state.time');number(s.seed,'state.seed',0,0xffffffff,true);
  if(version>=2){
@@ -208,8 +211,8 @@ function validate(envelope:unknown,version:1|2|3):void {
  if(s.economy!==undefined)validateEconomyState(s.economy,{width,height,time:c.time,nextId,playerCount,entities:s.entities as GameState['entities'],resources:s.resources as GameState['resources'],levels:c.levels,world:c.state.world});
  validateRuntime(save.runtime,c,version,s.teams as TeamId[]|undefined);
  validateSpecialists(c.state);
- if(version===3){const count=['rules','objectives','draft'].filter(k=>Object.hasOwn(s,k)).length;if(count!==0&&count!==3)bad('state.rules','rules, objectives and draft must be stored together');if(count===3){const state=s as unknown as GameState;state.rules=validateSavedRules(s.rules,state.content);validateDraftState(s.draft,draftPlayers(state),state.rules,state.content);validateObjectiveState(s.objectives,state);validateModeRoster(state);for(const [i,e] of state.entities.entries())if((e.raised||e.illusion)&&!definitionAllowed(state,e.side,entityDefinition(state,e).id))bad(`state.entities[${i}].${e.raised?'raised':'illusion'}`,'summoned definition is prohibited by the current owner match rules');}}
- if(s.scenario!==undefined)s.scenario=validateScenarioBinding(s.scenario,c.state);
+ if(version>=3){const count=['rules','objectives','draft'].filter(k=>Object.hasOwn(s,k)).length;if(count!==0&&count!==3)bad('state.rules','rules, objectives and draft must be stored together');if(count===3){const state=s as unknown as GameState;state.rules=validateSavedRules(s.rules,state.content);validateDraftState(s.draft,draftPlayers(state),state.rules,state.content);validateObjectiveState(s.objectives,state);validateModeRoster(state);if(version===4)for(const [i,e] of state.entities.entries())if((e.raised||e.illusion)&&!definitionAllowed(state,e.side,entityDefinition(state,e).id))bad(`state.entities[${i}].${e.raised?'raised':'illusion'}`,'summoned definition is prohibited by the current owner match rules');}}
+ if(s.scenario!==undefined)s.scenario=validateScenarioBinding(s.scenario,c.state,version<4);
 }
 function validateCurrent(envelope:unknown):asserts envelope is SaveEnvelope {validate(envelope,SAVE_VERSION);}
 /** Add team rules only after the complete two-player v1 schema has passed validation. */
@@ -222,7 +225,7 @@ function migrateLegacy(envelope:RecordValue):void {
 function migrateAi(envelope:RecordValue):void {
  validate(envelope,2);const state=envelope.state as RecordValue,runtime=envelope.runtime as RecordValue,count=(state.players as unknown[]).length;
  state.aiConfigs=Array.from({length:count},()=>normalizeAiConfig());
- Object.assign(runtime,{aiBatchTurns:0,aiDecisionAt:Array(count).fill(state.time as number),aiDecisionTurns:Array(count).fill(0),knownEnemyUnits:Array.from({length:count},()=>[]),retreating:Array.from({length:count},()=>[]),producedFighters:Array(count).fill(0)});envelope.version=SAVE_VERSION;
+ Object.assign(runtime,{aiBatchTurns:0,aiDecisionAt:Array(count).fill(state.time as number),aiDecisionTurns:Array(count).fill(0),knownEnemyUnits:Array.from({length:count},()=>[]),retreating:Array.from({length:count},()=>[]),producedFighters:Array(count).fill(0)});envelope.version=3;
 }
 /** Copy only bounded JSON data. Accessors, class instances and cycles are rejected. */
 function copyJson(value:unknown):unknown {
@@ -255,15 +258,15 @@ function copyJson(value:unknown):unknown {
 function checkSize(value:unknown):void {if(new TextEncoder().encode(JSON.stringify(value)).byteLength>MAX_SAVE_BYTES)bad('save','save exceeds size limit');}
 export function saveGame(state:GameState):SaveEnvelope {
  const envelope=copyJson({format:'orcs-vs-fairies-save',version:SAVE_VERSION,state:{...state,explored:state.explored.map(set=>[...set]),visible:state.visible.map(set=>[...set])},runtime:captureRuntime(state)});
- checkSize(envelope);validateCurrent(envelope);return envelope;
+ checkSize(envelope);validateCurrent(envelope);completeCurrentState(envelope.state as unknown as GameState);checkSize(envelope);validateCurrent(envelope);return envelope;
 }
 export function loadGame(input:unknown):GameState {
  let source=input;
  if(typeof input==='string'){if(input.length>MAX_SAVE_BYTES||new TextEncoder().encode(input).byteLength>MAX_SAVE_BYTES)bad('save','save exceeds size limit');try{source=JSON.parse(input);}catch{bad('save','invalid JSON');}}
  const envelope=copyJson(source);checkSize(envelope);const record=object(envelope,'save',['format','version','state','runtime']);
- if(record.version===1)migrateLegacy(record);if(record.version===2)migrateAi(record);
+ if(record.version===1)migrateLegacy(record);if(record.version===2)migrateAi(record);if(record.version===3)migrateV3(record);
  validateCurrent(envelope);if(!envelope.state.rules){const state=envelope.state as unknown as GameState;state.rules=normalizeMatchRules({sharedVision:state.sharedVision},state.content);state.draft=createDraft(draftPlayers(state),state.rules,state.content);state.objectives=emptyObjectives(state);}
- checkSize(envelope);validateCurrent(envelope);
+ completeCurrentState(envelope.state as unknown as GameState);checkSize(envelope);validateCurrent(envelope);
  const state:GameState={...envelope.state,explored:envelope.state.explored.map(values=>new Set(values)),visible:envelope.state.visible.map(values=>new Set(values))};
  if(state.world)state.world.levels[0].terrain=state.terrain;
  restoreRuntime(state,envelope.runtime);return state;
@@ -272,12 +275,36 @@ export function loadGame(input:unknown):GameState {
 export function decodeSaveSource(input:unknown):{original:OriginalSaveEnvelope;state:GameState} {
  let source=input;
  if(typeof input==='string'){if(input.length>MAX_SAVE_BYTES||new TextEncoder().encode(input).byteLength>MAX_SAVE_BYTES)bad('save','save exceeds size limit');try{source=JSON.parse(input);}catch{bad('save','invalid JSON');}}
- const original=copyJson(source);checkSize(original);
- const state=loadGame(original);return {original:original as OriginalSaveEnvelope,state};
+ const original=decodeOriginalSaveEnvelope(source);
+ const state=loadGame(original);return {original,state};
 }
 /** Original JSON ordering and UTF-16 code units are part of historical matching. */
-export function checksumSaveEnvelope(input:OriginalSaveEnvelope|SaveEnvelope):string {
- const {original}=decodeSaveSource(input),text=JSON.stringify(original);let hash=2166136261;
+export function checksumSaveEnvelope(input:unknown):string {
+ const original=decodeOriginalSaveEnvelope(input),text=JSON.stringify(original);let hash=2166136261;
  for(let i=0;i<text.length;i++){hash^=text.charCodeAt(i);hash=Math.imul(hash,16777619);}
  return (hash>>>0).toString(16).padStart(8,'0');
+}
+
+/** Read and validate history without authorizing a resume under newer rules. */
+export function decodeOriginalSaveEnvelope(input:unknown):OriginalSaveEnvelope {
+ let source=input;
+ if(typeof input==='string'){if(input.length>MAX_SAVE_BYTES||new TextEncoder().encode(input).byteLength>MAX_SAVE_BYTES)bad('save','save exceeds size limit');try{source=JSON.parse(input);}catch{bad('save','invalid JSON');}}
+ const original=copyJson(source);checkSize(original);const record=object(original,'save',['format','version','state','runtime']);
+ if(![1,2,3,4].includes(record.version as number))bad('version',`unsupported version ${String(record.version)}`);
+ validate(copyJson(original),record.version as 1|2|3|4);return original as OriginalSaveEnvelope;
+}
+function completeCurrentState(state:GameState):void {
+ state.friendlyFire??=state.rules?.friendlyFire??true;state.projectiles??=[];initializeFactionSystems(state);
+ state.economy??=createEconomyState(state.players.length);
+ for(const entity of state.entities)if(entity.kind==='unit')initializeTactics(state,entity);
+}
+function migrateV3(envelope:RecordValue):void {
+ validate(envelope,3);const state=envelope.state as unknown as GameState;
+ for(const entity of state.entities)if(entity.raised&&!entity.definitionFaction){
+  const faction=contentFactions(state.content)[state.players[entity.side].faction];
+  if(!(faction.unitDefinitions??Object.values(faction.units)).some(unit=>unit.ability==='raise'))throw new Error('Legacy captured summon origin is absent. This saved match is available for inspection but cannot resume under current rules.');
+ }
+ if(state.content)state.content=migrateHistoricalContentBundle(state.content);
+ if(state.scenario?.definition.content)state.scenario.definition.content=migrateHistoricalContentBundle(state.scenario.definition.content);
+ completeCurrentState(state);envelope.version=SAVE_VERSION;
 }
