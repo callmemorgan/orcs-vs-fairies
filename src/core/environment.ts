@@ -140,6 +140,12 @@ function evacuate(s:WorldGame,e:Entity):void {
   const p={x:x+.5,y:y+.5,level:levelOf(e)},d=Math.hypot(p.x-e.x,p.y-e.y);
   if(d<=ENVIRONMENT_RULES.evacuationRadius&&d<bestDistance&&bankClear(s,p)){best=p;bestDistance=d;}
  }
+ // As with navigation's refined grid, a narrow legal bank can fall between
+ // tile centers. Exhaust those rescue positions before declaring drowning.
+ if(!best)for(let y=Math.max(0,Math.floor((e.y-ENVIRONMENT_RULES.evacuationRadius)*4));y<Math.min(s.height*4,Math.ceil((e.y+ENVIRONMENT_RULES.evacuationRadius)*4));y++)for(let x=Math.max(0,Math.floor((e.x-ENVIRONMENT_RULES.evacuationRadius)*4));x<Math.min(s.width*4,Math.ceil((e.x+ENVIRONMENT_RULES.evacuationRadius)*4));x++){
+  const p={x:(x+.5)/4,y:(y+.5)/4,level:levelOf(e)},d=Math.hypot(p.x-e.x,p.y-e.y);
+  if(d<=ENVIRONMENT_RULES.evacuationRadius&&d<bestDistance&&bankClear(s,p)){best=p;bestDistance=d;}
+ }
  if(!best){hurt(s,e,e.hp,'Lake thawed: trapped troop drowned; no bank within 6 tiles',true);return;}
  e.x=best.x;e.y=best.y;e.path=[];e.order={type:'idle'};delete e.orderQueue;
  hurt(s,e,Math.max(0,Math.min(e.hp-1,e.maxHp*ENVIRONMENT_RULES.evacuationInjury)),'Lake thawed: troop evacuated to bank, injured by up to 25% health',true);

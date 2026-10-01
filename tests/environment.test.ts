@@ -188,6 +188,14 @@ describe('seasonal lake crossings',()=>{
   expect(e.hp).toBe(0);expect(s.corpses.some(c=>c.id===e.id)).toBe(true);
   expect(s.events.some(e=>e.type==='death'&&e.text?.includes('no bank within 6 tiles'))).toBe(true);
  });
+ it('finds a narrow legal bank between walls when every bank tile center is blocked',()=>{
+  const s=scenario();s.terrain.fill('water');for(let x=5;x<=8;x++)terrain(s,x,4,'grass');
+  for(const x of [6,8])s.entities.push({...s.entities[1],id:s.nextId++,x,y:4.5,kind:'building',role:'wall'});
+  const e=s.entities[0];e.x=7;e.y=7.5;winter(s);
+  expect(walkable(s,7,4.5)).toBe(true);s.time=400;stepEnvironment(s,.25);
+  expect(e.hp).toBe(75);expect(walkable(s,e.x,e.y)).toBe(true);expect(e.y).toBeLessThan(5);
+  expect(s.events.some(event=>event.source===e.id&&event.text?.includes('evacuated to bank'))).toBe(true);
+ });
  it('does not revert an ice tile replaced by a repaired bridge before thaw',()=>{
   const s=scenario();terrain(s,3,4,'water');winter(s);terrain(s,3,4,'bridge');s.time=400;stepEnvironment(s,.25);
   expect(s.terrain[4*16+3]).toBe('bridge');expect(s.world.iceTiles).toEqual([]);
