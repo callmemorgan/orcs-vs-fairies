@@ -8,6 +8,7 @@ export interface OnlineMatchRequest { matchId:string;role:'player'|'spectator';p
 export interface OnlineLobbyOptions {
   api?:OnlineApi;onJoinMatch:(request:OnlineMatchRequest)=>void|Promise<void>;
   onVisibility?:(visible:boolean)=>void;pollIntervalMs?:number;
+  toolbar?:HTMLElement;
 }
 const escape=(value:string)=>value.replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]!));
 const factionOptions=(selected:FactionId)=>Object.values(FACTIONS).map(faction=>`<option value="${faction.id}"${faction.id===selected?' selected':''}>${escape(faction.name)}</option>`).join('');
@@ -172,7 +173,7 @@ export function mountOnlineLobby(root:HTMLElement,options:OnlineLobbyOptions) {
       element<HTMLInputElement>('[aria-label="Online password"]').value='';message(`Signed in as ${account.username}.`);await refresh();});
     if(polling)clearTimeout(polling);pollLater();
   }
-  element<HTMLButtonElement>('.online-open').onclick=()=>void show();element<HTMLButtonElement>('.online-close').onclick=hide;
+  const launch=element<HTMLButtonElement>('.online-open');launch.onclick=()=>void show();element<HTMLButtonElement>('.online-close').onclick=hide;
   element<HTMLFormElement>('.online-auth').onsubmit=event=>{event.preventDefault();void authenticate('login');};
   element<HTMLButtonElement>('[data-online="register"]').onclick=()=>void authenticate('register');element<HTMLButtonElement>('[data-online="guest"]').onclick=()=>void authenticate('guest');
   element<HTMLButtonElement>('[data-online="logout"]').onclick=()=>void run(async()=>{await api.logout();account=null;current=null;lobbies=[];message('Signed out.');});
@@ -214,6 +215,7 @@ export function mountOnlineLobby(root:HTMLElement,options:OnlineLobbyOptions) {
       else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus();}
     }
   });
+  if(options.toolbar)options.toolbar.append(launch);
   return {show,hide,get visible(){return !overlay.hidden;},get account(){return account;},get currentLobby(){return current;},refresh,
-    dispose(){if(disposed)return;hide();disposed=true;requestEpoch++;if(polling)clearTimeout(polling);host.remove();}};
+    dispose(){if(disposed)return;hide();disposed=true;requestEpoch++;if(polling)clearTimeout(polling);launch.remove();host.remove();}};
 }
