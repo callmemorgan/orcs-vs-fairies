@@ -1,4 +1,5 @@
 import { FACTIONS } from '../core/content';
+import { contentFactions } from '../core/content-registry';
 import type { ScenarioAction, ScenarioActor, ScenarioCondition, ScenarioDefinition, ScenarioObjective, ScenarioOrder, ScenarioTrigger } from '../core/scenario-types';
 import type { BuildingRole, FactionId, Side, UnitRole, Vec } from '../core/types';
 import { EditorDocument } from '../editor/document';
@@ -18,7 +19,7 @@ const unitRoles: UnitRole[] = ['worker', 'melee', 'ranged', 'special', 'cavalry'
 const buildingRoles: BuildingRole[] = ['hq', 'depot', 'barracks', 'tower', 'wall', 'gate'];
 const conditionTypes = ['alive', 'dead', 'at', 'time', 'variable', 'cleared', 'all', 'any', 'not'] as const;
 const conditionNames: Record<ScenarioCondition['type'], string> = { alive: 'Actor is alive', dead: 'Actor is dead', at: 'Actor reaches a point', time: 'Elapsed time', variable: 'Variable comparison', cleared: 'Side has been cleared', all: 'All conditions', any: 'Any condition', not: 'Condition is false' };
-const actionNames: Record<ScenarioAction['type'], string> = { spawn: 'Spawn actors', order: 'Order actors', set: 'Set variable', add: 'Add to variable', message: 'Show message', reward: 'Give resources', finish: 'Finish mission' };
+const actionNames: Record<ScenarioAction['type'], string> = { spawn: 'Spawn actors', order: 'Order actors', set: 'Set variable', add: 'Add to variable', message: 'Show message', reward: 'Give resources', alliance: 'Change alliance', finish: 'Finish mission' };
 const element = <K extends keyof HTMLElementTagNameMap>(tag: K, text?: string): HTMLElementTagNameMap[K] => { const node = document.createElement(tag); if (text !== undefined) node.textContent = text; return node; };
 function button(text: string, action: () => void): HTMLButtonElement { const node = element('button', text); node.type = 'button'; node.addEventListener('click', action); return node; }
 function field(parent: HTMLElement, name: string, input: HTMLElement): void { const label = element('label'); label.className = 'editor-field'; label.append(element('span', name), input); parent.append(label); }
@@ -116,10 +117,13 @@ export function mountScenarioAuthoring(parent: HTMLElement, callbacks: ScenarioA
     select(box, `${label} role`, value.role, value.kind === 'unit' ? unitRoles : buildingRoles, role => { const next = { ...value, role }; delete next.definitionId; write(next); });
     position(box, `${label} position`, value, point => write({ ...value, ...point }));
     const faction = value.side === 0 ? doc.value.faction : doc.value.opponent;
-    const maxHp = value.kind === 'unit' ? FACTIONS[faction].units[value.role as UnitRole].hp : FACTIONS[faction].buildings[value.role as BuildingRole].hp;
+    const catalog = contentFactions()[faction];
+    const definitions = value.kind === 'unit' ? catalog.unitDefinitions : catalog.buildingDefinitions;
+    const custom = definitions?.find(def => def.id === value.definitionId && def.role === value.role);
+    const maxHp = custom?.hp ?? (value.kind === 'unit' ? catalog.units[value.role as UnitRole].hp : catalog.buildings[value.role as BuildingRole].hp);
     checkbox(box, `${label} custom health`, value.hp !== undefined, enabled => { const next = { ...value }; if (enabled) next.hp = maxHp; else delete next.hp; write(next); });
     if (value.hp !== undefined) numberInput(box, `${label} health`, value.hp, hp => write({ ...value, hp }), 1, maxHp);
-    textInput(box, `${label} custom definition ID`, value.definitionId ?? '', definitionId => { const next = { ...value }; if (definitionId.trim()) next.definitionId = definitionId.trim(); else delete next.definitionId; write(next); }, 64);
+    textInput(box, `${label} custom definition ID`, value.definitionId ?? '', definitionId => { const next = { ...value }; if (definitionId.trim()) next.definitionId = definitionId.trim(); else delete next.definitionId; write(next); }, 96);
     checkbox(box, `${label} initial order`, value.order !== undefined, enabled => { const next = { ...value }; if (enabled) next.order = { type: 'hold' }; else delete next.order; write(next); });
     if (value.order) orderEditor(box, label, value.order, order => write({ ...value, order }));
   }
@@ -161,6 +165,7 @@ export function mountScenarioAuthoring(parent: HTMLElement, callbacks: ScenarioA
     if (type === 'set' || type === 'add') return { type, key: 'progress', value: 1 };
     if (type === 'message') return { type, text: 'Reinforcements have arrived.' };
     if (type === 'reward') return { type, side: 0, resources: { wood: 100, ore: 50, crystal: 0 } };
+    if (type === 'alliance') return { type, allied: true };
     return { type, outcome: 'won', reason: 'Custom victory condition completed.' };
   }
   function actionEditor(parent: HTMLElement, label: string, value: ScenarioAction, write: (action: ScenarioAction) => void): void {
@@ -173,6 +178,7 @@ export function mountScenarioAuthoring(parent: HTMLElement, callbacks: ScenarioA
     if (value.type === 'set' || value.type === 'add') { textInput(box, `${label} variable`, value.key, key => write({ ...value, key }), 64); numberInput(box, `${label} value`, value.value, next => write({ ...value, value: next }), -1e6, 1e6); }
     if (value.type === 'message') { textInput(box, `${label} message`, value.text, text => write({ ...value, text }), 8000, true); textInput(box, `${label} speaker`, value.speaker ?? '', speaker => { const next = { ...value }; if (speaker.trim()) next.speaker = speaker.trim(); else delete next.speaker; write(next); }, 120); }
     if (value.type === 'reward') { select(box, `${label} reward side`, String(value.side), ['0', '1'], side => write({ ...value, side: Number(side) as Side }), { '0': 'Player', '1': 'Opponent' }); for (const kind of ['wood', 'ore', 'crystal'] as const) numberInput(box, `${label} ${kind}`, value.resources[kind], amount => write({ ...value, resources: { ...value.resources, [kind]: amount } })); }
+    if (value.type === 'alliance') checkbox(box, `${label} sides allied`, value.allied, allied => write({ ...value, allied }));
     if (value.type === 'finish') { select(box, `${label} outcome`, value.outcome, ['won', 'lost'], outcome => write({ ...value, outcome }), { won: 'Player victory', lost: 'Player defeat' }); textInput(box, `${label} reason`, value.reason, reason => write({ ...value, reason }), 2000, true); }
   }
   function objectiveEditor(parent: HTMLElement, objective: ScenarioObjective, index: number): void {

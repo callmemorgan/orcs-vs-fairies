@@ -65,10 +65,13 @@ try {
   assert(diagnostics.scenario.entities.some(entity => entity.id === diagnostics.scenario.runtime.labels['wave-1-actor-1']));
   checked('authored escort and wave execute in normal game and custom victory wins', { tick: diagnostics.tick, escortCheckpoint: diagnostics.scenario.runtime.escort.checkpoint });
   await page.screenshot({ path: path.join(evidence, 'scenario-success.png'), fullPage: true });
-  await page.getByText('Choose a campaign or practice mission', { exact: true }).click();
-  await page.getByRole('button', { name: 'Launch practice mission', exact: true }).click();
+  assert.equal(await page.locator('#overlay-description').innerText(), diagnostics.scenario.runtime.reason);
+  assert(!await page.locator('#overlay-description').innerText().then(text => text.includes('stronghold')));
+  await page.getByRole('button', { name: 'Map and scenario editor', exact: true }).click();
+  await page.getByRole('tab', { name: 'Scenario editor', exact: true }).click();
+  await page.getByRole('button', { name: 'Play scenario', exact: true }).click();
   await page.waitForFunction(() => window.editorDiagnostics?.()?.scenario?.runtime.outcome === 'playing');
-  checked('authored scenario can be relaunched through the normal scenario menu');
+  checked('authored scenario relaunches through its native editor play control');
   await page.getByRole('button', { name: 'Map and scenario editor', exact: true }).click();
   await page.getByRole('tab', { name: 'Scenario editor', exact: true }).click();
   await fold('Initial actors'); await page.getByLabel('Actor 1 custom health', { exact: true }).check(); await fill('Actor 1 health', 1);

@@ -657,3 +657,26 @@ describe('scenario authoring controls', () => {
     expect(decodeScenarioPackage(playScenario.mock.calls[0][0]).scenario.objectives[0].failure).toEqual({ type: 'dead', actor: 'commander' });
   });
 });
+
+
+describe('scenario authoring with the assembled registry', () => {
+  it('preserves a real commander definition and uses its health bound', () => {
+    const { root, panel } = setup();
+    change(root, 'Actor 1 role', 'special');
+    change(root, 'Actor 1 custom definition ID', 'core:orcs-commander');
+    toggle(root, 'Actor 1 custom health');
+    expect(panel.getScenario().army[0].definitionId).toBe('core:orcs-commander');
+    expect(panel.getScenario().army[0].hp).toBe(280);
+    expect((control(root, 'Actor 1 health') as HTMLInputElement).max).toBe('280');
+    expect(decodeScenarioPackage(panel.exportPackage()).scenario.army[0].definitionId).toBe('core:orcs-commander');
+  });
+
+  it('authors an alliance event without dropping its state', () => {
+    const { root, panel } = setup();
+    click(root, 'Add event');
+    change(root, 'Event 1 action 1 type', 'alliance');
+    expect(panel.getScenario().events[0].actions[0]).toEqual({ type: 'alliance', allied: true });
+    toggle(root, 'Event 1 action 1 sides allied');
+    expect(decodeScenarioPackage(panel.exportPackage()).scenario.events[0].actions[0]).toEqual({ type: 'alliance', allied: false });
+  });
+});

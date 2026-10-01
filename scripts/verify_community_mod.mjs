@@ -40,7 +40,9 @@ async function servedAssetHashes(build) {
   for (const url of [...build.scripts, ...build.stylesheets]) {
     const response = await fetch(url);
     assert.equal(response.status, 200, 'The served production entry asset is readable');
-    values[new URL(url).pathname] = createHash('sha256').update(Buffer.from(await response.arrayBuffer())).digest('hex');
+    const bytes = Buffer.from(await response.arrayBuffer());
+    assert.deepEqual(bytes, await readFile(path.resolve(staticDir, `.${new URL(url).pathname}`)), 'The served asset matches this production build');
+    values[new URL(url).pathname] = createHash('sha256').update(bytes).digest('hex');
   }
   return values;
 }
@@ -203,8 +205,25 @@ try {
   original = helpers.decodeContentPackage(JSON.parse(sourceText));
   const dependencies = [];
   for (const file of dependencyPaths) dependencies.push(helpers.decodeContentPackage(JSON.parse(await readFile(path.resolve(file), 'utf8'))));
+  // Default proof exercises recursive dependency downloads, using two small
+  // faction-only manifests so Lantern's gameplay definitions stay unchanged.
+  if (dependencies.length === 0 && original.dependencies.length === 0) {
+    const support = (id, deps) => {
+      const body = { format: original.format, schemaVersion: 1, engineVersion: original.engineVersion,
+        id, version: '1.0.0', name: `Proof ${id}`, dependencies: deps,
+        factions: [{ id: `${id}:helpers`, baseFaction: 'fairies', name: `Proof ${id}`, subtitle: 'Lantern dependency',
+          description: 'Faction-only dependency for the native immutable installation proof.', color: 15973717, accent: '#f3bd55', units: [], buildings: [], research: [] }], art: {} };
+      return helpers.decodeContentPackage({ ...body, hash: helpers.contentHash(body) });
+    };
+    const leaf = support('lantern-proof-leaf', []);
+    const middle = support('lantern-proof-support', [{ id: leaf.id, version: leaf.version, hash: leaf.hash }]);
+    dependencies.push(leaf, middle);
+    const { hash: _hash, ...body } = original;
+    body.dependencies = [{ id: middle.id, version: middle.version, hash: middle.hash }];
+    original = helpers.decodeContentPackage({ ...body, hash: helpers.contentHash(body) });
+  }
   originalBundle = helpers.createContentBundle([...dependencies, original]);
-  await writeFile(path.join(evidence, 'mod-original.json'), sourceText);
+  await save('mod-original.json', original);
   await save('expected-original-bundle.json', originalBundle);
   const faction = original.factions[0];
   const hall = faction.buildings.find(value => value.id === faction.defaultBuildings?.barracks);
@@ -233,6 +252,7 @@ try {
   publisherPage = await publisher.newPage(); receiverPage = await receiver.newPage();
   for (const page of [publisherPage, receiverPage]) { page.setDefaultTimeout(15000); page.on('pageerror', error => errors.push(error.message)); }
   const publisherBuild = await openWorkbench(publisherPage), receiverBuild = await openWorkbench(receiverPage);
+  await promisify(execFile)(process.execPath, [path.join(root, 'scripts/verify_served_build.mjs'), `${base}/editor.html`, path.join(evidence, 'served-build.json')], { cwd: root });
   const suffix = Date.now().toString(36);
   const author = await register(publisherPage, `ModPublisher${suffix}`);
   const viewer = await register(receiverPage, `ModReceiver${suffix}`);
@@ -261,9 +281,11 @@ try {
   checked('publisher uploads the exact validated mod and its pinned dependencies', { manifestHash: original.hash, downloadHash: publishedOriginal.detail.hash });
   await searchMod(receiverPage);
   await receiverPage.locator('.community-preview').getByText(`${faction.name}: ${faction.units.length} custom units and ${faction.buildings.length} buildings.`, { exact: true }).waitFor();
-  await installRevision(receiverPage, publishedOriginal, original);
+  const installedOriginal = await installRevision(receiverPage, publishedOriginal, original);
+  assert.equal(installedOriginal.records.length, originalBundle.packages.length);
+  checked('native installation preserves the recursive dependency graph', { packages: installedOriginal.records.map(record => ({ id: record.localId, version: record.version, dependencies: record.dependencies })) });
   await receiverPage.screenshot({ path: path.join(evidence, 'community-mod-preview.png'), fullPage: true });
-  checked('receiver finds, downloads, verifies and installs the exact root closure');
+  checked('receiver finds, recursively downloads, verifies and installs the exact root closure');
 
   const initial = await playInstalled(receiverPage, original, originalBundle);
   await save('community-mod-initial.json', initial);

@@ -62,6 +62,7 @@ async function paint(page, kind) {
 let first, second, oldReplay;
 try {
   await a.goto(`${base}/editor.html?art=placeholder`);
+  await promisify(execFile)(process.execPath, [path.resolve('scripts/verify_served_build.mjs'), `${base}/editor.html`, path.join(evidence, 'served-build.json')]);
   await a.getByLabel('Map title', { exact: true }).fill('Community river pass');
   await a.getByLabel('Package ID', { exact: true }).fill(localId); await paint(a, 'sand');
   await a.getByRole('button', { name: 'Close editor', exact: true }).click(); await openCommunity(a);
@@ -115,11 +116,47 @@ try {
   const replay = new ReplayPlayer(JSON.parse(await readFile(path.join(evidence, 'pinned-map-v1.replay.json'), 'utf8'))); replay.advance(40);
   assert(replay.finished); assert.equal(replay.state.terrain[37], 'sand'); assert.deepEqual(saveGame(replay.state), saveGame(oldState)); replay.dispose();
   checked('original replay opens through the shared replay player after newer remote publication and restart', { finalTick: oldReplay.finalTick, checksum: oldReplay.finalChecksum });
+
+  await b.locator('[data-session-tool="replay"]').click();
+  await b.getByLabel('Import replay JSON', { exact: true }).setInputFiles(path.join(evidence, 'pinned-map-v1.replay.json'));
+  await b.getByRole('button', { name: 'Import replay', exact: true }).click();
+  await b.waitForFunction(() => window.rts?.mode === 'replay' && window.rts.state.tick === 0, null, { timeout: 45000 });
+  assert.equal((await b.evaluate(() => window.rts.state.terrain))[37], 'sand');
+  const browserReplay = new ReplayPlayer(oldReplay);
+  for (const tick of [20, 40, 0, 40]) {
+    const slider = b.getByLabel('Replay tick', { exact: true });
+    if (tick === 40) await slider.press('End');
+    else {
+      await slider.press('Home'); await b.waitForFunction(() => window.rts?.state.tick === 0);
+      for (let next = 1; next <= tick; next++) { await slider.press('ArrowRight'); await b.waitForFunction(tick => window.rts?.state.tick === tick, next); }
+    }
+    await b.waitForFunction(tick => window.rts?.mode === 'replay' && window.rts.state.tick === tick, tick, { timeout: 45000 });
+    browserReplay.seek(tick);
+    await b.locator('[data-session-tab="saves"]').click();
+    const downloading = b.waitForEvent('download');
+    await b.getByRole('button', { name: 'Export save', exact: true }).click();
+    const file = path.join(evidence, `browser-replay-tick-${tick}-${results.length}.save.json`);
+    await (await downloading).saveAs(file);
+    const session = JSON.parse(await readFile(file, 'utf8'));
+    assert.deepEqual(session.game, saveGame(browserReplay.state), 'Actual main replay viewer exports the complete canonical state at the selected tick');
+    await b.locator('[data-session-tab="replay"]').click();
+    checked('native browser replay viewer seeks pinned old terrain with complete state equality', { tick });
+  }
+  browserReplay.dispose();
+  await b.getByLabel('Replay tick', { exact: true }).press('Home');
+  await b.waitForFunction(() => window.rts?.state.tick === 0);
+  await b.getByRole('button', { name: 'Close session tools', exact: true }).click();
+  await b.locator('[data-session-tool="replay"]').click();
+  await b.getByRole('button', { name: 'Play replay', exact: true }).click();
+  await b.getByRole('button', { name: 'Close session tools', exact: true }).click();
+  await b.waitForFunction(() => window.rts?.state.tick === 40 && window.rts.paused, null, { timeout: 15000 });
+  await b.screenshot({ path: path.join(evidence, 'community-pinned-replay-viewer.png'), fullPage: true });
+  checked('native browser viewer plays the original recording to completion after publication and restart');
   assert.deepEqual(errors, []); checked('both browser profiles have no uncaught errors');
 } catch (error) {
   await b.screenshot({ path: path.join(evidence, 'community-proof-failure.png'), fullPage: true });
   await writeFile(path.join(evidence, 'failure.json'), JSON.stringify({ error: String(error), publisherStatus: await a.locator('.community-status').allTextContents(), receiverStatus: await b.locator('.community-status').allTextContents() }, null, 2)); throw error;
 } finally {
-  await writeFile(path.join(evidence, 'result.json'), JSON.stringify({ base, results, errors, checkedAt: new Date().toISOString(), scope: 'Production browser map publication/install/play and shared replay playback; mod installation has separate HTTP proof and mod launch awaits the merged content engine.' }, null, 2));
+  await writeFile(path.join(evidence, 'result.json'), JSON.stringify({ base, results, errors, checkedAt: new Date().toISOString(), scope: 'Canonical production game host: two-account map publication/install/play, restart, pinned revisions and native browser replay playback with complete exported state equality.' }, null, 2));
   await browser.close(); await server.close(); await rm(dataDir, { recursive: true, force: true });
 }

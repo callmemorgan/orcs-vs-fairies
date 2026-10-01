@@ -106,7 +106,7 @@ function actor(value: unknown, path: string, refs: string[], width: number, heig
   id(a.label, `${path}.label`); number(a.side, `${path}.side`, 0, 1, true); choice(a.kind, `${path}.kind`, ['unit', 'building']);
   choice(a.role, `${path}.role`, a.kind === 'unit' ? unitRoles : buildingRoles); point({ x: a.x, y: a.y }, path, width, height);
   if (a.level !== undefined) number(a.level, `${path}.level`, 0, 1, true);
-  if (a.definitionId !== undefined) id(a.definitionId, `${path}.definitionId`);
+  if (a.definitionId !== undefined) { const value = text(a.definitionId, `${path}.definitionId`, 96); if (!/^[a-zA-Z][a-zA-Z0-9_.-]*(?::[a-zA-Z0-9_.-]+)?$/.test(value)) bad(`${path}.definitionId`, 'invalid definition identifier'); }
   if (a.hp !== undefined) number(a.hp, `${path}.hp`, Number.MIN_VALUE, 1e7);
   if (a.order !== undefined) order(a.order, `${path}.order`, refs, width, height);
   return a as unknown as ScenarioActor;
@@ -154,13 +154,14 @@ function readScenario(value: unknown, complete: boolean): ScenarioDefinition {
     const path = `scenario.events[${i}]`, e = object(value, path, ['id', 'when', 'actions'], ['repeat']); const key = id(e.id, `${path}.id`); if (eventIds.has(key)) bad(`${path}.id`, 'duplicate event ID'); eventIds.add(key); condition(e.when, `${path}.when`, refs, width, height);
     if (e.repeat !== undefined) { const r = object(e.repeat, `${path}.repeat`, ['seconds', 'count']); number(r.seconds, `${path}.repeat.seconds`, 1, 86400); number(r.count, `${path}.repeat.count`, 1, 10000, true); }
     array(e.actions, `${path}.actions`, SCENARIO_EDITOR_LIMITS.actions, complete ? 1 : 0).forEach((value, index) => {
-      const p = `${path}.actions[${index}]`, type = choice((value as RecordValue)?.type, `${p}.type`, ['spawn', 'order', 'set', 'add', 'message', 'reward', 'finish']);
-      const a = object(value, p, type === 'spawn' ? ['type', 'actors'] : type === 'order' ? ['type', 'actors', 'order'] : type === 'set' || type === 'add' ? ['type', 'key', 'value'] : type === 'message' ? ['type', 'text'] : type === 'reward' ? ['type', 'side', 'resources'] : ['type', 'outcome', 'reason'], type === 'message' ? ['speaker'] : []);
+      const p = `${path}.actions[${index}]`, type = choice((value as RecordValue)?.type, `${p}.type`, ['spawn', 'order', 'set', 'add', 'message', 'reward', 'alliance', 'finish']);
+      const a = object(value, p, type === 'spawn' ? ['type', 'actors'] : type === 'order' ? ['type', 'actors', 'order'] : type === 'set' || type === 'add' ? ['type', 'key', 'value'] : type === 'message' ? ['type', 'text'] : type === 'reward' ? ['type', 'side', 'resources'] : type === 'alliance' ? ['type', 'allied'] : ['type', 'outcome', 'reason'], type === 'message' ? ['speaker'] : []);
       if (type === 'spawn') actors(a.actors, `${p}.actors`, 1);
       if (type === 'order') { array(a.actors, `${p}.actors`, 512, 1).forEach((v, i) => refs.push(id(v, `${p}.actors[${i}]`))); order(a.order, `${p}.order`, refs, width, height); }
       if (type === 'set' || type === 'add') { id(a.key, `${p}.key`); number(a.value, `${p}.value`, -1e9, 1e9); }
       if (type === 'message') { text(a.text, `${p}.text`, 8000); if (a.speaker !== undefined) text(a.speaker, `${p}.speaker`, 120); }
       if (type === 'reward') { number(a.side, `${p}.side`, 0, 1, true); cost(a.resources, `${p}.resources`); }
+      if (type === 'alliance') bool(a.allied, `${p}.allied`);
       if (type === 'finish') { choice(a.outcome, `${p}.outcome`, ['won', 'lost']); text(a.reason, `${p}.reason`, 2000); }
     });
   });

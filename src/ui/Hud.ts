@@ -177,7 +177,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
       if(cb.isReplay?.()&&state!==s)minimapAlerts.reset();state=s;callbacks=cb;paused=cb.isPaused?.()??paused;const nextSide=cb.side?.()??0;if(nextSide!==localSide){localSide=nextSide;playerView=new PlayerView(localSide);actionsKey='';}tree.update(s,paused,localSide,cb.canCommand?.()===false);if(!menu.hidden)return;const player=s.players[localSide],definition=factionFor(s,localSide);const art=(id:string)=>contentArt(s.content)[id]?contentAssetUrl(s,id):`/assets/selection-${id}.png`;
       setText('#sound-button',cb.isMuted()?'Enable sound':'Mute sound');el('#sound-button').setAttribute('aria-pressed',String(cb.isMuted()));
       setText('#faction-name',definition.name);el<HTMLImageElement>('#banner-portrait').src=player.faction.includes(':')?art(definition.units.melee.id):`/assets/portrait-${player.faction}.png`;setText('#wood',Math.floor(player.wood).toString());setText('#ore',Math.floor(player.ore).toString());setText('#crystal',Math.floor(player.crystal).toString());setText('#population',`${player.population} / ${player.cap}`);
-      el('.objective-tag').textContent=`${AGE_NAMES[playerAge(s.players[localSide])]} · ${s.rules?.mode==='hill'?'Capture and defend the hill':s.rules?.mode==='relic'?'Collect and defend the relics':s.rules?.mode==='survival'?'Defeat every survival wave':s.rules?.mode==='scenario'?'Complete the scenario objectives':'Destroy all enemy strongholds'} · ${s.mapSize} · seed ${s.seed}`;
+      el('.objective-tag').textContent=`${AGE_NAMES[playerAge(s.players[localSide])]} · ${s.scenario?.definition.title ?? (s.rules?.mode==='hill'?'Capture and defend the hill':s.rules?.mode==='relic'?'Collect and defend the relics':s.rules?.mode==='survival'?'Defeat every survival wave':s.rules?.mode==='scenario'?'Complete the scenario objectives':'Destroy all enemy strongholds')} · ${s.mapSize} · seed ${s.seed}`;
       setText('#clock',`${Math.floor(s.time/60).toString().padStart(2,'0')}:${Math.floor(s.time%60).toString().padStart(2,'0')}`);
       if(performance.now()>noticeUntil)el('.notice').hidden=true;
       const entities=s.entities.filter(e=>selected.includes(e.id)&&e.hp>0&&(e.side===localSide||s.visible[localSide].has(fogKey(s,e)))).map(e=>e.side===localSide?e:{...e,...observedHealth(s,localSide,e)});const own=entities.filter(e=>e.side===localSide);const first=entities[0];
@@ -265,7 +265,14 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
       for(const action of actions){const slot=['Z','C','B','V','N','M'].indexOf(action.hotkey??'');const id=slot>=0?`action${slot+1}`:({A:'attackMove',X:'stop',H:'hold',Q:'ability'} as Record<string,string>)[action.hotkey??''];const label=id?cb.bindingLabel?.(id):undefined;if(label!==undefined){const key=action.button.querySelector('kbd');if(key)key.textContent=label;}}
       tooltip.refresh();
       overlay.hidden=!!cb.isInspection?.()||!!cb.isReplay?.()||!paused&&s.winner===null&&!s.draw;
-      if(!overlay.hidden){const ended=s.winner!==null||s.draw;setText('#overlay-title',ended?s.draw?'Draw':s.winningTeam===s.teams[localSide]?'Victory':'Defeat':'Battle paused');setText('#overlay-eyebrow',ended?'THE BATTLE IS OVER':'SKIRMISH');setText('#overlay-description',ended?s.draw?'Both sides lost their last stronghold in the same exchange.':s.winningTeam===s.teams[localSide]?'The last enemy stronghold has fallen. The Elderwood is yours.':'Your team has lost its last stronghold. Raise your banner and try again.':'Take a moment to plan your next move.');el('#resume-button').hidden=ended;}
+      if(!overlay.hidden){
+        const ended=s.winner!==null||s.draw,mission=s.scenario;
+        setText('#overlay-title',ended?s.draw?'Draw':s.winningTeam===s.teams[localSide]?'Victory':'Defeat':'Battle paused');
+        setText('#overlay-eyebrow',mission?'MISSION':ended?'THE BATTLE IS OVER':'SKIRMISH');
+        const description=mission&&ended?(mission.runtime.reason||(mission.runtime.outcome==='won'?mission.definition.successText:mission.definition.failureText)):
+          ended?s.draw?'Both sides lost their last stronghold in the same exchange.':s.winningTeam===s.teams[localSide]?'The last enemy stronghold has fallen. The Elderwood is yours.':'Your team has lost its last stronghold. Raise your banner and try again.':'Take a moment to plan your next move.';
+        setText('#overlay-description',description);el('#resume-button').hidden=ended;
+      }
       el<HTMLButtonElement>('#pause-button').disabled=cb.canPause?.()===false;setText('#pause-button',paused?'Resume':'Pause');drawMinimap(s);
     }
   };

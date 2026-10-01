@@ -14,7 +14,8 @@ for (const file of (await readdir('src', { recursive: true })).map(String).filte
 const response = await fetch(url, { cache: 'no-store' });
 assert.equal(response.status, 200);
 const html = await response.text();
-const localHtml = await readFile('dist/index.html', 'utf8');
+const pagePath = new URL(url).pathname;
+const localHtml = await readFile(resolve('dist', pagePath === '/' ? 'index.html' : `.${pagePath}`), 'utf8');
 assert.equal(html, localHtml, 'Served HTML differs from the current production build.');
 const assets = [...html.matchAll(/(?:src|href)="(\/assets\/[^\"]+)"/g)].map(match => match[1]);
 assert(assets.some(file => file.endsWith('.js')), 'The page has no production script.');
