@@ -1,0 +1,35 @@
+
+> orcs-vs-fairies@0.1.0 test
+> vitest run tests/scenario-campaign-host.test.ts tests/scenario-campaign-reward.test.ts tests/campaign-cosmetic-verifier.test.ts tests/session-scenario-profile.test.ts --reporter=verbose
+
+
+ RUN  v4.1.11 /home/morgana/Projects/orcs-vs-Fairies
+
+ ✓ tests/session-scenario-profile.test.ts > scenario ownership in ordinary session saves > retains the active campaign and matching battlefield through export and reload 150ms
+ ✓ tests/scenario-campaign-reward.test.ts > campaign finale cosmetic claim > offers a finished current campaign and submits its full cloned profile and canonical finale 100ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > discards a campaign file read after another match clears strategic ownership 12ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > keeps the newer campaign when two file reads resolve out of order 45ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > ignores stale read errors and reports an admitted current read error 5ms
+ ✓ tests/scenario-campaign-reward.test.ts > campaign finale cosmetic claim > does not submit unfinished or historical campaign progress 43ms
+ ✓ tests/scenario-campaign-reward.test.ts > campaign finale cosmetic claim > submits once while pending and permits retry after a verifier failure 42ms
+ ✓ tests/scenario-campaign-reward.test.ts > campaign finale cosmetic claim > discards an old response after a different match replaces the campaign 75ms
+ ✓ tests/scenario-campaign-reward.test.ts > campaign finale cosmetic claim > permits a different account to claim without clearing completed campaign progress 52ms
+ ✓ tests/scenario-campaign-reward.test.ts > campaign finale cosmetic claim > discards a pending previous-account response without marking the new account claimed 58ms
+ ✓ tests/session-scenario-profile.test.ts > scenario ownership in ordinary session saves > continues both SAVE4 histories from the loaded campaign without changing their initial checkpoint or accepted prefix 331ms
+ ✓ tests/session-scenario-profile.test.ts > scenario ownership in ordinary session saves > keeps the original historical game at SAVE3 while exporting its restored state as SAVE4 for inspection 23ms
+ ✓ tests/session-scenario-profile.test.ts > scenario ownership in ordinary session saves > retains conquest decisions, army and active battle 120ms
+ ✓ tests/session-scenario-profile.test.ts > scenario ownership in ordinary session saves > rejects a profile whose checkpoint is from another battlefield tick 48ms
+ ✓ tests/session-scenario-profile.test.ts > scenario ownership in ordinary session saves > rejects executable metadata before reading a profile 12ms
+ ✓ tests/session-scenario-profile.test.ts > scenario ownership in ordinary session saves > keeps ordinary session files unchanged when no profile is supplied 20ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > starts a campaign from the menu and retains normal commands in generic save ownership 158ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > continues an equipped SAVE4 campaign after ordinary save installation without replacing or duplicating its journal 438ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > opens an old saved campaign as an inspected checkpoint without starting or changing it 15ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > preserves a historical empty campaign and displays its compatibility reason 2ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > detects a bound historical generic save without a replay or profile 6ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > closes the mission modal when photo mode or another modal blocks it 2ms
+
+ Test Files  3 passed (3)
+      Tests  22 passed (22)
+   Start at  09:07:19
+   Duration  1.24s (transform 905ms, setup 0ms, import 1.22s, tests 1.76s, environment 174ms)
+

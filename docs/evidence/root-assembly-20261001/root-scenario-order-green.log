@@ -1,0 +1,86 @@
+
+> orcs-vs-fairies@0.1.0 test
+> vitest run tests/session-scenario-profile.test.ts tests/scenario-campaign-host.test.ts tests/scenarios.test.ts tests/scenario-recording-compatibility.test.ts tests/scenario-content.test.ts tests/scenario-save4-corpus.test.ts tests/scenario-campaign-verifier.test.ts tests/save4-corpus.test.ts --reporter=verbose
+
+
+ RUN  v4.1.11 /home/morgana/Projects/orcs-vs-Fairies
+
+ ✓ tests/scenario-content.test.ts > pinned scenario actor admission > spawns the same-role alternative and preserves pinned definitions in checkpoints and recordings 78ms
+ ✓ tests/scenario-content.test.ts > pinned scenario actor admission > keeps implicit built-in scenario definitions free of an added content bundle 5ms
+ ✓ tests/scenario-content.test.ts > pinned scenario actor admission > admits a native commander from the full built-in roster without a bundle 3ms
+ ✓ tests/scenario-content.test.ts > pinned scenario actor admission > admits explicit ordinary built-in IDs through the same roster check 3ms
+ ✓ tests/scenario-content.test.ts > pinned scenario actor admission > saves and replays authored dimensions smaller than the generated map 12ms
+ ✓ tests/scenario-recording-compatibility.test.ts > scenario journal rules compatibility > preserves genuine legacy recording bytes and hashes its original final checkpoint 30ms
+ ✓ tests/scenario-recording-compatibility.test.ts > scenario journal rules compatibility > keeps an omitted derived evaluation guard omitted in a legacy initial checkpoint 5ms
+ ✓ tests/scenario-recording-compatibility.test.ts > scenario journal rules compatibility > admits genuine unpinned checkpoints for inspection and rejects every execution entry 17ms
+ ✓ tests/scenario-recording-compatibility.test.ts > scenario journal rules compatibility > pins both versions on new journals and verifies current state 27ms
+ ✓ tests/scenario-recording-compatibility.test.ts > scenario journal rules compatibility > blocks old rules before executing valid recorded commands 19ms
+ ✓ tests/scenario-recording-compatibility.test.ts > scenario journal rules compatibility > requires the version 2 simulationRevision pin 9ms
+ ✓ tests/scenario-recording-compatibility.test.ts > scenario journal rules compatibility > requires the version 2 checksumVersion pin 8ms
+ ✓ tests/scenario-content.test.ts > pinned scenario actor admission > rejects unknown before spawning an army 4ms
+ ✓ tests/scenario-content.test.ts > pinned scenario actor admission > rejects wrong owner before spawning an army 3ms
+ ✓ tests/scenario-content.test.ts > pinned scenario actor admission > rejects wrong role before spawning an army 3ms
+ ✓ tests/scenario-content.test.ts > pinned scenario actor admission > rejects wrong kind before spawning an army 3ms
+ ✓ tests/scenario-content.test.ts > pinned scenario actor admission > checks health and building terrain against the selected definitions 4ms
+ ✓ tests/scenario-content.test.ts > pinned scenario actor admission > rejects invalid wave definitions and altered pinned hashes before launch 5ms
+ ✓ tests/scenario-content.test.ts > pinned scenario actor admission > rejects a checkpoint whose live actor was rebound to another admitted definition 12ms
+ ✓ tests/session-scenario-profile.test.ts > scenario ownership in ordinary session saves > retains the active campaign and matching battlefield through export and reload 161ms
+ ✓ tests/save4-corpus.test.ts > SAVE4 genuine historical corpus > preserves the v1 original game/history pair through import and local storage 79ms
+ ✓ tests/save4-corpus.test.ts > SAVE4 genuine historical corpus > preserves the Lantern original game/history pair through import and local storage 151ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > discards a campaign file read after another match clears strategic ownership 12ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > keeps the newer campaign when two file reads resolve out of order 43ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > ignores stale read errors and reports an admitted current read error 5ms
+ ✓ tests/session-scenario-profile.test.ts > scenario ownership in ordinary session saves > continues both SAVE4 histories from the loaded campaign without changing their initial checkpoint or accepted prefix 307ms
+ ✓ tests/save4-corpus.test.ts > SAVE4 genuine historical corpus > preserves the specialist original game/history pair through import and local storage 87ms
+ ✓ tests/save4-corpus.test.ts > SAVE4 genuine historical corpus > preserves the world original game/history pair through import and local storage 151ms
+ ✓ tests/save4-corpus.test.ts > SAVE4 genuine historical corpus > authenticates the old content before admitting entity and queue definitions 7ms
+ ✓ tests/save4-corpus.test.ts > SAVE4 genuine historical corpus > repins admitted old production without changing the queue, charged costs or resource balances 13ms
+ ✓ tests/save4-corpus.test.ts > SAVE4 genuine historical corpus > records and plays advanced SAVE4 history from a migrated old match 96ms
+ ✓ tests/session-scenario-profile.test.ts > scenario ownership in ordinary session saves > keeps the original historical game at SAVE3 while exporting its restored state as SAVE4 for inspection 24ms
+ ✓ tests/session-scenario-profile.test.ts > scenario ownership in ordinary session saves > retains conquest decisions, army and active battle 121ms
+ ✓ tests/session-scenario-profile.test.ts > scenario ownership in ordinary session saves > rejects a profile whose checkpoint is from another battlefield tick 51ms
+ ✓ tests/session-scenario-profile.test.ts > scenario ownership in ordinary session saves > rejects executable metadata before reading a profile 13ms
+ ✓ tests/session-scenario-profile.test.ts > scenario ownership in ordinary session saves > keeps ordinary session files unchanged when no profile is supplied 19ms
+ ✓ tests/save4-corpus.test.ts > SAVE4 genuine historical corpus > migrates the old off draft pool while preserving choices and mode progress 28ms
+ ✓ tests/save4-corpus.test.ts > SAVE4 genuine historical corpus > migrates the old active draft pool while preserving choices and mode progress 30ms
+ ✓ tests/save4-corpus.test.ts > SAVE4 genuine historical corpus > migrates the old complete draft pool while preserving choices and mode progress 31ms
+ ✓ tests/save4-corpus.test.ts > SAVE4 genuine historical corpus > rejects mixed versions, altered checksums, altered ticks and reordered original game fields 22ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > starts a campaign from the menu and retains normal commands in generic save ownership 134ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > continues an equipped SAVE4 campaign after ordinary save installation without replacing or duplicating its journal 407ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > opens an old saved campaign as an inspected checkpoint without starting or changing it 15ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > preserves a historical empty campaign and displays its compatibility reason 2ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > detects a bound historical generic save without a replay or profile 6ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > closes the mission modal when photo mode or another modal blocks it 2ms
+ ✓ tests/scenarios.test.ts > shared scenario execution > forwards a core tick once when the client also evaluates the scenario 21ms
+ ✓ tests/scenarios.test.ts > shared scenario execution > rejects external control of the opposing authored army 15ms
+ ✓ tests/scenarios.test.ts > shared scenario execution > refuses to export a journal that exceeds its own import node budget 802ms
+ ✓ tests/save4-corpus.test.ts > SAVE4 genuine historical corpus > rejects raw session array property extra before copying the original pair 28ms
+ ✓ tests/save4-corpus.test.ts > SAVE4 genuine historical corpus > rejects raw session array property 01 before copying the original pair 28ms
+ ✓ tests/save4-corpus.test.ts > SAVE4 genuine historical corpus > rejects raw session array property -0 before copying the original pair 29ms
+ ✓ tests/save4-corpus.test.ts > SAVE4 genuine historical corpus > rejects raw session array property 1
+ before copying the original pair 28ms
+ ✓ tests/save4-corpus.test.ts > SAVE4 genuine historical corpus > rejects raw session array accessor 0 without invoking it or changing descriptors 2ms
+ ✓ tests/save4-corpus.test.ts > SAVE4 genuine historical corpus > rejects raw session array accessor 01 without invoking it or changing descriptors 1ms
+ ✓ tests/save4-corpus.test.ts > SAVE4 genuine historical corpus > rejects raw session array accessor extra without invoking it or changing descriptors 1ms
+ ✓ tests/save4-corpus.test.ts > SAVE4 genuine historical corpus > rejects raw session array symbols without changing the imported source 1ms
+ ✓ tests/save4-corpus.test.ts > SAVE4 genuine historical corpus > preserves canonical nonenumerable indices through historical and current wrapper round-trips 20ms
+ ✓ tests/save4-corpus.test.ts > SAVE4 genuine historical corpus > keeps the scenario wrapper checksum separate from the nested core forwarding guard 16ms
+ ✓ tests/save4-corpus.test.ts > SAVE4 genuine historical corpus > retains a real old wrong-owner summon for inspection and rejects ambiguous resume after its caster died 12ms
+ ✓ tests/scenarios.test.ts > shared scenario execution > rejects executable recording and checkpoint properties without evaluating them 10ms
+ ✓ tests/scenarios.test.ts > shared scenario execution > moves ordinary troops through commands, ends without HQ destruction and resets the identical army 11ms
+ ✓ tests/scenarios.test.ts > shared scenario execution > fails when the protected troop dies through ordinary combat 16ms
+ ✓ tests/scenarios.test.ts > shared scenario execution > escorts a real moving convoy through every checkpoint and fights the authored ambush 13ms
+ ✓ tests/scenarios.test.ts > shared scenario execution > stops the convoy when escorts leave, instead of crediting elapsed time as arrival 15ms
+ ✓ tests/scenarios.test.ts > shared scenario execution > spends a finite reinforcement budget through real production and rejects excess orders 45ms
+ ✓ tests/scenarios.test.ts > shared scenario execution > survives authored waves and loses if the required fortress falls 36ms
+ ✓ tests/scenarios.test.ts > shared scenario execution > infiltrates and extracts without alarms, then detects a scout inside a patrol cone 12ms
+ ✓ tests/scenarios.test.ts > shared scenario execution > uses a legitimate Veilweaver cast to divert a guard while the real infiltrator escapes 4ms
+ ✓ tests/scenarios.test.ts > shared scenario execution > fights all boss phases, interrupts a warning attack and defeats the target 22ms
+ ✓ tests/scenarios.test.ts > shared scenario execution > preserves schedules, orders, alarms and an active boss warning across exact checkpoints 308ms
+ ✓ tests/scenarios.test.ts > shared scenario execution > rejects unknown references, impossible spawns, executable packages and oversized nested graphs 2ms
+
+ Test Files  6 passed (6)
+      Tests  72 passed (72)
+   Start at  08:58:08
+   Duration  1.70s (transform 1.48s, setup 0ms, import 2.01s, tests 3.77s, environment 91ms)
+

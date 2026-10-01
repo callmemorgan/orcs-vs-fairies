@@ -1,0 +1,61 @@
+
+> orcs-vs-fairies@0.1.0 test
+> vitest run tests/scenario-recording-compatibility.test.ts tests/scenario-save4-wrapper-migration.test.ts tests/session-scenario-profile.test.ts tests/scenario-campaign-host.test.ts tests/allied-world-combined.test.ts --reporter=verbose
+
+
+ RUN  v4.1.11 /home/morgana/Projects/orcs-vs-Fairies
+
+ ✓ tests/scenario-recording-compatibility.test.ts > scenario journal rules compatibility > preserves genuine legacy recording bytes and hashes its original final checkpoint 23ms
+ ✓ tests/scenario-recording-compatibility.test.ts > scenario journal rules compatibility > keeps an omitted derived evaluation guard omitted in a legacy initial checkpoint 5ms
+ ✓ tests/scenario-recording-compatibility.test.ts > scenario journal rules compatibility > preserves a genuine pinned SAVE3 equipment journal and rejects continuation under SAVE4 rules 25ms
+ ✓ tests/scenario-recording-compatibility.test.ts > scenario journal rules compatibility > admits genuine unpinned checkpoints for inspection and rejects every execution entry 12ms
+ ✓ tests/scenario-recording-compatibility.test.ts > scenario journal rules compatibility > pins both versions on new journals and verifies current state 17ms
+ ✓ tests/scenario-recording-compatibility.test.ts > scenario journal rules compatibility > blocks old rules before executing valid recorded commands 15ms
+ ✓ tests/scenario-recording-compatibility.test.ts > scenario journal rules compatibility > requires the version 2 simulationRevision pin 7ms
+ ✓ tests/scenario-save4-wrapper-migration.test.ts > SAVE4 migration of genuine equipped scenario wrappers > retains every archived fixture byte declared by its provenance 3ms
+ ✓ tests/scenario-save4-wrapper-migration.test.ts > SAVE4 migration of genuine equipped scenario wrappers > migrates an equipped checkpoint while preserving its original raw game, rules pin and veteran values 44ms
+ ✓ tests/scenario-save4-wrapper-migration.test.ts > SAVE4 migration of genuine equipped scenario wrappers > preserves a bound SAVE3 session source while its migrated SAVE4 game matches the same checkpoint 47ms
+ ✓ tests/scenario-save4-wrapper-migration.test.ts > SAVE4 migration of genuine equipped scenario wrappers > preserves the allocator checkpoint checksum and the original journal continuation prefix 9ms
+ ✓ tests/scenario-recording-compatibility.test.ts > scenario journal rules compatibility > requires the version 2 checksumVersion pin 7ms
+ ✓ tests/scenario-recording-compatibility.test.ts > scenario journal rules compatibility > blocks a current journal whose initial checkpoint rules pin is undefined 17ms
+ ✓ tests/scenario-recording-compatibility.test.ts > scenario journal rules compatibility > blocks a current journal whose initial checkpoint rules pin is 3.2.0 17ms
+ ✓ tests/scenario-recording-compatibility.test.ts > scenario journal rules compatibility > keeps a synthetic current-rules SAVE3/checksum3 journal readable without authorizing replay 13ms
+ ✓ tests/scenario-recording-compatibility.test.ts > scenario journal rules compatibility > rejects checksum version 1 when the genuine initial save is version 3 1ms
+ ✓ tests/scenario-recording-compatibility.test.ts > scenario journal rules compatibility > rejects checksum version 2 when the genuine initial save is version 3 1ms
+ ✓ tests/scenario-recording-compatibility.test.ts > scenario journal rules compatibility > rejects checksum version 4 when the genuine initial save is version 3 1ms
+ ✓ tests/session-scenario-profile.test.ts > scenario ownership in ordinary session saves > retains the active campaign and matching battlefield through export and reload 158ms
+ ✓ tests/scenario-save4-wrapper-migration.test.ts > SAVE4 migration of genuine equipped scenario wrappers > preserves raw SAVE3 checkpoints and journals inside chapter1-equipped-active-profile 13ms
+ ✓ tests/scenario-save4-wrapper-migration.test.ts > SAVE4 migration of genuine equipped scenario wrappers > preserves raw SAVE3 checkpoints and journals inside chapter1-completed-profile 16ms
+ ✓ tests/scenario-save4-wrapper-migration.test.ts > SAVE4 migration of genuine equipped scenario wrappers > preserves raw SAVE3 checkpoints and journals inside chapter2-casualty-active-profile 31ms
+ ✓ tests/scenario-save4-wrapper-migration.test.ts > SAVE4 migration of genuine equipped scenario wrappers > preserves raw SAVE3 checkpoints and journals inside chapter3-reserves-active-profile 40ms
+ ✓ tests/scenario-save4-wrapper-migration.test.ts > SAVE4 migration of genuine equipped scenario wrappers > retains an explicitly modified generic binding pin of undefined through migration without enabling execution 16ms
+ ✓ tests/scenario-save4-wrapper-migration.test.ts > SAVE4 migration of genuine equipped scenario wrappers > retains an explicitly modified generic binding pin of 1.0.0 through migration without enabling execution 16ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > discards a campaign file read after another match clears strategic ownership 12ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > keeps the newer campaign when two file reads resolve out of order 46ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > ignores stale read errors and reports an admitted current read error 5ms
+ ✓ tests/session-scenario-profile.test.ts > scenario ownership in ordinary session saves > continues both SAVE4 histories from the loaded campaign without changing their initial checkpoint or accepted prefix 308ms
+ ✓ tests/session-scenario-profile.test.ts > scenario ownership in ordinary session saves > keeps the original historical game at SAVE3 while exporting its restored state as SAVE4 for inspection 22ms
+ ✓ tests/session-scenario-profile.test.ts > scenario ownership in ordinary session saves > retains conquest decisions, army and active battle 122ms
+ ✓ tests/session-scenario-profile.test.ts > scenario ownership in ordinary session saves > rejects a profile whose checkpoint is from another battlefield tick 49ms
+ ✓ tests/session-scenario-profile.test.ts > scenario ownership in ordinary session saves > rejects executable metadata before reading a profile 14ms
+ ✓ tests/session-scenario-profile.test.ts > scenario ownership in ordinary session saves > keeps ordinary session files unchanged when no profile is supplied 19ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > starts a campaign from the menu and retains normal commands in generic save ownership 139ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > continues an equipped SAVE4 campaign after ordinary save installation without replacing or duplicating its journal 424ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > opens an old saved campaign as an inspected checkpoint without starting or changing it 15ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > preserves a historical empty campaign and displays its compatibility reason 2ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > detects a bound historical generic save without a replay or profile 6ms
+ ✓ tests/scenario-campaign-host.test.ts > campaign controls in the canonical app host > closes the mission modal when photo mode or another modal blocks it 2ms
+ ✓ tests/allied-world-combined.test.ts > allied AI with assembled world and content > leaves surface troops unassigned to a cavern request and completes with real cavern movement after saving 2076ms
+ ✓ tests/allied-world-combined.test.ts > allied AI with assembled world and content > copies a visible cavern target and retains that level when it traverses to the surface 33ms
+ ✓ tests/allied-world-combined.test.ts > allied AI with assembled world and content > rejects shared attack approval and defense assignment across stacked map levels 1ms
+ ✓ tests/allied-world-combined.test.ts > allied AI with assembled world and content > reserves a custom worker crystal cost and transfers support only once through public commands 347ms
+ ✓ tests/allied-world-combined.test.ts > allied AI with assembled world and content > releases a defender and its arrival timer during real traversal before the next AI decision 458ms
+ ✓ tests/allied-world-combined.test.ts > allied AI with assembled world and content > chooses a full eligible solo army without a cavern fighter blocking its surface target 0ms
+ ✓ tests/allied-world-combined.test.ts > allied AI with assembled world and content > keeps stacked target choice stable under target permutation and rejects malformed level counts 1ms
+ ✓ tests/allied-world-combined.test.ts > allied AI with assembled world and content > keeps authoritative state and future simulation unchanged during observations and remote rendering 1114ms
+
+ Test Files  5 passed (5)
+      Tests  48 passed (48)
+   Start at  09:04:54
+   Duration  4.45s (transform 1.36s, setup 0ms, import 1.82s, tests 5.78s, environment 84ms)
+
