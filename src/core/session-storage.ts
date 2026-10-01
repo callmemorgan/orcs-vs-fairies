@@ -5,10 +5,18 @@ import type { ReplayArchive } from './replays';
 import type { GameState, Side } from './types';
 import { decodePlanningRuntime } from './planning';
 import type { PlanningRuntime } from './planning';
+import { decodeCampaignProfile } from './campaign';
+import type { CampaignProfile } from './campaign';
+import { decodeConquestProfile } from './conquest';
+import type { ConquestProfile } from './conquest-types';
+import { restoreScenario, scenarioSessionForState } from './scenarios';
+import { scenarioStateEquals, verifyScenarioRecording } from './scenario-recordings';
+import { scenarioJson } from './scenario-validation';
 
 export interface StoragePort {getItem(key:string):string|null;setItem(key:string,value:string):void;removeItem(key:string):void}
 export interface SessionPlanning {version:1;players:PlanningRuntime[];automaticSides:Side[]}
-export interface SessionFile {format:'orcs-vs-fairies/session';version:1;game:ReturnType<typeof saveGame>;replay?:ReplayArchive;planning?:SessionPlanning}
+export type SessionScenarioProfile = {kind:'campaign';profile:CampaignProfile}|{kind:'conquest';profile:ConquestProfile};
+export interface SessionFile {format:'orcs-vs-fairies/session';version:1;game:ReturnType<typeof saveGame>;replay?:ReplayArchive;planning?:SessionPlanning;scenarioProfile?:SessionScenarioProfile}
 export interface SaveSlot {id:string;name:string;updatedAt:string;time:number;faction:string;opponent:string;autosave:boolean;file:SessionFile}
 export interface AutosaveSettings {enabled:boolean;intervalSeconds:number}
 const STORAGE_KEY='orcs-vs-fairies:sessions:v1';
@@ -27,18 +35,30 @@ export function decodeSessionPlanning(input:unknown,state:GameState):SessionPlan
   return {version:1,players,automaticSides:[...automatic]};
 }
 
-export function createSessionFile(state:GameState,replay?:ReplayArchive,planning?:SessionPlanning):SessionFile {
+export function decodeSessionScenarioProfile(input:unknown,state:GameState):SessionScenarioProfile {
+  const value=scenarioJson(input,{maxBytes:MAX_BYTES,maxNodes:1500000,maxArrayLength:100000});
+  if(!record(value)||Object.keys(value).length!==2||!Object.hasOwn(value,'kind')||!Object.hasOwn(value,'profile')||!['campaign','conquest'].includes(value.kind as string))throw new Error('Invalid saved scenario profile owner.');
+  const owner:SessionScenarioProfile=value.kind==='campaign'?{kind:'campaign',profile:decodeCampaignProfile(value.profile)}:{kind:'conquest',profile:decodeConquestProfile(value.profile)};
+  const session=scenarioSessionForState(state);
+  const checkpoint=owner.profile.active?.checkpoint??(owner.kind==='campaign'?owner.profile.history.at(-1)?.checkpoint:undefined);
+  const battle=owner.kind==='conquest'?[...owner.profile.history].reverse().find(action=>action.type==='battle'):undefined;
+  const expected=checkpoint?restoreScenario(checkpoint):battle?.type==='battle'?verifyScenarioRecording(battle.recording):null;
+  if(!session||!expected||!scenarioStateEquals(session,expected))throw new Error('Saved scenario profile does not match this battlefield.');
+  return owner;
+}
+export function createSessionFile(state:GameState,replay?:ReplayArchive,planning?:SessionPlanning,scenarioProfile?:SessionScenarioProfile):SessionFile {
   const game=saveGame(state);
   const file:SessionFile={format:'orcs-vs-fairies/session',version:1,game};
   if(replay){const archive=decodeReplay(replay);if(archive.finalTick!==state.tick||archive.finalChecksum!==replayChecksum(state,archive.checksumVersion??archive.initial.version))throw new Error('Replay does not match this game.');file.replay=archive;}
   if(planning!==undefined)file.planning=decodeSessionPlanning(planning,state);
+  if(scenarioProfile!==undefined){file.scenarioProfile=decodeSessionScenarioProfile(scenarioProfile,state);if(new TextEncoder().encode(JSON.stringify(file)).byteLength>MAX_BYTES)throw new Error('Save exceeds 20 MiB.');}
   return file;
 }
 
 export function decodeSessionFile(input:unknown):{file:SessionFile;state:GameState} {
   if(typeof input==='string'){if(input.length>MAX_BYTES)throw new Error('Save exceeds 20 MiB.');try{input=JSON.parse(input);}catch{throw new Error('Invalid save JSON.');}}
-  if(!record(input)||input.format!=='orcs-vs-fairies/session'||input.version!==1||Object.keys(input).some(k=>!['format','version','game','replay','planning'].includes(k)))throw new Error('Unsupported session file or version.');
-  const state=loadGame(input.game),planning=input.planning===undefined?undefined:decodeSessionPlanning(input.planning,state),file=createSessionFile(state,input.replay===undefined?undefined:decodeReplay(input.replay),planning);
+  if(!record(input)||input.format!=='orcs-vs-fairies/session'||input.version!==1||Object.keys(input).some(k=>!['format','version','game','replay','planning','scenarioProfile'].includes(k)))throw new Error('Unsupported session file or version.');
+  const state=loadGame(input.game),planning=input.planning===undefined?undefined:decodeSessionPlanning(input.planning,state),profile=input.scenarioProfile===undefined?undefined:decodeSessionScenarioProfile(input.scenarioProfile,state),file=createSessionFile(state,input.replay===undefined?undefined:decodeReplay(input.replay),planning,profile);
   return {state,file};
 }
 
