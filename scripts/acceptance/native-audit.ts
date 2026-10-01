@@ -47,6 +47,7 @@ export function verifyNativeAcceptanceArtifacts({ evidenceDir, fixturesDir, mani
   assert(Array.isArray(selectedGroups) && selectedGroups.length > 0 && new Set(selectedGroups).size === selectedGroups.length);
   assert(selectedGroups.every(group => ['direction', 'capture', 'specialists'].includes(group)), 'Browser requested known acceptance groups');
   assert.deepEqual(Object.keys(receipt.groups).sort(), [...selectedGroups].sort(), 'Every requested browser group has its completed receipt');
+  for(const group of selectedGroups)assert(receipt.groups[group]&&typeof receipt.groups[group]==='object'&&!Array.isArray(receipt.groups[group]),`Nonempty completed receipt for requested ${group}`);
   assert(Object.keys(receipt.downloads).length > 0, 'Retained native downloads are required');
   if (selectedGroups.includes('specialists')) {
     assert.equal(receipt.groups.specialists.completed, true);
@@ -78,7 +79,7 @@ export function verifyNativeAcceptanceArtifacts({ evidenceDir, fixturesDir, mani
   }
   assert(checks.length > 0, 'An admitted history audit must inspect original native saves');
   const pairs: [string, string][] = [];
-  if (receipt.groups.specialists) {
+  if (selectedGroups.includes('specialists')) {
     for (const faction of ['orcs', 'fairies', 'dwarves', 'undead', 'tideborn', 'automata']) pairs.push([`specialists-${faction}-pending`, `specialists-${faction}-active`]);
     pairs.push(['specialists-death-recovery', 'specialists-paid-rerecruit-complete'], ['specialists-paid-rerecruit-queued', 'specialists-paid-rerecruit-complete'], ['specialists-bridge-before-expiry', 'specialists-bridge-expired'], ['specialists-barricade-obstructs', 'specialists-barricade-expired-crossed'], ['specialists-beacon-connected-alert', 'specialists-beacon-link-destroyed']);
   }
@@ -93,8 +94,8 @@ export function verifyNativeAcceptanceArtifacts({ evidenceDir, fixturesDir, mani
     return { from, to, checkpointTick: partial.game.state.tick, finalTick: full.game.state.tick, suffix, completeNativeContinuation: true };
   });
   const groupAudits: any = {};
-  if (receipt.groups.capture) groupAudits.capture = verifyCaptureAmbushNativeArtifacts(evidenceDir, manifest);
-  if (receipt.groups.direction) groupAudits.direction = verifyDirectionDefenseNativeArtifacts({ evidenceDir, fixturesDir, manifest: { ...manifest, scenarios: Object.fromEntries(Object.entries(manifest.scenarios).filter(([, scenario]: [string, any]) => scenario.group === 'direction')) }, browserReceipt: receipt.groups.direction, outputPath: resolve(evidenceDir, 'direction-defense-native-checks.json'), sourceCommit });
+  if (selectedGroups.includes('capture')) groupAudits.capture = verifyCaptureAmbushNativeArtifacts(evidenceDir, manifest);
+  if (selectedGroups.includes('direction')) groupAudits.direction = verifyDirectionDefenseNativeArtifacts({ evidenceDir, fixturesDir, manifest: { ...manifest, scenarios: Object.fromEntries(Object.entries(manifest.scenarios).filter(([, scenario]: [string, any]) => scenario.group === 'direction')) }, browserReceipt: receipt.groups.direction, outputPath: resolve(evidenceDir, 'direction-defense-native-checks.json'), sourceCommit });
   const result = { sourceCommit, saveVersion: SAVE_VERSION, simulationRevision: SIMULATION_REVISION, completeNativeSaves: checks.length, checks, continuations, groupAudits };
   writeFileSync(resolve(evidenceDir, 'native-acceptance-history-checks.json'), `${JSON.stringify(result, null, 2)}\n`, { flag: 'wx' });
   return result;

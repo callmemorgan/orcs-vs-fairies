@@ -4,7 +4,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { digest, fingerprints, freshArtifact, regularFiles, safePath } from './native-contract.mjs';
-import { committedHelperInventory,helperBuildOptions } from './helper-provenance.mjs';
+import { committedHelperInventory,configuredCompiler,helperBuildOptions } from './helper-provenance.mjs';
 
 const [, , rootArg, outArg, pin] = process.argv;
 assert(rootArg && outArg && /^[0-9a-f]{40}$/.test(pin ?? ''), 'Use ROOT NEW_OUTPUT FULL_SOURCE_COMMIT');
@@ -19,7 +19,7 @@ const tracked = execFileSync('git', ['ls-tree', '-r', '--name-only', '-z', pin, 
 assert.deepEqual(paths, tracked, 'Complete source and acceptance inventories match the pinned Git tree');
 const initial = await committedHelperInventory(root,pin);
 for (const input of initial) assert.deepEqual(await readFile(safePath(root, input.path)), execFileSync('git', ['show', `${pin}:${input.path}`], { cwd: root, maxBuffer: 32 * 1024 * 1024 }));
-const esbuild = await import(process.env.OVF_ESBUILD_MODULE ?? 'esbuild');
+const {esbuild,identity:compiler} = await configuredCompiler(root);
 for (const [name, entry] of [['fixtures', 'scripts/acceptance/native-fixtures.ts'], ['audit', 'scripts/acceptance/native-audit.ts']]) {
   const bundlePath = resolve(out, `${name}.mjs`);
   const result = await esbuild.build(helperBuildOptions(root,entry,bundlePath));
@@ -30,7 +30,7 @@ for (const [name, entry] of [['fixtures', 'scripts/acceptance/native-fixtures.ts
   const bytes = result.outputFiles[0].contents;
   await writeFile(bundlePath, bytes, { flag: 'wx' });
   await writeFile(`${bundlePath}.metafile.json`, `${JSON.stringify(result.metafile, null, 2)}\n`, { flag: 'wx' });
-  const provenance = { schema: 1, sourceCommit: pin, entry, bundle: { path: bundlePath, bytes: bytes.length, sha256: digest(bytes) }, builder: { path: 'scripts/acceptance/build-native-helpers.mjs', sha256: digest(await readFile(self)) }, esbuildVersion: esbuild.version, inventory:initial, inputs: initial.filter(input => inputs.includes(input.path)) };
+  const provenance = { schema: 1, sourceCommit: pin, entry, bundle: { path: bundlePath, bytes: bytes.length, sha256: digest(bytes) }, builder: { path: 'scripts/acceptance/build-native-helpers.mjs', sha256: digest(await readFile(self)) }, esbuildVersion: esbuild.version, compiler, inventory:initial, inputs: initial.filter(input => inputs.includes(input.path)) };
   await writeFile(`${bundlePath}.provenance.json`, `${JSON.stringify(provenance, null, 2)}\n`, { flag: 'wx' });
 }
 await writeFile(resolve(out, 'source-inventory.json'), `${JSON.stringify({ sourceCommit: pin, files: initial }, null, 2)}\n`, { flag: 'wx' });
