@@ -10,7 +10,12 @@ export { validateScenario } from './scenario-validation';
 export type * from './scenario-types';
 
 export const MAX_SCENARIO_ACTIONS_PER_TICK = 128;
-const distance = (a: Vec, b: Vec) => Math.hypot(a.x - b.x, a.y - b.y);
+const commandListeners = new WeakMap<ScenarioSession, Set<(side: Side, command: Command) => void>>();
+export function subscribeScenarioCommands(session: ScenarioSession, listener: (side: Side, command: Command) => void): () => void {
+  let listeners = commandListeners.get(session); if (!listeners) { listeners = new Set(); commandListeners.set(session, listeners); }
+  listeners.add(listener); return () => { listeners!.delete(listener); if (!listeners!.size) commandListeners.delete(session); };
+}
+const distance = (a: Vec, b: Vec) => (a.level ?? 0) === (b.level ?? 0) ? Math.hypot(a.x - b.x, a.y - b.y) : Infinity;
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
 const actor = (session: ScenarioSession, label: string) => session.state.entities.find(e => e.id === session.runtime.labels[label] && e.hp > 0);
 const variable = (session: ScenarioSession, key: string) => session.runtime.variables[key] ?? 0;
@@ -57,10 +62,11 @@ function spawnActors(session: ScenarioSession, actors: ScenarioActor[]): void {
   for (const definition of actors) {
     if (Object.hasOwn(session.runtime.labels, definition.label)) throw new Error(`Scenario actor ${definition.label} was spawned twice.`);
     if (session.state.entities.length >= 4096) { finish(session, 'lost', 'The scenario exceeded its actor limit.'); return; }
-    const desired = { x: definition.x, y: definition.y };
+    const desired = { x: definition.x, y: definition.y, ...(definition.level === undefined ? {} : { level: definition.level }) };
     const destination = definition.kind === 'unit' ? (walkable(session.state, desired.x, desired.y) ? desired : openDestination(session.state, desired, desired)) : desired;
     if (!destination) { finish(session, 'lost', `The spawn point for ${definition.label} became blocked.`); return; }
     const entity = spawnEntity(session.state, definition.side, definition.kind, definition.role, destination.x, destination.y);
+    if (definition.level !== undefined) entity.level = definition.level;
     if (definition.hp !== undefined) entity.hp = definition.hp;
     session.runtime.labels[definition.label] = entity.id; spawned.push(definition);
     session.state.events.push({ type: definition.kind === 'unit' ? 'train' : 'build', side: definition.side, source: entity.id, x: entity.x, y: entity.y, text: definition.label });
@@ -82,18 +88,28 @@ function orderActors(session: ScenarioSession, labels: string[], order: Scenario
   }
 }
 
-export function createScenario(input: unknown): ScenarioSession {
+export function createScenario(input: unknown, options: { firstEntityId?: number } = {}): ScenarioSession {
   const definition = validateScenario(input);
-  const state = createMatch({ map: { seed: definition.seed, size: definition.map?.size ?? 'small' }, players: [
+  const firstId = options.firstEntityId ?? 1;
+  if (!Number.isSafeInteger(firstId) || firstId < 1 || firstId > 0x7fffffff - 8192) throw new Error('Scenario starting entity ID is outside its range.');
+  const state = createMatch({ map: { seed: definition.seed, size: definition.map?.size ?? 'small', ...(definition.map?.world ? { world: definition.map.world } : {}) }, players: [
     { id: 0, teamId: 0, factionId: definition.faction, controller: 'human' },
     { id: 1, teamId: 1, factionId: definition.opponent, controller: 'external' },
   ], rules: { mode: 'scenario', standardDefeat: false, startingAge: 3, startingResources: definition.rules.resources } });
-  state.entities = []; state.resources = []; state.nextId = 1; state.events = []; state.corpses = [];
+  state.entities = []; state.resources = []; state.events = []; state.corpses = [];
+  if (state.world) {
+    const offset = firstId - 1;
+    for (const bridge of state.world.bridges) bridge.id += offset;
+    for (const site of state.world.sites) { site.id += offset; site.creatureIds = site.creatureIds.map(id => id + offset); }
+    for (const creature of state.world.creatures) { creature.id += offset; creature.site += offset; if (creature.target !== null) creature.target += offset; }
+    state.nextId += offset;
+  } else state.nextId = firstId;
   state.explored = [new Set(), new Set()]; state.visible = [new Set(), new Set()];
   if (definition.map) {
     state.width = definition.map.width; state.height = definition.map.height; state.mapSize = definition.map.size; state.mapVersion = MAP_VERSION;
     state.terrain = [...definition.map.terrain]; state.starts = definition.map.starts.map(p => ({ ...p }));
     state.resources = definition.map.resources.map(r => ({ ...r, id: state.nextId++ }));
+    if (state.world) state.world.levels[0].terrain = state.terrain;
   }
   const runtime: ScenarioRuntime = {
     version: 1, definitionId: definition.id, outcome: 'playing', reason: '', labels: {}, variables: {}, triggers: {}, completed: [], messages: [],
@@ -292,6 +308,7 @@ export function issueScenarioCommand(session: ScenarioSession, side: Side, comma
   if (side === 0 && command.type === 'train' && (session.definition.rules.fixedArmy || session.runtime.reinforcementRemaining <= 0)) return false;
   const eventStart = session.state.events.length;
   if (!issueCommand(session.state, side, command)) return false;
+  for (const listener of commandListeners.get(session) ?? []) listener(side, clone(command));
   if (side === 0) {
     if (command.type === 'train') session.runtime.reinforcementRemaining--;
     if (command.type !== 'ability') { session.runtime.commandCounts[command.type] = (session.runtime.commandCounts[command.type] ?? 0) + 1; addVariable(session, `action.${command.type}`, 1); }

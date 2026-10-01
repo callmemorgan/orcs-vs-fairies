@@ -1,4 +1,4 @@
-import { captureScenario, createScenario, restoreScenario } from '../core/scenarios';
+import { captureScenario, createScenario, restoreScenario, validateScenario } from '../core/scenarios';
 import type { CampaignDefinition, ScenarioDefinition, ScenarioSession } from '../core/scenario-types';
 import './scenario-tools.css';
 
@@ -35,6 +35,7 @@ export class ScenarioTools {
   private readonly branches: HTMLElement;
   private readonly continueButton: HTMLButtonElement;
   private readonly controls: HTMLElement;
+  private readonly scenarioSelect: HTMLSelectElement;
   private current: ScenarioSession | null = null;
   private lastKey = '';
 
@@ -48,7 +49,7 @@ export class ScenarioTools {
       const button = element('button', 'Start campaign'); button.dataset.campaign = campaign.id; button.disabled = !callbacks.campaign;
       button.onclick = () => this.run(() => callbacks.campaign?.start(campaign.id)); card.append(button); campaigns.append(card);
     }
-    const practice = element('label', 'Practice mission'); const select = element('select'); select.setAttribute('aria-label', 'Practice mission');
+    const practice = element('label', 'Practice mission'); const select = this.scenarioSelect = element('select'); select.setAttribute('aria-label', 'Practice mission');
     for (const definition of Object.values(content.scenarios)) { const option = element('option', `${definition.faction} · ${definition.title}`); option.value = definition.id; select.append(option); }
     practice.append(select); const launch = element('button', 'Launch practice mission');
     launch.onclick = () => this.run(() => callbacks.start(createScenario(content.scenarios[select.value])));
@@ -69,6 +70,14 @@ export class ScenarioTools {
     this.error = element('p'); this.error.setAttribute('role', 'alert'); this.error.className = 'scenario-error'; this.error.hidden = true;
     this.controls.append(army, reset, save, load, this.continueButton); this.root.append(heading, this.picker, this.status, this.objectives, this.mechanics, this.messages, this.controls, this.branches, this.error); host.append(this.root);
     this.update();
+  }
+
+  registerScenario(input: ScenarioDefinition): void {
+    const definition = validateScenario(input);
+    if (Object.hasOwn(this.content.scenarios, definition.id)) throw new Error('A mission with this ID is already registered. Use a new package ID.');
+    this.content.scenarios[definition.id] = definition;
+    const option = element('option', `${definition.faction} · ${definition.title}`); option.value = definition.id; this.scenarioSelect.append(option); this.scenarioSelect.value = definition.id;
+    this.lastKey = ''; this.update();
   }
 
   private run(action: () => void): void { try { action(); this.error.hidden = true; this.lastKey = ''; this.update(); } catch (error) { this.showError(error); } }
