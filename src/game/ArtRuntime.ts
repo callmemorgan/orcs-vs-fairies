@@ -20,7 +20,7 @@ export default class ArtRuntime {
   constructor(private scene:Phaser.Scene,public enabled=true){}
   preload(factions:FactionId[],content?:ContentBundle){
     const definitions=contentFactions(content);this.customArt=contentArt(content);
-    this.requiredIds=new Set(factions.flatMap(id=>[...(definitions[id].unitDefinitions??Object.values(definitions[id].units)),...(definitions[id].buildingDefinitions??Object.values(definitions[id].buildings))].map(a=>a.id)));
+    this.requiredIds=new Set(factions.flatMap(id=>[...(definitions[id].unitDefinitions??Object.values(definitions[id].units)),...(definitions[id].buildingDefinitions??Object.values(definitions[id].buildings))].map(a=>a.artId??a.id)));
     if(!this.enabled)return;
     for(const id of this.requiredIds){const art=this.customArt[id];if(art)this.scene.load.svg(`mod:${id}`,svgDataUrl(art.svg),{width:art.width,height:art.height});}
     this.scene.load.once('filecomplete-json-rts-manifest',(_key:string,_type:string,data:Manifest)=>{
@@ -75,7 +75,7 @@ export default class ArtRuntime {
     return this.place(key,asset,`env:${id}`,undefined,x,y,y);
   }
   entity(e:Entity,state:GameState,x:number,y:number,viewSide:Side=0){
-    const id=entityDefinition(state,e).id,custom=this.customArt[id];
+    const definition=entityDefinition(state,e),id=definition.artId??definition.id,custom=this.customArt[id];
     if(custom){if(!this.scene.textures.exists(`mod:${id}`))return false;if(e.kind==='unit'&&e.hp>0)this.renderedUnits++;const alpha=e.hp<=0?Math.max(0,1-e.animTime/1.2):e.illusion&&e.side===viewSide?.55:1;return this.place(`entity:${e.id}`,{...custom,kind:e.kind},`mod:${id}`,undefined,x,y,y,alpha);}
     const asset=this.manifest?.assets[id];if(!asset?.animations)return false;
     let name=e.hp<=0?'death':e.kind==='building'?(e.progress<1?'construction':e.gateOpen?'open':'idle'):e.animation;

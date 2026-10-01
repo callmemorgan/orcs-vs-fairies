@@ -69,22 +69,24 @@ const expansionNames:Record<BuiltinFactionId,[string,string,string]>={
  dwarves:['Mountain Rider','Deep Pike','Stone Thrower'],undead:['Dread Rider','Bone Pike','Grave Catapult'],
  tideborn:['Shell Rider','Reef Pike','Coral Mangonel'],automata:['Strider','Lance Sentinel','Siege Engine'],
 };
+const cavalryAbilities:Record<BuiltinFactionId,import('./specialist-types').CavalryAbility>={orcs:'impact-fury',fairies:'forest-leap',dwarves:'armored-brace',undead:'terror',tideborn:'wet-surge',automata:'shield-dash'};
+const siegeAbilities:Record<BuiltinFactionId,import('./specialist-types').SiegeAbility>={orcs:'incendiary-shell',fairies:'rooting-shell',dwarves:'ammunition-cannon',undead:'corpse-shell',tideborn:'flood-shell',automata:'powered-beam'};
 export const FACTIONS:Record<FactionId,FactionDef>=Object.fromEntries(Object.entries(BASE_FACTIONS).map(([id,base])=>{
  const faction=id as BuiltinFactionId,prefix=base.units.worker.id.split('-')[0],names=expansionNames[faction];
  return [id,{...base,buildings:{...base.buildings,
   wall:{...building(`${prefix}-wall`,'Stone Wall','wall',30,25,1100,1,15,'A durable barrier. Siege engines break walls quickly.'),age:2},
   gate:{...building(`${prefix}-gate`,'Town Gate','gate',90,65,1400,2,28,'Open to let armies pass. An open gate also admits enemies. Cannot close on a unit.'),age:2},
  },units:{...base.units,special:{...base.units.special,age:2},
-  cavalry:{...unit(`${prefix}-cavalry`,names[0],'cavalry',100,65,210,18,2,1.5,3.5,1.3,42,undefined,'Fast raider. Strong against ranged troops; vulnerable to pikes.'),age:2,bonusAgainst:{ranged:1.7}},
+  cavalry:{...unit(`${prefix}-cavalry`,names[0],'cavalry',100,65,210,18,2,1.5,3.5,1.3,42,undefined,'Fast raider. Strong against ranged troops; vulnerable to pikes.'),age:2,ability:cavalryAbilities[faction],...(faction==='automata'?{shield:60}:{}),bonusAgainst:{ranged:1.7}},
   spear:{...unit(`${prefix}-spear`,names[1],'spear',55,25,125,11,1,1.9,2.1,1.25,28,undefined,'Long pike infantry. Deals triple damage to cavalry.'),age:1,bonusAgainst:{cavalry:3}},
-  siege:{...unit(`${prefix}-siege`,names[2],'siege',180,140,185,28,2,8.5,1.05,3.8,65,undefined,'Long-range siege engine. Deals quadruple damage to buildings. Protect it from raiders.'),age:3,cost:{wood:180,ore:140,crystal:25},buildingDamageMultiplier:4,sight:11},
+  siege:{...unit(`${prefix}-siege`,names[2],'siege',180,140,185,28,2,8.5,1.05,3.8,65,undefined,'Long-range siege engine. Deals quadruple damage to buildings. Protect it from raiders.'),age:3,cost:{wood:180,ore:140,crystal:25},buildingDamageMultiplier:4,sight:11,ability:siegeAbilities[faction]},
  }}];
 })) as Record<FactionId,FactionDef>;
 
 export const ABILITIES={
  'iron-command':{name:'Iron Command',description:'Target allied ground within 8 tiles. Nearby allies gain 25% damage for 8 seconds.',cooldown:30},
  'queen-step':{name:'Queen’s Step',description:'Target visible open ground within 7 tiles to blink there and heal nearby allies.',cooldown:30},
- 'thane-ward':{name:'Thane’s Ward',description:'Target an allied unit or building within 8 tiles. Restore 80 health and grant 4 armor for 10 seconds.',cooldown:30},
+ 'thane-ward':{name:'Thane’s Ward',description:'Target an allied unit within 8 tiles. Restore 80 health and grant 4 armor for 10 seconds.',cooldown:30},
  'soul-drain':{name:'Soul Drain',description:'Target a visible enemy unit within 7 tiles. Deal 60 damage and recover 45 health.',cooldown:30},
  'admiral-wave':{name:'Admiral’s Wave',description:'Target visible ground within 8 tiles. Allies recover 50 health; hostile units take 35 damage.',cooldown:30},
  'prime-shield':{name:'Prime Shield',description:'Target an allied machine within 8 tiles. Restore its shield and grant 4 armor for 10 seconds.',cooldown:30},

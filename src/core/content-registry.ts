@@ -93,7 +93,7 @@ export function decodeContentPackage(input:unknown):ContentPackage {
   if(typeof input==='string'){if(new TextEncoder().encode(input).length>MAX_CONTENT_BYTES)fail('package','file exceeds 2 MiB');try{input=JSON.parse(input);}catch{fail('package','expected valid JSON');}}
   const p=obj(input,'package',['format','schemaVersion','engineVersion','id','version','name','dependencies','factions','art','hash']);
   if(p.format!=='orcs-vs-fairies-mod'||p.schemaVersion!==1||p.engineVersion!==CONTENT_ENGINE_VERSION)fail('package','unsupported format, schema or engine version');
-  const namespace=str(p.id,'package.id',40);if(!/^[a-z][a-z0-9-]{0,39}$/.test(namespace))fail('package.id','expected a lowercase package ID');
+  const namespace=str(p.id,'package.id',40);if(['core','economy','builtin'].includes(namespace))fail('package.id','reserved built-in namespace');if(!/^[a-z][a-z0-9-]{0,39}$/.test(namespace))fail('package.id','expected a lowercase package ID');
   if(!/^\d+\.\d+\.\d+$/.test(str(p.version,'package.version',30)))fail('package.version','expected an exact semantic version');str(p.name,'package.name');
   arr(p.dependencies,'package.dependencies',16).forEach((v,i)=>{const d=obj(v,`package.dependencies[${i}]`,['id','version','hash']);str(d.id,`dependency[${i}].id`,40);str(d.version,`dependency[${i}].version`,30);if(!/^[a-f0-9]{64}$/.test(str(d.hash,`dependency[${i}].hash`,64)))fail(`dependency[${i}].hash`,'expected SHA-256');});
   const factions=arr(p.factions,'package.factions',16);if(!factions.length)fail('package.factions','at least one faction is required');
@@ -134,7 +134,7 @@ export function decodeContentBundle(input:unknown):ContentBundle {
   const value=obj(input,'bundle',['format','schemaVersion','engineVersion','baseHash','packages','hash']);if(value.format!=='orcs-vs-fairies-content'||value.schemaVersion!==1||value.engineVersion!==CONTENT_ENGINE_VERSION)fail('bundle','unsupported content version');if(value.baseHash!==BASE_CONTENT_HASH)fail('bundle.baseHash','built-in content differs from this build');const bundle=createContentBundle(arr(value.packages,'bundle.packages',32));if(value.hash!==bundle.hash)fail('bundle.hash','SHA-256 does not match admitted packages');return bundle;
 }
 function registry(state:Pick<GameState,'content'>):Registry {if(!state.content)return {factions:FACTIONS,art:BUILTIN_EXTRA_ART};let value=caches.get(state.content);if(!value){const admitted=decodeContentBundle(state.content);value=caches.get(admitted)!;caches.set(state.content,value);}return value;}
-export function contentFactions(content?:ContentBundle):Record<string,FactionDef>{return registry({content}).factions;}
+export function contentFactions(content?:ContentBundle):Record<string,FactionDef>{return content?registry({content}).factions:PINNED_BASE_FACTIONS;}
 export function contentArt(content?:ContentBundle):Record<string,ContentArt>{return registry({content}).art;}
 export function factionFor(state:GameState,side:Side):FactionDef{const faction=registry(state).factions[state.players[side]?.faction];if(!faction)throw new Error('Faction is absent from pinned match content.');return faction;}
 export function availableUnits(state:GameState,side:Side):UnitDef[]{const f=factionFor(state,side);return [...(f.unitDefinitions??[...Object.values(f.units),...(BUILTIN_EXTRA_DEFINITIONS[f.id as BuiltinFactionId]?.units??[])])];}
@@ -150,7 +150,7 @@ export function upgradesFor(state:GameState,side:Side):Record<UpgradeId,UpgradeD
 export function upgradeFor(state:GameState,side:Side,id:UpgradeId):UpgradeDef{const d=upgradesFor(state,side)[id];if(!d)throw new Error(`Research ${id} is absent from faction content.`);return d;}
 export function queuedUnitFor(state:GameState,producer:Entity,index:number):UnitDef{return unitFor(state,producer.side,producer.queue[index],producer.queueDefinitionIds?.[index]);}
 export function svgDataUrl(svg:string):string {const bytes=new TextEncoder().encode(svg),alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';let encoded='';for(let i=0;i<bytes.length;i+=3){const value=(bytes[i]<<16)|((bytes[i+1]??0)<<8)|(bytes[i+2]??0);encoded+=alphabet[(value>>>18)&63]+alphabet[(value>>>12)&63]+(i+1<bytes.length?alphabet[(value>>>6)&63]:'=')+(i+2<bytes.length?alphabet[value&63]:'=');}return `data:image/svg+xml;base64,${encoded}`;}
-export function contentAssetUrl(state:GameState,id:string):string{const art=contentArt(state.content)[id];return art?svgDataUrl(art.svg):`/assets/thumb-${id}.png`;}
+export function contentAssetUrl(state:GameState,id:string):string{const def=Object.values(contentFactions(state.content)).flatMap(f=>[...(f.unitDefinitions??Object.values(f.units)),...(f.buildingDefinitions??Object.values(f.buildings))]).find(d=>d.id===id),artId=def?.artId??id,art=contentArt(state.content)[artId];return art?svgDataUrl(art.svg):`/assets/thumb-${artId}.png`;}
 export class ContentLibrary {
   private installed:ContentPackage[]=[];
   list():ContentPackage[]{return [...this.installed];}

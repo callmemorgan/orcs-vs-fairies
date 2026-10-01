@@ -1,3 +1,4 @@
+import { FACTION_SYSTEM_DEFINITIONS } from './faction-systems-content';
 import { FACTIONS } from './content';
 import type { BuildingDef, BuiltinFactionId, UnitDef } from './types';
 import type { ContentArt } from './content-registry';
@@ -11,3 +12,15 @@ function svg(faction:BuiltinFactionId,kind:'hero'|'engineer'|'beacon'):string {c
 export const BUILTIN_EXTRA_ART:Record<string,ContentArt>=Object.fromEntries((Object.keys(commanders) as BuiltinFactionId[]).flatMap(faction=>(['hero','engineer','beacon'] as const).map(kind=>{const id=`core:${faction}-${kind==='hero'?'commander':kind}`;return [id,{path:`/mods/core/${faction}-${kind}.svg`,svg:svg(faction,kind),width:128,height:128,anchor:[64,112] as [number,number],visualTop:20}];})));
 
 BUILTIN_EXTRA_ART['core:field-barricade']={path:'/mods/core/barricade.svg',svg:'<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><g stroke="#27352c" stroke-width="4"><path d="M16 104L21 45L32 25L40 44L37 104M48 112L51 54L61 34L71 55L69 112M79 110L82 50L93 30L103 50L100 110" fill="#997042"/><path d="M16 62L107 69M17 90L106 98"/></g></svg>',width:128,height:128,anchor:[64,112],visualTop:25};
+
+for(const faction of Object.keys(commanders) as BuiltinFactionId[]) {BUILTIN_EXTRA_DEFINITIONS[faction].units.push(...FACTION_SYSTEM_DEFINITIONS[faction].units);BUILTIN_EXTRA_DEFINITIONS[faction].buildings.push(...FACTION_SYSTEM_DEFINITIONS[faction].buildings);}
+
+const factionObjectDrawings:Record<string,string>={
+ 'core:undead-corpse-wagon':'<path d="M22 58H103L92 87H29Z" fill="#586357"/><circle cx="36" cy="98" r="14" fill="#483c31"/><circle cx="88" cy="98" r="14" fill="#483c31"/><path d="M32 55L95 45M46 38L80 64M55 24L69 49" stroke="#cec8ab" stroke-width="9"/><circle cx="62" cy="35" r="14" fill="#d9d1b1"/>',
+ 'core:orcs-trophy-standard':'<path d="M60 109V22M39 25H95L80 60H39Z" stroke="#51352d" fill="#d48142" stroke-width="7"/><circle cx="59" cy="40" r="9" fill="#e4cfa2"/><path d="M35 104L88 108" stroke="#694536" stroke-width="10"/>',
+ 'core:fairies-enchanted-grove':'<path d="M28 110L35 55M77 110L92 49M52 99L63 37" stroke="#526346" stroke-width="10"/><circle cx="37" cy="43" r="27" fill="#569d72"/><circle cx="88" cy="37" r="29" fill="#72b98b"/><circle cx="62" cy="23" r="18" fill="#ace3b0"/><circle cx="63" cy="83" r="10" fill="#f4d78b"/>',
+ 'core:dwarves-tunnel':'<path d="M21 108V66Q21 24 64 24Q106 24 106 66V108Z" fill="#887c69"/><path d="M39 108V67Q39 46 64 46Q89 46 89 67V108Z" fill="#263633"/><path d="M21 72H39M91 72H107M57 26V45" stroke="#d0ae75" stroke-width="8"/>',
+ 'core:undead-necropolis-outpost':'<path d="M17 109L32 67L52 58V24L64 10L76 24V58L96 67L111 109Z" fill="#657368"/><path d="M52 109V78Q64 63 76 78V109" fill="#273e38"/><circle cx="64" cy="42" r="9" fill="#ace49c"/>',
+ 'core:automata-power-relay':'<path d="M30 106L46 70L46 39L64 18L82 39L82 70L98 106Z" fill="#708b94"/><path d="M46 48H82M35 91H92" stroke="#d1bc79" stroke-width="9"/><circle cx="64" cy="59" r="12" fill="#8ae6ee"/>',
+};
+for(const [id,drawing] of Object.entries(factionObjectDrawings)) BUILTIN_EXTRA_ART[id]={path:`/mods/core/${id.slice(5)}.svg`,svg:`<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><g stroke="#20332f" stroke-width="3">${drawing}</g></svg>`,width:128,height:128,anchor:[64,112],visualTop:10};
