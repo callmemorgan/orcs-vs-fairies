@@ -1,0 +1,30 @@
+.scenario-authoring { color: #e2eadb; min-width: 0; }
+.scenario-authoring h2 { margin-top: 0; }
+.scenario-authoring .editor-actions { display: flex; gap: .5rem; flex-wrap: wrap; align-items: end; }
+.scenario-authoring .scenario-content { display: grid; gap: .75rem; }
+.scenario-authoring .scenario-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: .6rem; min-width: 0; border: 1px solid #526451; border-radius: 5px; padding: .8rem; }
+.scenario-authoring .scenario-group > fieldset,
+.scenario-authoring .scenario-group > details,
+.scenario-authoring .scenario-group > p { grid-column: 1 / -1; }
+.scenario-authoring .scenario-group legend { padding: 0 .4rem; color: #d6deb5; }
+.scenario-authoring .editor-field { display: grid; align-content: start; gap: .3rem; min-width: 0; }
+.scenario-authoring .editor-field input,
+.scenario-authoring .editor-field select,
+.scenario-authoring .editor-field textarea { box-sizing: border-box; width: 100%; min-width: 0; color: #f2f5e9; background: #14221b; border: 1px solid #6e8363; padding: .45rem; border-radius: 3px; font: inherit; }
+.scenario-authoring .editor-field input[type="checkbox"] { width: 1.2rem; height: 1.2rem; }
+.scenario-authoring .editor-field textarea { resize: vertical; }
+.scenario-authoring button { padding: .5rem .65rem; color: #eff2df; background: #304632; border: 1px solid #6c8260; border-radius: 4px; cursor: pointer; font: inherit; }
+.scenario-authoring button:disabled { opacity: .55; cursor: default; }
+.scenario-authoring button:focus-visible,
+.scenario-authoring input:focus-visible,
+.scenario-authoring textarea:focus-visible,
+.scenario-authoring select:focus-visible,
+.scenario-authoring summary:focus-visible { outline: 2px solid #e2d783; outline-offset: 3px; }
+.scenario-authoring .scenario-disclosure { border: 1px solid #526451; border-radius: 5px; padding: .4rem; min-width: 0; }
+.scenario-authoring summary { cursor: pointer; padding: .3rem; color: #dde5c5; overflow-wrap: anywhere; }
+.scenario-authoring .scenario-disclosure[open] > summary { margin-bottom: .5rem; }
+.scenario-authoring .editor-error { color: #ffb49f; }
+@media (max-width: 600px) {
+  .scenario-authoring .scenario-group { grid-template-columns: 1fr; padding: .5rem; }
+  .scenario-authoring .editor-actions { align-items: stretch; }
+}

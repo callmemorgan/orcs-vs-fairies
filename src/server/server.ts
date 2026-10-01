@@ -18,6 +18,8 @@ import { ServerStore, type StoredLobby, type StoredCommand, type StoredFrame } f
 import { OnlineView } from './views';
 import { teamObservation } from './team-view';
 import { createTournamentService } from '../tournament/service';
+import { createCommunityHttp } from './community-http';
+import { CommunityPackageError } from './community-packages';
 
 const scrypt=promisify(scryptCallback);
 const SESSION_LIFETIME=7*24*60*60*1000;
@@ -87,6 +89,7 @@ export async function createRtsServer(options:ServerOptions){
   const externalOrigin=options.origin?.trim()||undefined;
   if(externalOrigin){const parsed=new URL(externalOrigin);if(parsed.origin!==externalOrigin||!['http:','https:'].includes(parsed.protocol))throw new Error('RTS_ORIGIN must be an exact HTTP(S) origin without a trailing slash.');}
   const store=new ServerStore(options.dataDir,compatibilityFingerprint());
+  const communityHttp=createCommunityHttp(store.db);
   const lobbies=new Map<string,StoredLobby>(store.lobbies().map(lobby=>{const normalized=settings(lobby.settings),draft=lobby.draft?validateDraftState(lobby.draft,normalized.players!.map((p,id)=>({...p,id:id as Side})),normalizeMatchRules(normalized.rules)):createDraft(normalized.players!.map((p,id)=>({...p,id:id as Side})),normalizeMatchRules(normalized.rules));return [lobby.id,{...lobby,draft,settings:normalized,seats:roster(normalized,lobby.seats,undefined,false)}];}));
   const matches=new Map<string,ActiveMatch>();
   const tickets=new Map<string,Ticket>();
@@ -137,10 +140,10 @@ export async function createRtsServer(options:ServerOptions){
     return req.headers.origin===expected;
   }
   function respond(res:ServerResponse,status:number,data:unknown){res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(JSON.stringify(data));}
-  async function body(req:IncomingMessage):Promise<Record<string,unknown>> {
+  async function body(req:IncomingMessage,maximumBytes=MAX_BODY_BYTES):Promise<Record<string,unknown>> {
     if(req.headers['content-type']?.split(';')[0]!=='application/json')throw new HttpError(415,'Use application/json.');
     let bytes=0;const chunks:Buffer[]=[];
-    for await(const part of req){const chunk=Buffer.from(part);bytes+=chunk.length;if(bytes>MAX_BODY_BYTES)throw new HttpError(413,'Request too large.');chunks.push(chunk);}
+    for await(const part of req){const chunk=Buffer.from(part);bytes+=chunk.length;if(bytes>maximumBytes)throw new HttpError(413,'Request too large.');chunks.push(chunk);}
     let value:unknown;try{value=JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw new HttpError(400,'Invalid JSON.');}
     if(!record(value))throw new HttpError(400,'Expected an object.');return value;
   }
@@ -242,6 +245,7 @@ export async function createRtsServer(options:ServerOptions){
     }
     if(path.startsWith('/api/')){
       const user=account(req);
+      if(await communityHttp({req,res,url,user,body,respond}))return;
       if(tournaments&&await tournaments.handle(req,res))return;
       if(req.method==='GET'&&path==='/api/lobbies'){respond(res,200,{lobbies:[...lobbies.values()].map(publicLobby)});return;}
       if(req.method==='POST'&&path==='/api/lobbies'){
@@ -317,7 +321,7 @@ export async function createRtsServer(options:ServerOptions){
     const data=await readFile(filename),types:Record<string,string>={'.html':'text/html; charset=utf-8','.js':'application/javascript','.css':'text/css','.json':'application/json','.png':'image/png','.svg':'image/svg+xml','.woff2':'font/woff2','.ico':'image/x-icon'};
     res.writeHead(200,{'Content-Type':types[extname(filename)]??'application/octet-stream','X-Content-Type-Options':'nosniff','Cache-Control':extname(filename)==='.html'?'no-cache':'public,max-age=3600'});res.end(data);
   }
-  const http=createServer((req,res)=>{void route(req,res).catch(error=>{if(res.headersSent){res.destroy();return;}respond(res,error instanceof HttpError?error.status:500,{error:error instanceof HttpError?error.message:'Server request failed.'});});});
+  const http=createServer((req,res)=>{void route(req,res).catch(error=>{if(res.headersSent){res.destroy();return;}const known=error instanceof HttpError||error instanceof CommunityPackageError;respond(res,known?error.status:500,{error:known?error.message:'Server request failed.'});});});
   const websocket=new WebSocketServer({noServer:true,maxPayload:MAX_BODY_BYTES,perMessageDeflate:false});
 
   function deliver(peer:Peer,match:ActiveMatch){

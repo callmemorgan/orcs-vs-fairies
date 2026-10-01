@@ -1,0 +1,37 @@
+.editor-entry { margin: .8rem; }
+.session-toolbar .editor-entry { margin: 0; }
+.editor-overlay { position: fixed; inset: 0; z-index: 1700; padding: 1rem; background: #0b111ddd; overflow: auto; color: #f0e7d3; }
+.editor-overlay[hidden], .editor-dialog [hidden] { display: none !important; }
+.editor-dialog { max-width: 1380px; margin: 0 auto; border: 1px solid #637572; border-radius: .8rem; background: #18252c; box-shadow: 0 12px 50px #000a; padding: 1rem; font-family: system-ui, sans-serif; }
+.editor-dialog header { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.editor-dialog h2 { margin: 0 0 .6rem; font-size: 1.3rem; }
+.editor-metadata, .editor-fields, .editor-toolbar, .editor-actions { display: flex; flex-wrap: wrap; gap: .6rem; align-items: end; margin: .7rem 0; }
+.editor-dialog label { display: flex; flex-direction: column; gap: .3rem; font-size: .85rem; }
+.editor-dialog input, .editor-dialog select, .editor-dialog textarea, .editor-dialog button { color: #f0e7d3; background: #25383f; border: 1px solid #708b83; border-radius: .3rem; padding: .5rem; font: inherit; }
+.editor-dialog input { max-width: 260px; }
+.editor-dialog button { cursor: pointer; min-height: 38px; }
+.editor-dialog button:hover { background: #35544d; }
+.editor-dialog button:disabled { opacity: .45; cursor: default; }
+.editor-dialog :focus-visible { outline: 3px solid #ffd38c; outline-offset: 2px; }
+.editor-creation { border: 1px solid #435b5c; padding: .6rem; border-radius: .4rem; }
+.editor-creation summary { cursor: pointer; }
+.editor-workspace { display: grid; grid-template-columns: minmax(320px, 1fr) minmax(230px, 310px); gap: 1rem; }
+.editor-canvas-wrap { min-width: 0; }
+.editor-canvas-wrap canvas { width: 100%; max-width: min(792px, max(320px, calc(100vh - 360px))); height: auto; aspect-ratio: 1; display: block; touch-action: none; cursor: crosshair; border: 2px solid #718a7f; }
+.editor-inspector { font-size: .9rem; }
+.editor-validation { padding: .5rem .7rem; border: 1px solid #526b65; background: #0e1c23; border-radius: .4rem; }
+.editor-validation p { margin: 0; }
+.editor-validation ul { padding-left: 1.2rem; margin: .5rem 0 0; max-height: 190px; overflow: auto; }
+.editor-status { min-height: 2.5em; color: #dceabe; }
+.editor-status.error { color: #ffb3a6; }
+.editor-tabs { display: flex; gap: .5rem; margin: .6rem 0; }
+.editor-tabs [aria-selected="true"] { background: #456558; border-color: #d1c595; }
+.editor-mission-host { position: fixed; z-index: 1100; top: 92px; left: 18px; max-width: 350px; }
+.editor-inspector .editor-actions { align-items: stretch; flex-direction: column; }
+.editor-inspector .editor-actions button { width: 100%; text-align: left; }
+@media (max-width: 800px) { .editor-overlay { padding: .4rem; } .editor-workspace { grid-template-columns: 1fr; } .editor-inspector .editor-actions { flex-direction: row; } .editor-inspector .editor-actions button { width: auto; } }
+
+.editor-package-badge{position:fixed;top:var(--tool-panel-top,126px);left:8px;z-index:900;margin:0;padding:4px 8px;background:#1d2329;color:#e8edf0;border:1px solid #6d7e8e;font:13px system-ui,sans-serif}
+.editor-package-badge[hidden]{display:none}
+
+.photo-mode .editor-entry,.photo-mode .editor-overlay,.photo-mode .community-entry,.photo-mode .community-overlay,.photo-mode .editor-package-badge{visibility:hidden}
