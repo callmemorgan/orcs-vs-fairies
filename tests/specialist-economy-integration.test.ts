@@ -159,3 +159,31 @@ describe('paid engineer barricade salvage', () => {
     expect(saveGame(state)).toEqual(before); expect(adapter.recordPaid).not.toHaveBeenCalled();
   });
 });
+
+it.each([
+  ['fairies', 'core:fairies-commander'],
+  ['fairies', FACTIONS.fairies.units.cavalry.id],
+  ['automata', FACTIONS.automata.units.cavalry.id],
+] as const)('routes %s %s relocation through canonical command cleanup', (faction, definitionId) => {
+  const state = fixture(faction), actor = spawnDefinition(state, 0, 'unit', definitionId, 18.5, 18.5);
+  loadRaidedCargo(state, actor); const point = { x: actor.x, y: actor.y + 2 };
+  expect(issueCommand(state, 0, { type: 'ability', ids: [actor.id], ...point })).toBe(true);
+  expect(actor).toMatchObject({ ...point, order: { type: 'idle' }, path: [] });
+  expect(captureRuntime(state).routes.some(([id]) => id === actor.id)).toBe(false);
+  expect(economicState(state)!.tasks.some(task => task.entityId === actor.id)).toBe(false);
+  expect(cargo(state, actor)).toMatchObject({ stock: { wood: 24, ore: 0, crystal: 0 }, origin: 'delivery', tradeValue: 0 });
+  expectRoundTrip(state);
+});
+
+it('records the charged barricade through canonical command input and returns its investment once on expiry', () => {
+  const state = fixture(), engineer = spawnDefinition(state, 0, 'unit', 'core:orcs-engineer', 18.5, 18.5), bank = { ...state.players[0] };
+  refreshVisibility(state); expect(issueCommand(state, 0, { type: 'engineerBuild', ids: [engineer.id], kind: 'barricade', x: 20.5, y: 18.5 })).toBe(true);
+  const barricade = state.entities.find(e => e.definitionId === 'core:field-barricade')!;
+  expect(state.players[0].wood).toBe(bank.wood - 35); expect(state.players[0].ore).toBe(bank.ore - 15);
+  expect(economicState(state)!.paidCosts).toEqual([{ entityId: barricade.id, stock: { wood: 35, ore: 15, crystal: 0 } }]);
+  state.specialists!.structures[0].expires = .1; let deaths = 0;
+  for(let i=0;i<3;i++){stepGame(state,.05);deaths += state.events.filter(event => event.type === 'death' && event.source === barricade.id).length;}
+  expect(deaths).toBe(1);
+  expect(economicState(state)!.salvage).toEqual([expect.objectContaining({ kind: 'salvage', stock: { wood: 8.75, ore: 3.75, crystal: 0 } })]);
+  expectRoundTrip(state);
+});

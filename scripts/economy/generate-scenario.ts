@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import { createMatch, issueCommand, refreshVisibility, stepGame } from '../../src/core/simulation';
+import { createMatch, issueCommand, refreshVisibility, spawnDefinition, stepGame } from '../../src/core/simulation';
 import { generateWorldMap } from '../../src/core/world-map';
 import { createContentBundle } from '../../src/core/content-registry';
 import { exampleMod } from '../../src/core/example-mod';
@@ -32,6 +32,6 @@ const soldier=s.entities.find(e=>e.side===0&&e.kind==='unit'&&e.role==='melee')!
 const market=economy.markets.find(m=>(m.level??0)===0)!;workers()[3].x=market.x;workers()[3].y=market.y+1;
 for(const caravan of s.entities.filter(e=>economy.caravans.includes(e.id))){caravan.x=originalHQ.x+4;caravan.y=originalHQ.y+2+economy.caravans.indexOf(caravan.id);caravan.order={type:'idle'};}
 for(const worker of workers(1)){worker.x=29.5;worker.y=31.5;worker.order={type:'idle'};}
-if(mixed){const caveWorker={...structuredClone(workers()[0]),id:s.nextId++,x:18.5,y:26.5,level:1,order:{type:'idle' as const},path:[],carried:0};s.entities.push(caveWorker);s.resources.push({id:s.nextId++,x:21.5,y:26.5,level:1,kind:'crystal',amount:600,maxAmount:600},{id:s.nextId++,x:7.5,y:11.5,level:1,kind:'crystal',amount:777,maxAmount:777});}
+if(mixed){for(const [id,x,y] of [['core:fairies-engineer',5.5,16.5],['core:fairies-commander',3.5,18.5]] as const){const specialist=spawnDefinition(s,0,'unit',id,x,y);specialist.order={type:'hold'};}const caveWorker={...structuredClone(workers()[0]),id:s.nextId++,x:18.5,y:26.5,level:1,order:{type:'idle' as const},path:[],carried:0};s.entities.push(caveWorker);s.resources.push({id:s.nextId++,x:21.5,y:26.5,level:1,kind:'crystal',amount:600,maxAmount:600},{id:s.nextId++,x:7.5,y:11.5,level:1,kind:'crystal',amount:777,maxAmount:777});}
 refreshVisibility(s);
 const destination=process.argv[2]??'docs/evidence/economy-settlements-20261001/browser-scenario.json';fs.mkdirSync(destination.slice(0,destination.lastIndexOf('/')),{recursive:true});fs.writeFileSync(destination,JSON.stringify(createSessionFile(s),null,2));console.log(JSON.stringify({destination,tick:s.tick,time:s.time,structures:economy.structures.map(e=>e.entityId),caravans:economy.caravans}));
