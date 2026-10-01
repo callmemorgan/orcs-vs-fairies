@@ -1,3 +1,4 @@
+import { BUILTIN_EXTRA_ART, BUILTIN_EXTRA_DEFINITIONS } from './specialist-content';
 import { ABILITIES, ECONOMY, FACTIONS, UPGRADES } from './content';
 import type { BuildingDef, BuildingRole, BuiltinFactionId, Entity, FactionDef, FactionId, GameState, Side, UnitDef, UnitRole, UpgradeDef, UpgradeId } from './types';
 
@@ -39,20 +40,20 @@ function one(v:unknown,path:string,choices:readonly string[]):string {if(typeof 
 function definitionId(v:unknown,path:string,namespace?:string):string {const value=str(v,path,100);if(!/^[a-z][a-z0-9-]{0,39}:[a-z][a-z0-9-]{0,58}$/.test(value)||namespace&&!value.startsWith(`${namespace}:`))fail(path,`expected a namespaced definition ID${namespace?` owned by ${namespace}`:''}`);return value;}
 function cost(v:unknown,path:string):void{const value=obj(v,path,['wood','ore','crystal']);for(const key of ['wood','ore','crystal'])num(value[key],`${path}.${key}`,0,100000);}
 function unit(v:unknown,path:string,namespace:string):void {
-  const value=obj(v,path,['id','name','role','cost','hp','damage','armor','range','speed','cooldown','trainTime','sight','description'],['shield','buildingDamageMultiplier','age','bonusAgainst','ability']);
+  const value=obj(v,path,['id','name','role','cost','hp','damage','armor','range','speed','cooldown','trainTime','sight','description'],['shield','buildingDamageMultiplier','age','bonusAgainst','ability','tags']);
   definitionId(value.id,`${path}.id`,namespace);str(value.name,`${path}.name`);str(value.description,`${path}.description`,2000);one(value.role,`${path}.role`,unitRoles);cost(value.cost,`${path}.cost`);
   for(const [key,min,max] of [['hp',1,100000],['damage',0,10000],['armor',0,1000],['range',.5,30],['speed',.1,10],['cooldown',.05,60],['trainTime',.05,600],['sight',1,30]] as const)num(value[key],`${path}.${key}`,min,max);
   if(value.shield!==undefined)num(value.shield,`${path}.shield`,0,100000);
   if(value.buildingDamageMultiplier!==undefined)num(value.buildingDamageMultiplier,`${path}.buildingDamageMultiplier`,.1,10);
   if(value.age!==undefined)num(value.age,`${path}.age`,1,3,true);
-  if(value.ability!==undefined)one(value.ability,`${path}.ability`,Object.keys(ABILITIES));
+  if(value.ability!==undefined)one(value.ability,`${path}.ability`,Object.keys(ABILITIES));if(value.tags!==undefined)arr(value.tags,`${path}.tags`,2).forEach((tag,i)=>one(tag,`${path}.tags[${i}]`,['hero','engineer']));
   if(value.bonusAgainst!==undefined){const bonuses=obj(value.bonusAgainst,`${path}.bonusAgainst`,[],unitRoles);for(const [key,factor] of Object.entries(bonuses))num(factor,`${path}.bonusAgainst.${key}`,.1,10);}
 }
 function building(v:unknown,path:string,namespace:string):void {
-  const value=obj(v,path,['id','name','role','cost','hp','size','buildTime','sight','description'],['age','ability']);
+  const value=obj(v,path,['id','name','role','cost','hp','size','buildTime','sight','description'],['age','ability','tags']);
   definitionId(value.id,`${path}.id`,namespace);str(value.name,`${path}.name`);str(value.description,`${path}.description`,2000);one(value.role,`${path}.role`,buildingRoles);cost(value.cost,`${path}.cost`);
   for(const [key,min,max] of [['hp',1,100000],['size',1,6],['buildTime',.05,600],['sight',1,30]] as const)num(value[key],`${path}.${key}`,min,max,key==='size');
-  if(value.age!==undefined)num(value.age,`${path}.age`,1,3,true);if(value.ability!==undefined)one(value.ability,`${path}.ability`,['heal']);
+  if(value.tags!==undefined)arr(value.tags,`${path}.tags`,2).forEach((tag,i)=>one(tag,`${path}.tags[${i}]`,['beacon','barricade']));if(value.age!==undefined)num(value.age,`${path}.age`,1,3,true);if(value.ability!==undefined)one(value.ability,`${path}.ability`,['heal']);
 }
 function research(v:unknown,path:string,namespace:string):void {
   const value=obj(v,path,['id','name','description','cost','researchTime','building','appliesTo','effects'],['age','requires','exclusiveGroup','appliesToDefinitions']);
@@ -84,7 +85,7 @@ export function contentHash(value:unknown):string {
   }
   return h.map(value=>(value>>>0).toString(16).padStart(8,'0')).join('');
 }
-export const BASE_CONTENT_HASH=contentHash({FACTIONS,UPGRADES,ECONOMY,ABILITIES});
+export const BASE_CONTENT_HASH=contentHash({FACTIONS,UPGRADES,ECONOMY,ABILITIES,BUILTIN_EXTRA_DEFINITIONS,BUILTIN_EXTRA_ART});
 function unsigned<T extends {hash:string}>(input:T):Omit<T,'hash'>{const {hash:_,...value}=input;return value;}
 function freeze<T>(value:T):T {if(value&&typeof value==='object'){for(const child of Object.values(value))freeze(child);Object.freeze(value);}return value;}
 /** Validate syntax and the supplied hash before considering package dependencies. */
@@ -107,10 +108,10 @@ export function decodeContentPackage(input:unknown):ContentPackage {
   if(new TextEncoder().encode(canonicalContent(p)).length>MAX_CONTENT_BYTES)fail('package','file exceeds 2 MiB');
   return freeze(JSON.parse(JSON.stringify(p)) as ContentPackage);
 }
-const PINNED_BASE_FACTIONS=freeze(JSON.parse(JSON.stringify(FACTIONS))) as Record<FactionId,FactionDef>;
+const PINNED_BASE_FACTIONS=freeze(JSON.parse(JSON.stringify(Object.fromEntries(Object.entries(FACTIONS).map(([id,f])=>[id,{...f,unitDefinitions:[...Object.values(f.units),...BUILTIN_EXTRA_DEFINITIONS[id as BuiltinFactionId].units],buildingDefinitions:[...Object.values(f.buildings),...BUILTIN_EXTRA_DEFINITIONS[id as BuiltinFactionId].buildings]}]))))) as Record<FactionId,FactionDef>;
 const PINNED_BASE_RESEARCH=freeze(JSON.parse(JSON.stringify(UPGRADES))) as typeof UPGRADES;
 function buildRegistry(packages:ContentPackage[]):Registry {
-  const factions:Record<string,FactionDef>={...PINNED_BASE_FACTIONS},art:Record<string,ContentArt>={},ids=new Set<string>(),byId=new Map(packages.map(p=>[p.id,p]));
+  const factions:Record<string,FactionDef>={...PINNED_BASE_FACTIONS},art:Record<string,ContentArt>={...BUILTIN_EXTRA_ART},ids=new Set<string>(),byId=new Map(packages.map(p=>[p.id,p]));
   if(byId.size!==packages.length)fail('bundle.packages','two versions of one package cannot share a match');
   const visited=new Set<string>(),visiting=new Set<string>();
   const visit=(p:ContentPackage)=>{if(visiting.has(p.id))fail('dependencies',`cycle includes ${p.id}`);if(visited.has(p.id))return;visiting.add(p.id);const deps=new Set<string>();for(const d of p.dependencies){if(deps.has(d.id))fail('dependencies',`duplicate dependency ${d.id}`);deps.add(d.id);const found=byId.get(d.id);if(!found)fail('dependencies',`missing ${d.id}@${d.version}`);if(found.version!==d.version||found.hash!==d.hash)fail('dependencies',`incompatible ${d.id}@${d.version}`);visit(found);}visiting.delete(p.id);visited.add(p.id);};packages.forEach(visit);
@@ -121,7 +122,7 @@ function buildRegistry(packages:ContentPackage[]):Registry {
     const targetUnits=[...Object.values(units),...f.units];for(const research of f.research)for(const id of research.appliesToDefinitions??[]){const target=targetUnits.find(unit=>unit.id===id);if(!target||target.role!==research.appliesTo)fail('research.appliesToDefinitions',`${id} is absent or has another role`);}
     const available=new Map([...Object.values(PINNED_BASE_RESEARCH),...f.research].map(d=>[d.id,d])),done=new Set<string>(),pending=new Set<string>();const check=(id:string)=>{if(pending.has(id))fail('research',`prerequisite cycle includes ${id}`);if(done.has(id))return;const d=available.get(id as UpgradeId);if(!d)fail('research',`missing prerequisite ${id}`);pending.add(id);for(const dep of d.requires??[])check(dep);pending.delete(id);done.add(id);};f.research.forEach(d=>check(d.id));
     for(const d of [...f.units,...f.buildings])if(!Object.hasOwn(p.art,d.id))fail('art',`missing custom artwork for ${d.id}`);
-    factions[f.id]=freeze({...base,...f,units,buildings,unitDefinitions:[...Object.values(units),...f.units.filter(d=>!Object.values(units).some(base=>base.id===d.id))],buildingDefinitions:[...Object.values(buildings),...f.buildings.filter(d=>!Object.values(buildings).some(base=>base.id===d.id))],research:f.research});Object.assign(art,p.art);
+    factions[f.id]=freeze({...base,...f,units,buildings,unitDefinitions:[...Object.values(units),...(base.unitDefinitions??[]).filter(d=>!Object.values(base.units).some(x=>x.id===d.id)),...f.units.filter(d=>!Object.values(units).some(base=>base.id===d.id))],buildingDefinitions:[...Object.values(buildings),...(base.buildingDefinitions??[]).filter(d=>!Object.values(base.buildings).some(x=>x.id===d.id)),...f.buildings.filter(d=>!Object.values(buildings).some(base=>base.id===d.id))],research:f.research});Object.assign(art,p.art);
   }
   if(Object.values(art).reduce((sum,a)=>sum+a.width*a.height,0)>16*1024*1024)fail('bundle.art','decoded artwork exceeds 64 MiB');return freeze({factions,art});
 }
@@ -132,18 +133,18 @@ export function createContentBundle(inputs:unknown[]):ContentBundle {
 export function decodeContentBundle(input:unknown):ContentBundle {
   const value=obj(input,'bundle',['format','schemaVersion','engineVersion','baseHash','packages','hash']);if(value.format!=='orcs-vs-fairies-content'||value.schemaVersion!==1||value.engineVersion!==CONTENT_ENGINE_VERSION)fail('bundle','unsupported content version');if(value.baseHash!==BASE_CONTENT_HASH)fail('bundle.baseHash','built-in content differs from this build');const bundle=createContentBundle(arr(value.packages,'bundle.packages',32));if(value.hash!==bundle.hash)fail('bundle.hash','SHA-256 does not match admitted packages');return bundle;
 }
-function registry(state:Pick<GameState,'content'>):Registry {if(!state.content)return {factions:FACTIONS,art:{}};let value=caches.get(state.content);if(!value){const admitted=decodeContentBundle(state.content);value=caches.get(admitted)!;caches.set(state.content,value);}return value;}
+function registry(state:Pick<GameState,'content'>):Registry {if(!state.content)return {factions:FACTIONS,art:BUILTIN_EXTRA_ART};let value=caches.get(state.content);if(!value){const admitted=decodeContentBundle(state.content);value=caches.get(admitted)!;caches.set(state.content,value);}return value;}
 export function contentFactions(content?:ContentBundle):Record<string,FactionDef>{return registry({content}).factions;}
 export function contentArt(content?:ContentBundle):Record<string,ContentArt>{return registry({content}).art;}
 export function factionFor(state:GameState,side:Side):FactionDef{const faction=registry(state).factions[state.players[side]?.faction];if(!faction)throw new Error('Faction is absent from pinned match content.');return faction;}
-export function availableUnits(state:GameState,side:Side):UnitDef[]{const f=factionFor(state,side);return [...(f.unitDefinitions??Object.values(f.units))];}
-export function availableBuildings(state:GameState,side:Side):BuildingDef[]{const f=factionFor(state,side);return [...(f.buildingDefinitions??Object.values(f.buildings))];}
+export function availableUnits(state:GameState,side:Side):UnitDef[]{const f=factionFor(state,side);return [...(f.unitDefinitions??[...Object.values(f.units),...(BUILTIN_EXTRA_DEFINITIONS[f.id as BuiltinFactionId]?.units??[])])];}
+export function availableBuildings(state:GameState,side:Side):BuildingDef[]{const f=factionFor(state,side);return [...(f.buildingDefinitions??[...Object.values(f.buildings),...(BUILTIN_EXTRA_DEFINITIONS[f.id as BuiltinFactionId]?.buildings??[])])];}
 export function unitFor(state:GameState,entity:Entity):UnitDef;
 export function unitFor(state:GameState,side:Side,role:UnitRole,definitionId?:string):UnitDef;
-export function unitFor(state:GameState,subject:Entity|Side,role?:UnitRole,id?:string):UnitDef {const side=typeof subject==='number'?subject:subject.side,kind=typeof subject==='number'?role:subject.role,definition=typeof subject==='number'?id:subject.definitionId;const f=typeof subject!=='number'&&subject.definitionFaction?registry(state).factions[subject.definitionFaction]:factionFor(state,side);if(!f)throw new Error('Original unit faction is absent from pinned content.');const value=definition?(f.unitDefinitions??Object.values(f.units)).find(d=>d.id===definition):f.units[kind as UnitRole];if(!value||value.role!==kind)throw new Error(`Unit definition ${definition??kind} is absent from faction ${f.id}.`);return value;}
+export function unitFor(state:GameState,subject:Entity|Side,role?:UnitRole,id?:string):UnitDef {const side=typeof subject==='number'?subject:subject.side,kind=typeof subject==='number'?role:subject.role,definition=typeof subject==='number'?id:subject.definitionId;const f=typeof subject!=='number'&&subject.definitionFaction?registry(state).factions[subject.definitionFaction]:factionFor(state,side);if(!f)throw new Error('Original unit faction is absent from pinned content.');const value=definition?(f.unitDefinitions??[...Object.values(f.units),...(BUILTIN_EXTRA_DEFINITIONS[f.id as BuiltinFactionId]?.units??[])]).find(d=>d.id===definition):f.units[kind as UnitRole];if(!value||value.role!==kind)throw new Error(`Unit definition ${definition??kind} is absent from faction ${f.id}.`);return value;}
 export function buildingFor(state:GameState,entity:Entity):BuildingDef;
 export function buildingFor(state:GameState,side:Side,role:BuildingRole,definitionId?:string):BuildingDef;
-export function buildingFor(state:GameState,subject:Entity|Side,role?:BuildingRole,id?:string):BuildingDef {const side=typeof subject==='number'?subject:subject.side,kind=typeof subject==='number'?role:subject.role,definition=typeof subject==='number'?id:subject.definitionId;const f=typeof subject!=='number'&&subject.definitionFaction?registry(state).factions[subject.definitionFaction]:factionFor(state,side);if(!f)throw new Error('Original building faction is absent from pinned content.');const value=definition?(f.buildingDefinitions??Object.values(f.buildings)).find(d=>d.id===definition):f.buildings[kind as BuildingRole];if(!value||value.role!==kind)throw new Error(`Building definition ${definition??kind} is absent from faction ${f.id}.`);return value;}
+export function buildingFor(state:GameState,subject:Entity|Side,role?:BuildingRole,id?:string):BuildingDef {const side=typeof subject==='number'?subject:subject.side,kind=typeof subject==='number'?role:subject.role,definition=typeof subject==='number'?id:subject.definitionId;const f=typeof subject!=='number'&&subject.definitionFaction?registry(state).factions[subject.definitionFaction]:factionFor(state,side);if(!f)throw new Error('Original building faction is absent from pinned content.');const value=definition?(f.buildingDefinitions??[...Object.values(f.buildings),...(BUILTIN_EXTRA_DEFINITIONS[f.id as BuiltinFactionId]?.buildings??[])]).find(d=>d.id===definition):f.buildings[kind as BuildingRole];if(!value||value.role!==kind)throw new Error(`Building definition ${definition??kind} is absent from faction ${f.id}.`);return value;}
 export function entityDefinition(state:GameState,entity:Entity):UnitDef|BuildingDef{return entity.kind==='unit'?unitFor(state,entity):buildingFor(state,entity);}
 export function upgradesFor(state:GameState,side:Side):Record<UpgradeId,UpgradeDef>{return {...(state.content?PINNED_BASE_RESEARCH:UPGRADES),...Object.fromEntries((factionFor(state,side).research??[]).map(d=>[d.id,d]))};}
 export function upgradeFor(state:GameState,side:Side,id:UpgradeId):UpgradeDef{const d=upgradesFor(state,side)[id];if(!d)throw new Error(`Research ${id} is absent from faction content.`);return d;}

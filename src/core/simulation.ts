@@ -206,6 +206,8 @@ function applyCommand(s:GameState,side:Side,c:Command):boolean{
  if(!e||!d||d.building!==e.role||e.research||researchRequirement(s,side,c.upgrade)||p.wood<d.cost.wood||p.ore<d.cost.ore||p.crystal<d.cost.crystal)return false;
  p.wood-=d.cost.wood;p.ore-=d.cost.ore;p.crystal-=d.cost.crystal;e.research=c.upgrade;if(d.exclusiveGroup)e.researchPaidCost={...d.cost};e.researchProgress=0;emit(s,'research',e,undefined,`${d.name} started`);return true;
  }
+ if(['promote','recoverArtifact','equipArtifact','unequipArtifact','fieldRepair'].includes(c.type))return false;
+ if(!('ids' in c))return false;
  const units=s.entities.filter(e=>c.ids.includes(e.id)&&e.side===side&&alive(e)&&e.kind==='unit'&&!e.illusion);
  if(!units.length)return false;
  if(c.type==='build'){
@@ -525,3 +527,6 @@ export function runAI(s:GameState,side:Side=1):void{
 issueCommand(s,side,{type:'attackMove',ids:readyArmy.filter(e=>e.entrenchedAt===undefined&&(!incomeRecoverable||e.id!==rt.expansionScout[side])).map(e=>e.id),x:destination.x,y:destination.y});rt.aiWave[side]=s.time;
  }else if(!rt.initialScoutDispatched[side]&&s.time>profile.scoutAt&&readyArmy.length&&readyArmy.every(e=>e.order.type==='idle')){const scout=readyArmy[0];if(issueCommand(s,side,{type:'attackMove',ids:[scout.id],x:hq.x+(enemyStart.x-hq.x)*.7,y:hq.y+(enemyStart.y-hq.y)*.7}))rt.initialScoutDispatched[side]=true;}
 }
+
+/** Constructor for validated deterministic systems; the caller charges costs and checks rules. */
+export function spawnDefinition(s:GameState,side:Side,kind:Entity['kind'],definitionId:string,x:number,y:number,progress=1):Entity {const d=kind==='unit'?availableUnits(s,side).find(d=>d.id===definitionId):availableBuildings(s,side).find(d=>d.id===definitionId);if(!d)throw new Error('Definition is absent from player content.');return spawn(s,side,kind,d.role,x,y,progress,definitionId);}
