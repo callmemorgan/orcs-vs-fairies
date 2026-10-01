@@ -1,9 +1,24 @@
 import assert from 'node:assert/strict';
-import {readFile,readlink} from 'node:fs/promises';
+import {readFile,readlink,readdir} from 'node:fs/promises';
+import {join} from 'node:path';
 import {execFileSync} from 'node:child_process';
-import {sourceProvenance,inventory,sha} from '../controls-proof/browser-common.mjs';
+import {sourceProvenance,sha} from '../controls-proof/browser-common.mjs';
 
-export {inventory,sha};
+export {sha};
+// Record links themselves. Following the server's dependency link would include
+// the entire installed toolchain and mutable caches in the package inventory.
+export async function inventory(directory) {
+  const files={};
+  async function visit(relative='') {
+    for(const entry of (await readdir(join(directory,relative),{withFileTypes:true})).sort((a,b)=>a.name.localeCompare(b.name))) {
+      const path=relative?`${relative}/${entry.name}`:entry.name,absolute=join(directory,path);
+      if(entry.isDirectory())await visit(path);
+      else if(entry.isSymbolicLink()) {const target=await readlink(absolute);files[path]={bytes:Buffer.byteLength(target),sha256:sha(target),symlink:target};}
+      else if(entry.isFile()) {const bytes=await readFile(absolute);files[path]={bytes:bytes.length,sha256:sha(bytes)};}
+    }
+  }
+  await visit();return files;
+}
 export const sourceDigest=provenance=>sha(Object.entries({...provenance.sourceFiles,...provenance.configFiles})
   .sort(([left],[right])=>left<right?-1:left>right?1:0)
   .map(([path,entry])=>`${path}\0${entry.sha256}\n`).join(''));
