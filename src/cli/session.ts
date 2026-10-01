@@ -1,25 +1,13 @@
 import { createHash } from 'node:crypto';
-import { FACTIONS, UPGRADES } from '../core/content';
+import { FACTIONS } from '../core/content';
+import { validateCommand } from '../core/commands';
 import { PlayerView } from '../core/observation';
+import { saveGame, loadGame } from '../core/saves';
 import { createGame, isGameOver, issueCommand, stepGame } from '../core/simulation';
 import type { Command, FactionId, GameState, MapSize, Side } from '../core/types';
-const roles=['worker','melee','ranged','special','spear','cavalry','siege'];
-const buildings=['hq','depot','barracks','tower','wall','gate'];
 const record=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v);
 const integer=(v:unknown):v is number=>Number.isSafeInteger(v);
-const finite=(v:unknown):v is number=>typeof v==='number'&&Number.isFinite(v);
 const keys=(o:Record<string,unknown>,allowed:string[])=>Object.keys(o).every(k=>allowed.includes(k));
-function validateCommand(v:unknown):v is Command{
- if(!record(v)||typeof v.type!=='string')return false;
- if(v.type==='cancelTrain')return keys(v,['type','id','index'])&&integer(v.id)&&integer(v.index);
- if(v.type==='train')return keys(v,['type','id','role'])&&integer(v.id)&&roles.includes(v.role as string);
- if(v.type==='research')return keys(v,['type','id','upgrade'])&&integer(v.id)&&typeof v.upgrade==='string'&&Object.hasOwn(UPGRADES,v.upgrade);
- if(!Array.isArray(v.ids)||!v.ids.length||v.ids.length>100||!v.ids.every(integer))return false;
- if(['stop','hold','ability','clearRally','toggleGate'].includes(v.type))return keys(v,['type','ids']);
- if(['move','attackMove','setRally'].includes(v.type))return keys(v,['type','ids','x','y'])&&finite(v.x)&&finite(v.y);
- if(['attack','gather','repair'].includes(v.type))return keys(v,['type','ids','target'])&&integer(v.target);
- return v.type==='build'&&keys(v,['type','ids','role','x','y'])&&buildings.includes(v.role as string)&&finite(v.x)&&finite(v.y);
-}
 export interface ReplayEntry {input:unknown;hash:string}
 export function stateHash(s:GameState):string{
  const json=JSON.stringify({...s,visible:s.visible.map(x=>[...x].sort((a,b)=>a-b)),explored:s.explored.map(x=>[...x].sort((a,b)=>a-b))});
@@ -32,7 +20,12 @@ export class TerminalSession {
  handle(input:unknown):unknown{
   if(!record(input)||typeof input.op!=='string')throw new Error('Expected an object with an op string.');
   let result:unknown;
-  if(input.op==='start'){
+  if(input.op==='load'){
+   if(!keys(input,['op','save','side'])||(input.side!==undefined&&input.side!==0&&input.side!==1))throw new Error('Invalid load request.');
+   const restored=loadGame(input.save),side=(input.side??1) as Side;
+   restored.controllers=side===0?['external','ai']:['ai','external'];
+   this.state=restored;this.view=new PlayerView(side);result=this.view.observe(restored);
+  }else if(input.op==='start'){
    if(this.state)throw new Error('A match already exists. Start a new process for another match.');
    if(!keys(input,['op','faction','opponent','side','seed','mapSize']))throw new Error('Unknown start field.');
    const faction=input.faction??'orcs',opponent=input.opponent??'fairies',size=input.mapSize??'medium',seed=input.seed??4127,side=input.side??1;
@@ -43,7 +36,9 @@ export class TerminalSession {
   }else{
    if(!this.state||!this.view)throw new Error('Start a match first.');
    const s=this.state,view=this.view;
-   if(input.op==='observe'){
+   if(input.op==='save'){
+    if(!keys(input,['op']))throw new Error('Unknown save field.');result=saveGame(s);
+   }else if(input.op==='observe'){
     if(!keys(input,['op']))throw new Error('Unknown observe field.');result=view.observe(s);
    }else if(input.op==='command'){
     if(!keys(input,['op','command'])||!validateCommand(input.command))throw new Error('Malformed command.');
@@ -55,7 +50,7 @@ export class TerminalSession {
     result={advanced,events,observation:view.observe(s)};
    }else if(input.op==='result'){
     if(!keys(input,['op']))throw new Error('Unknown result field.');result={finished:isGameOver(s),winner:s.winner,draw:s.draw,time:s.time,tick:s.tick,side:view.side,outcome:isGameOver(s)?s.draw?'draw':s.winner===view.side?'win':'loss':null};
-   }else throw new Error('Unknown op. Use start, observe, command, advance or result.');
+   }else throw new Error('Unknown op. Use start, load, save, observe, command, advance or result.');
   }
   this.replay.push({input:structuredClone(input),hash:stateHash(this.state!)});
   return {ok:true,result};
