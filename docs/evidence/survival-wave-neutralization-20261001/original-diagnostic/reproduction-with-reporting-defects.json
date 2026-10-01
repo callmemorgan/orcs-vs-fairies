@@ -1,0 +1,217 @@
+{
+  "sourcePin": "af44da406acf7ab44436e978cb1f571b93e28d23",
+  "sourceDigest": "af44da406acf7ab44436e978cb1f571b93e28d23",
+  "checkout": "/tmp/ovf-modes-save4-checkout.lhlKIC",
+  "input": "/tmp/ovf-modes-save4-proof.1RU1fI/runtime/survival-five-waves-wave-2-recovery.session.json",
+  "inputSha256": "1f524adce9f09dcc028bbe5f7d4bee709f8c739977dc4075ddce100a322f4484",
+  "executedBundleSha256": "76c15a96b4710251efebb59ee6be76114e74a4934389d64d06bf2357d5323d28",
+  "startTick": 6951,
+  "finalTick": 7448,
+  "publicStepSeconds": 0.05,
+  "advancedTicks": 497,
+  "reproduced": true,
+  "extraTicks": 100,
+  "transitions": [
+    {
+      "tick": 7251,
+      "wave": 3,
+      "phase": "fighting",
+      "spawnedIds": [
+        91,
+        92,
+        93
+      ],
+      "attackers": [
+        {
+          "id": 91,
+          "side": 1,
+          "team": 1,
+          "hp": 175,
+          "role": "melee",
+          "definitionId": "orc-melee",
+          "x": 26.5,
+          "y": 28.5,
+          "order": {
+            "type": "attackMove",
+            "x": 7.5,
+            "y": 7.5
+          },
+          "crewless": false
+        },
+        {
+          "id": 92,
+          "side": 1,
+          "team": 1,
+          "hp": 190,
+          "role": "special",
+          "definitionId": "orc-special",
+          "x": 27.5,
+          "y": 28.5,
+          "order": {
+            "type": "attackMove",
+            "x": 17.5,
+            "y": 17.5
+          },
+          "crewless": false
+        },
+        {
+          "id": 93,
+          "side": 1,
+          "team": 1,
+          "hp": 185,
+          "role": "siege",
+          "definitionId": "orc-siege",
+          "x": 28.5,
+          "y": 28.5,
+          "order": {
+            "type": "attackMove",
+            "x": 7.5,
+            "y": 7.5
+          },
+          "crew": {
+            "hp": 0,
+            "maxHp": 42,
+            "uncrewed": true
+          },
+          "crewless": false
+        }
+      ],
+      "defenderHq": [
+        {
+          "id": 1,
+          "hp": 1750
+        },
+        {
+          "id": 60,
+          "hp": 1750
+        }
+      ]
+    }
+  ],
+  "samples": [
+    {
+      "name": "saved-wave-2-recovery",
+      "tick": 6951,
+      "wave": 2,
+      "phase": "recovery",
+      "spawnedIds": [
+        85,
+        86
+      ],
+      "attackers": [
+        {
+          "id": 86,
+          "side": 1,
+          "team": 1,
+          "hp": 0,
+          "role": "ranged",
+          "definitionId": "orc-ranged",
+          "x": 27.78284271247462,
+          "y": 28.78284271247462,
+          "order": {
+            "type": "idle"
+          },
+          "crewless": false
+        }
+      ],
+      "defenderHq": [
+        {
+          "id": 1,
+          "hp": 1750
+        },
+        {
+          "id": 60,
+          "hp": 1750
+        }
+      ]
+    },
+    {
+      "name": "all-spawned-hostile-crews-neutralized-but-wave-still-fighting",
+      "tick": 7348,
+      "wave": 3,
+      "phase": "fighting",
+      "spawnedIds": [
+        91,
+        92,
+        93
+      ],
+      "attackers": [
+        {
+          "id": 93,
+          "side": 1,
+          "team": 1,
+          "hp": 132.27615561427828,
+          "role": "siege",
+          "definitionId": "orc-siege",
+          "x": 28.35150757595082,
+          "y": 28.35150757595082,
+          "order": {
+            "type": "idle"
+          },
+          "crew": {
+            "hp": 0,
+            "maxHp": 42,
+            "uncrewed": true
+          },
+          "crewless": true
+        }
+      ],
+      "defenderHq": [
+        {
+          "id": 1,
+          "hp": 1750
+        },
+        {
+          "id": 60,
+          "hp": 1750
+        }
+      ]
+    },
+    {
+      "name": "after-100-more-public-steps",
+      "tick": 7448,
+      "wave": 3,
+      "phase": "fighting",
+      "spawnedIds": [
+        91,
+        92,
+        93
+      ],
+      "attackers": [
+        {
+          "id": 93,
+          "side": 1,
+          "team": 1,
+          "hp": 132.27615561427828,
+          "role": "siege",
+          "definitionId": "orc-siege",
+          "x": 28.35150757595082,
+          "y": 28.35150757595082,
+          "order": {
+            "type": "idle"
+          },
+          "crew": {
+            "hp": 0,
+            "maxHp": 42,
+            "uncrewed": true
+          },
+          "crewless": true
+        }
+      ],
+      "defenderHq": [
+        {
+          "id": 1,
+          "hp": 1750
+        },
+        {
+          "id": 60,
+          "hp": 1750
+        }
+      ]
+    }
+  ],
+  "claim": "Read-only checkpoint load and normal public steps. No direct state edits or injected commands. An alive spawned engine with defeated crew keeps the survival fighting predicate true.",
+  "gameEnvelopeSha256": "bfd70d4fed11cc7b23ab5aaad602af2dffb6b88014deaf87106d74a8659a13b1",
+  "sourceUnchanged": true,
+  "fullOriginalRuntimeFailure": "/tmp/ovf-modes-save4-proof.1RU1fI/runtime/run.json"
+}

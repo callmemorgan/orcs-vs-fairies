@@ -1,0 +1,63 @@
+{
+  "sourcePin": "af44da406acf7ab44436e978cb1f571b93e28d23",
+  "schema": {
+    "saveVersion": 4,
+    "simulationRevision": "4.0.0",
+    "saveFormat": "orcs-vs-fairies-save",
+    "sessionVersion": 1,
+    "sessionFormat": "orcs-vs-fairies/session",
+    "replayVersion": 1,
+    "replayFormat": "orcs-vs-fairies/replay",
+    "replayChecksumVersion": 4,
+    "replayInitialSaveVersion": 4
+  },
+  "base": "http://127.0.0.1:9241/",
+  "outputRoot": "/tmp/ovf-modes-save4-proof.1RU1fI",
+  "startedAt": "2026-10-01T17:12:50.838Z",
+  "steps": [
+    {
+      "name": "natural-matches",
+      "args": [
+        "/tmp/ovf-modes-save4-proof.1RU1fI/modules/verify-runtime.mjs"
+      ],
+      "startedAt": "2026-10-01T17:12:50.838Z",
+      "result": "failed",
+      "failure": {
+        "message": "natural-matches failed; inspect /tmp/ovf-modes-save4-proof.1RU1fI/logs/natural-matches.log\n\n1 !== 0\n"
+      },
+      "finishedAt": "2026-10-01T17:20:35.809Z"
+    }
+  ],
+  "result": "failed",
+  "serverPackageFiles": {
+    "campaign-runtime.mjs": {
+      "bytes": 696074,
+      "sha256": "01e52b66532423128270adcf71efd0d18f1c7ee6a0be375002b08db61474a9bf"
+    },
+    "canonical-campaign.mjs": {
+      "bytes": 506,
+      "sha256": "bbbc83906b0fa0a5d95dae34a2ce25dd0e872408ae2f0448ef119a85da299b54"
+    },
+    "node_modules": {
+      "bytes": 49,
+      "sha256": "86633220e0de3b7f5ae7dfb3a198008fc34b4cfe14e77fe4bd9c633cdd0d3d1f",
+      "symlink": "/tmp/ovf-modes-save4-checkout.lhlKIC/node_modules"
+    },
+    "rts-server.js": {
+      "bytes": 829645,
+      "sha256": "7af88c8aa12eddb90a5217816030af87c256e11b2c6b9a9ef1c8a00f0508e95a"
+    }
+  },
+  "serverDependencies": {
+    "link": "/tmp/ovf-modes-save4-proof.1RU1fI/dist-server/node_modules",
+    "target": "/tmp/ovf-modes-save4-checkout.lhlKIC/node_modules",
+    "wsPackageSha256": "c1ef91ca04eb4754c011c5f0e7638b5078ff71104fada400c44ac761cf93e0b1"
+  },
+  "method": "Fresh bundled natural matches; owned canonical main server and production browser controls; complete native session replay and continuation.",
+  "failure": {
+    "message": "natural-matches failed; inspect /tmp/ovf-modes-save4-proof.1RU1fI/logs/natural-matches.log\n\n1 !== 0\n",
+    "stack": "AssertionError [ERR_ASSERTION]: natural-matches failed; inspect /tmp/ovf-modes-save4-proof.1RU1fI/logs/natural-matches.log\n\n1 !== 0\n\n    at command (file:///tmp/ovf-modes-save4-checkout.lhlKIC/scripts/modes/run.mjs:40:10)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///tmp/ovf-modes-save4-checkout.lhlKIC/scripts/modes/run.mjs:48:2"
+  },
+  "serverClosed": true,
+  "finishedAt": "2026-10-01T17:20:39.035Z"
+}

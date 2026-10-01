@@ -1,0 +1,47 @@
+
+ RUN  v4.1.11 /tmp/ovf-survival-neutralization-red-checkout-20261001
+
+ ❯ tests/survival-wave-neutralization.test.ts (2 tests | 2 failed) 447ms
+     × rewards a wave once when real melee attacks defeat the full siege crew, and resumes the complete save 215ms
+     × keeps a hostile crewed engine active but excludes a captured defender engine from orders and final-wave completion 231ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/survival-wave-neutralization.test.ts > survival wave neutralization through combat and capture > rewards a wave once when real melee attacks defeat the full siege crew, and resumes the complete save
+AssertionError: expected 'fighting' to be 'recovery' // Object.is equality
+
+Expected: "recovery"
+Received: "fighting"
+
+ ❯ tests/survival-wave-neutralization.test.ts:82:43
+     80|   until(state, () => isCrewless(attacker), branch.step);
+     81|   expect(attacker.hp).toBeGreaterThan(0);
+     82|   expect(state.objectives.survival.phase).toBe('recovery');
+       |                                           ^
+     83|   expect(state.players[0]).toMatchObject({ wood: stock.wood + 13, ore:…
+     84|   branch.command(0, { type: 'hold', ids: [captor.id] });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/survival-wave-neutralization.test.ts > survival wave neutralization through combat and capture > keeps a hostile crewed engine active but excludes a captured defender engine from orders and final-wave completion
+AssertionError: expected 'attackMove' to be 'idle' // Object.is equality
+
+Expected: "idle"
+Received: "attackMove"
+
+ ❯ tests/survival-wave-neutralization.test.ts:118:28
+    116|   branch.command(0, { type: 'stop', ids: [first.id] });
+    117|   branch.step();
+    118|   expect(first.order.type).toBe('idle');
+       |                            ^
+    119|   expect(first.x).toBeGreaterThan(20);
+    120|   branch.command(1, { type: 'hold', ids: [remaining.id] });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  10:43:46
+   Duration  856ms (transform 271ms, setup 0ms, import 338ms, tests 447ms, environment 0ms)
+

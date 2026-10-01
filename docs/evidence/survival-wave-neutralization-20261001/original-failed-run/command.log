@@ -1,0 +1,21 @@
+{"result":"failed","sourcePin":"af44da406acf7ab44436e978cb1f571b93e28d23","out":"/tmp/ovf-modes-save4-proof.1RU1fI","steps":1,"serverClosed":true}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: natural-matches failed; inspect /tmp/ovf-modes-save4-proof.1RU1fI/logs/natural-matches.log
+
+1 !== 0
+
+    at command (file:///tmp/ovf-modes-save4-checkout.lhlKIC/scripts/modes/run.mjs:40:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async file:///tmp/ovf-modes-save4-checkout.lhlKIC/scripts/modes/run.mjs:48:2 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.21.0
