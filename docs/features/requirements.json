@@ -611,12 +611,13 @@
       "id": 69,
       "title": "Survival mode",
       "requirement": "defend against increasingly difficult attack waves.",
-      "status": "verified",
+      "status": "in-progress",
       "evidence": [
         "docs/evidence/modes-root-integration-20261001/browser/results.json",
         "docs/evidence/modes-root-integration-20261001/runtime/runtime-results.json",
         "docs/evidence/modes-root-integration-20261001/served-build.json",
-        "docs/evidence/modes-root-integration-20261001/tests.log"
+        "docs/evidence/modes-root-integration-20261001/tests.log",
+        "docs/evidence/root-assembly-20261001/survival-af44da4-first-runtime-failure.json"
       ]
     },
     {
@@ -705,8 +706,12 @@
       "id": 81,
       "title": "Minimap alerts",
       "requirement": "clearly mark raids, idle production and threatened expansions.",
-      "status": "in-progress",
-      "evidence": []
+      "status": "verified",
+      "evidence": [
+        "docs/evidence/controls-final-af44da4-20261001/minimap/browser-proof.json",
+        "docs/evidence/controls-final-af44da4-20261001/README.md",
+        "docs/evidence/root-assembly-20261001/imported-controls-combat-db36593-audit.json"
+      ]
     },
     {
       "id": 82,
@@ -763,8 +768,12 @@
       "id": 87,
       "title": "Accessible faction colors",
       "requirement": "provide alternative palettes, patterns and unit outlines.",
-      "status": "in-progress",
-      "evidence": []
+      "status": "verified",
+      "evidence": [
+        "docs/evidence/controls-final-af44da4-20261001/display/browser-proof.json",
+        "docs/evidence/controls-final-af44da4-20261001/README.md",
+        "docs/evidence/root-assembly-20261001/imported-controls-combat-db36593-audit.json"
+      ]
     },
     {
       "id": 88,
@@ -783,10 +792,13 @@
       "id": 89,
       "title": "Gamepad controls",
       "requirement": "support selection, camera movement and commands through a controller.",
-      "status": "in-progress",
+      "status": "verified",
       "evidence": [
         "tests/gamepad.test.ts",
-        "scripts/verify_controls.mjs"
+        "scripts/verify_controls.mjs",
+        "docs/evidence/controls-final-af44da4-20261001/gamepad/browser-proof.json",
+        "docs/evidence/controls-final-af44da4-20261001/README.md",
+        "docs/evidence/root-assembly-20261001/imported-controls-combat-db36593-audit.json"
       ]
     },
     {
@@ -797,7 +809,9 @@
       "evidence": [
         "tests/saves.test.ts",
         "tests/session-storage.test.ts",
-        "scripts/verify_sessions.mjs:namedSaveLoadsExactTick"
+        "scripts/verify_sessions.mjs:namedSaveLoadsExactTick",
+        "docs/evidence/controls-final-af44da4-20261001/saves/browser-proof.json",
+        "docs/evidence/controls-final-af44da4-20261001/README.md"
       ]
     },
     {
