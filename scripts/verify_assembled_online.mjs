@@ -161,7 +161,7 @@ try {
   await first.page.getByLabel('Lobby player count',{exact:true}).selectOption('8');await first.page.getByLabel('Lobby map size',{exact:true}).selectOption('huge');
   for(let player=3;player<=8;player++){await first.page.getByLabel(`Lobby player ${player} team`,{exact:true}).selectOption(String((player-1)%2));await first.page.getByLabel(`Lobby player ${player} controller`,{exact:true}).selectOption('ai');}
   await first.page.getByRole('button',{name:'Create lobby',exact:true}).click();await first.page.waitForSelector('.online-current:not([hidden])');
-  const lobbyId=(await first.page.locator('.online-lobby-id').textContent()).trim();
+  const lobbyId=(await first.page.locator('.online-lobby-id').textContent()).split(' · ',1)[0].trim();
   await refresh(second);await second.page.getByRole('button',{name:`Join lobby ${lobbyId}`,exact:true}).click();await second.page.waitForSelector('.online-current:not([hidden])');
   await refresh(first);await first.page.locator('[data-online="ready"]').click();await first.page.waitForFunction(()=>document.querySelector('[data-online="ready"]')?.getAttribute('aria-pressed')==='true');
   await refresh(second);await second.page.locator('[data-online="ready"]').click();await second.page.waitForFunction(()=>document.querySelector('[data-online="ready"]')?.getAttribute('aria-pressed')==='true');
