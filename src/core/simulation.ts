@@ -170,6 +170,7 @@ export function canPlace(s:GameState,side:Side,role:BuildingRole,x:number,y:numb
  if(s.entities.some(e=>alive(e)&&levelOf(e)===level&&e.kind==='unit'&&isHostile(s,e.side,side)&&footprintOverlap(e,x,y,def.size)))return false;
  if(s.resources.some(e=>e.amount>0&&levelOf(e)===level&&Math.abs(e.x-x)<r+.8&&Math.abs(e.y-y)<r+.8))return false;return true;
 }
+function invalidateNavigation(s:GameState,e:Entity):void{e.path=[];e.entrenchedAt=undefined;runtime(s).routes.delete(e.id);}
 function assign(s:GameState,e:Entity,order:Entity['order']):void{cancelEconomyTask(s,e.id);if(e.siegeMode?.deployed&&(order.type==='move'||order.type==='attackMove'))e.siegeMode.deployed=false;if(order.type!=='hold')e.entrenchedAt=undefined;e.order=order;e.path=[];runtime(s).routes.delete(e.id);runtime(s).returning.delete(e.id);runtime(s).queuedGather.delete(e.id);}
 function interruptWorldOrder(s:GameState,e:Entity):void {if(e.hp<=0)onEconomyDeath(s,e,economyHooks);delete e.orderQueue;assign(s,e,{type:'idle'});}
 function commandOrder(s:GameState,e:Entity,order:Entity['order'],queued=false):boolean {
@@ -265,7 +266,7 @@ function applyCommand(s:GameState,side:Side,c:Command):boolean{
  const overlapping=s.entities.filter(e=>e.kind==='unit'&&alive(e)&&levelOf(e)===level&&isAllied(s,e.side,side)&&footprintOverlap(e,c.x,c.y,d.size));
  const shoves:{e:Entity;x:number;y:number}[]=[];
  for(const u of overlapping){const dest=shovePoint(s,c.x,c.y,d.size,level);if(!dest)return false;shoves.push({e:u,...dest});}
- p.wood-=d.cost.wood;p.ore-=d.cost.ore;p.crystal-=d.cost.crystal;const b=spawnEntity(s,side,'building',c.role,c.x,c.y,0,c.definitionId,level);recordEconomyPaid(s,b,d.cost);for(const shove of shoves){shove.e.x=shove.x;shove.e.y=shove.y;shove.e.path=[];shove.e.entrenchedAt=undefined;runtime(s).routes.delete(shove.e.id);}for(const e of workers)commandOrder(s,e,{type:'build',target:b.id});emit(s,'build',b);return true;
+ p.wood-=d.cost.wood;p.ore-=d.cost.ore;p.crystal-=d.cost.crystal;const b=spawnEntity(s,side,'building',c.role,c.x,c.y,0,c.definitionId,level);recordEconomyPaid(s,b,d.cost);for(const shove of shoves){shove.e.x=shove.x;shove.e.y=shove.y;invalidateNavigation(s,shove.e);}for(const e of workers)commandOrder(s,e,{type:'build',target:b.id});emit(s,'build',b);return true;
  }
  if(c.type==='ability'){let success=false;for(const e of units){const special=specialistAbility(s,e,c,specialistHooks(s));if(special??useAbility(s,e))success=true;}return success;}
  if(c.type==='move'||c.type==='attackMove'){
@@ -777,4 +778,4 @@ export function applyScenarioDamage(s:GameState,source:Entity,target:Entity,amou
 export function spawnDefinition(s:GameState,side:Side,kind:Entity['kind'],definitionId:string,x:number,y:number,progress=1,level?:number):Entity {const d=kind==='unit'?availableUnits(s,side).find(d=>d.id===definitionId):availableBuildings(s,side).find(d=>d.id===definitionId);if(!d)throw new Error('Definition is absent from player content.');return spawnEntity(s,side,kind,d.role,x,y,progress,definitionId,level??0);}
 
 function specialistHooks(s:GameState):SpecialistHooks {return {die:(actor,text)=>die(s,actor,text),spawn:(...args)=>spawnDefinition(s,...args),setTerrain:(point,kind)=>setWorldTerrain(s,point,kind),damage:(source,target,raw,options)=>{if(target.hp<=0)return;if(options?.ranged)raw*=projectileEnvironment(s,source,target).damageFactor*highGroundDamageFactor(s,source,target);const def=target.kind==='unit'?unitFor(s,target):undefined,armor=options?.armorPiercing?0:(def?.armor??3)+progressionStats(s,target).armor+(emplaced(s,target)?2:0)+s.players[target.side].upgrades.reduce((sum,id)=>{const u=upgradeFor(s,target.side,id);return sum+(def&&upgradeAppliesTo(u,def)?u.effects.armor??0:0);},0),event=emit(s,'attack',source,target.id);runtime(s).hits.push({source,target,amount:Math.max(1,raw-armor),event});}};}
-const economyHooks:EconomyHooks={visible:(s,side,p)=>isVisible(s,side,p.x,p.y,p.level??0),allied:isAllied,spawn:spawnEntity,assign,move,canPlace:(s,side,x,y,level)=>canPlace(s,side,'depot',x,y,'economy:warehouse',level),radius,buildingDef,unitDef};
+const economyHooks:EconomyHooks={visible:(s,side,p)=>isVisible(s,side,p.x,p.y,p.level??0),allied:isAllied,spawn:spawnEntity,assign,invalidateNavigation,move,canPlace:(s,side,x,y,level)=>canPlace(s,side,'depot',x,y,'economy:warehouse',level),radius,buildingDef,unitDef};

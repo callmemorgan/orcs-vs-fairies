@@ -54,6 +54,23 @@ function deathAssertions(s:GameState,cart:Entity){
 }
 
 describe('assembled world and economy',()=>{
+ it.each([0,1] as const)('preserves a loaded caravan route when side %s places an allied warehouse beneath it',side=>{
+  const s=fixture(),{cart,cargo}=loadedRoute(s);s.teams[1]=s.teams[0];
+  for(let i=0;i<120&&!canPlace(s,side,'depot',cart.x,cart.y,'economy:warehouse');i++)stepGame(s,.05);
+  const worker=actor(s,side,'worker',cart.x-3,cart.y+3);refreshVisibility(s);
+  expect(canPlace(s,side,'depot',cart.x,cart.y,'economy:warehouse')).toBe(true);
+  const task=structuredClone(s.economy!.tasks.find(t=>t.entityId===cart.id)),stock={...cargo.stock},value=cargo.tradeValue,point={x:cart.x,y:cart.y},crystal=s.players[0].crystal;expect(task).toBeDefined();
+  expect(issueCommand(s,side,{type:'buildEconomy',ids:[worker.id],kind:'warehouse',...point})).toBe(true);
+  expect({x:cart.x,y:cart.y}).not.toEqual(point);expect(s.economy!.tasks.find(t=>t.entityId===cart.id)).toEqual(task);expect(cargo.stock).toEqual(stock);expect(cargo.tradeValue).toBe(value);
+  continuation(s);run(s,30);expect(cargo.stock.wood).toBe(0);expect(s.players[0].crystal).toBeGreaterThan(crystal);
+ });
+ it('preserves a planting job when another worker places a warehouse beneath the planter',()=>{
+  const s=fixture(),planter=actor(s,0,'worker',12.5,12.5),builder=actor(s,0,'worker',9.5,12.5);refreshVisibility(s);
+  expect(issueCommand(s,0,{type:'plantGrove',ids:[planter.id],x:15.5,y:12.5})).toBe(true);
+  const task=structuredClone(s.economy!.tasks.find(t=>t.entityId===planter.id));expect(task).toBeDefined();
+  expect(issueCommand(s,0,{type:'buildEconomy',ids:[builder.id],kind:'warehouse',x:planter.x,y:planter.y})).toBe(true);
+  expect(s.economy!.tasks.find(t=>t.entityId===planter.id)).toEqual(task);run(s,12);expect(s.economy!.groves.find(g=>g.id===task!.targetId)?.plantedAt).toBeGreaterThanOrEqual(0);
+ });
  it('initializes strict economy IDs from real generated world villages and saves them',()=>{
   const s=createGame('orcs',4127,'fairies',{controllers:['external','external'],mapSize:'small',biome:'forest'}),village=s.world!.sites.find(site=>site.kind==='village')!;
   expect(s.economy!.villages.find(v=>v.id===village.id)?.level).toBe(village.level);
@@ -137,5 +154,12 @@ it('unions disclosed teammate economy markers while keeping the selected seat pr
  const s=fixture();s.teams[1]=s.teams[0];const market=s.economy!.markets.find(m=>m.level===1)!,ally=actor(s,1,'worker',market.x,market.y,1);ally.definitionId='economy:caravan';s.economy!.caravans.push(ally.id);s.economy!.cargo.push({entityId:ally.id,stock:{wood:40,ore:0,crystal:0},capacity:90,origin:'trade',tradeValue:7,sourceId:hq(s,1).id,destinationId:hq(s).id});s.economy!.tasks.push({entityId:ally.id,kind:'route',sourceId:hq(s,1).id,targetId:hq(s).id,phase:'delivery',amount:{wood:40,ore:0,crystal:0},repeat:false,progress:0});
  s.visible[0].clear();s.visible[1].clear();const key=fogKey(s,market);s.visible[1].add(key);s.explored[1].add(key);s.economy!.ledgers[1].gathered.wood=999;const accepted=s.economy!.contracts.find(c=>c.level===1)!;accepted.side=1;accepted.status='accepted';
  const frames=[new OnlineView(0).observe(s),new OnlineView(1).observe(s)],before=JSON.stringify(frames),merged=teamObservation(frames,0);
- expect(frames[0].economy.markets.some(m=>m.id===market.id)).toBe(false);expect(merged.economy.markets.some(m=>m.id===market.id)).toBe(true);expect(merged.visible).toContain(key);const cargo=merged.economy.caravans.find(c=>c.entityId===ally.id)!;expect(cargo.stock).toEqual(zeroCost());expect(cargo.tradeValue).toBe(0);expect(cargo.task).toBeUndefined();expect(cargo.sourceId).toBeUndefined();expect(merged.economy.ledger.gathered.wood).toBe(0);expect(merged.economy.contracts.some(c=>c.id===accepted.id)).toBe(false);expect(JSON.stringify(frames)).toBe(before);
+ expect(frames[0].economy.markets.some(m=>m.id===market.id)).toBe(false);expect(merged.economy.markets.some(m=>m.id===market.id)).toBe(true);expect(merged.visible).toContain(key);const cargo=merged.economy.caravans.find(c=>c.entityId===ally.id)!;expect(cargo.stock).toEqual(zeroCost());expect(cargo.origin).toBe('delivery');expect(cargo.tradeValue).toBe(0);expect(cargo.task).toBeUndefined();expect(cargo.sourceId).toBeUndefined();expect(merged.economy.ledger.gathered.wood).toBe(0);expect(merged.economy.contracts.some(c=>c.id===accepted.id)).toBe(false);expect(JSON.stringify(frames)).toBe(before);
+});
+
+it('keeps foreign cargo origin private in player observations and teammate marker unions',()=>{
+ const s=fixture();s.teams[1]=s.teams[0];const cart=actor(s,1,'worker',18.5,18.5);cart.definitionId='economy:caravan';s.economy!.caravans.push(cart.id);s.economy!.cargo.push({entityId:cart.id,stock:zeroCost(),capacity:90,origin:'trade',tradeValue:0});
+ for(const side of [0,1]){s.visible[side].clear();s.visible[side].add(fogKey(s,cart));}
+ const before=[new OnlineView(0).observe(s),new OnlineView(1).observe(s)],publicBefore=teamObservation(before,0);s.economy!.cargo.find(c=>c.entityId===cart.id)!.origin='contract';
+ const after=[new OnlineView(0).observe(s),new OnlineView(1).observe(s)];expect(after[0]).toEqual(before[0]);expect(teamObservation(after,0)).toEqual(publicBefore);expect(after[1].economy.caravans.find(c=>c.entityId===cart.id)?.origin).toBe('contract');
 });

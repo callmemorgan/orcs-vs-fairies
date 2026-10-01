@@ -17,6 +17,7 @@ function fixture() {
  const hooks:EconomyHooks={
   visible:()=>true,allied:(state,a,b)=>state.teams[a]===state.teams[b],
   assign:(_state,entity,order)=>{entity.order=order;entity.path=[];},
+  invalidateNavigation:(_state,entity)=>{entity.path=[];entity.entrenchedAt=undefined;},
   move:(_state,entity,target,dt,reach)=>{const distance=Math.hypot(target.x-entity.x,target.y-entity.y);if(distance<=reach+1e-8)return true;const travel=Math.min(distance-reach,1.8*dt);entity.x+=(target.x-entity.x)/distance*travel;entity.y+=(target.y-entity.y)/distance*travel;return distance-travel<=reach+1e-8;},
   radius:(_state,entity)=>entity.kind==='building'?1:.3,canPlace:()=>true,
   buildingDef:(state,entity)=>FACTIONS[state.players[entity.side].faction].buildings[entity.role as 'hq'],
