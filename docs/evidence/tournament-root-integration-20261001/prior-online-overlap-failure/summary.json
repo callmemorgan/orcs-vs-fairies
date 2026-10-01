@@ -1,0 +1,347 @@
+{
+  "source": {
+    "directory": "/home/morgana/.codex/worktrees/tournament-verification/orcs-vs-Fairies",
+    "commit": "0f57b9bc969bd81f55d97af9a02b1d17bc5bdf60",
+    "workingTree": "?? docs/features/tournament-main-verification.md\n?? node_modules\n?? scripts/tournaments/verify-canonical-main.mjs",
+    "smokeSha256": "0edac1fffb1dd72b4d1273c51ec3bf9710ee85a54fecaa75720517390156916f",
+    "serverBundleSha256": "232e3a5d09227c26d3777ba2a91b046e745fcefb5c2b94685b606c6e4f5ff90b",
+    "reportVerifierSha256": "e2319733782dd9e4f6c2d8099fccacc8a9287a0b1e1dd59285c4e73df4eec9df",
+    "servedModules": [
+      {
+        "path": "/assets/index-BY_hkvul.js",
+        "sha256": "ddae06b1f7523fbc4a76ad4a46a4fbc273bde2d925695ab9f6284a7cee74480c"
+      }
+    ]
+  },
+  "checks": [
+    "anonymous tournament inspection and launch are rejected by the canonical account gate",
+    "authenticated accounts inspect the registered smoke configuration without receiving executable argv",
+    "remote argv and disallowed-origin launches are rejected",
+    "another account can inspect a live run but cannot cancel it; a disallowed origin cannot cancel either",
+    "the creator cancels the actual registered child processes and retains a verified partial report with no agents left",
+    "the actual main toolbar traps focus, blocks battlefield input, and restores both running and previously paused local matches",
+    "another session modal blocks tournament launch and photo mode hides its toolbar",
+    "the actual main dashboard launches the registered agents, verifies both battles, shows standings, and downloads the same report",
+    "main replay inspection replaces Phaser canvases, preserves listener counts, supports playback/modal pause, and seeks to each verified final state"
+  ],
+  "http": [
+    {
+      "route": "/api/tournaments/configs",
+      "method": "GET",
+      "status": 401
+    },
+    {
+      "route": "/api/tournaments",
+      "method": "GET",
+      "status": 401
+    },
+    {
+      "route": "/api/tournaments",
+      "method": "POST",
+      "status": 401
+    },
+    {
+      "route": "/api/auth/register",
+      "method": "POST",
+      "status": 200
+    },
+    {
+      "route": "/api/auth/register",
+      "method": "POST",
+      "status": 200
+    },
+    {
+      "route": "/api/tournaments/configs",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "route": "/api/tournaments/configs",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "route": "/api/tournaments",
+      "method": "POST",
+      "status": 400
+    },
+    {
+      "route": "/api/tournaments",
+      "method": "POST",
+      "status": 403
+    },
+    {
+      "route": "/api/tournaments",
+      "method": "POST",
+      "status": 202
+    },
+    {
+      "route": "/api/tournaments/run-5a3cf469-65cc-4d3c-ab78-8fd005f3275e/cancel",
+      "method": "POST",
+      "status": 403
+    },
+    {
+      "route": "/api/tournaments/run-5a3cf469-65cc-4d3c-ab78-8fd005f3275e/cancel",
+      "method": "POST",
+      "status": 403
+    },
+    {
+      "route": "/api/tournaments/run-5a3cf469-65cc-4d3c-ab78-8fd005f3275e",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "route": "/api/tournaments/run-5a3cf469-65cc-4d3c-ab78-8fd005f3275e",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "route": "/api/tournaments/run-5a3cf469-65cc-4d3c-ab78-8fd005f3275e/cancel",
+      "method": "POST",
+      "status": 202
+    },
+    {
+      "route": "/api/tournaments/run-5a3cf469-65cc-4d3c-ab78-8fd005f3275e/result",
+      "method": "GET",
+      "status": 409
+    },
+    {
+      "route": "/api/tournaments/run-5a3cf469-65cc-4d3c-ab78-8fd005f3275e/result",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "route": "/api/tournaments/run-6e4a6f76-0dcd-4ef7-bf12-93f1d13aa714/result",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "route": "/api/tournaments/run-6e4a6f76-0dcd-4ef7-bf12-93f1d13aa714/result",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "route": "/api/tournaments/run-6e4a6f76-0dcd-4ef7-bf12-93f1d13aa714/matches/match-001/replay",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "route": "/api/tournaments/run-6e4a6f76-0dcd-4ef7-bf12-93f1d13aa714/matches/match-001/replay",
+      "method": "GET",
+      "status": 401
+    }
+  ],
+  "browser": {
+    "inspections": [
+      {
+        "matchId": "match-001",
+        "tick": 3863,
+        "hash": "9f0ec161d4327af1506c3c6af67fdca46ceaeb21bd43064888f584c6ea5bbd10",
+        "checksum": "c8afc73b",
+        "mode": "replay",
+        "paused": true,
+        "camera": {
+          "x": 880,
+          "y": -9.5,
+          "zoom": 1,
+          "width": 1440,
+          "height": 1000
+        },
+        "readOnly": true,
+        "simulationEnabled": false,
+        "side": 0
+      },
+      {
+        "matchId": "match-002",
+        "tick": 3933,
+        "hash": "27287fe0ed3d8f6ea81b9231de910ad08a5df28f0841df328048da30dae6ca89",
+        "checksum": "e507dbeb",
+        "mode": "replay",
+        "paused": true,
+        "camera": {
+          "x": 880,
+          "y": -9.5,
+          "zoom": 1,
+          "width": 1440,
+          "height": 1000
+        },
+        "readOnly": true,
+        "simulationEnabled": false,
+        "side": 0
+      },
+      {
+        "matchId": "match-001",
+        "tick": 3863,
+        "hash": "9f0ec161d4327af1506c3c6af67fdca46ceaeb21bd43064888f584c6ea5bbd10",
+        "checksum": "c8afc73b",
+        "mode": "replay",
+        "paused": true,
+        "camera": {
+          "x": 880,
+          "y": -9.5,
+          "zoom": 1,
+          "width": 1440,
+          "height": 1000
+        },
+        "readOnly": true,
+        "simulationEnabled": false,
+        "side": 0
+      }
+    ],
+    "version": "151.0.7922.34"
+  },
+  "runs": [
+    {
+      "id": "run-5a3cf469-65cc-4d3c-ab78-8fd005f3275e",
+      "status": "canceled",
+      "creator": "20054cb4-70e2-4b2f-9e6a-b540466597ce",
+      "observingAccount": "e653e64c-4a2b-458d-813d-9f5b365053dc",
+      "observedLiveProcesses": [
+        {
+          "pid": 1464950,
+          "parent": 1464935,
+          "group": 1464950,
+          "started": "2894801",
+          "argv": [
+            "node",
+            "scripts/agents/tournament-agent.mjs",
+            "--style",
+            "push"
+          ]
+        },
+        {
+          "pid": 1464951,
+          "parent": 1464935,
+          "group": 1464951,
+          "started": "2894801",
+          "argv": [
+            "node",
+            "scripts/agents/tournament-agent.mjs",
+            "--style",
+            "idle"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "run-6e4a6f76-0dcd-4ef7-bf12-93f1d13aa714",
+      "status": "complete",
+      "creator": "20054cb4-70e2-4b2f-9e6a-b540466597ce",
+      "matches": [
+        {
+          "id": "match-001",
+          "tick": 3863,
+          "sha256": "9f0ec161d4327af1506c3c6af67fdca46ceaeb21bd43064888f584c6ea5bbd10",
+          "agents": [
+            {
+              "id": "push",
+              "pid": 1465171
+            },
+            {
+              "id": "idle",
+              "pid": 1465172
+            }
+          ]
+        },
+        {
+          "id": "match-002",
+          "tick": 3933,
+          "sha256": "27287fe0ed3d8f6ea81b9231de910ad08a5df28f0841df328048da30dae6ca89",
+          "agents": [
+            {
+              "id": "idle",
+              "pid": 1465223
+            },
+            {
+              "id": "push",
+              "pid": 1465224
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [
+    "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#restart-button')\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"restart-button\" class=\"small-button\">Restart</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <button type=\"button\" class=\"online-open small-button\">Online</button> from <section class=\"online-tools\">…</section> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <button type=\"button\" class=\"online-open small-button\">Online</button> from <section class=\"online-tools\">…</section> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    44 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <button type=\"button\" class=\"online-open small-button\">Online</button> from <section class=\"online-tools\">…</section> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at /home/morgana/.codex/worktrees/tournament-verification/orcs-vs-Fairies/scripts/tournaments/verify-canonical-main.mjs:188:41"
+  ],
+  "cleanup": {
+    "serverClosed": true,
+    "remainingObservedProcesses": [],
+    "forciblyCleanedProcesses": [],
+    "observedProcesses": [
+      {
+        "pid": 1464950,
+        "parent": 1464935,
+        "group": 1464950,
+        "started": "2894801",
+        "argv": [
+          "node",
+          "scripts/agents/tournament-agent.mjs",
+          "--style",
+          "push"
+        ]
+      },
+      {
+        "pid": 1464951,
+        "parent": 1464935,
+        "group": 1464951,
+        "started": "2894801",
+        "argv": [
+          "node",
+          "scripts/agents/tournament-agent.mjs",
+          "--style",
+          "idle"
+        ]
+      },
+      {
+        "pid": 1465171,
+        "parent": 1464935,
+        "group": 1465171,
+        "started": "2895224",
+        "argv": [
+          "node",
+          "scripts/agents/tournament-agent.mjs",
+          "--style",
+          "push"
+        ]
+      },
+      {
+        "pid": 1465172,
+        "parent": 1464935,
+        "group": 1465172,
+        "started": "2895224",
+        "argv": [
+          "node",
+          "scripts/agents/tournament-agent.mjs",
+          "--style",
+          "idle"
+        ]
+      },
+      {
+        "pid": 1465223,
+        "parent": 1464935,
+        "group": 1465223,
+        "started": "2895308",
+        "argv": [
+          "node",
+          "scripts/agents/tournament-agent.mjs",
+          "--style",
+          "idle"
+        ]
+      },
+      {
+        "pid": 1465224,
+        "parent": 1464935,
+        "group": 1465224,
+        "started": "2895309",
+        "argv": [
+          "node",
+          "scripts/agents/tournament-agent.mjs",
+          "--style",
+          "push"
+        ]
+      }
+    ]
+  },
+  "passed": false
+}

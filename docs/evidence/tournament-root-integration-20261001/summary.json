@@ -1,0 +1,445 @@
+{
+  "source": {
+    "directory": "/home/morgana/Projects/orcs-vs-Fairies",
+    "commit": "3f4086f9cdcafdb2024161d43e72201b9cbe914f",
+    "workingTree": "",
+    "smokeSha256": "0edac1fffb1dd72b4d1273c51ec3bf9710ee85a54fecaa75720517390156916f",
+    "serverBundleSha256": "232e3a5d09227c26d3777ba2a91b046e745fcefb5c2b94685b606c6e4f5ff90b",
+    "reportVerifierSha256": "e2319733782dd9e4f6c2d8099fccacc8a9287a0b1e1dd59285c4e73df4eec9df",
+    "servedModules": [
+      {
+        "path": "/assets/index-BSOZ5IX8.js",
+        "sha256": "e5e4878f46ce82a7a2ffc6f889121d96708d06655b7825c0e9aa8f47cc949fa5"
+      }
+    ]
+  },
+  "checks": [
+    "anonymous tournament inspection and launch are rejected by the canonical account gate",
+    "authenticated accounts inspect the registered smoke configuration without receiving executable argv",
+    "remote argv and disallowed-origin launches are rejected",
+    "another account can inspect a live run but cannot cancel it; a disallowed origin cannot cancel either",
+    "the creator cancels the actual registered child processes and retains a verified partial report with no agents left",
+    "the actual main toolbar traps focus, blocks battlefield input, and restores both running and previously paused local matches",
+    "another session modal blocks tournament launch and photo mode hides its toolbar",
+    "the actual main dashboard launches the registered agents, verifies both battles, shows standings, and downloads the same report",
+    "main replay inspection replaces Phaser canvases, preserves listener counts, supports playback/modal pause, and seeks to each verified final state",
+    "local match and three replay replacements retire every canvas and return window listeners to the menu baseline",
+    "completed reports and cancellation ownership survive a real canonical server restart",
+    "graceful canonical server shutdown also exits both live agent processes and retains its canceled report"
+  ],
+  "http": [
+    {
+      "route": "/api/tournaments/configs",
+      "method": "GET",
+      "status": 401
+    },
+    {
+      "route": "/api/tournaments",
+      "method": "GET",
+      "status": 401
+    },
+    {
+      "route": "/api/tournaments",
+      "method": "POST",
+      "status": 401
+    },
+    {
+      "route": "/api/auth/register",
+      "method": "POST",
+      "status": 200
+    },
+    {
+      "route": "/api/auth/register",
+      "method": "POST",
+      "status": 200
+    },
+    {
+      "route": "/api/tournaments/configs",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "route": "/api/tournaments/configs",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "route": "/api/tournaments",
+      "method": "POST",
+      "status": 400
+    },
+    {
+      "route": "/api/tournaments",
+      "method": "POST",
+      "status": 403
+    },
+    {
+      "route": "/api/tournaments",
+      "method": "POST",
+      "status": 202
+    },
+    {
+      "route": "/api/tournaments/run-058004a1-1f7b-4174-a5f0-706051abf92e/cancel",
+      "method": "POST",
+      "status": 403
+    },
+    {
+      "route": "/api/tournaments/run-058004a1-1f7b-4174-a5f0-706051abf92e/cancel",
+      "method": "POST",
+      "status": 403
+    },
+    {
+      "route": "/api/tournaments/run-058004a1-1f7b-4174-a5f0-706051abf92e",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "route": "/api/tournaments/run-058004a1-1f7b-4174-a5f0-706051abf92e",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "route": "/api/tournaments/run-058004a1-1f7b-4174-a5f0-706051abf92e/cancel",
+      "method": "POST",
+      "status": 202
+    },
+    {
+      "route": "/api/tournaments/run-058004a1-1f7b-4174-a5f0-706051abf92e/result",
+      "method": "GET",
+      "status": 409
+    },
+    {
+      "route": "/api/tournaments/run-058004a1-1f7b-4174-a5f0-706051abf92e/result",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "route": "/api/tournaments/run-278f915e-c59c-42dc-99a4-db4126fc2a6c/result",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "route": "/api/tournaments/run-278f915e-c59c-42dc-99a4-db4126fc2a6c/result",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "route": "/api/tournaments/run-278f915e-c59c-42dc-99a4-db4126fc2a6c/matches/match-001/replay",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "route": "/api/tournaments/run-278f915e-c59c-42dc-99a4-db4126fc2a6c/matches/match-001/replay",
+      "method": "GET",
+      "status": 401
+    },
+    {
+      "route": "/api/tournaments/run-058004a1-1f7b-4174-a5f0-706051abf92e/cancel",
+      "method": "POST",
+      "status": 403
+    },
+    {
+      "route": "/api/tournaments/run-278f915e-c59c-42dc-99a4-db4126fc2a6c/result",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "route": "/api/tournaments",
+      "method": "POST",
+      "status": 202
+    }
+  ],
+  "browser": {
+    "processes": [
+      {
+        "pid": 1508618,
+        "parent": 1508365,
+        "group": 1508618,
+        "started": "2982748",
+        "argv": [
+          "/home/morgana/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=/tmp/playwright_chromiumdev_profile-OgJziQ --remote-debugging-pipe --no-startup-window"
+        ]
+      }
+    ],
+    "inspections": [
+      {
+        "matchId": "match-001",
+        "tick": 3863,
+        "hash": "9f0ec161d4327af1506c3c6af67fdca46ceaeb21bd43064888f584c6ea5bbd10",
+        "checksum": "c8afc73b",
+        "mode": "replay",
+        "paused": true,
+        "camera": {
+          "x": 880,
+          "y": -9.5,
+          "zoom": 1,
+          "width": 1440,
+          "height": 1000
+        },
+        "readOnly": true,
+        "simulationEnabled": false,
+        "side": 0
+      },
+      {
+        "matchId": "match-002",
+        "tick": 3933,
+        "hash": "27287fe0ed3d8f6ea81b9231de910ad08a5df28f0841df328048da30dae6ca89",
+        "checksum": "e507dbeb",
+        "mode": "replay",
+        "paused": true,
+        "camera": {
+          "x": 880,
+          "y": -9.5,
+          "zoom": 1,
+          "width": 1440,
+          "height": 1000
+        },
+        "readOnly": true,
+        "simulationEnabled": false,
+        "side": 0
+      },
+      {
+        "matchId": "match-001",
+        "tick": 3863,
+        "hash": "9f0ec161d4327af1506c3c6af67fdca46ceaeb21bd43064888f584c6ea5bbd10",
+        "checksum": "c8afc73b",
+        "mode": "replay",
+        "paused": true,
+        "camera": {
+          "x": 880,
+          "y": -9.5,
+          "zoom": 1,
+          "width": 1440,
+          "height": 1000
+        },
+        "readOnly": true,
+        "simulationEnabled": false,
+        "side": 0
+      }
+    ],
+    "version": "151.0.7922.34",
+    "lifecycle": {
+      "added": 4,
+      "removed": 4,
+      "distinct": 4,
+      "retiredDisconnected": true,
+      "listeners": {
+        "keydown": 2,
+        "keyup": 1,
+        "blur": 0,
+        "resize": 1
+      }
+    }
+  },
+  "runs": [
+    {
+      "id": "run-058004a1-1f7b-4174-a5f0-706051abf92e",
+      "status": "canceled",
+      "creator": "9f18e533-e8f3-450f-817b-eef0aba53c42",
+      "observingAccount": "e4c039a4-ce4a-4523-a9b1-39981892b3ca",
+      "observedLiveProcesses": [
+        {
+          "pid": 1508536,
+          "parent": 1508507,
+          "group": 1508536,
+          "started": "2982729",
+          "argv": [
+            "node",
+            "scripts/agents/tournament-agent.mjs",
+            "--style",
+            "push"
+          ]
+        },
+        {
+          "pid": 1508537,
+          "parent": 1508507,
+          "group": 1508537,
+          "started": "2982729",
+          "argv": [
+            "node",
+            "scripts/agents/tournament-agent.mjs",
+            "--style",
+            "idle"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "run-278f915e-c59c-42dc-99a4-db4126fc2a6c",
+      "status": "complete",
+      "creator": "9f18e533-e8f3-450f-817b-eef0aba53c42",
+      "matches": [
+        {
+          "id": "match-001",
+          "tick": 3863,
+          "sha256": "9f0ec161d4327af1506c3c6af67fdca46ceaeb21bd43064888f584c6ea5bbd10",
+          "agents": [
+            {
+              "id": "push",
+              "pid": 1508955
+            },
+            {
+              "id": "idle",
+              "pid": 1508956
+            }
+          ]
+        },
+        {
+          "id": "match-002",
+          "tick": 3933,
+          "sha256": "27287fe0ed3d8f6ea81b9231de910ad08a5df28f0841df328048da30dae6ca89",
+          "agents": [
+            {
+              "id": "idle",
+              "pid": 1508969
+            },
+            {
+              "id": "push",
+              "pid": 1508970
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "run-56dfa9e5-d6bf-4b7c-9b0d-c498152ee040",
+      "status": "canceled",
+      "observedLiveProcesses": [
+        {
+          "pid": 1511741,
+          "parent": 1511729,
+          "group": 1511741,
+          "started": "2988293",
+          "argv": [
+            "node",
+            "scripts/agents/tournament-agent.mjs",
+            "--style",
+            "push"
+          ]
+        },
+        {
+          "pid": 1511742,
+          "parent": 1511729,
+          "group": 1511742,
+          "started": "2988293",
+          "argv": [
+            "node",
+            "scripts/agents/tournament-agent.mjs",
+            "--style",
+            "idle"
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "cleanup": {
+    "serverClosed": true,
+    "browserClosed": true,
+    "remainingObservedProcesses": [],
+    "forciblyCleanedProcesses": [],
+    "observedProcesses": [
+      {
+        "pid": 1508536,
+        "parent": 1508507,
+        "group": 1508536,
+        "started": "2982729",
+        "argv": [
+          "node",
+          "scripts/agents/tournament-agent.mjs",
+          "--style",
+          "push"
+        ]
+      },
+      {
+        "pid": 1508537,
+        "parent": 1508507,
+        "group": 1508537,
+        "started": "2982729",
+        "argv": [
+          "node",
+          "scripts/agents/tournament-agent.mjs",
+          "--style",
+          "idle"
+        ]
+      },
+      {
+        "pid": 1508618,
+        "parent": 1508365,
+        "group": 1508618,
+        "started": "2982748",
+        "argv": [
+          "/home/morgana/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=/tmp/playwright_chromiumdev_profile-OgJziQ --remote-debugging-pipe --no-startup-window"
+        ]
+      },
+      {
+        "pid": 1508955,
+        "parent": 1508507,
+        "group": 1508955,
+        "started": "2983349",
+        "argv": [
+          "node",
+          "scripts/agents/tournament-agent.mjs",
+          "--style",
+          "push"
+        ]
+      },
+      {
+        "pid": 1508956,
+        "parent": 1508507,
+        "group": 1508956,
+        "started": "2983349",
+        "argv": [
+          "node",
+          "scripts/agents/tournament-agent.mjs",
+          "--style",
+          "idle"
+        ]
+      },
+      {
+        "pid": 1508969,
+        "parent": 1508507,
+        "group": 1508969,
+        "started": "2983475",
+        "argv": [
+          "node",
+          "scripts/agents/tournament-agent.mjs",
+          "--style",
+          "idle"
+        ]
+      },
+      {
+        "pid": 1508970,
+        "parent": 1508507,
+        "group": 1508970,
+        "started": "2983475",
+        "argv": []
+      },
+      {
+        "pid": 1511741,
+        "parent": 1511729,
+        "group": 1511741,
+        "started": "2988293",
+        "argv": [
+          "node",
+          "scripts/agents/tournament-agent.mjs",
+          "--style",
+          "push"
+        ]
+      },
+      {
+        "pid": 1511742,
+        "parent": 1511729,
+        "group": 1511742,
+        "started": "2988293",
+        "argv": [
+          "node",
+          "scripts/agents/tournament-agent.mjs",
+          "--style",
+          "idle"
+        ]
+      }
+    ]
+  },
+  "passed": true
+}
