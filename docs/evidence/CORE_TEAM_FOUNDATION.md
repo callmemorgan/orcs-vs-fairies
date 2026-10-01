@@ -1,0 +1,15 @@
+# Team core foundation evidence
+
+The implementation is `c1f22643fc3b73e16e58965f4e31bd10bfc08e04`. It adds one through eight configured players, teams, shared vision, individual handicaps, team outcomes, multi-base maps, version-two saves and the terminal roster API. Follow-on `57b6231` exposes damage timestamps only for owned entities so clients can detect hits after individual events expire.
+
+The [autonomous team records](team-matches-core-20261001/README.md) preserve real 2v2, 3v3 and 4v4 matches. All finished with valid team outcomes, no invariant failures and exact final-save round trips. The source snapshot, executed bundle, runner, per-player metrics and independent review remain available beside the reports.
+
+The [108-game faction ladder](six-factions-team-foundation-20261001/REPORT.md) runs all ordered pairings of six factions, including mirrors, on small, medium and large maps at seed 4127. All 108 finished. It recorded no economy or position violations, no movement-stall episodes and no long combat gaps. Side zero won 55 games and side one won 53; mirrors split nine wins per side. The report includes faction standings, which describe this deterministic seed sample rather than competitive balance.
+
+The ladder runner's original evidence name lacked the reporter's required `six-factions-` prefix. All 108 test cases passed before report generation rejected that name. The completed directory was then renamed to `six-factions-team-foundation-20261001`, and the existing reporter successfully generated `REPORT.md` and `summary.json`. `HEAD.txt`, `method.json` and the copied source identify the executed core.
+
+The full suite at `57b6231` passed 681 tests across 27 files in 253.15 seconds with `npm test -- --testTimeout=30000`. The original default-timeout run passed 679 of 680 cases, with the Tideborn AI economy test exceeding its five-second wall-clock limit while the ladder ran. Its focused file passed all eight tests with the longer limit. The final full run passed every case, including the navigation regression and owned damage timestamp check. No simulation rule changed to resolve the timeout.
+
+The explicit-null and sparse-roster fixes are included in the implementation commit. `createMatch` applies optional defaults only for `undefined`, validates supplied values and checks every player index before mapping. The team match table covers null values; `team-matches-core-20261001/config-edge-verification.json` additionally records deliberate validation errors from the frozen runtime for null optional values and a sparse player list. Destination selection filters hidden buildings and resources before choosing public movement orders; physical routing retains the real obstacle map privately. Twelve observation regression combinations cover hidden and visible blockers for immediate and queued movement commands.
+
+This evidence verifies the headless foundation. Browser roster setup, replay integration, online clients, public hosting and later AI policies must be checked against their assembled source separately.

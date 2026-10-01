@@ -45,3 +45,5 @@ This is the headless team foundation. Browser team selection, networking, lobby 
 ## Verification
 
 `tests/team-match.test.ts` runs real combat, allied support, ownership checks, team elimination, simultaneous headquarters destruction, handicap effects and all-slot AI economy, construction and recruitment. `tests/team-maps.test.ts` checks real routes between all bases, opening walkability, equal reserves and actual gathering income. `tests/team-saves.test.ts` compares complete saved state and runtime after each tick of 2v2, 3v3 and 4v4 continuation and validates legacy imports. `tests/team-observation.test.ts` and `tests/team-terminal.test.ts` exercise public observations, private information, command ownership, side-seven play and saved-match continuation through the actual terminal API.
+
+[The preserved foundation evidence](evidence/CORE_TEAM_FOUNDATION.md) records the complete 681-case suite, a 108-game faction ladder and autonomous 2v2, 3v3 and 4v4 victories. It includes frozen source, executed bundles, runners, final saves, per-player metrics and the independent team-record review.

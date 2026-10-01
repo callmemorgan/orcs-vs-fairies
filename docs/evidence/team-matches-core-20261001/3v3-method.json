@@ -1,0 +1,65 @@
+{
+  "sourceSha": "c1f22643fc3b73e16e58965f4e31bd10bfc08e04",
+  "sourceSha256": {
+    "types.ts": "00fba568c70e410207dcd6f3cd237e34de028fd0a207a2df566028421c7598e8",
+    "content.ts": "b1a17ec7839e458ce6bf8cba63fe19ba3a27de0ed2e2ed9c7a08226f406da4f2",
+    "simulation.ts": "378cfd3ba74815621f774797bba0d9056bb5548de97f141de808f3ccbb24ec14",
+    "maps.ts": "e0d2f499bc8c49a071a750a3541d635fa66c9ad6ebe8329f91828749390bab55",
+    "navigation.ts": "d0b2f4b1557cd0ed66b0887d6ef5b9a34ebc825bdea104bc79554f7475257ac0",
+    "saves.ts": "532a3916de6962d63628a2d0916d42ed983b587332122e21bbfa7d376b8ab689"
+  },
+  "frozenBundleSha256": "0e74c6b0c2286ca477c331a067696be02010994f7ccadb2dfd4fe088a23b99d9",
+  "config": {
+    "schemaVersion": 1,
+    "map": {
+      "seed": 4127,
+      "size": "huge"
+    },
+    "players": [
+      {
+        "id": 0,
+        "teamId": 0,
+        "factionId": "orcs",
+        "controller": "ai"
+      },
+      {
+        "id": 1,
+        "teamId": 1,
+        "factionId": "fairies",
+        "controller": "ai"
+      },
+      {
+        "id": 2,
+        "teamId": 0,
+        "factionId": "dwarves",
+        "controller": "ai"
+      },
+      {
+        "id": 3,
+        "teamId": 1,
+        "factionId": "undead",
+        "controller": "ai"
+      },
+      {
+        "id": 4,
+        "teamId": 0,
+        "factionId": "tideborn",
+        "controller": "ai"
+      },
+      {
+        "id": 5,
+        "teamId": 1,
+        "factionId": "automata",
+        "controller": "ai"
+      }
+    ],
+    "rules": {
+      "sharedVision": true,
+      "startingAge": 1
+    }
+  },
+  "stepSeconds": 0.05,
+  "maxMinutes": 45,
+  "mutationPolicy": "No state injection or content overrides; only createMatch and stepGame with AI controllers.",
+  "validationPolicy": "Every tick checks finite player balances, ownership population, population plus reserved queues against hard limits, legal queue lengths, finite in-bounds positions, and hostile-only attack events. Every 5 simulated seconds checks finite entity properties, resource ranges, and completed-building capacity totals. A loss of current housing may pause already-paid queues; it is not a violation of hard limits."
+}
