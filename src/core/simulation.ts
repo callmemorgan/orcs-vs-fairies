@@ -331,7 +331,7 @@ function useAbility(s:GameState,e:Entity):boolean{
  if(count>=2||s.players[e.side].population+reserved(s,e.side)>=s.players[e.side].cap)break;
  const cached=delivered.includes(corpse),point=cached?openDestination(s,{x:e.x+.7,y:e.y+.7,level:levelOf(e)},e):corpse;
  if(corpse.expires<=s.time||!point||!cached&&(distance(e,corpse)>6||!isVisible(s,e.side,corpse.x,corpse.y,levelOf(corpse)))||!walkable(s,point.x,point.y,levelOf(point)))continue;
- const raised=spawnEntity(s,e.side,'unit','melee',point.x,point.y,1,undefined,levelOf(point));raised.hp=raised.maxHp*.5;raised.raised=true;raised.expires=s.time+35;raised.order={type:'attackMove',x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level})};s.corpses=s.corpses.filter(c=>c.id!==corpse.id);if(e.factionState?.deliveredCorpses)e.factionState.deliveredCorpses=e.factionState.deliveredCorpses.filter(c=>c.id!==corpse.id);count++;updatePopulation(s);
+ const raised=spawnEntity(s,e.side,'unit','melee',point.x,point.y,1,undefined,levelOf(point),e.definitionFaction);raised.hp=raised.maxHp*.5;raised.raised=true;raised.expires=s.time+35;raised.order={type:'attackMove',x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level})};s.corpses=s.corpses.filter(c=>c.id!==corpse.id);if(e.factionState?.deliveredCorpses)e.factionState.deliveredCorpses=e.factionState.deliveredCorpses.filter(c=>c.id!==corpse.id);count++;updatePopulation(s);
  }
  if(!count)return false;runtime(s).abilities.set(e.id,s.time+22);
  }else if(ability==='illusion'){

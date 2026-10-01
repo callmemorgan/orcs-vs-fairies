@@ -69,7 +69,7 @@ function validateEntity(value:unknown,path:string,c:Context):void {
  // Completed research can reach 1+dt for a single tick before being reset.
  number(e.researchProgress,`${path}.researchProgress`,0,2);
  number(e.facing,`${path}.facing`,0,7,true);choice(e.animation,`${path}.animation`,['idle','walk','attack','death']);number(e.momentum,`${path}.momentum`,0,1);flag(e.illusion,`${path}.illusion`);number(e.carried,`${path}.carried`,0,18);choice(e.carriedKind,`${path}.carriedKind`,RESOURCE_KINDS);
- if(e.definitionFaction!==undefined){choice(e.definitionFaction,`${path}.definitionFaction`,Object.keys(contentFactions(c.state.content)));if(!c.state.players.some(player=>player.faction===e.definitionFaction)||e.kind!=='unit'||!e.illusion&&e.role!=='siege'&&(e.role==='worker'||(e.tactics as {surrenderedTo?:number}|undefined)?.surrenderedTo!==e.side))bad(`${path}.definitionFaction`,'original faction requires a captured engine or surrendered combat troop from a match faction');}
+ if(e.definitionFaction!==undefined){choice(e.definitionFaction,`${path}.definitionFaction`,Object.keys(contentFactions(c.state.content)));if(!c.state.players.some(player=>player.faction===e.definitionFaction)||e.kind!=='unit'||!e.illusion&&e.raised!==true&&e.role!=='siege'&&(e.role==='worker'||(e.tactics as {surrenderedTo?:number}|undefined)?.surrenderedTo!==e.side))bad(`${path}.definitionFaction`,'original faction requires a captured engine, surrendered combat troop or admitted summon from a match faction');}
  if(e.definitionId!==undefined){if(typeof e.definitionId!=='string'||e.definitionId.length>100)bad(`${path}.definitionId`,'invalid ID');try{entityDefinition(c.state,e as unknown as Entity);}catch{bad(`${path}.definitionId`,'definition is absent from the pinned faction or has another role');}}
  if(e.definitionFaction!==undefined&&!e.illusion&&e.maxHp!==entityDefinition(c.state,e as unknown as Entity).hp)bad(`${path}.maxHp`,'captured troop health capacity differs from its original definition');
  const queue=list(e.queue,`${path}.queue`,5);queue.forEach((role,i)=>{choice(role,`${path}.queue[${i}]`,UNIT_ROLES);if(e.kind!=='building'||(e.role!=='hq'&&e.role!=='barracks')||(e.role==='hq'&&role!=='worker')||(e.role==='barracks'&&role==='worker'))bad(`${path}.queue`,'invalid producer or recruit');});
@@ -82,6 +82,12 @@ function validateEntity(value:unknown,path:string,c:Context):void {
  if(e.researchPaidCost!==undefined){if(e.research===undefined)bad(`${path}.researchPaidCost`,'charged research cost requires pending research');const paid=object(e.researchPaidCost,`${path}.researchPaidCost`,['wood','ore','crystal']),expected=upgradesFor(c.state,e.side as Side)[e.research as keyof ReturnType<typeof upgradesFor>].cost;for(const key of RESOURCE_KINDS){number(paid[key],`${path}.researchPaidCost.${key}`,0,100000);if(paid[key]!==expected[key as keyof typeof expected])bad(`${path}.researchPaidCost`,'charged cost differs from pinned research');}}
  if(e.rally!==undefined)point(e.rally,`${path}.rally`,c);
  for(const key of ['gateOpen','raised'])optionalFlag(e,key,path);
+ if(e.raised===true){
+  const original=contentFactions(c.state.content)[(e.definitionFaction??c.state.players[e.side as Side].faction) as string],definition=entityDefinition(c.state,e as unknown as Entity);
+  // Grove decoys inherit the template's raised flag, with scaled health and expiry.
+  const healthFactor=e.illusion ? .4 : 1,lifetime=e.illusion?15:35;
+  if(e.kind!=='unit'||e.role!=='melee'||!(original.unitDefinitions??Object.values(original.units)).some(d=>d.ability==='raise')||definition.id!==original.units.melee.id||e.maxHp!==definition.hp*healthFactor||(e.expires as number)<=0||(e.expires as number)>c.time+lifetime+1e-8)bad(`${path}.raised`,'raised troops require the raising faction melee definition and their summon lifetime');
+ }
  if(e.lastAttacker!==undefined)id(e.lastAttacker,`${path}.lastAttacker`,c);
  for(const key of ['abilityReadyAt','entrenchedAt','lastDamagedAt','surgeUntil','shield','maxShield'])optionalNumber(e,key,path);
  if(e.factionState!==undefined)validateFactionUnit(e.factionState,`${path}.factionState`,c,e);
