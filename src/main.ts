@@ -83,7 +83,10 @@ const callbacks:HudCallbacks={
   shell.update(scene.state,scene.selected,callbacks);
  },
  clearRally:()=>{if(scene&&!scene.paused&&scene.command({type:'clearRally',ids:scene.selected}))shell.update(scene.state,scene.selected,callbacks);},
- ability:()=>{if(scene&&!scene.command({type:'ability',ids:scene.selected}))shell.notice('No selected ability is ready or has an eligible target.');},
+ command:command=>scene?.command(command)??false,
+ engineerBuild:kind=>{scene?.beginEngineerBuild(kind);},
+ fieldRepair:()=>{scene?.beginFieldRepair();},
+ ability:()=>{if(scene&&!scene.useAbility())shell.notice('No selected ability is ready or has an eligible target.');},
  hold:()=>{scene?.holdPosition();},
  attackMove:()=>scene?.beginAttackMove(),
  select:ids=>scene?.selectEntities(ids),

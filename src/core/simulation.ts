@@ -1,6 +1,6 @@
 import { DIRECTIONS_24, DIRECTIONS_32, facing8, length2D } from './geometry';
 import { commanderArtifact, creditCombat, dropArtifact, dropArtifacts, equipArtifact, promote, progressionStats, recordCombatExposure, recoverArtifact, stepVeterans, unequipArtifact } from './unit-progression';
-import { commanderDied, engineerBuild, fieldRepair, heroRecruitmentReason, launchSpecialistShot, resolveSpecialistShots, specialistAbility, stepSpecialists, updateBeacons } from './specialist-systems';
+import { commanderDied, engineerBuild, fieldRepair, heroRecruitmentReason, launchSpecialistShot, resolveSpecialistShots, runSpecialistAI, specialistAbility, stepSpecialists, updateBeacons } from './specialist-systems';
 import type { SpecialistHooks } from './specialist-systems';
 import type { SpecialistSource } from './specialist-types';
 import { aiProfile, chooseAiRecruit, counterWeights, normalizeAiConfig, openingBuilding, rememberObservedUnits, shouldRetreat, skipsAiDecision } from './ai-policy';
@@ -357,10 +357,10 @@ function resolveHits(s:GameState):void{
  const groups=new Map<Entity,Runtime['hits']>();
  for(const hit of runtime(s).hits){const group=groups.get(hit.target)??[];group.push(hit);groups.set(hit.target,group);}
  for(const [target,hits] of groups){if(!alive(target))continue;const total=hits.reduce((n,h)=>n+h.amount,0),absorbed=Math.min(target.shield??0,total),actual=Math.min(target.hp,total-absorbed)+absorbed;target.shield=Math.max(0,(target.shield??0)-absorbed);target.hp=Math.max(0,target.hp-(total-absorbed));target.lastDamagedAt=s.time;
-  for(const hit of hits){hit.event.amount=total?actual*hit.amount/total:0;const attacker=s.entities.find(e=>e.id===hit.source.id);if(attacker)creditCombat(s,attacker,target,hit.event.amount);}
+  for(const hit of hits){hit.event.amount=total?actual*hit.amount/total:0;const attacker=s.entities.find(e=>e.id===hit.source.id);if(attacker&&attacker.side===hit.source.side)creditCombat(s,attacker,target,hit.event.amount);}
   if(actual>0)recordCombatExposure(s,target);
   target.lastAttacker=hits.reduce((best,h)=>h.amount>best.amount?h:best).source.id;
-  if(target.hp===0){const killer=s.entities.find(e=>e.id===target.lastAttacker);if(killer)creditCombat(s,killer,target,0,true);die(s,target);}
+  if(target.hp===0){const killer=s.entities.find(e=>e.id===target.lastAttacker);if(killer&&killer.side===hits.reduce((best,h)=>h.amount>best.amount?h:best).source.side)creditCombat(s,killer,target,0,true);die(s,target);}
  }
  s.eliminated=playerSides(s).map(side=>!s.entities.some(e=>e.side===side&&e.role==='hq'&&alive(e)&&e.progress===1));
  const livingTeams=[...new Set(s.teams.filter((_,side)=>!s.eliminated[side]))];
@@ -471,6 +471,7 @@ export function runAI(s:GameState,side:Side=1):void{
   const danger=s.entities.some(e=>isHostile(s,e.side,side)&&alive(e)&&isVisible(s,side,e.x,e.y,levelOf(e))&&distance(e,gate)<9);
   if(!!gate.gateOpen===danger)issueCommand(s,side,{type:'toggleGate',ids:[gate.id]});
  }
+ runSpecialistAI(s,side,c=>issueCommand(s,side,c));
  const army=owned.filter(e=>e.kind==='unit'&&e.role!=='worker'&&!e.illusion);
  const visibleEnemy=s.entities.filter(e=>isHostile(s,e.side,side)&&alive(e)&&e.kind==='unit'&&isVisible(s,side,e.x,e.y,levelOf(e)));
  const planned=[...army.filter(e=>!e.raised).map(e=>e.role),...buildings.flatMap(e=>e.queue).filter(r=>r!=='worker')];
@@ -480,6 +481,7 @@ export function runAI(s:GameState,side:Side=1):void{
  for(const b of buildings.filter(e=>e.role==='barracks'&&e.progress===1)){
   if(age>=2&&!b.research&&army.length>=5)for(const id of ['forged-weapons','tempered-armor','veteran-arms'] as UpgradeId[]){const d=UPGRADES[id];if(!researchRequirement(s,side,id)&&p.wood>d.cost.wood+180&&p.ore>d.cost.ore+120){issueCommand(s,side,{type:'research',id:b.id,upgrade:id});break;}}
   if(b.queue.length>=profile.trainingQueue)continue;
+  const commander=availableUnits(s,side).find(d=>d.tags?.includes('hero'));if(commander&&age>=2&&army.length>=5&&!heroRecruitmentReason(s,side,commander.id)&&p.wood>commander.cost.wood+220&&p.ore>commander.cost.ore+160&&p.crystal>=commander.cost.crystal&&issueCommand(s,side,{type:'train',id:b.id,role:commander.role,definitionId:commander.id}))continue;
   // Maintain a small defensive force, then save enough to advance.
   const nextAge:UpgradeId|undefined=age===1?'town-age':age===2?'citadel-age':undefined;
   if(nextAge&&army.length>=7&&!hq.research&&s.time>(age===1?150:380)&&!visibleEnemy.some(e=>distance(e,hq)<14)&&p.wood<UPGRADES[nextAge].cost.wood+120)continue;

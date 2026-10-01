@@ -1,3 +1,4 @@
+import { observedArtifacts } from './unit-progression';
 import { ABILITIES } from './content';
 import { factionFor, unitFor, upgradesFor } from './content-registry';
 import { isAllied, isGameOver, isHostile, isVisible } from './simulation';
@@ -63,14 +64,14 @@ export class PlayerView {
   return {
    version:1,tick:s.tick,time:s.time,side,teamId,controller:s.controllers[side],sharedVision:s.sharedVision,winningTeam:s.winningTeam,eliminated:[...s.eliminated],
    map:{size:s.mapSize,width:s.width,height:s.height,version:s.mapVersion,seed:s.seed,starts:s.starts.map(p=>({...p})),terrain:s.terrain.map((t,i)=>s.explored[side].has(i)?t:null)},
-   player:{...s.players[side],upgrades:[...s.players[side].upgrades]},opponent:opponent?{side:opponent.side,faction:opponent.faction}:null,opponents,allies,
+   player:{...s.players[side],heroRecovery:s.players[side].heroRecovery?.map(r=>({...r})),upgrades:[...s.players[side].upgrades]},opponent:opponent?{side:opponent.side,faction:opponent.faction}:null,opponents,allies,
    entities:s.entities.filter(e=>e.hp>0&&(e.side===side||isVisible(s,side,e.x,e.y,levelOf(e)))).map(e=>{
     const {hp,maxHp}=observedHealth(s,side,e);
     const publicFields={id:e.id,side:e.side,kind:e.kind,role:e.role,definitionId:e.definitionId,definitionFaction:e.definitionFaction,x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level}),hp,maxHp,progress:e.progress,gateOpen:e.gateOpen,shield:e.shield,maxShield:e.maxShield,raised:e.raised,entrenchedAt:e.entrenchedAt,surgeUntil:e.surgeUntil};
-    return e.side===side?{...publicFields,illusion:e.illusion,order:{...e.order},orderQueue:e.orderQueue?.map(order=>({...order})),queue:[...e.queue],queueDefinitionIds:e.queueDefinitionIds?[...e.queueDefinitionIds]:undefined,queuePaidCosts:e.queuePaidCosts?.map(cost=>({...cost})),rally:e.rally?{...e.rally}:undefined,trainProgress:e.trainProgress,research:e.research,researchProgress:e.researchProgress,carried:e.carried,carriedKind:e.carriedKind,cooldown:e.cooldown,abilityReadyAt:e.abilityReadyAt,expires:e.expires,lastDamagedAt:e.lastDamagedAt}:isAllied(s,side,e.side)?{...publicFields,illusion:e.illusion}:publicFields;
+    return e.side===side?{...publicFields,veteran:e.veteran?structuredClone(e.veteran):undefined,equipment:e.equipment?{...e.equipment}:undefined,specialistBuffs:e.specialistBuffs?.map(buff=>({...buff,fearedFrom:buff.fearedFrom?{...buff.fearedFrom}:undefined})),beacon:e.beacon?{...e.beacon}:undefined,siegeMode:e.siegeMode?{...e.siegeMode}:undefined,illusion:e.illusion,order:{...e.order},orderQueue:e.orderQueue?.map(order=>({...order})),queue:[...e.queue],queueDefinitionIds:e.queueDefinitionIds?[...e.queueDefinitionIds]:undefined,queuePaidCosts:e.queuePaidCosts?.map(cost=>({...cost})),rally:e.rally?{...e.rally}:undefined,trainProgress:e.trainProgress,research:e.research,researchProgress:e.researchProgress,carried:e.carried,carriedKind:e.carriedKind,cooldown:e.cooldown,abilityReadyAt:e.abilityReadyAt,expires:e.expires,lastDamagedAt:e.lastDamagedAt}:isAllied(s,side,e.side)?{...publicFields,illusion:e.illusion}:publicFields;
    }),
    world:s.world?{version:s.world.version,revision:s.world.revision,biome:s.world.biome,phase:environmentPhase(s),levels:s.world.levels.map(l=>({id:l.id,title:l.title,terrain:l.terrain.map((t,i)=>s.explored[side].has(l.id*s.width*s.height+i)?t:null),elevation:l.elevation.map((e,i)=>s.explored[side].has(l.id*s.width*s.height+i)?e:null)})),transitions:s.world.transitions.filter(t=>s.explored[side].has(fogKey(s,t.from))||s.explored[side].has(fogKey(s,t.to))).map(t=>({id:t.id,from:{...t.from},to:{...t.to}})),bridges:s.world.bridges.filter(b=>isVisible(s,side,b.x,b.y,b.level)).map(b=>({id:b.id,x:b.x,y:b.y,level:b.level,hp:b.hp,maxHp:b.maxHp,rebuilding:b.rebuilding})),fires:s.world.fires.filter(f=>isVisible(s,side,f.x,f.y,f.level)).map(f=>({...f})),...observeNeutralWorld(s,side)}:undefined,
-   resources:this.resourcesFor(s),
+   resources:this.resourcesFor(s),artifacts:observedArtifacts(s,side),
    corpses:s.corpses.filter(c=>isVisible(s,side,c.x,c.y,levelOf(c))).map(c=>({...c})),
    visible:[...s.visible[side]].sort((a,b)=>a-b),explored:[...s.explored[side]].sort((a,b)=>a-b),
    content:{faction:factionFor(s,side),abilities:ABILITIES,upgrades:upgradesFor(s,side),hash:s.content?.hash},
