@@ -29,7 +29,7 @@ function setInput(control: HTMLInputElement | HTMLSelectElement, value: string):
   control.dispatchEvent(new Event('change', { bubbles: true }));
 }
 
-function setup(profile: ConquestProfile | null = createConquestProfile('orcs', 'conquest-ui')) {
+function setup(profile: ConquestProfile | null = createConquestProfile('orcs', 'conquest-ui'), readOnlyReason?: () => string | null) {
   const root = document.createElement('div');
   document.body.append(root);
   const callbacks = {
@@ -43,6 +43,7 @@ function setup(profile: ConquestProfile | null = createConquestProfile('orcs', '
     save: vi.fn<NonNullable<ConquestToolsCallbacks['save']>>(),
     import: vi.fn<NonNullable<ConquestToolsCallbacks['import']>>(),
     notice: vi.fn<NonNullable<ConquestToolsCallbacks['notice']>>(),
+    ...(readOnlyReason ? { readOnlyReason } : {}),
   } satisfies ConquestToolsCallbacks;
   const tools = new ConquestTools(root, callbacks);
   mounted.push(tools);
@@ -150,6 +151,56 @@ describe('conquest decision controls', () => {
     expect(callbacks.wait).not.toHaveBeenCalled();
     expect(callbacks.battle).not.toHaveBeenCalled();
     expect(battle.profile).toEqual(before);
+  });
+});
+
+describe('read-only conquest profile inspection', () => {
+  it('displays the callback reason and blocks otherwise eligible battle and diplomacy decisions', () => {
+    const profile = proposeConquest(createConquestProfile('orcs', 'readonly-conquest-ui'), { type: 'tribute', faction: 'fairies', amount: 250 });
+    const before = structuredClone(profile), reason = 'This imported realm uses earlier simulation rules. Inspect or export it, or create a new realm.';
+    const { root, callbacks } = setup(profile, () => reason);
+    setInput(field<HTMLSelectElement>(root, 'Foreign faction'), 'fairies');
+    expect(root.querySelector<HTMLElement>('[role="note"]')!.hidden).toBe(false);
+    expect(root.querySelector('[role="note"]')!.textContent).toBe(reason);
+    for (const label of ['Attack: Ashwing Grove', 'Attack: Deep Gate Quarry', 'Wait one turn', 'Offer tribute', 'Request truce', 'Request alliance']) {
+      const control = button(root, label); expect(control.disabled, label).toBe(true); expect(control.title).toBe(reason); control.click();
+    }
+    expect(callbacks.battle).not.toHaveBeenCalled(); expect(callbacks.wait).not.toHaveBeenCalled(); expect(callbacks.proposal).not.toHaveBeenCalled();
+    expect(field(root, 'Foreign faction').disabled).toBe(false);
+    expect(root.textContent).toContain('Foreign treasury: 150 wood · 350 ore · 20 crystal');
+    setInput(field<HTMLSelectElement>(root, 'Foreign faction'), 'dwarves'); expect(root.textContent).toContain('Deepforge (dwarves) · relations 0');
+    expect(profile).toEqual(before);
+  });
+
+  it('keeps export, import, saved-profile inspection and a new realm available for a recorded active battle', async () => {
+    const run = prepareConquestBattle(createConquestProfile('orcs', 'readonly-active-conquest-ui'), 'quarry'); run.recorder.destroy();
+    const before = structuredClone(run.profile), reason = 'The active battle was recorded under older rules and cannot continue.';
+    const { root, callbacks } = setup(run.profile, () => reason);
+    expect(root.querySelector('[role="status"]')!.textContent).toContain('recorded battle in Deep Gate Quarry');
+    expect(root.querySelector('[role="status"]')!.textContent).not.toContain('finish or resume');
+    for (const label of ['Create realm', 'Export realm profile', 'Resume saved realm']) { const control = button(root, label); expect(control.disabled, label).toBe(false); control.click(); }
+    expect(callbacks.start).toHaveBeenCalledExactlyOnceWith('orcs'); expect(callbacks.save).toHaveBeenCalledOnce(); expect(callbacks.resume).toHaveBeenCalledOnce();
+    const text = JSON.stringify(run.profile); expect(field(root, 'Import realm profile').disabled).toBe(false);
+    chooseFile(root, new File([text], 'recorded-realm.json', { type: 'application/json' }));
+    await vi.waitFor(() => expect(callbacks.import).toHaveBeenCalledExactlyOnceWith(text));
+    expect(run.profile).toEqual(before);
+  });
+
+  it('refreshes only reason changes and guards decisions before the next UI update', () => {
+    const profile = proposeConquest(createConquestProfile('orcs', 'readonly-refresh-conquest-ui'), { type: 'tribute', faction: 'fairies', amount: 250 });
+    let reason: string | null = null;
+    const { root, callbacks, tools } = setup(profile, () => reason);
+    setInput(field<HTMLSelectElement>(root, 'Foreign faction'), 'fairies');
+    expect(button(root, 'Attack: Ashwing Grove').disabled).toBe(false); expect(button(root, 'Request alliance').disabled).toBe(false);
+    reason = 'The realm is available for inspection only.';
+    button(root, 'Attack: Ashwing Grove').click(); expect(callbacks.battle).not.toHaveBeenCalled();
+    expect(button(root, 'Attack: Ashwing Grove').disabled).toBe(true); expect(button(root, 'Request alliance').disabled).toBe(true);
+    reason = 'A different compatibility explanation.'; tools.update(); expect(root.querySelector('[role="note"]')!.textContent).toBe(reason);
+    reason = null; tools.update();
+    expect(root.querySelector<HTMLElement>('[role="note"]')!.hidden).toBe(true);
+    expect(button(root, 'Attack: Ashwing Grove').disabled).toBe(false); expect(button(root, 'Request alliance').disabled).toBe(false);
+    button(root, 'Attack: Ashwing Grove').click(); button(root, 'Request alliance').click();
+    expect(callbacks.battle).toHaveBeenCalledExactlyOnceWith('grove', 'attack'); expect(callbacks.proposal).toHaveBeenCalledExactlyOnceWith({ type: 'alliance', faction: 'fairies' });
   });
 });
 

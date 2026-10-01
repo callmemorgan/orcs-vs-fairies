@@ -295,7 +295,13 @@ const tools=mountSessionTools(root,{
  onModal:open=>setModal('session',open)
 });
 const sessionToolbar=root.querySelector<HTMLElement>('.session-toolbar')!;
- scene.inputBlocked=sessionModal||objectiveOpen;scene.paused=!!playback||!!inspectionReason||sessionModal;
+const campaignHost=new ScenarioCampaignHost(root,sessionToolbar,{
+ state:()=>scene?.state??null,launch:(session,reason)=>{replacementGeneration++;launch(session.state,undefined,undefined,undefined,replacementGeneration,undefined,reason);},
+ menu:()=>{replacementGeneration++;closeOnline();recorder?.dispose();recorder=undefined;replay?.dispose();replay=undefined;retireGame(()=>shell.showMenu());tools.update(null);},
+ select:ids=>scene?.selectEntities(ids),center:(x,y)=>scene?.centerOn(x,y),notice:shell.notice,visibility:open=>setModal('campaign',open),inspection:()=>replay?'Replay inspection is read-only.':null,
+});
+const canSubmitObjectives=()=>!!scene&&!scene.paused&&!scene.readOnly&&!scene.photoMode&&!sessionModal&&!isGameOver(scene.state)&&!scene.state.eliminated[playerSide()];
+const objectives=mountObjectivePanel(root,{toolbar:sessionToolbar,getState:()=>scene?.state,getObservation:()=>scene?.objectiveObservation,getContent:()=>scene?.state.content,side:playerSide,blocked:()=>!!scene?.photoMode||sessionModal,onVisibility:open=>{objectiveOpen=open;if(scene)scene.inputBlocked=sessionModal||objectiveOpen;},canSubmit:canSubmitObjectives,submit:command=>canSubmitObjectives()&&dispatchCommand(playerSide(),command)});
 mountOnlineLobby(root,{api:onlineApi,toolbar:sessionToolbar,onJoinMatch:joinOnline,onVisibility:open=>setModal('online',open)});
 const teamAiTools=mountTeamAITools(root,{toolbar:sessionToolbar,command:command=>!teamAiBlocked()&&dispatchCommand(playerSide(),command),notice:shell.notice,onVisibility:open=>setModal('team-ai',open)});
 function teamAiBlocked(){return !scene||!!replay||scene.readOnly||scene.photoMode||scene.state.eliminated[playerSide()]||isGameOver(scene.state)||Array.from(openModals).some(source=>source!=='team-ai')||(scene.paused&&(!openModals.has('team-ai')||pausedBeforeModal));}
