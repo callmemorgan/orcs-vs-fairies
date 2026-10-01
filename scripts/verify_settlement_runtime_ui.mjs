@@ -1,0 +1,52 @@
+import assert from 'node:assert/strict';
+import {mkdir,readFile,readdir,writeFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+
+const base=process.argv[2],fixturePath=process.argv[3],out=process.argv[4];
+const productionSourceCommit=process.env.OVF_PRODUCTION_SOURCE_COMMIT;
+const expectedSaveVersion=Number(process.env.OVF_EXPECT_SAVE_VERSION??4);
+const expectedSimulationRevision=process.env.OVF_EXPECT_SIMULATION_REVISION;
+assert(base&&fixturePath&&out,'Pass the frozen preview URL, a fresh mixed fixture, and a new evidence directory.');
+assert(productionSourceCommit&&/^[0-9a-f]{40}$/.test(productionSourceCommit),'Pass the full final source SHA as OVF_PRODUCTION_SOURCE_COMMIT.');
+assert(Number.isSafeInteger(expectedSaveVersion)&&expectedSaveVersion>=4,'This driver requires final SAVE4 or later.');
+assert(expectedSimulationRevision,'Pass the approved final rules revision as OVF_EXPECT_SIMULATION_REVISION.');
+execFileSync('git',['diff','--quiet',productionSourceCommit,'--','src']);
+assert.equal(execFileSync('git',['status','--porcelain','--untracked-files=all','--','src'],{encoding:'utf8'}).trim(),'','The frozen source must be clean, including untracked source files.');
+const hash=createHash('sha256');for(const path of (await readdir('src',{recursive:true})).filter(path=>/\.(ts|css)$/.test(path)).sort()){hash.update(path);hash.update(await readFile(`src/${path}`));}const buildId=hash.digest('hex');
+const fixture=await readFile(fixturePath),decoded=JSON.parse(fixture);
+assert.equal(decoded.game.version,expectedSaveVersion,'Regenerate the fixture from the final save schema.');
+await mkdir(out,{recursive:true});
+const {chromium}=await import(process.env.OVF_PLAYWRIGHT_MODULE??'playwright');
+const browser=await chromium.launch({headless:true,args:['--disable-dev-shm-usage']}),page=await browser.newPage({viewport:{width:1440,height:1000},acceptDownloads:true});
+const result={base,fixturePath,sourceCommit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),productionSourceCommit,buildId,expectedSaveVersion,expectedSimulationRevision,checks:[],errors:[]};
+page.on('pageerror',error=>result.errors.push(error.message));
+const record=(name,value)=>{result.checks.push({name,value});console.log(`${name}: ${JSON.stringify(value)}`);};
+const read=()=>page.evaluate(()=>({tick:window.rts.state.tick,time:window.rts.state.time,players:window.rts.state.players,starts:window.rts.state.starts,entities:window.rts.state.entities,economy:window.rts.state.economy,contentHash:window.rts.state.content?.hash,art:window.rts.art}));
+try{
+ record('Fresh fixture uses final save schema',decoded.game.version);
+ await page.goto(base);await page.locator('#map-size').selectOption('small');await page.locator('.begin-match').click();await page.waitForSelector('.loading-battle[hidden]',{state:'attached',timeout:60000});
+ await page.locator('[data-session-tool="saves"]').click();await page.getByLabel('Import save JSON',{exact:true}).setInputFiles({name:'settlement-runtime.json',mimeType:'application/json',buffer:fixture});await page.getByRole('button',{name:'Import save',exact:true}).click();await page.waitForFunction(()=>Array.from(document.querySelectorAll('.session-notice')).some(item=>item.textContent?.includes('Save loaded.')),null,{timeout:60000});await page.getByRole('button',{name:'Close session tools',exact:true}).click();
+ await page.locator('[data-economy-launch]').click();await page.getByRole('dialog',{name:'Economy and settlements',exact:true}).waitFor();await page.getByRole('tab',{name:'Settlements and contracts',exact:true}).click();
+ const initial=await read(),ownHqs=initial.entities.filter(e=>e.side===0&&e.kind==='building'&&e.role==='hq'&&e.hp>0&&e.progress===1),start=initial.starts[0];
+ const hq=ownHqs.find(e=>Math.hypot(e.x-start.x,e.y-start.y)<8),expansion=ownHqs.find(e=>Math.hypot(e.x-start.x,e.y-start.y)>=8&&!initial.economy.specializations.some(item=>item.entityId===e.id));
+ assert(hq&&expansion,'The fresh fixture needs an original HQ and a paid unspecialized expansion.');assert(initial.contentHash&&initial.art.loaded,'The mixed pinned artwork must load.');record('Pinned content and native settlement controls loaded',{contentHash:initial.contentHash,hq:hq.id,expansion:expansion.id});
+ await page.getByLabel('Expansion settlement',{exact:true}).selectOption(String(expansion.id));await page.getByLabel('Settlement specialization',{exact:true}).selectOption('research');await page.getByRole('button',{name:'Specialize settlement',exact:true}).click();
+ await page.waitForFunction(id=>window.rts.state.economy.specializations.some(item=>item.entityId===id&&item.kind==='research'),expansion.id);
+ const specialized=await read();assert.equal(specialized.players[0].wood,initial.players[0].wood-120);assert.equal(specialized.players[0].ore,initial.players[0].ore-80);assert.equal(specialized.players[0].crystal,initial.players[0].crystal-30);record('Native research specialization paid',{wood:120,ore:80,crystal:30});
+ await page.getByLabel('Settlement specialization',{exact:true}).selectOption('mining');await page.waitForFunction(()=>Array.from(document.querySelectorAll('.economy-dialog button')).some(button=>button.textContent==='Specialize settlement'&&button.disabled),null,{timeout:5000});const specialize=page.getByRole('button',{name:'Specialize settlement',exact:true});assert.equal(await specialize.isDisabled(),true);assert.match(await specialize.getAttribute('title'),/already has a specialization/);assert.deepEqual((await read()).economy.specializations,specialized.economy.specializations);record('Native second specialization stays disabled',{id:expansion.id,reason:await specialize.getAttribute('title')});
+ await page.getByRole('button',{name:'Close economy and settlements',exact:true}).click();await page.locator('#technology-button').click();await page.locator('.technology-tree[open]').waitFor();
+ const durations={};
+ for(const id of ['worker-speed','worker-harvest']){const button=page.locator(`[data-technology="${id}"]`);assert(await button.isEnabled(),`Native ${id} research must be available.`);const time=(await button.locator('small').last().innerText()).match(/(\d+(?:\.\d+)?)s\s*$/);assert(time,`Native ${id} research duration is missing.`);durations[id]=Number(time[1]);await button.click();await page.waitForFunction(id=>window.rts.state.entities.some(e=>e.side===0&&e.research===id),id);await page.waitForFunction(id=>document.querySelector(`[data-technology="${id}"] em`)?.textContent?.includes('Researching'),id,{timeout:5000});}
+ const before=await read(),ordinaryBefore=before.entities.find(e=>e.id===hq.id),expansionBefore=before.entities.find(e=>e.id===expansion.id);
+ assert.equal(ordinaryBefore.research,'worker-speed');record('Native ordinary HQ research accepted',{id:hq.id,definitionId:ordinaryBefore.definitionId,upgrade:ordinaryBefore.research});
+ assert.equal(expansionBefore.research,'worker-harvest');record('Native expansion HQ research accepted',{id:expansion.id,definitionId:expansionBefore.definitionId,upgrade:expansionBefore.research});
+ await page.waitForFunction(tick=>window.rts.state.tick>=tick+40,before.tick,{timeout:15000});const after=await read(),elapsed=after.time-before.time;
+ const ordinaryAfter=after.entities.find(e=>e.id===hq.id),expansionAfter=after.entities.find(e=>e.id===expansion.id);assert.equal(ordinaryAfter.research,'worker-speed');assert.equal(expansionAfter.research,'worker-harvest');
+ const ordinaryRate=(ordinaryAfter.researchProgress-ordinaryBefore.researchProgress)*durations['worker-speed']/elapsed,expansionRate=(expansionAfter.researchProgress-expansionBefore.researchProgress)*durations['worker-harvest']/elapsed;
+ assert(Math.abs(ordinaryRate-1)<1e-7,`Ordinary HQ rate was ${ordinaryRate}.`);assert(Math.abs(expansionRate-1.35)<1e-7,`Research expansion rate was ${expansionRate}.`);
+ record('Native research advances with local specialization rate',{beforeTick:before.tick,afterTick:after.tick,elapsed,ordinaryRate,expansionRate,durations});await writeFile(`${out}/research-state.json`,JSON.stringify({before,after},null,2));await page.screenshot({path:`${out}/research-progress.png`});await page.getByRole('button',{name:'Close technology tree',exact:true}).click();
+ await page.locator('[data-session-tool="report"]').click();await page.getByLabel('Bug description',{exact:true}).fill('Final native settlement research runtime proof');const download=page.waitForEvent('download');await page.getByRole('button',{name:'Download bug report',exact:true}).click();await(await download).saveAs(`${out}/report.json`);const report=JSON.parse(await readFile(`${out}/report.json`,'utf8'));
+ assert.equal(report.versions.buildId,buildId);assert.equal(report.versions.save,expectedSaveVersion);assert.equal(report.versions.simulationRevision,expectedSimulationRevision);assert.equal(report.session.game.version,expectedSaveVersion);assert.equal(report.session.replay.initial.version,expectedSaveVersion);assert.equal(report.session.replay.simulationRevision,expectedSimulationRevision);record('Native report binds final source and versions',report.versions);
+ assert.deepEqual(result.errors,[]);result.passed=true;
+}catch(error){result.passed=false;result.error=String(error);await page.screenshot({path:`${out}/failure.png`}).catch(()=>{});throw error;}finally{await writeFile(`${out}/results.json`,JSON.stringify(result,null,2));await browser.close();}
