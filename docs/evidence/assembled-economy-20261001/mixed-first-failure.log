@@ -1,0 +1,116 @@
+
+ RUN  v4.1.11 /home/morgana/.codex/worktrees/assembled-economy/orcs-vs-Fairies
+
+ ❯ tests/economy-world-integration.test.ts (15 tests | 7 failed) 1265ms
+     × cancels loaded trade on a commanded transition, keeps the goods and deposits on the new level 64ms
+     × drops loaded paid cargo once when a commanded fire kills a caravan 52ms
+     × drops loaded paid cargo once when an attacked bridge drowns a caravan 229ms
+     × drops loaded cargo once when spring thaw leaves no reachable bank 39ms
+     × keeps caravans passive before bridge, village and environmental command dispatch 46ms
+     × records world traversal and economic payment in a same-build replay 205ms
+     × uses size-2 economic placement beside a size-6 mod depot and salvages the charged mod siege cost 37ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/economy-world-integration.test.ts > assembled world and economy > cancels loaded trade on a commanded transition, keeps the goods and deposits on the new level
+AssertionError: expected +0 to be 30 // Object.is equality
+
+- Expected
++ Received
+
+- 30
++ 0
+
+ ❯ tests/economy-world-integration.test.ts:67:55
+     65|   s.world.transitions.push({id:1,from:{x:cart.x,y:cart.y,level:0},to:{…
+     66|   expect(issueCommand(s,0,{type:'traverse',ids:[cart.id],transition:1}…
+     67|   expect(cart.level).toBe(1);expect(cargo.stock.wood).toBe(30);expect(…
+       |                                                       ^
+     68|   settlement(s,cart.x,cart.y+2,1);run(s,.1);expect(cargo.stock.wood).t…
+     69|  });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  tests/economy-world-integration.test.ts > assembled world and economy > drops loaded paid cargo once when a commanded fire kills a caravan
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ deathAssertions tests/economy-world-integration.test.ts:50:261
+
+ ❯ tests/economy-world-integration.test.ts:79:107
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  tests/economy-world-integration.test.ts > assembled world and economy > drops loaded paid cargo once when an attacked bridge drowns a caravan
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/economy-world-integration.test.ts:86:21
+     84|   const bridge={id:s.nextId++,x:10.5,y:10.5,level:0,hp:1,maxHp:160,til…
+     85|   s.visible[0].add(fogKey(s,bridge));s.explored[0].add(fogKey(s,bridge…
+     86|   expect(bridge.hp).toBe(0);deathAssertions(s,cart);
+       |                     ^
+     87|  });
+     88|  it('drops loaded cargo once when spring thaw leaves no reachable bank…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  tests/economy-world-integration.test.ts > assembled world and economy > drops loaded cargo once when spring thaw leaves no reachable bank
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ deathAssertions tests/economy-world-integration.test.ts:50:261
+
+ ❯ tests/economy-world-integration.test.ts:91:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  tests/economy-world-integration.test.ts > assembled world and economy > keeps caravans passive before bridge, village and environmental command dispatch
+AssertionError: expected 10.5 to be greater than 10.5
+ ❯ tests/economy-world-integration.test.ts:103:114
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  tests/economy-world-integration.test.ts > assembled world and economy > records world traversal and economic payment in a same-build replay
+Error: Replay command rejected at tick 1.
+ ❯ ReplayPlayer.settleCommands src/core/replays.ts:185:69
+    183|     while(this.cursor<this.archive.actions.length){
+    184|       const action=this.archive.actions[this.cursor];if(action.type!==…
+    185|       if(!issueCommand(this.state,action.side,action.command))throw ne…
+       |                                                                     ^
+    186|       this.cursor++;
+    187|     }
+ ❯ ReplayPlayer.advance src/core/replays.ts:199:79
+ ❯ tests/economy-world-integration.test.ts:114:59
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  tests/economy-world-integration.test.ts > economic definitions with pinned mod content > uses size-2 economic placement beside a size-6 mod depot and salvages the charged mod siege cost
+AssertionError: expected 30.75 to be close to 43.05, received difference is 12.299999999999997, but expected 0.005
+ ❯ tests/economy-world-integration.test.ts:130:491
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  7 failed | 16 passed (23)
+   Start at  04:09:55
+   Duration  1.62s (transform 372ms, setup 0ms, import 544ms, tests 1.89s, environment 0ms)
+

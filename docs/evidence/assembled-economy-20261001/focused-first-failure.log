@@ -1,0 +1,29 @@
+
+ RUN  v4.1.11 /home/morgana/.codex/worktrees/assembled-economy/orcs-vs-Fairies
+
+ ❯ tests/environment.test.ts (30 tests | 1 failed) 268ms
+     × saves a crossing destroyed, rebuilt and destroyed again during the same winter 55ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/environment.test.ts > seasonal lake crossings > saves a crossing destroyed, rebuilt and destroyed again during the same winter
+Error: Invalid economy state at markets[0].y.
+ ❯ fail src/core/economy-validation.ts:30:41
+
+ ❯ n src/core/economy-validation.ts:32:115
+ ❯ vector src/core/economy-validation.ts:37:79
+ ❯ src/core/economy-validation.ts:52:212
+ ❯ validateEconomyState src/core/economy-validation.ts:52:60
+ ❯ validate src/core/saves.ts:146:27
+ ❯ validateCurrent src/core/saves.ts:149:78
+ ❯ saveGame src/core/saves.ts:189:22
+ ❯ tests/environment.test.ts:225:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 20 passed (21)
+      Tests  1 failed | 361 passed (362)
+   Start at  04:23:22
+   Duration  29.83s (transform 3.86s, setup 0ms, import 6.04s, tests 59.37s, environment 212ms)
+

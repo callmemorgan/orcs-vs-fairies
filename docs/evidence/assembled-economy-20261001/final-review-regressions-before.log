@@ -1,0 +1,101 @@
+
+ RUN  v4.1.11 /home/morgana/.codex/worktrees/assembled-economy/orcs-vs-Fairies
+
+xxx···············xx
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/economy-world-integration.test.ts > assembled world and economy > preserves a loaded caravan route when side 0 places an allied warehouse beneath it
+ FAIL  tests/economy-world-integration.test.ts > assembled world and economy > preserves a loaded caravan route when side 1 places an allied warehouse beneath it
+AssertionError: expected undefined to deeply equal { entityId: 68, kind: 'route', …(6) }
+
+- Expected:
+{
+  "amount": {
+    "crystal": 0,
+    "ore": 0,
+    "wood": 30,
+  },
+  "entityId": 68,
+  "kind": "route",
+  "phase": "delivery",
+  "progress": 0,
+  "repeat": false,
+  "sourceId": 69,
+  "targetId": 70,
+}
+
++ Received:
+undefined
+
+ ❯ tests/economy-world-integration.test.ts:64:105
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/economy-world-integration.test.ts > assembled world and economy > preserves a planting job when another worker places a warehouse beneath the planter
+AssertionError: expected undefined to deeply equal { entityId: 68, kind: 'plant', …(2) }
+
+- Expected:
+{
+  "entityId": 68,
+  "kind": "plant",
+  "progress": 0,
+  "targetId": 70,
+}
+
++ Received:
+undefined
+
+ ❯ tests/economy-world-integration.test.ts:72:61
+     70|   const task=structuredClone(s.economy!.tasks.find(t=>t.entityId===pla…
+     71|   expect(issueCommand(s,0,{type:'buildEconomy',ids:[builder.id],kind:'…
+     72|   expect(s.economy!.tasks.find(t=>t.entityId===planter.id)).toEqual(ta…
+       |                                                             ^
+     73|  });
+     74|  it('initializes strict economy IDs from real generated world villages…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/economy-world-integration.test.ts > unions disclosed teammate economy markers while keeping the selected seat private fields
+AssertionError: expected 'trade' to be 'delivery' // Object.is equality
+
+Expected: "delivery"
+Received: "trade"
+
+ ❯ tests/economy-world-integration.test.ts:157:308
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/economy-world-integration.test.ts > keeps foreign cargo origin private in player observations and teammate marker unions
+AssertionError: expected { version: 1, tick: +0, …(22) } to deeply equal { version: 1, tick: +0, …(22) }
+
+- Expected
++ Received
+
+@@ -550,11 +550,11 @@
+          "destinationId": undefined,
+          "entityId": 68,
+          "hp": 65,
+          "level": 0,
+          "maxHp": 65,
+-         "origin": "trade",
++         "origin": "contract",
+          "side": 1,
+          "sourceId": undefined,
+          "stock": {
+            "crystal": 0,
+            "ore": 0,
+
+ ❯ tests/economy-world-integration.test.ts:164:91
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 15 passed (20)
+   Start at  04:36:11
+   Duration  1.66s (transform 148ms, setup 0ms, import 187ms, tests 1.41s, environment 0ms)
+
