@@ -148,7 +148,7 @@ const callbacks:HudCallbacks={
 function closeOnline(){onlineConnecting?.dispose();onlineConnecting=undefined;onlineConnection?.dispose();onlineConnection=undefined;onlineRender=undefined;}
 function applyCosmetics(){if(!scene)return;scene.setCosmeticLoadouts(onlineConnection?hostedLoadouts:replay?new Map():new Map([[playerSide(),accountLoadouts.get(scene.state.players[playerSide()].faction)??{}]]));}
 async function refreshHostedCosmetics(){const request=++hostedCosmeticRequest,connection=onlineConnection,generation=replacementGeneration;if(!connection)return;try{const result=await cosmeticApi.matchCosmetics(connection.matchId);if(request!==hostedCosmeticRequest||connection!==onlineConnection||generation!==replacementGeneration||!scene)return;hostedLoadouts=new Map(result.players.filter(player=>scene!.state.players[player.side]?.faction===player.factionId).map(player=>[player.side,resolveCosmeticLoadout(player.factionId,player.loadout)]));applyCosmetics();}catch{if(request===hostedCosmeticRequest&&connection===onlineConnection&&generation===replacementGeneration){hostedLoadouts.clear();applyCosmetics();}}}
-function accountChanged(account:Account|null){const id=account?.id??null;if(cosmeticAccountId===id)return;cosmeticAccountId=id;cosmeticAccountEpoch++;accountLoadouts.clear();applyCosmetics();cosmetics.reset();void cosmetics.refresh();}
+function accountChanged(account:Account|null){const id=account?.id??null;if(cosmeticAccountId===id)return;cosmeticAccountId=id;cosmeticAccountEpoch++;campaignHost.resetCampaignReward();accountLoadouts.clear();applyCosmetics();cosmetics.reset();void cosmetics.refresh();}
 function setModal(source:string,open:boolean){
  const wasOpen=!!openModals.size;
  if(open)openModals.add(source);else openModals.delete(source);
@@ -331,6 +331,14 @@ const campaignHost=new ScenarioCampaignHost(root,sessionToolbar,{
  state:()=>scene?.state??null,launch:(session,reason)=>{replacementGeneration++;launch(session.state,undefined,undefined,undefined,replacementGeneration,undefined,reason);},
  menu:()=>{replacementGeneration++;closeOnline();recorder?.dispose();recorder=undefined;replay?.dispose();replay=undefined;retireGame(()=>shell.showMenu());tools.update(null);},
  select:ids=>scene?.selectEntities(ids),center:(x,y)=>scene?.centerOn(x,y),notice:shell.notice,visibility:open=>setModal('campaign',open),inspection:()=>replay?'Replay inspection is read-only.':null,
+ claimCampaignVictory:async(missionId,profile)=>{
+  const accountId=cosmeticAccountId,epoch=cosmeticAccountEpoch;
+  if(!accountId)throw new Error('Sign in through Online play before claiming campaign cosmetics.');
+  await cosmeticApi.claimCampaignVictory(missionId,profile);
+  if(accountId!==cosmeticAccountId||epoch!==cosmeticAccountEpoch)throw new Error('The account changed while claiming the campaign reward. Review your cosmetic unlocks before retrying.');
+  await cosmetics.refresh();
+  if(accountId!==cosmeticAccountId||epoch!==cosmeticAccountEpoch)throw new Error('The account changed while refreshing cosmetic unlocks.');
+ },
 });
 const canSubmitObjectives=()=>!!scene&&!scene.paused&&!scene.readOnly&&!scene.photoMode&&!sessionModal&&!isGameOver(scene.state)&&!scene.state.eliminated[playerSide()];
 const objectives=mountObjectivePanel(root,{toolbar:sessionToolbar,getState:()=>scene?.state,getObservation:()=>scene?.objectiveObservation,getContent:()=>scene?.state.content,side:playerSide,blocked:()=>!!scene?.photoMode||sessionModal,onVisibility:open=>{objectiveOpen=open;if(scene)scene.inputBlocked=sessionModal||objectiveOpen;},canSubmit:canSubmitObjectives,submit:command=>canSubmitObjectives()&&dispatchCommand(playerSide(),command)});

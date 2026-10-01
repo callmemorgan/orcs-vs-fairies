@@ -2,7 +2,7 @@ import { campaignProgress, campaignRulesCompatibility, checkpointCampaignMission
 import { conquestRulesCompatibility, checkpointConquestBattle, completeConquestBattle, createConquestProfile, decodeConquestProfile, prepareConquestBattle, proposeConquest, waitConquestTurn } from '../core/conquest';
 import { ScenarioRecorder } from '../core/scenario-recordings';
 import { resetScenario, restoreScenario, scenarioRulesCompatibility, scenarioSessionForState } from '../core/scenarios';
-import type { CampaignMission } from '../core/campaign';
+import type { CampaignMission, CampaignProfile } from '../core/campaign';
 import type { ConquestMission } from '../core/conquest-types';
 import type { GameState } from '../core/types';
 import type { ScenarioSession } from '../core/scenario-types';
@@ -21,6 +21,7 @@ interface HostCallbacks {
   notice: (text: string) => void;
   visibility: (open: boolean) => void;
   inspection: () => string | null;
+  claimCampaignVictory?: (missionId: string, profile: CampaignProfile) => Promise<void>;
 }
 const campaignKey = 'ovf.campaign.v1', realmKey = 'ovf.conquest.v1';
 const node = <K extends keyof HTMLElementTagNameMap>(tag: K, text?: string) => { const item = document.createElement(tag); if (text !== undefined) item.textContent = text; return item; };
@@ -37,12 +38,16 @@ export class ScenarioCampaignHost {
   private checkpointAt = 0;
   private inspectionReason: string | undefined;
   private campaignImportGeneration = 0;
+  private rewardGeneration = 0;
+  private rewardPending = false;
+  private rewardClaimed = false;
   private readonly panel = node('section');
   private readonly status = node('p');
   private readonly missionTools: ScenarioTools;
   private readonly realmTools: ConquestTools;
   private readonly saveCampaign = node('button', 'Save campaign profile');
   private readonly resumeCampaign = node('button', 'Resume saved campaign');
+  private readonly claimReward = node('button', 'Claim campaign cosmetic reward');
 
   constructor(root: HTMLElement, toolbar: HTMLElement, private readonly callbacks: HostCallbacks, private readonly storage: Storage = localStorage) {
     this.panel.className = 'scenario-host-panel'; this.panel.hidden = true; this.panel.setAttribute('aria-label', 'Campaigns, missions and realms');
@@ -66,9 +71,10 @@ export class ScenarioCampaignHost {
     this.status.setAttribute('role', 'status');
     this.resumeCampaign.onclick = () => this.run(() => { const saved = this.storage.getItem(campaignKey); if (!saved) throw new Error('No campaign is saved in this browser.'); this.restoreCampaign(saved); });
     this.saveCampaign.onclick = () => this.run(() => { if (this.owner?.kind === 'campaign') { const owner = this.snapshot()!; download(`${owner.profile.id}-campaign.json`, owner.profile); } });
+    this.claimReward.onclick = () => { void this.claimCampaignReward(); };
     const file = node('input'); file.type = 'file'; file.accept = '.json,application/json'; file.setAttribute('aria-label', 'Import campaign profile');
     file.onchange = () => { const selected = file.files?.[0]; file.value = ''; if (selected) void this.importCampaignFile(selected); };
-    const label = node('label', 'Load campaign profile'); label.append(file); profileControls.append(this.status, this.resumeCampaign, this.saveCampaign, label); this.panel.append(profileControls);
+    const label = node('label', 'Load campaign profile'); label.append(file); profileControls.append(this.status, this.resumeCampaign, this.saveCampaign, label, this.claimReward); this.panel.append(profileControls);
     this.realmTools = new ConquestTools(this.panel, {
       profile: () => this.owner?.kind === 'conquest' ? this.owner.profile : null, readOnlyReason: () => this.reason(),
       start: faction => this.showRealm({ kind: 'conquest', profile: createConquestProfile(faction, crypto.randomUUID()) }),
@@ -106,7 +112,8 @@ export class ScenarioCampaignHost {
   }
   private setOpen(open: boolean): void { this.panel.hidden = !open; this.callbacks.visibility(open); if (open) this.update(); }
   private persist(): void { if (this.owner) this.storage.setItem(this.owner.kind === 'campaign' ? campaignKey : realmKey, JSON.stringify(this.owner.profile)); }
-  clear(): void { this.campaignImportGeneration++; this.realmTools?.cancelPendingImport(); this.recorder?.destroy(); this.recorder = undefined; this.owner = undefined; this.inspectionReason = undefined; this.completionError = false; }
+  clear(): void { this.campaignImportGeneration++; this.rewardGeneration++; this.rewardPending = false; this.rewardClaimed = false; this.realmTools?.cancelPendingImport(); this.recorder?.destroy(); this.recorder = undefined; this.owner = undefined; this.inspectionReason = undefined; this.completionError = false; }
+  resetCampaignReward(): void { this.rewardGeneration++; this.rewardPending = false; this.rewardClaimed = false; this.update(); }
   private launch(session: ScenarioSession, reason?: string): void { this.inspectionReason = reason; this.setOpen(false); this.callbacks.launch(session, reason); this.checkpointAt = session.state.time; this.update(); }
   private installRun(kind: 'campaign', run: CampaignMission): void;
   private installRun(kind: 'conquest', run: ConquestMission): void;
@@ -144,6 +151,21 @@ export class ScenarioCampaignHost {
     }
     return this.owner ? structuredClone(this.owner) : undefined;
   }
+  private rewardAvailable(): boolean {
+    return !!this.callbacks.claimCampaignVictory && this.owner?.kind === 'campaign' && !this.owner.profile.active && campaignProgress(this.owner.profile).finished && !this.reason();
+  }
+  private async claimCampaignReward(): Promise<void> {
+    if (!this.rewardAvailable() || this.rewardPending || this.rewardClaimed || this.owner?.kind !== 'campaign') return;
+    const profile = structuredClone(this.owner.profile), missionId = CAMPAIGNS[profile.campaignId].chapters[3], generation = this.rewardGeneration;
+    this.rewardPending = true; this.update();
+    try {
+      await this.callbacks.claimCampaignVictory!(missionId, profile);
+      if (generation !== this.rewardGeneration) return;
+      this.rewardClaimed = true;
+      this.callbacks.notice('Campaign victory verified. Open Cosmetics to choose earned items.');
+    } catch (error) { if (generation === this.rewardGeneration) this.error(error); }
+    finally { if (generation === this.rewardGeneration) { this.rewardPending = false; this.update(); } }
+  }
   step(): void {
     const session = this.session(); if (!this.owner?.profile.active || !session || !this.recorder || this.completionError || this.reason()) return;
     if (session.runtime.outcome !== 'playing' && (this.owner.kind === 'conquest' || session.runtime.outcome === 'won')) {
@@ -164,6 +186,9 @@ export class ScenarioCampaignHost {
     this.panel.classList.toggle('scenario-photo-hidden', !!options.photo);
     this.missionTools?.update(); this.realmTools?.update();
     this.saveCampaign.disabled = this.owner?.kind !== 'campaign';
+    this.claimReward.hidden = !this.callbacks.claimCampaignVictory || this.owner?.kind !== 'campaign' || !campaignProgress(this.owner.profile).finished;
+    this.claimReward.disabled = !this.rewardAvailable() || this.rewardPending || this.rewardClaimed;
+    this.claimReward.textContent = this.rewardPending ? 'Verifying campaign reward…' : this.rewardClaimed ? 'Campaign reward claimed' : 'Claim campaign cosmetic reward';
     try { this.resumeCampaign.disabled = !this.storage.getItem(campaignKey); } catch { this.resumeCampaign.disabled = true; }
     this.status.textContent = this.owner?.kind === 'campaign' ? `${CAMPAIGNS[this.owner.profile.campaignId].title} · ${this.owner.profile.history.length}/4 chapters completed${this.reason() ? ` · ${this.reason()}` : ''}` : 'Campaign profiles preserve the army and chosen route.';
   }
