@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Settlement planning browser proof</title>
+    <style>
+      html, body { margin: 0; min-height: 100%; color: #edf2ec; background: #14201e; font: 14px system-ui, sans-serif; }
+      #game { position: fixed; inset: 0; }
+      #fixture-info { position: fixed; left: 12px; bottom: 12px; max-width: 430px; z-index: 20; padding: 12px; background: #14201eec; border: 1px solid #7f968a; }
+      #fixture-info h1 { margin: 0 0 7px; font-size: 16px; }
+      #fixture-info p { margin: 6px 0; }
+      #fixture-info button { margin: 3px; padding: 6px; }
+      #planning-root { position: fixed; inset: 0; z-index: 25; pointer-events: none; }
+      #proof-status { white-space: pre-wrap; margin: 8px 0 0; font-size: 11px; max-height: 140px; overflow: auto; }
+    </style>
+  </head>
+  <body>
+    <div id="game"></div>
+    <div id="planning-root"></div>
+    <aside id="fixture-info" aria-label="Browser proof setup">
+      <h1>Settlement planning browser proof</h1>
+      <p>Test-only setup: a seeded game with five workers, external controllers and 200 wood. The panel dispatches normal simulation commands.</p>
+      <p id="sites"></p>
+      <button id="select-worker-1" type="button">Select fixture worker 1</button>
+      <button id="select-worker-2" type="button">Select fixture worker 2</button>
+      <button id="select-worker-3" type="button">Select fixture worker 3</button>
+      <button id="pause-fixture" type="button">Toggle fixture pause</button>
+      <button id="fund-fixture" type="button">Fund fixture with 100 wood</button>
+      <button id="read-only-fixture" type="button">Toggle fixture read-only</button>
+      <pre id="proof-status" aria-label="Simulation evidence"></pre>
+      <details>
+        <summary>Detailed simulation snapshot</summary>
+        <pre id="proof-data" aria-label="Detailed simulation evidence"></pre>
+      </details>
+    </aside>
+    <script type="module" src="./fixture.ts"></script>
+  </body>
+</html>
