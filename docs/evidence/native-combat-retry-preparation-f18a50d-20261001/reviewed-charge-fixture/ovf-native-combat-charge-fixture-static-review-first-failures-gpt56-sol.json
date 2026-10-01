@@ -1,0 +1,19 @@
+{
+  "kind": "preserved review-infrastructure false failures",
+  "failures": [
+    {
+      "operation": "Read the fixture file from both Git pins using an assumed packages/game/src/tests path.",
+      "result": "fatal: path 'packages/game/src/tests/direction-defense-fixtures.ts' does not exist",
+      "cause": "The repository path is scripts/acceptance/direction-defense-fixtures.ts.",
+      "rerun": false,
+      "resolution": "A separate read used the correct repository path and established matching hashes and blobs at both pins."
+    },
+    {
+      "operation": "Inspect retained fixture metadata using an assumed top-level ids key.",
+      "result": "KeyError: 'ids'",
+      "cause": "The retained fixture is a session file; scenario ids are stored outside that file.",
+      "rerun": false,
+      "resolution": "Separate reads identified encounter actors by their unique roles and positions and inspected the runner receipt's recorded ids."
+    }
+  ]
+}

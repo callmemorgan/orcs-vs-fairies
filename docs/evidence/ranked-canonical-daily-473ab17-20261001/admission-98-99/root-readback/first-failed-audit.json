@@ -1,0 +1,10 @@
+{
+  "status": "failed-root-audit",
+  "runtimeExecuted": false,
+  "reviewedCommit": "d85523d",
+  "failingCheck": "Check every ledger evidence value as a literal path",
+  "exception": "RuntimeError: scripts/verify_sessions.mjs:globalProductionUsesRealCommand",
+  "cause": "Existing historical ledger entries support file:function selectors. The auditor failed to parse a prior selector; it had already authenticated retained raw blobs and only98/99 changed IDs.",
+  "featureFailure": false,
+  "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 13, in <module>\nRuntimeError: scripts/verify_sessions.mjs:globalProductionUsesRealCommand\n"
+}

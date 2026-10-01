@@ -1,0 +1,1 @@
+This docs import preserves the external f18 retry packet unchanged. Product identity remains453c221; runtime proof pin isf18a50d. The actual docs commit is the later root commit containing this import and must be supplied separately to the checker. Cross-model admission and execution release remain pending. All39 encounters and frozen native-history checks remain mandatory.

@@ -1,0 +1,19 @@
+The supplementary preservation files pass static review. The saved failure is the separate current-root acceptance-proof equality check encountering the later direction fixture. The strict owned source checks remain intact, and the retained checker starts no application runtime.
+
+Reviewed on 2026-10-01T22:50:02.144965+00:00 in Codex by GPT-6; a finer model variant is not exposed in this session. This review used file reads, duplicate-key-rejecting JSON parsing, AST comparison and Git object reads. Neither checker was executed by this reviewer.
+
+The base packet-hashes.json remains byte-for-byte unchanged at SHA-256 `31fff9084309bccd37d54e9129819745c03a45904e0bd1c36896d78d61f44288`. Its eight file entries retain their recorded sizes and hashes. extended-packet-hashes.json contains those same entries plus exactly the three preservation files below. All eleven file entries match actual bytes; the extended manifest SHA-256 is `ce665bd16ea89f3bc7fc52af99ad6c9cf8f831d2e71c73033d792b45243343cc`.
+
+| Preservation file | SHA-256 |
+| --- | --- |
+| inspect-readiness.before-root-observation.py | `830c65fba30252390699a147483f1ea3a78baa9340584f38eecdec1f41407641` |
+| static-recheck-first-failure.stderr.txt | `acd768f86fc294dd95e471386875f7d7be4a01651f86857f85ea08697fd2dffc` |
+| static-recheck-first-failure.receipt.json | `6a2fe4210df0263cf9ec09e6d120dbc42493e271c233b821d26f4fb2ba6e2d7c` |
+
+The failure receipt's priorCheckerSha256 authenticates the preserved checker. Its argv selects the original packet inspector, a fresh packet-local readiness-explicit-checks.json output and exit code 1. The saved traceback quotes [preserved checker line 122](/tmp/ovf-faction-827-readiness-20261001-r1/inspect-readiness.before-root-observation.py:122) byte-for-byte and identifies the RuntimeError from comparing root proof entries with owned entries. Reaching that line means the earlier initial owned HEAD/tree/clean checks, seven-file checks, all 568 product identities, all 22 owned proof identities, complete source/public/proof inventories, retained helpers and installed-version checks completed without raising. The exclusive output open occurs at line 134, after the failure.
+
+An independent Git-tree comparison at the receipt's recorded root `f18a50d904c57ae1652f157b946ebd39d8d8923c` and owned execution `827496b06bb660b6639257e5113ac2f199be29ba` confirms that all 568 selected product entries agree. Among the 22 acceptance entries, only scripts/acceptance/direction-defense-fixtures.ts differs: owned blob `3c25e9c72d0e7b4ab8f330f6be20cb04dfb450a3`, later root blob `2b5864bc45da865556ed619233c6f0cb5ca16f89`. This matches the attribution in the failure receipt and corrected readiness receipt.
+
+The AST comparison finds only two changed top-level statements between preserved and final checkers. Line 122 changes later-root proof equality into recorded per-file differences; the result dictionary reports product agreement and acceptance differences separately. Every strict owned pin/source check remains unchanged. The failed attempt did not reach the later sparse-pattern, final-pin or installed-baseline comparison checks; the separately reviewed corrected receipt covers their successful completion. The failure receipt explicitly says timingNotCaptured=true, so it supports no duration claim.
+
+The preserved source imports only standard libraries and calls Git plus read-only systemctl/ss inspection. It contains no build, test, fixture, browser, game, dependency-link or service-start command. The receipt records runtimeOrServicesExecuted=false, and the runtime evidence parent remains empty with owned node_modules absent. No runtime acceptance is inferred. The base eight files, main independent review and all preservation files were left unchanged; this separate supplementary report is the only write in this review. Runtime remains held under root's release authority.

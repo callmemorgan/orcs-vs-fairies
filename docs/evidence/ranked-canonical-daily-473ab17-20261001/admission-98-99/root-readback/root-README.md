@@ -1,0 +1,1 @@
+The first root checker incorrectly treated an older file:function ledger reference as a literal path. The corrected readback authenticates every new98/99 evidence file against committed bytes, only those two changed IDs, the66/34 counts and product equality. The initial diagnostic remains preserved; no product or runtime failure was inferred.

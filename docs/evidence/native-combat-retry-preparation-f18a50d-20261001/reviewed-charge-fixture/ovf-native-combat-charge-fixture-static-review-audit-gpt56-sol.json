@@ -1,0 +1,42 @@
+{
+  "auditKind": "independent static native combat fixture candidate review",
+  "reviewerHarness": "Codex",
+  "reviewerModel": "GPT-5.6 Sol",
+  "basePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "comparisonPin": "a144ad3f3dddd0003f9553541908e2254f2444c6",
+  "result": "passed",
+  "candidate": {
+    "path": "/tmp/ovf-native-combat-453c221-retry-20261001-85q9lr0g/proposed-charge-fixture-repair/direction-defense-fixtures.ts",
+    "sha256": "3d53ed12a4eb2ad1ab9777b44e4f0eda0d3229085b4083e0e18b28095d908703",
+    "patchSha256": "853add850701918c71b798240db2f4584b9a8ee6fa18f3a84ec33d0c33fc57ce",
+    "originalSha256": "fb6f04ea660b122fd3aa6f952d78a5c01ec997d4f67a9bbd85f16d86b0564d8f",
+    "changedPaths": 1,
+    "changedLines": 1
+  },
+  "checks": [
+    { "name": "base file identity at both pins", "passed": true },
+    { "name": "one-line candidate scope", "passed": true },
+    { "name": "retained failure matches hidden target tile", "passed": true },
+    { "name": "candidate target tile is visible at inclusive sight boundary", "passed": true },
+    { "name": "clear flat terrain preserves line of sight", "passed": true },
+    { "name": "five-tile travel preserves full charge cap", "passed": true },
+    { "name": "four-tile moving checkpoint precedes impact", "passed": true },
+    { "name": "stationary stop and turn cases remain unchanged", "passed": true },
+    { "name": "front and rear pike semantics remain unchanged", "passed": true },
+    { "name": "runner and audit assertions remain unchanged", "passed": true }
+  ],
+  "findings": [],
+  "execution": {
+    "candidateExecuted": false,
+    "compileRun": false,
+    "buildRun": false,
+    "testsRun": false,
+    "simulationRun": false,
+    "browserRun": false,
+    "productFilesModified": false
+  },
+  "attention": [
+    "The candidate still requires integration, generated fixtures, an updated applicability bridge, and a native proof run.",
+    "This review makes no runtime-success claim."
+  ]
+}
