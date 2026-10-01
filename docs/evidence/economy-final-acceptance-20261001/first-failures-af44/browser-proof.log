@@ -1,0 +1,16 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.selectOption: Error: strict mode violation: getByLabel('Map level', { exact: true }) resolved to 2 elements:
+    1) <select aria-label="Map level">…</select> aka getByLabel('Map and scenario editor').getByLabel('Map level')
+    2) <select aria-label="Map level">…</select> aka getByRole('group', { name: 'World tools' }).getByLabel('Map level')
+
+Call log:
+[2m  - waiting for getByLabel('Map level', { exact: true })[22m
+
+    at /home/morgana/.codex/worktrees/economy-scenario-integration/orcs-vs-Fairies/scripts/verify_economy_ui.mjs:58:106 {
+  log: [ "  - waiting for getByLabel('Map level', { exact: true })" ]
+}
+
+Node.js v24.21.0

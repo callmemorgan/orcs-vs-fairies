@@ -1,0 +1,83 @@
+{
+  "verdict": "admit",
+  "remainingBlockers": [],
+  "reviewer": "/root/economy_settlements/economy_driver_assumptions",
+  "reviewedAt": "2026-10-01T17:47:42.535840+00:00",
+  "commit": "f94f0bc410f27c416750cd63ea73393d049b65e1",
+  "parentCommit": "db36593f816a57e29220d760de14455cec969f0b",
+  "repository": "/home/morgana/.codex/worktrees/economy-final-db36593/orcs-vs-Fairies",
+  "scope": [
+    "scripts/economy/browser-proof.mjs",
+    "scripts/verify_economy_combined_ui.mjs",
+    "scripts/verify_economy_ui.mjs",
+    "scripts/verify_settlement_runtime_ui.mjs"
+  ],
+  "helperSha256": "261e69e4951bc4e5f5e28f00ffddb8b1034f311f10d7203c357bb30e7b7b08f5",
+  "receipts": [
+    {
+      "kind": "teardown_faults",
+      "path": "/tmp/ovf-economy-teardown-probe.JxBWnZ/at-commit/result.json",
+      "sha256": "ec1a4025692cf58b1269b39c0e41c173ad1220d394397ffaebcbe91493ff79a6",
+      "bytes": 6251,
+      "caseCount": 5,
+      "allExpectedAssertionsPassed": true,
+      "sourceHead": "f94f0bc410f27c416750cd63ea73393d049b65e1",
+      "helperSha256": "261e69e4951bc4e5f5e28f00ffddb8b1034f311f10d7203c357bb30e7b7b08f5",
+      "browserVersion": "151.0.7922.34",
+      "browserClosed": true,
+      "serverClosed": true,
+      "runLog": {
+        "path": "/tmp/ovf-economy-teardown-probe.JxBWnZ/at-commit/run.log",
+        "sha256": "c6637339e10fcb082a14d06726acca4f963d96a5aed358851f8c42cb6739769b",
+        "bytes": 149
+      }
+    },
+    {
+      "kind": "response_classification",
+      "path": "/tmp/ovf-economy-teardown-probe.JxBWnZ/classification-at-commit/result.json",
+      "sha256": "a6bf1e7f74aecff0ed76b1628d27bd77e50c627a1d9c0e8f1e3a230252edcfc2",
+      "bytes": 25254,
+      "caseCount": 18,
+      "allExpectedAssertionsPassed": true,
+      "sourceHead": "f94f0bc410f27c416750cd63ea73393d049b65e1",
+      "helperSha256": "261e69e4951bc4e5f5e28f00ffddb8b1034f311f10d7203c357bb30e7b7b08f5",
+      "browserVersion": "151.0.7922.34",
+      "browserClosed": true,
+      "serverClosed": true,
+      "runLog": {
+        "path": "/tmp/ovf-economy-teardown-probe.JxBWnZ/classification-at-commit/run.log",
+        "sha256": "1b1116eab9a0360ffd34fc32f882752d57cefe1638bd621971bcd3a717e081c0",
+        "bytes": 150
+      }
+    }
+  ],
+  "preservedGuards": {
+    "economyChecks": 25,
+    "modalChecks": 12,
+    "settlementChecks": 8,
+    "nativeFullSessionAndFullGameEquality": true,
+    "preparedSourceModuleBuildAndServedHashAssociations": true
+  },
+  "findings": {
+    "ordering": "Both proof response listeners are removed synchronously before a bounded drain of the fixed task set; all three drivers drain before browser close.",
+    "failurePaths": "Observed body errors remain in pageErrors. An incomplete drain creates failed records and manifests, then finishEconomyProof throws.",
+    "observability": "The review verifies recorded observation start, cutoff, task count, drain completion or error, and HTTP-status collection through close. Existing external response listeners remain attached.",
+    "staleWrites": "After cutoff, neither proof response listener can append new body tasks. Already observed tasks settle before browser close in the successful path.",
+    "testEvidence": "Five actual Chromium fault cases and eighteen response classification cases pass their expected acceptance/rejection assertions at the admitted commit."
+  },
+  "reviewerActions": {
+    "sourceReadOnly": true,
+    "browserRun": false,
+    "buildRun": false,
+    "replayRun": false,
+    "newTesting": false,
+    "writes": [
+      "independent-admission.md",
+      "independent-admission.json"
+    ]
+  },
+  "limitations": [
+    "This admission concerns the narrow proof teardown repair. It does not declare a new native 25/12/8 rerun.",
+    "Service-worker response coverage is not claimed."
+  ]
+}

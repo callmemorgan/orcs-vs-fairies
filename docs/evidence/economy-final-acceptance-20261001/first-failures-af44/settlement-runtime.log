@@ -1,0 +1,43 @@
+Fresh fixture uses final save schema: 4
+Pinned content and native settlement controls loaded: {"contentHash":"5ba43a03cda56578278dec89424f8925690d12d63f7953c9a557339f4924dc97","hq":5,"expansion":57}
+Native research specialization paid: {"wood":120,"ore":80,"crystal":30}
+Native second specialization stays disabled: {"id":57,"reason":"This settlement already has a specialization."}
+Native ordinary HQ research accepted: {"id":5,"definitionId":"fairy-hq","upgrade":"worker-speed"}
+Native expansion HQ research accepted: {"id":57,"definitionId":"fairy-hq","upgrade":"worker-harvest"}
+Native research advances with local specialization rate: {"beforeTick":6312,"afterTick":6352,"elapsed":2.0000000000004547,"ordinaryRate":0.9999999999997735,"expansionRate":1.3499999999996941,"durations":{"worker-speed":25,"worker-harvest":30}}
+Native report binds final source and versions: {"buildId":"8c107a5f0ae792b00d7554879cc62d23fe835eccf415a2642243889331717452","save":4,"replay":1,"replaySimulation":4,"simulationRevision":"4.0.0","contentHash":"950f0aec"}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: pageErrors must be empty
++ actual - expected
+
++ [
++   'Executable response is outside the prepared build: http://127.0.0.1:5398/api/session',
++   'Executable response is outside the prepared build: http://127.0.0.1:5398/api/session',
++   'Executable response is outside the prepared build: http://127.0.0.1:5398/api/session',
++   'Executable response is outside the prepared build: http://127.0.0.1:5398/api/session',
++   'Executable response is outside the prepared build: http://127.0.0.1:5398/api/session'
++ ]
+- []
+
+    at finishProof (file:///home/morgana/.codex/worktrees/economy-scenario-integration/orcs-vs-Fairies/scripts/controls-proof/browser-common.mjs:182:92)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async finishEconomyProof (file:///home/morgana/.codex/worktrees/economy-scenario-integration/orcs-vs-Fairies/scripts/economy/browser-proof.mjs:77:6)
+    at async file:///home/morgana/.codex/worktrees/economy-scenario-integration/orcs-vs-Fairies/scripts/verify_settlement_runtime_ui.mjs:41:196 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [
+    'Executable response is outside the prepared build: http://127.0.0.1:5398/api/session',
+    'Executable response is outside the prepared build: http://127.0.0.1:5398/api/session',
+    'Executable response is outside the prepared build: http://127.0.0.1:5398/api/session',
+    'Executable response is outside the prepared build: http://127.0.0.1:5398/api/session',
+    'Executable response is outside the prepared build: http://127.0.0.1:5398/api/session'
+  ],
+  expected: [],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.21.0

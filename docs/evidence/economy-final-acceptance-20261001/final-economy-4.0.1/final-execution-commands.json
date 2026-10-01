@@ -1,0 +1,132 @@
+[
+  {
+    "name": "preparation",
+    "command": "OVF_EXPECT_SAVE_VERSION=4 OVF_EXPECT_SIMULATION_REVISION=4.0.1 node scripts/economy/prepare-final-proof.mjs c86e273c70738f144a00fe75f5ecf39e7fa324d8 /tmp/ovf-economy-final-c86e273.xgje4e",
+    "exitCode": 0,
+    "log": "prepare.log"
+  },
+  {
+    "name": "build:cli",
+    "program": "npm",
+    "args": [
+      "run",
+      "build:cli"
+    ],
+    "startedAt": "2026-10-01T18:46:42Z",
+    "log": "build-cli.log",
+    "exitCode": 0,
+    "finishedAt": "2026-10-01T18:46:42Z"
+  },
+  {
+    "name": "build:server",
+    "program": "npm",
+    "args": [
+      "run",
+      "build:server"
+    ],
+    "startedAt": "2026-10-01T18:46:42Z",
+    "log": "build-server.log",
+    "exitCode": 0,
+    "finishedAt": "2026-10-01T18:46:42Z"
+  },
+  {
+    "name": "build:tournament",
+    "program": "npm",
+    "args": [
+      "run",
+      "build:tournament"
+    ],
+    "startedAt": "2026-10-01T18:46:42Z",
+    "log": "build-tournament.log",
+    "exitCode": 0,
+    "finishedAt": "2026-10-01T18:46:42Z"
+  },
+  {
+    "name": "economy-browser",
+    "program": "node",
+    "args": [
+      "scripts/verify_economy_ui.mjs",
+      "http://127.0.0.1:5398/",
+      "/tmp/ovf-economy-final-c86e273.xgje4e/browser-scenario.json",
+      "/tmp/ovf-economy-final-c86e273.xgje4e/browser"
+    ],
+    "environment": {
+      "OVF_PLAYWRIGHT_MODULE": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs",
+      "OVF_PRODUCTION_SOURCE_COMMIT": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+      "OVF_EXPECT_SAVE_VERSION": "4",
+      "OVF_EXPECT_SIMULATION_REVISION": "4.0.1",
+      "OVF_PROOF_DIST": "/tmp/ovf-economy-final-c86e273.xgje4e/dist",
+      "OVF_PROOF_MODULES": "/tmp/ovf-economy-final-c86e273.xgje4e/modules",
+      "OVF_PROOF_SCHEMA_MODULE": "/tmp/ovf-economy-final-c86e273.xgje4e/modules/schema.mjs"
+    },
+    "startedAt": "2026-10-01T18:47:50Z",
+    "log": "browser-proof.log",
+    "exitCode": 0,
+    "finishedAt": "2026-10-01T18:49:58Z"
+  },
+  {
+    "name": "browser-commanded-native",
+    "program": "node",
+    "args": [
+      "/tmp/ovf-economy-final-c86e273.xgje4e/modules/verify-native-session.mjs",
+      "/tmp/ovf-economy-final-c86e273.xgje4e/browser/commanded-session.json",
+      "/tmp/ovf-economy-final-c86e273.xgje4e/browser/commanded-native-verification.json",
+      "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+      "/tmp/ovf-economy-final-c86e273.xgje4e/modules/manifest.json"
+    ],
+    "startedAt": "2026-10-01T18:50:23Z",
+    "log": "browser-commanded-native.log",
+    "exitCode": 0,
+    "finishedAt": "2026-10-01T18:50:24Z"
+  },
+  {
+    "name": "browser-reloaded-native",
+    "program": "node",
+    "args": [
+      "/tmp/ovf-economy-final-c86e273.xgje4e/modules/verify-native-session.mjs",
+      "/tmp/ovf-economy-final-c86e273.xgje4e/browser/reloaded-session.json",
+      "/tmp/ovf-economy-final-c86e273.xgje4e/browser/reloaded-native-verification.json",
+      "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+      "/tmp/ovf-economy-final-c86e273.xgje4e/modules/manifest.json"
+    ],
+    "startedAt": "2026-10-01T18:50:24Z",
+    "log": "browser-reloaded-native.log",
+    "exitCode": 0,
+    "finishedAt": "2026-10-01T18:50:25Z"
+  },
+  {
+    "name": "browser-replayed-native",
+    "program": "node",
+    "args": [
+      "/tmp/ovf-economy-final-c86e273.xgje4e/modules/verify-native-session.mjs",
+      "/tmp/ovf-economy-final-c86e273.xgje4e/browser/replayed-session.json",
+      "/tmp/ovf-economy-final-c86e273.xgje4e/browser/replayed-native-verification.json",
+      "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+      "/tmp/ovf-economy-final-c86e273.xgje4e/modules/manifest.json"
+    ],
+    "startedAt": "2026-10-01T18:50:25Z",
+    "log": "browser-replayed-native.log",
+    "exitCode": 0,
+    "finishedAt": "2026-10-01T18:50:27Z"
+  },
+  {
+    "name": "owned-preview",
+    "program": "node",
+    "args": [
+      "node_modules/vite/bin/vite.js",
+      "preview",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "5398",
+      "--strictPort",
+      "--outDir",
+      "/tmp/ovf-economy-final-c86e273.xgje4e/dist"
+    ],
+    "pid": 3914341,
+    "exitCode": 143,
+    "termination": "SIGTERM after source/module/dist/executable checks and all native validators",
+    "portClear": true,
+    "log": "preview.log"
+  }
+]

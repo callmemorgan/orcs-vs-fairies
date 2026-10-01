@@ -1,0 +1,57 @@
+diff --git a/scripts/economy/browser-proof.mjs b/scripts/economy/browser-proof.mjs
+index 83fd04e..1575a70 100644
+--- a/scripts/economy/browser-proof.mjs
++++ b/scripts/economy/browser-proof.mjs
+@@ -39,7 +39,7 @@ export async function prepareEconomyProof(base,out,feature){
+  assert.equal(prepared.moduleManifestSha256,sha(moduleBytes),'Module manifest changed after preparation.');assert.equal(prepared.buildManifestSha256,sha(buildBytes),'Build manifest changed after preparation.');
+  assert.deepEqual(build.economyScriptFiles,scripts,'Prepared build script association differs.');
+  const moduleFiles=await inventory(process.env.OVF_PROOF_MODULES);delete moduleFiles['manifest.json'];assert.deepEqual(moduleFiles,manifest.modules,'A prepared generator, checker or schema bundle changed.');
+- context.economyScriptFiles=scripts;context.economyModuleFiles=moduleFiles;context.allServedBefore=await servedInventory(context);context.browserAssetResponses=[];
++ context.economyScriptFiles=scripts;context.economyModuleFiles=moduleFiles;context.allServedBefore=await servedInventory(context);context.browserAssetResponses=[];context.browserApiResponses=[];
+  context.preparationSha256=sha(await readFile(join(context.distDir,'..','prepare.json')));
+  return context;
+ }
+@@ -47,9 +47,15 @@ export async function prepareEconomyProof(base,out,feature){
+ export function observePage(page,result,context){
+  observeSharedPage(page,result,context);
+  page.on('response',response=>{
+-  const url=new URL(response.url());if(url.origin!==new URL(context.base).origin||response.status()!==200)return;
+-  const path=decodeURIComponent(url.pathname==='/'?'index.html':url.pathname.slice(1)),expected=context.compiledFiles[path];
+-  if(!expected){if(/\.(?:html|m?js|css)$/.test(path)||/javascript|text\/css|text\/html/.test(response.headers()['content-type']??''))result.pageErrors.push(`Executable response is outside the prepared build: ${url.href}`);return;}
++  const url=new URL(response.url());if(url.origin!==new URL(context.base).origin)return;
++  const path=decodeURIComponent(url.pathname==='/'?'index.html':url.pathname.slice(1)),expected=context.compiledFiles[path],resourceType=response.request().resourceType(),contentType=response.headers()['content-type']??'';
++  if(!expected){
++   if(path.startsWith('api/')&&['fetch','xhr'].includes(resourceType)){
++    const task=(async()=>{const record={url:url.href,status:response.status(),resourceType,contentType};if(record.status>=300&&record.status<400){context.browserApiResponses.push({...record,sha256:null,bytes:null,bodyUnavailable:'Redirect response bodies are unavailable in Playwright.'});return;}const bytes=await response.body();context.browserApiResponses.push({...record,sha256:sha(bytes),bytes:bytes.length});})().catch(error=>result.pageErrors.push(`Economy API response observation: ${error.message}`));context.responseTasks.push(task);
++   }else if(['document','script','stylesheet'].includes(resourceType)||/\.(?:html|m?js|css|wasm)$/.test(path)||/javascript|text\/css|text\/html|application\/wasm/.test(contentType))result.pageErrors.push(`Executable response is outside the prepared build: ${url.href}`);
++   return;
++  }
++  if(response.status()!==200)return;
+   const task=(async()=>{const bytes=await response.body(),digest=sha(bytes),record={url:url.href,path,status:response.status(),sha256:digest,bytes:bytes.length};context.browserAssetResponses.push(record);assert.equal(digest,expected.sha256,`Browser response differs from the prepared ${path}`);assert.equal(bytes.length,expected.bytes);context.servedAssets[url.pathname]={path,sha256:digest,bytes:bytes.length,status:response.status()};})().catch(error=>result.pageErrors.push(`Economy asset provenance: ${error.message}`));
+   context.responseTasks.push(task);
+  });
+@@ -65,6 +71,7 @@ export async function finishEconomyProof(context,result,recordName){
+  result.economyScriptFiles=context.economyScriptFiles;
+  result.allServedBefore=context.allServedBefore;
+  result.browserAssetResponses=context.browserAssetResponses;
++ result.browserApiResponses=context.browserApiResponses;
+  let failure;
+  try{
+   assert.deepEqual(await economyScripts(context.sourcePin),context.economyScriptFiles,'Economy scripts changed during the browser proof.');
+diff --git a/scripts/verify_economy_ui.mjs b/scripts/verify_economy_ui.mjs
+index faeb698..5037d57 100644
+--- a/scripts/verify_economy_ui.mjs
++++ b/scripts/verify_economy_ui.mjs
+@@ -55,10 +55,10 @@ try{
+   if(initial.world){
+     assert.equal(initial.world.levels.length,2);assert(initial.contentHash,'Mixed fixture must pin its mod content.');assert(initial.art.loaded,'Pinned content artwork must load with vector economy definitions.');evidence.mixedWorldAndPinnedArtLoaded=true;
+     const caveWorker=initial.entities.find(e=>e.side===0&&e.role==='worker'&&e.level===1),caveCrystal=initial.resources.find(r=>r.kind==='crystal'&&r.level===1&&visible(r)),hidden=initial.resources.find(r=>r.kind==='crystal'&&r.level===1&&r.amount===777);assert(caveWorker&&caveCrystal&&hidden);assert(initial.visible.includes(Math.floor(hidden.y)*initial.width+Math.floor(hidden.x)),'The hidden cavern crystal must share coordinates with a visible surface tile.');assert(!visible(hidden),'Coincident surface visibility must not disclose cavern ore.');
+-    await page.locator('.world-tools > summary').click();await page.getByLabel('Map level',{exact:true}).selectOption('1');await page.waitForFunction(()=>window.rts.viewLevel===1);await page.locator('[data-economy-launch]').click();await tab('Resources');await units([caveWorker.id]);
++    await page.locator('.world-tools > summary').click();await page.getByRole('group',{name:'World tools',exact:true}).getByLabel('Map level',{exact:true}).selectOption('1');await page.waitForFunction(()=>window.rts.viewLevel===1);await page.locator('[data-economy-launch]').click();await tab('Resources');await units([caveWorker.id]);
+     const options=await page.getByLabel('Crystal deposit',{exact:true}).locator('option').evaluateAll(options=>options.map(o=>({value:o.value,disabled:o.disabled})));assert(!options.some(o=>o.value===String(hidden.id)));
+     await choose('Crystal deposit',caveCrystal.id);const beforeCave=await read();await act('Build crystal extractor');state=await read();const caveStructure=state.economy.structures.find(e=>e.kind==='extractor'&&e.resourceId===caveCrystal.id);assert(caveStructure);assert.equal(state.entities.find(e=>e.id===caveStructure.entityId).level,1);assert.equal(state.players[0].wood,beforeCave.players[0].wood-100);assert.equal(state.players[0].ore,beforeCave.players[0].ore-90);assert.equal(state.players[0].crystal,beforeCave.players[0].crystal-15);evidence.nativeCavernEconomyPaymentAndLayer=true;
+-    await page.screenshot({path:`${out}/cavern-economy.png`});await page.getByRole('button',{name:'Close economy and settlements',exact:true}).click();await page.waitForFunction(id=>window.rts.state.entities.find(e=>e.id===id)?.progress===1,caveStructure.entityId,{timeout:60000});const caveBuilt=(await read()).entities.find(e=>e.id===caveStructure.entityId);await clickTarget(caveBuilt,40);await page.waitForFunction(id=>window.rts.selected.includes(id),caveStructure.entityId);await page.screenshot({path:`${out}/cavern-battlefield.png`});await page.getByLabel('Map level',{exact:true}).selectOption('0');await page.locator('.world-tools > summary').click();
++    await page.screenshot({path:`${out}/cavern-economy.png`});await page.getByRole('button',{name:'Close economy and settlements',exact:true}).click();await page.waitForFunction(id=>window.rts.state.entities.find(e=>e.id===id)?.progress===1,caveStructure.entityId,{timeout:60000});const caveBuilt=(await read()).entities.find(e=>e.id===caveStructure.entityId);await clickTarget(caveBuilt,40);await page.waitForFunction(id=>window.rts.selected.includes(id),caveStructure.entityId);await page.screenshot({path:`${out}/cavern-battlefield.png`});await page.getByRole('group',{name:'World tools',exact:true}).getByLabel('Map level',{exact:true}).selectOption('0');await page.locator('.world-tools > summary').click();
+   }
+   await page.screenshot({path:`${out}/completed-battlefield.png`});await writeFile(`${out}/completed-state.json`,JSON.stringify(await read(),null,2));
+   await page.locator('[data-session-tool="saves"]').click();const downloadPromise=page.waitForEvent('download');await page.getByRole('button',{name:'Export save',exact:true}).click();await (await downloadPromise).saveAs(`${out}/commanded-session.json`);const saved=JSON.parse(await readFile(`${out}/commanded-session.json`,'utf8'));assert(saved.game.state.economy);assert.equal(saved.game.state.economy.specializations.some(item=>item.entityId===expansion.id),true);evidence.economySaveExport=true;

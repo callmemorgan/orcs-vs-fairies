@@ -1,0 +1,860 @@
+{
+  "sourceHead": "82e9bedf199e95640de5467e1faaf75bcb4565d9",
+  "helperPath": "/home/morgana/.codex/worktrees/economy-scenario-integration/orcs-vs-Fairies/scripts/economy/browser-proof.mjs",
+  "helperSha256": "3ba8f8f2f2567d05fc564e952d039c8a14684e3f494d29bad333aa6cbd0ea97e",
+  "probeSha256": "d0dae4e90ba04ebb1561593889afeb92962fd16fccc730c26e179354ac9247a0",
+  "browserVersion": "151.0.7922.34",
+  "cases": [
+    {
+      "name": "api-fetch-html",
+      "passed": true,
+      "operationResult": "<!doctype html><title>Response observer probe</title>",
+      "observed": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "status": 200,
+          "resourceType": "document",
+          "contentType": "text/html"
+        },
+        {
+          "url": "http://127.0.0.1:43269/api/session",
+          "status": 200,
+          "resourceType": "fetch",
+          "contentType": "text/html"
+        }
+      ],
+      "pageErrors": [],
+      "httpErrors": [],
+      "browserApiResponses": [
+        {
+          "url": "http://127.0.0.1:43269/api/session",
+          "status": 200,
+          "resourceType": "fetch",
+          "contentType": "text/html",
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53
+        }
+      ],
+      "browserAssetResponses": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "path": "index.html",
+          "status": 200,
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53
+        }
+      ],
+      "servedAssets": {
+        "/": {
+          "path": "index.html",
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53,
+          "status": 200
+        }
+      }
+    },
+    {
+      "name": "api-xhr-html",
+      "passed": true,
+      "operationResult": "<!doctype html><title>Response observer probe</title>",
+      "observed": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "status": 200,
+          "resourceType": "document",
+          "contentType": "text/html"
+        },
+        {
+          "url": "http://127.0.0.1:43269/api/xhr",
+          "status": 200,
+          "resourceType": "xhr",
+          "contentType": "text/html"
+        }
+      ],
+      "pageErrors": [],
+      "httpErrors": [],
+      "browserApiResponses": [
+        {
+          "url": "http://127.0.0.1:43269/api/xhr",
+          "status": 200,
+          "resourceType": "xhr",
+          "contentType": "text/html",
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53
+        }
+      ],
+      "browserAssetResponses": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "path": "index.html",
+          "status": 200,
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53
+        }
+      ],
+      "servedAssets": {
+        "/": {
+          "path": "index.html",
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53,
+          "status": 200
+        }
+      }
+    },
+    {
+      "name": "api-fetch-js-mime",
+      "passed": true,
+      "operationResult": "window.apiObservation=true;",
+      "observed": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "status": 200,
+          "resourceType": "document",
+          "contentType": "text/html"
+        },
+        {
+          "url": "http://127.0.0.1:43269/api/javascript",
+          "status": 200,
+          "resourceType": "fetch",
+          "contentType": "application/javascript"
+        }
+      ],
+      "pageErrors": [],
+      "httpErrors": [],
+      "browserApiResponses": [
+        {
+          "url": "http://127.0.0.1:43269/api/javascript",
+          "status": 200,
+          "resourceType": "fetch",
+          "contentType": "application/javascript",
+          "sha256": "9e1010a6509b163a33749ff8a32a26ab8f428efc18a4758bd2449586c5b0bbbd",
+          "bytes": 27
+        }
+      ],
+      "browserAssetResponses": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "path": "index.html",
+          "status": 200,
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53
+        }
+      ],
+      "servedAssets": {
+        "/": {
+          "path": "index.html",
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53,
+          "status": 200
+        }
+      }
+    },
+    {
+      "name": "api-fetch-css-mime",
+      "passed": true,
+      "operationResult": "body{color:black}",
+      "observed": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "status": 200,
+          "resourceType": "document",
+          "contentType": "text/html"
+        },
+        {
+          "url": "http://127.0.0.1:43269/api/css",
+          "status": 200,
+          "resourceType": "fetch",
+          "contentType": "text/css"
+        }
+      ],
+      "pageErrors": [],
+      "httpErrors": [],
+      "browserApiResponses": [
+        {
+          "url": "http://127.0.0.1:43269/api/css",
+          "status": 200,
+          "resourceType": "fetch",
+          "contentType": "text/css",
+          "sha256": "7ada5a1234b13c6cafa63c438ae59e1a35173601906230c4b7508722aa1597f6",
+          "bytes": 17
+        }
+      ],
+      "browserAssetResponses": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "path": "index.html",
+          "status": 200,
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53
+        }
+      ],
+      "servedAssets": {
+        "/": {
+          "path": "index.html",
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53,
+          "status": 200
+        }
+      }
+    },
+    {
+      "name": "api-fetch-redirect",
+      "passed": true,
+      "operationResult": "<!doctype html><title>Response observer probe</title>",
+      "observed": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "status": 200,
+          "resourceType": "document",
+          "contentType": "text/html"
+        },
+        {
+          "url": "http://127.0.0.1:43269/api/fetch-redirect",
+          "status": 302,
+          "resourceType": "fetch",
+          "contentType": "text/html"
+        },
+        {
+          "url": "http://127.0.0.1:43269/api/session",
+          "status": 200,
+          "resourceType": "fetch",
+          "contentType": "text/html"
+        }
+      ],
+      "pageErrors": [],
+      "httpErrors": [],
+      "browserApiResponses": [
+        {
+          "url": "http://127.0.0.1:43269/api/fetch-redirect",
+          "status": 302,
+          "resourceType": "fetch",
+          "contentType": "text/html",
+          "sha256": null,
+          "bytes": null,
+          "bodyUnavailable": "Redirect response bodies are unavailable in Playwright."
+        },
+        {
+          "url": "http://127.0.0.1:43269/api/session",
+          "status": 200,
+          "resourceType": "fetch",
+          "contentType": "text/html",
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53
+        }
+      ],
+      "browserAssetResponses": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "path": "index.html",
+          "status": 200,
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53
+        }
+      ],
+      "servedAssets": {
+        "/": {
+          "path": "index.html",
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53,
+          "status": 200
+        }
+      }
+    },
+    {
+      "name": "api-xhr-redirect",
+      "passed": true,
+      "operationResult": "<!doctype html><title>Response observer probe</title>",
+      "observed": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "status": 200,
+          "resourceType": "document",
+          "contentType": "text/html"
+        },
+        {
+          "url": "http://127.0.0.1:43269/api/xhr-redirect",
+          "status": 302,
+          "resourceType": "xhr",
+          "contentType": "text/html"
+        },
+        {
+          "url": "http://127.0.0.1:43269/api/xhr",
+          "status": 200,
+          "resourceType": "xhr",
+          "contentType": "text/html"
+        }
+      ],
+      "pageErrors": [],
+      "httpErrors": [],
+      "browserApiResponses": [
+        {
+          "url": "http://127.0.0.1:43269/api/xhr-redirect",
+          "status": 302,
+          "resourceType": "xhr",
+          "contentType": "text/html",
+          "sha256": null,
+          "bytes": null,
+          "bodyUnavailable": "Redirect response bodies are unavailable in Playwright."
+        },
+        {
+          "url": "http://127.0.0.1:43269/api/xhr",
+          "status": 200,
+          "resourceType": "xhr",
+          "contentType": "text/html",
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53
+        }
+      ],
+      "browserAssetResponses": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "path": "index.html",
+          "status": 200,
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53
+        }
+      ],
+      "servedAssets": {
+        "/": {
+          "path": "index.html",
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53,
+          "status": 200
+        }
+      }
+    },
+    {
+      "name": "unknown-document",
+      "passed": true,
+      "operationResult": true,
+      "observed": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "status": 200,
+          "resourceType": "document",
+          "contentType": "text/html"
+        },
+        {
+          "url": "http://127.0.0.1:43269/unknown-document",
+          "status": 200,
+          "resourceType": "document",
+          "contentType": "text/html"
+        }
+      ],
+      "pageErrors": [
+        "Executable response is outside the prepared build: http://127.0.0.1:43269/unknown-document"
+      ],
+      "httpErrors": [],
+      "browserApiResponses": [],
+      "browserAssetResponses": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "path": "index.html",
+          "status": 200,
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53
+        }
+      ],
+      "servedAssets": {
+        "/": {
+          "path": "index.html",
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53,
+          "status": 200
+        }
+      }
+    },
+    {
+      "name": "unknown-script",
+      "passed": true,
+      "operationResult": true,
+      "observed": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "status": 200,
+          "resourceType": "document",
+          "contentType": "text/html"
+        },
+        {
+          "url": "http://127.0.0.1:43269/unknown-script",
+          "status": 200,
+          "resourceType": "script",
+          "contentType": "application/javascript"
+        }
+      ],
+      "pageErrors": [
+        "Executable response is outside the prepared build: http://127.0.0.1:43269/unknown-script"
+      ],
+      "httpErrors": [],
+      "browserApiResponses": [],
+      "browserAssetResponses": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "path": "index.html",
+          "status": 200,
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53
+        }
+      ],
+      "servedAssets": {
+        "/": {
+          "path": "index.html",
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53,
+          "status": 200
+        }
+      }
+    },
+    {
+      "name": "unknown-module",
+      "passed": true,
+      "operationResult": true,
+      "observed": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "status": 200,
+          "resourceType": "document",
+          "contentType": "text/html"
+        },
+        {
+          "url": "http://127.0.0.1:43269/unknown-module",
+          "status": 200,
+          "resourceType": "script",
+          "contentType": "application/javascript"
+        }
+      ],
+      "pageErrors": [
+        "Executable response is outside the prepared build: http://127.0.0.1:43269/unknown-module"
+      ],
+      "httpErrors": [],
+      "browserApiResponses": [],
+      "browserAssetResponses": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "path": "index.html",
+          "status": 200,
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53
+        }
+      ],
+      "servedAssets": {
+        "/": {
+          "path": "index.html",
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53,
+          "status": 200
+        }
+      }
+    },
+    {
+      "name": "unknown-css",
+      "passed": true,
+      "operationResult": true,
+      "observed": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "status": 200,
+          "resourceType": "document",
+          "contentType": "text/html"
+        },
+        {
+          "url": "http://127.0.0.1:43269/unknown-style",
+          "status": 200,
+          "resourceType": "stylesheet",
+          "contentType": "text/css"
+        }
+      ],
+      "pageErrors": [
+        "Executable response is outside the prepared build: http://127.0.0.1:43269/unknown-style"
+      ],
+      "httpErrors": [],
+      "browserApiResponses": [],
+      "browserAssetResponses": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "path": "index.html",
+          "status": 200,
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53
+        }
+      ],
+      "servedAssets": {
+        "/": {
+          "path": "index.html",
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53,
+          "status": 200
+        }
+      }
+    },
+    {
+      "name": "unknown-script-201",
+      "passed": true,
+      "operationResult": true,
+      "observed": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "status": 200,
+          "resourceType": "document",
+          "contentType": "text/html"
+        },
+        {
+          "url": "http://127.0.0.1:43269/unknown-script-201",
+          "status": 201,
+          "resourceType": "script",
+          "contentType": "application/javascript"
+        }
+      ],
+      "pageErrors": [
+        "Executable response is outside the prepared build: http://127.0.0.1:43269/unknown-script-201"
+      ],
+      "httpErrors": [],
+      "browserApiResponses": [],
+      "browserAssetResponses": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "path": "index.html",
+          "status": 200,
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53
+        }
+      ],
+      "servedAssets": {
+        "/": {
+          "path": "index.html",
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53,
+          "status": 200
+        }
+      }
+    },
+    {
+      "name": "unknown-document-201",
+      "passed": true,
+      "operationResult": true,
+      "observed": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "status": 200,
+          "resourceType": "document",
+          "contentType": "text/html"
+        },
+        {
+          "url": "http://127.0.0.1:43269/unknown-document-201",
+          "status": 201,
+          "resourceType": "document",
+          "contentType": "text/html"
+        }
+      ],
+      "pageErrors": [
+        "Executable response is outside the prepared build: http://127.0.0.1:43269/unknown-document-201"
+      ],
+      "httpErrors": [],
+      "browserApiResponses": [],
+      "browserAssetResponses": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "path": "index.html",
+          "status": 200,
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53
+        }
+      ],
+      "servedAssets": {
+        "/": {
+          "path": "index.html",
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53,
+          "status": 200
+        }
+      }
+    },
+    {
+      "name": "unknown-css-201",
+      "passed": true,
+      "operationResult": true,
+      "observed": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "status": 200,
+          "resourceType": "document",
+          "contentType": "text/html"
+        },
+        {
+          "url": "http://127.0.0.1:43269/unknown-style-201",
+          "status": 201,
+          "resourceType": "stylesheet",
+          "contentType": "text/css"
+        }
+      ],
+      "pageErrors": [
+        "Executable response is outside the prepared build: http://127.0.0.1:43269/unknown-style-201"
+      ],
+      "httpErrors": [],
+      "browserApiResponses": [],
+      "browserAssetResponses": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "path": "index.html",
+          "status": 200,
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53
+        }
+      ],
+      "servedAssets": {
+        "/": {
+          "path": "index.html",
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53,
+          "status": 200
+        }
+      }
+    },
+    {
+      "name": "unknown-worker-and-import",
+      "passed": true,
+      "operationResult": true,
+      "observed": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "status": 200,
+          "resourceType": "document",
+          "contentType": "text/html"
+        },
+        {
+          "url": "http://127.0.0.1:43269/unknown-worker",
+          "status": 200,
+          "resourceType": "script",
+          "contentType": "application/javascript"
+        },
+        {
+          "url": "http://127.0.0.1:43269/unknown-worker-import",
+          "status": 200,
+          "resourceType": "other",
+          "contentType": "application/javascript"
+        }
+      ],
+      "pageErrors": [
+        "Executable response is outside the prepared build: http://127.0.0.1:43269/unknown-worker",
+        "Executable response is outside the prepared build: http://127.0.0.1:43269/unknown-worker-import"
+      ],
+      "httpErrors": [],
+      "browserApiResponses": [],
+      "browserAssetResponses": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "path": "index.html",
+          "status": 200,
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53
+        }
+      ],
+      "servedAssets": {
+        "/": {
+          "path": "index.html",
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53,
+          "status": 200
+        }
+      }
+    },
+    {
+      "name": "known-json-fetched",
+      "passed": true,
+      "operationResult": "{\"value\":\"prepared\"}",
+      "observed": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "status": 200,
+          "resourceType": "document",
+          "contentType": "text/html"
+        },
+        {
+          "url": "http://127.0.0.1:43269/known.json",
+          "status": 200,
+          "resourceType": "fetch",
+          "contentType": "application/json"
+        }
+      ],
+      "pageErrors": [],
+      "httpErrors": [],
+      "browserApiResponses": [],
+      "browserAssetResponses": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "path": "index.html",
+          "status": 200,
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53
+        },
+        {
+          "url": "http://127.0.0.1:43269/known.json",
+          "path": "known.json",
+          "status": 200,
+          "sha256": "339b6ce531e6d1945cc7659cc44bacbda2f01ed407b5215d81639e1eee5835ef",
+          "bytes": 20
+        }
+      ],
+      "servedAssets": {
+        "/": {
+          "path": "index.html",
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53,
+          "status": 200
+        },
+        "/known.json": {
+          "path": "known.json",
+          "sha256": "339b6ce531e6d1945cc7659cc44bacbda2f01ed407b5215d81639e1eee5835ef",
+          "bytes": 20,
+          "status": 200
+        }
+      }
+    },
+    {
+      "name": "tampered-json-fetched",
+      "passed": true,
+      "operationResult": "{\"value\":\"changed\"}",
+      "observed": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "status": 200,
+          "resourceType": "document",
+          "contentType": "text/html"
+        },
+        {
+          "url": "http://127.0.0.1:43269/tampered.json",
+          "status": 200,
+          "resourceType": "fetch",
+          "contentType": "application/json"
+        }
+      ],
+      "pageErrors": [
+        "Economy asset provenance: Browser response differs from the prepared tampered.json\n+ actual - expected\n\n+ '2671f34ad6be04d7ed0ca3273e7b0f7e3a11db326a60243f940244753c894975'\n- '339b6ce531e6d1945cc7659cc44bacbda2f01ed407b5215d81639e1eee5835ef'\n"
+      ],
+      "httpErrors": [],
+      "browserApiResponses": [],
+      "browserAssetResponses": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "path": "index.html",
+          "status": 200,
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53
+        },
+        {
+          "url": "http://127.0.0.1:43269/tampered.json",
+          "path": "tampered.json",
+          "status": 200,
+          "sha256": "2671f34ad6be04d7ed0ca3273e7b0f7e3a11db326a60243f940244753c894975",
+          "bytes": 19
+        }
+      ],
+      "servedAssets": {
+        "/": {
+          "path": "index.html",
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53,
+          "status": 200
+        }
+      }
+    },
+    {
+      "name": "unknown-wasm-fetched",
+      "passed": true,
+      "operationResult": "wasm probe",
+      "observed": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "status": 200,
+          "resourceType": "document",
+          "contentType": "text/html"
+        },
+        {
+          "url": "http://127.0.0.1:43269/unknown.wasm",
+          "status": 200,
+          "resourceType": "fetch",
+          "contentType": "application/wasm"
+        }
+      ],
+      "pageErrors": [
+        "Executable response is outside the prepared build: http://127.0.0.1:43269/unknown.wasm"
+      ],
+      "httpErrors": [],
+      "browserApiResponses": [],
+      "browserAssetResponses": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "path": "index.html",
+          "status": 200,
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53
+        }
+      ],
+      "servedAssets": {
+        "/": {
+          "path": "index.html",
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53,
+          "status": 200
+        }
+      }
+    },
+    {
+      "name": "api-non200-observed",
+      "passed": true,
+      "operationResult": "<!doctype html><title>Response observer probe</title>",
+      "observed": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "status": 200,
+          "resourceType": "document",
+          "contentType": "text/html"
+        },
+        {
+          "url": "http://127.0.0.1:43269/api/status",
+          "status": 503,
+          "resourceType": "fetch",
+          "contentType": "text/html"
+        }
+      ],
+      "pageErrors": [],
+      "httpErrors": [
+        {
+          "url": "http://127.0.0.1:43269/api/status",
+          "status": 503
+        }
+      ],
+      "browserApiResponses": [
+        {
+          "url": "http://127.0.0.1:43269/api/status",
+          "status": 503,
+          "resourceType": "fetch",
+          "contentType": "text/html",
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53
+        }
+      ],
+      "browserAssetResponses": [
+        {
+          "url": "http://127.0.0.1:43269/",
+          "path": "index.html",
+          "status": 200,
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53
+        }
+      ],
+      "servedAssets": {
+        "/": {
+          "path": "index.html",
+          "sha256": "f30244acb329e423375b1732c0807772a49f8194f7a2264d6117f6719976121f",
+          "bytes": 53,
+          "status": 200
+        }
+      }
+    }
+  ],
+  "passed": true,
+  "browserClosed": true,
+  "serverClosed": true,
+  "serviceWorkerScope": "No service-worker registration exists in the app; this page observer probe does not claim service-worker coverage."
+}

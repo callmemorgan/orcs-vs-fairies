@@ -1,0 +1,28 @@
+{"forestryOrderAndPayment":true,"warehouseFoundationAndWorkerOrder":true,"deepMineFoundation":true,"extractorFoundation":true,"overchargeToggled":true,"caravanRecruitmentPaid":true,"physicalTradeRouteOrdered":true,"marketDemandAndCurrency":true,"militarySupplyRaidOrdered":true,"workerSalvageCollectionOrdered":true,"workerLocalDeliveryConfigured":true,"localStockDeliveryOrdered":true,"expansionSpecializationPaid":true,"contractAcceptedAndDeliveryOrdered":true,"actualConstructionAndGroveMaturity":true,"completedRoutePaidFromFiniteMarket":true,"raidAndSalvageReachedOwnedStorage":true,"completedContractReward":true,"canvasHarvestDepositedWood":true,"nativeSpecialistSelectionAndControls":true,"mixedWorldAndPinnedArtLoaded":true,"nativeCavernEconomyPaymentAndLayer":true,"economySaveExport":true,"economyReportExport":true,"completedSaveAndReplayReloaded":true}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: pageErrors must be empty
++ actual - expected
+
++ [
++   'Economy API response observation: response.body: Target page, context or browser has been closed'
++ ]
+- []
+
+    at finishProof (file:///home/morgana/.codex/worktrees/economy-final-db36593/orcs-vs-Fairies/scripts/controls-proof/browser-common.mjs:182:92)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async finishEconomyProof (file:///home/morgana/.codex/worktrees/economy-final-db36593/orcs-vs-Fairies/scripts/economy/browser-proof.mjs:84:6)
+    at async file:///home/morgana/.codex/worktrees/economy-final-db36593/orcs-vs-Fairies/scripts/verify_economy_ui.mjs:69:273 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [
+    'Economy API response observation: response.body: Target page, context or browser has been closed'
+  ],
+  expected: [],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.21.0

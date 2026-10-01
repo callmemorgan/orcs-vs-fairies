@@ -1,0 +1,100 @@
+diff --git a/scripts/economy/browser-proof.mjs b/scripts/economy/browser-proof.mjs
+index 1575a70..9e68923 100644
+--- a/scripts/economy/browser-proof.mjs
++++ b/scripts/economy/browser-proof.mjs
+@@ -45,6 +45,7 @@ export async function prepareEconomyProof(base,out,feature){
+ }
+ 
+ export function observePage(page,result,context){
++ const priorResponseListeners=new Set(page.listeners('response'));
+  observeSharedPage(page,result,context);
+  page.on('response',response=>{
+   const url=new URL(response.url());if(url.origin!==new URL(context.base).origin)return;
+@@ -59,6 +60,20 @@ export function observePage(page,result,context){
+   const task=(async()=>{const bytes=await response.body(),digest=sha(bytes),record={url:url.href,path,status:response.status(),sha256:digest,bytes:bytes.length};context.browserAssetResponses.push(record);assert.equal(digest,expected.sha256,`Browser response differs from the prepared ${path}`);assert.equal(bytes.length,expected.bytes);context.servedAssets[url.pathname]={path,sha256:digest,bytes:bytes.length,status:response.status()};})().catch(error=>result.pageErrors.push(`Economy asset provenance: ${error.message}`));
+   context.responseTasks.push(task);
+  });
++ context.responseObservers??=[];context.responseObservation??={startedAt:new Date().toISOString()};
++ context.responseObservers.push({page,listeners:page.listeners('response').filter(listener=>!priorResponseListeners.has(listener))});
++}
++export async function stopEconomyObservation(context,{timeoutMs=30000}={}){
++ if(context.responseObservation?.drained)return;
++ const observers=context.responseObservers??[];
++ for(const {page,listeners} of observers)for(const listener of listeners)page.off('response',listener);
++ for(const page of new Set(observers.map(observer=>observer.page)))page.on('response',response=>{if(response.status()>=400)for(const report of context.observedReports)report.httpErrors.push({url:response.url(),status:response.status()});});
++ const observedTaskCount=context.responseTasks.length;
++ context.responseObservation={...context.responseObservation,endedAt:new Date().toISOString(),listenerCount:observers.reduce((count,observer)=>count+observer.listeners.length,0),observedTaskCount,timeoutMs,httpStatusesObservedThroughClose:true,drained:false};
++ let timer;
++ try{await Promise.race([Promise.all(context.responseTasks),new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('Timed out draining observed response bodies.')),timeoutMs);})]);assert.equal(context.responseTasks.length,observedTaskCount,'Response tasks changed after observation ended.');context.responseObservation.drained=true;}
++ catch(error){context.responseObservation.error=String(error);for(const report of context.observedReports)report.pageErrors.push(`Economy response drain: ${error.message}`);}
++ finally{clearTimeout(timer);context.responseObservation.finishedAt=new Date().toISOString();}
+ }
+ export async function freshFixture(context,path){
+  const prepared=JSON.parse(await readFile(join(context.distDir,'..','prepare.json'),'utf8')),bytes=await readFile(path);
+@@ -68,11 +83,13 @@ export async function freshFixture(context,path){
+ export async function finishEconomyProof(context,result,recordName){
+  result.result=result.passed===true?'passed':'failed';
+  assert.equal(result.browserClosed,true,'Close the browser before finalizing economy evidence.');
++ result.responseObservation=context.responseObservation;
+  result.economyScriptFiles=context.economyScriptFiles;
+  result.allServedBefore=context.allServedBefore;
+  result.browserAssetResponses=context.browserAssetResponses;
+  result.browserApiResponses=context.browserApiResponses;
+  let failure;
++ if(context.responseObservation?.drained!==true){failure=new Error('Response observation did not drain before browser close.');result.passed=false;result.result='failed';result.economyObservationError=context.responseObservation?.error??failure.message;}
+  try{
+   assert.deepEqual(await economyScripts(context.sourcePin),context.economyScriptFiles,'Economy scripts changed during the browser proof.');
+   const modules=await inventory(process.env.OVF_PROOF_MODULES);delete modules['manifest.json'];assert.deepEqual(modules,context.economyModuleFiles,'Prepared proof modules changed during the browser proof.');
+diff --git a/scripts/verify_economy_combined_ui.mjs b/scripts/verify_economy_combined_ui.mjs
+index 9633c34..6d9caae 100644
+--- a/scripts/verify_economy_combined_ui.mjs
++++ b/scripts/verify_economy_combined_ui.mjs
+@@ -1,5 +1,5 @@
+ import assert from 'node:assert/strict';
+-import {prepareEconomyProof,observePage,nativeSessionEquality,finishEconomyProof} from './economy/browser-proof.mjs';
++import {prepareEconomyProof,observePage,stopEconomyObservation,nativeSessionEquality,finishEconomyProof} from './economy/browser-proof.mjs';
+ const {chromium}=await import(process.env.OVF_PLAYWRIGHT_MODULE??'playwright');
+ const base=process.argv[2],out=process.argv[3];assert(base&&out,'Pass the frozen preview and a new modal evidence directory.');
+ const context=await prepareEconomyProof(base,out,'economy-modal');
+@@ -29,4 +29,4 @@ try{
+   await page.locator('[data-session-tool="saves"]').click();await page.waitForSelector('.session-overlay:not([hidden])');await page.waitForFunction(()=>document.querySelector('[data-economy-launch]')?.disabled===true,null,{timeout:5000});assert.equal(await page.locator('[data-economy-launch]').isDisabled(),true);await page.getByRole('button',{name:'Close session tools',exact:true}).click();record(`Session modal disables Economy launcher at ${viewport.width}px`);
+  }
+  assert.equal(result.checks.length,12);assert(result.checks.every(check=>check.value!==false));result.sessionEquality=await nativeSessionEquality(page,context);assert.deepEqual(result.errors,[]);result.passed=true;
+-}catch(error){result.passed=false;result.error=String(error);await page.screenshot({path:`${out}/failure.png`}).catch(()=>{});throw error;}finally{await browser.close();result.browserClosed=true;await finishEconomyProof(context,result,'results.json');}
++}catch(error){result.passed=false;result.error=String(error);await page.screenshot({path:`${out}/failure.png`}).catch(()=>{});throw error;}finally{try{await stopEconomyObservation(context);}finally{await browser.close();result.browserClosed=true;await finishEconomyProof(context,result,'results.json');}}
+diff --git a/scripts/verify_economy_ui.mjs b/scripts/verify_economy_ui.mjs
+index 5037d57..d27ab6c 100644
+--- a/scripts/verify_economy_ui.mjs
++++ b/scripts/verify_economy_ui.mjs
+@@ -1,6 +1,6 @@
+ import assert from 'node:assert/strict';
+ import {readFile,writeFile} from 'node:fs/promises';
+-import {prepareEconomyProof,observePage,nativeSessionEquality,finishEconomyProof,freshFixture} from './economy/browser-proof.mjs';
++import {prepareEconomyProof,observePage,stopEconomyObservation,nativeSessionEquality,finishEconomyProof,freshFixture} from './economy/browser-proof.mjs';
+ const {chromium}=await import(process.env.OVF_PLAYWRIGHT_MODULE??'playwright');
+ const base=process.argv[2]??'http://127.0.0.1:4173',fixturePath=process.argv[3];
+ assert(fixturePath,'Pass a saved economy scenario as argument 3. The scenario needs five workers, one military unit, three empty caravans, an owned stocked warehouse, an expansion HQ, a completed extractor, an unclaimed visible crystal node, unused depleted ore, a visible hostile warehouse, salvage, and a nearby market/open contract.');
+@@ -66,4 +66,4 @@ try{
+   result.sessionEquality=await nativeSessionEquality(page,context,{saved,report});evidence.completedSaveAndReplayReloaded=true;
+   assert.equal(Object.keys(evidence).length,25,'Final mixed fixture must execute all 25 intended economy checks.');assert(Object.values(evidence).every(value=>value===true));result.passed=true;
+   assert.deepEqual(errors,[]);result.scope='Real browser controls, construction, growth and harvested income, completed routes, finite market rewards, raids, salvage, contracts and full native save/report/reload/replay equality.';console.log(JSON.stringify(evidence));
+-}catch(error){result.passed=false;result.error=String(error);if(page)await page.screenshot({path:`${out}/failure.png`}).catch(()=>{});await writeFile(`${out}/failure.json`,JSON.stringify(result,null,2));throw error;}finally{await browser.close();result.browserClosed=true;await finishEconomyProof(context,result,'proof.json');}
++}catch(error){result.passed=false;result.error=String(error);if(page)await page.screenshot({path:`${out}/failure.png`}).catch(()=>{});await writeFile(`${out}/failure.json`,JSON.stringify(result,null,2));throw error;}finally{try{await stopEconomyObservation(context);}finally{await browser.close();result.browserClosed=true;await finishEconomyProof(context,result,'proof.json');}}
+diff --git a/scripts/verify_settlement_runtime_ui.mjs b/scripts/verify_settlement_runtime_ui.mjs
+index 6f7bbdc..8b0c811 100644
+--- a/scripts/verify_settlement_runtime_ui.mjs
++++ b/scripts/verify_settlement_runtime_ui.mjs
+@@ -1,6 +1,6 @@
+ import assert from 'node:assert/strict';
+ import {readFile,writeFile} from 'node:fs/promises';
+-import {prepareEconomyProof,observePage,nativeSessionEquality,finishEconomyProof,freshFixture} from './economy/browser-proof.mjs';
++import {prepareEconomyProof,observePage,stopEconomyObservation,nativeSessionEquality,finishEconomyProof,freshFixture} from './economy/browser-proof.mjs';
+ 
+ const base=process.argv[2],fixturePath=process.argv[3],out=process.argv[4];
+ assert(base&&fixturePath&&out,'Pass the frozen preview URL, fresh mixed fixture and a new evidence directory.');
+@@ -38,4 +38,4 @@ try{
+  await page.locator('[data-session-tool="report"]').click();await page.getByLabel('Bug description',{exact:true}).fill('Final native settlement research runtime proof');const download=page.waitForEvent('download');await page.getByRole('button',{name:'Download bug report',exact:true}).click();await(await download).saveAs(`${out}/report.json`);const report=JSON.parse(await readFile(`${out}/report.json`,'utf8'));
+  assert.equal(report.versions.buildId,buildId);assert.equal(report.versions.save,expectedSaveVersion);assert.equal(report.versions.simulationRevision,expectedSimulationRevision);assert.equal(report.session.game.version,expectedSaveVersion);assert.equal(report.session.replay.initial.version,expectedSaveVersion);assert.equal(report.session.replay.simulationRevision,expectedSimulationRevision);record('Native report binds final source and versions',report.versions);
+  await page.locator('[data-session-tab="saves"]').click();const exportPending=page.waitForEvent('download');await page.getByRole('button',{name:'Export save',exact:true}).click();await(await exportPending).saveAs(`${out}/commanded-session.json`);const saved=JSON.parse(await readFile(`${out}/commanded-session.json`,'utf8'));result.sessionEquality=await nativeSessionEquality(page,context,{saved,report});assert.equal(result.checks.length,8);assert(result.checks.every(check=>check.value!==false));assert.deepEqual(result.errors,[]);result.passed=true;
+-}catch(error){result.passed=false;result.error=String(error);await page.screenshot({path:`${out}/failure.png`}).catch(()=>{});throw error;}finally{await browser.close();result.browserClosed=true;await finishEconomyProof(context,result,'results.json');}
++}catch(error){result.passed=false;result.error=String(error);await page.screenshot({path:`${out}/failure.png`}).catch(()=>{});throw error;}finally{try{await stopEconomyObservation(context);}finally{await browser.close();result.browserClosed=true;await finishEconomyProof(context,result,'results.json');}}

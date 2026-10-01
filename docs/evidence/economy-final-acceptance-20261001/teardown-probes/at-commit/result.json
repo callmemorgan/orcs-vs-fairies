@@ -1,0 +1,201 @@
+{
+  "sourceHead": "f94f0bc410f27c416750cd63ea73393d049b65e1",
+  "helperPath": "/home/morgana/.codex/worktrees/economy-final-db36593/orcs-vs-Fairies/scripts/economy/browser-proof.mjs",
+  "helperSha256": "261e69e4951bc4e5f5e28f00ffddb8b1034f311f10d7203c357bb30e7b7b08f5",
+  "probeSha256": "6b2486c61b756c6f2c31b70769bb0c0a74ab492ef57ed4dd1d244fbb7c688954",
+  "browserVersion": "151.0.7922.34",
+  "cases": [
+    {
+      "mode": "original-early-close",
+      "assertionsPassed": true,
+      "pageClosed": true,
+      "responseObservation": {
+        "startedAt": "2026-10-01T17:40:34.853Z"
+      },
+      "pageErrors": [
+        "Economy API response observation: response.body: Target page, context or browser has been closed"
+      ],
+      "httpErrors": [],
+      "failedRequests": [],
+      "observedTaskCount": 3,
+      "browserApiResponses": [],
+      "externalResponses": [
+        {
+          "url": "http://127.0.0.1:33683/",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:33683/api/held/original-early-close",
+          "status": 200
+        }
+      ]
+    },
+    {
+      "mode": "drain-with-post-cutoff-response",
+      "assertionsPassed": true,
+      "pageClosed": true,
+      "responseObservation": {
+        "startedAt": "2026-10-01T17:40:34.877Z",
+        "endedAt": "2026-10-01T17:40:34.884Z",
+        "listenerCount": 2,
+        "observedTaskCount": 3,
+        "timeoutMs": 30000,
+        "httpStatusesObservedThroughClose": true,
+        "drained": true,
+        "finishedAt": "2026-10-01T17:40:34.886Z"
+      },
+      "pageErrors": [],
+      "httpErrors": [],
+      "failedRequests": [],
+      "observedTaskCount": 3,
+      "browserApiResponses": [
+        {
+          "url": "http://127.0.0.1:33683/api/held/drain-with-post-cutoff-response",
+          "status": 200,
+          "resourceType": "fetch",
+          "contentType": "text/html",
+          "sha256": "472834ebd2a2195eac9b41f1fa96d713f59083b8fbab7f4390a8c5f4719f5fcd",
+          "bytes": 63
+        }
+      ],
+      "externalResponses": [
+        {
+          "url": "http://127.0.0.1:33683/",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:33683/api/held/drain-with-post-cutoff-response",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:33683/api/late",
+          "status": 200
+        }
+      ]
+    },
+    {
+      "mode": "already-observed-body-failure",
+      "assertionsPassed": true,
+      "pageClosed": true,
+      "responseObservation": {
+        "startedAt": "2026-10-01T17:40:34.897Z",
+        "endedAt": "2026-10-01T17:40:34.904Z",
+        "listenerCount": 2,
+        "observedTaskCount": 3,
+        "timeoutMs": 30000,
+        "httpStatusesObservedThroughClose": true,
+        "drained": true,
+        "finishedAt": "2026-10-01T17:40:34.905Z"
+      },
+      "pageErrors": [
+        "Economy API response observation: response.body: Protocol error (Network.getResponseBody): No data found for resource with given identifier\nResponse body is not available for a response that was navigated away from. Read response.body() before triggering any navigation."
+      ],
+      "httpErrors": [],
+      "failedRequests": [
+        {
+          "url": "http://127.0.0.1:33683/api/held/already-observed-body-failure",
+          "failure": {
+            "errorText": "net::ERR_CONTENT_LENGTH_MISMATCH"
+          }
+        }
+      ],
+      "observedTaskCount": 3,
+      "browserApiResponses": [],
+      "externalResponses": [
+        {
+          "url": "http://127.0.0.1:33683/",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:33683/api/held/already-observed-body-failure",
+          "status": 200
+        }
+      ]
+    },
+    {
+      "mode": "drain-timeout",
+      "assertionsPassed": true,
+      "pageClosed": true,
+      "responseObservation": {
+        "startedAt": "2026-10-01T17:40:34.916Z",
+        "endedAt": "2026-10-01T17:40:34.923Z",
+        "listenerCount": 2,
+        "observedTaskCount": 3,
+        "timeoutMs": 40,
+        "httpStatusesObservedThroughClose": true,
+        "drained": false,
+        "error": "Error: Timed out draining observed response bodies.",
+        "finishedAt": "2026-10-01T17:40:34.963Z"
+      },
+      "pageErrors": [
+        "Economy response drain: Timed out draining observed response bodies.",
+        "Economy API response observation: response.body: Target page, context or browser has been closed"
+      ],
+      "httpErrors": [],
+      "failedRequests": [],
+      "observedTaskCount": 3,
+      "browserApiResponses": [],
+      "externalResponses": [
+        {
+          "url": "http://127.0.0.1:33683/",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:33683/api/held/drain-timeout",
+          "status": 200
+        }
+      ]
+    },
+    {
+      "mode": "post-cutoff-http-error",
+      "assertionsPassed": true,
+      "pageClosed": true,
+      "responseObservation": {
+        "startedAt": "2026-10-01T17:40:34.975Z",
+        "endedAt": "2026-10-01T17:40:34.982Z",
+        "listenerCount": 2,
+        "observedTaskCount": 3,
+        "timeoutMs": 30000,
+        "httpStatusesObservedThroughClose": true,
+        "drained": true,
+        "finishedAt": "2026-10-01T17:40:34.983Z"
+      },
+      "pageErrors": [],
+      "httpErrors": [
+        {
+          "url": "http://127.0.0.1:33683/api/late-error",
+          "status": 503
+        }
+      ],
+      "failedRequests": [],
+      "observedTaskCount": 3,
+      "browserApiResponses": [
+        {
+          "url": "http://127.0.0.1:33683/api/held/post-cutoff-http-error",
+          "status": 200,
+          "resourceType": "fetch",
+          "contentType": "text/html",
+          "sha256": "472834ebd2a2195eac9b41f1fa96d713f59083b8fbab7f4390a8c5f4719f5fcd",
+          "bytes": 63
+        }
+      ],
+      "externalResponses": [
+        {
+          "url": "http://127.0.0.1:33683/",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:33683/api/held/post-cutoff-http-error",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:33683/api/late-error",
+          "status": 503
+        }
+      ]
+    }
+  ],
+  "passed": true,
+  "browserClosed": true,
+  "serverClosed": true
+}

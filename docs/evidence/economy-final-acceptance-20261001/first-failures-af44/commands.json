@@ -1,0 +1,107 @@
+[
+  {
+    "name": "bundle-schema.mjs",
+    "program": "/home/morgana/.codex/worktrees/economy-scenario-integration/orcs-vs-Fairies/node_modules/.bin/esbuild",
+    "args": [
+      "scripts/controls-proof/schema.ts",
+      "--bundle",
+      "--platform=node",
+      "--format=esm",
+      "--loader:.svg=text",
+      "--define:__OVF_PROOF_PIN__=\"af44da406acf7ab44436e978cb1f571b93e28d23\"",
+      "--define:__OVF_PROOF_SOURCE_DIGEST__=\"10eeb15b10a59d07e8c67533042e9f2e3567375c035a490f541062ea6e002688\"",
+      "--metafile=/tmp/ovf-economy-final.j5QT4V/modules/schema.mjs.meta.json",
+      "--outfile=/tmp/ovf-economy-final.j5QT4V/modules/schema.mjs"
+    ],
+    "startedAt": "2026-10-01T16:56:58.031Z",
+    "exitCode": 0,
+    "finishedAt": "2026-10-01T16:56:58.046Z"
+  },
+  {
+    "name": "bundle-generate-scenario.mjs",
+    "program": "/home/morgana/.codex/worktrees/economy-scenario-integration/orcs-vs-Fairies/node_modules/.bin/esbuild",
+    "args": [
+      "scripts/economy/generate-scenario.ts",
+      "--bundle",
+      "--platform=node",
+      "--format=esm",
+      "--loader:.svg=text",
+      "--define:__OVF_PROOF_PIN__=\"af44da406acf7ab44436e978cb1f571b93e28d23\"",
+      "--define:__OVF_PROOF_SOURCE_DIGEST__=\"10eeb15b10a59d07e8c67533042e9f2e3567375c035a490f541062ea6e002688\"",
+      "--metafile=/tmp/ovf-economy-final.j5QT4V/modules/generate-scenario.mjs.meta.json",
+      "--outfile=/tmp/ovf-economy-final.j5QT4V/modules/generate-scenario.mjs"
+    ],
+    "startedAt": "2026-10-01T16:56:58.123Z",
+    "exitCode": 0,
+    "finishedAt": "2026-10-01T16:56:58.139Z"
+  },
+  {
+    "name": "bundle-verify-native-session.mjs",
+    "program": "/home/morgana/.codex/worktrees/economy-scenario-integration/orcs-vs-Fairies/node_modules/.bin/esbuild",
+    "args": [
+      "scripts/economy/verify-native-session.ts",
+      "--bundle",
+      "--platform=node",
+      "--format=esm",
+      "--loader:.svg=text",
+      "--define:__OVF_PROOF_PIN__=\"af44da406acf7ab44436e978cb1f571b93e28d23\"",
+      "--define:__OVF_PROOF_SOURCE_DIGEST__=\"10eeb15b10a59d07e8c67533042e9f2e3567375c035a490f541062ea6e002688\"",
+      "--metafile=/tmp/ovf-economy-final.j5QT4V/modules/verify-native-session.mjs.meta.json",
+      "--outfile=/tmp/ovf-economy-final.j5QT4V/modules/verify-native-session.mjs"
+    ],
+    "startedAt": "2026-10-01T16:56:58.219Z",
+    "exitCode": 0,
+    "finishedAt": "2026-10-01T16:56:58.234Z"
+  },
+  {
+    "name": "scenario-generation",
+    "program": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+    "args": [
+      "/tmp/ovf-economy-final.j5QT4V/modules/generate-scenario.mjs",
+      "/tmp/ovf-economy-final.j5QT4V/browser-scenario.json",
+      "--mixed"
+    ],
+    "startedAt": "2026-10-01T16:56:58.361Z",
+    "exitCode": 0,
+    "finishedAt": "2026-10-01T16:56:59.444Z"
+  },
+  {
+    "name": "fixture-validation",
+    "program": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+    "args": [
+      "/tmp/ovf-economy-final.j5QT4V/modules/verify-native-session.mjs",
+      "/tmp/ovf-economy-final.j5QT4V/browser-scenario.json",
+      "/tmp/ovf-economy-final.j5QT4V/fixture-validation.json",
+      "af44da406acf7ab44436e978cb1f571b93e28d23",
+      "/tmp/ovf-economy-final.j5QT4V/modules/manifest.json",
+      "--fixture"
+    ],
+    "startedAt": "2026-10-01T16:56:59.445Z",
+    "exitCode": 0,
+    "finishedAt": "2026-10-01T16:56:59.803Z"
+  },
+  {
+    "name": "typecheck",
+    "program": "/home/morgana/.codex/worktrees/economy-scenario-integration/orcs-vs-Fairies/node_modules/.bin/tsc",
+    "args": [
+      "--noEmit"
+    ],
+    "startedAt": "2026-10-01T16:56:59.803Z",
+    "exitCode": 0,
+    "finishedAt": "2026-10-01T16:57:05.259Z"
+  },
+  {
+    "name": "browser-build",
+    "program": "/home/morgana/.codex/worktrees/economy-scenario-integration/orcs-vs-Fairies/node_modules/.bin/vite",
+    "args": [
+      "build",
+      "--config",
+      "/home/morgana/.codex/worktrees/economy-scenario-integration/orcs-vs-Fairies/vite.config.ts",
+      "--outDir",
+      "/tmp/ovf-economy-final.j5QT4V/dist"
+    ],
+    "startedAt": "2026-10-01T16:57:05.259Z",
+    "exitCode": 0,
+    "finishedAt": "2026-10-01T16:57:08.142Z"
+  }
+]

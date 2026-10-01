@@ -1,0 +1,107 @@
+[
+  {
+    "name": "bundle-schema.mjs",
+    "program": "/home/morgana/.codex/worktrees/economy-final-db36593/orcs-vs-Fairies/node_modules/.bin/esbuild",
+    "args": [
+      "scripts/controls-proof/schema.ts",
+      "--bundle",
+      "--platform=node",
+      "--format=esm",
+      "--loader:.svg=text",
+      "--define:__OVF_PROOF_PIN__=\"c86e273c70738f144a00fe75f5ecf39e7fa324d8\"",
+      "--define:__OVF_PROOF_SOURCE_DIGEST__=\"24ef16d7e77323366b2c41f0cc15a93299d068587572dbce5366aa5088cca7c4\"",
+      "--metafile=/tmp/ovf-economy-final-c86e273.xgje4e/modules/schema.mjs.meta.json",
+      "--outfile=/tmp/ovf-economy-final-c86e273.xgje4e/modules/schema.mjs"
+    ],
+    "startedAt": "2026-10-01T18:46:02.948Z",
+    "exitCode": 0,
+    "finishedAt": "2026-10-01T18:46:02.959Z"
+  },
+  {
+    "name": "bundle-generate-scenario.mjs",
+    "program": "/home/morgana/.codex/worktrees/economy-final-db36593/orcs-vs-Fairies/node_modules/.bin/esbuild",
+    "args": [
+      "scripts/economy/generate-scenario.ts",
+      "--bundle",
+      "--platform=node",
+      "--format=esm",
+      "--loader:.svg=text",
+      "--define:__OVF_PROOF_PIN__=\"c86e273c70738f144a00fe75f5ecf39e7fa324d8\"",
+      "--define:__OVF_PROOF_SOURCE_DIGEST__=\"24ef16d7e77323366b2c41f0cc15a93299d068587572dbce5366aa5088cca7c4\"",
+      "--metafile=/tmp/ovf-economy-final-c86e273.xgje4e/modules/generate-scenario.mjs.meta.json",
+      "--outfile=/tmp/ovf-economy-final-c86e273.xgje4e/modules/generate-scenario.mjs"
+    ],
+    "startedAt": "2026-10-01T18:46:03.012Z",
+    "exitCode": 0,
+    "finishedAt": "2026-10-01T18:46:03.023Z"
+  },
+  {
+    "name": "bundle-verify-native-session.mjs",
+    "program": "/home/morgana/.codex/worktrees/economy-final-db36593/orcs-vs-Fairies/node_modules/.bin/esbuild",
+    "args": [
+      "scripts/economy/verify-native-session.ts",
+      "--bundle",
+      "--platform=node",
+      "--format=esm",
+      "--loader:.svg=text",
+      "--define:__OVF_PROOF_PIN__=\"c86e273c70738f144a00fe75f5ecf39e7fa324d8\"",
+      "--define:__OVF_PROOF_SOURCE_DIGEST__=\"24ef16d7e77323366b2c41f0cc15a93299d068587572dbce5366aa5088cca7c4\"",
+      "--metafile=/tmp/ovf-economy-final-c86e273.xgje4e/modules/verify-native-session.mjs.meta.json",
+      "--outfile=/tmp/ovf-economy-final-c86e273.xgje4e/modules/verify-native-session.mjs"
+    ],
+    "startedAt": "2026-10-01T18:46:03.086Z",
+    "exitCode": 0,
+    "finishedAt": "2026-10-01T18:46:03.097Z"
+  },
+  {
+    "name": "scenario-generation",
+    "program": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+    "args": [
+      "/tmp/ovf-economy-final-c86e273.xgje4e/modules/generate-scenario.mjs",
+      "/tmp/ovf-economy-final-c86e273.xgje4e/browser-scenario.json",
+      "--mixed"
+    ],
+    "startedAt": "2026-10-01T18:46:03.191Z",
+    "exitCode": 0,
+    "finishedAt": "2026-10-01T18:46:04.022Z"
+  },
+  {
+    "name": "fixture-validation",
+    "program": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+    "args": [
+      "/tmp/ovf-economy-final-c86e273.xgje4e/modules/verify-native-session.mjs",
+      "/tmp/ovf-economy-final-c86e273.xgje4e/browser-scenario.json",
+      "/tmp/ovf-economy-final-c86e273.xgje4e/fixture-validation.json",
+      "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+      "/tmp/ovf-economy-final-c86e273.xgje4e/modules/manifest.json",
+      "--fixture"
+    ],
+    "startedAt": "2026-10-01T18:46:04.023Z",
+    "exitCode": 0,
+    "finishedAt": "2026-10-01T18:46:04.289Z"
+  },
+  {
+    "name": "typecheck",
+    "program": "/home/morgana/.codex/worktrees/economy-final-db36593/orcs-vs-Fairies/node_modules/.bin/tsc",
+    "args": [
+      "--noEmit"
+    ],
+    "startedAt": "2026-10-01T18:46:04.289Z",
+    "exitCode": 0,
+    "finishedAt": "2026-10-01T18:46:08.431Z"
+  },
+  {
+    "name": "browser-build",
+    "program": "/home/morgana/.codex/worktrees/economy-final-db36593/orcs-vs-Fairies/node_modules/.bin/vite",
+    "args": [
+      "build",
+      "--config",
+      "/home/morgana/.codex/worktrees/economy-final-db36593/orcs-vs-Fairies/vite.config.ts",
+      "--outDir",
+      "/tmp/ovf-economy-final-c86e273.xgje4e/dist"
+    ],
+    "startedAt": "2026-10-01T18:46:08.432Z",
+    "exitCode": 0,
+    "finishedAt": "2026-10-01T18:46:10.818Z"
+  }
+]
