@@ -9,6 +9,8 @@ export const sha = value => createHash('sha256').update(value).digest('hex');
 const git = args => execFileSync('git',args,{encoding:'utf8'}).trim();
 const configPaths = ['package.json','package-lock.json','vite.config.ts','tsconfig.json','vitest.config.ts','index.html','editor.html'];
 const scriptPaths = ['scripts/controls-proof','scripts/minimap-alerts','scripts/verify_minimap_levels.mjs'];
+const canonicalTestPaths = ['tests/appearance.test.ts','tests/display-settings.test.ts','tests/gamepad.test.ts',
+  'tests/minimap-alerts.test.ts','tests/minimap-level-focus.test.ts','tests/session-storage.test.ts','tests/session-tools.test.ts'];
 
 export async function inventory(directory) {
   const files={};
@@ -24,14 +26,18 @@ export async function inventory(directory) {
 export async function sourceProvenance(sourcePin) {
   assert.match(sourcePin??'',/^[0-9a-f]{40}$/,'Pass the full committed source pin');
   assert.equal(git(['rev-parse','HEAD']),sourcePin,'Checkout must remain on the requested source');
-  const inputs=['src','public',...configPaths,...scriptPaths];
-  assert.equal(git(['diff','HEAD','--name-only','--',...inputs]),'','Tracked source, configuration and proof scripts must match HEAD');
+  const inputs=['src','public',...configPaths,...scriptPaths,...canonicalTestPaths];
+  assert.equal(git(['diff','HEAD','--name-only','--',...inputs]),'','Tracked source, configuration, proof scripts and canonical tests must match HEAD');
   const tracked=git(['ls-tree','-r','--name-only',sourcePin,'--',...inputs]).split('\n').filter(Boolean).sort();
+  assert.deepEqual(tracked.filter(path=>path.startsWith('tests/')),canonicalTestPaths.slice().sort(),'Canonical test inventory must match Git');
+  const canonicalConfig=await readFile('scripts/controls-proof/canonical.vitest.config.ts','utf8');
+  const configuredTests=Array.from(canonicalConfig.matchAll(/['"](tests\/[^'"]+\.test\.ts)['"]/g),match=>match[1]).sort();
+  assert.deepEqual(configuredTests,canonicalTestPaths.slice().sort(),'Every configured canonical test must be pinned');
   const actualSource=Object.keys(await inventory('src')).map(path=>`src/${path}`).sort();
   assert.deepEqual(actualSource,tracked.filter(path=>path.startsWith('src/')),'Source inventory must match Git, including untracked files');
   const actualAssets=Object.keys(await inventory('public')).map(path=>`public/${path}`).sort();
   assert.deepEqual(actualAssets,tracked.filter(path=>path.startsWith('public/')),'Public asset inventory must match Git');
-  const sourceFiles={},assetFiles={},configFiles={},scriptFiles={},buildHash=createHash('sha256');
+  const sourceFiles={},assetFiles={},configFiles={},scriptFiles={},testFiles={},buildHash=createHash('sha256');
   for(const path of tracked) {
     const bytes=await readFile(path),gitBlob=git(['rev-parse',`${sourcePin}:${path}`]);
     const pinned=execFileSync('git',['cat-file','blob',gitBlob],{maxBuffer:128*1024*1024});
@@ -40,12 +46,13 @@ export async function sourceProvenance(sourcePin) {
     if(path.startsWith('src/'))sourceFiles[path]=item;
     else if(path.startsWith('public/'))assetFiles[path]=item;
     else if(path.startsWith('scripts/'))scriptFiles[path]=item;
+    else if(path.startsWith('tests/'))testFiles[path]=item;
     else configFiles[path]=item;
   }
   for(const path of actualSource.filter(path=>/\.(ts|css)$/.test(path))) {
     buildHash.update(path.slice(4));buildHash.update(await readFile(path));
   }
-  return {sourcePin,buildId:buildHash.digest('hex'),sourceFiles,assetFiles,configFiles,scriptFiles};
+  return {sourcePin,buildId:buildHash.digest('hex'),sourceFiles,assetFiles,configFiles,scriptFiles,testFiles};
 }
 
 async function servedBuildSnapshot(context) {
@@ -99,6 +106,7 @@ export async function prepareProof({base,sourcePin,outputDir,feature}) {
   assert.deepEqual(moduleManifest.sourceFiles,provenance.sourceFiles,'Prepared module source hashes must match the checkout');
   assert.deepEqual(moduleManifest.configFiles,provenance.configFiles,'Prepared module configuration hashes must match the checkout');
   assert.deepEqual(moduleManifest.assetFiles,provenance.assetFiles,'Prepared module asset hashes must match the checkout');
+  assert.deepEqual(moduleManifest.testFiles,provenance.testFiles,'Prepared canonical test hashes must match the checkout');
   assert.equal(moduleManifest.modules['schema.mjs']?.sha256,sha(await readFile(schemaModule)),'Schema module bytes differ from preparation');
   const distDir=resolve(process.env.OVF_PROOF_DIST??'dist');
   const compiledFiles=await inventory(distDir);
@@ -115,6 +123,7 @@ export async function prepareProof({base,sourcePin,outputDir,feature}) {
   assert.deepEqual(buildManifest.sourceFiles,provenance.sourceFiles,'Build inputs differ from the frozen source');
   assert.deepEqual(buildManifest.configFiles,provenance.configFiles,'Build configuration differs from the frozen source');
   assert.deepEqual(buildManifest.assetFiles,provenance.assetFiles,'Build assets differ from the frozen source');
+  assert.deepEqual(buildManifest.testFiles,provenance.testFiles,'Build canonical test inputs differ from the frozen source');
   assert.deepEqual(buildManifest.compiledFiles,compiledFiles,'Compiled bytes changed after preparation');
   const context={base:origin.href,sourcePin,out,feature,schema,distDir,...provenance,provenance:{...provenance,schema,schemaModule:{path:schemaModule,sha256:sha(await readFile(schemaModule))},moduleManifestSha256:sha(await readFile(moduleManifestPath)),buildManifestSha256:sha(await readFile(join(distDir,'..','build-manifest.json'))),fingerprintOccurrences},compiledFiles,sha,servedAssets:{},responseTasks:[],observedReports:new Set()};
   context.servedBefore=await servedBuildSnapshot(context);
@@ -165,6 +174,7 @@ export async function finishProof(context,report) {
     assert.deepEqual(endProvenance.configFiles,context.configFiles,'Build configuration changed during browser proof');
     assert.deepEqual(endProvenance.assetFiles,context.assetFiles,'Public assets changed during browser proof');
     assert.deepEqual(endProvenance.scriptFiles,context.scriptFiles,'Proof scripts changed during browser proof');
+    assert.deepEqual(endProvenance.testFiles,context.testFiles,'Canonical tests changed during browser proof');
     assert.deepEqual(await inventory(context.distDir),context.compiledFiles,'Compiled bytes changed during browser proof');
     report.servedAfter=await servedBuildSnapshot(context);
     assert.deepEqual(report.servedAfter,context.servedBefore,'Served build changed during browser proof');
@@ -182,6 +192,6 @@ export async function finishProof(context,report) {
   await writeFile(join(context.out,'browser-proof.json'),JSON.stringify(report,null,2)+'\n');
   const artifacts=await inventory(context.out);
   for(const name of Object.keys(artifacts))if(name==='manifest.json'||name.endsWith('.log'))delete artifacts[name];
-  await writeFile(join(context.out,'manifest.json'),JSON.stringify({sourcePin:context.sourcePin,feature:context.feature,schema:context.schema,buildId:context.buildId,sourceFiles:context.sourceFiles,assetFiles:context.assetFiles,configFiles:context.configFiles,scriptFiles:context.scriptFiles,compiledFiles:context.compiledFiles,servedAssets:context.servedAssets,artifacts,logs:'Finalize logs after verifier and owned preview have exited.'},null,2)+'\n');
+  await writeFile(join(context.out,'manifest.json'),JSON.stringify({sourcePin:context.sourcePin,feature:context.feature,schema:context.schema,buildId:context.buildId,sourceFiles:context.sourceFiles,assetFiles:context.assetFiles,configFiles:context.configFiles,scriptFiles:context.scriptFiles,testFiles:context.testFiles,compiledFiles:context.compiledFiles,servedAssets:context.servedAssets,artifacts,logs:'Finalize logs after verifier and owned preview have exited.'},null,2)+'\n');
   if(finalError)throw finalError;
 }

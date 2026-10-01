@@ -15,6 +15,7 @@ assert.deepEqual(prepared.sourceFiles,provenance.sourceFiles);
 assert.deepEqual(prepared.configFiles,provenance.configFiles);
 assert.deepEqual(prepared.assetFiles,provenance.assetFiles);
 assert.deepEqual(prepared.scriptFiles,provenance.scriptFiles);
+assert.deepEqual(prepared.testFiles,provenance.testFiles);
 assert.equal(prepared.moduleManifestSha256,sha(await readFile(join(prepared.modulesDir,'manifest.json'))));
 assert.equal(prepared.buildManifestSha256,sha(await readFile(join(out,'build-manifest.json'))));
 const moduleManifest=JSON.parse(await readFile(join(prepared.modulesDir,'manifest.json'),'utf8'));

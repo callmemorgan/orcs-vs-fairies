@@ -31,7 +31,7 @@ assert.equal(schema.saveVersion,4,'The combined controls certification requires 
 assert.equal(schema.replayChecksumVersion,schema.saveVersion);
 assert.equal(schema.sessionVersion,1);assert.equal(schema.replayVersion,1);
 await writeFile(join(modules,'manifest.json'),JSON.stringify({sourcePin,sourceDigest,schema,
-  sourceFiles:provenance.sourceFiles,assetFiles:provenance.assetFiles,configFiles:provenance.configFiles,
+  sourceFiles:provenance.sourceFiles,assetFiles:provenance.assetFiles,configFiles:provenance.configFiles,testFiles:provenance.testFiles,
   entries,modules:await inventory(modules)},null,2)+'\n');
 await writeFile(join(out,'schema.json'),JSON.stringify(schema,null,2)+'\n');
 const minimap=join(out,'minimap');await mkdir(minimap,{recursive:true});
@@ -45,7 +45,7 @@ const compiledFiles=await inventory(join(out,'dist'));
 await writeFile(join(out,'build-manifest.json'),JSON.stringify({...provenance,compiledFiles},null,2)+'\n');
 await writeFile(join(out,'prepare.json'),JSON.stringify({sourcePin,sourceDigest,schema,outputRoot:out,
   distDir:join(out,'dist'),modulesDir:modules,sourceFiles:provenance.sourceFiles,
-  assetFiles:provenance.assetFiles,configFiles:provenance.configFiles,scriptFiles:provenance.scriptFiles,
+  assetFiles:provenance.assetFiles,configFiles:provenance.configFiles,scriptFiles:provenance.scriptFiles,testFiles:provenance.testFiles,
   moduleManifestSha256:sha(await readFile(join(modules,'manifest.json'))),
   buildManifestSha256:sha(await readFile(join(out,'build-manifest.json'))),
   preparedAt:new Date().toISOString(),browserRun:false},null,2)+'\n');
