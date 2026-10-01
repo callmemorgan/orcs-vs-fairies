@@ -1,5 +1,5 @@
 import {mkdirSync,writeFileSync} from 'node:fs';
-import {createGame,refreshVisibility} from '../../src/core/simulation';
+import {createGame,refreshVisibility,stepGame} from '../../src/core/simulation';
 import {FACTIONS} from '../../src/core/content';
 import {openDestination} from '../../src/core/navigation';
 import {createSessionFile} from '../../src/core/session-storage';
@@ -13,4 +13,6 @@ const neutral=base(),village=neutral.world!.sites.find(s=>s.kind==='village')!,d
 place(neutral,army[0],'melee',village.x+1.7,village.y,1);place(neutral,army[1],'cavalry',den.x+5.8,den.y+1,1);place(neutral,army[2],'cavalry',den.x+5.8,den.y-1,1);neutral.players[0].upgrades=['town-age'];write('neutral',neutral);
 const surface=base(),wood=surface.resources.find(r=>r.kind==='wood'&&r.level===0)!,workers=surface.entities.filter(e=>e.side===0&&e.kind==='unit');wood.amount=wood.maxAmount=30;place(surface,workers[0],'worker',wood.x+1.2,wood.y,0);const firebreak={x:Math.floor(wood.x)+.5,y:Math.floor(wood.y)-.5,level:0};surface.terrain[Math.floor(firebreak.y)*surface.width+Math.floor(firebreak.x)]='forest';
 const bridge=surface.world!.bridges[0],tile=bridge.tiles[0];bridge.hp=Math.min(36,bridge.maxHp);place(surface,workers[1],'cavalry',tile%surface.width+.5,Math.floor(tile/surface.width)+.5,0);place(surface,workers[2],'worker',workers[1].x+2,workers[1].y,0);write('surface',surface);
-writeFileSync(`${out}/manifest.json`,JSON.stringify({neutral:{supportActor:army[0].id,cavalry:[army[1].id,army[2].id],village:village.id,den:den.id},surface:{fireActor:workers[0].id,wood:wood.id,firebreak,bridge:bridge.id,attackActor:workers[1].id,repairActor:workers[2].id}},null,2));
+const dusk=base();dusk.time=98;write('dusk',dusk);
+const thaw=base();thaw.world!.biome='snow';thaw.time=232;const thawActor=thaw.entities.find(e=>e.side===0&&e.kind==='unit')!,thawPoint={x:16.5,y:12.5,level:0};for(let y=11;y<=13;y++)for(let x=15;x<=17;x++){thaw.terrain[y*thaw.width+x]='water';thaw.world!.levels[0].elevation[y*thaw.width+x]=0;}thaw.resources=thaw.resources.filter(r=>Math.abs(r.x-thawPoint.x)>3||Math.abs(r.y-thawPoint.y)>3);stepGame(thaw,.05);place(thaw,thawActor,'worker',thawPoint.x,thawPoint.y,0);write('thaw',thaw);
+writeFileSync(`${out}/manifest.json`,JSON.stringify({thaw:{actor:thawActor.id,point:thawPoint,hp:thawActor.hp},neutral:{supportActor:army[0].id,cavalry:[army[1].id,army[2].id],village:village.id,den:den.id},surface:{fireActor:workers[0].id,wood:wood.id,firebreak,bridge:bridge.id,attackActor:workers[1].id,repairActor:workers[2].id}},null,2));

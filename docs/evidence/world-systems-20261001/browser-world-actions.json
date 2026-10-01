@@ -1,0 +1,234 @@
+{
+  "url": "http://127.0.0.1:5365",
+  "checks": [
+    {
+      "name": "Controller previous selection follows the selected troop level",
+      "target": {
+        "id": 12,
+        "level": 0
+      }
+    },
+    {
+      "name": "Stronghold camera control switches back to the stronghold level",
+      "hq": {
+        "id": 12,
+        "level": 0
+      }
+    },
+    {
+      "name": "Village request, supplies and real defender through controls",
+      "owner": 0,
+      "stock": {
+        "wood": 260,
+        "ore": 120,
+        "crystal": 40
+      },
+      "player": {
+        "faction": "orcs",
+        "wood": 340,
+        "ore": 200,
+        "crystal": 0,
+        "population": 6,
+        "cap": 12,
+        "upgrades": [
+          "town-age"
+        ]
+      }
+    },
+    {
+      "name": "Normal army order clears real monster den and finite reward",
+      "site": {
+        "id": 2,
+        "x": 13.5,
+        "y": 18.5,
+        "level": 1,
+        "kind": "monster",
+        "owner": null,
+        "loyalty": [
+          0,
+          0
+        ],
+        "progress": 0,
+        "capturing": null,
+        "reward": {
+          "wood": 0,
+          "ore": 0,
+          "crystal": 0
+        },
+        "rewarded": [
+          0
+        ],
+        "request": {
+          "wood": 80,
+          "ore": 20,
+          "crystal": 0
+        },
+        "supplied": false,
+        "creatureIds": [
+          51,
+          52
+        ],
+        "respawnAt": 99.1
+      },
+      "creatures": [
+        {
+          "id": 51,
+          "hp": 0,
+          "maxHp": 110,
+          "respawnAt": 99.1
+        },
+        {
+          "id": 52,
+          "hp": 0,
+          "maxHp": 110,
+          "respawnAt": 96.69999999999999
+        }
+      ],
+      "players": [
+        {
+          "faction": "orcs",
+          "wood": 560,
+          "ore": 330,
+          "crystal": 50,
+          "population": 7,
+          "cap": 12,
+          "upgrades": [
+            "town-age"
+          ]
+        },
+        {
+          "faction": "fairies",
+          "wood": 420,
+          "ore": 220,
+          "crystal": 0,
+          "population": 6,
+          "cap": 12,
+          "upgrades": []
+        }
+      ]
+    },
+    {
+      "name": "Native army captures contested cavern relic",
+      "site": {
+        "id": 1,
+        "x": 18.5,
+        "y": 18.5,
+        "level": 1,
+        "kind": "relic",
+        "owner": 0,
+        "loyalty": [
+          0,
+          0
+        ],
+        "progress": 0,
+        "capturing": null,
+        "reward": {
+          "wood": 180,
+          "ore": 100,
+          "crystal": 40
+        },
+        "rewarded": [],
+        "request": {
+          "wood": 80,
+          "ore": 20,
+          "crystal": 0
+        },
+        "supplied": false,
+        "creatureIds": [],
+        "respawnAt": 0
+      }
+    },
+    {
+      "name": "Native export contains world, underground troops and neutral progress",
+      "tick": 405
+    },
+    {
+      "name": "Native ignition consumes finite timber and creates fire",
+      "fires": [
+        {
+          "x": 3.5,
+          "y": 11.5,
+          "level": 0,
+          "heat": 0.9932000000000007,
+          "expires": 45.6,
+          "nextSpread": 3.1
+        }
+      ]
+    },
+    {
+      "name": "Native worker clears forest firebreak",
+      "point": {
+        "x": 3.5,
+        "y": 10.5,
+        "level": 0
+      }
+    },
+    {
+      "name": "Native unit attack destroys crossing and invalidates terrain",
+      "bridge": {
+        "id": 4,
+        "x": 25.5,
+        "y": 13.5,
+        "level": 0,
+        "hp": 0,
+        "maxHp": 160,
+        "tiles": [
+          458,
+          459,
+          494,
+          493,
+          492,
+          529
+        ],
+        "rebuilding": 0,
+        "repairSide": null
+      },
+      "revision": 7
+    },
+    {
+      "name": "Native workers pay and rebuild the crossing",
+      "bridge": {
+        "id": 4,
+        "x": 25.5,
+        "y": 13.5,
+        "level": 0,
+        "hp": 160,
+        "maxHp": 160,
+        "tiles": [
+          458,
+          459,
+          494,
+          493,
+          492,
+          529
+        ],
+        "rebuilding": 1,
+        "repairSide": null
+      }
+    },
+    {
+      "name": "World day calendar advances to dusk in the production match",
+      "summary": "World · dusk · clear · spring"
+    },
+    {
+      "name": "Winter thaw countdown is visible before the crossing changes",
+      "description": "snow · Daylight changes surface sight. Rain slows troops and weakens ranged attacks; it stops fire spread. Lake ice thaws in 8s; leave lake crossings. Caverns use independent fog and paths. Selected height: 0. Each height tier adds 0.75 sight and 0.5 ranged reach; ranged troops gain 12% damage per tier above their target."
+    },
+    {
+      "name": "Production winter crossing thaws and rescues an injured worker to a bank",
+      "actor": {
+        "id": 13,
+        "x": 16.5,
+        "y": 10.5,
+        "hp": 63.75,
+        "maxHp": 85,
+        "order": {
+          "type": "idle"
+        }
+      },
+      "iceTiles": [],
+      "season": "World · day · rain · spring"
+    }
+  ],
+  "errors": []
+}
