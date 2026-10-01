@@ -45,7 +45,7 @@ export function evaluateObjectives(s:GameState,actions:Actions):void {
  }
  if(s.rules.mode==='relic'){
   for(const relic of s.objectives.relics){
-   if(relic.carrierId!==null){const carrier=s.entities.find(e=>e.id===relic.carrierId&&alive(e));if(!carrier){relic.carrierId=null;relic.heldTeam=null;continue;}relic.x=carrier.x;relic.y=carrier.y;
+   if(relic.carrierId!==null){const carrier=s.entities.find(e=>e.id===relic.carrierId&&alive(e));if(!carrier){const fallen=s.entities.find(e=>e.id===relic.carrierId)||s.corpses.find(e=>e.id===relic.carrierId);if(fallen){relic.x=fallen.x;relic.y=fallen.y;}relic.carrierId=null;relic.heldTeam=null;continue;}relic.x=carrier.x;relic.y=carrier.y;
     const shrine=s.entities.find(e=>alive(e)&&e.kind==='building'&&e.role==='hq'&&e.progress===1&&s.teams[e.side]===s.teams[carrier.side]&&Math.hypot(e.x-carrier.x,e.y-carrier.y)<=3);
     if(shrine){relic.carrierId=null;relic.heldTeam=s.teams[carrier.side];relic.x=shrine.x;relic.y=shrine.y;}
    }

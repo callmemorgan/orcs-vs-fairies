@@ -1,4 +1,4 @@
-import { normalizeMatchRules, createDraft, applyDraftChoice, tickDraft, draftPlayers, definitionAllowed } from './match-rules';
+import { normalizeMatchRules, createDraft, applyDraftChoice, tickDraft, draftPlayers, definitionAllowed, validateDraftState } from './match-rules';
 import { initializeObjectives, emptyObjectives, evaluateObjectives, collectRelic, dropRelic, objectiveAi } from './objectives';
 import { DIRECTIONS_24, DIRECTIONS_32, facing8, length2D } from './geometry';
 import { commanderArtifact, creditCombat, dropArtifact, dropArtifacts, equipArtifact, promote, progressionStats, recordCombatExposure, recoverArtifact, stepVeterans, unequipArtifact } from './unit-progression';
@@ -91,11 +91,22 @@ export function createMatch(config:MatchConfig,options:{scenario?:boolean}={}):G
  const packageMap=m.world as import('./world-types').WorldMapData|undefined??(m.biome===undefined?undefined:generateWorldMap(seed,size as GameState['mapSize'],definitions.length,m.biome as typeof BIOMES[number]));
  const map=packageMap?generatedMapFromWorld(packageMap,definitions.length,options):generateMatchMap(seed,size as GameState['mapSize'],definitions.length);
  if(packageMap&&packageMap.seed!==seed)throw new Error('Map package seed must match the match configuration.');
- const s:GameState={rules,draft:createDraft(config.players,rules),objectives:emptyObjectives(map),controllers:definitions.map(p=>p.controller),aiConfigs:definitions.map(p=>p.ai),teams,incomeFactors,populationLimits,sharedVision:rules.sharedVision!==false,eliminated:definitions.map(()=>false),winningTeam:null,mapSize:map.size,mapVersion:map.version,terrain:map.terrain,starts:definitions.map(p=>({...map.starts[p.slot]})),draw:false,tick:0,corpses:[],time:0,seed,width:map.width,height:map.height,entities:[],resources:[],players:definitions.map(p=>({faction:p.faction,wood:p.wood,ore:p.ore,crystal:p.crystal,population:0,cap:12,upgrades:age===3?['town-age','citadel-age']:age===2?['town-age']:[]})),winner:null,events:[],explored:definitions.map(()=>new Set()),visible:definitions.map(()=>new Set()),nextId:1};
+ const s:GameState={rules,draft:c.draft===undefined?createDraft(config.players,rules):validateDraftState(c.draft,config.players,rules),objectives:emptyObjectives(map),controllers:definitions.map(p=>p.controller),aiConfigs:definitions.map(p=>p.ai),teams,incomeFactors,populationLimits,sharedVision:rules.sharedVision!==false,eliminated:definitions.map(()=>false),winningTeam:null,mapSize:map.size,mapVersion:map.version,terrain:map.terrain,starts:definitions.map(p=>({...map.starts[p.slot]})),draw:false,tick:0,corpses:[],time:0,seed,width:map.width,height:map.height,entities:[],resources:[],players:definitions.map(p=>({faction:p.faction,wood:p.wood,ore:p.ore,crystal:p.crystal,population:0,cap:12,upgrades:age===3?['town-age','citadel-age']:age===2?['town-age']:[]})),winner:null,events:[],explored:definitions.map(()=>new Set()),visible:definitions.map(()=>new Set()),nextId:1};
  if(content)s.content=content;
  if(packageMap)initializeWorld(s,packageMap,m.biome as typeof BIOMES[number]??'temperate');
  if(!options.scenario)for(const side of playerSides(s)){const {x,y}=s.starts[side],level=levelOf(s.starts[side]),dir=y<s.height/2?1:-1;spawnEntity(s,side,'building','hq',x,y,1,undefined,level);for(let i=0;i<5;i++)spawnEntity(s,side,'unit','worker',x+(-2+i*.85)*dir,y+3*dir,1,undefined,level);spawnEntity(s,side,'unit','melee',x+3*dir,y+dir,1,undefined,level);}
- for(const resource of map.resources)s.resources.push({...resource,id:s.nextId++});initializeWorldSites(s);initializeObjectives(s);refreshVisibility(s);updatePopulation(s);return s;
+ for(const resource of map.resources)s.resources.push({...resource,id:s.nextId++});initializeWorldSites(s);initializeObjectives(s);if(s.rules.draft.enabled&&s.draft.status==='complete')finalizeDraft(s);refreshVisibility(s);updatePopulation(s);return s;
+}
+function finalizeDraft(s:GameState):void {
+ // The standard one-soldier starting army uses the first drafted combat unit.
+ for(const side of playerSides(s)){
+  const faction=FACTIONS[s.players[side].faction],picked=s.draft.picks[side].map(id=>Object.values(faction.units).find(u=>u.id===id)).find(u=>u&&u.role!=='worker');
+  if(!picked)throw new Error('Completed draft requires a combat unit for every player.');
+  const starters=s.entities.filter(e=>e.side===side&&e.kind==='unit'&&e.role!=='worker'&&e.hp>0);
+  for(const unit of starters){s.entities=s.entities.filter(e=>e!==unit);spawnEntity(s,side,'unit',picked.role,unit.x,unit.y);}
+ }
+ if(s.rules.mode==='survival')s.objectives.survival.nextWaveTick=s.tick+s.rules.survival.intervalTicks;
+ updatePopulation(s);
 }
 export function createGame(faction:FactionId,seed=1977,opponent:FactionId=faction==='orcs'?'fairies':'orcs',options:GameOptions={}):GameState{
  const controllers=options.controllers??['human','ai'];return createMatch({map:{seed,size:options.mapSize??'medium',...(options.biome?{biome:options.biome}:{}),...(options.world?{world:options.world}:{})},players:[{id:0,teamId:0,factionId:faction,controller:controllers[0],ai:options.ai?.[0]},{id:1,teamId:1,factionId:opponent,controller:controllers[1],ai:options.ai?.[1]}]});
@@ -173,7 +184,7 @@ export function issueCommand(s:GameState,side:Side,c:Command):boolean{
 }
 function applyCommand(s:GameState,side:Side,c:Command):boolean{
  if(!validateCommand(c)||isGameOver(s)||!s.players[side]||s.eliminated[side])return false;
- if(c.type==='draftChoice')return applyDraftChoice(s.draft,s.rules,draftPlayers(s),side,c.definitionId);
+ if(c.type==='draftChoice'){const accepted=applyDraftChoice(s.draft,s.rules,draftPlayers(s),side,c.definitionId);if(accepted&&s.draft.status==='complete')finalizeDraft(s);return accepted;}
  if(s.draft.status!=='complete')return false;
  if(c.type==='collectRelic')return collectRelic(s,side,c.id,c.relicId);
  if(c.type==='dropRelic')return dropRelic(s,side,c.id);
@@ -407,7 +418,9 @@ export function stepGame(s:GameState,dt:number):void{
  if(s.tick!==before)notifyStep(s,Math.min(dt,.25));
 }
 function applyStep(s:GameState,dt:number):void{
- if(isGameOver(s)||!Number.isFinite(dt)||dt<=0)return;s.events=[];dt=Math.min(dt,.25);s.time+=dt;s.tick++;stepEnvironment(s,dt,{interrupt:actor=>interruptWorldOrder(s,actor),die:(actor,text)=>die(s,actor,text)});const rt=runtime(s);rt.hits=[];stepSpecialists(s,specialistHooks(s));resolveSpecialistShots(s,specialistHooks(s));stepVeterans(s);rt.fog-=dt;if(rt.fog<=0){refreshVisibility(s);rt.fog=.2;}rt.ai-=dt;if(rt.ai<=0){rt.aiTurns++;rt.ai+=1;}
+ if(isGameOver(s)||!Number.isFinite(dt)||dt<=0)return;s.events=[];
+ if(s.draft.status==='drafting'){tickDraft(s.draft,s.rules,draftPlayers(s));for(const side of playerSides(s))if(s.controllers[side]==='ai'&&s.draft.order[s.draft.turn]?.side===side){for(const id of s.draft.pool)if(applyDraftChoice(s.draft,s.rules,draftPlayers(s),side,id))break;}s.tick++;if(s.draft.turn===s.draft.order.length)finalizeDraft(s);return;}
+ dt=Math.min(dt,.25);s.time+=dt;s.tick++;stepEnvironment(s,dt,{interrupt:actor=>interruptWorldOrder(s,actor),die:(actor,text)=>die(s,actor,text)});const rt=runtime(s);rt.hits=[];stepSpecialists(s,specialistHooks(s));resolveSpecialistShots(s,specialistHooks(s));stepVeterans(s);rt.fog-=dt;if(rt.fog<=0){refreshVisibility(s);rt.fog=.2;}rt.ai-=dt;if(rt.ai<=0){rt.aiTurns++;rt.ai+=1;}
  const sides=playerSides(s),due=new Set(sides.filter(side=>s.controllers[side]==='ai'&&!s.eliminated[side]&&s.time+1e-9>=rt.aiDecisionAt[side]));
  if(due.size){const offset=rt.aiBatchTurns++%sides.length;for(let i=0;i<sides.length;i++){const side=sides[(i+offset)%sides.length];if(due.has(side)){if(s.rules.mode!=='survival'||s.teams[side]===s.rules.survival.defenderTeam)runAI(s,side);objectiveAi(s,side,issueCommand);rt.aiDecisionAt[side]=s.time+aiProfile(s.aiConfigs[side]).decisionInterval;}}}
  for(const e of [...s.entities]){

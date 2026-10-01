@@ -3,7 +3,7 @@ import type { Age, Cost, GameState, MatchPlayerConfig, Side, TeamId } from './ty
 
 export interface MatchRules {
  mode:'annihilation'|'hill'|'relic'|'survival'|'scenario'; standardDefeat:boolean;
- startingAge:Age; sharedVision:boolean; startingResources:Cost; disabledDefinitionIds:string[];
+ startingAge:Age; sharedVision:boolean; friendlyFire:boolean; startingResources:Cost; disabledDefinitionIds:string[];
  hill:{radius:number;captureTicks:number;holdTicks:number};
  relic:{count:number;required:number;holdTicks:number;pickupRadius:number};
  survival:{defenderTeam:TeamId;waveCount:number;intervalTicks:number;recoveryTicks:number;unitsPerWave:number;rewardPerWave:Cost};
@@ -31,12 +31,12 @@ function bool(value:unknown,name:string):boolean {if(typeof value!=='boolean')th
 function money(value:unknown,name:string):Cost {const c=fields(value,['wood','ore','crystal'],name);return {wood:num(c.wood,0,1e9,`${name} wood`),ore:num(c.ore,0,1e9,`${name} ore`),crystal:num(c.crystal,0,1e9,`${name} crystal`)};}
 export function definitionIds():string[]{return [...new Set([...Object.values(FACTIONS).flatMap(f=>Object.values(f.units).map(u=>u.id)),...Object.keys(UPGRADES)])];}
 export function normalizeMatchRules(value:unknown={}):MatchRules {
- const r=fields(value,['mode','standardDefeat','startingAge','sharedVision','startingResources','disabledDefinitionIds','hill','relic','survival','draft'],'match rules');
+ const r=fields(value,['mode','standardDefeat','startingAge','sharedVision','friendlyFire','startingResources','disabledDefinitionIds','hill','relic','survival','draft'],'match rules');
  const mode=r.mode??'annihilation';if(!['annihilation','hill','relic','survival','scenario'].includes(mode as string))throw new Error('Unknown victory mode.');
  const h=fields(r.hill??{},['radius','captureTicks','holdTicks'],'hill rules'),l=fields(r.relic??{},['count','required','holdTicks','pickupRadius'],'relic rules'),s=fields(r.survival??{},['defenderTeam','waveCount','intervalTicks','recoveryTicks','unitsPerWave','rewardPerWave'],'survival rules'),d=fields(r.draft??{},['enabled','banRounds','pickRounds','turnTicks'],'draft rules');
  const disabled=r.disabledDefinitionIds??[];
  if(!Array.isArray(disabled)||disabled.length>256||disabled.some(id=>typeof id!=='string'||id.length>128||!definitionIds().includes(id))||new Set(disabled).size!==disabled.length)throw new Error('Disabled definitions must be unique known unit or technology IDs.');
- const rules:MatchRules={mode:mode as MatchRules['mode'],standardDefeat:bool(r.standardDefeat??(mode!=='scenario'&&mode!=='survival'),'standard defeat'),startingAge:num(r.startingAge??1,1,3,'starting age',true) as Age,sharedVision:bool(r.sharedVision??true,'shared vision'),startingResources:money(r.startingResources??{wood:420,ore:220,crystal:0},'starting resources'),disabledDefinitionIds:[...disabled],
+ const rules:MatchRules={mode:mode as MatchRules['mode'],standardDefeat:bool(r.standardDefeat??(mode!=='scenario'&&mode!=='survival'),'standard defeat'),startingAge:num(r.startingAge??1,1,3,'starting age',true) as Age,sharedVision:bool(r.sharedVision??true,'shared vision'),friendlyFire:bool(r.friendlyFire??true,'friendly fire'),startingResources:money(r.startingResources??{wood:420,ore:220,crystal:0},'starting resources'),disabledDefinitionIds:[...disabled],
  hill:{radius:num(h.radius??5,1,12,'hill radius'),captureTicks:num(h.captureTicks??100,1,72000,'hill capture duration',true),holdTicks:num(h.holdTicks??2400,1,72000,'hill hold duration',true)},
  relic:{count:num(l.count??3,1,8,'relic count',true),required:num(l.required??2,1,8,'required relics',true),holdTicks:num(l.holdTicks??2400,1,72000,'relic defense duration',true),pickupRadius:num(l.pickupRadius??1.5,.5,4,'relic pickup radius')},
  survival:{defenderTeam:num(s.defenderTeam??0,0,7,'defender team',true) as TeamId,waveCount:num(s.waveCount??5,1,20,'wave count',true),intervalTicks:num(s.intervalTicks??1200,20,72000,'wave interval',true),recoveryTicks:num(s.recoveryTicks??400,1,72000,'recovery duration',true),unitsPerWave:num(s.unitsPerWave??2,1,20,'wave size',true),rewardPerWave:money(s.rewardPerWave??{wood:60,ore:30,crystal:0},'wave reward')},
@@ -53,10 +53,12 @@ export function createDraft(players:Pick<MatchPlayerConfig,'id'|'factionId'>[],r
  return {status:order.length?'drafting':'complete',turn:0,remainingTicks:order.length?rules.draft.turnTicks:0,order,banned:[],picks:players.map(()=>[]),pool};
 }
 export function legalDraftChoices(draft:DraftState,players:Pick<MatchPlayerConfig,'id'|'factionId'>[],side:Side):string[]{return draft.pool.filter(id=>!draft.banned.includes(id)&&!draft.picks[side]?.includes(id)&&(draft.order[draft.turn]?.action==='ban'||draftOptions(players[side].factionId).includes(id)));}
+const combatIds=(factionId:MatchPlayerConfig['factionId'])=>Object.values(FACTIONS[factionId].units).filter(u=>u.role!=='worker').map(u=>u.id);
 export function applyDraftChoice(draft:DraftState,rules:MatchRules,players:Pick<MatchPlayerConfig,'id'|'factionId'>[],side:Side,definitionId:string):boolean {
  const turn=draft.order[draft.turn];if(draft.status!=='drafting'||!turn||turn.side!==side||!legalDraftChoices(draft,players,side).includes(definitionId))return false;
  // A ban is rejected when it would leave any faction unable to finish its picks.
- if(turn.action==='ban'&&players.some(p=>draftOptions(p.factionId).filter(id=>draft.pool.includes(id)&&id!==definitionId&&!draft.banned.includes(id)).length<rules.draft.pickRounds))return false;
+ if(turn.action==='pick'&&draft.picks[side].length===rules.draft.pickRounds-1&&!draft.picks[side].some(id=>combatIds(players[side].factionId).includes(id))&&!combatIds(players[side].factionId).includes(definitionId))return false;
+ if(turn.action==='ban'&&players.some(p=>draftOptions(p.factionId).filter(id=>draft.pool.includes(id)&&id!==definitionId&&!draft.banned.includes(id)).length<rules.draft.pickRounds||!combatIds(p.factionId).some(id=>draft.pool.includes(id)&&id!==definitionId&&!draft.banned.includes(id))))return false;
  if(turn.action==='pick')draft.picks[side].push(definitionId);else draft.banned.push(definitionId);
  draft.turn++;draft.status=draft.turn===draft.order.length?'complete':'drafting';draft.remainingTicks=draft.status==='complete'?0:rules.draft.turnTicks;return true;
 }
@@ -71,4 +73,30 @@ export function definitionAllowed(state:GameState,side:Side,id:string):boolean {
  if(state.rules.disabledDefinitionIds.includes(id)||state.draft.banned.includes(id))return false;
  const necessary=id==='town-age'||id==='citadel-age'||id===FACTIONS[state.players[side].faction].units.worker.id;
  return !state.rules.draft.enabled||necessary||state.draft.status==='complete'&&state.draft.picks[side].includes(id);
+}
+
+/** Validate the stored turn history by replaying every legal choice from the rules. */
+export function validateDraftState(value:unknown,players:Pick<MatchPlayerConfig,'id'|'factionId'>[],rules:MatchRules):DraftState {
+ const d=fields(value,['status','turn','remainingTicks','order','banned','picks','pool'],'draft state'),expected=createDraft(players,rules);
+ const turn=num(d.turn,0,expected.order.length,'draft turn',true);
+ if(JSON.stringify(d.order)!==JSON.stringify(expected.order)||JSON.stringify(d.pool)!==JSON.stringify(expected.pool))throw new Error('Draft order or pool differs from the match rules.');
+ if(!Array.isArray(d.banned)||!Array.isArray(d.picks)||d.picks.length!==players.length||d.picks.some(p=>!Array.isArray(p)||p.length>rules.draft.pickRounds||p.some(id=>typeof id!=='string')))throw new Error('Invalid saved draft choices.');
+ const choices=d.picks as string[][];
+ const picked=players.map(()=>0);let banned=0;
+ for(let i=0;i<turn;i++){const action=expected.order[i],id=action.action==='ban'?d.banned[banned++]:choices[action.side][picked[action.side]++];if(typeof id!=='string'||!applyDraftChoice(expected,rules,players,action.side,id))throw new Error('Saved draft contains an illegal choice.');}
+ if(banned!==d.banned.length||picked.some((count,side)=>count!==choices[side].length)||d.status!==expected.status)throw new Error('Saved draft choices do not match its turn.');
+ expected.remainingTicks=num(d.remainingTicks,expected.status==='drafting'?1:0,expected.status==='drafting'?rules.draft.turnTicks:0,'remaining draft ticks',true);return expected;
+}
+export function validateObjectiveState(value:unknown,state:GameState):ObjectiveState {
+ const o=fields(value,['hill','relics','relicHoldTicks','survival'],'objective state'),h=fields(o.hill,['x','y','ownerTeam','captureTeam','captureTicks','holdTicks','contested'],'hill state'),wave=fields(o.survival,['wave','nextWaveTick','spawnedIds','phase'],'survival state');
+ const team=(v:unknown)=>{if(v===null)return null;const id=num(v,0,7,'objective team',true) as Side;if(!state.teams.includes(id))throw new Error('Objective refers to an absent team.');return id;};
+ const point=(p:Record<string,unknown>)=>({x:num(p.x,0,state.width,'objective x'),y:num(p.y,0,state.height,'objective y')});
+ const hill:ObjectiveState['hill']={...point(h),ownerTeam:team(h.ownerTeam),captureTeam:team(h.captureTeam),captureTicks:num(h.captureTicks,0,state.rules.hill.captureTicks,'hill capture ticks',true),holdTicks:num(h.holdTicks,0,state.rules.hill.holdTicks,'hill hold ticks',true),contested:bool(h.contested,'contested hill')};
+ if(!Array.isArray(o.relics)||o.relics.length!==(state.rules.mode==='relic'?state.rules.relic.count:0))throw new Error('Invalid saved relic count.');
+ const relics:ObjectiveState['relics']=o.relics.map((v,i)=>{const r=fields(v,['id','x','y','carrierId','heldTeam'],'relic state');if(r.id!==i+1)throw new Error('Invalid saved relic ID.');const carrierId=r.carrierId===null?null:num(r.carrierId,1,state.nextId-1,'relic carrier ID',true);if(carrierId!==null&&!state.entities.some(e=>e.id===carrierId&&e.kind==='unit'&&e.hp>0&&!e.illusion))throw new Error('Relic carrier must be a living ordinary unit.');const heldTeam=team(r.heldTeam);if(carrierId!==null&&heldTeam!==null)throw new Error('Carried relic cannot be held in a shrine.');return {id:i+1,...point(r),carrierId,heldTeam};});
+ const carriers=relics.flatMap(r=>r.carrierId===null?[]:[r.carrierId]);if(new Set(carriers).size!==carriers.length)throw new Error('Unit cannot carry multiple relics.');
+ if(!Array.isArray(o.relicHoldTicks)||o.relicHoldTicks.length!==8)throw new Error('Invalid relic defense counters.');const relicHoldTicks=o.relicHoldTicks.map(v=>num(v,0,state.rules.relic.holdTicks,'relic defense counter',true));
+ if(!Array.isArray(wave.spawnedIds)||wave.spawnedIds.length>state.rules.survival.unitsPerWave*state.rules.survival.waveCount)throw new Error('Invalid survival wave IDs.');const spawnedIds=wave.spawnedIds.map(v=>num(v,1,state.nextId-1,'wave entity ID',true));if(new Set(spawnedIds).size!==spawnedIds.length)throw new Error('Duplicate survival attacker ID.');
+ if(!['waiting','fighting','recovery','complete'].includes(wave.phase as string))throw new Error('Unknown survival phase.');
+ return {hill,relics,relicHoldTicks,survival:{wave:num(wave.wave,0,state.rules.survival.waveCount,'survival wave',true),nextWaveTick:num(wave.nextWaveTick,0,1e12,'next wave tick',true),spawnedIds,phase:wave.phase as ObjectiveState['survival']['phase']}};
 }

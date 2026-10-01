@@ -1,4 +1,4 @@
-import type { FactionId, MapSize, Command, Side, Vec, MatchPlayerConfig, Age } from '../core/types';
+import type { FactionId, MapSize, Command, Side, Vec, MatchPlayerConfig, Age, MatchRulesInput, DraftState } from '../core/types';
 import type { PlayerView } from '../core/observation';
 
 export const PROTOCOL_VERSION = 1;
@@ -10,7 +10,7 @@ export interface LobbyPlayerSettings {
 }
 export interface LobbySettings {
   mapSize:MapSize; factions:FactionId[]; players?:LobbyPlayerSettings[];
-  sharedVision?:boolean; startingAge?:Age;
+  sharedVision?:boolean; startingAge?:Age; rules?:MatchRulesInput;
 }
 export interface LobbySeat {
   side:Side; account:Account|null; ready:boolean; controller?:'human'|'ai';
@@ -18,7 +18,7 @@ export interface LobbySeat {
 }
 export interface LobbyObservation {
   id:string; hostId:string; revision:number; settings:LobbySettings;
-  seats:LobbySeat[]; matchId:string|null;
+  seats:LobbySeat[]; matchId:string|null; draft?:DraftState;
 }
 type CoreObservation=ReturnType<PlayerView['observe']>;
 export type PlayerObservation=Omit<CoreObservation,'map'|'entities'|'events'> & {

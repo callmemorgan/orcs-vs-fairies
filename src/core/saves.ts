@@ -1,3 +1,5 @@
+import { normalizeMatchRules, createDraft, draftPlayers, validateDraftState, validateObjectiveState } from './match-rules';
+import { emptyObjectives } from './objectives';
 import { normalizeAiConfig } from './ai-policy';
 import { validateSpecialists } from './specialist-validation';
 import { availableBuildings, availableUnits, buildingFor, contentFactions, decodeContentBundle, entityDefinition, upgradesFor } from './content-registry';
@@ -110,7 +112,7 @@ function validateRuntime(value:unknown,c:Context,version:1|2|3):void {
 }
 function validate(envelope:unknown,version:1|2|3):void {
  const save=object(envelope,'save',['format','version','state','runtime']);if(save.format!=='orcs-vs-fairies-save')bad('format','unknown save format');if(save.version!==version)bad('version',`unsupported version ${String(save.version)}`);
- const s=object(save.state,'state',version===1?STATE_FIELDS:version===2?[...STATE_FIELDS,...TEAM_FIELDS]:[...STATE_FIELDS,...TEAM_FIELDS,'aiConfigs'],version===3?['content','world','specialists']:[]);
+ const s=object(save.state,'state',version===1?STATE_FIELDS:version===2?[...STATE_FIELDS,...TEAM_FIELDS]:[...STATE_FIELDS,...TEAM_FIELDS,'aiConfigs'],version===3?['content','world','specialists','rules','objectives','draft']:[]);
  if(s.content!==undefined)s.content=decodeContentBundle(s.content);
  const playerCount=list(s.players,'state.players',version===1?2:MAX_PLAYERS,version===1?2:undefined).length;
  if(playerCount===0)bad('state.players','expected between 1 and 8 players');
@@ -145,6 +147,7 @@ function validate(envelope:unknown,version:1|2|3):void {
  if(s.world!==undefined){validateWorldState(s.world,width,height,nextId,playerCount);const world=s.world;for(const allocated of [...world.bridges,...world.sites,...world.creatures])if(c.entityIds.has(allocated.id)||c.resourceIds.has(allocated.id))bad('world.id','collision with entity or resource');if(world.levels[0].terrain.some((t,i)=>t!==(s.terrain as unknown[])[i]))bad('world.levels[0].terrain','must match surface terrain');}
  validateRuntime(save.runtime,c,version);
  validateSpecialists(c.state);
+ if(version===3){const count=['rules','objectives','draft'].filter(k=>Object.hasOwn(s,k)).length;if(count!==0&&count!==3)bad('state.rules','rules, objectives and draft must be stored together');if(count===3){const state=s as unknown as GameState;state.rules=normalizeMatchRules(s.rules);validateDraftState(s.draft,draftPlayers(state),state.rules);validateObjectiveState(s.objectives,state);}}
 }
 function validateCurrent(envelope:unknown):asserts envelope is SaveEnvelope {validate(envelope,SAVE_VERSION);}
 /** Add team rules only after the complete two-player v1 schema has passed validation. */
@@ -195,5 +198,6 @@ export function loadGame(input:unknown):GameState {
  if(record.version===1)migrateLegacy(record);if(record.version===2)migrateAi(record);checkSize(envelope);validateCurrent(envelope);
  const state:GameState={...envelope.state,explored:envelope.state.explored.map(values=>new Set(values)),visible:envelope.state.visible.map(values=>new Set(values))};
  if(state.world)state.world.levels[0].terrain=state.terrain;
+ if(!state.rules){state.rules=normalizeMatchRules({sharedVision:state.sharedVision});state.draft=createDraft(draftPlayers(state),state.rules);state.objectives=emptyObjectives(state);}
  restoreRuntime(state,envelope.runtime);return state;
 }

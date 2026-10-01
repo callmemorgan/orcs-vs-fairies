@@ -46,7 +46,7 @@ export class OnlineApi {
   async createLobby(settings:LobbySettings,seed?:number) {
     return (await this.request<{lobby:LobbyObservation}>('/api/lobbies',{settings,...(seed===undefined?{}:{seed})})).lobby;
   }
-  async changeLobby(lobby:LobbyObservation,action:'join'|'leave'|'ready'|'settings'|'start',value:Record<string,unknown>={}) {
+  async changeLobby(lobby:LobbyObservation,action:'join'|'leave'|'ready'|'settings'|'start'|'draft',value:Record<string,unknown>={}) {
     return (await this.request<{lobby:LobbyObservation}>(`/api/lobbies/${encodeURIComponent(lobby.id)}/${action}`,{...value,expectedRevision:lobby.revision})).lobby;
   }
   async ticket(matchId:string,role:'player'|'spectator',perspective?:Side,view?:'player'|'team') {

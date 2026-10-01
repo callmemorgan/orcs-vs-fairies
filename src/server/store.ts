@@ -3,12 +3,12 @@ import { createHash } from 'node:crypto';
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Account, CommandAck, LobbySettings, LobbySeat, PlayerObservation } from '../online/protocol';
-import type { GameState, Side, MatchConfig as CoreMatchConfig } from '../core/types';
+import type { GameState, Side, DraftState, MatchConfig as CoreMatchConfig } from '../core/types';
 import { saveGame, loadGame } from '../core/saves';
 
 export interface StoredLobby {
   id:string; hostId:string; revision:number; settings:LobbySettings;
-  seats:LobbySeat[]; seed:number; matchId:string|null;
+  seats:LobbySeat[]; seed:number; matchId:string|null; draft?:DraftState; draftDeadlineAt?:number;
 }
 export interface MatchConfig extends LobbySettings { seed:number; matchConfig?:CoreMatchConfig }
 export interface StoredMatch {
