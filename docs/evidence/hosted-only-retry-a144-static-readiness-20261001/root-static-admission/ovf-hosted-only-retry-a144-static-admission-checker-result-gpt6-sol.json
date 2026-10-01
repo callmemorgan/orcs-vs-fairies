@@ -1,0 +1,147 @@
+{
+  "checks": {
+    "browserRuntime": {
+      "authenticatedFiles": 10,
+      "fullChromium1234Absent": true,
+      "headlessExecutable": "/home/morgana/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell",
+      "headlessExecutableSha256": "e11fc9ce65c96313476f7ee9844b6fb6a9220fb048693cfe9eee00acf4170a9f",
+      "headlessRevision": "1234",
+      "headlessVersion": "151.0.7922.34",
+      "playwrightCoreVersion": "1.62.1",
+      "playwrightVersion": "1.62.1",
+      "versionCaptureMethod": "Parent-authorized default headless launch/version/close. No page, app UI or proof loaded. Full Chromium executablePath does not describe default headless-shell selection."
+    },
+    "executionEnvelope": {
+      "canonicalOrDailyInvoked": false,
+      "cleanupBoundsSeconds": {
+        "kill": 5,
+        "reap": 1,
+        "term": 8
+      },
+      "dispatcherAstParsed": true,
+      "dispatcherChildBoundSeconds": 1260,
+      "freshPackageAndServedIdentityCapture": true,
+      "invocationKind": "hosted",
+      "supervisorBoundSeconds": 1200,
+      "supervisorCopiedByteForByte": true
+    },
+    "packetIdentity": {
+      "manifestSha256": "cafc3dd6187338d964dd67431ec4831265e9dc8c34101d8d86c3b2b1a60ad6c7",
+      "planSha256": "7d58d49e2dbde08e6d42180cdd35ec3068f57de62a2731d0d5385323d69cac1d",
+      "verificationIsOutsideSealedManifest": true,
+      "verificationSha256": "58796ec4c110191eb4925a66978304d2c631f6c66847c8495af944fde2225f34"
+    },
+    "preDispatchState": {
+      "freshPathsExist": {
+        "audit": false,
+        "externalExecutionReceipt": false,
+        "externalSupervisorLog": false,
+        "hostedOutput": false
+      },
+      "ownedCheckoutHead": "473ab17642211c3610aed648ae5f813b7680edc1",
+      "trackedChanges": []
+    },
+    "preservedOriginal473": {
+      "artifacts": 7,
+      "failure": "GET /api/lobbies observed twice where the old helper required exactly one request",
+      "failureWireUncompressedSha256": "19646963634768b2cbf4795fe758cbd346208f0e0c1ca959503ccf7e2b7a6959",
+      "historicalPackageFiles": {
+        "browser": 398,
+        "server": 3
+      },
+      "sqliteBytes": 378163200,
+      "sqliteSha256": "c2240e5d1482c09d637f3664388b7add6969e0dc1d036375fb8b8d9bb9b9111e",
+      "status": "failed"
+    },
+    "productFreeze": {
+      "changedPaths": [],
+      "commit": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "scope": [
+        "src",
+        "public",
+        "tests",
+        "package.json",
+        "package-lock.json",
+        "tsconfig.json",
+        "tsconfig.node.json",
+        "vite.config.ts",
+        "index.html",
+        "editor.html",
+        "Dockerfile.server",
+        ".dockerignore"
+      ],
+      "selectedChangesFromOriginal473": [
+        "scripts/server/verify-hosted-teams-browser.mjs"
+      ]
+    },
+    "protectedRootBaseline": {
+      "distFiles": 397,
+      "pid": 1063,
+      "port": 4173,
+      "priorBaselineSha256": "7b5a72514815ec968654e0e569579d4868d1ecd415af92357035fa4c27b14ba9",
+      "semanticFieldsEqual": [
+        "pid",
+        "cmdline",
+        "cwd",
+        "port4173",
+        "rootDist",
+        "distFiles"
+      ]
+    },
+    "reviewedHelperChange": {
+      "bytes": 48361,
+      "diffAddedLines": 3,
+      "diffRemovedLines": 1,
+      "diffSha256": "0ec16ca71c9a6064e738b2eb86471f0440b9a708e7cfbc30f3e309378ecb8309",
+      "getCountRule": ">= 1",
+      "gitBlob": "ce0de6437f8d6b53526e7cd24dd24805eed03c38",
+      "path": "scripts/server/verify-hosted-teams-browser.mjs",
+      "postCountRule": "== 1",
+      "responseAndLobbyGuardsRetained": true,
+      "sha256": "6c7757471a8435ef8ec3459e10a2114d7dd4e7d5907712c0cf2f1ab8fd650b8e"
+    },
+    "runtimeScope": {
+      "admissionTargets": [
+        "63: cooperative coordinated opponents",
+        "64: delayed player/team and zero-delay live spectators with restart persistence"
+      ],
+      "canonicalOrDailyRerun": false,
+      "newAcceptanceGateAuthorized": false,
+      "supplemental": [
+        "human 4v4"
+      ]
+    },
+    "sealedPacket": {
+      "allRegularMode0644": true,
+      "bytes": 341112,
+      "files": 8
+    },
+    "targetSource": {
+      "buildId": "5e49e689af13d4eef08c0760f904ad0bce2c2eebaa1144dea5d89cadecf310c0",
+      "commit": "a144ad3f3dddd0003f9553541908e2254f2444c6",
+      "saveVersion": 4,
+      "selectedFiles": 748,
+      "sha256": "dbcd5071f68d2d00a6a20c27a366389202c2354e752f7c5d38b16cfd7e998c8d",
+      "simulationRevision": "4.0.1",
+      "tree": "ff0690aeb2fc5096180ab4e600fe4f378fb2ed87"
+    }
+  },
+  "method": "Static reads, hashing, JSON parsing, Python AST parsing, and immutable Git object reads only.",
+  "reviewer": {
+    "harness": "Codex",
+    "model": "GPT-6 Sol"
+  },
+  "status": "passed",
+  "warnings": [
+    {
+      "id": "supplemental-4v4-precedes-runtime-targets",
+      "severity": "non-blocking-execution-risk",
+      "text": "The recipe calls 4v4 supplemental, but verifyBrowser runs it before the cooperative and restart/spectator targets and propagates a 4v4 error. A 4v4-only failure would make the retry inconclusive for clauses 63/64; it must not become a new admission requirement."
+    },
+    {
+      "id": "no-focused-helper-regression-test",
+      "severity": "non-blocking-test-gap",
+      "text": "The three-line GET-count relaxation has no focused unit test. The held hosted retry is the direct regression exercise."
+    }
+  ]
+}
