@@ -32,7 +32,7 @@ The runner compares the complete native `.game` envelope after fixture imports, 
 python3 docs/evidence/combat-proof-runner-20261001/verify-retained.py FULL_EVIDENCE_COMMIT
 ```
 
-GPT-5.6 Sol's source review is retained in `independent-review.md`. It admitted both helper commits with no findings. The evidence-only review is a separate follow-up; final production execution still needs the assembled source.
+GPT-5.6 Sol's source review is retained in `independent-review.md`. It admitted both helper commits with no findings. Its evidence-only review of `a764273203de6c4e7478d783c8e4d3966384ded1` also admitted the archive with no findings and independently reproduced both checkpoints and all 27 cases. That report is retained in `evidence-review.md`; final production execution still needs the assembled source.
 
 ## Reproducing preparation
 
