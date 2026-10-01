@@ -1,0 +1,54 @@
+{
+  "sourceHead": "5c22a8912b09e79dee7e97b5332f14d820afae38",
+  "introducedCommit": "83b4db6c7e0c8ce06ca0b055c02cf631302cb1e8",
+  "method": "Read-only source audit with a constructed world-state fixture; separate from the native hosted verifier.",
+  "ordinaryHostedLobbyCanCreateFixture": false,
+  "sourceFiles": {
+    "src/core/neutral-world.ts": {
+      "sha256": "23ac55815821b75b591ccbeb977e45b716b773d2de1a9417652546ec28e58ea3",
+      "bytes": 16453
+    },
+    "src/server/team-view.ts": {
+      "sha256": "52d6fbd50669227980bf0dae97fb420765ff712d3b7cbaedee76e2b81e20ed43",
+      "bytes": 3664
+    },
+    "src/online/render-state.ts": {
+      "sha256": "2bfaf68f2c3fca64a8d929416ae26f778f7e6f64d1b3cd27cab2d268c4fa7af6",
+      "bytes": 10874
+    },
+    "src/server/server.ts": {
+      "sha256": "7e1c2344bb3fbabd7651b0028c93a780466a7821ceb3661bbb68de1a63047703",
+      "bytes": 42174
+    },
+    "src/core/simulation.ts": {
+      "sha256": "4683fcad8907bc5114c48834304aa097c1de05076d3ee01a7e412cac2078dd5f",
+      "bytes": 89383
+    }
+  },
+  "observations": {
+    "sharedVision": false,
+    "unionAssertions": "passed",
+    "hiddenMutationOutputUnchanged": true,
+    "privateCreatureFieldsAbsent": true,
+    "privateBridgeFieldsAbsent": true,
+    "unknownTerrainPreserved": true,
+    "rewardClaimMismerge": {
+      "site": 84,
+      "basePerspective": 0,
+      "claimedBy0": {
+        "ownerFrame": true,
+        "teammateFrame": false,
+        "teamFrame": false,
+        "renderRewarded": []
+      },
+      "claimedBy1": {
+        "teamFrame": true,
+        "renderRewarded": [
+          0
+        ]
+      }
+    }
+  },
+  "fixturePath": "/tmp/ovf-hosted-team-contract-vision-merge-world-redaction.ts",
+  "explanation": "The world sites union takes the last teammate item, including its perspective-specific rewardClaimed flag. Only loyalty is restored from the base view. The renderer maps the retained flag to rewarded:[localSide]. Current hosted matchConfig omits world and biome, so normal lobby settings cannot generate this fixture."
+}
