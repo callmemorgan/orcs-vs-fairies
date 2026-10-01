@@ -44,6 +44,8 @@ describe('analysis of specialist command deaths', () => {
     expectLosses(recorder, 0, 0);
     expect(issueCommand(state, 0, ability)).toBe(true); assertLethal(state, victims);
     const deaths = state.events.filter(e => e.type === 'death');
+    expect(deaths.map(e => e.amount)).toEqual(victims.map((_, i) => 8 + i));
+    expect(victims.every(e => e.carried === 0)).toBe(true);
     expectLosses(recorder, victims.length, cost);
     acceptedOrders(state, commander);
     expect(state.tick).toBe(0); expect(state.events.filter(e => e.type === 'death')).toEqual(deaths);
@@ -102,13 +104,15 @@ describe('analysis of specialist command deaths', () => {
     setup.victims[0].hp = 20; setup.victims[0].animation = 'idle'; setup.victims[0].animTime = 0; setup.commander.abilityReadyAt = 0;
     const state = loadGame(saveGame(setup.state)), survivor = state.entities.find(e => e.id === setup.victims[0].id)!;
     const earlier = state.events.find(e => e.type === 'death' && e.source === survivor.id)!;
+    expect(earlier.amount).toBe(8); expect(survivor.carried).toBe(0);
+    const cost = entityDefinition(state, survivor).cost, survivorValue = cost.wood + cost.ore + cost.crystal;
     expect(earlier).toBeDefined(); expect(survivor.hp).toBeGreaterThan(0);
     const recorder = new MatchRecorder(state); expectLosses(recorder, 0, 0);
     expect(issueCommand(state, 0, setup.ability)).toBe(true); expect(survivor.hp).toBe(0);
     const deaths = state.events.filter(e => e.type === 'death' && e.source === survivor.id);
     expect(deaths).toHaveLength(2); expect(deaths[0]).toBe(earlier); expect(deaths[1]).not.toBe(earlier);
-    expectLosses(recorder, 1, setup.cost); acceptedOrders(state, setup.commander); expectLosses(recorder, 1, setup.cost);
-    const replay = new ReplayPlayer(recorder.export()); expect(replay.finished).toBe(true); expectLosses(replay, 1, setup.cost);
+    expectLosses(recorder, 1, survivorValue); acceptedOrders(state, setup.commander); expectLosses(recorder, 1, survivorValue);
+    const replay = new ReplayPlayer(recorder.export()); expect(replay.finished).toBe(true); expectLosses(replay, 1, survivorValue);
     expect(saveGame(replay.state)).toEqual(saveGame(state)); recorder.dispose(); replay.dispose();
   });
 

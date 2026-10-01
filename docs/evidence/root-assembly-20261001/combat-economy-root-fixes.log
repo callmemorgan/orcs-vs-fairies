@@ -1,0 +1,29 @@
+
+ RUN  v4.1.11 /home/morgana/Projects/orcs-vs-Fairies
+
+ ❯ tests/economy-world-integration.test.ts (20 tests | 1 failed) 1836ms
+     × drops loaded paid cargo once when an attacked bridge drowns a caravan 47ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/economy-world-integration.test.ts > assembled world and economy > drops loaded paid cargo once when an attacked bridge drowns a caravan
+AssertionError: expected 96.80158960636504 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 96.80158960636504
+
+ ❯ deathAssertions tests/economy-world-integration.test.ts:50:18
+
+ ❯ tests/economy-world-integration.test.ts:107:29
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  1 failed | 54 passed (55)
+   Start at  06:56:20
+   Duration  2.18s (transform 892ms, setup 0ms, import 1.16s, tests 2.72s, environment 90ms)
+

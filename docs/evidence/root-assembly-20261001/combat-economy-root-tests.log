@@ -1,0 +1,199 @@
+
+ RUN  v4.1.11 /home/morgana/Projects/orcs-vs-Fairies
+
+ ❯ tests/specialist-command-analysis.test.ts (7 tests | 5 failed) 403ms
+     × undead records lethal command losses once before stepping, through resumed history and replay seek 51ms
+     × tideborn records lethal command losses once before stepping, through resumed history and replay seek 20ms
+     × exports a completed command-only replay with losses before any timestep exists 15ms
+     × counts a new death event for an authored survivor whose ID occurs in initial historical deaths 21ms
+     × restores a seek checkpoint taken on the same tick as a lethal command without recounting its death 89ms
+ ❯ tests/combat-tactics.test.ts (22 tests | 1 failed) 2043ms
+     × siege shell impact obeys friendlyFire=false and survives a mid-flight save 46ms
+ ❯ tests/specialist-scene.test.ts (6 tests | 1 failed) 189ms
+   × recovers a visible ground marker, draws veteran rank and experience, and redraws changed bridge terrain 30ms
+ ❯ tests/economy-world-integration.test.ts (20 tests | 1 failed) 5723ms
+     × drops loaded paid cargo once when an attacked bridge drowns a caravan 107ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/combat-tactics.test.ts > combat tactics encounters > siege shell impact obeys friendlyFire=false and survives a mid-flight save
+AssertionError: expected 156.4 to be 175 // Object.is equality
+
+- Expected
++ Received
+
+- 175
++ 156.4
+
+ ❯ tests/combat-tactics.test.ts:70:513
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  tests/economy-world-integration.test.ts > assembled world and economy > drops loaded paid cargo once when an attacked bridge drowns a caravan
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/economy-world-integration.test.ts:105:21
+    103|   const bridge={id:s.nextId++,x:10.5,y:10.5,level:0,hp:1,maxHp:160,til…
+    104|   s.visible[0].add(fogKey(s,bridge));s.explored[0].add(fogKey(s,bridge…
+    105|   expect(bridge.hp).toBe(0);deathAssertions(s,cart);
+       |                     ^
+    106|  });
+    107|  it('drops loaded cargo once when spring thaw leaves no reachable bank…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  tests/specialist-command-analysis.test.ts > analysis of specialist command deaths > undead records lethal command losses once before stepping, through resumed history and replay seek
+AssertionError: expected { wood: 420, ore: 220, …(9) } to match object { losses: 1, buildingLosses: +0, …(2) }
+(7 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "buildingLosses": 0,
+    "gathered": 0,
+    "losses": 1,
+-   "lostValue": 58,
++   "lostValue": 50,
+  }
+
+ ❯ expectLosses tests/specialist-command-analysis.test.ts:31:34
+     29| function victimSample(recorder: MatchRecorder | ReplayPlayer): ArmySam…
+     30| function expectLosses(recorder: MatchRecorder | ReplayPlayer, units: n…
+     31|   expect(victimSample(recorder)).toMatchObject({ losses: units, buildi…
+       |                                  ^
+     32| }
+     33| function acceptedOrders(state: GameState, commander: Entity): void {
+ ❯ tests/specialist-command-analysis.test.ts:47:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  tests/specialist-command-analysis.test.ts > analysis of specialist command deaths > tideborn records lethal command losses once before stepping, through resumed history and replay seek
+AssertionError: expected { wood: 420, ore: 220, …(9) } to match object { losses: 2, buildingLosses: +0, …(2) }
+(7 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "buildingLosses": 0,
+    "gathered": 0,
+    "losses": 2,
+-   "lostValue": 117,
++   "lostValue": 100,
+  }
+
+ ❯ expectLosses tests/specialist-command-analysis.test.ts:31:34
+     29| function victimSample(recorder: MatchRecorder | ReplayPlayer): ArmySam…
+     30| function expectLosses(recorder: MatchRecorder | ReplayPlayer, units: n…
+     31|   expect(victimSample(recorder)).toMatchObject({ losses: units, buildi…
+       |                                  ^
+     32| }
+     33| function acceptedOrders(state: GameState, commander: Entity): void {
+ ❯ tests/specialist-command-analysis.test.ts:47:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  tests/specialist-command-analysis.test.ts > analysis of specialist command deaths > exports a completed command-only replay with losses before any timestep exists
+AssertionError: expected { wood: 420, ore: 220, …(9) } to match object { losses: 2, lostValue: 117 }
+(9 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "losses": 2,
+-   "lostValue": 117,
++   "lostValue": 100,
+  }
+
+ ❯ tests/specialist-command-analysis.test.ts:92:49
+     90|     expect(issueCommand(state, 0, ability)).toBe(true); assertLethal(s…
+     91|     const archive = recorder.export(); expect(archive.finalTick).toBe(…
+     92|     expect(archive.analysis.at(-1)!.players[1]).toMatchObject({ losses…
+       |                                                 ^
+     93|     const replay = new ReplayPlayer(JSON.stringify(archive)); expect(r…
+     94|     replay.seek(0); expectLosses(replay, 2, cost); recorder.dispose();…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  tests/specialist-command-analysis.test.ts > analysis of specialist command deaths > counts a new death event for an authored survivor whose ID occurs in initial historical deaths
+AssertionError: expected { wood: 420, ore: 220, …(9) } to match object { losses: 1, buildingLosses: +0, …(2) }
+(7 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "buildingLosses": 0,
+    "gathered": 0,
+    "losses": 1,
+-   "lostValue": 58,
++   "lostValue": 50,
+  }
+
+ ❯ expectLosses tests/specialist-command-analysis.test.ts:31:34
+     29| function victimSample(recorder: MatchRecorder | ReplayPlayer): ArmySam…
+     30| function expectLosses(recorder: MatchRecorder | ReplayPlayer, units: n…
+     31|   expect(victimSample(recorder)).toMatchObject({ losses: units, buildi…
+       |                                  ^
+     32| }
+     33| function acceptedOrders(state: GameState, commander: Entity): void {
+ ❯ tests/specialist-command-analysis.test.ts:110:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  tests/specialist-command-analysis.test.ts > analysis of specialist command deaths > restores a seek checkpoint taken on the same tick as a lethal command without recounting its death
+AssertionError: expected { wood: 420, ore: 220, …(9) } to match object { losses: 1, buildingLosses: +0, …(2) }
+(7 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "buildingLosses": 0,
+    "gathered": 0,
+    "losses": 1,
+-   "lostValue": 58,
++   "lostValue": 50,
+  }
+
+ ❯ expectLosses tests/specialist-command-analysis.test.ts:31:34
+     29| function victimSample(recorder: MatchRecorder | ReplayPlayer): ArmySam…
+     30| function expectLosses(recorder: MatchRecorder | ReplayPlayer, units: n…
+     31|   expect(victimSample(recorder)).toMatchObject({ losses: units, buildi…
+       |                                  ^
+     32| }
+     33| function acceptedOrders(state: GameState, commander: Entity): void {
+ ❯ tests/specialist-command-analysis.test.ts:122:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+ FAIL  tests/specialist-scene.test.ts > recovers a visible ground marker, draws veteran rank and experience, and redraws changed bridge terrain
+AssertionError: expected "vi.fn()" to be called with arguments: [ 1595, 681, 1600, 678 ]
+
+Number of calls: 0
+
+ ❯ tests/specialist-scene.test.ts:127:31
+    125|   expect(command).toHaveBeenLastCalledWith(0, { type: 'recoverArtifact…
+    126|   scene.update(0, 16); const overlay = (scene as any).graphics[4], poi…
+    127|   expect(overlay.lineBetween).toHaveBeenCalledWith(point.x - 5, point.…
+       |                               ^
+    128|   expect(overlay.fillRect).toHaveBeenCalledWith(point.x - 15, point.y …
+    129|   expect(overlay.strokeCircle).toHaveBeenCalledWith(marker.x, marker.y…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯
+
+
+ Test Files  4 failed | 33 passed (37)
+      Tests  8 failed | 701 passed (709)
+   Start at  06:46:10
+   Duration  11.01s (transform 10.86s, setup 0ms, import 18.08s, tests 100.32s, environment 1.40s)
+

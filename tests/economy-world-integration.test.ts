@@ -98,10 +98,15 @@ describe('assembled world and economy',()=>{
   expect(issueCommand(s,0,{type:'ignite',ids:[starter.id],x:cart.x,y:cart.y})).toBe(true);stepGame(s,.05);deathAssertions(s,cart);
  });
  it('drops loaded paid cargo once when an attacked bridge drowns a caravan',()=>{
-  const s=fixture(),{cart}=loadedRoute(s),siege=actor(s,0,'siege',12.5,10.5),tile=10*s.width+10;
+  const s=fixture(),{cart,cargo,source}=loadedRoute(s),siege=actor(s,0,'siege',12.5,10.5),tile=10*s.width+10;
+  // The loaded cart waits on the authored crossing, beyond automatic storage delivery range.
+  source.x=26.5;source.y=20.5;
+  expect(issueCommand(s,0,{type:'hold',ids:[cart.id]})).toBe(true);expect(cargo.stock.wood).toBe(30);
   for(let y=2;y<=18;y++)for(let x=2;x<=18;x++)s.terrain[y*s.width+x]='water';const tiles=[];for(let x=2;x<=18;x++){const crossing=10*s.width+x;s.terrain[crossing]='bridge';tiles.push(crossing);}
   const bridge={id:s.nextId++,x:10.5,y:10.5,level:0,hp:1,maxHp:160,tiles,rebuilding:0,repairSide:null};s.world.bridges.push(bridge);
   s.visible[0].add(fogKey(s,bridge));s.explored[0].add(fogKey(s,bridge));expect(issueCommand(s,0,{type:'worldAttack',ids:[siege.id],target:bridge.id})).toBe(true);stepGame(s,.05);
+  expect(bridge.hp).toBe(1);expect((s.projectiles?.length??0)+(s.specialists?.shots?.length??0)).toBe(1);expect(cart.hp).toBeGreaterThan(0);
+  for(let ticks=0;ticks<40&&bridge.hp>0;ticks++)stepGame(s,.05);
   expect(bridge.hp).toBe(0);deathAssertions(s,cart);
  });
  it('drops loaded cargo once when spring thaw leaves no reachable bank',()=>{

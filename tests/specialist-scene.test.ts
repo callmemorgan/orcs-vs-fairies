@@ -123,7 +123,7 @@ it('recovers a visible ground marker, draws veteran rank and experience, and red
   const marker = project(21.5, 20.5), pointer = { x: marker.x, y: marker.y - 12, button: 0, event: new MouseEvent('click'), rightButtonDown: () => false, middleButtonDown: () => false };
   (scene.input as any).activePointer = pointer; scene.input.emit('pointerdown', pointer); scene.input.emit('pointerup', pointer);
   expect(command).toHaveBeenLastCalledWith(0, { type: 'recoverArtifact', id: hero.id, artifact: item.id });
-  scene.update(0, 16); const overlay = (scene as any).graphics[4], point = project(hero.x, hero.y);
+  scene.update(0, 16); const overlay = (scene as any).overlay, point = project(hero.x, hero.y);
   expect(overlay.lineBetween).toHaveBeenCalledWith(point.x - 5, point.y - 55, point.x, point.y - 58);
   expect(overlay.fillRect).toHaveBeenCalledWith(point.x - 15, point.y + 19, 7, 3);
   expect(overlay.strokeCircle).toHaveBeenCalledWith(marker.x, marker.y - 12, 14);

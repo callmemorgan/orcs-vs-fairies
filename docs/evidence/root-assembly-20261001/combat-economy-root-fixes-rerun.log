@@ -1,0 +1,64 @@
+
+ RUN  v4.1.11 /home/morgana/Projects/orcs-vs-Fairies
+
+ ❯ tests/economy-world-integration.test.ts (20 tests | 1 failed) 1960ms
+     × drops loaded paid cargo once when an attacked bridge drowns a caravan 42ms
+ ❯ tests/team-replays.test.ts (9 tests | 2 failed) 2654ms
+     × keeps genuine v1 saves readable but rejects their old playback rules 6ms
+     × keeps genuine v2 saves readable but rejects their old playback rules 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/economy-world-integration.test.ts > assembled world and economy > drops loaded paid cargo once when an attacked bridge drowns a caravan
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ deathAssertions tests/economy-world-integration.test.ts:52:140
+
+ ❯ tests/economy-world-integration.test.ts:108:29
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/team-replays.test.ts > roster replay and session contracts > keeps genuine v1 saves readable but rejects their old playback rules
+AssertionError: expected '3e5630cc' to be '5db9ad74' // Object.is equality
+
+Expected: "5db9ad74"
+Received: "3e5630cc"
+
+ ❯ tests/team-replays.test.ts:50:43
+     48|     const source=JSON.parse(readFileSync(new URL(`./fixtures/legacy-re…
+     49|     const archive=decodeReplay(source),state=loadGame(archive.initial);
+     50|     expect(replayChecksum(state,version)).toBe(hash);
+       |                                           ^
+     51|     expect(archive.initial.version).toBe(version);expect(archive.check…
+     52|     expect(saveGame(state).version).toBe(SAVE_VERSION);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/team-replays.test.ts > roster replay and session contracts > keeps genuine v2 saves readable but rejects their old playback rules
+AssertionError: expected 'dd1447df' to be '0d8ff1ef' // Object.is equality
+
+Expected: "0d8ff1ef"
+Received: "dd1447df"
+
+ ❯ tests/team-replays.test.ts:50:43
+     48|     const source=JSON.parse(readFileSync(new URL(`./fixtures/legacy-re…
+     49|     const archive=decodeReplay(source),state=loadGame(archive.initial);
+     50|     expect(replayChecksum(state,version)).toBe(hash);
+       |                                           ^
+     51|     expect(archive.initial.version).toBe(version);expect(archive.check…
+     52|     expect(saveGame(state).version).toBe(SAVE_VERSION);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed | 5 passed (7)
+      Tests  3 failed | 83 passed (86)
+   Start at  06:57:57
+   Duration  3.07s (transform 1.40s, setup 0ms, import 2.10s, tests 6.92s, environment 91ms)
+

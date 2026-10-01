@@ -109,7 +109,8 @@ export class MatchRecorder {
         const entity=state.entities.find(e=>e.id===event.source);
         if(entity&&!entity.illusion&&!entity.raised){
           if(entity.kind==='unit')this.losses[event.side]++;else this.buildingLosses[event.side]++;
-          this.lostValue[event.side]+=entityValue(state,entity)+entity.carried;
+          // Death events preserve carried stock before economy cleanup transfers it into salvage.
+          this.lostValue[event.side]+=entityValue(state,entity)+(event.amount??entity.carried);
         }
       }
       if(event.type==='gather')this.gathered[event.side]+=event.amount??0;

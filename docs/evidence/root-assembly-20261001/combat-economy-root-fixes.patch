@@ -1,0 +1,122 @@
+diff --git a/src/core/replays.ts b/src/core/replays.ts
+index 952955c..5af4845 100644
+--- a/src/core/replays.ts
++++ b/src/core/replays.ts
+@@ -109,7 +109,8 @@ export class MatchRecorder {
+         const entity=state.entities.find(e=>e.id===event.source);
+         if(entity&&!entity.illusion&&!entity.raised){
+           if(entity.kind==='unit')this.losses[event.side]++;else this.buildingLosses[event.side]++;
+-          this.lostValue[event.side]+=entityValue(state,entity)+entity.carried;
++          // Death events preserve carried stock before economy cleanup transfers it into salvage.
++          this.lostValue[event.side]+=entityValue(state,entity)+(event.amount??entity.carried);
+         }
+       }
+       if(event.type==='gather')this.gathered[event.side]+=event.amount??0;
+diff --git a/src/core/simulation.ts b/src/core/simulation.ts
+index 46ca5ce..dbe5a9b 100644
+--- a/src/core/simulation.ts
++++ b/src/core/simulation.ts
+@@ -431,7 +431,7 @@ function resolveProjectiles(s:GameState):void {
+  }
+  s.projectiles=pending;
+ }
+-function die(s:GameState,e:Entity,text?:string,sourceSide?:Side):void{if(e.animation==='death')return;onEconomyDeath(s,e,economyHooks);for(const body of [...e.factionState?.corpseCargo??[],...e.factionState?.deliveredCorpses??[]])if(body.expires>s.time)s.corpses.push({...body,x:e.x,y:e.y,level:e.level});if(e.factionState){delete e.factionState.corpseCargo;delete e.factionState.deliveredCorpses;}if(sourceSide!==undefined)recordFactionDeath(s,e,sourceSide);recordTacticsDeath(s,e);commanderDied(s,e);commanderArtifact(s,e);dropArtifacts(s,e);if(s.specialists)s.specialists.structures=s.specialists.structures.filter(item=>item.entityId!==e.id);if(e.kind==='building')refundQueue(s,e);if(e.kind==='unit'&&!e.illusion&&!e.raised)s.corpses.push({id:e.id,x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level}),expires:s.time+45});e.hp=0;e.animation='death';e.animTime=0;e.order={type:'idle'};delete e.orderQueue;runtime(s).queuedGather.delete(e.id);e.path=[];emit(s,'death',e,undefined,text);}
++function die(s:GameState,e:Entity,text?:string,sourceSide?:Side):void{if(e.animation==='death')return;const carried=e.carried;onEconomyDeath(s,e,economyHooks);for(const body of [...e.factionState?.corpseCargo??[],...e.factionState?.deliveredCorpses??[]])if(body.expires>s.time)s.corpses.push({...body,x:e.x,y:e.y,level:e.level});if(e.factionState){delete e.factionState.corpseCargo;delete e.factionState.deliveredCorpses;}if(sourceSide!==undefined)recordFactionDeath(s,e,sourceSide);recordTacticsDeath(s,e);commanderDied(s,e);commanderArtifact(s,e);dropArtifacts(s,e);if(s.specialists)s.specialists.structures=s.specialists.structures.filter(item=>item.entityId!==e.id);if(e.kind==='building')refundQueue(s,e);if(e.kind==='unit'&&!e.illusion&&!e.raised)s.corpses.push({id:e.id,x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level}),expires:s.time+45});e.hp=0;e.animation='death';e.animTime=0;e.order={type:'idle'};delete e.orderQueue;runtime(s).queuedGather.delete(e.id);e.path=[];const event=emit(s,'death',e,undefined,text);if(carried>0)event.amount=carried;}
+ function enemy(s:GameState,e:Entity,max:number,onlyInRange=false):Entity|undefined{
+  let best:Entity|undefined,bestDist=Infinity;for(const b of s.entities){if(!alive(b)||!isHostile(s,b.side,e.side)||isCrewless(b)||!canObserveTacticalEntity(s,e.side,b)||onlyInRange&&!near(s,e,b,max))continue;const d=distance(e,b)-radius(s,b);if(d<=max&&(d<bestDist||best?.kind==='building'&&b.kind==='unit')){best=b;bestDist=d;}}return best;
+ }
+diff --git a/tests/combat-tactics.test.ts b/tests/combat-tactics.test.ts
+index e1cb337..30aa05a 100644
+--- a/tests/combat-tactics.test.ts
++++ b/tests/combat-tactics.test.ts
+@@ -4,13 +4,13 @@ import { validateCommand } from '../src/core/commands';
+ import { PlayerView } from '../src/core/observation';
+ import { MatchRecorder, ReplayPlayer, replayChecksum } from '../src/core/replays';
+ import { loadGame, saveGame } from '../src/core/saves';
+-import { createGame, createMatch, issueCommand, refreshVisibility, stepGame } from '../src/core/simulation';
++import { createMatch, issueCommand, refreshVisibility, stepGame } from '../src/core/simulation';
+ import { canAmbush, canObserveTacticalEntity, formationDestination, initializeTactics, isCrewless, TACTICS } from '../src/core/tactics';
+ import type { FormationKind } from '../src/core/tactics';
+ import type { BuildingRole, Entity, FactionId, GameState, Side, UnitRole } from '../src/core/types';
+ 
+-function fixture(faction:FactionId='orcs',opponent:FactionId='orcs') {
+- const s=createGame(faction,4127,opponent,{controllers:['external','external']});s.terrain.fill('grass');s.resources=[];s.entities=s.entities.filter(e=>e.kind==='building');return s;
++function fixture(faction:FactionId='orcs',opponent:FactionId='orcs',friendlyFire=true) {
++ const s=createMatch({map:{seed:4127},rules:{friendlyFire},players:[{id:0,teamId:0,factionId:faction,controller:'external'},{id:1,teamId:1,factionId:opponent,controller:'external'}]});s.terrain.fill('grass');s.resources=[];s.entities=s.entities.filter(e=>e.kind==='building');return s;
+ }
+ function unit(s:GameState,side:Side,role:UnitRole,x:number,y:number):Entity {
+  const d=FACTIONS[s.players[side].faction].units[role],e:Entity={id:s.nextId++,side,kind:'unit',role,x,y,hp:d.hp,maxHp:d.hp,order:{type:'hold'},cooldown:100,progress:1,queue:[],trainProgress:0,researchProgress:0,facing:4,animation:'idle',animTime:0,momentum:0,illusion:false,expires:0,carried:0,carriedKind:'wood',path:[]};if(d.shield){e.shield=d.shield;e.maxShield=d.shield;}initializeTactics(s,e);s.entities.push(e);return e;
+@@ -67,7 +67,7 @@ describe('combat tactics encounters',()=>{
+   const s=fixture(),target=unit(s,1,'melee',25.5,24.5),source=unit(s,0,'ranged',20.5,24.5),cover=building(s,1,'depot',23.5,24.5);target.facing=4;const first=target.hp;fire(s,source,target);expect(first-target.hp).toBeCloseTo(6.75);cover.hp=1;const siege=unit(s,0,'siege',18.5,24.5);fire(s,siege,cover,1);expect(cover.hp).toBe(0);source.momentum=0;const after=target.hp;fire(s,source,target);expect(after-target.hp).toBe(12);
+  });
+  it.each([true,false])('siege shell impact obeys friendlyFire=%s and survives a mid-flight save',friendlyFire=>{
+-  const s=fixture();s.friendlyFire=friendlyFire;const siege=unit(s,0,'siege',18.5,24.5),target=unit(s,1,'melee',25.5,24.5),friend=unit(s,0,'melee',25.5,25.5);target.facing=4;friend.facing=4;const enemyHp=target.hp,friendHp=friend.hp;fire(s,siege,target);expect(s.projectiles).toHaveLength(1);expect(target.hp).toBe(enemyHp);const resumed=loadGame(saveGame(s));advance(s,1);advance(resumed,1);expect(target.hp).toBeLessThan(enemyHp);if(friendlyFire)expect(friend.hp).toBeLessThan(friendHp);else expect(friend.hp).toBe(friendHp);expect(s.projectiles).toHaveLength(0);expect(replayChecksum(resumed)).toBe(replayChecksum(s));
++  const s=fixture('orcs','orcs',friendlyFire);expect(s.rules.friendlyFire).toBe(friendlyFire);expect(s.friendlyFire).toBe(friendlyFire);const siege=unit(s,0,'siege',18.5,24.5),target=unit(s,1,'melee',25.5,24.5),friend=unit(s,0,'melee',25.5,25.5);target.facing=4;friend.facing=4;const enemyHp=target.hp,friendHp=friend.hp;fire(s,siege,target);expect(s.projectiles).toHaveLength(1);expect(target.hp).toBe(enemyHp);const resumed=loadGame(saveGame(s));advance(s,1);advance(resumed,1);expect(target.hp).toBeLessThan(enemyHp);if(friendlyFire)expect(friend.hp).toBeLessThan(friendHp);else expect(friend.hp).toBe(friendHp);expect(s.projectiles).toHaveLength(0);expect(replayChecksum(resumed)).toBe(replayChecksum(s));
+  });
+  it('moving cavalry gains impact while stops and sharp turns lose the charge',()=>{
+   const trial=(motion:'stationary'|'charge'|'stop'|'turn')=>{const s=fixture(),cavalry=unit(s,0,'cavalry',18.5,24.5),target=unit(s,1,'melee',26,24.5);target.facing=4;cavalry.cooldown=100;refreshVisibility(s);if(motion!=='stationary'){issueCommand(s,0,{type:'move',ids:[cavalry.id],x:25.1,y:24.5});advance(s,1.8);expect(cavalry.tactics!.charge!.distance).toBeGreaterThan(4);if(motion==='stop'){issueCommand(s,0,{type:'hold',ids:[cavalry.id]});advance(s,1.5);}if(motion==='turn'){issueCommand(s,0,{type:'move',ids:[cavalry.id],x:cavalry.x,y:cavalry.y-2});advance(s,.4);}}else cavalry.x=25.1;const hp=target.hp;fire(s,cavalry,target,.3);return hp-target.hp;};
+diff --git a/tests/economy-world-integration.test.ts b/tests/economy-world-integration.test.ts
+index a19e6d2..8722253 100644
+--- a/tests/economy-world-integration.test.ts
++++ b/tests/economy-world-integration.test.ts
+@@ -98,10 +98,15 @@ describe('assembled world and economy',()=>{
+   expect(issueCommand(s,0,{type:'ignite',ids:[starter.id],x:cart.x,y:cart.y})).toBe(true);stepGame(s,.05);deathAssertions(s,cart);
+  });
+  it('drops loaded paid cargo once when an attacked bridge drowns a caravan',()=>{
+-  const s=fixture(),{cart}=loadedRoute(s),siege=actor(s,0,'siege',12.5,10.5),tile=10*s.width+10;
++  const s=fixture(),{cart,cargo,source}=loadedRoute(s),siege=actor(s,0,'siege',12.5,10.5),tile=10*s.width+10;
++  // The loaded cart waits on the authored crossing, beyond automatic storage delivery range.
++  source.x=26.5;source.y=20.5;
++  expect(issueCommand(s,0,{type:'hold',ids:[cart.id]})).toBe(true);expect(cargo.stock.wood).toBe(30);
+   for(let y=2;y<=18;y++)for(let x=2;x<=18;x++)s.terrain[y*s.width+x]='water';const tiles=[];for(let x=2;x<=18;x++){const crossing=10*s.width+x;s.terrain[crossing]='bridge';tiles.push(crossing);}
+   const bridge={id:s.nextId++,x:10.5,y:10.5,level:0,hp:1,maxHp:160,tiles,rebuilding:0,repairSide:null};s.world.bridges.push(bridge);
+   s.visible[0].add(fogKey(s,bridge));s.explored[0].add(fogKey(s,bridge));expect(issueCommand(s,0,{type:'worldAttack',ids:[siege.id],target:bridge.id})).toBe(true);stepGame(s,.05);
++  expect(bridge.hp).toBe(1);expect((s.projectiles?.length??0)+(s.specialists?.shots?.length??0)).toBe(1);expect(cart.hp).toBeGreaterThan(0);
++  for(let ticks=0;ticks<40&&bridge.hp>0;ticks++)stepGame(s,.05);
+   expect(bridge.hp).toBe(0);deathAssertions(s,cart);
+  });
+  it('drops loaded cargo once when spring thaw leaves no reachable bank',()=>{
+diff --git a/tests/specialist-command-analysis.test.ts b/tests/specialist-command-analysis.test.ts
+index ea65fd4..8a8b10f 100644
+--- a/tests/specialist-command-analysis.test.ts
++++ b/tests/specialist-command-analysis.test.ts
+@@ -44,6 +44,8 @@ describe('analysis of specialist command deaths', () => {
+     expectLosses(recorder, 0, 0);
+     expect(issueCommand(state, 0, ability)).toBe(true); assertLethal(state, victims);
+     const deaths = state.events.filter(e => e.type === 'death');
++    expect(deaths.map(e => e.amount)).toEqual(victims.map((_, i) => 8 + i));
++    expect(victims.every(e => e.carried === 0)).toBe(true);
+     expectLosses(recorder, victims.length, cost);
+     acceptedOrders(state, commander);
+     expect(state.tick).toBe(0); expect(state.events.filter(e => e.type === 'death')).toEqual(deaths);
+@@ -102,13 +104,15 @@ describe('analysis of specialist command deaths', () => {
+     setup.victims[0].hp = 20; setup.victims[0].animation = 'idle'; setup.victims[0].animTime = 0; setup.commander.abilityReadyAt = 0;
+     const state = loadGame(saveGame(setup.state)), survivor = state.entities.find(e => e.id === setup.victims[0].id)!;
+     const earlier = state.events.find(e => e.type === 'death' && e.source === survivor.id)!;
++    expect(earlier.amount).toBe(8); expect(survivor.carried).toBe(0);
++    const cost = entityDefinition(state, survivor).cost, survivorValue = cost.wood + cost.ore + cost.crystal;
+     expect(earlier).toBeDefined(); expect(survivor.hp).toBeGreaterThan(0);
+     const recorder = new MatchRecorder(state); expectLosses(recorder, 0, 0);
+     expect(issueCommand(state, 0, setup.ability)).toBe(true); expect(survivor.hp).toBe(0);
+     const deaths = state.events.filter(e => e.type === 'death' && e.source === survivor.id);
+     expect(deaths).toHaveLength(2); expect(deaths[0]).toBe(earlier); expect(deaths[1]).not.toBe(earlier);
+-    expectLosses(recorder, 1, setup.cost); acceptedOrders(state, setup.commander); expectLosses(recorder, 1, setup.cost);
+-    const replay = new ReplayPlayer(recorder.export()); expect(replay.finished).toBe(true); expectLosses(replay, 1, setup.cost);
++    expectLosses(recorder, 1, survivorValue); acceptedOrders(state, setup.commander); expectLosses(recorder, 1, survivorValue);
++    const replay = new ReplayPlayer(recorder.export()); expect(replay.finished).toBe(true); expectLosses(replay, 1, survivorValue);
+     expect(saveGame(replay.state)).toEqual(saveGame(state)); recorder.dispose(); replay.dispose();
+   });
+ 
+diff --git a/tests/specialist-scene.test.ts b/tests/specialist-scene.test.ts
+index 34affd5..fc2a28e 100644
+--- a/tests/specialist-scene.test.ts
++++ b/tests/specialist-scene.test.ts
+@@ -123,7 +123,7 @@ it('recovers a visible ground marker, draws veteran rank and experience, and red
+   const marker = project(21.5, 20.5), pointer = { x: marker.x, y: marker.y - 12, button: 0, event: new MouseEvent('click'), rightButtonDown: () => false, middleButtonDown: () => false };
+   (scene.input as any).activePointer = pointer; scene.input.emit('pointerdown', pointer); scene.input.emit('pointerup', pointer);
+   expect(command).toHaveBeenLastCalledWith(0, { type: 'recoverArtifact', id: hero.id, artifact: item.id });
+-  scene.update(0, 16); const overlay = (scene as any).graphics[4], point = project(hero.x, hero.y);
++  scene.update(0, 16); const overlay = (scene as any).overlay, point = project(hero.x, hero.y);
+   expect(overlay.lineBetween).toHaveBeenCalledWith(point.x - 5, point.y - 55, point.x, point.y - 58);
+   expect(overlay.fillRect).toHaveBeenCalledWith(point.x - 15, point.y + 19, 7, 3);
+   expect(overlay.strokeCircle).toHaveBeenCalledWith(marker.x, marker.y - 12, 14);

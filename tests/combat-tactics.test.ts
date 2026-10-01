@@ -4,13 +4,13 @@ import { validateCommand } from '../src/core/commands';
 import { PlayerView } from '../src/core/observation';
 import { MatchRecorder, ReplayPlayer, replayChecksum } from '../src/core/replays';
 import { loadGame, saveGame } from '../src/core/saves';
-import { createGame, createMatch, issueCommand, refreshVisibility, stepGame } from '../src/core/simulation';
+import { createMatch, issueCommand, refreshVisibility, stepGame } from '../src/core/simulation';
 import { canAmbush, canObserveTacticalEntity, formationDestination, initializeTactics, isCrewless, TACTICS } from '../src/core/tactics';
 import type { FormationKind } from '../src/core/tactics';
 import type { BuildingRole, Entity, FactionId, GameState, Side, UnitRole } from '../src/core/types';
 
-function fixture(faction:FactionId='orcs',opponent:FactionId='orcs') {
- const s=createGame(faction,4127,opponent,{controllers:['external','external']});s.terrain.fill('grass');s.resources=[];s.entities=s.entities.filter(e=>e.kind==='building');return s;
+function fixture(faction:FactionId='orcs',opponent:FactionId='orcs',friendlyFire=true) {
+ const s=createMatch({map:{seed:4127},rules:{friendlyFire},players:[{id:0,teamId:0,factionId:faction,controller:'external'},{id:1,teamId:1,factionId:opponent,controller:'external'}]});s.terrain.fill('grass');s.resources=[];s.entities=s.entities.filter(e=>e.kind==='building');return s;
 }
 function unit(s:GameState,side:Side,role:UnitRole,x:number,y:number):Entity {
  const d=FACTIONS[s.players[side].faction].units[role],e:Entity={id:s.nextId++,side,kind:'unit',role,x,y,hp:d.hp,maxHp:d.hp,order:{type:'hold'},cooldown:100,progress:1,queue:[],trainProgress:0,researchProgress:0,facing:4,animation:'idle',animTime:0,momentum:0,illusion:false,expires:0,carried:0,carriedKind:'wood',path:[]};if(d.shield){e.shield=d.shield;e.maxShield=d.shield;}initializeTactics(s,e);s.entities.push(e);return e;
@@ -67,7 +67,7 @@ describe('combat tactics encounters',()=>{
   const s=fixture(),target=unit(s,1,'melee',25.5,24.5),source=unit(s,0,'ranged',20.5,24.5),cover=building(s,1,'depot',23.5,24.5);target.facing=4;const first=target.hp;fire(s,source,target);expect(first-target.hp).toBeCloseTo(6.75);cover.hp=1;const siege=unit(s,0,'siege',18.5,24.5);fire(s,siege,cover,1);expect(cover.hp).toBe(0);source.momentum=0;const after=target.hp;fire(s,source,target);expect(after-target.hp).toBe(12);
  });
  it.each([true,false])('siege shell impact obeys friendlyFire=%s and survives a mid-flight save',friendlyFire=>{
-  const s=fixture();s.friendlyFire=friendlyFire;const siege=unit(s,0,'siege',18.5,24.5),target=unit(s,1,'melee',25.5,24.5),friend=unit(s,0,'melee',25.5,25.5);target.facing=4;friend.facing=4;const enemyHp=target.hp,friendHp=friend.hp;fire(s,siege,target);expect(s.projectiles).toHaveLength(1);expect(target.hp).toBe(enemyHp);const resumed=loadGame(saveGame(s));advance(s,1);advance(resumed,1);expect(target.hp).toBeLessThan(enemyHp);if(friendlyFire)expect(friend.hp).toBeLessThan(friendHp);else expect(friend.hp).toBe(friendHp);expect(s.projectiles).toHaveLength(0);expect(replayChecksum(resumed)).toBe(replayChecksum(s));
+  const s=fixture('orcs','orcs',friendlyFire);expect(s.rules.friendlyFire).toBe(friendlyFire);expect(s.friendlyFire).toBe(friendlyFire);const siege=unit(s,0,'siege',18.5,24.5),target=unit(s,1,'melee',25.5,24.5),friend=unit(s,0,'melee',25.5,25.5);target.facing=4;friend.facing=4;const enemyHp=target.hp,friendHp=friend.hp;fire(s,siege,target);expect(s.projectiles).toHaveLength(1);expect(target.hp).toBe(enemyHp);const resumed=loadGame(saveGame(s));advance(s,1);advance(resumed,1);expect(target.hp).toBeLessThan(enemyHp);if(friendlyFire)expect(friend.hp).toBeLessThan(friendHp);else expect(friend.hp).toBe(friendHp);expect(s.projectiles).toHaveLength(0);expect(replayChecksum(resumed)).toBe(replayChecksum(s));
  });
  it('moving cavalry gains impact while stops and sharp turns lose the charge',()=>{
   const trial=(motion:'stationary'|'charge'|'stop'|'turn')=>{const s=fixture(),cavalry=unit(s,0,'cavalry',18.5,24.5),target=unit(s,1,'melee',26,24.5);target.facing=4;cavalry.cooldown=100;refreshVisibility(s);if(motion!=='stationary'){issueCommand(s,0,{type:'move',ids:[cavalry.id],x:25.1,y:24.5});advance(s,1.8);expect(cavalry.tactics!.charge!.distance).toBeGreaterThan(4);if(motion==='stop'){issueCommand(s,0,{type:'hold',ids:[cavalry.id]});advance(s,1.5);}if(motion==='turn'){issueCommand(s,0,{type:'move',ids:[cavalry.id],x:cavalry.x,y:cavalry.y-2});advance(s,.4);}}else cavalry.x=25.1;const hp=target.hp;fire(s,cavalry,target,.3);return hp-target.hp;};
