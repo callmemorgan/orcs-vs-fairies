@@ -1,0 +1,9 @@
+Three separate observations ran at integrated commit `473ab17642211c3610aed648ae5f813b7680edc1`, with product bytes matching `453c221`. Canonical cosmetics passed 18 checks, including earned banners, decorations and portraits, canvas changes, owner mapping and restart persistence. Both original native exports are SAVE4 with replay rules 4.0.1 and identical complete game envelopes. Daily challenge runs ended in normal wins at ticks 1959 and 2009 under equal conditions; the faster score, retry, banner reward and restart checks passed.
+
+Hosted run1 remains failed. It completed native 2v2 and 3v3 checks, then stopped before 4v4 started because the proof required one matching lobby GET and observed two. Poll/manual overlap is supported by source inspection, but the retained wire has no request timestamps or initiators to prove the second request came from the timer. Cooperative and restart spectator stages were not reached.
+
+The phase manifests retain every original file identity. All selected raw tar members are expanded here with original bytes; compiled outputs, actual downloads, screenshots, logs, canonical SQLite and source/runtime audits are present. Public duplicates resolve to immutable Git. The oversized failed-hosted SQLite stays at its original path with its manifest hash and must be preserved before cleanup. Original external tar bytes remain separately retained.
+
+The daily raw method incorrectly says both slots are external. Its actual public config is external Orcs versus normal balanced Fairy AI with an infantry-rush opening. The raw bytes remain unchanged; the phase README and audit state the applicable configuration. No natural three/five-win stress or successful campaign claim is added to original feature acceptance.
+
+Direct cleanup confirmed owned processes and ports closed, protected PID 1063 and port 4173 unchanged, and all 397 root dist files unchanged. Feature statuses are unchanged by this import.
