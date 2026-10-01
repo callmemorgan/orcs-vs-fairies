@@ -405,6 +405,12 @@ describe('AI fairness and editable content', () => {
     const s = fixture(); s.players[0].wood = s.players[0].ore = 0;
     advance(s, 66);
     const home = hq(s, side), direction = side === 0 ? 1 : -1;
+    // A worker and visible wood keep normal regrouping available. Hold the
+    // worker so the fixture's exact paid-recruitment balances stay isolated.
+    const worker = add(s, side, 'unit', 'worker', home.x + direction * 2, home.y + direction * 3);
+    worker.order = { type: 'hold' };
+    s.resources.push({ id: s.nextId++, kind: 'wood', x: home.x + direction * 2, y: home.y + direction * 4, amount: 1000, maxAmount: 1000 });
+    refreshVisibility(s);
     const scout = add(s, side, 'unit', 'melee', home.x + direction * 3, home.y + direction * 3);
     const barracks = add(s, side, 'building', 'barracks', home.x + direction * 5, home.y);
     runAI(s, side); expect(scout.order.type).toBe('attackMove');
@@ -414,7 +420,7 @@ describe('AI fairness and editable content', () => {
     s.players[side].wood = def.cost.wood; s.players[side].ore = def.cost.ore;
     expect(issueCommand(s, side, { type: 'train', id: barracks.id, role: 'melee' })).toBe(true);
     advance(s, def.trainTime + 1); runAI(s, side);
-    const replacement = s.entities.find(e => e.side === side && e.kind === 'unit' && e.hp > 0)!;
+    const replacement = s.entities.find(e => e.side === side && e.kind === 'unit' && e.role !== 'worker' && e.hp > 0)!;
     expect(replacement).toBeDefined(); expect(replacement.id).not.toBe(scout.id);
     // Paid recruits now travel to the producer's home rally point. They must
     // finish that trip and stay grouped rather than replace the dead scout.
@@ -433,7 +439,7 @@ describe('AI fairness and editable content', () => {
     // Once the configured force is assembled, ordinary attack waves still run.
     for (let i = 1; i < faction.ai.armySize; i++) add(s, side, 'unit', 'melee', home.x + direction * 3, home.y + direction * (2 + i * .7));
     runAI(s, side);
-    const army = s.entities.filter(e => e.side === side && e.kind === 'unit' && e.hp > 0);
+    const army = s.entities.filter(e => e.side === side && e.kind === 'unit' && e.role !== 'worker' && e.hp > 0);
     expect(army).toHaveLength(faction.ai.armySize);
     expect(army.every(e => e.order.type === 'attackMove')).toBe(true);
   });
@@ -455,10 +461,14 @@ describe('AI fairness and editable content', () => {
   });
   it('cannot conjure resources or construction when its economy is empty', () => {
     const s = createGame('orcs'); s.resources = []; s.players[1].wood = s.players[1].ore = 0;
-    const before = s.entities.filter(e => e.side === 1).length;
+    const before = new Set(s.entities.filter(e => e.side === 1).map(e => e.id));
+    const buildings = s.entities.filter(e => e.side === 1 && e.kind === 'building').map(e => e.id);
     advance(s, 120);
     expect(s.players[1].wood).toBe(0); expect(s.players[1].ore).toBe(0);
-    expect(s.entities.filter(e => e.side === 1)).toHaveLength(before);
+    // Starved fighters may attack and die. The AI still cannot create any
+    // unpaid entity or foundation during that ordinary combat.
+    expect(s.entities.filter(e => e.side === 1).every(e => before.has(e.id))).toBe(true);
+    expect(s.entities.filter(e => e.side === 1 && e.kind === 'building').map(e => e.id)).toEqual(buildings);
     expect(s.entities.filter(e => e.side === 1).every(e => e.queue.length === 0)).toBe(true);
   });
   it('ignores unseen enemy positions when choosing orders', () => {

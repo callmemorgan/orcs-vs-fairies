@@ -383,7 +383,8 @@ export function runAI(s:GameState,side:Side=1):void{
    if(builder){let placed=false;for(let r=4;r<=7&&!placed;r++)for(let i=0;i<12&&!placed;i++){const x=Math.floor(deposit.x+Math.cos(i*Math.PI/6)*r)+.5,y=Math.floor(deposit.y+Math.sin(i*Math.PI/6)*r)+.5;if(canPlace(s,side,'hq',x,y))placed=issueCommand(s,side,{type:'build',ids:[builder.id],role:'hq',x,y});}}
   }
  }
- const queued=reserved(s,side);let buildRole:BuildingRole|undefined=openingBuilding(config,buildings.map(b=>b.role as BuildingRole));
+ const queued=reserved(s,side);
+ let buildRole:BuildingRole|undefined=openingBuilding(config,buildings.map(b=>b.role as BuildingRole));
  if(!buildRole){if(p.cap-p.population-queued<5&&p.cap<s.populationLimits[side]&&!buildings.some(b=>b.role==='depot'&&b.progress<1))buildRole='depot';else if(s.time>100&&!buildings.some(b=>b.role==='tower'))buildRole='tower';else if(s.time>180&&buildings.filter(b=>b.role==='barracks').length<(age===3&&p.wood>700&&p.ore>300?5:(age>=2||s.time>420)&&p.wood>400?3:2))buildRole='barracks';}
  if(buildRole&&!workers.some(e=>e.order.type==='build')){const builder=workers[0];if(builder){const dir=s.starts[side].y<s.height/2?1:-1;let placed=false;for(let r=5;r<=10&&!placed;r+=2)for(let i=0;i<16&&!placed;i++){const angle=i*Math.PI/8;const x=hq.x+Math.round(Math.cos(angle)*r)*dir,y=hq.y+Math.round(Math.sin(angle)*r)*dir;if(canPlace(s,side,buildRole,x,y))placed=issueCommand(s,side,{type:'build',ids:[builder.id],role:buildRole,x,y});}}}
  // A short defensive screen beside the tower leaves a gate in the army's route.
@@ -412,6 +413,15 @@ export function runAI(s:GameState,side:Side=1):void{
   const role=chooseAiRecruit(roles,planned,weights);if(!role)continue;
   if(issueCommand(s,side,{type:'train',id:b.id,role}))planned.push(role);
  }
+ // Evaluate after spending and recruitment so newly paid fighters count.
+ // Workers cannot replenish recruitment funds after their visible wood runs out.
+ // Count owned cargo and paid queues, but never inspect deposits in the fog.
+ const workerCost=f.units.worker.cost;
+ const workerRecoverable=workers.length>0||p.population<p.cap&&buildings.some(b=>b.role==='hq'&&b.progress===1&&b.queue.includes('worker'))||p.population+reserved(s,side)<p.cap&&p.wood>=workerCost.wood&&p.ore>=workerCost.ore&&p.crystal>=workerCost.crystal;
+ const woodIncome=available.some(n=>n.kind==='wood')||workers.some(w=>w.carriedKind==='wood'&&w.carried>0);
+ const recruitWood=Math.min(...roles.map(role=>f.units[role].cost.wood));
+ const paidFighterQueued=p.population<p.cap&&buildings.some(b=>b.role==='barracks'&&b.progress===1&&b.queue.some(role=>role!=='worker'));
+ const incomeRecoverable=paidFighterQueued||workerRecoverable&&(woodIncome||p.wood>=recruitWood);
  // Emplace within firing distance, and pack up when the position has no targets.
  for(const unit of army.filter(e=>unitDef(s,e).ability==='entrench')){
  const target=enemy(s,unit,unitDef(s,unit).range+(unit.role==='special'?3:0),true);
@@ -427,16 +437,16 @@ export function runAI(s:GameState,side:Side=1):void{
  const rally=commandDestination(s,side,forward,hq)??{x:hq.x+4,y:hq.y};
  for(const producer of buildings.filter(e=>e.role==='barracks'&&e.progress===1&&!e.rally))issueCommand(s,side,{type:'setRally',ids:[producer.id],...rally});
  const retreats=rt.retreating[side];
- for(const [id,record] of retreats){const soldier=army.find(e=>e.id===id);if(!soldier){retreats.delete(id);continue;}if(s.time>=record.until&&rt.producedFighters[side]>record.produced&&distance(soldier,rally)<9&&army.some(reinforcement=>!reinforcement.raised&&reinforcement.id>record.afterId&&distance(reinforcement,rally)<6&&!retreats.has(reinforcement.id)))retreats.delete(id);}
+ for(const [id,record] of retreats){const soldier=army.find(e=>e.id===id);if(!soldier){retreats.delete(id);continue;}if(s.time>=record.until&&(!incomeRecoverable||rt.producedFighters[side]>record.produced&&distance(soldier,rally)<9&&army.some(reinforcement=>!reinforcement.raised&&reinforcement.id>record.afterId&&distance(reinforcement,rally)<6&&!retreats.has(reinforcement.id))))retreats.delete(id);}
  for(const soldier of army){
-  if(retreats.has(soldier.id)||distance(soldier,hq)<9)continue;
+  if(!incomeRecoverable||retreats.has(soldier.id)||distance(soldier,hq)<9)continue;
   const enemies=seen.filter(e=>(e.kind==='unit'&&e.role!=='worker'||e.role==='tower')&&distance(e,soldier)<7);
   const allies=army.filter(e=>distance(e,soldier)<7&&!retreats.has(e.id));
   if(shouldRetreat(config,soldier,allies,enemies)&&issueCommand(s,side,{type:'move',ids:[soldier.id],...rally})){retreats.set(soldier.id,{until:s.time+profile.regroupSeconds,produced:rt.producedFighters[side],afterId:s.nextId-1});emit(s,'message',soldier,undefined,'Retreating to rally with reinforcements.');}
  }
  const readyArmy=army.filter(e=>!retreats.has(e.id));if(isVisible(s,side,enemyStart.x,enemyStart.y)&&!seen.some(e=>e.role==='hq'&&distance(e,enemyStart)<4))rt.clearedEnemyStarts[side].add(enemySide);rt.enemyStartCleared[side]=rt.clearedEnemyStarts[side].has(enemySide);
 
- if(age>=2&&(s.mapSize==='large'||s.mapSize==='huge')&&!rt.expansionScoutDispatched[side]&&readyArmy.length>=3){
+ if(incomeRecoverable&&age>=2&&(s.mapSize==='large'||s.mapSize==='huge')&&!rt.expansionScoutDispatched[side]&&readyArmy.length>=3){
   const scout=readyArmy.find(e=>e.role==='cavalry')??readyArmy.find(e=>e.role==='melee');
   const x=Math.floor(s.width*.23)+.5,y=Math.floor(s.height*.58)+.5;
   if(scout&&issueCommand(s,side,{type:'move',ids:[scout.id],x:s.starts[side].x<s.width/2?x:s.width-x,y:s.starts[side].y<s.height/2?y:s.height-y})){rt.expansionScout[side]=scout.id;rt.expansionScoutDispatched[side]=true;}
@@ -444,7 +454,7 @@ export function runAI(s:GameState,side:Side=1):void{
  if(rt.expansionScout[side]!==null&&!army.some(e=>e.id===rt.expansionScout[side]&&e.order.type==='move'))rt.expansionScout[side]=null;
 
  if(threat){const ready=readyArmy.filter(e=>e.order.type!=='attack'&&e.entrenchedAt===undefined);if(ready.length)issueCommand(s,side,{type:'attackMove',ids:ready.map(e=>e.id),x:threat.x,y:threat.y});}
- else if(readyArmy.length>=Math.max(3,Math.ceil(f.ai.armySize*profile.attackSizeFactor))&&s.time-rt.aiWave[side]>Math.max(15,65/f.ai.aggression*profile.waveIntervalFactor)){
+ else if(readyArmy.length>=(incomeRecoverable?Math.max(3,Math.ceil(f.ai.armySize*profile.attackSizeFactor)):1)&&s.time-rt.aiWave[side]>Math.max(15,65/f.ai.aggression*profile.waveIntervalFactor)){
  const raidTarget=config.personality==='raid'?seen.find(e=>e.role==='worker')??seen.find(e=>e.role==='depot'):undefined;
  const target=raidTarget??seen.find(e=>e.kind==='building'&&e.role==='hq')??[...remembered.values()].find(e=>e.role==='hq')??seen[0]??[...remembered.values()][0];
  let destination:Vec=target??enemyStart;
@@ -454,6 +464,6 @@ export function runAI(s:GameState,side:Side=1):void{
   for(let y=4.5;y<s.height-3;y+=6)for(let x=4.5;x<s.width-3;x+=6)if(!isVisible(s,side,x,y)&&!rt.searched[side].has(Math.floor(y)*s.width+Math.floor(x)))candidates.push({x,y});
   if(candidates.length){destination=candidates.sort((a,b)=>distance(origin,a)-distance(origin,b))[0];rt.searched[side].add(Math.floor(destination.y)*s.width+Math.floor(destination.x));}else rt.searched[side].clear();
  }
-issueCommand(s,side,{type:'attackMove',ids:readyArmy.filter(e=>e.entrenchedAt===undefined&&e.id!==rt.expansionScout[side]).map(e=>e.id),x:destination.x,y:destination.y});rt.aiWave[side]=s.time;
+issueCommand(s,side,{type:'attackMove',ids:readyArmy.filter(e=>e.entrenchedAt===undefined&&(!incomeRecoverable||e.id!==rt.expansionScout[side])).map(e=>e.id),x:destination.x,y:destination.y});rt.aiWave[side]=s.time;
  }else if(!rt.initialScoutDispatched[side]&&s.time>profile.scoutAt&&readyArmy.length&&readyArmy.every(e=>e.order.type==='idle')){const scout=readyArmy[0];if(issueCommand(s,side,{type:'attackMove',ids:[scout.id],x:hq.x+(enemyStart.x-hq.x)*.7,y:hq.y+(enemyStart.y-hq.y)*.7}))rt.initialScoutDispatched[side]=true;}
 }
