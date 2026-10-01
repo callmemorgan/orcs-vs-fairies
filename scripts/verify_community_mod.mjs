@@ -332,8 +332,8 @@ try {
   const secondRecruit = trained.entities.find(value => value.side === 0 && value.definitionId === recruits[1].id && !beforeIds.has(value.id));
   await clickEntity(receiverPage, secondRecruit);
   assert.equal(await receiverPage.locator('#selection-name').innerText(), recruits[1].name);
-  const stats = await receiverPage.locator('#selection-stats').innerText();
-  for (const [label, value] of [['ATK', recruits[1].damage], ['ARM', recruits[1].armor], ['RNG', recruits[1].range], ['SPD', recruits[1].speed]]) assert(stats.includes(`${label} ${value}`), `HUD displays ${label} ${value} from the authored definition`);
+  const stats = await receiverPage.locator('#selection-stats span').evaluateAll(nodes => Object.fromEntries(nodes.map(node => [node.firstChild.textContent.trim(), node.querySelector('b').textContent])));
+  for (const [label, value] of [['ATK', recruits[1].damage], ['ARM', recruits[1].armor], ['RNG', recruits[1].range], ['SPD', recruits[1].speed]]) assert.equal(stats[label], String(value), `HUD displays ${label} ${value} from the authored definition`);
   assert.equal(await receiverPage.locator('#portrait').getAttribute('data-asset'), recruits[1].id);
   const portrait = await receiverPage.locator('#portrait img').evaluate(image => ({ alt: image.alt, src: image.src, decoded: image.complete && image.naturalWidth > 0 }));
   assert.equal(portrait.alt, recruits[1].name);
@@ -402,6 +402,7 @@ try {
   assert.deepEqual(playedScenario.scenario.definition.content, originalBundle);
   const actor = playedScenario.entities.find(entity => entity.id === playedScenario.scenario.runtime.labels.commander);
   assert.equal(actor.definitionId, recruits[1].id); assert.equal(actor.maxHp, recruits[1].hp);
+  await receiverPage.waitForFunction(reason => document.querySelector('#overlay-description')?.textContent === reason, playedScenario.scenario.runtime.reason);
   assert.equal(await receiverPage.locator('#overlay-description').innerText(), playedScenario.scenario.runtime.reason);
   assert(!(await receiverPage.locator('#overlay-description').innerText()).includes('stronghold'));
   await save('played-pinned-lantern-scenario.json', playedScenario);
@@ -417,7 +418,7 @@ try {
   }
   throw error;
 } finally {
-  await save('result.json', { base, staticDir, fixturePath, results, errors, failure, checkedAt: new Date().toISOString(), scope: 'Temporary local real server and production browsers; community publication, immutable installation, normal mod play/build/train and exact pinned root closure.' });
+  await save('result.json', { base, staticDir, fixturePath, results, errors, failure, checkedAt: new Date().toISOString(), scope: 'Temporary local real server and production browsers; community publication, immutable installation, normal mod play/build/train, exact pinned root closure and authored custom-content scenario publication/install/play.' });
   await browser?.close();
   await server?.close();
   if (dataDir) await rm(dataDir, { recursive: true, force: true });
