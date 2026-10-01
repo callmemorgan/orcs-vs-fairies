@@ -1,0 +1,666 @@
+
+ RUN  v4.1.11 /tmp/ovf-faction-economy-baseline-cross-proof
+
+ ❯ tests/faction-economy-interruption.test.ts (32 tests | 29 failed) 490ms
+     × swaps a loaded raider and clears its old route while retaining cargo 42ms
+     × tunnel travel cancels a loaded delivery before installing its channel and survives continuation 11ms
+     × faction construction cancels planting, releases its site and records the paid cost 3ms
+     × collectCorpses replaces a wagon raid and leaves failed targets untouched 7ms
+     × deliverCorpses replaces a wagon raid and leaves failed targets untouched 7ms
+     × collectCorpses retains a wagon's physical resource cargo when replacing its return route 19ms
+     × deliverCorpses retains a wagon's physical resource cargo when replacing its return route 14ms
+     × grouped collectCorpses leaves an out-of-level loaded wagon and its delivery unchanged 84ms
+     × grouped deliverCorpses leaves an out-of-level loaded wagon and its delivery unchanged 58ms
+     × resuming an old tunnelTravel plus loaded economy route keeps the later faction action 9ms
+     × resuming an old collectCorpses plus loaded economy route keeps the later faction action 13ms
+     × resuming an old deliverCorpses plus loaded economy route keeps the later faction action 14ms
+     × resuming an old planting task plus later faction construction releases planting and continues the foundation 3ms
+     × a runtime surrender cancels a loaded route before transferring the physical cargo 14ms
+     × capture cleans up the engine delivery while allowing the captor channel to complete 21ms
+     × an old loaded neutral engine with task=true neither moves nor deposits at its former headquarters 19ms
+     × an old loaded neutral engine with task=false neither moves nor deposits at its former headquarters 16ms
+     × a visible supply target cannot make a crewless engine eligible for a new raid 2ms
+     × starting an economy raid removes a public formation and automatic retreat replaces the job 2ms
+     × formation replaces an economy raid and keeps the commanded formation until the next job 14ms
+     × automatic recovery cancels an admitted old raid/retreat combination before holding 4ms
+     × an old raid/formation combination in hold retains its later economy job and discards stale formation movement 3ms
+     × an old raid/formation combination in move retains its later economy job and discards stale formation movement 3ms
+     × an automatic ambush trigger cancels an admitted old raid job before attacking 5ms
+     × an admitted old raid/capture combination retains its channel until completion then cancels the captor job 16ms
+     × an accepted raid clears competing ambush state, but a failed raid keeps it 3ms
+     × an accepted raid clears competing capture state, but a failed raid keeps it 4ms
+     × an accepted raid clears competing retreat state, but a failed raid keeps it 3ms
+     × a paid faction structure drops its recorded salvage once through combat death 47ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 29 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/faction-economy-interruption.test.ts > faction commands replace economy work through the public command boundary > swaps a loaded raider and clears its old route while retaining cargo
+AssertionError: expected { entityId: 47, kind: 'route', …(6) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "amount": {
+    "crystal": 0,
+    "ore": 0,
+    "wood": 24,
+  },
+  "entityId": 47,
+  "kind": "route",
+  "phase": "delivery",
+  "progress": 0,
+  "repeat": false,
+  "sourceId": 48,
+  "targetId": 1,
+}
+
+ ❯ expectInterrupted tests/faction-economy-interruption.test.ts:41:20
+     39| }
+     40| function expectInterrupted(s:GameState,e:Entity,stock=24):void {
+     41|  expect(task(s,e)).toBeUndefined();expect(e.orderQueue).toBeUndefined(…
+       |                    ^
+     42|  expect(captureRuntime(s).routes.some(([id])=>id===e.id)).toBe(false);
+     43|  expect(cargo(s,e)).toMatchObject({stock:{wood:stock,ore:0,crystal:0},…
+ ❯ tests/faction-economy-interruption.test.ts:60:49
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/29]⎯
+
+ FAIL  tests/faction-economy-interruption.test.ts > faction commands replace economy work through the public command boundary > tunnel travel cancels a loaded delivery before installing its channel and survives continuation
+AssertionError: expected { entityId: 47, kind: 'route', …(6) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "amount": {
+    "crystal": 0,
+    "ore": 0,
+    "wood": 24,
+  },
+  "entityId": 47,
+  "kind": "route",
+  "phase": "delivery",
+  "progress": 0,
+  "repeat": false,
+  "sourceId": 48,
+  "targetId": 49,
+}
+
+ ❯ expectInterrupted tests/faction-economy-interruption.test.ts:41:20
+     39| }
+     40| function expectInterrupted(s:GameState,e:Entity,stock=24):void {
+     41|  expect(task(s,e)).toBeUndefined();expect(e.orderQueue).toBeUndefined(…
+       |                    ^
+     42|  expect(captureRuntime(s).routes.some(([id])=>id===e.id)).toBe(false);
+     43|  expect(cargo(s,e)).toMatchObject({stock:{wood:stock,ore:0,crystal:0},…
+ ❯ tests/faction-economy-interruption.test.ts:72:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/29]⎯
+
+ FAIL  tests/faction-economy-interruption.test.ts > faction commands replace economy work through the public command boundary > faction construction cancels planting, releases its site and records the paid cost
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/faction-economy-interruption.test.ts:86:24
+     84|   command(s,{type:'buildFactionStructure',ids:[worker.id],structure:'n…
+     85|   const building=s.entities.find(e=>e.definitionId===FACTION_STRUCTURE…
+     86|   expect(grove.burned).toBe(true);expect(task(s,worker)).toBeUndefined…
+       |                        ^
+     87|   expect(s.economy!.paidCosts.find(item=>item.entityId===building.id)?…
+     88|   expect(s.players[0].wood).toBe(wood-8-120);continueAndReplay(s,recor…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/29]⎯
+
+ FAIL  tests/faction-economy-interruption.test.ts > faction commands replace economy work through the public command boundary > collectCorpses replaces a wagon raid and leaves failed targets untouched
+ FAIL  tests/faction-economy-interruption.test.ts > faction commands replace economy work through the public command boundary > deliverCorpses replaces a wagon raid and leaves failed targets untouched
+AssertionError: expected { entityId: 47, kind: 'raid', …(2) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "entityId": 47,
+  "kind": "raid",
+  "progress": 0,
+  "targetId": 48,
+}
+
+ ❯ tests/faction-economy-interruption.test.ts:101:107
+     99|   refreshVisibility(s);command(s,{type:'raidSupply',ids:[wagon.id],tar…
+    100|   expect(issueCommand(s,0,{type,ids:[wagon.id],target:999999})).toBe(f…
+    101|   command(s,{type,ids:[wagon.id],target:type==='collectCorpses'?body.i…
+       |                                                                                                           ^
+    102|   expect(wagon.factionState!.corpseOrder).toMatchObject({type:type==='…
+    103|   continueAndReplay(s,recorder,10);expect(s.economy!.structures[0].sto…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/29]⎯
+
+ FAIL  tests/faction-economy-interruption.test.ts > faction commands replace economy work through the public command boundary > collectCorpses retains a wagon's physical resource cargo when replacing its return route
+ FAIL  tests/faction-economy-interruption.test.ts > faction commands replace economy work through the public command boundary > deliverCorpses retains a wagon's physical resource cargo when replacing its return route
+AssertionError: expected { entityId: 47, kind: 'route', …(6) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "amount": {
+    "crystal": 0,
+    "ore": 0,
+    "wood": 24,
+  },
+  "entityId": 47,
+  "kind": "route",
+  "phase": "delivery",
+  "progress": 0,
+  "repeat": false,
+  "sourceId": 48,
+  "targetId": 1,
+}
+
+ ❯ expectInterrupted tests/faction-economy-interruption.test.ts:41:20
+     39| }
+     40| function expectInterrupted(s:GameState,e:Entity,stock=24):void {
+     41|  expect(task(s,e)).toBeUndefined();expect(e.orderQueue).toBeUndefined(…
+       |                    ^
+     42|  expect(captureRuntime(s).routes.some(([id])=>id===e.id)).toBe(false);
+     43|  expect(cargo(s,e)).toMatchObject({stock:{wood:stock,ore:0,crystal:0},…
+ ❯ tests/faction-economy-interruption.test.ts:112:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/29]⎯
+
+ FAIL  tests/faction-economy-interruption.test.ts > faction commands replace economy work through the public command boundary > grouped collectCorpses leaves an out-of-level loaded wagon and its delivery unchanged
+ FAIL  tests/faction-economy-interruption.test.ts > faction commands replace economy work through the public command boundary > grouped deliverCorpses leaves an out-of-level loaded wagon and its delivery unchanged
+AssertionError: expected { entityId: 58, kind: 'route', …(6) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "amount": {
+    "crystal": 0,
+    "ore": 0,
+    "wood": 24,
+  },
+  "entityId": 58,
+  "kind": "route",
+  "phase": "delivery",
+  "progress": 0,
+  "repeat": false,
+  "sourceId": 61,
+  "targetId": 12,
+}
+
+ ❯ expectInterrupted tests/faction-economy-interruption.test.ts:41:20
+     39| }
+     40| function expectInterrupted(s:GameState,e:Entity,stock=24):void {
+     41|  expect(task(s,e)).toBeUndefined();expect(e.orderQueue).toBeUndefined(…
+       |                    ^
+     42|  expect(captureRuntime(s).routes.some(([id])=>id===e.id)).toBe(false);
+     43|  expect(cargo(s,e)).toMatchObject({stock:{wood:stock,ore:0,crystal:0},…
+ ❯ tests/faction-economy-interruption.test.ts:121:94
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/29]⎯
+
+ FAIL  tests/faction-economy-interruption.test.ts > faction commands replace economy work through the public command boundary > resuming an old tunnelTravel plus loaded economy route keeps the later faction action
+AssertionError: expected { entityId: 47, kind: 'route', …(6) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "amount": {
+    "crystal": 0,
+    "ore": 0,
+    "wood": 24,
+  },
+  "entityId": 47,
+  "kind": "route",
+  "phase": "delivery",
+  "progress": 0,
+  "repeat": false,
+  "sourceId": 48,
+  "targetId": 49,
+}
+
+ ❯ tests/faction-economy-interruption.test.ts:135:21
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/29]⎯
+
+ FAIL  tests/faction-economy-interruption.test.ts > faction commands replace economy work through the public command boundary > resuming an old collectCorpses plus loaded economy route keeps the later faction action
+ FAIL  tests/faction-economy-interruption.test.ts > faction commands replace economy work through the public command boundary > resuming an old deliverCorpses plus loaded economy route keeps the later faction action
+AssertionError: expected { entityId: 47, kind: 'route', …(6) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "amount": {
+    "crystal": 0,
+    "ore": 0,
+    "wood": 24,
+  },
+  "entityId": 47,
+  "kind": "route",
+  "phase": "delivery",
+  "progress": 0,
+  "repeat": false,
+  "sourceId": 48,
+  "targetId": 1,
+}
+
+ ❯ tests/faction-economy-interruption.test.ts:135:21
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/29]⎯
+
+ FAIL  tests/faction-economy-interruption.test.ts > faction commands replace economy work through the public command boundary > resuming an old planting task plus later faction construction releases planting and continues the foundation
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/faction-economy-interruption.test.ts:144:24
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/29]⎯
+
+ FAIL  tests/faction-economy-interruption.test.ts > tactical ownership and orders interrupt economy work > a runtime surrender cancels a loaded route before transferring the physical cargo
+AssertionError: expected { entityId: 47, kind: 'route', …(6) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "amount": {
+    "crystal": 0,
+    "ore": 0,
+    "wood": 24,
+  },
+  "entityId": 47,
+  "kind": "route",
+  "phase": "delivery",
+  "progress": 0,
+  "repeat": false,
+  "sourceId": 48,
+  "targetId": 1,
+}
+
+ ❯ expectInterrupted tests/faction-economy-interruption.test.ts:41:20
+     39| }
+     40| function expectInterrupted(s:GameState,e:Entity,stock=24):void {
+     41|  expect(task(s,e)).toBeUndefined();expect(e.orderQueue).toBeUndefined(…
+       |                    ^
+     42|  expect(captureRuntime(s).routes.some(([id])=>id===e.id)).toBe(false);
+     43|  expect(cargo(s,e)).toMatchObject({stock:{wood:stock,ore:0,crystal:0},…
+ ❯ tests/faction-economy-interruption.test.ts:155:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/29]⎯
+
+ FAIL  tests/faction-economy-interruption.test.ts > tactical ownership and orders interrupt economy work > capture cleans up the engine delivery while allowing the captor channel to complete
+AssertionError: expected { entityId: 47, kind: 'route', …(6) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "amount": {
+    "crystal": 0,
+    "ore": 0,
+    "wood": 24,
+  },
+  "entityId": 47,
+  "kind": "route",
+  "phase": "delivery",
+  "progress": 0,
+  "repeat": false,
+  "sourceId": 48,
+  "targetId": 1,
+}
+
+ ❯ expectInterrupted tests/faction-economy-interruption.test.ts:41:20
+     39| }
+     40| function expectInterrupted(s:GameState,e:Entity,stock=24):void {
+     41|  expect(task(s,e)).toBeUndefined();expect(e.orderQueue).toBeUndefined(…
+       |                    ^
+     42|  expect(captureRuntime(s).routes.some(([id])=>id===e.id)).toBe(false);
+     43|  expect(cargo(s,e)).toMatchObject({stock:{wood:stock,ore:0,crystal:0},…
+ ❯ tests/faction-economy-interruption.test.ts:162:58
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/29]⎯
+
+ FAIL  tests/faction-economy-interruption.test.ts > tactical ownership and orders interrupt economy work > an old loaded neutral engine with task=true neither moves nor deposits at its former headquarters
+AssertionError: expected [ { type: 'move', x: 30.5, y: 20.5 } ] to be undefined
+
+- Expected:
+undefined
+
++ Received:
+[
+  {
+    "type": "move",
+    "x": 30.5,
+    "y": 20.5,
+  },
+]
+
+ ❯ expectInterrupted tests/faction-economy-interruption.test.ts:41:57
+     39| }
+     40| function expectInterrupted(s:GameState,e:Entity,stock=24):void {
+     41|  expect(task(s,e)).toBeUndefined();expect(e.orderQueue).toBeUndefined(…
+       |                                                         ^
+     42|  expect(captureRuntime(s).routes.some(([id])=>id===e.id)).toBe(false);
+     43|  expect(cargo(s,e)).toMatchObject({stock:{wood:stock,ore:0,crystal:0},…
+ ❯ tests/faction-economy-interruption.test.ts:173:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/29]⎯
+
+ FAIL  tests/faction-economy-interruption.test.ts > tactical ownership and orders interrupt economy work > an old loaded neutral engine with task=false neither moves nor deposits at its former headquarters
+AssertionError: expected { entityId: 47, stock: { …(3) }, …(4) } to match object { …(3) }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "origin": "delivery",
+    "stock": {
+      "crystal": 0,
+      "ore": 0,
+-     "wood": 24,
++     "wood": 0,
+    },
+    "tradeValue": 0,
+  }
+
+ ❯ expectInterrupted tests/faction-economy-interruption.test.ts:43:21
+     41|  expect(task(s,e)).toBeUndefined();expect(e.orderQueue).toBeUndefined(…
+     42|  expect(captureRuntime(s).routes.some(([id])=>id===e.id)).toBe(false);
+     43|  expect(cargo(s,e)).toMatchObject({stock:{wood:stock,ore:0,crystal:0},…
+       |                     ^
+     44|  expect(cargo(s,e).destinationId).toBeUndefined();expect(cargo(s,e).co…
+     45| }
+ ❯ tests/faction-economy-interruption.test.ts:173:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/29]⎯
+
+ FAIL  tests/faction-economy-interruption.test.ts > tactical ownership and orders interrupt economy work > a visible supply target cannot make a crewless engine eligible for a new raid
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/faction-economy-interruption.test.ts:180:82
+    178|   engine.tactics!.siegeCrew!.hp=0;engine.tactics!.siegeCrew!.uncrewed=…
+    179|   expect(s.visible[0].has(Math.floor(target.y)*s.width+Math.floor(targ…
+    180|   expect(issueCommand(s,0,{type:'raidSupply',ids:[engine.id],target:ta…
+       |                                                                                  ^
+    181|  });
+    182|  it('starting an economy raid removes a public formation and automatic…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/29]⎯
+
+ FAIL  tests/faction-economy-interruption.test.ts > tactical ownership and orders interrupt economy work > starting an economy raid removes a public formation and automatic retreat replaces the job
+AssertionError: expected { kind: 'line', group: '0:47', …(6) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "anchor": {
+    "level": 0,
+    "x": 20.5,
+    "y": 20.5,
+  },
+  "count": 1,
+  "facing": 2,
+  "group": "0:47",
+  "kind": "line",
+  "phase": "moving",
+  "slot": 0,
+  "spacing": 1,
+}
+
+ ❯ tests/faction-economy-interruption.test.ts:185:151
+    183|   const s=fixture('orcs'),e=unit(s,'melee'),target=warehouse(s),enemy=…
+    184|   const recorder=record(s);command(s,{type:'formation',ids:[e.id],form…
+    185|   refreshVisibility(s);command(s,{type:'raidSupply',ids:[e.id],target:…
+       |                                                                                                                                                       ^
+    186|   continueAndReplay(s,recorder,.05);
+    187|   e.hp=e.maxHp*.5;e.tactics!.morale=15;refreshVisibility(s);const retr…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/29]⎯
+
+ FAIL  tests/faction-economy-interruption.test.ts > tactical ownership and orders interrupt economy work > formation replaces an economy raid and keeps the commanded formation until the next job
+AssertionError: expected { kind: 'wedge', group: '0:47', …(6) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "anchor": {
+    "level": 0,
+    "x": 20.5,
+    "y": 20.5,
+  },
+  "count": 1,
+  "facing": 2,
+  "group": "0:47",
+  "kind": "wedge",
+  "phase": "formed",
+  "slot": 0,
+  "spacing": 1,
+}
+
+ ❯ tests/faction-economy-interruption.test.ts:195:124
+    193|   command(s,{type:'formation',ids:[e.id],formation:'wedge',spacing:1,f…
+    194|   const before=saveGame(s);expect(issueCommand(s,0,{type:'raidSupply',…
+    195|   continueAndReplay(s,recorder,.2);command(s,{type:'raidSupply',ids:[e…
+       |                                                                                                                            ^
+    196|  });
+    197|  it('automatic recovery cancels an admitted old raid/retreat combinati…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/29]⎯
+
+ FAIL  tests/faction-economy-interruption.test.ts > tactical ownership and orders interrupt economy work > automatic recovery cancels an admitted old raid/retreat combination before holding
+AssertionError: expected { entityId: 47, kind: 'raid', …(2) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "entityId": 47,
+  "kind": "raid",
+  "progress": 0,
+  "targetId": 48,
+}
+
+ ❯ tests/faction-economy-interruption.test.ts:201:64
+    199|   // The previous engine admitted this competing state into saves; res…
+    200|   e.tactics!.retreat={x:10.5,y:10.5,until:0};e.tactics!.morale=50;cons…
+    201|   expect(e.tactics!.retreat).toBeUndefined();expect(task(s,e)).toBeUnd…
+       |                                                                ^
+    202|  });
+    203|  it.each(['hold','move'] as const)('an old raid/formation combination …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/29]⎯
+
+ FAIL  tests/faction-economy-interruption.test.ts > tactical ownership and orders interrupt economy work > an old raid/formation combination in hold retains its later economy job and discards stale formation movement
+ FAIL  tests/faction-economy-interruption.test.ts > tactical ownership and orders interrupt economy work > an old raid/formation combination in move retains its later economy job and discards stale formation movement
+AssertionError: expected { kind: 'line', group: '0:47', …(6) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "anchor": {
+    "level": 0,
+    "x": 20.5,
+    "y": 20.5,
+  },
+  "count": 1,
+  "facing": 2,
+  "group": "0:47",
+  "kind": "line",
+  "phase": "formed",
+  "slot": 0,
+  "spacing": 1,
+}
+
+ ❯ tests/faction-economy-interruption.test.ts:207:32
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/29]⎯
+
+ FAIL  tests/faction-economy-interruption.test.ts > tactical ownership and orders interrupt economy work > an automatic ambush trigger cancels an admitted old raid job before attacking
+AssertionError: expected { entityId: 47, kind: 'raid', …(2) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "entityId": 47,
+  "kind": "raid",
+  "progress": 0,
+  "targetId": 48,
+}
+
+ ❯ tests/faction-economy-interruption.test.ts:213:70
+    211|   command(s,{type:'ambush',ids:[e.id],radius:3,target:'melee'});const …
+    212|   command(s,{type:'raidSupply',ids:[e.id],target:target.id});e.tactics…
+    213|   expect(e.tactics!.ambush!.concealed).toBe(false);expect(task(s,e)).t…
+       |                                                                      ^
+    214|  });
+    215|  it('an admitted old raid/capture combination retains its channel unti…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/29]⎯
+
+ FAIL  tests/faction-economy-interruption.test.ts > tactical ownership and orders interrupt economy work > an admitted old raid/capture combination retains its channel until completion then cancels the captor job
+AssertionError: expected { entityId: 47, kind: 'raid', …(2) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "entityId": 47,
+  "kind": "raid",
+  "progress": 0,
+  "targetId": 48,
+}
+
+ ❯ tests/faction-economy-interruption.test.ts:220:125
+    218|   command(s,{type:'raidSupply',ids:[e.id],target:target.id});e.tactics…
+    219|   expect(e.tactics!.capture).toBeDefined();expect(task(s,e)).toBeDefin…
+    220|   continueAndReplay(s,recorder,.3);expect(engine.side).toBe(0);expect(…
+       |                                                                                                                             ^
+    221|  });
+    222|  it.each(['ambush','capture','retreat'] as const)('an accepted raid cl…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/29]⎯
+
+ FAIL  tests/faction-economy-interruption.test.ts > tactical ownership and orders interrupt economy work > an accepted raid clears competing ambush state, but a failed raid keeps it
+AssertionError: expected { radius: 3, target: 'any', …(2) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "armedAt": 0,
+  "concealed": true,
+  "radius": 3,
+  "target": "any",
+}
+
+ ❯ tests/faction-economy-interruption.test.ts:228:108
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/29]⎯
+
+ FAIL  tests/faction-economy-interruption.test.ts > tactical ownership and orders interrupt economy work > an accepted raid clears competing capture state, but a failed raid keeps it
+AssertionError: expected { target: 49, progress: +0 } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "progress": 0,
+  "target": 49,
+}
+
+ ❯ tests/faction-economy-interruption.test.ts:228:108
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/29]⎯
+
+ FAIL  tests/faction-economy-interruption.test.ts > tactical ownership and orders interrupt economy work > an accepted raid clears competing retreat state, but a failed raid keeps it
+AssertionError: expected { x: 10.5, y: 10.5, until: 8 } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "until": 8,
+  "x": 10.5,
+  "y": 10.5,
+}
+
+ ❯ tests/faction-economy-interruption.test.ts:228:108
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/29]⎯
+
+ FAIL  tests/faction-economy-interruption.test.ts > tactical ownership and orders interrupt economy work > a paid faction structure drops its recorded salvage once through combat death
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/faction-economy-interruption.test.ts:237:84
+    235|   command(s,{type:'attack',ids:[attacker.id],target:building.id},1);co…
+    236|   expect(building.hp).toBe(0);expect(s.economy!.deathClaims.filter(id=…
+    237|   const drops=s.economy!.salvage.filter(item=>item.kind==='salvage');e…
+       |                                                                                    ^
+    238|   run(s,1);expect(s.economy!.salvage.filter(item=>item.kind==='salvage…
+    239|  });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/29]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  29 failed | 3 passed (32)
+   Start at  08:05:19
+   Duration  842ms (transform 223ms, setup 0ms, import 272ms, tests 490ms, environment 0ms)
+
