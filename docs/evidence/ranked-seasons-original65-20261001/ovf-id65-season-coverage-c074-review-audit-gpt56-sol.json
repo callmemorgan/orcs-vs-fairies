@@ -1,0 +1,38 @@
+{
+  "status": "accepted-promotion",
+  "requirementId": 65,
+  "originalRequirement": "track competitive results with periodic rating resets.",
+  "map": "/tmp/ovf-id65-season-coverage-c074.json",
+  "mapSha256": "f3712dfc6fcd69b4baf3207af02458f3e82f253cbb8ef363676a9051ea1d3f40",
+  "independentInput": "/tmp/ovf-id65-season-coverage-c074-independent.json",
+  "independentInputSha256": "90d766abe376a96a981529fc4c219bb0e9a884d15078e91717ce9975e431c7d5",
+  "historicalPin": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+  "inspectedPin": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+  "observedRootHead": "ce3faceca7e93a41f716d767aca6c56487b1830b",
+  "authenticated": {
+    "reportSha256": "8711be82822ba830200c91af9936e476c3db3617a6ce6b33089cf329da0590e5",
+    "testsSha256": "ced75e92e6e198d8bad063fc0e4b276bfd7ee1936bf1849830cafcd21f7a11a9",
+    "suitePassed": true,
+    "passedTests": 2920,
+    "failedTests": 0,
+    "selectedAssertionsPassed": 2,
+    "bridgeEntriesVerified": 39,
+    "commitPathSidesVerified": 78,
+    "bridgeMismatches": 0,
+    "srcTestsChangedPaths": [
+      "src/main.ts"
+    ],
+    "relevantFilesChangedC074ToObservedHead": []
+  },
+  "clauses": {
+    "track competitive results": "passed: hosted match updates ratings/statistics once, exposes result and standings, and persists them through two restarts",
+    "periodic rating resets": "passed: monthly UTC season boundary gives previously rated accounts the full 1000 baseline while retaining archived standings and covers year rollover"
+  },
+  "findings": [],
+  "limits": [
+    "Historical admitted runtime evidence was authenticated but not rerun.",
+    "Native UI was inspected statically and not executed; this does not leave an original-clause gap."
+  ],
+  "runtimeExecuted": false,
+  "repositoryEdited": false
+}

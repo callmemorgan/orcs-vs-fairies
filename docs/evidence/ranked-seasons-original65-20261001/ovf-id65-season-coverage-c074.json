@@ -1,0 +1,1148 @@
+{
+  "schema": "ovf-id65-season-coverage-v1",
+  "created_at": "2026-10-01T20:44:18.919463+00:00",
+  "repository": "/home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies",
+  "scope": "Git-object and admitted-artifact inspection only; writing new /tmp evidence files is the only mutation. No repo/ledger edits, tests, builds, servers, browser or simulation.",
+  "pins": {
+    "historical_test_pin": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+    "inspected_pin": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+    "observed_checkout_head": "c86e273c70738f144a00fe75f5ecf39e7fa324d8"
+  },
+  "original_requirement": {
+    "path": "docs/features/requirements.json",
+    "lines": [
+      684,
+      688
+    ],
+    "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+    "record": {
+      "id": 65,
+      "title": "Ranked seasons",
+      "requirement": "track competitive results with periodic rating resets.",
+      "status": "in-progress",
+      "evidence": []
+    }
+  },
+  "admitted_historical_evidence": {
+    "admitted_in_git_object_commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+    "report": {
+      "path": "docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/report.json",
+      "sha256": "8711be82822ba830200c91af9936e476c3db3617a6ce6b33089cf329da0590e5",
+      "git_blob_id": "cd6f0cdb0242cd18e7d8ac204bfb3a81492a43cd",
+      "bytes": 1340,
+      "content": {
+        "head": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+        "phase": "tests",
+        "startedAt": "2026-10-01T18:26:25.436501+00:00",
+        "commands": [
+          {
+            "argv": [
+              "npm",
+              "test",
+              "--",
+              "--reporter=default",
+              "--reporter=json",
+              "--outputFile.json=/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/combined-rules401-full-suite-4a71cd0-r2/tests.json"
+            ],
+            "log": "command-1.log",
+            "exitCode": 0
+          }
+        ],
+        "runtime": {
+          "node": "v24.21.0",
+          "npm": "11.19.0",
+          "dependencies": {
+            "vitest": "4.1.11",
+            "typescript": "5.9.3",
+            "vite": "7.3.6",
+            "esbuild": "0.28.2",
+            "phaser": "4.2.1",
+            "ws": "8.22.0"
+          }
+        },
+        "tests": {
+          "numTotalTests": 2920,
+          "numPassedTests": 2920,
+          "numFailedTests": 0
+        },
+        "testFiles": 157,
+        "inputIntegrityPassed": true,
+        "finishedAt": "2026-10-01T18:39:00.175303+00:00",
+        "passed": true,
+        "artifactHashes": {
+          "command-1.log": "07d9194e5cb32f01c112c7847b0b345ee1dcfa4887fcefc6ecf0cc3d2592ea54",
+          "source-after.json": "53a7006baf049eba955a8cb382ce6355ba3cb6b9e7816848363b386b82df7694",
+          "source-before.json": "53a7006baf049eba955a8cb382ce6355ba3cb6b9e7816848363b386b82df7694",
+          "tests.json": "ced75e92e6e198d8bad063fc0e4b276bfd7ee1936bf1849830cafcd21f7a11a9"
+        }
+      }
+    },
+    "tests": {
+      "path": "docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+      "sha256": "ced75e92e6e198d8bad063fc0e4b276bfd7ee1936bf1849830cafcd21f7a11a9",
+      "matches_report_sha256": true,
+      "git_blob_id": "a045886f7445ec868f613c4ff11443783df44923",
+      "bytes": 1017281,
+      "selected_assertions": [
+        {
+          "artifact_path": "docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "artifact_line": 1,
+          "json_path": "$.testResults[106].assertionResults[3]",
+          "suite_metadata": {
+            "startTime": 1790879204186,
+            "endTime": 1790879206599.5364,
+            "status": "passed",
+            "message": "",
+            "name": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/server-competitions.test.ts"
+          },
+          "assertion": {
+            "ancestorTitles": [
+              "durable ranked seasons and hosted daily challenges"
+            ],
+            "fullName": "durable ranked seasons and hosted daily challenges awards one result across retries, post-game receipts and restarts, and keeps its starting season",
+            "status": "passed",
+            "title": "awards one result across retries, post-game receipts and restarts, and keeps its starting season",
+            "duration": 236.65396800000008,
+            "failureMessages": [],
+            "meta": {},
+            "tags": []
+          },
+          "source_test_path": "tests/server-competitions.test.ts",
+          "source_lines": {
+            "start": 63,
+            "end": 75
+          },
+          "c074_source": "  it('awards one result across retries, post-game receipts and restarts, and keeps its starting season',async()=>{\n    const context=await setup(),{host,guest,server,directory}=context;const lobby=await ranked(host,guest),matchId=lobby.matchId!;\n    const peer=await guest.peer(matchId);cleanup.push(async()=>peer.ws.terminate());await peer.snapshot();\n    context.setClock(Date.UTC(2026,10,1));const ack=await peer.command(1,{type:'surrender'});expect(ack).toMatchObject({accepted:true});\n    expect(await peer.command(1,{type:'surrender'})).toEqual(ack);expect(await peer.command(2,{type:'surrender'})).toMatchObject({accepted:false,reason:'ended'});\n    let standings=(await host.request('/api/ranked/standings?season=2026-10')).data.standings;expect(standings.map((row:any)=>[row.rating,row.played])).toEqual([[1016,1],[984,1]]);\n    expect((await host.request('/api/ranked/seasons')).data.current).toMatchObject({id:'2026-11',initialRating:1000,startsAt:'2026-11-01T00:00:00.000Z',endsAt:'2026-12-01T00:00:00.000Z'});\n    expect((await host.request('/api/ranked/standings')).data.standings).toEqual([]);\n    const result=(await host.request('/api/competitions/results/'+matchId)).data.result;expect(result).toMatchObject({seasonId:'2026-10',ratings:[{before:1000,after:1016},{before:1000,after:984}]});\n    await server.close();\n    for(let index=0;index<2;index++){const restarted=await createRtsServer({dataDir:directory,port:0,competitionNow:context.clock});host.url=restarted.url;guest.url=restarted.url;expect((await host.request('/api/ranked/standings?season=2026-10')).data.standings).toEqual(standings);expect((await host.request('/api/competitions/results/'+matchId)).data.result).toEqual(result);await restarted.close();}\n    const db=new DatabaseSync(join(directory,'server.sqlite'),{readOnly:true});expect(db.prepare('SELECT COUNT(*) n FROM competition_results').get()!.n).toBe(1);expect(db.prepare('SELECT COUNT(*) n FROM commands WHERE match_id=?').get(matchId)!.n).toBe(2);db.close();\n  });\n",
+          "covered_behavior": "Starting-season attribution across rollover; exact before/after ratings; empty new current standings; durable result and archive through two restarts.",
+          "evidence_kind": "Historical recorded functional hosted HTTP/WebSocket test; inspected read-only, not rerun."
+        },
+        {
+          "artifact_path": "docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "artifact_line": 1,
+          "json_path": "$.testResults[106].assertionResults[7]",
+          "suite_metadata": {
+            "startTime": 1790879204186,
+            "endTime": 1790879206599.5364,
+            "status": "passed",
+            "message": "",
+            "name": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/server-competitions.test.ts"
+          },
+          "assertion": {
+            "ancestorTitles": [
+              "durable ranked seasons and hosted daily challenges"
+            ],
+            "fullName": "durable ranked seasons and hosted daily challenges resets to the full 1000 baseline in the next season while retaining archived ratings",
+            "status": "passed",
+            "title": "resets to the full 1000 baseline in the next season while retaining archived ratings",
+            "duration": 177.53629,
+            "failureMessages": [],
+            "meta": {},
+            "tags": []
+          },
+          "source_test_path": "tests/server-competitions.test.ts",
+          "source_lines": {
+            "start": 107,
+            "end": 113
+          },
+          "c074_source": "  it('resets to the full 1000 baseline in the next season while retaining archived ratings',async()=>{\n    const context=await setup(),{host,guest}=context;const first=await ranked(host,guest),loser=await guest.peer(first.matchId!);cleanup.push(async()=>loser.ws.terminate());await loser.snapshot();await loser.command(1,{type:'surrender'});\n    context.setClock(Date.UTC(2026,10,1));const second=await ranked(host,guest),other=await host.peer(second.matchId!);cleanup.push(async()=>other.ws.terminate());await other.snapshot();await other.command(1,{type:'surrender'});\n    expect((await host.request('/api/competitions/results/'+second.matchId)).data.result.ratings).toEqual([{accountId:(await host.request('/api/session')).data.account.id,before:1000,after:984},{accountId:(await guest.request('/api/session')).data.account.id,before:1000,after:1016}]);\n    expect((await host.request('/api/ranked/standings?season=2026-10')).data.standings[0].account.username).toBe('rankingHost');expect((await host.request('/api/ranked/standings')).data.standings[0].account.username).toBe('rankingGuest');\n    expect(seasonAt(Date.UTC(2026,11,31))).toMatchObject({id:'2026-12',endsAt:'2027-01-01T00:00:00.000Z'});\n  });\n",
+          "covered_behavior": "Full monthly reset to 1000 for both previously rated accounts; old-season standings retained; year-end UTC boundary.",
+          "evidence_kind": "Historical recorded functional hosted HTTP/WebSocket test; inspected read-only, not rerun."
+        }
+      ]
+    }
+  },
+  "whole_file_bridge": [
+    {
+      "path": "tests/server-competitions.test.ts",
+      "historical": {
+        "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+        "git_blob_id": "bfffc577c2716bf1f365bf4db93c5ca9499fdd63",
+        "sha256": "5c3b8263413d2a2cef3006037fd7eaa044ee4e76a5556d8d42399782777ebe18",
+        "bytes": 16272
+      },
+      "c074": {
+        "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+        "git_blob_id": "bfffc577c2716bf1f365bf4db93c5ca9499fdd63",
+        "sha256": "5c3b8263413d2a2cef3006037fd7eaa044ee4e76a5556d8d42399782777ebe18",
+        "bytes": 16272
+      },
+      "git_blob_equal": true,
+      "sha256_equal": true
+    },
+    {
+      "path": "src/server/competitions.ts",
+      "historical": {
+        "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+        "git_blob_id": "09d5acac55d06bcd47b8da7edddfecef54cc43ba",
+        "sha256": "9fd84d853f45e132299521341071e8958310e9634fed2d01976bdaf576d222da",
+        "bytes": 6390
+      },
+      "c074": {
+        "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+        "git_blob_id": "09d5acac55d06bcd47b8da7edddfecef54cc43ba",
+        "sha256": "9fd84d853f45e132299521341071e8958310e9634fed2d01976bdaf576d222da",
+        "bytes": 6390
+      },
+      "git_blob_equal": true,
+      "sha256_equal": true
+    },
+    {
+      "path": "src/server/server.ts",
+      "historical": {
+        "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+        "git_blob_id": "c44e339200e49edfd0862386864d2dc64e63b608",
+        "sha256": "6cee3a6770a2e692ca4ad3ad155c3b06cf6f9116b43460f1eefe7eb7572a1f65",
+        "bytes": 50662
+      },
+      "c074": {
+        "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+        "git_blob_id": "c44e339200e49edfd0862386864d2dc64e63b608",
+        "sha256": "6cee3a6770a2e692ca4ad3ad155c3b06cf6f9116b43460f1eefe7eb7572a1f65",
+        "bytes": 50662
+      },
+      "git_blob_equal": true,
+      "sha256_equal": true
+    },
+    {
+      "path": "src/server/store.ts",
+      "historical": {
+        "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+        "git_blob_id": "912728e2ecdb80fd4159811b6cf5e3877a659963",
+        "sha256": "94b40c5f2c40f97e12d69bce63110795eed2a44f72e2c05903a8a7e8efe9fa04",
+        "bytes": 10118
+      },
+      "c074": {
+        "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+        "git_blob_id": "912728e2ecdb80fd4159811b6cf5e3877a659963",
+        "sha256": "94b40c5f2c40f97e12d69bce63110795eed2a44f72e2c05903a8a7e8efe9fa04",
+        "bytes": 10118
+      },
+      "git_blob_equal": true,
+      "sha256_equal": true
+    },
+    {
+      "path": "src/online/competitions.ts",
+      "historical": {
+        "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+        "git_blob_id": "7973376ba3820295ea3c8bc7f9ff6f52256616b8",
+        "sha256": "e1e1a51653e2eb0e2c7d9c4a7f04b18ea03cf26e49a56bcb78d8cdb710cc9bad",
+        "bytes": 1869
+      },
+      "c074": {
+        "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+        "git_blob_id": "7973376ba3820295ea3c8bc7f9ff6f52256616b8",
+        "sha256": "e1e1a51653e2eb0e2c7d9c4a7f04b18ea03cf26e49a56bcb78d8cdb710cc9bad",
+        "bytes": 1869
+      },
+      "git_blob_equal": true,
+      "sha256_equal": true
+    },
+    {
+      "path": "src/online/competition-client.ts",
+      "historical": {
+        "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+        "git_blob_id": "5800d4b017039fae4790ddff8a353b4cc6eca0e7",
+        "sha256": "75f88a94e281550bfe87e5546dca24efe694c19747841c81648f00d922c6dab6",
+        "bytes": 1434
+      },
+      "c074": {
+        "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+        "git_blob_id": "5800d4b017039fae4790ddff8a353b4cc6eca0e7",
+        "sha256": "75f88a94e281550bfe87e5546dca24efe694c19747841c81648f00d922c6dab6",
+        "bytes": 1434
+      },
+      "git_blob_equal": true,
+      "sha256_equal": true
+    },
+    {
+      "path": "src/ui/CompetitionTools.ts",
+      "historical": {
+        "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+        "git_blob_id": "9b8d600b61378a0a49e7bafe1607fd4ff27f8819",
+        "sha256": "f9f0d92164339e27b7fd88b334dfd0e021d1149406f0ca507b23deb73fd23ef6",
+        "bytes": 12649
+      },
+      "c074": {
+        "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+        "git_blob_id": "9b8d600b61378a0a49e7bafe1607fd4ff27f8819",
+        "sha256": "f9f0d92164339e27b7fd88b334dfd0e021d1149406f0ca507b23deb73fd23ef6",
+        "bytes": 12649
+      },
+      "git_blob_equal": true,
+      "sha256_equal": true
+    },
+    {
+      "path": "tests/competition-tools-integration.test.ts",
+      "historical": {
+        "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+        "git_blob_id": "b70efc5532401e0ef11987d6cdb481de57369ed4",
+        "sha256": "0a0863d968f1c0aca7407c6eb62ce286b7a4dd5d904c7e2126e62aa832a9dcd8",
+        "bytes": 7166
+      },
+      "c074": {
+        "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+        "git_blob_id": "b70efc5532401e0ef11987d6cdb481de57369ed4",
+        "sha256": "0a0863d968f1c0aca7407c6eb62ce286b7a4dd5d904c7e2126e62aa832a9dcd8",
+        "bytes": 7166
+      },
+      "git_blob_equal": true,
+      "sha256_equal": true
+    }
+  ],
+  "dependency_bridge": {
+    "method": "Compare complete src/tests changed-path list plus whole Git objects for repository-relative direct imports of all eight bridge files. Since the only changed source/test file is main.ts, no indirect source/test dependency under src/tests drifted in these server/client/reusable UI paths. Compare existing package/runner configuration objects separately.",
+    "src_tests_changed_paths": [
+      "src/main.ts"
+    ],
+    "direct_import_whole_file_bridge": [
+      {
+        "path": "src/core/commands.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "015c105bf25a4ebc0370885bd1fdcc0162e7f788",
+          "sha256": "efd360936cb2dc168402299eea06eda1c50247c79ad675237a0a7a7318dd4632",
+          "bytes": 7202
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "015c105bf25a4ebc0370885bd1fdcc0162e7f788",
+          "sha256": "efd360936cb2dc168402299eea06eda1c50247c79ad675237a0a7a7318dd4632",
+          "bytes": 7202
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "src/server/server.ts"
+        ]
+      },
+      {
+        "path": "src/core/content.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "ca4cc141f293f9ad57481734a23c9d0478b5f0af",
+          "sha256": "4495966583a38f122f23f40c8cfbc0c7655b00cc463b37efdf26a0c9b0a86160",
+          "bytes": 19805
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "ca4cc141f293f9ad57481734a23c9d0478b5f0af",
+          "sha256": "4495966583a38f122f23f40c8cfbc0c7655b00cc463b37efdf26a0c9b0a86160",
+          "bytes": 19805
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "src/server/server.ts",
+          "src/ui/CompetitionTools.ts"
+        ]
+      },
+      {
+        "path": "src/core/match-rules.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "4330ac8acae9f57ae704802e9d78be250e452199",
+          "sha256": "b31abb0ff8df8ecacaaa76ea6fafb2f87ff88f57f071389a74193538f4e534d5",
+          "bytes": 18173
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "4330ac8acae9f57ae704802e9d78be250e452199",
+          "sha256": "b31abb0ff8df8ecacaaa76ea6fafb2f87ff88f57f071389a74193538f4e534d5",
+          "bytes": 18173
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "src/server/server.ts"
+        ]
+      },
+      {
+        "path": "src/core/saves.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "1bc86d419b56585120d8c68c02a61c1b3a7ef580",
+          "sha256": "2059e49775401d44813a02c3628de3055c3d7d944d4f887cf7a3639c145197c7",
+          "bytes": 48856
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "1bc86d419b56585120d8c68c02a61c1b3a7ef580",
+          "sha256": "2059e49775401d44813a02c3628de3055c3d7d944d4f887cf7a3639c145197c7",
+          "bytes": 48856
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "src/server/store.ts"
+        ]
+      },
+      {
+        "path": "src/core/simulation.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "66bd44db02798f07467f888ab1193b06b52f364d",
+          "sha256": "e301c65d0352ffe648a5bc4ee6acbda1f562164deacdfe60f8f3b03e7bdccf35",
+          "bytes": 106228
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "66bd44db02798f07467f888ab1193b06b52f364d",
+          "sha256": "e301c65d0352ffe648a5bc4ee6acbda1f562164deacdfe60f8f3b03e7bdccf35",
+          "bytes": 106228
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "src/server/server.ts",
+          "tests/server-competitions.test.ts"
+        ]
+      },
+      {
+        "path": "src/core/types.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "d396b72d5342db148a3c6e1af9dd95eed83a729d",
+          "sha256": "9f2c6c337d2dd6669c1cd8dbee30c01c89c41de3d9caf962d57854310fe8dd33",
+          "bytes": 8433
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "d396b72d5342db148a3c6e1af9dd95eed83a729d",
+          "sha256": "9f2c6c337d2dd6669c1cd8dbee30c01c89c41de3d9caf962d57854310fe8dd33",
+          "bytes": 8433
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "src/online/competitions.ts",
+          "src/server/competitions.ts",
+          "src/server/server.ts",
+          "src/server/store.ts",
+          "src/ui/CompetitionTools.ts"
+        ]
+      },
+      {
+        "path": "src/online/client.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "ff8cc721b57ab6ced15c3b4e9b03aad314f8ea6c",
+          "sha256": "5564377fb45ca04a86bab9ea25025de2194c0dfdd1ca75ca835109711b46a72a",
+          "bytes": 16286
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "ff8cc721b57ab6ced15c3b4e9b03aad314f8ea6c",
+          "sha256": "5564377fb45ca04a86bab9ea25025de2194c0dfdd1ca75ca835109711b46a72a",
+          "bytes": 16286
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "src/online/competition-client.ts",
+          "src/ui/CompetitionTools.ts",
+          "tests/competition-tools-integration.test.ts"
+        ]
+      },
+      {
+        "path": "src/online/competition-client.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "5800d4b017039fae4790ddff8a353b4cc6eca0e7",
+          "sha256": "75f88a94e281550bfe87e5546dca24efe694c19747841c81648f00d922c6dab6",
+          "bytes": 1434
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "5800d4b017039fae4790ddff8a353b4cc6eca0e7",
+          "sha256": "75f88a94e281550bfe87e5546dca24efe694c19747841c81648f00d922c6dab6",
+          "bytes": 1434
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "src/ui/CompetitionTools.ts"
+        ]
+      },
+      {
+        "path": "src/online/competitions.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "7973376ba3820295ea3c8bc7f9ff6f52256616b8",
+          "sha256": "e1e1a51653e2eb0e2c7d9c4a7f04b18ea03cf26e49a56bcb78d8cdb710cc9bad",
+          "bytes": 1869
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "7973376ba3820295ea3c8bc7f9ff6f52256616b8",
+          "sha256": "e1e1a51653e2eb0e2c7d9c4a7f04b18ea03cf26e49a56bcb78d8cdb710cc9bad",
+          "bytes": 1869
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "src/online/competition-client.ts",
+          "src/server/competitions.ts",
+          "src/server/server.ts",
+          "src/server/store.ts"
+        ]
+      },
+      {
+        "path": "src/online/cosmetic-client.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "d58b93ec068624965f64cd6c821f988b0273b3c6",
+          "sha256": "77a609233607c3efb6c9986083282f4cbe7ab28e764aecec9f7571cb7c611cb0",
+          "bytes": 1076
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "d58b93ec068624965f64cd6c821f988b0273b3c6",
+          "sha256": "77a609233607c3efb6c9986083282f4cbe7ab28e764aecec9f7571cb7c611cb0",
+          "bytes": 1076
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "tests/competition-tools-integration.test.ts"
+        ]
+      },
+      {
+        "path": "src/online/cosmetics.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "e00846d012cdb5367f89a7a795a3b592c90ecd85",
+          "sha256": "411d139e5d90ebf390fc227fce6b0b961b746d1c9ec2782003d006b88ebc5685",
+          "bytes": 1388
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "e00846d012cdb5367f89a7a795a3b592c90ecd85",
+          "sha256": "411d139e5d90ebf390fc227fce6b0b961b746d1c9ec2782003d006b88ebc5685",
+          "bytes": 1388
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "src/server/server.ts"
+        ]
+      },
+      {
+        "path": "src/online/protocol.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "366eba126e985af87cd95f58ee9d5bcd8cfd8a30",
+          "sha256": "0ad3ac461e5be93e277a468bdd860b4c111282c219b0d1f7b381f22fd494030c",
+          "bytes": 2630
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "366eba126e985af87cd95f58ee9d5bcd8cfd8a30",
+          "sha256": "0ad3ac461e5be93e277a468bdd860b4c111282c219b0d1f7b381f22fd494030c",
+          "bytes": 2630
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "src/online/competition-client.ts",
+          "src/online/competitions.ts",
+          "src/server/server.ts",
+          "src/server/store.ts",
+          "src/ui/CompetitionTools.ts",
+          "tests/server-competitions.test.ts"
+        ]
+      },
+      {
+        "path": "src/server/campaign-verification.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "e567a6b466cc6d26a0396b954a3c20a93dc3cb6d",
+          "sha256": "786e60e4db0d65dcaadf7f6d8bb3aa1af9633cc27d5a36374ae70f07f71a6c27",
+          "bytes": 3186
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "e567a6b466cc6d26a0396b954a3c20a93dc3cb6d",
+          "sha256": "786e60e4db0d65dcaadf7f6d8bb3aa1af9633cc27d5a36374ae70f07f71a6c27",
+          "bytes": 3186
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "src/server/server.ts"
+        ]
+      },
+      {
+        "path": "src/server/community-http.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "27cc15b97e86b67497a4fe579045b354fcd0bb23",
+          "sha256": "78f2ba78db245eed7de9ab69a802c17fa3487b312b6d9b5630a13c44035d5e6f",
+          "bytes": 2917
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "27cc15b97e86b67497a4fe579045b354fcd0bb23",
+          "sha256": "78f2ba78db245eed7de9ab69a802c17fa3487b312b6d9b5630a13c44035d5e6f",
+          "bytes": 2917
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "src/server/server.ts"
+        ]
+      },
+      {
+        "path": "src/server/community-packages.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "a93643da6c8572b59f708c4db88c19bcbfb24218",
+          "sha256": "53f1c2c77f53ec5b5a0c6523c37822b1b32f54016fdd8cbd0b9e6618394cc697",
+          "bytes": 21198
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "a93643da6c8572b59f708c4db88c19bcbfb24218",
+          "sha256": "53f1c2c77f53ec5b5a0c6523c37822b1b32f54016fdd8cbd0b9e6618394cc697",
+          "bytes": 21198
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "src/server/server.ts"
+        ]
+      },
+      {
+        "path": "src/server/competitions.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "09d5acac55d06bcd47b8da7edddfecef54cc43ba",
+          "sha256": "9fd84d853f45e132299521341071e8958310e9634fed2d01976bdaf576d222da",
+          "bytes": 6390
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "09d5acac55d06bcd47b8da7edddfecef54cc43ba",
+          "sha256": "9fd84d853f45e132299521341071e8958310e9634fed2d01976bdaf576d222da",
+          "bytes": 6390
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "src/server/store.ts",
+          "tests/server-competitions.test.ts"
+        ]
+      },
+      {
+        "path": "src/server/cosmetics.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "e32bd3b02d5623c762e46935e384ea1fe0399edb",
+          "sha256": "04ac51920d6a853310d4bf647b14c9901bd453a29e9854da18bc27b1efa74320",
+          "bytes": 5449
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "e32bd3b02d5623c762e46935e384ea1fe0399edb",
+          "sha256": "04ac51920d6a853310d4bf647b14c9901bd453a29e9854da18bc27b1efa74320",
+          "bytes": 5449
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "src/server/server.ts",
+          "src/server/store.ts"
+        ]
+      },
+      {
+        "path": "src/server/server.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "c44e339200e49edfd0862386864d2dc64e63b608",
+          "sha256": "6cee3a6770a2e692ca4ad3ad155c3b06cf6f9116b43460f1eefe7eb7572a1f65",
+          "bytes": 50662
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "c44e339200e49edfd0862386864d2dc64e63b608",
+          "sha256": "6cee3a6770a2e692ca4ad3ad155c3b06cf6f9116b43460f1eefe7eb7572a1f65",
+          "bytes": 50662
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "tests/server-competitions.test.ts"
+        ]
+      },
+      {
+        "path": "src/server/store.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "912728e2ecdb80fd4159811b6cf5e3877a659963",
+          "sha256": "94b40c5f2c40f97e12d69bce63110795eed2a44f72e2c05903a8a7e8efe9fa04",
+          "bytes": 10118
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "912728e2ecdb80fd4159811b6cf5e3877a659963",
+          "sha256": "94b40c5f2c40f97e12d69bce63110795eed2a44f72e2c05903a8a7e8efe9fa04",
+          "bytes": 10118
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "src/server/server.ts",
+          "tests/server-competitions.test.ts"
+        ]
+      },
+      {
+        "path": "src/server/team-view.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "b00e45e8d71f4b3419354ed5218c6f33b2c14cbe",
+          "sha256": "ac53d33a6595b1576e1ddbe3b03ade7ba762d3fa53dd90ec76e5f1036da3bee4",
+          "bytes": 5481
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "b00e45e8d71f4b3419354ed5218c6f33b2c14cbe",
+          "sha256": "ac53d33a6595b1576e1ddbe3b03ade7ba762d3fa53dd90ec76e5f1036da3bee4",
+          "bytes": 5481
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "src/server/server.ts"
+        ]
+      },
+      {
+        "path": "src/server/views.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "fcc5d11d1bb09595d0103cc2ae8e5e3c457c2826",
+          "sha256": "fef071fb8d6f0729914abe1238206ef67179d59246f65e043d38e753f2e29578",
+          "bytes": 2864
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "fcc5d11d1bb09595d0103cc2ae8e5e3c457c2826",
+          "sha256": "fef071fb8d6f0729914abe1238206ef67179d59246f65e043d38e753f2e29578",
+          "bytes": 2864
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "src/server/server.ts",
+          "tests/server-competitions.test.ts"
+        ]
+      },
+      {
+        "path": "src/tournament/service.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "b0ae3c60ecae4f2dc7961dea6100f99bc4efbab7",
+          "sha256": "d3fbe79245f74d54ea36b94d475f2becfabc7b4242a90aabebfbb99e06189988",
+          "bytes": 11854
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "b0ae3c60ecae4f2dc7961dea6100f99bc4efbab7",
+          "sha256": "d3fbe79245f74d54ea36b94d475f2becfabc7b4242a90aabebfbb99e06189988",
+          "bytes": 11854
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "src/server/server.ts"
+        ]
+      },
+      {
+        "path": "src/ui/CompetitionTools.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "9b8d600b61378a0a49e7bafe1607fd4ff27f8819",
+          "sha256": "f9f0d92164339e27b7fd88b334dfd0e021d1149406f0ca507b23deb73fd23ef6",
+          "bytes": 12649
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "9b8d600b61378a0a49e7bafe1607fd4ff27f8819",
+          "sha256": "f9f0d92164339e27b7fd88b334dfd0e021d1149406f0ca507b23deb73fd23ef6",
+          "bytes": 12649
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "tests/competition-tools-integration.test.ts"
+        ]
+      },
+      {
+        "path": "src/ui/CosmeticTools.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "ca567837b5e8a9eeb2f0263041de915157ce9670",
+          "sha256": "c3650284bf657671bbca92649762a076cf5771130be321452ceb3e436db4ff0b",
+          "bytes": 9273
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "ca567837b5e8a9eeb2f0263041de915157ce9670",
+          "sha256": "c3650284bf657671bbca92649762a076cf5771130be321452ceb3e436db4ff0b",
+          "bytes": 9273
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "tests/competition-tools-integration.test.ts"
+        ]
+      },
+      {
+        "path": "src/ui/OnlineLobby.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "fead68062dd4cacc5b34a1724e66e6b7e5b8fba6",
+          "sha256": "91b8e98d7a3ec977186da829e7ba8aca7b3ddfead1fcf603e58a66bc672d597b",
+          "bytes": 29283
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "fead68062dd4cacc5b34a1724e66e6b7e5b8fba6",
+          "sha256": "91b8e98d7a3ec977186da829e7ba8aca7b3ddfead1fcf603e58a66bc672d597b",
+          "bytes": 29283
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "src/ui/CompetitionTools.ts"
+        ]
+      },
+      {
+        "path": "src/ui/competition-tools.css",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "bcb002ca54e71cc3dfd01f6dfaff2ff6260b1feb",
+          "sha256": "8a485b28d3f10fe73acac5f722e2fd3e0d397b5cb322a8702c0e8206aa7dbd89",
+          "bytes": 2256
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "bcb002ca54e71cc3dfd01f6dfaff2ff6260b1feb",
+          "sha256": "8a485b28d3f10fe73acac5f722e2fd3e0d397b5cb322a8702c0e8206aa7dbd89",
+          "bytes": 2256
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true,
+        "imported_by": [
+          "src/ui/CompetitionTools.ts"
+        ]
+      }
+    ],
+    "runner_dependency_configuration_bridge": [
+      {
+        "path": "package.json",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "3dd822575b18004e18b671e6f1f08ca65d7f686d",
+          "sha256": "3370359ea75de06fe950a244b81a4fd0139805a50b587032c3e51e0b042f6ff6",
+          "bytes": 1118
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "3dd822575b18004e18b671e6f1f08ca65d7f686d",
+          "sha256": "3370359ea75de06fe950a244b81a4fd0139805a50b587032c3e51e0b042f6ff6",
+          "bytes": 1118
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true
+      },
+      {
+        "path": "package-lock.json",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "2fec555a3260209d0973e7275422b4275443a889",
+          "sha256": "057f94325ad52a6e3f75d5decdb513baa4b9a0af2350651bb8886a61749a8c3d",
+          "bytes": 54240
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "2fec555a3260209d0973e7275422b4275443a889",
+          "sha256": "057f94325ad52a6e3f75d5decdb513baa4b9a0af2350651bb8886a61749a8c3d",
+          "bytes": 54240
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true
+      },
+      {
+        "path": "tsconfig.json",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "37a2d05abbb4fa020593bc834987f034d9edd016",
+          "sha256": "097f624958954274dab46f515239454a6d50b5bc92fe21d6bb8407d636b17264",
+          "bytes": 243
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "37a2d05abbb4fa020593bc834987f034d9edd016",
+          "sha256": "097f624958954274dab46f515239454a6d50b5bc92fe21d6bb8407d636b17264",
+          "bytes": 243
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true
+      },
+      {
+        "path": "vite.config.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "655a649464f9bc28f5766044f489cbfc352767b6",
+          "sha256": "07ecab9f882157c91a59b4c67c84f85c9c3b21e357039a3cb28346aa56165289",
+          "bytes": 1273
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "655a649464f9bc28f5766044f489cbfc352767b6",
+          "sha256": "07ecab9f882157c91a59b4c67c84f85c9c3b21e357039a3cb28346aa56165289",
+          "bytes": 1273
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true
+      },
+      {
+        "path": "vitest.config.ts",
+        "historical": {
+          "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+          "git_blob_id": "26b9a209e63c90d1d2231643222b5fa15a2a3c40",
+          "sha256": "c2c9ee7cefe55e153af12ea8b44612dabec23fa0f12c0953afc396f901dfafac",
+          "bytes": 116
+        },
+        "c074": {
+          "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+          "git_blob_id": "26b9a209e63c90d1d2231643222b5fa15a2a3c40",
+          "sha256": "c2c9ee7cefe55e153af12ea8b44612dabec23fa0f12c0953afc396f901dfafac",
+          "bytes": 116
+        },
+        "git_blob_equal": true,
+        "sha256_equal": true
+      }
+    ],
+    "concrete_id65_dependency_drift": []
+  },
+  "main_ts_exception": {
+    "whole_file_bridge": {
+      "path": "src/main.ts",
+      "historical": {
+        "commit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+        "git_blob_id": "022a7b80cff3a185879dd11a0762808c8435d047",
+        "sha256": "82cde4d82ae086d425283265e6906f4fa88b4a3b62d86ad2a988d36c06b8cfe6",
+        "bytes": 47418
+      },
+      "c074": {
+        "commit": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+        "git_blob_id": "2035c932e7c2b9fc1bfa00c5881050ac7f036986",
+        "sha256": "4b3de6a2c62517819e56d81e20f96aa10c8bfde8cd58ea70aa516fd84f0abda7",
+        "bytes": 47424
+      },
+      "git_blob_equal": false,
+      "sha256_equal": false
+    },
+    "diff": "diff --git a/src/main.ts b/src/main.ts\nindex 022a7b8..2035c93 100644\n--- a/src/main.ts\n+++ b/src/main.ts\n@@ -148,7 +148,7 @@ const callbacks:HudCallbacks={\n function closeOnline(){onlineConnecting?.dispose();onlineConnecting=undefined;onlineConnection?.dispose();onlineConnection=undefined;onlineRender=undefined;}\n function applyCosmetics(){if(!scene)return;scene.setCosmeticLoadouts(onlineConnection?hostedLoadouts:replay?new Map():new Map([[playerSide(),accountLoadouts.get(scene.state.players[playerSide()].faction)??{}]]));}\n async function refreshHostedCosmetics(){const request=++hostedCosmeticRequest,connection=onlineConnection,generation=replacementGeneration;if(!connection)return;try{const result=await cosmeticApi.matchCosmetics(connection.matchId);if(request!==hostedCosmeticRequest||connection!==onlineConnection||generation!==replacementGeneration||!scene)return;hostedLoadouts=new Map(result.players.filter(player=>scene!.state.players[player.side]?.faction===player.factionId).map(player=>[player.side,resolveCosmeticLoadout(player.factionId,player.loadout)]));applyCosmetics();}catch{if(request===hostedCosmeticRequest&&connection===onlineConnection&&generation===replacementGeneration){hostedLoadouts.clear();applyCosmetics();}}}\n-function accountChanged(account:Account|null){const id=account?.id??null;if(cosmeticAccountId===id)return;cosmeticAccountId=id;cosmeticAccountEpoch++;campaignHost.resetCampaignReward();accountLoadouts.clear();applyCosmetics();cosmetics.reset();void cosmetics.refresh();}\n+function accountChanged(account:Account|null){const id=account?.id??null;if(cosmeticAccountId===id)return;cosmeticAccountId=id;cosmeticAccountEpoch++;campaignHost.resetCampaignReward();accountLoadouts.clear();applyCosmetics();cosmetics.reset();if(id)void cosmetics.refresh();}\n function setModal(source:string,open:boolean){\n  const wasOpen=!!openModals.size;\n  if(open)openModals.add(source);else openModals.delete(source);\n",
+    "changed_line": 151,
+    "explanation": "The sole source/test change makes accountChanged call cosmetics.refresh() only when account ID is non-null. Logout skips a cosmetic-profile fetch after cosmetic reset; authenticated refresh remains. It does not change the competition mount, joinOnline, rating result/reset implementation, or tests.",
+    "unchanged_native_slices": [
+      {
+        "label": "Canonical joinOnline connection",
+        "path": "src/main.ts",
+        "start_line": 164,
+        "end_line": 176,
+        "historical_sha256": "063ce583003828ce50dafae1617c4d1184c47f07de83790e31583cb0795b868d",
+        "c074_sha256": "063ce583003828ce50dafae1617c4d1184c47f07de83790e31583cb0795b868d",
+        "equal": true,
+        "c074_source": "async function joinOnline(request:OnlineMatchRequest){\n const generation=++replacementGeneration;let latest:OnlineRenderState|undefined;\n onlineConnecting?.dispose();\n const connection=new OnlineMatchConnection({api:onlineApi,...request,\n  onObservation:view=>{latest=observationToRenderState(view,request.role);if(onlineConnection===connection){onlineRender=latest;scene?.applyRemoteFrame(latest);}},\n  onStatus:(_status,message)=>{if(onlineConnection===connection||onlineConnecting===connection)shell.notice(message);},\n  onReceipt:receipt=>{if(onlineConnection!==connection)return;shell.notice(receipt.accepted?'The server accepted the order.':`The server rejected the order (${receipt.reason??'unavailable'}).`);},\n  onNotice:message=>{if(onlineConnection===connection||onlineConnecting===connection)shell.notice(message);}\n });\n onlineConnecting=connection;\n try {await connection.connect();await connection.waitForSnapshot(45000);if(generation!==replacementGeneration||!latest)throw new Error('Another match replaced this connection request.');campaignHost.clear();launch(latest.state,undefined,undefined,{connection,render:latest},generation);}\n catch(error){connection.dispose();if(onlineConnecting===connection)onlineConnecting=undefined;throw error;}\n}\n"
+      },
+      {
+        "label": "Native competition mounting",
+        "path": "src/main.ts",
+        "start_line": 348,
+        "end_line": 348,
+        "historical_sha256": "2b1c44f42a22bbc39fe477af82c971b37189ff808d75a538a37a1f3fb703a7cb",
+        "c074_sha256": "2b1c44f42a22bbc39fe477af82c971b37189ff808d75a538a37a1f3fb703a7cb",
+        "equal": true,
+        "c074_source": "const competitions=mountCompetitionTools(root,{toolbar:sessionToolbar,isBlocked:()=>toolBlocked('competition'),onJoinMatch:joinOnline,onVisibility:open=>setModal('competition',open)});\n"
+      }
+    ]
+  },
+  "coverage_applicability_map": [
+    {
+      "behavior": "Monthly UTC periods with reset baseline 1000",
+      "source": [
+        {
+          "path": "src/server/competitions.ts",
+          "lines": [
+            7,
+            9
+          ]
+        },
+        {
+          "path": "src/server/competitions.ts",
+          "lines": [
+            23,
+            23
+          ]
+        },
+        {
+          "path": "src/server/competitions.ts",
+          "lines": [
+            43,
+            45
+          ]
+        },
+        {
+          "path": "src/online/competitions.ts",
+          "lines": [
+            12,
+            12
+          ]
+        }
+      ],
+      "functional_test": "tests/server-competitions.test.ts:107-112"
+    },
+    {
+      "behavior": "Competitive ratings and win/draw/loss results persist by season",
+      "source": [
+        {
+          "path": "src/server/competitions.ts",
+          "lines": [
+            37,
+            39
+          ]
+        },
+        {
+          "path": "src/server/competitions.ts",
+          "lines": [
+            49,
+            54
+          ]
+        },
+        {
+          "path": "src/server/store.ts",
+          "lines": [
+            84,
+            102
+          ]
+        }
+      ],
+      "functional_tests": [
+        "tests/server-competitions.test.ts:63-74",
+        "tests/server-competitions.test.ts:107-111"
+      ]
+    },
+    {
+      "behavior": "Match keeps the season admitted at its start",
+      "source": [
+        {
+          "path": "src/server/server.ts",
+          "lines": [
+            369,
+            370
+          ]
+        },
+        {
+          "path": "src/server/store.ts",
+          "lines": [
+            66,
+            73
+          ]
+        },
+        {
+          "path": "src/server/competitions.ts",
+          "lines": [
+            44,
+            54
+          ]
+        }
+      ],
+      "functional_test": "tests/server-competitions.test.ts:63-74"
+    },
+    {
+      "behavior": "Server exposes current and archived standings plus durable participant results",
+      "source": [
+        {
+          "path": "src/server/server.ts",
+          "lines": [
+            238,
+            244
+          ]
+        },
+        {
+          "path": "src/server/server.ts",
+          "lines": [
+            317,
+            322
+          ]
+        },
+        {
+          "path": "src/online/competition-client.ts",
+          "lines": [
+            6,
+            7
+          ]
+        },
+        {
+          "path": "src/online/competition-client.ts",
+          "lines": [
+            13,
+            13
+          ]
+        }
+      ],
+      "inspection_kind": "Read-only source inspection; named files are whole-file identical to the passing historical pin."
+    },
+    {
+      "behavior": "Native competition UI displays current season, reset timestamp/baseline, selectable archives and aggregate ratings/results",
+      "source": [
+        {
+          "path": "src/ui/CompetitionTools.ts",
+          "lines": [
+            39,
+            39
+          ]
+        },
+        {
+          "path": "src/ui/CompetitionTools.ts",
+          "lines": [
+            55,
+            59
+          ]
+        },
+        {
+          "path": "src/ui/CompetitionTools.ts",
+          "lines": [
+            80,
+            80
+          ]
+        },
+        {
+          "path": "src/main.ts",
+          "lines": [
+            348,
+            348
+          ]
+        }
+      ],
+      "inspection_kind": "Read-only UI/client source inspection. This artifact does not execute native UI."
+    }
+  ],
+  "verification_limits": {
+    "functional_evidence": "Actual passed assertions retained in historical admitted tests.json at 4a71cd07; not merely static test definitions.",
+    "current_activity": "This audit only reads Git objects and JSON. It does not rerun the assertions.",
+    "current_pin_regression": "Root final-pin regression remains separate and was not rerun by this agent. Source equivalence supports historical applicability; it is not a claim of a fresh c074 or final-pin test execution.",
+    "scope_limit": "No broad suite rerun solely for a future favicon. No added placements, partial-reset or detailed rating-ledger requirements."
+  },
+  "conclusion": {
+    "missing_original_id65_feature_behavior": false,
+    "reason": "The exact original clause has admitted functional full-reset, competitive-result, archive and restart evidence. Whole relevant files are unchanged from the passing pin; canonical mount/join slices are unchanged. No concrete ID65 source/test dependency drift is present.",
+    "remaining_work": "Requirement evidence/status reconciliation by root, plus any already-planned root final-pin regression. This audit establishes no additional architecture or native rollover gate."
+  },
+  "output_files": {
+    "json": "/tmp/ovf-id65-season-coverage-c074.json",
+    "brief": "/tmp/ovf-id65-season-coverage-c074.brief.md"
+  }
+}
