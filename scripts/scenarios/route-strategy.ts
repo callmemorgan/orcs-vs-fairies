@@ -31,7 +31,7 @@ function advance(session: ScenarioSession, unit: Entity, point: Vec, fight = fal
   const order = unit.order;
   if (distance(unit, point) <= .7 && order.type === 'idle') return;
   if (order.type === type && distance(order, point) <= .65) return;
-  issue(session, { type, ids: [unit.id], ...point });
+  issue(session, { type, ids: [unit.id], x: point.x, y: point.y });
 }
 
 function engage(session: ScenarioSession, unit: Entity, target: Entity): void {
