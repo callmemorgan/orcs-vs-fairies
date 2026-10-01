@@ -5,7 +5,7 @@ import { coneCosine } from './scenario-geometry';
 import { MAP_VERSION, TERRAIN, terrainAt } from './maps';
 import { openDestination, walkable } from './navigation';
 import { loadGame, saveGame } from './saves';
-import { createMatch, isAllied, isHostile, isVisible, issueCommand, refreshVisibility, spawnEntity, stepGame } from './simulation';
+import { applyScenarioDamage, createMatch, isAllied, isHostile, isVisible, issueCommand, refreshVisibility, spawnEntity, stepGame } from './simulation';
 import { scenarioJson, validateScenario } from './scenario-validation';
 import { fogKey } from './world-map';
 import type { Command, Entity, GameState, MatchConfig, Side, UnitRole, Vec } from './types';
@@ -256,15 +256,8 @@ function advanceStealth(session: ScenarioSession, dt: number): void {
 
 /** Authored hazards use ordinary entity health, shields, corpses and authoritative events. */
 function hazardDamage(session: ScenarioSession, source: Entity, target: Entity, amount: number): void {
-  const state = session.state, shield = Math.min(target.shield ?? 0, amount), actual = Math.min(target.hp, amount - shield) + shield;
-  target.shield = Math.max(0, (target.shield ?? 0) - shield); target.hp = Math.max(0, target.hp - (amount - shield)); target.lastDamagedAt = state.time; target.lastAttacker = source.id;
-  state.events.push({ type: 'attack', source: source.id, target: target.id, side: source.side, x: source.x, y: source.y, ...(source.level === undefined ? {} : { level: source.level }), amount: actual, text: 'Telegraphed boss strike' });
-  if (target.hp <= 0) {
-    target.order = { type: 'idle' }; delete target.orderQueue; target.path = []; target.animation = 'death'; target.animTime = 0;
-    if (target.kind === 'unit' && !target.illusion && !target.raised) state.corpses.push({ id: target.id, x: target.x, y: target.y, expires: state.time + 45 });
-    state.events.push({ type: 'death', side: target.side, source: target.id, x: target.x, y: target.y, ...(target.level === undefined ? {} : { level: target.level }) });
-    if (target.kind === 'unit' && !target.illusion && !target.raised) addVariable(session, `deaths.${target.side}`, 1);
-  }
+  const eventStart = session.state.events.length;
+  if (applyScenarioDamage(session.state, source, target, amount, { armorPiercing: true, text: 'Telegraphed boss strike' })) recordEvents(session, eventStart);
 }
 
 function advanceBoss(session: ScenarioSession): void {
@@ -352,7 +345,10 @@ export function afterScenarioCommand(state: GameState, side: Side, command: Comm
     if (command.type !== 'ability') { session.runtime.commandCounts[command.type] = (session.runtime.commandCounts[command.type] ?? 0) + 1; addVariable(session, `action.${command.type}`, 1); }
     recordEvents(session, eventStart);
   }
-  for (const listener of commandListeners.get(state) ?? []) listener(side, clone(command));
+  for (const listener of [...(commandListeners.get(state) ?? [])]) {
+    try { listener(side, clone(command)); }
+    catch (error) { console.error('Scenario command observer failed', error); }
+  }
 }
 
 export function captureScenario(session: ScenarioSession): ScenarioCheckpoint {

@@ -1,0 +1,60 @@
+
+> orcs-vs-fairies@0.1.0 test
+> vitest run tests/scenario-core-binding.test.ts tests/scenarios.test.ts tests/campaign.test.ts tests/conquest.test.ts tests/specialist-command-analysis.test.ts --testTimeout=30000
+
+
+ RUN  v4.1.11 /home/morgana/Projects/orcs-vs-Fairies
+
+ ❯ tests/scenario-core-binding.test.ts (4 tests | 3 failed) 226ms
+     × accounts for wrapper and direct commands once and excludes scripted commands from generic history 8ms
+     × keeps generic save continuation and tick-600 replay seeking equal through a terminal mission 203ms
+     × uses central commander death cleanup and records a boss casualty once 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/scenario-core-binding.test.ts > scenarios through the canonical simulation and replay > accounts for wrapper and direct commands once and excludes scripted commands from generic history
+TypeError: recorder.archive is not a function
+ ❯ tests/scenario-core-binding.test.ts:42:30
+     40|     stepGame(session.state, .05); stepGame(session.state, .05);
+     41|     expect(notifiedClones).toBe(2);
+     42|     const archive = recorder.archive(); recorder.dispose(); unsubscrib…
+       |                              ^
+     43|     expect(archive.actions.filter(action => action.type === 'command')…
+     44|     const replay = new ReplayPlayer(archive); while (!replay.finished)…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/scenario-core-binding.test.ts > scenarios through the canonical simulation and replay > keeps generic save continuation and tick-600 replay seeking equal through a terminal mission
+TypeError: recorder.archive is not a function
+ ❯ tests/scenario-core-binding.test.ts:57:30
+     55|     stepGame(session.state, .05); stepGame(session.state, Number.NaN);
+     56|     expect(session.state.events).toBe(events); expect(saveGame(session…
+     57|     const archive = recorder.archive(); recorder.dispose();
+       |                              ^
+     58|     const player = new ReplayPlayer(archive); while (!player.finished)…
+     59|     expect(saveGame(player.state)).toEqual(final);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/scenario-core-binding.test.ts > scenarios through the canonical simulation and replay > uses central commander death cleanup and records a boss casualty once
+Error: Invalid scenario at boss.phases: invalid array length.
+ ❯ bad src/core/scenario-validation.ts:11:59
+      9| const buildingRoles = ['hq', 'depot', 'barracks', 'tower', 'wall', 'ga…
+     10| type RecordValue = Record<string, unknown>;
+     11| function bad(path: string, reason: string): never { throw new Error(`I…
+       |                                                           ^
+     12| function object(value: unknown, path: string, required: string[], opti…
+     13|   if (!value || typeof value !== 'object' || Array.isArray(value) || O…
+ ❯ list src/core/scenario-validation.ts:38:74
+ ❯ validateScenario src/core/scenario-validation.ts:153:5
+ ❯ createScenario src/core/scenarios.ts:109:22
+ ❯ tests/scenario-core-binding.test.ts:65:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  3 failed | 40 passed (43)
+   Start at  04:52:50
+   Duration  26.79s (transform 575ms, setup 0ms, import 929ms, tests 44.43s, environment 0ms)
+

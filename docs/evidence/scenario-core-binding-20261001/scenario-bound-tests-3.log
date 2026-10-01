@@ -1,0 +1,33 @@
+
+ RUN  v4.1.11 /home/morgana/Projects/orcs-vs-Fairies
+
+ ❯ tests/scenario-core-binding.test.ts (4 tests | 1 failed) 271ms
+     × uses central commander death cleanup and records a boss casualty once 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/scenario-core-binding.test.ts > scenarios through the canonical simulation and replay > uses central commander death cleanup and records a boss casualty once
+AssertionError: expected undefined to be null
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/scenario-core-binding.test.ts:78:96
+     76|     expect(hero.hp).toBe(0); expect(hero.animation).toBe('death');
+     77|     expect(session.state.players[0].heroRecovery).toEqual([{ definitio…
+     78|     expect(session.state.specialists!.artifacts.find(item => item.id =…
+       |                                                                                                ^
+     79|     expect(session.state.corpses.filter(corpse => corpse.id === hero.i…
+     80|     expect(session.runtime.variables['deaths.0']).toBe(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 18 passed (19)
+   Start at  04:59:57
+   Duration  1.26s (transform 312ms, setup 0ms, import 385ms, tests 1.28s, environment 0ms)
+

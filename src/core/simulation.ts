@@ -1,4 +1,5 @@
 import { normalizeMatchRules, createDraft, applyDraftChoice, tickDraft, draftPlayers, definitionAllowed, validateDraftState } from './match-rules';
+import { afterScenarioCommand, afterScenarioStep, isScenarioScriptedCommand, scenarioCommandPermitted, scenarioSessionForState } from './scenarios';
 import { initializeObjectives, emptyObjectives, evaluateObjectives, collectRelic, dropRelic, objectiveAi } from './objectives';
 import { DIRECTIONS_24, DIRECTIONS_32, facing8, length2D } from './geometry';
 import { commanderArtifact, creditCombat, dropArtifact, dropArtifacts, equipArtifact, promote, progressionStats, recordCombatExposure, recoverArtifact, stepVeterans, unequipArtifact } from './unit-progression';
@@ -75,6 +76,7 @@ export function createMatch(config:MatchConfig,options:{scenario?:boolean}={}):G
  if(!Array.isArray(c.players)||c.players.length<1||c.players.length>8)throw new Error('A match requires 1 to 8 players.');
  for(let i=0;i<c.players.length;i++)if(!Object.hasOwn(c.players,i))throw new Error('Player slots cannot contain gaps.');
  const rules=normalizeMatchRules(c.rules===undefined?{}:c.rules,content);
+ if(rules.mode==='scenario'&&!options.scenario)throw new Error('Scenario matches require a bound scenario definition.');
  const slots=new Set<number>(),teams:Side[]=[],incomeFactors:number[]=[],populationLimits:number[]=[];
  const definitions=c.players.map((value,i)=>{
   const p=matchObject(value,['id','teamId','factionId','controller','startingSlot','handicap','ai'],'player');if(p.id!==i)throw new Error('Player IDs must be ordered contiguous slots starting at zero.');
@@ -179,8 +181,11 @@ function finishOrder(s:GameState,e:Entity):void {
  delete e.orderQueue;assign(s,e,{type:'idle'});
 }
 export function issueCommand(s:GameState,side:Side,c:Command):boolean{
- if(!validateCommand(c))return false;
- const accepted=applyCommand(s,side,c);if(accepted&&!runtime(s).stepping){if(runtime(s).hits.length)resolveHits(s);if(c.type==='ability'||c.type==='engineerBuild')refreshVisibility(s);}if(accepted&&!runtime(s).stepping)notifyCommand(s,side,c);return accepted;
+ if(!validateCommand(c)||!scenarioCommandPermitted(s,side,c))return false;
+ const eventStart=s.events.length,rt=runtime(s),accepted=applyCommand(s,side,c);
+ if(accepted&&!rt.stepping){if(rt.hits.length)resolveHits(s);if(c.type==='ability'||c.type==='engineerBuild')refreshVisibility(s);}
+ if(accepted&&!rt.stepping&&!isScenarioScriptedCommand(s)){afterScenarioCommand(s,side,c,eventStart);notifyCommand(s,side,c);}
+ return accepted;
 }
 function applyCommand(s:GameState,side:Side,c:Command):boolean{
  if(!validateCommand(c)||isGameOver(s)||!s.players[side]||s.eliminated[side])return false;
@@ -417,6 +422,7 @@ function neutralHooks(s:GameState){return {
 export function stepGame(s:GameState,dt:number):void{
  const before=s.tick,rt=runtime(s);rt.stepping=true;
  try{applyStep(s,dt);}finally{rt.stepping=false;}
+ if(s.tick!==before){const scenario=scenarioSessionForState(s);if(scenario)afterScenarioStep(scenario,Math.min(dt,.25));}
  if(s.tick!==before)notifyStep(s,Math.min(dt,.25));
 }
 function applyStep(s:GameState,dt:number):void{
@@ -569,6 +575,15 @@ issueCommand(s,side,{type:'attackMove',ids:readyArmy.filter(e=>e.entrenchedAt===
  runSpecialistAI(s,side,c=>issueCommand(s,side,c));
 }
 
+/** Scripted attacks share shields, combat credit and the ordinary death cleanup. */
+export function applyScenarioDamage(s:GameState,source:Entity,target:Entity,amount:number,options:{armorPiercing?:boolean;text?:string}={}):boolean {
+ if(isGameOver(s)||!Number.isFinite(amount)||amount<=0||amount>1e9||!s.entities.includes(source)||!s.entities.includes(target)||source.hp<=0||target.hp<=0||!sameLevel(source,target))return false;
+ const rt=runtime(s),before=rt.hits.length;
+ specialistHooks(s).damage(source,target,amount,{armorPiercing:options.armorPiercing});
+ if(rt.hits.length===before)return false;
+ if(options.text)rt.hits.at(-1)!.event.text=options.text;
+ resolveHits(s);return true;
+}
 /** Constructor for validated deterministic systems; the caller charges costs and checks rules. */
 export function spawnDefinition(s:GameState,side:Side,kind:Entity['kind'],definitionId:string,x:number,y:number,progress=1,level?:number):Entity {const d=kind==='unit'?availableUnits(s,side).find(d=>d.id===definitionId):availableBuildings(s,side).find(d=>d.id===definitionId);if(!d)throw new Error('Definition is absent from player content.');return spawnEntity(s,side,kind,d.role,x,y,progress,definitionId,level??0);}
 

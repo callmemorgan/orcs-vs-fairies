@@ -1,6 +1,7 @@
 import { normalizeMatchRules, createDraft, draftPlayers, validateDraftState, validateObjectiveState, validateSavedRules, validateModeRoster } from './match-rules';
 import { emptyObjectives } from './objectives';
 import { normalizeAiConfig } from './ai-policy';
+import { validateScenarioBinding } from './scenarios';
 import { validateSpecialists } from './specialist-validation';
 import { availableBuildings, availableUnits, buildingFor, contentFactions, decodeContentBundle, entityDefinition, upgradesFor } from './content-registry';
 import type { Entity, Side } from './types';
@@ -112,7 +113,7 @@ function validateRuntime(value:unknown,c:Context,version:1|2|3):void {
 }
 function validate(envelope:unknown,version:1|2|3):void {
  const save=object(envelope,'save',['format','version','state','runtime']);if(save.format!=='orcs-vs-fairies-save')bad('format','unknown save format');if(save.version!==version)bad('version',`unsupported version ${String(save.version)}`);
- const s=object(save.state,'state',version===1?STATE_FIELDS:version===2?[...STATE_FIELDS,...TEAM_FIELDS]:[...STATE_FIELDS,...TEAM_FIELDS,'aiConfigs'],version===3?['content','world','specialists','rules','objectives','draft']:[]);
+ const s=object(save.state,'state',version===1?STATE_FIELDS:version===2?[...STATE_FIELDS,...TEAM_FIELDS]:[...STATE_FIELDS,...TEAM_FIELDS,'aiConfigs'],version===3?['content','world','specialists','rules','objectives','draft','scenario']:[]);
  if(s.content!==undefined)s.content=decodeContentBundle(s.content);
  const playerCount=list(s.players,'state.players',version===1?2:MAX_PLAYERS,version===1?2:undefined).length;
  if(playerCount===0)bad('state.players','expected between 1 and 8 players');
@@ -148,6 +149,7 @@ function validate(envelope:unknown,version:1|2|3):void {
  validateRuntime(save.runtime,c,version);
  validateSpecialists(c.state);
  if(version===3){const count=['rules','objectives','draft'].filter(k=>Object.hasOwn(s,k)).length;if(count!==0&&count!==3)bad('state.rules','rules, objectives and draft must be stored together');if(count===3){const state=s as unknown as GameState;state.rules=validateSavedRules(s.rules,state.content);validateDraftState(s.draft,draftPlayers(state),state.rules,state.content);validateObjectiveState(s.objectives,state);validateModeRoster(state);}}
+ if(s.scenario!==undefined)s.scenario=validateScenarioBinding(s.scenario,c.state);
 }
 function validateCurrent(envelope:unknown):asserts envelope is SaveEnvelope {validate(envelope,SAVE_VERSION);}
 /** Add team rules only after the complete two-player v1 schema has passed validation. */
@@ -178,7 +180,9 @@ function copyJson(value:unknown):unknown {
    const array:unknown[]=[];for(let i=0;i<v.length;i++){const descriptor=Object.getOwnPropertyDescriptor(v,String(i));if(!descriptor||!('value' in descriptor))bad(path,'array accessors and gaps are forbidden');array.push(copy(descriptor.value,`${path}[${i}]`,depth+1));}result=array;
   }else{
    const prototype=Object.getPrototypeOf(v);if(prototype!==Object.prototype&&prototype!==null)bad(path,'expected a plain object');
-   const keys=Object.keys(v);if(keys.length>128||Object.getOwnPropertySymbols(v).length)bad(path,'invalid object properties');
+   // Authored actor labels and runtime counters can exceed fixed-schema key counts.
+   // Their own validators retain semantic bounds; this copy shares the array budget.
+   const keys=Object.keys(v);if(keys.length>100000||Object.getOwnPropertySymbols(v).length)bad(path,'invalid object properties');
    const record:RecordValue={};for(const key of keys){if(key==='__proto__'||key==='constructor'||key==='prototype')bad(path,'unsafe property name');const descriptor=Object.getOwnPropertyDescriptor(v,key)!;if(!('value' in descriptor))bad(path,'accessors are forbidden');if(descriptor.value!==undefined)record[key]=copy(descriptor.value,`${path}.${key}`,depth+1);}
    result=record;
   }
