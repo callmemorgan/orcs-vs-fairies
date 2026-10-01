@@ -1,18 +1,18 @@
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, open, readFile, readdir, rm, writeFile, type FileHandle } from 'node:fs/promises';
 import { createServer, request as nodeRequest, type IncomingMessage } from 'node:http';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { stateHash } from '../src/cli/session';
 import { PlayerView } from '../src/core/observation';
 import { decodeReplay, ReplayPlayer } from '../src/core/replays';
 import { createMatch } from '../src/core/simulation';
 import { decodeTournamentReport, tournamentMatchConfig, verifyTournamentReport } from '../src/tournament/report';
 import { runTournament } from '../src/tournament/runner';
-import { createTournamentService } from '../src/tournament/service';
+import { createTournamentService, type TournamentServiceOptions } from '../src/tournament/service';
 import type { AgentTurn, TournamentAgent, TournamentConfig, TournamentProgress, TournamentReport } from '../src/tournament/types';
 
 const cwd = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -114,8 +114,8 @@ function streamedPost(url: string) {
   return { outgoing, result };
 }
 
-async function httpService(outputRoot: string, configs: TournamentConfig[], authorize: (request: IncomingMessage) => boolean | Promise<boolean> = request => request.headers.authorization === 'Bearer runtime-test') {
-  const service = createTournamentService({ cwd, outputRoot, configs, authorize });
+async function httpService(outputRoot: string, configs: TournamentConfig[], authorize: (request: IncomingMessage) => boolean | Promise<boolean> = request => request.headers.authorization === 'Bearer runtime-test', principal?: TournamentServiceOptions['principal']) {
+  const service = createTournamentService({ cwd, outputRoot, configs, authorize, principal });
   const server = createServer((request, response) => {
     void service.handle(request, response).then(handled => {
       if (!handled) { response.writeHead(418, { 'Content-Type': 'application/json' }); response.end(JSON.stringify({ delegated: true })); }
@@ -137,10 +137,11 @@ async function httpService(outputRoot: string, configs: TournamentConfig[], auth
     await new Promise<void>((resolveClose, reject) => server.close(error => error ? reject(error) : resolveClose()));
   };
   cleanup.push(close);
-  const request = async <T = unknown>(route: string, options: { body?: unknown; raw?: string; method?: string; authorized?: boolean } = {}): Promise<HttpResult<T>> => {
+  const request = async <T = unknown>(route: string, options: { body?: unknown; raw?: string; method?: string; authorized?: boolean; principal?: string } = {}): Promise<HttpResult<T>> => {
     const response = await fetch(url + route, {
       method: options.method ?? (options.body !== undefined || options.raw !== undefined ? 'POST' : 'GET'),
-      headers: { 'Content-Type': 'application/json', ...(options.authorized === false ? {} : { Authorization: 'Bearer runtime-test' }) },
+      headers: { 'Content-Type': 'application/json', ...(options.authorized === false ? {} : { Authorization: 'Bearer runtime-test' }),
+        ...(options.principal === undefined ? {} : { 'X-Test-Principal': options.principal }) },
       body: options.raw ?? (options.body === undefined ? undefined : JSON.stringify(options.body)),
     });
     return { status: response.status, data: await response.json() as T };
@@ -417,6 +418,181 @@ describe('tournament runner with real terminal agents', () => {
 });
 
 describe('tournament HTTP service over TCP', () => {
+  const testPrincipal: TournamentServiceOptions['principal'] = request => {
+    const value = request.headers['x-test-principal'];
+    return typeof value === 'string' ? value : undefined;
+  };
+
+  it('keeps results public to authorized accounts but only lets the durable creator cancel', async () => {
+    const directory = await temporaryDirectory(), outputRoot = join(directory, 'reports'), pidFile = join(directory, 'owned-pid');
+    const hang = await fixture(directory, 'alpha', `
+      import { writeFileSync } from 'node:fs';
+      writeFileSync(${JSON.stringify(pidFile)}, String(process.pid));
+      process.stdin.resume();
+      setInterval(() => {}, 1000);
+    `);
+    const registered = config({ agents: [hang, builtin('beta', 'fairies')], responseTimeoutMs: 30000 });
+    const first = await httpService(outputRoot, [registered], undefined, testPrincipal);
+    const startBody = { configId: registered.id };
+    expect((await first.request('/api/tournaments', { body: startBody })).status).toBe(403);
+    expect((await first.request('/api/tournaments', { body: { ...startBody, principal: 'creator' }, principal: 'other' })).status).toBe(400);
+    expect((await first.request('/api/tournaments', { body: { ...startBody, command: ['unexpected'] }, principal: 'creator' })).status).toBe(400);
+    expect((await first.request('/api/tournaments/configs', { principal: 'other' })).status).toBe(200);
+    const starts = await Promise.all(['creator', 'other'].map(principal => first.request<{ id: string }>('/api/tournaments', { body: startBody, principal })));
+    expect(starts.map(response => response.status).sort()).toEqual([202, 409]);
+    const creator = starts[0].status === 202 ? 'creator' : 'other', visitor = creator === 'creator' ? 'other' : 'creator';
+    const id = starts.find(response => response.status === 202)!.data.id;
+    const ownerPath = join(outputRoot, 'owners', `${id}.json`);
+    const ownerText = await readFile(ownerPath, 'utf8');
+    expect(JSON.parse(ownerText)).toEqual({ version: 1, id, principal: creator });
+    const pid = await waitForPid(pidFile);
+    expect(alive(pid)).toBe(true);
+    const listed = await first.request<TournamentProgress[]>('/api/tournaments', { principal: visitor });
+    expect(listed.status).toBe(200);
+    expect(listed.data.map(progress => progress.id)).toEqual([id]);
+    expect(JSON.stringify(listed.data)).not.toContain('principal');
+    expect((await first.request(`/api/tournaments/${id}`, { principal: visitor })).status).toBe(200);
+    expect((await first.request(`/api/tournaments/${id}/cancel`, { method: 'POST', principal: visitor, body: { principal: creator } })).status).toBe(403);
+    expect(alive(pid)).toBe(true);
+    expect((await first.request<TournamentProgress>(`/api/tournaments/${id}`, { principal: visitor })).data.status).toBe('running');
+    expect((await first.request(`/api/tournaments/${id}/cancel`, { method: 'POST', principal: creator })).status).toBe(202);
+    expect((await finishedStatus(first.request, id)).status).toBe('canceled');
+    const report = await first.request<TournamentReport>(`/api/tournaments/${id}/result`, { principal: visitor });
+    expect(report.status).toBe(200);
+    await verifyTournamentReport(report.data);
+    expectChildrenExited(report.data);
+    expect(await readFile(ownerPath, 'utf8')).toBe(ownerText);
+    const replay = await first.request(`/api/tournaments/${id}/matches/match-001/replay`, { principal: visitor });
+    expect(replay.status).toBe(200);
+    await first.close();
+    const restored = await httpService(outputRoot, [registered], undefined, testPrincipal);
+    expect(await restored.request(`/api/tournaments/${id}/result`, { principal: visitor })).toEqual(report);
+    expect(await restored.request(`/api/tournaments/${id}/matches/match-001/replay`, { principal: visitor })).toEqual(replay);
+    expect((await restored.request(`/api/tournaments/${id}/cancel`, { method: 'POST', principal: visitor })).status).toBe(403);
+    expect((await restored.request(`/api/tournaments/${id}/cancel`, { method: 'POST', principal: creator })).status).toBe(202);
+    expect(await readFile(ownerPath, 'utf8')).toBe(ownerText);
+  }, 30000);
+
+  it('rolls back a failed ownership write without launching a process or keeping a reservation', async () => {
+    const directory = await temporaryDirectory(), outputRoot = join(directory, 'reports'), pidFile = join(directory, 'write-failure-pid');
+    const hang = await fixture(directory, 'alpha', `
+      import { writeFileSync } from 'node:fs';
+      writeFileSync(${JSON.stringify(pidFile)}, String(process.pid));
+      process.stdin.resume();
+      setInterval(() => {}, 1000);
+    `);
+    const registered = config({ agents: [hang, builtin('beta', 'fairies')], responseTimeoutMs: 30000 });
+    const owned = await httpService(outputRoot, [registered], undefined, testPrincipal);
+    await owned.request('/api/tournaments/configs');
+    const owners = join(outputRoot, 'owners');
+    await writeFile(owners, 'existing non-directory evidence\n');
+    expect((await owned.request('/api/tournaments', { body: { configId: registered.id }, principal: 'creator' })).status).toBe(500);
+    expect(await readFile(owners, 'utf8')).toBe('existing non-directory evidence\n');
+    expect(await readdir(outputRoot)).toEqual(['owners']);
+    expect((await owned.request<TournamentProgress[]>('/api/tournaments')).data).toEqual([]);
+    await expect(readFile(pidFile)).rejects.toMatchObject({ code: 'ENOENT' });
+    await rm(owners);
+    const started = await owned.request<{ id: string }>('/api/tournaments', { body: { configId: registered.id }, principal: 'creator' });
+    expect(started.status).toBe(202);
+    const pid = await waitForPid(pidFile);
+    expect(alive(pid)).toBe(true);
+    expect((await owned.request(`/api/tournaments/${started.data.id}/cancel`, { method: 'POST', principal: 'creator' })).status).toBe(202);
+    await finishedStatus(owned.request, started.data.id);
+    expect(alive(pid)).toBe(false);
+  }, 30000);
+
+  it('reserves during ownership flush and drains pending preparation before shutdown finishes', async () => {
+    const directory = await temporaryDirectory(), outputRoot = join(directory, 'reports'), pidFile = join(directory, 'pending-owner-pid');
+    const hang = await fixture(directory, 'alpha', `
+      import { writeFileSync } from 'node:fs';
+      writeFileSync(${JSON.stringify(pidFile)}, String(process.pid));
+      process.stdin.resume();
+      setInterval(() => {}, 1000);
+    `);
+    const registered = config({ agents: [hang, builtin('beta', 'fairies')], responseTimeoutMs: 30000 });
+    const owned = await httpService(outputRoot, [registered], undefined, testPrincipal);
+    const probe = await open(join(directory, 'sync-probe'), 'wx'), originalSync = probe.sync;
+    const prototype = Object.getPrototypeOf(probe) as FileHandle;
+    await probe.close();
+    let entered = false, release!: () => void, pending: Promise<HttpResult> | undefined;
+    const flushGate = new Promise<void>(resolveGate => { release = resolveGate; });
+    const sync = vi.spyOn(prototype, 'sync').mockImplementation(async function(this: FileHandle) {
+      entered = true; await flushGate; await originalSync.call(this);
+    });
+    cleanup.push(async () => { release(); sync.mockRestore(); await pending; });
+    pending = owned.request('/api/tournaments', { body: { configId: registered.id }, principal: 'creator' });
+    await waitFor(async () => entered, value => value);
+    const listed = await owned.request<TournamentProgress[]>('/api/tournaments', { principal: 'other' });
+    expect(listed.data).toHaveLength(1);
+    const id = listed.data[0].id;
+    expect(JSON.parse(await readFile(join(outputRoot, 'owners', `${id}.json`), 'utf8'))).toEqual({ version: 1, id, principal: 'creator' });
+    await expect(readFile(pidFile)).rejects.toMatchObject({ code: 'ENOENT' });
+    expect((await owned.request('/api/tournaments', { body: { configId: registered.id }, principal: 'other' })).status).toBe(409);
+    expect((await owned.request(`/api/tournaments/${id}/cancel`, { method: 'POST', principal: 'other' })).status).toBe(403);
+    let disposed = false;
+    const closing = owned.service.dispose();
+    expect(owned.service.dispose()).toBe(closing);
+    const finished = closing.then(() => { disposed = true; });
+    expect((await owned.request('/api/tournaments', { principal: 'other' })).status).toBe(503);
+    expect(disposed).toBe(false);
+    release();
+    expect((await pending).status).toBe(503);
+    await finished;
+    expect(disposed).toBe(true);
+    expect(await readdir(outputRoot)).toEqual(['owners']);
+    expect(await readdir(join(outputRoot, 'owners'))).toEqual([]);
+    await expect(readFile(pidFile)).rejects.toMatchObject({ code: 'ENOENT' });
+  }, 30000);
+
+  it('resolves principal races before reserving a run and refuses a delayed identity after shutdown', async () => {
+    const directory = await temporaryDirectory(), registered = config({ responseTimeoutMs: 30000, agents: [builtin('alpha', 'orcs', 'hang'), builtin('beta', 'fairies', 'hang')] });
+    let entered = false, release!: () => void;
+    const gate = new Promise<void>(resolveGate => { release = resolveGate; });
+    const owned = await httpService(join(directory, 'race'), [registered], undefined, async request => {
+      if (testPrincipal!(request) === 'slow') { entered = true; await gate; }
+      return testPrincipal!(request);
+    });
+    cleanup.push(async () => { release(); });
+    const delayed = owned.request('/api/tournaments', { body: { configId: registered.id }, principal: 'slow' });
+    await waitFor(async () => entered, value => value);
+    const winner = await owned.request<{ id: string }>('/api/tournaments', { body: { configId: registered.id }, principal: 'creator' });
+    expect(winner.status).toBe(202);
+    release();
+    expect((await delayed).status).toBe(409);
+    expect(JSON.parse(await readFile(join(directory, 'race', 'owners', `${winner.data.id}.json`), 'utf8')).principal).toBe('creator');
+    expect((await owned.request(`/api/tournaments/${winner.data.id}/cancel`, { method: 'POST', principal: 'creator' })).status).toBe(202);
+    await finishedStatus(owned.request, winner.data.id);
+    await owned.close();
+
+    entered = false;
+    let releaseShutdown!: () => void;
+    const shutdownGate = new Promise<void>(resolveGate => { releaseShutdown = resolveGate; });
+    const shuttingDown = await httpService(join(directory, 'shutdown'), [registered], undefined, async () => {
+      entered = true; await shutdownGate; return 'creator';
+    });
+    cleanup.push(async () => { releaseShutdown(); });
+    const pending = shuttingDown.request('/api/tournaments', { body: { configId: registered.id }, principal: 'creator' });
+    await waitFor(async () => entered, value => value);
+    await shuttingDown.service.dispose();
+    releaseShutdown();
+    expect((await pending).status).toBe(503);
+    expect(await readdir(join(directory, 'shutdown'))).toEqual([]);
+  }, 30000);
+
+  it('restores ownerless legacy reports for public reads without granting cancellation', async () => {
+    const directory = await temporaryDirectory(), outputRoot = join(directory, 'legacy'), registered = config();
+    const legacy = await httpService(outputRoot, [registered]);
+    const started = await legacy.request<{ id: string }>('/api/tournaments', { body: { configId: registered.id } });
+    expect(started.status).toBe(202);
+    await finishedStatus(legacy.request, started.data.id);
+    const result = await legacy.request(`/api/tournaments/${started.data.id}/result`);
+    expect((await legacy.request(`/api/tournaments/${started.data.id}/cancel`, { method: 'POST', principal: 'other' })).status).toBe(202);
+    await legacy.close();
+    const owned = await httpService(outputRoot, [registered], undefined, testPrincipal);
+    expect(await owned.request(`/api/tournaments/${started.data.id}/result`, { principal: 'other' })).toEqual(result);
+    expect((await owned.request(`/api/tournaments/${started.data.id}/cancel`, { method: 'POST', principal: 'creator' })).status).toBe(403);
+  }, 30000);
+
   it('prevents a pending authorization or streamed request body from starting work after disposal', async () => {
     const directory = await temporaryDirectory(), registered = config();
     let entered = false;

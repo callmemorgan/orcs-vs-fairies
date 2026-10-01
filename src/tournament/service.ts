@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { mkdir, readFile, readdir } from 'node:fs/promises';
+import { mkdir, open, readFile, readdir, rm } from 'node:fs/promises';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import path from 'node:path';
 import { decodeTournamentConfig, decodeTournamentReport, tournamentProgress, tournamentStandings } from './report';
@@ -13,6 +13,8 @@ export interface TournamentServiceOptions {
   configs: unknown[];
   /** The canonical server supplies its authorization rule. */
   authorize: (request: IncomingMessage) => boolean | Promise<boolean>;
+  /** Trusted account identity. When supplied, only a run's creator may cancel it. */
+  principal?: (request: IncomingMessage) => string | undefined | Promise<string | undefined>;
 }
 export interface TournamentService {
   /** Returns false for routes outside /api/tournaments. */
@@ -43,9 +45,39 @@ export function createTournamentService(options: TournamentServiceOptions): Tour
     if (byConfig.has(config.id)) throw new Error('Duplicate registered tournament configuration.');
     byConfig.set(config.id, config);
   }
-  const outputRoot = path.resolve(options.outputRoot);
-  const jobs = new Map<string, { progress: TournamentProgress; report?: TournamentReport; abort: AbortController; done?: Promise<void> }>();
-  let active: string | null = null, disposed = false;
+  const outputRoot = path.resolve(options.outputRoot), owners = path.join(outputRoot, 'owners'), principal = options.principal;
+  const jobs = new Map<string, { readonly creator?: string; progress: TournamentProgress; report?: TournamentReport; abort: AbortController; done?: Promise<void> }>();
+  let active: string | null = null, disposed = false, disposing: Promise<void> | undefined;
+  const validPrincipal = (value: unknown): value is string => typeof value === 'string' && value.length > 0 && value.length <= 1024;
+  const ownerFile = (id: string) => path.join(owners, `${id}.json`);
+  async function readOwner(id: string): Promise<string | undefined> {
+    try {
+      const value: unknown = JSON.parse(await readFile(ownerFile(id), 'utf8'));
+      return object(value) && Object.keys(value).every(key => ['version', 'id', 'principal'].includes(key))
+        && value.version === 1 && value.id === id && validPrincipal(value.principal) ? value.principal : undefined;
+    } catch { return undefined; }
+  }
+  async function writeOwner(id: string, creator: string): Promise<void> {
+    await mkdir(owners, { recursive: true });
+    // This sibling file never creates the runner's exclusively owned output directory.
+    const file = await open(ownerFile(id), 'wx', 0o600);
+    try {
+      await file.writeFile(JSON.stringify({ version: 1, id, principal: creator }) + '\n');
+      await file.sync();
+      await file.close();
+    } catch (error) {
+      await file.close().catch(() => {});
+      await rm(ownerFile(id), { force: true });
+      throw error;
+    }
+  }
+  async function identity(request: IncomingMessage): Promise<string | undefined> {
+    if (!principal) return undefined;
+    const creator = await principal(request);
+    if (disposed) throw new HttpFailure(503, 'Tournament service is shutting down.');
+    if (!validPrincipal(creator)) throw new HttpFailure(403, 'Tournament mutations require an account identity.');
+    return creator;
+  }
   const ready = (async () => {
     await mkdir(outputRoot, { recursive: true });
     // Completed reports survive server restart. Running processes belong to this server instance.
@@ -53,7 +85,9 @@ export function createTournamentService(options: TournamentServiceOptions): Tour
       if (!entry.isDirectory() || !/^run-[a-z0-9_-]+$/i.test(entry.name)) continue;
       try {
         const report = decodeTournamentReport(await readFile(path.join(outputRoot, entry.name, 'tournament.json'), 'utf8'));
-        if (report.status !== 'running') jobs.set(report.id, { progress: tournamentProgress(report), report, abort: new AbortController() });
+        if (report.status !== 'running' && report.id === entry.name) jobs.set(report.id, {
+          creator: await readOwner(report.id), progress: tournamentProgress(report), report, abort: new AbortController(),
+        });
       } catch { /* An unfinished directory is retained as evidence, without inventing a result. */ }
     }
   })();
@@ -79,20 +113,40 @@ export function createTournamentService(options: TournamentServiceOptions): Tour
         if (!object(input) || Object.keys(input).some(key => key !== 'configId') || typeof input.configId !== 'string') throw new HttpFailure(400, 'Select a registered tournament configuration.');
         const config = byConfig.get(input.configId);
         if (!config) throw new HttpFailure(404, 'Unknown tournament configuration.');
+        const creator = await identity(request);
+        if (disposed) throw new HttpFailure(503, 'Tournament service is shutting down.');
         if (active) throw new HttpFailure(409, 'A tournament is already running.');
         const id = `run-${randomUUID()}`, abort = new AbortController();
+        if (jobs.has(id)) throw new HttpFailure(500, 'Tournament identity already exists.');
         const job: (typeof jobs extends Map<string, infer Job> ? Job : never) = {
-          abort, progress: { id, status: 'running', totalMatches: config.agents.length * (config.agents.length - 1) / 2 * config.seeds.length * (config.bothSeats ? 2 : 1),
+          creator, abort, progress: { id, status: 'running', totalMatches: config.agents.length * (config.agents.length - 1) / 2 * config.seeds.length * (config.bothSeats ? 2 : 1),
             completedMatches: 0, standings: tournamentStandings({ config, matches: [] }), current: null, error: null },
         };
         active = id;
         jobs.set(id, job);
-        job.done = runTournament(config, { cwd: options.cwd, outputDirectory: path.join(outputRoot, id), id, signal: abort.signal,
-          onProgress: progress => { job.progress = structuredClone(progress); } }).then(report => {
-          job.report = report; job.progress = tournamentProgress(report);
-        }).catch(error => {
-          job.progress = { ...job.progress, status: 'failed', current: null, error: error instanceof Error ? error.message : String(error) };
-        }).finally(() => { if (active === id) active = null; });
+        let launched = false, ownerWritten = false;
+        let accept!: () => void, reject!: (error: unknown) => void;
+        const accepted = new Promise<void>((resolve, rejectStart) => { accept = resolve; reject = rejectStart; });
+        // Reserve synchronously; done includes metadata preparation so disposal waits
+        // for it, and no second request can launch during the ownership write.
+        job.done = (async () => {
+          try {
+            if (creator !== undefined) { await writeOwner(id, creator); ownerWritten = true; }
+            if (disposed) throw new HttpFailure(503, 'Tournament service is shutting down.');
+            const result = runTournament(config, { cwd: options.cwd, outputDirectory: path.join(outputRoot, id), id, signal: abort.signal,
+              onProgress: progress => { job.progress = structuredClone(progress); } });
+            launched = true; accept();
+            job.report = await result; job.progress = tournamentProgress(job.report);
+          } catch (error) {
+            if (ownerWritten) {
+              try { await rm(ownerFile(id), { force: true }); }
+              catch (cleanupError) { error = new Error(`Tournament ownership cleanup failed: ${String(cleanupError)}; original failure: ${String(error)}`); }
+            }
+            if (!launched) { jobs.delete(id); reject(error); }
+            else job.progress = { ...job.progress, status: 'failed', current: null, error: error instanceof Error ? error.message : String(error) };
+          } finally { if (active === id) active = null; }
+        })();
+        await accepted;
         json(response, 202, { id }); return true;
       }
       const route = /^\/api\/tournaments\/(run-[a-z0-9_-]+)(?:\/(result|cancel|matches\/([a-z0-9_-]+)\/replay))?$/.exec(url.pathname);
@@ -100,7 +154,11 @@ export function createTournamentService(options: TournamentServiceOptions): Tour
       const job = jobs.get(route[1]);
       if (!job) throw new HttpFailure(404, 'Unknown tournament.');
       if (request.method === 'GET' && !route[2]) { json(response, 200, job.progress); return true; }
-      if (request.method === 'POST' && route[2] === 'cancel') { job.abort.abort(); json(response, 202, { canceled: true }); return true; }
+      if (request.method === 'POST' && route[2] === 'cancel') {
+        if (principal && await identity(request) !== job.creator) throw new HttpFailure(403, 'Only the tournament creator may cancel this run.');
+        if (disposed) throw new HttpFailure(503, 'Tournament service is shutting down.');
+        job.abort.abort(); json(response, 202, { canceled: true }); return true;
+      }
       if (request.method === 'GET' && route[2] === 'result') {
         if (!job.report) throw new HttpFailure(job.progress.status === 'failed' ? 500 : 409, job.progress.error ?? 'The tournament is still running.');
         json(response, 200, job.report); return true;
@@ -118,11 +176,11 @@ export function createTournamentService(options: TournamentServiceOptions): Tour
       return true;
     }
   }
-  return { handle, async dispose() {
-    if (disposed) return;
+  return { handle, dispose() {
+    if (disposing) return disposing;
     disposed = true;
     for (const job of jobs.values()) if (job.progress.status === 'running') job.abort.abort();
-    await ready;
-    await Promise.all([...jobs.values()].map(job => job.done));
+    disposing = (async () => { await ready; await Promise.all([...jobs.values()].map(job => job.done)); })();
+    return disposing;
   } };
 }

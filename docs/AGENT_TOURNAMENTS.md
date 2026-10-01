@@ -144,6 +144,7 @@ const tournaments = createTournamentService({
   outputRoot: tournamentOutputRoot,
   configs: registeredConfigs,
   authorize: request => authorizedForTournaments(request),
+  principal: request => trustedAccountId(request),
 });
 
 async function route(request, response) {
@@ -155,6 +156,8 @@ async function route(request, response) {
 
 The handler returns `false` for paths outside `/api/tournaments`. It authorizes every tournament route, including read requests. HTTP clients select a registered config ID; they cannot supply commands, source paths, or replacement configuration fields. The start body is limited to 4 KiB. The service permits one active tournament per instance and returns 409 if another start arrives while it is running.
 
+For a shared account server, supply the optional trusted `principal(request)` callback with the stable account ID. It may return an ID or a promise of one. Starting and canceling a run require a nonempty ID of at most 1,024 characters; a missing ID returns 403. The service captures the creator ID once at creation, and only that creator may cancel the run. Other authorized accounts can read public configuration choices, progress, results and replays. Keep the host's origin checks on mutation requests. A trusted standalone service that supplies only `authorize` retains its previous behavior: every authorized caller may cancel.
+
 | Request | Response |
 | --- | --- |
 | `GET /api/tournaments/configs` | Configuration choices with agent names and factions, seeds, map size, seat setting, and time limit. |
@@ -162,10 +165,12 @@ The handler returns `false` for paths outside `/api/tournaments`. It authorizes 
 | `POST /api/tournaments` with `{"configId":"builtin-smoke"}` | 202 with `{"id":"run-..."}`. |
 | `GET /api/tournaments/:id` | Run status, recorded-match count, standings, and current matchup tick/time. |
 | `GET /api/tournaments/:id/result` | Final report; 409 while running. An initialization failure without a report returns 500. |
-| `POST /api/tournaments/:id/cancel` | 202 after requesting cancellation. Poll status to see when cleanup finishes. |
+| `POST /api/tournaments/:id/cancel` | 202 after requesting cancellation; 403 for another account when `principal` is configured. Poll status to see when cleanup finishes. |
 | `GET /api/tournaments/:id/matches/:matchId/replay` | Replay from the final report; unavailable while that report is absent. |
 
 The service stores each run in a new `run-...` directory. On startup it reads non-running reports from matching directories under the output root. It validates their structure but does not replay-verify them at startup. It retains unfinished directories without inventing a result or restarting their agents. `dispose()` requests cancellation and waits for active jobs and their children to finish.
+
+Account ownership is stored separately in `owners/run-....json` under the output root, with version, run ID and principal fields. The service reserves the run before writing and flushing that record, then launches the runner without precreating its output directory. A failed ownership write launches no agents and releases the reservation; shutdown waits for pending ownership preparation and removes a record whose run was never launched. Completed and canceled runs retain their creator across restart. Missing, malformed or mismatched ownership records still permit authorized public reads, but cannot grant cancellation in account mode. Ownership IDs are not added to public progress or runner reports.
 
 ## Dashboard integration
 
