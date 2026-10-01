@@ -16,6 +16,7 @@ import type { Account, CommandAck, LobbyObservation, LobbySettings, LobbyPlayerS
 import { ServerStore, type StoredLobby, type StoredCommand, type StoredFrame } from './store';
 import { OnlineView } from './views';
 import { teamObservation } from './team-view';
+import { createTournamentService } from '../tournament/service';
 
 const scrypt=promisify(scryptCallback);
 const SESSION_LIFETIME=7*24*60*60*1000;
@@ -72,6 +73,8 @@ export interface ServerOptions {
   host?:string;port?:number;dataDir:string;staticDir?:string;origin?:string;
   secureCookie?:boolean;spectatorDelaySeconds?:number;
   trustProxy?:boolean;
+  /** Configurations are supplied by the server operator, never by an HTTP request. */
+  tournaments?:{cwd:string;configs:unknown[];outputRoot?:string};
 }
 
 /** Independent clients send inputs; only this process owns and advances GameState. */
@@ -198,6 +201,7 @@ export async function createRtsServer(options:ServerOptions){
   function editLobby(lobby:StoredLobby,value:Record<string,unknown>){if(value.expectedRevision!==lobby.revision)throw new HttpError(409,'Lobby changed. Refresh its current revision.');if(lobby.matchId)throw new HttpError(409,'The match has started.');}
   function changed(lobby:StoredLobby){lobby.revision++;store.saveLobby(lobby);lobbies.set(lobby.id,lobby);}
   function matchSummary(match:ActiveMatch){return {id:match.id,lobbyId:match.lobbyId,tick:match.state.tick,finished:isGameOver(match.state),failed:match.failed};}
+  const tournaments=options.tournaments?createTournamentService({cwd:options.tournaments.cwd,configs:options.tournaments.configs,outputRoot:options.tournaments.outputRoot??resolve(options.dataDir,'tournaments'),authorize:req=>!!session(req)}):undefined;
 
   async function route(req:IncomingMessage,res:ServerResponse){
     const url=new URL(req.url??'/',`http://${req.headers.host??'localhost'}`),path=url.pathname;
@@ -234,6 +238,7 @@ export async function createRtsServer(options:ServerOptions){
     }
     if(path.startsWith('/api/')){
       const user=account(req);
+      if(tournaments&&await tournaments.handle(req,res))return;
       if(req.method==='GET'&&path==='/api/lobbies'){respond(res,200,{lobbies:[...lobbies.values()].map(publicLobby)});return;}
       if(req.method==='POST'&&path==='/api/lobbies'){
         const value=await body(req);if(!keys(value,['settings','seed'])||(value.seed!==undefined&&!integer(value.seed,0,0xffffffff)))throw new HttpError(400,'Invalid lobby fields.');
@@ -397,13 +402,14 @@ export async function createRtsServer(options:ServerOptions){
   }
   const timer=setInterval(()=>{for(const match of matches.values()){try{advance(match);}catch{match.failed=true;for(const peer of match.peers)fail(peer.socket,'match-failure','The match paused after an internal error.');}}const now=Date.now();for(const [token,ticket] of tickets)if(ticket.expires<now)tickets.delete(token);},1000/TICK_RATE);
   try{await new Promise<void>((resolveListening,reject)=>{http.once('error',reject);http.listen(port,host,()=>{http.off('error',reject);resolveListening();});});}
-  catch(error){clearInterval(timer);websocket.close();store.close();throw error;}
+  catch(error){clearInterval(timer);await tournaments?.dispose();websocket.close();store.close();throw error;}
   const address=http.address();if(!address||typeof address==='string')throw new Error('No server address.');
   return {
     url:`http://${host==='0.0.0.0'?'127.0.0.1':host}:${address.port}`,
     port:address.port,
     async close(){
       if(closing)return;closing=true;clearInterval(timer);
+      await tournaments?.dispose();
       for(const match of matches.values())for(const peer of match.peers)peer.socket.terminate();
       await new Promise<void>(resolveClosed=>websocket.close(()=>resolveClosed()));
       await new Promise<void>(resolveClosed=>http.close(()=>resolveClosed()));store.close();

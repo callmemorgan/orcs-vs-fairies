@@ -28,6 +28,8 @@ import { SkirmishRoster } from './ui/SkirmishRoster';
 import { normalizeAiConfig } from './core/ai-policy';
 import { PlayerView } from './core/observation';
 import { mountPracticeCoach } from './ui/PracticeCoach';
+import { mountTournamentDashboard } from './ui/TournamentDashboard';
+import { createTournamentDashboardSource } from './tournament/client';
 import './ui/style.css';
 declare const __OVF_BUILD_ID__:string;
 
@@ -209,6 +211,12 @@ async function verifyArchive(archive:ReplayArchive):Promise<{player:ReplayPlayer
  try {while(!player.finished){player.advance(100);await new Promise<void>(resolve=>setTimeout(resolve,0));}player.archive.analysis=player.analysis;player.archive.technologies=player.technologyTimings;return {player,complete:isGameOver(player.state)};}
  finally {player.dispose();}
 }
+async function importReplay(input:unknown){
+ const source=decodeReplay(input),request=++replacementGeneration,verified=await verifyArchive(source);
+ if(request!==replacementGeneration)throw new Error('Another replay load replaced this request.');
+ const player=verified.player.forkForSeek(source.initial.state.tick);
+ replayPerspective=0;replayComplete=verified.complete;launch(player.state,undefined,player);
+}
 async function installFile(input:unknown){
  const {file,state}=decodeSessionFile(input),request=++replacementGeneration;
  const oldHistory=file.replay&&!replayRulesCompatible(file.replay);
@@ -234,7 +242,7 @@ const tools=mountSessionTools(root,{
  importSave:installFile,exportSave:currentFile,
  getAutosave:()=>saves.getAutosave(),setAutosave:settings=>{saves.setAutosave(settings);autosaveFailure=false;lastAutosaveTime=scene?.state.time??0;},
  getReplay:()=>replay&&scene?{initialTick:replay.archive.initial.state.tick,tick:replay.state.tick,totalTicks:replay.archive.finalTick,playing:replayPlaying&&!replay.finished,speed:replaySpeed,perspective:replayPerspective,roster:scene.state.players.map((_p,id)=>({id:id as Side,name:factionFor(scene!.state,id as Side).name}))}:null,
- importReplay:async input=>{const source=decodeReplay(input),request=++replacementGeneration,verified=await verifyArchive(source);if(request!==replacementGeneration)throw new Error('Another replay load replaced this request.');const player=verified.player.forkForSeek(source.initial.state.tick);replayPerspective=0;replayComplete=verified.complete;launch(player.state,undefined,player);},
+ importReplay,
  exportReplay:()=>replay?.archive??currentArchive(),
  seekReplay:async tick=>{
   if(!replay||!scene)throw new Error('Import a replay first.');
@@ -264,6 +272,8 @@ const tools=mountSessionTools(root,{
  onModal:open=>setModal('session',open)
 });
 mountOnlineLobby(root,{api:onlineApi,onJoinMatch:joinOnline,onVisibility:open=>setModal('online',open)});
+const tournaments=mountTournamentDashboard(root,{source:createTournamentDashboardSource(),onReplay:importReplay,onVisibility:open=>setModal('tournament',open)});
+function tournamentBlocked(){return !!scene?.photoMode||Array.from(openModals).some(source=>source!=='tournament');}
 function planningBlocked(){return !!scene?.photoMode||Array.from(openModals).some(source=>source!=='planning');}
 function canEditPlanning(side:Side,context:PlanningEditContext){
  if(!scene||replay||onlineConnection||scene.readOnly||scene.photoMode||isGameOver(scene.state)||scene.state.eliminated[side]||side!==playerSide()||planningBlocked())return false;
@@ -309,7 +319,7 @@ setInterval(()=>{
 },16);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)maybeAutosave(true);});
 window.addEventListener('pagehide',()=>maybeAutosave(true));
-setInterval(()=>{if(scene)shell.update(scene.state,scene.selected,callbacks);tools.update(scene?.state??null,{side:playerSide(),paused:scene?.paused,replaySpectator:!!replay||!!scene?.readOnly,remoteMatch:!!onlineConnection});planning.update({blocked:planningBlocked()});updateCoach();},100);
+setInterval(()=>{if(scene)shell.update(scene.state,scene.selected,callbacks);tools.update(scene?.state??null,{side:playerSide(),paused:scene?.paused,replaySpectator:!!replay||!!scene?.readOnly,remoteMatch:!!onlineConnection});planning.update({blocked:planningBlocked()});tournaments.update({blocked:tournamentBlocked()});updateCoach();},100);
 // Read-only diagnostics for repeatable performance and state inspection. Player actions stay in the UI.
 Object.defineProperty(window,'rts',{get:()=>scene?.cameras?.main?{state:scene.state,viewSide:scene.viewSide,readOnly:scene.readOnly,selected:[...scene.selected],art:scene.artStatus,fps:game?.loop.actualFps,paused:scene.paused,mode:onlineConnection?'online':replay?'replay':'local',simulationEnabled:scene.simulationEnabled,online:onlineConnection?{status:onlineConnection.status,role:onlineRender?.role,side:playerSide(),delayTicks:onlineConnection.connectionInfo?.delayTicks,pendingCommands:onlineConnection.pendingCommands,privateSides:[...(onlineRender?.privateSides??[])]}:null,camera:{x:scene.cameras.main.scrollX,y:scene.cameras.main.scrollY,zoom:scene.cameras.main.zoom,width:scene.cameras.main.width,height:scene.cameras.main.height}}:null});
 if(location.hostname==='127.0.0.1'&&new URLSearchParams(location.search).has('qa'))setInterval(()=>{

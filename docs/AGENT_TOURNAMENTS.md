@@ -2,7 +2,7 @@
 
 The tournament runner plays external terminal agents against one another through the shared simulation. Each match has two players, both controlled by separate child processes. The runner sends player observations, accepts ordinary game commands, advances the game, and records a replay and process evidence. Built-in AI does not control either player.
 
-The modules provide a CLI, an HTTP handler, and a browser dashboard. The host application must mount the handler and dashboard; the default game and authoritative server do not connect them automatically. The tournament format is separate from the single-agent CLI protocol described in [Terminal agents](TERMINAL_AGENTS.md).
+The modules provide a CLI, an HTTP handler, and a browser dashboard. The main game mounts the dashboard beside its session controls. The authoritative server registers `scripts/tournaments/smoke.json` and uses its account cookies for access. Sign in through Online, then open Tournaments. The tournament format is separate from the single-agent CLI protocol described in [Terminal agents](TERMINAL_AGENTS.md).
 
 ## Build and run
 
@@ -132,6 +132,8 @@ Each process record contains its PID, turn and command counts, fault, exit code 
 
 ## HTTP integration
 
+`src/server/main.ts` registers the built-in smoke configuration from the repository working directory. Its run directories are stored beneath `RTS_DATA_DIR/tournaments`. The canonical router checks account authentication and the existing origin rule before dispatching tournament requests, and server shutdown disposes the service. Programmatic hosts can supply `ServerOptions.tournaments` with a working directory, registered configurations and an optional output root; omitting it disables these routes.
+
 `createTournamentService` in `src/tournament/service.ts` returns an async `handle(request, response)` function and `dispose()`. Mount it in the host's existing Node HTTP router. The host owns the registered configurations, working directory, output root, and authorization rule. The names below stand for those host values and functions:
 
 ```ts
@@ -166,6 +168,8 @@ The handler returns `false` for paths outside `/api/tournaments`. It authorizes 
 The service stores each run in a new `run-...` directory. On startup it reads non-running reports from matching directories under the output root. It validates their structure but does not replay-verify them at startup. It retains unfinished directories without inventing a result or restarting their agents. `dispose()` requests cancellation and waits for active jobs and their children to finish.
 
 ## Dashboard integration
+
+`src/main.ts` mounts the dashboard with the shared replay importer. Opening it pauses local play and blocks game input through the existing modal owner set. Opening another modal blocks its launch control, and photo mode hides the dashboard. Inspecting a verified match installs the archive in the ordinary replay viewer.
 
 `createTournamentDashboardSource` in `src/tournament/client.ts` implements the dashboard's `choices`, `start`, `status`, `result`, and `cancel` methods over HTTP. Its default base URL is empty for same-origin requests, which include same-origin authentication cookies. The service supplies no authentication UI or cross-origin credential handling.
 
