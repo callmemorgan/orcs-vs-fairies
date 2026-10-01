@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+const base='4e737ea58bd094de1b65792e5a0c2b228b797e87';
+const source='879a5305194e5eab67f2f0d5017150f58f2d9431';
+const path='tests/allied-modes-binding.test.ts';
+const read=pin=>execFileSync('git',['show',`${pin}:${path}`],{encoding:'utf8'});
+const before=read(base),after=read(source);
+const normalized=after.replace('  // Keep all 430 complete SAVE4 comparisons under full-suite worker contention.\n','').replace('    }, 20_000);\n','    });\n');
+assert.equal(normalized,before);
+const hash=value=>createHash('sha256').update(value).digest('hex');
+console.log(JSON.stringify({base,source,testBodyByteEqual:true,baseSha256:hash(before),sourceSha256:hash(after)},null,2));

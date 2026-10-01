@@ -1,0 +1,27 @@
+{
+  "baseCommit": "4e737ea58bd094de1b65792e5a0c2b228b797e87",
+  "testPath": "tests/allied-modes-binding.test.ts",
+  "testBodyByteEqualAfterRemovingBudgetChange": true,
+  "baseTestSha256": "450cf5c1ff73d0d29e0e0efa1d907be073eda756937a91041e3788b6cd4a1a53",
+  "candidateTestSha256": "9b6fa9cd12164974cfe6a8d142e92161d0178ed6251f728f8c035baca21fb34a",
+  "change": "Only the two 430-tick cases receive a 20000ms timeout; every public command, tick, save comparison and replay assertion remains byte-identical.",
+  "observedFullSuiteMilliseconds": {
+    "hill": 6565,
+    "relic": 6087
+  },
+  "observedUnmodifiedIsolatedMilliseconds": {
+    "hill": 2651,
+    "relic": 2511
+  },
+  "defaultTimeoutMilliseconds": 5000,
+  "newTimeoutMilliseconds": 20000,
+  "productionSourceChanged": false,
+  "sourceCommit": "879a5305194e5eab67f2f0d5017150f58f2d9431",
+  "relatedTestFiles": 5,
+  "relatedTestsPassed": 191,
+  "relatedRunSeconds": 67.77,
+  "observedPatchedRelatedMilliseconds": {
+    "hill": 2972,
+    "relic": 2703
+  }
+}
