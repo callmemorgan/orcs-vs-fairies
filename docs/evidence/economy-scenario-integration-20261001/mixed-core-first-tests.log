@@ -1,0 +1,27 @@
+
+ RUN  v4.1.11 /home/morgana/.codex/worktrees/economy-scenario-integration/orcs-vs-Fairies
+
+ ❯ tests/economy-specialist-core.test.ts (6 tests | 1 failed) 218ms
+     × passes a fatal extractor incident through shared cleanup once 8ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/economy-specialist-core.test.ts > specialist effects on physical economic work > passes a fatal extractor incident through shared cleanup once
+Error: Invalid economy state at structures[0].stock.
+ ❯ fail src/core/economy-validation.ts:30:41
+
+ ❯ src/core/economy-validation.ts:48:486
+ ❯ validateEconomyState src/core/economy-validation.ts:48:40
+ ❯ validate src/core/saves.ts:150:27
+ ❯ validateCurrent src/core/saves.ts:156:78
+ ❯ saveGame src/core/saves.ts:198:22
+ ❯ tests/economy-specialist-core.test.ts:46:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 passed (6)
+   Start at  05:26:18
+   Duration  497ms (transform 183ms, setup 0ms, import 221ms, tests 218ms, environment 0ms)
+

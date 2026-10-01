@@ -1,0 +1,33 @@
+
+ RUN  v4.1.11 /home/morgana/.codex/worktrees/economy-scenario-integration/orcs-vs-Fairies
+
+ ❯ tests/specialist-economy-integration.test.ts (12 tests | 1 failed) 412ms
+   × records the charged barricade through canonical command input and returns its investment once on expiry 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/specialist-economy-integration.test.ts > records the charged barricade through canonical command input and returns its investment once on expiry
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/specialist-economy-integration.test.ts:185:97
+    183|   expect(economicState(state)!.paidCosts).toEqual([{ entityId: barrica…
+    184|   state.specialists!.structures[0].expires = .1; run(state, .15);
+    185|   expect(state.events.filter(event => event.type === 'death' && event.…
+       |                                                                                                 ^
+    186|   expect(economicState(state)!.salvage).toEqual([expect.objectContaini…
+    187|   expectRoundTrip(state);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 21 passed (22)
+   Start at  05:34:50
+   Duration  661ms (transform 424ms, setup 0ms, import 563ms, tests 827ms, environment 0ms)
+

@@ -1,0 +1,28 @@
+
+ RUN  v4.1.11 /home/morgana/.codex/worktrees/economy-scenario-integration/orcs-vs-Fairies
+
+ ❯ tests/modes-objectives.test.ts (13 tests | 1 failed) 1525ms
+     × lets scenario rules replace headquarters defeat and permits commands without a stronghold 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/modes-objectives.test.ts > saved match rules and objectives > lets scenario rules replace headquarters defeat and permits commands without a stronghold
+Error: Scenario matches require a bound scenario definition.
+ ❯ createMatch src/core/simulation.ts:82:54
+     80|  for(let i=0;i<c.players.length;i++)if(!Object.hasOwn(c.players,i))thr…
+     81|  const rules=normalizeMatchRules(c.rules===undefined?{}:c.rules,conten…
+     82|  if(rules.mode==='scenario'&&!options.scenario)throw new Error('Scenar…
+       |                                                      ^
+     83|  const slots=new Set<number>(),teams:Side[]=[],incomeFactors:number[]=…
+     84|  const definitions=c.players.map((value,i)=>{
+ ❯ match tests/modes-objectives.test.ts:9:68
+ ❯ tests/modes-objectives.test.ts:21:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 12 passed (13)
+      Tests  1 failed | 330 passed (331)
+   Start at  05:24:37
+   Duration  7.91s (transform 3.99s, setup 0ms, import 5.95s, tests 37.93s, environment 141ms)
+

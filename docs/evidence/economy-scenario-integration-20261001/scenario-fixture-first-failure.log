@@ -1,0 +1,29 @@
+
+ RUN  v4.1.11 /home/morgana/.codex/worktrees/economy-scenario-integration/orcs-vs-Fairies
+
+ ❯ tests/economy-scenario-integration.test.ts (4 tests | 1 failed) 157ms
+     × rejects fixed-army economic construction and reinforcements through wrapper and direct input without mutation 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/economy-scenario-integration.test.ts > economy inside canonical authored scenarios > rejects fixed-army economic construction and reinforcements through wrapper and direct input without mutation
+Error: Invalid scenario at rules.reinforcementBudget: fixed armies cannot recruit.
+ ❯ bad src/core/scenario-validation.ts:11:59
+      9| const buildingRoles = ['hq', 'depot', 'barracks', 'tower', 'wall', 'ga…
+     10| type RecordValue = Record<string, unknown>;
+     11| function bad(path: string, reason: string): never { throw new Error(`I…
+       |                                                           ^
+     12| function object(value: unknown, path: string, required: string[], opti…
+     13|   if (!value || typeof value !== 'object' || Array.isArray(value) || O…
+ ❯ validateScenario src/core/scenario-validation.ts:220:59
+ ❯ createScenario src/core/scenarios.ts:111:22
+ ❯ tests/economy-scenario-integration.test.ts:28:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 19 passed (20)
+   Start at  05:23:28
+   Duration  653ms (transform 502ms, setup 0ms, import 632ms, tests 638ms, environment 0ms)
+

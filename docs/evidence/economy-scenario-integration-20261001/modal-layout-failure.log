@@ -1,0 +1,21 @@
+Objectives owns keyboard input while draft ticks remain live: {"tick":3,"selected":[],"paused":false}
+Objective draft command remains accepted through the normal application: true
+Shared launcher hit tests and World placement at 1280 by 720: {"toolbar":{"top":82,"bottom":152},"worldTop":160,"buttons":[{"name":"Saves","hit":true,"rect":{"x":704.953125,"y":82,"width":55.9375,"height":33}},{"name":"Replay","hit":true,"rect":{"x":764.890625,"y":82,"width":61.5625,"height":33}},{"name":"Analysis","hit":true,"rect":{"x":830.453125,"y":82,"width":69.625,"height":33}},{"name":"Production","hit":true,"rect":{"x":904.078125,"y":82,"width":85.90625,"height":33}},{"name":"Controls","hit":true,"rect":{"x":993.984375,"y":82,"width":71.421875,"height":33}},{"name":"Report a bug","hit":true,"rect":{"x":1069.40625,"y":82,"width":97.3125,"height":33}},{"name":"Photo mode","hit":true,"rect":{"x":1170.71875,"y":82,"width":93.28125,"height":33}},{"name":"Objectives","hit":true,"rect":{"x":839.28125,"y":119,"width":82.421875,"height":33}},{"name":"Online","hit":true,"rect":{"x":925.703125,"y":119,"width":61.171875,"height":33}},{"name":"Tournaments","hit":true,"rect":{"x":990.875,"y":119,"width":99.109375,"height":33}},{"name":"Economy and settlements","hit":true,"rect":{"x":1093.984375,"y":119,"width":170.015625,"height":33}}]}
+Economy pauses, traps focus, suppresses keyboard and restores input at 1280px: true
+Objectives launcher opens and Escape closes at 1280px: true
+Session modal disables Economy launcher at 1280px: true
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Launcher Saves is covered at 520px
+    at file:///home/morgana/.codex/worktrees/economy-scenario-integration/orcs-vs-Fairies/scripts/verify_economy_combined_ui.mjs:20:76 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.21.0
