@@ -1,0 +1,274 @@
+{
+  "format": "orcs-vs-fairies-conquest-review-proof",
+  "version": 1,
+  "generatedAt": "2026-10-01T11:06:53.380Z",
+  "sourceCommit": "3bdff79b0cbb2db3d94144051121aa43769cec47",
+  "dependencyCommit": "d1171b9",
+  "mode": "baseline",
+  "sourceFiles": {
+    "src/core/conquest.ts": "7ec5568b3b2ebf860b2e4e999c5325bad884e99351956cb5d95eb7ee195fee01",
+    "src/core/conquest-types.ts": "13a911953b250a4bf7d6ff4628dec8d95e1c78a9e39ced5c8eb2e84455e112a8",
+    "src/core/campaign.ts": "00c2e88393d7cb3a183d94742c9dc6eadfa79787b37d49bab53020e4aff21ce2",
+    "src/core/scenario-recordings.ts": "fcf09269836754f97b49e6f06affc0018beb16ff3888f08e107169384ed26e02",
+    "src/core/scenarios.ts": "b51f43cef1fef714cdb4fe442e93cd73eb3918e55133fbe1595805e0b8939c0f",
+    "src/core/scenario-types.ts": "7db3abc53f9ff69bc13bc6d894a71ff5e6b80f1820c7abb38116b7945bf5bc37",
+    "src/core/scenario-validation.ts": "9c00a9f6772d5dab7847a35e3fa996a2392ee27f7587eed65a1291f3907d0fe8",
+    "src/core/content.ts": "b1a17ec7839e458ce6bf8cba63fe19ba3a27de0ed2e2ed9c7a08226f406da4f2",
+    "src/core/geometry.ts": "d01cb8c5003443415cd43bef63dd087dad7238b1e82732222a1f6bb0bbccd283",
+    "src/core/simulation.ts": "ddaebcebd457112ad4b0ca11b4be0c00719a6251d5cf0b309eafbd8d7d06619a",
+    "src/core/saves.ts": "01e5ab00fb66fafa98411335647ad828163fc9d65b68d575cda20f131cde8381",
+    "src/core/navigation.ts": "6239be4e3588ab10a7d75ef6f3272ad52783be6ac3006a1f04b7790abe190d02",
+    "src/core/types.ts": "fc5395fb1c824dab04952375a7230f6e48f6362c724f3fdf0c8bdffbaace096f",
+    "src/scenarios/conquest-world.ts": "b5a64d47ba13d5ed2b523a0ec781ac07f45bafbc1569d0bd3aed3d12cf74271c",
+    "scripts/scenarios/conquest-strategy.ts": "6255100cbcf19e21387b20afbf6f670b8cb67e460425b3d54a12d16f083b61b2",
+    "scripts/scenarios/prove-conquest-review.ts": "141348944d5ac12f9d0dda56670a8903e5938170331a3634a78a33c63ea3f1c6"
+  },
+  "commandPath": "issueScenarioCommand",
+  "stepPath": "stepScenario",
+  "assertions": {
+    "historyAcceptsOnlyReloadableDecisions": false,
+    "expiredPassageCannotWin": false,
+    "aid-1-funding": true,
+    "aid-1-fresh-unit": true,
+    "aid-1-no-unfunded-treasury": false,
+    "aid-1-full-cost": false,
+    "aid-2-funding": true,
+    "aid-2-fresh-unit": false,
+    "aid-2-no-unfunded-treasury": false,
+    "aid-2-full-cost": false,
+    "aid-3-funding": true,
+    "aid-3-fresh-unit": false,
+    "aid-3-no-unfunded-treasury": false,
+    "aid-3-full-cost": false,
+    "multipleAidNoUnfundedTreasury": false,
+    "multipleAidChargesOnlyContributors": false,
+    "multipleAidLimit": true
+  },
+  "attempts": [
+    {
+      "id": "history-bound",
+      "acceptedHistory": 256,
+      "waitError": null,
+      "tributeError": null,
+      "battleError": null,
+      "overflowAccepted": true,
+      "overflowDecodeError": "Error: Invalid conquest profile."
+    },
+    {
+      "id": "expired-passage",
+      "outcome": "won",
+      "time": 29.750000000000288,
+      "hostile": true,
+      "expiry": {
+        "count": 1,
+        "lastTime": 15.000000000000078
+      },
+      "protectionVariable": null,
+      "acceptedTurn": 1
+    },
+    {
+      "id": "allied-passage-1",
+      "aidId": 22,
+      "aidExistedInRoster": false,
+      "funded": true,
+      "armyBefore": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "armyAfter": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        22
+      ],
+      "allyBefore": {
+        "wood": 150,
+        "ore": 350,
+        "crystal": 20
+      },
+      "allyAfter": {
+        "wood": 150,
+        "ore": 310,
+        "crystal": 20
+      },
+      "unitCost": {
+        "wood": 65,
+        "ore": 30,
+        "crystal": 0
+      }
+    },
+    {
+      "id": "allied-passage-2",
+      "aidId": 22,
+      "aidExistedInRoster": true,
+      "funded": true,
+      "armyBefore": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        22
+      ],
+      "armyAfter": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        22
+      ],
+      "allyBefore": {
+        "wood": 150,
+        "ore": 310,
+        "crystal": 20
+      },
+      "allyAfter": {
+        "wood": 150,
+        "ore": 270,
+        "crystal": 20
+      },
+      "unitCost": {
+        "wood": 65,
+        "ore": 30,
+        "crystal": 0
+      }
+    },
+    {
+      "id": "allied-passage-3",
+      "aidId": 22,
+      "aidExistedInRoster": true,
+      "funded": true,
+      "armyBefore": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        22
+      ],
+      "armyAfter": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        22
+      ],
+      "allyBefore": {
+        "wood": 150,
+        "ore": 270,
+        "crystal": 20
+      },
+      "allyAfter": {
+        "wood": 150,
+        "ore": 230,
+        "crystal": 20
+      },
+      "unitCost": {
+        "wood": 65,
+        "ore": 30,
+        "crystal": 0
+      }
+    },
+    {
+      "id": "multiple-allies",
+      "aid": {
+        "aid-fairies": 23,
+        "aid-undead": 24
+      },
+      "unitCost": {
+        "wood": 85,
+        "ore": 40,
+        "crystal": 0
+      },
+      "alliesBefore": {
+        "fairies": {
+          "wood": 150,
+          "ore": 350,
+          "crystal": 20
+        },
+        "undead": {
+          "wood": 150,
+          "ore": 350,
+          "crystal": 20
+        },
+        "tideborn": {
+          "wood": 150,
+          "ore": 350,
+          "crystal": 20
+        }
+      },
+      "alliesAfter": {
+        "fairies": {
+          "wood": 150,
+          "ore": 310,
+          "crystal": 20
+        },
+        "undead": {
+          "wood": 150,
+          "ore": 310,
+          "crystal": 20
+        },
+        "tideborn": {
+          "wood": 150,
+          "ore": 350,
+          "crystal": 20
+        }
+      }
+    }
+  ],
+  "journals": [
+    {
+      "id": "expired-passage",
+      "path": "/tmp/conquest-review.bWEBgn/targeted-original-archives/expired-passage.json",
+      "sha256": "b1c552896fd62782f6aa94891c2cec30dd6aec7e256c0ea1006e41759fba35db",
+      "finalTick": 595,
+      "commands": 35,
+      "outcome": "won"
+    },
+    {
+      "id": "allied-passage-1",
+      "path": "/tmp/conquest-review.bWEBgn/targeted-original-archives/allied-passage-1.json",
+      "sha256": "20e015dbe714e4078aa580b1407dc62b4872da1fa7a7ff7aa82bd82a5cef6099",
+      "finalTick": 166,
+      "commands": 1,
+      "outcome": "won"
+    },
+    {
+      "id": "allied-passage-2",
+      "path": "/tmp/conquest-review.bWEBgn/targeted-original-archives/allied-passage-2.json",
+      "sha256": "cac8ae8ca4e04c7b009558ef00343af52258fa1c040cd769bbcd4f1c43ef934b",
+      "finalTick": 166,
+      "commands": 1,
+      "outcome": "won"
+    },
+    {
+      "id": "allied-passage-3",
+      "path": "/tmp/conquest-review.bWEBgn/targeted-original-archives/allied-passage-3.json",
+      "sha256": "4f6109b31025d1684f5da232551290dba799e4b2a35fea51b7106ecfeb5d4585",
+      "finalTick": 166,
+      "commands": 1,
+      "outcome": "won"
+    },
+    {
+      "id": "multiple-allies",
+      "path": "/tmp/conquest-review.bWEBgn/targeted-original-archives/multiple-allies.json",
+      "sha256": "01356a6ba31bad314ab19bc68064db1943d638d1485464a7b6e46d727c9794c2",
+      "finalTick": 386,
+      "commands": 130,
+      "outcome": "won"
+    }
+  ]
+}

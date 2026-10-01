@@ -1,0 +1,87 @@
+{
+  "format": "orcs-vs-fairies-conquest-profile-budget-correction-proof",
+  "version": 1,
+  "sourceCommit": "4ace9bd094468b26e4e77310770112aff317d982",
+  "geometryDependencyCommit": "d1171b9",
+  "sourceFiles": {
+    "src/core/conquest.ts": "403574361920c0197a7944214f11450def40129b603fe87a3cca90a79a84c9bc",
+    "src/core/campaign.ts": "32c4660c2a4795f28396d94763b94339d79b2ebac00513a60bbb871351c9bb6f",
+    "src/core/scenario-recordings.ts": "74c5c82a535a2cfa158fa42ae1dd27df5c6c61622839a6b0f9187edcf1aee692",
+    "src/core/scenario-validation.ts": "9c00a9f6772d5dab7847a35e3fa996a2392ee27f7587eed65a1291f3907d0fe8",
+    "src/core/scenarios.ts": "69868cbb47bfafd8dcbad7173ae31ef8cbd40c1bd4f0e8811ba71fe976914ff7",
+    "src/core/geometry.ts": "d01cb8c5003443415cd43bef63dd087dad7238b1e82732222a1f6bb0bbccd283",
+    "scripts/scenarios/prove-conquest-profile-budget-fix.ts": "10dd77857282b1ec14955ce85cb535323f7c29754766574aed638bef7ca6f861"
+  },
+  "commandPath": "issueScenarioCommand",
+  "stepPath": "stepScenario",
+  "rows": [
+    {
+      "battle": 1,
+      "commands": 30001,
+      "checkpointError": null,
+      "resultError": null,
+      "acceptedHistory": 3,
+      "acceptedTurn": 1,
+      "inputUnchanged": true,
+      "acceptedProfileReloads": true,
+      "recording": {
+        "path": "/tmp/conquest-review.bWEBgn/profile-budget-corrected-archives/battle-1-recording.json",
+        "sha256": "f32989a4878058a7db6db090454a7e5459f3d0657873087812488a9c558d8f40"
+      }
+    },
+    {
+      "battle": 2,
+      "commands": 30001,
+      "checkpointError": null,
+      "resultError": null,
+      "acceptedHistory": 4,
+      "acceptedTurn": 2,
+      "inputUnchanged": true,
+      "acceptedProfileReloads": true,
+      "recording": {
+        "path": "/tmp/conquest-review.bWEBgn/profile-budget-corrected-archives/battle-2-recording.json",
+        "sha256": "98b640f9264eb23a01e66cf219aed673fe22ffbbf2293da7ed6b506784d4f779"
+      }
+    },
+    {
+      "battle": 3,
+      "commands": 30001,
+      "checkpointError": null,
+      "resultError": null,
+      "acceptedHistory": 5,
+      "acceptedTurn": 3,
+      "inputUnchanged": true,
+      "acceptedProfileReloads": true,
+      "recording": {
+        "path": "/tmp/conquest-review.bWEBgn/profile-budget-corrected-archives/battle-3-recording.json",
+        "sha256": "7e56f9bbd8ccd5a2de6d84de858c782374b3c43f6d0655606eaf7f8ee6125baa"
+      }
+    },
+    {
+      "battle": 4,
+      "commands": 30001,
+      "checkpointError": "Invalid scenario at package: package is too large or deeply nested.",
+      "resultError": "Invalid scenario at package: package is too large or deeply nested.",
+      "acceptedHistory": 5,
+      "acceptedTurn": 3,
+      "inputUnchanged": true,
+      "acceptedProfileReloads": true,
+      "recording": {
+        "path": "/tmp/conquest-review.bWEBgn/profile-budget-corrected-archives/battle-4-recording.json",
+        "sha256": "3add55f4c256361ce2dc75bb55d8d2367029b5d5d3b344e0ca7fdf061411be49"
+      }
+    }
+  ],
+  "standalone": {
+    "commands": 80000,
+    "unitsCommanded": 7,
+    "archiveError": "Invalid scenario at package: package is too large or deeply nested."
+  },
+  "assertions": {
+    "acceptedProfilesReload": true,
+    "overBudgetCheckpointRejected": true,
+    "overBudgetResultRejected": true,
+    "rejectedTransitionsPreserveProfile": true,
+    "overBudgetStandaloneJournalRejected": true
+  }
+}
