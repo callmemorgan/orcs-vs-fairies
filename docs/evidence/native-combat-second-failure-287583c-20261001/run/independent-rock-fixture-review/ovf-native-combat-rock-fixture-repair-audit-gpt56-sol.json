@@ -1,0 +1,420 @@
+{
+  "schema": 1,
+  "checkedAt": "2026-10-01T19:36:34.318104+00:00",
+  "reviewer": {
+    "harness": "Codex",
+    "model": "GPT-5.6 Sol"
+  },
+  "verdict": "accept proposed three-file patch for a fresh runtime retry; do not accept the failed partial browser run as feature proof",
+  "scope": {
+    "kind": "static and lightweight independent review",
+    "runtimeGenerationOrEngineExecution": false,
+    "sourceTreeEdited": false
+  },
+  "pins": {
+    "parentProofCommit": "287583c6bf90b0df76475f8541e6694df1d5f901",
+    "productSourceCommit": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+    "patchSha256": "57971936f170a40288cb3b52c82f0cdbfd9aeab5d3951e63978f47681c41e443"
+  },
+  "sourceBindings": [
+    {
+      "path": "scripts/acceptance/direction-defense-fixtures.ts",
+      "gitSha256": "955443d3561b9e4d4e39e7ab6e19afd6f437fca034ac685276ae561bf3046c0a",
+      "retainedOriginalSha256": "955443d3561b9e4d4e39e7ab6e19afd6f437fca034ac685276ae561bf3046c0a",
+      "gitEqualsRetainedOriginal": true,
+      "candidateSha256": "fb6f04ea660b122fd3aa6f952d78a5c01ec997d4f67a9bbd85f16d86b0564d8f"
+    },
+    {
+      "path": "scripts/acceptance/direction-defense.mjs",
+      "gitSha256": "eb76535da20b15dab3a929d9c9b28207cce6752f02073d724de9b04d0abb0f92",
+      "retainedOriginalSha256": "eb76535da20b15dab3a929d9c9b28207cce6752f02073d724de9b04d0abb0f92",
+      "gitEqualsRetainedOriginal": true,
+      "candidateSha256": "53469400135b8dbc7cc1e0a8644e23e05aeee431aac6b9aeccc5d4cc8473c259"
+    },
+    {
+      "path": "scripts/acceptance/native-context.mjs",
+      "gitSha256": "30a272340d4283cc8baedaf20d147f3aa80630f8c213fb383b3e082f6096c3b5",
+      "retainedOriginalSha256": "30a272340d4283cc8baedaf20d147f3aa80630f8c213fb383b3e082f6096c3b5",
+      "gitEqualsRetainedOriginal": true,
+      "candidateSha256": "f205338dd00ec7d8f75dcc0dc3c0415a31bac6b47b3e1dfbe45f5b9e517447dd"
+    }
+  ],
+  "patchApplication": {
+    "exitCode": 0,
+    "stdoutLines": [
+      "patching file scripts/acceptance/direction-defense-fixtures.ts",
+      "patching file scripts/acceptance/direction-defense.mjs",
+      "patching file scripts/acceptance/native-context.mjs"
+    ],
+    "stderrLines": [],
+    "files": [
+      {
+        "path": "scripts/acceptance/direction-defense-fixtures.ts",
+        "patchedSha256": "fb6f04ea660b122fd3aa6f952d78a5c01ec997d4f67a9bbd85f16d86b0564d8f",
+        "candidateSha256": "fb6f04ea660b122fd3aa6f952d78a5c01ec997d4f67a9bbd85f16d86b0564d8f",
+        "byteEqual": true
+      },
+      {
+        "path": "scripts/acceptance/direction-defense.mjs",
+        "patchedSha256": "53469400135b8dbc7cc1e0a8644e23e05aeee431aac6b9aeccc5d4cc8473c259",
+        "candidateSha256": "53469400135b8dbc7cc1e0a8644e23e05aeee431aac6b9aeccc5d4cc8473c259",
+        "byteEqual": true
+      },
+      {
+        "path": "scripts/acceptance/native-context.mjs",
+        "patchedSha256": "f205338dd00ec7d8f75dcc0dc3c0415a31bac6b47b3e1dfbe45f5b9e517447dd",
+        "candidateSha256": "f205338dd00ec7d8f75dcc0dc3c0415a31bac6b47b3e1dfbe45f5b9e517447dd",
+        "byteEqual": true
+      }
+    ]
+  },
+  "retainedFailure": {
+    "reportSha256": "d260dbac2517531740f3ae3049e816e31684b63c989d46f71095734b37500cc8",
+    "completed": false,
+    "selectedGroups": [
+      "direction",
+      "capture",
+      "specialists"
+    ],
+    "passingChecksBeforeFailure": 46,
+    "authenticatedDownloadsBeforeFailure": 79,
+    "failure": {
+      "phase": "native direction encounters",
+      "message": "page.waitForFunction: Timeout 15000ms exceeded.\n    at Object.wait (/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/native-context.mjs:13:50)\n    at attack (/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/direction-defense.mjs:33:15)\n    at async Object.runDirectionDefense (/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/direction-defense.mjs:84:5)\n    at async file:///home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/verify-native-acceptance.mjs:82:88"
+    },
+    "errors": [],
+    "lastState": {
+      "tick": 310,
+      "source": {
+        "id": 51,
+        "x": 24.076085709575782,
+        "y": 23.453293783819294,
+        "hp": 85,
+        "order": {
+          "type": "idle"
+        },
+        "animation": "idle"
+      },
+      "target": {
+        "id": 52,
+        "x": 26.327314933988273,
+        "y": 25.327314933988273,
+        "hp": 40,
+        "order": {
+          "type": "move",
+          "x": 31.5,
+          "y": 31.5,
+          "level": 0
+        },
+        "animation": "walk"
+      }
+    },
+    "originalRetentionCheckSha256": "97bdcca41b3e590422d73e94adbb8008617dbc343e0a69bc2592b2374de7852c"
+  },
+  "originalFixtureDiagnosis": {
+    "source": {
+      "id": 51,
+      "x": 20.5,
+      "y": 24.5,
+      "level": 0
+    },
+    "target": {
+      "id": 52,
+      "x": 25.5,
+      "y": 24.5,
+      "level": 0
+    },
+    "rockTile": [
+      23,
+      24
+    ],
+    "targetFogKey": 889,
+    "targetVisibility": {
+      "coverRockFixture": {
+        "visible": false,
+        "explored": false
+      },
+      "nativeImport37": {
+        "visible": false,
+        "explored": false
+      },
+      "coverNoneFixture": {
+        "visible": true,
+        "explored": true
+      }
+    },
+    "firingRay": {
+      "length": 5.0,
+      "steps": 15,
+      "sampledCells": [
+        [
+          20,
+          24
+        ],
+        [
+          21,
+          24
+        ],
+        [
+          21,
+          24
+        ],
+        [
+          21,
+          24
+        ],
+        [
+          22,
+          24
+        ],
+        [
+          22,
+          24
+        ],
+        [
+          22,
+          24
+        ],
+        [
+          23,
+          24
+        ],
+        [
+          23,
+          24
+        ],
+        [
+          23,
+          24
+        ],
+        [
+          24,
+          24
+        ],
+        [
+          24,
+          24
+        ],
+        [
+          24,
+          24
+        ],
+        [
+          25,
+          24
+        ]
+      ],
+      "rockTileCrossed": true,
+      "clearOfRockTile": false
+    },
+    "gameSceneHitRejectsInvisible": true,
+    "gameSceneSourceSha256": "2f6372937635cdb54367445eb22355d79f33a94ff75604180ff9b2848422cdec"
+  },
+  "proposedGeometry": {
+    "source": {
+      "x": 20.5,
+      "y": 23.9,
+      "level": 0
+    },
+    "target": {
+      "x": 25.5,
+      "y": 23.9,
+      "level": 0
+    },
+    "rockCenter": {
+      "x": 23.5,
+      "y": 24.5,
+      "level": 0
+    },
+    "targetFogKey": 853,
+    "mothbowSight": 9,
+    "sourceToTargetDistance": 5.0,
+    "sourceToTargetWithinSight": true,
+    "firingRay": {
+      "length": 5.0,
+      "steps": 15,
+      "sampledCells": [
+        [
+          20,
+          23
+        ],
+        [
+          21,
+          23
+        ],
+        [
+          21,
+          23
+        ],
+        [
+          21,
+          23
+        ],
+        [
+          22,
+          23
+        ],
+        [
+          22,
+          23
+        ],
+        [
+          22,
+          23
+        ],
+        [
+          23,
+          23
+        ],
+        [
+          23,
+          23
+        ],
+        [
+          23,
+          23
+        ],
+        [
+          24,
+          23
+        ],
+        [
+          24,
+          23
+        ],
+        [
+          24,
+          23
+        ],
+        [
+          25,
+          23
+        ]
+      ],
+      "rockTileCrossed": false,
+      "clearOfRockTile": true
+    },
+    "visibilityRayToTargetCellCenter": {
+      "length": 5.015974481593781,
+      "steps": 16,
+      "sampledCells": [
+        [
+          20,
+          23
+        ],
+        [
+          21,
+          23
+        ],
+        [
+          21,
+          23
+        ],
+        [
+          21,
+          23
+        ],
+        [
+          22,
+          23
+        ],
+        [
+          22,
+          23
+        ],
+        [
+          22,
+          23
+        ],
+        [
+          23,
+          23
+        ],
+        [
+          23,
+          23
+        ],
+        [
+          23,
+          23
+        ],
+        [
+          23,
+          23
+        ],
+        [
+          24,
+          23
+        ],
+        [
+          24,
+          23
+        ],
+        [
+          24,
+          23
+        ],
+        [
+          25,
+          23
+        ]
+      ],
+      "rockTileCrossed": false,
+      "clearOfRockTile": true
+    },
+    "coverPredicate": {
+      "sameLevel": true,
+      "shotLength": 5.0,
+      "minimumShotLength": 1.8,
+      "shotLengthPass": true,
+      "rockToTargetDistance": 2.0880613017821106,
+      "rockToTargetMaximum": 3.55,
+      "rockNearTargetPass": true,
+      "rockToSourceDistance": 3.0594117081556713,
+      "rockToSourceMinimum": 0.9500000000000001,
+      "rockPastSourcePass": true,
+      "rockToTargetMinimum": 0.3,
+      "rockBeforeTargetPass": true,
+      "segmentDistance": 0.6000000000000014,
+      "strictSegmentMaximum": 0.65,
+      "segmentDistancePass": true,
+      "allPass": true
+    },
+    "coverFactor": 0.65,
+    "rawMothbowDamage": 18,
+    "ironjawArmor": 3,
+    "computedHealthDamage": 8.700000000000001,
+    "expectedDamageInFixture": 8.7
+  },
+  "patchChecks": {
+    "fixtureMovesOnlyRockLane": true,
+    "fixtureDeclaresRockLane": true,
+    "displayLevelPrecondition": true,
+    "visibilityPrecondition": true,
+    "strictAttackOrderWaitRetained": true,
+    "damageAssertionRetained": true,
+    "pointerFormulaRetained": true,
+    "nativeMouseInputRetained": true,
+    "pointerEvidenceAdded": true,
+    "independentSyntaxChecks": [
+      {
+        "path": "direction-defense.mjs",
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "path": "native-context.mjs",
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ]
+  },
+  "requiredNextEvidence": "run a fresh complete native browser retry from the admitted files and require its normal complete envelope before feature acceptance",
+  "findings": [],
+  "limitations": [
+    "The corrected fixture was not generated or executed during this review.",
+    "The failed run remains partial evidence and does not accept all direction, capture, or specialist encounters."
+  ]
+}

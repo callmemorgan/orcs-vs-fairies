@@ -1,0 +1,4 @@
+ts	phase	decision	why	evidence	result
+2026-10-01T19:55:44.353893+00:00	retention	Copy all second-run files without changing bytes	Preserve the first failure and later admitted repair as separate evidence	run/first-failure-artifact-manifest.json; artifact-manifest.json	205 retained files include 182 original failure artifacts and 23 later artifacts
+2026-10-01T19:55:44.353897+00:00	scope	Bind unchanged product and proof inputs to admitted 0b source	This evidence-only archive must not alter executable inputs	source-footprint-0b.json; retention-audit.json	567 product inputs and complete acceptance proof inventory hashed against Git; no gameplay execution
+2026-10-01T19:57:10.596093+00:00	retention	Keep original TSV line endings and patch whitespace	Normalizing archived evidence would change original hashes	archive-checks.json; run/decisions.tsv; run/proposed-rock-fixture-repair/proposed.patch	Seven expected raw-evidence whitespace reports; authored control files pass
