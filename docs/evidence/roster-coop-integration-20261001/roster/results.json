@@ -1,0 +1,301 @@
+{
+  "base": "http://127.0.0.1:8788",
+  "startedAt": "2026-10-01T09:48:43.930Z",
+  "buildLabel": "root0d654ba/7ead6e1 plus uncommitted main coach mount and photo hiding; simulation rules3.0.0; gameplay core pre-starvation fix",
+  "pageBuilds": [
+    {
+      "profile": "2v2",
+      "capturedAt": "2026-10-01T09:48:44.142Z",
+      "url": "http://127.0.0.1:8788/",
+      "moduleScripts": [
+        "http://127.0.0.1:8788/assets/index-Dsuaf00x.js"
+      ],
+      "stylesheets": [
+        "http://127.0.0.1:8788/assets/index-BKsCg-l9.css"
+      ]
+    },
+    {
+      "profile": "3v3",
+      "capturedAt": "2026-10-01T09:48:48.507Z",
+      "url": "http://127.0.0.1:8788/",
+      "moduleScripts": [
+        "http://127.0.0.1:8788/assets/index-Dsuaf00x.js"
+      ],
+      "stylesheets": [
+        "http://127.0.0.1:8788/assets/index-BKsCg-l9.css"
+      ]
+    },
+    {
+      "profile": "4v4",
+      "capturedAt": "2026-10-01T09:48:56.527Z",
+      "url": "http://127.0.0.1:8788/",
+      "moduleScripts": [
+        "http://127.0.0.1:8788/assets/index-Dsuaf00x.js"
+      ],
+      "stylesheets": [
+        "http://127.0.0.1:8788/assets/index-BKsCg-l9.css"
+      ]
+    },
+    {
+      "profile": "appearance-reload",
+      "capturedAt": "2026-10-01T09:50:06.865Z",
+      "url": "http://127.0.0.1:8788/",
+      "moduleScripts": [
+        "http://127.0.0.1:8788/assets/index-Dsuaf00x.js"
+      ],
+      "stylesheets": [
+        "http://127.0.0.1:8788/assets/index-BKsCg-l9.css"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "Normal 2v2 preset launches 4 players with its chosen factions, controllers and teams",
+      "details": {
+        "count": 4,
+        "teams": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "factions": [
+          "tideborn",
+          "automata",
+          "dwarves",
+          "undead"
+        ],
+        "controllers": [
+          "human",
+          "ai",
+          "ai",
+          "ai"
+        ],
+        "sharedVision": true,
+        "initialTick": 0,
+        "finalTick": 10
+      }
+    },
+    {
+      "name": "Normal 3v3 preset launches 6 players with its chosen factions, controllers and teams",
+      "details": {
+        "count": 6,
+        "teams": [
+          0,
+          0,
+          0,
+          1,
+          1,
+          1
+        ],
+        "factions": [
+          "tideborn",
+          "automata",
+          "dwarves",
+          "undead",
+          "orcs",
+          "fairies"
+        ],
+        "controllers": [
+          "human",
+          "ai",
+          "ai",
+          "ai",
+          "ai",
+          "ai"
+        ],
+        "sharedVision": false,
+        "initialTick": 0,
+        "finalTick": 10
+      }
+    },
+    {
+      "name": "Normal 4v4 preset launches 8 players with its chosen factions, controllers and teams",
+      "details": {
+        "count": 8,
+        "teams": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1
+        ],
+        "factions": [
+          "tideborn",
+          "automata",
+          "dwarves",
+          "undead",
+          "orcs",
+          "fairies",
+          "tideborn",
+          "automata"
+        ],
+        "controllers": [
+          "human",
+          "ai",
+          "ai",
+          "ai",
+          "ai",
+          "ai",
+          "ai",
+          "ai"
+        ],
+        "sharedVision": true,
+        "initialTick": 0,
+        "finalTick": 10
+      }
+    },
+    {
+      "name": "Visible handicap controls reach exact initial banks and live income/population limits",
+      "details": {
+        "banks": [
+          {
+            "wood": 820,
+            "ore": 320,
+            "crystal": 200
+          },
+          {
+            "wood": 920,
+            "ore": 340,
+            "crystal": 210
+          },
+          {
+            "wood": 1020,
+            "ore": 360,
+            "crystal": 220
+          },
+          {
+            "wood": 1120,
+            "ore": 380,
+            "crystal": 230
+          },
+          {
+            "wood": 1220,
+            "ore": 400,
+            "crystal": 240
+          },
+          {
+            "wood": 1320,
+            "ore": 420,
+            "crystal": 250
+          },
+          {
+            "wood": 1420,
+            "ore": 440,
+            "crystal": 260
+          },
+          {
+            "wood": 1520,
+            "ore": 460,
+            "crystal": 270
+          }
+        ],
+        "incomeFactors": [
+          1.5,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0.75
+        ],
+        "populationLimits": [
+          24,
+          32,
+          40,
+          48,
+          56,
+          64,
+          72,
+          80
+        ],
+        "ai": {
+          "difficulty": "hard",
+          "personality": "raid",
+          "opening": "cavalry-raids"
+        }
+      }
+    },
+    {
+      "name": "appearance-deuteranopia changes real battlefield and minimap pixels while replay time and camera stay fixed",
+      "details": {
+        "battle": 612,
+        "minimap": 1396
+      }
+    },
+    {
+      "name": "appearance-tritanopia changes real battlefield and minimap pixels while replay time and camera stay fixed",
+      "details": {
+        "battle": 612,
+        "minimap": 1314
+      }
+    },
+    {
+      "name": "appearance-no-patterns changes real battlefield and minimap pixels while replay time and camera stay fixed",
+      "details": {
+        "battle": 2077,
+        "minimap": 1692
+      }
+    },
+    {
+      "name": "appearance-no-outlines changes real battlefield and minimap pixels while replay time and camera stay fixed",
+      "details": {
+        "battle": 9604,
+        "minimap": 2058
+      }
+    },
+    {
+      "name": "Palette, patterns and outlines persist through a real page reload and new match",
+      "details": {
+        "version": 1,
+        "palette": "tritanopia",
+        "patterns": false,
+        "outlines": false
+      }
+    },
+    {
+      "name": "Unchanged historical version 1 session imports as version 3 with original state/runtime and new team defaults",
+      "details": {
+        "source": "/home/morgana/Projects/orcs-vs-Fairies/work/hundred-features/legacy-browser-save-v1.json",
+        "capturedSource": "/home/morgana/Projects/orcs-vs-fairies-100-online-client/work/hundred-features/assembled-roster-proof/refined-run/historical-source-session-v1.json",
+        "sourceSha256": "55e5db3c9622859e32cd946543bf65562df2492ab07b56b524b4cef57fd935ba",
+        "sourceVersion": 1,
+        "migratedVersion": 3,
+        "tick": 8,
+        "teams": [
+          0,
+          1
+        ],
+        "replayInitialTick": 8
+      }
+    },
+    {
+      "name": "Historical save replacing a paused replay resumes its new local simulation",
+      "details": true
+    },
+    {
+      "name": "Migrated historical match accepts normal HUD recruitment",
+      "details": {
+        "producerId": 1,
+        "beforeWorkers": 0,
+        "afterWorkers": 1
+      }
+    },
+    {
+      "name": "No browser page errors",
+      "details": true
+    }
+  ],
+  "appearanceControl": {
+    "battle": 0,
+    "minimap": 0
+  },
+  "completed": true,
+  "completedAt": "2026-10-01T09:50:51.936Z",
+  "originalManualBuildLabel": "current served runtime; refer to captured module URLs",
+  "buildLabelSource": "Parent confirmed the source/rules identity of captured index-Dsuaf00x.js after the run."
+}

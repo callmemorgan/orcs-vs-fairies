@@ -1,0 +1,1 @@
+The assembled suite ran at commit 2fa4682 after the practice coach and AI starvation recovery integration. All 51 files and 1,170 tests passed with a 30-second test limit in 604.39 seconds. No source changed while the suite ran. This baseline predates content, world, tactics, objectives, economy and campaign integration.
