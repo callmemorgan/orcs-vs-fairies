@@ -39,7 +39,7 @@ describe('original serialized save sources',()=>{
    expect(()=>checksumSaveEnvelope(source),field).toThrow();
   }expect(reads).toBe(0);
  });
- it.each(['extra','01','00','-0','+0','0.0','0e0','4294967295'])('rejects array data property %s without changing the source',key=>{
+ it.each(['extra','01','00','-0','+0','0.0','0e0','4294967295','1\n','0\r','1 ',' 1','\t0','0x0'])('rejects array data property %s without changing the source',key=>{
   for(const enumerable of [true,false]){
    const source=fixture(1),array=source.state.entities;Object.defineProperty(array,key,{value:{marker:7},enumerable,configurable:true});
    const before=JSON.stringify(source),descriptors=Object.getOwnPropertyDescriptors(array);
