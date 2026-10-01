@@ -10,6 +10,8 @@ const factions:FactionId[]=['orcs','fairies','dwarves','undead','tideborn','auto
 const match=(count:number)=>createMatch({map:{seed:4127,size:'small'},players:Array.from({length:count},(_,i)=>({id:i as Side,teamId:(i%2) as Side,factionId:factions[i%factions.length],controller:'external' as const,handicap:{startingResources:{wood:400,ore:300,crystal:200}}}))});
 
 describe('roster replay and session contracts',()=>{
+  // The eight-player case runs several 900-tick replay branches. Allow for
+  // contention with other simulation files in the complete suite.
   it.each([3,8])('replays high-side commands, gathering and research in a %i-player match',count=>{
     const state=match(count),side=(count-1) as Side,recorder=new MatchRecorder(state);
     const worker=state.entities.find(e=>e.side===side&&e.role==='worker')!,hq=state.entities.find(e=>e.side===side&&e.role==='hq')!;
@@ -29,7 +31,7 @@ describe('roster replay and session contracts',()=>{
     stepGame(restored.state,.05);const resumed=new ReplayPlayer(continuation.export());resumed.advance(901);
     expect(saveGame(resumed.state)).toEqual(saveGame(restored.state));
     resumed.dispose();continuation.dispose();player.dispose();
-  });
+  },20_000);
   it.each([1,3,8])('validates analysis and action sides against the %i-player roster',count=>{
     const state=match(count),recorder=new MatchRecorder(state),archive=recorder.export();recorder.dispose();
     expect(decodeReplay(archive).analysis[0].players).toHaveLength(count);
