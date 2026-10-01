@@ -2,6 +2,7 @@ import { technologyTree } from './TechnologyTree';
 import { researchRequirement, playerAge, buildingAgeRequired, AGE_NAMES, upgradeAppliesTo } from '../core/progression';
 import { observedHealth, PlayerView } from '../core/observation';
 import { isAllied } from '../core/simulation';
+import { scenarioSessionForState } from '../core/scenarios';
 import { ABILITIES, FACTIONS } from '../core/content';
 import { availableBuildings, availableUnits, buildingFor, contentAssetUrl, contentArt, entityDefinition, factionFor, isNormalBuildingDefinition, productionQueueKey, queuedUnitFor, unitFor, upgradeFor } from '../core/content-registry';
 import type { BuildingRole, Cost, Entity, FactionId, GameState, MapSize, UnitRole, UpgradeId, Side, Vec } from '../core/types';
@@ -266,12 +267,13 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
       tooltip.refresh();
       overlay.hidden=!!cb.isInspection?.()||!!cb.isReplay?.()||!paused&&s.winner===null&&!s.draw;
       if(!overlay.hidden){
-        const ended=s.winner!==null||s.draw,mission=s.scenario;
+        const ended=s.winner!==null||s.draw,mission=scenarioSessionForState(s);
         setText('#overlay-title',ended?s.draw?'Draw':s.winningTeam===s.teams[localSide]?'Victory':'Defeat':'Battle paused');
-        setText('#overlay-eyebrow',mission?'MISSION':ended?'THE BATTLE IS OVER':'SKIRMISH');
+        setText('#overlay-eyebrow',ended?mission?mission.runtime.outcome==='won'?'MISSION COMPLETE':'MISSION FAILED':'THE BATTLE IS OVER':mission?'MISSION':'SKIRMISH');
         const description=mission&&ended?(mission.runtime.reason||(mission.runtime.outcome==='won'?mission.definition.successText:mission.definition.failureText)):
           ended?s.draw?'Both sides lost their last stronghold in the same exchange.':s.winningTeam===s.teams[localSide]?'The last enemy stronghold has fallen. The Elderwood is yours.':'Your team has lost its last stronghold. Raise your banner and try again.':'Take a moment to plan your next move.';
-        setText('#overlay-description',description);el('#resume-button').hidden=ended;
+        setText('#overlay-description',description);
+        setText('#overlay-restart',mission?'Return to menu':'New skirmish');el('#resume-button').hidden=ended;
       }
       el<HTMLButtonElement>('#pause-button').disabled=cb.canPause?.()===false;setText('#pause-button',paused?'Resume':'Pause');drawMinimap(s);
     }

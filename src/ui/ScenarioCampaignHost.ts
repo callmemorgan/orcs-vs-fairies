@@ -46,10 +46,10 @@ export class ScenarioCampaignHost {
 
   constructor(root: HTMLElement, toolbar: HTMLElement, private readonly callbacks: HostCallbacks, private readonly storage: Storage = localStorage) {
     this.panel.className = 'scenario-host-panel'; this.panel.hidden = true; this.panel.setAttribute('aria-label', 'Campaigns, missions and realms');
-    const menuButton = node('button', 'Campaigns and realms'); menuButton.className = 'campaign-menu-button';
+    const menuButton = node('button', 'Campaigns and realms'); menuButton.className = 'small-button campaign-menu-button';
     root.querySelector('.begin-match')!.before(menuButton);
     const toolbarButton = node('button', 'Missions and realms'); toolbarButton.className = 'scenario-toolbar-button'; toolbar.append(toolbarButton);
-    const close = node('button', 'Close missions'); close.className = 'scenario-host-close'; close.onclick = () => this.setOpen(false);
+    const close = node('button', 'Close missions'); close.className = 'small-button scenario-host-close'; close.onclick = () => this.setOpen(false);
     menuButton.onclick = toolbarButton.onclick = () => this.setOpen(this.panel.hidden);
     this.panel.append(close); root.append(this.panel);
     this.missionTools = new ScenarioTools(this.panel, {
