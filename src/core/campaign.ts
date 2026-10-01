@@ -4,7 +4,7 @@ import { scenarioJson } from './scenario-validation';
 import { decodeScenarioRecording, ScenarioRecorder, scenarioChecksum, scenarioStateEquals, verifyScenarioRecording } from './scenario-recordings';
 import type { ScenarioRecording } from './scenario-recordings';
 import type { ScenarioCheckpoint, ScenarioSession } from './scenario-types';
-import type { Entity } from './types';
+import type { Entity, GameState, Side } from './types';
 
 export interface CampaignBattle {
   missionId: string;
@@ -20,7 +20,18 @@ export interface CampaignProfile {
   history: CampaignResult[];
   active: CampaignBattle | null;
 }
-export interface CampaignSoldier { entity: Entity; label: string | null }
+export interface CampaignArtifact { id: number; definitionId: 'core:ember-blade' | 'core:iron-aegis' | 'core:wind-charm'; owner?: Side; holder?: number; position?: { x: number; y: number; level?: number } }
+export interface CampaignSoldier { entity: Entity; label: string | null; artifacts?: CampaignArtifact[] }
+type EquippedEntity = Entity & { equipment?: Partial<Record<'weapon' | 'armor' | 'trinket', number>>; veteran?: { nextSurvivalAt: number; lastCombatAt: number }; specialistBuffs?: unknown; burning?: unknown; siegeMode?: unknown };
+type ArtifactState = GameState & { specialists?: { artifacts: CampaignArtifact[]; nextArtifactId: number; structures: unknown[]; nextStructureId: number } };
+
+export function survivingScenarioArmy(session: ScenarioSession): CampaignSoldier[] {
+  const labels = new Map(Object.entries(session.runtime.labels).map(([label, id]) => [id, label]));
+  return session.state.entities.filter(e => e.side === 0 && e.kind === 'unit' && e.hp > 0 && !e.illusion && !e.raised).map(entity => {
+    const artifacts = (session.state as ArtifactState).specialists?.artifacts.filter(item => item.holder === entity.id && item.owner === entity.side) ?? [];
+    return { entity: copy(entity), label: labels.get(entity.id) ?? null, ...(artifacts.length ? { artifacts: copy(artifacts) } : {}) };
+  });
+}
 export interface CampaignMission { profile: CampaignProfile; session: ScenarioSession; recorder: ScenarioRecorder }
 const copy = <T>(value: T): T => structuredClone(value);
 function campaign(profile: CampaignProfile) { const result = CAMPAIGNS[profile.campaignId]; if (!result) throw new Error('Unknown campaign.'); return result; }
@@ -60,8 +71,8 @@ export function campaignArmy(profile: CampaignProfile): CampaignSoldier[] {
   const army = new Map<number, CampaignSoldier>();
   for (const result of profile.history) {
     for (const id of result.deployedIds) army.delete(id);
-    const session = restoreScenario(result.checkpoint), labels = new Map(Object.entries(session.runtime.labels).map(([label, id]) => [id, label]));
-    for (const entity of session.state.entities) if (entity.side === 0 && entity.kind === 'unit' && entity.hp > 0 && !entity.illusion && !entity.raised) army.set(entity.id, { entity: copy(entity), label: labels.get(entity.id) ?? null });
+    const session = restoreScenario(result.checkpoint);
+    for (const soldier of survivingScenarioArmy(session)) army.set(soldier.entity.id, soldier);
   }
   return [...army.values()].sort((a, b) => a.entity.id - b.entity.id);
 }
@@ -75,12 +86,26 @@ export function deployScenarioArmy(session: ScenarioSession, soldiers: CampaignS
     const exactDefinition = (a: Entity, b: Entity) => (a as Entity & { definitionId?: string }).definitionId === (b as Entity & { definitionId?: string }).definitionId;
     const index = available.findIndex(soldier => soldier.entity.role === placeholder.role && exactDefinition(soldier.entity, placeholder) && (slot.label === 'commander' ? soldier.label === 'commander' : soldier.label !== 'commander'));
     if (index < 0) continue;
-    const soldier = available.splice(index, 1)[0], entity = copy(soldier.entity);
+    const soldier = available.splice(index, 1)[0], entity = copy(soldier.entity) as EquippedEntity;
     entity.x = placeholder.x; entity.y = placeholder.y; if (placeholder.level !== undefined) entity.level = placeholder.level; else delete entity.level;
     // The army rests between chapters. Rank, equipment and identity remain; wounds and cooldowns recover.
     entity.hp = entity.maxHp; entity.shield = entity.maxShield ?? 0; entity.order = copy(placeholder.order); delete entity.orderQueue; entity.path = []; entity.cooldown = 0; delete entity.abilityReadyAt; delete entity.entrenchedAt; delete entity.lastDamagedAt; delete entity.lastAttacker; delete entity.surgeUntil;
-    entity.animation = 'idle'; entity.animTime = 0; entity.carried = 0; entity.expires = 0;
-    const veteran = (entity as Entity & { veteran?: { nextSurvivalAt: number } }).veteran; if (veteran) veteran.nextSurvivalAt = 30;
+    entity.animation = 'idle'; entity.animTime = 0; entity.carried = 0; entity.expires = 0; entity.momentum = 0;
+    delete entity.specialistBuffs; delete entity.burning; delete entity.siegeMode;
+    if (entity.veteran) { entity.veteran.nextSurvivalAt = 60; entity.veteran.lastCombatAt = 0; }
+    const artifactIds = new Map<number, number>();
+    if (soldier.artifacts?.length) {
+      if (soldier.artifacts.length > 12) throw new Error('A campaign soldier cannot carry more than twelve artifacts.');
+      const state = session.state as ArtifactState, specialist = state.specialists ??= { artifacts: [], structures: [], nextArtifactId: 1, nextStructureId: 1 };
+      for (const source of soldier.artifacts) {
+        if (source.holder !== entity.id || source.owner !== entity.side || source.position || artifactIds.has(source.id)) throw new Error('The campaign artifact does not belong to its survivor.');
+        const id = specialist.nextArtifactId++; artifactIds.set(source.id, id);
+        specialist.artifacts.push({ id, definitionId: source.definitionId, owner: entity.side, holder: entity.id });
+      }
+    }
+    if (entity.equipment) for (const slot of Object.keys(entity.equipment) as Array<keyof NonNullable<EquippedEntity['equipment']>>) {
+      const id = artifactIds.get(entity.equipment[slot]!); if (id === undefined) throw new Error('Campaign equipment references an absent artifact.'); entity.equipment[slot] = id;
+    }
     const position = session.state.entities.indexOf(placeholder); session.state.entities[position] = entity;
     session.runtime.labels[slot.label] = entity.id; deployed.push(entity.id);
     for (const event of session.state.events) if (event.source === placeholder.id) event.source = entity.id;

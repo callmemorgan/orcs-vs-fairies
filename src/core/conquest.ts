@@ -1,5 +1,5 @@
 import { FACTIONS } from './content';
-import { deployScenarioArmy, type CampaignSoldier } from './campaign';
+import { deployScenarioArmy, survivingScenarioArmy, type CampaignSoldier } from './campaign';
 import { captureScenario, createScenario, restoreScenario } from './scenarios';
 import { decodeScenarioRecording, ScenarioRecorder, scenarioStateEquals, verifyScenarioRecording } from './scenario-recordings';
 import { scenarioJson } from './scenario-validation';
@@ -33,8 +33,7 @@ export function conquestSupply(profile: ConquestProfile): Cost {
 }
 
 function friendlyArmy(session: ScenarioSession): CampaignSoldier[] {
-  const labels = new Map(Object.entries(session.runtime.labels).map(([label, id]) => [id, label]));
-  return session.state.entities.filter(e => e.side === 0 && e.kind === 'unit' && e.hp > 0 && !e.illusion && !e.raised).map(entity => ({ entity: copy(entity), label: labels.get(entity.id) ?? null }));
+  return survivingScenarioArmy(session);
 }
 
 function battleDefinition(profile: ConquestProfile, regionId: string, mode: 'attack' | 'passage'): ScenarioDefinition {

@@ -1,10 +1,11 @@
+import { length2D } from '../../src/core/geometry';
 import { FACTIONS } from '../../src/core/content';
 import { issueScenarioCommand } from '../../src/core/scenarios';
 import { isVisible } from '../../src/core/simulation';
 import type { ScenarioSession } from '../../src/core/scenario-types';
 import type { Command, Entity, UnitRole, Vec } from '../../src/core/types';
 
-const distance = (a: Vec, b: Vec) => Math.hypot(a.x - b.x, a.y - b.y);
+const distance = (a: Vec, b: Vec) => length2D(a.x - b.x, a.y - b.y);
 interface Orders { nextDecision: number; dodgeUntil: number; warningAt: number; dodging: Set<number> }
 const plans = new WeakMap<ScenarioSession, Orders>();
 export interface FinaleCommand { time: number; command: Command; accepted: boolean }

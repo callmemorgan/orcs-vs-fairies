@@ -1,3 +1,4 @@
+import { length2D } from '../core/geometry';
 import type { CampaignDefinition, ScenarioActor, ScenarioCondition, ScenarioDefinition, ScenarioMap, ScenarioObjective, ScenarioTrigger } from '../core/scenario-types';
 import type { BuildingRole, FactionId, TerrainKind, UnitRole, Vec } from '../core/types';
 
@@ -32,11 +33,11 @@ function authoredMap(ground: Ground, actors: ScenarioActor[]): ScenarioMap {
     for (let y = top; y <= bottom; y++) for (let x = left; x <= right; x++) paint(x, y, kind);
   }
   for (const path of ground.paths) for (let segment = 1; segment < path.length; segment++) {
-    const a = path[segment - 1], b = path[segment], steps = Math.ceil(Math.hypot(b.x - a.x, b.y - a.y) * 3);
+    const a = path[segment - 1], b = path[segment], steps = Math.ceil(length2D(b.x - a.x, b.y - a.y) * 3);
     for (let i = 0; i <= steps; i++) {
       const x = a.x + (b.x - a.x) * i / Math.max(1, steps), y = a.y + (b.y - a.y) * i / Math.max(1, steps);
       for (let row = Math.floor(y - 1.35); row <= Math.ceil(y + 1.35); row++) for (let col = Math.floor(x - 1.35); col <= Math.ceil(x + 1.35); col++) {
-        if (Math.hypot(col + .5 - x, row + .5 - y) <= 1.35) {
+        if (length2D(col + .5 - x, row + .5 - y) <= 1.35) {
           const old = terrain[row * width + col];
           paint(col, row, old === 'water' || old === 'shallows' || old === 'bridge' ? 'bridge' : 'road');
         }
@@ -46,7 +47,7 @@ function authoredMap(ground: Ground, actors: ScenarioActor[]): ScenarioMap {
   for (const actor of actors) {
     const radius = actor.kind === 'building' ? 2.4 : .8;
     for (let y = Math.floor(actor.y - radius); y <= Math.ceil(actor.y + radius); y++) for (let x = Math.floor(actor.x - radius); x <= Math.ceil(actor.x + radius); x++) {
-      if (Math.hypot(x + .5 - actor.x, y + .5 - actor.y) <= radius) paint(x, y, 'grass');
+      if (length2D(x + .5 - actor.x, y + .5 - actor.y) <= radius) paint(x, y, 'grass');
     }
   }
   for (let i = 0; i < width; i++) { terrain[i] = terrain[(height - 1) * width + i] = terrain[i * width] = terrain[i * width + width - 1] = 'rock'; }

@@ -1,3 +1,4 @@
+import { length2D } from '../../src/core/geometry';
 import { FACTIONS } from '../../src/core/content';
 import { issueScenarioCommand, type ScenarioSession } from '../../src/core/scenarios';
 import { isHostile, isVisible } from '../../src/core/simulation';
@@ -19,7 +20,7 @@ function issue(session: ScenarioSession, command: Command): boolean {
   return accepted;
 }
 
-const distance = (a: Vec, b: Vec) => Math.hypot(a.x - b.x, a.y - b.y);
+const distance = (a: Vec, b: Vec) => length2D(a.x - b.x, a.y - b.y);
 const own = (session: ScenarioSession) => session.state.entities.filter(e => e.side === 0 && e.hp > 0 && !e.illusion);
 const enemies = (session: ScenarioSession) => session.state.entities.filter(e => e.hp > 0 && isHostile(session.state, 0, e.side) && isVisible(session.state, 0, e.x, e.y));
 const troops = (session: ScenarioSession) => own(session).filter(e => e.kind === 'unit' && e.role !== 'worker');

@@ -1,3 +1,4 @@
+import { length2D } from '../../src/core/geometry';
 import { issueScenarioCommand } from '../../src/core/scenarios';
 import { isVisible } from '../../src/core/simulation';
 import type { ScenarioSession } from '../../src/core/scenario-types';
@@ -5,7 +6,7 @@ import type { Command, Entity, Vec } from '../../src/core/types';
 
 interface Steering { phase: number; nextCommand: number; started: boolean; deaths: Set<number>; commands: Array<{ tick: number; time: number; side: 0; command: Command; accepted: boolean }> }
 const states = new WeakMap<ScenarioSession, Steering>();
-const distance = (a: Vec, b: Vec) => Math.hypot(a.x-b.x,a.y-b.y);
+const distance = (a: Vec, b: Vec) => length2D(a.x-b.x,a.y-b.y);
 const own = (session: ScenarioSession) => session.state.entities.filter(entity => entity.hp>0 && entity.side===0 && entity.kind==='unit' && !entity.illusion && !entity.raised);
 const named = (session: ScenarioSession, label: string) => session.state.entities.find(entity => entity.id===session.runtime.labels[label] && entity.hp>0 && (entity.side===0 || isVisible(session.state,0,entity.x,entity.y)));
 const move = (session: ScenarioSession, entities: Entity[], point: Vec, attack = false) => entities.length>0 && submit(session,{type: attack?'attackMove':'move',ids: entities.map(entity=>entity.id),...point});
