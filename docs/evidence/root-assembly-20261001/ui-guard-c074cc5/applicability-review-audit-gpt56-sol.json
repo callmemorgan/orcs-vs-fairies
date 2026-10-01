@@ -1,0 +1,131 @@
+{
+  "kind": "independent-ui-product-and-suite-applicability-review-audit",
+  "checkedAt": "2026-10-01T20:07:00.189431+00:00",
+  "reviewer": "GPT-5.6 Sol",
+  "manifestPath": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-c074cc5-20261001/product-and-suite-applicability-before.json",
+  "manifestSha256": "4b632a1cc3b3c4b2b09eb1804c256cc0d571bdf78a2e475ad6eb7bcd82d1f205",
+  "pins": {
+    "target": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+    "immutableCoreBaseline": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+    "priorPassingSuite": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c"
+  },
+  "checkout": {
+    "head": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+    "branch": null,
+    "porcelainV2": ""
+  },
+  "selectors": {
+    "productRoots": [
+      "src",
+      "public"
+    ],
+    "productTopLevelFiles": [
+      "editor.html",
+      "index.html",
+      "package-lock.json",
+      "package.json",
+      "tsconfig.json",
+      "vite.config.ts",
+      "vitest.ai-recovery.config.ts",
+      "vitest.ai-team.config.ts",
+      "vitest.ai.config.ts",
+      "vitest.config.ts",
+      "vitest.ladder.config.ts"
+    ]
+  },
+  "counts": {
+    "product": 567,
+    "productUnchanged": 566,
+    "productChanged": 1,
+    "priorSuite": 917,
+    "suiteUnchanged": 916,
+    "suiteChanged": 1,
+    "liveManifest": 918,
+    "proofOnlyAdditions": 19,
+    "sourceAndPublicFilesystem": 556
+  },
+  "changed": {
+    "product": [
+      "src/main.ts"
+    ],
+    "priorSuite": [
+      "src/main.ts"
+    ]
+  },
+  "pathDeltas": {
+    "productVsCoreBaseline": {
+      "added": [],
+      "deleted": []
+    },
+    "priorSuiteMissingAtTarget": [],
+    "liveManifestMissingExpected": [],
+    "liveManifestUnexpected": []
+  },
+  "proofOnlyAdditions": [
+    "scripts/acceptance/audit-direction-defense.ts",
+    "scripts/acceptance/build-native-helpers.mjs",
+    "scripts/acceptance/capture-ambush-fixtures.ts",
+    "scripts/acceptance/capture-ambush-native-checks.ts",
+    "scripts/acceptance/capture-ambush.mjs",
+    "scripts/acceptance/direction-defense-fixtures.ts",
+    "scripts/acceptance/direction-defense.mjs",
+    "scripts/acceptance/generate-native-fixtures.mjs",
+    "scripts/acceptance/helper-provenance.mjs",
+    "scripts/acceptance/native-audit.ts",
+    "scripts/acceptance/native-context.mjs",
+    "scripts/acceptance/native-contract.mjs",
+    "scripts/acceptance/native-downloads.ts",
+    "scripts/acceptance/native-fixtures.ts",
+    "scripts/acceptance/native-freeze.mjs",
+    "scripts/acceptance/specialist-lifecycle-fixtures.ts",
+    "scripts/acceptance/specialist-lifecycle.mjs",
+    "scripts/acceptance/verify-native-acceptance.mjs",
+    "scripts/acceptance/verify-native-history.mjs"
+  ],
+  "mismatches": {
+    "priorManifestVsSuiteGit": [],
+    "liveManifestVsTargetGit": [],
+    "liveFilesystemVsTargetGit": [],
+    "sourceAndPublicInventoryAdded": [],
+    "sourceAndPublicInventoryMissing": []
+  },
+  "deferred": {
+    "freshUIBuildAndAdjacentTests": "pending after AI23309 terminal receipt",
+    "browserGuardDirectProof": "pending new modes and canonical cosmetics browser runs"
+  },
+  "checks": {
+    "checkoutHeadMatchesTarget": true,
+    "checkoutDetached": true,
+    "checkoutClean": true,
+    "manifestTargetPinMatches": true,
+    "priorManifestSha256MatchesRecorded": true,
+    "priorManifestMatchesTargetGitBlob": true,
+    "priorManifestHeadMatchesSuitePin": true,
+    "priorManifestCountMatches": true,
+    "priorManifestAuthenticatesAtSuitePin": true,
+    "productPathSetsMatchCoreBaseline": true,
+    "productCountMatches": true,
+    "productChangedPathMatches": true,
+    "productUnchangedCountMatches": true,
+    "completeLiveManifestPathSetMatchesProductUnionSuite": true,
+    "completeLiveManifestEntriesMatchTargetGit": true,
+    "liveManifestCountExpected": true,
+    "suitePathSetRetainedAtTarget": true,
+    "suiteChangedPathMatches": true,
+    "suiteUnchangedCountMatches": true,
+    "proofOnlyAdditionsMatchCurrentScriptsOutsidePriorSuite": true,
+    "proofOnlyAdditionsAbsentFromLiveComparisonManifest": true,
+    "liveFilesystemModesAndBytesMatchTargetGit": true,
+    "sourceAndPublicFilesystemInventoriesMatchTargetGit": true,
+    "manifestCompletionClaimTrue": true,
+    "manifestInventoryClaimTrue": true,
+    "mainSha256MatchesTarget": true,
+    "freshUiBuildAndAdjacentTestsRemainPending": true,
+    "browserGuardDirectProofRemainsPending": true,
+    "rulesVersionRetained": true,
+    "saveVersionRetained": true
+  },
+  "allChecksPassed": true,
+  "runtimeExecuted": false,
+  "expandedGatesAdded": false
+}
