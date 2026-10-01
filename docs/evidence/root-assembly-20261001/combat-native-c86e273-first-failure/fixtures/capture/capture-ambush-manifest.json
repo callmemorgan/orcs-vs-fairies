@@ -1,0 +1,171 @@
+{
+  "schema": 1,
+  "sourceCommit": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+  "saveVersion": 4,
+  "simulationRevision": "4.0.1",
+  "setup": "Authored SAVE4 layered encounters. Every fixture is serialized and strictly decoded before native import. No recorder exists during setup; native app commands and engine ticks produce all later changes.",
+  "scenarios": {
+    "siege-full-crew-capture": {
+      "file": "siege-full-crew-capture.json",
+      "ids": {
+        "captor": 64,
+        "engine": 65,
+        "target": 66,
+        "observer": 13,
+        "undergroundWorker": 17,
+        "moveDestination": {
+          "x": 26.5,
+          "y": 20.5,
+          "level": 0
+        }
+      },
+      "authored": {
+        "description": "A Thornblade starts outside melee range of a full-crew Orc engine. The engine has 42 crew health and full hull health. The player attacks its crew, channels capture, moves the captured engine and orders it to fire at an Orc depot.",
+        "engineCrewHealth": 42,
+        "engineHullHealth": 185,
+        "engineDefinitionId": "orc-siege",
+        "engineCooldown": 1000,
+        "targetHealth": 600,
+        "captorCooldown": 0,
+        "combatSuppression": "The hostile engine begins with a 1000-second cooldown so it does not kill the captor during the acceptance encounter. Crew health is unchanged from the production default."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "fairies"
+    },
+    "surrounded-surrender": {
+      "file": "surrounded-surrender.json",
+      "ids": {
+        "broken": 64,
+        "captors": [
+          65,
+          66,
+          67
+        ],
+        "undergroundWorker": 17,
+        "moveDestination": {
+          "x": 28.5,
+          "y": 24.5,
+          "level": 0
+        }
+      },
+      "authored": {
+        "description": "A wounded Deepforge ranged troop begins at 1 morale, surrounded by three Wild Court melee troops in opposing sectors. Native engine ticks decide surrender. The player then moves the surrendered troop.",
+        "brokenHealth": 30,
+        "brokenMaxHealth": 95,
+        "brokenMorale": 1,
+        "originalFaction": "dwarves",
+        "originalDefinitionId": "dwarf-ranged",
+        "captorPositions": [
+          {
+            "id": 65,
+            "x": 20.9,
+            "y": 24.5
+          },
+          {
+            "id": 66,
+            "x": 24.1,
+            "y": 24.5
+          },
+          {
+            "id": 67,
+            "x": 22.5,
+            "y": 26.1
+          }
+        ],
+        "captorCooldown": 1000,
+        "combatSuppression": "The surrounding troops begin with a long cooldown so the surrender check retains the authored 30 health rather than killing the troop first."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "fairies"
+    },
+    "active-retreat-save": {
+      "file": "active-retreat-save.json",
+      "ids": {
+        "retreater": 64,
+        "enemy": 65,
+        "support": 18,
+        "undergroundWorker": 17
+      },
+      "authored": {
+        "description": "A wounded isolated Ironjaw begins at 28 morale beside a visible hostile troop. Morale loss starts a real retreat toward its distant headquarters. A friendly warrior waits along its route.",
+        "retreaterHealth": 78,
+        "retreaterMaxHealth": 175,
+        "retreaterMorale": 28,
+        "enemyCooldown": 1000,
+        "supportPosition": {
+          "x": 11.5,
+          "y": 17.5
+        },
+        "headquarters": {
+          "x": 6.5,
+          "y": 17.5
+        }
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "orcs"
+    },
+    "ambush-selected-trigger": {
+      "file": "ambush-selected-trigger.json",
+      "ids": {
+        "ambusher": 64,
+        "dryTroop": 18,
+        "wrongTarget": 66,
+        "trigger": 67,
+        "timber": 65,
+        "undergroundWorker": 17
+      },
+      "authored": {
+        "description": "A Mothbow beside standing timber can ambush. A dry-ground warrior cannot. A worker already inside the chosen radius is the wrong target role. A full-health hostile melee troop begins a long march into the radius.",
+        "timberAmount": 100,
+        "ambusherCooldown": 6,
+        "radius": 2,
+        "target": "melee",
+        "wrongTargetHealth": 85,
+        "triggerHealth": 175,
+        "marchingOrder": {
+          "type": "move",
+          "x": 21.8,
+          "y": 20.5,
+          "level": 0
+        },
+        "initialOrders": "The hostile march is authored before native recording. No hostile order is injected later."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "fairies"
+    },
+    "ambush-scout-release-firebreak": {
+      "file": "ambush-scout-release-firebreak.json",
+      "ids": {
+        "ambusher": 64,
+        "scout": 66,
+        "worker": 13,
+        "timber": 65,
+        "undergroundWorker": 17,
+        "forestWork": {
+          "x": 20.5,
+          "y": 21.5,
+          "level": 0
+        }
+      },
+      "authored": {
+        "description": "A hostile scout is 2.3 tiles from a woodland archer. The player chooses buildings within radius 1 so the scout cannot trigger fire. The scout can observe the concealed archer without learning its trigger. The player releases, rearms, then clears the last timber through native Forest work.",
+        "radius": 1,
+        "target": "building",
+        "timberAmount": 100,
+        "scoutDistance": 2.3,
+        "workerCooldown": 0,
+        "firebreakCost": {
+          "wood": 5,
+          "ore": 0
+        }
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "fairies"
+    }
+  }
+}

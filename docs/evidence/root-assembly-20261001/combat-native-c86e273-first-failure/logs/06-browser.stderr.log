@@ -1,0 +1,21 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.waitForFunction: TypeError: Cannot read properties of null (reading 'mode')
+    at eval (eval at predicate (eval at evaluate (:311:30)), <anonymous>:1:16)
+    at predicate (eval at evaluate (:311:30), <anonymous>:7:27)
+    at next (eval at evaluate (:311:30), <anonymous>:29:33)
+    at eval (eval at evaluate (:311:30), <anonymous>:42:13)
+    at UtilityScript.evaluate (<anonymous>:313:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+    at wait (/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/native-context.mjs:13:50)
+    at persistence (/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/native-context.mjs:93:13)
+    at async Object.exportAndVerify (/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/native-context.mjs:99:74)
+    at async verified (/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/direction-defense.mjs:14:18)
+    at async Object.runDirectionDefense (/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/direction-defense.mjs:48:19)
+    at async file:///home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/verify-native-acceptance.mjs:82:88 {
+  log: []
+}
+
+Node.js v24.21.0

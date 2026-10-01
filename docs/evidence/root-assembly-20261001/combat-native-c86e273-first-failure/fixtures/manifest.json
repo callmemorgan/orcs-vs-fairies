@@ -1,0 +1,1472 @@
+{
+  "schema": 1,
+  "sourceCommit": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+  "saveVersion": 4,
+  "simulationRevision": "4.0.1",
+  "setup": "Authored initial conditions only. Native production UI supplies all later player commands and simulation ticks. Group manifests retain each setup exception.",
+  "groups": {
+    "direction": {
+      "setup": "Authored native session inputs. All setup precedes the recorder; generation advances zero ticks. All subsequent owned actions use production UI.",
+      "scenarios": [
+        "flank-front",
+        "flank-side",
+        "flank-rear",
+        "shield-front",
+        "shield-turned",
+        "shield-rear",
+        "shield-depletion",
+        "cover-none",
+        "cover-rock",
+        "cover-building",
+        "friendly-fire-off",
+        "friendly-fire-on",
+        "charge-stationary",
+        "charge-charge",
+        "charge-stop",
+        "charge-turn",
+        "charge-pike-front",
+        "charge-pike-rear",
+        "formation-line",
+        "formation-wedge",
+        "formation-square",
+        "formation-loose"
+      ]
+    },
+    "capture": {
+      "setup": "Authored SAVE4 layered encounters. Every fixture is serialized and strictly decoded before native import. No recorder exists during setup; native app commands and engine ticks produce all later changes.",
+      "scenarios": [
+        "siege-full-crew-capture",
+        "surrounded-surrender",
+        "active-retreat-save",
+        "ambush-selected-trigger",
+        "ambush-scout-release-firebreak"
+      ]
+    },
+    "specialists": {
+      "setup": "Authored setup only, no simulation or commands executed by generator. Native save imports begin recording; all proof actions use production HUD controls.",
+      "scenarios": [
+        "specialists-orcs",
+        "specialists-fairies",
+        "specialists-dwarves",
+        "specialists-undead",
+        "specialists-tideborn",
+        "specialists-automata",
+        "specialists-veteran",
+        "specialists-recovery",
+        "specialists-artifact-damage",
+        "specialists-bridge-crossing",
+        "specialists-barricade-obstruction",
+        "specialists-beacon-link"
+      ]
+    }
+  },
+  "scenarios": {
+    "flank-front": {
+      "file": "direction/flank-front.json",
+      "ids": {
+        "source": 52,
+        "target": 51,
+        "undergroundWorker": 12,
+        "expectedDamage": 12
+      },
+      "authored": {
+        "map": "Seed 0, small forest world with two layers; flat grass, no resources or neutral actors.",
+        "calendar": "Day, season and weather lengths are 1,000,000 seconds. Seed 0 starts in clear daylight.",
+        "roster": "Human side zero, external opponent; normal headquarters and distant workers retained. Default combat troops removed; encounter troops use native built-in definitions.",
+        "undergroundWorker": "One owned worker starts on level one; every import must preserve it.",
+        "economy": "Starting age three and starting banks of 2,000 wood, 2,000 ore and 500 crystal.",
+        "cooldowns": "Non-firing targets, guards, workers and formation troops start with cooldown 1,000. First-hit shooters start with cooldown 3. No cooldown is changed after recording.",
+        "health": "Normal definition health except the explicitly listed wounded cover or casualty actor.",
+        "targetFacing": 4,
+        "shooterMomentum": 0,
+        "description": "First native Boltspitter attack approaches a held Ironjaw from front. Independent fixtures prevent previous shots changing momentum or morale."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "orcs",
+      "sha256": "54e44a0fa55c9c89d2c000fb31a530b52bb04b0fa5ed47a7dededea3b8580615",
+      "group": "direction"
+    },
+    "flank-side": {
+      "file": "direction/flank-side.json",
+      "ids": {
+        "source": 52,
+        "target": 51,
+        "undergroundWorker": 12,
+        "expectedDamage": 15
+      },
+      "authored": {
+        "map": "Seed 0, small forest world with two layers; flat grass, no resources or neutral actors.",
+        "calendar": "Day, season and weather lengths are 1,000,000 seconds. Seed 0 starts in clear daylight.",
+        "roster": "Human side zero, external opponent; normal headquarters and distant workers retained. Default combat troops removed; encounter troops use native built-in definitions.",
+        "undergroundWorker": "One owned worker starts on level one; every import must preserve it.",
+        "economy": "Starting age three and starting banks of 2,000 wood, 2,000 ore and 500 crystal.",
+        "cooldowns": "Non-firing targets, guards, workers and formation troops start with cooldown 1,000. First-hit shooters start with cooldown 3. No cooldown is changed after recording.",
+        "health": "Normal definition health except the explicitly listed wounded cover or casualty actor.",
+        "targetFacing": 4,
+        "shooterMomentum": 0,
+        "description": "First native Boltspitter attack approaches a held Ironjaw from side. Independent fixtures prevent previous shots changing momentum or morale."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "orcs",
+      "sha256": "f93c74571bfe01a6ae77513b06b0d9cf51142ccc9dd819bd6971a2b5d2814eca",
+      "group": "direction"
+    },
+    "flank-rear": {
+      "file": "direction/flank-rear.json",
+      "ids": {
+        "source": 52,
+        "target": 51,
+        "undergroundWorker": 12,
+        "expectedDamage": 18
+      },
+      "authored": {
+        "map": "Seed 0, small forest world with two layers; flat grass, no resources or neutral actors.",
+        "calendar": "Day, season and weather lengths are 1,000,000 seconds. Seed 0 starts in clear daylight.",
+        "roster": "Human side zero, external opponent; normal headquarters and distant workers retained. Default combat troops removed; encounter troops use native built-in definitions.",
+        "undergroundWorker": "One owned worker starts on level one; every import must preserve it.",
+        "economy": "Starting age three and starting banks of 2,000 wood, 2,000 ore and 500 crystal.",
+        "cooldowns": "Non-firing targets, guards, workers and formation troops start with cooldown 1,000. First-hit shooters start with cooldown 3. No cooldown is changed after recording.",
+        "health": "Normal definition health except the explicitly listed wounded cover or casualty actor.",
+        "targetFacing": 4,
+        "shooterMomentum": 0,
+        "description": "First native Boltspitter attack approaches a held Ironjaw from rear. Independent fixtures prevent previous shots changing momentum or morale."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "orcs",
+      "sha256": "020a67e946fe7385516def97a05900e19a36c4734dfde06d6b26cc47dd34d8bd",
+      "group": "direction"
+    },
+    "shield-front": {
+      "file": "direction/shield-front.json",
+      "ids": {
+        "source": 53,
+        "target": 51,
+        "guard": 52,
+        "undergroundWorker": 12,
+        "guardFacing": 4,
+        "targetFacing": 4,
+        "expectedFirstDamage": 6.8
+      },
+      "authored": {
+        "map": "Seed 0, small forest world with two layers; flat grass, no resources or neutral actors.",
+        "calendar": "Day, season and weather lengths are 1,000,000 seconds. Seed 0 starts in clear daylight.",
+        "roster": "Human side zero, external opponent; normal headquarters and distant workers retained. Default combat troops removed; encounter troops use native built-in definitions.",
+        "undergroundWorker": "One owned worker starts on level one; every import must preserve it.",
+        "economy": "Starting age three and starting banks of 2,000 wood, 2,000 ore and 500 crystal.",
+        "cooldowns": "Non-firing targets, guards, workers and formation troops start with cooldown 1,000. First-hit shooters start with cooldown 3. No cooldown is changed after recording.",
+        "health": "Normal definition health except the explicitly listed wounded cover or casualty actor.",
+        "enemyOrder": "Mothbow starts with an attack order on Thunderlock #51.",
+        "guardEnergy": 40,
+        "description": "Public facing commands set the owned shield and ally. The first enemy Mothbow shot measures interception or bypass."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "dwarves",
+      "sha256": "9b2bf3042e4eb16d8f47d2ab26b9f6004ea3a10a26e257319e1cb95055953e8f",
+      "group": "direction"
+    },
+    "shield-turned": {
+      "file": "direction/shield-turned.json",
+      "ids": {
+        "source": 53,
+        "target": 51,
+        "guard": 52,
+        "undergroundWorker": 12,
+        "guardFacing": 0,
+        "targetFacing": 4,
+        "expectedFirstDamage": 17
+      },
+      "authored": {
+        "map": "Seed 0, small forest world with two layers; flat grass, no resources or neutral actors.",
+        "calendar": "Day, season and weather lengths are 1,000,000 seconds. Seed 0 starts in clear daylight.",
+        "roster": "Human side zero, external opponent; normal headquarters and distant workers retained. Default combat troops removed; encounter troops use native built-in definitions.",
+        "undergroundWorker": "One owned worker starts on level one; every import must preserve it.",
+        "economy": "Starting age three and starting banks of 2,000 wood, 2,000 ore and 500 crystal.",
+        "cooldowns": "Non-firing targets, guards, workers and formation troops start with cooldown 1,000. First-hit shooters start with cooldown 3. No cooldown is changed after recording.",
+        "health": "Normal definition health except the explicitly listed wounded cover or casualty actor.",
+        "enemyOrder": "Mothbow starts with an attack order on Thunderlock #51.",
+        "guardEnergy": 40,
+        "description": "Public facing commands set the owned shield and ally. The first enemy Mothbow shot measures interception or bypass."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "dwarves",
+      "sha256": "90e08c87f71cd7da8c3b5b48d5221548d0c24bbe7586a81452b37d63e6140e06",
+      "group": "direction"
+    },
+    "shield-rear": {
+      "file": "direction/shield-rear.json",
+      "ids": {
+        "source": 53,
+        "target": 51,
+        "guard": 52,
+        "undergroundWorker": 12,
+        "guardFacing": 4,
+        "targetFacing": 0,
+        "expectedFirstDamage": 17
+      },
+      "authored": {
+        "map": "Seed 0, small forest world with two layers; flat grass, no resources or neutral actors.",
+        "calendar": "Day, season and weather lengths are 1,000,000 seconds. Seed 0 starts in clear daylight.",
+        "roster": "Human side zero, external opponent; normal headquarters and distant workers retained. Default combat troops removed; encounter troops use native built-in definitions.",
+        "undergroundWorker": "One owned worker starts on level one; every import must preserve it.",
+        "economy": "Starting age three and starting banks of 2,000 wood, 2,000 ore and 500 crystal.",
+        "cooldowns": "Non-firing targets, guards, workers and formation troops start with cooldown 1,000. First-hit shooters start with cooldown 3. No cooldown is changed after recording.",
+        "health": "Normal definition health except the explicitly listed wounded cover or casualty actor.",
+        "enemyOrder": "Mothbow starts with an attack order on Thunderlock #51.",
+        "guardEnergy": 40,
+        "description": "Public facing commands set the owned shield and ally. The first enemy Mothbow shot measures interception or bypass."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "dwarves",
+      "sha256": "843862a8150f1e2fb2ad743498e388010f80c1e8f1942196f7efabbc3de3b06f",
+      "group": "direction"
+    },
+    "shield-depletion": {
+      "file": "direction/shield-depletion.json",
+      "ids": {
+        "source": 53,
+        "target": 51,
+        "guard": 52,
+        "undergroundWorker": 12,
+        "guardFacing": 4,
+        "targetFacing": 4,
+        "expectedFirstDamage": 6.8
+      },
+      "authored": {
+        "map": "Seed 0, small forest world with two layers; flat grass, no resources or neutral actors.",
+        "calendar": "Day, season and weather lengths are 1,000,000 seconds. Seed 0 starts in clear daylight.",
+        "roster": "Human side zero, external opponent; normal headquarters and distant workers retained. Default combat troops removed; encounter troops use native built-in definitions.",
+        "undergroundWorker": "One owned worker starts on level one; every import must preserve it.",
+        "economy": "Starting age three and starting banks of 2,000 wood, 2,000 ore and 500 crystal.",
+        "cooldowns": "Non-firing targets, guards, workers and formation troops start with cooldown 1,000. First-hit shooters start with cooldown 3. No cooldown is changed after recording.",
+        "health": "Normal definition health except the explicitly listed wounded cover or casualty actor.",
+        "enemyOrder": "Mothbow starts with an attack order on Thunderlock #51.",
+        "guardEnergy": 40,
+        "description": "A normal 40-point directional guard absorbs repeated frontal shots until empty. The following shot must deal the full 17 health damage."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "dwarves",
+      "sha256": "9b2bf3042e4eb16d8f47d2ab26b9f6004ea3a10a26e257319e1cb95055953e8f",
+      "group": "direction"
+    },
+    "cover-none": {
+      "file": "direction/cover-none.json",
+      "ids": {
+        "source": 51,
+        "target": 52,
+        "undergroundWorker": 12,
+        "expectedDamage": 15,
+        "withdrawal": {
+          "x": 18.5,
+          "y": 18.5
+        },
+        "returnPoint": {
+          "x": 20.5,
+          "y": 24.5
+        }
+      },
+      "authored": {
+        "map": "Seed 0, small forest world with two layers; flat grass, no resources or neutral actors.",
+        "calendar": "Day, season and weather lengths are 1,000,000 seconds. Seed 0 starts in clear daylight.",
+        "roster": "Human side zero, external opponent; normal headquarters and distant workers retained. Default combat troops removed; encounter troops use native built-in definitions.",
+        "undergroundWorker": "One owned worker starts on level one; every import must preserve it.",
+        "economy": "Starting age three and starting banks of 2,000 wood, 2,000 ore and 500 crystal.",
+        "cooldowns": "Non-firing targets, guards, workers and formation troops start with cooldown 1,000. First-hit shooters start with cooldown 3. No cooldown is changed after recording.",
+        "health": "Normal definition health except the explicitly listed wounded cover or casualty actor.",
+        "targetFacing": 4,
+        "description": "An independent native Mothbow first attack measures none cover.",
+        "siegePreparation": "Thorn Trebuchet is unprepared; its normal area shell needs no purchased payload. The enemy target is three tiles from the building center, outside shell splash."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "fairies",
+      "sha256": "9008ed45969b546ea9afade0e18ca5fdb6e2e2c9bef46de064cb2dbda6ae4e97",
+      "group": "direction"
+    },
+    "cover-rock": {
+      "file": "direction/cover-rock.json",
+      "ids": {
+        "source": 51,
+        "target": 52,
+        "undergroundWorker": 12,
+        "expectedDamage": 8.7,
+        "withdrawal": {
+          "x": 18.5,
+          "y": 18.5
+        },
+        "returnPoint": {
+          "x": 20.5,
+          "y": 24.5
+        }
+      },
+      "authored": {
+        "map": "Seed 0, small forest world with two layers; flat grass, no resources or neutral actors.",
+        "calendar": "Day, season and weather lengths are 1,000,000 seconds. Seed 0 starts in clear daylight.",
+        "roster": "Human side zero, external opponent; normal headquarters and distant workers retained. Default combat troops removed; encounter troops use native built-in definitions.",
+        "undergroundWorker": "One owned worker starts on level one; every import must preserve it.",
+        "economy": "Starting age three and starting banks of 2,000 wood, 2,000 ore and 500 crystal.",
+        "cooldowns": "Non-firing targets, guards, workers and formation troops start with cooldown 1,000. First-hit shooters start with cooldown 3. No cooldown is changed after recording.",
+        "health": "Normal definition health except the explicitly listed wounded cover or casualty actor.",
+        "targetFacing": 4,
+        "description": "An independent native Mothbow first attack measures rock cover.",
+        "siegePreparation": "Thorn Trebuchet is unprepared; its normal area shell needs no purchased payload. The enemy target is three tiles from the building center, outside shell splash."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "fairies",
+      "sha256": "6943e080b271c36147fb0e206dbd728d60e3e7290dd86dba848043cde1ff1eb1",
+      "group": "direction"
+    },
+    "cover-building": {
+      "file": "direction/cover-building.json",
+      "ids": {
+        "source": 51,
+        "target": 52,
+        "cover": 53,
+        "siege": 54,
+        "undergroundWorker": 12,
+        "expectedDamage": 8.7,
+        "withdrawal": {
+          "x": 18.5,
+          "y": 18.5
+        },
+        "returnPoint": {
+          "x": 20.5,
+          "y": 24.5
+        }
+      },
+      "authored": {
+        "map": "Seed 0, small forest world with two layers; flat grass, no resources or neutral actors.",
+        "calendar": "Day, season and weather lengths are 1,000,000 seconds. Seed 0 starts in clear daylight.",
+        "roster": "Human side zero, external opponent; normal headquarters and distant workers retained. Default combat troops removed; encounter troops use native built-in definitions.",
+        "undergroundWorker": "One owned worker starts on level one; every import must preserve it.",
+        "economy": "Starting age three and starting banks of 2,000 wood, 2,000 ore and 500 crystal.",
+        "cooldowns": "Non-firing targets, guards, workers and formation troops start with cooldown 1,000. First-hit shooters start with cooldown 3. No cooldown is changed after recording.",
+        "health": "Normal definition health except the explicitly listed wounded cover or casualty actor.",
+        "targetFacing": 4,
+        "coverHealth": 100,
+        "description": "An authored wounded enemy Timber Yard covers the target. A public siege attack must destroy its remaining 100 HP. The Mothbow withdraws during demolition and then returns for an uncovered shot.",
+        "siegePreparation": "Thorn Trebuchet is unprepared; its normal area shell needs no purchased payload. The enemy target is three tiles from the building center, outside shell splash."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "fairies",
+      "sha256": "7cba75e5637a70dc6a6b59dfa84692c3b8945ce26ce419d905999d34bb8e77a9",
+      "group": "direction"
+    },
+    "friendly-fire-off": {
+      "file": "direction/friendly-fire-off.json",
+      "ids": {
+        "source": 51,
+        "target": 52,
+        "friend": 53,
+        "undergroundWorker": 12,
+        "friendlyFire": false
+      },
+      "authored": {
+        "map": "Seed 0, small forest world with two layers; flat grass, no resources or neutral actors.",
+        "calendar": "Day, season and weather lengths are 1,000,000 seconds. Seed 0 starts in clear daylight.",
+        "roster": "Human side zero, external opponent; normal headquarters and distant workers retained. Default combat troops removed; encounter troops use native built-in definitions.",
+        "undergroundWorker": "One owned worker starts on level one; every import must preserve it.",
+        "economy": "Starting age three and starting banks of 2,000 wood, 2,000 ore and 500 crystal.",
+        "cooldowns": "Non-firing targets, guards, workers and formation troops start with cooldown 1,000. First-hit shooters start with cooldown 3. No cooldown is changed after recording.",
+        "health": "Normal definition health except the explicitly listed wounded cover or casualty actor.",
+        "friendlyFire": false,
+        "description": "A public native attack launches an ordinary Thorn Trebuchet shell at the enemy. An allied Thornblade starts one tile from impact. Export occurs while the real projectile is pending; continuation checks enemy and allied health."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "fairies",
+      "sha256": "7cc941e73b987eea1b303e44228e259d77037cc2a545b4455f470b677f5ae3c0",
+      "group": "direction"
+    },
+    "friendly-fire-on": {
+      "file": "direction/friendly-fire-on.json",
+      "ids": {
+        "source": 51,
+        "target": 52,
+        "friend": 53,
+        "undergroundWorker": 12,
+        "friendlyFire": true
+      },
+      "authored": {
+        "map": "Seed 0, small forest world with two layers; flat grass, no resources or neutral actors.",
+        "calendar": "Day, season and weather lengths are 1,000,000 seconds. Seed 0 starts in clear daylight.",
+        "roster": "Human side zero, external opponent; normal headquarters and distant workers retained. Default combat troops removed; encounter troops use native built-in definitions.",
+        "undergroundWorker": "One owned worker starts on level one; every import must preserve it.",
+        "economy": "Starting age three and starting banks of 2,000 wood, 2,000 ore and 500 crystal.",
+        "cooldowns": "Non-firing targets, guards, workers and formation troops start with cooldown 1,000. First-hit shooters start with cooldown 3. No cooldown is changed after recording.",
+        "health": "Normal definition health except the explicitly listed wounded cover or casualty actor.",
+        "friendlyFire": true,
+        "description": "A public native attack launches an ordinary Thorn Trebuchet shell at the enemy. An allied Thornblade starts one tile from impact. Export occurs while the real projectile is pending; continuation checks enemy and allied health."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "fairies",
+      "sha256": "f3d16ab39cedc932e6b91dad50ece5e3c3e7cd2b98747d0fd263076b20b02cd1",
+      "group": "direction"
+    },
+    "charge-stationary": {
+      "file": "direction/charge-stationary.json",
+      "ids": {
+        "source": 51,
+        "target": 52,
+        "undergroundWorker": 12,
+        "motion": "stationary",
+        "stopPoint": {
+          "x": 23.6,
+          "y": 24.5
+        },
+        "turnPoint": {
+          "x": 23.6,
+          "y": 22.5
+        }
+      },
+      "authored": {
+        "map": "Seed 0, small forest world with two layers; flat grass, no resources or neutral actors.",
+        "calendar": "Day, season and weather lengths are 1,000,000 seconds. Seed 0 starts in clear daylight.",
+        "roster": "Human side zero, external opponent; normal headquarters and distant workers retained. Default combat troops removed; encounter troops use native built-in definitions.",
+        "undergroundWorker": "One owned worker starts on level one; every import must preserve it.",
+        "economy": "Starting age three and starting banks of 2,000 wood, 2,000 ore and 500 crystal.",
+        "cooldowns": "Non-firing targets, guards, workers and formation troops start with cooldown 1,000. First-hit shooters start with cooldown 3. No cooldown is changed after recording.",
+        "health": "Normal definition health except the explicitly listed wounded cover or casualty actor.",
+        "targetFacing": 4,
+        "targetOrder": "hold",
+        "targetCooldown": 1000,
+        "description": "Native Stag Rider commands measure movement charge, hold interruption, sharp-turn interruption, or held Pikejaw counter. No specialist ability is activated. Pike rear differs only in held facing."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "fairies",
+      "sha256": "cbc3f18f0528b9d09dbc6bea80cb421147db4f01686b040ce54a5362de2d1619",
+      "group": "direction"
+    },
+    "charge-charge": {
+      "file": "direction/charge-charge.json",
+      "ids": {
+        "source": 51,
+        "target": 52,
+        "undergroundWorker": 12,
+        "motion": "charge",
+        "stopPoint": {
+          "x": 23.6,
+          "y": 24.5
+        },
+        "turnPoint": {
+          "x": 23.6,
+          "y": 22.5
+        }
+      },
+      "authored": {
+        "map": "Seed 0, small forest world with two layers; flat grass, no resources or neutral actors.",
+        "calendar": "Day, season and weather lengths are 1,000,000 seconds. Seed 0 starts in clear daylight.",
+        "roster": "Human side zero, external opponent; normal headquarters and distant workers retained. Default combat troops removed; encounter troops use native built-in definitions.",
+        "undergroundWorker": "One owned worker starts on level one; every import must preserve it.",
+        "economy": "Starting age three and starting banks of 2,000 wood, 2,000 ore and 500 crystal.",
+        "cooldowns": "Non-firing targets, guards, workers and formation troops start with cooldown 1,000. First-hit shooters start with cooldown 3. No cooldown is changed after recording.",
+        "health": "Normal definition health except the explicitly listed wounded cover or casualty actor.",
+        "targetFacing": 4,
+        "targetOrder": "hold",
+        "targetCooldown": 1000,
+        "description": "Native Stag Rider commands measure movement charge, hold interruption, sharp-turn interruption, or held Pikejaw counter. No specialist ability is activated. Pike rear differs only in held facing."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "fairies",
+      "sha256": "b6656cf9b1c38d3b350664a25c948a1407df699da4852328e06185b07718daa7",
+      "group": "direction"
+    },
+    "charge-stop": {
+      "file": "direction/charge-stop.json",
+      "ids": {
+        "source": 51,
+        "target": 52,
+        "undergroundWorker": 12,
+        "motion": "stop",
+        "stopPoint": {
+          "x": 23.6,
+          "y": 24.5
+        },
+        "turnPoint": {
+          "x": 23.6,
+          "y": 22.5
+        }
+      },
+      "authored": {
+        "map": "Seed 0, small forest world with two layers; flat grass, no resources or neutral actors.",
+        "calendar": "Day, season and weather lengths are 1,000,000 seconds. Seed 0 starts in clear daylight.",
+        "roster": "Human side zero, external opponent; normal headquarters and distant workers retained. Default combat troops removed; encounter troops use native built-in definitions.",
+        "undergroundWorker": "One owned worker starts on level one; every import must preserve it.",
+        "economy": "Starting age three and starting banks of 2,000 wood, 2,000 ore and 500 crystal.",
+        "cooldowns": "Non-firing targets, guards, workers and formation troops start with cooldown 1,000. First-hit shooters start with cooldown 3. No cooldown is changed after recording.",
+        "health": "Normal definition health except the explicitly listed wounded cover or casualty actor.",
+        "targetFacing": 4,
+        "targetOrder": "hold",
+        "targetCooldown": 1000,
+        "description": "Native Stag Rider commands measure movement charge, hold interruption, sharp-turn interruption, or held Pikejaw counter. No specialist ability is activated. Pike rear differs only in held facing."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "fairies",
+      "sha256": "b6656cf9b1c38d3b350664a25c948a1407df699da4852328e06185b07718daa7",
+      "group": "direction"
+    },
+    "charge-turn": {
+      "file": "direction/charge-turn.json",
+      "ids": {
+        "source": 51,
+        "target": 52,
+        "undergroundWorker": 12,
+        "motion": "turn",
+        "stopPoint": {
+          "x": 23.6,
+          "y": 24.5
+        },
+        "turnPoint": {
+          "x": 23.6,
+          "y": 22.5
+        }
+      },
+      "authored": {
+        "map": "Seed 0, small forest world with two layers; flat grass, no resources or neutral actors.",
+        "calendar": "Day, season and weather lengths are 1,000,000 seconds. Seed 0 starts in clear daylight.",
+        "roster": "Human side zero, external opponent; normal headquarters and distant workers retained. Default combat troops removed; encounter troops use native built-in definitions.",
+        "undergroundWorker": "One owned worker starts on level one; every import must preserve it.",
+        "economy": "Starting age three and starting banks of 2,000 wood, 2,000 ore and 500 crystal.",
+        "cooldowns": "Non-firing targets, guards, workers and formation troops start with cooldown 1,000. First-hit shooters start with cooldown 3. No cooldown is changed after recording.",
+        "health": "Normal definition health except the explicitly listed wounded cover or casualty actor.",
+        "targetFacing": 4,
+        "targetOrder": "hold",
+        "targetCooldown": 1000,
+        "description": "Native Stag Rider commands measure movement charge, hold interruption, sharp-turn interruption, or held Pikejaw counter. No specialist ability is activated. Pike rear differs only in held facing."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "fairies",
+      "sha256": "b6656cf9b1c38d3b350664a25c948a1407df699da4852328e06185b07718daa7",
+      "group": "direction"
+    },
+    "charge-pike-front": {
+      "file": "direction/charge-pike-front.json",
+      "ids": {
+        "source": 51,
+        "target": 52,
+        "undergroundWorker": 12,
+        "motion": "pike-front",
+        "stopPoint": {
+          "x": 23.6,
+          "y": 24.5
+        },
+        "turnPoint": {
+          "x": 23.6,
+          "y": 22.5
+        }
+      },
+      "authored": {
+        "map": "Seed 0, small forest world with two layers; flat grass, no resources or neutral actors.",
+        "calendar": "Day, season and weather lengths are 1,000,000 seconds. Seed 0 starts in clear daylight.",
+        "roster": "Human side zero, external opponent; normal headquarters and distant workers retained. Default combat troops removed; encounter troops use native built-in definitions.",
+        "undergroundWorker": "One owned worker starts on level one; every import must preserve it.",
+        "economy": "Starting age three and starting banks of 2,000 wood, 2,000 ore and 500 crystal.",
+        "cooldowns": "Non-firing targets, guards, workers and formation troops start with cooldown 1,000. First-hit shooters start with cooldown 3. No cooldown is changed after recording.",
+        "health": "Normal definition health except the explicitly listed wounded cover or casualty actor.",
+        "targetFacing": 4,
+        "targetOrder": "hold",
+        "targetCooldown": 1000,
+        "description": "Native Stag Rider commands measure movement charge, hold interruption, sharp-turn interruption, or held Pikejaw counter. No specialist ability is activated. Pike rear differs only in held facing."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "fairies",
+      "sha256": "351109e152f7ca14504985b3dd9d6dd5d4a35112ecd89d7b04a901f08c57456a",
+      "group": "direction"
+    },
+    "charge-pike-rear": {
+      "file": "direction/charge-pike-rear.json",
+      "ids": {
+        "source": 51,
+        "target": 52,
+        "undergroundWorker": 12,
+        "motion": "pike-rear",
+        "stopPoint": {
+          "x": 23.6,
+          "y": 24.5
+        },
+        "turnPoint": {
+          "x": 23.6,
+          "y": 22.5
+        }
+      },
+      "authored": {
+        "map": "Seed 0, small forest world with two layers; flat grass, no resources or neutral actors.",
+        "calendar": "Day, season and weather lengths are 1,000,000 seconds. Seed 0 starts in clear daylight.",
+        "roster": "Human side zero, external opponent; normal headquarters and distant workers retained. Default combat troops removed; encounter troops use native built-in definitions.",
+        "undergroundWorker": "One owned worker starts on level one; every import must preserve it.",
+        "economy": "Starting age three and starting banks of 2,000 wood, 2,000 ore and 500 crystal.",
+        "cooldowns": "Non-firing targets, guards, workers and formation troops start with cooldown 1,000. First-hit shooters start with cooldown 3. No cooldown is changed after recording.",
+        "health": "Normal definition health except the explicitly listed wounded cover or casualty actor.",
+        "targetFacing": 0,
+        "targetOrder": "hold",
+        "targetCooldown": 1000,
+        "description": "Native Stag Rider commands measure movement charge, hold interruption, sharp-turn interruption, or held Pikejaw counter. No specialist ability is activated. Pike rear differs only in held facing."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "fairies",
+      "sha256": "1b1456040b9b4e15ef9f7c4c070f2cbeb88720e951db60fd168ca9009d5ca989",
+      "group": "direction"
+    },
+    "formation-line": {
+      "file": "direction/formation-line.json",
+      "ids": {
+        "army": [
+          51,
+          52,
+          53,
+          54,
+          55,
+          56
+        ],
+        "roles": [
+          "melee",
+          "ranged",
+          "spear",
+          "cavalry",
+          "melee",
+          "ranged"
+        ],
+        "obstacle": 57,
+        "victim": 53,
+        "enemy": 58,
+        "undergroundWorker": 12,
+        "formation": "line",
+        "spacing": 0.8,
+        "facing": 0,
+        "destination": {
+          "x": 30.5,
+          "y": 20.5
+        }
+      },
+      "authored": {
+        "map": "Seed 0, small forest world with two layers; flat grass, no resources or neutral actors.",
+        "calendar": "Day, season and weather lengths are 1,000,000 seconds. Seed 0 starts in clear daylight.",
+        "roster": "Human side zero, external opponent; normal headquarters and distant workers retained. Default combat troops removed; encounter troops use native built-in definitions.",
+        "undergroundWorker": "One owned worker starts on level one; every import must preserve it.",
+        "economy": "Starting age three and starting banks of 2,000 wood, 2,000 ore and 500 crystal.",
+        "cooldowns": "Non-firing targets, guards, workers and formation troops start with cooldown 1,000. First-hit shooters start with cooldown 3. No cooldown is changed after recording.",
+        "health": "Normal definition health except the explicitly listed wounded cover or casualty actor.",
+        "victimHealth": 1,
+        "victimMorale": 100,
+        "enemyOrder": "Mothbow begins with an attack on wounded Pikejaw #53, cooldown 18 seconds, followed by a queued withdrawal.",
+        "description": "The complete own combat army contains melee, ranged, spear and cavalry roles. Native formation and movement controls route it around a native depot. A real enemy weapon hit kills the authored wounded member; queued opposition withdrawal lets survivors regroup at unchanged anchor."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "orcs",
+      "sha256": "f4fc213272117ffd66b8c2e95b89f55d3ba921b0fde9dc5c4ea1ca76cacbdd2d",
+      "group": "direction"
+    },
+    "formation-wedge": {
+      "file": "direction/formation-wedge.json",
+      "ids": {
+        "army": [
+          51,
+          52,
+          53,
+          54,
+          55,
+          56
+        ],
+        "roles": [
+          "melee",
+          "ranged",
+          "spear",
+          "cavalry",
+          "melee",
+          "ranged"
+        ],
+        "obstacle": 57,
+        "victim": 53,
+        "enemy": 58,
+        "undergroundWorker": 12,
+        "formation": "wedge",
+        "spacing": 0.8,
+        "facing": 0,
+        "destination": {
+          "x": 30.5,
+          "y": 20.5
+        }
+      },
+      "authored": {
+        "map": "Seed 0, small forest world with two layers; flat grass, no resources or neutral actors.",
+        "calendar": "Day, season and weather lengths are 1,000,000 seconds. Seed 0 starts in clear daylight.",
+        "roster": "Human side zero, external opponent; normal headquarters and distant workers retained. Default combat troops removed; encounter troops use native built-in definitions.",
+        "undergroundWorker": "One owned worker starts on level one; every import must preserve it.",
+        "economy": "Starting age three and starting banks of 2,000 wood, 2,000 ore and 500 crystal.",
+        "cooldowns": "Non-firing targets, guards, workers and formation troops start with cooldown 1,000. First-hit shooters start with cooldown 3. No cooldown is changed after recording.",
+        "health": "Normal definition health except the explicitly listed wounded cover or casualty actor.",
+        "victimHealth": 1,
+        "victimMorale": 100,
+        "enemyOrder": "Mothbow begins with an attack on wounded Pikejaw #53, cooldown 18 seconds, followed by a queued withdrawal.",
+        "description": "The complete own combat army contains melee, ranged, spear and cavalry roles. Native formation and movement controls route it around a native depot. A real enemy weapon hit kills the authored wounded member; queued opposition withdrawal lets survivors regroup at unchanged anchor."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "orcs",
+      "sha256": "f4fc213272117ffd66b8c2e95b89f55d3ba921b0fde9dc5c4ea1ca76cacbdd2d",
+      "group": "direction"
+    },
+    "formation-square": {
+      "file": "direction/formation-square.json",
+      "ids": {
+        "army": [
+          51,
+          52,
+          53,
+          54,
+          55,
+          56
+        ],
+        "roles": [
+          "melee",
+          "ranged",
+          "spear",
+          "cavalry",
+          "melee",
+          "ranged"
+        ],
+        "obstacle": 57,
+        "victim": 53,
+        "enemy": 58,
+        "undergroundWorker": 12,
+        "formation": "square",
+        "spacing": 0.8,
+        "facing": 0,
+        "destination": {
+          "x": 30.5,
+          "y": 20.5
+        }
+      },
+      "authored": {
+        "map": "Seed 0, small forest world with two layers; flat grass, no resources or neutral actors.",
+        "calendar": "Day, season and weather lengths are 1,000,000 seconds. Seed 0 starts in clear daylight.",
+        "roster": "Human side zero, external opponent; normal headquarters and distant workers retained. Default combat troops removed; encounter troops use native built-in definitions.",
+        "undergroundWorker": "One owned worker starts on level one; every import must preserve it.",
+        "economy": "Starting age three and starting banks of 2,000 wood, 2,000 ore and 500 crystal.",
+        "cooldowns": "Non-firing targets, guards, workers and formation troops start with cooldown 1,000. First-hit shooters start with cooldown 3. No cooldown is changed after recording.",
+        "health": "Normal definition health except the explicitly listed wounded cover or casualty actor.",
+        "victimHealth": 1,
+        "victimMorale": 100,
+        "enemyOrder": "Mothbow begins with an attack on wounded Pikejaw #53, cooldown 18 seconds, followed by a queued withdrawal.",
+        "description": "The complete own combat army contains melee, ranged, spear and cavalry roles. Native formation and movement controls route it around a native depot. A real enemy weapon hit kills the authored wounded member; queued opposition withdrawal lets survivors regroup at unchanged anchor."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "orcs",
+      "sha256": "f4fc213272117ffd66b8c2e95b89f55d3ba921b0fde9dc5c4ea1ca76cacbdd2d",
+      "group": "direction"
+    },
+    "formation-loose": {
+      "file": "direction/formation-loose.json",
+      "ids": {
+        "army": [
+          51,
+          52,
+          53,
+          54,
+          55,
+          56
+        ],
+        "roles": [
+          "melee",
+          "ranged",
+          "spear",
+          "cavalry",
+          "melee",
+          "ranged"
+        ],
+        "obstacle": 57,
+        "victim": 53,
+        "enemy": 58,
+        "undergroundWorker": 12,
+        "formation": "loose",
+        "spacing": 0.8,
+        "facing": 0,
+        "destination": {
+          "x": 30.5,
+          "y": 20.5
+        }
+      },
+      "authored": {
+        "map": "Seed 0, small forest world with two layers; flat grass, no resources or neutral actors.",
+        "calendar": "Day, season and weather lengths are 1,000,000 seconds. Seed 0 starts in clear daylight.",
+        "roster": "Human side zero, external opponent; normal headquarters and distant workers retained. Default combat troops removed; encounter troops use native built-in definitions.",
+        "undergroundWorker": "One owned worker starts on level one; every import must preserve it.",
+        "economy": "Starting age three and starting banks of 2,000 wood, 2,000 ore and 500 crystal.",
+        "cooldowns": "Non-firing targets, guards, workers and formation troops start with cooldown 1,000. First-hit shooters start with cooldown 3. No cooldown is changed after recording.",
+        "health": "Normal definition health except the explicitly listed wounded cover or casualty actor.",
+        "victimHealth": 1,
+        "victimMorale": 100,
+        "enemyOrder": "Mothbow begins with an attack on wounded Pikejaw #53, cooldown 18 seconds, followed by a queued withdrawal.",
+        "description": "The complete own combat army contains melee, ranged, spear and cavalry roles. Native formation and movement controls route it around a native depot. A real enemy weapon hit kills the authored wounded member; queued opposition withdrawal lets survivors regroup at unchanged anchor."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "orcs",
+      "sha256": "f4fc213272117ffd66b8c2e95b89f55d3ba921b0fde9dc5c4ea1ca76cacbdd2d",
+      "group": "direction"
+    },
+    "siege-full-crew-capture": {
+      "file": "capture/siege-full-crew-capture.json",
+      "ids": {
+        "captor": 64,
+        "engine": 65,
+        "target": 66,
+        "observer": 13,
+        "undergroundWorker": 17,
+        "moveDestination": {
+          "x": 26.5,
+          "y": 20.5,
+          "level": 0
+        }
+      },
+      "authored": {
+        "description": "A Thornblade starts outside melee range of a full-crew Orc engine. The engine has 42 crew health and full hull health. The player attacks its crew, channels capture, moves the captured engine and orders it to fire at an Orc depot.",
+        "engineCrewHealth": 42,
+        "engineHullHealth": 185,
+        "engineDefinitionId": "orc-siege",
+        "engineCooldown": 1000,
+        "targetHealth": 600,
+        "captorCooldown": 0,
+        "combatSuppression": "The hostile engine begins with a 1000-second cooldown so it does not kill the captor during the acceptance encounter. Crew health is unchanged from the production default."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "fairies",
+      "group": "capture"
+    },
+    "surrounded-surrender": {
+      "file": "capture/surrounded-surrender.json",
+      "ids": {
+        "broken": 64,
+        "captors": [
+          65,
+          66,
+          67
+        ],
+        "undergroundWorker": 17,
+        "moveDestination": {
+          "x": 28.5,
+          "y": 24.5,
+          "level": 0
+        }
+      },
+      "authored": {
+        "description": "A wounded Deepforge ranged troop begins at 1 morale, surrounded by three Wild Court melee troops in opposing sectors. Native engine ticks decide surrender. The player then moves the surrendered troop.",
+        "brokenHealth": 30,
+        "brokenMaxHealth": 95,
+        "brokenMorale": 1,
+        "originalFaction": "dwarves",
+        "originalDefinitionId": "dwarf-ranged",
+        "captorPositions": [
+          {
+            "id": 65,
+            "x": 20.9,
+            "y": 24.5
+          },
+          {
+            "id": 66,
+            "x": 24.1,
+            "y": 24.5
+          },
+          {
+            "id": 67,
+            "x": 22.5,
+            "y": 26.1
+          }
+        ],
+        "captorCooldown": 1000,
+        "combatSuppression": "The surrounding troops begin with a long cooldown so the surrender check retains the authored 30 health rather than killing the troop first."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "fairies",
+      "group": "capture"
+    },
+    "active-retreat-save": {
+      "file": "capture/active-retreat-save.json",
+      "ids": {
+        "retreater": 64,
+        "enemy": 65,
+        "support": 18,
+        "undergroundWorker": 17
+      },
+      "authored": {
+        "description": "A wounded isolated Ironjaw begins at 28 morale beside a visible hostile troop. Morale loss starts a real retreat toward its distant headquarters. A friendly warrior waits along its route.",
+        "retreaterHealth": 78,
+        "retreaterMaxHealth": 175,
+        "retreaterMorale": 28,
+        "enemyCooldown": 1000,
+        "supportPosition": {
+          "x": 11.5,
+          "y": 17.5
+        },
+        "headquarters": {
+          "x": 6.5,
+          "y": 17.5
+        }
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "orcs",
+      "group": "capture"
+    },
+    "ambush-selected-trigger": {
+      "file": "capture/ambush-selected-trigger.json",
+      "ids": {
+        "ambusher": 64,
+        "dryTroop": 18,
+        "wrongTarget": 66,
+        "trigger": 67,
+        "timber": 65,
+        "undergroundWorker": 17
+      },
+      "authored": {
+        "description": "A Mothbow beside standing timber can ambush. A dry-ground warrior cannot. A worker already inside the chosen radius is the wrong target role. A full-health hostile melee troop begins a long march into the radius.",
+        "timberAmount": 100,
+        "ambusherCooldown": 6,
+        "radius": 2,
+        "target": "melee",
+        "wrongTargetHealth": 85,
+        "triggerHealth": 175,
+        "marchingOrder": {
+          "type": "move",
+          "x": 21.8,
+          "y": 20.5,
+          "level": 0
+        },
+        "initialOrders": "The hostile march is authored before native recording. No hostile order is injected later."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "fairies",
+      "group": "capture"
+    },
+    "ambush-scout-release-firebreak": {
+      "file": "capture/ambush-scout-release-firebreak.json",
+      "ids": {
+        "ambusher": 64,
+        "scout": 66,
+        "worker": 13,
+        "timber": 65,
+        "undergroundWorker": 17,
+        "forestWork": {
+          "x": 20.5,
+          "y": 21.5,
+          "level": 0
+        }
+      },
+      "authored": {
+        "description": "A hostile scout is 2.3 tiles from a woodland archer. The player chooses buildings within radius 1 so the scout cannot trigger fire. The scout can observe the concealed archer without learning its trigger. The player releases, rearms, then clears the last timber through native Forest work.",
+        "radius": 1,
+        "target": "building",
+        "timberAmount": 100,
+        "scoutDistance": 2.3,
+        "workerCooldown": 0,
+        "firebreakCost": {
+          "wood": 5,
+          "ore": 0
+        }
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "fairies",
+      "group": "capture"
+    },
+    "specialists-orcs": {
+      "file": "specialists/specialists-orcs.json",
+      "ids": {
+        "faction": "orcs",
+        "hero": 59,
+        "engineer": 60,
+        "cavalry": 61,
+        "battle": 62,
+        "siege": 63,
+        "shellTarget": 64,
+        "undergroundWorker": 58,
+        "points": {
+          "command": {
+            "x": 13.5,
+            "y": 21.5
+          },
+          "queen": {
+            "x": 17.5,
+            "y": 19.5
+          },
+          "leap": {
+            "x": 12.5,
+            "y": 25.5
+          }
+        }
+      },
+      "authored": {
+        "description": "Distinct native commander, cavalry and paid siege ability. A living cavalry target survives the first payload; save and replay capture pending and active effects separately.",
+        "woundedHeroHealth": 180,
+        "woundedEngineerHealth": 70,
+        "woundedCavalryHealth": 100,
+        "ownAndEnemyCombatCooldown": 300,
+        "siegeCooldown": 6,
+        "undeadCorpse": null,
+        "wetGround": null,
+        "initialResources": {
+          "wood": 5000,
+          "ore": 5000,
+          "crystal": 1000
+        },
+        "weather": "Clear, day; calendar intervals 10000 seconds",
+        "secondLayer": "One owned worker",
+        "setupOnly": true
+      },
+      "faction": "orcs",
+      "initialTick": 0,
+      "initialTime": 0,
+      "group": "specialists"
+    },
+    "specialists-fairies": {
+      "file": "specialists/specialists-fairies.json",
+      "ids": {
+        "faction": "fairies",
+        "hero": 59,
+        "engineer": 60,
+        "cavalry": 61,
+        "battle": 62,
+        "siege": 63,
+        "shellTarget": 64,
+        "undergroundWorker": 58,
+        "points": {
+          "command": {
+            "x": 13.5,
+            "y": 21.5
+          },
+          "queen": {
+            "x": 17.5,
+            "y": 19.5
+          },
+          "leap": {
+            "x": 12.5,
+            "y": 25.5
+          }
+        }
+      },
+      "authored": {
+        "description": "Distinct native commander, cavalry and paid siege ability. A living cavalry target survives the first payload; save and replay capture pending and active effects separately.",
+        "woundedHeroHealth": 180,
+        "woundedEngineerHealth": 70,
+        "woundedCavalryHealth": 100,
+        "ownAndEnemyCombatCooldown": 300,
+        "siegeCooldown": 6,
+        "undeadCorpse": null,
+        "wetGround": null,
+        "initialResources": {
+          "wood": 5000,
+          "ore": 5000,
+          "crystal": 1000
+        },
+        "weather": "Clear, day; calendar intervals 10000 seconds",
+        "secondLayer": "One owned worker",
+        "setupOnly": true
+      },
+      "faction": "fairies",
+      "initialTick": 0,
+      "initialTime": 0,
+      "group": "specialists"
+    },
+    "specialists-dwarves": {
+      "file": "specialists/specialists-dwarves.json",
+      "ids": {
+        "faction": "dwarves",
+        "hero": 59,
+        "engineer": 60,
+        "cavalry": 61,
+        "battle": 62,
+        "siege": 63,
+        "shellTarget": 64,
+        "undergroundWorker": 58,
+        "points": {
+          "command": {
+            "x": 13.5,
+            "y": 21.5
+          },
+          "queen": {
+            "x": 17.5,
+            "y": 19.5
+          },
+          "leap": {
+            "x": 12.5,
+            "y": 25.5
+          }
+        }
+      },
+      "authored": {
+        "description": "Distinct native commander, cavalry and paid siege ability. A living cavalry target survives the first payload; save and replay capture pending and active effects separately.",
+        "woundedHeroHealth": 180,
+        "woundedEngineerHealth": 70,
+        "woundedCavalryHealth": 100,
+        "ownAndEnemyCombatCooldown": 300,
+        "siegeCooldown": 6,
+        "undeadCorpse": null,
+        "wetGround": null,
+        "initialResources": {
+          "wood": 5000,
+          "ore": 5000,
+          "crystal": 1000
+        },
+        "weather": "Clear, day; calendar intervals 10000 seconds",
+        "secondLayer": "One owned worker",
+        "setupOnly": true
+      },
+      "faction": "dwarves",
+      "initialTick": 0,
+      "initialTime": 0,
+      "group": "specialists"
+    },
+    "specialists-undead": {
+      "file": "specialists/specialists-undead.json",
+      "ids": {
+        "faction": "undead",
+        "hero": 59,
+        "engineer": 60,
+        "cavalry": 61,
+        "battle": 62,
+        "siege": 63,
+        "shellTarget": 64,
+        "undergroundWorker": 58,
+        "points": {
+          "command": {
+            "x": 13.5,
+            "y": 21.5
+          },
+          "queen": {
+            "x": 17.5,
+            "y": 19.5
+          },
+          "leap": {
+            "x": 12.5,
+            "y": 25.5
+          }
+        }
+      },
+      "authored": {
+        "description": "Distinct native commander, cavalry and paid siege ability. A living cavalry target survives the first payload; save and replay capture pending and active effects separately.",
+        "woundedHeroHealth": 180,
+        "woundedEngineerHealth": 70,
+        "woundedCavalryHealth": 100,
+        "ownAndEnemyCombatCooldown": 300,
+        "siegeCooldown": 6,
+        "undeadCorpse": "One visible authored corpse, expires at 45 seconds",
+        "wetGround": null,
+        "initialResources": {
+          "wood": 5000,
+          "ore": 5000,
+          "crystal": 1000
+        },
+        "weather": "Clear, day; calendar intervals 10000 seconds",
+        "secondLayer": "One owned worker",
+        "setupOnly": true
+      },
+      "faction": "undead",
+      "initialTick": 0,
+      "initialTime": 0,
+      "group": "specialists"
+    },
+    "specialists-tideborn": {
+      "file": "specialists/specialists-tideborn.json",
+      "ids": {
+        "faction": "tideborn",
+        "hero": 59,
+        "engineer": 60,
+        "cavalry": 61,
+        "battle": 62,
+        "siege": 63,
+        "shellTarget": 64,
+        "undergroundWorker": 58,
+        "points": {
+          "command": {
+            "x": 13.5,
+            "y": 21.5
+          },
+          "queen": {
+            "x": 17.5,
+            "y": 19.5
+          },
+          "leap": {
+            "x": 12.5,
+            "y": 25.5
+          }
+        }
+      },
+      "authored": {
+        "description": "Distinct native commander, cavalry and paid siege ability. A living cavalry target survives the first payload; save and replay capture pending and active effects separately.",
+        "woundedHeroHealth": 180,
+        "woundedEngineerHealth": 70,
+        "woundedCavalryHealth": 100,
+        "ownAndEnemyCombatCooldown": 300,
+        "siegeCooldown": 6,
+        "undeadCorpse": null,
+        "wetGround": "Mud under cavalry",
+        "initialResources": {
+          "wood": 5000,
+          "ore": 5000,
+          "crystal": 1000
+        },
+        "weather": "Clear, day; calendar intervals 10000 seconds",
+        "secondLayer": "One owned worker",
+        "setupOnly": true
+      },
+      "faction": "tideborn",
+      "initialTick": 0,
+      "initialTime": 0,
+      "group": "specialists"
+    },
+    "specialists-automata": {
+      "file": "specialists/specialists-automata.json",
+      "ids": {
+        "faction": "automata",
+        "hero": 59,
+        "engineer": 60,
+        "cavalry": 61,
+        "battle": 62,
+        "siege": 63,
+        "shellTarget": 64,
+        "undergroundWorker": 58,
+        "points": {
+          "command": {
+            "x": 13.5,
+            "y": 21.5
+          },
+          "queen": {
+            "x": 17.5,
+            "y": 19.5
+          },
+          "leap": {
+            "x": 12.5,
+            "y": 25.5
+          }
+        }
+      },
+      "authored": {
+        "description": "Distinct native commander, cavalry and paid siege ability. A living cavalry target survives the first payload; save and replay capture pending and active effects separately.",
+        "woundedHeroHealth": 180,
+        "woundedEngineerHealth": 70,
+        "woundedCavalryHealth": 100,
+        "ownAndEnemyCombatCooldown": 300,
+        "siegeCooldown": 6,
+        "undeadCorpse": null,
+        "wetGround": null,
+        "initialResources": {
+          "wood": 5000,
+          "ore": 5000,
+          "crystal": 1000
+        },
+        "weather": "Clear, day; calendar intervals 10000 seconds",
+        "secondLayer": "One owned worker",
+        "setupOnly": true
+      },
+      "faction": "automata",
+      "initialTick": 0,
+      "initialTime": 0,
+      "group": "specialists"
+    },
+    "specialists-veteran": {
+      "file": "specialists/specialists-veteran.json",
+      "ids": {
+        "hero": 59,
+        "victim": 60,
+        "undergroundWorker": 58
+      },
+      "authored": {
+        "description": "An unranked commander must approach and defeat an authored 80-health hostile engineer. No XP or promotion is assigned. Enemy retaliation cooldown is 300 seconds.",
+        "initialResources": {
+          "wood": 5000,
+          "ore": 5000,
+          "crystal": 1000
+        },
+        "weather": "Clear, day; calendar intervals 10000 seconds",
+        "secondLayer": "One owned worker",
+        "setupOnly": true
+      },
+      "faction": "orcs",
+      "initialTick": 0,
+      "initialTime": 0,
+      "group": "specialists"
+    },
+    "specialists-recovery": {
+      "file": "specialists/specialists-recovery.json",
+      "ids": {
+        "hero": 60,
+        "killer": 61,
+        "hall": 59,
+        "artifact": 1,
+        "march": {
+          "x": 13.5,
+          "y": 18.5
+        },
+        "undergroundWorker": 58
+      },
+      "authored": {
+        "description": "A wounded living commander holds a recoverable ground artifact. The player recovers/equips it and moves into the authored enemy marksman’s range. Defeat, item drop, 30-second recovery and full-price 25-second rerecruitment occur in gameplay.",
+        "woundedHeroHealth": 1,
+        "killerCooldown": 8,
+        "ownCombatCooldown": 300,
+        "initialResources": {
+          "wood": 5000,
+          "ore": 5000,
+          "crystal": 1000
+        },
+        "weather": "Clear, day; calendar intervals 10000 seconds",
+        "secondLayer": "One owned worker",
+        "setupOnly": true
+      },
+      "faction": "orcs",
+      "initialTick": 0,
+      "initialTime": 0,
+      "group": "specialists"
+    },
+    "specialists-artifact-damage": {
+      "file": "specialists/specialists-artifact-damage.json",
+      "ids": {
+        "engineer": 59,
+        "target": 60,
+        "artifact": 1,
+        "undergroundWorker": 58
+      },
+      "authored": {
+        "description": "The same fixture is loaded for a recovered but unequipped baseline and an equipped Ember Blade run. Read actual first attack damage and preserve both complete native endpoints.",
+        "firstAttackCooldown": 8,
+        "enemyRetaliationCooldown": 300,
+        "initialXP": 0,
+        "targetFacing": "West toward attacker, front hit",
+        "initialResources": {
+          "wood": 5000,
+          "ore": 5000,
+          "crystal": 1000
+        },
+        "weather": "Clear, day; calendar intervals 10000 seconds",
+        "secondLayer": "One owned worker",
+        "setupOnly": true
+      },
+      "faction": "orcs",
+      "initialTick": 0,
+      "initialTime": 0,
+      "group": "specialists"
+    },
+    "specialists-bridge-crossing": {
+      "file": "specialists/specialists-bridge-crossing.json",
+      "ids": {
+        "engineer": 59,
+        "traveler": 60,
+        "occupant": 61,
+        "bridge": {
+          "x": 18.5,
+          "y": 18.5
+        },
+        "destination": {
+          "x": 22.5,
+          "y": 18.5
+        },
+        "undergroundWorker": 58
+      },
+      "authored": {
+        "description": "A three-tile water channel blocks every route. A native move order remains blocked before a paid bridge; the same traveler crosses afterward. Another worker is ordered onto the bridge. After 60 simulated seconds the three tiles restore water and the bridge occupant relocates to shore through central expiry handling.",
+        "initialResources": {
+          "wood": 5000,
+          "ore": 5000,
+          "crystal": 1000
+        },
+        "weather": "Clear, day; calendar intervals 10000 seconds",
+        "secondLayer": "One owned worker",
+        "setupOnly": true
+      },
+      "faction": "orcs",
+      "initialTick": 0,
+      "initialTime": 0,
+      "group": "specialists"
+    },
+    "specialists-barricade-obstruction": {
+      "file": "specialists/specialists-barricade-obstruction.json",
+      "ids": {
+        "engineer": 59,
+        "traveler": 60,
+        "barricade": {
+          "x": 14.5,
+          "y": 18.5
+        },
+        "destination": {
+          "x": 22.5,
+          "y": 18.5
+        },
+        "undergroundWorker": 58
+      },
+      "authored": {
+        "description": "A one-tile land corridor is the only passage through a seven-tile water barrier. A paid native field barricade blocks it. The native move remains blocked until the barricade expires after 60 simulated seconds, then the traveler crosses.",
+        "initialResources": {
+          "wood": 5000,
+          "ore": 5000,
+          "crystal": 1000
+        },
+        "weather": "Clear, day; calendar intervals 10000 seconds",
+        "secondLayer": "One owned worker",
+        "setupOnly": true
+      },
+      "faction": "orcs",
+      "initialTick": 0,
+      "initialTime": 0,
+      "group": "specialists"
+    },
+    "specialists-beacon-link": {
+      "file": "specialists/specialists-beacon-link.json",
+      "ids": {
+        "first": 59,
+        "second": 60,
+        "intruder": 61,
+        "destroyer": 62,
+        "observer": 63,
+        "farTile": {
+          "x": 34.5,
+          "y": 10.5,
+          "level": 0
+        },
+        "undergroundWorker": 58
+      },
+      "authored": {
+        "description": "Two beacons are each 11 tiles from their preceding link. A distant intruder causes a real native alert. An authored enemy marksman destroys the wounded first link after its 10-second cooldown. The surviving remote beacon disconnects and loses current sight while exploration remains.",
+        "firstLinkHealth": 60,
+        "destroyerInitialCooldown": 10,
+        "otherCombatCooldowns": 300,
+        "farSightPoint": {
+          "x": 34.5,
+          "y": 10.5,
+          "level": 0
+        },
+        "initialResources": {
+          "wood": 5000,
+          "ore": 5000,
+          "crystal": 1000
+        },
+        "weather": "Clear, day; calendar intervals 10000 seconds",
+        "secondLayer": "One owned worker",
+        "setupOnly": true
+      },
+      "faction": "orcs",
+      "initialTick": 0,
+      "initialTime": 0,
+      "group": "specialists"
+    }
+  }
+}

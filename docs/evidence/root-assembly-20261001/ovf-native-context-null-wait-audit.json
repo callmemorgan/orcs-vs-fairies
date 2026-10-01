@@ -1,0 +1,36 @@
+{
+  "accepted": true,
+  "correctedSyntaxPasses": true,
+  "correctedSyntaxReceipt": {
+    "argv": [
+      "node",
+      "--check",
+      "/tmp/ovf-native-combat-c86e273-20261001/proposed-native-context-null-wait.mjs"
+    ],
+    "correction": "The retained first check passed ESM source on stdin without module mode; this check names the .mjs artifact.",
+    "exitCode": 0,
+    "inputSha256": "30a272340d4283cc8baedaf20d147f3aa80630f8c213fb383b3e082f6096c3b5",
+    "stderr": "",
+    "stdout": ""
+  },
+  "failureMatchesTarget": true,
+  "firstFailure": {
+    "checks": 6,
+    "downloads": 10,
+    "message": "page.waitForFunction: TypeError: Cannot read properties of null (reading 'mode')\n    at eval (eval at predicate (eval at evaluate (:311:30)), <anonymous>:1:16)\n    at predicate (eval at evaluate (:311:30), <anonymous>:7:27)\n    at next (eval at evaluate (:311:30), <anonymous>:29:33)\n    at eval (eval at evaluate (:311:30), <anonymous>:42:13)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at wait (/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/native-context.mjs:13:50)\n    at persistence (/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/native-context.mjs:93:13)\n    at async Object.exportAndVerify (/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/native-context.mjs:99:74)\n    at async verified (/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/direction-defense.mjs:14:18)\n    at async Object.runDirectionDefense (/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/direction-defense.mjs:48:19)\n    at async file:///home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/verify-native-acceptance.mjs:82:88",
+    "phase": "native direction encounters"
+  },
+  "gitSourceSha256": "bac722da055afd9e69dae6c1b9bb92ab41afa48f372efaed69fc7df1816bbec5",
+  "patchSha256": "a4ae2c7966d971afbe8adea3056d35f803e208468e82a705bc6d207bfd34fa56",
+  "pin": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+  "proposedEqualsOneExpressionReplacement": true,
+  "proposedSha256": "30a272340d4283cc8baedaf20d147f3aa80630f8c213fb383b3e082f6096c3b5",
+  "readyAndEndpointChecksPreserved": true,
+  "receiptHashesMatch": true,
+  "source": "scripts/acceptance/native-context.mjs",
+  "sourceUnedited": true,
+  "strictSuccessPredicatePreserved": true,
+  "targetExpressionCount": 1,
+  "worktreeMatchesGit": true,
+  "worktreeSourceSha256": "bac722da055afd9e69dae6c1b9bb92ab41afa48f372efaed69fc7df1816bbec5"
+}
