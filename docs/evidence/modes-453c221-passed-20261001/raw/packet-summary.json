@@ -1,0 +1,363 @@
+{
+  "sealedAtUtc": "2026-10-01T21:36:59.908461+00:00",
+  "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "proofAttemptId": "ovf-modes-453c221-27794cde95654e348a4165fe965e5659",
+  "packetDirectory": "/tmp/ovf-modes-complete-packet-453c221.dgl9yk4w",
+  "scope": "Fresh original full four-stage modes acceptance with source/input provenance, asset GET, original postflight and visual/native readback",
+  "runtimeResult": "passed",
+  "independentAdmissionPending": true,
+  "executionSessions": {
+    "preparation": {
+      "toolSession": 30808,
+      "toolExitCode": 0
+    },
+    "acceptance": {
+      "toolSession": 12484,
+      "toolExitCode": 0
+    },
+    "originalPostflight": {
+      "toolExitCode": 0
+    }
+  },
+  "originalExecutionPaths": {
+    "frozenCheckout": "/tmp/ovf-modes-final-checkout.3i_ez0cq",
+    "proofRoot": "/tmp/ovf-modes-final-proof.uezs4d3d",
+    "preparationLaunchDirectory": "/tmp/ovf-modes-final-launch.15z2ovmt"
+  },
+  "actualBuildId": "5e49e689af13d4eef08c0760f904ad0bce2c2eebaa1144dea5d89cadecf310c0",
+  "actualSourceDigest": "10eb86d645b975e0066a98e7617a24b25fb3861a65e0b07ac9c94d5665bb11b0",
+  "schema": {
+    "saveVersion": 4,
+    "simulationRevision": "4.0.1",
+    "saveFormat": "orcs-vs-fairies-save",
+    "sessionVersion": 1,
+    "sessionFormat": "orcs-vs-fairies/session",
+    "replayVersion": 1,
+    "replayFormat": "orcs-vs-fairies/replay",
+    "replayChecksumVersion": 4,
+    "replayInitialSaveVersion": 4
+  },
+  "pinnedInputCount": 596,
+  "stages": [
+    {
+      "name": "natural-matches",
+      "args": [
+        "/tmp/ovf-modes-final-proof.uezs4d3d/modules/verify-runtime.mjs"
+      ],
+      "startedAt": "2026-10-01T21:15:29.124Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T21:16:14.328Z"
+    },
+    {
+      "name": "main-browser",
+      "args": [
+        "scripts/verify_assembled_modes.mjs",
+        "http://127.0.0.1:9241/",
+        "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "/tmp/ovf-modes-final-proof.uezs4d3d/browser"
+      ],
+      "startedAt": "2026-10-01T21:16:14.604Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T21:16:51.066Z"
+    },
+    {
+      "name": "native-local-custom-hill.session",
+      "args": [
+        "/tmp/ovf-modes-final-proof.uezs4d3d/modules/verify-native.mjs",
+        "/tmp/ovf-modes-final-proof.uezs4d3d/browser/local-custom-hill.session.json",
+        "/tmp/ovf-modes-final-proof.uezs4d3d/native/local-custom-hill.session.verification.json",
+        "453c2218af9973b9eca8fb78392435bd9d46a740"
+      ],
+      "startedAt": "2026-10-01T21:16:51.066Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T21:16:53.272Z"
+    },
+    {
+      "name": "native-local-build-report.session",
+      "args": [
+        "/tmp/ovf-modes-final-proof.uezs4d3d/modules/verify-native.mjs",
+        "/tmp/ovf-modes-final-proof.uezs4d3d/browser/local-build-report.session.json",
+        "/tmp/ovf-modes-final-proof.uezs4d3d/native/local-build-report.session.verification.json",
+        "453c2218af9973b9eca8fb78392435bd9d46a740"
+      ],
+      "startedAt": "2026-10-01T21:16:53.272Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T21:16:55.476Z"
+    }
+  ],
+  "actualProofIds": {
+    "natural-matches": {
+      "id": "ovf-modes-453c221-27794cde95654e348a4165fe965e5659/natural-matches",
+      "actualRuntimePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "result": "passed"
+    },
+    "main-browser": {
+      "id": "ovf-modes-453c221-27794cde95654e348a4165fe965e5659/main-browser",
+      "actualRuntimePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "result": "passed"
+    },
+    "native-local-custom-hill.session": {
+      "id": "ovf-modes-453c221-27794cde95654e348a4165fe965e5659/native-local-custom-hill.session",
+      "actualRuntimePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "result": "passed"
+    },
+    "native-local-build-report.session": {
+      "id": "ovf-modes-453c221-27794cde95654e348a4165fe965e5659/native-local-build-report.session",
+      "actualRuntimePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "result": "passed"
+    }
+  },
+  "naturalCases": [
+    {
+      "name": "hill-duel",
+      "tick": 1029,
+      "winningTeam": 0,
+      "comparedTicks": 729,
+      "resumeTicks": [
+        300
+      ]
+    },
+    {
+      "name": "relic-duel",
+      "tick": 867,
+      "winningTeam": 0,
+      "comparedTicks": 567,
+      "resumeTicks": [
+        300
+      ]
+    },
+    {
+      "name": "relic-contested",
+      "tick": 1367,
+      "winningTeam": 0,
+      "comparedTicks": 1067,
+      "resumeTicks": [
+        300
+      ]
+    },
+    {
+      "name": "hill-2v2",
+      "tick": 805,
+      "winningTeam": 1,
+      "comparedTicks": 505,
+      "resumeTicks": [
+        300
+      ]
+    },
+    {
+      "name": "survival-five-waves",
+      "tick": 8190,
+      "winningTeam": 0,
+      "comparedTicks": 7890,
+      "resumeTicks": [
+        300,
+        6554,
+        6951,
+        7348,
+        7793
+      ]
+    }
+  ],
+  "browser": {
+    "result": "passed",
+    "profiles": 3,
+    "recordedChecks": 13,
+    "strictErrorCounts": {
+      "pageErrors": 0,
+      "consoleErrors": 0,
+      "failedRequests": 0,
+      "httpErrors": 0,
+      "errors": 0,
+      "cleanupErrors": 0,
+      "finalizationFailure": 0
+    },
+    "browserClosed": true
+  },
+  "nativePayloads": [
+    {
+      "inputPath": "/tmp/ovf-modes-final-proof.uezs4d3d/browser/local-custom-hill.session.json",
+      "inputSha256": "82dfc756f9cfe1142911445178e2af43498f22fc232037e99cb31d6ef0d98a29",
+      "actualNativeInputGameSaveVersion": 4,
+      "actualNativeInputReplaySimulationRevision": "4.0.1",
+      "gameTick": 40,
+      "replayFinalTick": 40,
+      "verificationPath": "/tmp/ovf-modes-final-proof.uezs4d3d/native/local-custom-hill.session.verification.json",
+      "verificationSha256": "606c97bfe446fe666947d1551f9dd67670aad7c061eb6c4f2b330dd156c34e07",
+      "actualVerifierSourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "actualVerifierBundleSha256": "b643d9edc6febdfb4af633499e683f79a569826b4d2f15273add8688273bf9f2",
+      "continuation": {
+        "startTick": 40,
+        "finalTick": 140,
+        "advancedTicks": 100,
+        "timestep": 0.05,
+        "maxActorDisplacement": 1.164515654862113,
+        "completeEnvelopeEqualityPassed": true,
+        "recorderEqualityPassed": true,
+        "allAcceptedContinuationCommandsRecorded": true,
+        "extendedReplayEqualityPassed": true
+      },
+      "commandTypes": [
+        "hold",
+        "stop",
+        "move",
+        "move",
+        "hold",
+        "stop"
+      ],
+      "fourthCommandQueued": true
+    },
+    {
+      "inputPath": "/tmp/ovf-modes-final-proof.uezs4d3d/browser/local-build-report.session.json",
+      "inputSha256": "3f930e4f32ac7b8e91c8c047588d75384426b59d5b9f11b78ed2052e9198bda6",
+      "actualNativeInputGameSaveVersion": 4,
+      "actualNativeInputReplaySimulationRevision": "4.0.1",
+      "gameTick": 40,
+      "replayFinalTick": 40,
+      "verificationPath": "/tmp/ovf-modes-final-proof.uezs4d3d/native/local-build-report.session.verification.json",
+      "verificationSha256": "2801cb91a0e3518043c16e51d3e8484148c3f214102834d68ac1a92b5c4dc81c",
+      "actualVerifierSourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "actualVerifierBundleSha256": "b643d9edc6febdfb4af633499e683f79a569826b4d2f15273add8688273bf9f2",
+      "continuation": {
+        "startTick": 40,
+        "finalTick": 140,
+        "advancedTicks": 100,
+        "timestep": 0.05,
+        "maxActorDisplacement": 1.164515654862113,
+        "completeEnvelopeEqualityPassed": true,
+        "recorderEqualityPassed": true,
+        "allAcceptedContinuationCommandsRecorded": true,
+        "extendedReplayEqualityPassed": true
+      },
+      "commandTypes": [
+        "hold",
+        "stop",
+        "move",
+        "move",
+        "hold",
+        "stop"
+      ],
+      "fourthCommandQueued": true
+    }
+  ],
+  "faviconHttp": {
+    "receipt": "external-assets/favicon-http-receipt.json",
+    "status": 200,
+    "mime": "image/x-icon",
+    "bytes": 32038,
+    "sha256": "5e0bf0f72488bc693d779cd7a3ebc7fdfca8db9916a6e3e0811fff59113253c2",
+    "pinnedDistResponseEqualityPassed": true
+  },
+  "originalPostflight": {
+    "result": "passed structural/hash audit",
+    "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+    "simulationsExecuted": false,
+    "naturalCases": [
+      {
+        "name": "hill-duel",
+        "tick": 1029,
+        "comparedTicks": 729,
+        "resumeTicks": [
+          300
+        ]
+      },
+      {
+        "name": "relic-duel",
+        "tick": 867,
+        "comparedTicks": 567,
+        "resumeTicks": [
+          300
+        ]
+      },
+      {
+        "name": "relic-contested",
+        "tick": 1367,
+        "comparedTicks": 1067,
+        "resumeTicks": [
+          300
+        ]
+      },
+      {
+        "name": "hill-2v2",
+        "tick": 805,
+        "comparedTicks": 505,
+        "resumeTicks": [
+          300
+        ]
+      },
+      {
+        "name": "survival-five-waves",
+        "tick": 8190,
+        "comparedTicks": 7890,
+        "resumeTicks": [
+          300,
+          6554,
+          6951,
+          7348,
+          7793
+        ]
+      }
+    ],
+    "nativeContinuations": 2,
+    "browserProfiles": 3,
+    "screenshotsToInspect": [
+      "local-custom-draft.png",
+      "local-hill-marker.png",
+      "hosted-relic-lobby.png",
+      "hosted-relic-collected.png",
+      "hosted-relic-marker.png",
+      "guest-relic-objectives.png"
+    ],
+    "artifactCount": 478,
+    "serverClosed": true,
+    "finalManifestSha256": "27c9cdc5149ca949a77c97c057bf22cdbf0a05e017b9dbff6c72aede9525d09d",
+    "finalHashesTsvSha256": "6a7d5668552066628c6bb6f40c9e57ba43065e6a529f7a1ccb3abbb753b8218e",
+    "limits": [
+      "Inspect all six screenshots separately. This audit checks retained reports and bytes; it does not independently rerun behavior."
+    ]
+  },
+  "visualReceipt": "external-postflight/visual-inspection.json",
+  "independentPayloadAudit": {
+    "result": "passed retained payload/hash readback",
+    "checksPassed": 890,
+    "checksTotal": 890,
+    "auditJsonSha256": "f83169b9e217767dda5a05b8fe91728a0a4c60470ecdcfc238c4f6d58ba79d9e",
+    "receipt": "independent-payload-audit/audit.json"
+  },
+  "necessaryOwnedCleanup": {
+    "serverPid": 747583,
+    "serverExitCode": 0,
+    "pidAbsent": true,
+    "listenersAbsent": true,
+    "connectEx": 111,
+    "remainingOwnedNodeProcesses": [],
+    "remainingPlaywrightHeadlessChromiumProcesses": [],
+    "receipt": "dispatch/final-direct-cleanup-observation.json"
+  },
+  "separateFailedBindObservation": {
+    "result": "failed",
+    "errno": 98,
+    "cause": "unobserved; no attribution",
+    "exactFailedBindTimestampCaptured": false,
+    "receipt": "dispatch/first-cleanup-observer-failure.json",
+    "details": "dispatch/cleanup-bind-capture-details.json",
+    "traceback": "dispatch/first-cleanup-bind-traceback.txt",
+    "laterSuccessfulDifferentObservation": "dispatch/final-direct-cleanup-observation.json",
+    "runtimeResultRelabeled": false
+  },
+  "historicalEvidencePreserved": {
+    "c86WholeRun": "failed",
+    "c86ActualPin": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+    "c074PlanAndReview": "unchanged historical static evidence",
+    "prebind": "unchanged historical static evidence"
+  },
+  "noAcceptanceRerun": true,
+  "noSourceChangeDuringRun": true,
+  "protectedPort4173Untouched": true,
+  "packetLimits": [
+    "Native behavioral conclusions come from the actual executed passing verifiers; independent payload/packet audits parse/hash retained evidence without replaying behavior.",
+    "The first temporary-bind observer failure remains failed and separately retained. Its precise request time/cause were not captured.",
+    "The source-based build ID excludes public assets. Actual pin, all 596 input hashes, compiled favicon and observed HTTP body bind the favicon.",
+    "Runtime paths inside original manifests remain the actual original paths; archived copies do not rename or relabel the executed checkout/output.",
+    "Server dependency symlink target text is archived. Full installed dependencies and external runtime/browser binaries remain outside this packet."
+  ]
+}

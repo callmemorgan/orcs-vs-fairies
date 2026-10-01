@@ -1,0 +1,7 @@
+Survival mode satisfies original requirement69 at product453c221. The unchanged four-stage acceptance passed. Five natural matches include a defended five-wave survival win: attacker counts increase from1 to5, and five resumed checkpoints compare7,890 advancing ticks. The strict main-app browser completed13 checks with no recorded page, console, request or HTTP errors.
+
+Both downloaded native sessions use SAVE4 and replay rules4.0.1. Their validators compare full game envelopes and histories at tick40, then advance100 ticks to140 with six accepted commands and extended replay equality. A separately downloaded browser replay ends at43; the two native reports do not certify that endpoint or every top-level session planning field.
+
+The bounded archive retains153 raw files totaling26,216,711 bytes. Its index authenticates596 omitted source copies and393 omitted public dist copies against immutable Git blobs. Generated JS/CSS/HTML, native payloads, screenshots, raw logs, recipes, compiled proof/server modules and the favicon remain retained. External originals stay in place. Independent packet, retention and trail reviews are copied with their failed observer attempts and corrections.
+
+The original acceptance, postflight and necessary cleanup checks passed. A separate temporary bind returned errno98 despite an absent server process, no listener and a refused connection. That observation remains failed with its cause unestablished. The later successful bind is a separate record. Historical failed acceptance keeps its original pin and bytes.

@@ -1,0 +1,317 @@
+{
+  "recordedAtUtc": "2026-10-01T19:58:08.881456+00:00",
+  "oldPin": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+  "candidatePin": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+  "result": "passed static hash/path review",
+  "checks": [
+    {
+      "name": "candidate pin",
+      "passed": true
+    },
+    {
+      "name": "old pin remains separate",
+      "passed": true
+    },
+    {
+      "name": "product inventory includes added and deleted paths",
+      "passed": true,
+      "details": {
+        "old": 563,
+        "new": 563,
+        "added": [],
+        "deleted": []
+      }
+    },
+    {
+      "name": "complete admitted input inventory includes added and deleted paths",
+      "passed": true,
+      "details": {
+        "old": 595,
+        "new": 595,
+        "added": [],
+        "deleted": []
+      }
+    },
+    {
+      "name": "reported product input count",
+      "passed": true
+    },
+    {
+      "name": "only main differs among all admitted inputs",
+      "passed": true,
+      "details": [
+        "src/main.ts"
+      ]
+    },
+    {
+      "name": "admitted file modes and types preserved",
+      "passed": true
+    },
+    {
+      "name": "all 595 old frozen input hashes match Git",
+      "passed": true,
+      "details": {
+        "inputs": 595,
+        "mismatches": []
+      }
+    },
+    {
+      "name": "main is single guard replacement",
+      "passed": true
+    },
+    {
+      "name": "main SHA matches plan",
+      "passed": true
+    },
+    {
+      "name": "saved guard diff matches Git",
+      "passed": true
+    },
+    {
+      "name": "admitted candidate hash: scripts/modes/prepare.mjs",
+      "passed": true
+    },
+    {
+      "name": "admitted candidate hash: scripts/modes/run.mjs",
+      "passed": true
+    },
+    {
+      "name": "admitted candidate hash: scripts/modes/verify-runtime.ts",
+      "passed": true
+    },
+    {
+      "name": "admitted candidate hash: scripts/modes/proof-common.mjs",
+      "passed": true
+    },
+    {
+      "name": "admitted candidate hash: scripts/verify_assembled_modes.mjs",
+      "passed": true
+    },
+    {
+      "name": "admitted candidate hash: scripts/controls-proof/browser-common.mjs",
+      "passed": true
+    },
+    {
+      "name": "admitted candidate hash: scripts/controls-proof/verify-native.ts",
+      "passed": true
+    },
+    {
+      "name": "admitted candidate hash: scripts/build-server.mjs",
+      "passed": true
+    },
+    {
+      "name": "admitted candidate hash: package.json",
+      "passed": true
+    },
+    {
+      "name": "admitted candidate hash: package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "admitted candidate hash: src/core/versions.ts",
+      "passed": true
+    },
+    {
+      "name": "all eleven admitted hashes represented",
+      "passed": true
+    },
+    {
+      "name": "unchangedWrappers: prepare-after-release.sh",
+      "passed": true
+    },
+    {
+      "name": "original admitted wrapper: prepare-after-release.sh",
+      "passed": true
+    },
+    {
+      "name": "unchangedWrappers: run-once-after-release.sh",
+      "passed": true
+    },
+    {
+      "name": "original admitted wrapper: run-once-after-release.sh",
+      "passed": true
+    },
+    {
+      "name": "unchangedWrappers: verify-results.py",
+      "passed": true
+    },
+    {
+      "name": "original admitted wrapper: verify-results.py",
+      "passed": true
+    },
+    {
+      "name": "references: implementedGuardReview",
+      "passed": true
+    },
+    {
+      "name": "references: oldCleanupReceipt",
+      "passed": true
+    },
+    {
+      "name": "references: oldHttpCaptureLimitations",
+      "passed": true
+    },
+    {
+      "name": "references: oldPreparationProvenanceAudit",
+      "passed": true
+    },
+    {
+      "name": "files: README.md",
+      "passed": true
+    },
+    {
+      "name": "files: guard-root.diff",
+      "passed": true
+    },
+    {
+      "name": "supplement external hash",
+      "passed": true
+    },
+    {
+      "name": "supplement matches independent path comparison",
+      "passed": true
+    },
+    {
+      "name": "plan keeps required release and pin gates",
+      "passed": true
+    },
+    {
+      "name": "plan uses full recipe",
+      "passed": true
+    },
+    {
+      "name": "plan records failed earlier run",
+      "passed": true
+    }
+  ],
+  "productInputCount": 563,
+  "completeAdmittedInputCount": 595,
+  "inputCategoryCounts": {
+    "sourceFiles": 163,
+    "assetFiles": 393,
+    "configFiles": 7,
+    "scriptFiles": 15,
+    "testFiles": 7,
+    "modeScriptFiles": 10
+  },
+  "mainSha256": "4b3de6a2c62517819e56d81e20f96aa10c8bfde8cd58ea70aa516fd84f0abda7",
+  "admittedReads": {
+    "scripts/modes/prepare.mjs": {
+      "bytes": 4868,
+      "sha256": "361c1ad1ab3ea15efa96298a75fec96b57047e0ce355e48f645ed2cb86d45a4a",
+      "gitBlob": "f6e6bf7985d2fdbb4fc8cb15f97f597496497d59"
+    },
+    "scripts/modes/run.mjs": {
+      "bytes": 7495,
+      "sha256": "d7e86ed777b44b9b55e8b08cf145533c485b59f8b99cd56b3d66024984c8c694",
+      "gitBlob": "4b96de10ec41c5901c3a73550dfe7bbed46dfb22"
+    },
+    "scripts/modes/verify-runtime.ts": {
+      "bytes": 10245,
+      "sha256": "b1a053307c4fdc45fcc3e12414ca7b2b12ff689fa8aa955ce9c07330f01f82ed",
+      "gitBlob": "b239b3353c799332bad9d072e68e7bf770cbffd2"
+    },
+    "scripts/modes/proof-common.mjs": {
+      "bytes": 4302,
+      "sha256": "0af3f241b7dafe11a4f487dfd47e82e5c9710c8fbd44ab1a2784bc8862a57dfe",
+      "gitBlob": "73bc52222441a02c9da0e6bbdd7afd50a835cda3"
+    },
+    "scripts/verify_assembled_modes.mjs": {
+      "bytes": 18424,
+      "sha256": "ad1f74fca75fc88ce25f6d68dd207080e2632767d9872bd2f9db46aea88af872",
+      "gitBlob": "7701f66a784c9c23d7be3b484e1800c72ca1f467"
+    },
+    "scripts/controls-proof/browser-common.mjs": {
+      "bytes": 14866,
+      "sha256": "2991d6048f9c5717ac1287a40ca67290c301e1f581d1f6dd769eddded61b5ae9",
+      "gitBlob": "047bcb6923c1b11cb36cd67cc119a259c657a4c5"
+    },
+    "scripts/controls-proof/verify-native.ts": {
+      "bytes": 17879,
+      "sha256": "55b95c28ffb588727cbb4232b3bf8af7b25fc1d5fd541fb7344ae69991480784",
+      "gitBlob": "0ae802ab7b544e5484ac2f780cab017834e1ff0b"
+    },
+    "scripts/build-server.mjs": {
+      "bytes": 992,
+      "sha256": "6f036a184206640a48f503915fa08d267109a7c408aa4e97837bb2eab8d137bd",
+      "gitBlob": "d648ab1d333766ef251d7c59d07b6eecbb92e542"
+    },
+    "package.json": {
+      "bytes": 1118,
+      "sha256": "3370359ea75de06fe950a244b81a4fd0139805a50b587032c3e51e0b042f6ff6",
+      "gitBlob": "3dd822575b18004e18b671e6f1f08ca65d7f686d"
+    },
+    "package-lock.json": {
+      "bytes": 54240,
+      "sha256": "057f94325ad52a6e3f75d5decdb513baa4b9a0af2350651bb8886a61749a8c3d",
+      "gitBlob": "2fec555a3260209d0973e7275422b4275443a889"
+    },
+    "src/core/versions.ts": {
+      "bytes": 346,
+      "sha256": "a8b20be0fb9abd0895fed0d4ad1c7612910f2d31bf9c12c85fd8a432c0ba3f24",
+      "gitBlob": "b47ecb908513fa9594b3189296df37b23fad34f2"
+    }
+  },
+  "fileHashes": {
+    "/tmp/ovf-modes-final-acceptance-plan.c0rsxvtx/prepare-after-release.sh": {
+      "bytes": 9794,
+      "sha256": "9092b5cdb120b68cbca561f0bd0f77e7045829d6501825044d5f9e7cd7346764"
+    },
+    "/tmp/ovf-modes-final-acceptance-plan.c0rsxvtx/run-once-after-release.sh": {
+      "bytes": 1247,
+      "sha256": "50ddfb27c8d22f00d1942ed6b872054420dc345c5851cae292e7b433a0b68226"
+    },
+    "/tmp/ovf-modes-final-acceptance-plan.c0rsxvtx/verify-results.py": {
+      "bytes": 7582,
+      "sha256": "bfbf6a559735435ab5e5109e997fbac17f724a51ea23a754823752081c6e9f82"
+    },
+    "/tmp/ovf-cosmetics-implemented-review.2aifmeiq/review.md": {
+      "bytes": 5701,
+      "sha256": "b7b94d8bc389bc76b2205f25d8acdcfcaff3eac24f0074cf1565c3cc2132a09a"
+    },
+    "/tmp/ovf-modes-final-dispatch.nb_ieevo/failure-cleanup.json": {
+      "bytes": 2337,
+      "sha256": "53b7e6bda0937c81efa2d5ad8188155e3577a0f8b01dd40e1221cb89fa81e0f2"
+    },
+    "/tmp/ovf-modes-final-dispatch.nb_ieevo/http-error-capture-limitations.json": {
+      "bytes": 2915,
+      "sha256": "37943b07e1038cf9541bdcb196d2968d45caf8ee3fa08cd2ca3b510146e88854"
+    },
+    "/tmp/ovf-modes-preparation-provenance-audit.Hn4Vp2hK/audit.json": {
+      "bytes": 165590,
+      "sha256": "ea426022e1b3f340529641298ddd1e6a91d867355c807112f3f611a092aa72f5"
+    },
+    "/tmp/ovf-modes-c074-full-retry-plan.24wi_u6x/README.md": {
+      "bytes": 5332,
+      "sha256": "fef7e31146807743fb3d4f6387a8c49b38507ff406dc910817b27d378ad4d0dd"
+    },
+    "/tmp/ovf-modes-c074-full-retry-plan.24wi_u6x/guard-root.diff": {
+      "bytes": 1948,
+      "sha256": "6ab1d65a0a452d7beacd4922a77c585d24a0e5f38ccaf18866b06ca4568c0e41"
+    }
+  },
+  "supplementSha256": "ce03daf798e07c7ba1f6aaf2b6484bd2e3198677d87578285358c7aa2346e644",
+  "repositoryChanges": {
+    "oldTrackedPaths": 5861,
+    "candidateTrackedPaths": 6238,
+    "changedPaths": 383,
+    "outsideModeInputs": 382,
+    "outsideModesNonDocumentation": [
+      "scripts/acceptance/direction-defense-fixtures.ts",
+      "scripts/acceptance/direction-defense.mjs",
+      "scripts/acceptance/native-context.mjs"
+    ],
+    "outsideModesDocumentation": 379,
+    "added": 377,
+    "deleted": 0
+  },
+  "originalPlanJsonSha256": "11b3b1907c12b08051418f55f488f2f81adb21ee4d4272f355b2242fbcf8ff7a",
+  "runtimeExecuted": false,
+  "buildsExecuted": false,
+  "testsExecuted": false,
+  "productModulesImported": false,
+  "browserExecuted": false,
+  "serverStarted": false,
+  "dependenciesInstalled": false,
+  "reviewScript": "/tmp/ovf-modes-c074-independent-plan-review.chb8h_ot/check-inputs.py"
+}

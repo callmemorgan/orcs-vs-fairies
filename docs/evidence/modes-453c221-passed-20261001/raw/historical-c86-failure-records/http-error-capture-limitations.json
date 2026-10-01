@@ -1,0 +1,80 @@
+{
+  "recordedAtUtc": "2026-10-01T19:38:37.448910+00:00",
+  "sourcePin": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+  "rawBrowserReport": "/tmp/ovf-modes-final-proof.pk292s0o/browser/browser-proof.json",
+  "rawBrowserReportSha256": "5f81b4751a0e48415dbd86889dd260a893fc740172fc928cb5abdb870476d423",
+  "result": "failed original browser proof; retained observations with capture limits",
+  "httpResponses": [
+    {
+      "observedUrl": "http://127.0.0.1:9241/api/cosmetics",
+      "observedStatus": 401,
+      "observedMethod": null,
+      "observedBody": null,
+      "observedProfile": null,
+      "requestId": null
+    },
+    {
+      "observedUrl": "http://127.0.0.1:9241/api/cosmetics",
+      "observedStatus": 401,
+      "observedMethod": null,
+      "observedBody": null,
+      "observedProfile": null,
+      "requestId": null
+    },
+    {
+      "observedUrl": "http://127.0.0.1:9241/api/cosmetics",
+      "observedStatus": 401,
+      "observedMethod": null,
+      "observedBody": null,
+      "observedProfile": null,
+      "requestId": null
+    }
+  ],
+  "chromiumConsoleEvents": [
+    {
+      "observedText": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "observedProfile": null,
+      "observedLocation": null,
+      "requestId": null
+    },
+    {
+      "observedText": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "observedProfile": null,
+      "observedLocation": null,
+      "requestId": null
+    },
+    {
+      "observedText": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "observedProfile": null,
+      "observedLocation": null,
+      "requestId": null
+    }
+  ],
+  "freshProfilesObservedByDriver": [
+    "local-custom-hill",
+    "host",
+    "guest"
+  ],
+  "captureLimits": "observePage stores only response URL/status and console text in shared arrays. It does not retain response method/body/profile/time/request IDs or console location. Matching individual responses to profiles/console events cannot be reconstructed from these records.",
+  "sourceContractInference": {
+    "method": "GET",
+    "requestBody": null,
+    "anonymousResponseStatus": 401,
+    "anonymousResponseBody": {
+      "error": "Sign in first."
+    },
+    "runtimeBodyVerified": false,
+    "references": [
+      "src/online/cosmetic-client.ts:6",
+      "src/online/client.ts:25",
+      "src/server/server.ts:148",
+      "src/server/server.ts:283",
+      "src/server/server.ts:400"
+    ]
+  },
+  "diagnosis": "Server authentication response is legitimate. main.ts initializes cosmeticAccountId undefined; initial accountChanged(null) unconditionally refreshes cosmetics despite known anonymous state. CosmeticTools intentionally catches the401 and renders its sign-in prompt.",
+  "proofReclassified": false,
+  "authenticationChanged": false,
+  "sourceChanged": false,
+  "retryExecuted": false
+}

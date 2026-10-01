@@ -1,0 +1,102 @@
+{
+  "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "schema": {
+    "saveVersion": 4,
+    "simulationRevision": "4.0.1",
+    "saveFormat": "orcs-vs-fairies-save",
+    "sessionVersion": 1,
+    "sessionFormat": "orcs-vs-fairies/session",
+    "replayVersion": 1,
+    "replayFormat": "orcs-vs-fairies/replay",
+    "replayChecksumVersion": 4,
+    "replayInitialSaveVersion": 4
+  },
+  "base": "http://127.0.0.1:9241/",
+  "outputRoot": "/tmp/ovf-modes-final-proof.uezs4d3d",
+  "startedAt": "2026-10-01T21:15:29.124Z",
+  "steps": [
+    {
+      "name": "natural-matches",
+      "args": [
+        "/tmp/ovf-modes-final-proof.uezs4d3d/modules/verify-runtime.mjs"
+      ],
+      "startedAt": "2026-10-01T21:15:29.124Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T21:16:14.328Z"
+    },
+    {
+      "name": "main-browser",
+      "args": [
+        "scripts/verify_assembled_modes.mjs",
+        "http://127.0.0.1:9241/",
+        "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "/tmp/ovf-modes-final-proof.uezs4d3d/browser"
+      ],
+      "startedAt": "2026-10-01T21:16:14.604Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T21:16:51.066Z"
+    },
+    {
+      "name": "native-local-custom-hill.session",
+      "args": [
+        "/tmp/ovf-modes-final-proof.uezs4d3d/modules/verify-native.mjs",
+        "/tmp/ovf-modes-final-proof.uezs4d3d/browser/local-custom-hill.session.json",
+        "/tmp/ovf-modes-final-proof.uezs4d3d/native/local-custom-hill.session.verification.json",
+        "453c2218af9973b9eca8fb78392435bd9d46a740"
+      ],
+      "startedAt": "2026-10-01T21:16:51.066Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T21:16:53.272Z"
+    },
+    {
+      "name": "native-local-build-report.session",
+      "args": [
+        "/tmp/ovf-modes-final-proof.uezs4d3d/modules/verify-native.mjs",
+        "/tmp/ovf-modes-final-proof.uezs4d3d/browser/local-build-report.session.json",
+        "/tmp/ovf-modes-final-proof.uezs4d3d/native/local-build-report.session.verification.json",
+        "453c2218af9973b9eca8fb78392435bd9d46a740"
+      ],
+      "startedAt": "2026-10-01T21:16:53.272Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T21:16:55.476Z"
+    }
+  ],
+  "result": "passed",
+  "serverPackageFiles": {
+    "campaign-runtime.mjs": {
+      "bytes": 696670,
+      "sha256": "a3cecf57e0492c1d309e1161280f906a9d9f7b58440e5c5cf5fce96734188fcc"
+    },
+    "canonical-campaign.mjs": {
+      "bytes": 506,
+      "sha256": "bbbc83906b0fa0a5d95dae34a2ce25dd0e872408ae2f0448ef119a85da299b54"
+    },
+    "node_modules": {
+      "bytes": 51,
+      "sha256": "eb2d9927a8da2d0894bd974634d0004286a8c37740719bdb1a1746e67d8bf4b0",
+      "symlink": "/tmp/ovf-modes-final-checkout.3i_ez0cq/node_modules"
+    },
+    "rts-server.js": {
+      "bytes": 830242,
+      "sha256": "e1a22e6b5c98c4c73a4215cb2422213c8fca630c4822bd8dbbc2777c3ff7e8f2"
+    }
+  },
+  "serverDependencies": {
+    "link": "/tmp/ovf-modes-final-proof.uezs4d3d/dist-server/node_modules",
+    "target": "/tmp/ovf-modes-final-checkout.3i_ez0cq/node_modules",
+    "wsPackageSha256": "c1ef91ca04eb4754c011c5f0e7638b5078ff71104fada400c44ac761cf93e0b1"
+  },
+  "method": "Fresh bundled natural matches; owned canonical main server and production browser controls; complete native session replay and continuation.",
+  "server": {
+    "bundle": "/tmp/ovf-modes-final-proof.uezs4d3d/dist-server/rts-server.js",
+    "bundleSha256": "e1a22e6b5c98c4c73a4215cb2422213c8fca630c4822bd8dbbc2777c3ff7e8f2",
+    "port": 9241,
+    "pid": 747583,
+    "aliveBeforePlannedShutdown": true,
+    "exitCode": 0,
+    "signal": null
+  },
+  "serverClosed": true,
+  "listenersAfter": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess",
+  "finishedAt": "2026-10-01T21:16:58.329Z"
+}

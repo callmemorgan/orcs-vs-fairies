@@ -1,0 +1,41 @@
+{
+  "recordedAtUtc": "2026-10-01T21:25:16.804812+00:00",
+  "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "originalFailureReceipt": "/tmp/ovf-modes-dispatch-453c221.09ofch__/first-cleanup-observer-failure.json",
+  "originalFailureReceiptSha256": "37ffeb9a575c0492753b5f1dcfcadaaf48ea2b813ce90d1a4a299d76ee4162ab",
+  "originalFailureReceiptBytesUnmodified": true,
+  "rawTraceback": "/tmp/ovf-modes-dispatch-453c221.09ofch__/first-cleanup-bind-traceback.txt",
+  "rawTracebackSha256": "212410e4e31cd3b775333edccadbb3b57960b2e0b599d4549a8c5fe5840a1c01",
+  "requestedObserverArgv": [
+    "python3",
+    "-"
+  ],
+  "executedSocketConstructorCall": "socket.socket()",
+  "socketConstructorPositionalArgs": [],
+  "socketConstructorKeywordArgs": {},
+  "socketConstructorDefaults": {
+    "family": "AF_INET (2)",
+    "type": "SOCK_STREAM (1)",
+    "protocol": 0,
+    "basis": "Python socket constructor defaults from the executed source call; attributes were not separately captured before failure."
+  },
+  "executedBindCall": "s.bind(('127.0.0.1',9241))",
+  "address": "127.0.0.1",
+  "port": 9241,
+  "soReuseaddrSetByObserver": false,
+  "status": "failed",
+  "errno": 98,
+  "errorText": "Address already in use",
+  "exactFailedBindTimestampCaptured": false,
+  "knownObservationWindow": {
+    "afterLauncherFinishedAt": "2026-10-01T21:16:58.329Z",
+    "beforeFailureReceiptWrittenAtUtc": "2026-10-01T21:18:16.614739+00:00",
+    "meaning": "Bounds only; not an exact request timestamp."
+  },
+  "laterAllStateListing": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\n",
+  "laterCurrentCleanupReceipt": "/tmp/ovf-modes-dispatch-453c221.09ofch__/final-direct-cleanup-observation.json",
+  "failedObservationPreservedSeparately": true,
+  "causeAttributed": false,
+  "acceptanceRerun": false,
+  "sourceChanged": false
+}

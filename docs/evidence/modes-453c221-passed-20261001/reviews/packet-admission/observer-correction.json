@@ -1,0 +1,39 @@
+{
+  "result": "corrected independent observer assumptions; packet unchanged",
+  "firstAuditPath": "/tmp/ovf-sealed-453c221-admission.cxekwgqw/audit-first.json",
+  "firstAuditSha256": "ffce79d44da1bdc097f09811cbb5e15ac12d9f820099fa5bf13f77cccb5e1603",
+  "firstScriptPath": "/tmp/ovf-sealed-453c221-admission.cxekwgqw/audit-first-script.py",
+  "firstScriptSha256": "5838f60d5b923058dbbdfb75cfc0d833f267b29b41cf574a2de8160108958738",
+  "firstAuditPassedCount": 2485,
+  "firstAuditCheckCount": 2490,
+  "firstFailures": [
+    {
+      "name": "module embedded pin schema.mjs",
+      "passed": false
+    },
+    {
+      "name": "module embedded digest schema.mjs",
+      "passed": false
+    },
+    {
+      "name": "module output size schema.mjs",
+      "passed": false
+    },
+    {
+      "name": "module output size verify-native.mjs",
+      "passed": false
+    },
+    {
+      "name": "module output size verify-runtime.mjs",
+      "passed": false
+    }
+  ],
+  "corrections": [
+    "The schema entry does not reference injected proof pin/digest constants; esbuild removes unused definitions. Its actual retained bundle hash and 49 pinned source input records bind it through the module manifest.",
+    "The actual esbuild metafiles use relative output paths ../ovf-modes-final-proof.uezs4d3d/modules/*.mjs. Compare the named output bytes/entryPoint rather than requiring an absolute output key."
+  ],
+  "productExecution": false,
+  "packetMutation": false,
+  "sourceMutation": false,
+  "recordedAtUtc": "2026-10-01T21:48:12.482543+00:00"
+}

@@ -1,0 +1,67 @@
+{
+  "checkedAtUtc": "2026-10-01T19:28:03.833947+00:00",
+  "result": "failed run preserved; cleanup passed",
+  "runExitCode": 1,
+  "sourcePin": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+  "ownedServerPid": 97491,
+  "ownedServerPidAbsent": true,
+  "serverExitCode": 0,
+  "browserClosed": true,
+  "port": 9241,
+  "listenerAbsent": true,
+  "connectEx": 111,
+  "directBindSucceeded": true,
+  "ownedNodeProofProcessesRemaining": [],
+  "protectedPortTouched": false,
+  "steps": [
+    {
+      "name": "natural-matches",
+      "args": [
+        "/tmp/ovf-modes-final-proof.pk292s0o/modules/verify-runtime.mjs"
+      ],
+      "startedAt": "2026-10-01T19:23:48.619Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T19:24:34.445Z"
+    },
+    {
+      "name": "main-browser",
+      "args": [
+        "scripts/verify_assembled_modes.mjs",
+        "http://127.0.0.1:9241/",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/tmp/ovf-modes-final-proof.pk292s0o/browser"
+      ],
+      "startedAt": "2026-10-01T19:24:34.721Z",
+      "result": "failed",
+      "failure": {
+        "message": "main-browser failed; inspect /tmp/ovf-modes-final-proof.pk292s0o/logs/main-browser.log\n\n1 !== 0\n"
+      },
+      "finishedAt": "2026-10-01T19:25:11.513Z"
+    }
+  ],
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+  ],
+  "httpErrors": [
+    {
+      "url": "http://127.0.0.1:9241/api/cosmetics",
+      "status": 401
+    },
+    {
+      "url": "http://127.0.0.1:9241/api/cosmetics",
+      "status": 401
+    },
+    {
+      "url": "http://127.0.0.1:9241/api/cosmetics",
+      "status": 401
+    }
+  ],
+  "nativeExportValidatorsRun": false,
+  "sourceChangedAfterFailure": false,
+  "observerCorrection": "Initial whole-command substring query matched its own bash inspection command. This audit checks parsed argv for Node executables only.",
+  "finalManifest": "/tmp/ovf-modes-final-proof.pk292s0o/final-manifest.json",
+  "finalManifestSha256": "60246a3d786c001209b2485118e62218b1207bcde9982a38caf852b5fe3934fe",
+  "finalHashesSha256": "9bb8f8feebdaac46dcd85badfa191e9eff7fd7343f77c392f3e713506c970790"
+}

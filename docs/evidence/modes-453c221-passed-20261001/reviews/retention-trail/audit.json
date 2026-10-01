@@ -1,0 +1,38 @@
+{
+  "reviewScope": "resumed bounded retention planning only",
+  "reviewerModel": "gpt-5.6-sol",
+  "decisionTrail": "/tmp/ovf-modes-retention-decisions-453c221.1b2k6zsi/decisions.tsv",
+  "scopeFile": "/tmp/ovf-modes-retention-decisions-453c221.1b2k6zsi/trail-scope.json",
+  "artifactIndex": "/tmp/ovf-modes-retention-453c221.qa_ctwp2",
+  "sealedPacket": "/tmp/ovf-modes-complete-packet-453c221.dgl9yk4w",
+  "verdict": "truthful with weak evidence pointers and no durable transcript pointer",
+  "verifiedFacts": {
+    "decisionRows": 3,
+    "retainedRegularFiles": 153,
+    "retainedRegularFileBytes": 26216711,
+    "gitAuthenticatedDuplicateOmissions": 989,
+    "omittedCopiesPresentAndCheckedBySavedVerifier": 989,
+    "externalSymlinkMetadataRecords": 1,
+    "failedBindRecordsRetained": true,
+    "failedBindCauseAttributed": false
+  },
+  "attention": [
+    {
+      "rows": [1, 2],
+      "kind": "weak-evidence-pointer",
+      "detail": "The evidence cells cite saved success stdout but omit the command receipts and verifier scripts that show exit codes and checks."
+    },
+    {
+      "rows": [3],
+      "kind": "weak-evidence-pointer",
+      "detail": "The evidence cell proves retained selection and symlink metadata but does not cite the dispatch records that establish the failed bind and absence of cause attribution."
+    },
+    {
+      "rows": [],
+      "kind": "missing-durable-transcript-pointer",
+      "detail": "trail-scope.json refers to current task context instead of a durable transcript or command-output path, preventing later reconstruction of the action sequence from the review package alone."
+    }
+  ],
+  "prohibitedWorkPerformed": false,
+  "notes": "No packet-admission audit or independent retention-policy review was performed."
+}

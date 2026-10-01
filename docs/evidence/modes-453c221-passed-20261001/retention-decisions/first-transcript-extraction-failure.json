@@ -1,0 +1,54 @@
+{
+  "result": "failed first transcript excerpt observation",
+  "cause": "The first extractor filtered function_call/function_call_output only, but actual functions.exec records use custom_tool_call/custom_tool_call_output. It selected zero records and raised AssertionError (0,0).",
+  "originalTranscriptPath": "/home/morgana/.codex/sessions/2026/10/01/rollout-2026-10-01T02-17-05-01a0f6c0-cb5c-70a2-9035-69d7cb04a897.jsonl",
+  "originalCallAndOutput": [
+    {
+      "timestamp": "2026-10-01T21:51:09.855Z",
+      "sourceOrdinal": 6061,
+      "payload": {
+        "type": "custom_tool_call",
+        "name": "exec",
+        "input": "text(await tools.exec_command({cmd:\"python3 - <<'PY'\\nfrom pathlib import Path\\nimport json,hashlib\\nfrom datetime import datetime,timezone\\nsource=Path('/home/morgana/.codex/sessions/2026/10/01/rollout-2026-10-01T02-17-05-01a0f6c0-cb5c-70a2-9035-69d7cb04a897.jsonl')\\nmeta=json.loads(source.open().readline())['payload']\\nassert meta['cwd']=='/home/morgana/Projects/orcs-vs-Fairies' and meta['agent_path']=='/root/modes_objectives'\\nrecords=[]\\nfor line in source.open():\\n r=json.loads(line)\\n if not ('2026-10-01T21:40:00'<=r.get('timestamp','')<'2026-10-01T21:48:00'):continue\\n if r.get('type')=='response_item':records.append(r)\\nneedles=['ovf-modes-retention-453c221','ovf-modes-retention-decisions-453c221']\\nids=set()\\nfor r in records:\\n p=r['payload']\\n if p.get('type')=='function_call' and any(n in p.get('arguments','') for n in needles):ids.add(p['call_id'])\\nselected=[]\\nfor r in records:\\n p=r['payload']\\n if p.get('type') in ['function_call','function_call_output'] and p.get('call_id') in ids:\\n  keys=['type','name','namespace','arguments','call_id','output']\\n  selected.append({'timestamp':r['timestamp'],'sourceOrdinal':r.get('ordinal'),'payload':{k:p[k] for k in keys if k in p}})\\nassert len(ids)>=6 and len(selected)==2*len(ids),(len(ids),len(selected))\\noutput=Path('/tmp/ovf-modes-retention-decisions-453c221.1b2k6zsi')\\nexcerpt=output/'command-transcript-excerpt.jsonl'\\nexcerpt.write_text(''.join(json.dumps(r)+'\\\\n' for r in selected))\\nreceipt={'createdAtUtc':datetime.now(timezone.utc).isoformat(),'originalTranscriptPath':str(source),'originalAgentPath':meta['agent_path'],'originalWorkspace':meta['cwd'],'extractionWindowUtc':['2026-10-01T21:40:00Z','2026-10-01T21:48:00Z'],'selection':'Actual function call/output records whose call arguments reference the bounded retention index or decision directory; tool metadata omitted. No system/user/private account metadata retained.','pairedToolCalls':len(ids),'retainedRecords':len(selected),'excerptPath':str(excerpt),'excerptBytes':excerpt.stat().st_size,'excerptSha256':hashlib.sha256(excerpt.read_bytes()).hexdigest(),'historicalDecisionTimestamps':'The first three trail rows were appended retrospectively at 21:47:19-20Z, after commands whose actual timestamps are preserved in the excerpt.'}\\n(output/'transcript-excerpt-receipt.json').write_text(json.dumps(receipt,indent=2)+'\\\\n')\\nprint(json.dumps(receipt,indent=2))\\nPY\",\"max_output_tokens\":2300}));\ntext(await tools.exec_command({cmd:\"/home/morgana/.agents/skills/show-me-your-work/scripts/log.sh /tmp/ovf-modes-retention-decisions-453c221.1b2k6zsi/decisions.tsv evidence-clarification 'Added command receipts and verifier sources to the evidence for rows 1 and 2' 'Success stdout alone is weaker than the command, exit status, and verification logic' '/tmp/ovf-modes-retention-453c221.qa_ctwp2/sealed-packet-verifier-receipt.json; /tmp/ovf-modes-complete-packet-453c221.dgl9yk4w/verify-packet.py; /tmp/ovf-modes-retention-453c221.qa_ctwp2/retention-verifier-receipt.json; /tmp/ovf-modes-retention-453c221.qa_ctwp2/verify-retention.py' 'Supplemented earlier evidence without editing its history; retention is a copy plan and root has not been claimed to copy it'\",\"max_output_tokens\":1000}));\ntext(await tools.exec_command({cmd:\"/home/morgana/.agents/skills/show-me-your-work/scripts/log.sh /tmp/ovf-modes-retention-decisions-453c221.1b2k6zsi/decisions.tsv evidence-clarification 'Added direct dispatch records to row 3 evidence' 'The inventory alone does not establish the observed failed bind or absence of an attributed cause' '/tmp/ovf-modes-complete-packet-453c221.dgl9yk4w/dispatch/first-cleanup-observer-failure.json; /tmp/ovf-modes-complete-packet-453c221.dgl9yk4w/dispatch/cleanup-bind-capture-details.json; /tmp/ovf-modes-complete-packet-453c221.dgl9yk4w/dispatch/final-direct-cleanup-observation.json' 'Original failed bind remains failed and its cause remains unestablished'\",\"max_output_tokens\":1000}));\ntext(await tools.exec_command({cmd:\"/home/morgana/.agents/skills/show-me-your-work/scripts/log.sh /tmp/ovf-modes-retention-decisions-453c221.1b2k6zsi/decisions.tsv transcript-clarification 'Retained a paired command and output excerpt from this agent transcript' 'Record actual command timestamps alongside the first three retrospective decision rows' '/tmp/ovf-modes-retention-decisions-453c221.1b2k6zsi/command-transcript-excerpt.jsonl; /tmp/ovf-modes-retention-decisions-453c221.1b2k6zsi/transcript-excerpt-receipt.json' 'Excerpt preserves actual commands and outputs for the bounded retention work without private account metadata'\",\"max_output_tokens\":1000}));\n",
+        "call_id": "call_VGqXCPaoynC0E5HPeT9pjeEP"
+      }
+    },
+    {
+      "timestamp": "2026-10-01T21:51:10.073Z",
+      "sourceOrdinal": 6067,
+      "payload": {
+        "type": "custom_tool_call_output",
+        "call_id": "call_VGqXCPaoynC0E5HPeT9pjeEP",
+        "output": [
+          {
+            "type": "input_text",
+            "text": "Script completed\nWall time 0.2 seconds\nOutput:\n"
+          },
+          {
+            "type": "input_text",
+            "text": "{\"chunk_id\":\"f5d3f7\",\"wall_time_seconds\":0.000009448,\"exit_code\":1,\"original_token_count\":25,\"output\":\"Traceback (most recent call last):\\n  File \\\"<stdin>\\\", line 23, in <module>\\nAssertionError: (0, 0)\\n\"}"
+          },
+          {
+            "type": "input_text",
+            "text": "{\"chunk_id\":\"43d1ee\",\"wall_time_seconds\":0.000006232,\"exit_code\":0,\"original_token_count\":0,\"output\":\"\"}"
+          },
+          {
+            "type": "input_text",
+            "text": "{\"chunk_id\":\"93eb43\",\"wall_time_seconds\":0.00000534,\"exit_code\":0,\"original_token_count\":0,\"output\":\"\"}"
+          },
+          {
+            "type": "input_text",
+            "text": "{\"chunk_id\":\"444197\",\"wall_time_seconds\":0.000005971,\"exit_code\":0,\"original_token_count\":0,\"output\":\"\"}"
+          }
+        ]
+      }
+    }
+  ],
+  "retrospectiveRow6Caveat": "Row 6 was appended after this failed extraction before the successful corrected extraction. Its stated success is superseded by the correction row; earlier history is preserved.",
+  "correctedExcerpt": "command-transcript-excerpt.jsonl",
+  "correctedReceipt": "transcript-excerpt-receipt.json",
+  "productExecution": false,
+  "rootMutation": false,
+  "packetMutation": false,
+  "indexMutation": false
+}

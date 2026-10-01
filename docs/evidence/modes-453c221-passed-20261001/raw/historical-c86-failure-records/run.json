@@ -1,0 +1,84 @@
+{
+  "sourcePin": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+  "schema": {
+    "saveVersion": 4,
+    "simulationRevision": "4.0.1",
+    "saveFormat": "orcs-vs-fairies-save",
+    "sessionVersion": 1,
+    "sessionFormat": "orcs-vs-fairies/session",
+    "replayVersion": 1,
+    "replayFormat": "orcs-vs-fairies/replay",
+    "replayChecksumVersion": 4,
+    "replayInitialSaveVersion": 4
+  },
+  "base": "http://127.0.0.1:9241/",
+  "outputRoot": "/tmp/ovf-modes-final-proof.pk292s0o",
+  "startedAt": "2026-10-01T19:23:48.619Z",
+  "steps": [
+    {
+      "name": "natural-matches",
+      "args": [
+        "/tmp/ovf-modes-final-proof.pk292s0o/modules/verify-runtime.mjs"
+      ],
+      "startedAt": "2026-10-01T19:23:48.619Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T19:24:34.445Z"
+    },
+    {
+      "name": "main-browser",
+      "args": [
+        "scripts/verify_assembled_modes.mjs",
+        "http://127.0.0.1:9241/",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/tmp/ovf-modes-final-proof.pk292s0o/browser"
+      ],
+      "startedAt": "2026-10-01T19:24:34.721Z",
+      "result": "failed",
+      "failure": {
+        "message": "main-browser failed; inspect /tmp/ovf-modes-final-proof.pk292s0o/logs/main-browser.log\n\n1 !== 0\n"
+      },
+      "finishedAt": "2026-10-01T19:25:11.513Z"
+    }
+  ],
+  "result": "failed",
+  "serverPackageFiles": {
+    "campaign-runtime.mjs": {
+      "bytes": 696670,
+      "sha256": "a3cecf57e0492c1d309e1161280f906a9d9f7b58440e5c5cf5fce96734188fcc"
+    },
+    "canonical-campaign.mjs": {
+      "bytes": 506,
+      "sha256": "bbbc83906b0fa0a5d95dae34a2ce25dd0e872408ae2f0448ef119a85da299b54"
+    },
+    "node_modules": {
+      "bytes": 51,
+      "sha256": "8815df01ed193fbac2f65e48aff2cc0dafe721324a591b7a709465ea8f60caec",
+      "symlink": "/tmp/ovf-modes-final-checkout.parj3ofk/node_modules"
+    },
+    "rts-server.js": {
+      "bytes": 830242,
+      "sha256": "e1a22e6b5c98c4c73a4215cb2422213c8fca630c4822bd8dbbc2777c3ff7e8f2"
+    }
+  },
+  "serverDependencies": {
+    "link": "/tmp/ovf-modes-final-proof.pk292s0o/dist-server/node_modules",
+    "target": "/tmp/ovf-modes-final-checkout.parj3ofk/node_modules",
+    "wsPackageSha256": "c1ef91ca04eb4754c011c5f0e7638b5078ff71104fada400c44ac761cf93e0b1"
+  },
+  "method": "Fresh bundled natural matches; owned canonical main server and production browser controls; complete native session replay and continuation.",
+  "server": {
+    "bundle": "/tmp/ovf-modes-final-proof.pk292s0o/dist-server/rts-server.js",
+    "bundleSha256": "e1a22e6b5c98c4c73a4215cb2422213c8fca630c4822bd8dbbc2777c3ff7e8f2",
+    "port": 9241,
+    "pid": 97491,
+    "exitCode": 0,
+    "signal": null
+  },
+  "failure": {
+    "message": "main-browser failed; inspect /tmp/ovf-modes-final-proof.pk292s0o/logs/main-browser.log\n\n1 !== 0\n",
+    "stack": "AssertionError [ERR_ASSERTION]: main-browser failed; inspect /tmp/ovf-modes-final-proof.pk292s0o/logs/main-browser.log\n\n1 !== 0\n\n    at command (file:///tmp/ovf-modes-final-checkout.parj3ofk/scripts/modes/run.mjs:40:10)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///tmp/ovf-modes-final-checkout.parj3ofk/scripts/modes/run.mjs:68:2"
+  },
+  "serverClosed": true,
+  "listenersAfter": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess",
+  "finishedAt": "2026-10-01T19:25:14.587Z"
+}

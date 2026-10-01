@@ -1,0 +1,4172 @@
+{
+  "result": "passed retained payload/hash readback",
+  "recordedAtUtc": "2026-10-01T21:31:49.880520+00:00",
+  "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "proofRoot": "/tmp/ovf-modes-final-proof.uezs4d3d",
+  "retainedCheckout": "/tmp/ovf-modes-final-checkout.3i_ez0cq",
+  "productExecutionPerformed": false,
+  "proofFilesChanged": false,
+  "sourceDigest": "10eb86d645b975e0066a98e7617a24b25fb3861a65e0b07ac9c94d5665bb11b0",
+  "buildId": "5e49e689af13d4eef08c0760f904ad0bce2c2eebaa1144dea5d89cadecf310c0",
+  "inputCounts": {
+    "sourceFiles": 163,
+    "assetFiles": 394,
+    "configFiles": 7,
+    "scriptFiles": 15,
+    "testFiles": 7,
+    "modeScriptFiles": 10
+  },
+  "uniqueInputCount": 596,
+  "modules": {
+    "schema.mjs": {
+      "entry": "scripts/controls-proof/schema.ts",
+      "inputCount": 49,
+      "sha256": "2bdf688d3544ad5acb00c3b36583efbe876e7fb51e39d24e306c96b1e707ca0b"
+    },
+    "verify-native.mjs": {
+      "entry": "scripts/controls-proof/verify-native.ts",
+      "inputCount": 49,
+      "sha256": "b643d9edc6febdfb4af633499e683f79a569826b4d2f15273add8688273bf9f2"
+    },
+    "verify-runtime.mjs": {
+      "entry": "scripts/modes/verify-runtime.ts",
+      "inputCount": 51,
+      "sha256": "cf05c5a346592d7f36e04ad6f0a7026400a827b8587bc8d5aa08d436e75128ce"
+    }
+  },
+  "runtimePayloads": [
+    {
+      "name": "hill-duel",
+      "sessionPath": "/tmp/ovf-modes-final-proof.uezs4d3d/runtime/hill-duel.session.json",
+      "savePath": "/tmp/ovf-modes-final-proof.uezs4d3d/runtime/hill-duel.save.json",
+      "replayPath": "/tmp/ovf-modes-final-proof.uezs4d3d/runtime/hill-duel.replay.json",
+      "tick": 1029,
+      "winner": 0,
+      "winningTeam": 0,
+      "checksum": "6d14ef46",
+      "gameSaveSha256": "695e307e184937e5267f95611a96163c576e0028f69fcb75969e97345091c095",
+      "saveVersion": 4,
+      "actualReplaySimulationRevision": "4.0.1",
+      "comparedTicks": 729,
+      "resumeTicks": [
+        300
+      ],
+      "continuationSegments": [
+        {
+          "startTick": 300,
+          "endTick": 1029,
+          "comparedTicks": 729
+        }
+      ],
+      "firstDifference": null,
+      "reportedChecks": {
+        "completeEnvelopeRoundtripPassed": true,
+        "completeReplayEnvelopePassed": true,
+        "continuedRecorderHistoryPassed": true,
+        "replaySeekEnvelopePassed": true
+      },
+      "fullReplayAdvancedTicks": 1029,
+      "analysisSamples": 12,
+      "technologyTimings": 0,
+      "manualReplayCommands": 0,
+      "checkpoints": [
+        {
+          "path": "/tmp/ovf-modes-final-proof.uezs4d3d/runtime/hill-duel-tick-300.session.json",
+          "tick": 300,
+          "wave": 0,
+          "phase": "waiting",
+          "analysisSamples": 4,
+          "technologyTimings": 0
+        }
+      ],
+      "survival": null
+    },
+    {
+      "name": "relic-duel",
+      "sessionPath": "/tmp/ovf-modes-final-proof.uezs4d3d/runtime/relic-duel.session.json",
+      "savePath": "/tmp/ovf-modes-final-proof.uezs4d3d/runtime/relic-duel.save.json",
+      "replayPath": "/tmp/ovf-modes-final-proof.uezs4d3d/runtime/relic-duel.replay.json",
+      "tick": 867,
+      "winner": 0,
+      "winningTeam": 0,
+      "checksum": "580f91b1",
+      "gameSaveSha256": "4543d2f2249a786806af1381746a0c9a93531809609532a2c5631ac2033a18bd",
+      "saveVersion": 4,
+      "actualReplaySimulationRevision": "4.0.1",
+      "comparedTicks": 567,
+      "resumeTicks": [
+        300
+      ],
+      "continuationSegments": [
+        {
+          "startTick": 300,
+          "endTick": 867,
+          "comparedTicks": 567
+        }
+      ],
+      "firstDifference": null,
+      "reportedChecks": {
+        "completeEnvelopeRoundtripPassed": true,
+        "completeReplayEnvelopePassed": true,
+        "continuedRecorderHistoryPassed": true,
+        "replaySeekEnvelopePassed": true
+      },
+      "fullReplayAdvancedTicks": 867,
+      "analysisSamples": 10,
+      "technologyTimings": 0,
+      "manualReplayCommands": 0,
+      "checkpoints": [
+        {
+          "path": "/tmp/ovf-modes-final-proof.uezs4d3d/runtime/relic-duel-tick-300.session.json",
+          "tick": 300,
+          "wave": 0,
+          "phase": "waiting",
+          "analysisSamples": 4,
+          "technologyTimings": 0
+        }
+      ],
+      "survival": null
+    },
+    {
+      "name": "relic-contested",
+      "sessionPath": "/tmp/ovf-modes-final-proof.uezs4d3d/runtime/relic-contested.session.json",
+      "savePath": "/tmp/ovf-modes-final-proof.uezs4d3d/runtime/relic-contested.save.json",
+      "replayPath": "/tmp/ovf-modes-final-proof.uezs4d3d/runtime/relic-contested.replay.json",
+      "tick": 1367,
+      "winner": 0,
+      "winningTeam": 0,
+      "checksum": "d2e90e7c",
+      "gameSaveSha256": "5552b431d3d8e79128b949d0247c38a894ce589d4d7ebfc441884c4be5566916",
+      "saveVersion": 4,
+      "actualReplaySimulationRevision": "4.0.1",
+      "comparedTicks": 1067,
+      "resumeTicks": [
+        300
+      ],
+      "continuationSegments": [
+        {
+          "startTick": 300,
+          "endTick": 1367,
+          "comparedTicks": 1067
+        }
+      ],
+      "firstDifference": null,
+      "reportedChecks": {
+        "completeEnvelopeRoundtripPassed": true,
+        "completeReplayEnvelopePassed": true,
+        "continuedRecorderHistoryPassed": true,
+        "replaySeekEnvelopePassed": true
+      },
+      "fullReplayAdvancedTicks": 1367,
+      "analysisSamples": 15,
+      "technologyTimings": 2,
+      "manualReplayCommands": 0,
+      "checkpoints": [
+        {
+          "path": "/tmp/ovf-modes-final-proof.uezs4d3d/runtime/relic-contested-tick-300.session.json",
+          "tick": 300,
+          "wave": 0,
+          "phase": "waiting",
+          "analysisSamples": 4,
+          "technologyTimings": 0
+        }
+      ],
+      "survival": null
+    },
+    {
+      "name": "hill-2v2",
+      "sessionPath": "/tmp/ovf-modes-final-proof.uezs4d3d/runtime/hill-2v2.session.json",
+      "savePath": "/tmp/ovf-modes-final-proof.uezs4d3d/runtime/hill-2v2.save.json",
+      "replayPath": "/tmp/ovf-modes-final-proof.uezs4d3d/runtime/hill-2v2.replay.json",
+      "tick": 805,
+      "winner": 2,
+      "winningTeam": 1,
+      "checksum": "f095dd52",
+      "gameSaveSha256": "b0c869eee8c4fe49a68aaaa93d258bd4ac1886dbe8cacbbbef7b456b06a5d141",
+      "saveVersion": 4,
+      "actualReplaySimulationRevision": "4.0.1",
+      "comparedTicks": 505,
+      "resumeTicks": [
+        300
+      ],
+      "continuationSegments": [
+        {
+          "startTick": 300,
+          "endTick": 805,
+          "comparedTicks": 505
+        }
+      ],
+      "firstDifference": null,
+      "reportedChecks": {
+        "completeEnvelopeRoundtripPassed": true,
+        "completeReplayEnvelopePassed": true,
+        "continuedRecorderHistoryPassed": true,
+        "replaySeekEnvelopePassed": true
+      },
+      "fullReplayAdvancedTicks": 805,
+      "analysisSamples": 10,
+      "technologyTimings": 0,
+      "manualReplayCommands": 0,
+      "checkpoints": [
+        {
+          "path": "/tmp/ovf-modes-final-proof.uezs4d3d/runtime/hill-2v2-tick-300.session.json",
+          "tick": 300,
+          "wave": 0,
+          "phase": "waiting",
+          "analysisSamples": 4,
+          "technologyTimings": 0
+        }
+      ],
+      "survival": null
+    },
+    {
+      "name": "survival-five-waves",
+      "sessionPath": "/tmp/ovf-modes-final-proof.uezs4d3d/runtime/survival-five-waves.session.json",
+      "savePath": "/tmp/ovf-modes-final-proof.uezs4d3d/runtime/survival-five-waves.save.json",
+      "replayPath": "/tmp/ovf-modes-final-proof.uezs4d3d/runtime/survival-five-waves.replay.json",
+      "tick": 8190,
+      "winner": 0,
+      "winningTeam": 0,
+      "checksum": "a6e45622",
+      "gameSaveSha256": "c7f76ef6af8350a78ef1a49ce4f95bc12dcafd18d28b5d983fa3a3140b2b9cd8",
+      "saveVersion": 4,
+      "actualReplaySimulationRevision": "4.0.1",
+      "comparedTicks": 7890,
+      "resumeTicks": [
+        300,
+        6554,
+        6951,
+        7348,
+        7793
+      ],
+      "continuationSegments": [
+        {
+          "startTick": 300,
+          "endTick": 6554,
+          "comparedTicks": 6254
+        },
+        {
+          "startTick": 6554,
+          "endTick": 6951,
+          "comparedTicks": 397
+        },
+        {
+          "startTick": 6951,
+          "endTick": 7348,
+          "comparedTicks": 397
+        },
+        {
+          "startTick": 7348,
+          "endTick": 7793,
+          "comparedTicks": 445
+        },
+        {
+          "startTick": 7793,
+          "endTick": 8190,
+          "comparedTicks": 397
+        }
+      ],
+      "firstDifference": null,
+      "reportedChecks": {
+        "completeEnvelopeRoundtripPassed": true,
+        "completeReplayEnvelopePassed": true,
+        "continuedRecorderHistoryPassed": true,
+        "replaySeekEnvelopePassed": true
+      },
+      "fullReplayAdvancedTicks": 8190,
+      "analysisSamples": 83,
+      "technologyTimings": 5,
+      "manualReplayCommands": 0,
+      "checkpoints": [
+        {
+          "path": "/tmp/ovf-modes-final-proof.uezs4d3d/runtime/survival-five-waves-tick-300.session.json",
+          "tick": 300,
+          "wave": 0,
+          "phase": "waiting",
+          "analysisSamples": 4,
+          "technologyTimings": 0
+        },
+        {
+          "path": "/tmp/ovf-modes-final-proof.uezs4d3d/runtime/survival-five-waves-wave-1-recovery.session.json",
+          "tick": 6554,
+          "wave": 1,
+          "phase": "recovery",
+          "analysisSamples": 67,
+          "technologyTimings": 4
+        },
+        {
+          "path": "/tmp/ovf-modes-final-proof.uezs4d3d/runtime/survival-five-waves-wave-2-recovery.session.json",
+          "tick": 6951,
+          "wave": 2,
+          "phase": "recovery",
+          "analysisSamples": 71,
+          "technologyTimings": 4
+        },
+        {
+          "path": "/tmp/ovf-modes-final-proof.uezs4d3d/runtime/survival-five-waves-wave-3-recovery.session.json",
+          "tick": 7348,
+          "wave": 3,
+          "phase": "recovery",
+          "analysisSamples": 75,
+          "technologyTimings": 5
+        },
+        {
+          "path": "/tmp/ovf-modes-final-proof.uezs4d3d/runtime/survival-five-waves-wave-4-recovery.session.json",
+          "tick": 7793,
+          "wave": 4,
+          "phase": "recovery",
+          "analysisSamples": 79,
+          "technologyTimings": 5
+        }
+      ],
+      "survival": {
+        "wave": 5,
+        "nextWaveTick": 8093,
+        "spawnedIds": [
+          108,
+          109,
+          110,
+          111,
+          112
+        ],
+        "phase": "complete"
+      }
+    }
+  ],
+  "nativeBrowserPayloads": [
+    {
+      "inputPath": "/tmp/ovf-modes-final-proof.uezs4d3d/browser/local-custom-hill.session.json",
+      "verificationPath": "/tmp/ovf-modes-final-proof.uezs4d3d/native/local-custom-hill.session.verification.json",
+      "inputSha256": "82dfc756f9cfe1142911445178e2af43498f22fc232037e99cb31d6ef0d98a29",
+      "actualGameVersion": 4,
+      "actualReplaySimulationRevision": "4.0.1",
+      "finalTick": 40,
+      "rawBrowserCommandCount": 2,
+      "continuationCommandCount": 6,
+      "continuationCommandTypes": [
+        "hold",
+        "stop",
+        "move",
+        "move",
+        "hold",
+        "stop"
+      ],
+      "fourthContinuationCommandQueued": true,
+      "continuationStartTick": 40,
+      "continuationFinalTick": 140,
+      "normalTicks": 100,
+      "timestep": 0.05,
+      "movementTicks": 60,
+      "displacement": 1.164515654862113,
+      "checkerScriptSha256": "55b95c28ffb588727cbb4232b3bf8af7b25fc1d5fd541fb7344ae69991480784",
+      "executedBundleSha256": "b643d9edc6febdfb4af633499e683f79a569826b4d2f15273add8688273bf9f2",
+      "reportedEnvelopeHistoryChecks": {
+        "completeEnvelopeEqualityPassed": true,
+        "recorderEqualityPassed": true,
+        "allAcceptedContinuationCommandsRecorded": true,
+        "extendedReplayEqualityPassed": true
+      }
+    },
+    {
+      "inputPath": "/tmp/ovf-modes-final-proof.uezs4d3d/browser/local-build-report.session.json",
+      "verificationPath": "/tmp/ovf-modes-final-proof.uezs4d3d/native/local-build-report.session.verification.json",
+      "inputSha256": "3f930e4f32ac7b8e91c8c047588d75384426b59d5b9f11b78ed2052e9198bda6",
+      "actualGameVersion": 4,
+      "actualReplaySimulationRevision": "4.0.1",
+      "finalTick": 40,
+      "rawBrowserCommandCount": 2,
+      "continuationCommandCount": 6,
+      "continuationCommandTypes": [
+        "hold",
+        "stop",
+        "move",
+        "move",
+        "hold",
+        "stop"
+      ],
+      "fourthContinuationCommandQueued": true,
+      "continuationStartTick": 40,
+      "continuationFinalTick": 140,
+      "normalTicks": 100,
+      "timestep": 0.05,
+      "movementTicks": 60,
+      "displacement": 1.164515654862113,
+      "checkerScriptSha256": "55b95c28ffb588727cbb4232b3bf8af7b25fc1d5fd541fb7344ae69991480784",
+      "executedBundleSha256": "b643d9edc6febdfb4af633499e683f79a569826b4d2f15273add8688273bf9f2",
+      "reportedEnvelopeHistoryChecks": {
+        "completeEnvelopeEqualityPassed": true,
+        "recorderEqualityPassed": true,
+        "allAcceptedContinuationCommandsRecorded": true,
+        "extendedReplayEqualityPassed": true
+      }
+    }
+  ],
+  "browser": {
+    "profiles": [
+      "local-custom-hill",
+      "host",
+      "guest"
+    ],
+    "strictErrorArrays": {
+      "pageErrors": [],
+      "consoleErrors": [],
+      "failedRequests": [],
+      "httpErrors": [],
+      "errors": []
+    },
+    "checkCount": 13,
+    "closed": true
+  },
+  "originalLauncherSteps": [
+    {
+      "name": "natural-matches",
+      "args": [
+        "/tmp/ovf-modes-final-proof.uezs4d3d/modules/verify-runtime.mjs"
+      ],
+      "startedAt": "2026-10-01T21:15:29.124Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T21:16:14.328Z"
+    },
+    {
+      "name": "main-browser",
+      "args": [
+        "scripts/verify_assembled_modes.mjs",
+        "http://127.0.0.1:9241/",
+        "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "/tmp/ovf-modes-final-proof.uezs4d3d/browser"
+      ],
+      "startedAt": "2026-10-01T21:16:14.604Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T21:16:51.066Z"
+    },
+    {
+      "name": "native-local-custom-hill.session",
+      "args": [
+        "/tmp/ovf-modes-final-proof.uezs4d3d/modules/verify-native.mjs",
+        "/tmp/ovf-modes-final-proof.uezs4d3d/browser/local-custom-hill.session.json",
+        "/tmp/ovf-modes-final-proof.uezs4d3d/native/local-custom-hill.session.verification.json",
+        "453c2218af9973b9eca8fb78392435bd9d46a740"
+      ],
+      "startedAt": "2026-10-01T21:16:51.066Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T21:16:53.272Z"
+    },
+    {
+      "name": "native-local-build-report.session",
+      "args": [
+        "/tmp/ovf-modes-final-proof.uezs4d3d/modules/verify-native.mjs",
+        "/tmp/ovf-modes-final-proof.uezs4d3d/browser/local-build-report.session.json",
+        "/tmp/ovf-modes-final-proof.uezs4d3d/native/local-build-report.session.verification.json",
+        "453c2218af9973b9eca8fb78392435bd9d46a740"
+      ],
+      "startedAt": "2026-10-01T21:16:53.272Z",
+      "result": "passed",
+      "finishedAt": "2026-10-01T21:16:55.476Z"
+    }
+  ],
+  "originalPostflight": {
+    "path": "/tmp/ovf-modes-postflight-453c221.x9kv45_h/postflight.json",
+    "result": "passed structural/hash audit",
+    "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+    "simulationsExecuted": false,
+    "naturalCases": [
+      {
+        "name": "hill-duel",
+        "tick": 1029,
+        "comparedTicks": 729,
+        "resumeTicks": [
+          300
+        ]
+      },
+      {
+        "name": "relic-duel",
+        "tick": 867,
+        "comparedTicks": 567,
+        "resumeTicks": [
+          300
+        ]
+      },
+      {
+        "name": "relic-contested",
+        "tick": 1367,
+        "comparedTicks": 1067,
+        "resumeTicks": [
+          300
+        ]
+      },
+      {
+        "name": "hill-2v2",
+        "tick": 805,
+        "comparedTicks": 505,
+        "resumeTicks": [
+          300
+        ]
+      },
+      {
+        "name": "survival-five-waves",
+        "tick": 8190,
+        "comparedTicks": 7890,
+        "resumeTicks": [
+          300,
+          6554,
+          6951,
+          7348,
+          7793
+        ]
+      }
+    ],
+    "nativeContinuations": 2,
+    "browserProfiles": 3,
+    "screenshotsToInspect": [
+      "local-custom-draft.png",
+      "local-hill-marker.png",
+      "hosted-relic-lobby.png",
+      "hosted-relic-collected.png",
+      "hosted-relic-marker.png",
+      "guest-relic-objectives.png"
+    ],
+    "artifactCount": 478,
+    "serverClosed": true,
+    "finalManifestSha256": "27c9cdc5149ca949a77c97c057bf22cdbf0a05e017b9dbff6c72aede9525d09d",
+    "finalHashesTsvSha256": "6a7d5668552066628c6bb6f40c9e57ba43065e6a529f7a1ccb3abbb753b8218e",
+    "limits": [
+      "Inspect all six screenshots separately. This audit checks retained reports and bytes; it does not independently rerun behavior."
+    ]
+  },
+  "separateCleanupObservations": {
+    "firstCleanupObserverFailure": {
+      "path": "/tmp/ovf-modes-dispatch-453c221.09ofch__/first-cleanup-observer-failure.json",
+      "record": {
+        "recordedAtUtc": "2026-10-01T21:18:16.614739+00:00",
+        "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "acceptanceToolSession": 12484,
+        "acceptanceToolExitCode": 0,
+        "launcherResult": "passed",
+        "originalExternalPostflightToolExitCode": 0,
+        "cleanupObserverResult": "failed direct temporary bind",
+        "failedCommandToolExitCode": 1,
+        "failedCheck": "socket.bind((127.0.0.1,9241)) without SO_REUSEADDR",
+        "errorType": "OSError",
+        "errno": 98,
+        "errorText": "Address already in use",
+        "earlierChecksObserved": {
+          "serverReportedExitCode": 0,
+          "serverClosed": true,
+          "serverPid": 747583,
+          "pidAbsent": true,
+          "listenersAfter": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\n",
+          "connectEx": 111
+        },
+        "subsequentReadOnlySocketInventory": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\n",
+        "acceptanceRerun": false,
+        "sourceChanged": false,
+        "bindingRetryPerformed": false
+      }
+    },
+    "laterCleanupObservation": {
+      "path": "/tmp/ovf-modes-dispatch-453c221.09ofch__/final-direct-cleanup-observation.json",
+      "record": {
+        "checkedAtUtc": "2026-10-01T21:19:52.881645+00:00",
+        "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "acceptanceToolSession": 12484,
+        "acceptanceToolExitCode": 0,
+        "earlierBindFailurePreserved": "/tmp/ovf-modes-dispatch-453c221.09ofch__/first-cleanup-observer-failure.json",
+        "earlierBindFailureCause": "not observed; no attribution asserted",
+        "acceptanceRerun": false,
+        "sourceChange": false,
+        "result": "passed direct current cleanup",
+        "serverPid": 747583,
+        "pidDirectlyAbsent": true,
+        "serverReportedExitCode": 0,
+        "allSocketStatesBefore": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\n",
+        "listenersAfter": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\n",
+        "connectEx": 111,
+        "directBindWithoutReusePassed": true,
+        "remainingOwnedNodeProcesses": [],
+        "remainingPlaywrightHeadlessChromiumProcesses": [],
+        "browserClosedReported": true,
+        "strictBrowserErrorArraysEmpty": true,
+        "protectedPort4173Untouched": true,
+        "finishedAtUtc": "2026-10-01T21:19:52.920335+00:00"
+      }
+    }
+  },
+  "checksPassed": 890,
+  "checksTotal": 890,
+  "failedChecks": [],
+  "independentBrowserNativeCrosscheck": {
+    "path": "/tmp/ovf-browser-native-audit.mhyy7e05/audit.json",
+    "sha256": "d4a8ae54d90e2a9c1e511c46399d4be72bf50705083be9e14ad5075bc4d3142d",
+    "result": "passed"
+  },
+  "checks": [
+    {
+      "name": "prepare source pin",
+      "passed": true
+    },
+    {
+      "name": "prepare complete schema",
+      "passed": true
+    },
+    {
+      "name": "modules source pin",
+      "passed": true
+    },
+    {
+      "name": "modules complete schema",
+      "passed": true
+    },
+    {
+      "name": "build source pin",
+      "passed": true
+    },
+    {
+      "name": "browserManifest source pin",
+      "passed": true
+    },
+    {
+      "name": "browserManifest complete schema",
+      "passed": true
+    },
+    {
+      "name": "browserProvenance source pin",
+      "passed": true
+    },
+    {
+      "name": "browserProvenance complete schema",
+      "passed": true
+    },
+    {
+      "name": "finalManifest source pin",
+      "passed": true
+    },
+    {
+      "name": "finalManifest complete schema",
+      "passed": true
+    },
+    {
+      "name": "runtimeProvenance source pin",
+      "passed": true
+    },
+    {
+      "name": "runtimeRun source pin",
+      "passed": true
+    },
+    {
+      "name": "launcher source pin",
+      "passed": true
+    },
+    {
+      "name": "launcher complete schema",
+      "passed": true
+    },
+    {
+      "name": "browser source pin",
+      "passed": true
+    },
+    {
+      "name": "browser complete schema",
+      "passed": true
+    },
+    {
+      "name": "runtime source commit",
+      "passed": true
+    },
+    {
+      "name": "browser source commit",
+      "passed": true
+    },
+    {
+      "name": "retained checkout HEAD",
+      "passed": true
+    },
+    {
+      "name": "596 unique admitted inputs including favicon",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/cli/main.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/cli/session.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/content-art/lantern/banner.svg",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/content-art/lantern/duelist.svg",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/content-art/lantern/sentinel.svg",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/ai-policy.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/ally-directives.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/campaign.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/coach.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/combat-targets.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/commander-rules.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/commands.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/conquest-types.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/conquest.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/content-registry.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/content.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/economy-cargo.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/economy-common.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/economy-definitions.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/economy-types.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/economy-validation.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/economy.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/environment.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/example-mod.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/faction-systems-content.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/faction-systems.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/geometry.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/history-hooks.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/legacy-content-v3.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/maps.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/match-rules.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/navigation.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/neutral-world.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/objectives.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/observation.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/planning.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/presentation-observation.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/progression.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/replays.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/saves.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/scenario-geometry.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/scenario-recordings.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/scenario-types.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/scenario-validation.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/scenarios.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/session-storage.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/simulation.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/specialist-content.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/specialist-systems.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/specialist-types.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/specialist-validation.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/tactics.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/team-ai.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/types.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/unit-progression.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/versions.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/world-actions.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/world-map.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/world-types.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/core/world-validation.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/editor/document.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/editor/editor-app.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/editor/launch.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/editor/map-package.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/editor/package-validation.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/editor/scenario-package.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/game/Appearance.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/game/ArtRuntime.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/game/Controls.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/game/Cosmetics.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/game/FactionOverlay.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/game/GameAudio.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/game/GameScene.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/game/Gamepad.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/game/ObjectiveMarkers.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/game/PlanningSession.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/game/ScenarioOverlay.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/game/TacticsOverlay.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/main.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/online/client.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/online/community-client.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/online/competition-client.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/online/competitions.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/online/cosmetic-client.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/online/cosmetics.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/online/protocol.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/online/render-state.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/qa/performance.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/scenarios/campaigns.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/scenarios/conquest-world.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/scenarios/demo.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/server/campaign-verification.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/server/canonical-campaign.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/server/community-http.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/server/community-packages.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/server/competitions.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/server/cosmetics.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/server/main.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/server/server.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/server/store.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/server/team-view.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/server/views.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/tournament/client.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/tournament/main.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/tournament/report.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/tournament/runner.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/tournament/service.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/tournament/types.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/AllyDirectives.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/CommunityBrowser.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/CompetitionTools.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/ConquestTools.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/CosmeticTools.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/DisplaySettings.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/EconomyTools.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/EditorTools.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/FactionTools.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/Hud.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/MatchRules.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/MinimapAlerts.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/ModLibrary.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/ObjectivePanel.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/OnlineLobby.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/PlanningTools.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/PracticeCoach.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/ScenarioAuthoring.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/ScenarioCampaignHost.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/ScenarioTools.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/SessionTools.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/SkirmishOptions.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/SkirmishRoster.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/TacticsTools.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/TeamAITools.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/TechnologyTree.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/Tooltip.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/TournamentDashboard.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/WorldTools.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/availability.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/community-browser.css",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/competition-tools.css",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/conquest-tools.css",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/cosmetic-tools.css",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/display-settings.css",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/economy-tools.css",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/editor-tools.css",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/faction-tools.css",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/match-rules.css",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/minimap-alerts.css",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/mod-library.css",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/objective-panel.css",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/online-lobby.css",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/practice-coach.css",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/scenario-authoring.css",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/scenario-host.css",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/scenario-tools.css",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/session-tools.css",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/skirmish-roster.css",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/specialist-ui.css",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/style.css",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/tactics-tools.css",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/tournament-dashboard.css",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/ui/world-tools.css",
+      "passed": true
+    },
+    {
+      "name": "pinned input src/vite-env.d.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-barracks-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-barracks-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-cavalry-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-cavalry-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-cavalry-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-cavalry-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-cavalry-2.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-cavalry-2.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-depot-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-depot-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-gate-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-gate-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-hq-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-hq-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-melee-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-melee-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-melee-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-melee-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-ranged-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-ranged-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-ranged-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-ranged-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-siege-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-siege-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-siege-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-siege-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-siege-2.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-siege-2.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-spear-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-spear-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-spear-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-spear-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-spear-2.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-spear-2.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-special-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-special-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-special-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-special-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-tower-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-tower-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-wall-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-wall-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-worker-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-worker-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-worker-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/automata-worker-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/crystal.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-barracks-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-barracks-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-cavalry-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-cavalry-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-cavalry-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-cavalry-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-cavalry-2.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-cavalry-2.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-depot-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-depot-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-gate-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-gate-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-hq-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-hq-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-melee-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-melee-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-melee-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-melee-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-ranged-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-ranged-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-ranged-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-ranged-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-siege-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-siege-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-siege-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-siege-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-siege-2.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-siege-2.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-spear-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-spear-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-spear-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-spear-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-spear-2.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-spear-2.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-special-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-special-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-special-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-special-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-tower-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-tower-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-wall-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-wall-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-worker-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-worker-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-worker-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/dwarf-worker-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-barracks-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-barracks-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-cavalry-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-cavalry-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-cavalry-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-cavalry-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-cavalry-2.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-cavalry-2.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-depot-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-depot-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-gate-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-gate-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-hq-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-hq-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-melee-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-melee-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-melee-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-melee-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-ranged-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-ranged-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-ranged-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-ranged-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-siege-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-siege-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-siege-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-siege-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-siege-2.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-siege-2.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-spear-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-spear-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-spear-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-spear-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-spear-2.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-spear-2.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-special-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-special-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-special-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-special-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-tower-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-tower-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-wall-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-wall-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-worker-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-worker-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-worker-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/fairy-worker-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/flowers.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/manifest.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-barracks-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-barracks-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-cavalry-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-cavalry-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-cavalry-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-cavalry-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-cavalry-2.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-cavalry-2.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-depot-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-depot-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-gate-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-gate-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-hq-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-hq-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-melee-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-melee-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-melee-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-melee-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-ranged-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-ranged-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-ranged-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-ranged-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-siege-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-siege-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-siege-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-siege-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-siege-2.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-siege-2.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-spear-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-spear-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-spear-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-spear-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-spear-2.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-spear-2.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-special-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-special-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-special-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-special-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-tower-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-tower-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-wall-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-wall-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-worker-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-worker-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-worker-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/orc-worker-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/ore.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/portrait-automata.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/portrait-dwarves.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/portrait-fairies.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/portrait-orcs.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/portrait-tideborn.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/portrait-undead.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/reeds.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/ruin-pillar.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/ruin-ring.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-automata-barracks.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-automata-cavalry.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-automata-depot.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-automata-gate.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-automata-hq.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-automata-melee.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-automata-ranged.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-automata-siege.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-automata-spear.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-automata-special.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-automata-tower.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-automata-wall.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-automata-worker.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-dwarf-barracks.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-dwarf-cavalry.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-dwarf-depot.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-dwarf-gate.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-dwarf-hq.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-dwarf-melee.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-dwarf-ranged.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-dwarf-siege.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-dwarf-spear.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-dwarf-special.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-dwarf-tower.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-dwarf-wall.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-dwarf-worker.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-economy-caravan.svg",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-economy-deep-mine.svg",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-economy-extractor.svg",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-economy-warehouse.svg",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-fairy-barracks.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-fairy-cavalry.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-fairy-depot.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-fairy-gate.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-fairy-hq.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-fairy-melee.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-fairy-ranged.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-fairy-siege.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-fairy-spear.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-fairy-special.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-fairy-tower.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-fairy-wall.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-fairy-worker.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-orc-barracks.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-orc-cavalry.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-orc-depot.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-orc-gate.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-orc-hq.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-orc-melee.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-orc-ranged.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-orc-siege.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-orc-spear.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-orc-special.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-orc-tower.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-orc-wall.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-orc-worker.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-tideborn-barracks.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-tideborn-cavalry.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-tideborn-depot.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-tideborn-gate.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-tideborn-hq.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-tideborn-melee.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-tideborn-ranged.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-tideborn-siege.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-tideborn-spear.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-tideborn-special.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-tideborn-tower.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-tideborn-wall.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-tideborn-worker.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-undead-barracks.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-undead-cavalry.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-undead-depot.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-undead-gate.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-undead-hq.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-undead-melee.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-undead-ranged.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-undead-siege.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-undead-spear.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-undead-special.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-undead-tower.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-undead-wall.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/selection-undead-worker.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/stump.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-barracks-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-barracks-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-cavalry-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-cavalry-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-cavalry-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-cavalry-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-cavalry-2.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-cavalry-2.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-depot-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-depot-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-gate-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-gate-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-hq-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-hq-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-melee-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-melee-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-melee-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-melee-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-ranged-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-ranged-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-ranged-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-ranged-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-siege-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-siege-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-siege-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-siege-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-siege-2.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-siege-2.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-spear-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-spear-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-spear-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-spear-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-spear-2.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-spear-2.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-special-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-special-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-special-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-special-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-tower-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-tower-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-wall-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-wall-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-worker-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-worker-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-worker-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tideborn-worker-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tile-bridge.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tile-dirt-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tile-dirt-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tile-dirt-2.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tile-grass-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tile-grass-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tile-grass-2.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tile-grass-3.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tile-mud.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tile-rock.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tile-shallows.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tile-stone.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tile-water.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tree-oak.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/tree-pine.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/ui-halt.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/ui-hold.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-barracks-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-barracks-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-cavalry-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-cavalry-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-cavalry-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-cavalry-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-cavalry-2.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-cavalry-2.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-depot-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-depot-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-gate-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-gate-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-hq-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-hq-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-melee-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-melee-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-melee-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-melee-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-ranged-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-ranged-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-ranged-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-ranged-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-siege-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-siege-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-siege-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-siege-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-siege-2.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-siege-2.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-spear-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-spear-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-spear-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-spear-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-spear-2.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-spear-2.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-special-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-special-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-special-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-special-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-tower-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-tower-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-wall-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-wall-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-worker-0.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-worker-0.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-worker-1.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/assets/undead-worker-1.png",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/favicon.ico",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/mods/lantern/banner.svg",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/mods/lantern/duelist.svg",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/mods/lantern/manifest.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input public/mods/lantern/sentinel.svg",
+      "passed": true
+    },
+    {
+      "name": "pinned input editor.html",
+      "passed": true
+    },
+    {
+      "name": "pinned input index.html",
+      "passed": true
+    },
+    {
+      "name": "pinned input package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input package.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input tsconfig.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input vite.config.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input vitest.config.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/controls-proof/README.md",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/controls-proof/browser-common.mjs",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/controls-proof/canonical.vitest.config.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/controls-proof/display.mjs",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/controls-proof/gamepad.mjs",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/controls-proof/mounted.test.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/controls-proof/mounted.vitest.config.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/controls-proof/prepare.mjs",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/controls-proof/run.mjs",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/controls-proof/saves.mjs",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/controls-proof/schema.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/controls-proof/verify-native.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/minimap-alerts/level-scenario.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/minimap-alerts/verify-native-export.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/verify_minimap_levels.mjs",
+      "passed": true
+    },
+    {
+      "name": "pinned input tests/appearance.test.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input tests/display-settings.test.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input tests/gamepad.test.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input tests/minimap-alerts.test.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input tests/minimap-level-focus.test.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input tests/session-storage.test.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input tests/session-tools.test.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/build-server.mjs",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/modes/README.md",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/modes/browser-entry.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/modes/prepare.mjs",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/modes/proof-common.mjs",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/modes/reproduce-survival-neutralization.mjs",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/modes/run.mjs",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/modes/verify-runtime.ts",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/tournaments/smoke.json",
+      "passed": true
+    },
+    {
+      "name": "pinned input scripts/verify_assembled_modes.mjs",
+      "passed": true
+    },
+    {
+      "name": "modules retained sourceFiles",
+      "passed": true
+    },
+    {
+      "name": "modules retained assetFiles",
+      "passed": true
+    },
+    {
+      "name": "modules retained configFiles",
+      "passed": true
+    },
+    {
+      "name": "modules retained scriptFiles",
+      "passed": true
+    },
+    {
+      "name": "modules retained testFiles",
+      "passed": true
+    },
+    {
+      "name": "modules retained modeScriptFiles",
+      "passed": true
+    },
+    {
+      "name": "build retained sourceFiles",
+      "passed": true
+    },
+    {
+      "name": "build retained assetFiles",
+      "passed": true
+    },
+    {
+      "name": "build retained configFiles",
+      "passed": true
+    },
+    {
+      "name": "build retained scriptFiles",
+      "passed": true
+    },
+    {
+      "name": "build retained testFiles",
+      "passed": true
+    },
+    {
+      "name": "build retained modeScriptFiles",
+      "passed": true
+    },
+    {
+      "name": "browserManifest retained sourceFiles",
+      "passed": true
+    },
+    {
+      "name": "browserManifest retained assetFiles",
+      "passed": true
+    },
+    {
+      "name": "browserManifest retained configFiles",
+      "passed": true
+    },
+    {
+      "name": "browserManifest retained scriptFiles",
+      "passed": true
+    },
+    {
+      "name": "browserManifest retained testFiles",
+      "passed": true
+    },
+    {
+      "name": "browserProvenance retained sourceFiles",
+      "passed": true
+    },
+    {
+      "name": "browserProvenance retained assetFiles",
+      "passed": true
+    },
+    {
+      "name": "browserProvenance retained configFiles",
+      "passed": true
+    },
+    {
+      "name": "browserProvenance retained scriptFiles",
+      "passed": true
+    },
+    {
+      "name": "browserProvenance retained testFiles",
+      "passed": true
+    },
+    {
+      "name": "finalManifest retained sourceFiles",
+      "passed": true
+    },
+    {
+      "name": "finalManifest retained assetFiles",
+      "passed": true
+    },
+    {
+      "name": "finalManifest retained configFiles",
+      "passed": true
+    },
+    {
+      "name": "finalManifest retained scriptFiles",
+      "passed": true
+    },
+    {
+      "name": "finalManifest retained testFiles",
+      "passed": true
+    },
+    {
+      "name": "finalManifest retained modeScriptFiles",
+      "passed": true
+    },
+    {
+      "name": "runtimeProvenance retained sourceFiles",
+      "passed": true
+    },
+    {
+      "name": "runtimeProvenance retained assetFiles",
+      "passed": true
+    },
+    {
+      "name": "runtimeProvenance retained configFiles",
+      "passed": true
+    },
+    {
+      "name": "runtimeProvenance retained scriptFiles",
+      "passed": true
+    },
+    {
+      "name": "runtimeProvenance retained testFiles",
+      "passed": true
+    },
+    {
+      "name": "runtimeProvenance retained modeScriptFiles",
+      "passed": true
+    },
+    {
+      "name": "runtime source SHA record",
+      "passed": true
+    },
+    {
+      "name": "prepare source digest",
+      "passed": true
+    },
+    {
+      "name": "modules source digest",
+      "passed": true
+    },
+    {
+      "name": "modules source build ID",
+      "passed": true
+    },
+    {
+      "name": "build source build ID",
+      "passed": true
+    },
+    {
+      "name": "browserManifest source build ID",
+      "passed": true
+    },
+    {
+      "name": "browserProvenance source build ID",
+      "passed": true
+    },
+    {
+      "name": "finalManifest source build ID",
+      "passed": true
+    },
+    {
+      "name": "runtimeProvenance source digest",
+      "passed": true
+    },
+    {
+      "name": "runtimeProvenance source build ID",
+      "passed": true
+    },
+    {
+      "name": "browser source build ID",
+      "passed": true
+    },
+    {
+      "name": "prepared source build ID",
+      "passed": true
+    },
+    {
+      "name": "runtime executed bundle hash",
+      "passed": true
+    },
+    {
+      "name": "runtime source binding report",
+      "passed": true
+    },
+    {
+      "name": "prepared module bytes manifest.json",
+      "passed": true
+    },
+    {
+      "name": "prepared module bytes schema.mjs",
+      "passed": true
+    },
+    {
+      "name": "prepared module bytes schema.mjs.meta.json",
+      "passed": true
+    },
+    {
+      "name": "prepared module bytes verify-native.mjs",
+      "passed": true
+    },
+    {
+      "name": "prepared module bytes verify-native.mjs.meta.json",
+      "passed": true
+    },
+    {
+      "name": "prepared module bytes verify-runtime.mjs",
+      "passed": true
+    },
+    {
+      "name": "prepared module bytes verify-runtime.mjs.meta.json",
+      "passed": true
+    },
+    {
+      "name": "module manifest bytes schema.mjs",
+      "passed": true
+    },
+    {
+      "name": "module manifest bytes schema.mjs.meta.json",
+      "passed": true
+    },
+    {
+      "name": "module manifest bytes verify-native.mjs",
+      "passed": true
+    },
+    {
+      "name": "module manifest bytes verify-native.mjs.meta.json",
+      "passed": true
+    },
+    {
+      "name": "module manifest bytes verify-runtime.mjs",
+      "passed": true
+    },
+    {
+      "name": "module manifest bytes verify-runtime.mjs.meta.json",
+      "passed": true
+    },
+    {
+      "name": "bundle metadata inputs schema.mjs",
+      "passed": true
+    },
+    {
+      "name": "bundle metadata entry schema.mjs",
+      "passed": true
+    },
+    {
+      "name": "bundle inputs pinned schema.mjs",
+      "passed": true
+    },
+    {
+      "name": "bundle metadata inputs verify-native.mjs",
+      "passed": true
+    },
+    {
+      "name": "bundle metadata entry verify-native.mjs",
+      "passed": true
+    },
+    {
+      "name": "bundle inputs pinned verify-native.mjs",
+      "passed": true
+    },
+    {
+      "name": "bundle metadata inputs verify-runtime.mjs",
+      "passed": true
+    },
+    {
+      "name": "bundle metadata entry verify-runtime.mjs",
+      "passed": true
+    },
+    {
+      "name": "bundle inputs pinned verify-runtime.mjs",
+      "passed": true
+    },
+    {
+      "name": "native embedded pin and digest",
+      "passed": true
+    },
+    {
+      "name": "runtime embedded pin and digest",
+      "passed": true
+    },
+    {
+      "name": "unchanged original fixture limits and seeds in pinned checker",
+      "passed": true
+    },
+    {
+      "name": "browser schema module hash",
+      "passed": true
+    },
+    {
+      "name": "browser module manifest hash",
+      "passed": true
+    },
+    {
+      "name": "browser build manifest hash",
+      "passed": true
+    },
+    {
+      "name": "all five original natural cases",
+      "passed": true
+    },
+    {
+      "name": "natural run reports completed",
+      "passed": true
+    },
+    {
+      "name": "hill-duel raw complete game envelope",
+      "passed": true
+    },
+    {
+      "name": "hill-duel raw complete replay envelope",
+      "passed": true
+    },
+    {
+      "name": "hill-duel replay initial save",
+      "passed": true
+    },
+    {
+      "name": "hill-duel raw formats and schemas",
+      "passed": true
+    },
+    {
+      "name": "hill-duel endpoint tick and checksum",
+      "passed": true
+    },
+    {
+      "name": "hill-duel actual complete-save SHA",
+      "passed": true
+    },
+    {
+      "name": "hill-duel raw winner and objectives",
+      "passed": true
+    },
+    {
+      "name": "hill-duel natural .05 ticks without manual replay commands",
+      "passed": true
+    },
+    {
+      "name": "hill-duel unmodified small seed",
+      "passed": true
+    },
+    {
+      "name": "hill-duel passed continuation/history/seek reports",
+      "passed": true
+    },
+    {
+      "name": "hill-duel advancing continuation segment arithmetic",
+      "passed": true
+    },
+    {
+      "name": "hill-duel-tick-300.session.json full saved envelope and replay metadata",
+      "passed": true
+    },
+    {
+      "name": "hill-duel-tick-300.session.json retained permanent history samples",
+      "passed": true
+    },
+    {
+      "name": "hill-duel raw checkpoint resume ticks",
+      "passed": true
+    },
+    {
+      "name": "hill-duel objective victory before enemy HQ defeat",
+      "passed": true
+    },
+    {
+      "name": "relic-duel raw complete game envelope",
+      "passed": true
+    },
+    {
+      "name": "relic-duel raw complete replay envelope",
+      "passed": true
+    },
+    {
+      "name": "relic-duel replay initial save",
+      "passed": true
+    },
+    {
+      "name": "relic-duel raw formats and schemas",
+      "passed": true
+    },
+    {
+      "name": "relic-duel endpoint tick and checksum",
+      "passed": true
+    },
+    {
+      "name": "relic-duel actual complete-save SHA",
+      "passed": true
+    },
+    {
+      "name": "relic-duel raw winner and objectives",
+      "passed": true
+    },
+    {
+      "name": "relic-duel natural .05 ticks without manual replay commands",
+      "passed": true
+    },
+    {
+      "name": "relic-duel unmodified small seed",
+      "passed": true
+    },
+    {
+      "name": "relic-duel passed continuation/history/seek reports",
+      "passed": true
+    },
+    {
+      "name": "relic-duel advancing continuation segment arithmetic",
+      "passed": true
+    },
+    {
+      "name": "relic-duel-tick-300.session.json full saved envelope and replay metadata",
+      "passed": true
+    },
+    {
+      "name": "relic-duel-tick-300.session.json retained permanent history samples",
+      "passed": true
+    },
+    {
+      "name": "relic-duel raw checkpoint resume ticks",
+      "passed": true
+    },
+    {
+      "name": "relic-duel objective victory before enemy HQ defeat",
+      "passed": true
+    },
+    {
+      "name": "relic-contested raw complete game envelope",
+      "passed": true
+    },
+    {
+      "name": "relic-contested raw complete replay envelope",
+      "passed": true
+    },
+    {
+      "name": "relic-contested replay initial save",
+      "passed": true
+    },
+    {
+      "name": "relic-contested raw formats and schemas",
+      "passed": true
+    },
+    {
+      "name": "relic-contested endpoint tick and checksum",
+      "passed": true
+    },
+    {
+      "name": "relic-contested actual complete-save SHA",
+      "passed": true
+    },
+    {
+      "name": "relic-contested raw winner and objectives",
+      "passed": true
+    },
+    {
+      "name": "relic-contested natural .05 ticks without manual replay commands",
+      "passed": true
+    },
+    {
+      "name": "relic-contested unmodified small seed",
+      "passed": true
+    },
+    {
+      "name": "relic-contested passed continuation/history/seek reports",
+      "passed": true
+    },
+    {
+      "name": "relic-contested advancing continuation segment arithmetic",
+      "passed": true
+    },
+    {
+      "name": "relic-contested-tick-300.session.json full saved envelope and replay metadata",
+      "passed": true
+    },
+    {
+      "name": "relic-contested-tick-300.session.json retained permanent history samples",
+      "passed": true
+    },
+    {
+      "name": "relic-contested raw checkpoint resume ticks",
+      "passed": true
+    },
+    {
+      "name": "relic-contested objective victory before enemy HQ defeat",
+      "passed": true
+    },
+    {
+      "name": "hill-2v2 raw complete game envelope",
+      "passed": true
+    },
+    {
+      "name": "hill-2v2 raw complete replay envelope",
+      "passed": true
+    },
+    {
+      "name": "hill-2v2 replay initial save",
+      "passed": true
+    },
+    {
+      "name": "hill-2v2 raw formats and schemas",
+      "passed": true
+    },
+    {
+      "name": "hill-2v2 endpoint tick and checksum",
+      "passed": true
+    },
+    {
+      "name": "hill-2v2 actual complete-save SHA",
+      "passed": true
+    },
+    {
+      "name": "hill-2v2 raw winner and objectives",
+      "passed": true
+    },
+    {
+      "name": "hill-2v2 natural .05 ticks without manual replay commands",
+      "passed": true
+    },
+    {
+      "name": "hill-2v2 unmodified small seed",
+      "passed": true
+    },
+    {
+      "name": "hill-2v2 passed continuation/history/seek reports",
+      "passed": true
+    },
+    {
+      "name": "hill-2v2 advancing continuation segment arithmetic",
+      "passed": true
+    },
+    {
+      "name": "hill-2v2-tick-300.session.json full saved envelope and replay metadata",
+      "passed": true
+    },
+    {
+      "name": "hill-2v2-tick-300.session.json retained permanent history samples",
+      "passed": true
+    },
+    {
+      "name": "hill-2v2 raw checkpoint resume ticks",
+      "passed": true
+    },
+    {
+      "name": "hill-2v2 objective victory before enemy HQ defeat",
+      "passed": true
+    },
+    {
+      "name": "survival-five-waves raw complete game envelope",
+      "passed": true
+    },
+    {
+      "name": "survival-five-waves raw complete replay envelope",
+      "passed": true
+    },
+    {
+      "name": "survival-five-waves replay initial save",
+      "passed": true
+    },
+    {
+      "name": "survival-five-waves raw formats and schemas",
+      "passed": true
+    },
+    {
+      "name": "survival-five-waves endpoint tick and checksum",
+      "passed": true
+    },
+    {
+      "name": "survival-five-waves actual complete-save SHA",
+      "passed": true
+    },
+    {
+      "name": "survival-five-waves raw winner and objectives",
+      "passed": true
+    },
+    {
+      "name": "survival-five-waves natural .05 ticks without manual replay commands",
+      "passed": true
+    },
+    {
+      "name": "survival-five-waves unmodified small seed",
+      "passed": true
+    },
+    {
+      "name": "survival-five-waves passed continuation/history/seek reports",
+      "passed": true
+    },
+    {
+      "name": "survival-five-waves advancing continuation segment arithmetic",
+      "passed": true
+    },
+    {
+      "name": "survival-five-waves-tick-300.session.json full saved envelope and replay metadata",
+      "passed": true
+    },
+    {
+      "name": "survival-five-waves-tick-300.session.json retained permanent history samples",
+      "passed": true
+    },
+    {
+      "name": "survival-five-waves-wave-1-recovery.session.json full saved envelope and replay metadata",
+      "passed": true
+    },
+    {
+      "name": "survival-five-waves-wave-1-recovery.session.json retained permanent history samples",
+      "passed": true
+    },
+    {
+      "name": "survival-five-waves-wave-2-recovery.session.json full saved envelope and replay metadata",
+      "passed": true
+    },
+    {
+      "name": "survival-five-waves-wave-2-recovery.session.json retained permanent history samples",
+      "passed": true
+    },
+    {
+      "name": "survival-five-waves-wave-3-recovery.session.json full saved envelope and replay metadata",
+      "passed": true
+    },
+    {
+      "name": "survival-five-waves-wave-3-recovery.session.json retained permanent history samples",
+      "passed": true
+    },
+    {
+      "name": "survival-five-waves-wave-4-recovery.session.json full saved envelope and replay metadata",
+      "passed": true
+    },
+    {
+      "name": "survival-five-waves-wave-4-recovery.session.json retained permanent history samples",
+      "passed": true
+    },
+    {
+      "name": "survival-five-waves raw checkpoint resume ticks",
+      "passed": true
+    },
+    {
+      "name": "survival natural five-wave endpoint",
+      "passed": true
+    },
+    {
+      "name": "survival recovery checkpoints all four waves",
+      "passed": true
+    },
+    {
+      "name": "survival reported natural spawns",
+      "passed": true
+    },
+    {
+      "name": "local-custom-hill native input actual schema",
+      "passed": true
+    },
+    {
+      "name": "local-custom-hill native input hash and path",
+      "passed": true
+    },
+    {
+      "name": "local-custom-hill input hash in browser and final manifests",
+      "passed": true
+    },
+    {
+      "name": "local-custom-hill actual game envelope hash",
+      "passed": true
+    },
+    {
+      "name": "local-custom-hill native verification pin and schema",
+      "passed": true
+    },
+    {
+      "name": "local-custom-hill checker and executed bundle hashes",
+      "passed": true
+    },
+    {
+      "name": "local-custom-hill native source provenance pin/digest/build",
+      "passed": true
+    },
+    {
+      "name": "local-custom-hill native source provenance raw file hashes",
+      "passed": true
+    },
+    {
+      "name": "local-custom-hill native whole-envelope/history reports",
+      "passed": true
+    },
+    {
+      "name": "local-custom-hill replay and game endpoints",
+      "passed": true
+    },
+    {
+      "name": "local-custom-hill raw accepted browser history commands",
+      "passed": true
+    },
+    {
+      "name": "local-custom-hill six native continuation commands and queued fourth",
+      "passed": true
+    },
+    {
+      "name": "local-custom-hill 100 normal .05 advancing native ticks",
+      "passed": true
+    },
+    {
+      "name": "local-custom-hill whole envelope and recorder continuation reports",
+      "passed": true
+    },
+    {
+      "name": "local-custom-hill retained command and advancing checkpoint hashes",
+      "passed": true
+    },
+    {
+      "name": "local-build-report native input actual schema",
+      "passed": true
+    },
+    {
+      "name": "local-build-report native input hash and path",
+      "passed": true
+    },
+    {
+      "name": "local-build-report input hash in browser and final manifests",
+      "passed": true
+    },
+    {
+      "name": "local-build-report actual game envelope hash",
+      "passed": true
+    },
+    {
+      "name": "local-build-report native verification pin and schema",
+      "passed": true
+    },
+    {
+      "name": "local-build-report checker and executed bundle hashes",
+      "passed": true
+    },
+    {
+      "name": "local-build-report native source provenance pin/digest/build",
+      "passed": true
+    },
+    {
+      "name": "local-build-report native source provenance raw file hashes",
+      "passed": true
+    },
+    {
+      "name": "local-build-report native whole-envelope/history reports",
+      "passed": true
+    },
+    {
+      "name": "local-build-report replay and game endpoints",
+      "passed": true
+    },
+    {
+      "name": "local-build-report raw accepted browser history commands",
+      "passed": true
+    },
+    {
+      "name": "local-build-report six native continuation commands and queued fourth",
+      "passed": true
+    },
+    {
+      "name": "local-build-report 100 normal .05 advancing native ticks",
+      "passed": true
+    },
+    {
+      "name": "local-build-report whole envelope and recorder continuation reports",
+      "passed": true
+    },
+    {
+      "name": "local-build-report retained command and advancing checkpoint hashes",
+      "passed": true
+    },
+    {
+      "name": "both raw browser native sessions equal",
+      "passed": true
+    },
+    {
+      "name": "bug report raw native session export",
+      "passed": true
+    },
+    {
+      "name": "all strict browser error arrays empty",
+      "passed": true
+    },
+    {
+      "name": "pinned browser observer collects every HTTP status at least 400",
+      "passed": true
+    },
+    {
+      "name": "pinned browser finalization requires all four observer arrays empty",
+      "passed": true
+    },
+    {
+      "name": "browser reported closed and passed",
+      "passed": true
+    },
+    {
+      "name": "three real browser profiles",
+      "passed": true
+    },
+    {
+      "name": "served compiled chunks unchanged",
+      "passed": true
+    },
+    {
+      "name": "four original launcher steps all passed",
+      "passed": true
+    },
+    {
+      "name": "original natural step arguments",
+      "passed": true
+    },
+    {
+      "name": "original browser step arguments",
+      "passed": true
+    },
+    {
+      "name": "original launcher final pass and closure",
+      "passed": true
+    },
+    {
+      "name": "original native step arguments 2",
+      "passed": true
+    },
+    {
+      "name": "original native step arguments 3",
+      "passed": true
+    },
+    {
+      "name": "original external structural/hash postflight passed",
+      "passed": true
+    },
+    {
+      "name": "original postflight terminal inventory hashes",
+      "passed": true
+    },
+    {
+      "name": "first failed bind observation retained separately",
+      "passed": true
+    },
+    {
+      "name": "later closure observation retains failed-bind path",
+      "passed": true
+    },
+    {
+      "name": "independent browser native readback output",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory prepare.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory modules/manifest.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory build-manifest.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory browser/manifest.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory browser/provenance.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/provenance.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/run.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory run.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory browser/browser-proof.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/runtime-results.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/source-sha256.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory modules/verify-runtime.mjs",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory modules/schema.mjs",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory modules/schema.mjs.meta.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory modules/verify-native.mjs",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory modules/verify-native.mjs.meta.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory modules/verify-runtime.mjs.meta.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/hill-duel.session.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/hill-duel.save.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/hill-duel.replay.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/hill-duel-initial.save.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/hill-duel-tick-300.session.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/hill-duel-tick-300.save.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/relic-duel.session.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/relic-duel.save.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/relic-duel.replay.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/relic-duel-initial.save.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/relic-duel-tick-300.session.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/relic-duel-tick-300.save.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/relic-contested.session.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/relic-contested.save.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/relic-contested.replay.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/relic-contested-initial.save.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/relic-contested-tick-300.session.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/relic-contested-tick-300.save.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/hill-2v2.session.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/hill-2v2.save.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/hill-2v2.replay.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/hill-2v2-initial.save.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/hill-2v2-tick-300.session.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/hill-2v2-tick-300.save.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/survival-five-waves.session.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/survival-five-waves.save.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/survival-five-waves.replay.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/survival-five-waves-initial.save.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/survival-five-waves-tick-300.session.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/survival-five-waves-tick-300.save.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/survival-five-waves-wave-1-recovery.session.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/survival-five-waves-wave-1-recovery.save.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/survival-five-waves-wave-2-recovery.session.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/survival-five-waves-wave-2-recovery.save.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/survival-five-waves-wave-3-recovery.session.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/survival-five-waves-wave-3-recovery.save.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/survival-five-waves-wave-4-recovery.session.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory runtime/survival-five-waves-wave-4-recovery.save.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory browser/local-custom-hill.session.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory native/local-custom-hill.session.verification.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory browser/local-build-report.session.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory native/local-build-report.session.verification.json",
+      "passed": true
+    },
+    {
+      "name": "read payload retained in final inventory browser/local-build-report.json",
+      "passed": true
+    },
+    {
+      "name": "all read evidence/source files unchanged throughout readback",
+      "passed": true
+    }
+  ],
+  "limits": [
+    "This audit parses, compares and hashes retained bytes. It does not independently rerun simulation, replay, browser, server, HTTP, tests or builds.",
+    "Continuation/history/seek behavioral equality is established by the retained passing original reports and the pinned checker assertions. This audit verifies their raw inputs, reported metrics and hash bindings.",
+    "Native continuation reports contain the six continuation commands; each raw browser replay contains two prior browser commands.",
+    "Off-sample survival checkpoint exports contain a current endpoint analysis sample. Permanent prior samples and technologies agree with final history; no assertion treats the transient endpoint sample as a final-history prefix.",
+    "The first failed temporary bind is a separate preserved observer failure. Its cause was not observed. It does not change the passed launcher or original structural/hash postflight.",
+    "Screenshot visual review and complete sealed-packet inventory are handled by the parent audit."
+  ]
+}

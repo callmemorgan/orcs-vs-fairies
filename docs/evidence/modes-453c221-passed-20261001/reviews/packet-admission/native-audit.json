@@ -1,0 +1,4261 @@
+{
+  "auditKind": "Read-only native receipt, raw input, and verifier-source crosscheck",
+  "packet": "/tmp/ovf-modes-complete-packet-453c221.dgl9yk4w",
+  "createdAt": "2026-10-01T21:46:51.828Z",
+  "executionBoundary": "Only built-in Node data parsing and hashing were executed. No project code or project imports, build, test, simulation, browser, server, HTTP request, probe, or proof rerun was executed by this audit.",
+  "files": [
+    {
+      "path": "proof/browser/local-custom-hill.session.json",
+      "bytes": 183224,
+      "sha256": "82dfc756f9cfe1142911445178e2af43498f22fc232037e99cb31d6ef0d98a29"
+    },
+    {
+      "path": "proof/browser/local-build-report.session.json",
+      "bytes": 183225,
+      "sha256": "3f930e4f32ac7b8e91c8c047588d75384426b59d5b9f11b78ed2052e9198bda6"
+    },
+    {
+      "path": "proof/browser/local-custom-hill.replay.json",
+      "bytes": 83435,
+      "sha256": "eb6f8bd90f648ce028a2baa0a48c62aea6435541c4f29ea6bd6d7a465e752b57"
+    },
+    {
+      "path": "proof/browser/local-build-report.json",
+      "bytes": 200205,
+      "sha256": "d84f670e5403c93362f87f48ae5706109286dceb503b0df9bc4d926a00bc50b8"
+    },
+    {
+      "path": "source-inputs/scripts/controls-proof/verify-native.ts",
+      "bytes": 17879,
+      "sha256": "55b95c28ffb588727cbb4232b3bf8af7b25fc1d5fd541fb7344ae69991480784"
+    },
+    {
+      "path": "proof/modules/verify-native.mjs",
+      "bytes": 774148,
+      "sha256": "b643d9edc6febdfb4af633499e683f79a569826b4d2f15273add8688273bf9f2"
+    }
+  ],
+  "receipts": [
+    {
+      "name": "local-custom-hill",
+      "receipt": {
+        "path": "proof/native/local-custom-hill.session.verification.json",
+        "bytes": 50203,
+        "sha256": "606c97bfe446fe666947d1551f9dd67670aad7c061eb6c4f2b330dd156c34e07"
+      },
+      "input": {
+        "path": "proof/browser/local-custom-hill.session.json",
+        "bytes": 183224,
+        "sha256": "82dfc756f9cfe1142911445178e2af43498f22fc232037e99cb31d6ef0d98a29"
+      },
+      "log": {
+        "path": "proof/logs/native-local-custom-hill.session.log",
+        "bytes": 291,
+        "sha256": "3206077c1e2bbbc718dfa60883fe1eea139453c3105e656b7699bb8b42e60763"
+      },
+      "receiptReportedPaths": {
+        "inputPath": "/tmp/ovf-modes-final-proof.uezs4d3d/browser/local-custom-hill.session.json",
+        "checkerScriptPath": "scripts/controls-proof/verify-native.ts",
+        "executedBundlePath": "/tmp/ovf-modes-final-proof.uezs4d3d/modules/verify-native.mjs"
+      },
+      "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "inputSchemaAndEndpoint": {
+        "format": "orcs-vs-fairies/session",
+        "sessionVersion": 1,
+        "gameFormat": "orcs-vs-fairies-save",
+        "saveVersion": 4,
+        "gameTick": 40,
+        "replayFormat": "orcs-vs-fairies/replay",
+        "replayVersion": 1,
+        "replayChecksumVersion": 4,
+        "simulationRevision": "4.0.1",
+        "initialSaveVersion": 4,
+        "initialTick": 0,
+        "finalTick": 40,
+        "finalChecksum": "2ffb6370",
+        "actions": [
+          {
+            "type": "advance",
+            "dt": 0.05,
+            "ticks": 9
+          },
+          {
+            "type": "command",
+            "side": 0,
+            "command": {
+              "type": "draftChoice",
+              "definitionId": "lantern:duelist"
+            }
+          },
+          {
+            "type": "advance",
+            "dt": 0.05,
+            "ticks": 18
+          },
+          {
+            "type": "command",
+            "side": 0,
+            "command": {
+              "type": "move",
+              "ids": [
+                47
+              ],
+              "x": 18.469375133514404,
+              "y": 18.469375133514404,
+              "level": 0,
+              "queued": false
+            }
+          },
+          {
+            "type": "advance",
+            "dt": 0.05,
+            "ticks": 13
+          }
+        ],
+        "analysisTicks": [
+          0,
+          40
+        ],
+        "technologies": [],
+        "gameEnvelopeSha256": "4f3b16460323c5bb24b447ab8f407533cc46fe196417b14b4044e29ea4ff4de9"
+      },
+      "checks": {
+        "inputSha256Match": true,
+        "checkerScriptSha256Match": true,
+        "executedBundleSha256Match": true,
+        "gameEnvelopeSha256Match": true,
+        "acceptedCommandsMatch": true,
+        "acceptedCommandEntriesMatch": true,
+        "initialTickMatch": true,
+        "finalTickMatch": true,
+        "checksumMatchesRawReplay": true,
+        "sourceInputBytesAndHashesMatch": true,
+        "sourceDigestMatch": true,
+        "buildIdMatch": true,
+        "moduleEmbeddedPinPresent": true,
+        "moduleEmbeddedSourceDigestPresent": true,
+        "continuationCountIsSix": true,
+        "continuationSequenceMatches": true,
+        "continuationAllCommandsUseActor": true,
+        "continuationFirstMoveUnqueued": true,
+        "continuationSecondMoveQueued": true,
+        "continuationTickArithmeticMatches": true,
+        "continuationStartMatchesRawEndpoint": true,
+        "continuationActorPresent": true,
+        "continuationActorSideMatch": true,
+        "continuationMovementStartMatchesRawActor": true,
+        "continuationPhaseTicksMatch": true,
+        "logFieldsMatchReceipt": true
+      },
+      "sourceProvenanceSummary": {
+        "sourceFileCount": 163,
+        "configFileCount": 7,
+        "fileCount": 170,
+        "digest": "10eb86d645b975e0066a98e7617a24b25fb3861a65e0b07ac9c94d5665bb11b0",
+        "recomputedDigest": "10eb86d645b975e0066a98e7617a24b25fb3861a65e0b07ac9c94d5665bb11b0",
+        "buildId": "5e49e689af13d4eef08c0760f904ad0bce2c2eebaa1144dea5d89cadecf310c0",
+        "recomputedBuildId": "5e49e689af13d4eef08c0760f904ad0bce2c2eebaa1144dea5d89cadecf310c0",
+        "digestMethod": "Actual source-input byte hashes, listed file order, path+NUL+SHA256+LF"
+      },
+      "sourceFileComparisons": [
+        {
+          "path": "editor.html",
+          "expectedBytes": 369,
+          "actualBytes": 369,
+          "expectedSha256": "cf320786f46eee47df14e86ef90d6e231ee7e277cd79bef81440c80cab2c8096",
+          "actualSha256": "cf320786f46eee47df14e86ef90d6e231ee7e277cd79bef81440c80cab2c8096",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "index.html",
+          "expectedBytes": 402,
+          "actualBytes": 402,
+          "expectedSha256": "a37da3fff167dc23686215dc4b9a2cd21e835443b8ab06fffab627d520450f24",
+          "actualSha256": "a37da3fff167dc23686215dc4b9a2cd21e835443b8ab06fffab627d520450f24",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "package-lock.json",
+          "expectedBytes": 54240,
+          "actualBytes": 54240,
+          "expectedSha256": "057f94325ad52a6e3f75d5decdb513baa4b9a0af2350651bb8886a61749a8c3d",
+          "actualSha256": "057f94325ad52a6e3f75d5decdb513baa4b9a0af2350651bb8886a61749a8c3d",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "package.json",
+          "expectedBytes": 1118,
+          "actualBytes": 1118,
+          "expectedSha256": "3370359ea75de06fe950a244b81a4fd0139805a50b587032c3e51e0b042f6ff6",
+          "actualSha256": "3370359ea75de06fe950a244b81a4fd0139805a50b587032c3e51e0b042f6ff6",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/cli/main.ts",
+          "expectedBytes": 1956,
+          "actualBytes": 1956,
+          "expectedSha256": "08758af144ae1285bf62cd7fc7f935f901649414709acd80172f2037b327c418",
+          "actualSha256": "08758af144ae1285bf62cd7fc7f935f901649414709acd80172f2037b327c418",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/cli/session.ts",
+          "expectedBytes": 5521,
+          "actualBytes": 5521,
+          "expectedSha256": "838b35ecf6db2c13f7fdab7d592b4bd91fb5bb549e86f7cf79432744e42d9b78",
+          "actualSha256": "838b35ecf6db2c13f7fdab7d592b4bd91fb5bb549e86f7cf79432744e42d9b78",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/content-art/lantern/banner.svg",
+          "expectedBytes": 3298,
+          "actualBytes": 3298,
+          "expectedSha256": "38ad6913b00fa37c4bd623fd2326de5c0a53c48325132701edeab6638d1b2dde",
+          "actualSha256": "38ad6913b00fa37c4bd623fd2326de5c0a53c48325132701edeab6638d1b2dde",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/content-art/lantern/duelist.svg",
+          "expectedBytes": 4022,
+          "actualBytes": 4022,
+          "expectedSha256": "aa5b231f3114661719024cdd582e8fe43cc7373a35d8f648acc9956ad8ca3734",
+          "actualSha256": "aa5b231f3114661719024cdd582e8fe43cc7373a35d8f648acc9956ad8ca3734",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/content-art/lantern/sentinel.svg",
+          "expectedBytes": 4490,
+          "actualBytes": 4490,
+          "expectedSha256": "691d89942ef0a41ae1eaff2e5e9c6df280b11b454313937f8b3747a1eedcec26",
+          "actualSha256": "691d89942ef0a41ae1eaff2e5e9c6df280b11b454313937f8b3747a1eedcec26",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/ai-policy.ts",
+          "expectedBytes": 7629,
+          "actualBytes": 7629,
+          "expectedSha256": "1dc343542d2cef97f22f608c53d01bc1d61ed6296918f98ced75e1c27fe8a75d",
+          "actualSha256": "1dc343542d2cef97f22f608c53d01bc1d61ed6296918f98ced75e1c27fe8a75d",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/ally-directives.ts",
+          "expectedBytes": 8140,
+          "actualBytes": 8140,
+          "expectedSha256": "2111264d57817395be56aa4df2f100c635d37a1433ed5ce0c70a5aa99d4a920b",
+          "actualSha256": "2111264d57817395be56aa4df2f100c635d37a1433ed5ce0c70a5aa99d4a920b",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/campaign.ts",
+          "expectedBytes": 21128,
+          "actualBytes": 21128,
+          "expectedSha256": "a665195656aab067bdbe9ab8246a7e6c45e574e2fecdfa839d3eb5d32a975b4b",
+          "actualSha256": "a665195656aab067bdbe9ab8246a7e6c45e574e2fecdfa839d3eb5d32a975b4b",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/coach.ts",
+          "expectedBytes": 14110,
+          "actualBytes": 14110,
+          "expectedSha256": "a1635f435afe307f249467ee66f8dc3950e6b82256b29d1f102f93eb633681a0",
+          "actualSha256": "a1635f435afe307f249467ee66f8dc3950e6b82256b29d1f102f93eb633681a0",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/combat-targets.ts",
+          "expectedBytes": 480,
+          "actualBytes": 480,
+          "expectedSha256": "424cb615d968b5906ad28b36e91e8224a2df20d27fb67da501667dd2851670f9",
+          "actualSha256": "424cb615d968b5906ad28b36e91e8224a2df20d27fb67da501667dd2851670f9",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/commander-rules.ts",
+          "expectedBytes": 814,
+          "actualBytes": 814,
+          "expectedSha256": "027b1854af6d8087803e1becde0986dbfdafa9f9cc753ca870dc548aa3e61406",
+          "actualSha256": "027b1854af6d8087803e1becde0986dbfdafa9f9cc753ca870dc548aa3e61406",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/commands.ts",
+          "expectedBytes": 7202,
+          "actualBytes": 7202,
+          "expectedSha256": "efd360936cb2dc168402299eea06eda1c50247c79ad675237a0a7a7318dd4632",
+          "actualSha256": "efd360936cb2dc168402299eea06eda1c50247c79ad675237a0a7a7318dd4632",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/conquest-types.ts",
+          "expectedBytes": 1799,
+          "actualBytes": 1799,
+          "expectedSha256": "5fe40ad55e5dd88a9be244f8686365437da80a1f3844a554fb493ea19a7c64bb",
+          "actualSha256": "5fe40ad55e5dd88a9be244f8686365437da80a1f3844a554fb493ea19a7c64bb",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/conquest.ts",
+          "expectedBytes": 30402,
+          "actualBytes": 30402,
+          "expectedSha256": "4c92201f8a238de44bd8122f7770c6b697b40bd32dfc31d4319f96dc8f8ed068",
+          "actualSha256": "4c92201f8a238de44bd8122f7770c6b697b40bd32dfc31d4319f96dc8f8ed068",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/content-registry.ts",
+          "expectedBytes": 30993,
+          "actualBytes": 30993,
+          "expectedSha256": "4f3b9211160320723f18264d7c6ca4719ce3988c68a4c50facb5d3c610d368d6",
+          "actualSha256": "4f3b9211160320723f18264d7c6ca4719ce3988c68a4c50facb5d3c610d368d6",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/content.ts",
+          "expectedBytes": 19805,
+          "actualBytes": 19805,
+          "expectedSha256": "4495966583a38f122f23f40c8cfbc0c7655b00cc463b37efdf26a0c9b0a86160",
+          "actualSha256": "4495966583a38f122f23f40c8cfbc0c7655b00cc463b37efdf26a0c9b0a86160",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/economy-cargo.ts",
+          "expectedBytes": 23563,
+          "actualBytes": 23563,
+          "expectedSha256": "1d929d274af8a2c7c6910618eea2416da5d57b7eee27b47678dffeca8eab7d91",
+          "actualSha256": "1d929d274af8a2c7c6910618eea2416da5d57b7eee27b47678dffeca8eab7d91",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/economy-common.ts",
+          "expectedBytes": 2811,
+          "actualBytes": 2811,
+          "expectedSha256": "d5adaa331a64a608b5d31047c5079c96b812db457216419674e669f9736e4c0f",
+          "actualSha256": "d5adaa331a64a608b5d31047c5079c96b812db457216419674e669f9736e4c0f",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/economy-definitions.ts",
+          "expectedBytes": 2157,
+          "actualBytes": 2157,
+          "expectedSha256": "410d6169bbcfdf73b67dd311382889107f67b491288bbaa939a27f51ff8328de",
+          "actualSha256": "410d6169bbcfdf73b67dd311382889107f67b491288bbaa939a27f51ff8328de",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/economy-types.ts",
+          "expectedBytes": 4490,
+          "actualBytes": 4490,
+          "expectedSha256": "11189ee79d0d06e92fc5dfd8d6b3a9cfd0c9e4db9fc31c4eb1d940cc1715e1a7",
+          "actualSha256": "11189ee79d0d06e92fc5dfd8d6b3a9cfd0c9e4db9fc31c4eb1d940cc1715e1a7",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/economy-validation.ts",
+          "expectedBytes": 13682,
+          "actualBytes": 13682,
+          "expectedSha256": "1c38f411439772f07e9170e4273689ec587c8390f5813e17f2cc5b82c19e5c59",
+          "actualSha256": "1c38f411439772f07e9170e4273689ec587c8390f5813e17f2cc5b82c19e5c59",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/economy.ts",
+          "expectedBytes": 20782,
+          "actualBytes": 20782,
+          "expectedSha256": "0ed27188846137326c76e0816c64fb518c525943e1e7d696c05bfb8a676df831",
+          "actualSha256": "0ed27188846137326c76e0816c64fb518c525943e1e7d696c05bfb8a676df831",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/environment.ts",
+          "expectedBytes": 17025,
+          "actualBytes": 17025,
+          "expectedSha256": "5d27a76df2284a776606cefed781f4e8cfa44fbf5f14c869c450da66ce64f8dd",
+          "actualSha256": "5d27a76df2284a776606cefed781f4e8cfa44fbf5f14c869c450da66ce64f8dd",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/example-mod.ts",
+          "expectedBytes": 2499,
+          "actualBytes": 2499,
+          "expectedSha256": "f5e4e84913ea80e57f2d41192adb9853835ba6bbea40bf043ea62744cefb525f",
+          "actualSha256": "f5e4e84913ea80e57f2d41192adb9853835ba6bbea40bf043ea62744cefb525f",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/faction-systems-content.ts",
+          "expectedBytes": 3429,
+          "actualBytes": 3429,
+          "expectedSha256": "bed461a7f9d0ab1acc1100e0a20c9bb0c2ddec399de40790634e12a2c109b139",
+          "actualSha256": "bed461a7f9d0ab1acc1100e0a20c9bb0c2ddec399de40790634e12a2c109b139",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/faction-systems.ts",
+          "expectedBytes": 23438,
+          "actualBytes": 23438,
+          "expectedSha256": "6ab56f94a7d2dc1ac33e866caad29e1ab9b97914150fdf99cc737e79c21dd9fa",
+          "actualSha256": "6ab56f94a7d2dc1ac33e866caad29e1ab9b97914150fdf99cc737e79c21dd9fa",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/geometry.ts",
+          "expectedBytes": 4909,
+          "actualBytes": 4909,
+          "expectedSha256": "d01cb8c5003443415cd43bef63dd087dad7238b1e82732222a1f6bb0bbccd283",
+          "actualSha256": "d01cb8c5003443415cd43bef63dd087dad7238b1e82732222a1f6bb0bbccd283",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/history-hooks.ts",
+          "expectedBytes": 1158,
+          "actualBytes": 1158,
+          "expectedSha256": "56a53b84aa389f3ccf189f72df2ecf2d632677f8a664b49fc16865e46bdf6f82",
+          "actualSha256": "56a53b84aa389f3ccf189f72df2ecf2d632677f8a664b49fc16865e46bdf6f82",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/legacy-content-v3.ts",
+          "expectedBytes": 15430,
+          "actualBytes": 15430,
+          "expectedSha256": "cf6f2540ea86570aad6896324d54870c11130816f64048cb9a567d8e7c2132c7",
+          "actualSha256": "cf6f2540ea86570aad6896324d54870c11130816f64048cb9a567d8e7c2132c7",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/maps.ts",
+          "expectedBytes": 13683,
+          "actualBytes": 13683,
+          "expectedSha256": "ef8e28bbbbb04478082b428ace10b9613fc8b7d3baa99315555684246890f195",
+          "actualSha256": "ef8e28bbbbb04478082b428ace10b9613fc8b7d3baa99315555684246890f195",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/match-rules.ts",
+          "expectedBytes": 18173,
+          "actualBytes": 18173,
+          "expectedSha256": "b31abb0ff8df8ecacaaa76ea6fafb2f87ff88f57f071389a74193538f4e534d5",
+          "actualSha256": "b31abb0ff8df8ecacaaa76ea6fafb2f87ff88f57f071389a74193538f4e534d5",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/navigation.ts",
+          "expectedBytes": 9590,
+          "actualBytes": 9590,
+          "expectedSha256": "27924b6c886d55ee2288a61101e2fa2f34853f6a20241e770c9c50c5d9c796a0",
+          "actualSha256": "27924b6c886d55ee2288a61101e2fa2f34853f6a20241e770c9c50c5d9c796a0",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/neutral-world.ts",
+          "expectedBytes": 16579,
+          "actualBytes": 16579,
+          "expectedSha256": "bf44c385259716251f014819c275d046579cf4a5fb905ea59efe924bc9eacc54",
+          "actualSha256": "bf44c385259716251f014819c275d046579cf4a5fb905ea59efe924bc9eacc54",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/objectives.ts",
+          "expectedBytes": 11262,
+          "actualBytes": 11262,
+          "expectedSha256": "89dac4b2a27a06681f64d82fa3c0d39dad4e2f27b3633720e9ca3cd3ccf23d6c",
+          "actualSha256": "89dac4b2a27a06681f64d82fa3c0d39dad4e2f27b3633720e9ca3cd3ccf23d6c",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/observation.ts",
+          "expectedBytes": 8808,
+          "actualBytes": 8808,
+          "expectedSha256": "793e9b7219eae2dd313ef0c3e27723402442ed250de891049076b589a40f1a30",
+          "actualSha256": "793e9b7219eae2dd313ef0c3e27723402442ed250de891049076b589a40f1a30",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/planning.ts",
+          "expectedBytes": 27860,
+          "actualBytes": 27860,
+          "expectedSha256": "6064f6ee2a99ed2a887318c55153372249bfd450a40ce58a9f6dfb03d21604e5",
+          "actualSha256": "6064f6ee2a99ed2a887318c55153372249bfd450a40ce58a9f6dfb03d21604e5",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/presentation-observation.ts",
+          "expectedBytes": 432,
+          "actualBytes": 432,
+          "expectedSha256": "892844e45c0990685b897a110eb4a0ad4d3be9ee345b5e7dc5eb1225fccd5562",
+          "actualSha256": "892844e45c0990685b897a110eb4a0ad4d3be9ee345b5e7dc5eb1225fccd5562",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/progression.ts",
+          "expectedBytes": 2307,
+          "actualBytes": 2307,
+          "expectedSha256": "baf7bfd7bfca212a09d7f13f2c5188eff4ccd15985e8542a92209777f57527b7",
+          "actualSha256": "baf7bfd7bfca212a09d7f13f2c5188eff4ccd15985e8542a92209777f57527b7",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/replays.ts",
+          "expectedBytes": 16630,
+          "actualBytes": 16630,
+          "expectedSha256": "c7d57a1df6536dee13fbbb35c58f4128fac1589e46f7fd62b296ce11804f1c17",
+          "actualSha256": "c7d57a1df6536dee13fbbb35c58f4128fac1589e46f7fd62b296ce11804f1c17",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/saves.ts",
+          "expectedBytes": 48856,
+          "actualBytes": 48856,
+          "expectedSha256": "2059e49775401d44813a02c3628de3055c3d7d944d4f887cf7a3639c145197c7",
+          "actualSha256": "2059e49775401d44813a02c3628de3055c3d7d944d4f887cf7a3639c145197c7",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/scenario-geometry.ts",
+          "expectedBytes": 4266,
+          "actualBytes": 4266,
+          "expectedSha256": "3f3213e385346a6977354896273edf80242823b6dfbfaf44bed04bc77e617645",
+          "actualSha256": "3f3213e385346a6977354896273edf80242823b6dfbfaf44bed04bc77e617645",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/scenario-recordings.ts",
+          "expectedBytes": 9224,
+          "actualBytes": 9224,
+          "expectedSha256": "311652f4b4505849928efe4ed4bf7e4d9641ab71716ecb37cc3d363e5f8f2780",
+          "actualSha256": "311652f4b4505849928efe4ed4bf7e4d9641ab71716ecb37cc3d363e5f8f2780",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/scenario-types.ts",
+          "expectedBytes": 5389,
+          "actualBytes": 5389,
+          "expectedSha256": "53659ab5bf18d5911da4dc38bee037f346ec68cab09a166b0d8efeaa1b265143",
+          "actualSha256": "53659ab5bf18d5911da4dc38bee037f346ec68cab09a166b0d8efeaa1b265143",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/scenario-validation.ts",
+          "expectedBytes": 21406,
+          "actualBytes": 21406,
+          "expectedSha256": "13c8183ecb993f10e06a722cbfde8b3269453930833b3ef957493a7dcbc09e69",
+          "actualSha256": "13c8183ecb993f10e06a722cbfde8b3269453930833b3ef957493a7dcbc09e69",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/scenarios.ts",
+          "expectedBytes": 39183,
+          "actualBytes": 39183,
+          "expectedSha256": "b5b6910d0974cde13818d5c9ef72485451a1d73b3c48068bfbb3ec5144aca710",
+          "actualSha256": "b5b6910d0974cde13818d5c9ef72485451a1d73b3c48068bfbb3ec5144aca710",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/session-storage.ts",
+          "expectedBytes": 12012,
+          "actualBytes": 12012,
+          "expectedSha256": "c3a9f04a0abc7bc29338b08bc1f7e65e7669002908ada7ba18836481b1f47c7e",
+          "actualSha256": "c3a9f04a0abc7bc29338b08bc1f7e65e7669002908ada7ba18836481b1f47c7e",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/simulation.ts",
+          "expectedBytes": 106228,
+          "actualBytes": 106228,
+          "expectedSha256": "e301c65d0352ffe648a5bc4ee6acbda1f562164deacdfe60f8f3b03e7bdccf35",
+          "actualSha256": "e301c65d0352ffe648a5bc4ee6acbda1f562164deacdfe60f8f3b03e7bdccf35",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/specialist-content.ts",
+          "expectedBytes": 6564,
+          "actualBytes": 6564,
+          "expectedSha256": "1a1cbb10836291795c51388e6401c672e23b311632b80e56e12a2b2e3a59817a",
+          "actualSha256": "1a1cbb10836291795c51388e6401c672e23b311632b80e56e12a2b2e3a59817a",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/specialist-systems.ts",
+          "expectedBytes": 22241,
+          "actualBytes": 22241,
+          "expectedSha256": "96644ada58215b32650d5e5d23643c784e1e08f49109a8ddc9bcc01145ded6c5",
+          "actualSha256": "96644ada58215b32650d5e5d23643c784e1e08f49109a8ddc9bcc01145ded6c5",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/specialist-types.ts",
+          "expectedBytes": 2303,
+          "actualBytes": 2303,
+          "expectedSha256": "b5ebc37625668d5bf416e4f21a65e28b1eae7e25a49c2f1a9b08129d3d65a549",
+          "actualSha256": "b5ebc37625668d5bf416e4f21a65e28b1eae7e25a49c2f1a9b08129d3d65a549",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/specialist-validation.ts",
+          "expectedBytes": 17272,
+          "actualBytes": 17272,
+          "expectedSha256": "47cc77f0006046c0c3d849caee9994627b8b299f2e39b1eea15b153d1835d79b",
+          "actualSha256": "47cc77f0006046c0c3d849caee9994627b8b299f2e39b1eea15b153d1835d79b",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/tactics.ts",
+          "expectedBytes": 18531,
+          "actualBytes": 18531,
+          "expectedSha256": "31e5e81e058e83bf94181c1c7203e1022d64aa0d8f715fb1e0082f04173c9797",
+          "actualSha256": "31e5e81e058e83bf94181c1c7203e1022d64aa0d8f715fb1e0082f04173c9797",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/team-ai.ts",
+          "expectedBytes": 25877,
+          "actualBytes": 25877,
+          "expectedSha256": "246afca59757266635d823fbd943d72ef500db0bab3385107da4f7ca930836b2",
+          "actualSha256": "246afca59757266635d823fbd943d72ef500db0bab3385107da4f7ca930836b2",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/types.ts",
+          "expectedBytes": 8433,
+          "actualBytes": 8433,
+          "expectedSha256": "9f2c6c337d2dd6669c1cd8dbee30c01c89c41de3d9caf962d57854310fe8dd33",
+          "actualSha256": "9f2c6c337d2dd6669c1cd8dbee30c01c89c41de3d9caf962d57854310fe8dd33",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/unit-progression.ts",
+          "expectedBytes": 8821,
+          "actualBytes": 8821,
+          "expectedSha256": "bd29a33226eac4122b63217904f13d40f17ce629d50e0c1f5eb56c443c72095a",
+          "actualSha256": "bd29a33226eac4122b63217904f13d40f17ce629d50e0c1f5eb56c443c72095a",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/versions.ts",
+          "expectedBytes": 346,
+          "actualBytes": 346,
+          "expectedSha256": "a8b20be0fb9abd0895fed0d4ad1c7612910f2d31bf9c12c85fd8a432c0ba3f24",
+          "actualSha256": "a8b20be0fb9abd0895fed0d4ad1c7612910f2d31bf9c12c85fd8a432c0ba3f24",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/world-actions.ts",
+          "expectedBytes": 7889,
+          "actualBytes": 7889,
+          "expectedSha256": "83b8c7dd2376a49811095ba731ee8df34121e72cfe4c3eea1ff16c31d99d4238",
+          "actualSha256": "83b8c7dd2376a49811095ba731ee8df34121e72cfe4c3eea1ff16c31d99d4238",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/world-map.ts",
+          "expectedBytes": 14404,
+          "actualBytes": 14404,
+          "expectedSha256": "51af55ec2bd0cee6e7dc7caf2f934e60e9a7a046daeb1d3d71e478c8be7c0dd2",
+          "actualSha256": "51af55ec2bd0cee6e7dc7caf2f934e60e9a7a046daeb1d3d71e478c8be7c0dd2",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/world-types.ts",
+          "expectedBytes": 2038,
+          "actualBytes": 2038,
+          "expectedSha256": "d0802170c228c886cc92959e01c1c1c4e358243809d8d476b4457159490dad8c",
+          "actualSha256": "d0802170c228c886cc92959e01c1c1c4e358243809d8d476b4457159490dad8c",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/world-validation.ts",
+          "expectedBytes": 7607,
+          "actualBytes": 7607,
+          "expectedSha256": "27d49a7c87a69f1e6a37ff22be85b50884dba6d1b1014529413776e2a7529374",
+          "actualSha256": "27d49a7c87a69f1e6a37ff22be85b50884dba6d1b1014529413776e2a7529374",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/editor/document.ts",
+          "expectedBytes": 3047,
+          "actualBytes": 3047,
+          "expectedSha256": "a746ef361a300a614c6fc8cc4449b67f168815f00edb8b361a1f2c50a1d230c4",
+          "actualSha256": "a746ef361a300a614c6fc8cc4449b67f168815f00edb8b361a1f2c50a1d230c4",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/editor/editor-app.ts",
+          "expectedBytes": 99,
+          "actualBytes": 99,
+          "expectedSha256": "fdc568dd878819ed713cf6ac76c2a0ab51dcf43674778deeb282eb95d2c73e93",
+          "actualSha256": "fdc568dd878819ed713cf6ac76c2a0ab51dcf43674778deeb282eb95d2c73e93",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/editor/launch.ts",
+          "expectedBytes": 1089,
+          "actualBytes": 1089,
+          "expectedSha256": "ac9616db3574b021530252af717817046c168188262f2a38352b8d727eab653b",
+          "actualSha256": "ac9616db3574b021530252af717817046c168188262f2a38352b8d727eab653b",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/editor/map-package.ts",
+          "expectedBytes": 22883,
+          "actualBytes": 22883,
+          "expectedSha256": "8a08f3e875a121b601700aa7aa31eb31185cf8f4b6bba5b6cb0d59354ef0d921",
+          "actualSha256": "8a08f3e875a121b601700aa7aa31eb31185cf8f4b6bba5b6cb0d59354ef0d921",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/editor/package-validation.ts",
+          "expectedBytes": 677,
+          "actualBytes": 677,
+          "expectedSha256": "a01739b75da643c91f86b7ee60088c8d020721e306b3c7f93705dcd94171004b",
+          "actualSha256": "a01739b75da643c91f86b7ee60088c8d020721e306b3c7f93705dcd94171004b",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/editor/scenario-package.ts",
+          "expectedBytes": 24306,
+          "actualBytes": 24306,
+          "expectedSha256": "74f6b8bb2d5d7ec7659f46b2cd23106ea323e9b57d55311206bb87791279a077",
+          "actualSha256": "74f6b8bb2d5d7ec7659f46b2cd23106ea323e9b57d55311206bb87791279a077",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/game/Appearance.ts",
+          "expectedBytes": 4298,
+          "actualBytes": 4298,
+          "expectedSha256": "56ef6e567518f90e9bbf403c41e74838741248c04a9e6f1919e154d0bb17558d",
+          "actualSha256": "56ef6e567518f90e9bbf403c41e74838741248c04a9e6f1919e154d0bb17558d",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/game/ArtRuntime.ts",
+          "expectedBytes": 9400,
+          "actualBytes": 9400,
+          "expectedSha256": "ac0df5d1203a4dc44b905b5791a8c447f19e7aabb1b388b50e6abc950c1ff239",
+          "actualSha256": "ac0df5d1203a4dc44b905b5791a8c447f19e7aabb1b388b50e6abc950c1ff239",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/game/Controls.ts",
+          "expectedBytes": 12074,
+          "actualBytes": 12074,
+          "expectedSha256": "1efe5f374a6a662ea24fb26b91dec35acabcd7b958b791d859628b6a25df9c03",
+          "actualSha256": "1efe5f374a6a662ea24fb26b91dec35acabcd7b958b791d859628b6a25df9c03",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/game/Cosmetics.ts",
+          "expectedBytes": 5323,
+          "actualBytes": 5323,
+          "expectedSha256": "8fbead76b858138228699e02b07f5322b3d0a5bf9e3e5b287971ec096053ee29",
+          "actualSha256": "8fbead76b858138228699e02b07f5322b3d0a5bf9e3e5b287971ec096053ee29",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/game/FactionOverlay.ts",
+          "expectedBytes": 2796,
+          "actualBytes": 2796,
+          "expectedSha256": "aa7e997fe5521a6a4f44e5fd14d7ba7ae4d2ec3288004cecec4dcbc099bafed2",
+          "actualSha256": "aa7e997fe5521a6a4f44e5fd14d7ba7ae4d2ec3288004cecec4dcbc099bafed2",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/game/GameAudio.ts",
+          "expectedBytes": 6151,
+          "actualBytes": 6151,
+          "expectedSha256": "2f9d8e5325829a84931cde0cf7f904a1f9b720213f48e9352a56cfc31080f6d9",
+          "actualSha256": "2f9d8e5325829a84931cde0cf7f904a1f9b720213f48e9352a56cfc31080f6d9",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/game/GameScene.ts",
+          "expectedBytes": 62102,
+          "actualBytes": 62102,
+          "expectedSha256": "2f6372937635cdb54367445eb22355d79f33a94ff75604180ff9b2848422cdec",
+          "actualSha256": "2f6372937635cdb54367445eb22355d79f33a94ff75604180ff9b2848422cdec",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/game/Gamepad.ts",
+          "expectedBytes": 7765,
+          "actualBytes": 7765,
+          "expectedSha256": "d78b066da6ed1183b40d6ca50e9e1b91528b2481a8e3d6f6a0daef57f6ba35ee",
+          "actualSha256": "d78b066da6ed1183b40d6ca50e9e1b91528b2481a8e3d6f6a0daef57f6ba35ee",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/game/ObjectiveMarkers.ts",
+          "expectedBytes": 3005,
+          "actualBytes": 3005,
+          "expectedSha256": "bbe0aeeaba8afbe892965a32539bc85332b45de16d287af421c75566c0095a03",
+          "actualSha256": "bbe0aeeaba8afbe892965a32539bc85332b45de16d287af421c75566c0095a03",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/game/PlanningSession.ts",
+          "expectedBytes": 12929,
+          "actualBytes": 12929,
+          "expectedSha256": "54254577b02b2204e69f0d99bb0d51ea4930e596b62336bd28d203d00e78565c",
+          "actualSha256": "54254577b02b2204e69f0d99bb0d51ea4930e596b62336bd28d203d00e78565c",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/game/ScenarioOverlay.ts",
+          "expectedBytes": 2598,
+          "actualBytes": 2598,
+          "expectedSha256": "6e7f1051503426ca8a98eef050592125cc00e5122d7898a093795562e7d56dc3",
+          "actualSha256": "6e7f1051503426ca8a98eef050592125cc00e5122d7898a093795562e7d56dc3",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/game/TacticsOverlay.ts",
+          "expectedBytes": 4332,
+          "actualBytes": 4332,
+          "expectedSha256": "d18bd35850f9af09a6c02d7a7549033fdfb5d8b492d939b87e5f8767f5148d7a",
+          "actualSha256": "d18bd35850f9af09a6c02d7a7549033fdfb5d8b492d939b87e5f8767f5148d7a",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/main.ts",
+          "expectedBytes": 47424,
+          "actualBytes": 47424,
+          "expectedSha256": "4b3de6a2c62517819e56d81e20f96aa10c8bfde8cd58ea70aa516fd84f0abda7",
+          "actualSha256": "4b3de6a2c62517819e56d81e20f96aa10c8bfde8cd58ea70aa516fd84f0abda7",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/online/client.ts",
+          "expectedBytes": 16286,
+          "actualBytes": 16286,
+          "expectedSha256": "5564377fb45ca04a86bab9ea25025de2194c0dfdd1ca75ca835109711b46a72a",
+          "actualSha256": "5564377fb45ca04a86bab9ea25025de2194c0dfdd1ca75ca835109711b46a72a",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/online/community-client.ts",
+          "expectedBytes": 20361,
+          "actualBytes": 20361,
+          "expectedSha256": "732ce711cc18119969100c98ea1a9f52899f5761bcfc057e48618d55081cdfc6",
+          "actualSha256": "732ce711cc18119969100c98ea1a9f52899f5761bcfc057e48618d55081cdfc6",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/online/competition-client.ts",
+          "expectedBytes": 1434,
+          "actualBytes": 1434,
+          "expectedSha256": "75f88a94e281550bfe87e5546dca24efe694c19747841c81648f00d922c6dab6",
+          "actualSha256": "75f88a94e281550bfe87e5546dca24efe694c19747841c81648f00d922c6dab6",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/online/competitions.ts",
+          "expectedBytes": 1869,
+          "actualBytes": 1869,
+          "expectedSha256": "e1e1a51653e2eb0e2c7d9c4a7f04b18ea03cf26e49a56bcb78d8cdb710cc9bad",
+          "actualSha256": "e1e1a51653e2eb0e2c7d9c4a7f04b18ea03cf26e49a56bcb78d8cdb710cc9bad",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/online/cosmetic-client.ts",
+          "expectedBytes": 1076,
+          "actualBytes": 1076,
+          "expectedSha256": "77a609233607c3efb6c9986083282f4cbe7ab28e764aecec9f7571cb7c611cb0",
+          "actualSha256": "77a609233607c3efb6c9986083282f4cbe7ab28e764aecec9f7571cb7c611cb0",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/online/cosmetics.ts",
+          "expectedBytes": 1388,
+          "actualBytes": 1388,
+          "expectedSha256": "411d139e5d90ebf390fc227fce6b0b961b746d1c9ec2782003d006b88ebc5685",
+          "actualSha256": "411d139e5d90ebf390fc227fce6b0b961b746d1c9ec2782003d006b88ebc5685",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/online/protocol.ts",
+          "expectedBytes": 2630,
+          "actualBytes": 2630,
+          "expectedSha256": "0ad3ac461e5be93e277a468bdd860b4c111282c219b0d1f7b381f22fd494030c",
+          "actualSha256": "0ad3ac461e5be93e277a468bdd860b4c111282c219b0d1f7b381f22fd494030c",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/online/render-state.ts",
+          "expectedBytes": 16508,
+          "actualBytes": 16508,
+          "expectedSha256": "1a48afcd1023c9c3f2270dcaf3c50d8a01eaffaf2dee9e7f511bcc528dba9621",
+          "actualSha256": "1a48afcd1023c9c3f2270dcaf3c50d8a01eaffaf2dee9e7f511bcc528dba9621",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/qa/performance.ts",
+          "expectedBytes": 9336,
+          "actualBytes": 9336,
+          "expectedSha256": "5f6b929e1761f903b5770d902482b3cc946fcd05af698e8a8fd3ccb0135aadb3",
+          "actualSha256": "5f6b929e1761f903b5770d902482b3cc946fcd05af698e8a8fd3ccb0135aadb3",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/scenarios/campaigns.ts",
+          "expectedBytes": 60270,
+          "actualBytes": 60270,
+          "expectedSha256": "5b651b94b6cbd30e7667e4745a65ceb53b7fde886754382a099a648588384c2a",
+          "actualSha256": "5b651b94b6cbd30e7667e4745a65ceb53b7fde886754382a099a648588384c2a",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/scenarios/conquest-world.ts",
+          "expectedBytes": 5295,
+          "actualBytes": 5295,
+          "expectedSha256": "b5a64d47ba13d5ed2b523a0ec781ac07f45bafbc1569d0bd3aed3d12cf74271c",
+          "actualSha256": "b5a64d47ba13d5ed2b523a0ec781ac07f45bafbc1569d0bd3aed3d12cf74271c",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/scenarios/demo.ts",
+          "expectedBytes": 28988,
+          "actualBytes": 28988,
+          "expectedSha256": "eaaebb087bad8414e2267d17dd999636379205f2440b4ab065326390adfbc87f",
+          "actualSha256": "eaaebb087bad8414e2267d17dd999636379205f2440b4ab065326390adfbc87f",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/server/campaign-verification.ts",
+          "expectedBytes": 3186,
+          "actualBytes": 3186,
+          "expectedSha256": "786e60e4db0d65dcaadf7f6d8bb3aa1af9633cc27d5a36374ae70f07f71a6c27",
+          "actualSha256": "786e60e4db0d65dcaadf7f6d8bb3aa1af9633cc27d5a36374ae70f07f71a6c27",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/server/canonical-campaign.ts",
+          "expectedBytes": 647,
+          "actualBytes": 647,
+          "expectedSha256": "bf87aa9996a58ddceb7e097069b4f971324f49e44a035a8c1768ea226f1703bf",
+          "actualSha256": "bf87aa9996a58ddceb7e097069b4f971324f49e44a035a8c1768ea226f1703bf",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/server/community-http.ts",
+          "expectedBytes": 2917,
+          "actualBytes": 2917,
+          "expectedSha256": "78f2ba78db245eed7de9ab69a802c17fa3487b312b6d9b5630a13c44035d5e6f",
+          "actualSha256": "78f2ba78db245eed7de9ab69a802c17fa3487b312b6d9b5630a13c44035d5e6f",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/server/community-packages.ts",
+          "expectedBytes": 21198,
+          "actualBytes": 21198,
+          "expectedSha256": "53f1c2c77f53ec5b5a0c6523c37822b1b32f54016fdd8cbd0b9e6618394cc697",
+          "actualSha256": "53f1c2c77f53ec5b5a0c6523c37822b1b32f54016fdd8cbd0b9e6618394cc697",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/server/competitions.ts",
+          "expectedBytes": 6390,
+          "actualBytes": 6390,
+          "expectedSha256": "9fd84d853f45e132299521341071e8958310e9634fed2d01976bdaf576d222da",
+          "actualSha256": "9fd84d853f45e132299521341071e8958310e9634fed2d01976bdaf576d222da",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/server/cosmetics.ts",
+          "expectedBytes": 5449,
+          "actualBytes": 5449,
+          "expectedSha256": "04ac51920d6a853310d4bf647b14c9901bd453a29e9854da18bc27b1efa74320",
+          "actualSha256": "04ac51920d6a853310d4bf647b14c9901bd453a29e9854da18bc27b1efa74320",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/server/main.ts",
+          "expectedBytes": 1129,
+          "actualBytes": 1129,
+          "expectedSha256": "51363f67f3e7b1829e6e20d346c561b7dcdeb2ba223fb7f1d9de28ad19c379ac",
+          "actualSha256": "51363f67f3e7b1829e6e20d346c561b7dcdeb2ba223fb7f1d9de28ad19c379ac",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/server/server.ts",
+          "expectedBytes": 50662,
+          "actualBytes": 50662,
+          "expectedSha256": "6cee3a6770a2e692ca4ad3ad155c3b06cf6f9116b43460f1eefe7eb7572a1f65",
+          "actualSha256": "6cee3a6770a2e692ca4ad3ad155c3b06cf6f9116b43460f1eefe7eb7572a1f65",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/server/store.ts",
+          "expectedBytes": 10118,
+          "actualBytes": 10118,
+          "expectedSha256": "94b40c5f2c40f97e12d69bce63110795eed2a44f72e2c05903a8a7e8efe9fa04",
+          "actualSha256": "94b40c5f2c40f97e12d69bce63110795eed2a44f72e2c05903a8a7e8efe9fa04",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/server/team-view.ts",
+          "expectedBytes": 5481,
+          "actualBytes": 5481,
+          "expectedSha256": "ac53d33a6595b1576e1ddbe3b03ade7ba762d3fa53dd90ec76e5f1036da3bee4",
+          "actualSha256": "ac53d33a6595b1576e1ddbe3b03ade7ba762d3fa53dd90ec76e5f1036da3bee4",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/server/views.ts",
+          "expectedBytes": 2864,
+          "actualBytes": 2864,
+          "expectedSha256": "fef071fb8d6f0729914abe1238206ef67179d59246f65e043d38e753f2e29578",
+          "actualSha256": "fef071fb8d6f0729914abe1238206ef67179d59246f65e043d38e753f2e29578",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/tournament/client.ts",
+          "expectedBytes": 1160,
+          "actualBytes": 1160,
+          "expectedSha256": "bc0e471e7d7c66bff6128a180216cff70b86950529dc986e001e00dcba5d835d",
+          "actualSha256": "bc0e471e7d7c66bff6128a180216cff70b86950529dc986e001e00dcba5d835d",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/tournament/main.ts",
+          "expectedBytes": 2016,
+          "actualBytes": 2016,
+          "expectedSha256": "033a940fd11d36d1ed9cc56c1a55e397fab9d6bd828d79b8b38c91d529b351cb",
+          "actualSha256": "033a940fd11d36d1ed9cc56c1a55e397fab9d6bd828d79b8b38c91d529b351cb",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/tournament/report.ts",
+          "expectedBytes": 17919,
+          "actualBytes": 17919,
+          "expectedSha256": "1408626ba8a11dabd4a696839cfad78d8b3b145397781a1995dedb60fad9d18e",
+          "actualSha256": "1408626ba8a11dabd4a696839cfad78d8b3b145397781a1995dedb60fad9d18e",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/tournament/runner.ts",
+          "expectedBytes": 15537,
+          "actualBytes": 15537,
+          "expectedSha256": "9c5b772cbabdbb727993cd1c59c3afb5ac159af9165df942a5b6ae0da17b004d",
+          "actualSha256": "9c5b772cbabdbb727993cd1c59c3afb5ac159af9165df942a5b6ae0da17b004d",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/tournament/service.ts",
+          "expectedBytes": 11854,
+          "actualBytes": 11854,
+          "expectedSha256": "d3fbe79245f74d54ea36b94d475f2becfabc7b4242a90aabebfbb99e06189988",
+          "actualSha256": "d3fbe79245f74d54ea36b94d475f2becfabc7b4242a90aabebfbb99e06189988",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/tournament/types.ts",
+          "expectedBytes": 3747,
+          "actualBytes": 3747,
+          "expectedSha256": "3df76bf918d47dcf8b56b3202f7914e4851253b72cce0b87233c76509520f4f7",
+          "actualSha256": "3df76bf918d47dcf8b56b3202f7914e4851253b72cce0b87233c76509520f4f7",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/AllyDirectives.ts",
+          "expectedBytes": 13907,
+          "actualBytes": 13907,
+          "expectedSha256": "0840941d20017782c868290904c35483ae0a3ad8708a982a10829efc9bfbd3f9",
+          "actualSha256": "0840941d20017782c868290904c35483ae0a3ad8708a982a10829efc9bfbd3f9",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/CommunityBrowser.ts",
+          "expectedBytes": 15717,
+          "actualBytes": 15717,
+          "expectedSha256": "697b8e9c50b7284eeeebe49624261b2b03ce869ef9f478e866be6014e23ca78e",
+          "actualSha256": "697b8e9c50b7284eeeebe49624261b2b03ce869ef9f478e866be6014e23ca78e",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/CompetitionTools.ts",
+          "expectedBytes": 12649,
+          "actualBytes": 12649,
+          "expectedSha256": "f9f0d92164339e27b7fd88b334dfd0e021d1149406f0ca507b23deb73fd23ef6",
+          "actualSha256": "f9f0d92164339e27b7fd88b334dfd0e021d1149406f0ca507b23deb73fd23ef6",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/ConquestTools.ts",
+          "expectedBytes": 14303,
+          "actualBytes": 14303,
+          "expectedSha256": "d0b34eec76c1744d7ffdd8de34b2fb1e294c6750e06e9ea831060d1743d143b3",
+          "actualSha256": "d0b34eec76c1744d7ffdd8de34b2fb1e294c6750e06e9ea831060d1743d143b3",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/CosmeticTools.ts",
+          "expectedBytes": 9273,
+          "actualBytes": 9273,
+          "expectedSha256": "c3650284bf657671bbca92649762a076cf5771130be321452ceb3e436db4ff0b",
+          "actualSha256": "c3650284bf657671bbca92649762a076cf5771130be321452ceb3e436db4ff0b",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/DisplaySettings.ts",
+          "expectedBytes": 9179,
+          "actualBytes": 9179,
+          "expectedSha256": "57c3ded44211c36aca439212464366643fa53a403d266c629d5a3db16e48b30d",
+          "actualSha256": "57c3ded44211c36aca439212464366643fa53a403d266c629d5a3db16e48b30d",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/EconomyTools.ts",
+          "expectedBytes": 46363,
+          "actualBytes": 46363,
+          "expectedSha256": "974158dcb1c95a154d59da153a342685297d049bfa099cef134180a6925571c5",
+          "actualSha256": "974158dcb1c95a154d59da153a342685297d049bfa099cef134180a6925571c5",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/EditorTools.ts",
+          "expectedBytes": 27384,
+          "actualBytes": 27384,
+          "expectedSha256": "9c76e9efbd37ddebad3417b42070bf2fc51f562aaae96183408c0d834d3429d4",
+          "actualSha256": "9c76e9efbd37ddebad3417b42070bf2fc51f562aaae96183408c0d834d3429d4",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/FactionTools.ts",
+          "expectedBytes": 24097,
+          "actualBytes": 24097,
+          "expectedSha256": "452c9964d4cae1495412811fc6ee5f600cea30675cfac234efe9d2b8e9648b7b",
+          "actualSha256": "452c9964d4cae1495412811fc6ee5f600cea30675cfac234efe9d2b8e9648b7b",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/Hud.ts",
+          "expectedBytes": 46307,
+          "actualBytes": 46307,
+          "expectedSha256": "827031c3c49dab942e00a11cd6531d633f351c9c2884ab1c704e187f81368828",
+          "actualSha256": "827031c3c49dab942e00a11cd6531d633f351c9c2884ab1c704e187f81368828",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/MatchRules.ts",
+          "expectedBytes": 14930,
+          "actualBytes": 14930,
+          "expectedSha256": "d8405bf18da57e1993d68355188d124f93d92124bc06f2d3b0191ff007554707",
+          "actualSha256": "d8405bf18da57e1993d68355188d124f93d92124bc06f2d3b0191ff007554707",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/MinimapAlerts.ts",
+          "expectedBytes": 4447,
+          "actualBytes": 4447,
+          "expectedSha256": "691591e60637391289ba5714b630250f8e25aadc7a8b414a8ded324710b5aad3",
+          "actualSha256": "691591e60637391289ba5714b630250f8e25aadc7a8b414a8ded324710b5aad3",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/ModLibrary.ts",
+          "expectedBytes": 7688,
+          "actualBytes": 7688,
+          "expectedSha256": "cd4121a4b25e9ccbc64e1166dc63a872c9de13f7b8756bb0c51b2579f2199a8e",
+          "actualSha256": "cd4121a4b25e9ccbc64e1166dc63a872c9de13f7b8756bb0c51b2579f2199a8e",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/ObjectivePanel.ts",
+          "expectedBytes": 18698,
+          "actualBytes": 18698,
+          "expectedSha256": "80c1e8b73c3baf9e8d1cf4fac5ff3cdabdea195e4ea4fc2892960c40395d5a15",
+          "actualSha256": "80c1e8b73c3baf9e8d1cf4fac5ff3cdabdea195e4ea4fc2892960c40395d5a15",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/OnlineLobby.ts",
+          "expectedBytes": 29283,
+          "actualBytes": 29283,
+          "expectedSha256": "91b8e98d7a3ec977186da829e7ba8aca7b3ddfead1fcf603e58a66bc672d597b",
+          "actualSha256": "91b8e98d7a3ec977186da829e7ba8aca7b3ddfead1fcf603e58a66bc672d597b",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/PlanningTools.ts",
+          "expectedBytes": 23381,
+          "actualBytes": 23381,
+          "expectedSha256": "6247d23bc23d2f8d0fa128315bbce3bbc7172c49946049f7b0fc536b953a94e7",
+          "actualSha256": "6247d23bc23d2f8d0fa128315bbce3bbc7172c49946049f7b0fc536b953a94e7",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/PracticeCoach.ts",
+          "expectedBytes": 9027,
+          "actualBytes": 9027,
+          "expectedSha256": "089ba4d8c7324b80957da2e7637985cab115d323f9f1eec733356b0df3382175",
+          "actualSha256": "089ba4d8c7324b80957da2e7637985cab115d323f9f1eec733356b0df3382175",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/ScenarioAuthoring.ts",
+          "expectedBytes": 43646,
+          "actualBytes": 43646,
+          "expectedSha256": "0ad2833c71d6b76a4f09ac31fdc5cf93f90e72a39e255681bf6cfb95732e7d16",
+          "actualSha256": "0ad2833c71d6b76a4f09ac31fdc5cf93f90e72a39e255681bf6cfb95732e7d16",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/ScenarioCampaignHost.ts",
+          "expectedBytes": 16640,
+          "actualBytes": 16640,
+          "expectedSha256": "352725a6ba02836a0f6e95894dbbb17cf703ef68f6b5e53b0b6553187a4b4a53",
+          "actualSha256": "352725a6ba02836a0f6e95894dbbb17cf703ef68f6b5e53b0b6553187a4b4a53",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/ScenarioTools.ts",
+          "expectedBytes": 12159,
+          "actualBytes": 12159,
+          "expectedSha256": "4eef03cbffcd9bf434c2684b0649fe86cd9b0a591eb50012fd24ba32df2e1176",
+          "actualSha256": "4eef03cbffcd9bf434c2684b0649fe86cd9b0a591eb50012fd24ba32df2e1176",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/SessionTools.ts",
+          "expectedBytes": 47196,
+          "actualBytes": 47196,
+          "expectedSha256": "e1e36fec742ba8fb0533abdb6a908ab2a8c9574649e435068efbf5d53575db1a",
+          "actualSha256": "e1e36fec742ba8fb0533abdb6a908ab2a8c9574649e435068efbf5d53575db1a",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/SkirmishOptions.ts",
+          "expectedBytes": 6413,
+          "actualBytes": 6413,
+          "expectedSha256": "e8c9ea0133a4913dc3cc77e0b9c2d0c33fa8d8373882d5656627cc78e20ba58a",
+          "actualSha256": "e8c9ea0133a4913dc3cc77e0b9c2d0c33fa8d8373882d5656627cc78e20ba58a",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/SkirmishRoster.ts",
+          "expectedBytes": 18764,
+          "actualBytes": 18764,
+          "expectedSha256": "a27fada09e0234323afbd3972d2ae833db7783ede34901418b27ec5f7ec8204d",
+          "actualSha256": "a27fada09e0234323afbd3972d2ae833db7783ede34901418b27ec5f7ec8204d",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/TacticsTools.ts",
+          "expectedBytes": 18409,
+          "actualBytes": 18409,
+          "expectedSha256": "e70b9bc289c7ac320e90f30fafe52f680d017b46476b3c7210e788fc2fd838c1",
+          "actualSha256": "e70b9bc289c7ac320e90f30fafe52f680d017b46476b3c7210e788fc2fd838c1",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/TeamAITools.ts",
+          "expectedBytes": 2824,
+          "actualBytes": 2824,
+          "expectedSha256": "c4bdeb35140acedbcb6b46d3a3c8d48551863210381ff8485b899851c5a2a543",
+          "actualSha256": "c4bdeb35140acedbcb6b46d3a3c8d48551863210381ff8485b899851c5a2a543",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/TechnologyTree.ts",
+          "expectedBytes": 4596,
+          "actualBytes": 4596,
+          "expectedSha256": "eed79508f6a16891e1cc16f4d822d4f46e05af5ed6b8c1b0ccd333bf03d78694",
+          "actualSha256": "eed79508f6a16891e1cc16f4d822d4f46e05af5ed6b8c1b0ccd333bf03d78694",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/Tooltip.ts",
+          "expectedBytes": 1440,
+          "actualBytes": 1440,
+          "expectedSha256": "7e4304346dd61c3e1024358e6081bf6b8298ff0758ea9776c8d48111fc8c236d",
+          "actualSha256": "7e4304346dd61c3e1024358e6081bf6b8298ff0758ea9776c8d48111fc8c236d",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/TournamentDashboard.ts",
+          "expectedBytes": 25690,
+          "actualBytes": 25690,
+          "expectedSha256": "e6f39eb2fc9256803fb2448d73f8db2cf88ded1923da237951a3d432462af065",
+          "actualSha256": "e6f39eb2fc9256803fb2448d73f8db2cf88ded1923da237951a3d432462af065",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/WorldTools.ts",
+          "expectedBytes": 8644,
+          "actualBytes": 8644,
+          "expectedSha256": "de578d72a8aaad99ad25bbe5b01dddf61fa4981eaeac999dcbc4975c3abe449c",
+          "actualSha256": "de578d72a8aaad99ad25bbe5b01dddf61fa4981eaeac999dcbc4975c3abe449c",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/availability.ts",
+          "expectedBytes": 1902,
+          "actualBytes": 1902,
+          "expectedSha256": "40926116445d719dafe63c5ca763a63ffba67718129a88734ec6448366c5185d",
+          "actualSha256": "40926116445d719dafe63c5ca763a63ffba67718129a88734ec6448366c5185d",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/community-browser.css",
+          "expectedBytes": 2561,
+          "actualBytes": 2561,
+          "expectedSha256": "3b59f418c756254240c2385a97553140534f8dfa2a6f7b253fdae2c7814cc5a0",
+          "actualSha256": "3b59f418c756254240c2385a97553140534f8dfa2a6f7b253fdae2c7814cc5a0",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/competition-tools.css",
+          "expectedBytes": 2256,
+          "actualBytes": 2256,
+          "expectedSha256": "8a485b28d3f10fe73acac5f722e2fd3e0d397b5cb322a8702c0e8206aa7dbd89",
+          "actualSha256": "8a485b28d3f10fe73acac5f722e2fd3e0d397b5cb322a8702c0e8206aa7dbd89",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/conquest-tools.css",
+          "expectedBytes": 1454,
+          "actualBytes": 1454,
+          "expectedSha256": "e1163a46326d5d151d0d475643a32f6f0b2c049d7bbbc348262671718612028d",
+          "actualSha256": "e1163a46326d5d151d0d475643a32f6f0b2c049d7bbbc348262671718612028d",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/cosmetic-tools.css",
+          "expectedBytes": 1878,
+          "actualBytes": 1878,
+          "expectedSha256": "8935b7c6b5283c2437c2161bd4dde29a256ad0412a19488571fe42a62a7f2fd5",
+          "actualSha256": "8935b7c6b5283c2437c2161bd4dde29a256ad0412a19488571fe42a62a7f2fd5",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/display-settings.css",
+          "expectedBytes": 4313,
+          "actualBytes": 4313,
+          "expectedSha256": "1dfd7358288814861ad67e2350fdf8d74310932f286634cb8e9eb68ac392f65d",
+          "actualSha256": "1dfd7358288814861ad67e2350fdf8d74310932f286634cb8e9eb68ac392f65d",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/economy-tools.css",
+          "expectedBytes": 3242,
+          "actualBytes": 3242,
+          "expectedSha256": "79ed95fec17ad4767b5f53b6b0189c3233ae9db59ec311bfff0838a3ffa25e60",
+          "actualSha256": "79ed95fec17ad4767b5f53b6b0189c3233ae9db59ec311bfff0838a3ffa25e60",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/editor-tools.css",
+          "expectedBytes": 3362,
+          "actualBytes": 3362,
+          "expectedSha256": "43c624286ad5d55870714e3651d855d672e073e4d5731c1e06f2a086c432c05f",
+          "actualSha256": "43c624286ad5d55870714e3651d855d672e073e4d5731c1e06f2a086c432c05f",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/faction-tools.css",
+          "expectedBytes": 2385,
+          "actualBytes": 2385,
+          "expectedSha256": "8d4891cc6c9fae47476f475a25db3ba545079dbc1dae734ab7e568fa802c0935",
+          "actualSha256": "8d4891cc6c9fae47476f475a25db3ba545079dbc1dae734ab7e568fa802c0935",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/match-rules.css",
+          "expectedBytes": 1651,
+          "actualBytes": 1651,
+          "expectedSha256": "b3288d9224c955e769340c4996f41ef50fc5aaab68956a48240dec0cb8856277",
+          "actualSha256": "b3288d9224c955e769340c4996f41ef50fc5aaab68956a48240dec0cb8856277",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/minimap-alerts.css",
+          "expectedBytes": 518,
+          "actualBytes": 518,
+          "expectedSha256": "f7487266a24d54979f2febd467eafd2f2976d40dc8dd91269fc99f57deb6a9d0",
+          "actualSha256": "f7487266a24d54979f2febd467eafd2f2976d40dc8dd91269fc99f57deb6a9d0",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/mod-library.css",
+          "expectedBytes": 3572,
+          "actualBytes": 3572,
+          "expectedSha256": "3020b8216ea43b65915e1b08e569141f54aa9fcda48b101a11cd40ba0716ffe2",
+          "actualSha256": "3020b8216ea43b65915e1b08e569141f54aa9fcda48b101a11cd40ba0716ffe2",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/objective-panel.css",
+          "expectedBytes": 2205,
+          "actualBytes": 2205,
+          "expectedSha256": "a563bdd6f9ad6b127d0d7fbaa11e1f8303f1e0b3d02d0fcc0e895769df300c1b",
+          "actualSha256": "a563bdd6f9ad6b127d0d7fbaa11e1f8303f1e0b3d02d0fcc0e895769df300c1b",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/online-lobby.css",
+          "expectedBytes": 3684,
+          "actualBytes": 3684,
+          "expectedSha256": "00d70536f7cc4c0afeecfec4aa1e2c43c1764d3db9b9140bbc90045ee7f9d7cd",
+          "actualSha256": "00d70536f7cc4c0afeecfec4aa1e2c43c1764d3db9b9140bbc90045ee7f9d7cd",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/practice-coach.css",
+          "expectedBytes": 2124,
+          "actualBytes": 2124,
+          "expectedSha256": "80f91504b074ae5f58c609a1dd4a4553d0887b620f4f1d2e6afaf331a2e66038",
+          "actualSha256": "80f91504b074ae5f58c609a1dd4a4553d0887b620f4f1d2e6afaf331a2e66038",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/scenario-authoring.css",
+          "expectedBytes": 2330,
+          "actualBytes": 2330,
+          "expectedSha256": "eea9015230e1f68c3630da0bb1b0402e76761552a3ac2e3487247b9e317cd91a",
+          "actualSha256": "eea9015230e1f68c3630da0bb1b0402e76761552a3ac2e3487247b9e317cd91a",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/scenario-host.css",
+          "expectedBytes": 577,
+          "actualBytes": 577,
+          "expectedSha256": "ce52c1746e915916f49e90dbfa1d6b2ab44d18d9e9536ff56e047787f8cf788c",
+          "actualSha256": "ce52c1746e915916f49e90dbfa1d6b2ab44d18d9e9536ff56e047787f8cf788c",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/scenario-tools.css",
+          "expectedBytes": 1549,
+          "actualBytes": 1549,
+          "expectedSha256": "31742caf61a193e43ae7a6cd3ad3e6b8969f61968077eb7caed0add0e6573403",
+          "actualSha256": "31742caf61a193e43ae7a6cd3ad3e6b8969f61968077eb7caed0add0e6573403",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/session-tools.css",
+          "expectedBytes": 5593,
+          "actualBytes": 5593,
+          "expectedSha256": "3ffabda15f8f82c7b9f94540e9a69b968baf400ed5a55c95617562c351642cff",
+          "actualSha256": "3ffabda15f8f82c7b9f94540e9a69b968baf400ed5a55c95617562c351642cff",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/skirmish-roster.css",
+          "expectedBytes": 4621,
+          "actualBytes": 4621,
+          "expectedSha256": "1a81c18ded6ff3c0071db1410d1e716cb5e35e579ed7ef8adaba541080028387",
+          "actualSha256": "1a81c18ded6ff3c0071db1410d1e716cb5e35e579ed7ef8adaba541080028387",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/specialist-ui.css",
+          "expectedBytes": 547,
+          "actualBytes": 547,
+          "expectedSha256": "e6e04cf3412b9cc6cc751959f70663b1dc7b22d26902d5518b66ce4306ebc236",
+          "actualSha256": "e6e04cf3412b9cc6cc751959f70663b1dc7b22d26902d5518b66ce4306ebc236",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/style.css",
+          "expectedBytes": 25034,
+          "actualBytes": 25034,
+          "expectedSha256": "c38377862db672c6b40cdb2859ced14837ca166a42d327c285d45f44da0a3f9d",
+          "actualSha256": "c38377862db672c6b40cdb2859ced14837ca166a42d327c285d45f44da0a3f9d",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/tactics-tools.css",
+          "expectedBytes": 2483,
+          "actualBytes": 2483,
+          "expectedSha256": "35ab8a586ac2eeafb5f32b4afb62272328cd79d8df9b0e8a1b58b47e86f0d4f8",
+          "actualSha256": "35ab8a586ac2eeafb5f32b4afb62272328cd79d8df9b0e8a1b58b47e86f0d4f8",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/tournament-dashboard.css",
+          "expectedBytes": 4201,
+          "actualBytes": 4201,
+          "expectedSha256": "071667fd29d795a307d43a6067616f6fdfbb3a3556252d29a406e57f2e2a8137",
+          "actualSha256": "071667fd29d795a307d43a6067616f6fdfbb3a3556252d29a406e57f2e2a8137",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/world-tools.css",
+          "expectedBytes": 1194,
+          "actualBytes": 1194,
+          "expectedSha256": "c3aab924fe100e8e204855ccdd4c28cf1dbad0872174d30acf17d5289f986cb5",
+          "actualSha256": "c3aab924fe100e8e204855ccdd4c28cf1dbad0872174d30acf17d5289f986cb5",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/vite-env.d.ts",
+          "expectedBytes": 38,
+          "actualBytes": 38,
+          "expectedSha256": "65996936fbb042915f7b74a200fcdde7e410f32a669b1ab9597cfaa4b0faddb5",
+          "actualSha256": "65996936fbb042915f7b74a200fcdde7e410f32a669b1ab9597cfaa4b0faddb5",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "tsconfig.json",
+          "expectedBytes": 243,
+          "actualBytes": 243,
+          "expectedSha256": "097f624958954274dab46f515239454a6d50b5bc92fe21d6bb8407d636b17264",
+          "actualSha256": "097f624958954274dab46f515239454a6d50b5bc92fe21d6bb8407d636b17264",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "vite.config.ts",
+          "expectedBytes": 1273,
+          "actualBytes": 1273,
+          "expectedSha256": "07ecab9f882157c91a59b4c67c84f85c9c3b21e357039a3cb28346aa56165289",
+          "actualSha256": "07ecab9f882157c91a59b4c67c84f85c9c3b21e357039a3cb28346aa56165289",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "vitest.config.ts",
+          "expectedBytes": 116,
+          "actualBytes": 116,
+          "expectedSha256": "c2c9ee7cefe55e153af12ea8b44612dabec23fa0f12c0953afc396f901dfafac",
+          "actualSha256": "c2c9ee7cefe55e153af12ea8b44612dabec23fa0f12c0953afc396f901dfafac",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        }
+      ],
+      "receiptPassFlags": {
+        "result": "passed",
+        "nativeDecoderPassed": true,
+        "completeEnvelopeRoundtripPassed": true,
+        "completeReplayEnvelopePassed": true,
+        "recomputedAnalysisPassed": true,
+        "technologyTimingsPassed": true,
+        "sourceUnchangedDuringVerification": true,
+        "bundleSourceBindingPassed": true
+      },
+      "continuationReceipt": {
+        "completeEnvelopeEqualityPassed": true,
+        "recorderEqualityPassed": true,
+        "allAcceptedContinuationCommandsRecorded": true,
+        "extendedReplayEqualityPassed": true,
+        "startTick": 40,
+        "finalTick": 140,
+        "advancedTicks": 100,
+        "timestep": 0.05,
+        "actorId": 2,
+        "side": 0,
+        "commands": [
+          {
+            "type": "hold",
+            "ids": [
+              2
+            ]
+          },
+          {
+            "type": "stop",
+            "ids": [
+              2
+            ]
+          },
+          {
+            "type": "move",
+            "ids": [
+              2
+            ],
+            "x": 7,
+            "y": 10.5,
+            "level": 0,
+            "queued": false
+          },
+          {
+            "type": "move",
+            "ids": [
+              2
+            ],
+            "x": 5.5,
+            "y": 12,
+            "level": 0,
+            "queued": true
+          },
+          {
+            "type": "hold",
+            "ids": [
+              2
+            ]
+          },
+          {
+            "type": "stop",
+            "ids": [
+              2
+            ]
+          }
+        ],
+        "movementStart": {
+          "x": 5.5,
+          "y": 10.5
+        },
+        "movementPhaseTicks": 60,
+        "maxActorDisplacement": 1.164515654862113,
+        "finalChecksum": "0681233e",
+        "extendedReplaySha256": "23abc705c980363413913450f520f7467a5814c4748b7392fb0cd5baf5258ba8",
+        "checkpointHashes": [
+          {
+            "phase": "command-1-hold",
+            "tick": 40,
+            "gameSha256": "725161bf4a637796a9c98573e74312ee41c3ec25dd306a775f0431a129ae6ff8"
+          },
+          {
+            "phase": "held",
+            "tick": 45,
+            "gameSha256": "6306dca9732e67df8fc68be149fc5303ee5781f653c7a686fafa49df32a098a0"
+          },
+          {
+            "phase": "command-2-stop",
+            "tick": 45,
+            "gameSha256": "4ea6a2af9ff1e71d1b9dd43aadc1debf94ec7f529ad8ec9793e5b571311bf59a"
+          },
+          {
+            "phase": "stopped",
+            "tick": 50,
+            "gameSha256": "1e85da187b0f43360ca432d74abfa784f90d424c0d67030fd670b69e5c920df3"
+          },
+          {
+            "phase": "command-3-move",
+            "tick": 50,
+            "gameSha256": "0fa7ac305d8654b57b04046b3c7df78a0270abfb1fe587dfc2ce701e517297a1"
+          },
+          {
+            "phase": "command-4-move",
+            "tick": 50,
+            "gameSha256": "7eec49300757a066de1b35229cfddf5d8198870a684cb03d06323aeebefe24be"
+          },
+          {
+            "phase": "moving",
+            "tick": 110,
+            "gameSha256": "1328c246c1c6ba13a864a879cb9caa73a6eb47359057f8071238dda43b24c397"
+          },
+          {
+            "phase": "command-5-hold",
+            "tick": 110,
+            "gameSha256": "52b582684215349bc4e7c8ac28bcc7b4b87ad0952b16b46c3bbbe8b62e618ddc"
+          },
+          {
+            "phase": "held-again",
+            "tick": 115,
+            "gameSha256": "0aea587431c10b26f8fe22cc4164e304493a4a7ad275732dce6792f281b603a9"
+          },
+          {
+            "phase": "command-6-stop",
+            "tick": 115,
+            "gameSha256": "e6f3533f3827526eca658c210c646c54f219dc52d05c99eea515080381cbd68e"
+          },
+          {
+            "phase": "stopped-again",
+            "tick": 140,
+            "gameSha256": "95af6473e9ed9348586762d7356e254b688454e0e9a58224344d5a76444c37e9"
+          }
+        ]
+      },
+      "continuationRawActor": {
+        "id": 2,
+        "side": 0,
+        "kind": "unit",
+        "role": "worker",
+        "x": 5.5,
+        "y": 10.5,
+        "hp": 65,
+        "maxHp": 65,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 1.5000000000000007,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "definitionId": "fairy-worker",
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        }
+      },
+      "savedLog": {
+        "result": "passed",
+        "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "saveVersion": 4,
+        "simulationRevision": "4.0.1",
+        "finalTick": 40,
+        "continuedTicks": 100,
+        "bundleSourceBindingPassed": true,
+        "outputPath": "/tmp/ovf-modes-final-proof.uezs4d3d/native/local-custom-hill.session.verification.json"
+      }
+    },
+    {
+      "name": "local-build-report",
+      "receipt": {
+        "path": "proof/native/local-build-report.session.verification.json",
+        "bytes": 50204,
+        "sha256": "2801cb91a0e3518043c16e51d3e8484148c3f214102834d68ac1a92b5c4dc81c"
+      },
+      "input": {
+        "path": "proof/browser/local-build-report.session.json",
+        "bytes": 183225,
+        "sha256": "3f930e4f32ac7b8e91c8c047588d75384426b59d5b9f11b78ed2052e9198bda6"
+      },
+      "log": {
+        "path": "proof/logs/native-local-build-report.session.log",
+        "bytes": 292,
+        "sha256": "eb8b35d86e7220e47baac587488e39aaa13bf75f405d0605cac0d2ea06473743"
+      },
+      "receiptReportedPaths": {
+        "inputPath": "/tmp/ovf-modes-final-proof.uezs4d3d/browser/local-build-report.session.json",
+        "checkerScriptPath": "scripts/controls-proof/verify-native.ts",
+        "executedBundlePath": "/tmp/ovf-modes-final-proof.uezs4d3d/modules/verify-native.mjs"
+      },
+      "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "inputSchemaAndEndpoint": {
+        "format": "orcs-vs-fairies/session",
+        "sessionVersion": 1,
+        "gameFormat": "orcs-vs-fairies-save",
+        "saveVersion": 4,
+        "gameTick": 40,
+        "replayFormat": "orcs-vs-fairies/replay",
+        "replayVersion": 1,
+        "replayChecksumVersion": 4,
+        "simulationRevision": "4.0.1",
+        "initialSaveVersion": 4,
+        "initialTick": 0,
+        "finalTick": 40,
+        "finalChecksum": "2ffb6370",
+        "actions": [
+          {
+            "type": "advance",
+            "dt": 0.05,
+            "ticks": 9
+          },
+          {
+            "type": "command",
+            "side": 0,
+            "command": {
+              "type": "draftChoice",
+              "definitionId": "lantern:duelist"
+            }
+          },
+          {
+            "type": "advance",
+            "dt": 0.05,
+            "ticks": 18
+          },
+          {
+            "type": "command",
+            "side": 0,
+            "command": {
+              "type": "move",
+              "ids": [
+                47
+              ],
+              "x": 18.469375133514404,
+              "y": 18.469375133514404,
+              "level": 0,
+              "queued": false
+            }
+          },
+          {
+            "type": "advance",
+            "dt": 0.05,
+            "ticks": 13
+          }
+        ],
+        "analysisTicks": [
+          0,
+          40
+        ],
+        "technologies": [],
+        "gameEnvelopeSha256": "4f3b16460323c5bb24b447ab8f407533cc46fe196417b14b4044e29ea4ff4de9"
+      },
+      "checks": {
+        "inputSha256Match": true,
+        "checkerScriptSha256Match": true,
+        "executedBundleSha256Match": true,
+        "gameEnvelopeSha256Match": true,
+        "acceptedCommandsMatch": true,
+        "acceptedCommandEntriesMatch": true,
+        "initialTickMatch": true,
+        "finalTickMatch": true,
+        "checksumMatchesRawReplay": true,
+        "sourceInputBytesAndHashesMatch": true,
+        "sourceDigestMatch": true,
+        "buildIdMatch": true,
+        "moduleEmbeddedPinPresent": true,
+        "moduleEmbeddedSourceDigestPresent": true,
+        "continuationCountIsSix": true,
+        "continuationSequenceMatches": true,
+        "continuationAllCommandsUseActor": true,
+        "continuationFirstMoveUnqueued": true,
+        "continuationSecondMoveQueued": true,
+        "continuationTickArithmeticMatches": true,
+        "continuationStartMatchesRawEndpoint": true,
+        "continuationActorPresent": true,
+        "continuationActorSideMatch": true,
+        "continuationMovementStartMatchesRawActor": true,
+        "continuationPhaseTicksMatch": true,
+        "logFieldsMatchReceipt": true
+      },
+      "sourceProvenanceSummary": {
+        "sourceFileCount": 163,
+        "configFileCount": 7,
+        "fileCount": 170,
+        "digest": "10eb86d645b975e0066a98e7617a24b25fb3861a65e0b07ac9c94d5665bb11b0",
+        "recomputedDigest": "10eb86d645b975e0066a98e7617a24b25fb3861a65e0b07ac9c94d5665bb11b0",
+        "buildId": "5e49e689af13d4eef08c0760f904ad0bce2c2eebaa1144dea5d89cadecf310c0",
+        "recomputedBuildId": "5e49e689af13d4eef08c0760f904ad0bce2c2eebaa1144dea5d89cadecf310c0",
+        "digestMethod": "Actual source-input byte hashes, listed file order, path+NUL+SHA256+LF"
+      },
+      "sourceFileComparisons": [
+        {
+          "path": "editor.html",
+          "expectedBytes": 369,
+          "actualBytes": 369,
+          "expectedSha256": "cf320786f46eee47df14e86ef90d6e231ee7e277cd79bef81440c80cab2c8096",
+          "actualSha256": "cf320786f46eee47df14e86ef90d6e231ee7e277cd79bef81440c80cab2c8096",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "index.html",
+          "expectedBytes": 402,
+          "actualBytes": 402,
+          "expectedSha256": "a37da3fff167dc23686215dc4b9a2cd21e835443b8ab06fffab627d520450f24",
+          "actualSha256": "a37da3fff167dc23686215dc4b9a2cd21e835443b8ab06fffab627d520450f24",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "package-lock.json",
+          "expectedBytes": 54240,
+          "actualBytes": 54240,
+          "expectedSha256": "057f94325ad52a6e3f75d5decdb513baa4b9a0af2350651bb8886a61749a8c3d",
+          "actualSha256": "057f94325ad52a6e3f75d5decdb513baa4b9a0af2350651bb8886a61749a8c3d",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "package.json",
+          "expectedBytes": 1118,
+          "actualBytes": 1118,
+          "expectedSha256": "3370359ea75de06fe950a244b81a4fd0139805a50b587032c3e51e0b042f6ff6",
+          "actualSha256": "3370359ea75de06fe950a244b81a4fd0139805a50b587032c3e51e0b042f6ff6",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/cli/main.ts",
+          "expectedBytes": 1956,
+          "actualBytes": 1956,
+          "expectedSha256": "08758af144ae1285bf62cd7fc7f935f901649414709acd80172f2037b327c418",
+          "actualSha256": "08758af144ae1285bf62cd7fc7f935f901649414709acd80172f2037b327c418",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/cli/session.ts",
+          "expectedBytes": 5521,
+          "actualBytes": 5521,
+          "expectedSha256": "838b35ecf6db2c13f7fdab7d592b4bd91fb5bb549e86f7cf79432744e42d9b78",
+          "actualSha256": "838b35ecf6db2c13f7fdab7d592b4bd91fb5bb549e86f7cf79432744e42d9b78",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/content-art/lantern/banner.svg",
+          "expectedBytes": 3298,
+          "actualBytes": 3298,
+          "expectedSha256": "38ad6913b00fa37c4bd623fd2326de5c0a53c48325132701edeab6638d1b2dde",
+          "actualSha256": "38ad6913b00fa37c4bd623fd2326de5c0a53c48325132701edeab6638d1b2dde",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/content-art/lantern/duelist.svg",
+          "expectedBytes": 4022,
+          "actualBytes": 4022,
+          "expectedSha256": "aa5b231f3114661719024cdd582e8fe43cc7373a35d8f648acc9956ad8ca3734",
+          "actualSha256": "aa5b231f3114661719024cdd582e8fe43cc7373a35d8f648acc9956ad8ca3734",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/content-art/lantern/sentinel.svg",
+          "expectedBytes": 4490,
+          "actualBytes": 4490,
+          "expectedSha256": "691d89942ef0a41ae1eaff2e5e9c6df280b11b454313937f8b3747a1eedcec26",
+          "actualSha256": "691d89942ef0a41ae1eaff2e5e9c6df280b11b454313937f8b3747a1eedcec26",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/ai-policy.ts",
+          "expectedBytes": 7629,
+          "actualBytes": 7629,
+          "expectedSha256": "1dc343542d2cef97f22f608c53d01bc1d61ed6296918f98ced75e1c27fe8a75d",
+          "actualSha256": "1dc343542d2cef97f22f608c53d01bc1d61ed6296918f98ced75e1c27fe8a75d",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/ally-directives.ts",
+          "expectedBytes": 8140,
+          "actualBytes": 8140,
+          "expectedSha256": "2111264d57817395be56aa4df2f100c635d37a1433ed5ce0c70a5aa99d4a920b",
+          "actualSha256": "2111264d57817395be56aa4df2f100c635d37a1433ed5ce0c70a5aa99d4a920b",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/campaign.ts",
+          "expectedBytes": 21128,
+          "actualBytes": 21128,
+          "expectedSha256": "a665195656aab067bdbe9ab8246a7e6c45e574e2fecdfa839d3eb5d32a975b4b",
+          "actualSha256": "a665195656aab067bdbe9ab8246a7e6c45e574e2fecdfa839d3eb5d32a975b4b",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/coach.ts",
+          "expectedBytes": 14110,
+          "actualBytes": 14110,
+          "expectedSha256": "a1635f435afe307f249467ee66f8dc3950e6b82256b29d1f102f93eb633681a0",
+          "actualSha256": "a1635f435afe307f249467ee66f8dc3950e6b82256b29d1f102f93eb633681a0",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/combat-targets.ts",
+          "expectedBytes": 480,
+          "actualBytes": 480,
+          "expectedSha256": "424cb615d968b5906ad28b36e91e8224a2df20d27fb67da501667dd2851670f9",
+          "actualSha256": "424cb615d968b5906ad28b36e91e8224a2df20d27fb67da501667dd2851670f9",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/commander-rules.ts",
+          "expectedBytes": 814,
+          "actualBytes": 814,
+          "expectedSha256": "027b1854af6d8087803e1becde0986dbfdafa9f9cc753ca870dc548aa3e61406",
+          "actualSha256": "027b1854af6d8087803e1becde0986dbfdafa9f9cc753ca870dc548aa3e61406",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/commands.ts",
+          "expectedBytes": 7202,
+          "actualBytes": 7202,
+          "expectedSha256": "efd360936cb2dc168402299eea06eda1c50247c79ad675237a0a7a7318dd4632",
+          "actualSha256": "efd360936cb2dc168402299eea06eda1c50247c79ad675237a0a7a7318dd4632",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/conquest-types.ts",
+          "expectedBytes": 1799,
+          "actualBytes": 1799,
+          "expectedSha256": "5fe40ad55e5dd88a9be244f8686365437da80a1f3844a554fb493ea19a7c64bb",
+          "actualSha256": "5fe40ad55e5dd88a9be244f8686365437da80a1f3844a554fb493ea19a7c64bb",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/conquest.ts",
+          "expectedBytes": 30402,
+          "actualBytes": 30402,
+          "expectedSha256": "4c92201f8a238de44bd8122f7770c6b697b40bd32dfc31d4319f96dc8f8ed068",
+          "actualSha256": "4c92201f8a238de44bd8122f7770c6b697b40bd32dfc31d4319f96dc8f8ed068",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/content-registry.ts",
+          "expectedBytes": 30993,
+          "actualBytes": 30993,
+          "expectedSha256": "4f3b9211160320723f18264d7c6ca4719ce3988c68a4c50facb5d3c610d368d6",
+          "actualSha256": "4f3b9211160320723f18264d7c6ca4719ce3988c68a4c50facb5d3c610d368d6",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/content.ts",
+          "expectedBytes": 19805,
+          "actualBytes": 19805,
+          "expectedSha256": "4495966583a38f122f23f40c8cfbc0c7655b00cc463b37efdf26a0c9b0a86160",
+          "actualSha256": "4495966583a38f122f23f40c8cfbc0c7655b00cc463b37efdf26a0c9b0a86160",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/economy-cargo.ts",
+          "expectedBytes": 23563,
+          "actualBytes": 23563,
+          "expectedSha256": "1d929d274af8a2c7c6910618eea2416da5d57b7eee27b47678dffeca8eab7d91",
+          "actualSha256": "1d929d274af8a2c7c6910618eea2416da5d57b7eee27b47678dffeca8eab7d91",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/economy-common.ts",
+          "expectedBytes": 2811,
+          "actualBytes": 2811,
+          "expectedSha256": "d5adaa331a64a608b5d31047c5079c96b812db457216419674e669f9736e4c0f",
+          "actualSha256": "d5adaa331a64a608b5d31047c5079c96b812db457216419674e669f9736e4c0f",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/economy-definitions.ts",
+          "expectedBytes": 2157,
+          "actualBytes": 2157,
+          "expectedSha256": "410d6169bbcfdf73b67dd311382889107f67b491288bbaa939a27f51ff8328de",
+          "actualSha256": "410d6169bbcfdf73b67dd311382889107f67b491288bbaa939a27f51ff8328de",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/economy-types.ts",
+          "expectedBytes": 4490,
+          "actualBytes": 4490,
+          "expectedSha256": "11189ee79d0d06e92fc5dfd8d6b3a9cfd0c9e4db9fc31c4eb1d940cc1715e1a7",
+          "actualSha256": "11189ee79d0d06e92fc5dfd8d6b3a9cfd0c9e4db9fc31c4eb1d940cc1715e1a7",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/economy-validation.ts",
+          "expectedBytes": 13682,
+          "actualBytes": 13682,
+          "expectedSha256": "1c38f411439772f07e9170e4273689ec587c8390f5813e17f2cc5b82c19e5c59",
+          "actualSha256": "1c38f411439772f07e9170e4273689ec587c8390f5813e17f2cc5b82c19e5c59",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/economy.ts",
+          "expectedBytes": 20782,
+          "actualBytes": 20782,
+          "expectedSha256": "0ed27188846137326c76e0816c64fb518c525943e1e7d696c05bfb8a676df831",
+          "actualSha256": "0ed27188846137326c76e0816c64fb518c525943e1e7d696c05bfb8a676df831",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/environment.ts",
+          "expectedBytes": 17025,
+          "actualBytes": 17025,
+          "expectedSha256": "5d27a76df2284a776606cefed781f4e8cfa44fbf5f14c869c450da66ce64f8dd",
+          "actualSha256": "5d27a76df2284a776606cefed781f4e8cfa44fbf5f14c869c450da66ce64f8dd",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/example-mod.ts",
+          "expectedBytes": 2499,
+          "actualBytes": 2499,
+          "expectedSha256": "f5e4e84913ea80e57f2d41192adb9853835ba6bbea40bf043ea62744cefb525f",
+          "actualSha256": "f5e4e84913ea80e57f2d41192adb9853835ba6bbea40bf043ea62744cefb525f",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/faction-systems-content.ts",
+          "expectedBytes": 3429,
+          "actualBytes": 3429,
+          "expectedSha256": "bed461a7f9d0ab1acc1100e0a20c9bb0c2ddec399de40790634e12a2c109b139",
+          "actualSha256": "bed461a7f9d0ab1acc1100e0a20c9bb0c2ddec399de40790634e12a2c109b139",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/faction-systems.ts",
+          "expectedBytes": 23438,
+          "actualBytes": 23438,
+          "expectedSha256": "6ab56f94a7d2dc1ac33e866caad29e1ab9b97914150fdf99cc737e79c21dd9fa",
+          "actualSha256": "6ab56f94a7d2dc1ac33e866caad29e1ab9b97914150fdf99cc737e79c21dd9fa",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/geometry.ts",
+          "expectedBytes": 4909,
+          "actualBytes": 4909,
+          "expectedSha256": "d01cb8c5003443415cd43bef63dd087dad7238b1e82732222a1f6bb0bbccd283",
+          "actualSha256": "d01cb8c5003443415cd43bef63dd087dad7238b1e82732222a1f6bb0bbccd283",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/history-hooks.ts",
+          "expectedBytes": 1158,
+          "actualBytes": 1158,
+          "expectedSha256": "56a53b84aa389f3ccf189f72df2ecf2d632677f8a664b49fc16865e46bdf6f82",
+          "actualSha256": "56a53b84aa389f3ccf189f72df2ecf2d632677f8a664b49fc16865e46bdf6f82",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/legacy-content-v3.ts",
+          "expectedBytes": 15430,
+          "actualBytes": 15430,
+          "expectedSha256": "cf6f2540ea86570aad6896324d54870c11130816f64048cb9a567d8e7c2132c7",
+          "actualSha256": "cf6f2540ea86570aad6896324d54870c11130816f64048cb9a567d8e7c2132c7",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/maps.ts",
+          "expectedBytes": 13683,
+          "actualBytes": 13683,
+          "expectedSha256": "ef8e28bbbbb04478082b428ace10b9613fc8b7d3baa99315555684246890f195",
+          "actualSha256": "ef8e28bbbbb04478082b428ace10b9613fc8b7d3baa99315555684246890f195",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/match-rules.ts",
+          "expectedBytes": 18173,
+          "actualBytes": 18173,
+          "expectedSha256": "b31abb0ff8df8ecacaaa76ea6fafb2f87ff88f57f071389a74193538f4e534d5",
+          "actualSha256": "b31abb0ff8df8ecacaaa76ea6fafb2f87ff88f57f071389a74193538f4e534d5",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/navigation.ts",
+          "expectedBytes": 9590,
+          "actualBytes": 9590,
+          "expectedSha256": "27924b6c886d55ee2288a61101e2fa2f34853f6a20241e770c9c50c5d9c796a0",
+          "actualSha256": "27924b6c886d55ee2288a61101e2fa2f34853f6a20241e770c9c50c5d9c796a0",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/neutral-world.ts",
+          "expectedBytes": 16579,
+          "actualBytes": 16579,
+          "expectedSha256": "bf44c385259716251f014819c275d046579cf4a5fb905ea59efe924bc9eacc54",
+          "actualSha256": "bf44c385259716251f014819c275d046579cf4a5fb905ea59efe924bc9eacc54",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/objectives.ts",
+          "expectedBytes": 11262,
+          "actualBytes": 11262,
+          "expectedSha256": "89dac4b2a27a06681f64d82fa3c0d39dad4e2f27b3633720e9ca3cd3ccf23d6c",
+          "actualSha256": "89dac4b2a27a06681f64d82fa3c0d39dad4e2f27b3633720e9ca3cd3ccf23d6c",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/observation.ts",
+          "expectedBytes": 8808,
+          "actualBytes": 8808,
+          "expectedSha256": "793e9b7219eae2dd313ef0c3e27723402442ed250de891049076b589a40f1a30",
+          "actualSha256": "793e9b7219eae2dd313ef0c3e27723402442ed250de891049076b589a40f1a30",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/planning.ts",
+          "expectedBytes": 27860,
+          "actualBytes": 27860,
+          "expectedSha256": "6064f6ee2a99ed2a887318c55153372249bfd450a40ce58a9f6dfb03d21604e5",
+          "actualSha256": "6064f6ee2a99ed2a887318c55153372249bfd450a40ce58a9f6dfb03d21604e5",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/presentation-observation.ts",
+          "expectedBytes": 432,
+          "actualBytes": 432,
+          "expectedSha256": "892844e45c0990685b897a110eb4a0ad4d3be9ee345b5e7dc5eb1225fccd5562",
+          "actualSha256": "892844e45c0990685b897a110eb4a0ad4d3be9ee345b5e7dc5eb1225fccd5562",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/progression.ts",
+          "expectedBytes": 2307,
+          "actualBytes": 2307,
+          "expectedSha256": "baf7bfd7bfca212a09d7f13f2c5188eff4ccd15985e8542a92209777f57527b7",
+          "actualSha256": "baf7bfd7bfca212a09d7f13f2c5188eff4ccd15985e8542a92209777f57527b7",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/replays.ts",
+          "expectedBytes": 16630,
+          "actualBytes": 16630,
+          "expectedSha256": "c7d57a1df6536dee13fbbb35c58f4128fac1589e46f7fd62b296ce11804f1c17",
+          "actualSha256": "c7d57a1df6536dee13fbbb35c58f4128fac1589e46f7fd62b296ce11804f1c17",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/saves.ts",
+          "expectedBytes": 48856,
+          "actualBytes": 48856,
+          "expectedSha256": "2059e49775401d44813a02c3628de3055c3d7d944d4f887cf7a3639c145197c7",
+          "actualSha256": "2059e49775401d44813a02c3628de3055c3d7d944d4f887cf7a3639c145197c7",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/scenario-geometry.ts",
+          "expectedBytes": 4266,
+          "actualBytes": 4266,
+          "expectedSha256": "3f3213e385346a6977354896273edf80242823b6dfbfaf44bed04bc77e617645",
+          "actualSha256": "3f3213e385346a6977354896273edf80242823b6dfbfaf44bed04bc77e617645",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/scenario-recordings.ts",
+          "expectedBytes": 9224,
+          "actualBytes": 9224,
+          "expectedSha256": "311652f4b4505849928efe4ed4bf7e4d9641ab71716ecb37cc3d363e5f8f2780",
+          "actualSha256": "311652f4b4505849928efe4ed4bf7e4d9641ab71716ecb37cc3d363e5f8f2780",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/scenario-types.ts",
+          "expectedBytes": 5389,
+          "actualBytes": 5389,
+          "expectedSha256": "53659ab5bf18d5911da4dc38bee037f346ec68cab09a166b0d8efeaa1b265143",
+          "actualSha256": "53659ab5bf18d5911da4dc38bee037f346ec68cab09a166b0d8efeaa1b265143",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/scenario-validation.ts",
+          "expectedBytes": 21406,
+          "actualBytes": 21406,
+          "expectedSha256": "13c8183ecb993f10e06a722cbfde8b3269453930833b3ef957493a7dcbc09e69",
+          "actualSha256": "13c8183ecb993f10e06a722cbfde8b3269453930833b3ef957493a7dcbc09e69",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/scenarios.ts",
+          "expectedBytes": 39183,
+          "actualBytes": 39183,
+          "expectedSha256": "b5b6910d0974cde13818d5c9ef72485451a1d73b3c48068bfbb3ec5144aca710",
+          "actualSha256": "b5b6910d0974cde13818d5c9ef72485451a1d73b3c48068bfbb3ec5144aca710",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/session-storage.ts",
+          "expectedBytes": 12012,
+          "actualBytes": 12012,
+          "expectedSha256": "c3a9f04a0abc7bc29338b08bc1f7e65e7669002908ada7ba18836481b1f47c7e",
+          "actualSha256": "c3a9f04a0abc7bc29338b08bc1f7e65e7669002908ada7ba18836481b1f47c7e",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/simulation.ts",
+          "expectedBytes": 106228,
+          "actualBytes": 106228,
+          "expectedSha256": "e301c65d0352ffe648a5bc4ee6acbda1f562164deacdfe60f8f3b03e7bdccf35",
+          "actualSha256": "e301c65d0352ffe648a5bc4ee6acbda1f562164deacdfe60f8f3b03e7bdccf35",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/specialist-content.ts",
+          "expectedBytes": 6564,
+          "actualBytes": 6564,
+          "expectedSha256": "1a1cbb10836291795c51388e6401c672e23b311632b80e56e12a2b2e3a59817a",
+          "actualSha256": "1a1cbb10836291795c51388e6401c672e23b311632b80e56e12a2b2e3a59817a",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/specialist-systems.ts",
+          "expectedBytes": 22241,
+          "actualBytes": 22241,
+          "expectedSha256": "96644ada58215b32650d5e5d23643c784e1e08f49109a8ddc9bcc01145ded6c5",
+          "actualSha256": "96644ada58215b32650d5e5d23643c784e1e08f49109a8ddc9bcc01145ded6c5",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/specialist-types.ts",
+          "expectedBytes": 2303,
+          "actualBytes": 2303,
+          "expectedSha256": "b5ebc37625668d5bf416e4f21a65e28b1eae7e25a49c2f1a9b08129d3d65a549",
+          "actualSha256": "b5ebc37625668d5bf416e4f21a65e28b1eae7e25a49c2f1a9b08129d3d65a549",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/specialist-validation.ts",
+          "expectedBytes": 17272,
+          "actualBytes": 17272,
+          "expectedSha256": "47cc77f0006046c0c3d849caee9994627b8b299f2e39b1eea15b153d1835d79b",
+          "actualSha256": "47cc77f0006046c0c3d849caee9994627b8b299f2e39b1eea15b153d1835d79b",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/tactics.ts",
+          "expectedBytes": 18531,
+          "actualBytes": 18531,
+          "expectedSha256": "31e5e81e058e83bf94181c1c7203e1022d64aa0d8f715fb1e0082f04173c9797",
+          "actualSha256": "31e5e81e058e83bf94181c1c7203e1022d64aa0d8f715fb1e0082f04173c9797",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/team-ai.ts",
+          "expectedBytes": 25877,
+          "actualBytes": 25877,
+          "expectedSha256": "246afca59757266635d823fbd943d72ef500db0bab3385107da4f7ca930836b2",
+          "actualSha256": "246afca59757266635d823fbd943d72ef500db0bab3385107da4f7ca930836b2",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/types.ts",
+          "expectedBytes": 8433,
+          "actualBytes": 8433,
+          "expectedSha256": "9f2c6c337d2dd6669c1cd8dbee30c01c89c41de3d9caf962d57854310fe8dd33",
+          "actualSha256": "9f2c6c337d2dd6669c1cd8dbee30c01c89c41de3d9caf962d57854310fe8dd33",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/unit-progression.ts",
+          "expectedBytes": 8821,
+          "actualBytes": 8821,
+          "expectedSha256": "bd29a33226eac4122b63217904f13d40f17ce629d50e0c1f5eb56c443c72095a",
+          "actualSha256": "bd29a33226eac4122b63217904f13d40f17ce629d50e0c1f5eb56c443c72095a",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/versions.ts",
+          "expectedBytes": 346,
+          "actualBytes": 346,
+          "expectedSha256": "a8b20be0fb9abd0895fed0d4ad1c7612910f2d31bf9c12c85fd8a432c0ba3f24",
+          "actualSha256": "a8b20be0fb9abd0895fed0d4ad1c7612910f2d31bf9c12c85fd8a432c0ba3f24",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/world-actions.ts",
+          "expectedBytes": 7889,
+          "actualBytes": 7889,
+          "expectedSha256": "83b8c7dd2376a49811095ba731ee8df34121e72cfe4c3eea1ff16c31d99d4238",
+          "actualSha256": "83b8c7dd2376a49811095ba731ee8df34121e72cfe4c3eea1ff16c31d99d4238",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/world-map.ts",
+          "expectedBytes": 14404,
+          "actualBytes": 14404,
+          "expectedSha256": "51af55ec2bd0cee6e7dc7caf2f934e60e9a7a046daeb1d3d71e478c8be7c0dd2",
+          "actualSha256": "51af55ec2bd0cee6e7dc7caf2f934e60e9a7a046daeb1d3d71e478c8be7c0dd2",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/world-types.ts",
+          "expectedBytes": 2038,
+          "actualBytes": 2038,
+          "expectedSha256": "d0802170c228c886cc92959e01c1c1c4e358243809d8d476b4457159490dad8c",
+          "actualSha256": "d0802170c228c886cc92959e01c1c1c4e358243809d8d476b4457159490dad8c",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/core/world-validation.ts",
+          "expectedBytes": 7607,
+          "actualBytes": 7607,
+          "expectedSha256": "27d49a7c87a69f1e6a37ff22be85b50884dba6d1b1014529413776e2a7529374",
+          "actualSha256": "27d49a7c87a69f1e6a37ff22be85b50884dba6d1b1014529413776e2a7529374",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/editor/document.ts",
+          "expectedBytes": 3047,
+          "actualBytes": 3047,
+          "expectedSha256": "a746ef361a300a614c6fc8cc4449b67f168815f00edb8b361a1f2c50a1d230c4",
+          "actualSha256": "a746ef361a300a614c6fc8cc4449b67f168815f00edb8b361a1f2c50a1d230c4",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/editor/editor-app.ts",
+          "expectedBytes": 99,
+          "actualBytes": 99,
+          "expectedSha256": "fdc568dd878819ed713cf6ac76c2a0ab51dcf43674778deeb282eb95d2c73e93",
+          "actualSha256": "fdc568dd878819ed713cf6ac76c2a0ab51dcf43674778deeb282eb95d2c73e93",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/editor/launch.ts",
+          "expectedBytes": 1089,
+          "actualBytes": 1089,
+          "expectedSha256": "ac9616db3574b021530252af717817046c168188262f2a38352b8d727eab653b",
+          "actualSha256": "ac9616db3574b021530252af717817046c168188262f2a38352b8d727eab653b",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/editor/map-package.ts",
+          "expectedBytes": 22883,
+          "actualBytes": 22883,
+          "expectedSha256": "8a08f3e875a121b601700aa7aa31eb31185cf8f4b6bba5b6cb0d59354ef0d921",
+          "actualSha256": "8a08f3e875a121b601700aa7aa31eb31185cf8f4b6bba5b6cb0d59354ef0d921",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/editor/package-validation.ts",
+          "expectedBytes": 677,
+          "actualBytes": 677,
+          "expectedSha256": "a01739b75da643c91f86b7ee60088c8d020721e306b3c7f93705dcd94171004b",
+          "actualSha256": "a01739b75da643c91f86b7ee60088c8d020721e306b3c7f93705dcd94171004b",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/editor/scenario-package.ts",
+          "expectedBytes": 24306,
+          "actualBytes": 24306,
+          "expectedSha256": "74f6b8bb2d5d7ec7659f46b2cd23106ea323e9b57d55311206bb87791279a077",
+          "actualSha256": "74f6b8bb2d5d7ec7659f46b2cd23106ea323e9b57d55311206bb87791279a077",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/game/Appearance.ts",
+          "expectedBytes": 4298,
+          "actualBytes": 4298,
+          "expectedSha256": "56ef6e567518f90e9bbf403c41e74838741248c04a9e6f1919e154d0bb17558d",
+          "actualSha256": "56ef6e567518f90e9bbf403c41e74838741248c04a9e6f1919e154d0bb17558d",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/game/ArtRuntime.ts",
+          "expectedBytes": 9400,
+          "actualBytes": 9400,
+          "expectedSha256": "ac0df5d1203a4dc44b905b5791a8c447f19e7aabb1b388b50e6abc950c1ff239",
+          "actualSha256": "ac0df5d1203a4dc44b905b5791a8c447f19e7aabb1b388b50e6abc950c1ff239",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/game/Controls.ts",
+          "expectedBytes": 12074,
+          "actualBytes": 12074,
+          "expectedSha256": "1efe5f374a6a662ea24fb26b91dec35acabcd7b958b791d859628b6a25df9c03",
+          "actualSha256": "1efe5f374a6a662ea24fb26b91dec35acabcd7b958b791d859628b6a25df9c03",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/game/Cosmetics.ts",
+          "expectedBytes": 5323,
+          "actualBytes": 5323,
+          "expectedSha256": "8fbead76b858138228699e02b07f5322b3d0a5bf9e3e5b287971ec096053ee29",
+          "actualSha256": "8fbead76b858138228699e02b07f5322b3d0a5bf9e3e5b287971ec096053ee29",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/game/FactionOverlay.ts",
+          "expectedBytes": 2796,
+          "actualBytes": 2796,
+          "expectedSha256": "aa7e997fe5521a6a4f44e5fd14d7ba7ae4d2ec3288004cecec4dcbc099bafed2",
+          "actualSha256": "aa7e997fe5521a6a4f44e5fd14d7ba7ae4d2ec3288004cecec4dcbc099bafed2",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/game/GameAudio.ts",
+          "expectedBytes": 6151,
+          "actualBytes": 6151,
+          "expectedSha256": "2f9d8e5325829a84931cde0cf7f904a1f9b720213f48e9352a56cfc31080f6d9",
+          "actualSha256": "2f9d8e5325829a84931cde0cf7f904a1f9b720213f48e9352a56cfc31080f6d9",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/game/GameScene.ts",
+          "expectedBytes": 62102,
+          "actualBytes": 62102,
+          "expectedSha256": "2f6372937635cdb54367445eb22355d79f33a94ff75604180ff9b2848422cdec",
+          "actualSha256": "2f6372937635cdb54367445eb22355d79f33a94ff75604180ff9b2848422cdec",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/game/Gamepad.ts",
+          "expectedBytes": 7765,
+          "actualBytes": 7765,
+          "expectedSha256": "d78b066da6ed1183b40d6ca50e9e1b91528b2481a8e3d6f6a0daef57f6ba35ee",
+          "actualSha256": "d78b066da6ed1183b40d6ca50e9e1b91528b2481a8e3d6f6a0daef57f6ba35ee",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/game/ObjectiveMarkers.ts",
+          "expectedBytes": 3005,
+          "actualBytes": 3005,
+          "expectedSha256": "bbe0aeeaba8afbe892965a32539bc85332b45de16d287af421c75566c0095a03",
+          "actualSha256": "bbe0aeeaba8afbe892965a32539bc85332b45de16d287af421c75566c0095a03",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/game/PlanningSession.ts",
+          "expectedBytes": 12929,
+          "actualBytes": 12929,
+          "expectedSha256": "54254577b02b2204e69f0d99bb0d51ea4930e596b62336bd28d203d00e78565c",
+          "actualSha256": "54254577b02b2204e69f0d99bb0d51ea4930e596b62336bd28d203d00e78565c",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/game/ScenarioOverlay.ts",
+          "expectedBytes": 2598,
+          "actualBytes": 2598,
+          "expectedSha256": "6e7f1051503426ca8a98eef050592125cc00e5122d7898a093795562e7d56dc3",
+          "actualSha256": "6e7f1051503426ca8a98eef050592125cc00e5122d7898a093795562e7d56dc3",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/game/TacticsOverlay.ts",
+          "expectedBytes": 4332,
+          "actualBytes": 4332,
+          "expectedSha256": "d18bd35850f9af09a6c02d7a7549033fdfb5d8b492d939b87e5f8767f5148d7a",
+          "actualSha256": "d18bd35850f9af09a6c02d7a7549033fdfb5d8b492d939b87e5f8767f5148d7a",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/main.ts",
+          "expectedBytes": 47424,
+          "actualBytes": 47424,
+          "expectedSha256": "4b3de6a2c62517819e56d81e20f96aa10c8bfde8cd58ea70aa516fd84f0abda7",
+          "actualSha256": "4b3de6a2c62517819e56d81e20f96aa10c8bfde8cd58ea70aa516fd84f0abda7",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/online/client.ts",
+          "expectedBytes": 16286,
+          "actualBytes": 16286,
+          "expectedSha256": "5564377fb45ca04a86bab9ea25025de2194c0dfdd1ca75ca835109711b46a72a",
+          "actualSha256": "5564377fb45ca04a86bab9ea25025de2194c0dfdd1ca75ca835109711b46a72a",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/online/community-client.ts",
+          "expectedBytes": 20361,
+          "actualBytes": 20361,
+          "expectedSha256": "732ce711cc18119969100c98ea1a9f52899f5761bcfc057e48618d55081cdfc6",
+          "actualSha256": "732ce711cc18119969100c98ea1a9f52899f5761bcfc057e48618d55081cdfc6",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/online/competition-client.ts",
+          "expectedBytes": 1434,
+          "actualBytes": 1434,
+          "expectedSha256": "75f88a94e281550bfe87e5546dca24efe694c19747841c81648f00d922c6dab6",
+          "actualSha256": "75f88a94e281550bfe87e5546dca24efe694c19747841c81648f00d922c6dab6",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/online/competitions.ts",
+          "expectedBytes": 1869,
+          "actualBytes": 1869,
+          "expectedSha256": "e1e1a51653e2eb0e2c7d9c4a7f04b18ea03cf26e49a56bcb78d8cdb710cc9bad",
+          "actualSha256": "e1e1a51653e2eb0e2c7d9c4a7f04b18ea03cf26e49a56bcb78d8cdb710cc9bad",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/online/cosmetic-client.ts",
+          "expectedBytes": 1076,
+          "actualBytes": 1076,
+          "expectedSha256": "77a609233607c3efb6c9986083282f4cbe7ab28e764aecec9f7571cb7c611cb0",
+          "actualSha256": "77a609233607c3efb6c9986083282f4cbe7ab28e764aecec9f7571cb7c611cb0",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/online/cosmetics.ts",
+          "expectedBytes": 1388,
+          "actualBytes": 1388,
+          "expectedSha256": "411d139e5d90ebf390fc227fce6b0b961b746d1c9ec2782003d006b88ebc5685",
+          "actualSha256": "411d139e5d90ebf390fc227fce6b0b961b746d1c9ec2782003d006b88ebc5685",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/online/protocol.ts",
+          "expectedBytes": 2630,
+          "actualBytes": 2630,
+          "expectedSha256": "0ad3ac461e5be93e277a468bdd860b4c111282c219b0d1f7b381f22fd494030c",
+          "actualSha256": "0ad3ac461e5be93e277a468bdd860b4c111282c219b0d1f7b381f22fd494030c",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/online/render-state.ts",
+          "expectedBytes": 16508,
+          "actualBytes": 16508,
+          "expectedSha256": "1a48afcd1023c9c3f2270dcaf3c50d8a01eaffaf2dee9e7f511bcc528dba9621",
+          "actualSha256": "1a48afcd1023c9c3f2270dcaf3c50d8a01eaffaf2dee9e7f511bcc528dba9621",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/qa/performance.ts",
+          "expectedBytes": 9336,
+          "actualBytes": 9336,
+          "expectedSha256": "5f6b929e1761f903b5770d902482b3cc946fcd05af698e8a8fd3ccb0135aadb3",
+          "actualSha256": "5f6b929e1761f903b5770d902482b3cc946fcd05af698e8a8fd3ccb0135aadb3",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/scenarios/campaigns.ts",
+          "expectedBytes": 60270,
+          "actualBytes": 60270,
+          "expectedSha256": "5b651b94b6cbd30e7667e4745a65ceb53b7fde886754382a099a648588384c2a",
+          "actualSha256": "5b651b94b6cbd30e7667e4745a65ceb53b7fde886754382a099a648588384c2a",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/scenarios/conquest-world.ts",
+          "expectedBytes": 5295,
+          "actualBytes": 5295,
+          "expectedSha256": "b5a64d47ba13d5ed2b523a0ec781ac07f45bafbc1569d0bd3aed3d12cf74271c",
+          "actualSha256": "b5a64d47ba13d5ed2b523a0ec781ac07f45bafbc1569d0bd3aed3d12cf74271c",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/scenarios/demo.ts",
+          "expectedBytes": 28988,
+          "actualBytes": 28988,
+          "expectedSha256": "eaaebb087bad8414e2267d17dd999636379205f2440b4ab065326390adfbc87f",
+          "actualSha256": "eaaebb087bad8414e2267d17dd999636379205f2440b4ab065326390adfbc87f",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/server/campaign-verification.ts",
+          "expectedBytes": 3186,
+          "actualBytes": 3186,
+          "expectedSha256": "786e60e4db0d65dcaadf7f6d8bb3aa1af9633cc27d5a36374ae70f07f71a6c27",
+          "actualSha256": "786e60e4db0d65dcaadf7f6d8bb3aa1af9633cc27d5a36374ae70f07f71a6c27",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/server/canonical-campaign.ts",
+          "expectedBytes": 647,
+          "actualBytes": 647,
+          "expectedSha256": "bf87aa9996a58ddceb7e097069b4f971324f49e44a035a8c1768ea226f1703bf",
+          "actualSha256": "bf87aa9996a58ddceb7e097069b4f971324f49e44a035a8c1768ea226f1703bf",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/server/community-http.ts",
+          "expectedBytes": 2917,
+          "actualBytes": 2917,
+          "expectedSha256": "78f2ba78db245eed7de9ab69a802c17fa3487b312b6d9b5630a13c44035d5e6f",
+          "actualSha256": "78f2ba78db245eed7de9ab69a802c17fa3487b312b6d9b5630a13c44035d5e6f",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/server/community-packages.ts",
+          "expectedBytes": 21198,
+          "actualBytes": 21198,
+          "expectedSha256": "53f1c2c77f53ec5b5a0c6523c37822b1b32f54016fdd8cbd0b9e6618394cc697",
+          "actualSha256": "53f1c2c77f53ec5b5a0c6523c37822b1b32f54016fdd8cbd0b9e6618394cc697",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/server/competitions.ts",
+          "expectedBytes": 6390,
+          "actualBytes": 6390,
+          "expectedSha256": "9fd84d853f45e132299521341071e8958310e9634fed2d01976bdaf576d222da",
+          "actualSha256": "9fd84d853f45e132299521341071e8958310e9634fed2d01976bdaf576d222da",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/server/cosmetics.ts",
+          "expectedBytes": 5449,
+          "actualBytes": 5449,
+          "expectedSha256": "04ac51920d6a853310d4bf647b14c9901bd453a29e9854da18bc27b1efa74320",
+          "actualSha256": "04ac51920d6a853310d4bf647b14c9901bd453a29e9854da18bc27b1efa74320",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/server/main.ts",
+          "expectedBytes": 1129,
+          "actualBytes": 1129,
+          "expectedSha256": "51363f67f3e7b1829e6e20d346c561b7dcdeb2ba223fb7f1d9de28ad19c379ac",
+          "actualSha256": "51363f67f3e7b1829e6e20d346c561b7dcdeb2ba223fb7f1d9de28ad19c379ac",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/server/server.ts",
+          "expectedBytes": 50662,
+          "actualBytes": 50662,
+          "expectedSha256": "6cee3a6770a2e692ca4ad3ad155c3b06cf6f9116b43460f1eefe7eb7572a1f65",
+          "actualSha256": "6cee3a6770a2e692ca4ad3ad155c3b06cf6f9116b43460f1eefe7eb7572a1f65",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/server/store.ts",
+          "expectedBytes": 10118,
+          "actualBytes": 10118,
+          "expectedSha256": "94b40c5f2c40f97e12d69bce63110795eed2a44f72e2c05903a8a7e8efe9fa04",
+          "actualSha256": "94b40c5f2c40f97e12d69bce63110795eed2a44f72e2c05903a8a7e8efe9fa04",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/server/team-view.ts",
+          "expectedBytes": 5481,
+          "actualBytes": 5481,
+          "expectedSha256": "ac53d33a6595b1576e1ddbe3b03ade7ba762d3fa53dd90ec76e5f1036da3bee4",
+          "actualSha256": "ac53d33a6595b1576e1ddbe3b03ade7ba762d3fa53dd90ec76e5f1036da3bee4",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/server/views.ts",
+          "expectedBytes": 2864,
+          "actualBytes": 2864,
+          "expectedSha256": "fef071fb8d6f0729914abe1238206ef67179d59246f65e043d38e753f2e29578",
+          "actualSha256": "fef071fb8d6f0729914abe1238206ef67179d59246f65e043d38e753f2e29578",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/tournament/client.ts",
+          "expectedBytes": 1160,
+          "actualBytes": 1160,
+          "expectedSha256": "bc0e471e7d7c66bff6128a180216cff70b86950529dc986e001e00dcba5d835d",
+          "actualSha256": "bc0e471e7d7c66bff6128a180216cff70b86950529dc986e001e00dcba5d835d",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/tournament/main.ts",
+          "expectedBytes": 2016,
+          "actualBytes": 2016,
+          "expectedSha256": "033a940fd11d36d1ed9cc56c1a55e397fab9d6bd828d79b8b38c91d529b351cb",
+          "actualSha256": "033a940fd11d36d1ed9cc56c1a55e397fab9d6bd828d79b8b38c91d529b351cb",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/tournament/report.ts",
+          "expectedBytes": 17919,
+          "actualBytes": 17919,
+          "expectedSha256": "1408626ba8a11dabd4a696839cfad78d8b3b145397781a1995dedb60fad9d18e",
+          "actualSha256": "1408626ba8a11dabd4a696839cfad78d8b3b145397781a1995dedb60fad9d18e",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/tournament/runner.ts",
+          "expectedBytes": 15537,
+          "actualBytes": 15537,
+          "expectedSha256": "9c5b772cbabdbb727993cd1c59c3afb5ac159af9165df942a5b6ae0da17b004d",
+          "actualSha256": "9c5b772cbabdbb727993cd1c59c3afb5ac159af9165df942a5b6ae0da17b004d",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/tournament/service.ts",
+          "expectedBytes": 11854,
+          "actualBytes": 11854,
+          "expectedSha256": "d3fbe79245f74d54ea36b94d475f2becfabc7b4242a90aabebfbb99e06189988",
+          "actualSha256": "d3fbe79245f74d54ea36b94d475f2becfabc7b4242a90aabebfbb99e06189988",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/tournament/types.ts",
+          "expectedBytes": 3747,
+          "actualBytes": 3747,
+          "expectedSha256": "3df76bf918d47dcf8b56b3202f7914e4851253b72cce0b87233c76509520f4f7",
+          "actualSha256": "3df76bf918d47dcf8b56b3202f7914e4851253b72cce0b87233c76509520f4f7",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/AllyDirectives.ts",
+          "expectedBytes": 13907,
+          "actualBytes": 13907,
+          "expectedSha256": "0840941d20017782c868290904c35483ae0a3ad8708a982a10829efc9bfbd3f9",
+          "actualSha256": "0840941d20017782c868290904c35483ae0a3ad8708a982a10829efc9bfbd3f9",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/CommunityBrowser.ts",
+          "expectedBytes": 15717,
+          "actualBytes": 15717,
+          "expectedSha256": "697b8e9c50b7284eeeebe49624261b2b03ce869ef9f478e866be6014e23ca78e",
+          "actualSha256": "697b8e9c50b7284eeeebe49624261b2b03ce869ef9f478e866be6014e23ca78e",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/CompetitionTools.ts",
+          "expectedBytes": 12649,
+          "actualBytes": 12649,
+          "expectedSha256": "f9f0d92164339e27b7fd88b334dfd0e021d1149406f0ca507b23deb73fd23ef6",
+          "actualSha256": "f9f0d92164339e27b7fd88b334dfd0e021d1149406f0ca507b23deb73fd23ef6",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/ConquestTools.ts",
+          "expectedBytes": 14303,
+          "actualBytes": 14303,
+          "expectedSha256": "d0b34eec76c1744d7ffdd8de34b2fb1e294c6750e06e9ea831060d1743d143b3",
+          "actualSha256": "d0b34eec76c1744d7ffdd8de34b2fb1e294c6750e06e9ea831060d1743d143b3",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/CosmeticTools.ts",
+          "expectedBytes": 9273,
+          "actualBytes": 9273,
+          "expectedSha256": "c3650284bf657671bbca92649762a076cf5771130be321452ceb3e436db4ff0b",
+          "actualSha256": "c3650284bf657671bbca92649762a076cf5771130be321452ceb3e436db4ff0b",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/DisplaySettings.ts",
+          "expectedBytes": 9179,
+          "actualBytes": 9179,
+          "expectedSha256": "57c3ded44211c36aca439212464366643fa53a403d266c629d5a3db16e48b30d",
+          "actualSha256": "57c3ded44211c36aca439212464366643fa53a403d266c629d5a3db16e48b30d",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/EconomyTools.ts",
+          "expectedBytes": 46363,
+          "actualBytes": 46363,
+          "expectedSha256": "974158dcb1c95a154d59da153a342685297d049bfa099cef134180a6925571c5",
+          "actualSha256": "974158dcb1c95a154d59da153a342685297d049bfa099cef134180a6925571c5",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/EditorTools.ts",
+          "expectedBytes": 27384,
+          "actualBytes": 27384,
+          "expectedSha256": "9c76e9efbd37ddebad3417b42070bf2fc51f562aaae96183408c0d834d3429d4",
+          "actualSha256": "9c76e9efbd37ddebad3417b42070bf2fc51f562aaae96183408c0d834d3429d4",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/FactionTools.ts",
+          "expectedBytes": 24097,
+          "actualBytes": 24097,
+          "expectedSha256": "452c9964d4cae1495412811fc6ee5f600cea30675cfac234efe9d2b8e9648b7b",
+          "actualSha256": "452c9964d4cae1495412811fc6ee5f600cea30675cfac234efe9d2b8e9648b7b",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/Hud.ts",
+          "expectedBytes": 46307,
+          "actualBytes": 46307,
+          "expectedSha256": "827031c3c49dab942e00a11cd6531d633f351c9c2884ab1c704e187f81368828",
+          "actualSha256": "827031c3c49dab942e00a11cd6531d633f351c9c2884ab1c704e187f81368828",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/MatchRules.ts",
+          "expectedBytes": 14930,
+          "actualBytes": 14930,
+          "expectedSha256": "d8405bf18da57e1993d68355188d124f93d92124bc06f2d3b0191ff007554707",
+          "actualSha256": "d8405bf18da57e1993d68355188d124f93d92124bc06f2d3b0191ff007554707",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/MinimapAlerts.ts",
+          "expectedBytes": 4447,
+          "actualBytes": 4447,
+          "expectedSha256": "691591e60637391289ba5714b630250f8e25aadc7a8b414a8ded324710b5aad3",
+          "actualSha256": "691591e60637391289ba5714b630250f8e25aadc7a8b414a8ded324710b5aad3",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/ModLibrary.ts",
+          "expectedBytes": 7688,
+          "actualBytes": 7688,
+          "expectedSha256": "cd4121a4b25e9ccbc64e1166dc63a872c9de13f7b8756bb0c51b2579f2199a8e",
+          "actualSha256": "cd4121a4b25e9ccbc64e1166dc63a872c9de13f7b8756bb0c51b2579f2199a8e",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/ObjectivePanel.ts",
+          "expectedBytes": 18698,
+          "actualBytes": 18698,
+          "expectedSha256": "80c1e8b73c3baf9e8d1cf4fac5ff3cdabdea195e4ea4fc2892960c40395d5a15",
+          "actualSha256": "80c1e8b73c3baf9e8d1cf4fac5ff3cdabdea195e4ea4fc2892960c40395d5a15",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/OnlineLobby.ts",
+          "expectedBytes": 29283,
+          "actualBytes": 29283,
+          "expectedSha256": "91b8e98d7a3ec977186da829e7ba8aca7b3ddfead1fcf603e58a66bc672d597b",
+          "actualSha256": "91b8e98d7a3ec977186da829e7ba8aca7b3ddfead1fcf603e58a66bc672d597b",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/PlanningTools.ts",
+          "expectedBytes": 23381,
+          "actualBytes": 23381,
+          "expectedSha256": "6247d23bc23d2f8d0fa128315bbce3bbc7172c49946049f7b0fc536b953a94e7",
+          "actualSha256": "6247d23bc23d2f8d0fa128315bbce3bbc7172c49946049f7b0fc536b953a94e7",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/PracticeCoach.ts",
+          "expectedBytes": 9027,
+          "actualBytes": 9027,
+          "expectedSha256": "089ba4d8c7324b80957da2e7637985cab115d323f9f1eec733356b0df3382175",
+          "actualSha256": "089ba4d8c7324b80957da2e7637985cab115d323f9f1eec733356b0df3382175",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/ScenarioAuthoring.ts",
+          "expectedBytes": 43646,
+          "actualBytes": 43646,
+          "expectedSha256": "0ad2833c71d6b76a4f09ac31fdc5cf93f90e72a39e255681bf6cfb95732e7d16",
+          "actualSha256": "0ad2833c71d6b76a4f09ac31fdc5cf93f90e72a39e255681bf6cfb95732e7d16",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/ScenarioCampaignHost.ts",
+          "expectedBytes": 16640,
+          "actualBytes": 16640,
+          "expectedSha256": "352725a6ba02836a0f6e95894dbbb17cf703ef68f6b5e53b0b6553187a4b4a53",
+          "actualSha256": "352725a6ba02836a0f6e95894dbbb17cf703ef68f6b5e53b0b6553187a4b4a53",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/ScenarioTools.ts",
+          "expectedBytes": 12159,
+          "actualBytes": 12159,
+          "expectedSha256": "4eef03cbffcd9bf434c2684b0649fe86cd9b0a591eb50012fd24ba32df2e1176",
+          "actualSha256": "4eef03cbffcd9bf434c2684b0649fe86cd9b0a591eb50012fd24ba32df2e1176",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/SessionTools.ts",
+          "expectedBytes": 47196,
+          "actualBytes": 47196,
+          "expectedSha256": "e1e36fec742ba8fb0533abdb6a908ab2a8c9574649e435068efbf5d53575db1a",
+          "actualSha256": "e1e36fec742ba8fb0533abdb6a908ab2a8c9574649e435068efbf5d53575db1a",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/SkirmishOptions.ts",
+          "expectedBytes": 6413,
+          "actualBytes": 6413,
+          "expectedSha256": "e8c9ea0133a4913dc3cc77e0b9c2d0c33fa8d8373882d5656627cc78e20ba58a",
+          "actualSha256": "e8c9ea0133a4913dc3cc77e0b9c2d0c33fa8d8373882d5656627cc78e20ba58a",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/SkirmishRoster.ts",
+          "expectedBytes": 18764,
+          "actualBytes": 18764,
+          "expectedSha256": "a27fada09e0234323afbd3972d2ae833db7783ede34901418b27ec5f7ec8204d",
+          "actualSha256": "a27fada09e0234323afbd3972d2ae833db7783ede34901418b27ec5f7ec8204d",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/TacticsTools.ts",
+          "expectedBytes": 18409,
+          "actualBytes": 18409,
+          "expectedSha256": "e70b9bc289c7ac320e90f30fafe52f680d017b46476b3c7210e788fc2fd838c1",
+          "actualSha256": "e70b9bc289c7ac320e90f30fafe52f680d017b46476b3c7210e788fc2fd838c1",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/TeamAITools.ts",
+          "expectedBytes": 2824,
+          "actualBytes": 2824,
+          "expectedSha256": "c4bdeb35140acedbcb6b46d3a3c8d48551863210381ff8485b899851c5a2a543",
+          "actualSha256": "c4bdeb35140acedbcb6b46d3a3c8d48551863210381ff8485b899851c5a2a543",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/TechnologyTree.ts",
+          "expectedBytes": 4596,
+          "actualBytes": 4596,
+          "expectedSha256": "eed79508f6a16891e1cc16f4d822d4f46e05af5ed6b8c1b0ccd333bf03d78694",
+          "actualSha256": "eed79508f6a16891e1cc16f4d822d4f46e05af5ed6b8c1b0ccd333bf03d78694",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/Tooltip.ts",
+          "expectedBytes": 1440,
+          "actualBytes": 1440,
+          "expectedSha256": "7e4304346dd61c3e1024358e6081bf6b8298ff0758ea9776c8d48111fc8c236d",
+          "actualSha256": "7e4304346dd61c3e1024358e6081bf6b8298ff0758ea9776c8d48111fc8c236d",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/TournamentDashboard.ts",
+          "expectedBytes": 25690,
+          "actualBytes": 25690,
+          "expectedSha256": "e6f39eb2fc9256803fb2448d73f8db2cf88ded1923da237951a3d432462af065",
+          "actualSha256": "e6f39eb2fc9256803fb2448d73f8db2cf88ded1923da237951a3d432462af065",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/WorldTools.ts",
+          "expectedBytes": 8644,
+          "actualBytes": 8644,
+          "expectedSha256": "de578d72a8aaad99ad25bbe5b01dddf61fa4981eaeac999dcbc4975c3abe449c",
+          "actualSha256": "de578d72a8aaad99ad25bbe5b01dddf61fa4981eaeac999dcbc4975c3abe449c",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/availability.ts",
+          "expectedBytes": 1902,
+          "actualBytes": 1902,
+          "expectedSha256": "40926116445d719dafe63c5ca763a63ffba67718129a88734ec6448366c5185d",
+          "actualSha256": "40926116445d719dafe63c5ca763a63ffba67718129a88734ec6448366c5185d",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/community-browser.css",
+          "expectedBytes": 2561,
+          "actualBytes": 2561,
+          "expectedSha256": "3b59f418c756254240c2385a97553140534f8dfa2a6f7b253fdae2c7814cc5a0",
+          "actualSha256": "3b59f418c756254240c2385a97553140534f8dfa2a6f7b253fdae2c7814cc5a0",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/competition-tools.css",
+          "expectedBytes": 2256,
+          "actualBytes": 2256,
+          "expectedSha256": "8a485b28d3f10fe73acac5f722e2fd3e0d397b5cb322a8702c0e8206aa7dbd89",
+          "actualSha256": "8a485b28d3f10fe73acac5f722e2fd3e0d397b5cb322a8702c0e8206aa7dbd89",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/conquest-tools.css",
+          "expectedBytes": 1454,
+          "actualBytes": 1454,
+          "expectedSha256": "e1163a46326d5d151d0d475643a32f6f0b2c049d7bbbc348262671718612028d",
+          "actualSha256": "e1163a46326d5d151d0d475643a32f6f0b2c049d7bbbc348262671718612028d",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/cosmetic-tools.css",
+          "expectedBytes": 1878,
+          "actualBytes": 1878,
+          "expectedSha256": "8935b7c6b5283c2437c2161bd4dde29a256ad0412a19488571fe42a62a7f2fd5",
+          "actualSha256": "8935b7c6b5283c2437c2161bd4dde29a256ad0412a19488571fe42a62a7f2fd5",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/display-settings.css",
+          "expectedBytes": 4313,
+          "actualBytes": 4313,
+          "expectedSha256": "1dfd7358288814861ad67e2350fdf8d74310932f286634cb8e9eb68ac392f65d",
+          "actualSha256": "1dfd7358288814861ad67e2350fdf8d74310932f286634cb8e9eb68ac392f65d",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/economy-tools.css",
+          "expectedBytes": 3242,
+          "actualBytes": 3242,
+          "expectedSha256": "79ed95fec17ad4767b5f53b6b0189c3233ae9db59ec311bfff0838a3ffa25e60",
+          "actualSha256": "79ed95fec17ad4767b5f53b6b0189c3233ae9db59ec311bfff0838a3ffa25e60",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/editor-tools.css",
+          "expectedBytes": 3362,
+          "actualBytes": 3362,
+          "expectedSha256": "43c624286ad5d55870714e3651d855d672e073e4d5731c1e06f2a086c432c05f",
+          "actualSha256": "43c624286ad5d55870714e3651d855d672e073e4d5731c1e06f2a086c432c05f",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/faction-tools.css",
+          "expectedBytes": 2385,
+          "actualBytes": 2385,
+          "expectedSha256": "8d4891cc6c9fae47476f475a25db3ba545079dbc1dae734ab7e568fa802c0935",
+          "actualSha256": "8d4891cc6c9fae47476f475a25db3ba545079dbc1dae734ab7e568fa802c0935",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/match-rules.css",
+          "expectedBytes": 1651,
+          "actualBytes": 1651,
+          "expectedSha256": "b3288d9224c955e769340c4996f41ef50fc5aaab68956a48240dec0cb8856277",
+          "actualSha256": "b3288d9224c955e769340c4996f41ef50fc5aaab68956a48240dec0cb8856277",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/minimap-alerts.css",
+          "expectedBytes": 518,
+          "actualBytes": 518,
+          "expectedSha256": "f7487266a24d54979f2febd467eafd2f2976d40dc8dd91269fc99f57deb6a9d0",
+          "actualSha256": "f7487266a24d54979f2febd467eafd2f2976d40dc8dd91269fc99f57deb6a9d0",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/mod-library.css",
+          "expectedBytes": 3572,
+          "actualBytes": 3572,
+          "expectedSha256": "3020b8216ea43b65915e1b08e569141f54aa9fcda48b101a11cd40ba0716ffe2",
+          "actualSha256": "3020b8216ea43b65915e1b08e569141f54aa9fcda48b101a11cd40ba0716ffe2",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/objective-panel.css",
+          "expectedBytes": 2205,
+          "actualBytes": 2205,
+          "expectedSha256": "a563bdd6f9ad6b127d0d7fbaa11e1f8303f1e0b3d02d0fcc0e895769df300c1b",
+          "actualSha256": "a563bdd6f9ad6b127d0d7fbaa11e1f8303f1e0b3d02d0fcc0e895769df300c1b",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/online-lobby.css",
+          "expectedBytes": 3684,
+          "actualBytes": 3684,
+          "expectedSha256": "00d70536f7cc4c0afeecfec4aa1e2c43c1764d3db9b9140bbc90045ee7f9d7cd",
+          "actualSha256": "00d70536f7cc4c0afeecfec4aa1e2c43c1764d3db9b9140bbc90045ee7f9d7cd",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/practice-coach.css",
+          "expectedBytes": 2124,
+          "actualBytes": 2124,
+          "expectedSha256": "80f91504b074ae5f58c609a1dd4a4553d0887b620f4f1d2e6afaf331a2e66038",
+          "actualSha256": "80f91504b074ae5f58c609a1dd4a4553d0887b620f4f1d2e6afaf331a2e66038",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/scenario-authoring.css",
+          "expectedBytes": 2330,
+          "actualBytes": 2330,
+          "expectedSha256": "eea9015230e1f68c3630da0bb1b0402e76761552a3ac2e3487247b9e317cd91a",
+          "actualSha256": "eea9015230e1f68c3630da0bb1b0402e76761552a3ac2e3487247b9e317cd91a",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/scenario-host.css",
+          "expectedBytes": 577,
+          "actualBytes": 577,
+          "expectedSha256": "ce52c1746e915916f49e90dbfa1d6b2ab44d18d9e9536ff56e047787f8cf788c",
+          "actualSha256": "ce52c1746e915916f49e90dbfa1d6b2ab44d18d9e9536ff56e047787f8cf788c",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/scenario-tools.css",
+          "expectedBytes": 1549,
+          "actualBytes": 1549,
+          "expectedSha256": "31742caf61a193e43ae7a6cd3ad3e6b8969f61968077eb7caed0add0e6573403",
+          "actualSha256": "31742caf61a193e43ae7a6cd3ad3e6b8969f61968077eb7caed0add0e6573403",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/session-tools.css",
+          "expectedBytes": 5593,
+          "actualBytes": 5593,
+          "expectedSha256": "3ffabda15f8f82c7b9f94540e9a69b968baf400ed5a55c95617562c351642cff",
+          "actualSha256": "3ffabda15f8f82c7b9f94540e9a69b968baf400ed5a55c95617562c351642cff",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/skirmish-roster.css",
+          "expectedBytes": 4621,
+          "actualBytes": 4621,
+          "expectedSha256": "1a81c18ded6ff3c0071db1410d1e716cb5e35e579ed7ef8adaba541080028387",
+          "actualSha256": "1a81c18ded6ff3c0071db1410d1e716cb5e35e579ed7ef8adaba541080028387",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/specialist-ui.css",
+          "expectedBytes": 547,
+          "actualBytes": 547,
+          "expectedSha256": "e6e04cf3412b9cc6cc751959f70663b1dc7b22d26902d5518b66ce4306ebc236",
+          "actualSha256": "e6e04cf3412b9cc6cc751959f70663b1dc7b22d26902d5518b66ce4306ebc236",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/style.css",
+          "expectedBytes": 25034,
+          "actualBytes": 25034,
+          "expectedSha256": "c38377862db672c6b40cdb2859ced14837ca166a42d327c285d45f44da0a3f9d",
+          "actualSha256": "c38377862db672c6b40cdb2859ced14837ca166a42d327c285d45f44da0a3f9d",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/tactics-tools.css",
+          "expectedBytes": 2483,
+          "actualBytes": 2483,
+          "expectedSha256": "35ab8a586ac2eeafb5f32b4afb62272328cd79d8df9b0e8a1b58b47e86f0d4f8",
+          "actualSha256": "35ab8a586ac2eeafb5f32b4afb62272328cd79d8df9b0e8a1b58b47e86f0d4f8",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/tournament-dashboard.css",
+          "expectedBytes": 4201,
+          "actualBytes": 4201,
+          "expectedSha256": "071667fd29d795a307d43a6067616f6fdfbb3a3556252d29a406e57f2e2a8137",
+          "actualSha256": "071667fd29d795a307d43a6067616f6fdfbb3a3556252d29a406e57f2e2a8137",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/ui/world-tools.css",
+          "expectedBytes": 1194,
+          "actualBytes": 1194,
+          "expectedSha256": "c3aab924fe100e8e204855ccdd4c28cf1dbad0872174d30acf17d5289f986cb5",
+          "actualSha256": "c3aab924fe100e8e204855ccdd4c28cf1dbad0872174d30acf17d5289f986cb5",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "src/vite-env.d.ts",
+          "expectedBytes": 38,
+          "actualBytes": 38,
+          "expectedSha256": "65996936fbb042915f7b74a200fcdde7e410f32a669b1ab9597cfaa4b0faddb5",
+          "actualSha256": "65996936fbb042915f7b74a200fcdde7e410f32a669b1ab9597cfaa4b0faddb5",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "tsconfig.json",
+          "expectedBytes": 243,
+          "actualBytes": 243,
+          "expectedSha256": "097f624958954274dab46f515239454a6d50b5bc92fe21d6bb8407d636b17264",
+          "actualSha256": "097f624958954274dab46f515239454a6d50b5bc92fe21d6bb8407d636b17264",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "vite.config.ts",
+          "expectedBytes": 1273,
+          "actualBytes": 1273,
+          "expectedSha256": "07ecab9f882157c91a59b4c67c84f85c9c3b21e357039a3cb28346aa56165289",
+          "actualSha256": "07ecab9f882157c91a59b4c67c84f85c9c3b21e357039a3cb28346aa56165289",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        },
+        {
+          "path": "vitest.config.ts",
+          "expectedBytes": 116,
+          "actualBytes": 116,
+          "expectedSha256": "c2c9ee7cefe55e153af12ea8b44612dabec23fa0f12c0953afc396f901dfafac",
+          "actualSha256": "c2c9ee7cefe55e153af12ea8b44612dabec23fa0f12c0953afc396f901dfafac",
+          "bytesMatch": true,
+          "sha256Match": true,
+          "symlink": false
+        }
+      ],
+      "receiptPassFlags": {
+        "result": "passed",
+        "nativeDecoderPassed": true,
+        "completeEnvelopeRoundtripPassed": true,
+        "completeReplayEnvelopePassed": true,
+        "recomputedAnalysisPassed": true,
+        "technologyTimingsPassed": true,
+        "sourceUnchangedDuringVerification": true,
+        "bundleSourceBindingPassed": true
+      },
+      "continuationReceipt": {
+        "completeEnvelopeEqualityPassed": true,
+        "recorderEqualityPassed": true,
+        "allAcceptedContinuationCommandsRecorded": true,
+        "extendedReplayEqualityPassed": true,
+        "startTick": 40,
+        "finalTick": 140,
+        "advancedTicks": 100,
+        "timestep": 0.05,
+        "actorId": 2,
+        "side": 0,
+        "commands": [
+          {
+            "type": "hold",
+            "ids": [
+              2
+            ]
+          },
+          {
+            "type": "stop",
+            "ids": [
+              2
+            ]
+          },
+          {
+            "type": "move",
+            "ids": [
+              2
+            ],
+            "x": 7,
+            "y": 10.5,
+            "level": 0,
+            "queued": false
+          },
+          {
+            "type": "move",
+            "ids": [
+              2
+            ],
+            "x": 5.5,
+            "y": 12,
+            "level": 0,
+            "queued": true
+          },
+          {
+            "type": "hold",
+            "ids": [
+              2
+            ]
+          },
+          {
+            "type": "stop",
+            "ids": [
+              2
+            ]
+          }
+        ],
+        "movementStart": {
+          "x": 5.5,
+          "y": 10.5
+        },
+        "movementPhaseTicks": 60,
+        "maxActorDisplacement": 1.164515654862113,
+        "finalChecksum": "0681233e",
+        "extendedReplaySha256": "23abc705c980363413913450f520f7467a5814c4748b7392fb0cd5baf5258ba8",
+        "checkpointHashes": [
+          {
+            "phase": "command-1-hold",
+            "tick": 40,
+            "gameSha256": "725161bf4a637796a9c98573e74312ee41c3ec25dd306a775f0431a129ae6ff8"
+          },
+          {
+            "phase": "held",
+            "tick": 45,
+            "gameSha256": "6306dca9732e67df8fc68be149fc5303ee5781f653c7a686fafa49df32a098a0"
+          },
+          {
+            "phase": "command-2-stop",
+            "tick": 45,
+            "gameSha256": "4ea6a2af9ff1e71d1b9dd43aadc1debf94ec7f529ad8ec9793e5b571311bf59a"
+          },
+          {
+            "phase": "stopped",
+            "tick": 50,
+            "gameSha256": "1e85da187b0f43360ca432d74abfa784f90d424c0d67030fd670b69e5c920df3"
+          },
+          {
+            "phase": "command-3-move",
+            "tick": 50,
+            "gameSha256": "0fa7ac305d8654b57b04046b3c7df78a0270abfb1fe587dfc2ce701e517297a1"
+          },
+          {
+            "phase": "command-4-move",
+            "tick": 50,
+            "gameSha256": "7eec49300757a066de1b35229cfddf5d8198870a684cb03d06323aeebefe24be"
+          },
+          {
+            "phase": "moving",
+            "tick": 110,
+            "gameSha256": "1328c246c1c6ba13a864a879cb9caa73a6eb47359057f8071238dda43b24c397"
+          },
+          {
+            "phase": "command-5-hold",
+            "tick": 110,
+            "gameSha256": "52b582684215349bc4e7c8ac28bcc7b4b87ad0952b16b46c3bbbe8b62e618ddc"
+          },
+          {
+            "phase": "held-again",
+            "tick": 115,
+            "gameSha256": "0aea587431c10b26f8fe22cc4164e304493a4a7ad275732dce6792f281b603a9"
+          },
+          {
+            "phase": "command-6-stop",
+            "tick": 115,
+            "gameSha256": "e6f3533f3827526eca658c210c646c54f219dc52d05c99eea515080381cbd68e"
+          },
+          {
+            "phase": "stopped-again",
+            "tick": 140,
+            "gameSha256": "95af6473e9ed9348586762d7356e254b688454e0e9a58224344d5a76444c37e9"
+          }
+        ]
+      },
+      "continuationRawActor": {
+        "id": 2,
+        "side": 0,
+        "kind": "unit",
+        "role": "worker",
+        "x": 5.5,
+        "y": 10.5,
+        "hp": 65,
+        "maxHp": 65,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 1.5000000000000007,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "definitionId": "fairy-worker",
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        }
+      },
+      "savedLog": {
+        "result": "passed",
+        "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "saveVersion": 4,
+        "simulationRevision": "4.0.1",
+        "finalTick": 40,
+        "continuedTicks": 100,
+        "bundleSourceBindingPassed": true,
+        "outputPath": "/tmp/ovf-modes-final-proof.uezs4d3d/native/local-build-report.session.verification.json"
+      }
+    }
+  ],
+  "comparisons": {
+    "rawSessionsSemanticEqual": true,
+    "rawSessionGameEnvelopesEqual": true,
+    "rawSessionEmbeddedReplaysEqual": true,
+    "reportSessionHasOnlyOneExtraTrailingLineFeed": true,
+    "bugReportEmbeddedSessionEqualsExtractedSession": true,
+    "bothReceiptSourceProvenanceEqual": true,
+    "bothContinuationReceiptsEqual": true,
+    "standaloneReplayInitialEqualsEmbeddedInitial": true,
+    "standaloneReplayCommandHistoryEqualsEmbeddedCommands": true,
+    "standaloneReplayEqualsEmbeddedReplay": false
+  },
+  "bugReport": {
+    "format": "orcs-vs-fairies/bug-report",
+    "version": 1,
+    "versions": {
+      "buildId": "5e49e689af13d4eef08c0760f904ad0bce2c2eebaa1144dea5d89cadecf310c0",
+      "save": 4,
+      "replay": 1,
+      "replaySimulation": 4,
+      "simulationRevision": "4.0.1",
+      "contentHash": "950f0aec"
+    },
+    "sessionSourceReference": {
+      "path": "proof/browser/local-build-report.json",
+      "line": 15
+    }
+  },
+  "standaloneReplay": {
+    "format": "orcs-vs-fairies/replay",
+    "version": 1,
+    "checksumVersion": 4,
+    "simulationRevision": "4.0.1",
+    "initialSaveVersion": 4,
+    "initialTick": 0,
+    "finalTick": 43,
+    "finalChecksum": "6ef916d5",
+    "actions": [
+      {
+        "type": "advance",
+        "dt": 0.05,
+        "ticks": 9
+      },
+      {
+        "type": "command",
+        "side": 0,
+        "command": {
+          "type": "draftChoice",
+          "definitionId": "lantern:duelist"
+        }
+      },
+      {
+        "type": "advance",
+        "dt": 0.05,
+        "ticks": 18
+      },
+      {
+        "type": "command",
+        "side": 0,
+        "command": {
+          "type": "move",
+          "ids": [
+            47
+          ],
+          "x": 18.469375133514404,
+          "y": 18.469375133514404,
+          "level": 0,
+          "queued": false
+        }
+      },
+      {
+        "type": "advance",
+        "dt": 0.05,
+        "ticks": 16
+      }
+    ],
+    "analysisTicks": [
+      0,
+      43
+    ],
+    "technologies": [],
+    "differenceFromEmbedded": {
+      "standaloneFinalAdvanceTicks": 16,
+      "embeddedFinalAdvanceTicks": 13,
+      "standaloneFinalTick": 43,
+      "embeddedFinalTick": 40,
+      "standaloneChecksum": "6ef916d5",
+      "embeddedChecksum": "2ffb6370",
+      "standaloneReferences": [
+        {
+          "path": "proof/browser/local-custom-hill.replay.json",
+          "line": 3704
+        },
+        {
+          "path": "proof/browser/local-custom-hill.replay.json",
+          "line": 3707
+        },
+        {
+          "path": "proof/browser/local-custom-hill.replay.json",
+          "line": 3708
+        }
+      ],
+      "embeddedReferences": [
+        {
+          "path": "proof/browser/local-custom-hill.session.json",
+          "line": 7917
+        },
+        {
+          "path": "proof/browser/local-custom-hill.session.json",
+          "line": 7920
+        },
+        {
+          "path": "proof/browser/local-custom-hill.session.json",
+          "line": 7921
+        }
+      ],
+      "receiptCoverage": "Both native receipts name session inputs ending at tick 40. Neither native receipt certifies the standalone replay endpoint at tick 43."
+    }
+  },
+  "verifierSourceInspection": {
+    "checker": {
+      "path": "source-inputs/scripts/controls-proof/verify-native.ts",
+      "bytes": 17879,
+      "sha256": "55b95c28ffb588727cbb4232b3bf8af7b25fc1d5fd541fb7344ae69991480784"
+    },
+    "executedBundle": {
+      "path": "proof/modules/verify-native.mjs",
+      "bytes": 774148,
+      "sha256": "b643d9edc6febdfb4af633499e683f79a569826b4d2f15273add8688273bf9f2"
+    },
+    "description": "Manually inspected the saved TypeScript verifier and its compiled main verification block. The saved source and bundle contain the following checks before producing passed receipts.",
+    "assertionReferences": [
+      {
+        "check": "Current SAVE_VERSION and SIMULATION_REVISION required; native decoder preserves raw game envelope and saveGame roundtrip equals it.",
+        "source": {
+          "path": "source-inputs/scripts/controls-proof/verify-native.ts",
+          "lines": "72-86"
+        },
+        "bundle": {
+          "path": "proof/modules/verify-native.mjs",
+          "lines": "11256-11276"
+        }
+      },
+      {
+        "check": "Replay consumes all actions; endpoint tick/checksum/full game envelope, analysis and technology timings equal the raw input.",
+        "source": {
+          "path": "source-inputs/scripts/controls-proof/verify-native.ts",
+          "lines": "87-96"
+        },
+        "bundle": {
+          "path": "proof/modules/verify-native.mjs",
+          "lines": "11277-11286"
+        }
+      },
+      {
+        "check": "After every accepted continuation command and each natural tick, compare full game envelopes, both recorder exports, and expected accepted command history.",
+        "source": {
+          "path": "source-inputs/scripts/controls-proof/verify-native.ts",
+          "lines": "141-173"
+        },
+        "bundle": {
+          "path": "proof/modules/verify-native.mjs",
+          "lines": "11332-11367"
+        }
+      },
+      {
+        "check": "Issue hold, stop, unqueued move, queued move, hold, stop; advance5+5+60+5+25=100 ticks; queued move adds an order; movement displacement must exceed0.01.",
+        "source": {
+          "path": "source-inputs/scripts/controls-proof/verify-native.ts",
+          "lines": "175-188"
+        },
+        "bundle": {
+          "path": "proof/modules/verify-native.mjs",
+          "lines": "11368-11387"
+        }
+      },
+      {
+        "check": "Both extended archives equal and replay to the full continued game envelope with matching analysis and technology timings.",
+        "source": {
+          "path": "source-inputs/scripts/controls-proof/verify-native.ts",
+          "lines": "189-203"
+        },
+        "bundle": {
+          "path": "proof/modules/verify-native.mjs",
+          "lines": "11388-11403"
+        }
+      },
+      {
+        "check": "Source/config provenance compared before and after verification; output hashes bind input, checker source and executed bundle.",
+        "source": {
+          "path": "source-inputs/scripts/controls-proof/verify-native.ts",
+          "lines": "206-223"
+        },
+        "bundle": {
+          "path": "proof/modules/verify-native.mjs",
+          "lines": "11409-11458"
+        }
+      }
+    ],
+    "gamepadBranch": "The optional gamepad/browser-sidecar assertions are in source103-120 and bundle11292-11310. These two receipts have no gamepad field; six-command counts here refer to native continuation, while each raw exported replay contains two commands.",
+    "gameEnvelopeScope": "The explicit complete-envelope assertions compare the entire raw game envelope including saved state/runtime. They do not assert reserialization equality for the complete top-level session planning envelope."
+  },
+  "limits": [
+    "This inspection directly verified saved bytes, schema/endpoints, command values, hashes, report relationships, source assertions and log consistency. It did not independently reproduce decoder/playback/continuation behavior, movement, extended replay hash, or checkpoint hashes.",
+    "Passing runtime assertions and sourceUnchangedDuringVerification are saved receipt claims. No live checkout/Git provenance recheck or build reproduction occurred.",
+    "Native receipts cover the tick-40 session inputs. The standalone tick-43 replay has matching schema and command history, but its endpoint is outside these native receipts.",
+    "No physical controller hardware or browser-control behavior is certified by this native audit.",
+    "The source/config digest covers the170 listed src/config inputs; the checker script is separately hash-bound."
+  ],
+  "hashMethods": {
+    "runtime": "Node v24.21.0",
+    "builtInModules": [
+      "node:fs",
+      "node:crypto",
+      "node:os",
+      "node:path"
+    ],
+    "rawFileHashes": "SHA256 over fs.readFileSync Buffer, with no decoding or normalization.",
+    "gameEnvelopeSha256": "Read saved session bytes; JSON.parse UTF-8 text; SHA256 over the UTF-8 bytes of JavaScript JSON.stringify(input.game). This uses the same JSON.stringify operation as hashJson(input.game) in verify-native.ts22 and218. It is not a Python JSON dump, canonical key sort, or hash of pretty-printed input text.",
+    "provenanceDigest": "For each listed source/config file, hash the actual packaged file bytes, preserve the listed file ordering, concatenate path + NUL + actual SHA256 hex + LF, then SHA256 the UTF-8 concatenation. Each actual file hash and length was also compared independently against the receipt.",
+    "buildId": "For listed src/*.ts and src/*.css files in the listed order, update SHA256 with the path after src/ and then its actual packaged file bytes, matching verify-native.ts60-64. No project code is loaded.",
+    "semanticComparisons": "Parse saved JSON with Node JSON.parse; compare JSON.stringify values in preserved property order. For the two sessions this yielded equality. Actual bytes were also checked separately to establish that the report session adds one trailing LF."
+  }
+}

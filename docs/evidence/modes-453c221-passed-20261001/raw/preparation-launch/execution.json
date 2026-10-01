@@ -1,0 +1,159 @@
+{
+  "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "checkout": "/tmp/ovf-modes-final-checkout.3i_ez0cq",
+  "output": "/tmp/ovf-modes-final-proof.uezs4d3d",
+  "launchDirectory": "/tmp/ovf-modes-final-launch.15z2ovmt",
+  "startedAtUtc": "2026-10-01T21:14:03.332616+00:00",
+  "result": "prepared",
+  "independentDependencies": true,
+  "naturalMatchesRun": false,
+  "browserRun": false,
+  "serverStarted": false,
+  "stages": [
+    {
+      "name": "pin-validation",
+      "argv": [
+        "git",
+        "-C",
+        "/home/morgana/Projects/orcs-vs-Fairies",
+        "cat-file",
+        "-e",
+        "453c2218af9973b9eca8fb78392435bd9d46a740^{commit}"
+      ],
+      "cwd": "/home/morgana/Projects/orcs-vs-Fairies",
+      "log": "/tmp/ovf-modes-final-launch.15z2ovmt/pin-validation.log",
+      "startedAtUtc": "2026-10-01T21:14:03.332776+00:00",
+      "pid": 641523,
+      "processGroup": 641523,
+      "naturalDrainWallSeconds": 4.237997927702963e-06,
+      "finishedAtUtc": "2026-10-01T21:14:03.334375+00:00",
+      "wallSeconds": 0.001549945998704061,
+      "exitCode": 0,
+      "cleanup": {
+        "processGroup": 641523,
+        "termSent": false,
+        "killSent": false,
+        "reapedDescendants": [],
+        "verifiedGone": true,
+        "leaderExitCode": 0,
+        "wallSeconds": 9.547999070491642e-06
+      }
+    },
+    {
+      "name": "worktree",
+      "argv": [
+        "git",
+        "-C",
+        "/home/morgana/Projects/orcs-vs-Fairies",
+        "worktree",
+        "add",
+        "--detach",
+        "/tmp/ovf-modes-final-checkout.3i_ez0cq",
+        "453c2218af9973b9eca8fb78392435bd9d46a740"
+      ],
+      "cwd": "/home/morgana/Projects/orcs-vs-Fairies",
+      "log": "/tmp/ovf-modes-final-launch.15z2ovmt/worktree.log",
+      "startedAtUtc": "2026-10-01T21:14:03.334481+00:00",
+      "pid": 641524,
+      "processGroup": 641524,
+      "naturalDrainWallSeconds": 7.433998689521104e-06,
+      "finishedAtUtc": "2026-10-01T21:14:04.298777+00:00",
+      "wallSeconds": 0.9642838369982201,
+      "exitCode": 0,
+      "cleanup": {
+        "processGroup": 641524,
+        "termSent": false,
+        "killSent": false,
+        "reapedDescendants": [],
+        "verifiedGone": true,
+        "leaderExitCode": 0,
+        "wallSeconds": 1.9136001355946064e-05
+      }
+    },
+    {
+      "name": "dependencies",
+      "argv": [
+        "npm",
+        "ci"
+      ],
+      "cwd": "/tmp/ovf-modes-final-checkout.3i_ez0cq",
+      "log": "/tmp/ovf-modes-final-launch.15z2ovmt/npm-ci.log",
+      "startedAtUtc": "2026-10-01T21:14:04.299049+00:00",
+      "pid": 641529,
+      "processGroup": 641529,
+      "naturalDrainWallSeconds": 5.820998921990395e-06,
+      "finishedAtUtc": "2026-10-01T21:14:05.063119+00:00",
+      "wallSeconds": 0.7640581099985866,
+      "exitCode": 0,
+      "cleanup": {
+        "processGroup": 641529,
+        "termSent": false,
+        "killSent": false,
+        "reapedDescendants": [],
+        "verifiedGone": true,
+        "leaderExitCode": 0,
+        "wallSeconds": 1.497899938840419e-05
+      }
+    },
+    {
+      "name": "prepare",
+      "argv": [
+        "node",
+        "scripts/modes/prepare.mjs",
+        "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "/tmp/ovf-modes-final-proof.uezs4d3d"
+      ],
+      "cwd": "/tmp/ovf-modes-final-checkout.3i_ez0cq",
+      "log": "/tmp/ovf-modes-final-launch.15z2ovmt/prepare-command.log",
+      "startedAtUtc": "2026-10-01T21:14:05.063428+00:00",
+      "pid": 641576,
+      "processGroup": 641576,
+      "naturalDrainWallSeconds": 5.069996404927224e-06,
+      "finishedAtUtc": "2026-10-01T21:14:14.831783+00:00",
+      "wallSeconds": 9.768337501998758,
+      "exitCode": 0,
+      "cleanup": {
+        "processGroup": 641576,
+        "termSent": false,
+        "killSent": false,
+        "reapedDescendants": [
+          {
+            "pid": 664544,
+            "exitCode": 0
+          },
+          {
+            "pid": 664589,
+            "exitCode": 0
+          },
+          {
+            "pid": 661966,
+            "exitCode": 0
+          }
+        ],
+        "verifiedGone": true,
+        "leaderExitCode": 0,
+        "wallSeconds": 8.746996172703803e-06
+      }
+    }
+  ],
+  "linuxChildSubreaper": true,
+  "preparedAtUtc": "2026-10-01T21:14:14.832706+00:00",
+  "sourceDigest": "10eb86d645b975e0066a98e7617a24b25fb3861a65e0b07ac9c94d5665bb11b0",
+  "buildId": "5e49e689af13d4eef08c0760f904ad0bce2c2eebaa1144dea5d89cadecf310c0",
+  "schema": {
+    "saveVersion": 4,
+    "simulationRevision": "4.0.1",
+    "saveFormat": "orcs-vs-fairies-save",
+    "sessionVersion": 1,
+    "sessionFormat": "orcs-vs-fairies/session",
+    "replayVersion": 1,
+    "replayFormat": "orcs-vs-fairies/replay",
+    "replayChecksumVersion": 4,
+    "replayInitialSaveVersion": 4
+  },
+  "prepareJsonSha256": "411560c7225132598edff11746bd26ee5efd70c4780a9f6f09a4437855ead2e1",
+  "completionPoint": "Owned-group cleanup completed; INT/TERM blocked and cancellation snapshot taken",
+  "exitCode": 0,
+  "finishedAtUtc": "2026-10-01T21:14:14.832838+00:00",
+  "cancellationSignal": 0
+}

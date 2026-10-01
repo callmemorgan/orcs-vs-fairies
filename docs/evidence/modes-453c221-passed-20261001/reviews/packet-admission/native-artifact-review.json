@@ -1,0 +1,92 @@
+{
+  "createdAtUtc": "2026-10-01T21:48:41.297291+00:00",
+  "nativeAuditPath": "/tmp/ovf-readonly-native-453c221-fgKQGM/audit.json",
+  "nativeAuditSha256": "f25c820eb5b077ae848a1faed2eb74c373a72d5aa0988b0f215b556e0d7b3ddf",
+  "packet": "/tmp/ovf-modes-complete-packet-453c221.dgl9yk4w",
+  "result": "passed delegated-artifact readback",
+  "checks": {
+    "auditHashMatchesDelegate": true,
+    "allListedArtifactHashesReadBack": true,
+    "allListedSourceHashesReadBack": true,
+    "allNativeReceiptCrosschecksTrue": true,
+    "rawSessionIdentityReadBack": true,
+    "allRawNativeSchemaCorrect": true,
+    "embeddedEndpoint40ReadBack": true,
+    "standaloneEndpoint43SeparateReadBack": true,
+    "continuationReadBack": true,
+    "nativePassFlagsReadBack": true
+  },
+  "nativeAuditReceiptCheckCount": 52,
+  "artifactHashComparisonCount": 12,
+  "sourceHashComparisonCount": 340,
+  "files": [
+    {
+      "path": "proof/browser/local-custom-hill.session.json",
+      "bytesMatch": true,
+      "hashMatch": true
+    },
+    {
+      "path": "proof/browser/local-build-report.session.json",
+      "bytesMatch": true,
+      "hashMatch": true
+    },
+    {
+      "path": "proof/browser/local-custom-hill.replay.json",
+      "bytesMatch": true,
+      "hashMatch": true
+    },
+    {
+      "path": "proof/browser/local-build-report.json",
+      "bytesMatch": true,
+      "hashMatch": true
+    },
+    {
+      "path": "source-inputs/scripts/controls-proof/verify-native.ts",
+      "bytesMatch": true,
+      "hashMatch": true
+    },
+    {
+      "path": "proof/modules/verify-native.mjs",
+      "bytesMatch": true,
+      "hashMatch": true
+    },
+    {
+      "path": "proof/native/local-custom-hill.session.verification.json",
+      "bytesMatch": true,
+      "hashMatch": true
+    },
+    {
+      "path": "proof/browser/local-custom-hill.session.json",
+      "bytesMatch": true,
+      "hashMatch": true
+    },
+    {
+      "path": "proof/logs/native-local-custom-hill.session.log",
+      "bytesMatch": true,
+      "hashMatch": true
+    },
+    {
+      "path": "proof/native/local-build-report.session.verification.json",
+      "bytesMatch": true,
+      "hashMatch": true
+    },
+    {
+      "path": "proof/browser/local-build-report.session.json",
+      "bytesMatch": true,
+      "hashMatch": true
+    },
+    {
+      "path": "proof/logs/native-local-build-report.session.log",
+      "bytesMatch": true,
+      "hashMatch": true
+    }
+  ],
+  "nativeAuditLimits": [
+    "This inspection directly verified saved bytes, schema/endpoints, command values, hashes, report relationships, source assertions and log consistency. It did not independently reproduce decoder/playback/continuation behavior, movement, extended replay hash, or checkpoint hashes.",
+    "Passing runtime assertions and sourceUnchangedDuringVerification are saved receipt claims. No live checkout/Git provenance recheck or build reproduction occurred.",
+    "Native receipts cover the tick-40 session inputs. The standalone tick-43 replay has matching schema and command history, but its endpoint is outside these native receipts.",
+    "No physical controller hardware or browser-control behavior is certified by this native audit.",
+    "The source/config digest covers the170 listed src/config inputs; the checker script is separately hash-bound."
+  ],
+  "scope": "Read-only standard-library Python parsing/hashing of saved data and relevant source text. No project imports, behavior, build/test, browser, server, HTTP, port/process probe, or acceptance rerun. Existing audits and packet are unchanged."
+}
