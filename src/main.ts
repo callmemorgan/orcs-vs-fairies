@@ -66,6 +66,7 @@ let replayPlaying=false;
 let replayComplete=false;
 let replaySpeed:ReplaySpeed=1,replayPerspective:Side=0,replayAccumulated=0,replayClock=performance.now();
 let sessionModal=false,modalScene:GameScene|undefined,pausedBeforeModal=false;
+let objectiveOpen=false;
 const openModals=new Set<string>();
 let onlineConnection:OnlineMatchConnection|undefined,onlineRender:OnlineRenderState|undefined;
 let onlineConnecting:OnlineMatchConnection|undefined;
@@ -118,7 +119,7 @@ function setModal(source:string,open:boolean){
  if(open)openModals.add(source);else openModals.delete(source);
  sessionModal=!!openModals.size;
  if(sessionModal&&!wasOpen){modalScene=scene;pausedBeforeModal=scene?.paused??false;}
- if(scene){scene.inputBlocked=sessionModal;if(sessionModal)scene.paused=true;else if(wasOpen)scene.paused=replay?!replayPlaying:scene===modalScene?pausedBeforeModal:false;shell.update(scene.state,scene.selected,callbacks);}
+ if(scene){scene.inputBlocked=sessionModal||objectiveOpen;if(sessionModal)scene.paused=true;else if(wasOpen)scene.paused=replay?!replayPlaying:scene===modalScene?pausedBeforeModal:false;shell.update(scene.state,scene.selected,callbacks);}
  if(!sessionModal)modalScene=undefined;
 }
 function dispatchCommand(side:Side,command:Parameters<typeof issueCommand>[2]):boolean {
@@ -176,7 +177,7 @@ function launch(state:GameState,history?:ReplayArchive,playback?:ReplayPlayer,re
   onStep:()=>{planning.update({blocked:planningBlocked()});maybeAutosave();},onPhotoMode:enabled=>{root.classList.toggle('photo-mode',enabled);photoControls.hidden=!enabled;planning.update({blocked:planningBlocked()});},
   onPause:()=>{if(scene){if(replay)replayPlaying=!scene.paused;shell.update(scene.state,scene.selected,callbacks);}},onActionSlot:slot=>{shell.activateActionSlot(slot);},
   viewBounds:()=>{const b=shell.battlefieldBounds();return {top:b.top*renderDensity,bottom:b.bottom*renderDensity};}});
- scene.inputBlocked=sessionModal;scene.paused=!!playback||sessionModal;
+ scene.inputBlocked=sessionModal||objectiveOpen;scene.paused=!!playback||sessionModal;
  planning.reset(state);if(planningData&&!planning.restore(planningData,state))throw new Error('Saved construction planning could not be restored.');planning.update({blocked:planningBlocked()});
  game=new Phaser.Game({type:Phaser.AUTO,parent:'game-canvas',backgroundColor:'#14201e',antialias:true,roundPixels:false,scale:{mode:Phaser.Scale.FIT,width:Math.round(innerWidth*renderDensity),height:Math.round(innerHeight*renderDensity)},scene:[scene],render:{pixelArt:false,smoothPixelArt:true},fps:{target:60}});
  const currentGame=game,density=renderDensity;
@@ -282,7 +283,8 @@ const tools=mountSessionTools(root,{
  onModal:open=>setModal('session',open)
 });
 const sessionToolbar=root.querySelector<HTMLElement>('.session-toolbar')!;
-const objectives=mountObjectivePanel(root,{toolbar:sessionToolbar,getState:()=>scene?.state,getObservation:()=>scene?.objectiveObservation,getContent:()=>scene?.state.content,side:playerSide,canSubmit:()=>!!scene&&scene.canIssueCommands,submit:command=>scene?.command(command)??false});
+const canSubmitObjectives=()=>!!scene&&!scene.paused&&!scene.readOnly&&!scene.photoMode&&!sessionModal&&!isGameOver(scene.state)&&!scene.state.eliminated[playerSide()];
+const objectives=mountObjectivePanel(root,{toolbar:sessionToolbar,getState:()=>scene?.state,getObservation:()=>scene?.objectiveObservation,getContent:()=>scene?.state.content,side:playerSide,blocked:()=>!!scene?.photoMode||sessionModal,onVisibility:open=>{objectiveOpen=open;if(scene)scene.inputBlocked=sessionModal||objectiveOpen;},canSubmit:canSubmitObjectives,submit:command=>canSubmitObjectives()&&dispatchCommand(playerSide(),command)});
 mountOnlineLobby(root,{api:onlineApi,toolbar:sessionToolbar,onJoinMatch:joinOnline,onVisibility:open=>setModal('online',open)});
 const tournaments=mountTournamentDashboard(root,{source:createTournamentDashboardSource(),toolbar:sessionToolbar,onReplay:importReplay,onVisibility:open=>setModal('tournament',open)});
 function alignToolPanels(){root.style.setProperty('--tool-panel-top',`${Math.max(126,Math.ceil(sessionToolbar.getBoundingClientRect().bottom)+8)}px`);}

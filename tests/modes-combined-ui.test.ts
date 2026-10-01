@@ -114,6 +114,94 @@ describe('content-aware match setup', () => {
 });
 
 describe('toolbar objective controls', () => {
+  it('reports each visibility transition once and focuses the close control before restoring the opener', () => {
+    const node = root(), toolbar = root(), { state, observer } = relicFixture(), onVisibility = vi.fn();
+    const panel = mountObjectivePanel(node, { toolbar, getState: () => state, getObservation: () => observer.observe(state), side: 0, submit: vi.fn(), onVisibility }); disposers.push(() => panel.dispose());
+    const launch = toolbar.querySelector<HTMLButtonElement>('[data-objective-tool]')!;
+    const close = node.querySelector<HTMLButtonElement>('.objective-panel-close')!;
+    expect(onVisibility).not.toHaveBeenCalled();
+    launch.focus(); launch.click(); expect(document.activeElement).toBe(close);
+    expect(onVisibility.mock.calls).toEqual([[true]]);
+    panel.update(); expect(onVisibility.mock.calls).toEqual([[true]]);
+    close.click(); expect(document.activeElement).toBe(launch);
+    panel.close(); expect(onVisibility.mock.calls).toEqual([[true], [false]]);
+    launch.click(); expect(onVisibility.mock.calls).toEqual([[true], [false], [true]]);
+    panel.dispose(); expect(document.activeElement).not.toBe(close);
+    expect(onVisibility.mock.calls).toEqual([[true], [false], [true], [false]]);
+    panel.dispose(); expect(onVisibility).toHaveBeenCalledTimes(4);
+  });
+
+  it('closes when blocked, preserves another modal focus, and denies reopening until the blocker clears', () => {
+    const node = root(), toolbar = root(), { state, observer } = relicFixture(), onVisibility = vi.fn();
+    const otherModalControl = document.createElement('button'); document.body.append(otherModalControl);
+    let blocked = false;
+    const panel = mountObjectivePanel(node, { toolbar, getState: () => state, getObservation: () => observer.observe(state), side: 0, submit: vi.fn(), onVisibility, blocked: () => blocked }); disposers.push(() => panel.dispose());
+    const launch = toolbar.querySelector<HTMLButtonElement>('[data-objective-tool]')!;
+    const overlay = node.querySelector<HTMLElement>('.objective-overlay')!;
+    launch.focus(); launch.click(); expect(overlay.hidden).toBe(false);
+    otherModalControl.focus(); blocked = true; panel.update();
+    expect(overlay.hidden).toBe(true); expect(launch.disabled).toBe(true); expect(document.activeElement).toBe(otherModalControl);
+    launch.dispatchEvent(new MouseEvent('click', { bubbles: true })); panel.update();
+    expect(overlay.hidden).toBe(true); expect(onVisibility.mock.calls).toEqual([[true], [false]]);
+    blocked = false; panel.update(); expect(launch.disabled).toBe(false); expect(overlay.hidden).toBe(true);
+    launch.focus(); launch.click(); expect(overlay.hidden).toBe(false);
+    expect(onVisibility.mock.calls).toEqual([[true], [false], [true]]);
+  });
+
+  it('wraps Tab and Shift+Tab within the dialog while skipping disabled draft choices', () => {
+    const node = root(), toolbar = root(), state = match('annihilation', true), observer = new PlayerView(0);
+    let canSubmit = false;
+    const panel = mountObjectivePanel(node, { toolbar, getState: () => state, getObservation: () => observer.observe(state), side: 0, submit: vi.fn(), canSubmit: () => canSubmit }); disposers.push(() => panel.dispose());
+    toolbar.querySelector<HTMLButtonElement>('[data-objective-tool]')!.click();
+    const close = node.querySelector<HTMLButtonElement>('.objective-panel-close')!;
+    expect(document.activeElement).toBe(close);
+    expect(Array.from(node.querySelectorAll<HTMLButtonElement>('[data-draft-choice]')).every(button => button.disabled)).toBe(true);
+    for (const shiftKey of [false, true]) {
+      const event = new KeyboardEvent('keydown', { key: 'Tab', shiftKey, bubbles: true, cancelable: true });
+      close.dispatchEvent(event); expect(event.defaultPrevented).toBe(true); expect(document.activeElement).toBe(close);
+    }
+    canSubmit = true; panel.update();
+    const enabled = Array.from(node.querySelectorAll<HTMLButtonElement>('[data-draft-choice]')).filter(button => !button.disabled);
+    expect(enabled.length).toBeGreaterThan(0);
+    const backward = new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true, cancelable: true });
+    close.dispatchEvent(backward); expect(backward.defaultPrevented).toBe(true); expect(document.activeElement).toBe(enabled.at(-1));
+    const forward = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true });
+    enabled.at(-1)!.dispatchEvent(forward); expect(forward.defaultPrevented).toBe(true); expect(document.activeElement).toBe(close);
+  });
+
+  it('captures Escape without reaching battlefield listeners and restores the previous focus', () => {
+    const node = root(), toolbar = root(), { state, observer } = relicFixture(), battlefieldKey = vi.fn(), onVisibility = vi.fn();
+    window.addEventListener('keydown', battlefieldKey);
+    disposers.push(() => window.removeEventListener('keydown', battlefieldKey));
+    const panel = mountObjectivePanel(node, { toolbar, getState: () => state, getObservation: () => observer.observe(state), side: 0, submit: vi.fn(), onVisibility }); disposers.push(() => panel.dispose());
+    const launch = toolbar.querySelector<HTMLButtonElement>('[data-objective-tool]')!;
+    launch.focus(); launch.click();
+    const close = node.querySelector<HTMLButtonElement>('.objective-panel-close')!;
+    const escape = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true });
+    close.dispatchEvent(escape);
+    expect(escape.defaultPrevented).toBe(true); expect(battlefieldKey).not.toHaveBeenCalled();
+    expect(node.querySelector<HTMLElement>('.objective-overlay')!.hidden).toBe(true); expect(document.activeElement).toBe(launch);
+    expect(onVisibility.mock.calls).toEqual([[true], [false]]);
+    panel.dispose();
+    const afterDispose = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true });
+    node.dispatchEvent(afterDispose); expect(afterDispose.defaultPrevented).toBe(false); expect(battlefieldKey).toHaveBeenCalledOnce();
+  });
+
+  it('returns escaped focus to the first or last dialog control on Tab or Shift+Tab', () => {
+    const node = root(), toolbar = root(), { state, observer } = relicFixture();
+    const outside = document.createElement('button'); document.body.append(outside);
+    const panel = mountObjectivePanel(node, { toolbar, getState: () => state, getObservation: () => observer.observe(state), side: 0, submit: vi.fn() }); disposers.push(() => panel.dispose());
+    toolbar.querySelector<HTMLButtonElement>('[data-objective-tool]')!.click();
+    const controls = Array.from(node.querySelectorAll<HTMLButtonElement>('.objective-panel button:not(:disabled)')).filter(button => !button.closest('[hidden]'));
+    expect(controls.length).toBeGreaterThan(1);
+    outside.focus();
+    const forward = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true });
+    outside.dispatchEvent(forward); expect(forward.defaultPrevented).toBe(true); expect(document.activeElement).toBe(controls[0]);
+    outside.focus();
+    const backward = new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true, cancelable: true });
+    outside.dispatchEvent(backward); expect(backward.defaultPrevented).toBe(true); expect(document.activeElement).toBe(controls.at(-1));
+  });
+
   it('opens and closes from the toolbar, hides when observations disappear, and removes its controls on disposal', () => {
     const node = root(), toolbar = root(), { state, observer } = relicFixture();
     let received: ObjectiveView | null = observer.observe(state);
@@ -169,6 +257,7 @@ describe('toolbar objective controls', () => {
     received.draftChoices = ['lantern:duelist'];
     const panel = mountObjectivePanel(node, { toolbar, getState: () => undefined, getObservation: () => received, side: 0, submit: vi.fn() }); disposers.push(() => panel.dispose());
     expect(node.querySelector<HTMLElement>('.objective-overlay')!.hidden).toBe(false);
+    expect(document.activeElement).toBe(node.querySelector('.objective-panel-close'));
     const choices = Array.from(node.querySelectorAll<HTMLButtonElement>('[data-draft-choice]'));
     expect(choices.map(button => button.dataset.draftChoice)).toEqual(['lantern:duelist']);
     expect(choices[0].textContent).toBe('Lantern Duelist');

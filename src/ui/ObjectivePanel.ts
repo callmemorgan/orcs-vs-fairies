@@ -76,6 +76,8 @@ export interface ObjectivePanelOptions {
   submit: (command: ObjectiveCommand) => unknown | Promise<unknown>;
   canSubmit?: () => boolean;
   toolbar?:HTMLElement;
+  onVisibility?:(open:boolean)=>void;
+  blocked?:()=>boolean;
 }
 
 /** Match progress and relic orders use only the player's latest observation when supplied. */
@@ -86,11 +88,11 @@ export function mountObjectivePanel(root: HTMLElement, options: ObjectivePanelOp
   host.append(heading, status, progress, details, relics, message);
   const overlay=options.toolbar?element('div',undefined,'objective-overlay'):undefined;
   const launch=options.toolbar?element('button','Objectives'):undefined;
-  let open=false,lastState:GameState|null|undefined,observed=false;
-  function show(value:boolean){open=value;if(overlay)overlay.hidden=!open;launch?.setAttribute('aria-expanded',String(open));}
+  let open=false,lastState:GameState|null|undefined,observed=false,previousFocus:HTMLElement|null=null;
+  function show(value:boolean){if(value&&(options.blocked?.()??false)||open===value)return;if(value)previousFocus=document.activeElement instanceof HTMLElement?document.activeElement:null;open=value;if(overlay)overlay.hidden=!open;launch?.setAttribute('aria-expanded',String(open));options.onVisibility?.(open);if(open)(host.querySelector<HTMLButtonElement>('button:not(:disabled)')??host).focus();else if(!options.blocked?.()&&previousFocus?.isConnected)previousFocus.focus();}
   const close=overlay?element('button','Close objectives'):undefined;
-  const escape=(event:KeyboardEvent)=>{if(event.key==='Escape'&&open)show(false);};
-  if(overlay&&launch&&close){launch.type='button';launch.dataset.objectiveTool='progress';launch.setAttribute('aria-controls','match-objectives');launch.setAttribute('aria-expanded','false');host.id='match-objectives';close.type='button';close.className='objective-panel-close';close.onclick=()=>show(false);host.prepend(close);overlay.append(host);overlay.hidden=true;root.append(overlay);options.toolbar!.append(launch);launch.onclick=()=>show(!open);overlay.onclick=event=>{if(event.target===overlay)show(false);};document.addEventListener('keydown',escape);}else root.append(host);
+  const keyboard=(event:KeyboardEvent)=>{if(!open)return;if(event.key==='Escape'){event.preventDefault();event.stopImmediatePropagation();show(false);return;}if(event.key!=='Tab')return;const focusable=Array.from(host.querySelectorAll<HTMLElement>('button:not(:disabled),[tabindex="0"]')).filter(node=>!node.hidden&&node.closest('[hidden]')===null),first=focusable[0],last=focusable.at(-1);if(!first){event.preventDefault();host.focus();}else if(!host.contains(document.activeElement)){event.preventDefault();(event.shiftKey?last:first)?.focus();}else if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}};
+  if(overlay&&launch&&close){launch.type='button';launch.dataset.objectiveTool='progress';launch.setAttribute('aria-haspopup','dialog');launch.setAttribute('aria-controls','match-objectives');launch.setAttribute('aria-expanded','false');host.id='match-objectives';host.setAttribute('role','dialog');host.setAttribute('aria-modal','true');host.tabIndex=-1;close.type='button';close.className='objective-panel-close';close.onclick=()=>show(false);host.prepend(close);overlay.append(host);overlay.hidden=true;root.append(overlay);options.toolbar!.append(launch);launch.onclick=()=>show(!open);overlay.onclick=event=>{if(event.target===overlay)show(false);};document.addEventListener('keydown',keyboard,true);}else root.append(host);
   const side = () => typeof options.side === 'function' ? options.side() : options.side;
   const localViews = new Map<Side, PlayerView>();
   const view = (): ObjectiveView | null | undefined => { if (options.getObservation) return options.getObservation(); const state = options.getState(); if (!state) return null; const currentSide = side(); let observer = localViews.get(currentSide); if (!observer) { observer = new PlayerView(currentSide); localViews.set(currentSide, observer); } return observer.observe(state); };
@@ -115,7 +117,7 @@ export function mountObjectivePanel(root: HTMLElement, options: ObjectivePanelOp
   function update() {
     if (disposed) return;
     const current = view(), rules = current?.rules; host.hidden = !current || !rules;
-    if(launch){launch.hidden=!current||!rules;const state=options.getState();if(state!==lastState||!observed&&current){lastState=state;observed=!!current;show(!!rules?.draft.enabled&&current?.draft?.status==='drafting'&&(options.canSubmit?.()??true));}if(!current){observed=false;show(false);}}
+    if(launch){launch.hidden=!current||!rules;launch.disabled=options.blocked?.()??false;if(launch.disabled)show(false);const state=options.getState();if(state!==lastState||!observed&&current){lastState=state;observed=!!current;show(!!rules?.draft.enabled&&current?.draft?.status==='drafting'&&(options.canSubmit?.()??true));}if(!current){observed=false;show(false);}}
     if (!current || !rules) return;
     const objectives = current.objectives, mode = rules.mode, team = current.teamId ?? current.teams?.[side()] ?? side();
     heading.textContent = MATCH_MODE_NAMES[mode]; progress.hidden = true; details.replaceChildren(); relics.hidden = mode !== 'relic';
@@ -154,5 +156,5 @@ export function mountObjectivePanel(root: HTMLElement, options: ObjectivePanelOp
     }
     draft.update();
   }
-  update(); return { update,close:()=>show(false), dispose() { if (disposed) return; disposed = true; draft.dispose(); host.remove();overlay?.remove();launch?.remove();document.removeEventListener('keydown',escape); } };
+  update(); return { update,close:()=>show(false), dispose() { if (disposed) return;show(false);disposed = true; draft.dispose(); host.remove();overlay?.remove();launch?.remove();document.removeEventListener('keydown',keyboard,true); } };
 }
