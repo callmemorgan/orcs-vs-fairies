@@ -1,0 +1,146 @@
+{
+  "node": "v24.21.0",
+  "browser": "151.0.7922.34",
+  "nodeBundleSha256": "39ad36c03b8118c24bec7643000be01ebfeddf460ef253805a04ccaf67b103c4",
+  "browserBundleSha256": "cd5fb8d1e45bc8ab3598df7995ef160ae5ee526f45a87dced51992292a5a7b54",
+  "stylesheetSha256": "3a2e37a820be39af5ded057dc09e6da17f33f8ed7bd8c3b6123d43e9cd18a6c2",
+  "marker": "tournament-proof-eb428909-44e8-4249-b4ad-1f99849b91ca",
+  "checks": {
+    "unauthorizedRequestsRejected": true,
+    "httpAcceptsOnlyRegisteredConfigId": true,
+    "actualSmokeReportVerifiedInNodeAndBrowser": true,
+    "httpPollingUpdatesDashboardAndStandings": true,
+    "completedAgentPidsExited": true,
+    "replayEndpointMatchesReport": true,
+    "bothReplayCallbacksRunFullBrowserPlaybackAndSeek": true,
+    "cancelThroughHttpStopsBothObservedLiveAgentPids": true,
+    "canceledPartialReportVerifiedInNodeAndBrowser": true
+  },
+  "runs": [
+    {
+      "id": "run-f5a6b176-4c66-42a4-ae80-0b1ca8e5a945",
+      "status": "complete",
+      "pids": [
+        1224050,
+        1224051,
+        1224240,
+        1224241
+      ],
+      "matches": [
+        {
+          "id": "match-001",
+          "finalTick": 3863,
+          "finalStateSha256": "d4066053052982ebf9b978f92480cf68beac6c91198744464fd44c54f9ce9859"
+        },
+        {
+          "id": "match-002",
+          "finalTick": 3933,
+          "finalStateSha256": "8efb1e58e148bf2f6b43cf2a4c77bbde6a14b18a908d38994cb0fbee021476eb"
+        }
+      ]
+    },
+    {
+      "id": "run-d4f827b1-bdd7-48e7-a609-61e747a18843",
+      "status": "canceled",
+      "pids": [
+        1225019,
+        1225020
+      ],
+      "livePidsBeforeCancel": [
+        1225019,
+        1225020
+      ]
+    }
+  ],
+  "browserProof": {
+    "ready": true,
+    "visibility": [
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "runs": [
+      {
+        "configId": "builtin-smoke",
+        "id": "run-f5a6b176-4c66-42a4-ae80-0b1ca8e5a945"
+      },
+      {
+        "configId": "proof-hang",
+        "id": "run-d4f827b1-bdd7-48e7-a609-61e747a18843"
+      }
+    ],
+    "polls": [
+      {
+        "id": "run-f5a6b176-4c66-42a4-ae80-0b1ca8e5a945",
+        "status": "running",
+        "completed": 0,
+        "tick": null
+      },
+      {
+        "id": "run-f5a6b176-4c66-42a4-ae80-0b1ca8e5a945",
+        "status": "running",
+        "completed": 0,
+        "tick": 3863
+      },
+      {
+        "id": "run-f5a6b176-4c66-42a4-ae80-0b1ca8e5a945",
+        "status": "complete",
+        "completed": 2,
+        "tick": null
+      },
+      {
+        "id": "run-d4f827b1-bdd7-48e7-a609-61e747a18843",
+        "status": "running",
+        "completed": 0,
+        "tick": 0
+      },
+      {
+        "id": "run-d4f827b1-bdd7-48e7-a609-61e747a18843",
+        "status": "running",
+        "completed": 0,
+        "tick": 0
+      },
+      {
+        "id": "run-d4f827b1-bdd7-48e7-a609-61e747a18843",
+        "status": "canceled",
+        "completed": 1,
+        "tick": null
+      }
+    ],
+    "reports": [
+      {
+        "id": "run-f5a6b176-4c66-42a4-ae80-0b1ca8e5a945",
+        "status": "complete",
+        "matches": 2
+      },
+      {
+        "id": "run-d4f827b1-bdd7-48e7-a609-61e747a18843",
+        "status": "canceled",
+        "matches": 1
+      }
+    ],
+    "inspections": [
+      {
+        "reportId": "run-f5a6b176-4c66-42a4-ae80-0b1ca8e5a945",
+        "matchId": "match-001",
+        "finalTick": 3863,
+        "sha256": "d4066053052982ebf9b978f92480cf68beac6c91198744464fd44c54f9ce9859",
+        "checksum": "5552badb",
+        "midpoint": 1931
+      },
+      {
+        "reportId": "run-f5a6b176-4c66-42a4-ae80-0b1ca8e5a945",
+        "matchId": "match-002",
+        "finalTick": 3933,
+        "sha256": "8efb1e58e148bf2f6b43cf2a4c77bbde6a14b18a908d38994cb0fbee021476eb",
+        "checksum": "50bbae2b",
+        "midpoint": 1966
+      }
+    ]
+  },
+  "errors": [],
+  "base": "http://127.0.0.1:42291",
+  "servedBrowserBundleSha256": "cd5fb8d1e45bc8ab3598df7995ef160ae5ee526f45a87dced51992292a5a7b54"
+}
