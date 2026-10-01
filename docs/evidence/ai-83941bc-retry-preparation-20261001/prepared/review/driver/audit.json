@@ -1,0 +1,145 @@
+{
+  "kind": "independent-static-retry-preparation-review",
+  "reviewedAt": "2026-10-01T22:19:39Z",
+  "reviewer": {
+    "harness": "Codex",
+    "actualModel": "GPT-6.1 Sol",
+    "identityBasis": "Active runtime/model context supplied to this agent",
+    "requestedOverride": "GPT-5.6 Sol",
+    "requestedOverrideApplied": false
+  },
+  "scope": {
+    "preparationRoot": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-83941bc-retry-prep-r1",
+    "ownedCheckout": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+    "reviewWrites": [
+      "review/driver/review.md",
+      "review/driver/audit.json"
+    ],
+    "invokedPreparedHelpers": false,
+    "invokedDriver": false,
+    "invokedAdapter": false,
+    "runtimeExecuted": false,
+    "runtimeClaims": false
+  },
+  "git": {
+    "ownedCheckoutHead": "453c2218af9973b9eca8fb78392435bd9d46a740",
+    "ownedCheckoutTrackedClean": true,
+    "retryPin": "83941bc80ce9ec08840b0645d9b33e8018d5309a",
+    "retryParent": "efeb9a8e1363e3360774699ba3facc82ccf3f836",
+    "changedPaths": [
+      "scripts/verify_assembled_coop.mjs",
+      "scripts/verify_assembled_online.mjs"
+    ]
+  },
+  "parserChange": {
+    "preparedPatchMatchesGitDiff": true,
+    "parentBlobsEqual453Blobs": true,
+    "newBlobsRevertToParentByOneReplacementEach": true,
+    "coopAssertTokenCount": {
+      "before": 43,
+      "after": 43
+    },
+    "onlineAssertTokenCount": {
+      "before": 91,
+      "after": 91
+    },
+    "blobs": {
+      "scripts/verify_assembled_coop.mjs": {
+        "beforeSha256": "66e5437480bd3cecb7bbd51915db1b323a51b8677afd308d1aef44bbbe8e0b9a",
+        "afterSha256": "b5498194b298d46e43de9cf996e1d35c5d1d594b4a13e15b26a8477a71dd8e3c"
+      },
+      "scripts/verify_assembled_online.mjs": {
+        "beforeSha256": "e544fbecf060f0fcfeb156287396d68efa91a68976d8d8eaf98fec2f22d73d1e",
+        "afterSha256": "f99162c75ae3d55b5f07572294df2dd5fc09a60106f3f95d7e00ddcd36773e45"
+      }
+    }
+  },
+  "applicability": {
+    "boundInputCount": 598,
+    "boundInputsMatchSealed453Record": true,
+    "boundDifferences": [
+      "scripts/verify_assembled_coop.mjs",
+      "scripts/verify_assembled_online.mjs"
+    ],
+    "runtimeBuildPathCount": 565,
+    "runtimeBuildPathsIdentical": true
+  },
+  "driver": {
+    "path": "recipe/followup-83941bc-r1-chromium1243.sh",
+    "bytes": 4954,
+    "sha256": "81e0f62d4012a50338819d82466556a5a093cac78a69d884619e51f8b5ea84da",
+    "diffMatchesApproved453Driver": true,
+    "allowedPhases": [
+      "build-web",
+      "build-server",
+      "serve",
+      "coop-ui",
+      "online-ui"
+    ],
+    "ownedCheckoutGuard": true,
+    "retryHeadGuard": true,
+    "freshOutputPrefix": "work/ai-save401-final-83941bc-r1",
+    "base": "http://127.0.0.1:5371",
+    "spectatorDelaySeconds": 30
+  },
+  "wrapperAndBrowserSelection": {
+    "wrapperSha256": "bb8c80fc33ca6a25e044a5df60350030bb2177461d265025b9bfcffcdc3a1cd2",
+    "wrapperByteIdenticalToAcceptedCopy": true,
+    "fresh839BuildEnvelopesRequired": true,
+    "adapterSha256": "7fe266503ffb4a65da331e6ae3fa7ffa248f805595dcb5e417a7669fc73bbd6d",
+    "adapterByteIdenticalToApproved453Copy": true,
+    "playwrightEntrySha256": "a0f5715ea22354f922791a9c53dc012d5d5c067ff9cc4cd35ffb7cd272071a9f",
+    "playwrightPackageSha256": "ca170ec143a88ed3043ac953eb3b2377b2b97304104f4e1e23316684ce2c35af",
+    "playwrightPackageVersion": "1.62.1",
+    "chromiumExecutablePath": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+    "chromiumExecutableSha256": "8c599d43aec53f2460a31ae2f4af6bd863f8258b34ff519564bc5d4726bfaa1e",
+    "futureRuntimeIdentityEstablished": false
+  },
+  "runbook": {
+    "path": "README.md",
+    "sha256": "6e6083bf4ed17659d4048f5ced2cb2a9ff3b92dc45b3f413cb6438ca8efee5af",
+    "assignedSerialOrder": true,
+    "stopOnFirstFailure": true,
+    "onlineRequiresCoopPass": true,
+    "sequenceEnforcedBy": "operator instructions",
+    "protectedPort": 4173,
+    "ownedPort": 5371
+  },
+  "observerDerivations": {
+    "allPreparedPatchesMatchTheirSources": true,
+    "additionalDerivationSha256": "3cd29317f1f2fedd159ac0b3e00a131b6e59b2ee207141a543b600d25e4e70f4",
+    "cleanupOwnedSha256": "f61490a5a264e51e8fa34f3d20e0cd71e6a3863d04ce1dedccb3e65e2d85082f",
+    "auditFailedEnvelopeSha256": "a1b64d8d6e95968360da06da9d9168a1b0681d7be6e2485670d6daad6ec66a66",
+    "closeOwnedBrowserSha256": "2bcb75f17ac11c382e2cdbf38d49c56b112e60595f894ae19b6294415fbe18ff"
+  },
+  "cleanup": {
+    "serverIdentityCheckedBeforeSignal": true,
+    "ownedPort": 5371,
+    "protectedPort": 4173,
+    "targetExcludedFromProtectedPortHolders": true,
+    "protectedListenerIdentityComparedBeforeAfter": true,
+    "protectedPortResultIncludedInPassed": true,
+    "r3CaptureIndependentOfCompletedTrace": true,
+    "debugStderrOwnershipFallback": true,
+    "partialObservedPhaseFailsClosed": true,
+    "scopedBrowserCloseChecksRootIdentity": true,
+    "scopedBrowserCloseChecksProtected4173BeforeAfter": true,
+    "scopedBrowserCloseClaimsDescendantCleanup": false
+  },
+  "findings": [],
+  "provenanceLimits": [
+    "The wrapper does not pin installed dependencies or the complete host environment.",
+    "The browser provenance helper does not authenticate every shared library or the complete host environment.",
+    "The frozen verifiers do not expose browser.version().",
+    "The trace helper cannot reconstruct a past live /proc observation or browser.version().",
+    "Static installed-file hashes do not establish a future run's selected browser process.",
+    "The 590 sealed payload files were not rehashed by this review."
+  ],
+  "sealed453": {
+    "manifestSha256": "bf8ed2449d14c0f3bcf00d32af4ca831885c08212be96fecc96ebd8d581ee681",
+    "files": 590,
+    "bytes": 373014330,
+    "modifiedByReview": false
+  },
+  "verdict": "static-preparation-accepted-with-stated-provenance-limits"
+}

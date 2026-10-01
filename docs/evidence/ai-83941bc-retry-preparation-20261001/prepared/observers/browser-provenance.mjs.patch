@@ -1,0 +1,23 @@
+--- /home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/preparation/browser-provenance.mjs
++++ /home/morgana/.codex/worktrees/assembled-allied-ai/ai-83941bc-retry-prep-r1/observers/browser-provenance.mjs
+@@ -4,15 +4,15 @@
+ import {dirname,join,resolve} from 'node:path';
+ import {createRequire} from 'node:module';
+ import {fileURLToPath} from 'node:url';
+-import {inventory,sha} from '../../../scripts/controls-proof/browser-common.mjs';
++import {inventory,sha} from '/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/scripts/controls-proof/browser-common.mjs';
+ const [directory,phase]=process.argv.slice(2),out=resolve(directory);assert(['before','after'].includes(phase));
+-const sourcePin='453c2218af9973b9eca8fb78392435bd9d46a740';assert.equal(execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),sourcePin);
++const sourcePin='83941bc80ce9ec08840b0645d9b33e8018d5309a';assert.equal(execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),sourcePin);
+ const modulePath='/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs';
+ const require=createRequire(modulePath),packagePath=require.resolve('playwright/package.json'),corePackagePath=require.resolve('playwright-core/package.json');
+-const launcher=resolve('work/ai-save401-final-453c221-r1/launcher');
+-const paths={adapter:join(launcher,'playwright-chromium-1243.mjs'),driver:join(launcher,'followup-453c221-r4-chromium1243.sh'),chromium:'/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome',playwrightEntry:modulePath};
++const launcher='/home/morgana/.codex/worktrees/assembled-allied-ai/ai-83941bc-retry-prep-r1/recipe';
++const paths={adapter:join(launcher,'playwright-chromium-1243.mjs'),driver:join(launcher,'followup-83941bc-r1-chromium1243.sh'),chromium:'/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome',playwrightEntry:modulePath};
+ const files={};for(const [name,path] of Object.entries(paths)){const bytes=await readFile(path);files[name]={path,realpath:await realpath(path),bytes:bytes.length,sha256:sha(bytes)};}
+-assert.equal(files.adapter.sha256,'7fe266503ffb4a65da331e6ae3fa7ffa248f805595dcb5e417a7669fc73bbd6d');assert.equal(files.driver.sha256,'49721f151fd5cb98b80b5143c850c67051d7abe22b1deb1625f3a5932be65f9f');assert.equal(files.chromium.sha256,'8c599d43aec53f2460a31ae2f4af6bd863f8258b34ff519564bc5d4726bfaa1e');
++assert.equal(files.adapter.sha256,'7fe266503ffb4a65da331e6ae3fa7ffa248f805595dcb5e417a7669fc73bbd6d');assert.equal(files.driver.sha256,'81e0f62d4012a50338819d82466556a5a093cac78a69d884619e51f8b5ea84da');assert.equal(files.chromium.sha256,'8c599d43aec53f2460a31ae2f4af6bd863f8258b34ff519564bc5d4726bfaa1e');
+ const packages={};for(const [name,path] of Object.entries({playwright:dirname(packagePath),playwrightCore:dirname(corePackagePath),ws:await realpath('node_modules/ws')})){const data=JSON.parse(await readFile(join(path,'package.json')));packages[name]={path,version:data.version,files:await inventory(path)};}
+ const helper=fileURLToPath(import.meta.url),helperBytes=await readFile(helper);
+ const record={sourcePin,files,packages,chromiumCliVersion:execFileSync(paths.chromium,['--version'],{encoding:'utf8'}).trim(),helper:{path:helper,bytes:helperBytes.length,sha256:sha(helperBytes)},limits:'Authenticates named actual launcher/browser files and all files in the selected installed Playwright, playwright-core and ws packages before/after. CLI --version identifies the pinned executable; actual phase process captures establish launch. Does not authenticate every shared library or the complete host environment. Frozen verifiers do not expose browser.version() to this external observer.'};

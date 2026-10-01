@@ -1,0 +1,72 @@
+--- /home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/launcher/followup-453c221-r4-chromium1243.sh
++++ /home/morgana/.codex/worktrees/assembled-allied-ai/ai-83941bc-retry-prep-r1/recipe/followup-83941bc-r1-chromium1243.sh
+@@ -2,12 +2,12 @@
+ set -euo pipefail
+ 
+ # Held recipes. Root must assign each phase before invocation.
+-AI_PHASE=${1:?Choose natural-allied, build-web, build-server, serve, allied-ui, roster-ui, coop-ui, or online-ui}
+-AI_SOURCE_PIN=453c2218af9973b9eca8fb78392435bd9d46a740
+-AI_PROOF_OUT=work/ai-save401-final-453c221-r1
+-AI_PROOF_WRAPPER=work/final-ai-prep/proof-envelope.mjs
++AI_PHASE=${1:?Choose build-web, build-server, serve, coop-ui, or online-ui}
++AI_SOURCE_PIN=83941bc80ce9ec08840b0645d9b33e8018d5309a
++AI_PROOF_OUT=work/ai-save401-final-83941bc-r1
++AI_PROOF_WRAPPER=/home/morgana/.codex/worktrees/assembled-allied-ai/ai-83941bc-retry-prep-r1/recipe/proof-envelope.mjs
+ AI_PROOF_BASE=http://127.0.0.1:5371
+-AI_PLAYWRIGHT_ADAPTER=$PWD/work/ai-save401-final-453c221-r1/launcher/playwright-chromium-1243.mjs
++AI_PLAYWRIGHT_ADAPTER=/home/morgana/.codex/worktrees/assembled-allied-ai/ai-83941bc-retry-prep-r1/recipe/playwright-chromium-1243.mjs
+ AI_PLAYWRIGHT_ADAPTER_SHA256=7fe266503ffb4a65da331e6ae3fa7ffa248f805595dcb5e417a7669fc73bbd6d
+ AI_PLAYWRIGHT_INDEX=/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs
+ AI_PLAYWRIGHT_INDEX_SHA256=a0f5715ea22354f922791a9c53dc012d5d5c067ff9cc4cd35ffb7cd272071a9f
+@@ -16,7 +16,10 @@
+ AI_PLAYWRIGHT_VERSION=1.62.1
+ AI_CHROMIUM_EXECUTABLE=/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome
+ AI_CHROMIUM_EXECUTABLE_SHA256=8c599d43aec53f2460a31ae2f4af6bd863f8258b34ff519564bc5d4726bfaa1e
++AI_OWNED_CHECKOUT=/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies
++[[ "$PWD" == "$AI_OWNED_CHECKOUT" ]] || exit 2
+ [[ "$(git rev-parse HEAD)" == "$AI_SOURCE_PIN" ]] || exit 2
++case "$AI_PHASE" in build-web|build-server|serve|coop-ui|online-ui) ;; *) exit 2 ;; esac
+ 
+ python3 - "$AI_PROOF_WRAPPER" <<'HASH_CHECK'
+ from pathlib import Path
+@@ -39,13 +42,6 @@
+ LAUNCHER_HASH_CHECK
+ 
+ case "$AI_PHASE" in
+-  natural-allied)
+-    env -u OVF_ALLIED_EXPLORATORY \
+-      "AI_TEAM_OUTPUT=$AI_PROOF_OUT/natural-allied" \
+-      "OVF_AI_PROOF_ARTIFACTS=[\"$AI_PROOF_OUT/natural-allied\"]" \
+-      node "$AI_PROOF_WRAPPER" "$AI_SOURCE_PIN" "$AI_PROOF_OUT/envelopes/natural-allied" -- \
+-      npx --no-install vitest run --config vitest.ai-team.config.ts --reporter=verbose
+-    ;;
+   build-web)
+     env "OVF_AI_PROOF_ARTIFACTS=[\"$AI_PROOF_OUT/dist\"]" \
+       node "$AI_PROOF_WRAPPER" "$AI_SOURCE_PIN" "$AI_PROOF_OUT/envelopes/build-web" -- \
+@@ -61,7 +57,7 @@
+       "RTS_STATIC_DIR=$AI_PROOF_OUT/dist" "RTS_DATA_DIR=$AI_PROOF_OUT/server-data" \
+       "RTS_ORIGIN=$AI_PROOF_BASE" node "$AI_PROOF_OUT/server/rts-server.js"
+     ;;
+-  allied-ui|roster-ui|coop-ui|online-ui)
++  coop-ui|online-ui)
+     AI_BROWSER_ENV=(env \
+       "OVF_PLAYWRIGHT_MODULE=$AI_PLAYWRIGHT_ADAPTER" \
+       "OVF_AI_PROOF_PLAYWRIGHT_ADAPTER_SHA256=$AI_PLAYWRIGHT_ADAPTER_SHA256" \
+@@ -78,17 +74,6 @@
+       "OVF_AI_PROOF_BASE=$AI_PROOF_BASE" "OVF_ONLINE_BUILD_LABEL=$AI_SOURCE_PIN" \
+       "OVF_AI_PROOF_ARTIFACTS=[\"$AI_PROOF_OUT/$AI_PHASE\"]")
+     case "$AI_PHASE" in
+-      allied-ui)
+-        AI_BROWSER_ENV+=("OVF_ALLIED_BROWSER_PROOF_OUTPUT=$AI_PROOF_OUT/allied-ui")
+-        "${AI_BROWSER_ENV[@]}" node "$AI_PROOF_WRAPPER" "$AI_SOURCE_PIN" "$AI_PROOF_OUT/envelopes/allied-ui" -- \
+-          node scripts/verify_assembled_allied.mjs "$AI_PROOF_BASE" "$PWD"
+-        ;;
+-      roster-ui)
+-        AI_BROWSER_ENV+=("OVF_ROSTER_PROOF_DIR=$AI_PROOF_OUT/roster-ui")
+-        "${AI_BROWSER_ENV[@]}" node "$AI_PROOF_WRAPPER" "$AI_SOURCE_PIN" "$AI_PROOF_OUT/envelopes/roster-ui" -- \
+-          node scripts/verify_assembled_roster.mjs "$AI_PROOF_BASE" \
+-          docs/evidence/roster-coop-integration-20261001/roster/historical-source-session-v1.json
+-        ;;
+       coop-ui)
+         AI_BROWSER_ENV+=("OVF_COOP_PROOF_DIR=$AI_PROOF_OUT/coop-ui")
+         "${AI_BROWSER_ENV[@]}" node "$AI_PROOF_WRAPPER" "$AI_SOURCE_PIN" "$AI_PROOF_OUT/envelopes/coop-ui" -- \

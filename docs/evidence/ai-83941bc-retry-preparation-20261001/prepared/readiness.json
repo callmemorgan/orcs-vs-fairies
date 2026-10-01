@@ -1,0 +1,67 @@
+{
+  "kind": "reviewed-held-retry-preparation",
+  "retryProofPin": "83941bc80ce9ec08840b0645d9b33e8018d5309a",
+  "currentOwnedCheckoutPin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "trackedClean": true,
+  "futureOutputPrefix": "work/ai-save401-final-83941bc-r1",
+  "futureOutputAbsent": true,
+  "execution": "HELD until root assigns checkout and heavy slot",
+  "assignedOrder": [
+    "build-web",
+    "build-server",
+    "serve",
+    "coop-ui",
+    "online-ui"
+  ],
+  "stopRule": "Stop on any failed phase; online only after co-op passes. Retain all failed outputs and do not rerun within the same prefix.",
+  "driver": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-83941bc-retry-prep-r1/recipe/followup-83941bc-r1-chromium1243.sh",
+  "driverSha256": "81e0f62d4012a50338819d82466556a5a093cac78a69d884619e51f8b5ea84da",
+  "wrapperUnchangedSha256": "bb8c80fc33ca6a25e044a5df60350030bb2177461d265025b9bfcffcdc3a1cd2",
+  "adapterUnchangedSha256": "7fe266503ffb4a65da331e6ae3fa7ffa248f805595dcb5e417a7669fc73bbd6d",
+  "buildEnvelopesMustUse839": true,
+  "oldPassingPhasesKeep453Pins": [
+    "natural-allied",
+    "allied-ui",
+    "roster-ui"
+  ],
+  "original453Packet": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1",
+  "original453ManifestSha256": "bf8ed2449d14c0f3bcf00d32af4ca831885c08212be96fecc96ebd8d581ee681",
+  "original453PayloadsRehashedThisPreparation": false,
+  "boundedRetention": {
+    "entries": 394,
+    "bytes": 68373454,
+    "evidence": "Sealed source-before assetFiles SHA256/bytes match original dist manifest records; asset gitBlob/bytes match both Git trees and modes match 100644."
+  },
+  "rawRetention": {
+    "entries": 196,
+    "bytes": 304640876,
+    "includes_generated_web_outputs": {
+      "entries": 4,
+      "bytes": 2533120
+    }
+  },
+  "compressionState": "HELD; no encoded/decompressed/hash/equality/storage result",
+  "reviews": {
+    "driver": {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-83941bc-retry-prep-r1/review/driver/review.md",
+      "sha256": "2958470a8554410cd6d9cf5d7324b2c9228bae7bea805bce15a05d556535dcbc",
+      "actualModel": "GPT-6.1 Sol",
+      "requestedOverrideApplied": false,
+      "findings": []
+    },
+    "trail": {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-83941bc-retry-prep-r1/review/trail/review.md",
+      "sha256": "8af8b7d2fa3cd615ae64f1c2a1ad3e67552e2ea6344c818f810028cac23eaa86",
+      "model": "GPT-5.6 Sol",
+      "findings": [],
+      "attentionFlags": [
+        "The 68,373,454 bytes of indexed public payloads were not re-read or rehashed. Admission relies on the byte-identical sealed manifest/source inventory and matching Git blob/mode/size metadata at both pins.",
+        "The SQLite codec and public restore recipes are held and unexecuted. Encoded size/hash, decoded size/hash, full byte equality, and storage savings remain unknown.",
+        "Cleanup helpers are held and unexecuted. Unknown partial-phase browser ownership prevents a complete cleanup claim, and the scoped close helper covers one verified root PID only; recorded descendants require separate checks.",
+        "The copied manifest and source inventory match the current originals, but this light review did not rehash the other 373 MB of sealed packet payloads."
+      ]
+    }
+  },
+  "decisionRows": 5,
+  "limits": "The applicability comparison and metadata readbacks executed as light file/Git inspection. No checkout move, retry driver, runtime observer, browser adapter, build/compiler/test/simulation/browser/server/install/restore/compression was invoked. Original packet files were not modified. Future phase provenance and gameplay require actual execution artifacts."
+}

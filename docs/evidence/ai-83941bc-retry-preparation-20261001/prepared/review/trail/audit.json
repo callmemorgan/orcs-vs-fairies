@@ -1,0 +1,223 @@
+{
+  "auditKind": "independent retention and decision-trail review",
+  "reviewerHarness": "Codex",
+  "reviewerModel": "GPT-5.6 Sol",
+  "reviewedRoot": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-83941bc-retry-prep-r1",
+  "sourcePins": {
+    "original": "453c2218af9973b9eca8fb78392435bd9d46a740",
+    "comparison": "83941bc80ce9ec08840b0645d9b33e8018d5309a"
+  },
+  "executionBoundary": "Static file, sealed metadata, and Git-tree inspection only. No packet payload rehash, recipe execution, compression, restoration, runtime, browser, build, test, server, dependency, checkout, or original-packet mutation.",
+  "result": "passed",
+  "checks": [
+    {
+      "name": "five-row decision trail",
+      "passed": true,
+      "details": {
+        "rowCount": 5,
+        "phases": [
+          "applicability",
+          "recipe",
+          "cleanup",
+          "retention",
+          "readback"
+        ],
+        "missingEvidence": []
+      }
+    },
+    {
+      "name": "retention output file hashes",
+      "passed": true,
+      "details": {
+        "fileCount": 10,
+        "failures": [],
+        "recipesExecuted": false
+      }
+    },
+    {
+      "name": "copied sealed metadata",
+      "passed": true,
+      "details": {
+        "manifestBytes": 91644,
+        "manifestSha256": "bf8ed2449d14c0f3bcf00d32af4ca831885c08212be96fecc96ebd8d581ee681",
+        "sourceInventoryBytes": 128449,
+        "sourceInventorySha256": "eb414c0a5c82b49110c36e83c8fad83e16c35ff886560d1116511a334b52c910"
+      }
+    },
+    {
+      "name": "590-entry sealed index",
+      "passed": true,
+      "details": {
+        "manifestEntries": 590,
+        "manifestBytes": 373014330,
+        "indexFailures": [],
+        "packetIncludingManifest": {
+          "entries": 591,
+          "bytes": 373105974
+        }
+      }
+    },
+    {
+      "name": "394/196 retention partition",
+      "passed": true,
+      "details": {
+        "duplicateEntries": 394,
+        "duplicateBytes": 68373454,
+        "actualEntries": 196,
+        "actualBytes": 304640876,
+        "disjointCompletePartition": true
+      }
+    },
+    {
+      "name": "394-entry sealed metadata/Git chain",
+      "passed": true,
+      "details": {
+        "checkedEntries": 394,
+        "payloadsRehashed": false,
+        "failures": [],
+        "comparisonRootTree": "f881294cb0479a6d1ed4f00112ac7f9cfa6c0551"
+      }
+    },
+    {
+      "name": "category totals and required actual bytes",
+      "passed": true,
+      "details": {
+        "categoryCounts": {
+          "native_runs_saves_replays_screenshots": 53,
+          "observer_reviewer_audits_corrections": 10,
+          "execution_provenance_and_generated_outputs": 47,
+          "preparation_cleanup_and_history": 17,
+          "status_and_decisions": 2,
+          "source_backed_public_duplicate": 394,
+          "generated_web_build": 4,
+          "sealed_run_envelopes_inventories": 60,
+          "native_sqlite_raw": 1,
+          "native_sqlite_companions": 2
+        },
+        "categoryBytes": {
+          "native_runs_saves_replays_screenshots": 68645398,
+          "observer_reviewer_audits_corrections": 19310,
+          "execution_provenance_and_generated_outputs": 7675708,
+          "preparation_cleanup_and_history": 600322,
+          "status_and_decisions": 21413,
+          "source_backed_public_duplicate": 68373454,
+          "generated_web_build": 2533120,
+          "sealed_run_envelopes_inventories": 2646789,
+          "native_sqlite_raw": 222466048,
+          "native_sqlite_companions": 32768
+        },
+        "categoryFailures": [],
+        "requiredActualPaths": [
+          "dist/assets/main-BxMb13AF.js",
+          "dist/assets/main-CxCO6VnC.css",
+          "dist/editor.html",
+          "dist/index.html",
+          "server-data/server.sqlite",
+          "server-data/server.sqlite-shm",
+          "server-data/server.sqlite-wal"
+        ]
+      }
+    },
+    {
+      "name": "held lossless codec safeguards",
+      "passed": true,
+      "details": {
+        "state": "HELD",
+        "executionPerformed": false,
+        "encoded": {
+          "path": null,
+          "bytes": null,
+          "sha256": null
+        },
+        "decoded": {
+          "path": null,
+          "bytes": null,
+          "sha256": null
+        },
+        "fullByteEquality": null,
+        "sourceGuardsPresent": true,
+        "deleteCallsAbsent": true,
+        "maxEncodedBytes": 230854656
+      }
+    },
+    {
+      "name": "held public restore safeguards",
+      "passed": true,
+      "details": {
+        "newDirectoryRequired": true,
+        "GitBlobHashAndReadbackRequired": true,
+        "deleteCallsAbsent": true,
+        "recipeExecuted": false
+      }
+    },
+    {
+      "name": "revised cleanup ownership and protected-port guards",
+      "passed": true,
+      "details": {
+        "cleanupGuardBeforeSignal": true,
+        "partialPhaseSources": [
+          "completed trace",
+          "R3 process record",
+          "original DEBUG stderr"
+        ],
+        "unknownOwnershipRefusesClaim": true,
+        "scopedCloseGuardBeforeSignal": true,
+        "scopedCloseLimit": "Signals one checked root; descendants need separate PID/start-ticks observation.",
+        "executed": false
+      }
+    },
+    {
+      "name": "decision evidence agrees with trail",
+      "passed": true,
+      "details": {
+        "boundInputs": 598,
+        "runtimeFilesIdentical": 565,
+        "parserChanges": 2,
+        "recipeExecution": "HELD. No checkout change, build, compiler, test, simulation, browser, server, install or retry was performed.",
+        "retentionStatus": "static_plan_only_no_packet_mutation"
+      }
+    },
+    {
+      "name": "retention readback checkpoint",
+      "passed": true,
+      "details": {
+        "evidencePath": "applicability/retention-readback.json",
+        "evidenceSha256": "ae1e2a11efbdc3c83e0afbfe0db93bf5efa3ed591627649965a88829fb57ccba",
+        "result": "passed",
+        "inventoriedFiles": 590,
+        "sourceBackedDuplicates": 394,
+        "retainActualBytesFiles": 196,
+        "preparedRetentionFilesAuthenticated": 10,
+        "payloadsRehashed": false,
+        "recipesExecuted": false
+      }
+    },
+    {
+      "name": "no retention recipe execution artifacts",
+      "passed": true,
+      "details": {
+        "retentionSubdirectories": [],
+        "compression": {
+          "state": "HELD",
+          "executed": false,
+          "raw_bytes": 222466048,
+          "raw_sha256": "68634fdb8c709812659afbd36558b97ff98eb3874df918ef631355b106f346d5",
+          "encoded_bytes": null,
+          "encoded_sha256": null,
+          "decoded_bytes": null,
+          "decoded_sha256": null,
+          "full_decompression_equality": null,
+          "storage_saved_bytes": null
+        }
+      }
+    }
+  ],
+  "findings": [],
+  "attentionFlags": [
+    "The 68,373,454 bytes of indexed public payloads were not re-read or rehashed. Admission relies on the byte-identical sealed manifest/source inventory and matching Git blob/mode/size metadata at both pins.",
+    "The SQLite codec and public restore recipes are held and unexecuted. Encoded size/hash, decoded size/hash, full byte equality, and storage savings remain unknown.",
+    "Cleanup helpers are held and unexecuted. Unknown partial-phase browser ownership prevents a complete cleanup claim, and the scoped close helper covers one verified root PID only; recorded descendants require separate checks.",
+    "The copied manifest and source inventory match the current originals, but this light review did not rehash the other 373 MB of sealed packet payloads."
+  ],
+  "failedChecks": []
+}

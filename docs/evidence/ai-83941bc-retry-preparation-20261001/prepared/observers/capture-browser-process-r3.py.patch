@@ -1,0 +1,11 @@
+--- /home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/preparation/capture-browser-process-r3.py
++++ /home/morgana/.codex/worktrees/assembled-allied-ai/ai-83941bc-retry-prep-r1/observers/capture-browser-process-r3.py
+@@ -29,7 +29,7 @@
+ record = {'phase': phase, 'capturedAt': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+           'rootPid': root_pid, 'expectedExecutable': expected, 'checks': checks,
+           'processes': [table[pid] for pid in sorted(ids) if pid in table]}
+-out = pathlib.Path('work/ai-save401-final-453c221-r1/browser-runtime') / phase / 'actual-process-r3.json'
++out = pathlib.Path('work/ai-save401-final-83941bc-r1/browser-runtime') / phase / 'actual-process-r3.json'
+ with out.open('x') as f:
+     f.write(json.dumps(record, indent=2) + '\n')
+ if not all(checks.values()):

@@ -1,0 +1,5 @@
+The retained external driver targets `83941bc80ce9ec08840b0645d9b33e8018d5309a`. It rebuilds the web and server packages, serves only the owned port 5371, runs co-op, then runs online only if co-op passes. The wrapper and explicit Chromium 1243 adapter retain their approved bytes. Original natural allied, allied UI and roster observations retain their 453 identity.
+
+The driver received independent GPT-6.1 Sol review; the requested older-model override did not apply to that reviewer. GPT-5.6 Sol separately reviewed the retention plan and decision trail. Known static findings were corrected. Neither review executed the new driver, browser, codec, restore or cleanup recipes. Large original payloads were not rehashed during this preparation. The future codec must authenticate encoded and restored bytes before claiming storage savings or preserved content.
+
+All 44 named preparation files and their inventory are retained byte for byte. Root owns execution assignment and feature admission. No feature status changes here.

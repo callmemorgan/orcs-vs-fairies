@@ -1,0 +1,11 @@
+--- /home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/preparation/capture-browser-trace.py
++++ /home/morgana/.codex/worktrees/assembled-allied-ai/ai-83941bc-retry-prep-r1/observers/capture-browser-trace.py
+@@ -2,7 +2,7 @@
+ import datetime, hashlib, json, pathlib, re, sys
+ 
+ phase = sys.argv[1]
+-base = pathlib.Path('work/ai-save401-final-453c221-r1')
++base = pathlib.Path('work/ai-save401-final-83941bc-r1')
+ trace = base / 'envelopes' / phase / 'stderr.log'
+ data = trace.read_bytes()
+ lines = data.decode().splitlines()
