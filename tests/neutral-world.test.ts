@@ -6,7 +6,7 @@ import { fogKey, initializeWorld, sameLevel, terrainLineOfSight } from '../src/c
 import { initializeWorldSites, issueNeutralWorldCommand, NEUTRAL_RULES, observeNeutralWorld, processNeutralOrder, relicBonus, stepNeutralWorld } from '../src/core/neutral-world';
 import type { NeutralWorldHooks } from '../src/core/neutral-world';
 import type { Cost, Entity, GameState, Side, UnitRole } from '../src/core/types';
-import type { NeutralCreature, WorldMapData, WorldPoint, WorldSite } from '../src/core/world-types';
+import type { WorldMapData, WorldSite } from '../src/core/world-types';
 
 const kinds=['wood','ore','crystal'] as const;
 function fixture(kind:WorldSite['kind'],level=0) {
@@ -68,7 +68,6 @@ function harness(s:GameState) {
 function stockTotal(s:GameState,equipment:Cost[]=[]) {
  return Object.fromEntries(kinds.map(kind=>[kind,s.players.reduce((sum,p)=>sum+p[kind],0)+s.world!.sites.reduce((sum,site)=>sum+site.reward[kind],0)+equipment.reduce((sum,cost)=>sum+cost[kind],0)]));
 }
-function clearDefenders(s:GameState){for(const c of s.world!.creatures){c.hp=0;c.respawnAt=s.time+1000;}}
 function settle(s:GameState,side:Side,unit:Entity,site:WorldSite) {
  const h=harness(s);unit.x=site.x-1.8;unit.y=site.y;
  expect(issueNeutralWorldCommand(s,side,{type:'supportVillage',ids:[unit.id],target:site.id})).toBe(true);h.advance(1);return h;
@@ -170,6 +169,14 @@ describe('village services and raids',()=>{
 });
 
 describe('relic capture and observation',()=>{
+ it('requires a reachable line of sight before channeling or delivering through a wall',()=>{
+  const {s,site,unit}=fixture('relic'),h=harness(s);unit.x=site.x-2;
+  for(let y=10;y<32;y++)s.world!.levels[0].terrain[y*s.width+21]='rock';
+  expect(issueNeutralWorldCommand(s,0,{type:'captureSite',ids:[unit.id],target:site.id})).toBe(true);h.advance(20);
+  expect(site.progress).toBe(0);expect(site.owner).toBe(null);
+  site.kind='village';const bank=s.players[0].wood;expect(issueNeutralWorldCommand(s,0,{type:'supportVillage',ids:[unit.id],target:site.id})).toBe(true);h.advance(20);
+  expect(site.loyalty[0]).toBe(0);expect(s.players[0].wood).toBe(bank);
+ }),
  it('channels after approaching, stops while contested, and removes the old team bonus after recapture',()=>{
   const {s,site,unit}=fixture('relic',1),h=harness(s);unit.x=site.x-8;
   expect(issueNeutralWorldCommand(s,0,{type:'captureSite',ids:[unit.id],target:site.id})).toBe(true);h.advance(20);expect(site.progress).toBe(0);

@@ -138,6 +138,7 @@ export function processNeutralOrder(s:WorldGame,e:Entity,dt:number,hooks:Neutral
   const at=target??targetSite,stats=attackStats(s,e,hooks);
   if(!visible(s,e.side,at)){stop(e);return true;}
   if(distance(e,at)>stats.range){hooks.move(e,point(at),dt,stats.range);return true;}
+  if(!(hooks.lineOfSight?.(point(e),point(at))??terrainLineOfSight(s,e,at))){hooks.move(e,point(at),dt,.8);return true;}
   if(e.cooldown>0)return true;
   e.cooldown=stats.cooldown;e.animation='attack';e.animTime=0;
   if(target){hooks.hit(e,target,stats.damage);if(target.hp<=0)defeatCreature(s,target,e.side);}
@@ -153,10 +154,12 @@ export function processNeutralOrder(s:WorldGame,e:Entity,dt:number,hooks:Neutral
  if(!site||!sameLevel(e,site)){stop(e);return true;}
  if(order.type==='captureSite'){
   if(site.kind!=='relic'||site.owner!==null&&allied(s,e.side,site.owner)){stop(e);return true;}
-  if(distance(e,site)>NEUTRAL_RULES.captureRadius)hooks.move(e,point(site),dt,NEUTRAL_RULES.captureRadius-.2);
+  if(!terrainLineOfSight(s,e,site))hooks.move(e,point(site),dt,.8);
+  else if(distance(e,site)>NEUTRAL_RULES.captureRadius)hooks.move(e,point(site),dt,NEUTRAL_RULES.captureRadius-.2);
   return true;
  }
  if(!validTarget(s,e.side,order)){stop(e);return true;}
+ if(!terrainLineOfSight(s,e,site)){hooks.move(e,point(site),dt,.8);return true;}
  if(distance(e,site)>2.3){hooks.move(e,point(site),dt,2.1);return true;}
  if(order.type==='supportVillage'){
   if(services(site,e.side)){
@@ -189,7 +192,7 @@ function creatureCanTarget(s:WorldGame,creature:NeutralCreature,site:WorldSite,e
 function stepCaptures(s:WorldGame,dt:number) {
  for(const site of s.world!.sites){
   if(site.kind!=='relic')continue;
-  const nearby=s.entities.filter(e=>eligible(e)&&sameLevel(e,site)&&distance(e,site)<=NEUTRAL_RULES.captureRadius);
+  const nearby=s.entities.filter(e=>eligible(e)&&sameLevel(e,site)&&distance(e,site)<=NEUTRAL_RULES.captureRadius&&terrainLineOfSight(s,e,site));
   const channels=nearby.filter(e=>worldOrder(e).type==='captureSite'&&worldOrder(e).target===site.id);
   const teams=new Set(nearby.map(e=>s.teams[e.side]));
   if(!channels.length||teams.size!==1){site.progress=0;site.capturing=null;continue;}
@@ -240,7 +243,7 @@ export function observeNeutralWorld(s:WorldGame,side:Side) {
  return {
   sites:s.world?.sites.filter(site=>visible(s,side,site)).map(site=>({id:site.id,kind:site.kind,x:site.x,y:site.y,level:site.level,
    owner:site.owner,loyalty:site.loyalty[side],progress:site.progress,capturing:site.capturing,
-   stock:{...site.reward},request:{...site.request},supplied:site.supplied,rewardClaimed:site.rewarded.includes(side),respawnAt:site.respawnAt}))??[],
+   stock:{...site.reward},request:{...site.request},supplied:site.supplied,rewardClaimed:site.kind==='monster'?site.rewarded.length>0:site.rewarded.includes(side),respawnAt:site.respawnAt}))??[],
   creatures:s.world?.creatures.filter(creature=>creature.hp>0&&visible(s,side,creature)).map(creature=>({id:creature.id,site:creature.site,
    x:creature.x,y:creature.y,level:creature.level,hp:creature.hp,maxHp:creature.maxHp}))??[],
  };
