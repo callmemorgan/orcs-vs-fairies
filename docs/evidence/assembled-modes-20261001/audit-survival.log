@@ -1,0 +1,63 @@
+{
+  "head": "6936250",
+  "results": [
+    {
+      "kind": "no_eligible_opposing_combat",
+      "rejected": true,
+      "error": "Every wave slot needs an enabled combat unit.",
+      "detail": {
+        "disabledIds": [
+          "lantern:sentinel",
+          "fairy-ranged",
+          "fairy-special",
+          "fairy-cavalry",
+          "fairy-spear",
+          "fairy-siege",
+          "lantern:duelist"
+        ],
+        "draftStatus": "complete"
+      }
+    },
+    {
+      "kind": "one_team",
+      "rejected": true,
+      "error": "Survival requires a defender team and one opposing wave team.",
+      "detail": {
+        "teams": [
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "kind": "missing_defender_team",
+      "rejected": true,
+      "error": "Survival requires a defender team and one opposing wave team.",
+      "detail": {
+        "teams": [
+          0,
+          1
+        ],
+        "defenderTeam": 7
+      }
+    },
+    {
+      "kind": "legitimate_pending_survival_draft",
+      "accepted": true,
+      "status": "drafting",
+      "turn": 0,
+      "remainingTicks": 15,
+      "tick": 5,
+      "saveRoundTripEqual": true,
+      "poolIncludesCustomDuelist": true
+    },
+    {
+      "kind": "pending_draft_after_further_steps",
+      "accepted": true,
+      "status": "drafting",
+      "remainingTicks": 10,
+      "tick": 10,
+      "saveRoundTripEqual": true
+    }
+  ]
+}

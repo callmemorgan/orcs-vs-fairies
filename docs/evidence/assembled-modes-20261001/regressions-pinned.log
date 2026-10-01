@@ -1,0 +1,45 @@
+
+ RUN  v4.1.11 /home/morgana/.codex/worktrees/assembled-modes/orcs-vs-Fairies
+
+································································································································································································································································································································································································································································································································································································································xx···················································································································································································································································································································································································································································································································································································································································································································································································
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/team-replays.test.ts > roster replay and session contracts > keeps genuine v1 saves readable but rejects their old playback rules
+AssertionError: expected 'c8cd7ada' to be '5db9ad74' // Object.is equality
+
+Expected: "5db9ad74"
+Received: "c8cd7ada"
+
+ ❯ tests/team-replays.test.ts:50:43
+     48|     const source=JSON.parse(readFileSync(new URL(`./fixtures/legacy-re…
+     49|     const archive=decodeReplay(source),state=loadGame(archive.initial);
+     50|     expect(replayChecksum(state,version)).toBe(hash);
+       |                                           ^
+     51|     expect(archive.initial.version).toBe(version);expect(archive.check…
+     52|     expect(saveGame(state).version).toBe(SAVE_VERSION);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/team-replays.test.ts > roster replay and session contracts > keeps genuine v2 saves readable but rejects their old playback rules
+AssertionError: expected '65a206b9' to be '0d8ff1ef' // Object.is equality
+
+Expected: "0d8ff1ef"
+Received: "65a206b9"
+
+ ❯ tests/team-replays.test.ts:50:43
+     48|     const source=JSON.parse(readFileSync(new URL(`./fixtures/legacy-re…
+     49|     const archive=decodeReplay(source),state=loadGame(archive.initial);
+     50|     expect(replayChecksum(state,version)).toBe(hash);
+       |                                           ^
+     51|     expect(archive.initial.version).toBe(version);expect(archive.check…
+     52|     expect(saveGame(state).version).toBe(SAVE_VERSION);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 68 passed (69)
+      Tests  2 failed | 1363 passed (1365)
+   Start at  04:29:32
+   Duration  49.67s (transform 14.48s, setup 0ms, import 25.45s, tests 266.61s, environment 4.57s)
+
