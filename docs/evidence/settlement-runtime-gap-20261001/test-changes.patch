@@ -1,0 +1,341 @@
+diff --git a/tests/economy-world-integration.test.ts b/tests/economy-world-integration.test.ts
+index 8722253..91a9ac3 100644
+--- a/tests/economy-world-integration.test.ts
++++ b/tests/economy-world-integration.test.ts
+@@ -149,9 +149,9 @@ describe('economic definitions with pinned mod content',()=>{
+   const content=createContentBundle([p]),s=createMatch({content,map:{seed:4127,size:'small',biome:'forest'},players:[{id:0,teamId:0,factionId:'lantern:keepers',controller:'external',handicap:{startingResources:{wood:5000,ore:5000,crystal:500}}},{id:1,teamId:1,factionId:'orcs',controller:'external'}],rules:{startingAge:3}});for(const l of s.world!.levels){l.terrain.fill('grass');l.elevation.fill(0);}s.resources=[];s.world!.creatures=[];s.world!.sites=[];
+   const w=s.entities.find(e=>e.side===0&&e.role==='worker')!;Object.assign(w,{x:10.5,y:10.5});refreshVisibility(s);
+   expect(factionFor(s,0).buildings.depot.size).toBe(6);expect(canPlace(s,0,'depot',1.5,10.5,'lantern:depot')).toBe(false);for(let y=8;y<=12;y++)for(let x=0;x<=3;x++){s.visible[0].add(y*s.width+x);s.explored[0].add(y*s.width+x);}expect(canPlace(s,0,'depot',1.5,10.5,'economy:warehouse')).toBe(true);
+-  expect(issueCommand(s,0,{type:'buildEconomy',ids:[w.id],kind:'warehouse',x:13.5,y:10.5})).toBe(true);const warehouse=s.entities.at(-1)!;expect(buildingFor(s,warehouse)).toBe(ECONOMY_BUILDINGS.warehouse);expect(availableBuildings(s,0).some(d=>d.id.startsWith('economy:'))).toBe(false);expect(availableUnits(s,0).some(d=>d.id==='economy:caravan')).toBe(false);
++  expect(issueCommand(s,0,{type:'buildEconomy',ids:[w.id],kind:'warehouse',x:13.5,y:10.5})).toBe(true);const warehouse=s.entities.at(-1)!;expect(buildingFor(s,warehouse)).toStrictEqual(ECONOMY_BUILDINGS.warehouse);expect(availableBuildings(s,0).some(d=>d.id.startsWith('economy:'))).toBe(false);expect(availableUnits(s,0).some(d=>d.id==='economy:caravan')).toBe(false);
+   const hall={...structuredClone(hq(s)),id:s.nextId++,role:'barracks' as const,definitionId:'lantern:hall',x:22.5,y:10.5};s.entities.push(hall);const before={wood:s.players[0].wood,ore:s.players[0].ore,crystal:s.players[0].crystal};expect(issueCommand(s,0,{type:'train',id:hall.id,role:'siege',definitionId:baseUnit.id})).toBe(true);expect(hall.queuePaidCosts).toEqual([baseUnit.cost]);run(s,.15);const siege=s.entities.find(e=>e.definitionId===baseUnit.id)!;expect(siege).toBeDefined();expect(s.economy!.paidCosts.find(c=>c.entityId===siege.id)?.stock).toEqual(baseUnit.cost);for(const k of ['wood','ore','crystal'] as const)expect(s.players[0][k]).toBe(before[k]-baseUnit.cost[k]);
+-  siege.hp=.01;Object.assign(siege,{x:24.5,y:12.5});const starter=actor(s,0,'worker',23.5,12.5);s.resources.push({id:s.nextId++,x:siege.x,y:siege.y,kind:'wood',amount:100,maxAmount:100});refreshVisibility(s);expect(issueCommand(s,0,{type:'ignite',ids:[starter.id],x:siege.x,y:siege.y})).toBe(true);stepGame(s,.05);expect(siege.hp).toBe(0);const salvage=s.economy!.salvage.find(c=>c.kind==='salvage'&&c.x===siege.x)!;for(const k of ['wood','ore','crystal'] as const)expect(salvage.stock[k]).toBeCloseTo(baseUnit.cost[k]*.25);expect(unitFor(s,0,'worker','economy:caravan')).toBe(ECONOMY_CARAVAN);continuation(s);
++  siege.hp=.01;Object.assign(siege,{x:24.5,y:12.5});const starter=actor(s,0,'worker',23.5,12.5);s.resources.push({id:s.nextId++,x:siege.x,y:siege.y,kind:'wood',amount:100,maxAmount:100});refreshVisibility(s);expect(issueCommand(s,0,{type:'ignite',ids:[starter.id],x:siege.x,y:siege.y})).toBe(true);stepGame(s,.05);expect(siege.hp).toBe(0);const salvage=s.economy!.salvage.find(c=>c.kind==='salvage'&&c.x===siege.x)!;for(const k of ['wood','ore','crystal'] as const)expect(salvage.stock[k]).toBeCloseTo(baseUnit.cost[k]*.25);expect(unitFor(s,0,'worker','economy:caravan')).toStrictEqual(ECONOMY_CARAVAN);continuation(s);
+  });
+ });
+ 
+diff --git a/tests/settlement-military-runtime.test.ts b/tests/settlement-military-runtime.test.ts
+new file mode 100644
+index 0000000..50d94cd
+--- /dev/null
++++ b/tests/settlement-military-runtime.test.ts
+@@ -0,0 +1,239 @@
++import { describe, expect, it } from 'vitest';
++import { buildingFor, unitFor } from '../src/core/content-registry';
++import { economicState, ECONOMY_RULES } from '../src/core/economy';
++import { MatchRecorder, ReplayPlayer } from '../src/core/replays';
++import { loadGame, saveGame, SAVE_VERSION } from '../src/core/saves';
++import { createMatch, issueCommand, refreshVisibility, stepGame } from '../src/core/simulation';
++import type { BuildingRole, Cost, Entity, GameState, MatchRulesInput, Side } from '../src/core/types';
++
++const DT = 0.05;
++const resourceKinds = ['wood', 'ore', 'crystal'] as const;
++
++function wallet(state: GameState, side: Side = 0): Cost {
++  const player = state.players[side];
++  return { wood: player.wood, ore: player.ore, crystal: player.crystal };
++}
++
++function expectPayment(state: GameState, before: Cost, cost: Cost): void {
++  for (const kind of resourceKinds) expect(state.players[0][kind]).toBe(before[kind] - cost[kind]);
++}
++
++function tick(state: GameState, ticks: number): void {
++  for (let i = 0; i < ticks; i++) stepGame(state, DT);
++}
++
++function until(state: GameState, done: () => boolean, limit = 2000): void {
++  for (let i = 0; i < limit && !done(); i++) stepGame(state, DT);
++  expect(done(), `condition did not finish within ${limit} public simulation steps`).toBe(true);
++}
++
++function fixture(rules: MatchRulesInput = {}): GameState {
++  const state = createMatch({
++    map: { seed: 4127, size: 'medium' },
++    players: [
++      { id: 0, teamId: 0, factionId: 'orcs', controller: 'external', handicap: { startingResources: { wood: 5000, ore: 5000, crystal: 500 } } },
++      { id: 1, teamId: 1, factionId: 'fairies', controller: 'external', handicap: { startingResources: { wood: 5000, ore: 5000, crystal: 500 } } },
++    ],
++    rules: { startingAge: 3, ...rules },
++  });
++  // Terrain and resources are fixture inputs; entities and production use the public runtime.
++  state.terrain.fill('grass');
++  state.resources = [];
++  refreshVisibility(state);
++  return state;
++}
++
++function startingHq(state: GameState): Entity {
++  return state.entities.find(entity => entity.side === 0 && entity.kind === 'building' && entity.role === 'hq')!;
++}
++
++function build(state: GameState, role: Extract<BuildingRole, 'hq' | 'barracks'>, x: number, y: number): Entity {
++  const worker = state.entities.find(entity => entity.side === 0 && entity.kind === 'unit' && entity.role === 'worker')!;
++  const definition = buildingFor(state, 0, role);
++  expect(issueCommand(state, 0, { type: 'move', ids: [worker.id], x: x - 3, y })).toBe(true);
++  until(state, () => worker.order.type === 'idle');
++  const before = wallet(state);
++  const previousIds = new Set(state.entities.map(entity => entity.id));
++  expect(issueCommand(state, 0, { type: 'build', ids: [worker.id], role, definitionId: definition.id, x, y })).toBe(true);
++  expectPayment(state, before, definition.cost);
++  const created = state.entities.filter(entity => !previousIds.has(entity.id));
++  expect(created).toHaveLength(1);
++  const producer = created[0];
++  expect(producer.definitionId).toBe(definition.id);
++  expect(buildingFor(state, producer)).toEqual(definition);
++  expect(economicState(state)!.paidCosts.find(record => record.entityId === producer.id)?.stock).toEqual(definition.cost);
++  until(state, () => producer.progress === 1);
++  expect(issueCommand(state, 0, { type: 'hold', ids: [worker.id] })).toBe(true);
++  return producer;
++}
++
++function producers(state: GameState): { expansion: Entity; military: Entity; ordinary: Entity } {
++  const start = startingHq(state);
++  const expansion = build(state, 'hq', start.x + 20, start.y);
++  const military = build(state, 'barracks', expansion.x, expansion.y + 6);
++  const ordinary = build(state, 'barracks', start.x, start.y + 9);
++  expect(Math.hypot(expansion.x - start.x, expansion.y - start.y)).toBeGreaterThan(8);
++  expect(Math.hypot(military.x - expansion.x, military.y - expansion.y)).toBeLessThan(ECONOMY_RULES.specialization.radius);
++  expect(Math.hypot(military.x - start.x, military.y - start.y)).toBeGreaterThan(ECONOMY_RULES.specialization.radius);
++  expect(Math.hypot(ordinary.x - expansion.x, ordinary.y - expansion.y)).toBeGreaterThan(ECONOMY_RULES.specialization.radius);
++  expect(Math.hypot(ordinary.x - start.x, ordinary.y - start.y)).toBeLessThan(ECONOMY_RULES.specialization.radius);
++  expect(military.side).toBe(ordinary.side);
++  expect(buildingFor(state, military).id).toBe(buildingFor(state, ordinary).id);
++  return { expansion, military, ordinary };
++}
++
++function specialize(state: GameState, expansion: Entity): void {
++  const before = wallet(state);
++  expect(ECONOMY_RULES.specialization.cost).toEqual({ wood: 120, ore: 80, crystal: 30 });
++  expect(issueCommand(state, 0, { type: 'specializeSettlement', id: expansion.id, kind: 'military' })).toBe(true);
++  expectPayment(state, before, ECONOMY_RULES.specialization.cost);
++  expect(economicState(state)!.specializations).toEqual([{ entityId: expansion.id, kind: 'military' }]);
++}
++
++describe('military settlement production through the public runtime', () => {
++  it('finishes the same paid unit earlier at a local producer and preserves the full save and command replay', () => {
++    const state = fixture({ disabledDefinitionIds: ['orc-siege'] });
++    const initialWallet = wallet(state);
++    const recorder = new MatchRecorder(state);
++    let replay: ReplayPlayer | undefined;
++    try {
++      const { expansion, military, ordinary } = producers(state);
++      const beforeSpecialization = saveGame(state);
++      expect(issueCommand(state, 1, { type: 'specializeSettlement', id: expansion.id, kind: 'military' })).toBe(false);
++      expect(issueCommand(state, 1, { type: 'train', id: military.id, role: 'melee', definitionId: 'orc-melee' })).toBe(false);
++      expect(saveGame(state)).toEqual(beforeSpecialization);
++      specialize(state, expansion);
++      const specialized = saveGame(state);
++      expect(issueCommand(state, 0, { type: 'specializeSettlement', id: expansion.id, kind: 'research' })).toBe(false);
++      expect(saveGame(state)).toEqual(specialized);
++      for (const producer of [military, ordinary]) {
++        expect(issueCommand(state, 0, { type: 'train', id: producer.id, role: 'siege', definitionId: 'orc-siege' })).toBe(false);
++        expect(saveGame(state)).toEqual(specialized);
++      }
++
++      const definition = unitFor(state, 0, 'melee', 'orc-melee');
++      expect(definition.cost).toEqual({ wood: 70, ore: 25, crystal: 0 });
++      const initialUnitIds = new Set(state.entities.filter(entity => entity.kind === 'unit').map(entity => entity.id));
++      for (const producer of [military, ordinary]) {
++        const before = wallet(state);
++        expect(issueCommand(state, 0, { type: 'train', id: producer.id, role: definition.role, definitionId: definition.id })).toBe(true);
++        expectPayment(state, before, definition.cost);
++        expect(producer.queueDefinitionIds).toEqual([definition.id]);
++        expect(producer.queuePaidCosts).toEqual([definition.cost]);
++      }
++      const paidWallet = wallet(state);
++      const constructionCosts = [buildingFor(state, expansion).cost, buildingFor(state, military).cost, buildingFor(state, ordinary).cost];
++      for (const kind of resourceKinds) {
++        expect(paidWallet[kind]).toBe(initialWallet[kind] - constructionCosts.reduce((total, cost) => total + cost[kind], 0) - ECONOMY_RULES.specialization.cost[kind] - 2 * definition.cost[kind]);
++      }
++      const queuedAt = state.tick;
++      tick(state, 100);
++      expect(military.trainProgress).toBeCloseTo(5 * ECONOMY_RULES.specialization.military / definition.trainTime, 12);
++      expect(ordinary.trainProgress).toBeCloseTo(5 / definition.trainTime, 12);
++      expect(military.trainProgress / ordinary.trainProgress).toBeCloseTo(1.3, 12);
++      expect(military.queue).toHaveLength(1);
++      expect(ordinary.queue).toHaveLength(1);
++
++      const checkpoint = saveGame(state);
++      expect(checkpoint.version).toBe(SAVE_VERSION);
++      const restored = loadGame(checkpoint);
++      expect(saveGame(restored)).toEqual(checkpoint);
++      let militaryCompletion = 0;
++      let ordinaryCompletion = 0;
++      for (let i = 0; i < 1000 && ordinary.queue.length; i++) {
++        stepGame(state, DT);
++        stepGame(restored, DT);
++        if (!military.queue.length && !militaryCompletion) {
++          militaryCompletion = state.tick - queuedAt;
++          expect(ordinary.queue).toEqual([definition.role]);
++          expect(ordinary.trainProgress).toBeLessThan(1);
++          const units = state.entities.filter(entity => entity.kind === 'unit' && !initialUnitIds.has(entity.id));
++          expect(units).toHaveLength(1);
++          expect(units[0].side).toBe(0);
++          expect(unitFor(state, units[0]).id).toBe(definition.id);
++          expect(Math.hypot(units[0].x - military.x, units[0].y - military.y)).toBeLessThan(4);
++          expect(saveGame(restored)).toEqual(saveGame(state));
++        }
++        if (!ordinary.queue.length) ordinaryCompletion = state.tick - queuedAt;
++      }
++      const expectedMilitaryTicks = Math.ceil(definition.trainTime / (DT * ECONOMY_RULES.specialization.military));
++      const expectedOrdinaryTicks = Math.ceil(definition.trainTime / DT);
++      expect(militaryCompletion).toBeGreaterThanOrEqual(expectedMilitaryTicks);
++      expect(militaryCompletion).toBeLessThanOrEqual(expectedMilitaryTicks + 1);
++      expect(ordinaryCompletion).toBeGreaterThanOrEqual(expectedOrdinaryTicks);
++      expect(ordinaryCompletion).toBeLessThanOrEqual(expectedOrdinaryTicks + 1);
++      expect(militaryCompletion).toBeLessThan(ordinaryCompletion);
++      expect(saveGame(restored)).toEqual(saveGame(state));
++
++      tick(state, 400);
++      tick(restored, 400);
++      const trained = state.entities.filter(entity => entity.kind === 'unit' && !initialUnitIds.has(entity.id));
++      expect(trained).toHaveLength(2);
++      expect(trained.map(entity => [entity.side, unitFor(state, entity).id])).toEqual([[0, definition.id], [0, definition.id]]);
++      for (const entity of trained) expect(economicState(state)!.paidCosts.find(record => record.entityId === entity.id)?.stock).toEqual(definition.cost);
++      expect(military.queue).toEqual([]);
++      expect(ordinary.queue).toEqual([]);
++      expect(wallet(state)).toEqual(paidWallet);
++      expect(wallet(state, 1)).toEqual({ wood: 5000, ore: 5000, crystal: 500 });
++      expect(saveGame(restored)).toEqual(saveGame(state));
++
++      const archive = recorder.export();
++      const commands = archive.actions.filter(action => action.type === 'command');
++      expect(commands.filter(action => action.command.type === 'build')).toHaveLength(3);
++      expect(commands.filter(action => action.command.type === 'specializeSettlement').map(action => action.command)).toEqual([{ type: 'specializeSettlement', id: expansion.id, kind: 'military' }]);
++      expect(commands.filter(action => action.command.type === 'train').map(action => action.command)).toEqual([military, ordinary].map(producer => ({ type: 'train', id: producer.id, role: definition.role, definitionId: definition.id })));
++      replay = new ReplayPlayer(archive);
++      while (!replay.finished) replay.advance(200);
++      expect(saveGame(replay.state)).toEqual(saveGame(state));
++    } finally {
++      replay?.dispose();
++      recorder.dispose();
++    }
++  });
++
++  it('keeps unpicked and foreign recruits rejected after public draft completion and military specialization', () => {
++    const state = fixture({ draft: { enabled: true, banRounds: 0, pickRounds: 1 } });
++    const initial = saveGame(state);
++    expect(issueCommand(state, 0, { type: 'train', id: startingHq(state).id, role: 'worker', definitionId: 'orc-worker' })).toBe(false);
++    expect(saveGame(state)).toEqual(initial);
++    expect(state.draft.pool).toContain('orc-melee');
++    expect(issueCommand(state, 0, { type: 'draftChoice', definitionId: 'orc-ranged' })).toBe(true);
++    expect(issueCommand(state, 1, { type: 'draftChoice', definitionId: 'fairy-ranged' })).toBe(true);
++    expect(state.draft.status).toBe('complete');
++    expect(state.draft.picks).toEqual([['orc-ranged'], ['fairy-ranged']]);
++
++    const { expansion, military, ordinary } = producers(state);
++    specialize(state, expansion);
++    for (const producer of [military, ordinary]) {
++      for (const [role, definitionId] of [['melee', 'orc-melee'], ['spear', 'orc-spear']] as const) {
++        const before = saveGame(state);
++        expect(issueCommand(state, 0, { type: 'train', id: producer.id, role, definitionId })).toBe(false);
++        expect(saveGame(state)).toEqual(before);
++      }
++      const beforeForeign = saveGame(state);
++      expect(issueCommand(state, 1, { type: 'train', id: producer.id, role: 'ranged', definitionId: 'fairy-ranged' })).toBe(false);
++      expect(saveGame(state)).toEqual(beforeForeign);
++    }
++    const definition = unitFor(state, 0, 'ranged', 'orc-ranged');
++    const beforeIds = new Set(state.entities.map(entity => entity.id));
++    for (const producer of [military, ordinary]) {
++      const before = wallet(state);
++      expect(issueCommand(state, 0, { type: 'train', id: producer.id, role: definition.role, definitionId: definition.id })).toBe(true);
++      expectPayment(state, before, definition.cost);
++    }
++    const paidWallet = wallet(state);
++    tick(state, 100);
++    expect(military.trainProgress).toBeCloseTo(5 * ECONOMY_RULES.specialization.military / definition.trainTime, 12);
++    expect(ordinary.trainProgress).toBeCloseTo(5 / definition.trainTime, 12);
++    until(state, () => military.queue.length === 0);
++    expect(ordinary.queue).toEqual([definition.role]);
++    expect(state.entities.filter(entity => !beforeIds.has(entity.id))).toHaveLength(1);
++    until(state, () => ordinary.queue.length === 0);
++    tick(state, 100);
++    const trained = state.entities.filter(entity => !beforeIds.has(entity.id));
++    expect(trained).toHaveLength(2);
++    expect(trained.map(entity => unitFor(state, entity).id)).toEqual([definition.id, definition.id]);
++    expect(wallet(state)).toEqual(paidWallet);
++    expect(saveGame(loadGame(saveGame(state)))).toEqual(saveGame(state));
++  });
++});
+diff --git a/tests/settlement-mining-runtime.test.ts b/tests/settlement-mining-runtime.test.ts
+new file mode 100644
+index 0000000..e81078d
+--- /dev/null
++++ b/tests/settlement-mining-runtime.test.ts
+@@ -0,0 +1,74 @@
++import {describe,expect,it} from 'vitest';
++import {buildingFor,unitFor} from '../src/core/content-registry';
++import {ECONOMY_RULES,economicState} from '../src/core/economy';
++import {MatchRecorder,ReplayPlayer} from '../src/core/replays';
++import {loadGame,saveGame,SAVE_VERSION} from '../src/core/saves';
++import {createSessionFile,decodeSessionFile} from '../src/core/session-storage';
++import {createMatch,issueCommand,refreshVisibility,stepGame} from '../src/core/simulation';
++import type {Cost,Entity,GameState,ResourceNode} from '../src/core/types';
++
++const wallet=(s:GameState):Cost=>({wood:s.players[0].wood,ore:s.players[0].ore,crystal:s.players[0].crystal});
++const debit=(before:Cost,cost:Cost):Cost=>({wood:before.wood-cost.wood,ore:before.ore-cost.ore,crystal:before.crystal-cost.crystal});
++function until(s:GameState,predicate:()=>boolean,limit=2400){let ticks=0;while(!predicate()&&ticks++<limit)stepGame(s,.05);expect(predicate()).toBe(true);}
++function setup(local:boolean){
++ const s=createMatch({map:{seed:4127,size:'medium'},players:[{id:0,teamId:0,factionId:'orcs',controller:'external',handicap:{startingResources:{wood:12000,ore:12000,crystal:1000},populationCap:100}},{id:1,teamId:1,factionId:'fairies',controller:'external'}],rules:{startingAge:3}});
++ // Flat authored ground and a finite ore reserve isolate the path and paid runtime behavior.
++ s.terrain.fill('grass');s.resources=[];refreshVisibility(s);
++ const start=s.entities.find(e=>e.side===0&&e.kind==='building'&&e.role==='hq')!,worker=s.entities.find(e=>e.side===0&&e.kind==='unit'&&e.role==='worker')!,definition=buildingFor(s,0,'hq'),x=start.x+20,y=start.y;
++ expect(issueCommand(s,0,{type:'move',ids:[worker.id],x:x-2,y:y+3})).toBe(true);until(s,()=>worker.order.type==='idle');refreshVisibility(s);
++ const before=wallet(s);expect(issueCommand(s,0,{type:'build',ids:[worker.id],role:'hq',definitionId:definition.id,x,y})).toBe(true);expect(wallet(s)).toEqual(debit(before,definition.cost));
++ const expansion=s.entities.at(-1)!;expect(expansion.definitionId).toBe(definition.id);until(s,()=>expansion.progress===1);
++ expect(economicState(s)!.paidCosts.find(item=>item.entityId===expansion.id)?.stock).toEqual(definition.cost);
++ const depot=local?expansion:start,node:ResourceNode={id:s.nextId++,x:depot.x+6,y:depot.y,kind:'ore',amount:600,maxAmount:600};s.resources.push(node);
++ expect(issueCommand(s,0,{type:'move',ids:[worker.id],x:node.x-1.4,y:node.y})).toBe(true);until(s,()=>worker.order.type==='idle');refreshVisibility(s);
++ expect(unitFor(s,worker).id).toBe('orc-worker');expect(worker.carried).toBe(0);
++ return {s,worker,node,expansion,depot};
++}
++const entity=(s:GameState,id:number):Entity=>s.entities.find(e=>e.id===id)!;
++const ore=(s:GameState,id:number)=>s.resources.find(n=>n.id===id)!;
++
++describe('mining specialization through public gather and owned deposits',()=>{
++ it('gathers faster on the same path, deposits earlier, conserves physical ore, and resumes full saves and replay',()=>{
++  const {s,worker,node,expansion}=setup(true),control=loadGame(saveGame(s)),recorder=new MatchRecorder(s),initial=node.amount;
++  const before=saveGame(s);expect(issueCommand(s,1,{type:'specializeSettlement',id:expansion.id,kind:'mining'})).toBe(false);expect(saveGame(s)).toEqual(before);
++  const funds=wallet(s);expect(issueCommand(s,0,{type:'specializeSettlement',id:expansion.id,kind:'mining'})).toBe(true);expect(wallet(s)).toEqual(debit(funds,ECONOMY_RULES.specialization.cost));
++  const specialized=saveGame(s);expect(issueCommand(s,0,{type:'specializeSettlement',id:expansion.id,kind:'military'})).toBe(false);expect(saveGame(s)).toEqual(specialized);
++  const miningBank=s.players[0].ore,ordinaryBank=control.players[0].ore;
++  for(const state of [s,control])expect(issueCommand(state,0,{type:'gather',ids:[worker.id],target:node.id})).toBe(true);
++  for(let tick=0;tick<10;tick++){stepGame(s,.05);stepGame(control,.05);}
++  const mined=initial-node.amount,ordinaryMined=initial-ore(control,node.id).amount;
++  expect(ordinaryMined).toBeGreaterThan(0);expect(mined/ordinaryMined).toBeCloseTo(1.3,8);expect(worker.carried).toBeCloseTo(mined,8);expect(entity(control,worker.id).carried).toBeCloseTo(ordinaryMined,8);
++  expect(s.players[0].ore).toBe(miningBank);expect(control.players[0].ore).toBe(ordinaryBank);expect({x:worker.x,y:worker.y}).toEqual({x:entity(control,worker.id).x,y:entity(control,worker.id).y});
++  const resumed=loadGame(saveGame(s));expect(saveGame(resumed).version).toBe(SAVE_VERSION);
++  const startTick=s.tick,first:{mining?:number;ordinary?:number}={},deposits:{mining:number[];ordinary:number[]}={mining:[],ordinary:[]};
++  for(let tick=0;tick<800;tick++){
++   stepGame(s,.05);stepGame(resumed,.05);stepGame(control,.05);
++   for(const [label,state] of [['mining',s],['ordinary',control]] as const)for(const event of state.events.filter(event=>event.type==='gather'&&event.source===worker.id)){
++    expect(event.target).toBe(expansion.id);expect(event.resource).toBe('ore');expect(event.amount).toBe(18);deposits[label].push(event.amount!);
++    if(label==='mining'&&first.mining===undefined){expect(s.players[0].ore).toBe(miningBank+18);expect(control.players[0].ore).toBe(ordinaryBank);expect(worker.carried).toBe(0);expect(entity(control,worker.id).carried).toBeGreaterThan(0);}
++    first[label]??=state.tick-startTick;
++   }
++   if(tick%100===0)expect(saveGame(resumed)).toEqual(saveGame(s));
++  }
++  expect(first.mining).toBeDefined();expect(first.ordinary).toBeDefined();expect(first.mining!).toBeLessThan(first.ordinary!);expect(deposits.mining.length).toBeGreaterThanOrEqual(3);expect(deposits.ordinary.length).toBeGreaterThanOrEqual(3);
++  const delivered=s.players[0].ore-miningBank,ordinaryDelivered=control.players[0].ore-ordinaryBank;
++  expect(delivered).toBe(deposits.mining.reduce((sum,amount)=>sum+amount,0));expect(ordinaryDelivered).toBe(deposits.ordinary.reduce((sum,amount)=>sum+amount,0));expect(delivered).toBeGreaterThanOrEqual(ordinaryDelivered);
++  expect(initial-node.amount).toBeCloseTo(delivered+worker.carried,7);expect(initial-ore(control,node.id).amount).toBeCloseTo(ordinaryDelivered+entity(control,worker.id).carried,7);
++  expect(economicState(s)!.ledgers[0].gathered.ore).toBe(delivered);expect(s.players[1].ore).toBe(control.players[1].ore);expect(saveGame(resumed)).toEqual(saveGame(s));
++  const archive=recorder.export(),session=createSessionFile(s,archive),decoded=decodeSessionFile(session);expect(session.game.version).toBe(SAVE_VERSION);expect(archive.initial.version).toBe(SAVE_VERSION);expect(saveGame(decoded.state)).toEqual(saveGame(s));
++  const replay=new ReplayPlayer(archive);replay.seek(s.tick);expect(saveGame(replay.state)).toEqual(saveGame(s));replay.dispose();recorder.dispose();
++ });
++
++ it('leaves an ordinary owned HQ resource path and deposit rate unchanged outside the mining region',()=>{
++  const {s,worker,node,expansion,depot}=setup(false),control=loadGame(saveGame(s)),funds=wallet(s);expect(issueCommand(s,0,{type:'specializeSettlement',id:expansion.id,kind:'mining'})).toBe(true);expect(wallet(s)).toEqual(debit(funds,ECONOMY_RULES.specialization.cost));
++  const miningBank=s.players[0].ore,ordinaryBank=control.players[0].ore;
++  for(const state of [s,control])expect(issueCommand(state,0,{type:'gather',ids:[worker.id],target:node.id})).toBe(true);
++  const delivered:{specialized:number[];control:number[]}={specialized:[],control:[]};
++  for(let tick=0;tick<600;tick++){
++   stepGame(s,.05);stepGame(control,.05);expect(ore(s,node.id).amount).toBe(ore(control,node.id).amount);
++   const ordinary=entity(control,worker.id);expect({x:worker.x,y:worker.y,carried:worker.carried,order:worker.order}).toEqual({x:ordinary.x,y:ordinary.y,carried:ordinary.carried,order:ordinary.order});
++   for(const [label,state] of [['specialized',s],['control',control]] as const)for(const event of state.events.filter(event=>event.type==='gather'&&event.source===worker.id)){expect(event.target).toBe(depot.id);delivered[label].push(event.amount!);}
++  }
++  expect(delivered.specialized.length).toBeGreaterThan(0);expect(delivered.specialized).toEqual(delivered.control);expect(s.players[0].ore-miningBank).toBe(control.players[0].ore-ordinaryBank);expect(economicState(s)!.ledgers[0].gathered.ore).toBe(economicState(control)!.ledgers[0].gathered.ore);
++ });
++});

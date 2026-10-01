@@ -1,0 +1,50 @@
+{
+  "workingDirectory": "/home/morgana/.codex/worktrees/economy-scenario-integration/orcs-vs-Fairies",
+  "commands": [
+    {
+      "command": "npx --no-install vitest run tests/settlement-mining-runtime.test.ts tests/settlement-military-runtime.test.ts --reporter=verbose",
+      "sourceCommit": "4e737ea58bd094de1b65792e5a0c2b228b797e87",
+      "testCommit": "b37bf4916a2a435da77dab982f08ddb2b1ab8006",
+      "exitCode": 0,
+      "testFiles": 2,
+      "passedTests": 4,
+      "log": "runtime-before-world-correction.log"
+    },
+    {
+      "command": "npx --no-install vitest run tests/economy-world-integration.test.ts --reporter=verbose",
+      "sourceCommit": "4e737ea58bd094de1b65792e5a0c2b228b797e87",
+      "testCommit": "b37bf4916a2a435da77dab982f08ddb2b1ab8006",
+      "exitCode": 1,
+      "testFiles": 1,
+      "passedTests": 19,
+      "failedTests": 1,
+      "log": "world-identity-failure.log"
+    },
+    {
+      "command": "npx --no-install vitest run tests/economy-world-integration.test.ts --reporter=verbose",
+      "sourceCommit": "4e737ea58bd094de1b65792e5a0c2b228b797e87",
+      "testCommit": "cc2d0b514301be4903ed262ca8a58b597c45e2c1",
+      "exitCode": 0,
+      "testFiles": 1,
+      "passedTests": 20,
+      "log": "world-corrected.log",
+      "executionNote": "Executed with these test bytes immediately before committing cc2d0b5."
+    },
+    {
+      "command": "npx --no-install vitest run tests/settlement-mining-runtime.test.ts tests/settlement-military-runtime.test.ts tests/economy-world-integration.test.ts --reporter=verbose",
+      "sourceCommit": "4e737ea58bd094de1b65792e5a0c2b228b797e87",
+      "testCommit": "cc2d0b514301be4903ed262ca8a58b597c45e2c1",
+      "exitCode": 0,
+      "testFiles": 3,
+      "passedTests": 24,
+      "log": "final-runtime.log"
+    },
+    {
+      "command": "npx --no-install tsc --noEmit",
+      "sourceCommit": "4e737ea58bd094de1b65792e5a0c2b228b797e87",
+      "testCommit": "cc2d0b514301be4903ed262ca8a58b597c45e2c1",
+      "exitCode": 0,
+      "log": "final-types.log"
+    }
+  ]
+}
