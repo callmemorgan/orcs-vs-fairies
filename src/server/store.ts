@@ -3,14 +3,14 @@ import { createHash } from 'node:crypto';
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Account, CommandAck, LobbySettings, LobbySeat, PlayerObservation } from '../online/protocol';
-import type { GameState, Side } from '../core/types';
+import type { GameState, Side, MatchConfig as CoreMatchConfig } from '../core/types';
 import { saveGame, loadGame } from '../core/saves';
 
 export interface StoredLobby {
   id:string; hostId:string; revision:number; settings:LobbySettings;
   seats:LobbySeat[]; seed:number; matchId:string|null;
 }
-export interface MatchConfig { factions:LobbySettings['factions']; mapSize:LobbySettings['mapSize']; seed:number }
+export interface MatchConfig extends LobbySettings { seed:number; matchConfig?:CoreMatchConfig }
 export interface StoredMatch {
   id:string; lobbyId:string; config:MatchConfig; tick:number;
   save:ReturnType<typeof saveGame>; memory:ResourceMemory[]; generation:number[];
@@ -55,11 +55,11 @@ export class ServerStore {
   addMatch(id:string,lobbyId:string,config:MatchConfig,state:GameState,memory:ResourceMemory[],generation:number[]){
     this.db.prepare('INSERT INTO matches(id,lobby_id,config,tick,checkpoint_tick,checkpoint,memory,generation,engine_hash,state_hash) VALUES(?,?,?,?,?,?,?,?,?,?)').run(id,lobbyId,JSON.stringify(config),state.tick,state.tick,JSON.stringify(saveGame(state)),JSON.stringify(memory),JSON.stringify(generation),this.engineHash,this.hashState(state,memory));
   }
-  startMatch(lobby:StoredLobby,state:GameState,memory:ResourceMemory[],generation:number[],frame:StoredFrame){
+  startMatch(lobby:StoredLobby,state:GameState,memory:ResourceMemory[],generation:number[],frame:StoredFrame,matchConfig?:CoreMatchConfig){
     if(!lobby.matchId)throw new Error('Started lobby requires a match ID.');
     this.db.exec('BEGIN IMMEDIATE');
     try{
-      this.addMatch(lobby.matchId,lobby.id,{...lobby.settings,seed:lobby.seed},state,memory,generation);
+      this.addMatch(lobby.matchId,lobby.id,{...lobby.settings,seed:lobby.seed,matchConfig},state,memory,generation);
       this.db.prepare('INSERT INTO frames(match_id,tick,views) VALUES(?,?,?)').run(lobby.matchId,frame.tick,JSON.stringify(frame.views));
       this.saveLobby(lobby);this.db.exec('COMMIT');
     }catch(error){this.db.exec('ROLLBACK');throw error;}

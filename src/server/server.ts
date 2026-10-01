@@ -9,18 +9,18 @@ import { isIP } from 'node:net';
 import { WebSocket, WebSocketServer } from 'ws';
 import { FACTIONS } from '../core/content';
 import { validateCommand } from '../core/commands';
-import { createGame, isGameOver, issueCommand, stepGame } from '../core/simulation';
-import type { GameState, Side } from '../core/types';
+import { createMatch, isGameOver, issueCommand, stepGame, playerSides } from '../core/simulation';
+import type { GameState, Side, MatchConfig as CoreMatchConfig, MatchPlayerConfig, Cost } from '../core/types';
 import { PROTOCOL_VERSION, TICK_RATE } from '../online/protocol';
-import type { Account, CommandAck, LobbyObservation, LobbySettings, ServerMessage, PlayerObservation } from '../online/protocol';
+import type { Account, CommandAck, LobbyObservation, LobbySettings, LobbyPlayerSettings, LobbySeat, ServerMessage, PlayerObservation } from '../online/protocol';
 import { ServerStore, type StoredLobby, type StoredCommand, type StoredFrame } from './store';
 import { OnlineView } from './views';
+import { teamObservation } from './team-view';
 
 const scrypt=promisify(scryptCallback);
 const SESSION_LIFETIME=7*24*60*60*1000;
 const MAX_BODY_BYTES=64*1024;
 const MAP_SIZES=['small','medium','large','huge'];
-const SIDES:Side[]=[0,1];
 function jsonHash(value:unknown):string {
   // Iteration permits bounded wire JSON with deep nesting without recursive stack overflow.
   const hash=createHash('sha256'),tasks:Array<{value?:unknown;text?:string}>=[{value}];
@@ -41,15 +41,27 @@ function integer(value:unknown,min=0,max=Number.MAX_SAFE_INTEGER):value is numbe
 function compatibilityFingerprint(){
   const hash=createHash('sha256'),ownFile=fileURLToPath(import.meta.url),coreDirectory=resolve(ownFile,'../../core');
   if(existsSync(coreDirectory)){
-    for(const filename of readdirSync(coreDirectory).filter(filename=>filename.endsWith('.ts')).sort())hash.update(filename).update(readFileSync(resolve(coreDirectory,filename)));
-    hash.update(readFileSync(ownFile));
+    for(const directory of [coreDirectory,resolve(ownFile,'..')])for(const filename of readdirSync(directory).filter(filename=>filename.endsWith('.ts')).sort())hash.update(`${directory.endsWith('core')?'core':'server'}/${filename}`).update(readFileSync(resolve(directory,filename)));
+    hash.update(readFileSync(resolve(ownFile,'../../online/protocol.ts')));
   }else hash.update(readFileSync(ownFile)); // Production bundle contains the complete core and server.
   return hash.digest('hex');
 }
 class HttpError extends Error {constructor(readonly status:number,message:string){super(message);}}
-interface Ticket {account:Account;matchId:string;role:'player'|'spectator';side:Side;expires:number}
+interface Ticket {account:Account;matchId:string;role:'player'|'spectator';side:Side;expires:number;perspective:'player'|'team'}
 interface Peer extends Ticket {socket:WebSocket;generation:number;lastFrameTick:number;messages:number;rateAt:number}
 interface Pending {side:Side;clientSeq:number;payload:string;command:unknown;socket:WebSocket;generation:number}
+function isSurrender(value:unknown):value is {type:'surrender'}{return record(value)&&keys(value,['type'])&&value.type==='surrender';}
+function applyInput(state:GameState,side:Side,command:unknown):boolean {
+  if(isSurrender(command)){
+    if(isGameOver(state)||!state.players[side]||state.eliminated[side])return false;
+    const units=state.entities.filter(entity=>entity.side===side&&entity.hp>0&&entity.kind==='unit'&&!entity.illusion);
+    // Stop through the core so its route, return-trip and queued-gather state is cleared.
+    if(units.length)issueCommand(state,side,{type:'stop',ids:units.map(entity=>entity.id)});
+    for(const entity of state.entities)if(entity.side===side&&entity.hp>0){entity.hp=0;entity.animation='death';entity.animTime=0;entity.order={type:'idle'};delete entity.orderQueue;entity.path=[];}
+    return true;
+  }
+  return validateCommand(command)&&issueCommand(state,side,command);
+}
 interface ActiveMatch {
   id:string;lobbyId:string;state:GameState;views:OnlineView[];frames:StoredFrame[];
   generations:number[];pending:Pending[];receipts:Map<string,StoredCommand>;
@@ -71,7 +83,7 @@ export async function createRtsServer(options:ServerOptions){
   const externalOrigin=options.origin?.trim()||undefined;
   if(externalOrigin){const parsed=new URL(externalOrigin);if(parsed.origin!==externalOrigin||!['http:','https:'].includes(parsed.protocol))throw new Error('RTS_ORIGIN must be an exact HTTP(S) origin without a trailing slash.');}
   const store=new ServerStore(options.dataDir,compatibilityFingerprint());
-  const lobbies=new Map(store.lobbies().map(lobby=>[lobby.id,lobby]));
+  const lobbies=new Map(store.lobbies().map(lobby=>{const normalized=settings(lobby.settings);return [lobby.id,{...lobby,settings:normalized,seats:roster(normalized,lobby.seats,undefined,false)}];}));
   const matches=new Map<string,ActiveMatch>();
   const tickets=new Map<string,Ticket>();
   const attempts=new Map<string,{count:number;at:number}>();
@@ -79,17 +91,17 @@ export async function createRtsServer(options:ServerOptions){
 
   try{for(const saved of store.matches()){
     if(saved.engineHash!==store.engineHash)throw new Error(`Stored match ${saved.id} needs its original compatible server build. Keep its data and deploy that build.`);
-    const state=store.restore(saved),views=SIDES.map(side=>new OnlineView(side,saved.memory[side]));
-    const receipts=new Map<string,StoredCommand>(),lastSeq=[0,0];
+    const state=store.restore(saved),sides=playerSides(state),views=sides.map(side=>new OnlineView(side,saved.memory[side]));
+    const receipts=new Map<string,StoredCommand>(),lastSeq=sides.map(()=>0);
     const records=store.commands(saved.id);
     for(const entry of records){receipts.set(`${entry.side}:${entry.clientSeq}`,entry);lastSeq[entry.side]=Math.max(lastSeq[entry.side],entry.clientSeq);}
     const pendingReplay=records.filter(entry=>entry.appliedTick>saved.checkpointTick);
-    let cursor=0;const eventBuffers:Array<PlayerObservation['events']>=[[],[]];
+    let cursor=0;const eventBuffers:Array<PlayerObservation['events']>=sides.map(()=>[]);
     while(state.tick<saved.tick){
       const targetTick=state.tick+1;
       while(cursor<pendingReplay.length&&pendingReplay[cursor].appliedTick===targetTick){
         const entry=pendingReplay[cursor++];
-        if(entry.ack.accepted&&(!validateCommand(entry.command)||!issueCommand(state,entry.side,entry.command)))throw new Error(`Stored match ${saved.id} diverged at tick ${targetTick}.`);
+        if(entry.ack.accepted&&!applyInput(state,entry.side,entry.command))throw new Error(`Stored match ${saved.id} diverged at tick ${targetTick}.`);
       }
       stepGame(state,1/TICK_RATE);views.forEach((view,side)=>eventBuffers[side].push(...view.observe(state).events));
       if(state.tick%4===0)eventBuffers.forEach(events=>{events.length=0;});
@@ -145,9 +157,43 @@ export async function createRtsServer(options:ServerOptions){
     if(++entry.count>30)throw new HttpError(429,'Too many sign-in attempts. Try again in a minute.');
   }
   function settings(value:unknown):LobbySettings{
-    if(!record(value)||!keys(value,['mapSize','factions'])||!MAP_SIZES.includes(value.mapSize as string)||!Array.isArray(value.factions)||value.factions.length!==2||!value.factions.every(faction=>typeof faction==='string'&&Object.hasOwn(FACTIONS,faction)))throw new HttpError(400,'Expected a map size and two known factions.');
-    return {mapSize:value.mapSize as LobbySettings['mapSize'],factions:value.factions as LobbySettings['factions']};
+    if(!record(value)||!keys(value,['mapSize','factions','players','sharedVision','startingAge'])||!MAP_SIZES.includes(value.mapSize as string))throw new HttpError(400,'Expected a supported map size and player roster.');
+    const knownFaction=(id:unknown)=>typeof id==='string'&&Object.hasOwn(FACTIONS,id);
+    let players:LobbyPlayerSettings[];
+    if(value.players!==undefined){
+      if(!Array.isArray(value.players)||value.players.length<2||value.players.length>8)throw new HttpError(400,'A lobby needs 2–8 player slots.');
+      players=value.players.map(player=>{
+        if(!record(player)||!keys(player,['factionId','teamId','controller','handicap'])||!knownFaction(player.factionId)||!integer(player.teamId,0,7)||!['human','ai'].includes(player.controller as string))throw new HttpError(400,'Each slot needs a known faction, team 0–7 and human/AI controller.');
+        let handicap:MatchPlayerConfig['handicap'];
+        if(player.handicap!==undefined){
+          const h=player.handicap;if(!record(h)||!keys(h,['startingResources','incomeFactor','populationCap']))throw new HttpError(400,'Invalid handicap.');
+          handicap={};
+          if(h.startingResources!==undefined){const r=h.startingResources;if(!record(r)||!keys(r,['wood','ore','crystal'])||!['wood','ore','crystal'].every(key=>typeof r[key]==='number'&&Number.isFinite(r[key])&&(r[key] as number)>=0&&(r[key] as number)<=1e9))throw new HttpError(400,'Starting resources must specify finite wood, ore and crystal amounts.');handicap.startingResources={wood:r.wood,ore:r.ore,crystal:r.crystal} as Cost;}
+          if(h.incomeFactor!==undefined){if(typeof h.incomeFactor!=='number'||!Number.isFinite(h.incomeFactor)||h.incomeFactor<0||h.incomeFactor>10)throw new HttpError(400,'Income factor must be 0–10.');handicap.incomeFactor=h.incomeFactor;}
+          if(h.populationCap!==undefined){if(!integer(h.populationCap,1,500))throw new HttpError(400,'Population cap must be 1–500.');handicap.populationCap=h.populationCap;}
+        }
+        return {factionId:player.factionId as LobbyPlayerSettings['factionId'],teamId:player.teamId as Side,controller:player.controller as 'human'|'ai',...(handicap?{handicap}:{})};
+      });
+      if(value.factions!==undefined&&(!Array.isArray(value.factions)||value.factions.length!==players.length||value.factions.some((id,index)=>id!==players[index].factionId)))throw new HttpError(400,'Faction list must match the player roster.');
+    }else{
+      if(!Array.isArray(value.factions)||value.factions.length<2||value.factions.length>8||!value.factions.every(knownFaction))throw new HttpError(400,'Expected 2–8 known factions.');
+      players=value.factions.map((factionId,index)=>({factionId:factionId as LobbyPlayerSettings['factionId'],teamId:index as Side,controller:'human'}));
+    }
+    if(!players.some(player=>player.controller==='human')||new Set(players.map(player=>player.teamId)).size<2)throw new HttpError(400,'A match needs a human slot and at least two teams.');
+    if(value.sharedVision!==undefined&&typeof value.sharedVision!=='boolean')throw new HttpError(400,'Shared vision must be boolean.');
+    if(value.startingAge!==undefined&&!integer(value.startingAge,1,3))throw new HttpError(400,'Starting age must be 1–3.');
+    return {mapSize:value.mapSize as LobbySettings['mapSize'],factions:players.map(player=>player.factionId),players,sharedVision:value.sharedVision!==false,startingAge:(value.startingAge??1) as LobbySettings['startingAge']};
   }
+  function roster(config:LobbySettings,previous:LobbySeat[]=[],creator?:Account,resetReadiness=true):LobbySeat[]{
+    const members=previous.flatMap(seat=>seat.account?[seat.account]:[]);if(creator&&!members.some(member=>member.id===creator.id))members.push(creator);
+    if(config.players!.filter(player=>player.controller==='human').length<members.length)throw new HttpError(409,'The new roster has too few human slots for present participants.');
+    const assigned=new Set<string>();
+    const seats=config.players!.map((player,index)=>{const former=previous[index]?.account;const account=player.controller==='human'&&former&&!assigned.has(former.id)?former:null;if(account)assigned.add(account.id);return {side:index as Side,account,ready:false,...player};});
+    for(const member of members)if(!assigned.has(member.id)){const empty=seats.find(seat=>seat.controller==='human'&&!seat.account)!;empty.account=member;assigned.add(member.id);}
+    if(!resetReadiness)for(const seat of seats)seat.ready=seat.controller==='human'&&!!seat.account&&!!previous.find(former=>former.account?.id===seat.account!.id)?.ready;
+    return seats;
+  }
+  function matchConfig(lobby:StoredLobby):CoreMatchConfig{return {schemaVersion:1,map:{seed:lobby.seed,size:lobby.settings.mapSize},players:lobby.settings.players!.map((player,index)=>({id:index as Side,teamId:player.teamId,factionId:player.factionId,controller:player.controller==='human'?'external':'ai',handicap:player.handicap})),rules:{sharedVision:lobby.settings.sharedVision,startingAge:lobby.settings.startingAge}};}
   function getLobby(id:string){const result=lobbies.get(id);if(!result)throw new HttpError(404,'Lobby not found.');return result;}
   function editLobby(lobby:StoredLobby,value:Record<string,unknown>){if(value.expectedRevision!==lobby.revision)throw new HttpError(409,'Lobby changed. Refresh its current revision.');if(lobby.matchId)throw new HttpError(409,'The match has started.');}
   function changed(lobby:StoredLobby){lobby.revision++;store.saveLobby(lobby);lobbies.set(lobby.id,lobby);}
@@ -191,7 +237,8 @@ export async function createRtsServer(options:ServerOptions){
       if(req.method==='GET'&&path==='/api/lobbies'){respond(res,200,{lobbies:[...lobbies.values()].map(publicLobby)});return;}
       if(req.method==='POST'&&path==='/api/lobbies'){
         const value=await body(req);if(!keys(value,['settings','seed'])||(value.seed!==undefined&&!integer(value.seed,0,0xffffffff)))throw new HttpError(400,'Invalid lobby fields.');
-        const lobby:StoredLobby={id:randomUUID(),hostId:user.id,revision:1,settings:settings(value.settings??{mapSize:'medium',factions:['orcs','fairies']}),seed:(value.seed as number|undefined)??randomBytes(4).readUInt32LE(),seats:[{side:0,account:user,ready:false},{side:1,account:null,ready:false}],matchId:null};
+        const configuration=settings(value.settings??{mapSize:'medium',factions:['orcs','fairies']});
+        const lobby:StoredLobby={id:randomUUID(),hostId:user.id,revision:1,settings:configuration,seed:(value.seed as number|undefined)??randomBytes(4).readUInt32LE(),seats:roster(configuration,[],user),matchId:null};
         store.saveLobby(lobby);lobbies.set(lobby.id,lobby);respond(res,201,{lobby:publicLobby(lobby)});return;
       }
       const lobbyRoute=/^\/api\/lobbies\/([^/]+)(?:\/(join|settings|ready|start|leave))?$/.exec(path);
@@ -204,11 +251,11 @@ export async function createRtsServer(options:ServerOptions){
         const own=lobby.seats.find(seat=>seat.account?.id===user.id);
         if(action==='join'){
           if(!keys(value,['expectedRevision']))throw new HttpError(400,'Unknown join field.');
-          if(!own){const empty=lobby.seats.find(seat=>!seat.account);if(!empty)throw new HttpError(409,'Lobby is full.');empty.account=user;if(!lobby.hostId)lobby.hostId=user.id;lobby.seats.forEach(seat=>{seat.ready=false;});changed(lobby);}
+          if(!own){const empty=lobby.seats.find(seat=>seat.controller==='human'&&!seat.account);if(!empty)throw new HttpError(409,'Human slots are full.');empty.account=user;if(!lobby.hostId)lobby.hostId=user.id;lobby.seats.forEach(seat=>{seat.ready=false;});changed(lobby);}
         }else if(action==='settings'){
           if(user.id!==lobby.hostId)throw new HttpError(403,'Only the host may change settings.');
           if(!keys(value,['expectedRevision','settings','seed'])||(value.seed!==undefined&&!integer(value.seed,0,0xffffffff)))throw new HttpError(400,'Unknown or invalid settings field.');
-          lobby.settings=settings(value.settings);if(value.seed!==undefined)lobby.seed=value.seed as number;lobby.seats.forEach(seat=>{seat.ready=false;});changed(lobby);
+          const configuration=settings(value.settings),seats=roster(configuration,lobby.seats);lobby.settings=configuration;lobby.seats=seats;if(value.seed!==undefined)lobby.seed=value.seed as number;changed(lobby);
         }else if(action==='ready'){
           if(!own)throw new HttpError(403,'Join a seat first.');
           if(!keys(value,['expectedRevision','ready'])||typeof value.ready!=='boolean')throw new HttpError(400,'Expected readiness.');own.ready=value.ready;changed(lobby);
@@ -219,12 +266,12 @@ export async function createRtsServer(options:ServerOptions){
         }else if(action==='start'){
           if(user.id!==lobby.hostId)throw new HttpError(403,'Only the host may start.');
           if(!keys(value,['expectedRevision']))throw new HttpError(400,'Unknown start field.');
-          if(lobby.seats.some(seat=>!seat.account||!seat.ready))throw new HttpError(409,'Both players must be present and ready.');
-          const state=createGame(lobby.settings.factions[0],lobby.seed,lobby.settings.factions[1],{mapSize:lobby.settings.mapSize,controllers:['external','external']});
-          const id=randomUUID(),views=SIDES.map(side=>new OnlineView(side)),frame={tick:0,views:views.map(view=>view.observe(state))};
+          if(lobby.seats.some(seat=>seat.controller==='human'&&(!seat.account||!seat.ready)))throw new HttpError(409,'All human players must be present and ready.');
+          const configuration=matchConfig(lobby),state=createMatch(configuration),sides=playerSides(state);
+          const id=randomUUID(),views=sides.map(side=>new OnlineView(side)),frame={tick:0,views:views.map(view=>view.observe(state))},generations=sides.map(()=>0);
           const started={...lobby,matchId:id,revision:lobby.revision+1};
-          store.startMatch(started,state,views.map(view=>view.snapshot()),[0,0],frame);
-          matches.set(id,{id,lobbyId:lobby.id,state,views,frames:[frame],generations:[0,0],pending:[],receipts:new Map(),lastSeq:[0,0],peers:new Set(),eventBuffers:[[],[]],failed:false});
+          store.startMatch(started,state,views.map(view=>view.snapshot()),generations,frame,configuration);
+          matches.set(id,{id,lobbyId:lobby.id,state,views,frames:[frame],generations,pending:[],receipts:new Map(),lastSeq:sides.map(()=>0),peers:new Set(),eventBuffers:sides.map(()=>[]),failed:false});
           Object.assign(lobby,started);
           lobbies.set(lobby.id,lobby);
         }else throw new HttpError(404,'Unknown lobby action.');
@@ -236,12 +283,13 @@ export async function createRtsServer(options:ServerOptions){
       const matchRoute=/^\/api\/matches\/([^/]+)\/ticket$/.exec(path);
       if(req.method==='POST'&&matchRoute){
         const match=matches.get(matchRoute[1]);if(!match)throw new HttpError(404,'Match not found.');
-        const value=await body(req);if(!keys(value,['role','perspective'])||!['player','spectator'].includes(value.role as string)||(value.perspective!==undefined&&value.perspective!==0&&value.perspective!==1))throw new HttpError(400,'Expected a player/spectator role and valid perspective.');
+        const value=await body(req);if(!keys(value,['role','perspective','view'])||!['player','spectator'].includes(value.role as string)||(value.perspective!==undefined&&!integer(value.perspective,0,match.state.players.length-1))||(value.view!==undefined&&!['player','team'].includes(value.view as string)))throw new HttpError(400,'Expected a player/spectator role and a valid player/team perspective.');
         const seat=lobbies.get(match.lobbyId)!.seats.find(seat=>seat.account?.id===user.id);
         if(value.role==='player'&&!seat)throw new HttpError(403,'You do not own a seat.');
         const role=value.role as 'player'|'spectator',side=role==='player'?seat!.side:(value.perspective??0) as Side;
-        const token=randomBytes(32).toString('hex');tickets.set(token,{account:user,matchId:match.id,role,side,expires:Date.now()+60000});
-        respond(res,200,{ticket:token,expiresInSeconds:60,protocolVersion:PROTOCOL_VERSION,role,side,delayTicks:role==='spectator'?delayTicks:0});return;
+        const perspective=role==='spectator'&&value.view==='team'?'team':'player';
+        const token=randomBytes(32).toString('hex');tickets.set(token,{account:user,matchId:match.id,role,side,perspective,expires:Date.now()+60000});
+        respond(res,200,{ticket:token,expiresInSeconds:60,protocolVersion:PROTOCOL_VERSION,role,side,perspective,delayTicks:role==='spectator'?delayTicks:0});return;
       }
       throw new HttpError(404,'API endpoint not found.');
     }
@@ -262,7 +310,7 @@ export async function createRtsServer(options:ServerOptions){
     const frame=[...match.frames].reverse().find(frame=>frame.tick<=cutoff);
     if(!frame){if(peer.lastFrameTick<0){send(peer.socket,{kind:'waiting',availableAtTick:delayTicks,currentTick:effectiveTick});peer.lastFrameTick=-2;}return;}
     if(frame.tick<=peer.lastFrameTick)return;
-    send(peer.socket,{kind:'snapshot',matchId:match.id,frameSeq:frame.tick,tick:frame.tick,view:frame.views[peer.side]});peer.lastFrameTick=frame.tick;
+    send(peer.socket,{kind:'snapshot',matchId:match.id,frameSeq:frame.tick,tick:frame.tick,view:peer.perspective==='team'?teamObservation(frame.views,peer.side):frame.views[peer.side]});peer.lastFrameTick=frame.tick;
   }
   http.on('upgrade',(req,socket,head)=>{
     try{
@@ -283,7 +331,7 @@ export async function createRtsServer(options:ServerOptions){
         for(const peer of match.peers)if(peer.role==='player'&&peer.side===ticket.side)peer.socket.close(4001,'Connection replaced');
       }
       const peer:Peer={...ticket,socket:ws,generation,lastFrameTick:-1,messages:0,rateAt:Date.now()};match.peers.add(peer);
-      send(ws,{kind:'hello',protocolVersion:PROTOCOL_VERSION,matchId:match.id,role:peer.role,side:peer.side,generation,lastClientSeq:peer.role==='player'?match.lastSeq[peer.side]:0,delayTicks:peer.role==='spectator'?delayTicks:0});deliver(peer,match);
+      send(ws,{kind:'hello',protocolVersion:PROTOCOL_VERSION,matchId:match.id,role:peer.role,side:peer.side,generation,perspective:peer.perspective,lastClientSeq:peer.role==='player'?match.lastSeq[peer.side]:0,delayTicks:peer.role==='spectator'?delayTicks:0});deliver(peer,match);
       ws.on('message',data=>{
         if(peer.role==='player'&&peer.generation!==match.generations[peer.side]){fail(ws,'replaced','This connection was replaced.');return;}
         const now=Date.now();if(now-peer.rateAt>1000){peer.messages=0;peer.rateAt=now;}
@@ -292,7 +340,7 @@ export async function createRtsServer(options:ServerOptions){
         if(record(value)&&value.kind==='ping'&&keys(value,['kind','requestId'])&&(value.requestId===undefined||typeof value.requestId==='string')){send(ws,{kind:'pong',requestId:value.requestId as string|undefined});return;}
         if(peer.role!=='player'){fail(ws,'spectator','Spectators cannot issue commands.');return;}
         if(!record(value)||!keys(value,['kind','protocolVersion','clientSeq','observedTick','command'])||value.kind!=='command'||value.protocolVersion!==PROTOCOL_VERSION||!integer(value.clientSeq,1)||!integer(value.observedTick)||value.observedTick>match.state.tick){fail(ws,'invalid-message','Invalid command envelope.');return;}
-        const valid=validateCommand(value.command),command=valid?value.command:null;
+        const valid=validateCommand(value.command)||isSurrender(value.command),command=valid?value.command:null;
         const payload=jsonHash(value.command);
         const key=`${peer.side}:${value.clientSeq}`,stored=match.receipts.get(key);
         if(stored){if(stored.payload===payload)send(ws,stored.ack);else fail(ws,'sequence-conflict','A command sequence cannot have a different payload.');return;}
@@ -322,7 +370,8 @@ export async function createRtsServer(options:ServerOptions){
     // Receive order is authoritative and recorded; each receipt is durable before delivery.
     for(const [ordinal,entry] of pending.entries()){
       let accepted=false,reason:CommandAck['reason'];
-      if(!validateCommand(entry.command))reason='invalid-command';
+      if(isSurrender(entry.command)){accepted=applyInput(match.state,entry.side,entry.command);if(!accepted)reason='unavailable';}
+      else if(!validateCommand(entry.command))reason='invalid-command';
       else{
         const ids='ids' in entry.command?entry.command.ids:'id' in entry.command?[entry.command.id]:[];
         if(!ids.length||ids.some(id=>!match.state.entities.some(entity=>entity.id===id&&entity.side===entry.side&&entity.hp>0)))reason='ownership';

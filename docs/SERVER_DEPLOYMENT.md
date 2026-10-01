@@ -2,7 +2,7 @@
 
 The Node server serves the browser build, HTTP API and WebSocket endpoint from one origin. It uses Node 24's built-in `node:sqlite` and a writable data directory for persistent accounts and service records. `Dockerfile.server` builds the browser and server together; `deploy/server-compose.yml` runs that image with a persistent volume.
 
-The initial server foundation supports two human seats. Team battles and cooperative rosters require the planned `createMatch` integration. Local build and service tests do not prove that a public deployment exists. Public online acceptance still requires an actual host, TLS, a durable volume and independent browsers exercising the hosted flows. These deployment files do not claim those steps have happened. See [the feature architecture](HUNDRED_FEATURE_ARCHITECTURE.md) for service and game integration requirements.
+The server supports 2–8 player slots with human and computer controllers. Each slot has a faction and team; human participants receive server-assigned seats, and computer slots do not require an account or readiness. This supports 2v2, 3v3, 4v4 and human/AI cooperative rosters. Local build and service tests do not prove that a public deployment exists. Public online acceptance still requires a host, TLS, a durable volume and independent browsers exercising the hosted flows. See [the feature architecture](HUNDRED_FEATURE_ARCHITECTURE.md) for service and game integration requirements.
 
 ## Run without Docker
 
@@ -18,6 +18,32 @@ RTS_HOST=127.0.0.1 RTS_PORT=8787 RTS_DATA_DIR=work/server RTS_STATIC_DIR=dist np
 The defaults are suitable for a local process. Open `http://127.0.0.1:8787` and use the same origin for `/api` and `/ws`. Serve the built browser through this process when testing the server; the Vite development origin is a separate origin unless a development proxy is configured.
 
 The service provides registration and login through `POST /api/auth/register` and `POST /api/auth/login`, a generated guest identity through `POST /api/auth/guest`, session inspection through `GET /api/session`, and logout through `POST /api/auth/logout`. Lobby creation uses `POST /api/lobbies`; discovery uses `GET /api/lobbies`. Participants use the lobby's `/join`, `/settings`, `/ready` and `/start` endpoints. `POST /api/matches/:id/ticket` issues a short-lived connection ticket for `/ws?ticket=...`. Account identity and participant ownership come from the server session and ticket.
+
+## Rosters and perspectives
+
+Lobby creation and settings changes accept a `settings.players` array. Array position assigns side 0–7. Each slot specifies `factionId`, `teamId` (0–7) and `controller` (`human` or `ai`). A lobby needs at least one human slot and two teams. The server places the host in the first human slot and subsequent participants in the next empty human slot. Settings changes preserve present accounts and reject a roster with too few human slots. Every roster or seed change clears human readiness; the start endpoint requires all human slots to be occupied and ready at the current lobby revision.
+
+For example, this settings object creates two human allies against two computer opponents:
+
+```json
+{
+  "mapSize": "huge",
+  "sharedVision": true,
+  "startingAge": 1,
+  "players": [
+    {"factionId": "orcs", "teamId": 0, "controller": "human"},
+    {"factionId": "fairies", "teamId": 0, "controller": "human"},
+    {"factionId": "dwarves", "teamId": 1, "controller": "ai"},
+    {"factionId": "automata", "teamId": 1, "controller": "ai"}
+  ]
+}
+```
+
+`startingAge` accepts 1–3 and `sharedVision` defaults to true. Each slot may include a `handicap` with complete `startingResources` (`wood`, `ore`, `crystal`, each 0–1,000,000,000), `incomeFactor` (0–10) and `populationCap` (integer 1–500). Unknown fields and invalid values are rejected. A legacy `factions` array remains supported and creates one human team per slot. When both arrays are provided, faction IDs must match.
+
+A player ticket always uses the account's owned side. The server ignores a requested perspective or team view for player tickets. Player frames expose that player's economy and orders, visible entity data, shared team vision when configured, and filtered events. They do not disclose teammate or enemy production queues, banks or private economy events.
+
+A spectator ticket accepts `perspective` for any configured side and `view: "player"` or `view: "team"`. Team views merge only stored teammate observations at the delayed tick, including their private player data in `teamPlayers`. They never read current match state to fill gaps. The configured delay applies to both spectator views, and spectators cannot issue commands. The online command `{ "type": "surrender" }` removes the owning player's forces through the authoritative match; teammates may continue until the core determines the team result. The receipt and result use the same journal and checkpoint recovery as other commands.
 
 ## Configuration
 

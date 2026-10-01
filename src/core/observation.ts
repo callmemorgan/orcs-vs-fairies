@@ -21,7 +21,7 @@ export class PlayerView {
   for(const r of s.resources)if(isVisible(s,this.side,r.x,r.y))this.resources.set(r.id,{...r,lastSeen:s.time});
  }
  resourcesFor(s:GameState){this.update(s);return [...this.resources.values()].map(r=>({...r,visible:isVisible(s,this.side,r.x,r.y)}));}
- events(s:GameState):GameEvent[]{
+ events(s:GameState,identify?:(event:GameEvent)=>string):Array<GameEvent & {eventId?:string}>{
   this.update(s);
   const side=this.side,entities=new Map(s.entities.map(e=>[e.id,e])),resources=new Map(s.resources.map(r=>[r.id,r]));
   const known=(id:number|undefined)=>{
@@ -36,7 +36,8 @@ export class PlayerView {
    const affected=target&&isAllied(s,side,target.side)&&(target.side===side||isVisible(s,side,target.x,target.y));
    const visible=isVisible(s,side,event.x,event.y);
    if(!own&&!visible&&!affected)return [];
-   const result={...event};
+   const result:GameEvent & {eventId?:string}={...event};
+   if(identify)result.eventId=identify(event);
    // A hit on an owned unit can be reported without revealing the hidden attacker.
    if(!own&&!visible&&affected){result.x=target.x;result.y=target.y;}
    if(!known(event.source)){
