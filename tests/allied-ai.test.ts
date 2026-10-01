@@ -5,7 +5,7 @@ import { PlayerView } from '../src/core/observation';
 import { loadGame, saveGame } from '../src/core/saves';
 import {
  alliedAiStatus, captureRuntime, createMatch, isVisible, issueCommand,
- refreshVisibility, restoreRuntime, runAI, stepGame,
+ refreshVisibility, restoreRuntime, runAI, spawnDefinition, stepGame,
 } from '../src/core/simulation';
 import type { AllyDirective, TeamAiState } from '../src/core/team-ai';
 import type { Command, Controller, Cost, Entity, GameState, Side, UnitRole, Vec } from '../src/core/types';
@@ -18,8 +18,8 @@ const position=(e:Vec):Vec=>({x:e.x,y:e.y});
 const distance=(a:Vec,b:Vec)=>Math.hypot(a.x-b.x,a.y-b.y);
 const entity=(s:GameState,id:number)=>s.entities.find(e=>e.id===id)!;
 
-function fixture(controllers:Controller[]=['external','ai','external','external']):GameState {
- const s=createMatch({map:{seed:4127,size:'medium'},players:controllers.map((controller,id)=>({id:id as Side,teamId:id===3?7:3,factionId:'orcs',controller})),rules:{sharedVision:false}});
+function fixture(controllers:Controller[]=['external','ai','external','external'],rules:{friendlyFire?:boolean}={}):GameState {
+ const s=createMatch({map:{seed:4127,size:'medium'},players:controllers.map((controller,id)=>({id:id as Side,teamId:id===3?7:3,factionId:'orcs',controller})),rules:{sharedVision:false,...rules}});
  s.terrain.fill('grass');s.resources=[];s.time=0;
  const starts=[{x:8,y:8},{x:8,y:24},{x:8,y:39},{x:39,y:24}];s.starts=starts;
  s.entities=s.entities.filter(e=>e.role==='hq'||e.side===1&&e.role==='melee');
@@ -222,20 +222,21 @@ describe('allied requests executed by real units',()=>{
  });
 
  it.each(['defend','attack'] as const)('restarts the %s arrival timer after an emergency pause',kind=>{
-  const s=fixture(),fighter=s.entities.find(e=>e.side===1&&e.role==='melee')!,destination={x:20,y:24};fighter.x=20;fighter.y=24;refreshVisibility(s);
+  const s=fixture(undefined,{friendlyFire:false}),fighter=s.entities.find(e=>e.side===1&&e.role==='melee')!,destination={x:20,y:24};fighter.x=20;fighter.y=24;refreshVisibility(s);
   expect(issueCommand(s,0,{type:'allyDirective',ally:1,directive:kind,...destination})).toBe(true);runAI(s,1);expect(request(s).arrivedAt).toBe(0);
   // A completed hostile barracks makes the home defense last longer than the
   // guard period. It has its faction's normal health and deals no damage.
-  const def=FACTIONS.orcs.buildings.barracks,template=s.entities.find(e=>e.side===3&&e.role==='hq')!;
-  const threat:Entity={...structuredClone(template),id:s.nextId++,role:'barracks',x:18,y:24,hp:def.hp,maxHp:def.hp};s.entities.push(threat);refreshVisibility(s);
+  const def=FACTIONS.orcs.buildings.barracks,threat=spawnDefinition(s,3,'building',def.id,18,24);refreshVisibility(s);
   stepGame(s,.05);expect(request(s).reason).toBe('Defending the stronghold before continuing the request.');expect(request(s).arrivedAt).toBeUndefined();
   for(let tick=0;tick<500;tick++)stepGame(s,.05);expect(threat.hp).toBeGreaterThan(0);expect(request(s).status).toBe('active');expect(distance(fighter,destination)).toBeLessThan(3);
+  // Disable allied splash in this timing fixture so clearing the threat keeps
+  // the assigned defender alive. Siege damage is exercised separately.
   // Allied siege troops clear the emergency through normal public attacks.
   const siege=Array.from({length:12},(_,i)=>troop(s,0,'siege',{x:23+i%3,y:23+Math.floor(i/3)*.8}));
-  expect(issueCommand(s,0,{type:'attack',ids:siege.map(e=>e.id),target:threat.id})).toBe(true);advanceUntil(s,()=>threat.hp===0,5);
+  expect(issueCommand(s,0,{type:'attack',ids:siege.map(e=>e.id),target:threat.id})).toBe(true);advanceUntil(s,()=>threat.hp===0,5);expect(fighter.hp).toBe(fighter.maxHp);
   advanceUntil(s,()=>request(s).arrivedAt!==undefined,3);const resumed=request(s).arrivedAt!;
   expect(resumed).toBeGreaterThan(25);expect(request(s).status).toBe('active');
-  const required=kind==='defend'?20:3;advanceUntil(s,()=>request(s).status==='completed',required+5);expect(s.time-resumed).toBeGreaterThanOrEqual(required);
+  const required=kind==='defend'?20:3;advanceUntil(s,()=>request(s).status==='completed',required+5);expect(s.time-resumed).toBeGreaterThanOrEqual(required);expect(fighter.hp).toBe(fighter.maxHp);
  });
 });
 

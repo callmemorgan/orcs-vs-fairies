@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 import { afterEach, expect, it, vi } from 'vitest';
 import { FACTIONS } from '../src/core/content';
-import { createGame, issueCommand } from '../src/core/simulation';
+import { createGame, issueCommand, spawnDefinition } from '../src/core/simulation';
 import { mountShell, type HudCallbacks } from '../src/ui/Hud';
 import { canvasContextStub } from './helpers/canvas-context';
 
@@ -13,10 +13,13 @@ it('disguises enemy doubles in selection health, group totals and roster tooltip
   const shell=mountShell(root,()=>{});shell.showGame();
   const callbacks={isMuted:()=>false,groups:()=>({}),cameraCorners:()=>[]} as unknown as HudCallbacks;
   const s=createGame('orcs',4127,'fairies',{controllers:['external','external']});
-  const caster=s.entities.find(e=>e.side===1&&e.role==='melee')!;
-  caster.role='special';caster.hp=caster.maxHp=FACTIONS.fairies.units.special.hp;
+  const start=s.starts[1];
+  const caster=spawnDefinition(s,1,'unit',FACTIONS.fairies.units.special.id,start.x+2,start.y+2);
+  expect(caster.definitionId).toBe(FACTIONS.fairies.units.special.id);
   expect(issueCommand(s,1,{type:'ability',ids:[caster.id]})).toBe(true);
   const clones=s.entities.filter(e=>e.illusion);
+  expect(clones).toHaveLength(2);
+  expect(clones.every(e=>e.side===1&&e.definitionId===caster.definitionId)).toBe(true);
   for(const e of [caster,...clones])s.visible[0].add(Math.floor(e.y)*s.width+Math.floor(e.x));
   const clone=clones[0],rawMax=clone.maxHp;
   shell.update(s,[clone.id],callbacks);
@@ -30,9 +33,9 @@ it('disguises enemy doubles in selection health, group totals and roster tooltip
   expect(root.querySelector<HTMLElement>(`[data-id="${clone.id}"]`)!.dataset.tooltip).toContain('53 / 105 health');
   expect(clone.hp).toBe(21);expect(clone.maxHp).toBe(42);
   // Owner-side doubles retain their true health in the same panel.
-  clone.side=0;
-  shell.update(s,[clone.id],callbacks);
+  shell.update(s,[clone.id],{...callbacks,side:()=>1});
   expect(root.querySelector('#selection-status')!.textContent).toContain('21 / 42 health');
+  expect(clone.side).toBe(1);expect(clone.hp).toBe(21);expect(clone.maxHp).toBe(42);
 });
 
 it('keeps caravan controls passive and uses a real economic portrait asset',()=>{

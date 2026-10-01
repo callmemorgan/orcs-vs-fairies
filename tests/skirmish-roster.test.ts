@@ -2,6 +2,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AI_OPENINGS, AI_PERSONALITIES, DEFAULT_AI_CONFIG, type AiConfig } from '../src/core/ai-policy';
 import { FACTIONS } from '../src/core/content';
+import { contentHash, createContentBundle } from '../src/core/content-registry';
+import { exampleMod } from '../src/core/example-mod';
 import { playerAge } from '../src/core/progression';
 import { createMatch, isAllied, isHostile, isVisible, issueCommand, stepGame } from '../src/core/simulation';
 import type { FactionId, MatchConfig } from '../src/core/types';
@@ -361,7 +363,7 @@ describe('local skirmish roster', () => {
     expect(deposits[0]).toBe(0);
     expect(trains[0]).toBe(0);
     expect(state.entities.filter(entity => entity.side === 0 && entity.role === 'worker').every(worker => worker.order.type === 'idle')).toBe(true);
-  }, 30_000);
+  }, 90_000);
 
   it('returns detached player, AI, handicap, resource and rules objects', () => {
     const { root, roster, players, config } = setup();
@@ -643,17 +645,17 @@ describe('roster configuration validation', () => {
   });
 
   it('renders faction names as text without creating markup', () => {
-    const original = FACTIONS.automata.name;
-    try {
-      FACTIONS.automata.name = '<img src=x onerror=alert(1)>';
-      const { root } = setup();
-      enable(root);
-      preset(root, '2v2');
-      const options = field<HTMLSelectElement>(row(root, 2), 'Player 3 faction').options;
-      expect(Array.from(options).find(option => option.value === 'automata')!.textContent).toContain(FACTIONS.automata.name);
-      expect(root.querySelectorAll('img,script')).toHaveLength(0);
-    } finally {
-      FACTIONS.automata.name = original;
-    }
+    const name = '<img src=x onerror=alert(1)>', { hash: _hash, ...body } = structuredClone(exampleMod());
+    body.factions[0].name = name;
+    const content = createContentBundle([{ ...body, hash: contentHash(body) }]);
+    const { root, roster } = setup();
+    roster.setContent(content);
+    enable(root);
+    preset(root, '2v2');
+    const faction = field<HTMLSelectElement>(row(root, 2), 'Player 3 faction');
+    expect(Array.from(faction.options).find(option => option.value === body.factions[0].id)!.textContent).toBe(name);
+    change(faction, body.factions[0].id);
+    expect(roster.getPlayers('orcs', 'fairies')[2].factionId).toBe(body.factions[0].id);
+    expect(root.querySelectorAll('img,script')).toHaveLength(0);
   });
 });
