@@ -1,0 +1,85 @@
+{
+  "result": "prepared-not-executed",
+  "reviewer": {
+    "model": "gpt-5.6-sol",
+    "reasoningEffort": "high"
+  },
+  "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "frozenInputs": {
+    "driver": {
+      "path": "work/final-ai-prep/followup-453c221-r4.sh",
+      "sha256": "af8b95dfba349f6dbf67809902248203281469cb3a75e18dda77e37ee86ba747"
+    },
+    "wrapper": {
+      "path": "work/final-ai-prep/proof-envelope.mjs",
+      "sha256": "bb8c80fc33ca6a25e044a5df60350030bb2177461d265025b9bfcffcdc3a1cd2"
+    }
+  },
+  "preparedFiles": {
+    "driver": {
+      "path": "work/ai-save401-final-453c221-r1/launcher/followup-453c221-r4-chromium1243.sh",
+      "bytes": 5739,
+      "mode": "0755",
+      "sha256": "49721f151fd5cb98b80b5143c850c67051d7abe22b1deb1625f3a5932be65f9f"
+    },
+    "adapter": {
+      "path": "work/ai-save401-final-453c221-r1/launcher/playwright-chromium-1243.mjs",
+      "bytes": 566,
+      "mode": "0644",
+      "sha256": "7fe266503ffb4a65da331e6ae3fa7ffa248f805595dcb5e417a7669fc73bbd6d"
+    },
+    "staticVerifier": {
+      "path": "work/ai-save401-final-453c221-r1/launcher/verify-launcher.mjs",
+      "bytes": 3013,
+      "mode": "0644",
+      "sha256": "26cb27354394de2fc70e27bac2288fd787e80adc608e73febe23e4cba13b51dd"
+    }
+  },
+  "playwright": {
+    "version": "1.62.1",
+    "indexPath": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs",
+    "indexBytes": 704,
+    "indexSha256": "a0f5715ea22354f922791a9c53dc012d5d5c067ff9cc4cd35ffb7cd272071a9f",
+    "packagePath": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/package.json",
+    "packageBytes": 1416,
+    "packageSha256": "ca170ec143a88ed3043ac953eb3b2377b2b97304104f4e1e23316684ce2c35af"
+  },
+  "chromium": {
+    "revision": "1243",
+    "path": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+    "bytes": 293285184,
+    "mode": "0755",
+    "sha256": "8c599d43aec53f2460a31ae2f4af6bd863f8258b34ff519564bc5d4726bfaa1e"
+  },
+  "adaptation": {
+    "driverDiffNumstat": {
+      "insertions": 32,
+      "deletions": 1
+    },
+    "onlyLaunchChange": "The adapter delegates to the same installed Playwright chromium object and adds executablePath to the existing launch options.",
+    "phaseCommandsUnchanged": true,
+    "outputPrefixesUnchanged": true,
+    "assertionModulesUnchanged": true,
+    "wrapperGateUnchanged": true,
+    "sourceGateUnchanged": true,
+    "adapterAndExecutableAuthenticatedBeforePhase": true,
+    "browserEnvelopeRecordsPathsAndHashes": true
+  },
+  "staticChecks": {
+    "bashParsePassed": true,
+    "sameInstalledChromiumStubDelegationPassed": true,
+    "capturedLaunchOptions": {
+      "headless": true,
+      "args": ["--disable-dev-shm-usage"],
+      "executablePath": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome"
+    },
+    "browserLaunched": false,
+    "phaseInvoked": false
+  },
+  "limits": [
+    "Static stub delegation proves option composition but not that Chromium 1243 starts or works with Playwright 1.62.1.",
+    "The adapter is outside the committed canonical source set. The adapted driver authenticates its bytes before execution and browser envelopes record its expected hash, but the proof wrapper does not copy or re-hash the adapter after a phase.",
+    "The receipt hashes Playwright's entry point and package metadata, not the entire installed Playwright package. Per-phase executable and package inventories must supply the broader before/after identity record.",
+    "No browser, server, build, simulation, or proof phase was run by this preparation."
+  ]
+}
