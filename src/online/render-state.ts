@@ -15,6 +15,7 @@ export interface OnlineRenderState {
   resourceMemory:PlayerObservation['resources'];
   observedEvents:PlayerObservation['events'];
   objectiveView:Pick<PlayerObservation,'side'|'teamId'|'player'|'allies'|'opponents'|'tick'|'rules'|'draft'|'draftChoices'|'draftDefinitions'|'objectives'|'result'> & {entities:Array<Pick<Entity,'id'|'side'|'kind'|'role'|'x'|'y'|'level'|'hp'|'illusion'>>};
+  alliedAi:PlayerObservation['alliedAi'];
 }
 
 function ownPlayer(player:Player):PlayerObservation['player'] {
@@ -105,7 +106,7 @@ export function observationToRenderState(view:PlayerObservation,role:'player'|'s
   } as unknown as GameState;
   const objectiveView={side:view.side,teamId:view.teamId,player:{...ownPlayer(view.player)},allies:structuredClone(view.allies),opponents:structuredClone(view.opponents),tick:view.tick,rules:structuredClone(view.rules),draft:structuredClone(view.draft),draftChoices:[...view.draftChoices],draftDefinitions:structuredClone(view.draftDefinitions),objectives:structuredClone(view.objectives),result:{...view.result},entities:entities.map(entity=>({id:entity.id,side:entity.side,kind:entity.kind,role:entity.role,x:entity.x,y:entity.y,...(entity.level===undefined?{}:{level:entity.level}),hp:entity.hp,illusion:entity.illusion}))};
   return {state,localSide,role,privateSides,hiddenStarts,unknownTerrain,objectiveView,worldPhase:view.world?.phase?structuredClone(view.world.phase):undefined,
-    resourceMemory:view.resources.map(resource=>({...resource})),observedEvents:view.events.map(event=>({
+    alliedAi:structuredClone(view.alliedAi),resourceMemory:view.resources.map(resource=>({...resource})),observedEvents:view.events.map(event=>({
       type:event.type,tick:event.tick,x:event.x,y:event.y,...(event.level===undefined?{}:{level:event.level}),side:event.side,text:event.text,
       target:event.target,source:event.source,amount:event.amount,resource:event.resource,
     }))};

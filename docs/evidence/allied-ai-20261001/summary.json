@@ -1,0 +1,151 @@
+{
+  "featureCommit": "ccdede6872933d74cae4d90dc7b8eefa1272bdce",
+  "baseCommit": "2c21d97",
+  "geometryDependency": "d1171b9",
+  "pinnedFiles": 27,
+  "validation": {
+    "focusedTestFiles": 16,
+    "focusedTests": 340,
+    "typescript": "passed",
+    "build": "passed with existing Phaser chunk-size warning",
+    "actualSavedGameReload": "byte-identical"
+  },
+  "cases": [
+    {
+      "name": "small-orcs-fairies-dwarves-undead",
+      "requestedMapSize": "small",
+      "actualMapSize": "large",
+      "width": 64,
+      "height": 64,
+      "time": 800.0499999998201,
+      "winningTeam": 0,
+      "attacks": [
+        596,
+        2559,
+        594,
+        1135
+      ],
+      "recruits": [
+        97,
+        91,
+        77,
+        116
+      ],
+      "paidFighters": [
+        50,
+        52,
+        41,
+        64
+      ],
+      "plans": 19,
+      "observedRetainedLaunches": 13,
+      "observedSharedLaunches": 13,
+      "observedSoloLaunches": 0,
+      "lastLosingHeadquartersDeaths": [
+        {
+          "time": 718.1999999998945,
+          "id": 15,
+          "side": 2,
+          "teamId": 1,
+          "hp": 0,
+          "lastAttacker": 180,
+          "combat": {
+            "side": 2,
+            "maxHp": 1800,
+            "attacks": 92,
+            "damage": 1800
+          }
+        },
+        {
+          "time": 800.0499999998201,
+          "id": 22,
+          "side": 3,
+          "teamId": 1,
+          "hp": 0,
+          "lastAttacker": 476,
+          "combat": {
+            "side": 3,
+            "maxHp": 1650,
+            "attacks": 84,
+            "damage": 1650
+          }
+        }
+      ],
+      "saveSha256": "3ddbfb6bc3b102edabbba68212829a50a7d5f47a15adc9f116b16f8ae36f5cac",
+      "byteEqualRoundtrip": true,
+      "sourceUnchanged": true,
+      "violations": 0
+    },
+    {
+      "name": "medium-dwarves-undead-orcs-fairies",
+      "requestedMapSize": "medium",
+      "actualMapSize": "large",
+      "width": 64,
+      "height": 64,
+      "time": 992.599999999645,
+      "winningTeam": 0,
+      "attacks": [
+        651,
+        1554,
+        959,
+        2526
+      ],
+      "recruits": [
+        108,
+        145,
+        133,
+        98
+      ],
+      "paidFighters": [
+        51,
+        93,
+        72,
+        54
+      ],
+      "plans": 26,
+      "observedRetainedLaunches": 15,
+      "observedSharedLaunches": 12,
+      "observedSoloLaunches": 3,
+      "lastLosingHeadquartersDeaths": [
+        {
+          "time": 837.599999999786,
+          "id": 1,
+          "side": 0,
+          "teamId": 1,
+          "hp": 0,
+          "lastAttacker": 434,
+          "combat": {
+            "side": 0,
+            "maxHp": 1800,
+            "attacks": 133,
+            "damage": 1800
+          }
+        },
+        {
+          "time": 992.599999999645,
+          "id": 8,
+          "side": 1,
+          "teamId": 1,
+          "hp": 0,
+          "lastAttacker": 600,
+          "combat": {
+            "side": 1,
+            "maxHp": 1650,
+            "attacks": 56,
+            "damage": 1650
+          }
+        }
+      ],
+      "saveSha256": "8946fc78c4e2a9a98e76e3de9aeb4b3e8188f197db12cdd53c55c328bb225367",
+      "byteEqualRoundtrip": true,
+      "sourceUnchanged": true,
+      "violations": 0
+    }
+  ],
+  "limitations": [
+    "Two distinct arrangements on one normalized large64x64 map do not establish team or faction balance.",
+    "Launch counts observe retained saved waves after each step; waves immediately removed at their deadline can be omitted.",
+    "Natural matches use the branch simulation based on2c21d97 plus the copied d1171b9 geometry module for new allied modules. They do not prove root numerical integration or cross-runtime identity.",
+    "Root owns combined SAVE4/replay integration and actual local/online browser panel verification."
+  ]
+}

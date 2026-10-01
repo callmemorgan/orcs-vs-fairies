@@ -1,6 +1,6 @@
 import { PROMOTIONS } from './unit-progression';
 import { UPGRADES } from './content';
-import type { Command } from './types';
+import type { AlliedCommand, Command } from './types';
 
 const roles=['worker','melee','ranged','special','spear','cavalry','siege'];
 const buildings=['hq','depot','barracks','tower','wall','gate'];
@@ -10,6 +10,9 @@ const index=(v:unknown):v is number=>Number.isSafeInteger(v)&&(v as number)>=0;
 const definition=(v:unknown)=>v===undefined||typeof v==='string'&&/^[a-z][a-z0-9:-]{0,99}$/.test(v);
 const finite=(v:unknown):v is number=>typeof v==='number'&&Number.isFinite(v);
 const keys=(o:Record<string,unknown>,allowed:string[])=>Object.keys(o).every(k=>allowed.includes(k));
+const side=(v:unknown):v is number=>index(v)&&(v as number)<8;
+const cost=(v:unknown):boolean=>record(v)&&keys(v,['wood','ore','crystal'])&&['wood','ore','crystal'].every(k=>finite(v[k])&&(v[k] as number)>=0&&(v[k] as number)<=1e9)&&['wood','ore','crystal'].some(k=>(v[k] as number)>0);
+export function isPlayerCommand(command:Command):command is AlliedCommand{return ['allyDirective','cancelAllyDirective','transferResources'].includes(command.type);}
 
 /** One strict command boundary for terminal, replay, and future remote inputs. */
 export function validateCommand(v:unknown):v is Command {
@@ -20,6 +23,14 @@ export function validateCommand(v:unknown):v is Command {
   if(v.type==='collectRelic')return keys(v,['type','id','relicId'])&&id(v.id)&&id(v.relicId);
   if(v.type==='dropRelic')return keys(v,['type','id'])&&id(v.id);
   const allowed=(fields:string[])=>keys(v,queued?[...fields,'queued']:fields);
+  if(v.type==='transferResources')return allowed(['type','recipient','resources'])&&side(v.recipient)&&cost(v.resources);
+  if(v.type==='cancelAllyDirective')return allowed(['type','directiveId'])&&id(v.directiveId);
+  if(v.type==='allyDirective'){
+    if(!side(v.ally))return false;
+    if(v.directive==='support')return allowed(['type','ally','directive','resources'])&&cost(v.resources);
+    if(v.directive==='attack'&&'target' in v)return allowed(['type','ally','directive','target'])&&id(v.target);
+    return ['defend','scout','attack'].includes(v.directive as string)&&allowed(['type','ally','directive','x','y','level'])&&finite(v.x)&&finite(v.y)&&(v.level===undefined||Number.isInteger(v.level)&&(v.level as number)>=0&&(v.level as number)<=1);
+  }
   if(v.type==='cancelTrain')return allowed(['type','id','index'])&&id(v.id)&&index(v.index);
   if(v.type==='reorderTrain')return allowed(['type','id','from','to'])&&id(v.id)&&index(v.from)&&index(v.to);
   if(v.type==='train')return allowed(['type','id','role','definitionId'])&&id(v.id)&&roles.includes(v.role as string)&&definition(v.definitionId);

@@ -1,4 +1,3 @@
-import { normalizeMatchRules, createDraft, applyDraftChoice, legalDraftChoices, validateDraftState } from '../core/match-rules';
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { randomBytes, randomUUID, createHash, scrypt as scryptCallback, timingSafeEqual } from 'node:crypto';
 import { promisify } from 'node:util';
@@ -17,7 +16,6 @@ import type { Account, CommandAck, LobbyObservation, LobbySettings, LobbyPlayerS
 import { ServerStore, type StoredLobby, type StoredCommand, type StoredFrame } from './store';
 import { OnlineView } from './views';
 import { teamObservation } from './team-view';
-import { createTournamentService } from '../tournament/service';
 
 const scrypt=promisify(scryptCallback);
 const SESSION_LIFETIME=7*24*60*60*1000;
@@ -74,8 +72,6 @@ export interface ServerOptions {
   host?:string;port?:number;dataDir:string;staticDir?:string;origin?:string;
   secureCookie?:boolean;spectatorDelaySeconds?:number;
   trustProxy?:boolean;
-  /** Configurations are supplied by the server operator, never by an HTTP request. */
-  tournaments?:{cwd:string;configs:unknown[];outputRoot?:string};
 }
 
 /** Independent clients send inputs; only this process owns and advances GameState. */
@@ -87,7 +83,7 @@ export async function createRtsServer(options:ServerOptions){
   const externalOrigin=options.origin?.trim()||undefined;
   if(externalOrigin){const parsed=new URL(externalOrigin);if(parsed.origin!==externalOrigin||!['http:','https:'].includes(parsed.protocol))throw new Error('RTS_ORIGIN must be an exact HTTP(S) origin without a trailing slash.');}
   const store=new ServerStore(options.dataDir,compatibilityFingerprint());
-  const lobbies=new Map<string,StoredLobby>(store.lobbies().map(lobby=>{const normalized=settings(lobby.settings),draft=lobby.draft?validateDraftState(lobby.draft,normalized.players!.map((p,id)=>({...p,id:id as Side})),normalizeMatchRules(normalized.rules)):createDraft(normalized.players!.map((p,id)=>({...p,id:id as Side})),normalizeMatchRules(normalized.rules));return [lobby.id,{...lobby,draft,settings:normalized,seats:roster(normalized,lobby.seats,undefined,false)}];}));
+  const lobbies=new Map(store.lobbies().map(lobby=>{const normalized=settings(lobby.settings);return [lobby.id,{...lobby,settings:normalized,seats:roster(normalized,lobby.seats,undefined,false)}];}));
   const matches=new Map<string,ActiveMatch>();
   const tickets=new Map<string,Ticket>();
   const attempts=new Map<string,{count:number;at:number}>();
@@ -116,7 +112,7 @@ export async function createRtsServer(options:ServerOptions){
   }}catch(error){store.close();throw error;}
 
   function publicLobby(lobby:StoredLobby):LobbyObservation{
-    return {id:lobby.id,hostId:lobby.hostId,revision:lobby.revision,settings:lobby.settings,seats:lobby.seats,matchId:lobby.matchId,draft:lobby.draft?{...structuredClone(lobby.draft),remainingTicks:lobby.draftDeadlineAt?Math.max(1,Math.ceil((lobby.draftDeadlineAt-Date.now())/(1000/TICK_RATE))):lobby.draft.remainingTicks}:undefined};
+    return {id:lobby.id,hostId:lobby.hostId,revision:lobby.revision,settings:lobby.settings,seats:lobby.seats,matchId:lobby.matchId};
   }
   function send(socket:WebSocket,message:ServerMessage){
     if(socket.readyState===WebSocket.OPEN){
@@ -161,7 +157,7 @@ export async function createRtsServer(options:ServerOptions){
     if(++entry.count>30)throw new HttpError(429,'Too many sign-in attempts. Try again in a minute.');
   }
   function settings(value:unknown):LobbySettings{
-    if(!record(value)||!keys(value,['mapSize','factions','players','sharedVision','startingAge','rules'])||!MAP_SIZES.includes(value.mapSize as string))throw new HttpError(400,'Expected a supported map size and player roster.');
+    if(!record(value)||!keys(value,['mapSize','factions','players','sharedVision','startingAge'])||!MAP_SIZES.includes(value.mapSize as string))throw new HttpError(400,'Expected a supported map size and player roster.');
     const knownFaction=(id:unknown)=>typeof id==='string'&&Object.hasOwn(FACTIONS,id);
     let players:LobbyPlayerSettings[];
     if(value.players!==undefined){
@@ -186,9 +182,7 @@ export async function createRtsServer(options:ServerOptions){
     if(!players.some(player=>player.controller==='human')||new Set(players.map(player=>player.teamId)).size<2)throw new HttpError(400,'A match needs a human slot and at least two teams.');
     if(value.sharedVision!==undefined&&typeof value.sharedVision!=='boolean')throw new HttpError(400,'Shared vision must be boolean.');
     if(value.startingAge!==undefined&&!integer(value.startingAge,1,3))throw new HttpError(400,'Starting age must be 1–3.');
-    if(value.rules!==undefined&&!record(value.rules))throw new HttpError(400,'Match rules must be an object.');
-    let rules:ReturnType<typeof normalizeMatchRules>;try{rules=normalizeMatchRules({...((value.rules??{}) as object),...(value.startingAge===undefined?{}:{startingAge:value.startingAge}),...(value.sharedVision===undefined?{}:{sharedVision:value.sharedVision})});if(rules.mode==='scenario')throw new Error('Launch authored scenarios from the scenario menu.');if(rules.mode==='survival'&&(!players.some(p=>p.teamId===rules.survival.defenderTeam)||new Set(players.map(p=>p.teamId)).size!==2))throw new Error('Survival requires a defender team and one opposing wave team.');createDraft(players.map((p,id)=>({...p,id:id as Side})),rules);createMatch({map:{seed:0,size:value.mapSize as CoreMatchConfig['map']['size']},players:players.map((p,id)=>({...p,id:id as Side})),rules});}catch(error){throw new HttpError(400,error instanceof Error?error.message:'Invalid match rules.');}
-    return {rules,mapSize:value.mapSize as LobbySettings['mapSize'],factions:players.map(player=>player.factionId),players,sharedVision:rules.sharedVision,startingAge:rules.startingAge};
+    return {mapSize:value.mapSize as LobbySettings['mapSize'],factions:players.map(player=>player.factionId),players,sharedVision:value.sharedVision!==false,startingAge:(value.startingAge??1) as LobbySettings['startingAge']};
   }
   function roster(config:LobbySettings,previous:LobbySeat[]=[],creator?:Account,resetReadiness=true):LobbySeat[]{
     const members=previous.flatMap(seat=>seat.account?[seat.account]:[]);if(creator&&!members.some(member=>member.id===creator.id))members.push(creator);
@@ -199,13 +193,11 @@ export async function createRtsServer(options:ServerOptions){
     if(!resetReadiness)for(const seat of seats)seat.ready=seat.controller==='human'&&!!seat.account&&!!previous.find(former=>former.account?.id===seat.account!.id)?.ready;
     return seats;
   }
-  function matchConfig(lobby:StoredLobby):CoreMatchConfig{return {schemaVersion:1,map:{seed:lobby.seed,size:lobby.settings.mapSize},players:lobby.settings.players!.map((player,index)=>({id:index as Side,teamId:player.teamId,factionId:player.factionId,controller:player.controller==='human'?'external':'ai',handicap:player.handicap})),rules:lobby.settings.rules,draft:lobby.draft};}
+  function matchConfig(lobby:StoredLobby):CoreMatchConfig{return {schemaVersion:1,map:{seed:lobby.seed,size:lobby.settings.mapSize},players:lobby.settings.players!.map((player,index)=>({id:index as Side,teamId:player.teamId,factionId:player.factionId,controller:player.controller==='human'?'external':'ai',handicap:player.handicap})),rules:{sharedVision:lobby.settings.sharedVision,startingAge:lobby.settings.startingAge}};}
   function getLobby(id:string){const result=lobbies.get(id);if(!result)throw new HttpError(404,'Lobby not found.');return result;}
   function editLobby(lobby:StoredLobby,value:Record<string,unknown>){if(value.expectedRevision!==lobby.revision)throw new HttpError(409,'Lobby changed. Refresh its current revision.');if(lobby.matchId)throw new HttpError(409,'The match has started.');}
-  function resetDraft(lobby:StoredLobby){lobby.draft=createDraft(lobby.settings.players!.map((p,id)=>({...p,id:id as Side})),normalizeMatchRules(lobby.settings.rules));delete lobby.draftDeadlineAt;if(!lobby.seats.some(seat=>seat.controller==='human'&&!seat.account)&&lobby.draft.status==='drafting')lobby.draftDeadlineAt=Date.now()+lobby.draft.remainingTicks*1000/TICK_RATE;}
   function changed(lobby:StoredLobby){lobby.revision++;store.saveLobby(lobby);lobbies.set(lobby.id,lobby);}
   function matchSummary(match:ActiveMatch){return {id:match.id,lobbyId:match.lobbyId,tick:match.state.tick,finished:isGameOver(match.state),failed:match.failed};}
-  const tournaments=options.tournaments?createTournamentService({cwd:options.tournaments.cwd,configs:options.tournaments.configs,outputRoot:options.tournaments.outputRoot??resolve(options.dataDir,'tournaments'),authorize:req=>!!session(req),principal:req=>session(req)?.id}):undefined;
 
   async function route(req:IncomingMessage,res:ServerResponse){
     const url=new URL(req.url??'/',`http://${req.headers.host??'localhost'}`),path=url.pathname;
@@ -242,15 +234,14 @@ export async function createRtsServer(options:ServerOptions){
     }
     if(path.startsWith('/api/')){
       const user=account(req);
-      if(tournaments&&await tournaments.handle(req,res))return;
       if(req.method==='GET'&&path==='/api/lobbies'){respond(res,200,{lobbies:[...lobbies.values()].map(publicLobby)});return;}
       if(req.method==='POST'&&path==='/api/lobbies'){
         const value=await body(req);if(!keys(value,['settings','seed'])||(value.seed!==undefined&&!integer(value.seed,0,0xffffffff)))throw new HttpError(400,'Invalid lobby fields.');
         const configuration=settings(value.settings??{mapSize:'medium',factions:['orcs','fairies']});
         const lobby:StoredLobby={id:randomUUID(),hostId:user.id,revision:1,settings:configuration,seed:(value.seed as number|undefined)??randomBytes(4).readUInt32LE(),seats:roster(configuration,[],user),matchId:null};
-        resetDraft(lobby);store.saveLobby(lobby);lobbies.set(lobby.id,lobby);respond(res,201,{lobby:publicLobby(lobby)});return;
+        store.saveLobby(lobby);lobbies.set(lobby.id,lobby);respond(res,201,{lobby:publicLobby(lobby)});return;
       }
-      const lobbyRoute=/^\/api\/lobbies\/([^/]+)(?:\/(join|settings|ready|start|leave|draft))?$/.exec(path);
+      const lobbyRoute=/^\/api\/lobbies\/([^/]+)(?:\/(join|settings|ready|start|leave))?$/.exec(path);
       if(lobbyRoute){
         const existing=getLobby(lobbyRoute[1]),action=lobbyRoute[2];
         if(req.method==='GET'&&!action){respond(res,200,{lobby:publicLobby(existing)});return;}
@@ -260,29 +251,22 @@ export async function createRtsServer(options:ServerOptions){
         const own=lobby.seats.find(seat=>seat.account?.id===user.id);
         if(action==='join'){
           if(!keys(value,['expectedRevision']))throw new HttpError(400,'Unknown join field.');
-          if(!own){const empty=lobby.seats.find(seat=>seat.controller==='human'&&!seat.account);if(!empty)throw new HttpError(409,'Human slots are full.');empty.account=user;if(!lobby.hostId)lobby.hostId=user.id;lobby.seats.forEach(seat=>{seat.ready=false;});resetDraft(lobby);changed(lobby);}
+          if(!own){const empty=lobby.seats.find(seat=>seat.controller==='human'&&!seat.account);if(!empty)throw new HttpError(409,'Human slots are full.');empty.account=user;if(!lobby.hostId)lobby.hostId=user.id;lobby.seats.forEach(seat=>{seat.ready=false;});changed(lobby);}
         }else if(action==='settings'){
           if(user.id!==lobby.hostId)throw new HttpError(403,'Only the host may change settings.');
           if(!keys(value,['expectedRevision','settings','seed'])||(value.seed!==undefined&&!integer(value.seed,0,0xffffffff)))throw new HttpError(400,'Unknown or invalid settings field.');
-          const configuration=settings(value.settings),seats=roster(configuration,lobby.seats);lobby.settings=configuration;lobby.seats=seats;if(value.seed!==undefined)lobby.seed=value.seed as number;resetDraft(lobby);changed(lobby);
+          const configuration=settings(value.settings),seats=roster(configuration,lobby.seats);lobby.settings=configuration;lobby.seats=seats;if(value.seed!==undefined)lobby.seed=value.seed as number;changed(lobby);
         }else if(action==='ready'){
           if(!own)throw new HttpError(403,'Join a seat first.');
-          if(!keys(value,['expectedRevision','ready'])||typeof value.ready!=='boolean')throw new HttpError(400,'Expected readiness.');if(value.ready&&lobby.draft?.status==='drafting')throw new HttpError(409,'Finish the draft before becoming ready.');own.ready=value.ready;changed(lobby);
+          if(!keys(value,['expectedRevision','ready'])||typeof value.ready!=='boolean')throw new HttpError(400,'Expected readiness.');own.ready=value.ready;changed(lobby);
         }else if(action==='leave'){
           if(!own)throw new HttpError(403,'You are not in this lobby.');
           if(!keys(value,['expectedRevision']))throw new HttpError(400,'Unknown leave field.');own.account=null;own.ready=false;lobby.seats.forEach(seat=>{seat.ready=false;});
-          if(user.id===lobby.hostId)lobby.hostId=lobby.seats.find(seat=>seat.account)?.account?.id??'';resetDraft(lobby);changed(lobby);
-        }else if(action==='draft'){
-          if(!own)throw new HttpError(403,'Join a seat first.');
-          if(!keys(value,['expectedRevision','definitionId'])||typeof value.definitionId!=='string')throw new HttpError(400,'Expected a definition ID.');
-          if(lobby.seats.some(seat=>seat.controller==='human'&&!seat.account))throw new HttpError(409,'All human players must be present before the draft.');
-          if(!lobby.draft||!applyDraftChoice(lobby.draft,normalizeMatchRules(lobby.settings.rules),lobby.settings.players!.map((p,id)=>({...p,id:id as Side})),own.side,value.definitionId))throw new HttpError(409,'Illegal choice, duplicate definition, or another player owns this draft turn.');
-          lobby.draftDeadlineAt=lobby.draft.status==='drafting'?Date.now()+lobby.draft.remainingTicks*1000/TICK_RATE:undefined;lobby.seats.forEach(seat=>{seat.ready=false;});changed(lobby);
+          if(user.id===lobby.hostId)lobby.hostId=lobby.seats.find(seat=>seat.account)?.account?.id??'';changed(lobby);
         }else if(action==='start'){
           if(user.id!==lobby.hostId)throw new HttpError(403,'Only the host may start.');
           if(!keys(value,['expectedRevision']))throw new HttpError(400,'Unknown start field.');
           if(lobby.seats.some(seat=>seat.controller==='human'&&(!seat.account||!seat.ready)))throw new HttpError(409,'All human players must be present and ready.');
-          if(lobby.draft?.status==='drafting')throw new HttpError(409,'Finish the draft before launching.');
           const configuration=matchConfig(lobby),state=createMatch(configuration),sides=playerSides(state);
           const id=randomUUID(),views=sides.map(side=>new OnlineView(side)),frame={tick:0,views:views.map(view=>view.observe(state))},generations=sides.map(()=>0);
           const started={...lobby,matchId:id,revision:lobby.revision+1};
@@ -412,17 +396,15 @@ export async function createRtsServer(options:ServerOptions){
     }
     for(const peer of match.peers)deliver(peer,match);
   }
-  function advanceDrafts(){for(const lobby of lobbies.values()){if(lobby.matchId||lobby.draft?.status!=='drafting'||!lobby.draftDeadlineAt)continue;const turn=lobby.draft.order[lobby.draft.turn];if(lobby.seats[turn.side].controller!=='ai'&&Date.now()<lobby.draftDeadlineAt)continue;const next=structuredClone(lobby),rules=normalizeMatchRules(next.settings.rules),players=next.settings.players!.map((p,id)=>({...p,id:id as Side}));for(const id of legalDraftChoices(next.draft!,players,turn.side))if(applyDraftChoice(next.draft!,rules,players,turn.side,id))break;next.draftDeadlineAt=next.draft!.status==='drafting'?Date.now()+next.draft!.remainingTicks*1000/TICK_RATE:undefined;next.seats.forEach(seat=>{seat.ready=false;});changed(next);}}
-  const timer=setInterval(()=>{try{advanceDrafts();}catch{}for(const match of matches.values()){try{advance(match);}catch{match.failed=true;for(const peer of match.peers)fail(peer.socket,'match-failure','The match paused after an internal error.');}}const now=Date.now();for(const [token,ticket] of tickets)if(ticket.expires<now)tickets.delete(token);},1000/TICK_RATE);
+  const timer=setInterval(()=>{for(const match of matches.values()){try{advance(match);}catch{match.failed=true;for(const peer of match.peers)fail(peer.socket,'match-failure','The match paused after an internal error.');}}const now=Date.now();for(const [token,ticket] of tickets)if(ticket.expires<now)tickets.delete(token);},1000/TICK_RATE);
   try{await new Promise<void>((resolveListening,reject)=>{http.once('error',reject);http.listen(port,host,()=>{http.off('error',reject);resolveListening();});});}
-  catch(error){clearInterval(timer);await tournaments?.dispose();websocket.close();store.close();throw error;}
+  catch(error){clearInterval(timer);websocket.close();store.close();throw error;}
   const address=http.address();if(!address||typeof address==='string')throw new Error('No server address.');
   return {
     url:`http://${host==='0.0.0.0'?'127.0.0.1':host}:${address.port}`,
     port:address.port,
     async close(){
       if(closing)return;closing=true;clearInterval(timer);
-      await tournaments?.dispose();
       for(const match of matches.values())for(const peer of match.peers)peer.socket.terminate();
       await new Promise<void>(resolveClosed=>websocket.close(()=>resolveClosed()));
       await new Promise<void>(resolveClosed=>http.close(()=>resolveClosed()));store.close();

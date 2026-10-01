@@ -40,7 +40,7 @@ describe('AI recovery after losing its economy',()=>{
   runAI(s,0);expect(captureRuntime(s).retreating[0]).toEqual([]);expect(fighter(s).order.type).toBe('attackMove');
  });
  it('keeps regrouping while an owned worker carries wood home',()=>{
-  const s=stranded();s.entities.push({...structuredClone(fighter(s)),id:s.nextId++,role:'worker',hp:85,maxHp:85,carried:18,carriedKind:'wood'});runAI(s,0);expect(captureRuntime(s).retreating[0]).toHaveLength(1);
+  const s=stranded();s.players[0].wood=52;s.players[0].population=2;s.populationLimits[0]=2;s.players[0].cap=2;const hq=s.entities.find(e=>e.side===0&&e.role==='hq')!,node={id:s.nextId++,x:11,y:13,kind:'wood' as const,amount:0,maxAmount:1000};s.resources.push(node);s.entities.push({...structuredClone(hq),id:s.nextId++,role:'barracks',x:hq.x+5},{...structuredClone(fighter(s)),id:s.nextId++,role:'worker',hp:85,maxHp:85,carried:18,carriedKind:'wood',order:{type:'gather',target:node.id}});refreshVisibility(s);runAI(s,0);expect(captureRuntime(s).retreating[0]).toHaveLength(1);
  });
  it('waits for a completing paid fighter even without another source of wood',()=>{
   const s=stranded(),hq=s.entities.find(e=>e.side===0&&e.role==='hq')!;s.entities.push({...structuredClone(hq),id:s.nextId++,role:'barracks',queue:['melee'],x:hq.x+4});runAI(s,0);expect(captureRuntime(s).retreating[0]).toHaveLength(1);expect(fighter(s).order.type).toBe('idle');

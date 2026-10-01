@@ -411,11 +411,11 @@ describe('AI fairness and editable content', () => {
     const s = fixture(); s.players[0].wood = s.players[0].ore = 0;
     advance(s, 66);
     const home = hq(s, side), direction = side === 0 ? 1 : -1;
-    // A worker and visible wood keep normal regrouping available. Hold the
+    // A worker and visible wood/ore keep normal regrouping available. Hold the
     // worker so the fixture's exact paid-recruitment balances stay isolated.
     const worker = add(s, side, 'unit', 'worker', home.x + direction * 2, home.y + direction * 3);
     worker.order = { type: 'hold' };
-    s.resources.push({ id: s.nextId++, kind: 'wood', x: home.x + direction * 2, y: home.y + direction * 4, amount: 1000, maxAmount: 1000 });
+    s.resources.push({ id: s.nextId++, kind: 'wood', x: home.x + direction * 2, y: home.y + direction * 4, amount: 1000, maxAmount: 1000 },{ id: s.nextId++, kind: 'ore', x: home.x + direction * 4, y: home.y + direction * 4, amount: 1000, maxAmount: 1000 });
     refreshVisibility(s);
     const scout = add(s, side, 'unit', 'melee', home.x + direction * 3, home.y + direction * 3);
     const barracks = add(s, side, 'building', 'barracks', home.x + direction * 5, home.y);

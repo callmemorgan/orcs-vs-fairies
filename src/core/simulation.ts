@@ -9,6 +9,10 @@ import type { SpecialistSource } from './specialist-types';
 import { aiProfile, chooseAiRecruit, counterWeights, normalizeAiConfig, openingBuilding, rememberObservedUnits, shouldRetreat, skipsAiDecision } from './ai-policy';
 import type { EnemyMemory, EnemyObservation } from './ai-policy';
 import { buildingAgeRequired, canCompleteResearch, playerAge, researchRequirement, upgradeAppliesTo } from './progression';
+import { isPlayerCommand } from './commands';
+import { coordinateTeamAi, emptyTeamAiState, hasTeamAiMemory } from './team-ai';
+import type { TeamAiReport, TeamAiState } from './team-ai';
+import { alliedAiObservation, applyAlliedPlayerCommand, processAllyDirectives } from './ally-directives';
 import { ECONOMY, FACTIONS, UPGRADES } from './content';
 import { availableBuildings, availableUnits, buildingFor, contentFactions, decodeContentBundle, factionFor, isNormalBuildingDefinition, queuedUnitFor, unitFor, upgradeFor } from './content-registry';
 import { walkable, segmentWalkable, openDestination, route } from './navigation';
@@ -25,9 +29,10 @@ import type { BuildingDef, BuildingRole, Command, Cost, Entity, FactionId, GameO
 const distance = (a:Vec,b:Vec) => sameLevel(a,b)?length2D(a.x-b.x,a.y-b.y):Infinity;
 const clamp=(n:number,a:number,b:number)=>Math.max(a,Math.min(b,n));
 interface RetreatRecord { until:number; produced:number; afterId:number }
-interface Runtime { aiBatchTurns:number; aiDecisionAt:number[]; aiDecisionTurns:number[]; knownEnemyUnits:EnemyMemory[]; retreating:Map<number,RetreatRecord>[]; producedFighters:number[]; stepping?:boolean; fog:number; ai:number; aiTurns:number; hits:{source:Entity|SpecialistSource;target:Entity;amount:number;event:GameState['events'][number]}[]; routes:Map<number,{key:string;at:number}>; abilities:Map<number,number>; returning:Set<number>; queuedGather:Set<number>; aiWave:number[]; initialScoutDispatched:boolean[]; expansionScout:(number|null)[]; expansionScoutDispatched:boolean[]; knownEnemyBuildings:Map<number,Vec & {role:string}>[]; enemyStartCleared:boolean[]; clearedEnemyStarts:Set<Side>[]; searched:Set<number>[] }
+interface Runtime { teamAI:TeamAiState; aiBatchTurns:number; aiDecisionAt:number[]; aiDecisionTurns:number[]; knownEnemyUnits:EnemyMemory[]; retreating:Map<number,RetreatRecord>[]; producedFighters:number[]; stepping?:boolean; fog:number; ai:number; aiTurns:number; hits:{source:Entity|SpecialistSource;target:Entity;amount:number;event:GameState['events'][number]}[]; routes:Map<number,{key:string;at:number}>; abilities:Map<number,number>; returning:Set<number>; queuedGather:Set<number>; aiWave:number[]; initialScoutDispatched:boolean[]; expansionScout:(number|null)[]; expansionScoutDispatched:boolean[]; knownEnemyBuildings:Map<number,Vec & {role:string}>[]; enemyStartCleared:boolean[]; clearedEnemyStarts:Set<Side>[]; searched:Set<number>[] }
 /** The complete simulation memory that is not stored on GameState itself. */
 export interface RuntimeSnapshot {
+ teamAI?:TeamAiState;
  aiBatchTurns:number; aiDecisionAt:number[]; aiDecisionTurns:number[];
  knownEnemyUnits:[number,EnemyObservation][][]; retreating:[number,RetreatRecord][][]; producedFighters:number[];
  fog:number; ai:number; aiTurns:number;
@@ -40,16 +45,18 @@ export interface RuntimeSnapshot {
  enemyStartCleared:boolean[]; clearedEnemyStarts:Side[][]; searched:number[][];
 }
 const runtimes=new WeakMap<GameState,Runtime>();
-function runtime(s:GameState):Runtime { let r=runtimes.get(s);if(!r){r={aiBatchTurns:0,aiDecisionAt:s.players.map(()=>0),aiDecisionTurns:s.players.map(()=>0),knownEnemyUnits:s.players.map(()=>new Map()),retreating:s.players.map(()=>new Map()),producedFighters:s.players.map(()=>0),fog:0,ai:0,aiTurns:0,hits:[],routes:new Map(),abilities:new Map(),returning:new Set(),queuedGather:new Set(),aiWave:s.players.map(()=>0),initialScoutDispatched:s.players.map(()=>false),expansionScout:s.players.map(()=>null),expansionScoutDispatched:s.players.map(()=>false),knownEnemyBuildings:s.players.map(()=>new Map()),enemyStartCleared:s.players.map(()=>false),clearedEnemyStarts:s.players.map(()=>new Set()),searched:s.players.map(()=>new Set())};runtimes.set(s,r);}return r; }
+// Reuse only within an AI batch, before movement, harvesting or fog can change.
+const aiRecoveryScopes=new WeakMap<GameState,Map<Side,{key:string;value:boolean}>>();
+function runtime(s:GameState):Runtime { let r=runtimes.get(s);if(!r){r={teamAI:emptyTeamAiState(),aiBatchTurns:0,aiDecisionAt:s.players.map(()=>0),aiDecisionTurns:s.players.map(()=>0),knownEnemyUnits:s.players.map(()=>new Map()),retreating:s.players.map(()=>new Map()),producedFighters:s.players.map(()=>0),fog:0,ai:0,aiTurns:0,hits:[],routes:new Map(),abilities:new Map(),returning:new Set(),queuedGather:new Set(),aiWave:s.players.map(()=>0),initialScoutDispatched:s.players.map(()=>false),expansionScout:s.players.map(()=>null),expansionScoutDispatched:s.players.map(()=>false),knownEnemyBuildings:s.players.map(()=>new Map()),enemyStartCleared:s.players.map(()=>false),clearedEnemyStarts:s.players.map(()=>new Set()),searched:s.players.map(()=>new Set())};runtimes.set(s,r);}return r; }
 export function captureRuntime(s:GameState):RuntimeSnapshot {
  const r=runtime(s);
- return {aiBatchTurns:r.aiBatchTurns,aiDecisionAt:[...r.aiDecisionAt],aiDecisionTurns:[...r.aiDecisionTurns],knownEnemyUnits:r.knownEnemyUnits.map(memory=>[...memory].map(([id,o])=>[id,{...o}])),retreating:r.retreating.map(memory=>[...memory].map(([id,o])=>[id,{...o}])),producedFighters:[...r.producedFighters],fog:r.fog,ai:r.ai,aiTurns:r.aiTurns,hits:r.hits.map(h=>({source:h.source.id,target:h.target.id,amount:h.amount,event:s.events.indexOf(h.event)})),routes:[...r.routes].map(([id,value])=>[id,{...value}]),abilities:[...r.abilities],returning:[...r.returning],queuedGather:[...r.queuedGather],aiWave:[...r.aiWave],initialScoutDispatched:[...r.initialScoutDispatched],expansionScout:[...r.expansionScout],expansionScoutDispatched:[...r.expansionScoutDispatched],knownEnemyBuildings:r.knownEnemyBuildings.map(memory=>[...memory].map(([id,p])=>[id,{...p}])),enemyStartCleared:[...r.enemyStartCleared],clearedEnemyStarts:r.clearedEnemyStarts.map(players=>[...players]),searched:r.searched.map(tiles=>[...tiles])};
+ return {...(hasTeamAiMemory(r.teamAI)?{teamAI:structuredClone(r.teamAI)}:{}),aiBatchTurns:r.aiBatchTurns,aiDecisionAt:[...r.aiDecisionAt],aiDecisionTurns:[...r.aiDecisionTurns],knownEnemyUnits:r.knownEnemyUnits.map(memory=>[...memory].map(([id,o])=>[id,{...o}])),retreating:r.retreating.map(memory=>[...memory].map(([id,o])=>[id,{...o}])),producedFighters:[...r.producedFighters],fog:r.fog,ai:r.ai,aiTurns:r.aiTurns,hits:r.hits.map(h=>({source:h.source.id,target:h.target.id,amount:h.amount,event:s.events.indexOf(h.event)})),routes:[...r.routes].map(([id,value])=>[id,{...value}]),abilities:[...r.abilities],returning:[...r.returning],queuedGather:[...r.queuedGather],aiWave:[...r.aiWave],initialScoutDispatched:[...r.initialScoutDispatched],expansionScout:[...r.expansionScout],expansionScoutDispatched:[...r.expansionScoutDispatched],knownEnemyBuildings:r.knownEnemyBuildings.map(memory=>[...memory].map(([id,p])=>[id,{...p}])),enemyStartCleared:[...r.enemyStartCleared],clearedEnemyStarts:r.clearedEnemyStarts.map(players=>[...players]),searched:r.searched.map(tiles=>[...tiles])};
 }
 /** Restore only a snapshot already validated by the save loader. */
 export function restoreRuntime(s:GameState,r:RuntimeSnapshot):void {
  const entities=new Map(s.entities.map(e=>[e.id,e]));
  const hits=r.hits.map(h=>{const source=entities.get(h.source),target=entities.get(h.target),event=s.events[h.event];if(!source||!target||!event)throw new Error('Save runtime has an invalid hit reference.');return {source,target,amount:h.amount,event};});
- runtimes.set(s,{aiBatchTurns:r.aiBatchTurns,aiDecisionAt:[...r.aiDecisionAt],aiDecisionTurns:[...r.aiDecisionTurns],knownEnemyUnits:r.knownEnemyUnits.map(memory=>new Map(memory.map(([id,o])=>[id,{...o}]))),retreating:r.retreating.map(memory=>new Map(memory.map(([id,o])=>[id,{...o}]))),producedFighters:[...r.producedFighters],fog:r.fog,ai:r.ai,aiTurns:r.aiTurns,hits,routes:new Map(r.routes.map(([id,value])=>[id,{...value}])),abilities:new Map(r.abilities),returning:new Set(r.returning),queuedGather:new Set(r.queuedGather),aiWave:[...r.aiWave],initialScoutDispatched:[...r.initialScoutDispatched],expansionScout:[...r.expansionScout],expansionScoutDispatched:[...r.expansionScoutDispatched],knownEnemyBuildings:r.knownEnemyBuildings.map(memory=>new Map(memory.map(([id,p])=>[id,{...p}])) ),enemyStartCleared:[...r.enemyStartCleared],clearedEnemyStarts:r.clearedEnemyStarts.map(players=>new Set(players)),searched:r.searched.map(tiles=>new Set(tiles))});
+ runtimes.set(s,{teamAI:r.teamAI?structuredClone(r.teamAI):emptyTeamAiState(),aiBatchTurns:r.aiBatchTurns,aiDecisionAt:[...r.aiDecisionAt],aiDecisionTurns:[...r.aiDecisionTurns],knownEnemyUnits:r.knownEnemyUnits.map(memory=>new Map(memory.map(([id,o])=>[id,{...o}]))),retreating:r.retreating.map(memory=>new Map(memory.map(([id,o])=>[id,{...o}]))),producedFighters:[...r.producedFighters],fog:r.fog,ai:r.ai,aiTurns:r.aiTurns,hits,routes:new Map(r.routes.map(([id,value])=>[id,{...value}])),abilities:new Map(r.abilities),returning:new Set(r.returning),queuedGather:new Set(r.queuedGather),aiWave:[...r.aiWave],initialScoutDispatched:[...r.initialScoutDispatched],expansionScout:[...r.expansionScout],expansionScoutDispatched:[...r.expansionScoutDispatched],knownEnemyBuildings:r.knownEnemyBuildings.map(memory=>new Map(memory.map(([id,p])=>[id,{...p}])) ),enemyStartCleared:[...r.enemyStartCleared],clearedEnemyStarts:r.clearedEnemyStarts.map(players=>new Set(players)),searched:r.searched.map(tiles=>new Set(tiles))});
 }
 export const MAX_ORDER_QUEUE=32;
 const alive=(e:Entity)=>e.hp>0;
@@ -194,6 +201,7 @@ function applyCommand(s:GameState,side:Side,c:Command):boolean{
  if(c.type==='collectRelic')return collectRelic(s,side,c.id,c.relicId);
  if(c.type==='dropRelic')return dropRelic(s,side,c.id);
  const p=s.players[side],f=factionFor(s,side);
+ if(isPlayerCommand(c))return applyAlliedPlayerCommand(s,side,c,runtime(s).teamAI,(viewer,x,y,level)=>isVisible(s,viewer,x,y,level));
  const environmentAction=issueEnvironmentCommand(s,side,c);if(environmentAction!==undefined)return environmentAction;
  const worldAction=issueWorldAction(s,side,c,(e,o)=>{commandOrder(s,e,o);});if(worldAction!==undefined)return worldAction;
  if(c.type==='recruitVillage'&&!definitionAllowed(s,side,unitFor(s,side,'melee').id))return false;
@@ -421,7 +429,7 @@ function neutralHooks(s:GameState){return {
 };}
 export function stepGame(s:GameState,dt:number):void{
  const before=s.tick,rt=runtime(s);rt.stepping=true;
- try{applyStep(s,dt);}finally{rt.stepping=false;}
+ try{applyStep(s,dt);}finally{rt.stepping=false;aiRecoveryScopes.delete(s);}
  if(s.tick!==before){const scenario=scenarioSessionForState(s);if(scenario)afterScenarioStep(scenario,Math.min(dt,.25));}
  if(s.tick!==before)notifyStep(s,Math.min(dt,.25));
 }
@@ -429,8 +437,10 @@ function applyStep(s:GameState,dt:number):void{
  if(isGameOver(s)||!Number.isFinite(dt)||dt<=0)return;s.events=[];
  if(s.draft.status==='drafting'){tickDraft(s.draft,s.rules,draftPlayers(s),s.content);for(const side of playerSides(s))if(s.controllers[side]==='ai'&&s.draft.order[s.draft.turn]?.side===side){for(const id of s.draft.pool)if(applyDraftChoice(s.draft,s.rules,draftPlayers(s),side,id,s.content))break;}s.tick++;if(s.draft.turn===s.draft.order.length)finalizeDraft(s);return;}
  dt=Math.min(dt,.25);s.time+=dt;s.tick++;stepEnvironment(s,dt,{interrupt:actor=>interruptWorldOrder(s,actor),die:(actor,text)=>die(s,actor,text)});const rt=runtime(s);rt.hits=[];stepSpecialists(s,specialistHooks(s));resolveSpecialistShots(s,specialistHooks(s));stepVeterans(s);rt.fog-=dt;if(rt.fog<=0){refreshVisibility(s);rt.fog=.2;}rt.ai-=dt;if(rt.ai<=0){rt.aiTurns++;rt.ai+=1;}
+ aiRecoveryScopes.set(s,new Map());
  const sides=playerSides(s),due=new Set(sides.filter(side=>s.controllers[side]==='ai'&&!s.eliminated[side]&&s.time+1e-9>=rt.aiDecisionAt[side]));
  if(due.size){const offset=rt.aiBatchTurns++%sides.length;for(let i=0;i<sides.length;i++){const side=sides[(i+offset)%sides.length];if(due.has(side)){if(s.rules.mode!=='survival'||s.teams[side]===s.rules.survival.defenderTeam)runAI(s,side);objectiveAi(s,side,issueCommand);rt.aiDecisionAt[side]=s.time+aiProfile(s.aiConfigs[side]).decisionInterval;}}}
+ if(s.rules.mode==='annihilation'&&(due.size||rt.teamAI.coordinator.waves.length))runTeamCoordination(s);
  for(const e of [...s.entities]){
  e.animTime+=dt;if(!alive(e)){if(e.kind==='building')refundQueue(s,e);continue;}if(e.expires&&s.time>=e.expires){die(s,e);continue;}e.cooldown=Math.max(0,e.cooldown-dt);if(e.animation!=='attack'||e.animTime>.4)e.animation='idle';e.momentum=Math.max(0,e.momentum-dt*.014);
  if(e.kind==='building'){if(e.progress===1&&buildingDef(s,e).ability==='heal')for(const ally of s.entities)if(isAllied(s,ally.side,e.side)&&alive(ally)&&ally.kind==='unit'&&!ally.illusion&&distance(ally,e)<6)ally.hp=Math.min(ally.maxHp,ally.hp+dt*2.5);if(e.research){e.researchProgress+=dt/upgradeFor(s,e.side,e.research).researchTime;if(e.researchProgress>=1)finishResearch(s,e);}production(s,e,dt);if(e.role==='tower'&&e.progress===1&&!buildingDef(s,e).tags?.includes('beacon')){const b=enemy(s,e,7);if(b)fight(s,e,b,dt);}continue;}
@@ -451,8 +461,159 @@ function applyStep(s:GameState,dt:number):void{
  stepNeutralWorld(s,dt,neutralHooks(s));
  resolveHits(s);updateBeacons(s);
  s.corpses=s.corpses.filter(c=>c.expires>s.time);
- separateUnits(s);s.entities=s.entities.filter(e=>alive(e)||e.animTime<1.2);updatePopulation(s);evaluateObjectives(s,{spawn:spawnEntity,command:issueCommand});
+ separateUnits(s);s.entities=s.entities.filter(e=>alive(e)||e.animTime<1.2);updatePopulation(s);pruneTeamAssignments(s);evaluateObjectives(s,{spawn:spawnEntity,command:issueCommand});
 }
+function pruneTeamAssignments(s:GameState):void {
+ const state=runtime(s).teamAI,live=new Map(s.entities.filter(e=>alive(e)&&e.kind==='unit'&&e.role!=='worker'&&!e.illusion).map(e=>[e.id,e]));
+ for(const d of state.directives)if(d.status==='accepted'||d.status==='active'){
+  d.assigned=d.assigned.filter(id=>{const e=live.get(id);return e?.side===d.recipient&&!!d.destination&&sameLevel(e,d.destination);});
+  if(!d.assigned.length)delete d.arrivedAt;
+  if(s.time>=d.expiresAt||s.eliminated[d.issuer]||s.eliminated[d.recipient]||s.controllers[d.recipient]!=='ai'){d.status='failed';d.assigned=[];d.reason=s.time>=d.expiresAt?'Request expired.':'Ally is unavailable.';}
+ }
+ state.coordinator.reservations=state.coordinator.reservations.filter(r=>!s.eliminated[r.side]&&r.expiresAt>s.time&&(r.role==='expand'||r.ids.every(id=>{const e=live.get(id);return e?.side===r.side&&sameLevel(e,r.destination);})));
+ state.coordinator.waves=state.coordinator.waves.flatMap(w=>{
+  w.participants=w.participants.flatMap(p=>{const ids=p.ids.filter(id=>{const e=live.get(id);return e?.side===p.side&&!s.eliminated[p.side]&&sameLevel(e,w.target);});return ids.length?[{side:p.side,ids}]:[];});return w.participants.length?[w]:[];
+ });
+}
+export function alliedAiStatus(s:GameState,side:Side){return alliedAiObservation(s,side,runtimes.get(s)?.teamAI??emptyTeamAiState());}
+/** Recovery considers only recruits the AI can select at its current age. */
+function hasRecoverableAiIncome(s:GameState,side:Side,owned=s.entities.filter(e=>e.side===side&&alive(e))):boolean {
+ const scope=aiRecoveryScopes.get(s);if(!scope)return computeRecoverableAiIncome(s,side,owned);
+ const p=s.players[side];
+ // Commands in this batch can charge banks/queues, add buildings, or open gates.
+ // Terrain, worker positions, cargo, resources and visibility stay fixed until
+ // the batch ends. Include every command-mutable route or budget dependency.
+ const key=JSON.stringify([p.wood,p.ore,p.crystal,p.population,p.cap,playerAge(p),s.nextId,owned.map(e=>[e.id,e.role,e.hp,e.progress,e.queue,e.order,runtime(s).returning.has(e.id)]),s.entities.filter(e=>e.kind==='building'&&(e.side===side||isVisible(s,side,e.x,e.y,levelOf(e)))).map(e=>[e.id,e.gateOpen])]);
+ const cached=scope.get(side);if(cached?.key===key)return cached.value;
+ const value=computeRecoverableAiIncome(s,side,owned);scope.set(side,{key,value});return value;
+}
+function computeRecoverableAiIncome(s:GameState,side:Side,owned:Entity[]):boolean {
+ const p=s.players[side],f=factionFor(s,side),age=playerAge(p),buildings=owned.filter(e=>e.kind==='building');
+ // Queued recruits have already been charged, including named custom definitions.
+ if(p.population<p.cap&&buildings.some(b=>b.role==='barracks'&&b.progress===1&&b.queue.some(role=>role!=='worker')))return true;
+ const barracks=buildings.find(b=>b.role==='barracks'),factoryCost=barracks?{wood:0,ore:0,crystal:0}:f.buildings.barracks.cost;
+ if(!barracks&&buildingAgeRequired(f.buildings.barracks)>age)return false;
+ const recruits=Object.values(f.units).filter(d=>d.role!=='worker'&&(d.age??1)<=age).map(d=>({...d,cost:{wood:d.cost.wood+factoryCost.wood,ore:d.cost.ore+factoryCost.ore,crystal:d.cost.crystal+factoryCost.crystal}}));
+ if(!recruits.length)return false;
+ const kinds=['wood','ore','crystal'] as const,bank:Cost={wood:p.wood,ore:p.ore,crystal:p.crystal};
+ if(barracks?.progress===1&&recruits.some(d=>kinds.every(kind=>bank[kind]>=d.cost[kind])))return true;
+ const workers=owned.filter(e=>e.kind==='unit'&&e.role==='worker'&&!e.illusion);
+ if(workers.length&&recruits.some(d=>kinds.every(kind=>bank[kind]>=d.cost[kind])))return true;
+ if(s.incomeFactors[side]<=0)return false;
+ const nodes=s.resources.filter(n=>n.amount>0&&isVisible(s,side,n.x,n.y,levelOf(n)));
+ const depots=buildings.filter(b=>b.progress===1&&(b.role==='hq'||b.role==='depot'));
+ if(!depots.length)return false;
+ // Unknown terrain stays optimistic. Hidden rocks, deposits and structures must
+ // not alter an owned command or reveal whether an economy can recover.
+ const cells=s.width*s.height,known=s.explored[side];
+ const view:GameState={...s,entities:s.entities.filter(e=>e.side===side||isVisible(s,side,e.x,e.y,levelOf(e))),resources:nodes,
+  terrain:s.terrain.map((tile,index)=>known.has(index)?tile:'grass'),
+  world:s.world?{...s.world,levels:s.world.levels.map(level=>({...level,terrain:level.terrain.map((tile,index)=>known.has(level.id*cells+index)?tile:'grass'),elevation:level.elevation.map((height,index)=>known.has(level.id*cells+index)?height:0)}))}:undefined};
+ // Mirror production's first permitted spawn point, rather than the blocked
+ // center. Each payable-worker budget charges its full cost once.
+ const spawnPoint=(producer:Entity):Vec|undefined=>{
+  const direction=side===0?1:-1;
+  for(let ring=radius(s,producer)+1;ring<=radius(s,producer)+6;ring+=.5)for(const [dx,dy] of DIRECTIONS_24){const point={x:producer.x+dx*ring*direction,y:producer.y+dy*ring*direction,...(producer.level===undefined?{}:{level:producer.level})};if(walkable(view,point.x,point.y,levelOf(point)))return point;}
+  return undefined;
+ };
+ const hqs=buildings.filter(b=>b.role==='hq'&&b.progress===1),worker=f.units.worker;
+ const paid=hqs.filter(b=>b.queue.includes('worker')&&p.population<p.cap).flatMap(b=>{const point=spawnPoint(b);return point?[point]:[];});
+ const collectors:Vec[]=[...workers,...paid],budgets:{collectors:Vec[];bank:Cost}[]=collectors.length?[{collectors,bank}]:[];
+ if(p.population+reserved(s,side)<p.cap&&(worker.age??1)<=age&&kinds.every(kind=>bank[kind]>=worker.cost[kind])){
+  for(const producer of hqs.filter(b=>b.queue.length<5)){
+   const point=spawnPoint(producer);if(point)budgets.push({collectors:[...collectors,point],bank:{wood:bank.wood-worker.cost.wood,ore:bank.ore-worker.cost.ore,crystal:bank.crystal-worker.cost.crystal}});
+  }
+ }
+ if(!budgets.length)return false;
+ const delivery=(from:Vec):boolean=>{
+  const depot=depots.filter(b=>sameLevel(b,from)).sort((a,b)=>distance(from,a)-distance(from,b))[0];
+  if(!depot)return false;
+  const reach=radius(s,depot)+1,d=distance(from,depot);
+  if(d<=reach)return true;
+  const approach={x:depot.x+(from.x-depot.x)/d*reach,y:depot.y+(from.y-depot.y)/d*reach,...(from.level===undefined?{}:{level:from.level})};
+  return segmentWalkable(view,from,approach)||route(view,from,depot,reach,side).length>0;
+ };
+ const cargo:Cost={wood:0,ore:0,crystal:0};
+ const harvestPoint=(from:Vec,node:ResourceNode):Vec|undefined=>{
+  if(!sameLevel(from,node))return undefined;
+  const d=distance(from,node);if(d<=1.2&&walkable(view,from.x,from.y,levelOf(from)))return from;
+  const approach={x:node.x+(from.x-node.x)/d*1.1,y:node.y+(from.y-node.y)/d*1.1,...(node.level===undefined?{}:{level:node.level})};
+  if(segmentWalkable(view,from,approach))return approach;
+  const endpoint=route(view,from,node,1.1,side).at(-1);if(!endpoint)return undefined;
+  if(distance(endpoint,node)<=1.2)return endpoint;
+  return route(view,from,node,1,side).at(-1);
+ };
+ for(const worker of workers){
+  if(worker.carried<=0||!delivery(worker))continue;
+  const gathering=worker.order.type==='gather',available=worker.order.type==='idle'||gathering;
+  const current=gathering?s.resources.find(node=>node.id===(worker.order as {target:number}).target&&isVisible(s,side,node.x,node.y,levelOf(node))):undefined;
+  const returning=gathering&&(runtime(s).returning.has(worker.id)||worker.carried>=18||!!current&&(current.amount<=0||current.kind!==worker.carriedKind));
+  // A different-kind gather command sends cargo home before collection. A
+  // partial same-kind load needs a collection route that fills or exhausts it.
+  const trigger=available&&nodes.some(node=>sameLevel(node,worker)&&(node.kind!==worker.carriedKind||(()=>{const point=harvestPoint(worker,node);return !!point&&delivery(point);})()));
+  if(returning||trigger)cargo[worker.carriedKind]+=worker.carried*s.incomeFactors[side];
+ }
+ // Each deposit and each cargo load is finite and can be counted only once.
+ return budgets.some(budget=>{
+  const obtainable:Cost={wood:budget.bank.wood+cargo.wood,ore:budget.bank.ore+cargo.ore,crystal:budget.bank.crystal+cargo.crystal};
+  for(const kind of kinds){
+   const required=Math.max(...recruits.map(d=>d.cost[kind]));if(obtainable[kind]>=required)continue;
+   for(const node of nodes.filter(n=>n.kind===kind)){
+    if(budget.collectors.some(worker=>{const point=harvestPoint(worker,node);return !!point&&delivery(point);}))obtainable[kind]+=node.amount*s.incomeFactors[side];
+    if(obtainable[kind]>=required)break;
+   }
+  }
+  return recruits.some(d=>kinds.every(kind=>obtainable[kind]>=d.cost[kind]));
+ });
+}
+function coordinatedAiTeam(s:GameState,side:Side):boolean {
+ return hasRecoverableAiIncome(s,side)&&playerSides(s).filter(other=>s.controllers[other]==='ai'&&!s.eliminated[other]&&isAllied(s,side,other)&&hasRecoverableAiIncome(s,other)).length>1;
+}
+function runTeamCoordination(s:GameState):void {
+ const rt=runtime(s),reports:TeamAiReport[]=[];
+ for(const side of playerSides(s).filter(side=>s.controllers[side]==='ai'&&!s.eliminated[side])){
+  const owned=s.entities.filter(e=>e.side===side&&alive(e)),hq=owned.find(e=>e.role==='hq'&&e.progress===1);if(!hq||!hasRecoverableAiIncome(s,side,owned))continue;
+  const requested=new Set(rt.teamAI.directives.filter(d=>d.recipient===side&&(d.status==='accepted'||d.status==='active')).flatMap(d=>d.assigned));
+  const army=owned.filter(e=>e.kind==='unit'&&e.role!=='worker'&&!e.illusion&&!rt.retreating[side].has(e.id)&&!requested.has(e.id)&&e.entrenchedAt===undefined&&sameLevel(e,hq));
+  const seen=s.entities.filter(e=>alive(e)&&isHostile(s,side,e.side)&&isVisible(s,side,e.x,e.y,levelOf(e)));
+  const enemies=playerSides(s).filter(other=>isHostile(s,side,other)&&!s.eliminated[other]);
+  const targets:TeamAiReport['targets']=[...rt.knownEnemyBuildings[side]].map(([id,point])=>({key:`entity:${id}`,kind:point.role==='hq'?'hq':'building',x:point.x,y:point.y,...(point.level===undefined?{}:{level:point.level}),observer:side,seenAt:0}));
+  for(const enemy of seen)targets.push({key:`entity:${enemy.id}`,kind:enemy.kind==='building'?(enemy.role==='hq'?'hq':'building'):'unit',x:enemy.x,y:enemy.y,...(enemy.level===undefined?{}:{level:enemy.level}),observer:side,seenAt:s.time});
+  for(const enemy of enemies)if(!rt.clearedEnemyStarts[side].has(enemy))targets.push({key:`start:${enemy}`,kind:'start',...s.starts[enemy],observer:side,seenAt:0});
+  targets.splice(0,targets.length,...targets.filter(target=>sameLevel(target,hq)));
+  if(!targets.length){
+   for(let y=4.5;y<s.height-3;y+=6)for(let x=4.5;x<s.width-3;x+=6){const tile=fogKey(s,{x,y,level:levelOf(hq)});if(!isVisible(s,side,x,y,levelOf(hq))&&!rt.searched[side].has(tile))targets.push({key:`search:${tile}`,kind:'start',x,y,...(hq.level===undefined?{}:{level:hq.level}),observer:side,seenAt:0});}
+   targets.splice(0,targets.length,...targets.filter(target=>sameLevel(target,hq)));
+  if(!targets.length){rt.searched[side].clear();const candidate={x:Math.floor(s.width*.5)+.5,y:Math.floor(s.height*.5)+.5,...(hq.level===undefined?{}:{level:hq.level})};targets.push({key:'search:middle',kind:'start',...candidate,observer:side,seenAt:0});}
+  }
+  const profile=aiProfile(s.aiConfigs[side]),f=factionFor(s,side),workers=owned.filter(e=>e.role==='worker'),available=s.resources.filter(n=>n.amount>300&&isVisible(s,side,n.x,n.y,levelOf(n)));
+  const reservation=rt.teamAI.coordinator.reservations.find(r=>r.side===side&&r.role==='scout');
+  const reservedScout=reservation?.ids.length?owned.find(e=>e.id===reservation.ids[0]):undefined;
+  const scoutingNeeded=s.time>profile.scoutAt&&(!rt.initialScoutDispatched[side]||!!reservedScout&&distance(reservedScout,reservation!.destination)>2);
+  const p=s.players[side],config=s.aiConfigs[side];
+  const expansion=playerAge(p)>=2&&workers.length>=profile.expansionWorkers&&owned.filter(e=>e.role==='hq').length<2&&p.wood>=(config.personality==='expand'?340:400)&&p.ore>=(config.personality==='expand'?160:220)?available.filter(n=>sameLevel(n,hq)&&distance(n,hq)>14&&!s.entities.some(b=>alive(b)&&isAllied(s,side,b.side)&&(b.side===side||isVisible(s,side,b.x,b.y,levelOf(b)))&&(b.role==='hq'||b.role==='depot')&&distance(b,n)<8)).sort((a,b)=>distance(a,hq)-distance(b,hq))[0]:undefined;
+  const waveReadyAt=rt.aiWave[side]+Math.max(15,65/f.ai.aggression*profile.waveIntervalFactor);
+  reports.push({side,teamId:s.teams[side],time:s.time,hq:{x:hq.x,y:hq.y,...(hq.level===undefined?{}:{level:hq.level})},fighters:army.map(e=>({id:e.id,role:e.role as Exclude<UnitRole,'worker'>,x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level})})),
+   threats:seen.filter(e=>distance(e,hq)<12).map(e=>({id:e.id,x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level})})),targets,readyToAttack:army.length>=2,soloReadyToAttack:army.length>=Math.max(3,Math.ceil(f.ai.armySize*profile.attackSizeFactor)),soloAttackSize:Math.max(3,Math.ceil(f.ai.armySize*profile.attackSizeFactor)),waveReadyAt,scoutingNeeded,...(expansion?{expansion:{x:expansion.x,y:expansion.y,...(expansion.level===undefined?{}:{level:expansion.level})}}:{})});
+ }
+ const plan=coordinateTeamAi(rt.teamAI.coordinator,reports,s.time);rt.teamAI.coordinator=plan.coordinator;
+ for(const assignment of plan.assignments){
+  if(assignment.role==='attack'||assignment.role==='expand'||!assignment.ids.length)continue;
+  const units=s.entities.filter(e=>e.side===assignment.side&&alive(e)&&assignment.ids.includes(e.id));
+  const type=assignment.role==='defend'?'attackMove':'move';
+  if(units.some(e=>e.order.type!==type||distance(e.order,assignment.destination)>Math.max(1.5,Math.sqrt(units.length)))){
+   if(issueCommand(s,assignment.side,{type,ids:units.map(e=>e.id),...assignment.destination})&&assignment.role==='scout'){
+    for(const member of reports.filter(r=>r.teamId===s.teams[assignment.side]))rt.initialScoutDispatched[member.side]=true;
+   }
+  }
+ }
+ // Apply all approved owners in the same step, regardless of their AI cadence.
+ for(const launch of plan.launches)if(issueCommand(s,launch.side,{type:'attackMove',ids:launch.ids,...launch.destination})){
+  rt.aiWave[launch.side]=s.time;
+  if(plan.assignments.some(a=>a.waveId===launch.waveId&&a.targetKey?.startsWith('search:')))rt.searched[launch.side].add(fogKey(s,launch.destination));
+ }
+}
+
 /** AI issues exactly the commands accepted for humans, using current visibility only. */
 export function runAI(s:GameState,side:Side=1):void{
  if(isGameOver(s)||!s.players[side]||s.eliminated[side])return;const owned=s.entities.filter(e=>e.side===side&&alive(e)),workers=owned.filter(e=>e.kind==='unit'&&e.role==='worker'),buildings=owned.filter(e=>e.kind==='building'),hq=buildings.find(e=>e.role==='hq');if(!hq)return;
@@ -482,8 +643,8 @@ export function runAI(s:GameState,side:Side=1):void{
  const researchPlan:UpgradeId[]=config.opening==='cavalry-raids'?['town-age','worker-harvest','worker-speed','citadel-age']:['worker-harvest','worker-speed','town-age','citadel-age'];
  if(hq.progress===1&&!hq.research&&workers.length>=7&&(config.personality!=='rush'||s.time>100))for(const id of researchPlan){const u=UPGRADES[id];if(u.building==='hq'&&!researchRequirement(s,side,id)&&p.wood>=u.cost.wood+120&&p.ore>=u.cost.ore+80&&p.crystal>=u.cost.crystal){issueCommand(s,side,{type:'research',id:hq.id,upgrade:id});break;}}
  // Claim an observed outer deposit with a new production/drop-off center.
- if(age>=2&&workers.length>=profile.expansionWorkers&&buildings.filter(b=>b.role==='hq').length<2&&!workers.some(w=>w.order.type==='build')&&p.wood>=(config.personality==='expand'?340:400)&&p.ore>=(config.personality==='expand'?160:220)){
-  const deposit=available.filter(n=>n.amount>300&&distance(n,hq)>14&&!buildings.some(b=>(b.role==='hq'||b.role==='depot')&&distance(b,n)<8)).sort((a,b)=>distance(a,hq)-distance(b,hq))[0];
+ if(age>=2&&workers.length>=profile.expansionWorkers&&buildings.filter(b=>b.role==='hq').length<2&&!workers.some(w=>w.order.type==='build')&&p.wood>=(config.personality==='expand'?340:400)&&p.ore>=(config.personality==='expand'?160:220)&&(!coordinatedAiTeam(s,side)||rt.teamAI.coordinator.reservations.some(r=>r.side===side&&r.role==='expand'))){
+  const deposit=available.filter(n=>n.amount>300&&distance(n,hq)>14&&!s.entities.some(b=>alive(b)&&isAllied(s,side,b.side)&&(b.side===side||isVisible(s,side,b.x,b.y))&&(b.role==='hq'||b.role==='depot')&&distance(b,n)<8)).sort((a,b)=>distance(a,hq)-distance(b,hq))[0];
   if(deposit){const builder=workers.filter(w=>w.order.type==='gather'||w.order.type==='idle').sort((a,b)=>distance(a,deposit)-distance(b,deposit))[0];
    if(builder){let placed=false;for(let r=4;r<=7&&!placed;r++)for(let i=0;i<24&&!placed;i+=2){const [dx,dy]=DIRECTIONS_24[i],x=Math.floor(deposit.x+dx*r)+.5,y=Math.floor(deposit.y+dy*r)+.5;if(canPlace(s,side,'hq',x,y))placed=issueCommand(s,side,{type:'build',ids:[builder.id],role:'hq',x,y});}}
   }
@@ -520,14 +681,9 @@ export function runAI(s:GameState,side:Side=1):void{
   if(issueCommand(s,side,{type:'train',id:b.id,role}))planned.push(role);
  }
  // Evaluate after spending and recruitment so newly paid fighters count.
- // Workers cannot replenish recruitment funds after their visible wood runs out.
- // Count owned cargo and paid queues, but never inspect deposits in the fog.
- const workerCost=f.units.worker.cost;
- const workerRecoverable=workers.length>0||p.population<p.cap&&buildings.some(b=>b.role==='hq'&&b.progress===1&&b.queue.includes('worker'))||p.population+reserved(s,side)<p.cap&&p.wood>=workerCost.wood&&p.ore>=workerCost.ore&&p.crystal>=workerCost.crystal;
- const woodIncome=available.some(n=>n.kind==='wood')||workers.some(w=>w.carriedKind==='wood'&&w.carried>0);
- const recruitWood=Math.min(...roles.map(role=>f.units[role].cost.wood));
- const paidFighterQueued=p.population<p.cap&&buildings.some(b=>b.role==='barracks'&&b.progress===1&&b.queue.some(role=>role!=='worker'));
- const incomeRecoverable=paidFighterQueued||workerRecoverable&&(woodIncome||p.wood>=recruitWood);
+ // Every required resource must be payable or recoverable through observed routes.
+ // Count finite owned cargo and paid queues, but never inspect deposits in the fog.
+ const incomeRecoverable=hasRecoverableAiIncome(s,side);
  // Emplace within firing distance, and pack up when the position has no targets.
  for(const unit of army.filter(e=>unitDef(s,e).ability==='entrench')){
  const target=enemy(s,unit,unitDef(s,unit).range+(unit.role==='special'?3:0),true);
@@ -550,7 +706,14 @@ export function runAI(s:GameState,side:Side=1):void{
   const allies=army.filter(e=>distance(e,soldier)<7&&!retreats.has(e.id));
   if(shouldRetreat(config,soldier,allies,enemies)&&issueCommand(s,side,{type:'move',ids:[soldier.id],...rally})){retreats.set(soldier.id,{until:s.time+profile.regroupSeconds,produced:rt.producedFighters[side],afterId:s.nextId-1});emit(s,'message',soldier,undefined,'Retreating to rally with reinforcements.');}
  }
- const readyArmy=army.filter(e=>!retreats.has(e.id));if(isVisible(s,side,enemyStart.x,enemyStart.y,levelOf(enemyStart))&&!seen.some(e=>e.role==='hq'&&distance(e,enemyStart)<4))rt.clearedEnemyStarts[side].add(enemySide);rt.enemyStartCleared[side]=rt.clearedEnemyStarts[side].has(enemySide);
+ const tacticalArmy=army.filter(e=>!retreats.has(e.id));
+ const directiveIds=processAllyDirectives(s,side,rt.teamAI,tacticalArmy.filter(e=>e.entrenchedAt===undefined),!!threat,(viewer,x,y,level)=>isVisible(s,viewer,x,y,level),(owner,command)=>issueCommand(s,owner,command));
+ const readyArmy=tacticalArmy.filter(e=>!directiveIds.has(e.id));if(isVisible(s,side,enemyStart.x,enemyStart.y,levelOf(enemyStart))&&!seen.some(e=>e.role==='hq'&&distance(e,enemyStart)<4))rt.clearedEnemyStarts[side].add(enemySide);rt.enemyStartCleared[side]=rt.clearedEnemyStarts[side].has(enemySide);
+
+ if(coordinatedAiTeam(s,side)&&incomeRecoverable){
+  if(threat){const defenders=tacticalArmy.filter(e=>e.order.type!=='attack'&&e.entrenchedAt===undefined);if(defenders.length)issueCommand(s,side,{type:'attackMove',ids:defenders.map(e=>e.id),x:threat.x,y:threat.y,...(threat.level===undefined?{}:{level:threat.level})});}
+  return;
+ }
 
  if(incomeRecoverable&&age>=2&&(s.mapSize==='large'||s.mapSize==='huge')&&!rt.expansionScoutDispatched[side]&&readyArmy.length>=3){
   const scout=readyArmy.find(e=>e.role==='cavalry')??readyArmy.find(e=>e.role==='melee');
@@ -559,7 +722,7 @@ export function runAI(s:GameState,side:Side=1):void{
  }
  if(rt.expansionScout[side]!==null&&!army.some(e=>e.id===rt.expansionScout[side]&&e.order.type==='move'))rt.expansionScout[side]=null;
 
- if(threat){const ready=readyArmy.filter(e=>e.order.type!=='attack'&&e.entrenchedAt===undefined);if(ready.length)issueCommand(s,side,{type:'attackMove',ids:ready.map(e=>e.id),x:threat.x,y:threat.y});}
+ if(threat){const ready=tacticalArmy.filter(e=>e.order.type!=='attack'&&e.entrenchedAt===undefined);if(ready.length)issueCommand(s,side,{type:'attackMove',ids:ready.map(e=>e.id),x:threat.x,y:threat.y});}
  else if(readyArmy.length>=(incomeRecoverable?Math.max(3,Math.ceil(f.ai.armySize*profile.attackSizeFactor)):1)&&s.time-rt.aiWave[side]>Math.max(15,65/f.ai.aggression*profile.waveIntervalFactor)){
  const raidTarget=config.personality==='raid'?seen.find(e=>e.role==='worker')??seen.find(e=>e.role==='depot'):undefined;
  const target=raidTarget??seen.find(e=>e.kind==='building'&&e.role==='hq')??[...remembered.values()].find(e=>e.role==='hq')??seen[0]??[...remembered.values()][0];

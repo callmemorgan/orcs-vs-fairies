@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import GameScene, { project, unproject } from './game/GameScene';
 import { createPerformanceGame, countPerformanceUnits, FrameCollector, PERFORMANCE_CENTER } from './qa/performance';
-import { createGame, createMatch, issueCommand, isGameOver } from './core/simulation';
+import { alliedAiStatus, createGame, createMatch, issueCommand, isGameOver } from './core/simulation';
 import { ContentLibrary, productionQueueKey, upgradeFor, factionFor } from './core/content-registry';
 import { mountModLibrary } from './ui/ModLibrary';
 import { mountShell } from './ui/Hud';
@@ -27,6 +27,7 @@ import { mountPlanningSession } from './game/PlanningSession';
 import type { PlanningEditContext } from './game/PlanningSession';
 import { SkirmishOptions } from './ui/SkirmishOptions';
 import { SkirmishRoster } from './ui/SkirmishRoster';
+import { mountTeamAITools } from './ui/TeamAITools';
 import { normalizeAiConfig } from './core/ai-policy';
 import { PlayerView } from './core/observation';
 import { mountPracticeCoach } from './ui/PracticeCoach';
@@ -286,6 +287,8 @@ const sessionToolbar=root.querySelector<HTMLElement>('.session-toolbar')!;
 const canSubmitObjectives=()=>!!scene&&!scene.paused&&!scene.readOnly&&!scene.photoMode&&!sessionModal&&!isGameOver(scene.state)&&!scene.state.eliminated[playerSide()];
 const objectives=mountObjectivePanel(root,{toolbar:sessionToolbar,getState:()=>scene?.state,getObservation:()=>scene?.objectiveObservation,getContent:()=>scene?.state.content,side:playerSide,blocked:()=>!!scene?.photoMode||sessionModal,onVisibility:open=>{objectiveOpen=open;if(scene)scene.inputBlocked=sessionModal||objectiveOpen;},canSubmit:canSubmitObjectives,submit:command=>canSubmitObjectives()&&dispatchCommand(playerSide(),command)});
 mountOnlineLobby(root,{api:onlineApi,toolbar:sessionToolbar,onJoinMatch:joinOnline,onVisibility:open=>setModal('online',open)});
+const teamAiTools=mountTeamAITools(root,{toolbar:sessionToolbar,command:command=>!teamAiBlocked()&&dispatchCommand(playerSide(),command),notice:shell.notice,onVisibility:open=>setModal('team-ai',open)});
+function teamAiBlocked(){return !scene||!!replay||scene.readOnly||scene.photoMode||scene.state.eliminated[playerSide()]||isGameOver(scene.state)||Array.from(openModals).some(source=>source!=='team-ai')||(scene.paused&&(!openModals.has('team-ai')||pausedBeforeModal));}
 const tournaments=mountTournamentDashboard(root,{source:createTournamentDashboardSource(),toolbar:sessionToolbar,onReplay:importReplay,onVisibility:open=>setModal('tournament',open)});
 function alignToolPanels(){root.style.setProperty('--tool-panel-top',`${Math.max(126,Math.ceil(sessionToolbar.getBoundingClientRect().bottom)+8)}px`);}
 new ResizeObserver(alignToolPanels).observe(sessionToolbar);
@@ -337,7 +340,13 @@ setInterval(()=>{
 },16);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)maybeAutosave(true);});
 window.addEventListener('pagehide',()=>maybeAutosave(true));
-setInterval(()=>{if(scene)shell.update(scene.state,scene.selected,callbacks);tools.update(scene?.state??null,{side:playerSide(),paused:scene?.paused,replaySpectator:!!replay||!!scene?.readOnly,remoteMatch:!!onlineConnection});objectives.update();planning.update({blocked:planningBlocked()});tournaments.update({blocked:tournamentBlocked()});updateCoach();},100);
+setInterval(()=>{
+ if(scene)shell.update(scene.state,scene.selected,callbacks);
+ const side=playerSide(),state=scene?.state,view=state?(onlineRender?onlineRender.alliedAi:alliedAiStatus(state,side)):null;
+ const destination=state?.entities.find(e=>e.side===side&&e.hp>0&&scene!.selected.includes(e.id))??state?.entities.find(e=>e.side===side&&e.role==='hq'&&e.hp>0);
+ teamAiTools.update({side,allies:(view?.allies??[]).map(ally=>({side:ally.side,name:`Player ${ally.side+1} · ${factionFor(state!,ally.side).name}`})),directives:view?.directives??[],width:state?.width??1,height:state?.height??1,levels:state?.world?.levels.map(l=>({id:l.id,name:l.title}))??[{id:0,name:'Surface'}],enabled:!teamAiBlocked(),...(destination?{destination:{x:destination.x,y:destination.y,...(destination.level===undefined?{}:{level:destination.level})}}:{})},{blocked:teamAiBlocked()});
+ tools.update(state??null,{side,paused:scene?.paused,replaySpectator:!!replay||!!scene?.readOnly,remoteMatch:!!onlineConnection});objectives.update();planning.update({blocked:planningBlocked()});tournaments.update({blocked:tournamentBlocked()});updateCoach();
+},100);
 // Read-only diagnostics for repeatable performance and state inspection. Player actions stay in the UI.
 const worldTools=mountWorldTools(root,{phase:()=>onlineRender?.worldPhase,state:()=>scene?.state,side:playerSide,level:()=>scene?.viewLevel??0,selected:()=>scene?.selected??[],canCommand:()=>!!scene&&scene.canIssueCommands,command:c=>scene?.command(c)??false,setLevel:level=>scene?.setViewLevel(level),select:ids=>scene?.selectEntities(ids),center:p=>scene?.centerOn(p.x,p.y),notice:shell.notice});
 setInterval(()=>worldTools.update(),100);
