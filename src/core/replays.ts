@@ -4,7 +4,7 @@ import { entityDefinition } from './content-registry';
 import { saveGame, loadGame, SAVE_VERSION } from './saves';
 import { issueCommand, stepGame, isGameOver } from './simulation';
 import { LEGACY_SIMULATION_REVISIONS, SIMULATION_REVISION } from './versions';
-import type { BuildingRole, Command, Entity, GameState, Side, UnitRole } from './types';
+import type { BuildingRole, Command, Entity, GameEvent, GameState, Side, UnitRole } from './types';
 
 export type ReplayAction = {type:'command';side:Side;command:Command} | {type:'advance';dt:number;ticks:number};
 export interface ArmySample {wood:number;ore:number;crystal:number;units:number;buildings:number;losses:number;gathered:number;upgrades:string[];armyValue?:number;buildingLosses?:number;lostValue?:number}
@@ -66,10 +66,12 @@ export class MatchRecorder {
   private lostValue:number[];
   private technologies:TechnologyTiming[]=[];
   private knownUpgrades:Set<string>[];
+  private consumedEvents:WeakSet<GameEvent>;
   private sampledBucket=-1;
   private unsubscribe:()=>void;
   private error:string|null=null;
   constructor(private state:GameState,previous?:ReplayArchive) {
+    this.consumedEvents=new WeakSet(state.events);
     this.knownUpgrades=state.players.map(p=>new Set(p.upgrades));
     this.losses=state.players.map(()=>0);this.gathered=state.players.map(()=>0);this.buildingLosses=state.players.map(()=>0);this.lostValue=state.players.map(()=>0);
     if(previous){
@@ -82,23 +84,14 @@ export class MatchRecorder {
       const last=archive.analysis.at(-1);if(last){this.losses=last.players.map(p=>p.losses);this.gathered=last.players.map(p=>p.gathered);this.buildingLosses=last.players.map(p=>p.buildingLosses??0);this.lostValue=last.players.map(p=>p.lostValue??0);}
     }else {this.initial=saveGame(state);this.sample(true);}
     this.unsubscribe=subscribeSimulation(state,{
-      command:(side,command)=>{if(this.actions.length>=MAX_ACTIONS){this.fail('Replay command limit reached.');return;}this.actions.push({type:'command',side,command});},
+      command:(side,command)=>{if(this.actions.length>=MAX_ACTIONS){this.fail('Replay command limit reached.');return;}this.actions.push({type:'command',side,command});this.collectEvents();this.sample(isGameOver(state));},
       step:dt=>{
         if(this.state.tick-this.initial.state.tick>MAX_TICKS){this.fail('Replay duration limit reached.');return;}
         const last=this.actions.at(-1);
         if(last?.type==='advance'&&last.dt===dt)last.ticks++;
         else if(this.actions.length<MAX_ACTIONS)this.actions.push({type:'advance',dt,ticks:1});
         else {this.fail('Replay command limit reached.');return;}
-        for(const e of state.events){
-          if(e.type==='death'){
-            const entity=state.entities.find(x=>x.id===e.source);
-            if(entity&&!entity.illusion&&!entity.raised){
-              if(entity.kind==='unit')this.losses[e.side]++;else this.buildingLosses[e.side]++;
-              this.lostValue[e.side]+=entityValue(state,entity)+entity.carried;
-            }
-          }
-          if(e.type==='gather')this.gathered[e.side]+=e.amount??0;
-        }
+        this.collectEvents();
         for(const side of state.players.map((_,i)=>i as Side))for(const upgrade of state.players[side].upgrades){
           if(this.knownUpgrades[side].has(upgrade))continue;
           this.knownUpgrades[side].add(upgrade);this.technologies.push({side,upgrade,tick:state.tick,time:state.time});
@@ -106,6 +99,21 @@ export class MatchRecorder {
         this.sample(isGameOver(state));
       }
     });
+  }
+  private collectEvents(){
+    const state=this.state;
+    for(const event of state.events){
+      if(this.consumedEvents.has(event))continue;
+      this.consumedEvents.add(event);
+      if(event.type==='death'){
+        const entity=state.entities.find(e=>e.id===event.source);
+        if(entity&&!entity.illusion&&!entity.raised){
+          if(entity.kind==='unit')this.losses[event.side]++;else this.buildingLosses[event.side]++;
+          this.lostValue[event.side]+=entityValue(state,entity)+entity.carried;
+        }
+      }
+      if(event.type==='gather')this.gathered[event.side]+=event.amount??0;
+    }
   }
   private fail(message:string){this.error=message;this.unsubscribe?.();}
   private sampleBucket(time:number){return Math.floor((time-this.initial.state.time+1e-8)/5);}

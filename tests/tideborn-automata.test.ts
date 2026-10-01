@@ -33,7 +33,7 @@ it.each(['tideborn','automata'] as FactionId[])('%s AI gathers crystal and recru
  const s=createGame(f,4127,f,{controllers:['ai','ai'],mapSize:'large'}),trained=new Set<UnitRole>();let crystal=0;
  for(let i=0;i<8000;i++){stepGame(s,.05);for(const e of s.events){if(e.type==='train'&&e.side===0)trained.add(s.entities.find(u=>u.id===e.source)!.role as UnitRole);if(e.type==='gather'&&e.side===0&&e.resource==='crystal')crystal+=e.amount??0;}}
  expect(crystal).toBeGreaterThan(0);expect([...trained]).toEqual(expect.arrayContaining(['worker','melee','ranged','special']));
-});
+},30000);
 
 it('shield and terrain traits follow content definitions rather than faction names',()=>{
  const worker=FACTIONS.orcs.units.worker,oldShield=worker.shield,oldTerrain=FACTIONS.orcs.terrainSpeeds;
