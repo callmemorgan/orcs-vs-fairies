@@ -1,4 +1,5 @@
 import { normalizeAiConfig } from './ai-policy';
+import { validateSpecialists } from './specialist-validation';
 import { availableBuildings, availableUnits, buildingFor, contentFactions, decodeContentBundle, entityDefinition, upgradesFor } from './content-registry';
 import type { Entity, Side } from './types';
 import { MAP_VERSION, TERRAIN } from './maps';
@@ -54,7 +55,7 @@ function fog(value:unknown,path:string,c:Context):Set<number>[] {
  return list(value,path,c.playerCount,c.playerCount).map((v,i)=>uniqueIds(list(v,`${path}[${i}]`,c.cells),`${path}[${i}]`,c.cells-1));
 }
 function validateEntity(value:unknown,path:string,c:Context):void {
- const e=object(value,path,['id','side','kind','role','x','y','hp','maxHp','order','cooldown','progress','queue','trainProgress','researchProgress','facing','animation','animTime','momentum','illusion','expires','carried','carriedKind','path'],['level','definitionId','definitionFaction','queueDefinitionIds','queuePaidCosts','orderQueue','research','researchPaidCost','rally','gateOpen','lastAttacker','abilityReadyAt','entrenchedAt','raised','shield','maxShield','lastDamagedAt','surgeUntil']);
+ const e=object(value,path,['id','side','kind','role','x','y','hp','maxHp','order','cooldown','progress','queue','trainProgress','researchProgress','facing','animation','animTime','momentum','illusion','expires','carried','carriedKind','path'],['level','definitionId','definitionFaction','queueDefinitionIds','queuePaidCosts','orderQueue','research','researchPaidCost','rally','gateOpen','lastAttacker','abilityReadyAt','entrenchedAt','raised','shield','maxShield','lastDamagedAt','surgeUntil','veteran','equipment','specialistBuffs','siegeMode','burning','beacon']);
  const entityId=id(e.id,`${path}.id`,c);if(c.entityIds.has(entityId))bad(`${path}.id`,'duplicate entity or resource id');c.entityIds.add(entityId);c.entities.set(entityId,e);
  number(e.side,`${path}.side`,0,c.playerCount-1,true);choice(e.kind,`${path}.kind`,['unit','building']);choice(e.role,`${path}.role`,e.kind==='unit'?UNIT_ROLES:BUILDING_ROLES);coordinates(e,path,c);
  const maxHp=number(e.maxHp,`${path}.maxHp`,Number.MIN_VALUE,1e9);number(e.hp,`${path}.hp`,0,maxHp);order(e.order,`${path}.order`,c);
@@ -109,7 +110,7 @@ function validateRuntime(value:unknown,c:Context,version:1|2|3):void {
 }
 function validate(envelope:unknown,version:1|2|3):void {
  const save=object(envelope,'save',['format','version','state','runtime']);if(save.format!=='orcs-vs-fairies-save')bad('format','unknown save format');if(save.version!==version)bad('version',`unsupported version ${String(save.version)}`);
- const s=object(save.state,'state',version===1?STATE_FIELDS:version===2?[...STATE_FIELDS,...TEAM_FIELDS]:[...STATE_FIELDS,...TEAM_FIELDS,'aiConfigs'],version===3?['content','world']:[]);
+ const s=object(save.state,'state',version===1?STATE_FIELDS:version===2?[...STATE_FIELDS,...TEAM_FIELDS]:[...STATE_FIELDS,...TEAM_FIELDS,'aiConfigs'],version===3?['content','world','specialists']:[]);
  if(s.content!==undefined)s.content=decodeContentBundle(s.content);
  const playerCount=list(s.players,'state.players',version===1?2:MAX_PLAYERS,version===1?2:undefined).length;
  if(playerCount===0)bad('state.players','expected between 1 and 8 players');
@@ -127,7 +128,7 @@ function validate(envelope:unknown,version:1|2|3):void {
  }
  list(s.entities,'state.entities',c.maxEntities).forEach((v,i)=>validateEntity(v,`state.entities[${i}]`,c));
  list(s.resources,'state.resources',MAX_RESOURCES).forEach((v,i)=>{const p=`state.resources[${i}]`,r=object(v,p,['id','x','y','kind','amount','maxAmount'],['level']),key=id(r.id,`${p}.id`,c);if(c.entityIds.has(key)||c.resourceIds.has(key))bad(`${p}.id`,'duplicate entity or resource id');c.resourceIds.add(key);coordinates(r,p,c);choice(r.kind,`${p}.kind`,RESOURCE_KINDS);const max=number(r.maxAmount,`${p}.maxAmount`,0,1e9);number(r.amount,`${p}.amount`,0,max);});
- playersArray(s.players,'state.players',c,(v,p)=>{const player=object(v,p,['faction','wood','ore','crystal','population','cap','upgrades']);choice(player.faction,`${p}.faction`,Object.keys(contentFactions(c.state.content)));for(const key of RESOURCE_KINDS)number(player[key],`${p}.${key}`);number(player.population,`${p}.population`,0,c.maxEntities,true);number(player.cap,`${p}.cap`,0,version===1?100:500,true);const available=upgradesFor(c.state,(s.players as unknown[]).indexOf(v) as Side),upgrades=list(player.upgrades,`${p}.upgrades`,Object.keys(available).length);upgrades.forEach((u,i)=>choice(u,`${p}.upgrades[${i}]`,Object.keys(available)));if(new Set(upgrades).size!==upgrades.length)bad(`${p}.upgrades`,'duplicate upgrade');});
+ playersArray(s.players,'state.players',c,(v,p)=>{const player=object(v,p,['faction','wood','ore','crystal','population','cap','upgrades'],['heroRecovery']);choice(player.faction,`${p}.faction`,Object.keys(contentFactions(c.state.content)));for(const key of RESOURCE_KINDS)number(player[key],`${p}.${key}`);number(player.population,`${p}.population`,0,c.maxEntities,true);number(player.cap,`${p}.cap`,0,version===1?100:500,true);const available=upgradesFor(c.state,(s.players as unknown[]).indexOf(v) as Side),upgrades=list(player.upgrades,`${p}.upgrades`,Object.keys(available).length);upgrades.forEach((u,i)=>choice(u,`${p}.upgrades[${i}]`,Object.keys(available)));if(new Set(upgrades).size!==upgrades.length)bad(`${p}.upgrades`,'duplicate upgrade');});
  const researching=Array.from({length:playerCount},()=>new Set<string>()),choices=Array.from({length:playerCount},()=>new Map<string,string>()),players=s.players as RecordValue[];
  for(let side=0;side<playerCount;side++){const definitions=upgradesFor(c.state,side as Side);for(const id of players[side].upgrades as string[]){const group=definitions[id as keyof typeof definitions].exclusiveGroup;if(group){if(choices[side].has(group))bad(`state.players[${side}].upgrades`,'exclusive technology choices conflict');choices[side].set(group,id);}}}
  for(const e of c.entities.values())if((e.hp as number)>0&&e.research!==undefined){const side=e.side as number,upgrade=e.research as string;if((players[side].upgrades as string[]).includes(upgrade)||researching[side].has(upgrade))bad('state.entities.research','upgrade is already complete or being researched');researching[side].add(upgrade);const group=upgradesFor(c.state,side as Side)[upgrade as keyof ReturnType<typeof upgradesFor>].exclusiveGroup;if(group){if(choices[side].has(group))bad('state.entities.research','exclusive technology choice is already complete or being researched');choices[side].set(group,upgrade);}}
@@ -143,6 +144,7 @@ function validate(envelope:unknown,version:1|2|3):void {
  const explored=fog(s.explored,'state.explored',c),visible=fog(s.visible,'state.visible',c);visible.forEach((tiles,side)=>{for(const tile of tiles)if(!explored[side].has(tile))bad(`state.visible[${side}]`,'visible tiles must be explored');});
  if(s.world!==undefined){validateWorldState(s.world,width,height,nextId,playerCount);const world=s.world;for(const allocated of [...world.bridges,...world.sites,...world.creatures])if(c.entityIds.has(allocated.id)||c.resourceIds.has(allocated.id))bad('world.id','collision with entity or resource');if(world.levels[0].terrain.some((t,i)=>t!==(s.terrain as unknown[])[i]))bad('world.levels[0].terrain','must match surface terrain');}
  validateRuntime(save.runtime,c,version);
+ validateSpecialists(c.state);
 }
 function validateCurrent(envelope:unknown):asserts envelope is SaveEnvelope {validate(envelope,SAVE_VERSION);}
 /** Add team rules only after the complete two-player v1 schema has passed validation. */
