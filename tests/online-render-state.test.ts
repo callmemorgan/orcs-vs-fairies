@@ -135,16 +135,18 @@ describe('display-only online state',()=>{
 
   it('retains disclosed projectiles and splash rules without copying damage or hidden launch origins',()=>{
     const f=createFactionFixture('dwarves'),own=f.siege,enemy=f.state.entities.find(item=>item.side===1&&item.role==='melee')!;
-    f.state.friendlyFire=false;f.state.projectiles=[
+    f.state.friendlyFire=false;f.state.rules.friendlyFire=false;f.state.projectiles=[
       {id:f.state.nextId++,source:own.id,side:0,faction:'dwarves',from:{x:own.x,y:own.y,level:0},x:16,y:17,damage:89,buildingMultiplier:2,impactAt:2,radius:2.5,modification:'grapeshot'},
       {id:f.state.nextId++,source:enemy.id,side:1,faction:'orcs',from:{x:f.state.width-2,y:f.state.height-2},x:15,y:17,damage:777,buildingMultiplier:3,impactAt:3,radius:1.75},
       {id:f.state.nextId++,source:enemy.id,side:1,faction:'orcs',from:{x:f.state.width-2,y:f.state.height-2},x:f.state.width-2,y:f.state.height-2,damage:999,buildingMultiplier:5,impactAt:4,radius:9},
     ];refreshVisibility(f.state);
     const view=onlineObservation(f.state);expect(view.projectiles).toHaveLength(2);expect(view.projectiles[1].from).toBeUndefined();
-    Object.assign(view.projectiles[0],{damage:999,source:999,buildingMultiplier:999,modification:'incendiary'});view.projectiles[1].from={x:f.state.width-2,y:f.state.height-2};Object.assign(view.rules,{privateUpgrade:'secret'});
+    Object.assign(view.projectiles[0],{damage:999,source:999,buildingMultiplier:999,modification:'incendiary'});view.projectiles[1].from={x:f.state.width-2,y:f.state.height-2};Object.assign(view.rules,{privateUpgrade:'secret'});Object.assign(view.rules.hill,{privateClock:777});Object.assign(view.rules.survival.rewardPerWave,{privateBalance:999});Object.assign(view.rules.startingResources,{privateIncome:666});
     const render=observationToRenderState(view);expect(render.state.projectiles).toEqual([{id:f.state.projectiles[0].id,side:0,x:16,y:17,from:{x:own.x,y:own.y,level:0},impactAt:2,radius:2.5},{id:f.state.projectiles[1].id,side:1,x:15,y:17,from:undefined,impactAt:3,radius:1.75}]);
-    expect(render.state.friendlyFire).toBe(false);expect((render.state as GameState & {rules:{friendlyFire:boolean}}).rules).toEqual({friendlyFire:false});
-    view.projectiles[0].from!.x=999;view.rules.friendlyFire=true;expect(render.state.projectiles![0].from.x).toBe(own.x);expect(render.state.friendlyFire).toBe(false);
+    expect(render.state.friendlyFire).toBe(false);expect(render.state.rules).toEqual(f.state.rules);expect(render.objectiveView.rules).toEqual(f.state.rules);
+    view.projectiles[0].from!.x=999;view.rules.friendlyFire=true;view.rules.hill.holdTicks++;view.rules.survival.rewardPerWave.wood++;view.rules.disabledDefinitionIds.push('worker-speed');
+    expect(render.state.projectiles![0].from.x).toBe(own.x);expect(render.state.friendlyFire).toBe(false);expect(render.state.rules).toEqual(f.state.rules);expect(render.objectiveView.rules).toEqual(f.state.rules);
+    render.state.rules.hill.holdTicks++;expect(render.objectiveView.rules.hill.holdTicks).toBe(f.state.rules.hill.holdTicks);
   });
 
   it('copies disclosed spatial levels and only the local Fury scalar, with no hidden runtime effects',()=>{

@@ -1,0 +1,28 @@
+
+ RUN  v4.1.11 /home/morgana/Projects/orcs-vs-Fairies
+
+ ❯ tests/online-render-state.test.ts (13 tests | 1 failed) 141ms
+     × copies disclosed spatial levels and only the local Fury scalar, with no hidden runtime effects 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/online-render-state.test.ts > display-only online state > copies disclosed spatial levels and only the local Fury scalar, with no hidden runtime effects
+TypeError: Cannot read properties of undefined (reading 'mode')
+ ❯ copyPublicRules src/online/render-state.ts:29:16
+     27| function copyPublicRules(rules:PlayerObservation['rules']):PlayerObser…
+     28|   return {
+     29|     mode:rules.mode,standardDefeat:rules.standardDefeat,startingAge:ru…
+       |                ^
+     30|     sharedVision:rules.sharedVision,friendlyFire:rules.friendlyFire,
+     31|     startingResources:{wood:rules.startingResources.wood,ore:rules.sta…
+ ❯ observationToRenderState src/online/render-state.ts:166:19
+ ❯ tests/online-render-state.test.ts:159:133
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 46 passed (47)
+   Start at  07:05:36
+   Duration  1.10s (transform 553ms, setup 0ms, import 733ms, tests 1.47s, environment 0ms)
+

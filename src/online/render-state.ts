@@ -23,6 +23,22 @@ export interface OnlineRenderState {
   alliedAi:PlayerObservation['alliedAi'];
 }
 
+/** Copy only the disclosed rule schema, including nested objective and resource fields. */
+function copyPublicRules(rules:PlayerObservation['rules']):PlayerObservation['rules'] {
+  return {
+    mode:rules.mode,standardDefeat:rules.standardDefeat,startingAge:rules.startingAge,
+    sharedVision:rules.sharedVision,friendlyFire:rules.friendlyFire,
+    startingResources:{wood:rules.startingResources.wood,ore:rules.startingResources.ore,crystal:rules.startingResources.crystal},
+    disabledDefinitionIds:[...rules.disabledDefinitionIds],
+    hill:{radius:rules.hill.radius,captureTicks:rules.hill.captureTicks,holdTicks:rules.hill.holdTicks},
+    relic:{count:rules.relic.count,required:rules.relic.required,holdTicks:rules.relic.holdTicks,pickupRadius:rules.relic.pickupRadius},
+    survival:{defenderTeam:rules.survival.defenderTeam,waveCount:rules.survival.waveCount,
+      intervalTicks:rules.survival.intervalTicks,recoveryTicks:rules.survival.recoveryTicks,unitsPerWave:rules.survival.unitsPerWave,
+      rewardPerWave:{wood:rules.survival.rewardPerWave.wood,ore:rules.survival.rewardPerWave.ore,crystal:rules.survival.rewardPerWave.crystal}},
+    draft:{enabled:rules.draft.enabled,banRounds:rules.draft.banRounds,pickRounds:rules.draft.pickRounds,turnTicks:rules.draft.turnTicks},
+  };
+}
+
 function ownPlayer(player:Player):PlayerObservation['player'] {
   return {faction:player.faction,wood:player.wood,ore:player.ore,crystal:player.crystal,
     population:player.population,cap:player.cap,heroRecovery:player.heroRecovery?.map(recovery=>({...recovery})),upgrades:[...player.upgrades]};
@@ -147,14 +163,14 @@ export function observationToRenderState(view:PlayerObservation,role:'player'|'s
     controllers:Array.from({length:count},():Controller=>'external'),mapSize:view.map.size,mapVersion:view.map.version,
     terrain,starts,...(world?{world}:{}),draw:view.result.draw,tick:view.tick,time:view.time,seed:0,width:view.map.width,height:view.map.height,
     friendlyFire:view.rules?.friendlyFire??true,projectiles:(view.projectiles??[]).map(shell=>{const origin=shell.from,seen=origin&&visible[localSide].has((origin.level??0)*view.map.width*view.map.height+Math.floor(origin.y)*view.map.width+Math.floor(origin.x));return {id:shell.id,side:shell.side,x:shell.x,y:shell.y,...(shell.level===undefined?{}:{level:shell.level}),from:origin&&(privateSides.has(shell.side)||seen)?copyPoint(origin):undefined,impactAt:shell.impactAt,radius:shell.radius};}),factionSystems:{version:1,fury:Array.from({length:count},(_v,side)=>side===localSide&&typeof view.factionSystems?.fury==='number'?view.factionSystems.fury:0),terrainEffects:[]},entities,specialists:{artifacts:(view.artifacts??[]).map(item=>({...item,position:item.position?{...item.position}:undefined})),structures:[],nextArtifactId:1,nextStructureId:1},resources:view.resources.map(resource=>({id:resource.id,x:resource.x,y:resource.y,...(resource.level===undefined?{}:{level:resource.level}),kind:resource.kind,amount:resource.amount,maxAmount:resource.maxAmount})),
-    players,rules:structuredClone(view.rules),draft:structuredClone(view.draft),winner:view.result.winner,events,explored,visible,nextId:1,
+    players,rules:view.rules&&copyPublicRules(view.rules),draft:structuredClone(view.draft),winner:view.result.winner,events,explored,visible,nextId:1,
     corpses:view.corpses.map(corpse=>({id:corpse.id,x:corpse.x,y:corpse.y,...(corpse.level===undefined?{}:{level:corpse.level}),expires:corpse.expires})),
     teams,sharedVision:observation.sharedVision??false,winningTeam:observation.result.winningTeam??null,
     eliminated:[...(observation.result.eliminated??Array.from({length:count},()=>false))],
     incomeFactors:Array.from({length:count},()=>1),populationLimits:Array.from({length:count},()=>100),
   } as unknown as GameState;
   markServerObservation(state);
-  const objectiveView={side:view.side,teamId:view.teamId,player:{...ownPlayer(view.player)},allies:structuredClone(view.allies),opponents:structuredClone(view.opponents),tick:view.tick,rules:structuredClone(view.rules),draft:structuredClone(view.draft),draftChoices:[...view.draftChoices],draftDefinitions:structuredClone(view.draftDefinitions),objectives:structuredClone(view.objectives),result:{...view.result},entities:entities.map(entity=>({id:entity.id,side:entity.side,kind:entity.kind,role:entity.role,x:entity.x,y:entity.y,...(entity.level===undefined?{}:{level:entity.level}),hp:entity.hp,illusion:entity.illusion}))};
+  const objectiveView={side:view.side,teamId:view.teamId,player:{...ownPlayer(view.player)},allies:structuredClone(view.allies),opponents:structuredClone(view.opponents),tick:view.tick,rules:view.rules&&copyPublicRules(view.rules),draft:structuredClone(view.draft),draftChoices:[...view.draftChoices],draftDefinitions:structuredClone(view.draftDefinitions),objectives:structuredClone(view.objectives),result:{...view.result},entities:entities.map(entity=>({id:entity.id,side:entity.side,kind:entity.kind,role:entity.role,x:entity.x,y:entity.y,...(entity.level===undefined?{}:{level:entity.level}),hp:entity.hp,illusion:entity.illusion}))};
   return {state,localSide,role,privateSides,hiddenStarts,unknownTerrain,objectiveView,economy:view.economy?structuredClone(view.economy):undefined,worldPhase:view.world?.phase?structuredClone(view.world.phase):undefined,
     alliedAi:structuredClone(view.alliedAi),resourceMemory:view.resources.map(resource=>({...resource})),observedEvents:view.events.map(event=>({
       type:event.type,tick:event.tick,x:event.x,y:event.y,...(event.level===undefined?{}:{level:event.level}),side:event.side,text:event.text,
