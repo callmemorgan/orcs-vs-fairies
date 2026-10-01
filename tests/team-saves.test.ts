@@ -6,8 +6,9 @@ import type { Entity, FactionId, GameState, MatchConfig, Side } from '../src/cor
 
 const factions=Object.keys(FACTIONS) as FactionId[];
 const teamFields=['teams','incomeFactors','populationLimits','sharedVision','eliminated','winningTeam'] as const;
-const playerArrays=['players','controllers','starts','teams','incomeFactors','populationLimits','eliminated','explored','visible'] as const;
-const runtimeArrays=['aiWave','initialScoutDispatched','expansionScout','expansionScoutDispatched','knownEnemyBuildings','enemyStartCleared','searched','clearedEnemyStarts'] as const;
+const aiFields=['aiDecisionAt','aiDecisionTurns','knownEnemyUnits','retreating','producedFighters'] as const;
+const playerArrays=['aiConfigs','players','controllers','starts','teams','incomeFactors','populationLimits','eliminated','explored','visible'] as const;
+const runtimeArrays=[...aiFields,'aiWave','initialScoutDispatched','expansionScout','expansionScoutDispatched','knownEnemyBuildings','enemyStartCleared','searched','clearedEnemyStarts'] as const;
 function invalidCases(values:readonly (readonly [string,(save:any)=>unknown])[]) {return values;}
 function config(count:number,ai=false):MatchConfig {
  return {map:{seed:4127,size:'small'},players:Array.from({length:count},(_,id)=>({id:id as Side,teamId:(id<count/2?0:1) as Side,factionId:id===count-1?'fairies':factions[id%factions.length],controller:ai?'ai':'external'})),rules:{sharedVision:true}};
@@ -16,6 +17,7 @@ function good(count=8) {return saveGame(createMatch(config(count)));}
 function legacy(state:GameState):any {
  const save:any=saveGame(state);save.version=1;
  for(const key of teamFields)delete save.state[key];
+ delete save.state.aiConfigs;for(const key of aiFields)delete save.runtime[key];
  delete save.runtime.clearedEnemyStarts;
  return save;
 }
@@ -40,7 +42,7 @@ function special(state:GameState,side:Side):Entity {
 describe('team match saves',()=>{
  it.each([1,2,3,4,5,6,7,8])('round-trips all player and runtime arrays for %i players',count=>{
   const state=createMatch(config(count)),save=saveGame(state),loaded=loadGame(save);
-  expect(save.version).toBe(SAVE_VERSION);expect(SAVE_VERSION).toBe(2);expect(saveGame(loaded)).toEqual(save);
+  expect(save.version).toBe(SAVE_VERSION);expect(SAVE_VERSION).toBe(3);expect(saveGame(loaded)).toEqual(save);
   for(const key of playerArrays)expect(save.state[key]).toHaveLength(count);
   for(const key of runtimeArrays)expect(save.runtime[key]).toHaveLength(count);
   loaded.teams[0]=7;loaded.incomeFactors[0]=3;loaded.populationLimits[0]=500;loaded.eliminated[0]=true;
@@ -160,14 +162,14 @@ describe('legacy version 1 migration',()=>{
   const state=createGame('orcs',4127,'fairies',{controllers:['ai','ai'],mapSize:'small'});advance(state,160);
   const snapshot=legacy(state),before=structuredClone(snapshot),runtime={...structuredClone(snapshot.runtime),clearedEnemyStarts:snapshot.runtime.enemyStartCleared.map((value:boolean,side:number)=>value?[1-side]:[])},loaded=loadGame(snapshot);
   expect(snapshot).toEqual(before);expect(loaded.teams).toEqual([0,1]);expect(loaded.incomeFactors).toEqual([1,1]);expect(loaded.populationLimits).toEqual([100,100]);expect(loaded.sharedVision).toBe(true);expect(loaded.eliminated).toEqual([false,false]);expect(loaded.winningTeam).toBeNull();
-  expect(captureRuntime(loaded)).toEqual(runtime);expect(saveGame(loaded).version).toBe(2);expect(saveGame(loaded)).toEqual(saveGame(state));
+  expect(captureRuntime(loaded)).toMatchObject(runtime);expect(saveGame(loaded).version).toBe(SAVE_VERSION);const migrated=captureRuntime(loaded),original=captureRuntime(state);for(const key of aiFields)(original[key] as unknown)=structuredClone(migrated[key]);restoreRuntime(state,original);expect(saveGame(loaded)).toEqual(saveGame(state));
   for(let i=0;i<500;i++){stepGame(state,.125);stepGame(loaded,.125);expect(saveGame(loaded)).toEqual(saveGame(state));}
  },90000);
 
  it.each(['missing','unfinished','dead'] as const)('derives eliminated status from a %s HQ',kind=>{
   const state=createGame('orcs',4127,'fairies',{controllers:['external','external']}),snapshot=legacy(state),hq=snapshot.state.entities.find((e:any)=>e.side===1&&e.role==='hq');
   if(kind==='missing')snapshot.state.entities=snapshot.state.entities.filter((e:any)=>e.id!==hq.id);else if(kind==='unfinished')hq.progress=.9;else hq.hp=0;
-  snapshot.state.winner=0;const loaded=loadGame(snapshot);expect(loaded.eliminated).toEqual([false,true]);expect(loaded.winner).toBe(0);expect(loaded.winningTeam).toBe(0);expect(saveGame(loaded).version).toBe(2);
+  snapshot.state.winner=0;const loaded=loadGame(snapshot);expect(loaded.eliminated).toEqual([false,true]);expect(loaded.winner).toBe(0);expect(loaded.winningTeam).toBe(0);expect(saveGame(loaded).version).toBe(SAVE_VERSION);
  });
 
  it('preserves each cleared enemy base from the legacy two-player scouting flags',()=>{

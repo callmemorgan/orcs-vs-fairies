@@ -58,9 +58,8 @@ export function openingBuilding(config:AiConfig,roles:readonly BuildingRole[]):B
 export interface EnemyObservation extends Vec { role:UnitRole; seenAt:number; hpFraction:number }
 export type EnemyMemory = Map<number,EnemyObservation>;
 /** Callers supply only visible hostiles. This function never reads the full match. */
-export function rememberObservedUnits(memory:EnemyMemory,visible:readonly Entity[],time:number,visibleAt:(point:Vec)=>boolean):void {
- const seen=new Set(visible.map(e=>e.id));
- for(const [id,observation] of memory)if(time-observation.seenAt>90||(visibleAt(observation)&&!seen.has(id)))memory.delete(id);
+export function rememberObservedUnits(memory:EnemyMemory,visible:readonly Entity[],time:number):void {
+ for(const [id,observation] of memory)if(time-observation.seenAt>90)memory.delete(id);
  for(const enemy of visible)if(enemy.kind==='unit'&&enemy.role!=='worker'&&!enemy.illusion&&enemy.hp>0)memory.set(enemy.id,{role:enemy.role as UnitRole,x:enemy.x,y:enemy.y,seenAt:time,hpFraction:enemy.hp/enemy.maxHp});
 }
 export function counterWeights(faction:FactionDef,config:AiConfig,observed:Iterable<EnemyObservation>):Partial<Record<UnitRole,number>> {

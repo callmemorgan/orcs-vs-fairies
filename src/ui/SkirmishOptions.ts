@@ -48,7 +48,7 @@ export class SkirmishOptions {
     const resources = document.createElement('p');
     resources.id = `${prefix}-resources`;
     resources.className = 'skirmish-ai-resources';
-    resources.textContent = 'The AI uses the same starting resources, costs, and gathering rules at every difficulty.';
+    resources.textContent = 'Without a selected handicap, the AI uses the same starting resources, costs, and gathering rules at every difficulty.';
     this.difficulty.setAttribute('aria-describedby', resources.id);
 
     this.personalityDescription = document.createElement('p');

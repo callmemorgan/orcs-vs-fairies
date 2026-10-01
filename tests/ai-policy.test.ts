@@ -25,19 +25,19 @@ describe('AI decisions using supplied observations',()=>{
   expect(openingBuilding(normalizeAiConfig({personality:'expand'}),['hq'])).toBe('depot');
   expect(openingBuilding(normalizeAiConfig({personality:'expand'}),['hq','depot'])).toBe('barracks');
  });
- it('learns visible enemy cavalry and chooses spears, then forgets stale or disproved sightings',()=>{
-  const memory=new Map();rememberObservedUnits(memory,[troop('cavalry',99)],10,()=>false);
+ it('learns visible enemy cavalry and chooses spears, then forgets stale sightings',()=>{
+  const memory=new Map();rememberObservedUnits(memory,[troop('cavalry',99)],10);
   const weights=counterWeights(FACTIONS.orcs,normalizeAiConfig({difficulty:'hard'}),memory.values());
   expect(chooseAiRecruit(['melee','ranged','spear'],[],weights)).toBe('spear');
-  rememberObservedUnits(memory,[],60,()=>false);expect(memory.size).toBe(1);
-  rememberObservedUnits(memory,[],61,()=>true);expect(memory.size).toBe(0);
-  rememberObservedUnits(memory,[troop('cavalry',99)],70,()=>false);
-  rememberObservedUnits(memory,[],161,()=>false);expect(memory.size).toBe(0);
+  rememberObservedUnits(memory,[],60);expect(memory.size).toBe(1);
+  rememberObservedUnits(memory,[],61);expect(memory.size).toBe(1);
+  rememberObservedUnits(memory,[troop('cavalry',99)],70);
+  rememberObservedUnits(memory,[],161);expect(memory.size).toBe(0);
  });
  it('does not learn workers or illusions as fighting forces',()=>{
-  const memory=new Map();rememberObservedUnits(memory,[troop('worker',98),{...troop('cavalry',99),illusion:true}],10,()=>false);expect(memory.size).toBe(0);
+  const memory=new Map();rememberObservedUnits(memory,[troop('worker',98),{...troop('cavalry',99),illusion:true}],10);expect(memory.size).toBe(0);
  });
- it('preserves the same opening weights until a real observation arrives',()=>{
+ it('keeps easy opponents on their opening composition after enemy sightings',()=>{
   expect(counterWeights(FACTIONS.orcs,normalizeAiConfig({difficulty:'easy'}),[{role:'cavalry',seenAt:0,hpFraction:1,x:20,y:20}])).toEqual(counterWeights(FACTIONS.orcs,normalizeAiConfig({difficulty:'easy'}),[]));
  });
  it('retreats a wounded fighter only when enemies are seen and regroups when outnumbered',()=>{

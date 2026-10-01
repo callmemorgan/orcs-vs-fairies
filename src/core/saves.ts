@@ -1,10 +1,11 @@
+import { normalizeAiConfig } from './ai-policy';
 import { FACTIONS, UPGRADES } from './content';
 import { MAP_VERSION, TERRAIN } from './maps';
 import { captureRuntime, MAX_ORDER_QUEUE, restoreRuntime } from './simulation';
 import type { RuntimeSnapshot } from './simulation';
 import type { GameState } from './types';
 
-export const SAVE_VERSION=2;
+export const SAVE_VERSION=3;
 export const MAX_SAVE_BYTES=16*1024*1024;
 type SerializedState=Omit<GameState,'explored'|'visible'> & {explored:number[][];visible:number[][]};
 export interface SaveEnvelope {format:'orcs-vs-fairies-save';version:typeof SAVE_VERSION;state:SerializedState;runtime:RuntimeSnapshot}
@@ -73,9 +74,9 @@ function playersArray(value:unknown,path:string,c:Context,check:(v:unknown,p:str
 function entries(value:unknown,path:string,max:number,c:Context,check:(v:unknown,p:string)=>void):void {
  const seen=new Set<number>();list(value,path,max).forEach((entry,i)=>{const p=`${path}[${i}]`,parts=list(entry,p,2,2),key=id(parts[0],`${p}[0]`,c);if(seen.has(key))bad(path,'duplicate map key');seen.add(key);check(parts[1],`${p}[1]`);});
 }
-function validateRuntime(value:unknown,c:Context,version:1|2):void {
+function validateRuntime(value:unknown,c:Context,version:1|2|3):void {
  const fields=['fog','ai','aiTurns','hits','routes','abilities','returning','queuedGather','aiWave','initialScoutDispatched','expansionScout','expansionScoutDispatched','knownEnemyBuildings','enemyStartCleared','searched'];
- const path='runtime',r=object(value,path,version===1?fields:[...fields,'clearedEnemyStarts']);
+ const path='runtime',r=object(value,path,version===1?fields:version===2?[...fields,'clearedEnemyStarts']:[...fields,'clearedEnemyStarts','aiDecisionAt','aiDecisionTurns','knownEnemyUnits','retreating','producedFighters']);
  number(r.fog,'runtime.fog',-.25,.2);number(r.ai,'runtime.ai',-.25,1);number(r.aiTurns,'runtime.aiTurns',0,MAX_VALUE,true);
  list(r.hits,'runtime.hits',c.maxEntities).forEach((v,i)=>{const p=`runtime.hits[${i}]`,h=object(v,p,['source','target','amount','event']);for(const key of ['source','target'])if(!c.entityIds.has(id(h[key],`${p}.${key}`,c)))bad(`${p}.${key}`,'missing hit entity');number(h.amount,`${p}.amount`,0,1e9);number(h.event,`${p}.event`,0,c.eventCount-1,true);});
  entries(r.routes,'runtime.routes',MAX_ID,c,(v,p)=>{const route=object(v,p,['key','at']);if(typeof route.key!=='string'||route.key.length>128)bad(`${p}.key`,'invalid route key');number(route.at,`${p}.at`,0,c.time);});
@@ -87,18 +88,26 @@ function validateRuntime(value:unknown,c:Context,version:1|2):void {
  playersArray(r.expansionScout,'runtime.expansionScout',c,(v,p)=>{if(v!==null)id(v,p,c);});
  playersArray(r.knownEnemyBuildings,'runtime.knownEnemyBuildings',c,(v,p)=>entries(v,p,c.maxEntities,c,(value,q)=>{const b=object(value,q,['x','y','role']);coordinates(b,q,c);choice(b.role,`${q}.role`,BUILDING_ROLES);}));
  playersArray(r.searched,'runtime.searched',c,(v,p)=>uniqueIds(list(v,p,c.cells),p,c.cells-1));
- if(version===2)playersArray(r.clearedEnemyStarts,'runtime.clearedEnemyStarts',c,(v,p)=>uniqueIds(list(v,p,c.playerCount),p,c.playerCount-1));
+ if(version>=2)playersArray(r.clearedEnemyStarts,'runtime.clearedEnemyStarts',c,(v,p)=>uniqueIds(list(v,p,c.playerCount),p,c.playerCount-1));
+ if(version===3){
+  playersArray(r.aiDecisionAt,'runtime.aiDecisionAt',c,(v,p)=>number(v,p,0,c.time+3));
+  for(const key of ['aiDecisionTurns','producedFighters'])playersArray(r[key],`runtime.${key}`,c,(v,p)=>number(v,p,0,MAX_VALUE,true));
+  playersArray(r.knownEnemyUnits,'runtime.knownEnemyUnits',c,(v,p)=>entries(v,p,c.maxEntities,c,(value,q)=>{const observation=object(value,q,['x','y','role','seenAt','hpFraction']);coordinates(observation,q,c);choice(observation.role,`${q}.role`,UNIT_ROLES.filter(role=>role!=='worker'));number(observation.seenAt,`${q}.seenAt`,0,c.time);number(observation.hpFraction,`${q}.hpFraction`,0,1);}));
+  playersArray(r.retreating,'runtime.retreating',c,(v,p)=>entries(v,p,c.maxEntities,c,(value,q)=>{const record=object(value,q,['until','produced','afterId']);number(record.until,`${q}.until`,0,c.time+30);number(record.produced,`${q}.produced`,0,MAX_VALUE,true);number(record.afterId,`${q}.afterId`,0,c.nextId-1,true);}));
+ }
+
 }
-function validate(envelope:unknown,version:1|2):void {
+function validate(envelope:unknown,version:1|2|3):void {
  const save=object(envelope,'save',['format','version','state','runtime']);if(save.format!=='orcs-vs-fairies-save')bad('format','unknown save format');if(save.version!==version)bad('version',`unsupported version ${String(save.version)}`);
- const s=object(save.state,'state',version===1?STATE_FIELDS:[...STATE_FIELDS,...TEAM_FIELDS]);
+ const s=object(save.state,'state',version===1?STATE_FIELDS:version===2?[...STATE_FIELDS,...TEAM_FIELDS]:[...STATE_FIELDS,...TEAM_FIELDS,'aiConfigs']);
  const playerCount=list(s.players,'state.players',version===1?2:MAX_PLAYERS,version===1?2:undefined).length;
  if(playerCount===0)bad('state.players','expected between 1 and 8 players');
  const width=number(s.width,'state.width',8,256,true),height=number(s.height,'state.height',8,256,true),nextId=number(s.nextId,'state.nextId',1,MAX_ID,true);
  const c:Context={width,height,cells:width*height,time:number(s.time,'state.time'),nextId,playerCount,maxEntities:version===1?4096:MAX_ENTITIES,entityIds:new Set(),entities:new Map(),resourceIds:new Set(),eventCount:0};
+ if(version===3)playersArray(s.aiConfigs,'state.aiConfigs',c,(v,p)=>{const config=object(v,p,['difficulty','personality','opening']);choice(config.difficulty,`${p}.difficulty`,['easy','normal','hard']);choice(config.personality,`${p}.personality`,['balanced','rush','fortify','expand','raid']);choice(config.opening,`${p}.opening`,['infantry-rush','tower-defense','fast-expansion','cavalry-raids']);});
  playersArray(s.controllers,'state.controllers',c,(v,p)=>choice(v,p,['human','ai','external']));choice(s.mapSize,'state.mapSize',['small','medium','large','huge']);number(s.mapVersion,'state.mapVersion',1,MAP_VERSION,true);
  list(s.terrain,'state.terrain',c.cells,c.cells).forEach((v,i)=>choice(v,`state.terrain[${i}]`,Object.keys(TERRAIN)));playersArray(s.starts,'state.starts',c,(v,p)=>point(v,p,c));flag(s.draw,'state.draw');number(s.tick,'state.tick',0,MAX_VALUE,true);number(s.time,'state.time');number(s.seed,'state.seed',0,0xffffffff,true);
- if(version===2){
+ if(version>=2){
   playersArray(s.teams,'state.teams',c,(v,p)=>number(v,p,0,MAX_PLAYERS-1,true));
   playersArray(s.incomeFactors,'state.incomeFactors',c,(v,p)=>number(v,p,0,10));
   playersArray(s.populationLimits,'state.populationLimits',c,(v,p)=>number(v,p,1,500,true));
@@ -110,7 +119,7 @@ function validate(envelope:unknown,version:1|2):void {
  const researching=Array.from({length:playerCount},()=>new Set<string>()),players=s.players as RecordValue[];
  for(const e of c.entities.values())if((e.hp as number)>0&&e.research!==undefined){const side=e.side as number,upgrade=e.research as string;if((players[side].upgrades as string[]).includes(upgrade)||researching[side].has(upgrade))bad('state.entities.research','upgrade is already complete or being researched');researching[side].add(upgrade);}
  if(s.winner!==null)number(s.winner,'state.winner',0,playerCount-1,true);if(s.draw&&s.winner!==null)bad('state.winner','draw cannot have a winner');
- if(version===2){
+ if(version>=2){
   if(s.winningTeam!==null){number(s.winningTeam,'state.winningTeam',0,MAX_PLAYERS-1,true);if(!(s.teams as number[]).includes(s.winningTeam as number))bad('state.winningTeam','team has no player');}
   if((s.winner===null)!==(s.winningTeam===null)||(s.winner!==null&&(s.teams as number[])[s.winner as number]!==s.winningTeam))bad('state.winner','winner must belong to the winning team');
   if(s.draw&&s.winningTeam!==null)bad('state.winningTeam','draw cannot have a winning team');
@@ -127,7 +136,12 @@ function migrateLegacy(envelope:RecordValue):void {
  validate(envelope,1);const state=envelope.state as RecordValue,entities=state.entities as RecordValue[];
  Object.assign(state,{teams:[0,1],incomeFactors:[1,1],populationLimits:[100,100],sharedVision:true,eliminated:[0,1].map(side=>!entities.some(e=>e.side===side&&e.kind==='building'&&e.role==='hq'&&(e.hp as number)>0&&e.progress===1)),winningTeam:state.winner});
  const runtime=envelope.runtime as RecordValue,cleared=runtime.enemyStartCleared as boolean[];runtime.clearedEnemyStarts=cleared.map((value,side)=>value?[1-side]:[]);
- envelope.version=SAVE_VERSION;
+ envelope.version=2;
+}
+function migrateAi(envelope:RecordValue):void {
+ validate(envelope,2);const state=envelope.state as RecordValue,runtime=envelope.runtime as RecordValue,count=(state.players as unknown[]).length;
+ state.aiConfigs=Array.from({length:count},()=>normalizeAiConfig());
+ Object.assign(runtime,{aiDecisionAt:Array(count).fill(state.time as number),aiDecisionTurns:Array(count).fill(0),knownEnemyUnits:Array.from({length:count},()=>[]),retreating:Array.from({length:count},()=>[]),producedFighters:Array(count).fill(0)});envelope.version=SAVE_VERSION;
 }
 /** Copy only bounded JSON data. Accessors, class instances and cycles are rejected. */
 function copyJson(value:unknown):unknown {
@@ -162,7 +176,7 @@ export function loadGame(input:unknown):GameState {
  let source=input;
  if(typeof input==='string'){if(input.length>MAX_SAVE_BYTES||new TextEncoder().encode(input).byteLength>MAX_SAVE_BYTES)bad('save','save exceeds size limit');try{source=JSON.parse(input);}catch{bad('save','invalid JSON');}}
  const envelope=copyJson(source);checkSize(envelope);const record=object(envelope,'save',['format','version','state','runtime']);
- if(record.version===1)migrateLegacy(record);validateCurrent(envelope);
+ if(record.version===1)migrateLegacy(record);if(record.version===2)migrateAi(record);validateCurrent(envelope);
  const state:GameState={...envelope.state,explored:envelope.state.explored.map(values=>new Set(values)),visible:envelope.state.visible.map(values=>new Set(values))};
  restoreRuntime(state,envelope.runtime);return state;
 }
