@@ -1,0 +1,619 @@
+{
+  "kind": "read-only-current-world-artifact-audit",
+  "result": "passed",
+  "checkedAt": "2026-10-01T19:13:12.266698+00:00",
+  "sourcePin": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+  "saveVersion": 4,
+  "simulationRevision": "4.0.1",
+  "contentEngineVersion": 3,
+  "sourceDigest": "f8412883e1d8c3f6fa47f74c8c7bf608fa472cabe05503bab51ffd13d1101af5",
+  "buildId": "af4b40282bb086e0dccf5aad4e8c38819b2d2eb80370fb749e728a9f33cdb87a",
+  "sourceInputCount": 602,
+  "stepCount": 57,
+  "nativeReportCount": 35,
+  "launcherReceiptCount": 38,
+  "preparationSha256": "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+  "artifactHashesChecked": 709,
+  "stageChecks": {
+    "browser": 12,
+    "actions": 17,
+    "mods": 13,
+    "map": 17,
+    "flat": 9,
+    "layered": 8,
+    "community-map": 14,
+    "community-mod": 11
+  },
+  "nativeReports": [
+    {
+      "input": "fixtures/neutral.json",
+      "inputSha256": "f1f092ca748825f58f009093f3d39258176806eed62af66557c7ce6efd98cc71",
+      "report": "native-reports/fixture-neutral.json",
+      "finalTick": 0,
+      "continuedTick": 20
+    },
+    {
+      "input": "fixtures/surface.json",
+      "inputSha256": "afc9e8fe6e79c1197293ff7fc95bc472cc6dac8341385dad612762f3b3d748a1",
+      "report": "native-reports/fixture-surface.json",
+      "finalTick": 0,
+      "continuedTick": 20
+    },
+    {
+      "input": "fixtures/dusk.json",
+      "inputSha256": "219226e24bb09b547d29daeef694102d7d83dad0b3aed3a47d2c8771fd8738e5",
+      "report": "native-reports/fixture-dusk.json",
+      "finalTick": 0,
+      "continuedTick": 20
+    },
+    {
+      "input": "fixtures/thaw.json",
+      "inputSha256": "b5c116db50c33a0e73199fdf8ed07a70efbb9bebcd31d8e81f92ab6e0832bbc5",
+      "report": "native-reports/fixture-thaw.json",
+      "finalTick": 1,
+      "continuedTick": 21
+    },
+    {
+      "input": "cli/cli-world-session.json",
+      "inputSha256": "4b72fe71f1a500be2e4adf551967b097c8700b0a67b7f2bb218f8a997e97220e",
+      "report": "native-reports/cli.json",
+      "finalTick": 200,
+      "continuedTick": 220
+    },
+    {
+      "input": "browser/desert-world-save.json",
+      "inputSha256": "39cf62ef18032aa725c3b2593608cba146268b772094fd3be00ef85134738931",
+      "report": "native-reports/world-desert.json",
+      "finalTick": 99,
+      "continuedTick": 119
+    },
+    {
+      "input": "browser/marsh-world-save.json",
+      "inputSha256": "022f362cf93bdf4ee462014af7ed9a2d53a1ab640293a29d9e1ad4ec881d4a86",
+      "report": "native-reports/world-marsh.json",
+      "finalTick": 100,
+      "continuedTick": 120
+    },
+    {
+      "input": "browser/snow-world-save.json",
+      "inputSha256": "131a377cb3c49d4b85c03fe5982ab4ebfb4245289eadd52ecabd23d740e52e20",
+      "report": "native-reports/world-snow.json",
+      "finalTick": 97,
+      "continuedTick": 117
+    },
+    {
+      "input": "browser/forest-world-save.json",
+      "inputSha256": "166f8b69b538c7809f0a26d5506d581fa4b5e07d23f157fc095ea79980e333e7",
+      "report": "native-reports/world-forest.json",
+      "finalTick": 101,
+      "continuedTick": 121
+    },
+    {
+      "input": "bug-report-sessions/world.json",
+      "inputSha256": "5078a7305a4082f3063c1efaa828e759edb17bc272aac7d6a26776173b358dc1",
+      "report": "native-reports/bug-world.json",
+      "finalTick": 99,
+      "continuedTick": 119
+    },
+    {
+      "input": "actions/native-neutral-imported.json",
+      "inputSha256": "3bdfb82834ef63595e49e7f854d388e05b36d26dbf82d7e10d16e7c44c4b71f9",
+      "report": "native-reports/actions-imported-neutral.json",
+      "finalTick": 0,
+      "continuedTick": 20
+    },
+    {
+      "input": "actions/native-surface-imported.json",
+      "inputSha256": "279647cbb1d27d5de999d25c652c3ed6dc17ed4cc8088629cd1bb3f314ccc7b3",
+      "report": "native-reports/actions-imported-surface.json",
+      "finalTick": 0,
+      "continuedTick": 20
+    },
+    {
+      "input": "actions/native-dusk-imported.json",
+      "inputSha256": "5b396895eb89a9abfd411f70bda48b67c903376b7d2bd7f45849f3fb5c2bd34e",
+      "report": "native-reports/actions-imported-dusk.json",
+      "finalTick": 0,
+      "continuedTick": 20
+    },
+    {
+      "input": "actions/native-thaw-imported.json",
+      "inputSha256": "2a34dd51e154cd45a076e087f26bc28211e70c15da8e264f8f6f9586c7945cd5",
+      "report": "native-reports/actions-imported-thaw.json",
+      "finalTick": 1,
+      "continuedTick": 21
+    },
+    {
+      "input": "actions/world-browser-save.json",
+      "inputSha256": "987ae1d4411f9c2765fd115edb600d01acb8a3452af92f84cc91d32b3ac63974",
+      "report": "native-reports/actions-world.json",
+      "finalTick": 375,
+      "continuedTick": 395
+    },
+    {
+      "input": "actions/surface-world-save.json",
+      "inputSha256": "30428bc5c1938f0bffd53ae06fae428800c87a30124e9bc1084b2404b46a63af",
+      "report": "native-reports/actions-surface.json",
+      "finalTick": 355,
+      "continuedTick": 375
+    },
+    {
+      "input": "actions/thaw-world-save.json",
+      "inputSha256": "344b22de47a9beb32cbc611ca4fe395fcffb965e553f2fb1d5d314b2745edd28",
+      "report": "native-reports/actions-thaw.json",
+      "finalTick": 169,
+      "continuedTick": 189
+    },
+    {
+      "input": "bug-report-sessions/actions.json",
+      "inputSha256": "45f6c915fcf484c657b20befd57baaa92eed6a60a829c95bbefb08a5bdeb9eb0",
+      "report": "native-reports/bug-actions.json",
+      "finalTick": 375,
+      "continuedTick": 395
+    },
+    {
+      "input": "mods/browser-save.json",
+      "inputSha256": "706f79b3a0cd591b770e6bfcaa433eefe812a63eba5c493bd9fb734e4803f7aa",
+      "report": "native-reports/mods-browser-save.json",
+      "finalTick": 851,
+      "continuedTick": 871
+    },
+    {
+      "input": "mods/browser-replay-final.save.json",
+      "inputSha256": "706f79b3a0cd591b770e6bfcaa433eefe812a63eba5c493bd9fb734e4803f7aa",
+      "report": "native-reports/mods-browser-replay-final.save.json",
+      "finalTick": 851,
+      "continuedTick": 871
+    },
+    {
+      "input": "bug-report-sessions/mods.json",
+      "inputSha256": "ff98709d44b1f208c26445700252fcdef0d55ad973bb881afd89ea2e15867442",
+      "report": "native-reports/bug-mods.json",
+      "finalTick": 851,
+      "continuedTick": 871
+    },
+    {
+      "input": "map/edited-map-in-play.save.json",
+      "inputSha256": "5cee0b4f2cd562cd8ab5931fc735660a6556990fcab95fc55e9aa5b229687b12",
+      "report": "native-reports/map.json",
+      "finalTick": 22,
+      "continuedTick": 42
+    },
+    {
+      "input": "bug-report-sessions/map.json",
+      "inputSha256": "0fd162cb1490ad2b0bb55a37df1e3c7618fea790ccaa2d37c88a9ffd62674bf5",
+      "report": "native-reports/bug-map.json",
+      "finalTick": 22,
+      "continuedTick": 42
+    },
+    {
+      "input": "flat/convoy-playing.save.json",
+      "inputSha256": "01ccd0d467aa93117ea5868584e2f34a1ebd6a61441af099257de58498466b0d",
+      "report": "native-reports/flat.json",
+      "finalTick": 1,
+      "continuedTick": 21
+    },
+    {
+      "input": "bug-report-sessions/flat.json",
+      "inputSha256": "6b4dda9ec3b2d1cb9aaaf3d8ea89721c8498dff97bed1ea571ba2f3700f7168b",
+      "report": "native-reports/bug-flat.json",
+      "finalTick": 1,
+      "continuedTick": 21
+    },
+    {
+      "input": "layered/cave-scenario-playing.save.json",
+      "inputSha256": "2fa68db933d154b9b96efb8d310f314442c2f78f67ee79e8a4253fdfc22a52d7",
+      "report": "native-reports/layered.json",
+      "finalTick": 3,
+      "continuedTick": 23
+    },
+    {
+      "input": "bug-report-sessions/layered.json",
+      "inputSha256": "70e10b808bdb92c6610c36abc3232530c7bf35b8d87d89ddc07c11636335d2ad",
+      "report": "native-reports/bug-layered.json",
+      "finalTick": 3,
+      "continuedTick": 23
+    },
+    {
+      "input": "community-map/browser-replay-tick-0-10.save.json",
+      "inputSha256": "db7a08700a88d73f3ea81ab0089d6a7f59eb8e738d020abfc41f89f9bde90949",
+      "report": "native-reports/community-map-browser-replay-tick-0-10.json",
+      "finalTick": 0,
+      "continuedTick": 20
+    },
+    {
+      "input": "community-map/browser-replay-tick-20-8.save.json",
+      "inputSha256": "793938d4c3b6c6c692f2afc5b6df8b06d84423aba9c0cb7dd9b019b9e91eb1c6",
+      "report": "native-reports/community-map-browser-replay-tick-20-8.json",
+      "finalTick": 20,
+      "continuedTick": 40
+    },
+    {
+      "input": "community-map/browser-replay-tick-40-11.save.json",
+      "inputSha256": "c0b379d8a1c310df9b80a6e46467f9f43cbb253bd6f68bf9fd235a3ffe71e491",
+      "report": "native-reports/community-map-browser-replay-tick-40-11.json",
+      "finalTick": 40,
+      "continuedTick": 60
+    },
+    {
+      "input": "community-map/browser-replay-tick-40-9.save.json",
+      "inputSha256": "c0b379d8a1c310df9b80a6e46467f9f43cbb253bd6f68bf9fd235a3ffe71e491",
+      "report": "native-reports/community-map-browser-replay-tick-40-9.json",
+      "finalTick": 40,
+      "continuedTick": 60
+    },
+    {
+      "input": "community-map/browser-played-complete.save.json",
+      "inputSha256": "c0b379d8a1c310df9b80a6e46467f9f43cbb253bd6f68bf9fd235a3ffe71e491",
+      "report": "native-reports/community-map-complete.json",
+      "finalTick": 40,
+      "continuedTick": 60
+    },
+    {
+      "input": "bug-report-sessions/community-map.json",
+      "inputSha256": "5e3c09f8de1c5764660e3ee46e6fbcd0204937d33c034af94d99e3f13183f70b",
+      "report": "native-reports/bug-community-map.json",
+      "finalTick": 40,
+      "continuedTick": 60
+    },
+    {
+      "input": "community-mod/community-mod-trained.save.json",
+      "inputSha256": "5aa10ab8546562139e33ebd2a592d4842b8745ce0fb8a5a712da398d753fe6b8",
+      "report": "native-reports/community-mod.json",
+      "finalTick": 599,
+      "continuedTick": 619
+    },
+    {
+      "input": "bug-report-sessions/community-mod.json",
+      "inputSha256": "41f3e51273ba48f9c916574e17f9122e02c752406db98ffe42b43524be0ac45a",
+      "report": "native-reports/bug-community-mod.json",
+      "finalTick": 599,
+      "continuedTick": 619
+    }
+  ],
+  "launcherReceipts": [
+    {
+      "path": "launches/generate-1YjOEc/binding.json",
+      "sha256": "15c496f5284f9eb45511275beacc520acb795681f34d7f2215fae694ede35996",
+      "module": "generate"
+    },
+    {
+      "path": "launches/mod-fixture-EEw8tO/binding.json",
+      "sha256": "5565e53201edb02629574ee4a97d17180cd4cd943b05346cdde4c24ba5dd6df1",
+      "module": "mod-fixture"
+    },
+    {
+      "path": "launches/cli-31uh1r/binding.json",
+      "sha256": "7ee1058b5f63063b7c5235d9a7a651da64bc42f5e8f7ff28b1c69017f4f3ed1f",
+      "module": "cli"
+    },
+    {
+      "path": "launches/native-hWWQHi/binding.json",
+      "sha256": "e58587c21be86499189a8ac97262a601245a46b1a9d1b3d0f2e921f133376496",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-2BfT4U/binding.json",
+      "sha256": "6042d14b6f68709a79895d325655ce67a2a18867c1582034e77f2cef479370e3",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-MblExW/binding.json",
+      "sha256": "03d4fb1c9ca7cf13c21b8d01714e6a71fce907729427367bc6d6027b4fbaf174",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-GRxsS1/binding.json",
+      "sha256": "5cbb5c95bb85fe6bbc50ff61c42417ef54d273008b48bb2fb769c309ba19384d",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-Uu2hFZ/binding.json",
+      "sha256": "2676e9e800556738030125bf37d96ad174cab52ea1cc3e36da42a46481f49899",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-rcMbhb/binding.json",
+      "sha256": "57742574cafdc89e7e9a9df01270fde85927077872524f62a21802d07611d45d",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-yus5zJ/binding.json",
+      "sha256": "161961caa5ebb0b5034388fcbd85d772ec7bcad848e6ff6e87ed99e0d34d1a89",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-t71mP3/binding.json",
+      "sha256": "1a1f48e3bd449481d46e098ed4a3f49a22f9e2492b60ac64666766c6583bb700",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-NKMdnR/binding.json",
+      "sha256": "b6303c7e8f535d7cf57f11f8cca3ad75e7bee6a692e5f3cb9bf2415d8634d6c0",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-wXeaMv/binding.json",
+      "sha256": "333e7b7289776c124e8bdbf321cdf2d04cd737256758435261d825c50c9f3428",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-OnEJhA/binding.json",
+      "sha256": "7473a73dc8e32b9466b37526bcb1d3ce7572c434008e9731c49f254d2488f4e0",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-rc7bHv/binding.json",
+      "sha256": "4b18815f4a8bd36b0021503121900d76d8dee06ab7b952d7562fdc0ef0e5cc6f",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-pImz7n/binding.json",
+      "sha256": "6db2a9268948d5c3c3b5bed6595884930c0a53a3a2b039d893f66cd4b1b01fb7",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-6j8CiT/binding.json",
+      "sha256": "c75dfd5574a3f9b2cf8ad2b50a89d9c4961af7bf3c09562b2bf16b3c716dbc2e",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-QnR68u/binding.json",
+      "sha256": "cfca7ffaecc515797f3e2e59b2bd2e2030f14be50d35931de2423d6d5318d659",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-zXZHA7/binding.json",
+      "sha256": "2062862752b52b17ba9e9f2cea0f445ba8398d31f0cc2bb999593534c3ed6bed",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-Chkk6e/binding.json",
+      "sha256": "50479b2222745d60737ae8c2d6ad1b4dda763b88157f96e39928c977e74658cf",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-dMdCv1/binding.json",
+      "sha256": "bdff8cc0a0c913e6773d9c0181a448497764868364de71ae591ab4b2eac6a753",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-H9zGfD/binding.json",
+      "sha256": "060b222f9e49f95e133b67eeb182f9aece8085d076861c4de3bf8448ed1c7789",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-DMWc3t/binding.json",
+      "sha256": "0a233e199b1a8e5ea388bd974c5b8f9d34073be196aaddc344a16e2de26c43be",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-Cu7ppg/binding.json",
+      "sha256": "64adbc1d07c806db4a677857b3cf9312a1e82ab577dc5978de59629527b9a303",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-RYBPj5/binding.json",
+      "sha256": "aa22ef253b162697543537ae4904c7167d15b97acbb0b28c4269a10281c00645",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-xfquCC/binding.json",
+      "sha256": "3cda6db18e5b68352a403b7623b4b10692c7770e4183a98238ce82890a0db6c0",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-0nuF3c/binding.json",
+      "sha256": "a7831c348865b2e233e782ab3f2ad452245f3623f2d380bb283b90647aa8e310",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-eALSzO/binding.json",
+      "sha256": "0c69189f8bd0a55d36fc255f035cbad9c94330c6e092a654dc8d87d93dd0d5d0",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-LWCc5X/binding.json",
+      "sha256": "626bf785bd200848c4e552b025767767f2277fb53442f098bc1171779b6153f6",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-B0uaXJ/binding.json",
+      "sha256": "f7456078db3ca64df44091de821c2549e89bc373d79027e1a1c81a9e9c90f407",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-OxRqAh/binding.json",
+      "sha256": "6c7079fb0d830465a2ecef21eebd4922738de70df7961c0b6d69ba96230da481",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-yjvStu/binding.json",
+      "sha256": "27710fa92a02422a95bd8de2099a5d78b6b4040ecab82def9fa56d4893c12133",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-qoTHiF/binding.json",
+      "sha256": "c1c2409c2151b1f44586575dcdb8972c73c59ba73c02730e0c0cfa8a49799788",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-TMGnpQ/binding.json",
+      "sha256": "7de16b49e3e0b9d45c429a18f5893bc3d4793b1ed55cc21e2e578ba2c991b097",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-7Bq6xd/binding.json",
+      "sha256": "e4626f5981864115267ab22e32484dded6e1efd02e87baf6eb5c897452735de9",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-cOG00J/binding.json",
+      "sha256": "869f1a3af3825a340c76674bbcc79ced04b4cd5876e0120298e8bcd2c01b16d2",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-NsIreb/binding.json",
+      "sha256": "1de73262ceff394a7c519a7b7b5e5aed6f2dd0ccca4303c175a96c0613a25f1b",
+      "module": "native"
+    },
+    {
+      "path": "launches/native-pHqqVh/binding.json",
+      "sha256": "cf004eac8053bbdd4f466080ca11e60616ed088a16c38b2979fe39bd63b28448",
+      "module": "native"
+    }
+  ],
+  "bugReportPaths": {
+    "world": "browser/world-native-build-report.json",
+    "actions": "actions/world-actions-native-build-report.json",
+    "mods": "mods/browser-build-report.json",
+    "map": "map/edited-map-build-report.json",
+    "flat": "flat/convoy-build-report.json",
+    "layered": "layered/cave-scenario-build-report.json",
+    "community-map": "community-map/community-map-build-report.json",
+    "community-mod": "community-mod/community-mod-build-report.json"
+  },
+  "cleanup": {
+    "ownedPorts": [
+      5183,
+      35123,
+      41683
+    ],
+    "listenersAfter": {
+      "5183": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess",
+      "35123": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess",
+      "41683": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess"
+    },
+    "helpersAfter": [],
+    "privateRebuildsAbsent": true,
+    "backendDataDirectoryLimit": "Unique map/backend directory names were not retained by the drivers. Final direct enumeration found no directories matching either pinned driver prefix in the confirmed Node temporary directory.",
+    "nodeTmpdir": "/tmp",
+    "backendDirectoriesAfter": {
+      "ovf-community-browser-*": [],
+      "ovf-community-mod-*": []
+    }
+  },
+  "screenshots": [
+    {
+      "path": "browser/desert-cavern.png",
+      "sha256": "f98783b029bcc527ea02169bcf2b85f3dc7e1d5b86238766a1e672676e83ed6e"
+    },
+    {
+      "path": "browser/desert-surface.png",
+      "sha256": "12a35977d03a0250d418aa1968735b21c4a3103a5b754d69da9dff27b91d85e1"
+    },
+    {
+      "path": "browser/forest-cavern.png",
+      "sha256": "a436e5bfd80bf4d78893de4a29ee876efc7b02c48ed83c35778c358838e1dbff"
+    },
+    {
+      "path": "browser/forest-surface.png",
+      "sha256": "e8d78a6d95c9b28587f5940a881f8c364cec14faaeb66c565a84deaa28a0ea6c"
+    },
+    {
+      "path": "browser/marsh-cavern.png",
+      "sha256": "b100efd06dc4734c1775f8ddca5ed17888bc6e38a955d6c3a964f151bb6a2e95"
+    },
+    {
+      "path": "browser/marsh-surface.png",
+      "sha256": "00fc8ad63b9d822f13a13489659eae76bfca11ed83e921aa3c58090a70db5f08"
+    },
+    {
+      "path": "browser/snow-cavern.png",
+      "sha256": "8b117060b701ae75eff7fd118aae2f857968e89a21a7f5ce2df8590a66864739"
+    },
+    {
+      "path": "browser/snow-surface.png",
+      "sha256": "ac25dc994038e47b99f185c19ec0644a552422e24073621b5768d85700054896"
+    },
+    {
+      "path": "actions/forest-fire-and-bridge.png",
+      "sha256": "b955ca1a49ca86393516e8efeb9942f056f5502bb68a0b213621df17b1dae38e"
+    },
+    {
+      "path": "actions/neutral-services-and-relic.png",
+      "sha256": "2d58c1b21765c6092aebdb2e920d496603fcd89631da806b6098f17535ca2e02"
+    },
+    {
+      "path": "actions/winter-thaw-rescue.png",
+      "sha256": "88064bfb82ffaa9dcac33d9acd0c7982742f549c99bc584474394a725c58bb9d"
+    },
+    {
+      "path": "mods/gameplay.png",
+      "sha256": "3471c209562cc299a5eac14e8023d5c125cbc5cdf8d2bd085726dc2ef6fd20f9"
+    },
+    {
+      "path": "mods/initial.png",
+      "sha256": "52d92ac02f6ebb4b67d37e0ec57a87ab2061ddc7e288e3c13f865710a1493705"
+    },
+    {
+      "path": "map/edited-map-in-play.png",
+      "sha256": "bd2897c2e6ee2d64fda69e0f1788e923ebe74471a37cc37e0e639d75280c827c"
+    },
+    {
+      "path": "map/map-editor.png",
+      "sha256": "48a1f0b0d6421d8f66473aab9ef4029efddd2f290c24409053fe40c62062bb0d"
+    },
+    {
+      "path": "flat/scenario-editor.png",
+      "sha256": "e4db7d11ec3ae9c8c49eaa9dcb203094fe2f43b2044f60b5dbad89e2d4af3704"
+    },
+    {
+      "path": "flat/scenario-failure.png",
+      "sha256": "443cfc493a16670f55e4bb05d9f6bfa78cf996f5730e2e8442cc8b243364a38f"
+    },
+    {
+      "path": "flat/scenario-success.png",
+      "sha256": "6a02c1b16e64cf2681021b016279184817df7893ed791476644c7317e620c45d"
+    },
+    {
+      "path": "layered/cave-scenario-arrival.png",
+      "sha256": "cd76ba17a3e36b65a7791304aebb731f7f6bd4409b0f8143f97f5f129be3f39b"
+    },
+    {
+      "path": "layered/cave-scenario-editor.png",
+      "sha256": "8d7e13e3db026e7a0c9e64756c419bd41c2952ca537cc2970cfa15e48cc04c68"
+    },
+    {
+      "path": "layered/cave-scenario-playing.png",
+      "sha256": "882e205ff2a1e6202a66a08de155229ca837cececc77d94ede385203edea87f7"
+    },
+    {
+      "path": "layered/cave-scenario-victory.png",
+      "sha256": "18aad588fd182cf84a90c2be4e68976e5eb9f0431013b3269f5f793d8d7c237a"
+    },
+    {
+      "path": "community-map/community-map-in-play.png",
+      "sha256": "a0a0a0c465b01ac3dbdc5853ef241ad4d069c0b1fcdf6242a3db76a2c2d435e8"
+    },
+    {
+      "path": "community-map/community-pinned-replay-viewer.png",
+      "sha256": "74db929cd8b429a177c8be9789797142e795a51136f945fd2fe5a0e34793078f"
+    },
+    {
+      "path": "community-map/community-pinned-revisions.png",
+      "sha256": "3e7eb4a0ca7d4fd598f05c6e4b75d603fb8ad5ae88c7c2e932b001e4a69be702"
+    },
+    {
+      "path": "community-map/community-preview.png",
+      "sha256": "bbd0638fa3e11fc2141dc9dc74bdf8222ffe639702a0a40d1a3266f129fee7b3"
+    },
+    {
+      "path": "community-mod/community-mod-pinned-revisions.png",
+      "sha256": "914470af1e9b9309a5198eed8b418f7721d3e1049d3b664c7e38022c7327bf38"
+    },
+    {
+      "path": "community-mod/community-mod-preview.png",
+      "sha256": "138cb7a9dadf501856f6762b619e34a0e4356d2a189253d79832cc0d0bea8037"
+    },
+    {
+      "path": "community-mod/community-mod-trained.png",
+      "sha256": "546cb66883dbf8b7ed0c2cc2fd1bd8a15df393672b88faf0c121f5ac61401864"
+    },
+    {
+      "path": "community-mod/pinned-lantern-scenario-victory.png",
+      "sha256": "502f3f801659edf5dcf447c59869b808a06c48c60ac5f40f5149fc9128d003fb"
+    }
+  ],
+  "visualInspection": "Pending; hashes are not a visual inspection."
+}

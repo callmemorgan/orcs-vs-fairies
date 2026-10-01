@@ -1,0 +1,1694 @@
+{
+  "kind": "actual-world-native-cli-content-community-proof",
+  "result": "passed",
+  "executingSourcePin": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+  "saveVersion": 4,
+  "simulationRevision": "4.0.1",
+  "contentEngineVersion": 3,
+  "scope": "World menu/actions, native complete replay/continuation, ordinary CLI traversal/resume/log replay, local mod, map/flat/layered editors and two-account community map/mod publication/install/play/restart.",
+  "rawOutputRoot": "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273",
+  "runSha256": "78aee51ef6e18743cb7ca2ade0abc3e4ecb32f48335715efe375175a1328568f",
+  "orchestration": {
+    "path": "audit/run-world-content-frozen-pin.py",
+    "sha256": "8ef9ca35d73f8fdda36b899898e2ef3c0cbf870f958a56c225c895a06563a87c",
+    "cwd": "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies",
+    "arguments": [
+      "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+      "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273"
+    ]
+  },
+  "sourceDigest": "f8412883e1d8c3f6fa47f74c8c7bf608fa472cabe05503bab51ffd13d1101af5",
+  "buildId": "af4b40282bb086e0dccf5aad4e8c38819b2d2eb80370fb749e728a9f33cdb87a",
+  "preparationSha256": "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+  "startedAt": "2026-10-01T19:03:15.023547+00:00",
+  "finishedAt": "2026-10-01T19:12:08.557644+00:00",
+  "recipeSteps": [
+    {
+      "name": "source-before",
+      "args": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "const {worldSourceProof}=await import(\"./scripts/world/proof-common.mjs\");console.log(JSON.stringify(await worldSourceProof(process.argv[1])));",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8"
+      ],
+      "startedAt": "2026-10-01T19:03:15.024436+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:03:16.550096+00:00",
+      "log": "logs/source-before.log",
+      "logSha256": "1205647cd4a9ca14b84da22ebf34513bab8ee2b196156e7f488349eab8449c72"
+    },
+    {
+      "name": "build",
+      "args": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "startedAt": "2026-10-01T19:03:16.558205+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:03:23.107141+00:00",
+      "log": "logs/build.log",
+      "logSha256": "07c2dd2e73c6239c494f3b5a70f09be53ecc0e0e42d75c7743e56d790894a46d"
+    },
+    {
+      "name": "build-cli",
+      "args": [
+        "npm",
+        "run",
+        "build:cli"
+      ],
+      "startedAt": "2026-10-01T19:03:23.107398+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:03:23.170732+00:00",
+      "log": "logs/build-cli.log",
+      "logSha256": "c9b3752af465fdd1d22c91e8d52ac4a7a85cec233a350d05f93418c54fbfb4f0"
+    },
+    {
+      "name": "build-server",
+      "args": [
+        "npm",
+        "run",
+        "build:server"
+      ],
+      "startedAt": "2026-10-01T19:03:23.170957+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:03:23.279158+00:00",
+      "log": "logs/build-server.log",
+      "logSha256": "c5722585b79bef8cc7dc0c29dcd00e8fea5ce47f1575d1362346f3107d1da309"
+    },
+    {
+      "name": "build-tournament",
+      "args": [
+        "npm",
+        "run",
+        "build:tournament"
+      ],
+      "startedAt": "2026-10-01T19:03:23.279399+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:03:23.336949+00:00",
+      "log": "logs/build-tournament.log",
+      "logSha256": "cf448da34d93214423477a2040657018d208359c27bd2cdeea3436f01a78434f"
+    },
+    {
+      "name": "prepare-modules",
+      "args": [
+        "node",
+        "scripts/world/prepare.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules"
+      ],
+      "startedAt": "2026-10-01T19:03:23.637207+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:03:26.522479+00:00",
+      "log": "logs/prepare-modules.log",
+      "logSha256": "7088890e5d61a93f5e3453df6d8754e228fbbf33c9d6af16f81e2e769e612dbc"
+    },
+    {
+      "name": "generate",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "generate",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/fixtures"
+      ],
+      "startedAt": "2026-10-01T19:03:26.522820+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:03:32.423576+00:00",
+      "log": "logs/generate.log",
+      "logSha256": "683c0922f550d01c38a55ac06cf50de584475ebaaab6adde9d9dafe7c617bee7"
+    },
+    {
+      "name": "mod-fixture",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "mod-fixture",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/mod-fixtures"
+      ],
+      "startedAt": "2026-10-01T19:03:32.423867+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:03:39.689604+00:00",
+      "log": "logs/mod-fixture.log",
+      "logSha256": "21a948745639b136269d8c5a96f90af22c3df3e3eddeb17d8cfbb2094e4d991b"
+    },
+    {
+      "name": "cli",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "cli",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/cli"
+      ],
+      "startedAt": "2026-10-01T19:03:39.689904+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:03:47.351984+00:00",
+      "log": "logs/cli.log",
+      "logSha256": "f78a1516c70ad78036897dc8f47ca5b947da074e48f7e0446dab98b1d6b2fb17"
+    },
+    {
+      "name": "native-fixture-neutral",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/fixtures/neutral.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/fixture-neutral.json"
+      ],
+      "startedAt": "2026-10-01T19:03:47.352309+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:03:54.754387+00:00",
+      "log": "logs/native-fixture-neutral.log",
+      "logSha256": "c2e78eac0c43fa1f8ad747eb720625cfeb2d358648a7deca57349835f29d5e68"
+    },
+    {
+      "name": "native-fixture-surface",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/fixtures/surface.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/fixture-surface.json"
+      ],
+      "startedAt": "2026-10-01T19:03:54.755939+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:04:02.184681+00:00",
+      "log": "logs/native-fixture-surface.log",
+      "logSha256": "f8e8fe2fbf18d04868d4ec49ee95a54a4d6390ef92349b7de1fb51e125db5592"
+    },
+    {
+      "name": "native-fixture-dusk",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/fixtures/dusk.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/fixture-dusk.json"
+      ],
+      "startedAt": "2026-10-01T19:04:02.186111+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:04:09.646327+00:00",
+      "log": "logs/native-fixture-dusk.log",
+      "logSha256": "fde3afb84b2e8755b9a62d0892fa0dc3f941b12cb91c1a15d1c9ffe815686684"
+    },
+    {
+      "name": "native-fixture-thaw",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/fixtures/thaw.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/fixture-thaw.json"
+      ],
+      "startedAt": "2026-10-01T19:04:09.647991+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:04:17.227059+00:00",
+      "log": "logs/native-fixture-thaw.log",
+      "logSha256": "8cf7834b6c3cbd1af2e883ec0260a8cccbfe2053c705a98ecd943e9efeb31aa1"
+    },
+    {
+      "name": "native-cli",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/cli/cli-world-session.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/cli.json"
+      ],
+      "startedAt": "2026-10-01T19:04:17.228461+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:04:24.714250+00:00",
+      "log": "logs/native-cli.log",
+      "logSha256": "523cedbcf92a815b1478d2a41aae8af4fc972af9656b31cccf03e7a8eddb72eb"
+    },
+    {
+      "name": "served-index-before",
+      "args": [
+        "node",
+        "scripts/verify_served_build.mjs",
+        "http://127.0.0.1:5183",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/served-index-before.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/builds/dist"
+      ],
+      "startedAt": "2026-10-01T19:04:24.976683+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:04:25.061882+00:00",
+      "log": "logs/served-index-before.log",
+      "logSha256": "abfb3dba74707afbfa0189d981c41fc97470f442b278ec2d22013f4353853889"
+    },
+    {
+      "name": "served-editor-before",
+      "args": [
+        "node",
+        "scripts/verify_served_build.mjs",
+        "http://127.0.0.1:5183/editor.html",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/served-editor-before.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/builds/dist"
+      ],
+      "startedAt": "2026-10-01T19:04:25.062227+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:04:25.144482+00:00",
+      "log": "logs/served-editor-before.log",
+      "logSha256": "836264d0939231aade1a773f84625f00f35f134e303bb0cdc5c32791c1eb5296"
+    },
+    {
+      "name": "world-menu",
+      "args": [
+        "node",
+        "scripts/verify_world.mjs",
+        "http://127.0.0.1:5183",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/browser"
+      ],
+      "startedAt": "2026-10-01T19:04:25.144829+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:04:54.464641+00:00",
+      "log": "logs/world-menu.log",
+      "logSha256": "95b72afaf4133eddc2cee65a1185e1afae96b59b81764bb038ed87c8c48b3222"
+    },
+    {
+      "name": "native-world-desert",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/browser/desert-world-save.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/world-desert.json"
+      ],
+      "startedAt": "2026-10-01T19:04:54.465076+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:05:01.997082+00:00",
+      "log": "logs/native-world-desert.log",
+      "logSha256": "06050137bc4643028b4b14bc14aa0a7b3376055166571935cd037cb88f6afc3c"
+    },
+    {
+      "name": "native-world-marsh",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/browser/marsh-world-save.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/world-marsh.json"
+      ],
+      "startedAt": "2026-10-01T19:05:01.998531+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:05:09.418032+00:00",
+      "log": "logs/native-world-marsh.log",
+      "logSha256": "2ae56526d0e8a8bb14b87c83c40a68c642aeb120b9822e7013d5b208f19eb55c"
+    },
+    {
+      "name": "native-world-snow",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/browser/snow-world-save.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/world-snow.json"
+      ],
+      "startedAt": "2026-10-01T19:05:09.419516+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:05:16.842635+00:00",
+      "log": "logs/native-world-snow.log",
+      "logSha256": "1baa7d7eb2ee62bc11792f850d05b16db97a4fcd0f0f86542c9ad003ae5a3fa6"
+    },
+    {
+      "name": "native-world-forest",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/browser/forest-world-save.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/world-forest.json"
+      ],
+      "startedAt": "2026-10-01T19:05:16.844072+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:05:24.277064+00:00",
+      "log": "logs/native-world-forest.log",
+      "logSha256": "5aa357f1f4cf05a15c6e4c598a3e025835cfe5091e249773608607247118f7e2"
+    },
+    {
+      "name": "native-bug-world",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/bug-report-sessions/world.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/bug-world.json"
+      ],
+      "startedAt": "2026-10-01T19:05:24.280062+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:05:31.813516+00:00",
+      "log": "logs/native-bug-world.log",
+      "logSha256": "89b46e4287c19af3d530e0505fdd124d41cc0446d047b29f0cd3a7923bd01be1"
+    },
+    {
+      "name": "world-actions",
+      "args": [
+        "node",
+        "scripts/verify_world_actions.mjs",
+        "http://127.0.0.1:5183",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/actions",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/fixtures"
+      ],
+      "startedAt": "2026-10-01T19:05:31.815029+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:06:29.202340+00:00",
+      "log": "logs/world-actions.log",
+      "logSha256": "9e3cd477ea86e6ce10669071ff7b2da549d6fdab2127365855efca884531b00a"
+    },
+    {
+      "name": "native-actions-imported-neutral",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/actions/native-neutral-imported.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/actions-imported-neutral.json"
+      ],
+      "startedAt": "2026-10-01T19:06:29.202778+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:06:36.775861+00:00",
+      "log": "logs/native-actions-imported-neutral.log",
+      "logSha256": "776d55a1571c8940fbb445b61851e61cf3a6c447179277e776da8d12e7cc96c0"
+    },
+    {
+      "name": "native-actions-imported-surface",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/actions/native-surface-imported.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/actions-imported-surface.json"
+      ],
+      "startedAt": "2026-10-01T19:06:36.777299+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:06:44.448528+00:00",
+      "log": "logs/native-actions-imported-surface.log",
+      "logSha256": "0b822b7b74da1a55e57eebedd701a39c466760fd7722f41e7f1dcbad89e40731"
+    },
+    {
+      "name": "native-actions-imported-dusk",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/actions/native-dusk-imported.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/actions-imported-dusk.json"
+      ],
+      "startedAt": "2026-10-01T19:06:44.450252+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:06:52.067748+00:00",
+      "log": "logs/native-actions-imported-dusk.log",
+      "logSha256": "b8057eafc379a771d0bf31b0ff600bfba14e8962e5f5c3e36bc9a93e52a87f9f"
+    },
+    {
+      "name": "native-actions-imported-thaw",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/actions/native-thaw-imported.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/actions-imported-thaw.json"
+      ],
+      "startedAt": "2026-10-01T19:06:52.069238+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:06:59.538406+00:00",
+      "log": "logs/native-actions-imported-thaw.log",
+      "logSha256": "103c6f6fc42c5649dfcf97e51237b92d26a050c684c5ba1802997956ae99d569"
+    },
+    {
+      "name": "native-actions-world",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/actions/world-browser-save.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/actions-world.json"
+      ],
+      "startedAt": "2026-10-01T19:06:59.540103+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:07:07.205118+00:00",
+      "log": "logs/native-actions-world.log",
+      "logSha256": "a6f05545ec16b5a38c11d86e124da3a4934f267245c793c921bf29a08ac85949"
+    },
+    {
+      "name": "native-actions-surface",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/actions/surface-world-save.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/actions-surface.json"
+      ],
+      "startedAt": "2026-10-01T19:07:07.206609+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:07:14.798730+00:00",
+      "log": "logs/native-actions-surface.log",
+      "logSha256": "850dd29542cff3476ff39f58fb244c232bb495652684398c2137609fa7437435"
+    },
+    {
+      "name": "native-actions-thaw",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/actions/thaw-world-save.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/actions-thaw.json"
+      ],
+      "startedAt": "2026-10-01T19:07:14.800249+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:07:22.437438+00:00",
+      "log": "logs/native-actions-thaw.log",
+      "logSha256": "69014f0b7205d69a8c62a5ec3d4d16445fd03afa06147ec5570bac8aff3b3163"
+    },
+    {
+      "name": "native-bug-actions",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/bug-report-sessions/actions.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/bug-actions.json"
+      ],
+      "startedAt": "2026-10-01T19:07:22.440575+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:07:30.090849+00:00",
+      "log": "logs/native-bug-actions.log",
+      "logSha256": "6c278ffaf51f282bf552b57615be37d1363b6760d357a3ce5907d3c067b56bf4"
+    },
+    {
+      "name": "mods",
+      "args": [
+        "node",
+        "scripts/verify_mods.mjs",
+        "http://127.0.0.1:5183"
+      ],
+      "startedAt": "2026-10-01T19:07:30.092525+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:08:24.562742+00:00",
+      "log": "logs/mods.log",
+      "logSha256": "9339ed62de0bd25ddf1cddfc243c54c743167d39bc9004a584b20991331cf344"
+    },
+    {
+      "name": "native-mods-browser-save",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/mods/browser-save.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/mods-browser-save.json"
+      ],
+      "startedAt": "2026-10-01T19:08:24.563247+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:08:32.396225+00:00",
+      "log": "logs/native-mods-browser-save.log",
+      "logSha256": "10039ab95dd59cbcd1862277b018d8f1a580aaf51b199a2ef15a62e5c9492e54"
+    },
+    {
+      "name": "native-mods-browser-replay-final.save",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/mods/browser-replay-final.save.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/mods-browser-replay-final.save.json"
+      ],
+      "startedAt": "2026-10-01T19:08:32.397998+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:08:40.175188+00:00",
+      "log": "logs/native-mods-browser-replay-final.save.log",
+      "logSha256": "4d76b0a351e07c69b44ef96515b59bf2ab62902daf304b3b2e61d277ce9efe83"
+    },
+    {
+      "name": "native-bug-mods",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/bug-report-sessions/mods.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/bug-mods.json"
+      ],
+      "startedAt": "2026-10-01T19:08:40.177851+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:08:47.984340+00:00",
+      "log": "logs/native-bug-mods.log",
+      "logSha256": "7c3e710f2da29a0c39b686fd1f055d470b9af59d3613f8eb7bce68690c43b260"
+    },
+    {
+      "name": "map-editor",
+      "args": [
+        "node",
+        "scripts/verify_editors.mjs",
+        "http://127.0.0.1:5183"
+      ],
+      "startedAt": "2026-10-01T19:08:47.985997+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:08:55.304737+00:00",
+      "log": "logs/map-editor.log",
+      "logSha256": "5a38abc941f70e157eac3709083e8bda9910db128b02695ada3d8e63b4e9e054"
+    },
+    {
+      "name": "native-map",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/map/edited-map-in-play.save.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/map.json"
+      ],
+      "startedAt": "2026-10-01T19:08:55.305197+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:09:02.816199+00:00",
+      "log": "logs/native-map.log",
+      "logSha256": "005c3fcbfc6402374a1524938bf52c224ea7e61a4da7db22e29c1bf6567768ca"
+    },
+    {
+      "name": "native-bug-map",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/bug-report-sessions/map.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/bug-map.json"
+      ],
+      "startedAt": "2026-10-01T19:09:02.819136+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:09:10.389571+00:00",
+      "log": "logs/native-bug-map.log",
+      "logSha256": "00dd1f0c6b51baf9500c54b489ef52d11f7c71a1aadb7d7f7fcfebc9528b6eff"
+    },
+    {
+      "name": "flat-editor",
+      "args": [
+        "node",
+        "scripts/verify_scenario_editor.mjs",
+        "http://127.0.0.1:5183"
+      ],
+      "startedAt": "2026-10-01T19:09:10.391295+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:09:23.566880+00:00",
+      "log": "logs/flat-editor.log",
+      "logSha256": "391c66faf55b2a3f225d6f6c2e5037bfab1c94f320fddc0eb0bff4df40456ca0"
+    },
+    {
+      "name": "native-flat",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/flat/convoy-playing.save.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/flat.json"
+      ],
+      "startedAt": "2026-10-01T19:09:23.567413+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:09:30.970976+00:00",
+      "log": "logs/native-flat.log",
+      "logSha256": "839f6f5d122c1223d0a1dc15fa436a5bb52953375acc9501f3bf9603068df3a7"
+    },
+    {
+      "name": "native-bug-flat",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/bug-report-sessions/flat.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/bug-flat.json"
+      ],
+      "startedAt": "2026-10-01T19:09:30.973412+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:09:38.438606+00:00",
+      "log": "logs/native-bug-flat.log",
+      "logSha256": "68d23d32e40b343f37a23be90f3e17fcf9c9567e7fdbd36b51bb925848704d57"
+    },
+    {
+      "name": "layered-editor",
+      "args": [
+        "node",
+        "scripts/verify_layered_scenario_editor.mjs",
+        "http://127.0.0.1:5183"
+      ],
+      "startedAt": "2026-10-01T19:09:38.440521+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:09:47.313312+00:00",
+      "log": "logs/layered-editor.log",
+      "logSha256": "2d2bcf8f8442aac4d6ceee3a9339550d21cc79766ef2d57b4d6ac48e2eb5c253"
+    },
+    {
+      "name": "native-layered",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/layered/cave-scenario-playing.save.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/layered.json"
+      ],
+      "startedAt": "2026-10-01T19:09:47.313812+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:09:55.263738+00:00",
+      "log": "logs/native-layered.log",
+      "logSha256": "bfb7fdce35ab09c96567ef55673fd869ff2719b62d5cf2cff0ab15a9de0e8dba"
+    },
+    {
+      "name": "native-bug-layered",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/bug-report-sessions/layered.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/bug-layered.json"
+      ],
+      "startedAt": "2026-10-01T19:09:55.267461+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:10:03.176730+00:00",
+      "log": "logs/native-bug-layered.log",
+      "logSha256": "bf574dca53033f609a5b10dba8d8f18093b36421addb918c8e94f841462e8a7a"
+    },
+    {
+      "name": "community-map",
+      "args": [
+        "node",
+        "scripts/verify_community_browser.mjs"
+      ],
+      "startedAt": "2026-10-01T19:10:03.178661+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:10:20.016884+00:00",
+      "log": "logs/community-map.log",
+      "logSha256": "d4ef2b15631c8181727db04f3af825dd62be6952367cf538bc3030df3086d077"
+    },
+    {
+      "name": "native-community-map-browser-replay-tick-0-10",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/community-map/browser-replay-tick-0-10.save.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/community-map-browser-replay-tick-0-10.json"
+      ],
+      "startedAt": "2026-10-01T19:10:20.017762+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:10:27.499178+00:00",
+      "log": "logs/native-community-map-browser-replay-tick-0-10.log",
+      "logSha256": "aa352dc30a18250933c471f8ce24937f6f1dd96b79ab950f794185644a4750d0"
+    },
+    {
+      "name": "native-community-map-browser-replay-tick-20-8",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/community-map/browser-replay-tick-20-8.save.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/community-map-browser-replay-tick-20-8.json"
+      ],
+      "startedAt": "2026-10-01T19:10:27.503637+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:10:34.960626+00:00",
+      "log": "logs/native-community-map-browser-replay-tick-20-8.log",
+      "logSha256": "051ca5cc0404ea1caf8d278e95c5b19090c3b53a3834e78b3203f86719367456"
+    },
+    {
+      "name": "native-community-map-browser-replay-tick-40-11",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/community-map/browser-replay-tick-40-11.save.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/community-map-browser-replay-tick-40-11.json"
+      ],
+      "startedAt": "2026-10-01T19:10:34.962194+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:10:42.494191+00:00",
+      "log": "logs/native-community-map-browser-replay-tick-40-11.log",
+      "logSha256": "514ce41d63bdf0905b40d194253e03325519649b506bbba118f508f5ae90d883"
+    },
+    {
+      "name": "native-community-map-browser-replay-tick-40-9",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/community-map/browser-replay-tick-40-9.save.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/community-map-browser-replay-tick-40-9.json"
+      ],
+      "startedAt": "2026-10-01T19:10:42.496014+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:10:50.205434+00:00",
+      "log": "logs/native-community-map-browser-replay-tick-40-9.log",
+      "logSha256": "7f6d51b11899407e2432b3462e914d51a525de9fffd8ba34ff65fcdc329d18f5"
+    },
+    {
+      "name": "native-community-map-complete",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/community-map/browser-played-complete.save.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/community-map-complete.json"
+      ],
+      "startedAt": "2026-10-01T19:10:50.207060+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:10:57.966902+00:00",
+      "log": "logs/native-community-map-complete.log",
+      "logSha256": "1176bcbc5a6f08f4411812dff2297c82a7ed4ef2e35835cb9455928cb2a03c9a"
+    },
+    {
+      "name": "native-bug-community-map",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/bug-report-sessions/community-map.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/bug-community-map.json"
+      ],
+      "startedAt": "2026-10-01T19:10:57.969892+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:11:05.504196+00:00",
+      "log": "logs/native-bug-community-map.log",
+      "logSha256": "c7d4ef8cee6c2fcf5e8278ca4e5e6b853698fe7e6b86ab0a5c5c8829c045cf3e"
+    },
+    {
+      "name": "community-mod",
+      "args": [
+        "node",
+        "scripts/verify_community_mod.mjs"
+      ],
+      "startedAt": "2026-10-01T19:11:05.506053+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:11:51.242217+00:00",
+      "log": "logs/community-mod.log",
+      "logSha256": "8b2d7320f1f3bb64dc419919c5b82bb9ed49c4f8b7b47a8cef345f36e993f856"
+    },
+    {
+      "name": "native-community-mod",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/community-mod/community-mod-trained.save.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/community-mod.json"
+      ],
+      "startedAt": "2026-10-01T19:11:51.242846+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:11:59.036568+00:00",
+      "log": "logs/native-community-mod.log",
+      "logSha256": "d863a5e1b6c58420e34951be7a175dff82e5adf283258957b85f2f45df791141"
+    },
+    {
+      "name": "native-bug-community-mod",
+      "args": [
+        "node",
+        "scripts/world/run-native.mjs",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/modules",
+        "70e6dd3d283e07eb26549ac7df1c2bf441785bff526668099bfc0c056df347c0",
+        "native",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/bug-report-sessions/community-mod.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/native-reports/bug-community-mod.json"
+      ],
+      "startedAt": "2026-10-01T19:11:59.039277+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:12:06.800244+00:00",
+      "log": "logs/native-bug-community-mod.log",
+      "logSha256": "2703ef39ac6858a164edc00fd95e886e26b2ce62854ef81d301025dde8a52fcd"
+    },
+    {
+      "name": "served-index-after",
+      "args": [
+        "node",
+        "scripts/verify_served_build.mjs",
+        "http://127.0.0.1:5183",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/served-index-after.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/builds/dist"
+      ],
+      "startedAt": "2026-10-01T19:12:06.804192+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:12:06.889405+00:00",
+      "log": "logs/served-index-after.log",
+      "logSha256": "82dbef4d28e83e51a434ae5ec07575257ebd62d79b417719a3a1e2329024d8be"
+    },
+    {
+      "name": "served-editor-after",
+      "args": [
+        "node",
+        "scripts/verify_served_build.mjs",
+        "http://127.0.0.1:5183/editor.html",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/served-editor-after.json",
+        "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273/builds/dist"
+      ],
+      "startedAt": "2026-10-01T19:12:06.889902+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:12:06.974095+00:00",
+      "log": "logs/served-editor-after.log",
+      "logSha256": "3ba8dd978638bc0daba6c7801d3a462fc668b6ad88bfb026ec7a2e5d78436771"
+    },
+    {
+      "name": "source-after",
+      "args": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "const {worldSourceProof}=await import(\"./scripts/world/proof-common.mjs\");console.log(JSON.stringify(await worldSourceProof(process.argv[1])));",
+        "c86e273c70738f144a00fe75f5ecf39e7fa324d8"
+      ],
+      "startedAt": "2026-10-01T19:12:06.974576+00:00",
+      "result": "passed",
+      "exitCode": 0,
+      "finishedAt": "2026-10-01T19:12:08.458743+00:00",
+      "log": "logs/source-after.log",
+      "logSha256": "1205647cd4a9ca14b84da22ebf34513bab8ee2b196156e7f488349eab8449c72"
+    }
+  ],
+  "nativeChecks": [
+    {
+      "name": "fixture-neutral",
+      "input": "fixtures/neutral.json",
+      "inputSha256": "f1f092ca748825f58f009093f3d39258176806eed62af66557c7ce6efd98cc71",
+      "result": "passed",
+      "report": "native-reports/fixture-neutral.json"
+    },
+    {
+      "name": "fixture-surface",
+      "input": "fixtures/surface.json",
+      "inputSha256": "afc9e8fe6e79c1197293ff7fc95bc472cc6dac8341385dad612762f3b3d748a1",
+      "result": "passed",
+      "report": "native-reports/fixture-surface.json"
+    },
+    {
+      "name": "fixture-dusk",
+      "input": "fixtures/dusk.json",
+      "inputSha256": "219226e24bb09b547d29daeef694102d7d83dad0b3aed3a47d2c8771fd8738e5",
+      "result": "passed",
+      "report": "native-reports/fixture-dusk.json"
+    },
+    {
+      "name": "fixture-thaw",
+      "input": "fixtures/thaw.json",
+      "inputSha256": "b5c116db50c33a0e73199fdf8ed07a70efbb9bebcd31d8e81f92ab6e0832bbc5",
+      "result": "passed",
+      "report": "native-reports/fixture-thaw.json"
+    },
+    {
+      "name": "cli",
+      "input": "cli/cli-world-session.json",
+      "inputSha256": "4b72fe71f1a500be2e4adf551967b097c8700b0a67b7f2bb218f8a997e97220e",
+      "result": "passed",
+      "report": "native-reports/cli.json"
+    },
+    {
+      "name": "world-desert",
+      "input": "browser/desert-world-save.json",
+      "inputSha256": "39cf62ef18032aa725c3b2593608cba146268b772094fd3be00ef85134738931",
+      "result": "passed",
+      "report": "native-reports/world-desert.json"
+    },
+    {
+      "name": "world-marsh",
+      "input": "browser/marsh-world-save.json",
+      "inputSha256": "022f362cf93bdf4ee462014af7ed9a2d53a1ab640293a29d9e1ad4ec881d4a86",
+      "result": "passed",
+      "report": "native-reports/world-marsh.json"
+    },
+    {
+      "name": "world-snow",
+      "input": "browser/snow-world-save.json",
+      "inputSha256": "131a377cb3c49d4b85c03fe5982ab4ebfb4245289eadd52ecabd23d740e52e20",
+      "result": "passed",
+      "report": "native-reports/world-snow.json"
+    },
+    {
+      "name": "world-forest",
+      "input": "browser/forest-world-save.json",
+      "inputSha256": "166f8b69b538c7809f0a26d5506d581fa4b5e07d23f157fc095ea79980e333e7",
+      "result": "passed",
+      "report": "native-reports/world-forest.json"
+    },
+    {
+      "name": "bug-world",
+      "input": "bug-report-sessions/world.json",
+      "inputSha256": "5078a7305a4082f3063c1efaa828e759edb17bc272aac7d6a26776173b358dc1",
+      "result": "passed",
+      "report": "native-reports/bug-world.json"
+    },
+    {
+      "name": "actions-imported-neutral",
+      "input": "actions/native-neutral-imported.json",
+      "inputSha256": "3bdfb82834ef63595e49e7f854d388e05b36d26dbf82d7e10d16e7c44c4b71f9",
+      "result": "passed",
+      "report": "native-reports/actions-imported-neutral.json"
+    },
+    {
+      "name": "actions-imported-surface",
+      "input": "actions/native-surface-imported.json",
+      "inputSha256": "279647cbb1d27d5de999d25c652c3ed6dc17ed4cc8088629cd1bb3f314ccc7b3",
+      "result": "passed",
+      "report": "native-reports/actions-imported-surface.json"
+    },
+    {
+      "name": "actions-imported-dusk",
+      "input": "actions/native-dusk-imported.json",
+      "inputSha256": "5b396895eb89a9abfd411f70bda48b67c903376b7d2bd7f45849f3fb5c2bd34e",
+      "result": "passed",
+      "report": "native-reports/actions-imported-dusk.json"
+    },
+    {
+      "name": "actions-imported-thaw",
+      "input": "actions/native-thaw-imported.json",
+      "inputSha256": "2a34dd51e154cd45a076e087f26bc28211e70c15da8e264f8f6f9586c7945cd5",
+      "result": "passed",
+      "report": "native-reports/actions-imported-thaw.json"
+    },
+    {
+      "name": "actions-world",
+      "input": "actions/world-browser-save.json",
+      "inputSha256": "987ae1d4411f9c2765fd115edb600d01acb8a3452af92f84cc91d32b3ac63974",
+      "result": "passed",
+      "report": "native-reports/actions-world.json"
+    },
+    {
+      "name": "actions-surface",
+      "input": "actions/surface-world-save.json",
+      "inputSha256": "30428bc5c1938f0bffd53ae06fae428800c87a30124e9bc1084b2404b46a63af",
+      "result": "passed",
+      "report": "native-reports/actions-surface.json"
+    },
+    {
+      "name": "actions-thaw",
+      "input": "actions/thaw-world-save.json",
+      "inputSha256": "344b22de47a9beb32cbc611ca4fe395fcffb965e553f2fb1d5d314b2745edd28",
+      "result": "passed",
+      "report": "native-reports/actions-thaw.json"
+    },
+    {
+      "name": "bug-actions",
+      "input": "bug-report-sessions/actions.json",
+      "inputSha256": "45f6c915fcf484c657b20befd57baaa92eed6a60a829c95bbefb08a5bdeb9eb0",
+      "result": "passed",
+      "report": "native-reports/bug-actions.json"
+    },
+    {
+      "name": "mods-browser-save",
+      "input": "mods/browser-save.json",
+      "inputSha256": "706f79b3a0cd591b770e6bfcaa433eefe812a63eba5c493bd9fb734e4803f7aa",
+      "result": "passed",
+      "report": "native-reports/mods-browser-save.json"
+    },
+    {
+      "name": "mods-browser-replay-final.save",
+      "input": "mods/browser-replay-final.save.json",
+      "inputSha256": "706f79b3a0cd591b770e6bfcaa433eefe812a63eba5c493bd9fb734e4803f7aa",
+      "result": "passed",
+      "report": "native-reports/mods-browser-replay-final.save.json"
+    },
+    {
+      "name": "bug-mods",
+      "input": "bug-report-sessions/mods.json",
+      "inputSha256": "ff98709d44b1f208c26445700252fcdef0d55ad973bb881afd89ea2e15867442",
+      "result": "passed",
+      "report": "native-reports/bug-mods.json"
+    },
+    {
+      "name": "map",
+      "input": "map/edited-map-in-play.save.json",
+      "inputSha256": "5cee0b4f2cd562cd8ab5931fc735660a6556990fcab95fc55e9aa5b229687b12",
+      "result": "passed",
+      "report": "native-reports/map.json"
+    },
+    {
+      "name": "bug-map",
+      "input": "bug-report-sessions/map.json",
+      "inputSha256": "0fd162cb1490ad2b0bb55a37df1e3c7618fea790ccaa2d37c88a9ffd62674bf5",
+      "result": "passed",
+      "report": "native-reports/bug-map.json"
+    },
+    {
+      "name": "flat",
+      "input": "flat/convoy-playing.save.json",
+      "inputSha256": "01ccd0d467aa93117ea5868584e2f34a1ebd6a61441af099257de58498466b0d",
+      "result": "passed",
+      "report": "native-reports/flat.json"
+    },
+    {
+      "name": "bug-flat",
+      "input": "bug-report-sessions/flat.json",
+      "inputSha256": "6b4dda9ec3b2d1cb9aaaf3d8ea89721c8498dff97bed1ea571ba2f3700f7168b",
+      "result": "passed",
+      "report": "native-reports/bug-flat.json"
+    },
+    {
+      "name": "layered",
+      "input": "layered/cave-scenario-playing.save.json",
+      "inputSha256": "2fa68db933d154b9b96efb8d310f314442c2f78f67ee79e8a4253fdfc22a52d7",
+      "result": "passed",
+      "report": "native-reports/layered.json"
+    },
+    {
+      "name": "bug-layered",
+      "input": "bug-report-sessions/layered.json",
+      "inputSha256": "70e10b808bdb92c6610c36abc3232530c7bf35b8d87d89ddc07c11636335d2ad",
+      "result": "passed",
+      "report": "native-reports/bug-layered.json"
+    },
+    {
+      "name": "community-map-browser-replay-tick-0-10",
+      "input": "community-map/browser-replay-tick-0-10.save.json",
+      "inputSha256": "db7a08700a88d73f3ea81ab0089d6a7f59eb8e738d020abfc41f89f9bde90949",
+      "result": "passed",
+      "report": "native-reports/community-map-browser-replay-tick-0-10.json"
+    },
+    {
+      "name": "community-map-browser-replay-tick-20-8",
+      "input": "community-map/browser-replay-tick-20-8.save.json",
+      "inputSha256": "793938d4c3b6c6c692f2afc5b6df8b06d84423aba9c0cb7dd9b019b9e91eb1c6",
+      "result": "passed",
+      "report": "native-reports/community-map-browser-replay-tick-20-8.json"
+    },
+    {
+      "name": "community-map-browser-replay-tick-40-11",
+      "input": "community-map/browser-replay-tick-40-11.save.json",
+      "inputSha256": "c0b379d8a1c310df9b80a6e46467f9f43cbb253bd6f68bf9fd235a3ffe71e491",
+      "result": "passed",
+      "report": "native-reports/community-map-browser-replay-tick-40-11.json"
+    },
+    {
+      "name": "community-map-browser-replay-tick-40-9",
+      "input": "community-map/browser-replay-tick-40-9.save.json",
+      "inputSha256": "c0b379d8a1c310df9b80a6e46467f9f43cbb253bd6f68bf9fd235a3ffe71e491",
+      "result": "passed",
+      "report": "native-reports/community-map-browser-replay-tick-40-9.json"
+    },
+    {
+      "name": "community-map-complete",
+      "input": "community-map/browser-played-complete.save.json",
+      "inputSha256": "c0b379d8a1c310df9b80a6e46467f9f43cbb253bd6f68bf9fd235a3ffe71e491",
+      "result": "passed",
+      "report": "native-reports/community-map-complete.json"
+    },
+    {
+      "name": "bug-community-map",
+      "input": "bug-report-sessions/community-map.json",
+      "inputSha256": "5e3c09f8de1c5764660e3ee46e6fbcd0204937d33c034af94d99e3f13183f70b",
+      "result": "passed",
+      "report": "native-reports/bug-community-map.json"
+    },
+    {
+      "name": "community-mod",
+      "input": "community-mod/community-mod-trained.save.json",
+      "inputSha256": "5aa10ab8546562139e33ebd2a592d4842b8745ce0fb8a5a712da398d753fe6b8",
+      "result": "passed",
+      "report": "native-reports/community-mod.json"
+    },
+    {
+      "name": "bug-community-mod",
+      "input": "bug-report-sessions/community-mod.json",
+      "inputSha256": "41f3e51273ba48f9c916574e17f9122e02c752406db98ffe42b43524be0ac45a",
+      "result": "passed",
+      "report": "native-reports/bug-community-mod.json"
+    }
+  ],
+  "counts": {
+    "recipeSteps": 57,
+    "nativeReports": 35,
+    "privateLauncherReceipts": 38,
+    "fixtureCliBrowserExports": 27,
+    "currentApplicationBugSessions": 8,
+    "gitAuthenticatedInputs": 602,
+    "originalRawArtifactHashes": 709,
+    "visuallyInspectedScreenshots": 30
+  },
+  "cliChecks": {
+    "accepted": true,
+    "completeNativeEnvelopeParity": true,
+    "completeResumedEnvelopeParity": true,
+    "resumedTicks": 20,
+    "cliLogReplayPassed": true,
+    "verifiedLogEntries": 4,
+    "levels": 2,
+    "traversedLevel": 1
+  },
+  "artifactAudit": {
+    "path": "audit/read-only-audit.json",
+    "sha256": "4cf7f6854d219f56c2df65e1fb8356257a33945cfce02aaa7ccfab052eb8b56e",
+    "script": "audit/read-only-audit.py",
+    "scriptSha256": "9ce58a2f4b062afc3c4393e33c87ec05e573c276a7c3710016980135e8e3d38e"
+  },
+  "independentAdmission": {
+    "recommendation": "accept-recorded-world-archive-with-capture-limitations",
+    "artifact": "independent-audit.json",
+    "sha256": "c772942f765d1185289f47a5be79991867b48f52d778b70a606e7444e75748f8",
+    "reviewArtifact": "audit/independent-review.md",
+    "reviewSha256": "80f21c17010d48a6df6dfe5f9a59cbf34345059405f39ca33446a10f485f8275",
+    "rerunAuditArtifact": "audit/independent-rerun-audit.json",
+    "rerunAuditSha256": "7fe6c91687d1e023bd67d2347e955421d40b0c6eb1514563664c02ce72caa019",
+    "counts": {
+      "sourceInputs": 602,
+      "steps": 57,
+      "nativeReports": 35,
+      "launcherBindings": 38,
+      "artifactManifestEntries": 709,
+      "archiveFiles": 724
+    },
+    "directFeatureSupport": [
+      41,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      94,
+      95,
+      96,
+      97
+    ],
+    "requiresParentBehaviorEvidence": [
+      3,
+      42,
+      43,
+      90,
+      91,
+      100
+    ],
+    "captureLimitations": [
+      "Biome cavern and edited-map play captures show mostly fog and a small explored area; selectors, notices, runtime assertions, native exports, and continuation proofs establish the behavior.",
+      "flat/scenario-failure.png precedes the defeat overlay; flat/result.json records the runtime loss assertion."
+    ],
+    "findings": []
+  },
+  "screenshots": [
+    {
+      "path": "browser/desert-cavern.png",
+      "sha256": "f98783b029bcc527ea02169bcf2b85f3dc7e1d5b86238766a1e672676e83ed6e",
+      "observed": "Each surface/cavern pair shows the corresponding map-level selection, explored ground and returned surface army."
+    },
+    {
+      "path": "browser/desert-surface.png",
+      "sha256": "12a35977d03a0250d418aa1968735b21c4a3103a5b754d69da9dff27b91d85e1",
+      "observed": "Each surface/cavern pair shows the corresponding map-level selection, explored ground and returned surface army."
+    },
+    {
+      "path": "browser/forest-cavern.png",
+      "sha256": "a436e5bfd80bf4d78893de4a29ee876efc7b02c48ed83c35778c358838e1dbff",
+      "observed": "Each surface/cavern pair shows the corresponding map-level selection, explored ground and returned surface army."
+    },
+    {
+      "path": "browser/forest-surface.png",
+      "sha256": "e8d78a6d95c9b28587f5940a881f8c364cec14faaeb66c565a84deaa28a0ea6c",
+      "observed": "Each surface/cavern pair shows the corresponding map-level selection, explored ground and returned surface army."
+    },
+    {
+      "path": "browser/marsh-cavern.png",
+      "sha256": "b100efd06dc4734c1775f8ddca5ed17888bc6e38a955d6c3a964f151bb6a2e95",
+      "observed": "Each surface/cavern pair shows the corresponding map-level selection, explored ground and returned surface army."
+    },
+    {
+      "path": "browser/marsh-surface.png",
+      "sha256": "00fc8ad63b9d822f13a13489659eae76bfca11ed83e921aa3c58090a70db5f08",
+      "observed": "Each surface/cavern pair shows the corresponding map-level selection, explored ground and returned surface army."
+    },
+    {
+      "path": "browser/snow-cavern.png",
+      "sha256": "8b117060b701ae75eff7fd118aae2f857968e89a21a7f5ce2df8590a66864739",
+      "observed": "Each surface/cavern pair shows the corresponding map-level selection, explored ground and returned surface army."
+    },
+    {
+      "path": "browser/snow-surface.png",
+      "sha256": "ac25dc994038e47b99f185c19ec0644a552422e24073621b5768d85700054896",
+      "observed": "Each surface/cavern pair shows the corresponding map-level selection, explored ground and returned surface army."
+    },
+    {
+      "path": "actions/forest-fire-and-bridge.png",
+      "sha256": "b955ca1a49ca86393516e8efeb9942f056f5502bb68a0b213621df17b1dae38e",
+      "observed": "The cavern relic/army, rebuilt bridge and injured thaw worker are visible. The cavern selector matches the neutral capture."
+    },
+    {
+      "path": "actions/neutral-services-and-relic.png",
+      "sha256": "2d58c1b21765c6092aebdb2e920d496603fcd89631da806b6098f17535ca2e02",
+      "observed": "The cavern relic/army, rebuilt bridge and injured thaw worker are visible. The cavern selector matches the neutral capture."
+    },
+    {
+      "path": "actions/winter-thaw-rescue.png",
+      "sha256": "88064bfb82ffaa9dcac33d9acd0c7982742f549c99bc584474394a725c58bb9d",
+      "observed": "The cavern relic/army, rebuilt bridge and injured thaw worker are visible. The cavern selector matches the neutral capture."
+    },
+    {
+      "path": "mods/gameplay.png",
+      "sha256": "3471c209562cc299a5eac14e8023d5c125cbc5cdf8d2bd085726dc2ef6fd20f9",
+      "observed": "Custom Lantern artwork, hall construction and trained units are visible in the actual match."
+    },
+    {
+      "path": "mods/initial.png",
+      "sha256": "52d92ac02f6ebb4b67d37e0ec57a87ab2061ddc7e288e3c13f865710a1493705",
+      "observed": "Custom Lantern artwork, hall construction and trained units are visible in the actual match."
+    },
+    {
+      "path": "map/edited-map-in-play.png",
+      "sha256": "bd2897c2e6ee2d64fda69e0f1788e923ebe74471a37cc37e0e639d75280c827c",
+      "observed": "The editor shows an authored map ready for play; the play capture shows the Underground switch."
+    },
+    {
+      "path": "map/map-editor.png",
+      "sha256": "48a1f0b0d6421d8f66473aab9ef4029efddd2f290c24409053fe40c62062bb0d",
+      "observed": "The editor shows an authored map ready for play; the play capture shows the Underground switch."
+    },
+    {
+      "path": "flat/scenario-editor.png",
+      "sha256": "e4db7d11ec3ae9c8c49eaa9dcb203094fe2f43b2044f60b5dbad89e2d4af3704",
+      "observed": "The authored objectives editor and victory overlay are readable. The loss capture limitation is recorded."
+    },
+    {
+      "path": "flat/scenario-failure.png",
+      "sha256": "443cfc493a16670f55e4bb05d9f6bfa78cf996f5730e2e8442cc8b243364a38f",
+      "observed": "The authored objectives editor and victory overlay are readable. The loss capture limitation is recorded."
+    },
+    {
+      "path": "flat/scenario-success.png",
+      "sha256": "6a02c1b16e64cf2681021b016279184817df7893ed791476644c7317e620c45d",
+      "observed": "The authored objectives editor and victory overlay are readable. The loss capture limitation is recorded."
+    },
+    {
+      "path": "layered/cave-scenario-arrival.png",
+      "sha256": "cd76ba17a3e36b65a7791304aebb731f7f6bd4409b0f8143f97f5f129be3f39b",
+      "observed": "The editor has Underground point conditions; playing/arrival captures show cave actors and the victory overlay is visible."
+    },
+    {
+      "path": "layered/cave-scenario-editor.png",
+      "sha256": "8d7e13e3db026e7a0c9e64756c419bd41c2952ca537cc2970cfa15e48cc04c68",
+      "observed": "The editor has Underground point conditions; playing/arrival captures show cave actors and the victory overlay is visible."
+    },
+    {
+      "path": "layered/cave-scenario-playing.png",
+      "sha256": "882e205ff2a1e6202a66a08de155229ca837cececc77d94ede385203edea87f7",
+      "observed": "The editor has Underground point conditions; playing/arrival captures show cave actors and the victory overlay is visible."
+    },
+    {
+      "path": "layered/cave-scenario-victory.png",
+      "sha256": "18aad588fd182cf84a90c2be4e68976e5eb9f0431013b3269f5f793d8d7c237a",
+      "observed": "The editor has Underground point conditions; playing/arrival captures show cave actors and the victory overlay is visible."
+    },
+    {
+      "path": "community-map/community-map-in-play.png",
+      "sha256": "a0a0a0c465b01ac3dbdc5853ef241ad4d069c0b1fcdf6242a3db76a2c2d435e8",
+      "observed": "The account browser shows preview and pinned version1 beside a version2 publication; installed gameplay and replay viewer retain the authored terrain."
+    },
+    {
+      "path": "community-map/community-pinned-replay-viewer.png",
+      "sha256": "74db929cd8b429a177c8be9789797142e795a51136f945fd2fe5a0e34793078f",
+      "observed": "The account browser shows preview and pinned version1 beside a version2 publication; installed gameplay and replay viewer retain the authored terrain."
+    },
+    {
+      "path": "community-map/community-pinned-revisions.png",
+      "sha256": "3e7eb4a0ca7d4fd598f05c6e4b75d603fb8ad5ae88c7c2e932b001e4a69be702",
+      "observed": "The account browser shows preview and pinned version1 beside a version2 publication; installed gameplay and replay viewer retain the authored terrain."
+    },
+    {
+      "path": "community-map/community-preview.png",
+      "sha256": "bbd0638fa3e11fc2141dc9dc74bdf8222ffe639702a0a40d1a3266f129fee7b3",
+      "observed": "The account browser shows preview and pinned version1 beside a version2 publication; installed gameplay and replay viewer retain the authored terrain."
+    },
+    {
+      "path": "community-mod/community-mod-pinned-revisions.png",
+      "sha256": "914470af1e9b9309a5198eed8b418f7721d3e1049d3b664c7e38022c7327bf38",
+      "observed": "The account browser shows pinned original mod/dependency closure after a revision; trained custom units and the pinned custom scenario victory are visible."
+    },
+    {
+      "path": "community-mod/community-mod-preview.png",
+      "sha256": "138cb7a9dadf501856f6762b619e34a0e4356d2a189253d79832cc0d0bea8037",
+      "observed": "The account browser shows pinned original mod/dependency closure after a revision; trained custom units and the pinned custom scenario victory are visible."
+    },
+    {
+      "path": "community-mod/community-mod-trained.png",
+      "sha256": "546cb66883dbf8b7ed0c2cc2fd1bd8a15df393672b88faf0c121f5ac61401864",
+      "observed": "The account browser shows pinned original mod/dependency closure after a revision; trained custom units and the pinned custom scenario victory are visible."
+    },
+    {
+      "path": "community-mod/pinned-lantern-scenario-victory.png",
+      "sha256": "502f3f801659edf5dcf447c59869b808a06c48c60ac5f40f5149fc9128d003fb",
+      "observed": "The account browser shows pinned original mod/dependency closure after a revision; trained custom units and the pinned custom scenario victory are visible."
+    }
+  ],
+  "visualCaptureLimitations": [
+    {
+      "path": "browser/*-cavern.png",
+      "observation": "The cavern captures show mostly fog and a small explored area. Map-level selectors and notices support the transition; browser assertions and complete native exports establish geometry, visibility and state."
+    },
+    {
+      "path": "map/edited-map-in-play.png",
+      "observation": "Underground select and Entered Underground notice are visible, with mostly fog and a unit ring. The image supports the level switch; authored cave terrain and geometry are proved by retained runtime assertions and native export."
+    },
+    {
+      "path": "flat/scenario-failure.png",
+      "observation": "The battlefield capture precedes a defeat overlay. The retained flat editor result proves the runtime loss assertion; this image alone does not show defeat."
+    }
+  ],
+  "screenshotInspectionArtifact": {
+    "path": "audit/visual-inspection.json",
+    "sha256": "bd4d882cff97ce5baca782ce35d364feea4e186bac0d0e901f2780476f6031a2"
+  },
+  "buildManifestSha256": {
+    "dist": "2f701c00897e75ea1555cd72b59a09452d38e7c1c926fbe48382971d6f7ca346",
+    "dist-cli": "70161e367181091e502bb904418c94f2227dbfa6334eee6ddcfc49d512706025",
+    "dist-server": "240a746bfa756c0ee4168963b25948569f0a5d83c7f915544a1ab38b4ad886a0",
+    "dist-tournament": "31bd3e26dd0144c1acd958ef87a245ac31f5c19d8471550eb3c98d4301bd59c1"
+  },
+  "sourceAndBuildBytesUnchanged": true,
+  "servedIndexAndEditorBytesUnchanged": true,
+  "cleanupArtifact": {
+    "path": "audit/cleanup-receipt.json",
+    "sha256": "670169cd47977c017d503d48f47b19a857fa02385c2c44f39bcc4a7e50d88263"
+  },
+  "cleanup": {
+    "kind": "actual-owned-world-cleanup-receipt",
+    "sourcePin": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+    "checkedAt": "2026-10-01T19:14:35.536753+00:00",
+    "previewPid": 729795,
+    "previewPidAbsent": true,
+    "previewClosed": true,
+    "ownedPorts": [
+      5183,
+      35123,
+      41683
+    ],
+    "listenersAfter": {
+      "5183": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess",
+      "35123": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess",
+      "41683": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess"
+    },
+    "directLoopbackBindPassed": {
+      "5183": true,
+      "35123": true,
+      "41683": true
+    },
+    "temporaryDirectory": "/tmp",
+    "backendDirectoriesAfter": {
+      "ovf-community-browser-*": [],
+      "ovf-community-mod-*": []
+    },
+    "helpersAfter": [],
+    "all38PrivateRebuildDirectoriesAbsent": true,
+    "cleanupSource": "Pinned community drivers await browser/server close and their own data/helper directory deletion in finally; native launcher removes each private rebuild in finally.",
+    "port4173Touched": false
+  },
+  "protected4173Touched": false,
+  "historicalDb36593Save4Rules400Preserved": true,
+  "futureRevisionProofsRequireFreshGeneration": true,
+  "noRelabeling": true,
+  "requirementEvidenceMapping": [
+    {
+      "requirements": [
+        41,
+        50
+      ],
+      "artifacts": [
+        "browser/browser-world.json",
+        "browser/*-surface.png",
+        "browser/*-cavern.png",
+        "native-reports/world-*.json"
+      ],
+      "coverage": "Four production biome menu launches, surface/cave traversal and independent visibility, return traversal and complete native exports."
+    },
+    {
+      "requirements": [
+        42,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49
+      ],
+      "artifacts": [
+        "actions/browser-world-actions.json",
+        "actions/*.png",
+        "native-reports/actions-*.json"
+      ],
+      "coverage": "Production dusk transition, bridge destruction/payment/rebuild, finite-timber ignition/firebreak, lake thaw/rescue, cleared den/finite reward, village loyalty/supplies/recruitment and captured cavern relic."
+    },
+    {
+      "requirements": [
+        94
+      ],
+      "artifacts": [
+        "map/result.json",
+        "map/two-level-map.json",
+        "map/edited-map-in-play.save.json",
+        "native-reports/map.json"
+      ],
+      "coverage": "Normal editor paint/elevation/undo/redo/save/import/start-slot/geometry validation and actual two-level game launch/traversal/native export."
+    },
+    {
+      "requirements": [
+        95
+      ],
+      "artifacts": [
+        "flat/result.json",
+        "layered/result.json",
+        "layered/cave-scenario-timeline.json",
+        "native-reports/flat.json",
+        "native-reports/layered.json"
+      ],
+      "coverage": "Authored flat and underground objectives/triggers/events and actual custom victory/loss paths with current native exports."
+    },
+    {
+      "requirements": [
+        96
+      ],
+      "artifacts": [
+        "mods/browser-proof.json",
+        "mods/initial.png",
+        "mods/gameplay.png",
+        "native-reports/mods-*.json",
+        "mod-fixtures/lantern.json"
+      ],
+      "coverage": "Imported pinned custom faction/artwork/healing/construction/recruitment/research/combat/save/resume/native replay; content package engine remains3."
+    },
+    {
+      "requirements": [
+        97
+      ],
+      "artifacts": [
+        "community-map/result.json",
+        "community-mod/result.json",
+        "community-map/*.png",
+        "community-mod/*.png",
+        "native-reports/community-*.json"
+      ],
+      "coverage": "Two independent authenticated profiles publish/search/checksum-install/play, preserve old revisions/dependency closure, restart, view native pinned replay and play an authored custom-content scenario."
+    },
+    {
+      "requirements": [
+        90,
+        91,
+        100
+      ],
+      "supportingOnly": true,
+      "artifacts": [
+        "native-reports/*.json",
+        "bug-report-sessions/*.json"
+      ],
+      "coverage": "All35 current native exports preserve complete decode/resave/replay envelopes,20 resumed ticks and extended histories;8 application build-report sessions have current revision and frozen build."
+    }
+  ],
+  "rootOwnedBehavioralEvidence": "Root focused/full tests prove rule effects beyond these named production/native paths, including requirement3 high-ground and requirements42/43 visibility/night/weather modifiers.",
+  "retainedArchiveFileCount": 727,
+  "retainedArtifactManifest": "retained-artifact-hashes.tsv",
+  "committedEvidenceCopies": {
+    "independent-review.md": {
+      "rawPath": "audit/independent-review.md",
+      "sha256": "80f21c17010d48a6df6dfe5f9a59cbf34345059405f39ca33446a10f485f8275"
+    },
+    "independent-rerun-audit.json": {
+      "rawPath": "audit/independent-rerun-audit.json",
+      "sha256": "7fe6c91687d1e023bd67d2347e955421d40b0c6eb1514563664c02ce72caa019"
+    },
+    "read-only-audit.py": {
+      "rawPath": "audit/read-only-audit.py",
+      "sha256": "9ce58a2f4b062afc3c4393e33c87ec05e573c276a7c3710016980135e8e3d38e"
+    },
+    "read-only-audit.json": {
+      "rawPath": "audit/read-only-audit.json",
+      "sha256": "4cf7f6854d219f56c2df65e1fb8356257a33945cfce02aaa7ccfab052eb8b56e"
+    },
+    "visual-inspection.json": {
+      "rawPath": "audit/visual-inspection.json",
+      "sha256": "bd4d882cff97ce5baca782ce35d364feea4e186bac0d0e901f2780476f6031a2"
+    },
+    "cleanup-receipt.json": {
+      "rawPath": "audit/cleanup-receipt.json",
+      "sha256": "670169cd47977c017d503d48f47b19a857fa02385c2c44f39bcc4a7e50d88263"
+    },
+    "run-world-content-frozen-pin.py": {
+      "rawPath": "audit/run-world-content-frozen-pin.py",
+      "sha256": "8ef9ca35d73f8fdda36b899898e2ef3c0cbf870f958a56c225c895a06563a87c"
+    },
+    "independent-audit.json": {
+      "rawPath": "audit/independent-admission.json",
+      "sha256": "c772942f765d1185289f47a5be79991867b48f52d778b70a606e7444e75748f8"
+    }
+  }
+}
