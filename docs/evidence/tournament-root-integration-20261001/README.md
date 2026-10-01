@@ -7,3 +7,5 @@ The three exported replay states match the two full tournament report hashes. Fo
 Screenshots, compressed reports and the app's own exported session saves remain here. The old intercepted Restart failure is retained under `prior-online-overlap-failure`; its fixed-position Online button prompted the shared-toolbar correction. SAVE3 and rules3.2.0 were used; final combined migrations require new current-format evidence.
 
 Reproduce from a new output directory using `scripts/tournaments/verify-canonical-main.mjs` and the bundled Playwright module. See `docs/features/tournament-main-verification.md` for the command and scope.
+
+The isolated `canonical-main-29c75a5-1` attempt passed five HTTP checks, then its verifier could not identify the Chromium process it had launched. Its summary is retained as `prior-browser-process-observation-failure.json`; cleanup completed with no surviving observed agents or forced cleanup. This was a verifier observation failure. The successful isolated and root runs used the corrected observation code.

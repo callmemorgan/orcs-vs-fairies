@@ -17,7 +17,7 @@ export interface OnlineRenderState {
   objectiveView:Pick<PlayerObservation,'side'|'teamId'|'player'|'allies'|'opponents'|'tick'|'rules'|'draft'|'draftChoices'|'draftDefinitions'|'objectives'|'result'> & {entities:Array<Pick<Entity,'id'|'side'|'kind'|'role'|'x'|'y'|'level'|'hp'|'illusion'>>};
 }
 
-function ownPlayer(player:Player):Player {
+function ownPlayer(player:Player):PlayerObservation['player'] {
   return {faction:player.faction,wood:player.wood,ore:player.ore,crystal:player.crystal,
     population:player.population,cap:player.cap,heroRecovery:player.heroRecovery?.map(recovery=>({...recovery})),upgrades:[...player.upgrades]};
 }

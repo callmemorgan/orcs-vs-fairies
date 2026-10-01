@@ -1,0 +1,40 @@
+
+> orcs-vs-fairies@0.1.0 test
+> vitest run tests/specialist-building-authority.test.ts tests/specialist-command-analysis.test.ts tests/specialist-gameplay.test.ts tests/specialist-bridge-expiry.test.ts tests/specialist-world-integration.test.ts tests/modes-combined.test.ts tests/modes-combined-ui.test.ts tests/modes-objectives.test.ts tests/match-rules-ui.test.ts tests/server-modes.test.ts
+
+
+ RUN  v4.1.11 /home/morgana/Projects/orcs-vs-Fairies
+
+ ❯ tests/modes-objectives.test.ts (13 tests | 2 failed) 775ms
+     × finishes a timed eight-player mirror draft and saves every player roster 187ms
+     × applies unit restrictions to survival attackers and to the starting soldier 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/modes-objectives.test.ts > saved match rules and objectives > finishes a timed eight-player mirror draft and saves every player roster
+AssertionError: expected [ 'core:orcs-engineer', …(2) ] to include 'orc-special'
+ ❯ tests/modes-objectives.test.ts:69:154
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/modes-objectives.test.ts > saved match rules and objectives > applies unit restrictions to survival attackers and to the starting soldier
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/modes-objectives.test.ts:73:156
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 9 passed (10)
+      Tests  2 failed | 187 passed (189)
+   Start at  04:38:27
+   Duration  5.01s (transform 1.58s, setup 0ms, import 2.34s, tests 15.11s, environment 285ms)
+

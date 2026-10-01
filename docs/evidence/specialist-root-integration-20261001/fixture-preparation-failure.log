@@ -1,0 +1,19 @@
+node:internal/fs/promises:1743
+  const result = await PromisePrototypeThen(
+                 ^
+
+Error: ENOENT: no such file or directory, stat 'work/hundred-features/specialists/orcs.json'
+    at async Object.stat (node:internal/fs/promises:1743:18)
+    at async resolvePathsAndDirectoryForInputFiles (/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/lib/coreBundle.js:60325:18)
+    at async convertInputFiles (/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/lib/coreBundle.js:60344:42)
+    at async _Frame.setInputFiles (/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/lib/coreBundle.js:60197:27)
+    at async _Locator.setInputFiles (/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/lib/coreBundle.js:58207:16)
+    at async load (file:///home/morgana/Projects/orcs-vs-Fairies/scripts/verify_specialists.mjs:69:3)
+    at async file:///home/morgana/Projects/orcs-vs-Fairies/scripts/verify_specialists.mjs:153:17 {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'stat',
+  path: 'work/hundred-features/specialists/orcs.json'
+}
+
+Node.js v24.21.0

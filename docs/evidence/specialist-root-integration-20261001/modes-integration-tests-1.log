@@ -1,0 +1,785 @@
+
+> orcs-vs-fairies@0.1.0 test
+> vitest run tests/specialist-building-authority.test.ts tests/specialist-command-analysis.test.ts tests/specialist-gameplay.test.ts tests/specialist-bridge-expiry.test.ts tests/specialist-world-integration.test.ts tests/modes-combined.test.ts tests/modes-combined-ui.test.ts tests/modes-objectives.test.ts tests/match-rules-ui.test.ts tests/server-modes.test.ts
+
+
+ RUN  v4.1.11 /home/morgana/Projects/orcs-vs-Fairies
+
+ ❯ tests/specialist-command-analysis.test.ts (7 tests | 7 failed) 37ms
+     × undead records lethal command losses once before stepping, through resumed history and replay seek 12ms
+     × tideborn records lethal command losses once before stepping, through resumed history and replay seek 8ms
+     × undead starts fresh analysis after a lethal command without recounting initial events 3ms
+     × tideborn starts fresh analysis after a lethal command without recounting initial events 3ms
+     × exports a completed command-only replay with losses before any timestep exists 4ms
+     × counts a new death event for an authored survivor whose ID occurs in initial historical deaths 2ms
+     × restores a seek checkpoint taken on the same tick as a lethal command without recounting its death 3ms
+ ❯ tests/specialist-bridge-expiry.test.ts (12 tests | 12 failed) 97ms
+     × kills a normal level-0 troop once and leaves the same coordinates on the other level alive 26ms
+     × kills a normal level-1 troop once and leaves the same coordinates on the other level alive 15ms
+     × uses central cleanup for an equipped level-0 commander, with one recovery entry and one extra loot item 9ms
+     × uses central cleanup for an equipped level-1 commander, with one recovery entry and one extra loot item 7ms
+     × kills a level-0 illusion commander without permanent rewards or ordinary losses 8ms
+     × kills a level-1 illusion commander without permanent rewards or ordinary losses 5ms
+     × kills a level-0 raised commander without permanent rewards or ordinary losses 5ms
+     × kills a level-1 raised commander without permanent rewards or ordinary losses 5ms
+     × reproduces level-0 cleanup and loss counts from a native save and replay seeks across expiry 4ms
+     × reproduces level-1 cleanup and loss counts from a native save and replay seeks across expiry 3ms
+     × rescues a level-0 footprint overlapping the bridge when its center is already on an isolated bank 5ms
+     × rescues a level-1 footprint overlapping the bridge when its center is already on an isolated bank 4ms
+ ❯ tests/specialist-world-integration.test.ts (27 tests | 27 failed) 167ms
+     × builds and expires a level-0 bridge through the world terrain API, and replays a real crossing 33ms
+     × builds and expires a level-1 bridge through the world terrain API, and replays a real crossing 15ms
+     × rejects temporary bridge placement over permanent bridge tiles without charging resources 10ms
+     × restores untouched temporary tiles despite unrelated edits and preserves changed terrain on either level 7ms
+     × evacuates a level-0 unit whose footprint overlaps an expired bridge from adjacent bank 6ms
+     × evacuates a level-1 unit whose footprint overlaps an expired bridge from adjacent bank 4ms
+     × evacuates a level-0 unit whose footprint overlaps a destroyed permanent bridge from adjacent bank 4ms
+     × evacuates a level-1 unit whose footprint overlaps a destroyed permanent bridge from adjacent bank 6ms
+     × uses underground terrain for teleportation and keeps its event hidden from a surface observer 4ms
+     × moves terrified underground units while leaving identical surface coordinates unaffected 3ms
+     × observes and equips underground artifacts without disclosing hidden surface artifacts or retaining shared records 4ms
+     × records field repair and barricade commands on level-0 5ms
+     × records field repair and barricade commands on level-1 5ms
+     × uses veteran damage, promotion armor and equipment in normal level-0 neutral combat and replay 6ms
+     × uses veteran damage, promotion armor and equipment in normal level-1 neutral combat and replay 5ms
+     × runs commander recovery and finite artifact cleanup when a level-0 forest fire kills a hero 4ms
+     × runs commander recovery and finite artifact cleanup when a level-1 forest fire kills a hero 5ms
+     × runs commander recovery and one loot drop when thaw drowns a hero trapped far from shore 4ms
+     × runs commander cleanup when a level-0 permanent bridge collapses with no reachable shore 4ms
+     × runs commander cleanup when a level-1 permanent bridge collapses with no reachable shore 4ms
+     × applies projectile weather=clear and high ground once on level-0 5ms
+     × applies projectile weather=rain and high ground once on level-0 4ms
+     × applies projectile weather=rain and high ground once on level-1 5ms
+     × rejects a specialist artifact position on a nonexistent third level 4ms
+     × rejects a specialist bridge position on a nonexistent third level 4ms
+     × rejects a specialist shot position on a nonexistent third level 3ms
+     × rejects a specialist fire-origin position on a nonexistent third level 3ms
+ ❯ tests/modes-objectives.test.ts (13 tests | 2 failed) 789ms
+     × finishes a timed eight-player mirror draft and saves every player roster 188ms
+     × applies unit restrictions to survival attackers and to the starting soldier 3ms
+ ❯ tests/specialist-gameplay.test.ts (86 tests | 72 failed) 3237ms
+     × orcs cavalry uses its distinct ability and rejects an immediate repeat 5ms
+     × fairies cavalry uses its distinct ability and rejects an immediate repeat 2ms
+     × dwarves cavalry uses its distinct ability and rejects an immediate repeat 1ms
+     × undead cavalry uses its distinct ability and rejects an immediate repeat 1ms
+     × tideborn cavalry uses its distinct ability and rejects an immediate repeat 2ms
+     × automata cavalry uses its distinct ability and rejects an immediate repeat 1ms
+     × rejects leaps to hidden, blocked, distant and foreign targets without spending cooldown or shield 1ms
+     × requires wet ground for Wet Surge and a nearby hostile troop for Terror 1ms
+     × orcs commander applies its targeted effect through the accepted ability command 1ms
+     × fairies commander applies its targeted effect through the accepted ability command 2ms
+     × dwarves commander applies its targeted effect through the accepted ability command 1ms
+     × undead commander applies its targeted effect through the accepted ability command 1ms
+     × tideborn commander applies its targeted effect through the accepted ability command 1ms
+     × automata commander applies its targeted effect through the accepted ability command 1ms
+     × dwarves commander rejects the wrong team and invalid targets without consuming its ability 1ms
+     × undead commander rejects the wrong team and invalid targets without consuming its ability 1ms
+     × automata commander rejects the wrong team and invalid targets without consuming its ability 1ms
+     × orcs pays preparation costs and delays health damage until projectile impact 1ms
+     × fairies pays preparation costs and delays health damage until projectile impact 1ms
+     × dwarves pays preparation costs and delays health damage until projectile impact 1ms
+     × undead pays preparation costs and delays health damage until projectile impact 1ms
+     × tideborn pays preparation costs and delays health damage until projectile impact 1ms
+     × automata pays preparation costs and delays health damage until projectile impact 1ms
+     × orcs rejects preparation without its resource 1ms
+     × fairies rejects preparation without its resource 1ms
+     × dwarves rejects preparation without its resource 1ms
+     × tideborn rejects preparation without its resource 1ms
+     × automata rejects preparation without its resource 1ms
+     × rejects corpse shells without a nearby visible corpse and prevents duplicate paid shell preparation 1ms
+     × keeps cannon deployment on an explicit in-range attack, and movement packs it 1ms
+     × redeploys a moved cannon with ten paid rounds without discarding ammunition 1ms
+     × dwarves expends a finite paid magazine and cannot fire when empty 1ms
+     × automata expends a finite paid magazine and cannot fire when empty 1ms
+     × damages allies in the impact area without awarding XP for allied damage 1ms
+     × does not turn allied splash damage into survival experience 1ms
+     × continues incendiary damage after the source dies and is removed 1ms
+     × fairies shell changes commanded movement until its effect expires 1ms
+     × tideborn shell changes commanded movement until its effect expires 1ms
+     × awards survival XP for a recent hostile hit, then stops awarding it after disengagement 1ms
+     × does not award survival XP for being hit only by a disposable illusion 1ms
+     × does not award survival XP for being hit only by a disposable raised 1ms
+     × earns all three ranks from hostile damage and grants survival XP only while combat exposure is recent 2ms
+     × melee promotion vanguard changes the real combat or movement result 1ms
+     × special promotion bulwark changes the real combat or movement result 1ms
+     × ranged promotion sharpshooter changes the real combat or movement result 1ms
+     × cavalry promotion pathfinder changes the real combat or movement result 1ms
+     × does not award combat XP for damaging illusion troops or attacks by them 1ms
+     × does not award combat XP for damaging raised troops or attacks by them 1ms
+     × rejects allied attack commands and ineligible promotion choices 1ms
+     × limits commanders while queued and alive, then requires the full death recovery and recruitment price 46ms
+     × enforces owner, distance, visibility and specialist eligibility, and equips only a held item 2ms
+     × changes damage, armor and movement through equipped artifacts, and removal restores the baseline 2ms
+     × drops held items once on a commander death and makes only visible ground artifacts observable 2ms
+     × does not create a commander artifact when a disposable illusion dies 1ms
+     × does not create a commander artifact when a disposable raised dies 1ms
+     × connects a beacon chain with global shared vision=true, grants team sight, alerts once and never attacks 8ms
+     × connects a beacon chain with global shared vision=false, grants team sight, alerts once and never attacks 6ms
+     × builds a three-tile bridge, lets a unit cross, then restores water after 60 seconds 2ms
+     × preserves a bridge tile changed later, blocks duplicate builds, and expires a barricade collision 2ms
+     × returns an actor occupying an expired bridge to walkable shore 2ms
+     × charges proportional ore for field repair and rejects full, distant, hostile and unsupported targets 1ms
+     × rejects field work by ordinary troops, beyond sight or distance, and without payment 1ms
+     × does not credit a captured siege engine for its former owner's delayed damage, lethal=false 5ms
+     × does not credit a captured siege engine for its former owner's delayed damage, lethal=true 5ms
+     × orcs saves and replays its ammunition, pending impact and active field effect 1ms
+     × fairies saves and replays its ammunition, pending impact and active field effect 1ms
+     × dwarves saves and replays its ammunition, pending impact and active field effect 2ms
+     × undead saves and replays its ammunition, pending impact and active field effect 1ms
+     × tideborn saves and replays its ammunition, pending impact and active field effect 1ms
+     × automata saves and replays its ammunition, pending impact and active field effect 1ms
+     × resolves a real long-range shell after its source has died, been removed and been saved 8ms
+     × resumes and replays active shells, fire, equipment, bridges and hero recovery deterministically 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 120 ⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/modes-objectives.test.ts > saved match rules and objectives > finishes a timed eight-player mirror draft and saves every player roster
+AssertionError: expected [ 'core:orcs-engineer', …(2) ] to include 'orc-special'
+ ❯ tests/modes-objectives.test.ts:69:154
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/120]⎯
+
+ FAIL  tests/modes-objectives.test.ts > saved match rules and objectives > applies unit restrictions to survival attackers and to the starting soldier
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/modes-objectives.test.ts:73:156
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/120]⎯
+
+ FAIL  tests/specialist-bridge-expiry.test.ts > temporary crossing expiry without reachable shore > kills a normal level-0 troop once and leaves the same coordinates on the other level alive
+ FAIL  tests/specialist-bridge-expiry.test.ts > temporary crossing expiry without reachable shore > kills a normal level-1 troop once and leaves the same coordinates on the other level alive
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-bridge-expiry.test.ts:36:16
+ ❯ fixture tests/specialist-bridge-expiry.test.ts:31:20
+ ❯ tests/specialist-bridge-expiry.test.ts:72:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/120]⎯
+
+ FAIL  tests/specialist-bridge-expiry.test.ts > temporary crossing expiry without reachable shore > uses central cleanup for an equipped level-0 commander, with one recovery entry and one extra loot item
+ FAIL  tests/specialist-bridge-expiry.test.ts > temporary crossing expiry without reachable shore > uses central cleanup for an equipped level-1 commander, with one recovery entry and one extra loot item
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-bridge-expiry.test.ts:36:16
+ ❯ fixture tests/specialist-bridge-expiry.test.ts:31:20
+ ❯ tests/specialist-bridge-expiry.test.ts:87:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/120]⎯
+
+ FAIL  tests/specialist-bridge-expiry.test.ts > temporary crossing expiry without reachable shore > kills a level-0 illusion commander without permanent rewards or ordinary losses
+ FAIL  tests/specialist-bridge-expiry.test.ts > temporary crossing expiry without reachable shore > kills a level-1 illusion commander without permanent rewards or ordinary losses
+ FAIL  tests/specialist-bridge-expiry.test.ts > temporary crossing expiry without reachable shore > kills a level-0 raised commander without permanent rewards or ordinary losses
+ FAIL  tests/specialist-bridge-expiry.test.ts > temporary crossing expiry without reachable shore > kills a level-1 raised commander without permanent rewards or ordinary losses
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-bridge-expiry.test.ts:36:16
+ ❯ fixture tests/specialist-bridge-expiry.test.ts:31:20
+ ❯ tests/specialist-bridge-expiry.test.ts:103:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/120]⎯
+
+ FAIL  tests/specialist-bridge-expiry.test.ts > temporary crossing expiry without reachable shore > reproduces level-0 cleanup and loss counts from a native save and replay seeks across expiry
+ FAIL  tests/specialist-bridge-expiry.test.ts > temporary crossing expiry without reachable shore > reproduces level-1 cleanup and loss counts from a native save and replay seeks across expiry
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-bridge-expiry.test.ts:36:16
+ ❯ fixture tests/specialist-bridge-expiry.test.ts:31:20
+ ❯ tests/specialist-bridge-expiry.test.ts:118:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/120]⎯
+
+ FAIL  tests/specialist-bridge-expiry.test.ts > temporary crossing expiry without reachable shore > rescues a level-0 footprint overlapping the bridge when its center is already on an isolated bank
+ FAIL  tests/specialist-bridge-expiry.test.ts > temporary crossing expiry without reachable shore > rescues a level-1 footprint overlapping the bridge when its center is already on an isolated bank
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-bridge-expiry.test.ts:36:16
+ ❯ fixture tests/specialist-bridge-expiry.test.ts:31:20
+ ❯ tests/specialist-bridge-expiry.test.ts:142:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/120]⎯
+
+ FAIL  tests/specialist-command-analysis.test.ts > analysis of specialist command deaths > undead records lethal command losses once before stepping, through resumed history and replay seek
+ FAIL  tests/specialist-command-analysis.test.ts > analysis of specialist command deaths > tideborn records lethal command losses once before stepping, through resumed history and replay seek
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ fixture tests/specialist-command-analysis.test.ts:19:21
+ ❯ tests/specialist-command-analysis.test.ts:43:58
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/120]⎯
+
+ FAIL  tests/specialist-command-analysis.test.ts > analysis of specialist command deaths > undead starts fresh analysis after a lethal command without recounting initial events
+ FAIL  tests/specialist-command-analysis.test.ts > analysis of specialist command deaths > tideborn starts fresh analysis after a lethal command without recounting initial events
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ fixture tests/specialist-command-analysis.test.ts:19:21
+ ❯ tests/specialist-command-analysis.test.ts:73:52
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/120]⎯
+
+ FAIL  tests/specialist-command-analysis.test.ts > analysis of specialist command deaths > exports a completed command-only replay with losses before any timestep exists
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ fixture tests/specialist-command-analysis.test.ts:19:21
+ ❯ tests/specialist-command-analysis.test.ts:89:58
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/120]⎯
+
+ FAIL  tests/specialist-command-analysis.test.ts > analysis of specialist command deaths > counts a new death event for an authored survivor whose ID occurs in initial historical deaths
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ fixture tests/specialist-command-analysis.test.ts:19:21
+ ❯ tests/specialist-command-analysis.test.ts:97:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/120]⎯
+
+ FAIL  tests/specialist-command-analysis.test.ts > analysis of specialist command deaths > restores a seek checkpoint taken on the same tick as a lethal command without recounting its death
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ fixture tests/specialist-command-analysis.test.ts:19:21
+ ❯ tests/specialist-command-analysis.test.ts:115:58
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > specialist recruitment and cavalry > orcs cavalry uses its distinct ability and rejects an immediate repeat
+ FAIL  tests/specialist-gameplay.test.ts > specialist recruitment and cavalry > fairies cavalry uses its distinct ability and rejects an immediate repeat
+ FAIL  tests/specialist-gameplay.test.ts > specialist recruitment and cavalry > dwarves cavalry uses its distinct ability and rejects an immediate repeat
+ FAIL  tests/specialist-gameplay.test.ts > specialist recruitment and cavalry > undead cavalry uses its distinct ability and rejects an immediate repeat
+ FAIL  tests/specialist-gameplay.test.ts > specialist recruitment and cavalry > tideborn cavalry uses its distinct ability and rejects an immediate repeat
+ FAIL  tests/specialist-gameplay.test.ts > specialist recruitment and cavalry > automata cavalry uses its distinct ability and rejects an immediate repeat
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ tests/specialist-gameplay.test.ts:105:53
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > specialist recruitment and cavalry > rejects leaps to hidden, blocked, distant and foreign targets without spending cooldown or shield
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ tests/specialist-gameplay.test.ts:119:56
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > specialist recruitment and cavalry > requires wet ground for Wet Surge and a nearby hostile troop for Terror
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ tests/specialist-gameplay.test.ts:128:106
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > specialist recruitment and cavalry > orcs commander applies its targeted effect through the accepted ability command
+ FAIL  tests/specialist-gameplay.test.ts > specialist recruitment and cavalry > fairies commander applies its targeted effect through the accepted ability command
+ FAIL  tests/specialist-gameplay.test.ts > specialist recruitment and cavalry > dwarves commander applies its targeted effect through the accepted ability command
+ FAIL  tests/specialist-gameplay.test.ts > specialist recruitment and cavalry > undead commander applies its targeted effect through the accepted ability command
+ FAIL  tests/specialist-gameplay.test.ts > specialist recruitment and cavalry > tideborn commander applies its targeted effect through the accepted ability command
+ FAIL  tests/specialist-gameplay.test.ts > specialist recruitment and cavalry > automata commander applies its targeted effect through the accepted ability command
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ tests/specialist-gameplay.test.ts:131:52
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > specialist recruitment and cavalry > dwarves commander rejects the wrong team and invalid targets without consuming its ability
+ FAIL  tests/specialist-gameplay.test.ts > specialist recruitment and cavalry > undead commander rejects the wrong team and invalid targets without consuming its ability
+ FAIL  tests/specialist-gameplay.test.ts > specialist recruitment and cavalry > automata commander rejects the wrong team and invalid targets without consuming its ability
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ tests/specialist-gameplay.test.ts:145:52
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > specialist siege impacts > orcs pays preparation costs and delays health damage until projectile impact
+ FAIL  tests/specialist-gameplay.test.ts > specialist siege impacts > fairies pays preparation costs and delays health damage until projectile impact
+ FAIL  tests/specialist-gameplay.test.ts > specialist siege impacts > dwarves pays preparation costs and delays health damage until projectile impact
+ FAIL  tests/specialist-gameplay.test.ts > specialist siege impacts > undead pays preparation costs and delays health damage until projectile impact
+ FAIL  tests/specialist-gameplay.test.ts > specialist siege impacts > tideborn pays preparation costs and delays health damage until projectile impact
+ FAIL  tests/specialist-gameplay.test.ts > specialist siege impacts > automata pays preparation costs and delays health damage until projectile impact
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ siegeFixture tests/specialist-gameplay.test.ts:64:49
+ ❯ tests/specialist-gameplay.test.ts:153:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > specialist siege impacts > orcs rejects preparation without its resource
+ FAIL  tests/specialist-gameplay.test.ts > specialist siege impacts > fairies rejects preparation without its resource
+ FAIL  tests/specialist-gameplay.test.ts > specialist siege impacts > dwarves rejects preparation without its resource
+ FAIL  tests/specialist-gameplay.test.ts > specialist siege impacts > tideborn rejects preparation without its resource
+ FAIL  tests/specialist-gameplay.test.ts > specialist siege impacts > automata rejects preparation without its resource
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ siegeFixture tests/specialist-gameplay.test.ts:64:49
+ ❯ tests/specialist-gameplay.test.ts:170:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > specialist siege impacts > rejects corpse shells without a nearby visible corpse and prevents duplicate paid shell preparation
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ siegeFixture tests/specialist-gameplay.test.ts:64:49
+ ❯ tests/specialist-gameplay.test.ts:174:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > specialist siege impacts > keeps cannon deployment on an explicit in-range attack, and movement packs it
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ siegeFixture tests/specialist-gameplay.test.ts:64:49
+ ❯ tests/specialist-gameplay.test.ts:180:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > specialist siege impacts > redeploys a moved cannon with ten paid rounds without discarding ammunition
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ siegeFixture tests/specialist-gameplay.test.ts:64:49
+ ❯ tests/specialist-gameplay.test.ts:185:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > specialist siege impacts > dwarves expends a finite paid magazine and cannot fire when empty
+ FAIL  tests/specialist-gameplay.test.ts > specialist siege impacts > automata expends a finite paid magazine and cannot fire when empty
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ tests/specialist-gameplay.test.ts:192:51
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > specialist siege impacts > damages allies in the impact area without awarding XP for allied damage
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ siegeFixture tests/specialist-gameplay.test.ts:64:49
+ ❯ tests/specialist-gameplay.test.ts:199:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > specialist siege impacts > does not turn allied splash damage into survival experience
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ siegeFixture tests/specialist-gameplay.test.ts:64:49
+ ❯ tests/specialist-gameplay.test.ts:204:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > specialist siege impacts > continues incendiary damage after the source dies and is removed
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ siegeFixture tests/specialist-gameplay.test.ts:64:49
+ ❯ tests/specialist-gameplay.test.ts:210:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > specialist siege impacts > fairies shell changes commanded movement until its effect expires
+ FAIL  tests/specialist-gameplay.test.ts > specialist siege impacts > tideborn shell changes commanded movement until its effect expires
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ siegeFixture tests/specialist-gameplay.test.ts:64:49
+ ❯ tests/specialist-gameplay.test.ts:216:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > combat veterans, promotions and recovery > awards survival XP for a recent hostile hit, then stops awarding it after disengagement
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ tests/specialist-gameplay.test.ts:233:49
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > combat veterans, promotions and recovery > does not award survival XP for being hit only by a disposable illusion
+ FAIL  tests/specialist-gameplay.test.ts > combat veterans, promotions and recovery > does not award survival XP for being hit only by a disposable raised
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ tests/specialist-gameplay.test.ts:238:49
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > combat veterans, promotions and recovery > earns all three ranks from hostile damage and grants survival XP only while combat exposure is recent
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ veteranFixture tests/specialist-gameplay.test.ts:226:52
+ ❯ tests/specialist-gameplay.test.ts:242:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > combat veterans, promotions and recovery > melee promotion vanguard changes the real combat or movement result
+ FAIL  tests/specialist-gameplay.test.ts > combat veterans, promotions and recovery > special promotion bulwark changes the real combat or movement result
+ FAIL  tests/specialist-gameplay.test.ts > combat veterans, promotions and recovery > ranged promotion sharpshooter changes the real combat or movement result
+ FAIL  tests/specialist-gameplay.test.ts > combat veterans, promotions and recovery > cavalry promotion pathfinder changes the real combat or movement result
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ veteranFixture tests/specialist-gameplay.test.ts:226:52
+ ❯ tests/specialist-gameplay.test.ts:247:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > combat veterans, promotions and recovery > does not award combat XP for damaging illusion troops or attacks by them
+ FAIL  tests/specialist-gameplay.test.ts > combat veterans, promotions and recovery > does not award combat XP for damaging raised troops or attacks by them
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ tests/specialist-gameplay.test.ts:268:51
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > combat veterans, promotions and recovery > rejects allied attack commands and ineligible promotion choices
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ veteranFixture tests/specialist-gameplay.test.ts:226:52
+ ❯ tests/specialist-gameplay.test.ts:274:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > combat veterans, promotions and recovery > limits commanders while queued and alive, then requires the full death recovery and recruitment price
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ building tests/specialist-gameplay.test.ts:45:10
+ ❯ tests/specialist-gameplay.test.ts:278:80
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > finite artifacts > enforces owner, distance, visibility and specialist eligibility, and equips only a held item
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ tests/specialist-gameplay.test.ts:306:45
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > finite artifacts > changes damage, armor and movement through equipped artifacts, and removal restores the baseline
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ tests/specialist-gameplay.test.ts:316:45
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > finite artifacts > drops held items once on a commander death and makes only visible ground artifacts observable
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ tests/specialist-gameplay.test.ts:330:45
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > finite artifacts > does not create a commander artifact when a disposable illusion dies
+ FAIL  tests/specialist-gameplay.test.ts > finite artifacts > does not create a commander artifact when a disposable raised dies
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ tests/specialist-gameplay.test.ts:337:46
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > beacon outposts and engineer field work > connects a beacon chain with global shared vision=true, grants team sight, alerts once and never attacks
+ FAIL  tests/specialist-gameplay.test.ts > beacon outposts and engineer field work > connects a beacon chain with global shared vision=false, grants team sight, alerts once and never attacks
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ building tests/specialist-gameplay.test.ts:45:10
+ ❯ tests/specialist-gameplay.test.ts:345:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > beacon outposts and engineer field work > builds a three-tile bridge, lets a unit cross, then restores water after 60 seconds
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ tests/specialist-gameplay.test.ts:357:49
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > beacon outposts and engineer field work > preserves a bridge tile changed later, blocks duplicate builds, and expires a barricade collision
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ tests/specialist-gameplay.test.ts:365:49
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > beacon outposts and engineer field work > returns an actor occupying an expired bridge to walkable shore
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ tests/specialist-gameplay.test.ts:374:49
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > beacon outposts and engineer field work > charges proportional ore for field repair and rejects full, distant, hostile and unsupported targets
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ tests/specialist-gameplay.test.ts:381:49
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > beacon outposts and engineer field work > rejects field work by ordinary troops, beyond sight or distance, and without payment
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ tests/specialist-gameplay.test.ts:388:49
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > specialist saves and recorded accepted commands > does not credit a captured siege engine for its former owner's delayed damage, lethal=false
+ FAIL  tests/specialist-gameplay.test.ts > specialist saves and recorded accepted commands > does not credit a captured siege engine for its former owner's delayed damage, lethal=true
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ tests/specialist-gameplay.test.ts:396:61
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > specialist saves and recorded accepted commands > orcs saves and replays its ammunition, pending impact and active field effect
+ FAIL  tests/specialist-gameplay.test.ts > specialist saves and recorded accepted commands > fairies saves and replays its ammunition, pending impact and active field effect
+ FAIL  tests/specialist-gameplay.test.ts > specialist saves and recorded accepted commands > dwarves saves and replays its ammunition, pending impact and active field effect
+ FAIL  tests/specialist-gameplay.test.ts > specialist saves and recorded accepted commands > undead saves and replays its ammunition, pending impact and active field effect
+ FAIL  tests/specialist-gameplay.test.ts > specialist saves and recorded accepted commands > tideborn saves and replays its ammunition, pending impact and active field effect
+ FAIL  tests/specialist-gameplay.test.ts > specialist saves and recorded accepted commands > automata saves and replays its ammunition, pending impact and active field effect
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ siegeFixture tests/specialist-gameplay.test.ts:64:49
+ ❯ tests/specialist-gameplay.test.ts:406:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > specialist saves and recorded accepted commands > resolves a real long-range shell after its source has died, been removed and been saved
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ tests/specialist-gameplay.test.ts:415:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[47/120]⎯
+
+ FAIL  tests/specialist-gameplay.test.ts > specialist saves and recorded accepted commands > resumes and replays active shells, fire, equipment, bridges and hero recovery deterministically
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-gameplay.test.ts:41:13
+ ❯ tests/specialist-gameplay.test.ts:425:50
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[48/120]⎯
+
+ FAIL  tests/specialist-world-integration.test.ts > specialists in a layered world > builds and expires a level-0 bridge through the world terrain API, and replays a real crossing
+ FAIL  tests/specialist-world-integration.test.ts > specialists in a layered world > builds and expires a level-1 bridge through the world terrain API, and replays a real crossing
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-world-integration.test.ts:32:13
+ ❯ tests/specialist-world-integration.test.ts:51:57
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[49/120]⎯
+
+ FAIL  tests/specialist-world-integration.test.ts > specialists in a layered world > rejects temporary bridge placement over permanent bridge tiles without charging resources
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-world-integration.test.ts:32:13
+ ❯ tests/specialist-world-integration.test.ts:65:37
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[50/120]⎯
+
+ FAIL  tests/specialist-world-integration.test.ts > specialists in a layered world > restores untouched temporary tiles despite unrelated edits and preserves changed terrain on either level
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-world-integration.test.ts:32:13
+ ❯ tests/specialist-world-integration.test.ts:70:37
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[51/120]⎯
+
+ FAIL  tests/specialist-world-integration.test.ts > specialists in a layered world > evacuates a level-0 unit whose footprint overlaps an expired bridge from adjacent bank
+ FAIL  tests/specialist-world-integration.test.ts > specialists in a layered world > evacuates a level-1 unit whose footprint overlaps an expired bridge from adjacent bank
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-world-integration.test.ts:32:13
+ ❯ tests/specialist-world-integration.test.ts:76:37
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[52/120]⎯
+
+ FAIL  tests/specialist-world-integration.test.ts > specialists in a layered world > evacuates a level-0 unit whose footprint overlaps a destroyed permanent bridge from adjacent bank
+ FAIL  tests/specialist-world-integration.test.ts > specialists in a layered world > evacuates a level-1 unit whose footprint overlaps a destroyed permanent bridge from adjacent bank
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-world-integration.test.ts:32:13
+ ❯ tests/specialist-world-integration.test.ts:81:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[53/120]⎯
+
+ FAIL  tests/specialist-world-integration.test.ts > specialists in a layered world > uses underground terrain for teleportation and keeps its event hidden from a surface observer
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-world-integration.test.ts:32:13
+ ❯ tests/specialist-world-integration.test.ts:87:42
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[54/120]⎯
+
+ FAIL  tests/specialist-world-integration.test.ts > specialists in a layered world > moves terrified underground units while leaving identical surface coordinates unaffected
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-world-integration.test.ts:32:13
+ ❯ tests/specialist-world-integration.test.ts:94:42
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[55/120]⎯
+
+ FAIL  tests/specialist-world-integration.test.ts > specialists in a layered world > observes and equips underground artifacts without disclosing hidden surface artifacts or retaining shared records
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-world-integration.test.ts:32:13
+ ❯ tests/specialist-world-integration.test.ts:99:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[56/120]⎯
+
+ FAIL  tests/specialist-world-integration.test.ts > specialists in a layered world > records field repair and barricade commands on level-0
+ FAIL  tests/specialist-world-integration.test.ts > specialists in a layered world > records field repair and barricade commands on level-1
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-world-integration.test.ts:32:13
+ ❯ tests/specialist-world-integration.test.ts:106:37
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[57/120]⎯
+
+ FAIL  tests/specialist-world-integration.test.ts > specialist deaths and projectile environment > uses veteran damage, promotion armor and equipment in normal level-0 neutral combat and replay
+ FAIL  tests/specialist-world-integration.test.ts > specialist deaths and projectile environment > uses veteran damage, promotion armor and equipment in normal level-1 neutral combat and replay
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-world-integration.test.ts:32:13
+ ❯ tests/specialist-world-integration.test.ts:115:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[58/120]⎯
+
+ FAIL  tests/specialist-world-integration.test.ts > specialist deaths and projectile environment > runs commander recovery and finite artifact cleanup when a level-0 forest fire kills a hero
+ FAIL  tests/specialist-world-integration.test.ts > specialist deaths and projectile environment > runs commander recovery and finite artifact cleanup when a level-1 forest fire kills a hero
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-world-integration.test.ts:32:13
+ ❯ tests/specialist-world-integration.test.ts:127:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[59/120]⎯
+
+ FAIL  tests/specialist-world-integration.test.ts > specialist deaths and projectile environment > runs commander recovery and one loot drop when thaw drowns a hero trapped far from shore
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-world-integration.test.ts:32:13
+ ❯ tests/specialist-world-integration.test.ts:134:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[60/120]⎯
+
+ FAIL  tests/specialist-world-integration.test.ts > specialist deaths and projectile environment > runs commander cleanup when a level-0 permanent bridge collapses with no reachable shore
+ FAIL  tests/specialist-world-integration.test.ts > specialist deaths and projectile environment > runs commander cleanup when a level-1 permanent bridge collapses with no reachable shore
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-world-integration.test.ts:32:13
+ ❯ tests/specialist-world-integration.test.ts:139:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[61/120]⎯
+
+ FAIL  tests/specialist-world-integration.test.ts > specialist deaths and projectile environment > applies projectile weather=clear and high ground once on level-0
+ FAIL  tests/specialist-world-integration.test.ts > specialist deaths and projectile environment > applies projectile weather=rain and high ground once on level-0
+ FAIL  tests/specialist-world-integration.test.ts > specialist deaths and projectile environment > applies projectile weather=rain and high ground once on level-1
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-world-integration.test.ts:32:13
+ ❯ tests/specialist-world-integration.test.ts:146:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[62/120]⎯
+
+ FAIL  tests/specialist-world-integration.test.ts > specialist deaths and projectile environment > rejects a specialist artifact position on a nonexistent third level
+ FAIL  tests/specialist-world-integration.test.ts > specialist deaths and projectile environment > rejects a specialist bridge position on a nonexistent third level
+ FAIL  tests/specialist-world-integration.test.ts > specialist deaths and projectile environment > rejects a specialist shot position on a nonexistent third level
+ FAIL  tests/specialist-world-integration.test.ts > specialist deaths and projectile environment > rejects a specialist fire-origin position on a nonexistent third level
+ReferenceError: spawn is not defined
+ ❯ spawnDefinition src/core/simulation.ts:573:344
+
+ ❯ actor tests/specialist-world-integration.test.ts:32:13
+ ❯ tests/specialist-world-integration.test.ts:152:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[63/120]⎯
+
+
+ Test Files  5 failed | 5 passed (10)
+      Tests  120 failed | 68 passed (188)
+   Start at  04:36:02
+   Duration  3.56s (transform 1.95s, setup 0ms, import 2.78s, tests 8.62s, environment 329ms)
+

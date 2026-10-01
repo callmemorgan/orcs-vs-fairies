@@ -1,0 +1,175 @@
+{
+  "source": {
+    "directory": "/home/morgana/.codex/worktrees/tournament-verification/orcs-vs-Fairies",
+    "commit": "29c75a5149383a25bf04e3aa0c3afc9ed7bbb02d",
+    "workingTree": "?? docs/features/tournament-main-verification.md\n?? node_modules\n?? scripts/tournaments/verify-canonical-main.mjs",
+    "smokeSha256": "0edac1fffb1dd72b4d1273c51ec3bf9710ee85a54fecaa75720517390156916f",
+    "serverBundleSha256": "232e3a5d09227c26d3777ba2a91b046e745fcefb5c2b94685b606c6e4f5ff90b",
+    "reportVerifierSha256": "e2319733782dd9e4f6c2d8099fccacc8a9287a0b1e1dd59285c4e73df4eec9df"
+  },
+  "checks": [
+    "anonymous tournament inspection and launch are rejected by the canonical account gate",
+    "authenticated accounts inspect the registered smoke configuration without receiving executable argv",
+    "remote argv and disallowed-origin launches are rejected",
+    "another account can inspect a live run but cannot cancel it; a disallowed origin cannot cancel either",
+    "the creator cancels the actual registered child processes and retains a verified partial report with no agents left"
+  ],
+  "http": [
+    {
+      "route": "/api/tournaments/configs",
+      "method": "GET",
+      "status": 401
+    },
+    {
+      "route": "/api/tournaments",
+      "method": "GET",
+      "status": 401
+    },
+    {
+      "route": "/api/tournaments",
+      "method": "POST",
+      "status": 401
+    },
+    {
+      "route": "/api/auth/register",
+      "method": "POST",
+      "status": 200
+    },
+    {
+      "route": "/api/auth/register",
+      "method": "POST",
+      "status": 200
+    },
+    {
+      "route": "/api/tournaments/configs",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "route": "/api/tournaments/configs",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "route": "/api/tournaments",
+      "method": "POST",
+      "status": 400
+    },
+    {
+      "route": "/api/tournaments",
+      "method": "POST",
+      "status": 403
+    },
+    {
+      "route": "/api/tournaments",
+      "method": "POST",
+      "status": 202
+    },
+    {
+      "route": "/api/tournaments/run-debd982f-9740-418e-8a18-e377f0765b21/cancel",
+      "method": "POST",
+      "status": 403
+    },
+    {
+      "route": "/api/tournaments/run-debd982f-9740-418e-8a18-e377f0765b21/cancel",
+      "method": "POST",
+      "status": 403
+    },
+    {
+      "route": "/api/tournaments/run-debd982f-9740-418e-8a18-e377f0765b21",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "route": "/api/tournaments/run-debd982f-9740-418e-8a18-e377f0765b21",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "route": "/api/tournaments/run-debd982f-9740-418e-8a18-e377f0765b21/cancel",
+      "method": "POST",
+      "status": 202
+    },
+    {
+      "route": "/api/tournaments/run-debd982f-9740-418e-8a18-e377f0765b21/result",
+      "method": "GET",
+      "status": 409
+    },
+    {
+      "route": "/api/tournaments/run-debd982f-9740-418e-8a18-e377f0765b21/result",
+      "method": "GET",
+      "status": 200
+    }
+  ],
+  "browser": {},
+  "runs": [
+    {
+      "id": "run-debd982f-9740-418e-8a18-e377f0765b21",
+      "status": "canceled",
+      "creator": "88a0cf94-3490-457b-bc20-2314271f76a5",
+      "observingAccount": "25fd423c-7665-4db6-ae96-ed2d1c8bab31",
+      "observedLiveProcesses": [
+        {
+          "pid": 1498731,
+          "parent": 1498719,
+          "group": 1498731,
+          "started": "2950164",
+          "argv": [
+            "node",
+            "scripts/agents/tournament-agent.mjs",
+            "--style",
+            "push"
+          ]
+        },
+        {
+          "pid": 1498732,
+          "parent": 1498719,
+          "group": 1498732,
+          "started": "2950164",
+          "argv": [
+            "node",
+            "scripts/agents/tournament-agent.mjs",
+            "--style",
+            "idle"
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [
+    "AssertionError [ERR_ASSERTION]: The launched Chromium process must be observable.\n    at file:///home/morgana/.codex/worktrees/tournament-verification/orcs-vs-Fairies/scripts/tournaments/verify-canonical-main.mjs:117:3"
+  ],
+  "cleanup": {
+    "serverClosed": true,
+    "browserClosed": true,
+    "remainingObservedProcesses": [],
+    "forciblyCleanedProcesses": [],
+    "observedProcesses": [
+      {
+        "pid": 1498731,
+        "parent": 1498719,
+        "group": 1498731,
+        "started": "2950164",
+        "argv": [
+          "node",
+          "scripts/agents/tournament-agent.mjs",
+          "--style",
+          "push"
+        ]
+      },
+      {
+        "pid": 1498732,
+        "parent": 1498719,
+        "group": 1498732,
+        "started": "2950164",
+        "argv": [
+          "node",
+          "scripts/agents/tournament-agent.mjs",
+          "--style",
+          "idle"
+        ]
+      }
+    ]
+  },
+  "passed": false
+}

@@ -1,4 +1,5 @@
 import {describe,it,expect} from 'vitest';
+import {availableUnits,unitFor} from '../src/core/content-registry';
 import {FACTIONS} from '../src/core/content';
 import {createMatch,issueCommand,stepGame,spawnEntity,refreshVisibility} from '../src/core/simulation';
 import {loadGame,saveGame} from '../src/core/saves';
@@ -66,11 +67,11 @@ describe('saved match rules and objectives',()=>{
  });
  it('finishes a timed eight-player mirror draft and saves every player roster',()=>{
   const state=match({draft:{enabled:true,banRounds:1,pickRounds:3,turnTicks:20}},[0,0,0,0,1,1,1,1]);tick(state,260);expect(state.draft.status).toBe('drafting');const resumed=loadGame(saveGame(state));tick(state,500);tick(resumed,500);expect(state.draft.status).toBe('complete');expect(state.draft.banned).toHaveLength(8);expect(state.draft.picks.every(p=>p.length===3)).toBe(true);expect(saveGame(resumed)).toEqual(saveGame(state));
-  for(let side=0;side<8;side++){const soldier=state.entities.find(e=>e.side===side&&e.kind==='unit'&&e.role!=='worker')!;expect(state.draft.picks[side]).toContain(FACTIONS[state.players[side].faction].units[soldier.role as 'melee'].id);expect(state.draft.banned).not.toContain(FACTIONS[state.players[side].faction].units[soldier.role as 'melee'].id);}
+  for(let side=0;side<8;side++){const soldier=state.entities.find(e=>e.side===side&&e.kind==='unit'&&e.role!=='worker')!;expect(state.draft.picks[side]).toContain(unitFor(state,soldier).id);expect(state.draft.banned).not.toContain(unitFor(state,soldier).id);}
  });
  it('applies unit restrictions to survival attackers and to the starting soldier',()=>{
   const state=match({mode:'survival',disabledDefinitionIds:[FACTIONS.orcs.units.melee.id,FACTIONS.fairies.units.melee.id],survival:{intervalTicks:20,unitsPerWave:2}});expect(state.entities.filter(e=>e.kind==='unit'&&e.side===0&&e.role!=='worker').map(e=>e.role)).toEqual(['ranged']);tick(state,20);expect(state.entities.filter(e=>state.objectives.survival.spawnedIds.includes(e.id)).map(e=>e.role)).not.toContain('melee');
-  const all=Object.values(FACTIONS.fairies.units).filter(u=>u.role!=='worker').map(u=>u.id);expect(()=>match({mode:'survival',disabledDefinitionIds:all})).toThrow(/enabled combat unit/);
+  const all=availableUnits({players:[{faction:'fairies'}]},0).filter(u=>u.role!=='worker').map(u=>u.id);expect(()=>match({mode:'survival',disabledDefinitionIds:all})).toThrow(/enabled combat unit/);
  });
  it('rejects malformed save rule groups, absent carriers and impossible draft histories',()=>{
   const state=match({mode:'relic',relic:{count:1,required:1}}),save=saveGame(state);const partial=structuredClone(save);delete (partial.state as unknown as Partial<GameState>).draft;expect(()=>loadGame(partial)).toThrow(/stored together/);
