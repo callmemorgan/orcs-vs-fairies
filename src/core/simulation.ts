@@ -103,7 +103,7 @@ export function refreshVisibility(s:GameState):void{
  updateBeacons(s,false);
  for(const visible of s.visible)visible.clear();
  for(const e of s.entities){if(!alive(e)||e.kind==='building'&&buildingDef(s,e).tags?.includes('beacon')&&!e.beacon?.connected)continue;const sight=((e.kind==='unit'?unitDef(s,e).sight:buildingDef(s,e).sight)+highGroundSightBonus(s,e))*environmentalSightFactor(s,e),side=e.side;
-  for(let y=Math.max(0,Math.floor(e.y-sight));y<=Math.min(s.height-1,Math.ceil(e.y+sight));y++)for(let x=Math.max(0,Math.floor(e.x-sight));x<=Math.min(s.width-1,Math.ceil(e.x+sight));x++)if(length2D(x+.5-e.x,y+.5-e.y)<=sight&&terrainLineOfSight(s,e,{x:x+.5,y:y+.5,level:levelOf(e)})){const key=fogKey(s,{x,y,level:levelOf(e)});s.visible[side].add(key);s.explored[side].add(key);}
+  for(let y=Math.max(0,Math.floor(e.y-sight));y<=Math.min(s.height-1,Math.ceil(e.y+sight));y++)for(let x=Math.max(0,Math.floor(e.x-sight));x<=Math.min(s.width-1,Math.ceil(e.x+sight));x++)if(length2D(x+.5-e.x,y+.5-e.y)<=sight&&terrainLineOfSight(s,e,{x:x+.5,y:y+.5,level:levelOf(e)})){const key=fogKey(s,{x,y,level:levelOf(e)});const recipients=e.beacon?.connected?playerSides(s).filter(other=>isAllied(s,side,other)):[side];for(const recipient of recipients){s.visible[recipient].add(key);s.explored[recipient].add(key);}}
  }
  if(s.sharedVision)for(const team of new Set(s.teams)){
   const members=playerSides(s).filter(side=>s.teams[side]===team),visible=new Set<number>(),explored=new Set<number>();
@@ -144,7 +144,7 @@ export function canPlace(s:GameState,side:Side,role:BuildingRole,x:number,y:numb
  if(s.entities.some(e=>alive(e)&&levelOf(e)===level&&e.kind==='unit'&&isHostile(s,e.side,side)&&footprintOverlap(e,x,y,def.size)))return false;
  if(s.resources.some(e=>e.amount>0&&levelOf(e)===level&&Math.abs(e.x-x)<r+.8&&Math.abs(e.y-y)<r+.8))return false;return true;
 }
-function assign(s:GameState,e:Entity,order:Entity['order']):void{if(e.siegeMode?.deployed&&(order.type==='move'||order.type==='attackMove'||order.type==='attack'))e.siegeMode.deployed=false;if(order.type!=='hold')e.entrenchedAt=undefined;e.order=order;e.path=[];runtime(s).routes.delete(e.id);runtime(s).returning.delete(e.id);runtime(s).queuedGather.delete(e.id);}
+function assign(s:GameState,e:Entity,order:Entity['order']):void{if(e.siegeMode?.deployed&&(order.type==='move'||order.type==='attackMove'))e.siegeMode.deployed=false;if(order.type!=='hold')e.entrenchedAt=undefined;e.order=order;e.path=[];runtime(s).routes.delete(e.id);runtime(s).returning.delete(e.id);runtime(s).queuedGather.delete(e.id);}
 function interruptWorldOrder(s:GameState,e:Entity):void {delete e.orderQueue;assign(s,e,{type:'idle'});}
 function commandOrder(s:GameState,e:Entity,order:Entity['order'],queued=false):boolean {
  if(queued&&e.order.type!=='idle'&&e.order.type!=='hold'){
@@ -222,6 +222,7 @@ function applyCommand(s:GameState,side:Side,c:Command):boolean{
  const units=s.entities.filter(e=>c.ids.includes(e.id)&&e.side===side&&alive(e)&&e.kind==='unit'&&!e.illusion);
  if(!units.length)return false;
  if(c.type==='build'){
+ if(c.definitionId==='core:orcs-trophy-standard')return false;
  const level=c.level??0,workers=units.filter(e=>e.role==='worker'&&levelOf(e)===level);const d=c.definitionId?availableBuildings(s,side).find(d=>d.id===c.definitionId&&d.role===c.role):f.buildings[c.role];if(!workers.length||!d||playerAge(p)<buildingAgeRequired(d)||p.wood<d.cost.wood||p.ore<d.cost.ore||p.crystal<d.cost.crystal||!canPlace(s,side,c.role,c.x,c.y,c.definitionId,level))return false;
  const overlapping=s.entities.filter(e=>e.kind==='unit'&&alive(e)&&levelOf(e)===level&&isAllied(s,e.side,side)&&footprintOverlap(e,c.x,c.y,d.size));
  const shoves:{e:Entity;x:number;y:number}[]=[];
@@ -274,7 +275,7 @@ function useAbility(s:GameState,e:Entity):boolean{
  e.abilityReadyAt=runtime(s).abilities.get(e.id)??s.time;
  emit(s,'ability',e);return true;
 }
-function walkTo(e:Entity,x:number,y:number):void{
+function walkTo(e:Entity,x:number,y:number):void{if(e.siegeMode?.deployed&&Math.hypot(x-e.x,y-e.y)>.001)e.siegeMode.deployed=false;
  const dx=x-e.x,dy=y-e.y;
  if(dx!==0||dy!==0)e.facing=facing8(dx,dy);
  e.x=x;e.y=y;e.animation='walk';
@@ -358,7 +359,7 @@ function resolveHits(s:GameState):void{
  for(const hit of runtime(s).hits){const group=groups.get(hit.target)??[];group.push(hit);groups.set(hit.target,group);}
  for(const [target,hits] of groups){if(!alive(target))continue;const total=hits.reduce((n,h)=>n+h.amount,0),absorbed=Math.min(target.shield??0,total),actual=Math.min(target.hp,total-absorbed)+absorbed;target.shield=Math.max(0,(target.shield??0)-absorbed);target.hp=Math.max(0,target.hp-(total-absorbed));target.lastDamagedAt=s.time;
   for(const hit of hits){hit.event.amount=total?actual*hit.amount/total:0;const attacker=s.entities.find(e=>e.id===hit.source.id);if(attacker&&attacker.side===hit.source.side)creditCombat(s,attacker,target,hit.event.amount);}
-  if(actual>0)recordCombatExposure(s,target);
+  if(actual>0&&hits.some(hit=>(hit.event.amount??0)>0&&s.teams[hit.source.side]!==s.teams[target.side]))recordCombatExposure(s,target);
   target.lastAttacker=hits.reduce((best,h)=>h.amount>best.amount?h:best).source.id;
   if(target.hp===0){const killer=s.entities.find(e=>e.id===target.lastAttacker);if(killer&&killer.side===hits.reduce((best,h)=>h.amount>best.amount?h:best).source.side)creditCombat(s,killer,target,0,true);die(s,target);}
  }

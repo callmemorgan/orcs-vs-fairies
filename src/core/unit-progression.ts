@@ -41,7 +41,7 @@ export function progressionStats(s:GameState,e:Entity):{damageFactor:number;spee
  return {damageFactor,speedFactor,armor,range};
 }
 /** Deterministic finite drop: one artifact from each hostile commander's death. */
-export function commanderArtifact(s:GameState,e:Entity):void{if(e.kind==='unit'&&unitFor(s,e).tags?.includes('hero'))createArtifact(s,(['core:ember-blade','core:iron-aegis','core:wind-charm'] as ArtifactDefinitionId[])[e.id%3],e);}
+export function commanderArtifact(s:GameState,e:Entity):void{if(eligible(e)&&unitFor(s,e).tags?.includes('hero'))createArtifact(s,(['core:ember-blade','core:iron-aegis','core:wind-charm'] as ArtifactDefinitionId[])[e.id%3],e);}
 export function observedArtifacts(s:GameState,side:Side):ArtifactItem[]{return (s.specialists?.artifacts??[]).filter(item=>item.owner===side||item.position&&s.visible[side].has((item.position.level??0)*s.width*s.height+Math.floor(item.position.y)*s.width+Math.floor(item.position.x))).map(item=>({...item,position:item.position?{...item.position}:undefined}));}
 
 export function dropArtifact(s:GameState,side:Side,id:number,artifact:number):boolean {const e=s.entities.find(e=>e.id===id&&e.side===side&&e.hp>0),item=s.specialists?.artifacts.find(item=>item.id===artifact);if(!e||!equipmentEligible(s,e)||!item||item.owner!==side||item.holder!==e.id)return false;for(const slot of ['weapon','armor','trinket'] as EquipmentSlot[])if(e.equipment?.[slot]===artifact)delete e.equipment[slot];delete item.owner;delete item.holder;item.position={x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level})};return true;}

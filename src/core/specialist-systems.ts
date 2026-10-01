@@ -1,5 +1,5 @@
 import { ABILITIES } from './content';
-import { buildingFor, unitFor } from './content-registry';
+import { availableUnits, buildingFor, unitFor } from './content-registry';
 import { walkable } from './navigation';
 import { terrainAt } from './maps';
 import { promotionChoices as importPromotionChoices, specialistState } from './unit-progression';
@@ -22,8 +22,8 @@ const allAbilities=new Set<SpecialistAbility>(['iron-command','queen-step','than
 export function abilityNeedsTarget(s:GameState,e:Entity):boolean {return targeted.has(unitFor(s,e).ability as SpecialistAbility);}
 function buff(s:GameState,e:Entity,value:Omit<SpecialistBuff,'until'>,seconds:number):void {e.specialistBuffs??=[];if(e.specialistBuffs.length>=64)e.specialistBuffs.shift();e.specialistBuffs.push({...value,until:s.time+seconds});}
 export function heroRecruitmentReason(s:GameState,side:Side,definitionId:string):string|undefined {
- const def=s.players[side]&&unitFor(s,side,'special',definitionId);if(!def?.tags?.includes('hero'))return undefined;
- if(s.entities.some(e=>e.side===side&&active(e)&&unitFor(s,e).tags?.includes('hero'))||s.entities.some(e=>e.side===side&&e.hp>0&&e.queueDefinitionIds?.some(id=>{try{return unitFor(s,side,'special',id).tags?.includes('hero');}catch{return false;}})))return 'A commander is already alive or queued';
+ const def=s.players[side]&&availableUnits(s,side).find(def=>def.id===definitionId);if(!def?.tags?.includes('hero'))return undefined;
+ if(s.entities.some(e=>e.side===side&&active(e)&&unitFor(s,e).tags?.includes('hero'))||s.entities.some(e=>e.side===side&&e.hp>0&&e.queueDefinitionIds?.some(id=>{return availableUnits(s,side).find(def=>def.id===id)?.tags?.includes('hero');})))return 'A commander is already alive or queued';
  const recovery=s.players[side].heroRecovery?.find(r=>r.definitionId===definitionId);if(recovery&&recovery.availableAt>s.time)return `Commander recovery: ${Math.ceil(recovery.availableAt-s.time)}s`;return undefined;
 }
 export function commanderDied(s:GameState,e:Entity):void {if(e.kind!=='unit'||e.illusion||e.raised||!unitFor(s,e).tags?.includes('hero'))return;const p=s.players[e.side];p.heroRecovery??=[];p.heroRecovery=p.heroRecovery.filter(r=>r.definitionId!==unitFor(s,e).id);p.heroRecovery.push({definitionId:unitFor(s,e).id,availableAt:s.time+30});}
@@ -48,7 +48,7 @@ export function specialistAbility(s:GameState,e:Entity,c:Extract<Command,{type:'
   case 'shield-dash':if(!validPoint(4)||!fieldWalkable(s,point!)||(e.shield??0)<15)return false;e.shield!-=15;e.x=point!.x;e.y=point!.y;e.path=[];break;
   case 'incendiary-shell':if(s.players[e.side].wood<8||e.siegeMode?.prepared)return false;s.players[e.side].wood-=8;e.siegeMode??={ammo:0,deployed:false};e.siegeMode.prepared='incendiary';break;
   case 'rooting-shell':if(s.players[e.side].crystal<6||e.siegeMode?.prepared)return false;s.players[e.side].crystal-=6;e.siegeMode??={ammo:0,deployed:false};e.siegeMode.prepared='rooting';break;
-  case 'ammunition-cannon':if(s.players[e.side].ore<15||e.animation==='walk'||(e.siegeMode?.ammo??0)>5)return false;s.players[e.side].ore-=15;e.siegeMode??={ammo:0,deployed:false};e.siegeMode.ammo+=5;e.siegeMode.deployed=true;e.order={type:'hold'};break;
+  case 'ammunition-cannon':if(e.animation==='walk')return false;if(e.siegeMode&&!e.siegeMode.deployed&&e.siegeMode.ammo>0){e.siegeMode.deployed=true;e.order={type:'hold'};break;}if(s.players[e.side].ore<15||(e.siegeMode?.ammo??0)>5)return false;s.players[e.side].ore-=15;e.siegeMode??={ammo:0,deployed:false};e.siegeMode.ammo+=5;e.siegeMode.deployed=true;e.order={type:'hold'};break;
   case 'corpse-shell':{if(e.siegeMode?.prepared)return false;const corpse=s.corpses.find(c=>c.expires>s.time&&dist(e,c)<=6&&visible(s,e.side,c));if(!corpse)return false;s.corpses=s.corpses.filter(c=>c.id!==corpse.id);e.siegeMode??={ammo:0,deployed:false};e.siegeMode.prepared='corpse';break;}
   case 'flood-shell':if(s.players[e.side].crystal<6||e.siegeMode?.prepared)return false;s.players[e.side].crystal-=6;e.siegeMode??={ammo:0,deployed:false};e.siegeMode.prepared='flood';break;
   case 'powered-beam':if(s.players[e.side].crystal<8||(e.siegeMode?.ammo??0)>4)return false;s.players[e.side].crystal-=8;e.siegeMode??={ammo:0,deployed:false};e.siegeMode.ammo+=4;break;
@@ -122,7 +122,12 @@ export function stepSpecialists(s:GameState,hooks:SpecialistHooks):void {
   if(item.entityId!==undefined&&(!entity||entity.hp<=0)){state.structures=state.structures.filter(current=>current.id!==item.id);continue;}
   if(item.expires>s.time)continue;
   if(entity){entity.expires=s.time;}
-  for(const tile of item.tiles??[])if(fieldTerrainAt(s,tile)===tile.placed&&(tile.stamp===undefined||!hooks.terrainRevision||hooks.terrainRevision(tile)===tile.stamp))fieldSetTerrain(s,tile,tile.previous as TerrainKind,hooks);
+  const restored:Vec[]=[];
+  for(const tile of item.tiles??[])if(fieldTerrainAt(s,tile)===tile.placed&&(tile.stamp===undefined||!hooks.terrainRevision||hooks.terrainRevision(tile)===tile.stamp)&&fieldSetTerrain(s,tile,tile.previous as TerrainKind,hooks))restored.push(tile);
+  for(const actor of s.entities)if(active(actor)&&restored.some(tile=>sameLevel(actor,tile)&&Math.floor(actor.x)===Math.floor(tile.x)&&Math.floor(actor.y)===Math.floor(tile.y))&&!fieldWalkable(s,actor)){
+   let shore:Vec|undefined;for(let ring=.5;ring<=8&&!shore;ring+=.5)for(let i=0;i<32;i++){const candidate={x:actor.x+Math.cos(i*Math.PI/16)*ring,y:actor.y+Math.sin(i*Math.PI/16)*ring,level:actor.level};if(fieldWalkable(s,candidate)){shore=candidate;break;}}
+   if(shore){actor.x=shore.x;actor.y=shore.y;actor.path=[];actor.order={type:'idle'};delete actor.orderQueue;s.events.push({type:'message',side:actor.side,x:actor.x,y:actor.y,source:actor.id,text:'Temporary bridge expired; moved to nearby shore.'});}
+  }
   state.structures=state.structures.filter(current=>current.id!==item.id);
  }
 }

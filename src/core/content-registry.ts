@@ -46,7 +46,7 @@ function unit(v:unknown,path:string,namespace:string):void {
   if(value.shield!==undefined)num(value.shield,`${path}.shield`,0,100000);
   if(value.buildingDamageMultiplier!==undefined)num(value.buildingDamageMultiplier,`${path}.buildingDamageMultiplier`,.1,10);
   if(value.age!==undefined)num(value.age,`${path}.age`,1,3,true);
-  if(value.ability!==undefined)one(value.ability,`${path}.ability`,Object.keys(ABILITIES));if(value.tags!==undefined)arr(value.tags,`${path}.tags`,2).forEach((tag,i)=>one(tag,`${path}.tags[${i}]`,['hero','engineer']));
+  if(value.ability!==undefined){one(value.ability,`${path}.ability`,Object.keys(ABILITIES));if(['incendiary-shell','rooting-shell','ammunition-cannon','corpse-shell','flood-shell','powered-beam'].includes(value.ability as string)&&value.role!=='siege')fail(`${path}.ability`,'artillery preparation requires the siege role');}if(value.tags!==undefined)arr(value.tags,`${path}.tags`,2).forEach((tag,i)=>one(tag,`${path}.tags[${i}]`,['hero','engineer']));
   if(value.bonusAgainst!==undefined){const bonuses=obj(value.bonusAgainst,`${path}.bonusAgainst`,[],unitRoles);for(const [key,factor] of Object.entries(bonuses))num(factor,`${path}.bonusAgainst.${key}`,.1,10);}
 }
 function building(v:unknown,path:string,namespace:string):void {

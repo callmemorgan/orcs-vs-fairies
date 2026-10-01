@@ -98,7 +98,7 @@ export const ABILITIES={
  'shield-dash':{name:'Shield Dash',description:'Spend 15 shield to dash up to 4 tiles toward visible open ground.',cooldown:25},
  'incendiary-shell':{name:'Incendiary Shell',description:'Spend 8 wood to ignite the next shell and nearby targets for 6 seconds.',cooldown:0},
  'rooting-shell':{name:'Rooting Shell',description:'Spend 6 crystal to root targets hit by the next shell for 4 seconds.',cooldown:0},
- 'ammunition-cannon':{name:'Deploy Ammunition',description:'Deploy and buy 5 ammunition for 15 ore. The cannon must deploy before firing.',cooldown:0},
+ 'ammunition-cannon':{name:'Deploy Ammunition',description:'Deploy and buy 5 ammunition for 15 ore. Moving packs up; deploy remaining ammunition again for free.',cooldown:0},
  'corpse-shell':{name:'Corpse Bombardment',description:'Consume a nearby visible corpse to charge the next area shell.',cooldown:0},
  'flood-shell':{name:'Flood Shell',description:'Spend 6 crystal to slow troops near the next impact for 6 seconds.',cooldown:0},
  'powered-beam':{name:'Power Beam',description:'Spend 8 crystal to power 4 beam shots. Beam damage pierces armor.',cooldown:0},
