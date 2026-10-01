@@ -3,6 +3,8 @@ import GameScene, { project, unproject } from './game/GameScene';
 import { createPerformanceGame, countPerformanceUnits, FrameCollector, PERFORMANCE_CENTER } from './qa/performance';
 import { alliedAiStatus, createGame, createMatch, issueCommand, isGameOver } from './core/simulation';
 import { createScenario, scenarioSessionForState } from './core/scenarios';
+import { ScenarioOverlay } from './game/ScenarioOverlay';
+import { ScenarioCampaignHost } from './ui/ScenarioCampaignHost';
 import { ContentLibrary, productionQueueKey, upgradeFor, factionFor } from './core/content-registry';
 import { mountModLibrary } from './ui/ModLibrary';
 import { mountShell } from './ui/Hud';
@@ -39,6 +41,7 @@ declare const __OVF_BUILD_ID__:string;
 
 let game:Phaser.Game|undefined;
 let scene:GameScene|undefined;
+let scenarioOverlay:ScenarioOverlay|undefined;
 let retiring:Phaser.Game|undefined;
 let faction:FactionId='orcs';
 let opponent:FactionId='fairies';
@@ -97,7 +100,7 @@ const callbacks:HudCallbacks={
  select:ids=>scene?.selectEntities(ids),
  stop:()=>{if(scene)scene.command({type:'stop',ids:scene.selected});},
  pause:()=>{if(scene)scene.togglePause();},
- restart:()=>{replacementGeneration++;closeOnline();recorder?.dispose();recorder=undefined;replay?.dispose();replay=undefined;retireGame();shell.showMenu();tools.update(null);},
+ restart:()=>{replacementGeneration++;campaignHost.clear();closeOnline();recorder?.dispose();recorder=undefined;replay?.dispose();replay=undefined;retireGame();shell.showMenu();tools.update(null);},
  toggleMuted:()=>scene?.toggleMuted(),
  isMuted:()=>scene?.muted??false,
  isPaused:()=>scene?.paused??false,
@@ -138,11 +141,12 @@ async function joinOnline(request:OnlineMatchRequest){
   onNotice:message=>{if(onlineConnection===connection||onlineConnecting===connection)shell.notice(message);}
  });
  onlineConnecting=connection;
- try {await connection.connect();await connection.waitForSnapshot(45000);if(generation!==replacementGeneration||!latest)throw new Error('Another match replaced this connection request.');launch(latest.state,undefined,undefined,{connection,render:latest},generation);}
+ try {await connection.connect();await connection.waitForSnapshot(45000);if(generation!==replacementGeneration||!latest)throw new Error('Another match replaced this connection request.');campaignHost.clear();launch(latest.state,undefined,undefined,{connection,render:latest},generation);}
  catch(error){connection.dispose();if(onlineConnecting===connection)onlineConnecting=undefined;throw error;}
 }
 function retireGame(onDestroyed?:()=>void){
  resetCoach();
+ scenarioOverlay?.destroy();scenarioOverlay=undefined;
  objectives.close();
  if(retiring){retiring.events.once(Phaser.Core.Events.DESTROY,()=>onDestroyed?.());return;}
  if(!game){onDestroyed?.();return;}
@@ -156,20 +160,20 @@ function start(next:FactionId,nextOpponent:FactionId=opponent,mapSize:MapSize="m
   const custom=next.includes(':')||nextOpponent.includes(':');
   roster.setContent(modLibrary.bundle());
   const state=benchmark?createPerformanceGame():custom||roster.enabled?createMatch({...(custom||modLibrary.list().length?{content:modLibrary.bundle()}:{}),map:{seed,size:mapSize,biome:selectedBiome()},players:roster.getPlayers(next,nextOpponent,aiOptions.value),rules:roster.getRules()}):createGame(next,seed,nextOpponent,{mapSize,biome:selectedBiome(),ai:[{},aiOptions.value]});
-  replacementGeneration++;launch(state);
+  campaignHost.clear();replacementGeneration++;launch(state);
  }catch(error){shell.notice(error instanceof Error?error.message:'Cannot start this skirmish.');}
 }
 /** Launch an admitted editor mission through the normal application host. */
 export function launchAuthoredScenario(definition:unknown,label?:string):GameState {
- const session=createScenario(definition);replacementGeneration++;launch(session.state);
+ const session=createScenario(definition);campaignHost.clear();replacementGeneration++;launch(session.state);
  shell.notice(label??session.definition.title);return session.state;
 }
-function launch(state:GameState,history?:ReplayArchive,playback?:ReplayPlayer,remote?:{connection:OnlineMatchConnection;render:OnlineRenderState},generation=replacementGeneration,planningData?:SessionPlanning){
+function launch(state:GameState,history?:ReplayArchive,playback?:ReplayPlayer,remote?:{connection:OnlineMatchConnection;render:OnlineRenderState},generation=replacementGeneration,planningData?:SessionPlanning,inspectionReason?:string){
  if(generation!==replacementGeneration){remote?.connection.dispose();playback?.dispose();return;}
- if(game||retiring){retireGame(()=>launch(state,history,playback,remote,generation,planningData));return;}
+ if(game||retiring){retireGame(()=>launch(state,history,playback,remote,generation,planningData,inspectionReason));return;}
  if(onlineConnection!==remote?.connection){onlineConnection?.dispose();onlineConnection=remote?.connection;onlineRender=remote?.render;}
  if(remote&&onlineConnecting===remote.connection)onlineConnecting=undefined;
- recorder?.dispose();replay?.dispose();replay=playback;recorder=playback||remote?undefined:new MatchRecorder(state,history);
+ recorder?.dispose();replay?.dispose();replay=playback;recorder=playback||remote||inspectionReason?undefined:new MatchRecorder(state,history);
  faction=state.players[0].faction;opponent=state.players[1]?.faction??faction;lastAutosaveTime=state.time;autosaveFailure=false;
  replayPlaying=false;replayAccumulated=0;replayClock=performance.now();shell.showGame();
  const human=state.controllers.findIndex(c=>c==='human'),external=state.controllers.findIndex(c=>c==='external');
@@ -178,13 +182,13 @@ function launch(state:GameState,history?:ReplayArchive,playback?:ReplayPlayer,re
  // Phaser scales the canvas in CSS; use a physical-pixel game size and
  // matching camera zoom so high-DPI displays do not stretch a low-res buffer.
  renderDensity=Math.min(2,Math.max(1,window.devicePixelRatio||1));
- scene=new GameScene({state,controls,viewSide:side,readOnly:!!playback||remote?.render.role==='spectator',simulationEnabled:!playback&&!remote,remoteFrame:remote?.render,pixelDensity:renderDensity,
+ scene=new GameScene({state,controls,viewSide:side,readOnly:!!playback||!!inspectionReason||remote?.render.role==='spectator',simulationEnabled:!playback&&!remote&&!inspectionReason,remoteFrame:remote?.render,pixelDensity:renderDensity,
   onCommand:(side,command)=>!sessionModal&&dispatchCommand(side,command),
-  onSelection:ids=>{if(scene)shell.update(scene.state,ids,callbacks);},onNotice:text=>shell.notice(text),onReady:()=>shell.ready(),
-  onStep:()=>{planning.update({blocked:planningBlocked()});maybeAutosave();},onPhotoMode:enabled=>{root.classList.toggle('photo-mode',enabled);photoControls.hidden=!enabled;planning.update({blocked:planningBlocked()});},
+  onSelection:ids=>{if(scene)shell.update(scene.state,ids,callbacks);},onNotice:text=>shell.notice(text),onReady:()=>{shell.ready();if(scene&&scenarioSessionForState(scene.state))scenarioOverlay=new ScenarioOverlay(scene,project);if(inspectionReason)shell.notice(inspectionReason);},
+  onStep:()=>{campaignHost.step();planning.update({blocked:planningBlocked()});maybeAutosave();},onPhotoMode:enabled=>{root.classList.toggle('photo-mode',enabled);photoControls.hidden=!enabled;campaignHost.update({photo:enabled});planning.update({blocked:planningBlocked()});},
   onPause:()=>{if(scene){if(replay)replayPlaying=!scene.paused;shell.update(scene.state,scene.selected,callbacks);}},onActionSlot:slot=>{shell.activateActionSlot(slot);},
   viewBounds:()=>{const b=shell.battlefieldBounds();return {top:b.top*renderDensity,bottom:b.bottom*renderDensity};}});
- scene.inputBlocked=sessionModal||objectiveOpen;scene.paused=!!playback||sessionModal;
+ scene.inputBlocked=sessionModal||objectiveOpen;scene.paused=!!playback||!!inspectionReason||sessionModal;
  planning.reset(state);if(planningData&&!planning.restore(planningData,state))throw new Error('Saved construction planning could not be restored.');planning.update({blocked:planningBlocked()});
  game=new Phaser.Game({type:Phaser.AUTO,parent:'game-canvas',backgroundColor:'#14201e',antialias:true,roundPixels:false,scale:{mode:Phaser.Scale.FIT,width:Math.round(innerWidth*renderDensity),height:Math.round(innerHeight*renderDensity)},scene:[scene],render:{pixelArt:false,smoothPixelArt:true},fps:{target:60}});
  const currentGame=game,density=renderDensity;
@@ -215,7 +219,7 @@ function currentArchive():ReplayArchive {
 function currentFile():SessionFile {
  if(!scene)throw new Error('Start or load a match first.');
  if(onlineConnection)throw new Error('Online matches are saved by the server. Local save exports are available for local matches.');
- return createSessionFile(scene.state,currentArchive(),planning.snapshot()??undefined);
+ return createSessionFile(scene.state,scene.readOnly&&!replay?undefined:currentArchive(),planning.snapshot()??undefined,campaignHost.snapshot());
 }
 function maybeAutosave(force=false){
  if(!scene||!recorder||replay||benchmark||autosaveFailure)return;
@@ -233,14 +237,15 @@ async function importReplay(input:unknown){
  const source=decodeReplay(input),request=++replacementGeneration,verified=await verifyArchive(source);
  if(request!==replacementGeneration)throw new Error('Another replay load replaced this request.');
  const player=verified.player.forkForSeek(source.initial.state.tick);
- replayPerspective=0;replayComplete=verified.complete;launch(player.state,undefined,player);
+ campaignHost.clear();replayPerspective=0;replayComplete=verified.complete;launch(player.state,undefined,player);
 }
 async function installFile(input:unknown){
  const {file,state}=decodeSessionFile(input),request=++replacementGeneration;
  const oldHistory=file.replay&&!replayRulesCompatible(file.replay);
  if(file.replay&&!oldHistory)file.replay=(await verifyArchive(file.replay)).player.archive;
  if(request!==replacementGeneration)throw new Error('Another match load replaced this request.');
- launch(state,oldHistory?undefined:file.replay,undefined,undefined,request,file.planning);
+ const inspectionReason=campaignHost.install(file.scenarioProfile,state);
+ launch(state,oldHistory?undefined:file.replay,undefined,undefined,request,file.planning,inspectionReason??undefined);
  if(oldHistory)shell.notice('Saved match loaded. Its replay uses older simulation rules; new replay history starts from this save.');
 }
 function analysisView(samples:AnalysisSample[],complete:boolean,timings:TechnologyTiming[]):SessionAnalysis {
@@ -290,8 +295,7 @@ const tools=mountSessionTools(root,{
  onModal:open=>setModal('session',open)
 });
 const sessionToolbar=root.querySelector<HTMLElement>('.session-toolbar')!;
-const canSubmitObjectives=()=>!!scene&&!scene.paused&&!scene.readOnly&&!scene.photoMode&&!sessionModal&&!isGameOver(scene.state)&&!scene.state.eliminated[playerSide()];
-const objectives=mountObjectivePanel(root,{toolbar:sessionToolbar,getState:()=>scene?.state,getObservation:()=>scene?.objectiveObservation,getContent:()=>scene?.state.content,side:playerSide,blocked:()=>!!scene?.photoMode||sessionModal,onVisibility:open=>{objectiveOpen=open;if(scene)scene.inputBlocked=sessionModal||objectiveOpen;},canSubmit:canSubmitObjectives,submit:command=>canSubmitObjectives()&&dispatchCommand(playerSide(),command)});
+ scene.inputBlocked=sessionModal||objectiveOpen;scene.paused=!!playback||!!inspectionReason||sessionModal;
 mountOnlineLobby(root,{api:onlineApi,toolbar:sessionToolbar,onJoinMatch:joinOnline,onVisibility:open=>setModal('online',open)});
 const teamAiTools=mountTeamAITools(root,{toolbar:sessionToolbar,command:command=>!teamAiBlocked()&&dispatchCommand(playerSide(),command),notice:shell.notice,onVisibility:open=>setModal('team-ai',open)});
 function teamAiBlocked(){return !scene||!!replay||scene.readOnly||scene.photoMode||scene.state.eliminated[playerSide()]||isGameOver(scene.state)||Array.from(openModals).some(source=>source!=='team-ai')||(scene.paused&&(!openModals.has('team-ai')||pausedBeforeModal));}
@@ -351,12 +355,12 @@ setInterval(()=>{
  const side=playerSide(),state=scene?.state,view=state?(onlineRender?onlineRender.alliedAi:alliedAiStatus(state,side)):null;
  const destination=state?.entities.find(e=>e.side===side&&e.hp>0&&scene!.selected.includes(e.id))??state?.entities.find(e=>e.side===side&&e.role==='hq'&&e.hp>0);
  teamAiTools.update({side,allies:(view?.allies??[]).map(ally=>({side:ally.side,name:`Player ${ally.side+1} · ${factionFor(state!,ally.side).name}`})),directives:view?.directives??[],width:state?.width??1,height:state?.height??1,levels:state?.world?.levels.map(l=>({id:l.id,name:l.title}))??[{id:0,name:'Surface'}],enabled:!teamAiBlocked(),...(destination?{destination:{x:destination.x,y:destination.y,...(destination.level===undefined?{}:{level:destination.level})}}:{})},{blocked:teamAiBlocked()});
- tools.update(state??null,{side,paused:scene?.paused,replaySpectator:!!replay||!!scene?.readOnly,remoteMatch:!!onlineConnection});objectives.update();planning.update({blocked:planningBlocked()});tournaments.update({blocked:tournamentBlocked()});updateCoach();
+ tools.update(state??null,{side,paused:scene?.paused,replaySpectator:!!replay||!!scene?.readOnly,remoteMatch:!!onlineConnection});objectives.update();planning.update({blocked:planningBlocked()});tournaments.update({blocked:tournamentBlocked()});campaignHost.update({blocked:Array.from(openModals).some(source=>source!=='campaign'),photo:scene?.photoMode});scenarioOverlay?.update(scene?scenarioSessionForState(scene.state):null,!!scene?.photoMode,scene?.viewLevel??0);updateCoach();
 },100);
 // Read-only diagnostics for repeatable performance and state inspection. Player actions stay in the UI.
 const worldTools=mountWorldTools(root,{phase:()=>onlineRender?.worldPhase,state:()=>scene?.state,side:playerSide,level:()=>scene?.viewLevel??0,selected:()=>scene?.selected??[],canCommand:()=>!!scene&&scene.canIssueCommands,command:c=>scene?.command(c)??false,setLevel:level=>scene?.setViewLevel(level),select:ids=>scene?.selectEntities(ids),center:p=>scene?.centerOn(p.x,p.y),notice:shell.notice});
 setInterval(()=>worldTools.update(),100);
-Object.defineProperty(window,'rts',{get:()=>scene?.cameras?.main?{state:scene.state,get activeScenario(){const session=scenarioSessionForState(scene!.state);return session?structuredClone({definition:session.definition,runtime:session.runtime}):null;},viewLevel:scene.viewLevel,viewSide:scene.viewSide,readOnly:scene.readOnly,selected:[...scene.selected],art:scene.artStatus,fps:game?.loop.actualFps,paused:scene.paused,mode:onlineConnection?'online':replay?'replay':'local',simulationEnabled:scene.simulationEnabled,online:onlineConnection?{status:onlineConnection.status,role:onlineRender?.role,side:playerSide(),delayTicks:onlineConnection.connectionInfo?.delayTicks,pendingCommands:onlineConnection.pendingCommands,privateSides:[...(onlineRender?.privateSides??[])]}:null,camera:{x:scene.cameras.main.scrollX,y:scene.cameras.main.scrollY,zoom:scene.cameras.main.zoom,width:scene.cameras.main.width,height:scene.cameras.main.height}}:null});
+Object.defineProperty(window,'rts',{get:()=>scene?.cameras?.main?{state:scene.state,get activeScenario(){const session=scenarioSessionForState(scene!.state);return session?structuredClone({definition:session.definition,runtime:session.runtime,simulationRevision:session.simulationRevision}):null;},viewLevel:scene.viewLevel,viewSide:scene.viewSide,readOnly:scene.readOnly,selected:[...scene.selected],art:scene.artStatus,fps:game?.loop.actualFps,paused:scene.paused,mode:onlineConnection?'online':replay?'replay':'local',simulationEnabled:scene.simulationEnabled,online:onlineConnection?{status:onlineConnection.status,role:onlineRender?.role,side:playerSide(),delayTicks:onlineConnection.connectionInfo?.delayTicks,pendingCommands:onlineConnection.pendingCommands,privateSides:[...(onlineRender?.privateSides??[])]}:null,camera:{x:scene.cameras.main.scrollX,y:scene.cameras.main.scrollY,zoom:scene.cameras.main.zoom,width:scene.cameras.main.width,height:scene.cameras.main.height}}:null});
 if(location.hostname==='127.0.0.1'&&new URLSearchParams(location.search).has('qa'))setInterval(()=>{
  if(!scene||!game)return;
  const s=scene.state;
