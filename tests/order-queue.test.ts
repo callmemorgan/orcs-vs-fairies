@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { FACTIONS } from '../src/core/content';
 import { createGame, issueCommand, refreshVisibility, stepGame } from '../src/core/simulation';
-import type { BuildingRole, Command, Entity, GameState, Order, Side } from '../src/core/types';
+import type { BuildingRole, Command, Entity, FactionId, GameState, Order, Side } from '../src/core/types';
 
 type QueuedEntity = Entity & { orderQueue?: Order[] };
 type QueuedCommand = Command & { queued?: boolean };
 
-function fixture() {
-  const s = createGame('orcs', 4127, 'fairies', { controllers: ['external', 'external'] });
-  const worker = s.entities.find(e => e.side === 0 && e.role === 'worker')! as QueuedEntity;
+function fixture(faction: FactionId = 'orcs', role: 'worker' | 'melee' = 'worker') {
+  const s = createGame(faction, 4127, 'fairies', { controllers: ['external', 'external'] });
+  const worker = s.entities.find(e => e.side === 0 && e.role === role)! as QueuedEntity;
   s.terrain.fill('grass');
   s.resources = [];
   s.entities = s.entities.filter(e => e.kind === 'building' || e === worker);
@@ -110,6 +110,24 @@ describe('queued unit orders', () => {
       expect(worker.order.type).toBe(type === 'repair' ? 'build' : type === 'stop' ? 'idle' : type);
     },
   );
+
+  it('clears waiting movement when a dwarf emplaces and stays clear after packing up', () => {
+    const { s, worker: guard } = fixture('dwarves', 'melee');
+    expect(command(s, { type: 'move', ids: [guard.id], x: 24.5, y: 20.5 })).toBe(true);
+    expect(command(s, { type: 'move', ids: [guard.id], x: 24.5, y: 24.5, queued: true })).toBe(true);
+    expect(issueCommand(s, 0, { type: 'ability', ids: [guard.id] })).toBe(true);
+    expect(guard.order).toEqual({ type: 'hold' });
+    expect(waiting(guard)).toEqual([]);
+    advance(s, 4);
+    expect(guard.x).toBe(20.5);
+    expect(guard.y).toBe(20.5);
+    expect(issueCommand(s, 0, { type: 'ability', ids: [guard.id] })).toBe(true);
+    expect(guard.order).toEqual({ type: 'idle' });
+    expect(waiting(guard)).toEqual([]);
+    advance(s, 4);
+    expect(guard.x).toBe(20.5);
+    expect(guard.y).toBe(20.5);
+  });
 
   it('rejects invalid queued commands without changing current or waiting orders', () => {
     const { s, worker } = fixture();
@@ -297,6 +315,25 @@ describe('queued unit orders', () => {
     expect(other.amount).toBe(100);
     expect(worker.order).toEqual({ type: 'idle' });
     expect(distance(worker, 25.5, 20.5)).toBeLessThan(.6);
+  });
+
+  it.each(['idle', 'move'] as const)('finishes a final queued gather started from %s without retargeting', initial => {
+    const { s, worker } = fixture();
+    building(s, 'depot', 20.5, 24.5);
+    const node = { id: s.nextId++, kind: 'wood' as const, x: 22.5, y: 20.5, amount: 1, maxAmount: 1 };
+    const other = { id: s.nextId++, kind: 'wood' as const, x: 24.5, y: 23.5, amount: 100, maxAmount: 100 };
+    s.resources.push(node, other);
+    refreshVisibility(s);
+    const wood = s.players[0].wood;
+    if (initial === 'move') expect(command(s, { type: 'move', ids: [worker.id], x: 21.5, y: 20.5 })).toBe(true);
+    expect(command(s, { type: 'gather', ids: [worker.id], target: node.id, queued: true })).toBe(true);
+    advance(s, 10);
+    expect(node.amount).toBe(0);
+    expect(worker.carried).toBe(0);
+    expect(s.players[0].wood).toBeCloseTo(wood + 1);
+    expect(other.amount).toBe(100);
+    expect(worker.order).toEqual({ type: 'idle' });
+    expect(waiting(worker)).toEqual([]);
   });
 
   it('retains automatic gather retargeting when no following order was queued', () => {

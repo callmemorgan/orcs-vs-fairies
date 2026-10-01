@@ -7,29 +7,29 @@ import type { BuildingDef, BuildingRole, Command, Entity, FactionId, GameOptions
 
 const distance = (a:Vec,b:Vec) => Math.hypot(a.x-b.x,a.y-b.y);
 const clamp=(n:number,a:number,b:number)=>Math.max(a,Math.min(b,n));
-interface Runtime { stepping?:boolean; fog:number; ai:number; aiTurns:number; hits:{source:Entity;target:Entity;amount:number;event:GameState['events'][number]}[]; routes:Map<number,{key:string;at:number}>; abilities:Map<number,number>; returning:Set<number>; aiWave:[number,number]; initialScoutDispatched:[boolean,boolean]; expansionScout:[number|null,number|null]; expansionScoutDispatched:[boolean,boolean]; knownEnemyBuildings:[Map<number,Vec & {role:string}>,Map<number,Vec & {role:string}>]; enemyStartCleared:[boolean,boolean]; searched:[Set<number>,Set<number>] }
+interface Runtime { stepping?:boolean; fog:number; ai:number; aiTurns:number; hits:{source:Entity;target:Entity;amount:number;event:GameState['events'][number]}[]; routes:Map<number,{key:string;at:number}>; abilities:Map<number,number>; returning:Set<number>; queuedGather:Set<number>; aiWave:[number,number]; initialScoutDispatched:[boolean,boolean]; expansionScout:[number|null,number|null]; expansionScoutDispatched:[boolean,boolean]; knownEnemyBuildings:[Map<number,Vec & {role:string}>,Map<number,Vec & {role:string}>]; enemyStartCleared:[boolean,boolean]; searched:[Set<number>,Set<number>] }
 /** The complete simulation memory that is not stored on GameState itself. */
 export interface RuntimeSnapshot {
  fog:number; ai:number; aiTurns:number;
  hits:{source:number;target:number;amount:number;event:number}[];
  routes:[number,{key:string;at:number}][];
- abilities:[number,number][]; returning:number[];
+ abilities:[number,number][]; returning:number[]; queuedGather:number[];
  aiWave:[number,number]; initialScoutDispatched:[boolean,boolean];
  expansionScout:[number|null,number|null]; expansionScoutDispatched:[boolean,boolean];
  knownEnemyBuildings:[[number,Vec & {role:string}][],[number,Vec & {role:string}][]];
  enemyStartCleared:[boolean,boolean]; searched:[number[],number[]];
 }
 const runtimes=new WeakMap<GameState,Runtime>();
-function runtime(s:GameState):Runtime { let r=runtimes.get(s);if(!r){r={fog:0,ai:0,aiTurns:0,hits:[],routes:new Map(),abilities:new Map(),returning:new Set(),aiWave:[0,0],initialScoutDispatched:[false,false],expansionScout:[null,null],expansionScoutDispatched:[false,false],knownEnemyBuildings:[new Map(),new Map()],enemyStartCleared:[false,false],searched:[new Set(),new Set()]};runtimes.set(s,r);}return r; }
+function runtime(s:GameState):Runtime { let r=runtimes.get(s);if(!r){r={fog:0,ai:0,aiTurns:0,hits:[],routes:new Map(),abilities:new Map(),returning:new Set(),queuedGather:new Set(),aiWave:[0,0],initialScoutDispatched:[false,false],expansionScout:[null,null],expansionScoutDispatched:[false,false],knownEnemyBuildings:[new Map(),new Map()],enemyStartCleared:[false,false],searched:[new Set(),new Set()]};runtimes.set(s,r);}return r; }
 export function captureRuntime(s:GameState):RuntimeSnapshot {
  const r=runtime(s);
- return {fog:r.fog,ai:r.ai,aiTurns:r.aiTurns,hits:r.hits.map(h=>({source:h.source.id,target:h.target.id,amount:h.amount,event:s.events.indexOf(h.event)})),routes:[...r.routes].map(([id,value])=>[id,{...value}]),abilities:[...r.abilities],returning:[...r.returning],aiWave:[...r.aiWave],initialScoutDispatched:[...r.initialScoutDispatched],expansionScout:[...r.expansionScout],expansionScoutDispatched:[...r.expansionScoutDispatched],knownEnemyBuildings:[[...r.knownEnemyBuildings[0]].map(([id,p])=>[id,{...p}]),[...r.knownEnemyBuildings[1]].map(([id,p])=>[id,{...p}])],enemyStartCleared:[...r.enemyStartCleared],searched:[[...r.searched[0]],[...r.searched[1]]]};
+ return {fog:r.fog,ai:r.ai,aiTurns:r.aiTurns,hits:r.hits.map(h=>({source:h.source.id,target:h.target.id,amount:h.amount,event:s.events.indexOf(h.event)})),routes:[...r.routes].map(([id,value])=>[id,{...value}]),abilities:[...r.abilities],returning:[...r.returning],queuedGather:[...r.queuedGather],aiWave:[...r.aiWave],initialScoutDispatched:[...r.initialScoutDispatched],expansionScout:[...r.expansionScout],expansionScoutDispatched:[...r.expansionScoutDispatched],knownEnemyBuildings:[[...r.knownEnemyBuildings[0]].map(([id,p])=>[id,{...p}]),[...r.knownEnemyBuildings[1]].map(([id,p])=>[id,{...p}])],enemyStartCleared:[...r.enemyStartCleared],searched:[[...r.searched[0]],[...r.searched[1]]]};
 }
 /** Restore only a snapshot already validated by the save loader. */
 export function restoreRuntime(s:GameState,r:RuntimeSnapshot):void {
  const entities=new Map(s.entities.map(e=>[e.id,e]));
  const hits=r.hits.map(h=>{const source=entities.get(h.source),target=entities.get(h.target),event=s.events[h.event];if(!source||!target||!event)throw new Error('Save runtime has an invalid hit reference.');return {source,target,amount:h.amount,event};});
- runtimes.set(s,{fog:r.fog,ai:r.ai,aiTurns:r.aiTurns,hits,routes:new Map(r.routes.map(([id,value])=>[id,{...value}])),abilities:new Map(r.abilities),returning:new Set(r.returning),aiWave:[...r.aiWave],initialScoutDispatched:[...r.initialScoutDispatched],expansionScout:[...r.expansionScout],expansionScoutDispatched:[...r.expansionScoutDispatched],knownEnemyBuildings:[new Map(r.knownEnemyBuildings[0].map(([id,p])=>[id,{...p}])),new Map(r.knownEnemyBuildings[1].map(([id,p])=>[id,{...p}]))],enemyStartCleared:[...r.enemyStartCleared],searched:[new Set(r.searched[0]),new Set(r.searched[1])]});
+ runtimes.set(s,{fog:r.fog,ai:r.ai,aiTurns:r.aiTurns,hits,routes:new Map(r.routes.map(([id,value])=>[id,{...value}])),abilities:new Map(r.abilities),returning:new Set(r.returning),queuedGather:new Set(r.queuedGather),aiWave:[...r.aiWave],initialScoutDispatched:[...r.initialScoutDispatched],expansionScout:[...r.expansionScout],expansionScoutDispatched:[...r.expansionScoutDispatched],knownEnemyBuildings:[new Map(r.knownEnemyBuildings[0].map(([id,p])=>[id,{...p}])),new Map(r.knownEnemyBuildings[1].map(([id,p])=>[id,{...p}]))],enemyStartCleared:[...r.enemyStartCleared],searched:[new Set(r.searched[0]),new Set(r.searched[1])]});
 }
 export const MAX_ORDER_QUEUE=32;
 const alive=(e:Entity)=>e.hp>0;
@@ -77,13 +77,13 @@ export function canPlace(s:GameState,side:Side,role:BuildingRole,x:number,y:numb
  if(s.entities.some(e=>alive(e)&&e.kind==='unit'&&e.side!==side&&footprintOverlap(e,x,y,def.size)))return false;
  if(s.resources.some(e=>e.amount>0&&Math.abs(e.x-x)<r+.8&&Math.abs(e.y-y)<r+.8))return false;return true;
 }
-function assign(s:GameState,e:Entity,order:Entity['order']):void{if(order.type!=='hold')e.entrenchedAt=undefined;e.order=order;e.path=[];runtime(s).routes.delete(e.id);runtime(s).returning.delete(e.id);}
+function assign(s:GameState,e:Entity,order:Entity['order']):void{if(order.type!=='hold')e.entrenchedAt=undefined;e.order=order;e.path=[];runtime(s).routes.delete(e.id);runtime(s).returning.delete(e.id);runtime(s).queuedGather.delete(e.id);}
 function commandOrder(s:GameState,e:Entity,order:Entity['order'],queued=false):boolean {
  if(queued&&e.order.type!=='idle'&&e.order.type!=='hold'){
   if((e.orderQueue?.length??0)>=MAX_ORDER_QUEUE)return false;
   (e.orderQueue??=[]).push(order);return true;
  }
- delete e.orderQueue;assign(s,e,order);return true;
+ delete e.orderQueue;assign(s,e,order);if(queued&&order.type==='gather')runtime(s).queuedGather.add(e.id);return true;
 }
 function finishOrder(s:GameState,e:Entity):void {
  while(e.orderQueue?.length){
@@ -92,7 +92,7 @@ function finishOrder(s:GameState,e:Entity):void {
   if(order.type==='gather'&&!s.resources.some(n=>n.id===order.target&&n.amount>0))continue;
   if(order.type==='build'&&!s.entities.some(t=>t.id===order.target&&alive(t)&&t.side===e.side&&t.kind==='building'&&(t.progress<1||t.hp<t.maxHp)))continue;
   if(!e.orderQueue.length)delete e.orderQueue;
-  assign(s,e,order);return;
+  assign(s,e,order);if(order.type==='gather')runtime(s).queuedGather.add(e.id);return;
  }
  delete e.orderQueue;assign(s,e,{type:'idle'});
 }
@@ -167,7 +167,7 @@ function applyCommand(s:GameState,side:Side,c:Command):boolean{
 function useAbility(s:GameState,e:Entity):boolean{
  if((runtime(s).abilities.get(e.id)??0)>s.time)return false;const ability=unitDef(s,e).ability;if(!ability)return false;
  if(ability==='entrench'){
- if(e.entrenchedAt!==undefined){e.entrenchedAt=undefined;assign(s,e,{type:'idle'});}else{assign(s,e,{type:'hold'});e.entrenchedAt=s.time;}
+ if(e.entrenchedAt!==undefined){e.entrenchedAt=undefined;commandOrder(s,e,{type:'idle'});}else{commandOrder(s,e,{type:'hold'});e.entrenchedAt=s.time;}
  }else if(ability==='raise'){
  updatePopulation(s);let count=0;
  for(const corpse of [...s.corpses].sort((a,b)=>distance(e,a)-distance(e,b))){
@@ -227,18 +227,18 @@ function damage(s:GameState,a:Entity,b:Entity):void{
  const base=d?d.damage*upgradeFactor(s,a,'damage'):19;const bonus=d?.ability==='momentum'?1+a.momentum*.40:emplaced(s,a)?1.15:1;const hit=Math.max(1,base*bonus*(b.kind==='building'?(d?.buildingDamageMultiplier??1):(d?.bonusAgainst?.[b.role as UnitRole]??1))-armor)*(a.illusion?.25:1);
  a.cooldown=(d?.cooldown??1.4)/(d?.ability==='momentum'?1+a.momentum*.15:1);if(d?.ability==='momentum')a.momentum=Math.min(1,a.momentum+.15);a.animation='attack';a.animTime=0;const event=emit(s,'attack',a,b.id);runtime(s).hits.push({source:a,target:b,amount:hit,event});
 }
-function die(s:GameState,e:Entity):void{if(e.kind==='building')refundQueue(s,e);if(e.kind==='unit'&&!e.illusion&&!e.raised)s.corpses.push({id:e.id,x:e.x,y:e.y,expires:s.time+45});e.hp=0;e.animation='death';e.animTime=0;e.order={type:'idle'};delete e.orderQueue;e.path=[];emit(s,'death',e);}
+function die(s:GameState,e:Entity):void{if(e.kind==='building')refundQueue(s,e);if(e.kind==='unit'&&!e.illusion&&!e.raised)s.corpses.push({id:e.id,x:e.x,y:e.y,expires:s.time+45});e.hp=0;e.animation='death';e.animTime=0;e.order={type:'idle'};delete e.orderQueue;runtime(s).queuedGather.delete(e.id);e.path=[];emit(s,'death',e);}
 function enemy(s:GameState,e:Entity,max:number,onlyInRange=false):Entity|undefined{
  let best:Entity|undefined,bestDist=Infinity;for(const b of s.entities){if(!alive(b)||b.side===e.side||!isVisible(s,e.side,b.x,b.y)||onlyInRange&&!near(s,e,b,max))continue;const d=distance(e,b)-radius(s,b);if(d<=max&&(d<bestDist||best?.kind==='building'&&b.kind==='unit')){best=b;bestDist=d;}}return best;
 }
 function fight(s:GameState,e:Entity,b:Entity,dt:number):void{const range=weaponRange(s,e);if(near(s,e,b,range)){e.facing=(Math.round(Math.atan2(b.y-e.y,b.x-e.x)/(Math.PI/4))+8)%8;if(e.cooldown<=0)damage(s,e,b);}else if(e.kind==='unit')move(s,e,b,dt,range+(b.kind==='building'?radius(s,b):0)-.1);}
 function gather(s:GameState,e:Entity,target:number,dt:number):void{
- const node=s.resources.find(n=>n.id===target);const rt=runtime(s);if(e.carried>=18||node?.amount===0&&e.carried>0||e.orderQueue?.length&&(!node||node.amount<=0)&&e.carried>0)rt.returning.add(e.id);
+ const node=s.resources.find(n=>n.id===target);const rt=runtime(s),finite=rt.queuedGather.has(e.id)||!!e.orderQueue?.length;if(e.carried>=18||node?.amount===0&&e.carried>0||finite&&(!node||node.amount<=0)&&e.carried>0)rt.returning.add(e.id);
  if(rt.returning.has(e.id)){
  const depot=s.entities.filter(b=>b.side===e.side&&alive(b)&&b.kind==='building'&&b.progress===1&&(b.role==='hq'||b.role==='depot')).sort((a,b)=>distance(e,a)-distance(e,b))[0];
- if(!depot){finishOrder(s,e);return;}if(near(s,e,depot,1.1)){s.players[e.side][e.carriedKind]+=e.carried;const deposit=emit(s,'gather',e,depot.id);deposit.amount=e.carried;deposit.resource=e.carriedKind;e.carried=0;rt.returning.delete(e.id);if(e.orderQueue?.length&&(!node||node.amount<=0))finishOrder(s,e);}else move(s,e,depot,dt,radius(s,depot)+1);return;
+ if(!depot){finishOrder(s,e);return;}if(near(s,e,depot,1.1)){s.players[e.side][e.carriedKind]+=e.carried;const deposit=emit(s,'gather',e,depot.id);deposit.amount=e.carried;deposit.resource=e.carriedKind;e.carried=0;rt.returning.delete(e.id);if(finite&&(!node||node.amount<=0))finishOrder(s,e);}else move(s,e,depot,dt,radius(s,depot)+1);return;
  }
- if(!node||node.amount<=0){if(e.orderQueue?.length){finishOrder(s,e);return;}const next=s.resources.filter(n=>n.amount>0&&n.kind===(node?.kind??e.carriedKind)&&isVisible(s,e.side,n.x,n.y)).sort((a,b)=>distance(e,a)-distance(e,b))[0];assign(s,e,next?{type:'gather',target:next.id}:{type:'idle'});return;}
+ if(!node||node.amount<=0){if(finite){finishOrder(s,e);return;}const next=s.resources.filter(n=>n.amount>0&&n.kind===(node?.kind??e.carriedKind)&&isVisible(s,e.side,n.x,n.y)).sort((a,b)=>distance(e,a)-distance(e,b))[0];assign(s,e,next?{type:'gather',target:next.id}:{type:'idle'});return;}
  if(e.carried>0&&e.carriedKind!==node.kind){rt.returning.add(e.id);return;}
  if(distance(e,node)>1.2){move(s,e,node,dt,1.1);return;}
  e.animation='attack';e.carriedKind=node.kind;const amount=Math.min(node.amount,dt*ECONOMY.harvestPerSecond*upgradeFactor(s,e,'gather')*(node.kind==='crystal'?.6:1),18-e.carried);node.amount-=amount;e.carried+=amount;
@@ -246,7 +246,7 @@ function gather(s:GameState,e:Entity,target:number,dt:number):void{
 function construct(s:GameState,e:Entity,id:number,dt:number):void{
  const b=s.entities.find(b=>b.id===id&&alive(b)&&b.side===e.side&&b.kind==='building');if(!b){finishOrder(s,e);return;}if(!near(s,e,b,1.2)){move(s,e,b,dt,radius(s,b)+1.1);return;}
  const def=buildingDef(s,b);e.animation='attack';if(b.progress<1){const amount=Math.min(1-b.progress,dt/def.buildTime);b.progress+=amount;b.hp=Math.min(b.maxHp,b.hp+amount*b.maxHp*.9);if(b.progress>=1){b.progress=1;emit(s,'build',b,undefined,'Construction complete');updatePopulation(s);}}
- else if(b.hp<b.maxHp){const p=s.players[e.side],amount=Math.min(b.maxHp-b.hp,dt*18,p.wood*10);p.wood-=amount*.1;b.hp+=amount;}
+ else if(b.hp<b.maxHp){const p=s.players[e.side],amount=Math.min(b.maxHp-b.hp,dt*18,p.wood*10);p.wood=Math.max(0,p.wood-amount*.1);b.hp+=amount;}
  else finishOrder(s,e);
 }
 function production(s:GameState,e:Entity,dt:number):void{

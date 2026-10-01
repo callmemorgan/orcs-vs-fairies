@@ -82,9 +82,31 @@ describe('versioned match saves',()=>{
   expect(restored.players[0].upgrades).toContain('worker-speed');
  });
 
+ it('preserves the final queued gather through save/load after its waiting list is empty',()=>{
+  const s=createGame('orcs',4127,'fairies',{controllers:['external','external']}),worker=s.entities.find(e=>e.side===0&&e.role==='worker')!,node=s.resources.find(n=>n.kind==='wood')!,other=s.resources.filter(n=>n.kind==='wood')[1];
+  node.amount=1;worker.x=node.x+1.1;worker.y=node.y;refreshVisibility(s);
+  expect(issueCommand(s,0,{type:'gather',ids:[worker.id],target:node.id,queued:true})).toBe(true);
+  expect(worker.orderQueue).toBeUndefined();expect(captureRuntime(s).queuedGather).toContain(worker.id);
+  const wood=s.players[0].wood,remaining=other.amount;
+  const restored=compareContinuation(s,200),restoredWorker=restored.entities.find(e=>e.id===worker.id)!;
+  expect(restoredWorker.order.type).toBe('idle');expect(restoredWorker.carried).toBe(0);expect(restored.players[0].wood).toBeCloseTo(wood+1);
+  expect(restored.resources.find(n=>n.id===other.id)!.amount).toBe(remaining);expect(captureRuntime(restored).queuedGather).toEqual([]);
+ });
+
+ it('keeps repair spending nonnegative and saveable when workers exhaust fractional funds',()=>{
+  const s=createGame('orcs',4127,'fairies',{controllers:['external','external']}),worker=s.entities.find(e=>e.side===0&&e.role==='worker')!,hq=s.entities.find(e=>e.side===0&&e.role==='hq')!;
+  worker.x=hq.x+3;worker.y=hq.y;refreshVisibility(s);
+  for(let round=0;round<3;round++){
+   hq.hp=1;expect(issueCommand(s,0,{type:'repair',ids:[worker.id],target:hq.id})).toBe(true);
+   for(let i=0;i<1000&&hq.hp<hq.maxHp&&s.players[0].wood>0;i++)stepGame(s,.25);
+   expect(s.players[0].wood).toBeGreaterThanOrEqual(0);expect(()=>loadGame(saveGame(s))).not.toThrow();
+  }
+  expect(s.players[0].wood).toBe(0);expect(hq.hp).toBeLessThan(hq.maxHp);
+ });
+
  it('restores every runtime field, including historical route IDs and AI search sets',()=>{
   const s=createGame('orcs',4127),r=captureRuntime(s),entity=s.entities[1],enemyHQ=s.entities.find(e=>e.side===1&&e.role==='hq')!;
-  r.fog=.12;r.ai=.7;r.aiTurns=8;r.routes=[[entity.id,{key:'10,10,0.5',at:0}]];r.abilities=[[entity.id,25]];r.returning=[entity.id];
+  r.fog=.12;r.ai=.7;r.aiTurns=8;r.routes=[[entity.id,{key:'10,10,0.5',at:0}]];r.abilities=[[entity.id,25]];r.returning=[entity.id];entity.order={type:'gather',target:s.resources[0].id};r.queuedGather=[entity.id];
   r.aiWave=[0,0];r.initialScoutDispatched=[true,true];r.expansionScout=[entity.id,null];r.expansionScoutDispatched=[true,false];
   r.knownEnemyBuildings=[[[enemyHQ.id,{x:enemyHQ.x,y:enemyHQ.y,role:'hq'}]],[]];r.enemyStartCleared=[true,false];r.searched=[[120,121],[125]];
   restoreRuntime(s,r);expect(captureRuntime(loadGame(saveGame(s)))).toEqual(r);
@@ -122,6 +144,10 @@ describe('versioned match saves',()=>{
   ['invalid path',(s:any):unknown=>s.state.entities[1].path=[{x:1,y:Infinity}]],['invalid production',(s:any):unknown=>s.state.entities[0].queue=['melee']],
   ['unbounded queue',(s:any):unknown=>s.state.entities[0].queue=Array(6).fill('worker')],['overfull carried stock',(s:any):unknown=>s.state.entities[1].carried=19],
   ['invalid runtime timer',(s:any):unknown=>s.runtime.ai=NaN],['duplicate route',(s:any):unknown=>s.runtime.routes=[[1,{key:'x',at:0}],[1,{key:'y',at:0}]]],
+  ['future route timestamp',(s:any):unknown=>s.runtime.routes=[[2,{key:'10,10,0.5',at:1e12}]]],
+  ['completed active research',(s:any):unknown=>{s.state.players[0].upgrades=['worker-speed'];s.state.entities[0].research='worker-speed';return undefined;}],
+  ['duplicate active research',(s:any):unknown=>{s.state.entities[0].research='worker-speed';const duplicate=structuredClone(s.state.entities[0]);duplicate.id=s.state.nextId++;s.state.entities.push(duplicate);return undefined;}],
+  ['invalid finite gather marker',(s:any):unknown=>s.runtime.queuedGather=[1]],
   ['invalid ability time',(s:any):unknown=>s.runtime.abilities=[[1,Infinity]]],['invalid memory',(s:any):unknown=>s.runtime.knownEnemyBuildings[0]=[[1,{x:1,y:1,role:'worker'}]]],
   ['missing hit entity',(s:any):unknown=>{s.state.events=[{type:'attack',x:1,y:1,side:0}];s.runtime.hits=[{source:999,target:1,amount:1,event:0}];return undefined;}],
   ['missing hit event',(s:any):unknown=>s.runtime.hits=[{source:1,target:2,amount:1,event:0}]],

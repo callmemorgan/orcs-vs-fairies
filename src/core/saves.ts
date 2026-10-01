@@ -30,7 +30,7 @@ function choice(value:unknown,path:string,choices:readonly string[]):string {if(
 function list(value:unknown,path:string,max:number,length?:number):unknown[] {if(!Array.isArray(value)||value.length>max||(length!==undefined&&value.length!==length))bad(path,'invalid array length');return value;}
 function optionalNumber(record:RecordValue,key:string,path:string,min=0,max=MAX_VALUE,integer=false):void {if(record[key]!==undefined)number(record[key],`${path}.${key}`,min,max,integer);}
 function optionalFlag(record:RecordValue,key:string,path:string):void {if(record[key]!==undefined)flag(record[key],`${path}.${key}`);}
-interface Context {width:number;height:number;cells:number;nextId:number;entityIds:Set<number>;resourceIds:Set<number>;eventCount:number}
+interface Context {width:number;height:number;cells:number;time:number;nextId:number;entityIds:Set<number>;entities:Map<number,RecordValue>;resourceIds:Set<number>;eventCount:number}
 function id(value:unknown,path:string,c:Context):number {return number(value,path,1,c.nextId-1,true);}
 function point(value:unknown,path:string,c:Context):void {const p=object(value,path,['x','y']);number(p.x,`${path}.x`,0,c.width);number(p.y,`${path}.y`,0,c.height);}
 function coordinates(value:RecordValue,path:string,c:Context):void {number(value.x,`${path}.x`,0,c.width);number(value.y,`${path}.y`,0,c.height);}
@@ -49,7 +49,7 @@ function fog(value:unknown,path:string,c:Context):[Set<number>,Set<number>] {
 }
 function validateEntity(value:unknown,path:string,c:Context):void {
  const e=object(value,path,['id','side','kind','role','x','y','hp','maxHp','order','cooldown','progress','queue','trainProgress','researchProgress','facing','animation','animTime','momentum','illusion','expires','carried','carriedKind','path'],['orderQueue','research','rally','gateOpen','lastAttacker','abilityReadyAt','entrenchedAt','raised','shield','maxShield','lastDamagedAt','surgeUntil']);
- const entityId=id(e.id,`${path}.id`,c);if(c.entityIds.has(entityId))bad(`${path}.id`,'duplicate entity or resource id');c.entityIds.add(entityId);
+ const entityId=id(e.id,`${path}.id`,c);if(c.entityIds.has(entityId))bad(`${path}.id`,'duplicate entity or resource id');c.entityIds.add(entityId);c.entities.set(entityId,e);
  number(e.side,`${path}.side`,0,1,true);choice(e.kind,`${path}.kind`,['unit','building']);choice(e.role,`${path}.role`,e.kind==='unit'?UNIT_ROLES:BUILDING_ROLES);coordinates(e,path,c);
  const maxHp=number(e.maxHp,`${path}.maxHp`,Number.MIN_VALUE,1e9);number(e.hp,`${path}.hp`,0,maxHp);order(e.order,`${path}.order`,c);
  for(const key of ['cooldown','animTime','expires'])number(e[key],`${path}.${key}`);
@@ -72,13 +72,14 @@ function entries(value:unknown,path:string,max:number,c:Context,check:(v:unknown
  const seen=new Set<number>();list(value,path,max).forEach((entry,i)=>{const p=`${path}[${i}]`,parts=list(entry,p,2,2),key=id(parts[0],`${p}[0]`,c);if(seen.has(key))bad(path,'duplicate map key');seen.add(key);check(parts[1],`${p}[1]`);});
 }
 function validateRuntime(value:unknown,c:Context):void {
- const path='runtime',r=object(value,path,['fog','ai','aiTurns','hits','routes','abilities','returning','aiWave','initialScoutDispatched','expansionScout','expansionScoutDispatched','knownEnemyBuildings','enemyStartCleared','searched']);
+ const path='runtime',r=object(value,path,['fog','ai','aiTurns','hits','routes','abilities','returning','queuedGather','aiWave','initialScoutDispatched','expansionScout','expansionScoutDispatched','knownEnemyBuildings','enemyStartCleared','searched']);
  number(r.fog,'runtime.fog',-.25,.2);number(r.ai,'runtime.ai',-.25,1);number(r.aiTurns,'runtime.aiTurns',0,MAX_VALUE,true);
  list(r.hits,'runtime.hits',MAX_ENTITIES).forEach((v,i)=>{const p=`runtime.hits[${i}]`,h=object(v,p,['source','target','amount','event']);for(const key of ['source','target'])if(!c.entityIds.has(id(h[key],`${p}.${key}`,c)))bad(`${p}.${key}`,'missing hit entity');number(h.amount,`${p}.amount`,0,1e9);number(h.event,`${p}.event`,0,c.eventCount-1,true);});
- entries(r.routes,'runtime.routes',MAX_ID,c,(v,p)=>{const route=object(v,p,['key','at']);if(typeof route.key!=='string'||route.key.length>128)bad(`${p}.key`,'invalid route key');number(route.at,`${p}.at`);});
+ entries(r.routes,'runtime.routes',MAX_ID,c,(v,p)=>{const route=object(v,p,['key','at']);if(typeof route.key!=='string'||route.key.length>128)bad(`${p}.key`,'invalid route key');number(route.at,`${p}.at`,0,c.time);});
  entries(r.abilities,'runtime.abilities',MAX_ID,c,(v,p)=>number(v,p));
  uniqueIds(list(r.returning,'runtime.returning',MAX_ID),'runtime.returning',c.nextId-1).forEach(n=>{if(n===0)bad('runtime.returning','invalid entity id');});
- pair(r.aiWave,'runtime.aiWave',(v,p)=>number(v,p));
+ uniqueIds(list(r.queuedGather,'runtime.queuedGather',MAX_ENTITIES),'runtime.queuedGather',c.nextId-1).forEach(n=>{const e=c.entities.get(n);if(!e||(e.hp as number)<=0||e.kind!=='unit'||e.role!=='worker'||(e.order as RecordValue).type!=='gather')bad('runtime.queuedGather','expected a living worker gathering');});
+ pair(r.aiWave,'runtime.aiWave',(v,p)=>number(v,p,0,c.time));
  for(const key of ['initialScoutDispatched','expansionScoutDispatched','enemyStartCleared'])pair(r[key],`runtime.${key}`,flag);
  pair(r.expansionScout,'runtime.expansionScout',(v,p)=>{if(v!==null)id(v,p,c);});
  pair(r.knownEnemyBuildings,'runtime.knownEnemyBuildings',(v,p)=>entries(v,p,MAX_ENTITIES,c,(value,q)=>{const b=object(value,q,['x','y','role']);coordinates(b,q,c);choice(b.role,`${q}.role`,BUILDING_ROLES);}));
@@ -88,12 +89,14 @@ function validate(envelope:unknown):asserts envelope is SaveEnvelope {
  const save=object(envelope,'save',['format','version','state','runtime']);if(save.format!=='orcs-vs-fairies-save')bad('format','unknown save format');if(save.version!==SAVE_VERSION)bad('version',`unsupported version ${String(save.version)}`);
  const s=object(save.state,'state',['controllers','mapSize','mapVersion','terrain','starts','draw','tick','corpses','time','seed','width','height','entities','resources','players','winner','events','explored','visible','nextId']);
  const width=number(s.width,'state.width',8,256,true),height=number(s.height,'state.height',8,256,true),nextId=number(s.nextId,'state.nextId',1,MAX_ID,true);
- const c:Context={width,height,cells:width*height,nextId,entityIds:new Set(),resourceIds:new Set(),eventCount:0};
+ const c:Context={width,height,cells:width*height,time:number(s.time,'state.time'),nextId,entityIds:new Set(),entities:new Map(),resourceIds:new Set(),eventCount:0};
  pair(s.controllers,'state.controllers',(v,p)=>choice(v,p,['human','ai','external']));choice(s.mapSize,'state.mapSize',['small','medium','large','huge']);number(s.mapVersion,'state.mapVersion',1,MAP_VERSION,true);
  list(s.terrain,'state.terrain',c.cells,c.cells).forEach((v,i)=>choice(v,`state.terrain[${i}]`,Object.keys(TERRAIN)));pair(s.starts,'state.starts',(v,p)=>point(v,p,c));flag(s.draw,'state.draw');number(s.tick,'state.tick',0,MAX_VALUE,true);number(s.time,'state.time');number(s.seed,'state.seed',0,0xffffffff,true);
  list(s.entities,'state.entities',MAX_ENTITIES).forEach((v,i)=>validateEntity(v,`state.entities[${i}]`,c));
  list(s.resources,'state.resources',MAX_RESOURCES).forEach((v,i)=>{const p=`state.resources[${i}]`,r=object(v,p,['id','x','y','kind','amount','maxAmount']),key=id(r.id,`${p}.id`,c);if(c.entityIds.has(key)||c.resourceIds.has(key))bad(`${p}.id`,'duplicate entity or resource id');c.resourceIds.add(key);coordinates(r,p,c);choice(r.kind,`${p}.kind`,RESOURCE_KINDS);const max=number(r.maxAmount,`${p}.maxAmount`,0,1e9);number(r.amount,`${p}.amount`,0,max);});
  pair(s.players,'state.players',(v,p)=>{const player=object(v,p,['faction','wood','ore','crystal','population','cap','upgrades']);choice(player.faction,`${p}.faction`,Object.keys(FACTIONS));for(const key of RESOURCE_KINDS)number(player[key],`${p}.${key}`);number(player.population,`${p}.population`,0,MAX_ENTITIES,true);number(player.cap,`${p}.cap`,0,100,true);const upgrades=list(player.upgrades,`${p}.upgrades`,Object.keys(UPGRADES).length);upgrades.forEach((u,i)=>choice(u,`${p}.upgrades[${i}]`,Object.keys(UPGRADES)));if(new Set(upgrades).size!==upgrades.length)bad(`${p}.upgrades`,'duplicate upgrade');});
+ const researching=[new Set<string>(),new Set<string>()],players=s.players as RecordValue[];
+ for(const e of c.entities.values())if((e.hp as number)>0&&e.research!==undefined){const side=e.side as number,upgrade=e.research as string;if((players[side].upgrades as string[]).includes(upgrade)||researching[side].has(upgrade))bad('state.entities.research','upgrade is already complete or being researched');researching[side].add(upgrade);}
  if(s.winner!==null)number(s.winner,'state.winner',0,1,true);if(s.draw&&s.winner!==null)bad('state.winner','draw cannot have a winner');
  list(s.corpses,'state.corpses',MAX_ENTITIES*2).forEach((v,i)=>{const p=`state.corpses[${i}]`,corpse=object(v,p,['id','x','y','expires']);id(corpse.id,`${p}.id`,c);coordinates(corpse,p,c);number(corpse.expires,`${p}.expires`);});
  const events=list(s.events,'state.events',MAX_ENTITIES*4);c.eventCount=events.length;
