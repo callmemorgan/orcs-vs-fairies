@@ -34,6 +34,12 @@ function siegeFixture(ability:SiegeAbility):GameState {
  spawnDefinition(s,0,'unit',def.id,20,20);return s;
 }
 
+function shotFixture():any {
+ const s=siegeFixture('incendiary-shell'),source=s.entities.find(e=>e.definitionId==='lantern:artillery')!;
+ s.specialists={artifacts:[],structures:[],nextArtifactId:1,nextStructureId:1};
+ Object.assign(s.specialists,{nextShotId:2,shots:[{id:1,source:{id:source.id,side:0,definitionId:source.definitionId,faction:s.players[0].faction,x:20,y:20,level:0},target:{x:25,y:20,level:0},impactAt:2,rawDamage:40,buildingMultiplier:1.8,payload:{kind:'incendiary',damageFactor:1,armorPiercing:false,radius:2}}]});
+ return saveGame(s);
+}
 describe('specialist save validation',()=>{
  it('round-trips progression, equipped and ground artifacts, structures and timers without sharing records',()=>{
   const original=fixture(),before=saveGame(original),restored=loadGame(JSON.stringify(before));expect(saveGame(restored)).toEqual(before);
@@ -107,4 +113,21 @@ describe('specialist save validation',()=>{
  ] as const)('rejects %s',(_name,ability,mode)=>{
   const s=siegeFixture(ability),e=s.entities.find(e=>e.definitionId==='lantern:artillery')!;e.siegeMode=mode as any;expect(()=>saveGame(s)).toThrow(/siegeMode/);
  });
+ it('round-trips a delayed siege source snapshot after the firing entity is removed',()=>{
+  const save=shotFixture();save.state.entities=save.state.entities.filter((e:any)=>e.definitionId!=='lantern:artillery');
+  expect(saveGame(loadGame(JSON.stringify(save)))).toEqual(save);
+ });
+ it.each([
+  ['missing shot counter',(s:any):any=>delete s.state.specialists.nextShotId],['duplicate shot',(s:any):any=>s.state.specialists.shots.push(structuredClone(s.state.specialists.shots[0]))],
+  ['wrong source faction',(s:any):any=>s.state.specialists.shots[0].source.faction='fairies'],['unknown source faction',(s:any):any=>s.state.specialists.shots[0].source.faction='missing'],
+  ['non-siege definition',(s:any):any=>s.state.specialists.shots[0].source.definitionId='lantern:sentinel'],['unallocated source id',(s:any):any=>s.state.specialists.shots[0].source.id=s.state.nextId],
+  ['invalid source level',(s:any):any=>s.state.specialists.shots[0].source.level=4],['invalid impact level',(s:any):any=>s.state.specialists.shots[0].target.level=-1],
+  ['unbounded impact time',(s:any):any=>s.state.specialists.shots[0].impactAt=31],['unbounded damage',(s:any):any=>s.state.specialists.shots[0].rawDamage=1e10],
+  ['invalid building multiplier',(s:any):any=>s.state.specialists.shots[0].buildingMultiplier=0],['wrong payload kind',(s:any):any=>s.state.specialists.shots[0].payload.kind='beam'],
+  ['wrong payload factor',(s:any):any=>s.state.specialists.shots[0].payload.damageFactor=1.4],['wrong piercing flag',(s:any):any=>s.state.specialists.shots[0].payload.armorPiercing=true],
+  ['wrong payload radius',(s:any):any=>s.state.specialists.shots[0].payload.radius=3],
+ ] as const)('rejects %s in the delayed siege snapshot',(_name,mutate)=>{
+  const save=shotFixture();mutate(save);expect(()=>loadGame(save)).toThrow(/Invalid save at state.specialists/);
+ });
+
 });

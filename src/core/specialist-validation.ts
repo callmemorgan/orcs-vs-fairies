@@ -1,4 +1,4 @@
-import { availableUnits, buildingFor, unitFor } from './content-registry';
+import { availableUnits, buildingFor, contentFactions, unitFor } from './content-registry';
 import { ARTIFACTS, PROMOTIONS, veteranRank } from './unit-progression';
 import type { Entity, GameState, Side, UnitRole } from './types';
 import type { ArtifactDefinitionId, EquipmentSlot, PromotionId } from './specialist-types';
@@ -151,6 +151,30 @@ function validateStructures(s:GameState,state:RecordValue,entities:Map<number,En
   }
  });
 }
+function validateShots(s:GameState,state:RecordValue):void {
+ const counter=state.nextShotId===undefined?1:number(state.nextShotId,'state.specialists.nextShotId',1,MAX_ID,true),ids=new Set<number>();
+ if(state.shots===undefined)return;
+ list(state.shots,'state.specialists.shots',MAX_RECORDS).forEach((value,i)=>{
+  const p=`state.specialists.shots[${i}]`,shot=object(value,p,['id','source','target','impactAt','rawDamage','buildingMultiplier','payload']);
+  const id=number(shot.id,`${p}.id`,1,counter-1,true);if(ids.has(id))bad(`${p}.id`,'duplicate siege shot id');ids.add(id);
+  const source=position(shot.source,`${p}.source`,s,['id','side','definitionId','faction']);
+  number(source.id,`${p}.source.id`,1,s.nextId-1,true);number(source.side,`${p}.source.side`,0,s.players.length-1,true);
+  choice(source.faction,`${p}.source.faction`,Object.keys(contentFactions(s.content)));
+  if(typeof source.definitionId!=='string'||source.definitionId.length>100)bad(`${p}.source.definitionId`,'invalid definition ID');
+  let ability:string|undefined;
+  try {ability=unitFor(s,{...source,kind:'unit',role:'siege',definitionFaction:source.faction} as unknown as Entity).ability;}
+  catch {bad(`${p}.source.definitionId`,'shot source must resolve a siege definition in its original faction');}
+  position(shot.target,`${p}.target`,s);number(shot.impactAt,`${p}.impactAt`,0,s.time+30);
+  number(shot.rawDamage,`${p}.rawDamage`,0,1e9);number(shot.buildingMultiplier,`${p}.buildingMultiplier`,.1,10);
+  const payload=object(shot.payload,`${p}.payload`,['kind','damageFactor','armorPiercing','radius']),kind=choice(payload.kind,`${p}.payload.kind`,['incendiary','rooting','corpse','flood','beam','cannon']);
+  const expectedKind=ability==='ammunition-cannon'?'cannon':ability==='powered-beam'?'beam':PREPARED[ability??''];
+  if(kind!==expectedKind)bad(`${p}.payload.kind`,'siege payload differs from its source ability');
+  const expectedFactor=kind==='cannon'?1.5:kind==='corpse'?1.4:1,expectedRadius=kind==='cannon'||kind==='beam'?0:kind==='corpse'?2.5:2;
+  if(payload.damageFactor!==expectedFactor)bad(`${p}.payload.damageFactor`,'siege payload has an invalid damage factor');
+  if(payload.armorPiercing!==(kind==='beam'))bad(`${p}.payload.armorPiercing`,'siege payload has an invalid armor-piercing flag');
+  if(payload.radius!==expectedRadius)bad(`${p}.payload.radius`,'siege payload has an invalid radius');
+ });
+}
 function validateHeroes(s:GameState):void {
  for(let side=0;side<s.players.length;side++){
   const p=`state.players[${side}].heroRecovery`,player=s.players[side],heroes=availableUnits(s,side as Side).filter(def=>def.tags?.includes('hero')),heroIds=new Set(heroes.map(def=>def.id));
@@ -172,7 +196,7 @@ function validateHeroes(s:GameState):void {
 /** Validate specialty fields after the base save schema and definitions have passed. */
 export function validateSpecialists(s:GameState):void {
  const entities=new Map(s.entities.map(e=>[e.id,e])),equipped=new Set<number>();let artifacts=new Map<number,RecordValue>();
- if(s.specialists!==undefined){const state=object(s.specialists,'state.specialists',['artifacts','structures','nextArtifactId','nextStructureId']);artifacts=validateArtifacts(s,state,entities);validateStructures(s,state,entities);}
+ if(s.specialists!==undefined){const state=object(s.specialists,'state.specialists',['artifacts','structures','nextArtifactId','nextStructureId'],['shots','nextShotId']);artifacts=validateArtifacts(s,state,entities);validateStructures(s,state,entities);validateShots(s,state);}
  s.entities.forEach((e,i)=>{const p=`state.entities[${i}]`;validateVeteran(s,e,p);validateBuffs(s,e,p);validateSiege(s,e,p);validateBurning(s,e,p,entities);validateBeacon(s,e,p);validateEquipment(s,e,p,artifacts,equipped);});
  validateHeroes(s);
 }
