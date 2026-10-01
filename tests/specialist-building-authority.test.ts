@@ -8,7 +8,7 @@ import {
 } from '../src/core/planning';
 import type { ConstructionPlan } from '../src/core/planning';
 import { canPlace, createMatch, issueCommand } from '../src/core/simulation';
-import type { BuildingRole, FactionId, GameState } from '../src/core/types';
+import type { BuildingRole, BuiltinFactionId, FactionId, GameState } from '../src/core/types';
 import { mountShell, type HudCallbacks } from '../src/ui/Hud';
 import { mountPlanningTools, type PlanningToolsCallbacks } from '../src/ui/PlanningTools';
 import { canvasContextStub } from './helpers/canvas-context';
@@ -19,11 +19,11 @@ afterEach(() => {
   vi.restoreAllMocks(); document.body.replaceChildren();
 });
 
-function fixture(tag?: 'barricade' | 'beacon') {
+function fixture(tag?: 'barricade' | 'beacon', requestedFaction: BuiltinFactionId = 'orcs') {
   vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue({
     ...canvasContextStub(), clearRect() {}, setLineDash() {}, strokeRect() {}, fillText() {},
   } as unknown as CanvasRenderingContext2D);
-  let faction: FactionId = 'orcs', content;
+  let faction: FactionId = requestedFaction, content;
   if (tag) {
     const pkg = structuredClone(exampleMod());
     pkg.factions[0].buildings[0].tags = [tag];
@@ -99,6 +99,24 @@ describe('ordinary building authority', () => {
     const { state, worker, point } = fixture(), site = point(role, definitionId);
     expect(canPlace(state, 0, role, site.x, site.y, definitionId)).toBe(true);
     unchangedAfterRejectedBuild(state, worker.id, role, site, definitionId);
+  });
+
+  it.each([
+    ['fairies', 'core:fairies-enchanted-grove'],
+    ['dwarves', 'core:dwarves-tunnel'],
+    ['undead', 'core:undead-necropolis-outpost'],
+    ['automata', 'core:automata-power-relay'],
+  ] as const)('requires specialized placement for the %s structure %s across commands and normal catalogs', (faction, definitionId) => {
+    const { state, worker, point } = fixture(undefined, faction), def = buildingFor(state, 0, 'depot', definitionId), site = point(def.role, definitionId);
+    expect(canPlace(state, 0, def.role, site.x, site.y, definitionId)).toBe(true);
+    unchangedAfterRejectedBuild(state, worker.id, def.role, site, definitionId);
+    const actions = mountHud(state, worker.id).querySelector('#action-buttons')!;
+    expect(actions.querySelector('[aria-label="' + def.name + '"]')).toBeNull();
+    const ordinaryDepot = buildingFor(state, 0, 'depot');
+    expect(actions.querySelector('[aria-label="' + ordinaryDepot.name + '"]')).not.toBeNull();
+    const { select } = mountPlanner(state, worker.id);
+    expect(select.textContent).not.toContain(def.name);
+    expect(select.querySelector('option[value="depot"]')!.textContent).toContain(ordinaryDepot.name);
   });
 
   it('excludes an admitted custom default barricade from HUD and planning, and rejects direct, parsed and forged blueprint placement', () => {
