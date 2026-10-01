@@ -178,8 +178,8 @@ export function mountSessionTools(root:HTMLElement,callbacks:SessionToolsCallbac
     analysisPanel.append(create('p',`${samples.length} recorded samples, ${formatTime(samples[0].time)} to ${formatTime(samples.at(-1)!.time)}. Lines show recorded values; gaps between samples are connected.`));
     chart('Resources held',samples,sample=>sample.wood+sample.ore+sample.crystal,names);
     if(hasAnalysisField(samples,'gathered'))chart('Resources gathered',samples,sample=>sample.gathered??NaN,names);
-    chart('Army strength',samples,sample=>sample.army,names);
-    if(hasAnalysisField(samples,'armyValue'))chart('Army value',samples,sample=>sample.armyValue??NaN,names);
+    chart('Army size (units)',samples,sample=>sample.army,names);
+    if(hasAnalysisField(samples,'armyValue'))chart('Army recruitment value',samples,sample=>sample.armyValue??NaN,names);
     if(hasAnalysisField(samples,'buildings'))chart('Buildings',samples,sample=>sample.buildings??NaN,names);
     chart('Cumulative losses',samples,sample=>sample.losses,names);
     if(hasAnalysisField(samples,'buildingLosses'))chart('Cumulative building losses',samples,sample=>sample.buildingLosses??NaN,names);
@@ -253,14 +253,39 @@ export function mountSessionTools(root:HTMLElement,callbacks:SessionToolsCallbac
   }
 
   const reportPanel=panels.get('report')!,description=create('textarea');description.rows=6;description.maxLength=4000;description.setAttribute('aria-label','Bug description');description.placeholder='What happened? What did you expect? Include the steps that caused it.';
-  const report=button('Download bug report',()=>{const text=description.value.trim();if(!text){showError(new Error('Describe the problem before downloading a report.'));description.focus();return;}void run(async()=>download('orcs-vs-fairies-bug-report.json',await callbacks.bugReport(text)),'Bug report downloaded. It includes the recorded match and diagnostics.',report);});
-  reportPanel.append(create('p','Describe the problem and download a JSON report containing the recorded match and diagnostics. You can attach it when filing a bug.'),field('Bug description',description),report);
+  const previewPanel=create('section',undefined,'session-chart');previewPanel.hidden=true;previewPanel.setAttribute('aria-label','Bug report preview');
+  const previewSummary=create('dl'),previewDetails=create('details'),previewJson=create('textarea'),jsonSummary=create('summary','Report JSON');jsonSummary.tabIndex=0;previewJson.readOnly=true;previewJson.rows=14;previewJson.setAttribute('aria-label','Report JSON preview');previewDetails.append(jsonSummary,previewJson);previewPanel.append(create('h3','Report preview'),previewSummary,previewDetails);
+  let cachedReport:{description:string;state:GameState|null;tick:number|undefined;bundle:unknown;json:string}|null=null;
+  description.addEventListener('input',()=>{cachedReport=null;previewPanel.hidden=true;});
+  function reportDescription(){const text=description.value.trim();if(!text){description.focus();throw new Error('Describe the problem before previewing or downloading a report.');}return text;}
+  function reportIsCurrent(){return !!cachedReport&&cachedReport.description===description.value.trim()&&cachedReport.state===state&&cachedReport.tick===state?.tick;}
+  function refreshReport(){if(cachedReport&&!reportIsCurrent()){cachedReport=null;previewPanel.hidden=true;}}
+  async function reportBundle(text:string){
+    if(reportIsCurrent())return cachedReport!.bundle;
+    const source=state,tick=state?.tick,result=await callbacks.bugReport(text);
+    if(!result||typeof result!=='object'||Array.isArray(result))throw new Error('The report generator returned no report.');
+    const json=JSON.stringify(result,null,2);if(json===undefined)throw new Error('The report could not be serialized.');const bundle:unknown=JSON.parse(json);
+    if(disposed||source!==state||tick!==state?.tick||text!==description.value.trim())throw new Error('The match or description changed. Preview the report again.');
+    cachedReport={description:text,state:source,tick,bundle,json};renderReportPreview();return bundle;
+  }
+  function renderReportPreview(){
+    if(!cachedReport)return;
+    const record=(value:unknown):Record<string,unknown>=>value&&typeof value==='object'&&!Array.isArray(value)?value as Record<string,unknown>:{};
+    const bundle=record(cachedReport.bundle),versions=record(bundle.versions),session=record(bundle.session),game=record(session.game),gameState=record(game.state),replay=record(session.replay??bundle.replay),diagnostics=record(bundle.diagnostics);
+    const actions=replay.actions??replay.commands;
+    const rows:[string,unknown][]=[['Report ID',bundle.id],['Format',bundle.format],['Version',bundle.version],['Build version',versions.buildId],['Content version/hash',versions.contentHash],['Save version',versions.save],['Replay version',versions.replay??replay.version],['Tick',gameState.tick??diagnostics.tick??cachedReport.tick],['Replay actions',Array.isArray(actions)?actions.length:undefined],['Diagnostic keys',Object.keys(diagnostics).sort().join(', ')||'None']];
+    previewSummary.replaceChildren();for(const [label,value] of rows)previewSummary.append(create('dt',label),create('dd',value===undefined?'Not provided':typeof value==='string'||typeof value==='number'?String(value):JSON.stringify(value)));
+    previewJson.value=cachedReport.json;previewPanel.hidden=false;
+  }
+  const preview=button('Preview report',()=>{let text:string;try{text=reportDescription();}catch(error){showError(error);return;}void run(()=>reportBundle(text),'Report preview ready. Review the replay and diagnostics before downloading.',preview);});
+  const report=button('Download bug report',()=>{let text:string;try{text=reportDescription();}catch(error){showError(error);return;}void run(async()=>download('orcs-vs-fairies-bug-report.json',await reportBundle(text)),'Bug report downloaded. It includes the recorded match and diagnostics.',report);});
+  reportPanel.append(create('p','Describe the problem, preview the recorded match and diagnostics, then download the JSON report. You can attach it when filing a bug.'),field('Bug description',description),preview,report,previewPanel);
 
   function switchTab(tab:Tab){active=tab;for(const [name,panel] of panels)panel.hidden=name!==tab;for(const [name,control] of tabButtons){control.setAttribute('aria-pressed',String(name===tab));control.classList.toggle('active',name===tab);}notice.hidden=true;refreshActive();if(tab==='saves'){try{const settings=callbacks.getAutosave();autosave.checked=settings.enabled;const raw=String(settings.intervalSeconds);if(!Array.from(interval.options).some(o=>o.value===raw)){const custom=create('option',`${settings.intervalSeconds} seconds`);custom.value=raw;interval.append(custom);}interval.value=raw;}catch(error){showError(error);}void refreshSaves();}}
   function open(tab:Tab){if(disposed)return;if(!opened){previousFocus=document.activeElement instanceof HTMLElement?document.activeElement:null;opened=true;overlay.hidden=false;try{callbacks.onModal(true);}catch(error){showError(error);}}switchTab(tab);closeButton.focus();}
   function close(){if(!opened)return;opened=false;overlay.hidden=true;drag=null;try{callbacks.onModal(false);}catch(error){showError(error);}if(previousFocus?.isConnected)previousFocus.focus();previousFocus=null;}
-  function refreshActive(){if(!opened||disposed)return;try{saveButton.disabled=exportSave.disabled=!state||saveButton.dataset.busy==='true'||exportSave.dataset.busy==='true';if(active==='production')refreshProduction();if(active==='replay')refreshReplay();if(active==='analysis')refreshAnalysis();if(active==='controls')refreshBindings();}catch(error){showError(error);}}
-  function keyboard(event:KeyboardEvent){if(!opened)return;if(event.key==='Escape'){event.preventDefault();event.stopImmediatePropagation();close();return;}if(event.key==='Tab'){const controls=Array.from(dialog.querySelectorAll<HTMLElement>('button,input,select,textarea,a[href],[tabindex]')).filter(e=>!e.closest('[hidden]')&&!(e instanceof HTMLButtonElement&&e.disabled)&&!(e instanceof HTMLInputElement&&e.disabled)&&!(e instanceof HTMLSelectElement&&e.disabled)&&e.tabIndex>=0);if(!controls.length){event.preventDefault();dialog.focus();return;}const first=controls[0],last=controls.at(-1)!;if(event.shiftKey&&(document.activeElement===first||!dialog.contains(document.activeElement))){event.preventDefault();last.focus();}else if(!event.shiftKey&&(document.activeElement===last||!dialog.contains(document.activeElement))){event.preventDefault();first.focus();}}if(!dialog.contains(event.target as Node))event.stopPropagation();}
+  function refreshActive(){if(!opened||disposed)return;try{saveButton.disabled=exportSave.disabled=!state||saveButton.dataset.busy==='true'||exportSave.dataset.busy==='true';if(active==='production')refreshProduction();if(active==='replay')refreshReplay();if(active==='analysis')refreshAnalysis();if(active==='controls')refreshBindings();if(active==='report')refreshReport();}catch(error){showError(error);}}
+  function keyboard(event:KeyboardEvent){if(!opened)return;if(event.key==='Escape'){event.preventDefault();event.stopImmediatePropagation();close();return;}if(event.key==='Tab'){const controls=Array.from(dialog.querySelectorAll<HTMLElement>('button,input,select,textarea,a[href],[tabindex]')).filter(e=>!e.closest('[hidden]')&&(!e.closest('details:not([open])')||e.tagName==='SUMMARY')&&!(e instanceof HTMLButtonElement&&e.disabled)&&!(e instanceof HTMLInputElement&&e.disabled)&&!(e instanceof HTMLSelectElement&&e.disabled)&&e.tabIndex>=0);if(!controls.length){event.preventDefault();dialog.focus();return;}const first=controls[0],last=controls.at(-1)!;if(event.shiftKey&&(document.activeElement===first||!dialog.contains(document.activeElement))){event.preventDefault();last.focus();}else if(!event.shiftKey&&(document.activeElement===last||!dialog.contains(document.activeElement))){event.preventDefault();first.focus();}}if(!dialog.contains(event.target as Node))event.stopPropagation();}
   document.addEventListener('keydown',keyboard,true);
   const stop=(event:Event)=>event.stopPropagation();for(const type of ['pointerdown','pointerup','mousedown','mouseup','click','dblclick','contextmenu','wheel'])host.addEventListener(type,stop);
   host.addEventListener('keydown',event=>{if(opened||event.target instanceof HTMLButtonElement&&['Enter',' ','Spacebar'].includes(event.key))event.stopPropagation();});

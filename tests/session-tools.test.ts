@@ -76,7 +76,7 @@ function makeCallbacks() {
     saveBindingProfile: vi.fn((_name: string) => true),
     loadBindingProfile: vi.fn((_name: string) => true),
     resetBindings: vi.fn(() => true),
-    bugReport: vi.fn((description: string) => ({ description, replay: { seed: 4127 }, diagnostics: { tick: 0 } })),
+    bugReport: vi.fn<Callbacks['bugReport']>((description: string) => ({ description, replay: { seed: 4127 }, diagnostics: { tick: 0 } })),
     photo: vi.fn(() => {}),
     onModal: vi.fn((_open: boolean) => {}),
     download: vi.fn((_filename: string, _value: unknown) => true),
@@ -367,7 +367,7 @@ describe('replay and analysis', () => {
     const page = open(root, 'analysis');
     expect(page.querySelectorAll('svg[role="img"]')).toHaveLength(4);
     expect(page.textContent).toContain('Resources held');
-    expect(page.textContent).toContain('Army strength');
+    expect(page.textContent).toContain('Army size (units)');
     expect(page.textContent).toContain('Cumulative losses');
     expect(page.textContent).toContain('SECRET TECHNOLOGY');
     expect(page.textContent).toContain('0:40 (tick 400)');
@@ -378,12 +378,12 @@ describe('replay and analysis', () => {
     for(const [index,sample] of analysis.samples.entries())for(const player of sample.players)Object.assign(player,{gathered:100+index*500,buildings:2+index,armyValue:200+index*300,buildingLosses:index,lostValue:index*75});
     callbacks.getAnalysis.mockReturnValue(analysis);
     const {root}=setup(callbacks,{replaySpectator:true}),page=open(root,'analysis');
-    for(const title of ['Resources held','Resources gathered','Army strength','Army value','Buildings','Cumulative losses','Cumulative building losses','Cumulative loss value'])expect(page.querySelector(`svg[aria-label="${title} over match time"]`)).not.toBeNull();
+    for(const title of ['Resources held','Resources gathered','Army size (units)','Army recruitment value','Buildings','Cumulative losses','Cumulative building losses','Cumulative loss value'])expect(page.querySelector(`svg[aria-label="${title} over match time"]`)).not.toBeNull();
     expect(page.querySelector('svg[aria-label="Resources gathered over match time"] title')!.textContent).toContain('2:00 600');
     expect(page.querySelector('svg[aria-label="Cumulative building losses over match time"] title')!.textContent).toContain('2:00 1');
     expect(page.querySelector('svg[aria-label="Cumulative loss value over match time"] title')!.textContent).toContain('2:00 75');
   });
-  it.each(['Resources held','Army strength','Cumulative losses'])('opens the replay from clickable and keyboard-accessible %s timestamps',async chart=>{
+  it.each(['Resources held','Army size (units)','Cumulative losses'])('opens the replay from clickable and keyboard-accessible %s timestamps',async chart=>{
     const callbacks=makeCallbacks();callbacks.getAnalysis.mockReturnValue(recordedAnalysis());callbacks.getReplay.mockReturnValue({tick:0,initialTick:0,totalTicks:1200,playing:false,speed:1,perspective:0});
     const {root}=setup(callbacks,{replaySpectator:true}),page=open(root,'analysis');
     const plot=page.querySelector(`svg[aria-label="${chart} over match time"]`)!;
@@ -610,6 +610,65 @@ describe('bindings, reports, and modal lifecycle', () => {
     await vi.waitFor(() => expect(callbacks.download).toHaveBeenCalledWith('orcs-vs-fairies-bug-report.json', {
       description: 'Cavalry stopped after crossing the bridge.', replay: { seed: 4127 }, diagnostics: { tick: 0 },
     }));
+  });
+  it('previews report versions, replay actions and diagnostics and downloads the inspected snapshot',async()=>{
+    const callbacks=makeCallbacks();
+    const bundle={format:'orcs-vs-fairies/bug-report',version:1,id:'local-proof',description:'A report',versions:{buildId:'source-build-proof',contentHash:'f00dbabe',save:2,replay:1},session:{game:{state:{tick:0}},replay:{version:1,actions:[{type:'command'},{type:'advance'}]}},diagnostics:{fps:60,viewport:{width:1100,height:850},renderDensity:1}};
+    callbacks.bugReport.mockReturnValue(bundle);
+    const {root}=setup(callbacks),page=open(root,'report');
+    setInput(field<HTMLTextAreaElement>(page,'Bug description'),'A report');button(page,'Preview report').click();
+    const preview=page.querySelector<HTMLElement>('[aria-label="Bug report preview"]')!;
+    await vi.waitFor(()=>expect(preview.hidden).toBe(false));
+    for(const text of ['local-proof','orcs-vs-fairies/bug-report','source-build-proof','f00dbabe','Replay actions','fps, renderDensity, viewport'])expect(preview.textContent).toContain(text);
+    const values=Array.from(preview.querySelectorAll('dt')).map(label=>[label.textContent,label.nextElementSibling!.textContent]);
+    expect(values).toContainEqual(['Tick','0']);expect(values).toContainEqual(['Replay actions','2']);expect(values).toContainEqual(['Version','1']);
+    const json=field<HTMLTextAreaElement>(preview,'Report JSON preview');expect(json.readOnly).toBe(true);expect(JSON.parse(json.value)).toEqual(bundle);
+    const inspected=JSON.parse(json.value);bundle.diagnostics.fps=0;button(page,'Download bug report').click();
+    await vi.waitFor(()=>expect(callbacks.download).toHaveBeenCalledWith('orcs-vs-fairies-bug-report.json',inspected));
+    expect(callbacks.bugReport).toHaveBeenCalledOnce();
+  });
+  it('refreshes report previews after a description or match tick changes',async()=>{
+    const callbacks=makeCallbacks(),{root,state,tools}=setup(callbacks);
+    callbacks.bugReport.mockImplementation(description=>({description,diagnostics:{tick:state.tick}}));
+    const page=open(root,'report'),draft=field<HTMLTextAreaElement>(page,'Bug description'),preview=page.querySelector<HTMLElement>('[aria-label="Bug report preview"]')!;
+    setInput(draft,'First report');button(page,'Preview report').click();await vi.waitFor(()=>expect(preview.hidden).toBe(false));
+    setInput(draft,'Changed report');expect(preview.hidden).toBe(true);button(page,'Download bug report').click();
+    await vi.waitFor(()=>expect(callbacks.bugReport).toHaveBeenCalledTimes(2));await vi.waitFor(()=>expect(preview.hidden).toBe(false));
+    state.tick++;tools.update(state,{});expect(preview.hidden).toBe(true);button(page,'Preview report').click();
+    await vi.waitFor(()=>expect(callbacks.bugReport).toHaveBeenCalledTimes(3));await vi.waitFor(()=>expect(preview.hidden).toBe(false));
+    expect(JSON.parse(field<HTMLTextAreaElement>(preview,'Report JSON preview').value).diagnostics.tick).toBe(1);
+  });
+  it('renders report and diagnostic text without interpreting HTML',async()=>{
+    const callbacks=makeCallbacks(),markup='<img src=x onerror=alert(1)>';
+    callbacks.bugReport.mockReturnValue({format:markup,description:markup,versions:{buildId:markup,contentHash:markup},diagnostics:{[markup]:markup}});
+    const {root}=setup(callbacks),page=open(root,'report');setInput(field<HTMLTextAreaElement>(page,'Bug description'),markup);button(page,'Preview report').click();
+    const preview=page.querySelector<HTMLElement>('[aria-label="Bug report preview"]')!;await vi.waitFor(()=>expect(preview.hidden).toBe(false));
+    expect(preview.textContent).toContain(markup);expect(preview.querySelector('img')).toBeNull();expect(JSON.parse(field<HTMLTextAreaElement>(preview,'Report JSON preview').value).description).toBe(markup);
+  });
+  it('rejects a stale asynchronous preview and keeps the latest description',async()=>{
+    const callbacks=makeCallbacks();let resolve!:(value:unknown)=>void;callbacks.bugReport.mockReturnValueOnce(new Promise(done=>{resolve=done;}));
+    const {root}=setup(callbacks),page=open(root,'report'),draft=field<HTMLTextAreaElement>(page,'Bug description');
+    setInput(draft,'Original draft');button(page,'Preview report').click();setInput(draft,'Newer draft');resolve({description:'Original draft',diagnostics:{tick:0}});
+    await vi.waitFor(()=>expect(root.querySelector('[role="status"]')!.textContent).toContain('description changed'));
+    expect(page.querySelector<HTMLElement>('[aria-label="Bug report preview"]')!.hidden).toBe(true);expect(draft.value).toBe('Newer draft');expect(callbacks.download).not.toHaveBeenCalled();
+    button(page,'Preview report').click();await vi.waitFor(()=>expect(page.querySelector<HTMLElement>('[aria-label="Bug report preview"]')!.hidden).toBe(false));
+    expect(JSON.parse(field<HTMLTextAreaElement>(page,'Report JSON preview').value).description).toBe('Newer draft');
+  });
+  it('requires a description and keeps report failures visible without downloading',async()=>{
+    const callbacks=makeCallbacks(),{root}=setup(callbacks),page=open(root,'report');
+    button(page,'Preview report').click();expect(callbacks.bugReport).not.toHaveBeenCalled();
+    callbacks.bugReport.mockRejectedValue(new Error('Replay checksum mismatch'));
+    setInput(field<HTMLTextAreaElement>(page,'Bug description'),'A report');button(page,'Download bug report').click();
+    await vi.waitFor(()=>expect(root.querySelector('[role="status"]')!.textContent).toBe('Replay checksum mismatch'));
+    expect(callbacks.download).not.toHaveBeenCalled();expect(page.querySelector<HTMLElement>('[aria-label="Bug report preview"]')!.hidden).toBe(true);
+  });
+  it('traps report focus around the collapsed JSON summary and expanded readonly preview',async()=>{
+    const {root}=setup(),page=open(root,'report');setInput(field<HTMLTextAreaElement>(page,'Bug description'),'A report');button(page,'Preview report').click();
+    const preview=page.querySelector<HTMLElement>('[aria-label="Bug report preview"]')!;await vi.waitFor(()=>expect(preview.hidden).toBe(false));
+    const summary=preview.querySelector('summary')!,details=preview.querySelector('details')!,json=field<HTMLTextAreaElement>(preview,'Report JSON preview');
+    summary.focus();summary.dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',bubbles:true,cancelable:true}));expect(document.activeElement).toBe(button(root,'Close session tools'));
+    details.open=true;json.focus();json.dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',bubbles:true,cancelable:true}));expect(document.activeElement).toBe(button(root,'Close session tools'));
+    button(root,'Close session tools').dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',shiftKey:true,bubbles:true,cancelable:true}));expect(document.activeElement).toBe(json);
   });
 
   it('blocks battlefield keyboard events while open, traps focus, and restores the launcher on Escape', () => {
