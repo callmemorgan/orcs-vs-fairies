@@ -1,0 +1,907 @@
+{
+  "checks": [
+    "two accounts register through actual Online UI and all native launchers share the session toolbar",
+    "competition and cosmetics modal focus, Escape, blocked input, both local pause states, shared modal blocking, and photo visibility work in main"
+  ],
+  "accounts": {
+    "host": {
+      "id": "4eccb0be-c522-4c27-aaee-9924b5803c87",
+      "username": "NativeHost_e662dab0"
+    },
+    "guest": {
+      "id": "47a9ba80-3a7b-4a60-84e5-c4cd9e49486f",
+      "username": "NativeGuest_e51debde"
+    }
+  },
+  "rankedMatches": [
+    {
+      "lobbyId": "51bd46e2-2845-4ecd-9d6a-776a53f5033b",
+      "matchId": "86c3c1ed-7898-4e80-b011-94d9ba68bb05",
+      "host": {
+        "hello": {
+          "kind": "hello",
+          "protocolVersion": 1,
+          "matchId": "86c3c1ed-7898-4e80-b011-94d9ba68bb05",
+          "role": "player",
+          "side": 0,
+          "generation": 1,
+          "perspective": "player",
+          "lastClientSeq": 0,
+          "delayTicks": 0
+        },
+        "mode": "online",
+        "side": 0,
+        "factions": [
+          "orcs",
+          "orcs"
+        ]
+      },
+      "guest": {
+        "hello": {
+          "kind": "hello",
+          "protocolVersion": 1,
+          "matchId": "86c3c1ed-7898-4e80-b011-94d9ba68bb05",
+          "role": "player",
+          "side": 1,
+          "generation": 1,
+          "perspective": "player",
+          "lastClientSeq": 0,
+          "delayTicks": 0
+        },
+        "mode": "online",
+        "side": 1,
+        "factions": [
+          "orcs",
+          "orcs"
+        ]
+      }
+    },
+    {
+      "lobbyId": "4d6dbf25-6f43-4e3b-8d11-2ab39543f583",
+      "matchId": "af401620-3d9c-45b8-a9d7-f66bb61bbe46",
+      "host": {
+        "hello": {
+          "kind": "hello",
+          "protocolVersion": 1,
+          "matchId": "af401620-3d9c-45b8-a9d7-f66bb61bbe46",
+          "role": "player",
+          "side": 0,
+          "generation": 1,
+          "perspective": "player",
+          "lastClientSeq": 0,
+          "delayTicks": 0
+        },
+        "mode": "online",
+        "side": 0,
+        "factions": [
+          "orcs",
+          "orcs"
+        ]
+      },
+      "guest": {
+        "hello": {
+          "kind": "hello",
+          "protocolVersion": 1,
+          "matchId": "af401620-3d9c-45b8-a9d7-f66bb61bbe46",
+          "role": "player",
+          "side": 1,
+          "generation": 1,
+          "perspective": "player",
+          "lastClientSeq": 0,
+          "delayTicks": 0
+        },
+        "mode": "online",
+        "side": 1,
+        "factions": [
+          "orcs",
+          "orcs"
+        ]
+      }
+    },
+    {
+      "lobbyId": "7c8ebd4e-ddef-4de3-8588-ac4b397cd35a",
+      "matchId": "375682cc-ed6c-4593-bfd3-5a36144e40c5",
+      "host": {
+        "hello": {
+          "kind": "hello",
+          "protocolVersion": 1,
+          "matchId": "375682cc-ed6c-4593-bfd3-5a36144e40c5",
+          "role": "player",
+          "side": 0,
+          "generation": 1,
+          "perspective": "player",
+          "lastClientSeq": 0,
+          "delayTicks": 0
+        },
+        "mode": "online",
+        "side": 0,
+        "factions": [
+          "orcs",
+          "orcs"
+        ]
+      },
+      "guest": {
+        "hello": {
+          "kind": "hello",
+          "protocolVersion": 1,
+          "matchId": "375682cc-ed6c-4593-bfd3-5a36144e40c5",
+          "role": "player",
+          "side": 1,
+          "generation": 1,
+          "perspective": "player",
+          "lastClientSeq": 0,
+          "delayTicks": 0
+        },
+        "mode": "online",
+        "side": 1,
+        "factions": [
+          "orcs",
+          "orcs"
+        ]
+      }
+    }
+  ],
+  "wireActions": [
+    {
+      "matchId": "86c3c1ed-7898-4e80-b011-94d9ba68bb05",
+      "envelope": {
+        "kind": "command",
+        "protocolVersion": 1,
+        "clientSeq": 1,
+        "observedTick": 32,
+        "command": {
+          "type": "surrender"
+        }
+      },
+      "ack": {
+        "kind": "commandAck",
+        "clientSeq": 1,
+        "appliedTick": 35,
+        "accepted": true
+      }
+    },
+    {
+      "matchId": "af401620-3d9c-45b8-a9d7-f66bb61bbe46",
+      "envelope": {
+        "kind": "command",
+        "protocolVersion": 1,
+        "clientSeq": 1,
+        "observedTick": 68,
+        "command": {
+          "type": "surrender"
+        }
+      },
+      "ack": {
+        "kind": "commandAck",
+        "clientSeq": 1,
+        "appliedTick": 72,
+        "accepted": true
+      }
+    },
+    {
+      "matchId": "375682cc-ed6c-4593-bfd3-5a36144e40c5",
+      "envelope": {
+        "kind": "command",
+        "protocolVersion": 1,
+        "clientSeq": 1,
+        "observedTick": 52,
+        "command": {
+          "type": "surrender"
+        }
+      },
+      "ack": {
+        "kind": "commandAck",
+        "clientSeq": 1,
+        "appliedTick": 55,
+        "accepted": true
+      }
+    }
+  ],
+  "thresholds": [
+    {
+      "wins": 1,
+      "earned": [
+        "orcs-victory-banner"
+      ],
+      "guestWins": 0,
+      "result": {
+        "matchId": "86c3c1ed-7898-4e80-b011-94d9ba68bb05",
+        "seasonId": "2026-10",
+        "winner": "4eccb0be-c522-4c27-aaee-9924b5803c87",
+        "tick": 35,
+        "ratings": [
+          {
+            "accountId": "4eccb0be-c522-4c27-aaee-9924b5803c87",
+            "before": 1000,
+            "after": 1016
+          },
+          {
+            "accountId": "47a9ba80-3a7b-4a60-84e5-c4cd9e49486f",
+            "before": 1000,
+            "after": 984
+          }
+        ]
+      }
+    },
+    {
+      "wins": 2,
+      "earned": [
+        "orcs-victory-banner"
+      ],
+      "guestWins": 0,
+      "result": {
+        "matchId": "af401620-3d9c-45b8-a9d7-f66bb61bbe46",
+        "seasonId": "2026-10",
+        "winner": "4eccb0be-c522-4c27-aaee-9924b5803c87",
+        "tick": 72,
+        "ratings": [
+          {
+            "accountId": "4eccb0be-c522-4c27-aaee-9924b5803c87",
+            "before": 1016,
+            "after": 1031
+          },
+          {
+            "accountId": "47a9ba80-3a7b-4a60-84e5-c4cd9e49486f",
+            "before": 984,
+            "after": 969
+          }
+        ]
+      }
+    },
+    {
+      "wins": 3,
+      "earned": [
+        "orcs-honor-seal",
+        "orcs-victory-banner"
+      ],
+      "guestWins": 0,
+      "result": {
+        "matchId": "375682cc-ed6c-4593-bfd3-5a36144e40c5",
+        "seasonId": "2026-10",
+        "winner": "4eccb0be-c522-4c27-aaee-9924b5803c87",
+        "tick": 55,
+        "ratings": [
+          {
+            "accountId": "4eccb0be-c522-4c27-aaee-9924b5803c87",
+            "before": 1031,
+            "after": 1044
+          },
+          {
+            "accountId": "47a9ba80-3a7b-4a60-84e5-c4cd9e49486f",
+            "before": 969,
+            "after": 956
+          }
+        ]
+      }
+    }
+  ],
+  "browser": {},
+  "profiles": {},
+  "uiActions": [
+    {
+      "method": "POST",
+      "route": "/api/auth/register",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/auth/register",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 201,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/51bd46e2-2845-4ecd-9d6a-776a53f5033b/join",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": true,
+      "preparationStatus": 200,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/51bd46e2-2845-4ecd-9d6a-776a53f5033b/ready",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/51bd46e2-2845-4ecd-9d6a-776a53f5033b/ready",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/51bd46e2-2845-4ecd-9d6a-776a53f5033b/start",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/matches/86c3c1ed-7898-4e80-b011-94d9ba68bb05/ticket",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 201,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/4d6dbf25-6f43-4e3b-8d11-2ab39543f583/join",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": true,
+      "preparationStatus": 200,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/4d6dbf25-6f43-4e3b-8d11-2ab39543f583/ready",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/4d6dbf25-6f43-4e3b-8d11-2ab39543f583/ready",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/4d6dbf25-6f43-4e3b-8d11-2ab39543f583/start",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/matches/af401620-3d9c-45b8-a9d7-f66bb61bbe46/ticket",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 201,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/7c8ebd4e-ddef-4de3-8588-ac4b397cd35a/join",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": true,
+      "preparationStatus": 200,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/7c8ebd4e-ddef-4de3-8588-ac4b397cd35a/ready",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/7c8ebd4e-ddef-4de3-8588-ac4b397cd35a/ready",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/7c8ebd4e-ddef-4de3-8588-ac4b397cd35a/start",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/matches/375682cc-ed6c-4593-bfd3-5a36144e40c5/ticket",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 201,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/b9adb0bc-e07e-4b5c-a0ca-a6645e065ade/join",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": true,
+      "preparationStatus": 200,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/b9adb0bc-e07e-4b5c-a0ca-a6645e065ade/ready",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/b9adb0bc-e07e-4b5c-a0ca-a6645e065ade/ready",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/b9adb0bc-e07e-4b5c-a0ca-a6645e065ade/start",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/matches/1e12a6e2-9d6c-4344-bfe5-0d77da5ea076/ticket",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    }
+  ],
+  "ticketResponses": [
+    {
+      "label": "host",
+      "path": "/api/matches/86c3c1ed-7898-4e80-b011-94d9ba68bb05/ticket",
+      "status": 200,
+      "at": 1790858612422
+    },
+    {
+      "label": "guest",
+      "path": "/api/matches/86c3c1ed-7898-4e80-b011-94d9ba68bb05/ticket",
+      "status": 200,
+      "at": 1790858613047
+    },
+    {
+      "label": "host",
+      "path": "/api/matches/af401620-3d9c-45b8-a9d7-f66bb61bbe46/ticket",
+      "status": 200,
+      "at": 1790858616931
+    },
+    {
+      "label": "guest",
+      "path": "/api/matches/af401620-3d9c-45b8-a9d7-f66bb61bbe46/ticket",
+      "status": 200,
+      "at": 1790858619330
+    },
+    {
+      "label": "host",
+      "path": "/api/matches/375682cc-ed6c-4593-bfd3-5a36144e40c5/ticket",
+      "status": 200,
+      "at": 1790858623359
+    },
+    {
+      "label": "guest",
+      "path": "/api/matches/375682cc-ed6c-4593-bfd3-5a36144e40c5/ticket",
+      "status": 200,
+      "at": 1790858625678
+    },
+    {
+      "label": "host",
+      "path": "/api/matches/1e12a6e2-9d6c-4344-bfe5-0d77da5ea076/ticket",
+      "status": 200,
+      "at": 1790858629374
+    },
+    {
+      "label": "guest",
+      "path": "/api/matches/1e12a6e2-9d6c-4344-bfe5-0d77da5ea076/ticket",
+      "status": 200,
+      "at": 1790858630726
+    }
+  ],
+  "optionEvidence": [
+    {
+      "wins": 1,
+      "options": [
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-victory-banner",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"orcs-victory-banner\">Ironclad victory banner</option>"
+        },
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-honor-seal",
+          "disabled": true,
+          "matchesDisabled": true,
+          "attribute": "",
+          "html": "<option value=\"orcs-honor-seal\" disabled=\"\">Ironclad honor seal (locked)</option>"
+        },
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-commander",
+          "disabled": true,
+          "matchesDisabled": true,
+          "attribute": "",
+          "html": "<option value=\"orcs-commander\" disabled=\"\">Ironclad commander portrait (locked)</option>"
+        }
+      ]
+    },
+    {
+      "wins": 2,
+      "options": [
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-victory-banner",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"orcs-victory-banner\">Ironclad victory banner</option>"
+        },
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-honor-seal",
+          "disabled": true,
+          "matchesDisabled": true,
+          "attribute": "",
+          "html": "<option value=\"orcs-honor-seal\" disabled=\"\">Ironclad honor seal (locked)</option>"
+        },
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-commander",
+          "disabled": true,
+          "matchesDisabled": true,
+          "attribute": "",
+          "html": "<option value=\"orcs-commander\" disabled=\"\">Ironclad commander portrait (locked)</option>"
+        }
+      ]
+    },
+    {
+      "wins": 3,
+      "options": [
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-victory-banner",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"orcs-victory-banner\">Ironclad victory banner</option>"
+        },
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-honor-seal",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"orcs-honor-seal\">Ironclad honor seal</option>"
+        },
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-commander",
+          "disabled": true,
+          "matchesDisabled": true,
+          "attribute": "",
+          "html": "<option value=\"orcs-commander\" disabled=\"\">Ironclad commander portrait (locked)</option>"
+        }
+      ]
+    }
+  ],
+  "passed": false,
+  "errors": [
+    "page.evaluate: TypeError: Cannot read properties of null (reading 'mode')\n    at eval (eval at evaluate (:311:30), <anonymous>:3:51)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at waitMatch (/home/morgana/.codex/worktrees/tournament-verification/orcs-vs-Fairies/scripts/competitions/verify-canonical-browser.mjs:175:17)\n    at async createRanked (/home/morgana/.codex/worktrees/tournament-verification/orcs-vs-Fairies/scripts/competitions/verify-canonical-browser.mjs:197:26)\n    at async verifyBrowser (/home/morgana/.codex/worktrees/tournament-verification/orcs-vs-Fairies/scripts/competitions/verify-canonical-browser.mjs:464:21)\n    at async file:///home/morgana/.codex/worktrees/tournament-verification/orcs-vs-Fairies/scripts/competitions/verify-canonical-main.mjs:152:16"
+  ],
+  "failureRuntime": {
+    "host": {
+      "rts": {
+        "mode": "online",
+        "tick": 28,
+        "side": 0,
+        "art": {
+          "enabled": true,
+          "loaded": true,
+          "assets": 100,
+          "loadedAtlasPages": 23,
+          "decodedAtlasMiB": 222.21868896484375,
+          "renderedUnits": 6
+        },
+        "fps": 48.75,
+        "online": {
+          "status": "connected",
+          "role": "player",
+          "side": 0,
+          "delayTicks": 0,
+          "pendingCommands": 0,
+          "privateSides": [
+            0
+          ]
+        }
+      },
+      "canvases": 1,
+      "competitionMessage": "Ranked lobby created. Both players must ready up.",
+      "competitionVisible": false,
+      "connections": [
+        {
+          "hello": {
+            "kind": "hello",
+            "protocolVersion": 1,
+            "matchId": "86c3c1ed-7898-4e80-b011-94d9ba68bb05",
+            "role": "player",
+            "side": 0,
+            "generation": 1,
+            "perspective": "player",
+            "lastClientSeq": 0,
+            "delayTicks": 0
+          },
+          "state": 3,
+          "acks": [],
+          "errors": []
+        },
+        {
+          "hello": {
+            "kind": "hello",
+            "protocolVersion": 1,
+            "matchId": "af401620-3d9c-45b8-a9d7-f66bb61bbe46",
+            "role": "player",
+            "side": 0,
+            "generation": 1,
+            "perspective": "player",
+            "lastClientSeq": 0,
+            "delayTicks": 0
+          },
+          "state": 3,
+          "acks": [],
+          "errors": []
+        },
+        {
+          "hello": {
+            "kind": "hello",
+            "protocolVersion": 1,
+            "matchId": "375682cc-ed6c-4593-bfd3-5a36144e40c5",
+            "role": "player",
+            "side": 0,
+            "generation": 1,
+            "perspective": "player",
+            "lastClientSeq": 0,
+            "delayTicks": 0
+          },
+          "state": 3,
+          "acks": [],
+          "errors": []
+        },
+        {
+          "hello": {
+            "kind": "hello",
+            "protocolVersion": 1,
+            "matchId": "1e12a6e2-9d6c-4344-bfe5-0d77da5ea076",
+            "role": "player",
+            "side": 0,
+            "generation": 1,
+            "perspective": "player",
+            "lastClientSeq": 0,
+            "delayTicks": 0
+          },
+          "state": 1,
+          "acks": [],
+          "errors": []
+        }
+      ]
+    },
+    "guest": {
+      "rts": null,
+      "canvases": 1,
+      "competitionMessage": "",
+      "competitionVisible": false,
+      "connections": [
+        {
+          "hello": {
+            "kind": "hello",
+            "protocolVersion": 1,
+            "matchId": "86c3c1ed-7898-4e80-b011-94d9ba68bb05",
+            "role": "player",
+            "side": 1,
+            "generation": 1,
+            "perspective": "player",
+            "lastClientSeq": 0,
+            "delayTicks": 0
+          },
+          "state": 3,
+          "acks": [
+            {
+              "kind": "commandAck",
+              "clientSeq": 1,
+              "appliedTick": 35,
+              "accepted": true
+            }
+          ],
+          "errors": []
+        },
+        {
+          "hello": {
+            "kind": "hello",
+            "protocolVersion": 1,
+            "matchId": "af401620-3d9c-45b8-a9d7-f66bb61bbe46",
+            "role": "player",
+            "side": 1,
+            "generation": 1,
+            "perspective": "player",
+            "lastClientSeq": 0,
+            "delayTicks": 0
+          },
+          "state": 3,
+          "acks": [
+            {
+              "kind": "commandAck",
+              "clientSeq": 1,
+              "appliedTick": 72,
+              "accepted": true
+            }
+          ],
+          "errors": []
+        },
+        {
+          "hello": {
+            "kind": "hello",
+            "protocolVersion": 1,
+            "matchId": "375682cc-ed6c-4593-bfd3-5a36144e40c5",
+            "role": "player",
+            "side": 1,
+            "generation": 1,
+            "perspective": "player",
+            "lastClientSeq": 0,
+            "delayTicks": 0
+          },
+          "state": 3,
+          "acks": [
+            {
+              "kind": "commandAck",
+              "clientSeq": 1,
+              "appliedTick": 55,
+              "accepted": true
+            }
+          ],
+          "errors": []
+        },
+        {
+          "hello": {
+            "kind": "hello",
+            "protocolVersion": 1,
+            "matchId": "1e12a6e2-9d6c-4344-bfe5-0d77da5ea076",
+            "role": "player",
+            "side": 1,
+            "generation": 1,
+            "perspective": "player",
+            "lastClientSeq": 0,
+            "delayTicks": 0
+          },
+          "state": 1,
+          "acks": [],
+          "errors": []
+        }
+      ]
+    }
+  }
+}

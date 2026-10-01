@@ -1,0 +1,1781 @@
+{
+  "checks": [
+    "two accounts register through actual Online UI and all native launchers share the session toolbar",
+    "competition and cosmetics modal focus, Escape, blocked input, both local pause states, shared modal blocking, and photo visibility work in main",
+    "five native same-faction ranked matches finish through accepted guest surrender commands and unlock host cosmetics at 1, 3, and 5 wins; guest earns none",
+    "native equipment changes actual Phaser canvas pixels and persistent HUD portrait while full paused save state and private runtime remain unchanged",
+    "older same-match hosted cosmetics success and transport failure cannot overwrite or clear later server-receipted equipment",
+    "sixth live same-faction ranked match maps host equipment only to owner side 0 on both views and both accounts rejoin the same server match after reload",
+    "native daily entry and reload resume the same authoritative seeded run",
+    "native account logout clears local cosmetic players, building decorations, banner, and HUD portrait",
+    "a real anonymous session response delayed until after native login cannot replace the current identity or local equipment"
+  ],
+  "accounts": {
+    "host": {
+      "id": "75223f26-5d54-4a2e-b312-4ef7eda6cabc",
+      "username": "NativeHost_c80ae030"
+    },
+    "guest": {
+      "id": "1a44bdd5-4adc-4232-b49f-9a6d66f30ea6",
+      "username": "NativeGuest_b54cc3ee"
+    }
+  },
+  "rankedMatches": [
+    {
+      "lobbyId": "057dd127-3ef6-4110-9876-dde8a8c032f1",
+      "matchId": "2958f0ea-4bd7-4dc5-99ea-9e9608c9cb79",
+      "host": {
+        "hello": {
+          "kind": "hello",
+          "protocolVersion": 1,
+          "matchId": "2958f0ea-4bd7-4dc5-99ea-9e9608c9cb79",
+          "role": "player",
+          "side": 0,
+          "generation": 1,
+          "perspective": "player",
+          "lastClientSeq": 0,
+          "delayTicks": 0
+        },
+        "mode": "online",
+        "side": 0,
+        "factions": [
+          "orcs",
+          "orcs"
+        ]
+      },
+      "guest": {
+        "hello": {
+          "kind": "hello",
+          "protocolVersion": 1,
+          "matchId": "2958f0ea-4bd7-4dc5-99ea-9e9608c9cb79",
+          "role": "player",
+          "side": 1,
+          "generation": 1,
+          "perspective": "player",
+          "lastClientSeq": 0,
+          "delayTicks": 0
+        },
+        "mode": "online",
+        "side": 1,
+        "factions": [
+          "orcs",
+          "orcs"
+        ]
+      }
+    },
+    {
+      "lobbyId": "08ffe88a-988d-4487-977d-9e16d22b6366",
+      "matchId": "b0f2df29-ed04-4cef-b286-ee960546d553",
+      "host": {
+        "hello": {
+          "kind": "hello",
+          "protocolVersion": 1,
+          "matchId": "b0f2df29-ed04-4cef-b286-ee960546d553",
+          "role": "player",
+          "side": 0,
+          "generation": 1,
+          "perspective": "player",
+          "lastClientSeq": 0,
+          "delayTicks": 0
+        },
+        "mode": "online",
+        "side": 0,
+        "factions": [
+          "orcs",
+          "orcs"
+        ]
+      },
+      "guest": {
+        "hello": {
+          "kind": "hello",
+          "protocolVersion": 1,
+          "matchId": "b0f2df29-ed04-4cef-b286-ee960546d553",
+          "role": "player",
+          "side": 1,
+          "generation": 1,
+          "perspective": "player",
+          "lastClientSeq": 0,
+          "delayTicks": 0
+        },
+        "mode": "online",
+        "side": 1,
+        "factions": [
+          "orcs",
+          "orcs"
+        ]
+      }
+    },
+    {
+      "lobbyId": "ea95c7b5-1591-4aad-a952-7b8ebd113a2a",
+      "matchId": "a0a347eb-b709-47be-8776-2dcdd5f23d90",
+      "host": {
+        "hello": {
+          "kind": "hello",
+          "protocolVersion": 1,
+          "matchId": "a0a347eb-b709-47be-8776-2dcdd5f23d90",
+          "role": "player",
+          "side": 0,
+          "generation": 1,
+          "perspective": "player",
+          "lastClientSeq": 0,
+          "delayTicks": 0
+        },
+        "mode": "online",
+        "side": 0,
+        "factions": [
+          "orcs",
+          "orcs"
+        ]
+      },
+      "guest": {
+        "hello": {
+          "kind": "hello",
+          "protocolVersion": 1,
+          "matchId": "a0a347eb-b709-47be-8776-2dcdd5f23d90",
+          "role": "player",
+          "side": 1,
+          "generation": 1,
+          "perspective": "player",
+          "lastClientSeq": 0,
+          "delayTicks": 0
+        },
+        "mode": "online",
+        "side": 1,
+        "factions": [
+          "orcs",
+          "orcs"
+        ]
+      }
+    },
+    {
+      "lobbyId": "c7c19f42-d204-4e1f-81e1-ba04c12cd66f",
+      "matchId": "1313a7e1-dd81-4669-a5f9-8ce268620470",
+      "host": {
+        "hello": {
+          "kind": "hello",
+          "protocolVersion": 1,
+          "matchId": "1313a7e1-dd81-4669-a5f9-8ce268620470",
+          "role": "player",
+          "side": 0,
+          "generation": 1,
+          "perspective": "player",
+          "lastClientSeq": 0,
+          "delayTicks": 0
+        },
+        "mode": "online",
+        "side": 0,
+        "factions": [
+          "orcs",
+          "orcs"
+        ]
+      },
+      "guest": {
+        "hello": {
+          "kind": "hello",
+          "protocolVersion": 1,
+          "matchId": "1313a7e1-dd81-4669-a5f9-8ce268620470",
+          "role": "player",
+          "side": 1,
+          "generation": 1,
+          "perspective": "player",
+          "lastClientSeq": 0,
+          "delayTicks": 0
+        },
+        "mode": "online",
+        "side": 1,
+        "factions": [
+          "orcs",
+          "orcs"
+        ]
+      }
+    },
+    {
+      "lobbyId": "a39fb4cb-a5e4-4029-a66d-5fae1e1fc158",
+      "matchId": "30c60d7c-1975-4b01-9619-d075fee29d34",
+      "host": {
+        "hello": {
+          "kind": "hello",
+          "protocolVersion": 1,
+          "matchId": "30c60d7c-1975-4b01-9619-d075fee29d34",
+          "role": "player",
+          "side": 0,
+          "generation": 1,
+          "perspective": "player",
+          "lastClientSeq": 0,
+          "delayTicks": 0
+        },
+        "mode": "online",
+        "side": 0,
+        "factions": [
+          "orcs",
+          "orcs"
+        ]
+      },
+      "guest": {
+        "hello": {
+          "kind": "hello",
+          "protocolVersion": 1,
+          "matchId": "30c60d7c-1975-4b01-9619-d075fee29d34",
+          "role": "player",
+          "side": 1,
+          "generation": 1,
+          "perspective": "player",
+          "lastClientSeq": 0,
+          "delayTicks": 0
+        },
+        "mode": "online",
+        "side": 1,
+        "factions": [
+          "orcs",
+          "orcs"
+        ]
+      }
+    }
+  ],
+  "wireActions": [
+    {
+      "matchId": "2958f0ea-4bd7-4dc5-99ea-9e9608c9cb79",
+      "envelope": {
+        "kind": "command",
+        "protocolVersion": 1,
+        "clientSeq": 1,
+        "observedTick": 48,
+        "command": {
+          "type": "surrender"
+        }
+      },
+      "ack": {
+        "kind": "commandAck",
+        "clientSeq": 1,
+        "appliedTick": 52,
+        "accepted": true
+      }
+    },
+    {
+      "matchId": "b0f2df29-ed04-4cef-b286-ee960546d553",
+      "envelope": {
+        "kind": "command",
+        "protocolVersion": 1,
+        "clientSeq": 1,
+        "observedTick": 100,
+        "command": {
+          "type": "surrender"
+        }
+      },
+      "ack": {
+        "kind": "commandAck",
+        "clientSeq": 1,
+        "appliedTick": 103,
+        "accepted": true
+      }
+    },
+    {
+      "matchId": "a0a347eb-b709-47be-8776-2dcdd5f23d90",
+      "envelope": {
+        "kind": "command",
+        "protocolVersion": 1,
+        "clientSeq": 1,
+        "observedTick": 104,
+        "command": {
+          "type": "surrender"
+        }
+      },
+      "ack": {
+        "kind": "commandAck",
+        "clientSeq": 1,
+        "appliedTick": 109,
+        "accepted": true
+      }
+    },
+    {
+      "matchId": "1313a7e1-dd81-4669-a5f9-8ce268620470",
+      "envelope": {
+        "kind": "command",
+        "protocolVersion": 1,
+        "clientSeq": 1,
+        "observedTick": 76,
+        "command": {
+          "type": "surrender"
+        }
+      },
+      "ack": {
+        "kind": "commandAck",
+        "clientSeq": 1,
+        "appliedTick": 82,
+        "accepted": true
+      }
+    },
+    {
+      "matchId": "30c60d7c-1975-4b01-9619-d075fee29d34",
+      "envelope": {
+        "kind": "command",
+        "protocolVersion": 1,
+        "clientSeq": 1,
+        "observedTick": 56,
+        "command": {
+          "type": "surrender"
+        }
+      },
+      "ack": {
+        "kind": "commandAck",
+        "clientSeq": 1,
+        "appliedTick": 60,
+        "accepted": true
+      }
+    }
+  ],
+  "thresholds": [
+    {
+      "wins": 1,
+      "earned": [
+        "orcs-victory-banner"
+      ],
+      "guestWins": 0,
+      "result": {
+        "matchId": "2958f0ea-4bd7-4dc5-99ea-9e9608c9cb79",
+        "seasonId": "2026-10",
+        "winner": "75223f26-5d54-4a2e-b312-4ef7eda6cabc",
+        "tick": 52,
+        "ratings": [
+          {
+            "accountId": "75223f26-5d54-4a2e-b312-4ef7eda6cabc",
+            "before": 1000,
+            "after": 1016
+          },
+          {
+            "accountId": "1a44bdd5-4adc-4232-b49f-9a6d66f30ea6",
+            "before": 1000,
+            "after": 984
+          }
+        ]
+      }
+    },
+    {
+      "wins": 2,
+      "earned": [
+        "orcs-victory-banner"
+      ],
+      "guestWins": 0,
+      "result": {
+        "matchId": "b0f2df29-ed04-4cef-b286-ee960546d553",
+        "seasonId": "2026-10",
+        "winner": "75223f26-5d54-4a2e-b312-4ef7eda6cabc",
+        "tick": 103,
+        "ratings": [
+          {
+            "accountId": "75223f26-5d54-4a2e-b312-4ef7eda6cabc",
+            "before": 1016,
+            "after": 1031
+          },
+          {
+            "accountId": "1a44bdd5-4adc-4232-b49f-9a6d66f30ea6",
+            "before": 984,
+            "after": 969
+          }
+        ]
+      }
+    },
+    {
+      "wins": 3,
+      "earned": [
+        "orcs-honor-seal",
+        "orcs-victory-banner"
+      ],
+      "guestWins": 0,
+      "result": {
+        "matchId": "a0a347eb-b709-47be-8776-2dcdd5f23d90",
+        "seasonId": "2026-10",
+        "winner": "75223f26-5d54-4a2e-b312-4ef7eda6cabc",
+        "tick": 109,
+        "ratings": [
+          {
+            "accountId": "75223f26-5d54-4a2e-b312-4ef7eda6cabc",
+            "before": 1031,
+            "after": 1044
+          },
+          {
+            "accountId": "1a44bdd5-4adc-4232-b49f-9a6d66f30ea6",
+            "before": 969,
+            "after": 956
+          }
+        ]
+      }
+    },
+    {
+      "wins": 4,
+      "earned": [
+        "orcs-honor-seal",
+        "orcs-victory-banner"
+      ],
+      "guestWins": 0,
+      "result": {
+        "matchId": "1313a7e1-dd81-4669-a5f9-8ce268620470",
+        "seasonId": "2026-10",
+        "winner": "75223f26-5d54-4a2e-b312-4ef7eda6cabc",
+        "tick": 82,
+        "ratings": [
+          {
+            "accountId": "75223f26-5d54-4a2e-b312-4ef7eda6cabc",
+            "before": 1044,
+            "after": 1056
+          },
+          {
+            "accountId": "1a44bdd5-4adc-4232-b49f-9a6d66f30ea6",
+            "before": 956,
+            "after": 944
+          }
+        ]
+      }
+    },
+    {
+      "wins": 5,
+      "earned": [
+        "orcs-commander",
+        "orcs-honor-seal",
+        "orcs-victory-banner"
+      ],
+      "guestWins": 0,
+      "result": {
+        "matchId": "30c60d7c-1975-4b01-9619-d075fee29d34",
+        "seasonId": "2026-10",
+        "winner": "75223f26-5d54-4a2e-b312-4ef7eda6cabc",
+        "tick": 60,
+        "ratings": [
+          {
+            "accountId": "75223f26-5d54-4a2e-b312-4ef7eda6cabc",
+            "before": 1056,
+            "after": 1067
+          },
+          {
+            "accountId": "1a44bdd5-4adc-4232-b49f-9a6d66f30ea6",
+            "before": 944,
+            "after": 933
+          }
+        ]
+      }
+    }
+  ],
+  "browser": {
+    "equipment": {
+      "beforePngSha256": "0e68d1189efe2cf1f31339f87d0260d37b0d88088625c8cca8ec92fb19f4fea2",
+      "afterPngSha256": "979247a13eceb8830928123cbc77444b07c110c142fcb73f520662e682bdf264",
+      "changedPixels": {
+        "width": 1440,
+        "height": 1000,
+        "pixels": 1313
+      },
+      "beforeGameSha256": "f3c41d7aff1f7549b554ec209824a191fd9f37d45cf7fb67716758ed24e9a24d",
+      "afterGameSha256": "f3c41d7aff1f7549b554ec209824a191fd9f37d45cf7fb67716758ed24e9a24d",
+      "diagnostics": {
+        "mode": "local",
+        "side": 0,
+        "players": [
+          {
+            "side": 0,
+            "faction": "orcs"
+          },
+          {
+            "side": 1,
+            "faction": "fairies"
+          }
+        ],
+        "cosmetics": {
+          "players": [
+            {
+              "side": 0,
+              "banner": "orcs-victory-banner",
+              "decoration": "orcs-honor-seal",
+              "portrait": "orcs-commander"
+            }
+          ],
+          "buildings": [
+            1
+          ]
+        },
+        "decorated": [
+          {
+            "id": 1,
+            "side": 0,
+            "kind": "building",
+            "hp": 1800,
+            "progress": 1,
+            "faction": "orcs"
+          }
+        ]
+      },
+      "portraitAlt": "Ironclad commander portrait"
+    },
+    "hostedRequestOrdering": {
+      "success": {
+        "old": {
+          "label": "old hosted success",
+          "path": "/api/matches/2856bbe1-773a-43e0-b205-333d8ffd7b46/cosmetics",
+          "status": 200,
+          "data": {
+            "players": [
+              {
+                "side": 0,
+                "factionId": "orcs",
+                "loadout": {
+                  "banner": "orcs-victory-banner",
+                  "decoration": "orcs-honor-seal",
+                  "portrait": "orcs-commander"
+                }
+              },
+              {
+                "side": 1,
+                "factionId": "orcs",
+                "loadout": {
+                  "banner": null,
+                  "decoration": null,
+                  "portrait": null
+                }
+              }
+            ]
+          },
+          "requestedAt": 1790858943300,
+          "capturedAt": 1790858943303
+        },
+        "newer": {
+          "players": [
+            {
+              "side": 0,
+              "factionId": "orcs",
+              "loadout": {
+                "banner": null,
+                "decoration": null,
+                "portrait": null
+              }
+            },
+            {
+              "side": 1,
+              "factionId": "orcs",
+              "loadout": {
+                "banner": null,
+                "decoration": null,
+                "portrait": null
+              }
+            }
+          ]
+        },
+        "released": {
+          "mode": "response",
+          "releasedAt": 1790858947238
+        },
+        "beforeRelease": {
+          "mode": "online",
+          "side": 0,
+          "players": [
+            {
+              "side": 0,
+              "faction": "orcs"
+            },
+            {
+              "side": 1,
+              "faction": "orcs"
+            }
+          ],
+          "cosmetics": {
+            "players": [
+              {
+                "side": 0
+              },
+              {
+                "side": 1
+              }
+            ],
+            "buildings": []
+          },
+          "decorated": []
+        },
+        "afterRelease": {
+          "mode": "online",
+          "side": 0,
+          "players": [
+            {
+              "side": 0,
+              "faction": "orcs"
+            },
+            {
+              "side": 1,
+              "faction": "orcs"
+            }
+          ],
+          "cosmetics": {
+            "players": [
+              {
+                "side": 0
+              },
+              {
+                "side": 1
+              }
+            ],
+            "buildings": []
+          },
+          "decorated": []
+        }
+      },
+      "failure": {
+        "old": {
+          "label": "old hosted failure",
+          "path": "/api/matches/2856bbe1-773a-43e0-b205-333d8ffd7b46/cosmetics",
+          "status": 200,
+          "data": {
+            "players": [
+              {
+                "side": 0,
+                "factionId": "orcs",
+                "loadout": {
+                  "banner": "orcs-victory-banner",
+                  "decoration": "orcs-honor-seal",
+                  "portrait": "orcs-commander"
+                }
+              },
+              {
+                "side": 1,
+                "factionId": "orcs",
+                "loadout": {
+                  "banner": null,
+                  "decoration": null,
+                  "portrait": null
+                }
+              }
+            ]
+          },
+          "requestedAt": 1790858944689,
+          "capturedAt": 1790858944692
+        },
+        "newer": {
+          "players": [
+            {
+              "side": 0,
+              "factionId": "orcs",
+              "loadout": {
+                "banner": "orcs-victory-banner",
+                "decoration": "orcs-honor-seal",
+                "portrait": "orcs-commander"
+              }
+            },
+            {
+              "side": 1,
+              "factionId": "orcs",
+              "loadout": {
+                "banner": null,
+                "decoration": null,
+                "portrait": null
+              }
+            }
+          ]
+        },
+        "released": {
+          "mode": "failed",
+          "releasedAt": 1790858946545
+        },
+        "beforeRelease": {
+          "mode": "online",
+          "side": 1,
+          "players": [
+            {
+              "side": 0,
+              "faction": "orcs"
+            },
+            {
+              "side": 1,
+              "faction": "orcs"
+            }
+          ],
+          "cosmetics": {
+            "players": [
+              {
+                "side": 0,
+                "banner": "orcs-victory-banner",
+                "decoration": "orcs-honor-seal",
+                "portrait": "orcs-commander"
+              },
+              {
+                "side": 1
+              }
+            ],
+            "buildings": []
+          },
+          "decorated": []
+        },
+        "afterRelease": {
+          "mode": "online",
+          "side": 1,
+          "players": [
+            {
+              "side": 0,
+              "faction": "orcs"
+            },
+            {
+              "side": 1,
+              "faction": "orcs"
+            }
+          ],
+          "cosmetics": {
+            "players": [
+              {
+                "side": 0,
+                "banner": "orcs-victory-banner",
+                "decoration": "orcs-honor-seal",
+                "portrait": "orcs-commander"
+              },
+              {
+                "side": 1
+              }
+            ],
+            "buildings": []
+          },
+          "decorated": []
+        }
+      }
+    },
+    "hostedCosmetics": {
+      "host": {
+        "mode": "online",
+        "side": 0,
+        "players": [
+          {
+            "side": 0,
+            "faction": "orcs"
+          },
+          {
+            "side": 1,
+            "faction": "orcs"
+          }
+        ],
+        "cosmetics": {
+          "players": [
+            {
+              "side": 0,
+              "banner": "orcs-victory-banner",
+              "decoration": "orcs-honor-seal",
+              "portrait": "orcs-commander"
+            },
+            {
+              "side": 1
+            }
+          ],
+          "buildings": [
+            1
+          ]
+        },
+        "decorated": [
+          {
+            "id": 1,
+            "side": 0,
+            "kind": "building",
+            "hp": 1800,
+            "progress": 1,
+            "faction": "orcs"
+          }
+        ]
+      },
+      "guest": {
+        "mode": "online",
+        "side": 1,
+        "players": [
+          {
+            "side": 0,
+            "faction": "orcs"
+          },
+          {
+            "side": 1,
+            "faction": "orcs"
+          }
+        ],
+        "cosmetics": {
+          "players": [
+            {
+              "side": 0,
+              "banner": "orcs-victory-banner",
+              "decoration": "orcs-honor-seal",
+              "portrait": "orcs-commander"
+            },
+            {
+              "side": 1
+            }
+          ],
+          "buildings": []
+        },
+        "decorated": []
+      },
+      "server": {
+        "players": [
+          {
+            "side": 0,
+            "factionId": "orcs",
+            "loadout": {
+              "banner": "orcs-victory-banner",
+              "decoration": "orcs-honor-seal",
+              "portrait": "orcs-commander"
+            }
+          },
+          {
+            "side": 1,
+            "factionId": "orcs",
+            "loadout": {
+              "banner": null,
+              "decoration": null,
+              "portrait": null
+            }
+          }
+        ]
+      }
+    },
+    "signedOut": {
+      "mode": "local",
+      "side": 0,
+      "players": [
+        {
+          "side": 0,
+          "faction": "orcs"
+        },
+        {
+          "side": 1,
+          "faction": "fairies"
+        }
+      ],
+      "cosmetics": {
+        "players": [
+          {
+            "side": 0
+          }
+        ],
+        "buildings": []
+      },
+      "decorated": []
+    },
+    "staleSession": {
+      "old": {
+        "label": "old anonymous session poll",
+        "path": "/api/session",
+        "status": 200,
+        "data": {
+          "account": null
+        },
+        "requestedAt": 1790858965056,
+        "capturedAt": 1790858965059
+      },
+      "account": {
+        "id": "75223f26-5d54-4a2e-b312-4ef7eda6cabc",
+        "username": "NativeHost_c80ae030"
+      },
+      "released": {
+        "mode": "response",
+        "releasedAt": 1790858967918
+      },
+      "beforeRelease": {
+        "mode": "local",
+        "side": 0,
+        "players": [
+          {
+            "side": 0,
+            "faction": "orcs"
+          },
+          {
+            "side": 1,
+            "faction": "fairies"
+          }
+        ],
+        "cosmetics": {
+          "players": [
+            {
+              "side": 0,
+              "banner": "orcs-victory-banner",
+              "decoration": "orcs-honor-seal",
+              "portrait": "orcs-commander"
+            }
+          ],
+          "buildings": [
+            1
+          ]
+        },
+        "decorated": [
+          {
+            "id": 1,
+            "side": 0,
+            "kind": "building",
+            "hp": 1800,
+            "progress": 1,
+            "faction": "orcs"
+          }
+        ]
+      },
+      "afterRelease": {
+        "mode": "local",
+        "side": 0,
+        "players": [
+          {
+            "side": 0,
+            "faction": "orcs"
+          },
+          {
+            "side": 1,
+            "faction": "fairies"
+          }
+        ],
+        "cosmetics": {
+          "players": [
+            {
+              "side": 0,
+              "banner": "orcs-victory-banner",
+              "decoration": "orcs-honor-seal",
+              "portrait": "orcs-commander"
+            }
+          ],
+          "buildings": [
+            1
+          ]
+        },
+        "decorated": [
+          {
+            "id": 1,
+            "side": 0,
+            "kind": "building",
+            "hp": 1800,
+            "progress": 1,
+            "faction": "orcs"
+          }
+        ]
+      }
+    }
+  },
+  "profiles": {
+    "host": {
+      "owned": [
+        "orcs-commander",
+        "orcs-honor-seal",
+        "orcs-victory-banner"
+      ],
+      "wins": {
+        "orcs": 5
+      },
+      "equipment": {
+        "orcs": {
+          "revision": 3,
+          "loadout": {
+            "banner": "orcs-victory-banner",
+            "decoration": "orcs-honor-seal",
+            "portrait": "orcs-commander"
+          }
+        }
+      }
+    },
+    "guest": {
+      "owned": [],
+      "wins": {},
+      "equipment": {}
+    }
+  },
+  "uiActions": [
+    {
+      "method": "POST",
+      "route": "/api/auth/register",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/auth/register",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 201,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/057dd127-3ef6-4110-9876-dde8a8c032f1/join",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": true,
+      "preparationStatus": 200,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/057dd127-3ef6-4110-9876-dde8a8c032f1/ready",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/057dd127-3ef6-4110-9876-dde8a8c032f1/ready",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/057dd127-3ef6-4110-9876-dde8a8c032f1/start",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/matches/2958f0ea-4bd7-4dc5-99ea-9e9608c9cb79/ticket",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 201,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/08ffe88a-988d-4487-977d-9e16d22b6366/join",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": true,
+      "preparationStatus": 200,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/08ffe88a-988d-4487-977d-9e16d22b6366/ready",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/08ffe88a-988d-4487-977d-9e16d22b6366/ready",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/08ffe88a-988d-4487-977d-9e16d22b6366/start",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/matches/b0f2df29-ed04-4cef-b286-ee960546d553/ticket",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 201,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/ea95c7b5-1591-4aad-a952-7b8ebd113a2a/join",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": true,
+      "preparationStatus": 200,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/ea95c7b5-1591-4aad-a952-7b8ebd113a2a/ready",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/ea95c7b5-1591-4aad-a952-7b8ebd113a2a/ready",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/ea95c7b5-1591-4aad-a952-7b8ebd113a2a/start",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/matches/a0a347eb-b709-47be-8776-2dcdd5f23d90/ticket",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 201,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/c7c19f42-d204-4e1f-81e1-ba04c12cd66f/join",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": true,
+      "preparationStatus": 200,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/c7c19f42-d204-4e1f-81e1-ba04c12cd66f/ready",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/c7c19f42-d204-4e1f-81e1-ba04c12cd66f/ready",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/c7c19f42-d204-4e1f-81e1-ba04c12cd66f/start",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/matches/1313a7e1-dd81-4669-a5f9-8ce268620470/ticket",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 201,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/a39fb4cb-a5e4-4029-a66d-5fae1e1fc158/join",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": true,
+      "preparationStatus": 200,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/a39fb4cb-a5e4-4029-a66d-5fae1e1fc158/ready",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/a39fb4cb-a5e4-4029-a66d-5fae1e1fc158/ready",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/a39fb4cb-a5e4-4029-a66d-5fae1e1fc158/start",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/matches/30c60d7c-1975-4b01-9619-d075fee29d34/ticket",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/cosmetics/equip",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 201,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/0efd58de-9ee6-4951-af55-3c662a98275e/join",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": true,
+      "preparationStatus": 200,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/0efd58de-9ee6-4951-af55-3c662a98275e/ready",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/0efd58de-9ee6-4951-af55-3c662a98275e/ready",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/lobbies/0efd58de-9ee6-4951-af55-3c662a98275e/start",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/matches/2856bbe1-773a-43e0-b205-333d8ffd7b46/ticket",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/cosmetics/equip",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/cosmetics/equip",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/matches/2856bbe1-773a-43e0-b205-333d8ffd7b46/ticket",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/matches/2856bbe1-773a-43e0-b205-333d8ffd7b46/ticket",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/challenges/daily/start",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 201,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/challenges/daily/start",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/auth/logout",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    },
+    {
+      "method": "POST",
+      "route": "/api/auth/login",
+      "attempt": 1,
+      "requested": true,
+      "preparatoryRequested": false,
+      "status": 200,
+      "mutations": 1
+    }
+  ],
+  "ticketResponses": [
+    {
+      "label": "host",
+      "path": "/api/matches/2958f0ea-4bd7-4dc5-99ea-9e9608c9cb79/ticket",
+      "status": 200,
+      "at": 1790858892850
+    },
+    {
+      "label": "guest",
+      "path": "/api/matches/2958f0ea-4bd7-4dc5-99ea-9e9608c9cb79/ticket",
+      "status": 200,
+      "at": 1790858893703
+    },
+    {
+      "label": "host",
+      "path": "/api/matches/b0f2df29-ed04-4cef-b286-ee960546d553/ticket",
+      "status": 200,
+      "at": 1790858900100
+    },
+    {
+      "label": "guest",
+      "path": "/api/matches/b0f2df29-ed04-4cef-b286-ee960546d553/ticket",
+      "status": 200,
+      "at": 1790858903234
+    },
+    {
+      "label": "host",
+      "path": "/api/matches/a0a347eb-b709-47be-8776-2dcdd5f23d90/ticket",
+      "status": 200,
+      "at": 1790858910238
+    },
+    {
+      "label": "guest",
+      "path": "/api/matches/a0a347eb-b709-47be-8776-2dcdd5f23d90/ticket",
+      "status": 200,
+      "at": 1790858913477
+    },
+    {
+      "label": "host",
+      "path": "/api/matches/1313a7e1-dd81-4669-a5f9-8ce268620470/ticket",
+      "status": 200,
+      "at": 1790858924101
+    },
+    {
+      "label": "guest",
+      "path": "/api/matches/1313a7e1-dd81-4669-a5f9-8ce268620470/ticket",
+      "status": 200,
+      "at": 1790858926725
+    },
+    {
+      "label": "host",
+      "path": "/api/matches/30c60d7c-1975-4b01-9619-d075fee29d34/ticket",
+      "status": 200,
+      "at": 1790858931480
+    },
+    {
+      "label": "guest",
+      "path": "/api/matches/30c60d7c-1975-4b01-9619-d075fee29d34/ticket",
+      "status": 200,
+      "at": 1790858933136
+    },
+    {
+      "label": "host",
+      "path": "/api/matches/2856bbe1-773a-43e0-b205-333d8ffd7b46/ticket",
+      "status": 200,
+      "at": 1790858943243
+    },
+    {
+      "label": "guest",
+      "path": "/api/matches/2856bbe1-773a-43e0-b205-333d8ffd7b46/ticket",
+      "status": 200,
+      "at": 1790858944666
+    },
+    {
+      "label": "host",
+      "path": "/api/matches/2856bbe1-773a-43e0-b205-333d8ffd7b46/ticket",
+      "status": 200,
+      "at": 1790858950298
+    },
+    {
+      "label": "guest",
+      "path": "/api/matches/2856bbe1-773a-43e0-b205-333d8ffd7b46/ticket",
+      "status": 200,
+      "at": 1790858952216
+    },
+    {
+      "label": "host",
+      "path": "/api/matches/a8732ab4-b852-4df2-8de0-fced45a7fa67/ticket",
+      "status": 200,
+      "at": 1790858955104
+    },
+    {
+      "label": "host",
+      "path": "/api/matches/a8732ab4-b852-4df2-8de0-fced45a7fa67/ticket",
+      "status": 200,
+      "at": 1790858957636
+    }
+  ],
+  "optionEvidence": [
+    {
+      "wins": 1,
+      "options": [
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-victory-banner",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"orcs-victory-banner\">Ironclad victory banner</option>"
+        },
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-honor-seal",
+          "disabled": true,
+          "matchesDisabled": true,
+          "attribute": "",
+          "html": "<option value=\"orcs-honor-seal\" disabled=\"\">Ironclad honor seal (locked)</option>"
+        },
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-commander",
+          "disabled": true,
+          "matchesDisabled": true,
+          "attribute": "",
+          "html": "<option value=\"orcs-commander\" disabled=\"\">Ironclad commander portrait (locked)</option>"
+        }
+      ]
+    },
+    {
+      "wins": 2,
+      "options": [
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-victory-banner",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"orcs-victory-banner\">Ironclad victory banner</option>"
+        },
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-honor-seal",
+          "disabled": true,
+          "matchesDisabled": true,
+          "attribute": "",
+          "html": "<option value=\"orcs-honor-seal\" disabled=\"\">Ironclad honor seal (locked)</option>"
+        },
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-commander",
+          "disabled": true,
+          "matchesDisabled": true,
+          "attribute": "",
+          "html": "<option value=\"orcs-commander\" disabled=\"\">Ironclad commander portrait (locked)</option>"
+        }
+      ]
+    },
+    {
+      "wins": 3,
+      "options": [
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-victory-banner",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"orcs-victory-banner\">Ironclad victory banner</option>"
+        },
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-honor-seal",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"orcs-honor-seal\">Ironclad honor seal</option>"
+        },
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-commander",
+          "disabled": true,
+          "matchesDisabled": true,
+          "attribute": "",
+          "html": "<option value=\"orcs-commander\" disabled=\"\">Ironclad commander portrait (locked)</option>"
+        }
+      ]
+    },
+    {
+      "wins": 4,
+      "options": [
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-victory-banner",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"orcs-victory-banner\">Ironclad victory banner</option>"
+        },
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-honor-seal",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"orcs-honor-seal\">Ironclad honor seal</option>"
+        },
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-commander",
+          "disabled": true,
+          "matchesDisabled": true,
+          "attribute": "",
+          "html": "<option value=\"orcs-commander\" disabled=\"\">Ironclad commander portrait (locked)</option>"
+        }
+      ]
+    },
+    {
+      "wins": 5,
+      "options": [
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-victory-banner",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"orcs-victory-banner\">Ironclad victory banner</option>"
+        },
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-honor-seal",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"orcs-honor-seal\">Ironclad honor seal</option>"
+        },
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-commander",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"orcs-commander\">Ironclad commander portrait</option>"
+        }
+      ]
+    }
+  ],
+  "sixthMatchId": "2856bbe1-773a-43e0-b205-333d8ffd7b46",
+  "daily": {
+    "matchId": "a8732ab4-b852-4df2-8de0-fced45a7fa67",
+    "challenge": {
+      "date": "2026-10-01",
+      "seed": 3553659378,
+      "expiresAt": "2026-10-02T00:00:00.000Z",
+      "scoring": "fastest-victory",
+      "tickRate": 20,
+      "config": {
+        "schemaVersion": 1,
+        "map": {
+          "seed": 3553659378,
+          "size": "small"
+        },
+        "players": [
+          {
+            "id": 0,
+            "teamId": 0,
+            "factionId": "orcs",
+            "controller": "external"
+          },
+          {
+            "id": 1,
+            "teamId": 1,
+            "factionId": "fairies",
+            "controller": "ai",
+            "ai": {
+              "difficulty": "normal",
+              "personality": "balanced",
+              "opening": "infantry-rush"
+            }
+          }
+        ],
+        "rules": {
+          "sharedVision": true,
+          "startingAge": 1
+        }
+      }
+    },
+    "resumedMatchId": "a8732ab4-b852-4df2-8de0-fced45a7fa67"
+  },
+  "passed": true
+}

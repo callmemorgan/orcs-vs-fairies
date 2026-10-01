@@ -1,0 +1,57 @@
+{
+  "helperSha256": "2109428aec8b076965b0a98b68040a1aab1ac3348000c6e14aa6b08bf79ce691",
+  "browser": "151.0.7922.34",
+  "writes": 2,
+  "returned": {
+    "status": 500,
+    "data": {
+      "write": 1
+    }
+  },
+  "summary": {
+    "uiActions": [
+      {
+        "method": "POST",
+        "route": "/join",
+        "attempt": 1,
+        "requested": false
+      },
+      {
+        "method": "POST",
+        "route": "/join",
+        "attempt": 2,
+        "requested": true,
+        "status": 500
+      }
+    ]
+  },
+  "requests": [
+    {
+      "path": "/lobby",
+      "method": "GET",
+      "at": 1790858318981,
+      "afterStart": 118
+    },
+    {
+      "path": "/join",
+      "method": "POST",
+      "at": 1790858320883,
+      "status": 500,
+      "afterStart": 2020
+    },
+    {
+      "path": "/lobby",
+      "method": "GET",
+      "at": 1790858321325,
+      "afterStart": 2462
+    },
+    {
+      "path": "/join",
+      "method": "POST",
+      "at": 1790858321339,
+      "status": 200,
+      "afterStart": 2476
+    }
+  ],
+  "finalMessage": "joined"
+}

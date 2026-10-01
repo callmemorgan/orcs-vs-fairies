@@ -1,0 +1,53 @@
+{
+  "passed": true,
+  "sourceHead": "0bfaf11e4af92e5977d272567ecf4e68b9372536",
+  "image": "sha256:9d6889efdc51ae29b081c2f417820150e81d3bab692208bb0cd74090d16e2306",
+  "checks": [
+    "current runtime image serves the game, account routes and unavailable canonical campaign adapter",
+    "packaged fixed agents launch with real PIDs and cancellation retains a verified report",
+    "both full builtin smoke battles verify against current host source and packaged source provenance",
+    "container proc inventory has no tournament-agent processes after completion"
+  ],
+  "canceled": {
+    "id": "run-72eae2a8-b6a9-426b-ae8b-41f76f340aea",
+    "status": "canceled",
+    "agents": [
+      {
+        "pid": 36,
+        "argv": [
+          "node",
+          "scripts/agents/tournament-agent.mjs",
+          "--style",
+          "push"
+        ]
+      },
+      {
+        "pid": 37,
+        "argv": [
+          "node",
+          "scripts/agents/tournament-agent.mjs",
+          "--style",
+          "idle"
+        ]
+      }
+    ]
+  },
+  "complete": {
+    "id": "run-7f116bde-aac5-4e32-8dbf-52911cce2996",
+    "matches": [
+      {
+        "id": "match-001",
+        "sha256": "9f0ec161d4327af1506c3c6af67fdca46ceaeb21bd43064888f584c6ea5bbd10",
+        "tick": 3863
+      },
+      {
+        "id": "match-002",
+        "sha256": "27287fe0ed3d8f6ea81b9231de910ad08a5df28f0841df328048da30dae6ca89",
+        "tick": 3933
+      }
+    ]
+  },
+  "remainingAgents": [],
+  "cleanupErrors": [],
+  "method": "Run the local production runtime image, register through HTTP, inspect actual /proc agent PIDs, cancel and verify one report, complete and verify both fixed smoke battles, then gracefully stop the container."
+}

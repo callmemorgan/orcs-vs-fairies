@@ -1,0 +1,294 @@
+{
+  "checks": [
+    "two accounts register through actual Online UI and all native launchers share the session toolbar",
+    "competition and cosmetics modal focus, Escape, blocked input, both local pause states, shared modal blocking, and photo visibility work in main"
+  ],
+  "accounts": {
+    "host": {
+      "id": "f54c387d-132f-44f5-95d6-e651f7f095a7",
+      "username": "NativeHost_8ce01227"
+    },
+    "guest": {
+      "id": "930146b3-c879-430b-ae16-708cdc9c9608",
+      "username": "NativeGuest_9fbd8ae2"
+    }
+  },
+  "rankedMatches": [
+    {
+      "lobbyId": "95aef7e3-c6c4-4ec8-845f-79d1af9b2a8d",
+      "matchId": "ee9e261b-9618-4ffc-921d-77b3668b526e",
+      "host": {
+        "hello": {
+          "kind": "hello",
+          "protocolVersion": 1,
+          "matchId": "ee9e261b-9618-4ffc-921d-77b3668b526e",
+          "role": "player",
+          "side": 0,
+          "generation": 1,
+          "perspective": "player",
+          "lastClientSeq": 0,
+          "delayTicks": 0
+        },
+        "mode": "online",
+        "side": 0,
+        "factions": [
+          "orcs",
+          "orcs"
+        ]
+      },
+      "guest": {
+        "hello": {
+          "kind": "hello",
+          "protocolVersion": 1,
+          "matchId": "ee9e261b-9618-4ffc-921d-77b3668b526e",
+          "role": "player",
+          "side": 1,
+          "generation": 1,
+          "perspective": "player",
+          "lastClientSeq": 0,
+          "delayTicks": 0
+        },
+        "mode": "online",
+        "side": 1,
+        "factions": [
+          "orcs",
+          "orcs"
+        ]
+      }
+    },
+    {
+      "lobbyId": "a9393b16-6cda-4010-9cac-0464b97c7577",
+      "matchId": "ed2c2202-7f28-47e6-b543-907389d760ca",
+      "host": {
+        "hello": {
+          "kind": "hello",
+          "protocolVersion": 1,
+          "matchId": "ed2c2202-7f28-47e6-b543-907389d760ca",
+          "role": "player",
+          "side": 0,
+          "generation": 1,
+          "perspective": "player",
+          "lastClientSeq": 0,
+          "delayTicks": 0
+        },
+        "mode": "online",
+        "side": 0,
+        "factions": [
+          "orcs",
+          "orcs"
+        ]
+      },
+      "guest": {
+        "hello": {
+          "kind": "hello",
+          "protocolVersion": 1,
+          "matchId": "ed2c2202-7f28-47e6-b543-907389d760ca",
+          "role": "player",
+          "side": 1,
+          "generation": 1,
+          "perspective": "player",
+          "lastClientSeq": 0,
+          "delayTicks": 0
+        },
+        "mode": "online",
+        "side": 1,
+        "factions": [
+          "orcs",
+          "orcs"
+        ]
+      }
+    }
+  ],
+  "wireActions": [
+    {
+      "matchId": "ee9e261b-9618-4ffc-921d-77b3668b526e",
+      "envelope": {
+        "kind": "command",
+        "protocolVersion": 1,
+        "clientSeq": 1,
+        "observedTick": 36,
+        "command": {
+          "type": "surrender"
+        }
+      },
+      "ack": {
+        "kind": "commandAck",
+        "clientSeq": 1,
+        "appliedTick": 40,
+        "accepted": true
+      }
+    },
+    {
+      "matchId": "ed2c2202-7f28-47e6-b543-907389d760ca",
+      "envelope": {
+        "kind": "command",
+        "protocolVersion": 1,
+        "clientSeq": 1,
+        "observedTick": 76,
+        "command": {
+          "type": "surrender"
+        }
+      },
+      "ack": {
+        "kind": "commandAck",
+        "clientSeq": 1,
+        "appliedTick": 80,
+        "accepted": true
+      }
+    }
+  ],
+  "thresholds": [
+    {
+      "wins": 1,
+      "earned": [
+        "orcs-victory-banner"
+      ],
+      "guestWins": 0,
+      "result": {
+        "matchId": "ee9e261b-9618-4ffc-921d-77b3668b526e",
+        "seasonId": "2026-10",
+        "winner": "f54c387d-132f-44f5-95d6-e651f7f095a7",
+        "tick": 40,
+        "ratings": [
+          {
+            "accountId": "f54c387d-132f-44f5-95d6-e651f7f095a7",
+            "before": 1000,
+            "after": 1016
+          },
+          {
+            "accountId": "930146b3-c879-430b-ae16-708cdc9c9608",
+            "before": 1000,
+            "after": 984
+          }
+        ]
+      }
+    },
+    {
+      "wins": 2,
+      "earned": [
+        "orcs-victory-banner"
+      ],
+      "guestWins": 0,
+      "result": {
+        "matchId": "ed2c2202-7f28-47e6-b543-907389d760ca",
+        "seasonId": "2026-10",
+        "winner": "f54c387d-132f-44f5-95d6-e651f7f095a7",
+        "tick": 80,
+        "ratings": [
+          {
+            "accountId": "f54c387d-132f-44f5-95d6-e651f7f095a7",
+            "before": 1016,
+            "after": 1031
+          },
+          {
+            "accountId": "930146b3-c879-430b-ae16-708cdc9c9608",
+            "before": 984,
+            "after": 969
+          }
+        ]
+      }
+    }
+  ],
+  "browser": {},
+  "profiles": {},
+  "optionEvidence": [
+    {
+      "wins": 1,
+      "options": [
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-victory-banner",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"orcs-victory-banner\">Ironclad victory banner</option>"
+        },
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-honor-seal",
+          "disabled": true,
+          "matchesDisabled": true,
+          "attribute": "",
+          "html": "<option value=\"orcs-honor-seal\" disabled=\"\">Ironclad honor seal (locked)</option>"
+        },
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-commander",
+          "disabled": true,
+          "matchesDisabled": true,
+          "attribute": "",
+          "html": "<option value=\"orcs-commander\" disabled=\"\">Ironclad commander portrait (locked)</option>"
+        }
+      ]
+    },
+    {
+      "wins": 2,
+      "options": [
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-victory-banner",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"orcs-victory-banner\">Ironclad victory banner</option>"
+        },
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-honor-seal",
+          "disabled": true,
+          "matchesDisabled": true,
+          "attribute": "",
+          "html": "<option value=\"orcs-honor-seal\" disabled=\"\">Ironclad honor seal (locked)</option>"
+        },
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-commander",
+          "disabled": true,
+          "matchesDisabled": true,
+          "attribute": "",
+          "html": "<option value=\"orcs-commander\" disabled=\"\">Ironclad commander portrait (locked)</option>"
+        }
+      ]
+    }
+  ],
+  "passed": false,
+  "errors": [
+    "page.waitForFunction: Timeout 60000ms exceeded.\n    at waitMatch (/home/morgana/.codex/worktrees/tournament-verification/orcs-vs-Fairies/scripts/competitions/verify-canonical-browser.mjs:132:16)\n    at createRanked (/home/morgana/.codex/worktrees/tournament-verification/orcs-vs-Fairies/scripts/competitions/verify-canonical-browser.mjs:161:32)\n    at async verifyBrowser (/home/morgana/.codex/worktrees/tournament-verification/orcs-vs-Fairies/scripts/competitions/verify-canonical-browser.mjs:422:21)\n    at async file:///home/morgana/.codex/worktrees/tournament-verification/orcs-vs-Fairies/scripts/competitions/verify-canonical-main.mjs:152:16"
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "helperSha256": "35ea8b4b309eca2b827ca056cde65318d94fcc0d0b01253c21c8f8c74bd6159e",
+  "browser": "151.0.7922.34",
+  "cases": [
+    {
+      "scenario": "slow_preparation",
+      "reads": 1,
+      "writes": 1,
+      "clicks": 1,
+      "returned": {
+        "status": 500,
+        "data": {
+          "write": 1
+        }
+      },
+      "summary": {
+        "uiActions": [
+          {
+            "method": "POST",
+            "route": "/api/lobbies/review/join",
+            "attempt": 1,
+            "requested": true,
+            "preparatoryRequested": true,
+            "preparationStatus": 200,
+            "status": 500,
+            "mutations": 1
+          }
+        ]
+      },
+      "requests": [
+        {
+          "path": "/api/lobbies/review",
+          "method": "GET",
+          "at": 1790858969333,
+          "status": 200,
+          "afterStart": 140
+        },
+        {
+          "path": "/api/lobbies/review/join",
+          "method": "POST",
+          "at": 1790858971243,
+          "status": 500,
+          "afterStart": 2050
+        }
+      ],
+      "finalMessage": "server 500",
+      "passed": true
+    },
+    {
+      "scenario": "failed_preparation",
+      "reads": 1,
+      "writes": 0,
+      "clicks": 1,
+      "error": {
+        "name": "AssertionError",
+        "message": "Expected values to be strictly equal:\n\n500 !== 200\n"
+      },
+      "summary": {
+        "uiActions": [
+          {
+            "method": "POST",
+            "route": "/api/lobbies/review/join",
+            "attempt": 1,
+            "requested": false,
+            "preparatoryRequested": true,
+            "preparationStatus": 500
+          }
+        ]
+      },
+      "requests": [
+        {
+          "path": "/api/lobbies/review",
+          "method": "GET",
+          "at": 1790858971849,
+          "status": 500,
+          "afterStart": 31
+        }
+      ],
+      "finalMessage": "preparation 500",
+      "passed": true
+    },
+    {
+      "scenario": "true_no_request",
+      "reads": 0,
+      "writes": 1,
+      "clicks": 2,
+      "returned": {
+        "status": 200,
+        "data": {
+          "write": 1
+        }
+      },
+      "summary": {
+        "uiActions": [
+          {
+            "method": "POST",
+            "route": "/api/matches/review/ticket",
+            "attempt": 1,
+            "requested": false,
+            "preparatoryRequested": false
+          },
+          {
+            "method": "POST",
+            "route": "/api/matches/review/ticket",
+            "attempt": 2,
+            "requested": true,
+            "preparatoryRequested": false,
+            "status": 200,
+            "mutations": 1
+          }
+        ]
+      },
+      "requests": [
+        {
+          "path": "/api/matches/review/ticket",
+          "method": "POST",
+          "at": 1790858973964,
+          "status": 200,
+          "afterStart": 1577
+        }
+      ],
+      "finalMessage": "success",
+      "passed": true
+    }
+  ]
+}

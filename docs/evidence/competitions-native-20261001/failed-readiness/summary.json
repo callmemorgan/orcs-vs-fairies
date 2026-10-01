@@ -1,0 +1,286 @@
+{
+  "checks": [
+    "two accounts register through actual Online UI and all native launchers share the session toolbar",
+    "competition and cosmetics modal focus, Escape, blocked input, both local pause states, shared modal blocking, and photo visibility work in main"
+  ],
+  "accounts": {
+    "host": {
+      "id": "34a29d85-16ac-49b5-a358-0336686ab727",
+      "username": "NativeHost_6bb1b0e6"
+    },
+    "guest": {
+      "id": "da49360b-5697-4a3c-b1e9-2a05fdf4ff1c",
+      "username": "NativeGuest_d507991d"
+    }
+  },
+  "rankedMatches": [
+    {
+      "lobbyId": "9d99a79f-bbf2-40ab-bbd6-a5468d60b52a",
+      "matchId": "4e5fa052-f65b-42f8-8bdf-83efe166b2a2",
+      "host": {
+        "hello": {
+          "kind": "hello",
+          "protocolVersion": 1,
+          "matchId": "4e5fa052-f65b-42f8-8bdf-83efe166b2a2",
+          "role": "player",
+          "side": 0,
+          "generation": 1,
+          "perspective": "player",
+          "lastClientSeq": 0,
+          "delayTicks": 0
+        },
+        "mode": "online",
+        "side": 0,
+        "factions": [
+          "orcs",
+          "orcs"
+        ]
+      },
+      "guest": {
+        "hello": {
+          "kind": "hello",
+          "protocolVersion": 1,
+          "matchId": "4e5fa052-f65b-42f8-8bdf-83efe166b2a2",
+          "role": "player",
+          "side": 1,
+          "generation": 1,
+          "perspective": "player",
+          "lastClientSeq": 0,
+          "delayTicks": 0
+        },
+        "mode": "online",
+        "side": 1,
+        "factions": [
+          "orcs",
+          "orcs"
+        ]
+      }
+    }
+  ],
+  "wireActions": [
+    {
+      "matchId": "4e5fa052-f65b-42f8-8bdf-83efe166b2a2",
+      "envelope": {
+        "kind": "command",
+        "protocolVersion": 1,
+        "clientSeq": 1,
+        "observedTick": 56,
+        "command": {
+          "type": "surrender"
+        }
+      },
+      "ack": {
+        "kind": "commandAck",
+        "clientSeq": 1,
+        "appliedTick": 62,
+        "accepted": true
+      }
+    }
+  ],
+  "thresholds": [
+    {
+      "wins": 1,
+      "earned": [
+        "orcs-victory-banner"
+      ],
+      "guestWins": 0,
+      "result": {
+        "matchId": "4e5fa052-f65b-42f8-8bdf-83efe166b2a2",
+        "seasonId": "2026-10",
+        "winner": "34a29d85-16ac-49b5-a358-0336686ab727",
+        "tick": 62,
+        "ratings": [
+          {
+            "accountId": "34a29d85-16ac-49b5-a358-0336686ab727",
+            "before": 1000,
+            "after": 1016
+          },
+          {
+            "accountId": "da49360b-5697-4a3c-b1e9-2a05fdf4ff1c",
+            "before": 1000,
+            "after": 984
+          }
+        ]
+      }
+    }
+  ],
+  "browser": {},
+  "profiles": {},
+  "ticketResponses": [
+    {
+      "label": "host",
+      "path": "/api/matches/4e5fa052-f65b-42f8-8bdf-83efe166b2a2/ticket",
+      "status": 200,
+      "at": 1790857816359
+    },
+    {
+      "label": "guest",
+      "path": "/api/matches/4e5fa052-f65b-42f8-8bdf-83efe166b2a2/ticket",
+      "status": 200,
+      "at": 1790857817546
+    }
+  ],
+  "nativeEntryClicks": [
+    {
+      "matchId": "4e5fa052-f65b-42f8-8bdf-83efe166b2a2",
+      "attempt": 1,
+      "ticketRequested": true
+    }
+  ],
+  "optionEvidence": [
+    {
+      "wins": 1,
+      "options": [
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-victory-banner",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"orcs-victory-banner\">Ironclad victory banner</option>"
+        },
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-honor-seal",
+          "disabled": true,
+          "matchesDisabled": true,
+          "attribute": "",
+          "html": "<option value=\"orcs-honor-seal\" disabled=\"\">Ironclad honor seal (locked)</option>"
+        },
+        {
+          "value": "",
+          "disabled": false,
+          "matchesDisabled": false,
+          "attribute": null,
+          "html": "<option value=\"\">Default</option>"
+        },
+        {
+          "value": "orcs-commander",
+          "disabled": true,
+          "matchesDisabled": true,
+          "attribute": "",
+          "html": "<option value=\"orcs-commander\" disabled=\"\">Ironclad commander portrait (locked)</option>"
+        }
+      ]
+    }
+  ],
+  "passed": false,
+  "errors": [
+    "page.waitForResponse: Timeout 20000ms exceeded while waiting for event \"response\"\n    at uiResponse (/home/morgana/.codex/worktrees/tournament-verification/orcs-vs-Fairies/scripts/competitions/verify-canonical-browser.mjs:40:26)\n    at lobbyMutation (/home/morgana/.codex/worktrees/tournament-verification/orcs-vs-Fairies/scripts/competitions/verify-canonical-browser.mjs:130:30)\n    at async createRanked (/home/morgana/.codex/worktrees/tournament-verification/orcs-vs-Fairies/scripts/competitions/verify-canonical-browser.mjs:162:55)\n    at async verifyBrowser (/home/morgana/.codex/worktrees/tournament-verification/orcs-vs-Fairies/scripts/competitions/verify-canonical-browser.mjs:451:21)\n    at async file:///home/morgana/.codex/worktrees/tournament-verification/orcs-vs-Fairies/scripts/competitions/verify-canonical-main.mjs:152:16"
+  ],
+  "failureRuntime": {
+    "host": {
+      "rts": {
+        "mode": "online",
+        "tick": 62,
+        "side": 0,
+        "art": {
+          "enabled": true,
+          "loaded": true,
+          "assets": 100,
+          "loadedAtlasPages": 23,
+          "decodedAtlasMiB": 222.21868896484375,
+          "renderedUnits": 6
+        },
+        "fps": 19.999089618070812,
+        "online": {
+          "status": "connected",
+          "role": "player",
+          "side": 0,
+          "delayTicks": 0,
+          "pendingCommands": 0,
+          "privateSides": [
+            0
+          ]
+        }
+      },
+      "canvases": 1,
+      "competitionMessage": "Ranked lobby created. Both players must ready up.",
+      "competitionVisible": true,
+      "connections": [
+        {
+          "hello": {
+            "kind": "hello",
+            "protocolVersion": 1,
+            "matchId": "4e5fa052-f65b-42f8-8bdf-83efe166b2a2",
+            "role": "player",
+            "side": 0,
+            "generation": 1,
+            "perspective": "player",
+            "lastClientSeq": 0,
+            "delayTicks": 0
+          },
+          "state": 1,
+          "acks": [],
+          "errors": []
+        }
+      ]
+    },
+    "guest": {
+      "rts": {
+        "mode": "online",
+        "tick": 62,
+        "side": 1,
+        "art": {
+          "enabled": true,
+          "loaded": true,
+          "assets": 100,
+          "loadedAtlasPages": 23,
+          "decodedAtlasMiB": 222.21868896484375,
+          "renderedUnits": 0
+        },
+        "fps": 20.05147170131847,
+        "online": {
+          "status": "connected",
+          "role": "player",
+          "side": 1,
+          "delayTicks": 0,
+          "pendingCommands": 0,
+          "privateSides": [
+            1
+          ]
+        }
+      },
+      "canvases": 1,
+      "competitionMessage": "",
+      "competitionVisible": true,
+      "connections": [
+        {
+          "hello": {
+            "kind": "hello",
+            "protocolVersion": 1,
+            "matchId": "4e5fa052-f65b-42f8-8bdf-83efe166b2a2",
+            "role": "player",
+            "side": 1,
+            "generation": 1,
+            "perspective": "player",
+            "lastClientSeq": 0,
+            "delayTicks": 0
+          },
+          "state": 1,
+          "acks": [
+            {
+              "kind": "commandAck",
+              "clientSeq": 1,
+              "appliedTick": 62,
+              "accepted": true
+            }
+          ],
+          "errors": []
+        }
+      ]
+    }
+  }
+}
