@@ -1,0 +1,5 @@
+Reviewed by GPT-5.6 Sol.
+
+The reviewer checked the final decision rows, verification logs, browser proof, exported report, production bundle and source fingerprint. The final proof contains 22 passing checks and no page errors. The production build passed, and nine test files passed 231 checks. The reviewer found that two earlier payment labels proved only accepted state changes. The browser script and simulation checks now assert the exact caravan and specialization resource deductions. The eight focused checks and complete browser rerun passed after that correction.
+
+The evidence covers the isolated economy checkout. Root integration must still preserve the combined version 4 save migration, historical fields, world view level and fog keys, registry definition behavior, and online/modal callbacks, then rerun verification on that assembled application. The local checkout had no `agent-transcripts/` directory, so the reviewer could compare the trail with its artifact files but could not audit a transcript. No unrelated global session storage was read.
