@@ -1,0 +1,33 @@
+/tmp/ovf-captured-baseline-aaage2j1
+
+> orcs-vs-fairies@0.1.0 test
+> vitest run tests/combat-tactics.test.ts -t siege shell impact obeys
+
+
+ RUN  v4.1.11 /tmp/ovf-captured-baseline-aaage2j1
+
+ ❯ tests/combat-tactics.test.ts (22 tests | 1 failed | 20 skipped) 44ms
+     × siege shell impact obeys friendlyFire=false and survives a mid-flight save 13ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/combat-tactics.test.ts > combat tactics encounters > siege shell impact obeys friendlyFire=false and survives a mid-flight save
+AssertionError: expected 156.4 to be 175 // Object.is equality
+
+- Expected
++ Received
+
+- 175
++ 156.4
+
+ ❯ tests/combat-tactics.test.ts:70:513
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed | 20 skipped (22)
+   Start at  07:03:17
+   Duration  372ms (transform 224ms, setup 0ms, import 269ms, tests 44ms, environment 0ms)
+

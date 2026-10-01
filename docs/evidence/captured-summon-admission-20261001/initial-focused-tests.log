@@ -1,0 +1,32 @@
+
+> orcs-vs-fairies@0.1.0 test
+> vitest run tests/modes-combined.test.ts tests/captured-gravecaller-definition.test.ts tests/captured-illusion-definition.test.ts tests/captured-gravecaller-grove.test.ts tests/faction-systems.test.ts tests/combat-tactics.test.ts
+
+
+ RUN  v4.1.11 /home/morgana/.codex/worktrees/captured-summons/orcs-vs-Fairies
+
+ ❯ tests/combat-tactics.test.ts (22 tests | 1 failed) 609ms
+     × siege shell impact obeys friendlyFire=false and survives a mid-flight save 10ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/combat-tactics.test.ts > combat tactics encounters > siege shell impact obeys friendlyFire=false and survives a mid-flight save
+AssertionError: expected 156.4 to be 175 // Object.is equality
+
+- Expected
++ Received
+
+- 175
++ 156.4
+
+ ❯ tests/combat-tactics.test.ts:70:513
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 5 passed (6)
+      Tests  1 failed | 86 passed (87)
+   Start at  07:01:14
+   Duration  1.83s (transform 927ms, setup 0ms, import 1.42s, tests 5.07s, environment 0ms)
+
