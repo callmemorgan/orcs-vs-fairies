@@ -1,0 +1,2228 @@
+{
+  "format": "orcs-vs-fairies-campaign-progression-proof",
+  "version": 1,
+  "generatedAt": "2026-10-01T10:48:12.470Z",
+  "sourceCommit": "6d1cab7c3665f958e39ab324ee88d97ac512c2a0",
+  "sourceFiles": {
+    "src/core/campaign.ts": "00c2e88393d7cb3a183d94742c9dc6eadfa79787b37d49bab53020e4aff21ce2",
+    "src/core/scenarios.ts": "b51f43cef1fef714cdb4fe442e93cd73eb3918e55133fbe1595805e0b8939c0f",
+    "src/core/scenario-recordings.ts": "fcf09269836754f97b49e6f06affc0018beb16ff3888f08e107169384ed26e02",
+    "src/scenarios/campaigns.ts": "f61da50b23bd565403df85c1e6fc971d60c3d2e79ee6405887edc8f45261e95b",
+    "scripts/scenarios/mission-strategy.ts": "22373eb3d432df6162710c2775f530775a0db44daaffec25b12ae68d423053b3",
+    "scripts/scenarios/puzzle-stealth-strategy.ts": "78265d83eefcc7af43d27bb98c78ef45a5f8c60e65b9f01269929878ffb6451b",
+    "scripts/scenarios/route-strategy.ts": "0ef869fc4ac1b4aa697cac71b66173c534ce85a75b54bd99103d81b2c9457a1d",
+    "scripts/scenarios/finale-strategy.ts": "1fdfd1ea493bae0c66cd7b57aaf68705976a428c67aa3d1946c042bd789d2840",
+    "scripts/scenarios/prove-alternate-profiles.ts": "ae0eb3cb4979c8f4fc2469c9e3e0562a307955b2d96879f250fa4f28b5ada9ca"
+  },
+  "profiles": [
+    {
+      "campaignId": "campaign-orcs",
+      "profileId": "author-alt-orcs",
+      "choiceId": "courier",
+      "assertions": {
+        "fourVerifiedChapters": true,
+        "alternateChapterUsed": true,
+        "choicePersisted": true,
+        "finished": true,
+        "chapterAssertions": true
+      },
+      "progress": {
+        "campaignId": "campaign-orcs",
+        "chapter": 4,
+        "choiceId": "courier",
+        "completed": [
+          "orcs-1",
+          "orcs-2",
+          "orcs-3-alt",
+          "orcs-4"
+        ],
+        "finished": true
+      },
+      "chapters": [
+        {
+          "missionId": "orcs-1",
+          "time": 24.30000000000021,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "deployedIds": [],
+          "reserveIds": [],
+          "carry": [],
+          "survivorIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/orcs-1.json",
+            "sha256": "f91f748bb3e6e3ddee0e87bb9745c51252b3646c5c9aa0bbc3138945251723d6",
+            "finalChecksum": "a00689bb",
+            "commandCount": 208
+          },
+          "finalCheckpointSha256": "ba6738c17efdd8090ff41a267caa985836397900ced7fa548c73563f04864d02"
+        },
+        {
+          "missionId": "orcs-2",
+          "time": 69.99999999999817,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            3,
+            4,
+            5,
+            6,
+            2
+          ],
+          "deployedIds": [
+            1,
+            3,
+            4,
+            5,
+            6,
+            2
+          ],
+          "reserveIds": [],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 190,
+              "newMaxHp": 190,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 3,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 175,
+              "newMaxHp": 175,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 4,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 175,
+              "newMaxHp": 175,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 5,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 100,
+              "newMaxHp": 100,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 6,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 100,
+              "newMaxHp": 100,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 2,
+              "role": "worker",
+              "oldRole": "worker",
+              "oldMaxHp": 85,
+              "newMaxHp": 85,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            1,
+            3,
+            4,
+            5,
+            6,
+            2,
+            24
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            24
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/orcs-2.json",
+            "sha256": "c72da958782424a4a2711c472156aeddfca4cf756b00b803e54fc9c0cb3e9631",
+            "finalChecksum": "b1f2ce1c",
+            "commandCount": 90
+          },
+          "finalCheckpointSha256": "3d8cfd0b26fe7a091bf27e78fe2b9b677b94c201048b5171b8fca707b8f4a0ff"
+        },
+        {
+          "missionId": "orcs-3-alt",
+          "time": 38.19999999999997,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            2
+          ],
+          "deployedIds": [
+            1,
+            2
+          ],
+          "reserveIds": [
+            3,
+            4,
+            5,
+            6,
+            24
+          ],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 190,
+              "newMaxHp": 190,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 2,
+              "role": "worker",
+              "oldRole": "worker",
+              "oldMaxHp": 85,
+              "newMaxHp": 85,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            1,
+            2
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            24
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/orcs-3.json",
+            "sha256": "3966d23a3300031f5dfc0848fed395858d682f074b32ad4ead55b14cd88cba7b",
+            "finalChecksum": "3e1f5a2c",
+            "commandCount": 75
+          },
+          "finalCheckpointSha256": "0f4e79de59ad8427003565fc9b60b89eb1a619b0fde9e502e9ca9ff617b23fed"
+        },
+        {
+          "missionId": "orcs-4",
+          "time": 37.10000000000003,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            3,
+            4,
+            5,
+            6
+          ],
+          "deployedIds": [
+            1,
+            3,
+            4,
+            5,
+            6
+          ],
+          "reserveIds": [
+            2,
+            24
+          ],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 190,
+              "newMaxHp": 190,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 3,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 175,
+              "newMaxHp": 175,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 4,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 175,
+              "newMaxHp": 175,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 5,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 100,
+              "newMaxHp": 100,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 6,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 100,
+              "newMaxHp": 100,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            1,
+            3,
+            4,
+            5,
+            6
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            24
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/orcs-4.json",
+            "sha256": "8f64ba7397254b731ef8b7b364110d433123c296109cff7bc164726833d8a7f5",
+            "finalChecksum": "d5b5790d",
+            "commandCount": 49
+          },
+          "finalCheckpointSha256": "8cc362b8d619c21427271f2b0661c66266835faedab8e73aefc2cc165699b66e"
+        }
+      ],
+      "profilePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/orcs-profile.json",
+      "profileSha256": "2fb3bf951a092c5ae3fecb44d9df9170dfde2f1340f4fd20f3c9214badd8aa26"
+    },
+    {
+      "campaignId": "campaign-fairies",
+      "profileId": "author-alt-fairies",
+      "choiceId": "stockade",
+      "assertions": {
+        "fourVerifiedChapters": true,
+        "alternateChapterUsed": true,
+        "choicePersisted": true,
+        "finished": true,
+        "chapterAssertions": true
+      },
+      "progress": {
+        "campaignId": "campaign-fairies",
+        "chapter": 4,
+        "choiceId": "stockade",
+        "completed": [
+          "fairies-1",
+          "fairies-2",
+          "fairies-3-alt",
+          "fairies-4"
+        ],
+        "finished": true
+      },
+      "chapters": [
+        {
+          "missionId": "fairies-1",
+          "time": 29.400000000000283,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            2
+          ],
+          "deployedIds": [],
+          "reserveIds": [],
+          "carry": [],
+          "survivorIds": [
+            1,
+            2
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/fairies-1.json",
+            "sha256": "85fbf56824a54f3d81c51e50c60c5ff0cadf1bbf204ad78255138bca67a7f5db",
+            "finalChecksum": "f0cd0f12",
+            "commandCount": 58
+          },
+          "finalCheckpointSha256": "68f199f81443fcf6ebe54db70630a14af44ce59018335909acf5410e8073a958"
+        },
+        {
+          "missionId": "fairies-2",
+          "time": 20.00000000000015,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            2,
+            7,
+            8,
+            9,
+            10
+          ],
+          "deployedIds": [
+            1,
+            2
+          ],
+          "reserveIds": [],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 105,
+              "newMaxHp": 105,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 2,
+              "role": "worker",
+              "oldRole": "worker",
+              "oldMaxHp": 65,
+              "newMaxHp": 65,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            1,
+            2,
+            7,
+            8,
+            9,
+            10
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            7,
+            8,
+            9,
+            10
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/fairies-2.json",
+            "sha256": "b5acbe9b5b44b2e9a557da6f700eadb8e3d6421f850a14a07a8f50728b0e6b1d",
+            "finalChecksum": "64921403",
+            "commandCount": 173
+          },
+          "finalCheckpointSha256": "0b6f024aa87e573170a81a78440aa8932a25fad2246529febc873fbca9a69d54"
+        },
+        {
+          "missionId": "fairies-3-alt",
+          "time": 8.09999999999998,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            18,
+            7,
+            8,
+            9
+          ],
+          "deployedIds": [
+            1,
+            7,
+            8,
+            9
+          ],
+          "reserveIds": [
+            2,
+            10
+          ],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 105,
+              "newMaxHp": 105,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 7,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 140,
+              "newMaxHp": 140,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 8,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 140,
+              "newMaxHp": 140,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 9,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 85,
+              "newMaxHp": 85,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            1,
+            18,
+            7,
+            8,
+            9
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            7,
+            8,
+            9,
+            10,
+            18
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/fairies-3.json",
+            "sha256": "adf16e9956c5a4e9e1a585efe2d1abf9a3cc174c6f3417689b0d5a432587683d",
+            "finalChecksum": "3549cf29",
+            "commandCount": 3
+          },
+          "finalCheckpointSha256": "aa4a01d302010592437363fce7ef67c8c7ce874113cf24c9d68c8bffb60004a7"
+        },
+        {
+          "missionId": "fairies-4",
+          "time": 40.29999999999985,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            18,
+            7,
+            8,
+            9,
+            10
+          ],
+          "deployedIds": [
+            1,
+            18,
+            7,
+            8,
+            9,
+            10
+          ],
+          "reserveIds": [
+            2
+          ],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 105,
+              "newMaxHp": 105,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 18,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 105,
+              "newMaxHp": 105,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 7,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 140,
+              "newMaxHp": 140,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 8,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 140,
+              "newMaxHp": 140,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 9,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 85,
+              "newMaxHp": 85,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 10,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 85,
+              "newMaxHp": 85,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            1,
+            18,
+            9,
+            10
+          ],
+          "casualtyIds": [
+            7,
+            8
+          ],
+          "rosterIds": [
+            1,
+            2,
+            9,
+            10,
+            18
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/fairies-4.json",
+            "sha256": "bfbc405a87b416e7a67550db2fdc355bce2d4071553ab16e4b883c1e60962edd",
+            "finalChecksum": "98dc6d25",
+            "commandCount": 50
+          },
+          "finalCheckpointSha256": "43206348b045ede9a039bcbdf6caca1fcb38211ce6465fdad1f6a3d8830e3486"
+        }
+      ],
+      "profilePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/fairies-profile.json",
+      "profileSha256": "f5948d132af57d11cf0b0ea88ad4d77a60ee72a7aa0b5651395e8caaf5d13745"
+    },
+    {
+      "campaignId": "campaign-dwarves",
+      "profileId": "author-alt-dwarves",
+      "choiceId": "works",
+      "assertions": {
+        "fourVerifiedChapters": true,
+        "alternateChapterUsed": true,
+        "choicePersisted": true,
+        "finished": true,
+        "chapterAssertions": true
+      },
+      "progress": {
+        "campaignId": "campaign-dwarves",
+        "chapter": 4,
+        "choiceId": "works",
+        "completed": [
+          "dwarves-1",
+          "dwarves-2",
+          "dwarves-3-alt",
+          "dwarves-4"
+        ],
+        "finished": true
+      },
+      "chapters": [
+        {
+          "missionId": "dwarves-1",
+          "time": 48.34999999999939,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "deployedIds": [],
+          "reserveIds": [],
+          "carry": [],
+          "survivorIds": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/dwarves-1.json",
+            "sha256": "68484304ad229eb451984d069c63a5db3f2a565855cba7e622f4af915ec1022b",
+            "finalChecksum": "61904d7b",
+            "commandCount": 9
+          },
+          "finalCheckpointSha256": "7a66101d98adcc473a5384109db26f579ecbc5f477d3fb59219cf1cf0f9d6046"
+        },
+        {
+          "missionId": "dwarves-2",
+          "time": 74.99999999999788,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            3,
+            2,
+            4,
+            5,
+            16
+          ],
+          "deployedIds": [
+            1,
+            3,
+            2,
+            4,
+            5
+          ],
+          "reserveIds": [],
+          "carry": [
+            {
+              "id": 1,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 170,
+              "newMaxHp": 170,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 3,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 170,
+              "newMaxHp": 170,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 2,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 145,
+              "newMaxHp": 145,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 4,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 95,
+              "newMaxHp": 95,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 5,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 95,
+              "newMaxHp": 95,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            1,
+            2,
+            4,
+            5,
+            16,
+            21
+          ],
+          "casualtyIds": [
+            3
+          ],
+          "rosterIds": [
+            1,
+            2,
+            4,
+            5,
+            16,
+            21
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/dwarves-2.json",
+            "sha256": "d0a67bcdf289cf02d89636b90552a396e8edd465ed51226cfc4a3dfda62635aa",
+            "finalChecksum": "62dc37fa",
+            "commandCount": 83
+          },
+          "finalCheckpointSha256": "efe00494ef5c8ad30d08b97e8645607561978eaf651985eadbde6dcd6cb01834"
+        },
+        {
+          "missionId": "dwarves-3-alt",
+          "time": 40.199999999999854,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            16
+          ],
+          "deployedIds": [
+            1,
+            16
+          ],
+          "reserveIds": [
+            2,
+            4,
+            5,
+            21
+          ],
+          "carry": [
+            {
+              "id": 1,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 170,
+              "newMaxHp": 170,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 16,
+              "role": "worker",
+              "oldRole": "worker",
+              "oldMaxHp": 80,
+              "newMaxHp": 80,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            1,
+            16
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            4,
+            5,
+            16,
+            21
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/dwarves-3.json",
+            "sha256": "10a3cea92730a00f494b22a311ef96c93d02759c417031eb92885b9ca9035815",
+            "finalChecksum": "e83b2409",
+            "commandCount": 78
+          },
+          "finalCheckpointSha256": "80d7c18ad4cef64f8b64999cf35632eeddeff7a7e848ddd3a3ded3ff41b80b59"
+        },
+        {
+          "missionId": "dwarves-4",
+          "time": 58.299999999998825,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            29,
+            2,
+            31,
+            4
+          ],
+          "deployedIds": [
+            1,
+            2,
+            4
+          ],
+          "reserveIds": [
+            5,
+            16,
+            21
+          ],
+          "carry": [
+            {
+              "id": 1,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 170,
+              "newMaxHp": 170,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 2,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 145,
+              "newMaxHp": 145,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 4,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 95,
+              "newMaxHp": 95,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            1,
+            2,
+            31,
+            4
+          ],
+          "casualtyIds": [
+            29
+          ],
+          "rosterIds": [
+            1,
+            2,
+            4,
+            5,
+            16,
+            21,
+            31
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/dwarves-4.json",
+            "sha256": "11b01c6b0e598d67347ead09cc60b01879f0c54670b7cd57b560ded54fecf3fa",
+            "finalChecksum": "62ca0b26",
+            "commandCount": 16
+          },
+          "finalCheckpointSha256": "53c8bd79705c1390c8819d6c4fabbc6ad5394fe7d802dc3c4cc4a9572410bdc7"
+        }
+      ],
+      "profilePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/dwarves-profile.json",
+      "profileSha256": "ad4c37d475b96eeac5e2f3aaaff4533dc861509672f319074bf4cc0e89933c0c"
+    },
+    {
+      "campaignId": "campaign-undead",
+      "profileId": "author-alt-undead",
+      "choiceId": "burial",
+      "assertions": {
+        "fourVerifiedChapters": true,
+        "alternateChapterUsed": true,
+        "choicePersisted": true,
+        "finished": true,
+        "chapterAssertions": true
+      },
+      "progress": {
+        "campaignId": "campaign-undead",
+        "chapter": 4,
+        "choiceId": "burial",
+        "completed": [
+          "undead-1",
+          "undead-2",
+          "undead-3-alt",
+          "undead-4"
+        ],
+        "finished": true
+      },
+      "chapters": [
+        {
+          "missionId": "undead-1",
+          "time": 64.99999999999845,
+          "outcome": "won",
+          "initialIds": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "deployedIds": [],
+          "reserveIds": [],
+          "carry": [],
+          "survivorIds": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            15
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            15
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/undead-1.json",
+            "sha256": "a6b14a0a489057260722401aa6001145dadc306dadb7d73a1cb8e4b09d4db7dc",
+            "finalChecksum": "70317d7f",
+            "commandCount": 100
+          },
+          "finalCheckpointSha256": "d80eeb0770d4223926475037ffe6a2e699e7ebb88afe4f5c412d37bab93af36d"
+        },
+        {
+          "missionId": "undead-2",
+          "time": 37.30000000000002,
+          "outcome": "won",
+          "initialIds": [
+            3,
+            9
+          ],
+          "deployedIds": [
+            3,
+            9
+          ],
+          "reserveIds": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            15
+          ],
+          "carry": [
+            {
+              "id": 3,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 95,
+              "newMaxHp": 95,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 9,
+              "role": "worker",
+              "oldRole": "worker",
+              "oldMaxHp": 60,
+              "newMaxHp": 60,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            3,
+            9
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            15
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/undead-2.json",
+            "sha256": "d2a84d9847c5ce90d36cda23a0e4e9eec5e58c4c14b55da4d746c2f2a9143d45",
+            "finalChecksum": "5952d7c7",
+            "commandCount": 73
+          },
+          "finalCheckpointSha256": "dd0129898dc76c84564fe567f05d7b0d64adf026031986d92db1a6ba17175690"
+        },
+        {
+          "missionId": "undead-3-alt",
+          "time": 8.449999999999985,
+          "outcome": "won",
+          "initialIds": [
+            3,
+            4,
+            5,
+            7,
+            8
+          ],
+          "deployedIds": [
+            3,
+            4,
+            5,
+            7,
+            8
+          ],
+          "reserveIds": [
+            6,
+            9,
+            15
+          ],
+          "carry": [
+            {
+              "id": 3,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 95,
+              "newMaxHp": 95,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 4,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 115,
+              "newMaxHp": 115,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 5,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 115,
+              "newMaxHp": 115,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 7,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 80,
+              "newMaxHp": 80,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 8,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 80,
+              "newMaxHp": 80,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            3,
+            4,
+            5,
+            7,
+            8
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            15
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/undead-3.json",
+            "sha256": "768849df88d5f66d97984926f4422c958c75c10c2d65131f6fa9312d3b6b2878",
+            "finalChecksum": "b5f34cfc",
+            "commandCount": 1
+          },
+          "finalCheckpointSha256": "87b63bace33361f2cd64be0ba8d9df688f93f70711ae958733a9019311a08deb"
+        },
+        {
+          "missionId": "undead-4",
+          "time": 38.14999999999997,
+          "outcome": "won",
+          "initialIds": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            15
+          ],
+          "deployedIds": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            15
+          ],
+          "reserveIds": [
+            9
+          ],
+          "carry": [
+            {
+              "id": 3,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 95,
+              "newMaxHp": 95,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 4,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 115,
+              "newMaxHp": 115,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 5,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 115,
+              "newMaxHp": 115,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 6,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 115,
+              "newMaxHp": 115,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 7,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 80,
+              "newMaxHp": 80,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 8,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 80,
+              "newMaxHp": 80,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 15,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 80,
+              "newMaxHp": 80,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            3,
+            6,
+            7,
+            8,
+            15
+          ],
+          "casualtyIds": [
+            4,
+            5
+          ],
+          "rosterIds": [
+            3,
+            6,
+            7,
+            8,
+            9,
+            15
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/undead-4.json",
+            "sha256": "8846ace2e8dd90641c01b0120b9e9635c028dbddc10776a4395394fdb0e088b9",
+            "finalChecksum": "44708f88",
+            "commandCount": 88
+          },
+          "finalCheckpointSha256": "d98a4bec366bc306e144bb8a1f3b5ba7cbee4ab1c7e9c869458ff098a0b9a035"
+        }
+      ],
+      "profilePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/undead-profile.json",
+      "profileSha256": "a48e49e4aa917ba0d4eac124e718d85a4189660107368b074492ec89ec4c372e"
+    },
+    {
+      "campaignId": "campaign-tideborn",
+      "profileId": "author-alt-tideborn",
+      "choiceId": "basin",
+      "assertions": {
+        "fourVerifiedChapters": true,
+        "alternateChapterUsed": true,
+        "choicePersisted": true,
+        "finished": true,
+        "chapterAssertions": true
+      },
+      "progress": {
+        "campaignId": "campaign-tideborn",
+        "chapter": 4,
+        "choiceId": "basin",
+        "completed": [
+          "tideborn-1",
+          "tideborn-2",
+          "tideborn-3-alt",
+          "tideborn-4"
+        ],
+        "finished": true
+      },
+      "chapters": [
+        {
+          "missionId": "tideborn-1",
+          "time": 23.800000000000203,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "deployedIds": [],
+          "reserveIds": [],
+          "carry": [],
+          "survivorIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/tideborn-1.json",
+            "sha256": "34a226f4b0a0438c0b0d7f8fb57de38cd88b053fcbce1f7c580cb54c53d5e6ca",
+            "finalChecksum": "b68b0b2c",
+            "commandCount": 195
+          },
+          "finalCheckpointSha256": "bd510772ebc26227b357b3911b866a47876a622eeffe54fd3b2c10f165549b8c"
+        },
+        {
+          "missionId": "tideborn-2",
+          "time": 12.250000000000039,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            3,
+            4,
+            5,
+            6
+          ],
+          "deployedIds": [
+            1,
+            3,
+            4,
+            5,
+            6
+          ],
+          "reserveIds": [
+            2
+          ],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 115,
+              "newMaxHp": 115,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 3,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 170,
+              "newMaxHp": 170,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 4,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 170,
+              "newMaxHp": 170,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 5,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 90,
+              "newMaxHp": 90,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 6,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 90,
+              "newMaxHp": 90,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            1,
+            3,
+            4,
+            5,
+            6
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/tideborn-2.json",
+            "sha256": "7d33152121553fc165433c7f610e00708990dca8d70d24b9266a08b17b6837df",
+            "finalChecksum": "98677a2c",
+            "commandCount": 13
+          },
+          "finalCheckpointSha256": "b0d8f54b5b8d6e25337981edc25ae39f6791f8d2220d16547c30012506d316f2"
+        },
+        {
+          "missionId": "tideborn-3-alt",
+          "time": 74.99999999999788,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            3,
+            4,
+            5,
+            6,
+            2
+          ],
+          "deployedIds": [
+            1,
+            3,
+            4,
+            5,
+            6,
+            2
+          ],
+          "reserveIds": [],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 115,
+              "newMaxHp": 115,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 3,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 170,
+              "newMaxHp": 170,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 4,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 170,
+              "newMaxHp": 170,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 5,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 90,
+              "newMaxHp": 90,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 6,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 90,
+              "newMaxHp": 90,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 2,
+              "role": "worker",
+              "oldRole": "worker",
+              "oldMaxHp": 70,
+              "newMaxHp": 70,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            1,
+            3,
+            4,
+            5,
+            6,
+            31
+          ],
+          "casualtyIds": [
+            2
+          ],
+          "rosterIds": [
+            1,
+            3,
+            4,
+            5,
+            6,
+            31
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/tideborn-3.json",
+            "sha256": "973b9389f86a48927572428f16a1a77e34bd93402753f6fe43ea424bc9259494",
+            "finalChecksum": "16eef6a3",
+            "commandCount": 97
+          },
+          "finalCheckpointSha256": "64e9c88d202eea5f4de2e3e0d4e90e9ad972c4561d3a43493cef5b3d5570f4c2"
+        },
+        {
+          "missionId": "tideborn-4",
+          "time": 41.44999999999978,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            3,
+            4,
+            5,
+            6
+          ],
+          "deployedIds": [
+            1,
+            3,
+            4,
+            5,
+            6
+          ],
+          "reserveIds": [
+            31
+          ],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 115,
+              "newMaxHp": 115,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 3,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 170,
+              "newMaxHp": 170,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 4,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 170,
+              "newMaxHp": 170,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 5,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 90,
+              "newMaxHp": 90,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 6,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 90,
+              "newMaxHp": 90,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            1,
+            3,
+            4,
+            5,
+            6
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            3,
+            4,
+            5,
+            6,
+            31
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/tideborn-4.json",
+            "sha256": "c585e6977f17c88c5382f7c17240f1c7430e1503bea622061bb6e99443bee618",
+            "finalChecksum": "2087694d",
+            "commandCount": 40
+          },
+          "finalCheckpointSha256": "4a499b746027da4da5caf8f7b5b346a2bf36cad8331e7d547bfe46d155898167"
+        }
+      ],
+      "profilePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/tideborn-profile.json",
+      "profileSha256": "b375e431439279aba961bff1858bc475f9e60e648fc17fa4fc9a91affb467e47"
+    },
+    {
+      "campaignId": "campaign-automata",
+      "profileId": "author-alt-automata",
+      "choiceId": "repair",
+      "assertions": {
+        "fourVerifiedChapters": true,
+        "alternateChapterUsed": true,
+        "choicePersisted": true,
+        "finished": true,
+        "chapterAssertions": true
+      },
+      "progress": {
+        "campaignId": "campaign-automata",
+        "chapter": 4,
+        "choiceId": "repair",
+        "completed": [
+          "automata-1",
+          "automata-2",
+          "automata-3-alt",
+          "automata-4"
+        ],
+        "finished": true
+      },
+      "chapters": [
+        {
+          "missionId": "automata-1",
+          "time": 13.500000000000057,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "deployedIds": [],
+          "reserveIds": [],
+          "carry": [],
+          "survivorIds": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/automata-1.json",
+            "sha256": "372b76ae64d8e943fc9c892cec311bf863d76c4cf1f1f7fa138aa94993f570dc",
+            "finalChecksum": "92999eee",
+            "commandCount": 3
+          },
+          "finalCheckpointSha256": "4501bedf9278a022edaaaf459d2bdba24d21957d0284607f11b4374e118efe6f"
+        },
+        {
+          "missionId": "automata-2",
+          "time": 43.349999999999675,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            9
+          ],
+          "deployedIds": [
+            1
+          ],
+          "reserveIds": [
+            2,
+            3,
+            4,
+            5
+          ],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 135,
+              "newMaxHp": 135,
+              "healed": true,
+              "oldMaxShield": 45,
+              "newMaxShield": 45
+            }
+          ],
+          "survivorIds": [
+            1,
+            9
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            9
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/automata-2.json",
+            "sha256": "ab515cbc9fb88cb47395c17375130ecd6ad0bb24bb439ba3ab73b309eb37d10b",
+            "finalChecksum": "2c2fcf4d",
+            "commandCount": 84
+          },
+          "finalCheckpointSha256": "20f404d75d04c38833342b0c49c8ae7cbca791507e431a1f5eff2af5b11604bc"
+        },
+        {
+          "missionId": "automata-3-alt",
+          "time": 25.450000000000227,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            9,
+            2,
+            3,
+            4,
+            5
+          ],
+          "deployedIds": [
+            1,
+            9,
+            2,
+            3,
+            4,
+            5
+          ],
+          "reserveIds": [],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 135,
+              "newMaxHp": 135,
+              "healed": true,
+              "oldMaxShield": 45,
+              "newMaxShield": 45
+            },
+            {
+              "id": 9,
+              "role": "worker",
+              "oldRole": "worker",
+              "oldMaxHp": 55,
+              "newMaxHp": 55,
+              "healed": true,
+              "oldMaxShield": 12,
+              "newMaxShield": 12
+            },
+            {
+              "id": 2,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 135,
+              "newMaxHp": 135,
+              "healed": true,
+              "oldMaxShield": 45,
+              "newMaxShield": 45
+            },
+            {
+              "id": 3,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 135,
+              "newMaxHp": 135,
+              "healed": true,
+              "oldMaxShield": 45,
+              "newMaxShield": 45
+            },
+            {
+              "id": 4,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 75,
+              "newMaxHp": 75,
+              "healed": true,
+              "oldMaxShield": 35,
+              "newMaxShield": 35
+            },
+            {
+              "id": 5,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 75,
+              "newMaxHp": 75,
+              "healed": true,
+              "oldMaxShield": 35,
+              "newMaxShield": 35
+            }
+          ],
+          "survivorIds": [
+            1,
+            9,
+            2,
+            3,
+            4,
+            5
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            9
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/automata-3.json",
+            "sha256": "f9bbb8b5285588e5c16fae3e148d74f5192da878b3d22ead850b0e953a9ec1de",
+            "finalChecksum": "0c931c83",
+            "commandCount": 226
+          },
+          "finalCheckpointSha256": "6c730cc86babcd5881eeab1c81250f1a20ba3757dd31ede2e4505a50b8a1354d"
+        },
+        {
+          "missionId": "automata-4",
+          "time": 45.59999999999955,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "deployedIds": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "reserveIds": [
+            9
+          ],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 135,
+              "newMaxHp": 135,
+              "healed": true,
+              "oldMaxShield": 45,
+              "newMaxShield": 45
+            },
+            {
+              "id": 2,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 135,
+              "newMaxHp": 135,
+              "healed": true,
+              "oldMaxShield": 45,
+              "newMaxShield": 45
+            },
+            {
+              "id": 3,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 135,
+              "newMaxHp": 135,
+              "healed": true,
+              "oldMaxShield": 45,
+              "newMaxShield": 45
+            },
+            {
+              "id": 4,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 75,
+              "newMaxHp": 75,
+              "healed": true,
+              "oldMaxShield": 35,
+              "newMaxShield": 35
+            },
+            {
+              "id": 5,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 75,
+              "newMaxHp": 75,
+              "healed": true,
+              "oldMaxShield": 35,
+              "newMaxShield": 35
+            }
+          ],
+          "survivorIds": [
+            1,
+            2,
+            4,
+            5
+          ],
+          "casualtyIds": [
+            3
+          ],
+          "rosterIds": [
+            1,
+            2,
+            4,
+            5,
+            9
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/automata-4.json",
+            "sha256": "7dd49d70f51ac81f36ad44d0296990fd3d5762464391cc074bda55c448bc8f19",
+            "finalChecksum": "7def0a1a",
+            "commandCount": 36
+          },
+          "finalCheckpointSha256": "4cfda3c573a37c334d0bcf1083697eaf1d9eaf40adb6f125198cfc9f0382255a"
+        }
+      ],
+      "profilePath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T10-48-00-134Z/automata-profile.json",
+      "profileSha256": "def17b5912c1c9c51bfc75270690f38f27a33acf0410aa603893f9f86dc0f5dd"
+    }
+  ]
+}
