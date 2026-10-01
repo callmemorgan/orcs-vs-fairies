@@ -111,4 +111,24 @@ describe('analysis of specialist command deaths', () => {
     expect(saveGame(replay.state)).toEqual(saveGame(state)); recorder.dispose(); replay.dispose();
   });
 
+  it('restores a seek checkpoint taken on the same tick as a lethal command without recounting its death', () => {
+    const { state, commander, victims, ability, cost } = fixture('undead');
+    commander.cooldown = 1000;
+    const recorder = new MatchRecorder(state);
+    for (let i = 0; i < 600; i++) stepGame(state, .05);
+    expect(victims[0].hp).toBe(20); expectLosses(recorder, 0, 0);
+    expect(issueCommand(state, 0, ability)).toBe(true); acceptedOrders(state, commander);
+    expect(state.tick).toBe(600); expectLosses(recorder, 1, cost);
+    for (let i = 0; i < 100; i++) stepGame(state, .05);
+    const replay = new ReplayPlayer(recorder.export());
+    replay.advance(600); expectLosses(replay, 1, cost);
+    expect(replay.state.events.some(event => event.type === 'death' && event.source === victims[0].id)).toBe(true);
+    replay.advance(100); expectLosses(replay, 1, cost);
+    replay.seek(650); expect(replay.state.tick).toBe(650); expectLosses(replay, 1, cost);
+    const fork = replay.forkForSeek(600); expect(fork.state.tick).toBe(600); expectLosses(fork, 1, cost);
+    fork.advance(100); expectLosses(fork, 1, cost); expect(saveGame(fork.state)).toEqual(saveGame(state));
+    replay.seek(700); expectLosses(replay, 1, cost); expect(saveGame(replay.state)).toEqual(saveGame(state));
+    recorder.dispose(); replay.dispose(); fork.dispose();
+  });
+
 });
