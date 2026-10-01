@@ -1,26 +1,38 @@
 import Phaser from 'phaser';
 import ArtRuntime from './ArtRuntime';
 import GameAudio from './GameAudio';
-import type { GameState, BuildingRole, Entity, UnitRole } from '../core/types';
+import type { GameState, BuildingRole, Command, Entity, UnitRole } from '../core/types';
 import { canPlace, isVisible, issueCommand, stepGame } from '../core/simulation';
 import { PlayerView } from '../core/observation';
 import { FACTIONS } from '../core/content';
-import { captureDigitHotkeys } from '../ui/availability';
+import { ControlProfiles, inputIsSuppressed } from './Controls';
+import type { ControlAction, KeyboardState } from './Controls';
+import { GamepadController } from './Gamepad';
 
 const TILE_W = 64, TILE_H = 32, OX = 1600, OY = 80;
-const CAMERA_TAP:Record<string,readonly [number,number]> = {
-  ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1],
-  KeyW:[0,-1],KeyS:[0,1],KeyD:[1,0],
+const CAMERA_TAP:Partial<Record<ControlAction,readonly [number,number]>> = {
+  cameraLeft:[-1,0],cameraRight:[1,0],cameraUp:[0,-1],cameraDown:[0,1],
 };
 export function project(x:number,y:number) { return {x:OX+(x-y)*TILE_W/2,y:OY+(x+y)*TILE_H/2}; }
 export function unproject(x:number,y:number) { return {x:((x-OX)/32+(y-OY)/16)/2,y:((y-OY)/16-(x-OX)/32)/2}; }
-interface Options {pixelDensity?:number;state:GameState;onSelection:(ids:number[])=>void;onNotice:(text:string)=>void;onReady?:()=>void;viewBounds?:()=>{top:number;bottom:number}}
+export interface GameSceneOptions {
+  pixelDensity?:number;state:GameState;onSelection:(ids:number[])=>void;onNotice:(text:string)=>void;onReady?:()=>void;viewBounds?:()=>{top:number;bottom:number};
+  controls?:ControlProfiles;viewSide?:0|1;readOnly?:boolean;simulationEnabled?:boolean;
+  onCommand?:(side:0|1,command:Command)=>boolean;onStep?:(state:GameState)=>void;onPhotoMode?:(enabled:boolean)=>void;onPause?:(paused:boolean)=>void;onActionSlot?:(slot:number)=>void;
+}
 export default class GameScene extends Phaser.Scene {
   public state:GameState;
   public selected:number[]=[];
   public buildRole:BuildingRole|null=null;
   public paused=false;
-  private options:Options;
+  private options:GameSceneOptions;
+  public readonly controls:ControlProfiles;
+  public readOnly=false;
+  public simulationEnabled=true;
+  public inputBlocked=false;
+  private _viewSide:0|1=0;
+  private _photoMode=false;
+  private photoPreviousPause=false;
   private art!:ArtRuntime;
   private playerView=new PlayerView(0);
   private audio?:GameAudio;
@@ -33,7 +45,13 @@ export default class GameScene extends Phaser.Scene {
   private actors!:Phaser.GameObjects.Graphics;
   private fog!:Phaser.GameObjects.Graphics;
   private overlay!:Phaser.GameObjects.Graphics;
-  private keys:Record<string,Phaser.Input.Keyboard.Key>={};
+  private heldKeys=new Set<string>();
+  private queuedPointerModifiers=new WeakMap<Event,boolean>();
+  private keyboardState:KeyboardState={codes:this.heldKeys,ctrl:false,meta:false,alt:false,shift:false};
+  private controller=new GamepadController();
+  private controllerCursor:{x:number;y:number}|null=null;
+  private controllerActive=false;
+  public gamepadConnected=false;
   private groups:Record<string,number[]>={};
   private drag:{x:number;y:number;wx:number;wy:number}|null=null;
   private pan:{x:number;y:number}|null=null;
@@ -45,7 +63,29 @@ export default class GameScene extends Phaser.Scene {
   private workerAlertAt=-Infinity;
   private combatEffects:{from:{x:number;y:number};to:{x:number;y:number};born:number;color:number;heavy:boolean}[]=[];
   private markers:{x:number;y:number;born:number;attack:boolean}[]=[];
-  constructor(options:Options) {super({key:'world'});this.options=options;this.state=options.state;}
+  constructor(options:GameSceneOptions) {super({key:'world'});this.options=options;this.state=options.state;this.controls=options.controls??new ControlProfiles();this._viewSide=options.viewSide??0;this.playerView=new PlayerView(this._viewSide);this.readOnly=options.readOnly??false;this.simulationEnabled=options.simulationEnabled??true;}
+  public get viewSide(){return this._viewSide;}
+  public set viewSide(side:0|1){if(side!==0&&side!==1)throw new Error('Perspective must be side 0 or 1.');if(this._viewSide===side)return;this._viewSide=side;this.playerView=new PlayerView(side);this.groups={};this.select([]);if(this.fog)this.drawFog();}
+  public get photoMode(){return this._photoMode;}
+  public setPhotoMode(enabled:boolean){
+    if(this._photoMode===enabled)return;
+    if(enabled){this.photoPreviousPause=this.paused;this.paused=true;this.setBuildRole(null);this.drag=null;this.pan=null;}
+    else this.paused=this.photoPreviousPause;
+    this._photoMode=enabled;this.options.onPhotoMode?.(enabled);this.options.onPause?.(this.paused);this.events.emit('photomode',enabled);
+    if(this.actors){this.drawActors();this.drawOverlay();}
+  }
+  public togglePause(){if(this.photoMode||this.state.winner!==null||this.state.draw)return;this.paused=!this.paused;this.options.onPause?.(this.paused);}
+  public command(command:Command):boolean {if(!this.canCommand)return false;return this.options.onCommand?.(this.viewSide,command)??issueCommand(this.state,this.viewSide,command);}
+  private get canCommand(){return !this.readOnly&&!this.photoMode&&!this.inputBlocked&&!this.paused&&this.state.winner===null&&!this.state.draw;}
+  private get controlContext(){return {selected:!!this.selected.length,playable:!this.photoMode&&(this.readOnly||!this.paused&&this.state.winner===null&&!this.state.draw)};}
+  private inputSuppressed(target:EventTarget|null=document.activeElement){const modal=!!document.querySelector('dialog[open],.session-overlay:not([hidden]) [role="dialog"]')||Array.from(document.querySelectorAll('[role="dialog"][aria-modal="true"]:not(dialog)')).some(element=>!element.closest('[hidden]'));return this.inputBlocked||inputIsSuppressed(target,modal);}
+  private queueModifier(event?:{shiftKey?:boolean;ctrlKey?:boolean;metaKey?:boolean;altKey?:boolean}){
+    if(!event)return this.controls.isHeld('queueModifier',this.keyboardState,this.controlContext);
+    const captured=this.queuedPointerModifiers.get(event as Event);if(captured!==undefined)return captured;
+    const codes=new Set(this.heldKeys);
+    for(const [modifier,held] of [['Shift',event.shiftKey],['Control',event.ctrlKey],['Meta',event.metaKey],['Alt',event.altKey]] as const)if(held){codes.add(`${modifier}Left`);codes.add(`${modifier}Right`);}
+    return this.controls.isHeld('queueModifier',{codes,shift:!!event.shiftKey,ctrl:!!event.ctrlKey,meta:!!event.metaKey,alt:!!event.altKey},this.controlContext);
+  }
   private get pixelDensity(){return this.options.pixelDensity??1;}
   private get dragThreshold(){return 6*this.pixelDensity;}
   preload(){this.art=new ArtRuntime(this,new URLSearchParams(location.search).get('art')!=='placeholder');this.art.preload(this.state.players.map(p=>p.faction));}
@@ -58,17 +98,24 @@ export default class GameScene extends Phaser.Scene {
     this.ground=this.add.graphics().setDepth(-101);this.actors=this.add.graphics().setDepth(0);this.fog=this.add.graphics().setDepth(100000);this.overlay=this.add.graphics().setDepth(100001);
     this.drawGround();
     this.cameras.main.setBounds(OX-this.state.height*32-64,-80,(this.state.width+this.state.height)*32+128,(this.state.width+this.state.height)*16+320).setZoom(this.pixelDensity);
-    this.centerOn(this.state.starts[0].x,this.state.starts[0].y);
+    this.centerOn(this.state.starts[this.viewSide].x,this.state.starts[this.viewSide].y);
     this.input.mouse?.disableContextMenu();
-    this.keys=this.input.keyboard!.addKeys('W,A,S,D,UP,DOWN,LEFT,RIGHT,SPACE,SHIFT') as Record<string,Phaser.Input.Keyboard.Key>;
-    this.input.keyboard!.on('keydown',(e:KeyboardEvent)=>this.key(e));
+    const keydown=(e:KeyboardEvent)=>this.key(e),keyup=(e:KeyboardEvent)=>{this.heldKeys.delete(e.code);this.updateModifiers(e);};
+    window.addEventListener('keydown',keydown);
+    window.addEventListener('keyup',keyup);
+    // Phaser dispatches pointer input later; remember the modifier at the native event.
+    const captureQueue=(event:Event)=>this.queuedPointerModifiers.set(event,this.queueModifier(event as MouseEvent));
+    for(const type of ['mousedown','mouseup','touchstart','touchend'])this.game.canvas.addEventListener(type,captureQueue,true);
     this.input.on('pointerdown',(p:Phaser.Input.Pointer)=>{
+      if(this.inputSuppressed())return;
       if(p.middleButtonDown()){this.drag=null;this.pan={x:p.x,y:p.y};return;}
-      if(this.paused||(this.state.winner!==null||this.state.draw))return;
+      this.controllerActive=false;
+      if(this.photoMode||this.inputSuppressed()||!this.controlContext.playable)return;
       if(p.rightButtonDown()){this.order(p);return;}
       const world=this.cameras.main.getWorldPoint(p.x,p.y);this.drag={x:p.x,y:p.y,wx:world.x,wy:world.y};
     });
     this.input.on('pointermove',(p:Phaser.Input.Pointer)=>{
+      if(this.inputSuppressed()){this.pan=null;return;}
       if(!this.pan)return;
       if(!p.middleButtonDown()){this.pan=null;return;}
       const c=this.cameras.main;c.scrollX-=(p.x-this.pan.x)/c.zoom;c.scrollY-=(p.y-this.pan.y)/c.zoom;this.pan={x:p.x,y:p.y};
@@ -77,11 +124,11 @@ export default class GameScene extends Phaser.Scene {
       if(p.button===1){this.pan=null;return;}
       if(p.button!==0||!this.drag)return;
       const drag=this.drag;this.drag=null;const world=this.cameras.main.getWorldPoint(p.x,p.y);
-      if(this.paused||(this.state.winner!==null||this.state.draw))return;
+      if(this.photoMode||this.inputSuppressed()||!this.controlContext.playable)return;
       const pos=unproject(world.x,world.y);
       if(this.buildRole){
         const role=this.buildRole;
-        if(issueCommand(this.state,0,{type:'build',ids:this.selected,role,x:role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y:role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5})) {this.setBuildRole(null);this.options.onNotice('Construction ordered.');this.audio?.play('order');}
+        if(this.command({type:'build',ids:this.selected,role,x:role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y:role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5})) {this.setBuildRole(null);this.options.onNotice('Construction ordered.');this.audio?.play('order');}
         else this.options.onNotice('Cannot build here. Select a worker and check resources and space.');
         return;
       }
@@ -89,133 +136,194 @@ export default class GameScene extends Phaser.Scene {
       let ids:number[]=[];
       if(Math.hypot(p.x-drag.x,p.y-drag.y)>this.dragThreshold){
         const x1=Math.min(drag.wx,world.x),x2=Math.max(drag.wx,world.x),y1=Math.min(drag.wy,world.y),y2=Math.max(drag.wy,world.y);
-        ids=this.state.entities.filter(e=>{const q=project(e.x,e.y);return e.side===0&&e.kind==='unit'&&e.hp>0&&q.x>=x1&&q.x<=x2&&q.y>=y1&&q.y<=y2;}).map(e=>e.id);
-      } else {const hit=this.hit(world.x,world.y);if(hit?.side===0)ids=[hit.id];}
-      if(this.keys.SHIFT.isDown||this.input.activePointer.event.shiftKey)ids=[...new Set([...this.selected,...ids])];
+        ids=this.state.entities.filter(e=>{const q=project(e.x,e.y);return e.side===this.viewSide&&e.kind==='unit'&&e.hp>0&&q.x>=x1&&q.x<=x2&&q.y>=y1&&q.y<=y2;}).map(e=>e.id);
+      } else {const hit=this.hit(world.x,world.y);if(hit?.side===this.viewSide)ids=[hit.id];}
+      if(this.queueModifier(this.input.activePointer.event))ids=[...new Set([...this.selected,...ids])];
       this.select(ids);
     });
-    const clearPointerDrag=()=>{this.pan=null;this.drag=null;};
+    const clearPointerDrag=()=>{this.pan=null;this.drag=null;this.heldKeys.clear();this.keyboardState={codes:this.heldKeys,ctrl:false,meta:false,alt:false,shift:false};this.controller.reset();this.controllerActive=false;};
     this.input.on('pointerupoutside',clearPointerDrag);
     window.addEventListener('blur',clearPointerDrag);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN,()=>window.removeEventListener('blur',clearPointerDrag));
     this.input.on('wheel',(_p:Phaser.Input.Pointer,_o:unknown,_dx:number,dy:number)=>{
+      if(this.inputSuppressed())return;
       this.cameras.main.setZoom(Phaser.Math.Clamp(this.cameras.main.zoom-dy*.001*this.pixelDensity,0.55*this.pixelDensity,1.8*this.pixelDensity));
     });
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN,()=>this.input.keyboard?.removeAllListeners('keydown'));
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN,()=>{window.removeEventListener('keydown',keydown);window.removeEventListener('keyup',keyup);for(const type of ['mousedown','mouseup','touchstart','touchend'])this.game.canvas.removeEventListener(type,captureQueue,true);this.controller.reset();if(this.photoMode)this.options.onPhotoMode?.(false);});
     this.drawFog();
     this.options.onReady?.();
   }
-  public controlGroups(){return Object.fromEntries(Object.entries(this.groups).map(([key,ids])=>[key,ids.filter(id=>this.state.entities.some(e=>e.id===id&&e.hp>0))]));}
+  public controlGroups(){return Object.fromEntries(Object.entries(this.groups).map(([key,ids])=>[key,ids.filter(id=>this.state.entities.some(e=>e.id===id&&e.hp>0&&this.visible(e)))]));}
   public recallGroup(key:string){const ids=this.controlGroups()[key];if(ids?.length)this.select(ids);}
   public selectEntities(ids:number[]){this.select(ids.filter(id=>this.state.entities.some(e=>e.id===id&&e.hp>0&&this.visible(e))));}
-  public beginAttackMove(){if(this.paused||this.state.winner!==null||this.state.draw||!this.selected.length)return;this.attackMode=true;this.buildRole=null;this.options.onNotice('Attack move: click a destination.');}
-  public setBuildRole(role:BuildingRole|null){this.buildRole=role;this.attackMode=false;}
-  public centerOn(x:number,y:number){const q=project(x,y),camera=this.cameras.main;camera.centerOn(q.x,q.y);const bounds=this.options.viewBounds?.();if(bounds)camera.scrollY+=(camera.height/2-(bounds.top+bounds.bottom)/2)/camera.zoom;}
-  public restart(state:GameState){this.audio?.reset();this.resultSoundPlayed=false;this.art.reset();this.state=state;this.playerView=new PlayerView(0);this.paused=false;this.accumulated=0;this.attackedNoticeAt.clear();this.buildingAlertAt=-Infinity;this.workerAlertAt=-Infinity;this.groups={};this.markers=[];this.combatEffects=[];this.setBuildRole(null);this.select([]);this.drawGround();this.drawFog();this.centerOn(this.state.starts[0].x,this.state.starts[0].y);}
-  public holdPosition(){if(this.paused||(this.state.winner!==null||this.state.draw)||!issueCommand(this.state,0,{type:'hold',ids:this.selected}))return false;this.attackMode=false;this.setBuildRole(null);this.audio?.play('order');this.options.onNotice('Holding position: attack in range without pursuing.');return true;}
+  public beginAttackMove(){if(!this.canCommand||!this.selected.length)return;this.attackMode=true;this.buildRole=null;this.options.onNotice('Attack move: click a destination.');}
+  public setBuildRole(role:BuildingRole|null){this.buildRole=role&&this.canCommand?role:null;this.attackMode=false;}
+  public centerOn(x:number,y:number){const q=project(x,y),camera=this.cameras.main;camera.centerOn(q.x,q.y);const bounds=this.photoMode?undefined:this.options.viewBounds?.();if(bounds)camera.scrollY+=(camera.height/2-(bounds.top+bounds.bottom)/2)/camera.zoom;}
+  public restart(state:GameState){this.setPhotoMode(false);this.audio?.reset();this.resultSoundPlayed=false;this.art.reset();this.state=state;this.playerView=new PlayerView(this.viewSide);this.paused=false;this.accumulated=0;this.attackedNoticeAt.clear();this.buildingAlertAt=-Infinity;this.workerAlertAt=-Infinity;this.groups={};this.markers=[];this.combatEffects=[];this.heldKeys.clear();this.controller.reset();this.controllerCursor=null;this.setBuildRole(null);this.select([]);this.drawGround();this.drawFog();this.centerOn(this.state.starts[this.viewSide].x,this.state.starts[this.viewSide].y);}
+  public holdPosition(){if(!this.command({type:'hold',ids:this.selected}))return false;this.attackMode=false;this.setBuildRole(null);this.audio?.play('order');this.options.onNotice('Holding position: attack in range without pursuing.');return true;}
   private select(ids:number[],audible=true){const changed=ids.length!==this.selected.length||ids.some((id,index)=>id!==this.selected[index]);this.selected=ids;this.options.onSelection(ids);if(audible&&changed&&ids.length)this.audio?.play('selection');}
   private key(e:KeyboardEvent){
-    if(document.querySelector('dialog[open]'))return;
-    if((e.target as HTMLElement)?.closest('input,textarea,select'))return;
-    if(e.code==='Escape'){this.setBuildRole(null);this.attackMode=false;this.drag=null;return;}
-    const playable=captureDigitHotkeys(this.paused,this.state.winner!==null||this.state.draw);
-    if(e.code==='F2'){
-      if(!playable)return;
-      e.preventDefault();
-      this.select(this.state.entities.filter(unit=>unit.side===0&&unit.kind==='unit'&&unit.role!=='worker'&&unit.hp>0).map(unit=>unit.id));
-      return;
-    }
+    if(this.inputSuppressed(e.target))return;
+    this.heldKeys.add(e.code);this.updateModifiers(e);
+    const action=this.controls.matchKeyboard(e,this.controlContext);if(!action)return;
+    e.preventDefault();
     // A complete tap can arrive between updates, so held-key polling alone loses it.
-    const direction=CAMERA_TAP[e.code]??(e.code==='KeyA'&&!this.selected.length?[-1,0]:undefined);
-    if(direction&&!e.ctrlKey&&!e.metaKey&&!e.altKey){
-      e.preventDefault();
+    const direction=CAMERA_TAP[action];
+    if(direction){
       if(!e.repeat){const c=this.cameras.main,step=48*this.pixelDensity/c.zoom;c.scrollX+=direction[0]*step;c.scrollY+=direction[1]*step;}
       return;
     }
-    if(!playable)return;
-    if(e.code==='KeyA'&&!e.ctrlKey&&!e.metaKey&&this.selected.length){this.attackMode=true;this.buildRole=null;this.options.onNotice('Attack move: click a destination.');}
-    if(e.code==='Space'){e.preventDefault();const hq=this.state.entities.find(v=>v.side===0&&v.role==='hq');if(hq)this.centerOn(hq.x,hq.y);}
-    if(e.code==='KeyH'&&!e.ctrlKey&&!e.metaKey&&!e.altKey)this.holdPosition();
-    if(e.code==='KeyX'&&issueCommand(this.state,0,{type:'stop',ids:this.selected}))this.audio?.play('order');
-    if((e.code==='KeyQ'||e.code==='KeyF')&&issueCommand(this.state,0,{type:'ability',ids:this.selected}))this.audio?.play('order');
-    if(/^Digit[0-9]$/.test(e.code)){
-      e.preventDefault();const n=e.code.slice(-1);
-      if(e.ctrlKey||e.metaKey){this.groups[n]=[...this.selected];this.options.onNotice(`Group ${n} assigned.`);}
-      else this.recallGroup(n);
-    }
+    if(e.repeat)return;
+    this.activateControl(action);
   }
-  private visible(e:Entity){return e.side===0||this.state.visible[0].has(Math.floor(e.y)*this.state.width+Math.floor(e.x));}
+  private updateModifiers(e:KeyboardEvent){this.keyboardState={codes:this.heldKeys,ctrl:e.ctrlKey,meta:e.metaKey,alt:e.altKey,shift:e.shiftKey};}
+  private activateControl(action:ControlAction){
+    switch(action){
+      case 'cancel':if(this.photoMode)this.setPhotoMode(false);else {this.setBuildRole(null);this.attackMode=false;this.drag=null;}return;
+      case 'photoMode':this.setPhotoMode(!this.photoMode);return;
+      case 'pause':this.togglePause();return;
+      case 'zoomIn':this.zoomBy(.15*this.pixelDensity);return;
+      case 'zoomOut':this.zoomBy(-.15*this.pixelDensity);return;
+      case 'centerHQ':{const hq=this.state.entities.find(v=>v.side===this.viewSide&&v.role==='hq'&&v.hp>0);if(hq)this.centerOn(hq.x,hq.y);return;}
+      case 'selectArmy':this.select(this.state.entities.filter(unit=>unit.side===this.viewSide&&unit.kind==='unit'&&unit.role!=='worker'&&unit.hp>0).map(unit=>unit.id));return;
+      case 'attackMove':this.beginAttackMove();return;
+      case 'hold':this.holdPosition();return;
+      case 'stop':if(this.command({type:'stop',ids:this.selected}))this.audio?.play('order');return;
+      case 'ability':if(this.command({type:'ability',ids:this.selected}))this.audio?.play('order');return;
+    }
+    if(action.startsWith('action')){if(this.canCommand)this.options.onActionSlot?.(Number(action.slice(6)));return;}
+    if(action.startsWith('groupAssign')){const n=action.slice(-1);this.groups[n]=[...this.selected];this.options.onNotice(`Group ${n} assigned.`);}
+    else if(action.startsWith('groupRecall'))this.recallGroup(action.slice(-1));
+  }
+  private zoomBy(delta:number){this.cameras.main.setZoom(Phaser.Math.Clamp(this.cameras.main.zoom+delta,.55*this.pixelDensity,1.8*this.pixelDensity));}
+  private visible(e:Entity){return e.side===this.viewSide||this.state.visible[this.viewSide].has(Math.floor(e.y)*this.state.width+Math.floor(e.x));}
   private hit(x:number,y:number){return [...this.state.entities].sort((a,b)=>(b.x+b.y)-(a.x+a.y)||b.id-a.id).find(e=>{if(e.hp<=0||!this.visible(e))return false;const rendered=this.art.contains(`entity:${e.id}`,x,y);if(rendered!==null)return rendered;const q=project(e.x,e.y);const r=e.kind==='building'?35:14;return Math.abs(x-q.x)<r&&y>q.y-(e.kind==='building'?65:35)&&y<q.y+12;});}
   private order(p:Phaser.Input.Pointer,attack=false){
+    this.orderAt(p.x,p.y,attack,this.queueModifier(p.event));
+  }
+  private orderAt(x:number,y:number,attack=false,queued=false){
+    if(!this.canCommand)return;
     if(this.buildRole){this.setBuildRole(null);return;}
-    const world=this.cameras.main.getWorldPoint(p.x,p.y);const pos=unproject(world.x,world.y);const hit=this.hit(world.x,world.y);
+    const world=this.cameras.main.getWorldPoint(x,y);const pos=unproject(world.x,world.y);const hit=this.hit(world.x,world.y);
     let ok=false;
-    const own=this.state.entities.filter(e=>this.selected.includes(e.id)&&e.side===0&&e.hp>0);
+    const own=this.state.entities.filter(e=>this.selected.includes(e.id)&&e.side===this.viewSide&&e.hp>0);
     const producers=own.filter(e=>e.kind==='building'&&(e.role==='hq'||e.role==='barracks'));
     if(producers.length&&!attack&&!own.some(e=>e.kind==='unit')){
-      ok=issueCommand(this.state,0,{type:'setRally',ids:producers.map(e=>e.id),x:pos.x,y:pos.y});
+      ok=this.command({type:'setRally',ids:producers.map(e=>e.id),x:pos.x,y:pos.y});
       this.options.onNotice(ok?'Rally point set. New units will move here.':'Choose open ground for the rally point.');
       if(ok)this.audio?.play('order');
       return;
     }
-    if(hit&&hit.side===1)ok=issueCommand(this.state,0,{type:'attack',ids:this.selected,target:hit.id});
-    else if(hit&&hit.side===0&&hit.kind==='building'&&hit.hp<hit.maxHp)ok=issueCommand(this.state,0,{type:'repair',ids:this.selected,target:hit.id});
+    if(hit&&hit.side!==this.viewSide)ok=this.command({type:'attack',ids:this.selected,target:hit.id,queued});
+    else if(hit&&hit.side===this.viewSide&&hit.kind==='building'&&hit.hp<hit.maxHp)ok=this.command({type:'repair',ids:this.selected,target:hit.id,queued});
     else {
-      const resource=[...this.state.resources].sort((a,b)=>(b.x+b.y)-(a.x+a.y)).find(r=>{if(r.amount<=0||!this.state.visible[0].has(Math.floor(r.y)*this.state.width+Math.floor(r.x)))return false;const rendered=this.art.contains(`resource:${r.id}`,world.x,world.y);if(rendered!==null)return rendered;const q=project(r.x,r.y);return Math.abs(q.x-world.x)<24&&Math.abs(q.y-15-world.y)<30;});
-      if(resource&&!attack)ok=issueCommand(this.state,0,{type:'gather',ids:this.selected,target:resource.id});
-      else ok=issueCommand(this.state,0,{type:attack?'attackMove':'move',ids:this.selected,x:Phaser.Math.Clamp(pos.x,.5,this.state.width-.5),y:Phaser.Math.Clamp(pos.y,.5,this.state.height-.5)});
+      const resource=[...this.state.resources].sort((a,b)=>(b.x+b.y)-(a.x+a.y)).find(r=>{if(r.amount<=0||!this.state.visible[this.viewSide].has(Math.floor(r.y)*this.state.width+Math.floor(r.x)))return false;const rendered=this.art.contains(`resource:${r.id}`,world.x,world.y);if(rendered!==null)return rendered;const q=project(r.x,r.y);return Math.abs(q.x-world.x)<24&&Math.abs(q.y-15-world.y)<30;});
+      if(resource&&!attack)ok=this.command({type:'gather',ids:this.selected,target:resource.id,queued});
+      else ok=this.command({type:attack?'attackMove':'move',ids:this.selected,x:Phaser.Math.Clamp(pos.x,.5,this.state.width-.5),y:Phaser.Math.Clamp(pos.y,.5,this.state.height-.5),queued});
     }
     if(ok){this.markers.push({...project(pos.x,pos.y),born:this.time.now,attack});this.audio?.play('order');}
   }
+  private controllerSelect(queued:boolean){
+    if(!this.controlContext.playable||!this.controllerCursor)return;
+    const {x,y}=this.controllerCursor;
+    if(this.buildRole){
+      const world=this.cameras.main.getWorldPoint(x,y),pos=unproject(world.x,world.y),role=this.buildRole;
+      if(this.command({type:'build',ids:this.selected,role,x:role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y:role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5})){this.setBuildRole(null);this.options.onNotice('Construction ordered.');this.audio?.play('order');}
+      else this.options.onNotice('Cannot build here. Select a worker and check resources and space.');
+      return;
+    }
+    if(this.attackMode){this.attackMode=false;this.orderAt(x,y,true,queued);return;}
+    const world=this.cameras.main.getWorldPoint(x,y),hit=this.hit(world.x,world.y);
+    const ids=hit?.side===this.viewSide?[hit.id]:[];
+    this.select(queued?[...new Set([...this.selected,...ids])]:ids);
+  }
+  private cycleSelection(direction:-1|1){
+    if(!this.controlContext.playable)return;
+    const entities=this.state.entities.filter(e=>e.side===this.viewSide&&e.hp>0).sort((a,b)=>a.id-b.id);
+    if(!entities.length)return;
+    const index=entities.findIndex(e=>e.id===this.selected[0]);
+    const next=entities[index<0?(direction>0?0:entities.length-1):(index+direction+entities.length)%entities.length];
+    this.select([next.id]);this.centerOn(next.x,next.y);
+    const camera=this.cameras.main,bounds=this.options.viewBounds?.();this.controllerCursor={x:camera.width/2,y:bounds?(bounds.top+bounds.bottom)/2:camera.height/2};
+  }
+  private updateController(delta:number,suppressed:boolean){
+    let pads:readonly (Gamepad|null)[]=[];try{pads=navigator.getGamepads?.()??[];}catch{/* The browser may disable controller access. */}
+    const frame=this.controller.update(pads,delta,suppressed);this.gamepadConnected=frame.connected;
+    if(!frame.connected){this.controllerActive=false;this.controllerCursor=null;return;}
+    if(suppressed)return;
+    const camera=this.cameras.main,bounds=this.photoMode?undefined:this.options.viewBounds?.();
+    if(!this.controllerCursor)this.controllerCursor={x:camera.width/2,y:bounds?(bounds.top+bounds.bottom)/2:camera.height/2};
+    if(frame.cameraX||frame.cameraY||frame.zoom||frame.cursorX||frame.cursorY||frame.pressed.length)this.controllerActive=true;
+    camera.scrollX+=frame.cameraX*this.pixelDensity/camera.zoom;camera.scrollY+=frame.cameraY*this.pixelDensity/camera.zoom;
+    if(frame.zoom)this.zoomBy(frame.zoom*this.pixelDensity);
+    this.controllerCursor.x=Phaser.Math.Clamp(this.controllerCursor.x+frame.cursorX*this.pixelDensity,0,camera.width);
+    this.controllerCursor.y=Phaser.Math.Clamp(this.controllerCursor.y+frame.cursorY*this.pixelDensity,bounds?.top??0,bounds?.bottom??camera.height);
+    for(const action of frame.pressed){
+      switch(action){
+        case 'selectPrevious':this.cycleSelection(-1);break;
+        case 'selectNext':this.cycleSelection(1);break;
+        case 'select':this.controllerSelect(frame.queued);break;
+        case 'contextOrder':this.orderAt(this.controllerCursor.x,this.controllerCursor.y,this.attackMode,frame.queued);this.attackMode=false;break;
+        case 'attackMode':this.beginAttackMove();break;
+        case 'cancel':this.activateControl('cancel');break;
+        case 'ability':this.activateControl('ability');break;
+        case 'hold':this.activateControl('hold');break;
+        case 'stop':this.activateControl('stop');break;
+        case 'centerHq':this.activateControl('centerHQ');break;
+        case 'pause':this.activateControl('pause');break;
+        case 'photo':this.activateControl('photoMode');break;
+        default:if(action.startsWith('action'))this.activateControl(action as ControlAction);break;
+      }
+    }
+  }
   update(_time:number,delta:number){
     if(!this.actors)return;
-    if(!this.paused&&(this.state.winner===null&&!this.state.draw)){
+    if(this.simulationEnabled&&!this.paused&&(this.state.winner===null&&!this.state.draw)){
       this.accumulated+=Math.min(delta/1000,.15);
-      while(this.accumulated>=.05){stepGame(this.state,.05);this.accumulated-=.05;this.processEvents();}
+      while(this.accumulated>=.05){stepGame(this.state,.05);this.accumulated-=.05;this.processEvents();this.options.onStep?.(this.state);}
     }
     const living=this.selected.filter(id=>this.state.entities.some(e=>e.id===id&&e.hp>0&&this.visible(e)));if(living.length!==this.selected.length)this.select(living,false);
-    const k=this.keys,c=this.cameras.main,s=(document.querySelector('dialog[open]')?0:Math.min(delta,40))*.75*this.pixelDensity/c.zoom;
-    if(k.LEFT.isDown||(k.A.isDown&&!this.selected.length))c.scrollX-=s;
-    if(k.RIGHT.isDown||k.D.isDown)c.scrollX+=s;
-    if(k.UP.isDown||k.W.isDown)c.scrollY-=s;
-    if(k.DOWN.isDown||k.S.isDown)c.scrollY+=s;
+    const suppressed=this.inputSuppressed();if(suppressed)this.heldKeys.clear();
+    const c=this.cameras.main,s=(suppressed?0:Math.min(delta,40))*.75*this.pixelDensity/c.zoom;
+    for(const [action,direction] of Object.entries(CAMERA_TAP))if(this.controls.isHeld(action as ControlAction,this.keyboardState,this.controlContext)){c.scrollX+=direction![0]*s;c.scrollY+=direction![1]*s;}
+    this.updateController(delta,suppressed);
     this.drawActors();this.drawOverlay();
     this.fogClock+=delta;if(this.fogClock>150){this.fogClock=0;this.drawFog();}
   }
   private processEvents(){
-    const state=this.state, faction=FACTIONS[state.players[0].faction];
+    const state=this.state, faction=FACTIONS[state.players[this.viewSide].faction];
     let buildingAlert:Entity|undefined,workerAlert:Entity|undefined;
     for(const event of state.events){
-      if(event.type==='attack'&&isVisible(state,0,event.x,event.y)){
+      if(event.type==='attack'&&isVisible(state,this.viewSide,event.x,event.y)){
         const source=state.entities.find(e=>e.id===event.source),target=state.entities.find(e=>e.id===event.target);
         if(source&&target&&this.visible(target)){
           const def=source.kind==='unit'?FACTIONS[state.players[source.side].faction].units[source.role as UnitRole]:undefined;
           if(source.kind==='building'||(def?.range??0)>3)this.combatEffects.push({from:project(source.x,source.y),to:project(target.x,target.y),born:state.time,color:FACTIONS[state.players[source.side].faction].color,heavy:!!def?.buildingDamageMultiplier});
         }
       }
-      if(event.type==='attack'&&state.visible[0].has(Math.floor(event.y)*state.width+Math.floor(event.x)))this.audio?.play('attack');
+      if(event.type==='attack'&&state.visible[this.viewSide].has(Math.floor(event.y)*state.width+Math.floor(event.x)))this.audio?.play('attack');
       if(event.type==='attack'){
         const target=state.entities.find(e=>e.id===event.target);
         // An own target is known even if its attacker is outside vision. Never reveal the attacker.
-        if(!target||target.side!==0)continue;
+        if(!target||target.side!==this.viewSide)continue;
         if(target.kind==='building'&&state.time-(this.attackedNoticeAt.get(target.id)??-Infinity)>=12)buildingAlert??=target;
         else if(target.kind==='unit'&&target.role==='worker')workerAlert??=target;
-      }else if(event.side===0){
+      }else if(event.side===this.viewSide){
         if(event.type==='message'&&event.text)this.options.onNotice(event.text);
         if(event.type==='build'&&event.text==='Construction complete'){
           this.audio?.play('build');
-          const entity=state.entities.find(e=>e.side===0&&e.kind==='building'&&Math.hypot(e.x-event.x,e.y-event.y)<.1);
+          const entity=state.entities.find(e=>e.side===this.viewSide&&e.kind==='building'&&Math.hypot(e.x-event.x,e.y-event.y)<.1);
           this.options.onNotice(entity?`${faction.buildings[entity.role as BuildingRole].name} complete.`:'Construction complete.');
         }
         if(event.type==='train'){
           this.audio?.play('train');
-          const entity=state.entities.find(e=>e.side===0&&e.kind==='unit'&&Math.hypot(e.x-event.x,e.y-event.y)<.1);
+          const entity=state.entities.find(e=>e.side===this.viewSide&&e.kind==='unit'&&Math.hypot(e.x-event.x,e.y-event.y)<.1);
           this.options.onNotice(entity?`${faction.units[entity.role as UnitRole].name} ready.`:'Unit recruited.');
         }
         if(event.type==='research'&&event.text?.endsWith('complete')){this.audio?.play('train');this.options.onNotice(`${event.text}.`);}
       }
     }
-    if((state.winner!==null||state.draw)&&!this.resultSoundPlayed){this.resultSoundPlayed=true;this.audio?.play(state.winner===0?'victory':'defeat');}
+    if((state.winner!==null||state.draw)&&!this.resultSoundPlayed){this.resultSoundPlayed=true;this.audio?.play(state.winner===this.viewSide?'victory':'defeat');}
     if(buildingAlert){
       this.attackedNoticeAt.set(buildingAlert.id,state.time);this.buildingAlertAt=state.time;
       this.options.onNotice(`${faction.buildings[buildingAlert.role as BuildingRole].name} under attack!`);
@@ -241,16 +349,16 @@ export default class GameScene extends Phaser.Scene {
     const remembered=this.playerView.resourcesFor(this.state);
     const objects=[...remembered.filter(r=>r.amount>0).map(r=>({sort:r.x+r.y,r})),...this.state.entities.filter(e=>this.visible(e)).map(e=>({sort:e.x+e.y,e}))].sort((a,b)=>a.sort-b.sort);
     for(const obj of objects){
-      if('r' in obj){const r=obj.r,p=project(r.x,r.y);if(!this.state.explored[0].has(Math.floor(r.y)*this.state.width+Math.floor(r.x)))continue;
+      if('r' in obj){const r=obj.r,p=project(r.x,r.y);if(!this.state.explored[this.viewSide].has(Math.floor(r.y)*this.state.width+Math.floor(r.x)))continue;
         const environment=r.kind==='crystal'?'crystal':r.kind==='ore'?'ore':r.id%3===0?'tree-oak':'tree-pine';
         if(this.art.environment(`resource:${r.id}`,environment,p.x,p.y))continue;
         g.fillStyle(0x142a22,.3).fillEllipse(p.x+4,p.y+4,41,17);
         if(r.kind==='wood'){g.fillStyle(0x634d34).fillRect(p.x-3,p.y-25,6,28);g.fillStyle(0x274b3b).fillTriangle(p.x-22,p.y-17,p.x,p.y-67,p.x+22,p.y-17);g.fillStyle(0x3d6950).fillTriangle(p.x-18,p.y-28,p.x-2,p.y-68,p.x+12,p.y-28);g.fillStyle(0x71915b).fillTriangle(p.x-13,p.y-44,p.x-2,p.y-68,p.x+7,p.y-44);}
         else{g.fillStyle(0x53616a).fillTriangle(p.x-19,p.y+1,p.x-9,p.y-22,p.x+13,p.y-2);g.fillStyle(0x92adad).fillTriangle(p.x-9,p.y-22,p.x+3,p.y-25,p.x+13,p.y-2);g.fillStyle(0xb8cfba).fillTriangle(p.x+2,p.y-4,p.x+8,p.y-18,p.x+21,p.y+1);}continue;
       }
-      const e=obj.e,p=project(e.x,e.y);const faction=this.state.players[e.side].faction;const orc=faction==='orcs';const color=FACTIONS[faction].color;const selected=this.selected.includes(e.id);const dead=e.hp<=0;const alpha=dead?.35:e.illusion&&e.side===this.playerView.side?.5:1;
+      const e=obj.e,p=project(e.x,e.y);const faction=this.state.players[e.side].faction;const orc=faction==='orcs';const color=FACTIONS[faction].color;const selected=!this.photoMode&&this.selected.includes(e.id);const dead=e.hp<=0;const alpha=dead?.35:e.illusion&&e.side===this.playerView.side?.5:1;
       g.fillStyle(0x14201c,.38).fillEllipse(p.x+4,p.y+4,e.kind==='building'?70:27,e.kind==='building'?30:12);
-      if(selected){g.lineStyle(2,e.side===0?0xe5d98e:0xec7269,1).strokeEllipse(p.x,p.y+2,e.kind==='building'?82:35,e.kind==='building'?39:17);}
+      if(selected){g.lineStyle(2,e.side===this.viewSide?0xe5d98e:0xec7269,1).strokeEllipse(p.x,p.y+2,e.kind==='building'?82:35,e.kind==='building'?39:17);}
       if(this.art.entity(e,this.state,p.x,p.y,this.playerView.side))continue;
       if(e.kind==='building'){
         const size=e.role==='hq'?1.25:e.role==='tower'?.75:1;const w=48*size,h=(e.role==='tower'?78:43)*size;const y=p.y;
@@ -261,7 +369,7 @@ export default class GameScene extends Phaser.Scene {
         g.fillStyle(0x263638,alpha).fillRect(p.x-8,y-25,16,22);g.fillStyle(color,alpha).fillRect(p.x+w/2-2,y-h-15,15,13);
         if(e.role==='barracks'){g.lineStyle(3,0xc7c2a0,alpha).lineBetween(p.x-9,y-h+8,p.x+9,y-h+24);g.lineBetween(p.x+9,y-h+8,p.x-9,y-h+24);}
         if(e.role==='depot'){g.fillStyle(0xa08a59,alpha).fillRect(p.x+18,y-15,15,12);}
-        if(e.progress<1){g.fillStyle(0x182b2a,.6).fillRect(p.x-34,y-12,68,6);g.fillStyle(0xe4c578).fillRect(p.x-34,y-12,68*e.progress,6);}
+        if(!this.photoMode&&e.progress<1){g.fillStyle(0x182b2a,.6).fillRect(p.x-34,y-12,68,6);g.fillStyle(0xe4c578).fillRect(p.x-34,y-12,68*e.progress,6);}
       }else{
         const bob=e.animation==='walk'?Math.sin(e.animTime*12)*2:Math.sin(this.state.time*2+e.id)*.5;const y=p.y+bob;
         if(!orc){g.fillStyle(0xc4e8cb,.55*alpha).fillEllipse(p.x-10,y-21,20,12);g.fillEllipse(p.x+10,y-21,20,12);}
@@ -275,28 +383,28 @@ export default class GameScene extends Phaser.Scene {
         if(e.role==='ranged'){g.lineStyle(2,0xd2ba7d,alpha).strokeEllipse(p.x+11,y-20,10,23);}
         if(e.role==='special'){g.lineStyle(2,0xbfb586,alpha).lineBetween(p.x+10,y-4,p.x+10,y-36);g.fillStyle(orc?0xebaf58:0xa5e9cb,alpha).fillCircle(p.x+10,y-38,5);}
         g.fillStyle(0xf4e7b7,alpha).fillCircle(p.x+dx*4,y-30+dy*2,1.5);
-        if(e.momentum>0){g.lineStyle(2,0xe8a24e,.7).strokeEllipse(p.x,p.y+2,28+e.momentum,13);}
+        if(!this.photoMode&&e.momentum>0){g.lineStyle(2,0xe8a24e,.7).strokeEllipse(p.x,p.y+2,28+e.momentum,13);}
       }
-      if(!dead&&(selected||e.hp<e.maxHp)){
-        const w=e.kind==='building'?54:30,y=p.y-(e.kind==='building'?95:46);g.fillStyle(0x182426,.9).fillRect(p.x-w/2-1,y-1,w+2,5);g.fillStyle(e.side===0?0xa8cc85:0xd87560).fillRect(p.x-w/2,y,w*Math.max(0,e.hp/e.maxHp),3);
+      if(!this.photoMode&&!dead&&(selected||e.hp<e.maxHp)){
+        const w=e.kind==='building'?54:30,y=p.y-(e.kind==='building'?95:46);g.fillStyle(0x182426,.9).fillRect(p.x-w/2-1,y-1,w+2,5);g.fillStyle(e.side===this.viewSide?0xa8cc85:0xd87560).fillRect(p.x-w/2,y,w*Math.max(0,e.hp/e.maxHp),3);
       }
     }
-    for(let i=0;i<this.state.terrain.length;i++)if(this.state.terrain[i]==='shallows'&&i%7===0&&this.state.explored[0].has(i)){const p=project(i%this.state.width+.5,Math.floor(i/this.state.width)+.5);this.art.environment(`reeds:${i}`,'reeds',p.x,p.y);}
-    for(const r of remembered)if(r.kind==='wood'&&r.amount<=0&&this.state.explored[0].has(Math.floor(r.y)*this.state.width+Math.floor(r.x))){const p=project(r.x,r.y);this.art.environment(`resource:${r.id}`,'stump',p.x,p.y);}
+    for(let i=0;i<this.state.terrain.length;i++)if(this.state.terrain[i]==='shallows'&&i%7===0&&this.state.explored[this.viewSide].has(i)){const p=project(i%this.state.width+.5,Math.floor(i/this.state.width)+.5);this.art.environment(`reeds:${i}`,'reeds',p.x,p.y);}
+    for(const r of remembered)if(r.kind==='wood'&&r.amount<=0&&this.state.explored[this.viewSide].has(Math.floor(r.y)*this.state.width+Math.floor(r.x))){const p=project(r.x,r.y);this.art.environment(`resource:${r.id}`,'stump',p.x,p.y);}
     this.art.end();
   }
-  private drawFog(){const g=this.fog;g.clear();for(let y=0;y<this.state.height;y++)for(let x=0;x<this.state.width;x++){const i=y*this.state.width+x;if(this.state.visible[0].has(i))continue;const p=project(x+.5,y+.5);this.diamond(g,p.x,p.y,65,33,0x102022,this.state.explored[0].has(i)?.48:.98);}}
+  private drawFog(){const g=this.fog;g.clear();for(let y=0;y<this.state.height;y++)for(let x=0;x<this.state.width;x++){const i=y*this.state.width+x;if(this.state.visible[this.viewSide].has(i))continue;const p=project(x+.5,y+.5);this.diamond(g,p.x,p.y,65,33,0x102022,this.state.explored[this.viewSide].has(i)?.48:.98);}}
   private drawOverlay(){
-    const g=this.overlay;g.clear();const p=this.input.activePointer;const world=this.cameras.main.getWorldPoint(p.x,p.y);
+    const g=this.overlay;g.clear();if(this.photoMode){this.game.canvas.style.cursor='default';return;}const p=this.controllerActive&&this.controllerCursor?this.controllerCursor:this.input.activePointer;const world=this.cameras.main.getWorldPoint(p.x,p.y);
     for(const corpse of this.state.corpses){
-      if(!isVisible(this.state,0,corpse.x,corpse.y))continue;
+      if(!isVisible(this.state,this.viewSide,corpse.x,corpse.y))continue;
       const c=project(corpse.x,corpse.y);g.lineStyle(2,0xbbb79f,.6).lineBetween(c.x-5,c.y-2,c.x+5,c.y+2);g.lineBetween(c.x-5,c.y+2,c.x+5,c.y-2);
     }
     for(const unit of this.state.entities){
       if(unit.hp<=0||!this.visible(unit))continue;
       const c=project(unit.x,unit.y);
       // Ownership stays readable when both armies have the same faction artwork.
-      g.fillStyle(unit.side===0?0xb9e493:0xf08572,.95).fillTriangle(c.x-3,c.y+6,c.x+3,c.y+6,c.x,c.y+11);
+      g.fillStyle(unit.side===this.viewSide?0xb9e493:0xf08572,.95).fillTriangle(c.x-3,c.y+6,c.x+3,c.y+6,c.x,c.y+11);
       if((unit.shield??0)>0){g.lineStyle(1,0xb59af0,.35+.45*(unit.shield!/unit.maxShield!)).strokeEllipse(c.x,c.y-14,35,39);}
       if((unit.surgeUntil??0)>this.state.time){g.lineStyle(2,0x83d5cf,.7).strokeEllipse(c.x,c.y+2,36,16);}
       if(unit.entrenchedAt!==undefined){
@@ -314,19 +422,20 @@ export default class GameScene extends Phaser.Scene {
     for(const e of this.state.entities){
       if(e.hp<=0||!this.visible(e)||!(this.selected.includes(e.id)||e.hp<e.maxHp))continue;
       const q=project(e.x,e.y),w=e.kind==='building'?54:30,y=(this.art.top(`entity:${e.id}`)??(q.y-(e.kind==='building'?89:40)))-6;
-      g.fillStyle(0x182426,.9).fillRect(q.x-w/2-1,y-1,w+2,5);g.fillStyle(e.side===0?0xa8cc85:0xd87560).fillRect(q.x-w/2,y,w*Math.max(0,e.hp/e.maxHp),3);
+      g.fillStyle(0x182426,.9).fillRect(q.x-w/2-1,y-1,w+2,5);g.fillStyle(e.side===this.viewSide?0xa8cc85:0xd87560).fillRect(q.x-w/2,y,w*Math.max(0,e.hp/e.maxHp),3);
       if(e.kind==='building'&&e.progress<1){g.fillStyle(0x182b2a,.8).fillRect(q.x-27,y+7,54,4);g.fillStyle(0xe4c578).fillRect(q.x-27,y+7,54*e.progress,4);}
     }
     if(this.drag&&Math.hypot(p.x-this.drag.x,p.y-this.drag.y)>this.dragThreshold&&!this.buildRole){g.lineStyle(1,0xe5dca6).strokeRect(this.drag.wx,this.drag.wy,world.x-this.drag.wx,world.y-this.drag.wy);g.fillStyle(0xd6e9a5,.12).fillRect(this.drag.wx,this.drag.wy,world.x-this.drag.wx,world.y-this.drag.wy);}
-    if(this.buildRole){const pos=unproject(world.x,world.y);const x=this.buildRole==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y=this.buildRole==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5,q=project(x,y);const valid=canPlace(this.state,0,this.buildRole,x,y);const size=FACTIONS[this.state.players[0].faction].buildings[this.buildRole].size;this.diamond(g,q.x,q.y,size*64,size*32,valid?0xa6d99a:0xe27964,.5);}
+    if(this.buildRole){const pos=unproject(world.x,world.y);const x=this.buildRole==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y=this.buildRole==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5,q=project(x,y);const valid=canPlace(this.state,this.viewSide,this.buildRole,x,y);const size=FACTIONS[this.state.players[this.viewSide].faction].buildings[this.buildRole].size;this.diamond(g,q.x,q.y,size*64,size*32,valid?0xa6d99a:0xe27964,.5);}
     for(const building of this.state.entities){
-      if(building.side!==0||building.hp<=0||!building.rally||!this.selected.includes(building.id))continue;
+      if(building.side!==this.viewSide||building.hp<=0||!building.rally||!this.selected.includes(building.id))continue;
       const from=project(building.x,building.y),to=project(building.rally.x,building.rally.y);
       g.lineStyle(1,0xe4c578,.55).lineBetween(from.x,from.y,to.x,to.y);
       g.lineStyle(2,0xe4c578,1).strokeEllipse(to.x,to.y,22,11).lineBetween(to.x,to.y,to.x,to.y-32);
       g.fillStyle(0xe4c578,1).fillTriangle(to.x,to.y-32,to.x+18,to.y-26,to.x,to.y-20);
     }
     this.markers=this.markers.filter(m=>this.time.now-m.born<700);for(const m of this.markers){const age=(this.time.now-m.born)/700;g.lineStyle(2,m.attack?0xe38b6b:0xf0dfa3,1-age).strokeEllipse(m.x,m.y,15+age*35,7+age*17);}
+    if(this.controllerActive&&this.controllerCursor){g.lineStyle(2,0xffefb6,.95).strokeCircle(world.x,world.y,7/this.cameras.main.zoom).lineBetween(world.x-12/this.cameras.main.zoom,world.y,world.x+12/this.cameras.main.zoom,world.y).lineBetween(world.x,world.y-12/this.cameras.main.zoom,world.x,world.y+12/this.cameras.main.zoom);}
     this.game.canvas.style.cursor=this.buildRole||this.attackMode?'crosshair':'default';
   }
 }

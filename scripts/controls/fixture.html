@@ -1,0 +1,13 @@
+<!doctype html><html><head><style>html,body{margin:0;background:#14201e}#hud{position:absolute;top:0;color:white}input{position:absolute;right:0;top:0}</style></head><body><div id="game"></div><div id="hud">Controls verification</div><input id="focus" aria-label="Typing test"><script type="module">
+import Phaser from 'phaser';
+import GameScene,{project} from '/src/game/GameScene.ts';
+import {createGame,issueCommand} from '/src/core/simulation.ts';
+import {ControlProfiles} from '/src/game/Controls.ts';
+const state=createGame('orcs',4127,'fairies',{controllers:['external','external']});
+const checks={steps:0,photo:[],selections:[],commands:[],slots:[]};
+const controls=new ControlProfiles(localStorage);controls.resetDefaults();
+window.checks=checks;window.project=project;
+const scene=new GameScene({state,controls,onCommand:(side,command)=>{checks.commands.push({side,command});return issueCommand(state,side,command);},onSelection:ids=>checks.selections.push(ids),onNotice:()=>{},onReady:()=>window.ready=true,onPhotoMode:enabled=>{checks.photo.push(enabled);document.querySelector('#hud').hidden=enabled;document.querySelector('#focus').hidden=enabled;},onStep:()=>checks.steps++,onActionSlot:slot=>checks.slots.push(slot)});
+window.scene=scene;
+window.game=new Phaser.Game({type:Phaser.CANVAS,parent:'game',width:1100,height:850,scene:[scene],fps:{target:60}});
+</script></body></html>
