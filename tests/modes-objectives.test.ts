@@ -58,6 +58,9 @@ describe('saved match rules and objectives',()=>{
   const barracks=spawnEntity(state,0,'building','barracks',12,8);expect(issueCommand(state,0,{type:'train',id:barracks.id,role:'melee'})).toBe(false);expect(issueCommand(state,0,{type:'train',id:barracks.id,role:'siege'})).toBe(false);expect(issueCommand(state,0,{type:'train',id:barracks.id,role:'ranged'})).toBe(true);expect(issueCommand(state,0,{type:'research',id:barracks.id,upgrade:'forged-weapons'})).toBe(false);
   expect(legalDraftChoices(state.draft,players,0)).not.toContain(banned);expect(loadGame(saveGame(state)).draft).toEqual(state.draft);
  });
+ it('keeps survival from ending immediately and grants the declared recovery reward to every defender',()=>{
+  expect(()=>match({mode:'annihilation',standardDefeat:false})).toThrow(/requires headquarters defeat/);expect(()=>match({mode:'survival',standardDefeat:true})).toThrow(/defender and wave defeat rules/);const state=match({mode:'survival',survival:{intervalTicks:20,waveCount:2,unitsPerWave:2}},[0,0,1,1]);state.entities.find(e=>e.side===0&&e.role==='hq')!.hp=0;tick(state,20);expect(state.winner).toBeNull();for(const unit of state.entities.filter(e=>state.objectives.survival.spawnedIds.includes(e.id)))unit.hp=0;tick(state,1);expect(state.objectives.survival.phase).toBe('recovery');expect(state.players[0].wood).toBe(480);expect(state.players[1].wood).toBe(480);
+ });
  it('keeps the maximum configured survival wave inside its published spawn region',()=>{
   const state=match({mode:'survival',survival:{waveCount:20,unitsPerWave:20,intervalTicks:20}});state.objectives.survival.wave=19;tick(state,20);const attackers=state.entities.filter(e=>state.objectives.survival.spawnedIds.includes(e.id));expect(attackers).toHaveLength(400);expect(attackers.every(e=>e.x>=.5&&e.x<=state.width-.5&&e.y>=.5&&e.y<=state.height-.5)).toBe(true);expect(()=>loadGame(saveGame(state))).not.toThrow();
  });

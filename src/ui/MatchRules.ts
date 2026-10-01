@@ -103,7 +103,7 @@ export class MatchRulesForm {
   private listen(target: HTMLElement, type: string, fn: () => void) { target.addEventListener(type, fn); this.removeListeners.push(() => target.removeEventListener(type, fn)); }
   private changed() { if (this.destroyed) return; this.refresh(); this.options.onChange?.(); }
   private refresh() {
-    const mode = this.controls.get('mode')!.value;
+    const mode = this.controls.get('mode')!.value;this.controls.get('standardDefeat')!.disabled=mode==='survival'||mode==='annihilation';
     for (const [key, group] of this.groups) if (['hill', 'relic', 'survival', 'scenario'].includes(key)) { group.hidden = mode !== key; for (const control of Array.from(group.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input,select'))) control.disabled = group.hidden; }
     this.description.textContent = ({ annihilation: 'Defeat the opposing teams by destroying their headquarters.', hill: 'Capture the central hill, then hold it until the victory timer completes. Enemy units contest the hill.', relic: 'Collect relics with your units and hold the required number for the victory timer.', survival: 'Defend against scheduled enemy waves, recover between waves, and clear the final wave to win.', scenario: 'The selected scenario controls its objectives and victory conditions.' } as Record<string, string>)[mode] ?? '';
     this.host.dataset.mode = mode;
@@ -130,7 +130,7 @@ export class MatchRulesForm {
     const rules = structuredClone(MATCH_RULE_DEFAULTS);
     try {
       for (const [key, control] of this.controls) {
-        if (control.disabled) continue;
+        if (control.disabled&&key!=='standardDefeat') continue;
         let value: string | number | boolean = control.value;
         if (control instanceof HTMLInputElement) {
           if (control.type === 'checkbox') value = control.checked;

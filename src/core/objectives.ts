@@ -61,8 +61,8 @@ export function evaluateObjectives(s:GameState,actions:Actions):void {
    const target=[...defenders].sort((a,b)=>Math.hypot(a.x-unit.x,a.y-unit.y)-Math.hypot(b.x-unit.x,b.y-unit.y))[0];actions.command(s,unit.side,{type:'attackMove',ids:[unit.id],x:target.x,y:target.y});
   }
   if(wave.phase==='fighting'&&!s.entities.some(e=>wave.spawnedIds.includes(e.id)&&alive(e))){
-   const survivors=s.players.map((_,id)=>id as Side).filter(side=>s.teams[side]===rules.defenderTeam&&s.entities.some(e=>alive(e)&&e.role==='hq'&&e.side===side));
-   // Each surviving defender receives the visible, configured wave reward.
+   const survivors=s.players.map((_,id)=>id as Side).filter(side=>s.teams[side]===rules.defenderTeam);
+   // Each defender receives the visible, configured wave reward.
    for(const side of survivors)for(const resource of ['wood','ore','crystal'] as const)s.players[side][resource]+=rules.rewardPerWave[resource];
    if(wave.wave===rules.waveCount){wave.phase='complete';finish(s,rules.defenderTeam,'The final survival wave is defeated.');return;}
    wave.phase='recovery';wave.nextWaveTick=s.tick+rules.recoveryTicks;

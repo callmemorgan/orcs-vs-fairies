@@ -41,6 +41,8 @@ export function normalizeMatchRules(value:unknown={}):MatchRules {
  relic:{count:num(l.count??3,1,8,'relic count',true),required:num(l.required??2,1,8,'required relics',true),holdTicks:num(l.holdTicks??2400,1,72000,'relic defense duration',true),pickupRadius:num(l.pickupRadius??1.5,.5,4,'relic pickup radius')},
  survival:{defenderTeam:num(s.defenderTeam??0,0,7,'defender team',true) as TeamId,waveCount:num(s.waveCount??5,1,20,'wave count',true),intervalTicks:num(s.intervalTicks??1200,20,72000,'wave interval',true),recoveryTicks:num(s.recoveryTicks??400,1,72000,'recovery duration',true),unitsPerWave:num(s.unitsPerWave??2,1,20,'wave size',true),rewardPerWave:money(s.rewardPerWave??{wood:60,ore:30,crystal:0},'wave reward')},
  draft:{enabled:bool(d.enabled??false,'draft enabled'),banRounds:num(d.banRounds??1,0,2,'ban rounds',true),pickRounds:num(d.pickRounds??3,1,6,'pick rounds',true),turnTicks:num(d.turnTicks??600,20,2400,'draft turn duration',true)}};
+ if(rules.mode==='annihilation'&&!rules.standardDefeat)throw new Error('Annihilation requires headquarters defeat.');
+ if(rules.mode==='survival'&&rules.standardDefeat)throw new Error('Survival must use its defender and wave defeat rules.');
  if(rules.relic.required>rules.relic.count)throw new Error('Required relic count exceeds the available relics.');
  return rules;
 }
