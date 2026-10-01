@@ -3,6 +3,7 @@ import { DIRECTIONS_32, length2D } from './geometry';
 import { fogKey, levelOf, sameLevel } from './world-map';
 import { walkable } from './navigation';
 import { TERRAIN } from './maps';
+import { isCrewless } from './tactics';
 import type { Command, Entity, GameState, Side, TeamId, UnitRole, Vec } from './types';
 import { definitionAllowed, validateModeRoster, type ObjectiveState } from './match-rules';
 interface Actions {spawn:(s:GameState,side:Side,kind:Entity['kind'],role:UnitRole,x:number,y:number,progress?:number,definitionId?:string,level?:number)=>Entity;command:(s:GameState,side:Side,c:Command)=>boolean}
@@ -70,10 +71,11 @@ export function evaluateObjectives(s:GameState,actions:Actions):void {
  if(s.rules.mode==='survival'){
   const rules=s.rules.survival,wave=s.objectives.survival,defenders=s.entities.filter(e=>alive(e)&&e.role==='hq'&&e.progress===1&&s.teams[e.side]===rules.defenderTeam),opponents=s.players.map((_,id)=>id as Side).filter(side=>s.teams[side]!==rules.defenderTeam);
   if(!defenders.length){wave.phase='complete';finish(s,s.teams[opponents[0]],'The defenders lost their last stronghold.');return;}
-  if(wave.phase==='fighting')for(const unit of s.entities.filter(e=>wave.spawnedIds.includes(e.id)&&alive(e)&&e.order.type==='idle')){
+  const attackers=s.entities.filter(e=>wave.spawnedIds.includes(e.id)&&alive(e)&&s.teams[e.side]!==rules.defenderTeam&&!isCrewless(e));
+  if(wave.phase==='fighting')for(const unit of attackers.filter(e=>e.order.type==='idle')){
    const target=[...defenders].sort((a,b)=>distance(a,unit)-distance(b,unit)||a.id-b.id)[0];if(target)objectiveOrder(s,unit,target,actions.command);
   }
-  if(wave.phase==='fighting'&&!s.entities.some(e=>wave.spawnedIds.includes(e.id)&&alive(e))){
+  if(wave.phase==='fighting'&&!attackers.length){
    const survivors=s.players.map((_,id)=>id as Side).filter(side=>s.teams[side]===rules.defenderTeam);
    // Each defender receives the visible, configured wave reward.
    for(const side of survivors)for(const resource of ['wood','ore','crystal'] as const)s.players[side][resource]+=rules.rewardPerWave[resource];
