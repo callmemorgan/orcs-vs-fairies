@@ -6,7 +6,7 @@ import { SkirmishOptions } from './SkirmishOptions';
 import './skirmish-roster.css';
 
 type Preset = 'duel' | '2v2' | '3v3' | '4v4' | 'co-op' | 'custom';
-type Rules = Required<NonNullable<MatchConfig['rules']>>;
+type Rules = {sharedVision:boolean;startingAge:Age};
 type HandicapKey = keyof Cost | 'income' | 'population';
 interface PlayerRow {
   id: Side;

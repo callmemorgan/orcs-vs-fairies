@@ -16,6 +16,9 @@ export function validateCommand(v:unknown):v is Command {
   if(!record(v)||typeof v.type!=='string')return false;
   const queued=['move','attackMove','attack','gather','repair'].includes(v.type);
   if('queued' in v&&(!queued||typeof v.queued!=='boolean'))return false;
+  if(v.type==='draftChoice')return keys(v,['type','definitionId'])&&typeof v.definitionId==='string'&&v.definitionId.length>0&&v.definitionId.length<=128;
+  if(v.type==='collectRelic')return keys(v,['type','id','relicId'])&&id(v.id)&&id(v.relicId);
+  if(v.type==='dropRelic')return keys(v,['type','id'])&&id(v.id);
   const allowed=(fields:string[])=>keys(v,queued?[...fields,'queued']:fields);
   if(v.type==='cancelTrain')return allowed(['type','id','index'])&&id(v.id)&&index(v.index);
   if(v.type==='reorderTrain')return allowed(['type','id','from','to'])&&id(v.id)&&index(v.from)&&index(v.to);
