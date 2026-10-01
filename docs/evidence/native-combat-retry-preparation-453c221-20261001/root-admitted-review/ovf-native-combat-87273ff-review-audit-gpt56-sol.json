@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "reviewer": {
+    "model": "gpt-5.6-sol",
+    "reasoningEffort": "high"
+  },
+  "commit": "87273ff035a7fe7342f37785d5e5274ebd9dde4f",
+  "parent": "ae84897614db94dd2b107b9a47e2bfc5e1821c46",
+  "scope": "Read-only review of the exact docs-only native combat retry preparation commit. No checker, test, build, browser, simulation, server, or gameplay executed. No repository files changed.",
+  "diff": {
+    "method": "git diff BASE...TIP",
+    "sha256": "687e14bfc4fad5581a83a3a718bf0bc473631a1d62769662656012edad692b38",
+    "filesAdded": 11,
+    "insertions": 7071,
+    "deletions": 0,
+    "docsOnly": true
+  },
+  "findings": [],
+  "verdict": "admit-preparation-only",
+  "checks": {
+    "commitHasExpectedSoleParent": true,
+    "allPathsUnderFreshPreparationDirectory": true,
+    "artifactManifestEntriesRecomputed": 10,
+    "artifactManifestMismatches": [],
+    "baselineProductPaths": 567,
+    "runtimeProductPaths": 568,
+    "runtimeSourcePublicFiles": 557,
+    "runtimePublicFiles": 394,
+    "originalProofModules": 19,
+    "endpointDeltaC074To453": [
+      "A public/favicon.ico"
+    ],
+    "endpointDelta0bTo453Product": [
+      "A public/favicon.ico",
+      "M src/main.ts"
+    ],
+    "acceptanceTreeEqualTo0b": true,
+    "editorBlobEqualTo0b": true,
+    "rootBridgeOriginalInputs": 918,
+    "rootBridgePriorSourcePublicEntries": 556,
+    "rootBridgeMismatches": [],
+    "checkerRequireCalls": 66,
+    "checkerAssertStatements": 0,
+    "firstReceiptHashCheckedBeforeJsonParse": true,
+    "outputUsesExclusiveBinaryCreate": true,
+    "sourceAndDistSpecialEntriesRejected": true,
+    "previewWorkingDirectoryExplicit": true,
+    "retainedLauncherSha256": "3ea6c74f53dddf6a10361c791f231200c5e33468cfa7a6db1aace9573cc81f14",
+    "chromium1243PathExplicit": true,
+    "runtimeExecuted": false
+  },
+  "behavioralInterrogation": {
+    "ordering": "The added recipe remains serial. It inserts a first dist/public gate after build and a final authenticated comparison after browser and native history. Existing runtime ordering is unchanged by this docs-only commit.",
+    "failurePaths": "All checker gates call require and terminate on failure. Git, JSON, path, and IO errors propagate. A receipt is created only at the end with exclusive creation.",
+    "observability": "The checker prints the fresh receipt path and SHA-256 before its summaries; the admitted launcher retains stdout, stderr, argv, cwd, executable identity, environment, and exit.",
+    "staleWrites": "Fresh output is required, written with xb, and reread. The final gate authenticates the first receipt bytes before parsing and compares complete source, frozen-contract, dist, and public fingerprints.",
+    "testDelta": "No runtime tests ran or changed. Syntax parsing is the only recorded preparation check; later execution remains held."
+  },
+  "limits": [
+    "Static source and byte equality do not prove a fresh production build.",
+    "This review does not establish browser compatibility or native gameplay behavior.",
+    "The 39 encounters and original history audit remain pending serial execution after root approval.",
+    "The first unexpected failure must stop the sequence and remain preserved."
+  ],
+  "report": {
+    "path": "/tmp/ovf-native-combat-87273ff-review-gpt56-sol.md",
+    "bytes": 5167,
+    "sha256": "dcdc15178469a394565f378eb0277c5a422e7c44e074fb2a78496a00b4158d40"
+  }
+}

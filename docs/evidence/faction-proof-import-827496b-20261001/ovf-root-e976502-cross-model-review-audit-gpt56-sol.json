@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "reviewer": {
+    "model": "gpt-5.6-sol",
+    "reasoningEffort": "high"
+  },
+  "commit": "e976502f25df468b3edf1298fed887de78cd4730",
+  "parent": "8b96f5197adf5b4ddfa160c2fe5a550afdf7e9d8",
+  "verdict": "admit-metadata-only",
+  "findings": [],
+  "scope": "Exact-commit cross-model review of retained launcher preparation, copied autosave repair admission/readback, and two decision rows. Browser runtime remains outside this admission.",
+  "diff": {
+    "method": "git diff BASE...TIP",
+    "sha256": "f30122d28a1f35ee10ac82c5276316079592b0ebbbf5c4e1a3329bcca124f9cd",
+    "paths": 14,
+    "insertions": 1167,
+    "deletions": 0
+  },
+  "checks": {
+    "expectedSoleParent": true,
+    "newEvidenceFiles": 13,
+    "decisionRowsAppended": 2,
+    "decisionParentPrefixBytes": 97388,
+    "decisionTipBytes": 98284,
+    "decisionExactPrefix": true,
+    "productPathsChanged": [],
+    "requirementStatusPathsChanged": [],
+    "launcherCopiesEqualSources": true,
+    "launcherRetentionSizesAndHashesMatch": true,
+    "adapterSha256": "7fe266503ffb4a65da331e6ae3fa7ffa248f805595dcb5e417a7669fc73bbd6d",
+    "adaptedDriverSha256": "49721f151fd5cb98b80b5143c850c67051d7abe22b1deb1625f3a5932be65f9f",
+    "originalDriverSha256": "af8b95dfba349f6dbf67809902248203281469cb3a75e18dda77e37ee86ba747",
+    "proofWrapperSha256": "bb8c80fc33ca6a25e044a5df60350030bb2177461d265025b9bfcffcdc3a1cd2",
+    "defaultChromium1234Absent": true,
+    "requiredChromium1243Present": true,
+    "requiredChromium1243Bytes": 293285184,
+    "autosaveReviewCopiesEqualTmpSources": true,
+    "autosaveReadbackCommit": "8b96f5197adf5b4ddfa160c2fe5a550afdf7e9d8",
+    "autosaveReadbackFiles": 69,
+    "autosaveReadbackBytes": 11181643,
+    "autosaveReadbackAllHashesMatch": true,
+    "ledgerVerified": 63,
+    "ledgerInProgress": 37,
+    "requiredFooterPresent": true,
+    "browserRuntimeAdmitted": false
+  },
+  "behavioralInterrogation": {
+    "ordering": "None; metadata-only. The two ledger rows are appended in timestamp order.",
+    "failurePaths": "None; no executable product behavior changed.",
+    "observability": "No runtime logging changed. The retained preparation records launcher, package and executable identity requirements for later evidence.",
+    "staleWrites": "None; no runtime writer changed.",
+    "testDelta": "None. Root separately ran the unchanged static verifier without a browser; runtime results remain outside this commit admission."
+  },
+  "limits": [
+    "This review does not admit any browser phase or gameplay result.",
+    "The static verifier claim relies on root's separate execution; the retained bytes and hash were independently checked here.",
+    "The committed adapted shell script is retained as a documentation artifact with Git mode 100644; this review does not use it as an executable copy."
+  ],
+  "report": {
+    "path": "/tmp/ovf-root-e976502-cross-model-review-gpt56-sol.md",
+    "bytes": 4151,
+    "sha256": "ef5709f85c907138e21a32bd684659f445216dcd3957645f4236bcdf02e58056"
+  }
+}

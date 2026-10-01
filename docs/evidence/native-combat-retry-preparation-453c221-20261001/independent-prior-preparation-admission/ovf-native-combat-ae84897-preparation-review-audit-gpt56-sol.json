@@ -1,0 +1,77 @@
+{
+  "kind": "native-combat-c074-retry-preparation-commit-review",
+  "checkedAt": "2026-10-01T20:20:53.315902+00:00",
+  "reviewer": "GPT-5.6 Sol",
+  "result": "accepted-preparation-only",
+  "commit": "ae84897614db94dd2b107b9a47e2bfc5e1821c46",
+  "parent": "034f0fe1b25ed1bfadad025773300e45b4dc3244",
+  "tree": "d9964997fcf9563820e3744b89aff0a319b77ea5",
+  "paths": [
+    "docs/evidence/native-combat-next-retry-preparation-0b-20261001/README.md",
+    "docs/evidence/native-combat-next-retry-preparation-0b-20261001/artifact-manifest.json",
+    "docs/evidence/native-combat-next-retry-preparation-0b-20261001/authorized-product-change-c074.patch",
+    "docs/evidence/native-combat-next-retry-preparation-0b-20261001/candidate-product-applicability-c074.json",
+    "docs/evidence/native-combat-next-retry-preparation-0b-20261001/independent-second-failure-admission/ovf-combat-second-failure-034f0fe-external-byte-audit.json",
+    "docs/evidence/native-combat-next-retry-preparation-0b-20261001/independent-second-failure-admission/ovf-native-combat-second-failure-034f0fe-review-audit-gpt56-sol.json",
+    "docs/evidence/native-combat-next-retry-preparation-0b-20261001/independent-second-failure-admission/ovf-native-combat-second-failure-034f0fe-review-gpt56-sol.md",
+    "docs/evidence/native-combat-next-retry-preparation-0b-20261001/original-0b-proof-modules.json",
+    "docs/evidence/native-combat-next-retry-preparation-0b-20261001/preparation-checks.json",
+    "docs/evidence/native-combat-next-retry-preparation-0b-20261001/preparation-decisions.tsv",
+    "docs/evidence/native-combat-next-retry-preparation-0b-20261001/preparation-source-review.md",
+    "docs/evidence/native-combat-next-retry-preparation-0b-20261001/verify-product-applicability.py"
+  ],
+  "counts": {
+    "preparedDocs": 12,
+    "manifestCovered": 11,
+    "productInputs": 567,
+    "proofModules": 19,
+    "assertNodes": 0
+  },
+  "changed": {
+    "product": [
+      "src/main.ts"
+    ],
+    "proof": []
+  },
+  "mismatches": {
+    "manifest": [],
+    "moduleDocument": [],
+    "retainedAdmission": [],
+    "productPathDelta": {
+      "added": [],
+      "deleted": []
+    }
+  },
+  "checks": {
+    "commitHeadMatches": true,
+    "commitParentMatches": true,
+    "onlyTwelvePreparationDocsAdded": true,
+    "manifestCoversOtherElevenFiles": true,
+    "manifestHashesAndBytesMatchCommit": true,
+    "baselineSealMatches": true,
+    "productPathSetRetained": true,
+    "onlyMainProductBlobChanged": true,
+    "allNineteenProofModulesRetained": true,
+    "editorSupplementRetained": true,
+    "authorizedPatchMatchesGit": true,
+    "candidateDocumentMatchesFacts": true,
+    "originalProofModuleDocumentMatchesGit": true,
+    "checkerHashMatchesManifest": true,
+    "checkerParsesWithoutAssertNodes": true,
+    "checkerDisablesGitReplacementObjects": true,
+    "checkerAuthenticatesExecutingBytes": true,
+    "checkerRequiresFullPins": true,
+    "checkerRequiresTargetHeadBeforeAndAfter": true,
+    "checkerRequiresFreshExternalReceipt": true,
+    "retainedIndependentAdmissionMatchesExternalSources": true,
+    "runtimeClaimsRemainFalse": true
+  },
+  "allChecksPassed": true,
+  "runtimeExecuted": false,
+  "checkerExecuted": false,
+  "findings": [],
+  "limits": [
+    "Static Git, byte, JSON and AST review only.",
+    "Fresh UI regression, heavy-slot release, checker receipt, build, browser, native history and all 39 encounters remain runtime requirements."
+  ]
+}

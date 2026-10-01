@@ -1,0 +1,1086 @@
+diff --git a/docs/features/FACTION_FINAL_VERIFICATION.md b/docs/features/FACTION_FINAL_VERIFICATION.md
+new file mode 100644
+index 0000000000000000000000000000000000000000..669bb317b004d4b7c843305f70a464218e9d9706
+--- /dev/null
++++ b/docs/features/FACTION_FINAL_VERIFICATION.md
+@@ -0,0 +1,155 @@
++# Held final faction verification
++
++This document prepares acceptance for original feature IDs 21–30. Every new flow and every command below is HELD and unexecuted. Root owns the heavy execution slot, preview release, final source pin, retained evidence admission, and requirement ledger. This document changes no feature status.
++
++The production source tree for this preparation is byte-identical to acceptance freeze c86e273c70738f144a00fe75f5ecf39e7fa324d8. That source uses SAVE4 and rules 4.0.1. RECIPE_PIN must be the later full committed source SHA containing this document and the admitted faction proof helpers; the execution record must retain its resolved full value. The historical source pins below remain separate. A successful historical run does not establish acceptance at c86e273 or at RECIPE_PIN.
++
++The authored group uses scripts/acceptance/faction-powers-fixtures.ts, scripts/acceptance/faction-powers.mjs, and scripts/acceptance/audit-faction-powers.ts. It is registered as factions in the authenticated native generator, production browser runner and complete history auditor. The browser group is selected explicitly; the existing default groups remain direction, capture and specialists. This is preparation only. Do not run a builder, generator, build, focused suite, browser, offline engine audit, or CLI simulation before this integration is committed and root releases the serial slot.
++
++The source defines 23 initial scenarios across all six factions. Each checkpoint exports and reimports the original complete native game, exports and imports its original replay, compares the unprojected replay endpoint, and retains a rendered replay screenshot. A separate hostile-perspective Grove replay checks production art against the hostile PlayerView while the real troop's tile is visible. The offline audit requires all 26 named continuation pairs, with distinct endpoints and no duplicates, before it replays any suffix. These source assertions are unexecuted and do not certify their outcomes.
++
++## Historical sources and evidence
++
++| Record | Tested identity | Retained result and scope |
++| --- | --- | --- |
++| [Isolated faction encounters](../evidence/faction-systems-20261001/README.md) | Its browser [results.json](../evidence/faction-systems-20261001/browser/results.json) contains SHA-256 values for 26 source/proof files. Neither that record nor its README supplies a Git source commit. | 32 authoritative encounters, 27 mounted browser checks, and 242 regression passes in nine files. The fixture uses placeholder art and authored starting resources, Fury, trophies, selection and Gravecaller cooldown. It proves that mounted fixture's controls and rendering. |
++| [Assembled combat](../evidence/assembled-combat-20261001/README.md) | 470099e120ae270aa726d1eb831724d292006238; SAVE3; rules 3.2.0; source build ID 75019b785cd1829cd60ccab6a4c762209ed61f88aec0c42e00da19d582ce80c0. | [verification-summary.json](../evidence/assembled-combat-20261001/verification-summary.json) records 597 tests in 26 files and 29 production browser checks. Native browser controls cover Orc, Dwarf and Automata encounters. Fairy, Undead and Tideborn have simulation, mounted-panel and earlier isolated fixture coverage. The later economy/scenario merge and SAVE4 reconciliation are outside this pin. |
++| [Frozen native combat](../evidence/frozen-native-combat-af44da4-20261001/README.md) | af44da406acf7ab44436e978cb1f571b93e28d23; SAVE4; rules 4.0.0; source build ID 8c107a5f0ae792b00d7554879cc62d23fe835eccf415a2642243889331717452. | [browser-combined-combat.json](../evidence/frozen-native-combat-af44da4-20261001/browser-combined-combat.json) records 29 checks, 21 native saves, five replays and a bug report. Every native save passed full round trip and replay endpoint checks. This is historical 4.0.0 evidence. |
++| [Corrected faction/economy fixtures](../evidence/faction-economy-fixture-correction-20261001/README.md) | Runtime 65839dff2c22a2ad6f88f1607a9e5535ab86754c; fixture 3adb13e88cbad3e35b2804d04c2784440bf62282; unchanged baseline 115a537dd90d5e26ca04c7003f47310a71e67879; evidence 328f4f84cf18a43c20eaad57a15be934bd81aff7. | [source-manifest.json](../evidence/faction-economy-fixture-correction-20261001/source-manifest.json) records 32 focused and 391 surrounding passes in 16 files. The unchanged baseline has 29 failures and three passes. This isolated correction precedes root integration and SAVE4 reconciliation; it makes no native browser, full-suite or ladder claim. |
++
++The immutable original entries in [requirements.json](requirements.json) decide completion. The faction-identity table of [HUNDRED_FEATURE_ARCHITECTURE.md](../HUNDRED_FEATURE_ARCHITECTURE.md) adds implementation and verification ideas; its expanded clauses are supplemental and do not add final acceptance gates. At the acceptance freeze, all ten original rows are in progress with empty evidence arrays. Root's [decisions.tsv](decisions.tsv) explicitly imports the assembled combat proof as historical, admits corrected faction/economy fixtures separately, and leaves final gameplay acceptance open.
++
++## Historical coverage by original ID
++
++| ID | Historical assertions and artifacts | Limits and supplemental architecture differences |
++| --- | --- | --- |
++| 21: Orc war chants | At the assembled pin, tests/faction-systems.test.ts earns bounded Fury from hostile HP loss, rejects insufficient Fury, spends 25 Fury, measures Assault damage and Bulwark's three-point reduction, and checks expiry. The isolated browser records both controls and expiry. The frozen native browser spends 25 authored Fury on each chant, expires the chant at tick 302, and retains orcs-rally-save.json and orcs-rally-replay.json. | The native initial Fury was authored, and native measured combat buffs remain to be proved. Selected eligible troops are valid army-buff recipients for original ID 21; nearby unselected allies are a supplemental architecture difference. |
++| 22: Orc trophy standards | At the assembled pin, tests earn two trophies from hostile mortal kills, consume them for a 160-HP banner, measure morale and a 1.1 damage factor, destroy the banner, and stop its expired aura. Historical lethal-credit tests cover capture and delayed kills. Native artifacts include orcs-chants-and-standard.png and the rally save/replay. | The native trophies were authored. Its morale recovery has allied support and a standard together, so it does not isolate the banner effect. Earned placement, entering/leaving aura range, destruction and bounded stacking need explicit records. |
++| 23: Fairy illusion swapping | Historical tests exchange positions, spend 15 crystal, clear orders, enforce a ten-second cooldown, reject foreign clones, and keep a blocked swap atomic. The isolated fixture creates real doubles with the ability before swapping; fairies-swap.png and browser/results.json retain the assertions. Corrected economy tests preserve cargo while the swap replaces the old route, then compare complete saves and replay continuation. | No assembled native main-app swap/save/replay flow is retained. The inspected simple swap cases do not complete the expired-clone, visibility and retained-health matrix. |
++| 24: Fairy enchanted groves | Historical tests hide allies from hostile PlayerView, reject attacks against concealed units, reveal on scout proximity, attack or recent damage, and create a harmless moving decoy for an observed hostile scout. Captured-Gravecaller/Grove tests retain original summon/decoy definitions through saves and replay. The isolated browser constructs a Grove and records nearby concealment in fairies-grove.png. | Native cultivated-grove concealment and misleading scout effects remain to be proved. Constructing that Grove can satisfy original ID 24; enchanting an existing/planted economy grove is a supplemental architecture idea. |
++| 25: Dwarf tunnels | Historical tests save halfway through a three-second channel and resume to a walkable exit, cancel on damage or ordinary orders, and reject foreign exits. The isolated fixture shows 33% progress, arrival and worker construction in dwarves-channel.png, dwarves-channel-battlefield.png and dwarves.png. Corrected economy tests interrupt loaded delivery and preserve later faction actions in old reachable saves. | No retained native flow constructs both entrances, moves a squad, saves in transit and destroys its exit. Three assembled ownership-cleanup cases call tactical callbacks directly because active faction channels precede tactical updates in ordinary steps; preserve that disclosed limit. |
++| 26: Dwarf workshop modifications | Historical tests charge each artillery unit, exercise stone, grapeshot, reinforced and incendiary fittings, measure distinct target/area behavior and movement, retain delayed payload after source removal, and reject partial ammunition payment. Assembled world-ignition cases cover surface/cavern fire and save/replay continuation. The isolated browser records all four controls. Frozen native artifacts buy five shells for 15 ore and stone fitting for 25 wood/20 ore, save a live shell at tick 42 and reach the real bridge impact once. | Native coverage uses stone fitting. Other fittings' distinct armored-target/group impacts and replacement behavior need native assertions. |
++| 27: Undead corpse wagons | Historical tests recruit/cancel/save wagons, race two collectors for one corpse, deliver and raise once, preserve original decay deadlines and drop surviving cargo on death. Isolated screenshots include undead-cargo.png and undead-delivery.png. Corrected economy tests cover corpse-order interruption, physical cargo, grouped cross-level selection and legacy continuation. | The isolated browser gives the Gravecaller a long cooldown to inspect delivery before raising. It does not prove delivery-to-raise or the competing claim through native production controls. |
++| 28: Undead necropolises | Historical tests pay for construction and measure healing/sustained lifespan inside the radius and expiry after leaving. Assembled real Gravecaller summons are sustained by a Necropolis in bridge-expiry cases with native continuation and replay. The isolated browser records construction in undead-necropolis.png. Corrected economy tests cover planting replacement, paid costs and one-time salvage. | The inspected records do not demonstrate source capture, hostile cleansing or source destruction followed by decay. Construction alone is not lifespan evidence. |
++| 29: Tideborn water shaping | Historical tests charge 25 crystal, mutate legal terrain, protect rock, restore overlapping effects once, check twenty-second expiry and compare save/replay continuation. The isolated browser records mud, shallows and water, caster cooldown and restoration in tideborn.png. | No retained native shaped-choke rerouting or amphibious crossing comparison was found in the inspected faction/economy/world reports. Economy specialist flood slowing at cf5cb85f15fcc628d2ba19d9f49afb66a788fe04 concerns movement modifiers, not shapeWater terrain/pathfinding. |
++| 30: Automata power networks | Historical tests exercise powered firing, shared shield damage, relay loss disabling a tower, distinct components, joined HQ components, and save admission/continuation. The isolated fixture records connection and Shield 80/80. Frozen native artifacts record paid relay construction, completed connection and complete save/replay equality at tick 404. The native save SHA-256 is e0b5971a9e68d9031abb3b88b389844dda9a3aced054eeb4577b5bda61eba72d and checksum d23a9076. | The frozen native encounter does not attack the network or demonstrate powered defense behavior. Historical core tests prove shield sharing and disconnection. Capacity/overload and rebuild coverage are supplemental architecture ideas rather than original ID 30 gates. |
++
++The frozen Dwarf projection uses the actual dwarves-impact-save.json and dwarves-in-flight-save.json downloads. Its full packaged run compares 76 ticks and four commands; its pending run compares 34 ticks and one remaining command after tick 42. Both reach the complete projected native envelope SHA-256 a1d5f45422b69c7522d531b7fda664f7f5512f5654f4dd370aa528a43ec4e6f5. The sole game projection changes controller zero from human to external. Original planning metadata stays in the original native downloads; derived CLI wrappers omit outer planning and make no outer-planning parity claim. This document's new browser/history recipe does not itself add a fresh packaged CLI execution.
++
++## New native obligations
++
++Every row below is HELD and unexecuted. The fixtures must disclose authored terrain, starting resources, entities, positions, health, cooldowns and orders in their authenticated manifests. Authored setup may make encounters practical, but it cannot replace a native behavior that the run claims. A claim of earning Fury/trophies, claiming corpses, building entrances, destroying structures or causing real combat needs the corresponding live action. After setup, actions use native controls, accepted public commands and production engine steps. Browser evaluation may read state and compute coordinates. It must not call diagnostic mutation functions, write simulation state or call scene methods to perform an action.
++
++| ID | Native proof of the original requirement | Supplemental checks and retained checkpoints |
++| --- | --- | --- |
++| 21 | Cast Assault and Bulwark through the Faction panel; record Fury payment, selected eligible recipients, measured offensive/defensive differences, duration and expiry. Selected troops satisfy the original army-buff wording. | Prefer earning Fury from hostile combat. Reject insufficient/duplicate unaffordable spending without changing the complete game. Record an unselected nearby ally to disclose the supplemental recipient difference. Save/replay during an active chant and continue beyond expiry. |
++| 22 | Earn trophies in a real engagement, place the standard through its control and measure nearby allied strengthening. | Measure aura effects inside/outside range, destroy the banner and check effect removal and the actual stacking rule. Save/replay an active standard. Check that illusions/summons or a stale owner's delayed hit cannot award a new trophy. |
++| 23 | Create a double through the real ability, select it, swap through native targeting and record both exchanged positions. | Check health, resulting orders, payment/cooldown and hostile, expired, undisclosed or blocked target rejection. Save/replay after the swap. Preserve physical economy cargo on a successful swap; rejected swaps retain the old route. |
++| 24 | Cultivate the currently supported Enchanted Grove through worker construction. Demonstrate allied concealment and misleading decoy effects through a hostile scout's observation while the true troop stays private. | Check detection/attack reveal, decoy lifetime/harmlessness/original definition and save/replay with an active Grove/decoy. Record construction versus enchanting an existing/planted forest as a supplemental difference, not an acceptance failure. |
++| 25 | Complete two entrances through worker controls, order an eligible selected squad between them, and record transit and legal arrival. | Save during active travel and execute its suffix. Destroy the selected exit before arrival and record its cancellation/emergency result. Check invalid exits, damage/new orders and preserved cargo/unaffected out-of-level jobs. Exit destruction is supplemental to the original transfer requirement. |
++| 26 | Choose different artillery ammunition/attachments through native controls and demonstrate their resulting behavior on actual artillery. | Exercise all supported fittings, costs/replacement, distinct armored/group effects, ammunition and incendiary payload. Save fitted artillery and a real pending shell, restore and resolve once. Check insufficient funds and source/ownership changes with complete state/runtime comparisons. |
++| 27 | Produce wagons, collect real combat corpses, transport them as cargo and deliver them to a Gravecaller through native controls. | Raise from delivered stock once; race collectors and check no duplicate ground claim. Preserve decay clocks, cargo and unaffected routes. Save loaded cargo and active orders and compare replay/suffixes. Check invalid targets, death/drop and grouped cross-level selection. |
++| 28 | Demonstrate an observable native territory-acquisition/capture step, construct a Necropolis in that captured territory, and show that its converted ground sustains real summoned troops. Compare the same summon inside/outside its area. An authored home patch alone does not prove captured territory. | Save sustained summons and continue through boundary/source loss to expiry. Capturing the Necropolis itself, destroying it and hostile cleansing are supplemental architecture checks where implemented; absent cleansing is not an original ID 28 gate. |
++| 29 | Cast temporary shallows, mud and flooded defensive terrain through native controls; record actual tile changes and expiry/restoration. Deep water being unwalkable does not contradict the original terrain-shaping requirement. | Measure cost/cooldown/area bounds, non-amphibious path changes and Tideborn movement where passability permits. Save active terrain and continue past expiry. Check overlap, protected tiles, layers and invalid casts without partial changes. Amphibious deep-water crossing is supplemental. |
++| 30 | Build connected structures, attack a defense and measure shared shield transfer and powered specialized defense behavior through native controls. | Destroy/rebuild a connector, compare an unrelated component and save connected/damaged/disconnected/rebuilt states. Capacity/overload is absent and supplemental; shield depletion is not an overload test. |
++
++For every positive faction flow, retain the original native save and replay downloads and validate the complete .game envelope, including every state and runtime field. There is no permitted exclusion or normalization of queues, economy tasks/cargo, faction state, terrain effects, visibility, orders, routes, controllers or runtime. Compare import, full save round trip, unprojected replay endpoint and any promised checkpoint suffix with the uninterrupted native result. Retain command/tick/checksum assertions as additional evidence, not replacements for complete envelope equality.
++
++## Known architecture wording gaps
++
++The current chant command applies to selected eligible units. The architecture says buffs affect nearby allies. Root has clarified that selected troop buffs satisfy immutable original ID 21. Measure and disclose the recipients in the new run; keep the architecture difference as supplemental information without requiring a production change.
++
++The current Grove command constructs a dedicated Enchanted Grove. The architecture says workers enchant an existing or planted grove. Root has clarified that original ID 24 requires native cultivated-grove concealment and misleading scout effects regardless of whether cultivation uses a new-structure command. Prove those effects. Record the absent enchant-existing-economy-grove operation as supplemental rather than withholding original completion for it.
++
++The current Automata graph connects structures by range and component roots and supplies shields/defenses. It has no capacity/overload model. Root has clarified that capacity/overload is supplemental to original ID 30. Native shared shields and powered defenses decide original completion; disconnection/rebuilding provide additional graph evidence. Do not claim an overload test or capacity model from shield depletion.
++
++All other expanded architecture clauses are supplemental as well. Record whether a planned supplemental flow was demonstrated, unsupported or unexecuted, without turning it into a new original requirement. Keep required original assertions and complete native state/runtime evidence intact. A source-only recipe or a supporting test does not establish an original native behavior.
++
++## Held serial recipe
++
++Use the owned isolated checkout with the completed, admitted proof source committed at RECIPE_PIN. Use a fresh absolute output directory outside the checkout. The proposed preview is http://127.0.0.1:5298, bound to 127.0.0.1 with a strict port. Root must release that port and the heavy slot. Run one phase at a time and wait for its recorded result before starting the next phase. A new source/proof change requires a new full pin, fresh preparation and a fresh evidence directory.
++
++The estimates are planning estimates, not observed timings or timeout budgets. Allow about two minutes for the focused suite, about two minutes for the client/CLI builds and helper/generation/freeze phase, 10–20 minutes for the native six-faction controls, and about two minutes for the offline history audit and artifact checks. Native controls may take longer with slow UI, selection retries or long timed effects. Plan roughly 16–26 minutes in serial phases plus screenshot inspection and failure diagnosis; keep root informed when a phase exceeds its estimate.
++
++All setup and commands in the following blocks are HELD. Use the committed recipe checkout and replace the output placeholder only after root releases the recipe. RECIPE_PIN reads that checkout's immutable HEAD; retain its full value with the command record. The output parent must be new; the wrappers require fresh child output paths. Record each executed command, environment overrides, timestamps, executable/module hashes, exit code, stdout and stderr in that output parent.
++
++~~~sh
++# HELD: configure only for the later committed and released run.
++FACTION_ROOT="$PWD"
++RECIPE_PIN=$(git rev-parse HEAD)
++FACTION_OUT=/ABS/NEW-FACTION-ACCEPTANCE-OUTPUT
++mkdir "$FACTION_OUT"
++~~~
++
++Phase 1 is the focused regression suite, about two minutes, HELD and unexecuted. It is a supporting interaction check, not native feature acceptance. Use one worker so cases do not compete with another heavy proof or one another's event-loop budget.
++
++~~~sh
++# HELD: execute only after root releases the serial slot.
++node_modules/.bin/vitest run \
++  tests/faction-systems.test.ts tests/faction-tools.test.ts \
++  tests/faction-save-semantics.test.ts tests/faction-economy-interruption.test.ts \
++  tests/captured-illusion-definition.test.ts tests/captured-gravecaller-definition.test.ts \
++  tests/captured-gravecaller-grove.test.ts tests/captured-summon-rules.test.ts \
++  tests/joint-combat-integration.test.ts tests/joint-trophy-ownership.test.ts \
++  tests/joint-world-ignition.test.ts tests/joint-special-surrender-fire.test.ts \
++  tests/economy-cargo-integration.test.ts tests/economy-cancellation.test.ts \
++  tests/terrain-economy.test.ts tests/world-interruptions.test.ts \
++  tests/team-observation.test.ts tests/online-render-state.test.ts \
++  tests/saves.test.ts tests/replays.test.ts tests/save4-rule-revision.test.ts \
++  --testTimeout=30000 --maxWorkers=1
++~~~
++
++Phase 2 builds the client and CLI, then bundles the source-bound helpers, generates authenticated fixtures and freezes the inputs. Allow about two minutes. Every command is HELD and unexecuted. This preparation must retain the complete source/config/proof inventory, compiler/module identities, helper bundles/metafiles, generation receipts, fixture hashes and actual production assets. The generator and observer rebuild checks must bind the new faction modules to RECIPE_PIN. The freeze alone is not evidence that the producer ran correctly.
++
++~~~sh
++# HELD: run serially from FACTION_ROOT after Phase 1 passes.
++npm run build
++npm run build:cli
++node scripts/acceptance/build-native-helpers.mjs \
++  "$PWD" "$FACTION_OUT/helpers" "$RECIPE_PIN"
++node scripts/acceptance/generate-native-fixtures.mjs \
++  "$FACTION_ROOT" "$FACTION_OUT/helpers/fixtures.mjs" \
++  "$FACTION_OUT/fixtures" "$RECIPE_PIN"
++node scripts/acceptance/verify-native-acceptance.mjs --freeze \
++  "$FACTION_ROOT" "$FACTION_OUT/fixtures" \
++  "$FACTION_OUT/freeze.json" "$RECIPE_PIN"
++~~~
++
++Phase 3 is the native production browser group, estimated at 10–20 minutes and possibly longer if controls are slow. It is HELD and unexecuted. Start the owned preview in its own terminal after the build and freeze pass. Record its PID and startup output. Set OVF_PLAYWRIGHT_MODULE to the verified installed Playwright module and OVF_CHROMIUM_EXECUTABLE to its matching browser executable. Require the observed same-origin HTML, JavaScript and CSS to match the frozen production build, with service workers blocked and no browser or asset failures accepted.
++
++~~~sh
++# HELD: preview in the owned checkout, only on root's released port.
++npm run preview -- --host 127.0.0.1 --port 5298 --strictPort
++~~~
++
++~~~sh
++# HELD: separate terminal, with the same FACTION_ROOT/RECIPE_PIN/FACTION_OUT.
++node scripts/acceptance/verify-native-acceptance.mjs \
++  http://127.0.0.1:5298 "$FACTION_ROOT" \
++  "$FACTION_OUT/browser" "$FACTION_OUT/fixtures" \
++  "$FACTION_OUT/freeze.json" "$FACTION_OUT/helpers/audit.mjs" factions
++~~~
++
++Phase 4 is the offline history audit, about two minutes plus artifact inspection. It is HELD and unexecuted and must follow the browser serially. It validates authenticated original downloads, complete native saves/replays and faction-specific checkpoint suffixes from the same source. It must not substitute historical sessions, synthesized exports or projected controller histories for the browser's original native equality claims.
++
++~~~sh
++# HELD: run after the retained native browser receipt is complete.
++node scripts/acceptance/verify-native-history.mjs \
++  "$FACTION_ROOT" "$FACTION_OUT/helpers/audit.mjs" \
++  "$FACTION_OUT/fixtures" "$FACTION_OUT/browser" "$RECIPE_PIN" \
++  "$FACTION_OUT/freeze.json"
++~~~
++
++Close only the owned preview after all required browser captures are finished, record its exit, and verify port 5298 has no remaining listener. Inspect every screenshot, check original download hashes and the complete artifact inventory, and submit the new archive for independent admission. Root alone appends acceptance decisions and updates the requirement ledger against the immutable original requirements. Until the original native flows and their evidence checks are complete, the new group remains unexecuted or unaccepted preparation. Supplemental architecture differences do not add completion gates.
++
++## Failure retention and historical limits
++
++Keep the first failing receipt, last readable native state, original downloads, screenshot and command output. Diagnose the failure before changing production/proof source or rerunning. Never overwrite a failed evidence root, suppress a required original assertion or remove a .game/runtime field to obtain equality. Record unsupported supplemental steps with their limits. A corrected run gets a new source pin when its source changed and always gets fresh output paths; both failed and corrected records remain retained.
++
++The corrected faction/economy archive withdraws 70aba48. Its old legacy fixture appended a task, allowing duplicate-task admission failure instead of the intended behavior failure. The corrected fixture replaces the actor's task and asserts exactly one saved task before recording and stepping. The fixture Git blob is 35d25aabf43236f736ba407f2b6bc56ea350d52d and SHA-256 is 46fd16a47ef4513921fd6341df532854302a012e91c67861a832b4c5b3f2d3db. Root's independent baseline reproduction retains 29 failures and three passes against unchanged 115a537, with intended stale-route/planting assertions and no duplicate-task validation failures. An earlier grouped-wagon probe retains two failures. The corrected README references a former faction-economy-final-20261001 directory whose README is absent at c86e273; do not treat that missing reference as retained proof.
++
++The assembled SAVE3 archive retains 1,813 repository passes and 16 failures reproduced on its pre-admission baseline, plus an unfinished AI soak. It makes no whole-repository green or completed-ladder claim. It also discloses ambiguous historical captured-Gravecaller SAVE3 definitions and the later migration responsibility. Its isolated/main-app scope and old rules identity must remain visible when citing it.
++
++The frozen af44 native browser passed on its first run. A later orchestration resume raised NameError for a missing local esbuild variable before the native-checker build. The original failure is retained; the preview was closed, the executable path restored, and remaining native/projection/packaged checks proceeded serially without changing or rerunning browser artifacts. This procedural repair does not transform rules 4.0.0 evidence into rules 4.0.1 acceptance.
++
++The existing 39-encounter direction/capture/specialist preparation contains no original-faction gameplay results and does not replace these ten obligations. The new six-faction group must independently authenticate its setup, native controls, source/build identity, complete state/runtime comparisons and downloads before it can support a new acceptance decision.
+diff --git a/scripts/acceptance/audit-faction-powers.ts b/scripts/acceptance/audit-faction-powers.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..9a2115c332c750b04198fe20050c174892ac0775
+--- /dev/null
++++ b/scripts/acceptance/audit-faction-powers.ts
+@@ -0,0 +1,308 @@
++import assert from 'node:assert/strict';
++import { createHash } from 'node:crypto';
++import { readFileSync, writeFileSync } from 'node:fs';
++import { resolve } from 'node:path';
++import { factionArmorBonus, factionCanFire, factionConcealment, factionDamageFactor, factionMovementFactor, factionSplashRadius } from '../../src/core/faction-systems';
++import { CORPSE_WAGON, FACTION_STRUCTURE_INFO } from '../../src/core/faction-systems-content';
++import { PlayerView } from '../../src/core/observation';
++import { loadGame, saveGame } from '../../src/core/saves';
++import { decodeSessionFile } from '../../src/core/session-storage';
++import type { SessionFile } from '../../src/core/session-storage';
++import { captureRuntime, issueCommand } from '../../src/core/simulation';
++import type { Command, Cost, Entity, GameState, Side, Vec } from '../../src/core/types';
++
++function decodedOriginal(input: unknown): GameState {
++  const { file, state } = decodeSessionFile(input);
++  assert.deepEqual(saveGame(state), file.game, 'The complete original native envelope survives decoding');
++  return state;
++}
++
++// These observers read a disposable decoded copy of the original native download.
++// Ordinary illusions can fire; a grove decoy is harmless because it expires first.
++export function observeFactionNative(input: unknown, side: Side = 0) {
++  const state = decodedOriginal(input), view = new PlayerView(side).observe(state);
++  return {
++    tick: state.tick, time: state.time, side, visibleIds: view.entities.map(e => e.id),
++    terrainEffects: state.factionSystems?.terrainEffects ?? [],
++    actors: state.entities.map(e => ({
++      id: e.id, side: e.side, level: e.level ?? 0, hp: e.hp, shield: e.shield,
++      expires: e.expires, cooldown: e.cooldown, raised: e.raised, illusion: e.illusion,
++      order: e.order, factionState: e.factionState,
++      damageFactor: factionDamageFactor(state, e), armorBonus: factionArmorBonus(state, e),
++      movementFactor: factionMovementFactor(e), canFire: factionCanFire(state, e),
++      harmlessUntilExpiry: e.hp > 0 && e.illusion && e.expires > state.time && e.cooldown > e.expires - state.time,
++      concealed: factionConcealment(state, e),
++    })),
++  };
++}
++
++export function verifyFactionPowerNativeArtifacts({ evidenceDir, fixturesDir, manifest, receipt, files }: {
++  evidenceDir: string; fixturesDir: string; manifest: any; receipt: any; files: Map<string, SessionFile>;
++}) {
++  // The parent authenticates original bytes before populating files and verifies
++  // complete replay endpoints and restored continuations without field exclusions.
++  assert.equal(receipt.completed, true);
++  assert.deepEqual(receipt.featureIds, [21, 22, 23, 24, 25, 26, 27, 28, 29, 30]);
++  assert(Array.isArray(receipt.checkpoints) && receipt.checkpoints.length > 0);
++  assert(Array.isArray(receipt.continuations) && receipt.continuations.length > 0);
++  const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
++  const metadata = new Map<string, any>(), states = new Map<string, GameState>(), initials = new Map<string, GameState>();
++  const checks: any[] = [], expectedContinuations = new Set<string>(), providedContinuations = new Set<string>();
++  for (const pair of receipt.continuations) {
++    assert(Array.isArray(pair) && pair.length === 2 && pair.every(name => typeof name === 'string' && name.startsWith('factions-')));
++    assert.notEqual(pair[0], pair[1], 'A continuation must reach a different checkpoint');
++    const key = JSON.stringify(pair); assert(!providedContinuations.has(key), 'Unique faction continuation'); providedContinuations.add(key);
++  }
++  function original(name: string) {
++    const file = files.get(name); assert(file?.replay, 'Required authenticated original native checkpoint ' + name); return file;
++  }
++  function spec(name: string) {
++    const item = manifest.scenarios[name]; assert(item && item.group === 'factions', 'Declared faction scenario ' + name); return item;
++  }
++  function state(name: string, scenario?: string): GameState {
++    const row = metadata.get(name); assert(row, 'Native checkpoint metadata for ' + name);
++    if (scenario) assert.equal(row.scenario, scenario, name + ' declared scenario');
++    if (!states.has(name)) states.set(name, decodedOriginal(original(name)));
++    return states.get(name)!;
++  }
++  function initial(name: string): GameState {
++    state(name);
++    if (!initials.has(name)) {
++      const envelope = original(name).replay!.initial, value = loadGame(envelope);
++      assert.deepEqual(saveGame(value), envelope, name + ' complete original initial envelope'); initials.set(name, value);
++    }
++    return initials.get(name)!;
++  }
++  function actor(value: GameState, id: number, label: string): Entity {
++    const entity = value.entities.find(e => e.id === id && e.hp > 0); assert(entity, label + ' live actor ' + id); return entity;
++  }
++  const gone = (value: GameState, id: number) => !value.entities.some(e => e.id === id && e.hp > 0);
++  const hp = (value: GameState, id: number) => value.entities.find(e => e.id === id)?.hp ?? 0;
++  const distance = (a: Vec, b: Vec) => Math.hypot(a.x - b.x, a.y - b.y);
++  const sameLevel = (a: Vec, b: Vec) => (a.level ?? 0) === (b.level ?? 0);
++  function paid(before: GameState, after: GameState, cost: Cost, label: string) {
++    for (const kind of ['wood', 'ore', 'crystal'] as const) assert.equal(before.players[0][kind] - after.players[0][kind], cost[kind], label + ' ' + kind + ' charge');
++  }
++  function command(name: string, type: Command['type'], predicate: (value: Command) => boolean = () => true) {
++    state(name);
++    const action = original(name).replay!.actions.find(a => a.type === 'command' && a.side === 0 && a.command.type === type && predicate(a.command));
++    assert(action?.type === 'command', name + ' recorded accepted ' + type); return action.command;
++  }
++  function continuation(from: string, to: string) {
++    state(from); state(to); const key = JSON.stringify([from, to]);
++    assert(providedContinuations.has(key), 'Required restored continuation ' + from + ' to ' + to); expectedContinuations.add(key);
++  }
++  function hit(value: GameState, source: number, target: number, label: string) {
++    // Events last one tick. HP deltas and the accepted attack prove the effect;
++    // retained targets also preserve the attacking source after later UI frames.
++    const entity = value.entities.find(e => e.id === target);
++    if (entity) assert.equal(entity.lastAttacker, source, label + ' persistent attacking source');
++  }
++  function constructed(prefix: string, scenario: string, structure: keyof typeof FACTION_STRUCTURE_INFO, worker: number, point: Vec) {
++    const before = state(prefix + '-before-build', scenario), foundation = state(prefix + '-foundation', scenario), complete = state(prefix + '-complete', scenario);
++    const definition = FACTION_STRUCTURE_INFO[structure].definition;
++    assert.deepEqual(spec(scenario).authored.structureCosts[definition.id], definition.cost, prefix + ' declared native definition cost');
++    const building = foundation.entities.find(e => e.side === 0 && e.hp > 0 && e.definitionId === definition.id && e.progress < 1 && sameLevel(e, point) && distance(e, point) < .1);
++    assert(building, prefix + ' native foundation'); assert(!before.entities.some(e => e.id === building.id), prefix + ' new construction ID');
++    paid(before, foundation, definition.cost, prefix);
++    command(prefix + '-foundation', 'buildFactionStructure', c => c.type === 'buildFactionStructure' && c.structure === structure && c.ids.includes(worker) && sameLevel(c, point) && distance(c, point) < .1);
++    const finished = actor(complete, building.id, prefix); assert.equal(finished.progress, 1); assert.equal(finished.definitionId, definition.id);
++    continuation(prefix + '-foundation', prefix + '-complete'); return finished;
++  }
++  for (const checkpoint of receipt.checkpoints) {
++    assert(typeof checkpoint.name === 'string' && !metadata.has(checkpoint.name), 'Unique faction checkpoint');
++    const scenario = spec(checkpoint.scenario), file = original(checkpoint.name), authored = JSON.parse(readFileSync(resolve(fixturesDir, scenario.file), 'utf8'));
++    assert.deepEqual(file.replay!.initial, authored.game, checkpoint.name + ' exact declared authored initial envelope');
++    const value = decodedOriginal(file); assert.equal(value.tick, checkpoint.tick); assert.equal(hash(file.game), checkpoint.gameSha256);
++    assert(Array.isArray(checkpoint.featureIds) && checkpoint.featureIds.length > 0 && checkpoint.featureIds.every((id: number) => Number.isInteger(id) && id >= 21 && id <= 30));
++    metadata.set(checkpoint.name, checkpoint); states.set(checkpoint.name, value);
++  }
++
++  {
++    const scenario = 'factions-orcs-earned', ids = spec(scenario).ids;
++    const earned = state('factions-orcs-earned-fury', scenario), start = initial('factions-orcs-earned-fury');
++    assert.equal(start.factionSystems!.fury[0], 0); assert.equal(actor(start, ids.soldier, scenario).factionState?.trophyKills ?? 0, 0);
++    assert(earned.factionSystems!.fury[0] >= 50); assert(hp(earned, ids.bankTarget) < hp(start, ids.bankTarget));
++    for (const id of ids.earners) command('factions-orcs-earned-fury', 'attack', c => c.type === 'attack' && c.ids.includes(id) && c.target === ids.bankTarget);
++    const baseline = state('factions-orcs-baseline-hit', scenario), beforeAssault = state('factions-orcs-before-assault', scenario), assaultPaid = state('factions-orcs-assault-paid', scenario), assault = state('factions-orcs-assault-active', scenario);
++    assert.equal(beforeAssault.factionSystems!.fury[0] - assaultPaid.factionSystems!.fury[0], 25);
++    command('factions-orcs-assault-paid', 'warChant', c => c.type === 'warChant' && c.chant === 'assault' && c.ids.includes(ids.soldier));
++    assert.equal(actor(assaultPaid, ids.soldier, scenario).factionState?.chant?.kind, 'assault');
++    assert.equal(factionDamageFactor(assaultPaid, actor(assaultPaid, ids.soldier, scenario)), 1.25);
++    const baselineDamage = hp(start, ids.target) - hp(baseline, ids.target), assaultDamage = hp(assaultPaid, ids.target) - hp(assault, ids.target);
++    assert(baselineDamage > 0 && assaultDamage > baselineDamage); hit(baseline, ids.soldier, ids.target, 'Ordinary hit'); hit(assault, ids.soldier, ids.target, 'Assault hit');
++    const beforeIncoming = state('factions-orcs-before-unprotected-hit', scenario), incoming = state('factions-orcs-unprotected-hit', scenario);
++    const beforeBulwark = state('factions-orcs-before-bulwark', scenario), bulwarkPaid = state('factions-orcs-bulwark-paid', scenario), bulwark = state('factions-orcs-bulwark-active', scenario);
++    assert.equal(beforeBulwark.factionSystems!.fury[0] - bulwarkPaid.factionSystems!.fury[0], 25);
++    command('factions-orcs-bulwark-paid', 'warChant', c => c.type === 'warChant' && c.chant === 'bulwark' && c.ids.includes(ids.defender));
++    assert.equal(actor(bulwarkPaid, ids.defender, scenario).factionState?.chant?.kind, 'bulwark'); assert.equal(factionArmorBonus(bulwarkPaid, actor(bulwarkPaid, ids.defender, scenario)), 3);
++    const incomingDamage = hp(beforeIncoming, ids.defender) - hp(incoming, ids.defender), guardedDamage = hp(bulwarkPaid, ids.defender) - hp(bulwark, ids.defender);
++    assert(incomingDamage > 0 && guardedDamage > 0 && guardedDamage < incomingDamage); hit(incoming, ids.enemy, ids.defender, 'Ordinary incoming hit'); hit(bulwark, ids.enemy, ids.defender, 'Bulwark incoming hit');
++    const expired = state('factions-orcs-chants-expired', scenario);
++    for (const id of [ids.soldier, ids.defender]) assert.equal(actor(expired, id, scenario).factionState?.chant, undefined);
++    continuation('factions-orcs-bulwark-active', 'factions-orcs-chants-expired');
++    checks.push({ id: 21, earnedFury: earned.factionSystems!.fury[0], paidFury: { assault: 25, bulwark: 25 }, baselineDamage, assaultDamage, incomingDamage, guardedDamage, expired: true });
++
++    const trophies = state('factions-orcs-earned-trophies', scenario), inRange = state('factions-orcs-standard-in-range', scenario), outside = state('factions-orcs-standard-outside', scenario);
++    const earnedTrophies = actor(trophies, ids.soldier, scenario).factionState?.trophyKills ?? 0; assert(earnedTrophies >= 2);
++    for (const victim of ids.victims) { const mortal = actor(start, victim, scenario); assert(!mortal.illusion && !mortal.raised); assert(gone(trophies, victim)); command('factions-orcs-earned-trophies', 'attack', c => c.type === 'attack' && c.ids.includes(ids.soldier) && c.target === victim); }
++    assert.equal(earnedTrophies - (actor(inRange, ids.soldier, scenario).factionState?.trophyKills ?? 0), 2);
++    const standard = inRange.entities.find(e => e.side === 0 && e.hp > 0 && e.definitionId === 'core:orcs-trophy-standard'); assert(standard && standard.expires > inRange.time); assert(!trophies.entities.some(e => e.id === standard.id));
++    command('factions-orcs-standard-in-range', 'trophyStandard', c => c.type === 'trophyStandard' && c.ids.includes(ids.soldier));
++    assert.equal(factionDamageFactor(inRange, actor(inRange, ids.soldier, scenario)), 1.1); assert.equal(factionDamageFactor(outside, actor(outside, ids.soldier, scenario)), 1);
++    assert(distance(actor(outside, ids.soldier, scenario), standard) > 6); continuation('factions-orcs-earned-trophies', 'factions-orcs-standard-outside');
++    const destruction = 'factions-standard-destruction', destructionIds = spec(destruction).ids, supported = state('factions-standard-before-destruction', destruction), destroyed = state('factions-standard-destroyed', destruction);
++    assert.equal(factionDamageFactor(supported, actor(supported, destructionIds.soldier, destruction)), 1.1); assert(gone(destroyed, destructionIds.standard)); assert.equal(factionDamageFactor(destroyed, actor(destroyed, destructionIds.soldier, destruction)), 1);
++    continuation('factions-standard-before-destruction', 'factions-standard-destroyed'); checks.push({ id: 22, earnedTrophies, trophiesSpent: 2, standard: standard.id, rangeAndDestruction: true });
++  }
++
++  {
++    const scenario = 'factions-fairies-swap', ids = spec(scenario).ids, pre = state('factions-fairies-before-swap', scenario), post = state('factions-fairies-swapped', scenario);
++    assert(!initial('factions-fairies-before-swap').entities.some(e => e.illusion)); command('factions-fairies-before-swap', 'ability', c => c.type === 'ability' && c.ids.includes(ids.caster));
++    const swap = command('factions-fairies-swapped', 'illusionSwap', c => c.type === 'illusionSwap' && c.ids.includes(ids.soldier)); assert(swap.type === 'illusionSwap');
++    const real = actor(pre, ids.soldier, scenario), double = actor(pre, swap.target, scenario), exchanged = actor(post, real.id, scenario), clone = actor(post, double.id, scenario);
++    assert.equal(real.id, ids.caster, 'The native-conjuring caster performs the swap'); assert(!real.illusion); assert.equal(double.definitionId, real.definitionId, 'The caster swaps with its own conjured unit definition');
++    assert(double.illusion && double.side === 0 && double.expires > pre.time);
++    assert.deepEqual([exchanged.x, exchanged.y, exchanged.level ?? 0, clone.x, clone.y, clone.level ?? 0], [double.x, double.y, double.level ?? 0, real.x, real.y, real.level ?? 0]);
++    assert.equal(exchanged.hp, real.hp); assert.equal(clone.hp, double.hp); assert.equal(exchanged.order.type, 'hold'); assert.equal(clone.order.type, 'hold'); paid(pre, post, { wood: 0, ore: 0, crystal: 15 }, 'Illusion swap'); assert((exchanged.factionState?.swapReadyAt ?? 0) > post.time);
++    continuation('factions-fairies-before-swap', 'factions-fairies-swapped');
++    const rejections: any[] = [];
++    const cooldownName = 'factions-fairies-cooldown-rejected', cooldown = state(cooldownName, scenario);
++    paid(post, cooldown, { wood: 0, ore: 0, crystal: 0 }, 'Cooldown rejection');
++    for (const id of [real.id, double.id]) {
++      const unchanged = actor(cooldown, id, scenario), before = actor(post, id, scenario);
++      assert.deepEqual([unchanged.x, unchanged.y, unchanged.level ?? 0, unchanged.hp, unchanged.order, unchanged.factionState], [before.x, before.y, before.level ?? 0, before.hp, before.order, before.factionState], 'Cooldown rejection preserves actor ' + id);
++    }
++    assert((actor(cooldown, real.id, scenario).factionState?.swapReadyAt ?? 0) > cooldown.time);
++    const acceptedSwaps = (name: string) => original(name).replay!.actions.filter(a => a.type === 'command' && a.command.type === 'illusionSwap');
++    assert.deepEqual(acceptedSwaps(cooldownName), acceptedSwaps('factions-fairies-swapped'), 'Cooldown endpoint contains no additional accepted swap');
++    const cooldownCopy = decodedOriginal(original(cooldownName)), cooldownBefore = saveGame(cooldownCopy);
++    assert.equal(issueCommand(cooldownCopy, 0, { type: 'illusionSwap', ids: [real.id], target: double.id }), false, 'Cooldown native endpoint rejects through public command');
++    assert.deepEqual(saveGame(cooldownCopy), cooldownBefore, 'Cooldown rejection preserves the complete envelope'); rejections.push({ kind: 'cooldown', originalNativeEndpoint: cooldownName, fullEnvelopeUnchanged: true });
++    for (const kind of ['blocked', 'expired', 'hostile']) {
++      const negative = 'factions-fairies-' + kind, negativeIds = spec(negative).ids, name = negative + '-rejected', rejected = state(name, negative), start = initial(name);
++      const unchanged = actor(rejected, negativeIds.soldier, negative), originalReal = actor(start, negativeIds.soldier, negative);
++      assert.deepEqual([unchanged.x, unchanged.y, unchanged.level ?? 0, unchanged.hp, unchanged.order, unchanged.factionState], [originalReal.x, originalReal.y, originalReal.level ?? 0, originalReal.hp, originalReal.order, originalReal.factionState]); paid(start, rejected, { wood: 0, ore: 0, crystal: 0 }, kind + ' rejection');
++      assert(!original(name).replay!.actions.some(a => a.type === 'command' && a.command.type === 'illusionSwap'), kind + ' native history contains no accepted swap');
++      if (kind === 'expired') assert(gone(rejected, negativeIds.illusion));
++      if (kind === 'hostile') assert.equal(actor(rejected, negativeIds.illusion, negative).side, 1);
++      const disposable = decodedOriginal(original(name)), before = saveGame(disposable);
++      assert.equal(issueCommand(disposable, 0, { type: 'illusionSwap', ids: [negativeIds.soldier], target: negativeIds.illusion }), false, kind + ' native endpoint rejects through public command');
++      assert.deepEqual(saveGame(disposable), before, kind + ' rejection preserves the complete envelope'); rejections.push({ kind, originalNativeEndpoint: name, fullEnvelopeUnchanged: true });
++    }
++    checks.push({ id: 23, real: real.id, illusion: double.id, exchangedPositionsHealthAndOrders: true, paidCrystal: 15, rejections });
++
++    const groveScenario = 'factions-fairies-grove', groveIds = spec(groveScenario).ids;
++    const grove = constructed('factions-fairies-grove', groveScenario, 'enchanted-grove', groveIds.worker, groveIds.grovePoint), hidden = state('factions-fairies-grove-hidden', groveScenario), decoys = state('factions-fairies-grove-decoy', groveScenario);
++    const enemy = new PlayerView(1).observe(decoys), owner = new PlayerView(0).observe(decoys), trueTroop = actor(decoys, groveIds.soldier, groveScenario);
++    assert(factionConcealment(hidden, actor(hidden, groveIds.soldier, groveScenario))); assert(owner.entities.some(e => e.id === trueTroop.id)); assert(!enemy.entities.some(e => e.id === trueTroop.id));
++    const key = (trueTroop.level ?? 0) * decoys.width * decoys.height + Math.floor(trueTroop.y) * decoys.width + Math.floor(trueTroop.x); assert(enemy.visible.includes(key), 'The true troop tile is observed beyond ordinary fog');
++    const decoy = decoys.entities.find(e => e.side === 0 && e.hp > 0 && e.illusion && e.order.type === 'move'); assert(decoy && decoy.expires > decoys.time); assert(enemy.entities.some(e => e.id === decoy.id));
++    assert(decoy.cooldown > decoy.expires - decoys.time); assert(decoy.cooldown <= 100 && decoy.expires - decoys.time <= 15 + 1e-8); assert.equal(factionCanFire(decoys, decoy), true, 'Harmlessness is expiry before cooldown, not an illusion fire gate');
++    continuation('factions-fairies-grove-complete', 'factions-fairies-grove-decoy'); checks.push({ id: 24, paidGrove: grove.id, trueTroop: trueTroop.id, hostileMovingDecoy: decoy.id, cooldown: decoy.cooldown, remainingLifetime: decoy.expires - decoys.time });
++  }
++
++  {
++    const scenario = 'factions-dwarves-tunnels', ids = spec(scenario).ids;
++    const entrance = constructed('factions-dwarves-entrance', scenario, 'tunnel', ids.workers[0], ids.entrancePoint), exit = constructed('factions-dwarves-exit', scenario, 'tunnel', ids.workers[1], ids.exitPoint);
++    const transit = state('factions-dwarves-tunnel-transit', scenario), arrived = state('factions-dwarves-tunnel-arrived', scenario);
++    command('factions-dwarves-tunnel-transit', 'tunnelTravel', c => c.type === 'tunnelTravel' && c.target === exit.id && ids.soldiers.every((id: number) => c.ids.includes(id)));
++    for (const id of ids.soldiers) { const channel = actor(transit, id, scenario), final = actor(arrived, id, scenario); assert.equal(channel.factionState?.tunnel?.target, exit.id); assert(channel.factionState!.tunnel!.progress > 0 && channel.factionState!.tunnel!.progress < 1); assert(sameLevel(channel, entrance)); assert(sameLevel(final, exit) && distance(final, exit) < 3); assert.equal(final.factionState?.tunnel, undefined); assert.equal(final.order.type, 'hold'); }
++    continuation('factions-dwarves-tunnel-transit', 'factions-dwarves-tunnel-arrived');
++    const negative = 'factions-dwarves-exit-destruction', negativeIds = spec(negative).ids, pending = state('factions-dwarves-exit-pending', negative), canceled = state('factions-dwarves-exit-canceled', negative), start = initial('factions-dwarves-exit-pending');
++    assert(gone(canceled, negativeIds.exit));
++    for (const id of negativeIds.soldiers) { assert.equal(actor(pending, id, negative).factionState?.tunnel?.target, negativeIds.exit); const final = actor(canceled, id, negative), origin = actor(start, id, negative); assert.equal(final.factionState?.tunnel, undefined); assert(sameLevel(final, origin) && distance(final, origin) < .2); }
++    continuation('factions-dwarves-exit-pending', 'factions-dwarves-exit-canceled'); checks.push({ id: 25, paidEntrances: [entrance.id, exit.id], midChannelCrossLevelArrival: true, destroyedExitCancelsAtOrigin: true });
++  }
++
++  {
++    const impacts: Record<string, { targetDamage: number; groupDamage: number[] }> = {};
++    for (const fitting of ['baseline', 'stone', 'grapeshot', 'incendiary', 'reinforced']) {
++      const scenario = 'factions-dwarves-' + fitting, ids = spec(scenario).ids, before = state(scenario + '-initial', scenario);
++      const fitted = fitting === 'baseline' ? before : state(scenario + '-fitted', scenario);
++      if (fitting !== 'baseline') { paid(before, fitted, { wood: 50, ore: 40, crystal: 0 }, fitting + ' fittings'); command(scenario + '-fitted', 'modifyArtillery', c => c.type === 'modifyArtillery' && c.modification === fitting && [ids.siege, ids.cannon].every(id => c.ids.includes(id))); }
++      for (const id of [ids.siege, ids.cannon]) assert.equal(actor(fitted, id, scenario).factionState?.artillery, fitting === 'baseline' ? undefined : fitting);
++      const shooter = actor(fitted, ids.siege, scenario), target = fitting === 'grapeshot' ? ids.targets[0] : ids.building;
++      assert.equal(factionDamageFactor(fitted, shooter, actor(fitted, ids.building, scenario)), fitting === 'stone' ? 1.25 : 1);
++      assert.equal(factionDamageFactor(fitted, shooter, actor(fitted, ids.targets[0], scenario)), fitting === 'grapeshot' ? 1.5 : 1);
++      assert.equal(factionSplashRadius(shooter), fitting === 'grapeshot' ? 2.5 : 1.75); assert.equal(factionArmorBonus(fitted, shooter), fitting === 'reinforced' ? 3 : 0); assert.equal(factionMovementFactor(shooter), fitting === 'reinforced' ? .85 : 1);
++      const ammunition = state(scenario + '-ammo', scenario); paid(fitted, ammunition, { wood: 0, ore: 15, crystal: 0 }, fitting + ' magazine'); assert.equal(actor(ammunition, ids.siege, scenario).siegeMode?.ammo, 5); assert.equal(actor(ammunition, ids.siege, scenario).siegeMode?.deployed, true); command(scenario + '-ammo', 'ability', c => c.type === 'ability' && c.ids.includes(ids.siege));
++      const pending = state(scenario + '-pending', scenario), impact = state(scenario + '-impact', scenario), destination = actor(pending, target, scenario);
++      const specialist = pending.specialists?.shots?.find(p => p.source.id === ids.siege && sameLevel(p.target, destination) && distance(p.target, destination) < .1);
++      const projectile = pending.projectiles?.find(p => p.source === ids.siege && sameLevel(p, destination) && distance(p, destination) < .1);
++      assert(specialist || projectile, fitting + ' source-and-target-specific pending shell');
++      const shot = specialist ?? projectile!; assert.equal(shot.modification, fitting === 'baseline' ? undefined : fitting); assert(shot.impactAt > pending.time); assert(!impact.specialists?.shots?.some(p => specialist && p.id === specialist.id)); assert(!impact.projectiles?.some(p => projectile && p.id === projectile.id));
++      if (specialist) { assert.equal(specialist.source.side, 0); assert.equal(specialist.source.definitionId, actor(pending, ids.siege, scenario).definitionId); assert.deepEqual(specialist.payload, { kind: 'cannon', damageFactor: 1.5, armorPiercing: false, radius: 0 }); }
++      assert.equal(actor(ammunition, ids.siege, scenario).siegeMode!.ammo - actor(pending, ids.siege, scenario).siegeMode!.ammo, 1);
++      paid(ammunition, impact, fitting === 'incendiary' ? { wood: 15, ore: 5, crystal: 0 } : { wood: 0, ore: 0, crystal: 0 }, fitting + ' shot');
++      command(scenario + '-pending', 'attack', c => c.type === 'attack' && c.ids.includes(ids.siege) && c.target === target);
++      const targetDamage = hp(pending, target) - hp(impact, target), groupDamage = ids.targets.map((id: number) => hp(pending, id) - hp(impact, id)); assert(targetDamage > 0); hit(impact, ids.siege, target, fitting + ' impact'); impacts[fitting] = { targetDamage, groupDamage };
++      if (fitting === 'incendiary') { const point = specialist?.target ?? projectile!; assert(impact.world?.fires.some(fire => sameLevel(fire, point) && distance(fire, point) < .8)); assert(impact.entities.some(e => e.burning?.some(b => b.source === ids.siege))); }
++      continuation(scenario + '-pending', scenario + '-impact');
++    }
++    assert(impacts.stone.targetDamage > impacts.baseline.targetDamage); assert(impacts.grapeshot.groupDamage.filter(amount => amount > 0).length >= 2); checks.push({ id: 26, allFourPaidFittingsAndFactors: true, sourceAndTargetSpecificPendingAndImpact: true, impacts });
++  }
++
++  {
++    const scenario = 'factions-undead-wagons', ids = spec(scenario).ids, before = state('factions-undead-before-recruit', scenario), queued = state('factions-undead-wagon-queued', scenario), recruited = state('factions-undead-wagon-recruited', scenario);
++    paid(before, queued, CORPSE_WAGON.cost, 'Corpse wagon recruitment'); const barracks = actor(queued, ids.barracks, scenario), index = barracks.queueDefinitionIds?.indexOf(CORPSE_WAGON.id) ?? -1; assert(index >= 0); assert.equal(barracks.queue[index], 'special'); assert.deepEqual(barracks.queuePaidCosts?.[index], CORPSE_WAGON.cost); assert(barracks.trainProgress < 1);
++    command('factions-undead-wagon-queued', 'train', c => c.type === 'train' && c.id === ids.barracks && c.definitionId === CORPSE_WAGON.id);
++    const newWagons = recruited.entities.filter(e => e.side === 0 && e.hp > 0 && !e.illusion && e.definitionId === CORPSE_WAGON.id && !before.entities.some(old => old.id === e.id)); assert.equal(newWagons.length, 1); assert.equal(newWagons[0].role, 'special'); assert.equal(newWagons[0].maxHp, CORPSE_WAGON.hp); assert(!actor(recruited, ids.barracks, scenario).queueDefinitionIds?.includes(CORPSE_WAGON.id));
++    assert.equal(captureRuntime(recruited).producedFighters[0] - captureRuntime(before).producedFighters[0], 1);
++    assert.deepEqual(recruited.economy?.paidCosts.find(e => e.entityId === newWagons[0].id)?.stock, CORPSE_WAGON.cost); continuation('factions-undead-wagon-queued', 'factions-undead-wagon-recruited');
++    const created = state('factions-undead-body-created', scenario), originalBody = created.corpses.find(body => body.id === ids.victim); assert(originalBody); assert(gone(created, ids.victim)); assert(distance(originalBody, actor(created, ids.caster, scenario)) > 6); command('factions-undead-body-created', 'attack', c => c.type === 'attack' && c.ids.includes(ids.killer) && c.target === ids.victim);
++    const cargo = state('factions-undead-wagon-cargo', scenario), carried = cargo.entities.flatMap(e => (e.factionState?.corpseCargo ?? []).filter(body => body.id === originalBody.id).map(body => ({ carrier: e.id, body }))); assert.equal(carried.length, 1); assert(ids.wagons.includes(carried[0].carrier)); assert.equal(carried[0].body.expires, originalBody.expires); assert(!cargo.corpses.some(body => body.id === originalBody.id)); command('factions-undead-wagon-cargo', 'collectCorpses', c => c.type === 'collectCorpses' && c.target === originalBody.id && ids.wagons.every((id: number) => c.ids.includes(id)));
++    const delivery = state('factions-undead-wagon-delivery', scenario), order = actor(delivery, carried[0].carrier, scenario).factionState?.corpseOrder; assert(order?.type === 'deliver' && order.target === ids.caster); command('factions-undead-wagon-delivery', 'deliverCorpses', c => c.type === 'deliverCorpses' && c.ids.includes(carried[0].carrier) && c.target === ids.caster);
++    const raised = state('factions-undead-wagon-raised', scenario), newRaised = raised.entities.filter(e => e.side === 0 && e.hp > 0 && e.raised && !cargo.entities.some(old => old.id === e.id)); assert.equal(newRaised.length, 1); assert(!newRaised[0].illusion && newRaised[0].role === 'melee');
++    const casterReadyAt = captureRuntime(raised).abilities.find(([id]) => id === ids.caster)?.[1]; assert(casterReadyAt !== undefined); assert(Math.abs(newRaised[0].expires - (casterReadyAt + 13)) < 1e-8, 'The delivered raise lifetime matches its caster cooldown');
++    assert(!raised.corpses.some(body => body.id === originalBody.id)); assert(!raised.entities.some(e => [...e.factionState?.corpseCargo ?? [], ...e.factionState?.deliveredCorpses ?? []].some(body => body.id === originalBody.id))); continuation('factions-undead-wagon-cargo', 'factions-undead-wagon-raised'); checks.push({ id: 27, paidRecruit: newWagons[0].id, body: originalBody.id, originalDeadline: originalBody.expires, singleCarrier: carried[0].carrier, deliveredRaise: newRaised[0].id });
++  }
++
++  {
++    const scenario = 'factions-undead-necropolis', ids = spec(scenario).ids, captured = state('factions-undead-territory-captured', scenario), start = initial('factions-undead-territory-captured');
++    const originalSite = start.world?.sites.find(site => site.id === ids.site), site = captured.world?.sites.find(site => site.id === ids.site); assert(originalSite?.kind === 'relic' && originalSite.owner === 1); assert(site?.kind === 'relic' && site.owner === 0); assert.equal(site.progress, 0); assert.equal(site.capturing, null); command('factions-undead-territory-captured', 'captureSite', c => c.type === 'captureSite' && c.ids.includes(ids.capturer) && c.target === ids.site);
++    const necropolis = constructed('factions-undead-necropolis', scenario, 'necropolis', ids.worker, ids.necropolisPoint); assert(sameLevel(necropolis, site) && distance(necropolis, site) <= 6);
++    const sustained = state('factions-undead-sustained', scenario), healed = state('factions-undead-healed', scenario), outside = state('factions-undead-outside', scenario), decayed = state('factions-undead-decaying', scenario);
++    assert(!start.entities.some(e => e.raised)); const troop = sustained.entities.find(e => e.side === 0 && e.hp > 0 && e.raised); assert(troop); assert(sameLevel(troop, necropolis) && distance(troop, necropolis) <= 6); command('factions-undead-sustained', 'attack', c => c.type === 'attack' && c.ids.includes(ids.killer) && c.target === ids.victim);
++    const supported = actor(healed, troop.id, scenario); assert(supported.hp > troop.hp); assert(Math.abs(supported.expires - healed.time - (troop.expires - sustained.time)) < .1);
++    const departed = actor(outside, troop.id, scenario), decaying = actor(decayed, troop.id, scenario); assert(distance(departed, necropolis) > 6); assert(decaying.expires - decayed.time < departed.expires - outside.time - 2.5); continuation('factions-undead-sustained', 'factions-undead-decaying');
++    const destruction = 'factions-undead-necropolis-destruction', destructionIds = spec(destruction).ids, supportedBefore = state('factions-undead-source-before-destruction', destruction), sourceGone = state('factions-undead-source-destroyed', destruction), sourceDecay = state('factions-undead-source-decay', destruction);
++    assert(actor(supportedBefore, destructionIds.necropolis, destruction).progress === 1); assert(gone(sourceGone, destructionIds.necropolis)); const atDeath = actor(sourceGone, destructionIds.raised, destruction), afterDeath = actor(sourceDecay, destructionIds.raised, destruction); assert(afterDeath.expires - sourceDecay.time < atDeath.expires - sourceGone.time - 2.5); continuation('factions-undead-source-before-destruction', 'factions-undead-source-decay'); checks.push({ id: 28, capturedRelic: ids.site, paidNecropolis: necropolis.id, raised: troop.id, localHealingAndLifetimeSustain: true, leavingAndSourceDestructionResumeDecay: true });
++  }
++
++  {
++    const movement: Record<string, { ordinary: number[]; amphibious: number; seconds: number }> = {};
++    for (const terrain of ['baseline', 'mud', 'shallows', 'water']) {
++      const scenario = 'factions-tideborn-' + terrain, ids = spec(scenario).ids, before = state(scenario + '-before', scenario);
++      if (terrain !== 'baseline') {
++        const active = state(scenario + '-active', scenario), effects = active.factionSystems!.terrainEffects; paid(before, active, { wood: 0, ore: 0, crystal: 25 }, terrain + ' shaping'); assert.equal(effects.length, 1);
++        const effect = effects[0]; assert(effect.tiles.length > 0 && effect.tiles.length <= 13 && effect.tiles.every(tile => tile.after === terrain)); assert(effect.until > active.time && effect.until - active.time <= 20 + 1e-8); assert.equal(actor(active, ids.caster, scenario).factionState?.waterReadyAt, effect.until);
++        command(scenario + '-active', 'shapeWater', c => c.type === 'shapeWater' && c.terrain === terrain && c.ids.includes(ids.caster) && sameLevel(c, ids.shapePoint) && distance(c, ids.shapePoint) < .1);
++        const restored = state(scenario + '-restored', scenario); assert.equal(restored.factionSystems!.terrainEffects.length, 0); assert(restored.time >= effect.until);
++        for (const tile of effect.tiles) { const index = Math.floor(tile.y) * active.width + Math.floor(tile.x); assert.equal(before.world!.levels[tile.level].terrain[index], tile.before); assert.equal(active.world!.levels[tile.level].terrain[index], tile.after); assert.equal(restored.world!.levels[tile.level].terrain[index], tile.before, terrain + ' restores every original shaped tile'); }
++        for (const point of ids.protectedTiles) { const index = Math.floor(point.y) * active.width + Math.floor(point.x), level = point.level ?? 0; assert.equal(active.world!.levels[level].terrain[index], before.world!.levels[level].terrain[index]); assert.equal(restored.world!.levels[level].terrain[index], before.world!.levels[level].terrain[index]); }
++        continuation(scenario + '-active', scenario + '-restored');
++      }
++      const from = state(scenario + '-movement-before', scenario), to = state(scenario + '-movement', scenario); assert(to.time - from.time >= 5); command(scenario + '-movement', 'move', c => c.type === 'move' && c.ids.includes(ids.soldier) && sameLevel(c, ids.crossPoint) && distance(c, ids.crossPoint) < .1);
++      movement[terrain] = { ordinary: ids.enemies.map((id: number) => distance(actor(from, id, scenario), actor(to, id, scenario))), amphibious: distance(actor(from, ids.soldier, scenario), actor(to, ids.soldier, scenario)), seconds: to.time - from.time };
++    }
++    assert(movement.baseline.ordinary.some(amount => amount > 0)); assert(movement.mud.ordinary.some((amount, i) => amount < movement.baseline.ordinary[i])); assert(movement.water.ordinary.some((amount, i) => amount < movement.baseline.ordinary[i])); assert(movement.mud.amphibious > 0 && movement.shallows.amphibious > 0); checks.push({ id: 29, allThreePaidTemporaryShapes: true, everyShapedTileRestored: true, originalCheckpointMovement: movement });
++  }
++
++  {
++    const scenario = 'factions-automata-connect', ids = spec(scenario).ids;
++    const relay = constructed('factions-automata-relay', scenario, 'power-relay', ids.worker, ids.relayPoint), powered = state('factions-automata-powered', scenario), poweredHit = state('factions-automata-powered-hit', scenario);
++    assert.equal(factionCanFire(initial('factions-automata-powered'), actor(initial('factions-automata-powered'), ids.tower, scenario)), false); assert.equal(actor(powered, ids.tower, scenario).factionState?.power?.connected, true); assert.equal(factionCanFire(powered, actor(powered, ids.tower, scenario)), true);
++    assert(ids.enemies.some((id: number) => hp(poweredHit, id) < hp(powered, id) && poweredHit.entities.find(e => e.id === id)?.lastAttacker === ids.tower));
++    const breaking = 'factions-automata-break', breakIds = spec(breaking).ids, connected = state('factions-automata-network-before-hit', breaking), shared = state('factions-automata-shared-shield', breaking), disconnected = state('factions-automata-disconnected', breaking);
++    assert.equal(actor(connected, breakIds.tower, breaking).factionState?.power?.connected, true); assert(connected.entities.filter(e => e.side === 0 && e.kind === 'building' && e.hp > 0 && e.id !== breakIds.tower).some(e => (shared.entities.find(n => n.id === e.id)?.shield ?? 0) < (e.shield ?? 0)));
++    assert(breakIds.enemies.includes(actor(shared, breakIds.tower, breaking).lastAttacker)); assert(gone(disconnected, breakIds.relay)); assert.equal(actor(disconnected, breakIds.tower, breaking).factionState?.power?.connected, false); assert.equal(factionCanFire(disconnected, actor(disconnected, breakIds.tower, breaking)), false);
++    const replacement = constructed('factions-automata-rebuilt-relay', breaking, 'power-relay', breakIds.worker, breakIds.relayPoint), reconnected = state('factions-automata-reconnected', breaking); assert.notEqual(replacement.id, breakIds.relay); assert.equal(actor(reconnected, breakIds.tower, breaking).factionState?.power?.connected, true); assert.equal(factionCanFire(reconnected, actor(reconnected, breakIds.tower, breaking)), true);
++    continuation('factions-automata-network-before-hit', 'factions-automata-reconnected'); checks.push({ id: 30, paidRelay: relay.id, sourceSpecificTowerFire: true, sharedShieldRealDamage: true, connectorDeathDisablesFire: true, paidReplacement: replacement.id, reconnected: true });
++  }
++
++  assert.deepEqual([...providedContinuations].sort(), [...expectedContinuations].sort(), 'All faction continuations are independently required');
++  assert.deepEqual(checks.map(check => check.id), [21, 22, 23, 24, 25, 26, 27, 28, 29, 30]);
++  const result = { completed: true, featureIds: checks.map(check => check.id), checks, checkpoints: receipt.checkpoints, continuationPairs: receipt.continuations };
++  writeFileSync(resolve(evidenceDir, 'faction-powers-native-checks.json'), JSON.stringify(result, null, 2) + '\n', { flag: 'wx' }); return result;
++}
+diff --git a/scripts/acceptance/faction-powers-fixtures.ts b/scripts/acceptance/faction-powers-fixtures.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..1404750326c784ffa47a694585190e1f6c25e2f6
+--- /dev/null
++++ b/scripts/acceptance/faction-powers-fixtures.ts
+@@ -0,0 +1,369 @@
++import assert from 'node:assert/strict';
++import { createHash } from 'node:crypto';
++import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
++import { resolve } from 'node:path';
++import { FACTIONS } from '../../src/core/content';
++import { environmentPhase } from '../../src/core/environment';
++import { initializeFactionSystems, refreshPowerNetworks } from '../../src/core/faction-systems';
++import { CORPSE_WAGON, FACTION_STRUCTURE_INFO, TROPHY_STANDARD } from '../../src/core/faction-systems-content';
++import { MatchRecorder } from '../../src/core/replays';
++import { saveGame, SAVE_VERSION } from '../../src/core/saves';
++import { createSessionFile, decodeSessionFile } from '../../src/core/session-storage';
++import { createMatch, issueCommand, refreshVisibility, spawnDefinition } from '../../src/core/simulation';
++import { SIMULATION_REVISION } from '../../src/core/versions';
++import type { BuiltinFactionId, BuildingRole, Entity, GameState, ResourceNode, Side, UnitRole, Vec } from '../../src/core/types';
++
++export interface FactionPowerScenario {
++  file: string;
++  group: 'factions';
++  ids: Record<string, unknown>;
++  authored: Record<string, unknown>;
++  initialTick: number;
++  initialTime: number;
++  faction: BuiltinFactionId;
++  sha256: string;
++}
++export interface FactionPowerManifest {
++  schema: 1;
++  group: 'factions';
++  sourceCommit: string;
++  saveVersion: typeof SAVE_VERSION;
++  simulationRevision: string;
++  setup: string;
++  scenarios: Record<string, FactionPowerScenario>;
++}
++
++// This generator authors starting conditions only. Public setup abilities below
++// create canonical negative doubles or the initial raised ally before recording.
++// No fixture generation advances the engine; the native app owns later actions.
++export function buildFactionPowerFixtures(output: string, sourceCommit: string): FactionPowerManifest {
++  assert(output, 'Supply a new output directory.');
++  assert.match(sourceCommit, /^[a-f0-9]{40}$/, 'Supply the full frozen source commit.');
++  assert.equal(SAVE_VERSION, 4, 'Faction acceptance requires SAVE4.');
++  assert.equal(SIMULATION_REVISION, '4.0.1', 'Faction acceptance requires the admitted rules revision.');
++  const out = resolve(output);
++  assert(!existsSync(out), 'Fixture output directory must be new.');
++  mkdirSync(out, { recursive: true });
++  const scenarios: Record<string, FactionPowerScenario> = {};
++  const banks = { wood: 2000, ore: 2000, crystal: 500 };
++  const commonAuthored = {
++    map: 'Seed 0, small forest world, two flat grass layers. Generated resources, transitions, bridges, neutral sites, creatures, fire and ice are removed; any encounter resource or rock is declared separately.',
++    calendar: 'Clear daylight at seed 0; day, season and weather lengths are 1,000,000 seconds. No starting environmental hazard.',
++    roster: 'Side zero is human; side one is external. Both native headquarters and distant native workers remain. Default combat troops are removed; encounter actors use spawnDefinition.',
++    undergroundWorker: 'One retained owned worker starts underground in every fixture.',
++    economy: { startingAge: 3, startingBanksForBothPlayers: banks },
++    structureCosts: Object.fromEntries(Object.values(FACTION_STRUCTURE_INFO).map(info => [info.definition.id, { ...info.definition.cost }])),
++    orders: 'Unless listed separately, actors hold, have no queued order or path, face west (4), and have zero momentum.',
++    cooldowns: 'Unless listed separately, all actors begin with weapon cooldown 1,000 seconds. No weapon cooldown is authored after recording; native stepping and weapon fire update it.',
++    health: 'Definition health and shield capacities are retained except declared wounded health or depleted shield reserves.',
++    history: 'All authoring and any canonical setup ability precede a zero-tick, zero-action MatchRecorder.',
++  };
++
++  function reset(e: Entity, x: number, y: number, level = 0, cooldown = 1000): Entity {
++    Object.assign(e, { x, y, level, order: { type: 'hold' }, path: [], cooldown, facing: 4, animation: 'idle', animTime: 0, momentum: 0 });
++    delete e.orderQueue;
++    return e;
++  }
++  function base(faction: BuiltinFactionId, opponent: BuiltinFactionId = 'orcs') {
++    const state = createMatch({
++      map: { seed: 0, size: 'small', biome: 'forest' },
++      rules: { startingAge: 3, friendlyFire: false, sharedVision: false },
++      players: [
++        { id: 0, teamId: 0, factionId: faction, controller: 'human', handicap: { startingResources: banks } },
++        { id: 1, teamId: 1, factionId: opponent, controller: 'external', handicap: { startingResources: banks } },
++      ],
++    });
++    assert(state.world && state.world.levels.length === 2, 'Faction encounters need both map levels.');
++    const relicTemplate = state.world.sites.find(site => site.kind === 'relic');
++    assert(relicTemplate, 'The native generated world supplies a complete relic site record.');
++    for (const layer of state.world.levels) { layer.terrain.fill('grass'); layer.elevation.fill(0); }
++    Object.assign(state.world, { transitions: [], bridges: [], sites: [], creatures: [], fires: [], iceTiles: [], dayLength: 1_000_000, seasonLength: 1_000_000, weatherLength: 1_000_000 });
++    state.world.levels[0].terrain = state.terrain;
++    state.terrain.fill('grass'); state.resources = [];
++    state.entities = state.entities.filter(e => e.kind === 'building' && e.role === 'hq' || e.kind === 'unit' && e.role === 'worker');
++    for (const side of [0, 1] as Side[]) {
++      const hq = state.entities.find(e => e.side === side && e.role === 'hq')!;
++      reset(hq, side ? 31.5 : 5.5, side ? 31.5 : 5.5);
++      state.starts[side] = { x: hq.x, y: hq.y, level: 0 };
++      state.entities.filter(e => e.side === side && e.role === 'worker').forEach((e, i) => reset(e, side ? 30.5 + i * .7 : 4.5 + i * .7, side ? 28.5 : 8.5));
++    }
++    const workers = state.entities.filter(e => e.side === 0 && e.role === 'worker');
++    const undergroundWorker = workers.at(-1)!;
++    reset(undergroundWorker, 8.5, 8.5, 1);
++    initializeFactionSystems(state);
++    assert.equal(environmentPhase(state).weather, 'clear');
++    assert.equal(environmentPhase(state).day, 'day');
++    return { state, worker: workers[0], undergroundWorker, hq: state.entities.find(e => e.side === 0 && e.role === 'hq')!, relicTemplate };
++  }
++  function unit(state: GameState, side: Side, role: UnitRole, x: number, y: number, cooldown = 1000, level = 0): Entity {
++    return reset(spawnDefinition(state, side, 'unit', FACTIONS[state.players[side].faction].units[role].id, x, y, 1, level), x, y, level, cooldown);
++  }
++  function namedUnit(state: GameState, side: Side, definitionId: string, x: number, y: number, cooldown = 1000, level = 0): Entity {
++    return reset(spawnDefinition(state, side, 'unit', definitionId, x, y, 1, level), x, y, level, cooldown);
++  }
++  function building(state: GameState, side: Side, role: BuildingRole, x: number, y: number, level = 0): Entity {
++    return reset(spawnDefinition(state, side, 'building', FACTIONS[state.players[side].faction].buildings[role].id, x, y, 1, level), x, y, level);
++  }
++  function structure(state: GameState, definitionId: string, point: Vec): Entity {
++    return reset(spawnDefinition(state, 0, 'building', definitionId, point.x, point.y, 1, point.level ?? 0), point.x, point.y, point.level ?? 0);
++  }
++  function timber(state: GameState, point: Vec): ResourceNode {
++    const node: ResourceNode = { id: state.nextId++, kind: 'wood', ...point, level: point.level ?? 0, amount: 1, maxAmount: 1 };
++    state.resources.push(node); return node;
++  }
++  function write(name: string, state: GameState, ids: Record<string, unknown>, authored: Record<string, unknown>) {
++    assert(!Object.hasOwn(scenarios, name), `Unique faction fixture ${name}.`);
++    assert.equal(state.tick, 0); assert.equal(state.time, 0);
++    if (state.players[0].faction === 'automata') refreshPowerNetworks(state, 0);
++    refreshVisibility(state);
++    const recorder = new MatchRecorder(state);
++    const file = createSessionFile(state, recorder.export()); recorder.dispose();
++    const decoded = decodeSessionFile(file);
++    assert.deepEqual(saveGame(decoded.state), file.game, `${name} complete native fixture round trip`);
++    assert.equal(file.game.version, SAVE_VERSION);
++    assert.equal(file.replay!.simulationRevision, SIMULATION_REVISION);
++    assert.equal(file.replay!.actions.length, 0);
++    assert.equal(file.replay!.finalTick, 0);
++    assert.equal(decoded.state.world!.levels.length, 2);
++    assert(decoded.state.entities.some(e => e.side === 0 && e.kind === 'unit' && e.level === 1));
++    const bytes = Buffer.from(`${JSON.stringify(file, null, 2)}\n`);
++    writeFileSync(resolve(out, `${name}.json`), bytes, { flag: 'wx' });
++    scenarios[name] = {
++      file: `${name}.json`, group: 'factions', ids,
++      authored: { ...commonAuthored, ...authored, startingActors: structuredClone(state.entities), startingSites: structuredClone(state.world!.sites), startingResources: structuredClone(state.resources) },
++      initialTick: state.tick, initialTime: state.time, faction: state.players[0].faction as BuiltinFactionId,
++      sha256: createHash('sha256').update(bytes).digest('hex'),
++    };
++  }
++
++  {
++    const { state, worker, undergroundWorker } = base('orcs');
++    reset(worker, 29.5, 23.5);
++    const earners = [13.5, 14.5, 15.5].map(y => unit(state, 0, 'ranged', 16.5, y, 3));
++    const bankTarget = building(state, 1, 'depot', 24.5, 14.5);
++    const startingPoint = { x: 16.5, y: 20.5, level: 0 };
++    const soldier = unit(state, 0, 'ranged', startingPoint.x, startingPoint.y, 3);
++    const target = unit(state, 1, 'melee', 24.5, 23.5);
++    const victims = [[31.5, 19.5], [31.5, 27.5]].map(([x, y]) => {
++      const victim = unit(state, 1, 'melee', x, y); victim.hp = 1; victim.tactics!.morale = 100; return victim;
++    });
++    const victimSupport = [unit(state, 1, 'melee', 30.5, 18.5), unit(state, 1, 'melee', 30.5, 28.5)];
++    const defender = unit(state, 0, 'melee', 10.5, 30.5); defender.facing = 0;
++    const defenderCover = building(state, 0, 'depot', 13.5, 30.5);
++    const enemy = unit(state, 1, 'ranged', 16.5, 30.5, 25); enemy.order = { type: 'attack', target: defender.id };
++    initializeFactionSystems(state).fury[0] = 0;
++    for (const actor of [...earners, soldier, defender]) actor.factionState = { trophyKills: 0 };
++    write('factions-orcs-earned', state, { earners: earners.map(e => e.id), earnerPoints: earners.map(e => ({ x: e.x, y: e.y, level: e.level })), bankTarget: bankTarget.id, soldier: soldier.id, startingPoint, target: target.id, victims: victims.map(e => e.id), victimSupport: victimSupport.map(e => e.id), defender: defender.id, defenderCover: defenderCover.id, enemy: enemy.id, worker: worker.id, undergroundWorker: undergroundWorker.id }, {
++      description: 'Three native Boltspitters begin outside weapon range and earn Fury by commanded attacks on a normal 600-health enemy depot. A separate fresh Boltspitter begins outside target range, then measures ordinary and Assault damage and earns two real trophies from wounded mortal enemies. A delayed enemy marksman measures Bulwark against a separate front-facing defender behind a normal native cover depot.',
++      initialFury: 0, initialTrophies: 0, victimHealth: 1, victimMorale: 100,
++      ownShooterCooldown: 3, enemyOrder: { actor: enemy.id, target: defender.id, initialCooldown: 25 },
++      defenderFacing: 0, defenderCover: 'A normal completed owned Timber Yard stands between the marksman and defender, keeping the defender alive through the later native chant checks. No cover construction or payment is claimed.',
++      troopSeparation: 'The comparison shooter starts beyond hostile acquisition range, with a native return point for the wait after Assault. Trophy victims are beyond seven tiles of the comparison firing position and eight tiles apart. The held worker supplies sight to their later native attacks.',
++      victimSupport: 'Two normal held hostile Ironjaws at cooldown 1,000 provide each wounded victim with native morale support until commanded trophy kills.',
++    });
++  }
++  {
++    const { state, worker, undergroundWorker } = base('orcs');
++    const standard = structure(state, TROPHY_STANDARD.id, { x: 22.5, y: 20.5, level: 0 }); standard.expires = 180;
++    const soldier = unit(state, 0, 'ranged', 19.5, 20.5); soldier.tactics!.morale = 50;
++    const enemy = unit(state, 1, 'siege', 29.5, 20.5, 3); enemy.order = { type: 'attack', target: standard.id };
++    write('factions-standard-destruction', state, { standard: standard.id, soldier: soldier.id, enemy: enemy.id, worker: worker.id, undergroundWorker: undergroundWorker.id }, {
++      description: 'A completed authored standard at its normal 160 health initially supports a held allied troop. Real hostile siege attacks destroy it; no trophy earning or standard construction is claimed for this input.',
++      authoredStandard: { hp: 160, expires: 180, paidCost: 'None: this is an authored completed starting structure.' }, soldierMorale: 50,
++      enemyOrder: { actor: enemy.id, target: standard.id, initialCooldown: 3 },
++    });
++  }
++  {
++    const { state, worker, undergroundWorker } = base('fairies');
++    reset(worker, 16.5, 18.5);
++    const caster = unit(state, 0, 'special', 24.5, 20.5);
++    const companion = unit(state, 0, 'melee', 20.5, 20.5);
++    write('factions-fairies-swap', state, { caster: caster.id, soldier: caster.id, companion: companion.id, worker: worker.id, undergroundWorker: undergroundWorker.id }, {
++      description: 'There are no initial illusions. Native Conjure illusions creates canonical Veilweaver doubles; that same selected real Veilweaver then pays for a swap with its own double through the owned illusion picker. The normal held Thornblade is a companion only.',
++      initialIllusions: 0,
++    });
++  }
++  {
++    const { state, worker, undergroundWorker } = base('fairies');
++    reset(worker, 18.5, 20.5);
++    const soldier = unit(state, 0, 'melee', 23.5, 20.5);
++    const scout = unit(state, 1, 'cavalry', 27.5, 23.5);
++    const grovePoint = { x: 20.5, y: 20.5, level: 0 };
++    write('factions-fairies-grove', state, { worker: worker.id, soldier: soldier.id, scout: scout.id, grovePoint, undergroundWorker: undergroundWorker.id }, {
++      description: 'Native construction plants the only enchanted grove. The true troop is three tiles from its center. A held hostile cavalry scout is more than three tiles from the true troop and less than eight from the grove, allowing concealment and an observed-scout harmless decoy.',
++      initialGroves: 0, scoutWeaponCooldown: 1000,
++    });
++  }
++  for (const negative of ['blocked', 'expired', 'hostile'] as const) {
++    const { state, worker, undergroundWorker } = base('fairies', 'fairies');
++    reset(worker, 18.5, 17.5);
++    const soldier = unit(state, 0, 'melee', 20.5, 20.5);
++    const side: Side = negative === 'hostile' ? 1 : 0;
++    const caster = unit(state, side, 'special', 26.5, 20.5);
++    refreshVisibility(state);
++    assert(issueCommand(state, side, { type: 'ability', ids: [caster.id] }), 'Initial native ability must create canonical doubles.');
++    const doubles = state.entities.filter(e => e.side === side && e.illusion);
++    assert.equal(doubles.length, 2);
++    const illusion = reset(doubles[0], 26.5, 20.5);
++    state.entities = state.entities.filter(e => e.id !== doubles[1].id);
++    reset(caster, 28.5, 17.5);
++    if (negative === 'blocked') state.terrain[20 * state.width + 26] = 'rock';
++    if (negative === 'expired') illusion.expires = .05;
++    write(`factions-fairies-${negative}`, state, { soldier: soldier.id, illusion: illusion.id, worker: worker.id, negative, caster: caster.id, undergroundWorker: undergroundWorker.id }, {
++      description: 'A public initial Fairy ability authors a legitimate definition-derived illusion before the recorder. The native swap must reject its declared blocked destination, expired lifetime or hostile owner without spending or moving the real troop.',
++      setupAbility: { side, caster: caster.id, type: 'ability', retainedDoubles: 1, removedSecondDouble: doubles[1].id },
++      illusion: { definitionId: illusion.definitionId, hp: illusion.hp, maxHp: illusion.maxHp, expires: illusion.expires, side },
++      blockedRock: negative === 'blocked' ? { x: 26, y: 20, level: 0 } : null,
++      expiryException: negative === 'expired' ? 'The canonical double lifetime is shortened to 0.05 seconds before recording; native stepping expires it.' : null,
++    });
++  }
++  {
++    const { state, worker, undergroundWorker } = base('dwarves');
++    reset(worker, 18.5, 20.5);
++    reset(undergroundWorker, 22.5, 20.5, 1);
++    const soldiers = [unit(state, 0, 'melee', 18.5, 21.5), unit(state, 0, 'ranged', 18.5, 22.5)];
++    const entrancePoint = { x: 20.5, y: 20.5, level: 0 }, exitPoint = { x: 24.5, y: 20.5, level: 1 };
++    write('factions-dwarves-tunnels', state, { workers: [worker.id, undergroundWorker.id], soldiers: soldiers.map(e => e.id), entrancePoint, exitPoint, worker: worker.id, undergroundWorker: undergroundWorker.id }, {
++      description: 'No tunnel exists initially. Native selected workers construct one surface entrance and one underground exit. Both held soldiers begin within three tiles of the planned origin, and public tunnel travel must change their map level.',
++      initialTunnels: 0, sourceAssemblyPoint: { x: 18.5, y: 21.5, level: 0 },
++    });
++  }
++  {
++    const { state, worker, undergroundWorker } = base('dwarves');
++    const entrance = structure(state, FACTION_STRUCTURE_INFO.tunnel.definition.id, { x: 20.5, y: 20.5, level: 0 });
++    const exit = structure(state, FACTION_STRUCTURE_INFO.tunnel.definition.id, { x: 24.5, y: 20.5, level: 1 }); exit.hp = 10;
++    const soldiers = [unit(state, 0, 'melee', 18.5, 20.5), unit(state, 0, 'ranged', 18.5, 21.5)];
++    const enemy = unit(state, 1, 'siege', 31.5, 20.5, 1, 1); enemy.order = { type: 'attack', target: exit.id };
++    reset(undergroundWorker, 21.5, 24.5, 1);
++    write('factions-dwarves-exit-destruction', state, { entrance: entrance.id, exit: exit.id, soldiers: soldiers.map(e => e.id), enemy: enemy.id, worker: worker.id, undergroundWorker: undergroundWorker.id }, {
++      description: 'Two authored completed native entrances link the levels. A real enemy shell destroys the wounded underground exit while public travel channels, so the squad must remain at the surface origin with its channel cancelled.',
++      authoredTunnels: 'Completed starting structures; no construction or payment claimed.', exitHealth: 10,
++      enemyOrder: { actor: enemy.id, target: exit.id, level: 1, initialCooldown: 1 },
++    });
++  }
++  for (const modification of ['baseline', 'stone', 'grapeshot', 'incendiary', 'reinforced'] as const) {
++    const { state, worker, undergroundWorker } = base('dwarves');
++    reset(worker, 15.5, 17.5);
++    const siege = unit(state, 0, 'siege', 18.5, 20.5, 12);
++    const cannon = unit(state, 0, 'special', 18.5, 24.5);
++    const targetBuilding = building(state, 1, 'wall', modification === 'grapeshot' ? 29.5 : 25.5, 20.5);
++    const targetPoints = modification === 'grapeshot' ? [[24.5, 22.5], [26.5, 22.5], [27.5, 20.5]] : [[28.5, 22.5], [29.5, 22.5], [29.5, 20.5]];
++    const targets = targetPoints.map(([x, y]) => unit(state, 1, 'melee', x, y));
++    const enemy = unit(state, 1, 'ranged', 30.5, 15.5);
++    const impactTimber = timber(state, { x: targetBuilding.x, y: targetBuilding.y, level: 0 });
++    write(`factions-dwarves-${modification}`, state, { siege: siege.id, cannon: cannon.id, building: targetBuilding.id, targets: targets.map(e => e.id), worker: worker.id, timber: impactTimber.id, enemy: enemy.id, modification, undergroundWorker: undergroundWorker.id }, {
++      description: 'Independent native artillery encounters compare the unfitted baseline with a fitting chosen in the production panel. A normal armored wall and infantry outside its footprint measure direct and splash effects. The siege starts without ammunition; native Deploy Ammunition must purchase it. The special Siege Cannon starts unentrenched.',
++      initialFitting: null, initialAmmunition: 'None; siegeMode is absent.', ownArtilleryCooldown: { siege: 12, cannon: 1000 },
++      cooldownReason: 'The 12-second initial siege cooldown permits native import, paid fitting and ammunition checkpoint controls before the recorded attack. Weapon cooldown then follows the native definition.',
++      enemyOrder: { actor: enemy.id, order: 'hold', initialCooldown: 1000 },
++      timberException: 'One unit of timber shares the wall impact tile. Ignition is tile-based; this authored resource lets a real paid incendiary impact create fire without manufacturing a fire or a pending shell.',
++      targetIsolation: modification === 'grapeshot' ? 'The infantry group is the only initial enemy in native artillery range; the unused normal wall and idle marksman are farther away.' : 'The normal wall is the only initial enemy in native artillery range. The held infantry group and idle marksman are farther away, so any native held fire following deployment reaches the same wall as the explicit attack.',
++      intendedModification: modification,
++    });
++  }
++  {
++    const { state, worker, undergroundWorker } = base('undead');
++    reset(worker, 17.5, 17.5);
++    const barracks = building(state, 0, 'barracks', 10.5, 15.5);
++    const wagons = [namedUnit(state, 0, CORPSE_WAGON.id, 18.5, 20.5), namedUnit(state, 0, CORPSE_WAGON.id, 18.5, 22.5)];
++    const victim = unit(state, 1, 'melee', 20.5, 20.5); victim.hp = 1; victim.tactics!.morale = 100;
++    const victimSupport = unit(state, 1, 'melee', 22.5, 22.5);
++    const killer = unit(state, 0, 'ranged', 12.5, 20.5, 3);
++    const caster = unit(state, 0, 'special', 30.5, 20.5);
++    write('factions-undead-wagons', state, { barracks: barracks.id, wagons: wagons.map(e => e.id), victim: victim.id, victimSupport: victimSupport.id, killer: killer.id, caster: caster.id, worker: worker.id, undergroundWorker: undergroundWorker.id }, {
++      description: 'A normal native barracks permits recruitment cancellation and completion. Two authored empty native wagons compete for the one body produced by a real commanded kill after recruitment. The held shooter starts outside victim range, and the Gravecaller starts more than six tiles from the casualty; wagon delivery enables ordinary automatic raising.',
++      authoredWagons: 'Two normal completed starting units, with no corpse cargo or corpse order.', initialCorpses: 0,
++      victimHealth: 1, victimMorale: 100, killerCooldown: 3,
++      victimSupport: 'A normal held hostile Ironjaw at cooldown 1,000 provides native morale support while the wounded victim waits through recruitment.',
++    });
++  }
++  {
++    const { state, worker, undergroundWorker, relicTemplate } = base('undead');
++    reset(worker, 21.5, 17.5);
++    const caster = unit(state, 0, 'special', 28.5, 20.5);
++    const killer = unit(state, 0, 'ranged', 18.5, 25.5, 3);
++    const victim = unit(state, 1, 'melee', 26.5, 23.5); victim.hp = 1; victim.tactics!.morale = 100;
++    const victimSupport = unit(state, 1, 'melee', 27.5, 25.5);
++    const capturer = unit(state, 0, 'melee', 23.5, 16.5);
++    const site = Object.assign(relicTemplate, { x: 24.5, y: 16.5, level: 0, owner: 1 as Side });
++    state.world!.sites.push(site);
++    const necropolisPoint = { x: 24.5, y: 20.5, level: 0 }, outsidePoint = { x: 33.5, y: 20.5, level: 0 };
++    write('factions-undead-necropolis', state, { worker: worker.id, caster: caster.id, killer: killer.id, victim: victim.id, victimSupport: victimSupport.id, capturer: capturer.id, site: site.id, necropolisPoint, outsidePoint, undergroundWorker: undergroundWorker.id }, {
++      description: 'A native troop captures the initially hostile relic before native worker construction completes the forward necropolis nearby. A later native kill supplies an ordinary Gravecaller raise. The casualty is in caster range and within the future six-tile sustain radius. Native movement later takes the raised ally outside that radius.',
++      initialNecropolises: 0, initialCorpses: 0, initialRaised: 0, victimHealth: 1, victimMorale: 100,
++      killerCooldown: 3, dormancy: 'The held shooter begins outside the victim weapon range and approaches only after the native attack command following construction.',
++      relic: { id: site.id, x: site.x, y: site.y, level: site.level, owner: site.owner, source: 'The complete relic runtime record comes from native createMatch world initialization. Only its position, layer and initial hostile owner are authored before recording.' },
++      capturer: 'A normal held Boneguard is one tile from the relic, outside every enemy weapon range. Relic capture, ownership change and the later foundation occur through native controls.',
++      victimSupport: 'A normal held hostile Ironjaw at cooldown 1,000 provides native morale support throughout relic capture and foundation construction.',
++    });
++  }
++  {
++    const { state, worker, undergroundWorker } = base('undead');
++    const necropolis = structure(state, FACTION_STRUCTURE_INFO.necropolis.definition.id, { x: 24.5, y: 20.5, level: 0 });
++    const caster = unit(state, 0, 'special', 20.5, 20.5);
++    const body = { id: state.nextId++, x: 22.5, y: 20.5, level: 0, expires: 45 }; state.corpses.push(body);
++    refreshVisibility(state);
++    assert(issueCommand(state, 0, { type: 'ability', ids: [caster.id] }), 'Initial native raise must produce the canonical summoned ally.');
++    const raised = state.entities.find(e => e.raised && !e.illusion)!; assert(raised);
++    raised.hp = 20; reset(raised, 21.5, 22.5);
++    const enemy = unit(state, 1, 'siege', 31.5, 20.5, 3); enemy.order = { type: 'attack', target: necropolis.id };
++    enemy.orderQueue = [{ type: 'move', x: 33.5, y: 30.5, level: 0 }];
++    write('factions-undead-necropolis-destruction', state, { necropolis: necropolis.id, raised: raised.id, enemy: enemy.id, worker: worker.id, caster: caster.id, undergroundWorker: undergroundWorker.id }, {
++      description: 'A public initial raise ability produces a canonical Boneguard before recording. Its authored wounded health is sustained by a normal completed starting necropolis. Real siege attacks destroy that normal-health building; the raised ally must then resume lifetime loss.',
++      setupAbility: { side: 0, caster: caster.id, type: 'ability', consumedBody: body.id }, raisedHealth: 20,
++      raisedPoint: { x: raised.x, y: raised.y, level: raised.level }, raisedPosition: 'Within six tiles of the source and beyond the 2.05-tile shell splash reach, so actual source destruction does not kill the same ally.',
++      authoredNecropolis: 'Normal definition health and completed progress; no construction or payment claimed.',
++      enemyOrder: { actor: enemy.id, target: necropolis.id, initialCooldown: 3, queuedWithdrawal: { x: 33.5, y: 30.5, level: 0 } },
++    });
++  }
++  for (const terrain of ['baseline', 'mud', 'shallows', 'water'] as const) {
++    const { state, worker, undergroundWorker } = base('tideborn');
++    for (let y = 0; y < state.height; y++) if (y < 20 || y > 24) state.terrain[y * state.width + 20] = 'rock';
++    state.terrain[21 * state.width + 19] = 'rock';
++    const protectedResource = timber(state, { x: 21.5, y: 23.5, level: 0 });
++    const caster = unit(state, 0, 'special', 17.5, 26.5);
++    const soldier = unit(state, 0, 'melee', 16.5, 22.5);
++    const enemies = [21.5, 22.5, 23.5].map(y => {
++      const enemy = unit(state, 1, 'melee', 28.5, y); enemy.order = { type: 'move', x: 14.5, y: 22.5, level: 0 }; return enemy;
++    });
++    const shapePoint = { x: 20.5, y: 22.5, level: 0 }, crossPoint = { x: 24.5, y: 22.5, level: 0 };
++    const protectedTiles = [{ x: 19.5, y: 21.5, level: 0, before: 'rock', kind: 'rock' }, { x: 21.5, y: 23.5, level: 0, before: 'grass', kind: 'resource', resource: protectedResource.id }];
++    write(`factions-tideborn-${terrain}`, state, { caster: caster.id, soldier: soldier.id, enemies: enemies.map(e => e.id), shapePoint, crossPoint, protectedTiles, worker: worker.id, undergroundWorker: undergroundWorker.id, terrain }, {
++      description: 'Independent encounters share a rock wall with the only grass opening at rows 20 through 24. Native shaping changes that opening while both initial armies are outside the cast radius. Mud and shallows permit Tideborn movement while delaying ordinary enemy troops; the baseline supplies their unshaped travel. Deep water blocks every faction until native restoration.',
++      rockWall: { x: 20, openingRows: [20, 21, 22, 23, 24], level: 0 },
++      protectedRock: protectedTiles[0], protectedResource: protectedTiles[1],
++      enemyOrders: enemies.map(e => ({ actor: e.id, order: e.order, initialCooldown: 1000 })),
++      waterConstraint: 'Tideborn terrain traits apply to mud and shallows only. The current native navigation predicate also rejects deep water for Tideborn; no water crossing is claimed.',
++      intendedTerrain: terrain,
++    });
++  }
++  for (const mode of ['connect', 'break'] as const) {
++    const { state, worker, undergroundWorker, hq } = base('automata');
++    reset(hq, 6.5, 20.5); state.starts[0] = { x: hq.x, y: hq.y, level: 0 };
++    reset(worker, 11.5, mode === 'connect' ? 17.5 : 24.5);
++    const tower = building(state, 0, 'tower', 20.5, 20.5); tower.cooldown = mode === 'connect' ? 0 : 3;
++    const relayPoint = { x: 13.5, y: 20.5, level: 0 };
++    const enemies = [[26.5, 20.5], [26.5, 22.5]].map(([x, y], i) => {
++      const enemy = unit(state, 1, 'ranged', x, y, 3 + i); enemy.order = { type: 'attack', target: tower.id }; return enemy;
++    });
++    let relay: Entity | undefined, demolisher: Entity | undefined;
++    if (mode === 'break') {
++      relay = structure(state, FACTION_STRUCTURE_INFO['power-relay'].definition.id, relayPoint); relay.hp = 10;
++      demolisher = unit(state, 1, 'siege', 6.5, 16.5, 12); demolisher.order = { type: 'attack', target: relay.id };
++      refreshPowerNetworks(state, 0); tower.shield = 0;
++    }
++    write(`factions-automata-${mode}`, state, { hq: hq.id, tower: tower.id, worker: worker.id, relayPoint, enemies: enemies.map(e => e.id), ...(relay ? { relay: relay.id } : {}), ...(demolisher ? { demolisher: demolisher.id } : {}), undergroundWorker: undergroundWorker.id }, {
++      description: mode === 'connect' ? 'The tower begins fourteen tiles from its HQ, disconnected. A native worker builds the seven-tile midpoint relay. Real enemy attacks and powered tower fire then measure the connected graph and shared shield reserves.' : 'A canonical authored HQ-relay-tower component begins with the tower local shield depleted. Enemy marksmen draw actual shield reserves from its component. A delayed enemy siege attack destroys the wounded relay, disconnecting the tower; the safe owned worker can rebuild a native paid relay.',
++      towerWeaponCooldown: tower.cooldown, enemyOrders: enemies.map(e => ({ actor: e.id, target: tower.id, initialCooldown: e.cooldown })),
++      authoredRelay: relay ? { hp: 10, progress: 1, paidCost: 'None: completed starting structure.' } : null,
++      initialTowerShield: mode === 'break' ? 0 : 'Native graph default of 80 on the disconnected completed tower.',
++      demolisherOrder: demolisher ? { actor: demolisher.id, target: relay!.id, initialCooldown: 12, reason: 'The shooter is outside tower range and delays relay destruction until shared damage can be observed.' } : null,
++      graphSetup: 'refreshPowerNetworks(state, 0) authors the native graph and capacities without advancing the engine. No hand-written connection or shield capacity is used.',
++    });
++  }
++
++  const manifest: FactionPowerManifest = { schema: 1, group: 'factions', sourceCommit, saveVersion: SAVE_VERSION, simulationRevision: SIMULATION_REVISION, setup: 'Authored native faction starting conditions only. All declared setup precedes recording; generation advances zero ticks. Native production UI supplies subsequent player commands and simulation.', scenarios };
++  writeFileSync(resolve(out, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`, { flag: 'wx' });
++  console.log(`Authored ${Object.keys(scenarios).length} native faction fixtures at ${sourceCommit}; SAVE${SAVE_VERSION}, rules ${SIMULATION_REVISION}; zero simulation ticks.`);
++  return manifest;
++}
+diff --git a/scripts/acceptance/faction-powers.mjs b/scripts/acceptance/faction-powers.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..4d8393fe46844f4b8661f0579e8a22b0b5fbe6e2
+--- /dev/null
++++ b/scripts/acceptance/faction-powers.mjs
+@@ -0,0 +1,107 @@
++import assert from 'node:assert/strict';
++import { digest } from './native-contract.mjs';
++import { resolve } from 'node:path';
++
++// Native input only. The context reads state, imports authored saves, dispatches
++// pointer/keyboard/DOM controls, and retains actual browser downloads.
++export async function runFactionPowers(ctx) {
++  const {page}=ctx,receipt={completed:false,featureIds:[],checks:[],checkpoints:[],continuations:[],effects:{}};
++  assert.equal(typeof ctx.factionFacts,'function','Pinned read-only faction observer required');
++  const actor=(s,id)=>{const e=s.entities.find(e=>e.id===id);assert(e,`Actor ${id}`);return e;};
++  const live=(s,id)=>s.entities.find(e=>e.id===id&&e.hp>0);
++  const bank=s=>s.players[0];
++  const swapState=(s,realId,doubleId)=>({bank:Object.fromEntries(['wood','ore','crystal'].map(kind=>[kind,bank(s)[kind]])),actors:[realId,doubleId].map(id=>{const e=s.entities.find(e=>e.id===id);return e?{id:e.id,x:e.x,y:e.y,level:e.level??0,hp:e.hp,order:e.order,factionState:e.factionState}:null;})});
++  const near=(e,p,r=.8)=>Math.hypot(e.x-p.x,e.y-p.y)<r&&(e.level??0)===(p.level??0);
++  const button=name=>ctx.faction.getByRole('button',{name,exact:true});
++  function record(name,featureIds,observed={}){ctx.record(name,{featureIds,...observed});receipt.checks.push({name,featureIds,...observed});}
++  async function start(name){const spec=await ctx.loadScenario(name);await ctx.pause();return spec.ids;}
++  async function select(ids){await ctx.resume();if(Array.isArray(ids)){assert(ids.length);if(ids.length===1)await ctx.selectTroop(ids[0]);else await ctx.selectMany(ids);}else await ctx.selectTroop(ids);}
++  async function stop(id){await select(id);await ctx.closePanels();await page.getByRole('button',{name:/^Hold position(?:\b|$)/}).click();await ctx.wait(id=>window.rts.state.entities.find(e=>e.id===id)?.order.type==='hold',id);await ctx.pause();}
++  async function panel(ids){await select(ids);await ctx.openFaction();}
++  async function point(p){await ctx.faction.getByLabel('Faction destination X',{exact:true}).fill(String(p.x));await ctx.faction.getByLabel('Faction destination Y',{exact:true}).fill(String(p.y));await ctx.faction.getByLabel('Faction destination level',{exact:true}).selectOption(String(p.level??0));}
++  async function action(name,ids,{destination,picker,value}={}){await panel(ids);if(destination)await point(destination);if(picker)await ctx.faction.getByLabel(picker,{exact:true}).selectOption(String(value));assert(await button(name).isEnabled(),`${name}: ${await button(name).getAttribute('title')}`);await button(name).click();await ctx.wait(name=>[...document.querySelectorAll('.faction-notice')].some(e=>!e.hidden&&e.textContent===`${name} ordered.`),name);await ctx.pause();return ctx.snap();}
++  async function disabled(name,ids,pattern){await panel(ids);assert.equal(await button(name).isEnabled(),false);const reason=await button(name).getAttribute('title');assert.match(reason??'',pattern);await ctx.pause();return reason;}
++  async function elapsed(seconds){const begin=await ctx.snap();return ctx.runUntil(s=>s.time>=begin.time+seconds,{timeout:Math.ceil(seconds*1600+15000),label:`${seconds}s public simulation continuation`});}
++  async function attack(id,target){await select(id);await ctx.entityClick(target,'right');await ctx.wait(({id,target})=>{const e=window.rts.state.entities.find(e=>e.id===id);return e?.order.type==='attack'&&e.order.target===target;},{id,target});}
++  async function hit(id,target){const before=await ctx.snap(),hp=actor(before,target).hp;await attack(id,target);const after=await ctx.runUntil(s=>actor(s,target).hp<hp,{timeout:30000,label:`real hit ${id}→${target}`});return {before,after,damage:hp-actor(after,target).hp};}
++  async function move(id,p){await select(id);await ctx.ground(p,'right');return ctx.runUntil(s=>near(actor(s,id),p),{timeout:60000,label:`native movement ${id}`});}
++  async function checkpoint(name,featureIds,scenario){await ctx.pause();const file=await ctx.exportAndVerify(name);await ctx.pause();receipt.checkpoints.push({name,scenario,featureIds,tick:file.game.state.tick,gameSha256:digest(JSON.stringify(file.game))});return file;}
++  async function hostileRendering(name,file,center,id,decoy){await ctx.openSessions('replay');await ctx.sessions.getByLabel('Import replay JSON',{exact:true}).setInputFiles(resolve(ctx.out,`${name}-replay.json`));await ctx.sessions.getByRole('button',{name:'Import replay',exact:true}).click();await ctx.wait(()=>window.rts.mode==='replay',null,60000);await ctx.ready();await ctx.sessions.getByLabel('Replay tick',{exact:true}).press('End');await ctx.wait(tick=>window.rts.state.tick===tick,file.game.state.tick,60000);await ctx.sessions.getByLabel('Replay perspective',{exact:true}).selectOption('1');await ctx.wait(()=>window.rts.viewSide===1);await ctx.closeSessions();await ctx.selectTroop(center);const observed=ctx.observeNative(file,1);assert(!observed.ids.includes(id));assert(observed.ids.includes(decoy));const trueActor=actor(file.game.state,id);assert(observed.visible.includes(Math.floor(trueActor.y)*file.game.state.width+Math.floor(trueActor.x)),'Hidden troop tile is visible; this is concealment beyond fog');await ctx.wait(expected=>window.rts.art.renderedUnits===expected,observed.renderedUnits);await ctx.screenshot('factions-fairies-hostile-grove');record('Native hostile replay rendering shows the decoy and conceals the real troop',[24],{trueTroop:id,decoy,renderedUnits:observed.renderedUnits});await ctx.importSave(resolve(ctx.out,`${name}-save.json`),'grove original after hostile rendering');await ctx.closeSessions();await ctx.pause();}
++  async function build(name,definition,worker,destination,featureIds,prefix,scenario){await checkpoint(`${prefix}-before-build`,featureIds,scenario);const before=await ctx.snap();await action(name,worker,{destination});let after=await ctx.snap();const created=after.entities.find(e=>e.side===0&&e.definitionId===definition&&e.progress<1&&near(e,destination,.1));assert(created,'Native foundation created');const cost=ctx.manifest.scenarios[scenario].authored.structureCosts?.[definition];assert(cost,'Declared native structure cost');for(const kind of ['wood','ore','crystal'])assert.equal(bank(before)[kind]-bank(after)[kind],cost[kind]);await checkpoint(`${prefix}-foundation`,featureIds,scenario);after=await ctx.runUntil(s=>live(s,created.id)?.progress===1,{timeout:90000,label:`complete ${definition}`});const complete=await checkpoint(`${prefix}-complete`,featureIds,scenario);receipt.continuations.push([`${prefix}-foundation`,`${prefix}-complete`]);record(`${name} pays its full cost and completes through native worker construction`,featureIds,{id:created.id,cost});return {id:created.id,file:complete,state:after};}
++
++  // Fury and trophies start at zero; every increase comes from recorded combat.
++  let scenario='factions-orcs-earned',ids=await start(scenario),s=await ctx.snap();
++  assert.equal(s.factionSystems.fury[0],0);assert.equal(actor(s,ids.soldier).factionState?.trophyKills??0,0);
++  record('Insufficient Fury disables a chant without spending', [21],{reason:await disabled('Assault chant',ids.soldier,/Fury/i)});
++  await select(ids.earners);await ctx.entityClick(ids.bankTarget,'right');
++  s=await ctx.runUntil(s=>s.factionSystems.fury[0]>=50,{timeout:120000,label:'50 Fury earned from actual hostile damage'});
++  const earned=await checkpoint('factions-orcs-earned-fury',[21],scenario);assert(actor(earned.game.state,ids.bankTarget).hp<actor(earned.replay.initial.state,ids.bankTarget).hp);
++  for(const id of ids.earners){const original=actor(earned.replay.initial.state,id);await move(id,{x:original.x,y:original.y,level:original.level??0});await stop(id);}
++  const baseline=await hit(ids.soldier,ids.target);await stop(ids.soldier);await checkpoint('factions-orcs-baseline-hit',[21],scenario);await checkpoint('factions-orcs-before-assault',[21],scenario);const beforeAssault=await ctx.snap();
++  await action('Assault chant',ids.soldier);s=await ctx.snap();assert.equal(s.factionSystems.fury[0],beforeAssault.factionSystems.fury[0]-25);assert.equal(actor(s,ids.soldier).factionState.chant.kind,'assault');await checkpoint('factions-orcs-assault-paid',[21],scenario);
++  const assault=await hit(ids.soldier,ids.target);assert(assault.damage>baseline.damage,'Assault changes actual damage');await stop(ids.soldier);
++  await checkpoint('factions-orcs-assault-active',[21],scenario);record('Earned Fury buys Assault and increases an actual hit',[21],{baselineDamage:baseline.damage,assaultDamage:assault.damage,paidFury:25});
++  await move(ids.soldier,ids.startingPoint);await stop(ids.soldier);
++  const defenseStart=(await checkpoint('factions-orcs-before-unprotected-hit',[21],scenario)).game.state,defenderHp=actor(defenseStart,ids.defender).hp;
++  s=await ctx.runUntil(s=>actor(s,ids.defender).hp<defenderHp,{timeout:60000,label:'unprotected enemy hit'});const incoming=defenderHp-actor(s,ids.defender).hp;await checkpoint('factions-orcs-unprotected-hit',[21],scenario);
++  await checkpoint('factions-orcs-before-bulwark',[21],scenario);const beforeBulwark=await ctx.snap();await action('Bulwark chant',ids.defender);const paid=await ctx.snap();assert.equal(paid.factionSystems.fury[0],beforeBulwark.factionSystems.fury[0]-25);await checkpoint('factions-orcs-bulwark-paid',[21],scenario);
++  const guardedHp=actor(paid,ids.defender).hp;s=await ctx.runUntil(s=>actor(s,ids.defender).hp<guardedHp,{timeout:30000,label:'Bulwark protected real hit'});const guarded=guardedHp-actor(s,ids.defender).hp;assert(guarded<incoming);await checkpoint('factions-orcs-bulwark-active',[21],scenario);record('Earned Fury buys Bulwark and reduces incoming damage',[21],{incoming,guarded,paidFury:25});
++  await elapsed(12.1);s=await ctx.snap();assert.equal(actor(s,ids.soldier).factionState?.chant,undefined);assert.equal(actor(s,ids.defender).factionState?.chant,undefined);await checkpoint('factions-orcs-chants-expired',[21],scenario);receipt.continuations.push(['factions-orcs-bulwark-active','factions-orcs-chants-expired']);record('Both temporary chants expire in recorded continuation',[21]);
++  for(const victim of ids.victims){await attack(ids.soldier,victim);await ctx.runUntil(s=>!live(s,victim),{timeout:30000,label:'mortal trophy kill'});await stop(ids.soldier);}
++  s=await ctx.snap();assert((actor(s,ids.soldier).factionState?.trophyKills??0)>=2);await checkpoint('factions-orcs-earned-trophies',[22],scenario);
++  const trophies=actor(s,ids.soldier).factionState.trophyKills;await action('Raise trophy standard',ids.soldier);s=await ctx.snap();const standard=s.entities.find(e=>e.definitionId==='core:orcs-trophy-standard'&&e.hp>0);assert(standard);assert.equal(actor(s,ids.soldier).factionState.trophyKills,trophies-2);
++  const aura=await checkpoint('factions-orcs-standard-in-range',[22],scenario),auraFacts=ctx.factionFacts(aura);assert.equal(auraFacts.actors.find(e=>e.id===ids.soldier).damageFactor,1.1);
++  await move(ids.soldier,{x:standard.x-8,y:standard.y,level:standard.level??0});const outside=await checkpoint('factions-orcs-standard-outside',[22],scenario);assert.equal(ctx.factionFacts(outside).actors.find(e=>e.id===ids.soldier).damageFactor,1);receipt.continuations.push(['factions-orcs-earned-trophies','factions-orcs-standard-outside']);record('Mortal victories pay for a standard whose aura stops outside range',[22],{standard:standard.id,trophiesSpent:2});
++  scenario='factions-standard-destruction';ids=await start(scenario);const standardBefore=await checkpoint('factions-standard-before-destruction',[22],scenario);assert.equal(ctx.factionFacts(standardBefore).actors.find(e=>e.id===ids.soldier).damageFactor,1.1);await ctx.runUntil(s=>!live(s,ids.standard),{timeout:60000,label:'hostile attack destroys standard'});const noStandard=await checkpoint('factions-standard-destroyed',[22],scenario);assert.equal(ctx.factionFacts(noStandard).actors.find(e=>e.id===ids.soldier).damageFactor,1);receipt.continuations.push(['factions-standard-before-destruction','factions-standard-destroyed']);record('Real hostile destruction removes the standard aura',[22]);
++
++  scenario='factions-fairies-swap';ids=await start(scenario);await action('Conjure illusions',ids.caster);s=await ctx.snap();const clone=s.entities.find(e=>e.side===0&&e.illusion&&e.hp>0);assert(clone);const swapBefore=await checkpoint('factions-fairies-before-swap',[23],scenario),real=actor(swapBefore.game.state,ids.soldier),double=actor(swapBefore.game.state,clone.id);
++  assert.equal(real.id,ids.caster);assert.equal(double.definitionId,real.definitionId);await action('Swap with illusion',ids.soldier,{picker:'Owned illusion',value:clone.id});const swapped=await checkpoint('factions-fairies-swapped',[23],scenario),r=actor(swapped.game.state,real.id),d=actor(swapped.game.state,double.id);assert.deepEqual([r.x,r.y,d.x,d.y],[double.x,double.y,real.x,real.y]);assert.equal(r.hp,real.hp);assert.equal(d.hp,double.hp);assert.equal(r.order.type,'hold');assert.equal(d.order.type,'hold');assert.equal(bank(swapBefore.game.state).crystal-bank(swapped.game.state).crystal,15);assert(r.factionState.swapReadyAt>swapped.game.state.time);record('A Veilweaver swaps with its own native-conjured double, preserves health and pays 15 crystal',[23]);
++  const cooldownBefore=swapState(swapped.game.state,ids.soldier,clone.id),cooldownReason=await disabled('Swap with illusion',ids.soldier,/recharg|ready|cooldown/i);assert.deepEqual(swapState(await ctx.snap(),ids.soldier,clone.id),cooldownBefore);await checkpoint('factions-fairies-cooldown-rejected',[23],scenario);record('Swap cooldown rejects reuse without changing bank, positions, health or orders',[23],{reason:cooldownReason});receipt.continuations.push(['factions-fairies-before-swap','factions-fairies-swapped']);
++  for(const kind of ['blocked','expired','hostile']){
++    scenario=`factions-fairies-${kind}`;ids=await start(scenario);
++    if(kind==='expired')await ctx.runUntil(s=>!s.entities.some(e=>e.id===ids.illusion),{timeout:10000,label:'authored short-lived double expires and leaves the native roster'});
++    await panel(ids.soldier);const rejectedBefore=swapState(await ctx.snap(),ids.soldier,ids.illusion);
++    if(kind==='blocked'){
++      await ctx.faction.getByLabel('Owned illusion',{exact:true}).selectOption(String(ids.illusion));
++      if(await button('Swap with illusion').isEnabled()){await button('Swap with illusion').click();await ctx.wait(()=>[...document.querySelectorAll('.faction-notice')].some(e=>!e.hidden&&/rejected/i.test(e.textContent)));}
++      else assert.match(await button('Swap with illusion').getAttribute('title'),/blocked|destination|owned|living|illusion|ready/i);
++    }else{
++      assert(!(await ctx.faction.getByLabel('Owned illusion',{exact:true}).locator('option').allTextContents()).some(text=>text.includes(`#${ids.illusion} `)));assert.equal(await button('Swap with illusion').isEnabled(),false);
++    }
++    await ctx.pause();const rejectedAfter=swapState(await ctx.snap(),ids.soldier,ids.illusion);assert.deepEqual(rejectedAfter,rejectedBefore,`${kind} rejection preserves bank, positions, health and orders`);
++    await checkpoint(`factions-fairies-${kind}-rejected`,[23],scenario);record(`${kind} illusion cannot receive a native swap and leaves the actors and bank unchanged`,[23],{before:rejectedBefore,after:rejectedAfter});
++  }
++  scenario='factions-fairies-grove';ids=await start(scenario);const grove=await build('Build enchanted grove','core:fairies-enchanted-grove',ids.worker,ids.grovePoint,[24],'factions-fairies-grove',scenario);const hidden=await checkpoint('factions-fairies-grove-hidden',[24],scenario);const owner=ctx.observeNative(hidden,0),enemyView=ctx.observeNative(hidden,1);assert(owner.ids.includes(ids.soldier));assert(!enemyView.ids.includes(ids.soldier),'True troop is private from hostile scout');
++  await ctx.runUntil(s=>s.entities.some(e=>e.side===0&&e.illusion&&e.order.type==='move'),{timeout:30000,label:'grove sends real harmless decoy'});const decoyFile=await checkpoint('factions-fairies-grove-decoy',[24],scenario);const decoy=decoyFile.game.state.entities.find(e=>e.side===0&&e.illusion&&e.order.type==='move');assert(decoy);const hostile=ctx.observeNative(decoyFile,1);assert(hostile.ids.includes(decoy.id));assert(!hostile.ids.includes(ids.soldier));assert.equal(ctx.factionFacts(decoyFile).actors.find(e=>e.id===decoy.id).harmlessUntilExpiry,true);await hostileRendering('factions-fairies-grove-decoy',decoyFile,ids.scout,ids.soldier,decoy.id);receipt.continuations.push(['factions-fairies-grove-complete','factions-fairies-grove-decoy']);record('A paid cultivated grove conceals the true ally and exposes its harmless moving decoy to a hostile scout',[24],{grove:grove.id,trueTroop:ids.soldier,decoy:decoy.id,hostileVisible:hostile.ids});
++
++  scenario='factions-dwarves-tunnels';ids=await start(scenario);const entrance=await build('Build tunnel entrance','core:dwarves-tunnel',ids.workers[0],ids.entrancePoint,[25],'factions-dwarves-entrance',scenario);const exit=await build('Build tunnel entrance','core:dwarves-tunnel',ids.workers[1],ids.exitPoint,[25],'factions-dwarves-exit',scenario);await action('Travel through tunnel',ids.soldiers,{picker:'Owned tunnel exit',value:exit.id});await ctx.runUntil(s=>ids.soldiers.some(id=>actor(s,id).factionState?.tunnel?.progress>0),{timeout:10000,label:'native tunnel transit begins'});const transit=await checkpoint('factions-dwarves-tunnel-transit',[25],scenario);assert(ids.soldiers.every(id=>actor(transit.game.state,id).factionState?.tunnel?.target===exit.id));await ctx.runUntil(s=>ids.soldiers.every(id=>!actor(s,id).factionState?.tunnel&&(actor(s,id).level??0)===(ids.exitPoint.level??0)),{timeout:15000,label:'cross-level squad arrival'});const arrived=await checkpoint('factions-dwarves-tunnel-arrived',[25],scenario);for(const id of ids.soldiers){assert(near(actor(arrived.game.state,id),ids.exitPoint,3));assert.equal(actor(arrived.game.state,id).order.type,'hold');}receipt.continuations.push(['factions-dwarves-tunnel-transit','factions-dwarves-tunnel-arrived']);record('Two paid entrances carry a squad across map levels and preserve mid-transit native history',[25],{entrance:entrance.id,exit:exit.id});
++  scenario='factions-dwarves-exit-destruction';ids=await start(scenario);const origin=await ctx.snap();await action('Travel through tunnel',ids.soldiers,{picker:'Owned tunnel exit',value:ids.exit});await checkpoint('factions-dwarves-exit-pending',[25],scenario);await ctx.runUntil(s=>!live(s,ids.exit)&&ids.soldiers.every(id=>!actor(s,id).factionState?.tunnel),{timeout:30000,label:'destroyed exit cancels transit'});const canceled=await checkpoint('factions-dwarves-exit-canceled',[25],scenario);for(const id of ids.soldiers){assert.equal(actor(canceled.game.state,id).level,actor(origin,id).level);assert(near(actor(canceled.game.state,id),actor(origin,id),.2));}receipt.continuations.push(['factions-dwarves-exit-pending','factions-dwarves-exit-canceled']);record('An exit destroyed by hostile combat cancels transit at the origin',[25]);
++
++  const fittingResults={};
++  for(const fitting of ['baseline','stone','grapeshot','incendiary','reinforced']){scenario=`factions-dwarves-${fitting}`;ids=await start(scenario);const initial=await checkpoint(`factions-dwarves-${fitting}-initial`,[26],scenario);if(fitting!=='baseline'){const label={stone:'Stone shot',grapeshot:'Grapeshot',incendiary:'Incendiary shot',reinforced:'Reinforce artillery'}[fitting];await action(label,[ids.siege,ids.cannon]);s=await ctx.snap();for(const kind of ['wood','ore'])assert.equal(bank(initial.game.state)[kind]-bank(s)[kind],kind==='wood'?50:40);assert.equal(actor(s,ids.siege).factionState.artillery,fitting);assert.equal(actor(s,ids.cannon).factionState.artillery,fitting);await checkpoint(`factions-dwarves-${fitting}-fitted`,[26],scenario);}
++    await select(ids.siege);await ctx.closePanels();await page.getByRole('button',{name:/^Deploy Ammunition(?:\b|$)/}).click();await ctx.pause();s=await ctx.snap();assert(actor(s,ids.siege).siegeMode?.ammo>0,'Native ammunition deployment purchases a real magazine');await checkpoint(`factions-dwarves-${fitting}-ammo`,[26],scenario);
++    const target=fitting==='grapeshot'?ids.targets[0]:ids.building,initialHp=actor(s,target).hp,initialGroup=ids.targets.map(id=>actor(s,id).hp),ammoBank={wood:bank(s).wood,ore:bank(s).ore};await attack(ids.siege,target);await ctx.runUntil(s=>(s.projectiles??[]).some(p=>p.source===ids.siege&&near(p,actor(s,target),.05))||(s.specialists?.shots??[]).some(p=>p.source.id===ids.siege&&near(p.target,actor(s,target),.05)),{timeout:30000,label:'paid fitting launches pending artillery at the selected target'});await checkpoint(`factions-dwarves-${fitting}-pending`,[26],scenario);s=await ctx.runUntil(s=>actor(s,target).hp<initialHp,{timeout:30000,label:'fitting impact'});const impact=await checkpoint(`factions-dwarves-${fitting}-impact`,[26],scenario);fittingResults[fitting]={targetDamage:initialHp-actor(s,target).hp,groupDamage:ids.targets.map((id,i)=>initialGroup[i]-actor(s,id).hp),file:`factions-dwarves-${fitting}-impact`};receipt.continuations.push([`factions-dwarves-${fitting}-pending`,`factions-dwarves-${fitting}-impact`]);
++    if(fitting==='incendiary'){assert.equal(ammoBank.wood-bank(impact.game.state).wood,15);assert.equal(ammoBank.ore-bank(impact.game.state).ore,5);assert(impact.game.state.world.fires.length>0,'Incendiary changes actual world fire');}
++    if(fitting==='reinforced'){const fact=ctx.factionFacts(impact).actors.find(e=>e.id===ids.siege);assert.equal(fact.armorBonus,3);assert.equal(fact.movementFactor,.85);}
++    record(`Native ${fitting} artillery has a paid pending shot and preserved real impact`,[26],fittingResults[fitting]);
++  }
++  assert(fittingResults.stone.targetDamage>fittingResults.baseline.targetDamage);assert(fittingResults.grapeshot.groupDamage.filter(d=>d>0).length>=2);record('Stone changes armored building impact and Grapeshot damages a group',[26],fittingResults);receipt.effects.fittings=fittingResults;
++
++  scenario='factions-undead-wagons';ids=await start(scenario);const recruitBefore=await checkpoint('factions-undead-before-recruit',[27],scenario);await action('Recruit corpse wagon',ids.worker,{picker:'Corpse wagon barracks',value:ids.barracks});s=await ctx.snap();assert.equal(bank(recruitBefore.game.state).wood-bank(s).wood,100);assert.equal(bank(recruitBefore.game.state).ore-bank(s).ore,45);assert(actor(s,ids.barracks).queueDefinitionIds.includes('core:undead-corpse-wagon'));await checkpoint('factions-undead-wagon-queued',[27],scenario);await ctx.runUntil(s=>s.entities.filter(e=>e.side===0&&e.definitionId==='core:undead-corpse-wagon').length>ids.wagons.length,{timeout:60000,label:'ordinary native corpse wagon recruitment'});await checkpoint('factions-undead-wagon-recruited',[27],scenario);receipt.continuations.push(['factions-undead-wagon-queued','factions-undead-wagon-recruited']);
++  await attack(ids.killer,ids.victim);s=await ctx.runUntil(s=>!live(s,ids.victim)&&s.corpses.some(body=>body.id===ids.victim),{timeout:30000,label:'actual mortal creates corpse'});await stop(ids.killer);const body=s.corpses.find(e=>e.id===ids.victim);assert(body);await checkpoint('factions-undead-body-created',[27],scenario);await action('Collect corpses',ids.wagons,{picker:'Visible corpse',value:body.id});s=await ctx.runUntil(s=>ids.wagons.reduce((n,id)=>n+(actor(s,id).factionState?.corpseCargo?.length??0),0)===1,{timeout:30000,label:'two public collectors claim one corpse'});assert(!s.corpses.some(b=>b.id===body.id));const carrying=ids.wagons.find(id=>actor(s,id).factionState?.corpseCargo?.some(b=>b.id===body.id));assert(carrying);assert.equal(actor(s,carrying).factionState.corpseCargo[0].expires,body.expires);await checkpoint('factions-undead-wagon-cargo',[27],scenario);
++  const raisedBefore=s.entities.filter(e=>e.raised).length;await action('Deliver corpses',carrying,{picker:'Owned Gravecaller',value:ids.caster});await checkpoint('factions-undead-wagon-delivery',[27],scenario);s=await ctx.runUntil(s=>s.entities.filter(e=>e.raised).length>raisedBefore,{timeout:30000,label:'delivered stock feeds a real Gravecaller raise'});assert.equal(actor(s,carrying).factionState.corpseCargo.length,0);assert(!s.corpses.some(b=>b.id===body.id));assert(!(actor(s,ids.caster).factionState?.deliveredCorpses??[]).some(b=>b.id===body.id));await checkpoint('factions-undead-wagon-raised',[27],scenario);receipt.continuations.push(['factions-undead-wagon-cargo','factions-undead-wagon-raised']);record('Ordinary recruitment and racing native collectors deliver one unchanged-deadline body for one raise',[27],{body:body.id,originalDeadline:body.expires,carrying});
++  scenario='factions-undead-necropolis';ids=await start(scenario);await select(ids.capturer);const world=await ctx.openWorld();await world.locator('.world-row').filter({hasText:`relic #${ids.site}`}).getByRole('button',{name:'Capture relic',exact:true}).click();await ctx.runUntil(s=>s.world.sites.some(site=>site.id===ids.site&&site.owner===0),{timeout:45000,label:'native acquisition of forward territory'});await checkpoint('factions-undead-territory-captured',[28],scenario);const necropolis=await build('Build necropolis','core:undead-necropolis-outpost',ids.worker,ids.necropolisPoint,[28],'factions-undead-necropolis',scenario);await attack(ids.killer,ids.victim);s=await ctx.runUntil(s=>s.entities.some(e=>e.raised&&e.side===0),{timeout:30000,label:'real Gravecaller summons on forward ground'});const raised=s.entities.find(e=>e.raised&&e.side===0);assert(raised);await stop(ids.killer);await move(raised.id,{x:ids.necropolisPoint.x+2,y:ids.necropolisPoint.y,level:ids.necropolisPoint.level??0});const sustained=await checkpoint('factions-undead-sustained',[28],scenario),troop=actor(sustained.game.state,raised.id),remaining=troop.expires-sustained.game.state.time;await elapsed(5);const healed=await checkpoint('factions-undead-healed',[28],scenario),next=actor(healed.game.state,raised.id);assert(next.hp>troop.hp);assert(Math.abs((next.expires-healed.game.state.time)-remaining)<.1);await move(raised.id,ids.outsidePoint);const outsideRaised=await checkpoint('factions-undead-outside',[28],scenario);await elapsed(3);const decay=await checkpoint('factions-undead-decaying',[28],scenario);assert(actor(decay.game.state,raised.id).expires-decay.game.state.time<actor(outsideRaised.game.state,raised.id).expires-outsideRaised.game.state.time-2.5);receipt.continuations.push(['factions-undead-sustained','factions-undead-decaying']);record('A paid forward necropolis heals the same real summon and sustains only its local lifetime',[28],{necropolis:necropolis.id,raised:raised.id});
++  scenario='factions-undead-necropolis-destruction';ids=await start(scenario);const beforeDeath=await checkpoint('factions-undead-source-before-destruction',[28],scenario);await ctx.runUntil(s=>!live(s,ids.necropolis),{timeout:60000,label:'hostile destruction of necropolis'});const deadSource=await checkpoint('factions-undead-source-destroyed',[28],scenario);await elapsed(3);const lostSustain=await checkpoint('factions-undead-source-decay',[28],scenario);assert(actor(lostSustain.game.state,ids.raised).expires-lostSustain.game.state.time<actor(deadSource.game.state,ids.raised).expires-deadSource.game.state.time-2.5);receipt.continuations.push(['factions-undead-source-before-destruction','factions-undead-source-decay']);record('Hostile source destruction resumes a local summon’s decay',[28]);
++
++  const wet={};
++  for(const terrain of ['baseline','mud','shallows','water']){scenario=`factions-tideborn-${terrain}`;ids=await start(scenario);const before=await checkpoint(`factions-tideborn-${terrain}-before`,[29],scenario);if(terrain!=='baseline'){await action('Shape water',ids.caster,{destination:ids.shapePoint,picker:'Shaped terrain',value:terrain});s=await ctx.snap();assert.equal(bank(before.game.state).crystal-bank(s).crystal,25);const effect=s.factionSystems.terrainEffects.at(-1);assert(effect&&effect.tiles.length&&effect.tiles.length<=13);assert(effect.tiles.every(t=>t.after===terrain));assert(ids.protectedTiles.every(p=>s.world.levels[p.level??0].terrain[Math.floor(p.y)*s.width+Math.floor(p.x)]===(p.terrain??p.before)));record(`${terrain} shaping pays 25 crystal and protects excluded terrain`,[29],{tiles:effect.tiles.length,reason:await disabled('Shape water',ids.caster,/ready|recharg|cooldown/i)});await checkpoint(`factions-tideborn-${terrain}-active`,[29],scenario);}
++    const movementStart=(await checkpoint(`factions-tideborn-${terrain}-movement-before`,[29],scenario)).game.state;await select(ids.soldier);await ctx.ground(ids.crossPoint,'right');await elapsed(5);const movement=await checkpoint(`factions-tideborn-${terrain}-movement`,[29],scenario);wet[terrain]={ordinary:ids.enemies.map(id=>Math.hypot(actor(movement.game.state,id).x-actor(movementStart,id).x,actor(movement.game.state,id).y-actor(movementStart,id).y)),amphibious:Math.hypot(actor(movement.game.state,ids.soldier).x-actor(movementStart,ids.soldier).x,actor(movement.game.state,ids.soldier).y-actor(movementStart,ids.soldier).y),tick:movement.game.state.tick};
++    if(terrain!=='baseline'){await ctx.runUntil(s=>s.factionSystems.terrainEffects.length===0,{timeout:45000,label:'temporary terrain expires'});const restored=await checkpoint(`factions-tideborn-${terrain}-restored`,[29],scenario);const active=(await ctx.snap());for(const tile of movement.game.state.factionSystems.terrainEffects.flatMap(e=>e.tiles))assert.equal(active.world.levels[tile.level??0].terrain[Math.floor(tile.y)*active.width+Math.floor(tile.x)],tile.before);receipt.continuations.push([`factions-tideborn-${terrain}-active`,`factions-tideborn-${terrain}-restored`]);assert.equal(ctx.factionFacts(restored).terrainEffects.length,0);}
++  }
++  assert(wet.mud.ordinary.some((d,i)=>d<wet.baseline.ordinary[i]));assert(wet.shallows.amphibious>0);assert(wet.water.ordinary.some((d,i)=>d<wet.baseline.ordinary[i]));record('Native shaping changes ordinary movement, preserves wet Tideborn travel and restores the choke',[29],wet);receipt.effects.wetMovement=wet;
++
++  scenario='factions-automata-connect';ids=await start(scenario);s=await ctx.snap();assert.equal(actor(s,ids.tower).factionState?.power?.connected??false,false);const relay=await build('Build power relay','core:automata-power-relay',ids.worker,ids.relayPoint,[30],'factions-automata-relay',scenario);s=await ctx.runUntil(s=>actor(s,ids.tower).factionState?.power?.connected===true,{timeout:10000,label:'completed relay joins the native power graph'});const powered=await checkpoint('factions-automata-powered',[30],scenario);assert(ctx.factionFacts(powered).actors.find(e=>e.id===ids.tower).canFire);const targetHp=ids.enemies.map(id=>actor(s,id).hp);await ctx.runUntil(s=>ids.enemies.some((id,i)=>actor(s,id).hp<targetHp[i]),{timeout:45000,label:'connected tower really fires'});await checkpoint('factions-automata-powered-hit',[30],scenario);record('Native relay construction connects a defense and enables its actual fire',[30],{relay:relay.id});
++  scenario='factions-automata-break';ids=await start(scenario);const connected=await checkpoint('factions-automata-network-before-hit',[30],scenario);const reserves=connected.game.state.entities.filter(e=>e.side===0&&e.kind==='building'&&e.id!==ids.tower).map(e=>({id:e.id,shield:e.shield??0}));await ctx.runUntil(s=>reserves.some(e=>(actor(s,e.id).shield??0)<e.shield),{timeout:30000,label:'shared shield reserve absorbs tower damage'});await checkpoint('factions-automata-shared-shield',[30],scenario);await ctx.runUntil(s=>!live(s,ids.relay)&&actor(s,ids.tower).factionState?.power?.connected===false,{timeout:60000,label:'connector destruction removes power'});const disconnected=await checkpoint('factions-automata-disconnected',[30],scenario);assert.equal(ctx.factionFacts(disconnected).actors.find(e=>e.id===ids.tower).canFire,false);await build('Build power relay','core:automata-power-relay',ids.worker,ids.relayPoint,[30],'factions-automata-rebuilt-relay',scenario);await ctx.runUntil(s=>actor(s,ids.tower).factionState?.power?.connected===true,{timeout:10000,label:'rebuilt relay rejoins the native power graph'});await checkpoint('factions-automata-reconnected',[30],scenario);receipt.continuations.push(['factions-automata-network-before-hit','factions-automata-reconnected']);record('Shared shields absorb real damage, connector death disables a defense, and rebuilding restores it',[30]);
++
++  receipt.featureIds=[...new Set(receipt.checks.flatMap(c=>c.featureIds))].sort((a,b)=>a-b);assert.deepEqual(receipt.featureIds,[21,22,23,24,25,26,27,28,29,30]);receipt.completed=true;return receipt;
++}
+diff --git a/scripts/acceptance/native-audit.ts b/scripts/acceptance/native-audit.ts
+index ab84bbfdb59088c233d2b56c4452219253705b42..5e81e78ec31c63b6867de905019f335386ac92e8 100644
+--- a/scripts/acceptance/native-audit.ts
++++ b/scripts/acceptance/native-audit.ts
+@@ -12,7 +12,9 @@ import { SIMULATION_REVISION } from '../../src/core/versions';
+ import { observeNative, verifyCaptureAmbushNativeArtifacts } from './capture-ambush-native-checks';
+ import { verifyDirectionDefenseNativeArtifacts } from './audit-direction-defense';
+ import { readAuthenticatedDownload } from './native-downloads';
++import { observeFactionNative,verifyFactionPowerNativeArtifacts } from './audit-faction-powers';
+ export { observeNative };
++export { observeFactionNative };
+ 
+ const digest = (bytes: string | Buffer) => createHash('sha256').update(bytes).digest('hex');
+ function commandSuffix(partial: SessionFile, full: SessionFile): ReplayAction[] {
+@@ -46,7 +48,7 @@ export function verifyNativeAcceptanceArtifacts({ evidenceDir, fixturesDir, mani
+   assert.equal(receipt.completed, true, 'Browser must complete before its histories are admitted');
+   const selectedGroups = receipt.selectedGroups;
+   assert(Array.isArray(selectedGroups) && selectedGroups.length > 0 && new Set(selectedGroups).size === selectedGroups.length);
+-  assert(selectedGroups.every(group => ['direction', 'capture', 'specialists'].includes(group)), 'Browser requested known acceptance groups');
++  assert(selectedGroups.every(group => ['direction', 'capture', 'specialists', 'factions'].includes(group)), 'Browser requested known acceptance groups');
+   assert.deepEqual(Object.keys(receipt.groups).sort(), [...selectedGroups].sort(), 'Every requested browser group has its completed receipt');
+   for(const group of selectedGroups)assert(receipt.groups[group]&&typeof receipt.groups[group]==='object'&&!Array.isArray(receipt.groups[group]),`Nonempty completed receipt for requested ${group}`);
+   assert(Object.keys(receipt.downloads).length > 0, 'Retained native downloads are required');
+@@ -80,6 +82,33 @@ export function verifyNativeAcceptanceArtifacts({ evidenceDir, fixturesDir, mani
+   }
+   assert(checks.length > 0, 'An admitted history audit must inspect original native saves');
+   const pairs: [string, string][] = [];
++  if(selectedGroups.includes('factions')) {
++    assert.equal(receipt.groups.factions.completed,true);
++    const required: [string,string][] = [
++      ['factions-orcs-bulwark-active','factions-orcs-chants-expired'],
++      ['factions-orcs-earned-trophies','factions-orcs-standard-outside'],
++      ['factions-standard-before-destruction','factions-standard-destroyed'],
++      ['factions-fairies-before-swap','factions-fairies-swapped'],
++      ['factions-fairies-grove-complete','factions-fairies-grove-decoy'],
++      ['factions-dwarves-tunnel-transit','factions-dwarves-tunnel-arrived'],
++      ['factions-dwarves-exit-pending','factions-dwarves-exit-canceled'],
++      ['factions-undead-wagon-queued','factions-undead-wagon-recruited'],
++      ['factions-undead-wagon-cargo','factions-undead-wagon-raised'],
++      ['factions-undead-sustained','factions-undead-decaying'],
++      ['factions-undead-source-before-destruction','factions-undead-source-decay'],
++      ['factions-automata-network-before-hit','factions-automata-reconnected'],
++    ];
++    for(const prefix of ['factions-fairies-grove','factions-dwarves-entrance','factions-dwarves-exit','factions-undead-necropolis','factions-automata-relay','factions-automata-rebuilt-relay'])required.push([`${prefix}-foundation`,`${prefix}-complete`]);
++    for(const fitting of ['baseline','stone','grapeshot','incendiary','reinforced'])required.push([`factions-dwarves-${fitting}-pending`,`factions-dwarves-${fitting}-impact`]);
++    for(const terrain of ['mud','shallows','water'])required.push([`factions-tideborn-${terrain}-active`,`factions-tideborn-${terrain}-restored`]);
++    const supplied=receipt.groups.factions.continuations;
++    assert(Array.isArray(supplied),'Faction continuations are declared');
++    for(const pair of supplied)assert(Array.isArray(pair)&&pair.length===2&&pair[0]!==pair[1]&&pair.every(name=>typeof name==='string'&&name.startsWith('factions-')),'Distinct faction continuation endpoints');
++    const keys=supplied.map((pair:string[])=>JSON.stringify(pair));
++    assert.equal(new Set(keys).size,keys.length,'Unique faction continuation pairs');
++    assert.deepEqual(keys.sort(),required.map(pair=>JSON.stringify(pair)).sort(),'Every required faction continuation is retained');
++    pairs.push(...required);
++  }
+   if (selectedGroups.includes('specialists')) {
+     for (const faction of ['orcs', 'fairies', 'dwarves', 'undead', 'tideborn', 'automata']) pairs.push([`specialists-${faction}-pending`, `specialists-${faction}-active`]);
+     pairs.push(['specialists-death-recovery', 'specialists-paid-rerecruit-complete'], ['specialists-paid-rerecruit-queued', 'specialists-paid-rerecruit-complete'], ['specialists-bridge-before-expiry', 'specialists-bridge-expired'], ['specialists-barricade-obstructs', 'specialists-barricade-expired-crossed'], ['specialists-beacon-connected-alert', 'specialists-beacon-link-destroyed']);
+@@ -95,6 +124,7 @@ export function verifyNativeAcceptanceArtifacts({ evidenceDir, fixturesDir, mani
+     return { from, to, checkpointTick: partial.game.state.tick, finalTick: full.game.state.tick, suffix, completeNativeContinuation: true };
+   });
+   const groupAudits: any = {};
++  if(selectedGroups.includes('factions'))groupAudits.factions=verifyFactionPowerNativeArtifacts({evidenceDir,fixturesDir,manifest,receipt:receipt.groups.factions,files});
+   if (selectedGroups.includes('capture')) groupAudits.capture = verifyCaptureAmbushNativeArtifacts(evidenceDir, manifest, receipt.groups.capture, receipt.downloads);
+   if (selectedGroups.includes('direction')) groupAudits.direction = verifyDirectionDefenseNativeArtifacts({ evidenceDir, fixturesDir, manifest: { ...manifest, scenarios: Object.fromEntries(Object.entries(manifest.scenarios).filter(([, scenario]: [string, any]) => scenario.group === 'direction')) }, browserReceipt: receipt.groups.direction, downloads:receipt.downloads, outputPath: resolve(evidenceDir, 'direction-defense-native-checks.json'), sourceCommit });
+   const result = { sourceCommit, saveVersion: SAVE_VERSION, simulationRevision: SIMULATION_REVISION, completeNativeSaves: checks.length, checks, continuations, groupAudits };
+diff --git a/scripts/acceptance/native-fixtures.ts b/scripts/acceptance/native-fixtures.ts
+index fae6b71b7d38b2a9f0e98e012e5e9d185e0164dd..90974876292f5cc31da5a7ca2ff95b490b72ddc1 100644
+--- a/scripts/acceptance/native-fixtures.ts
++++ b/scripts/acceptance/native-fixtures.ts
+@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
+ import { buildDirectionDefenseFixtures } from './direction-defense-fixtures';
+ import { buildCaptureAmbushMoraleFixtures } from './capture-ambush-fixtures';
+ import { buildSpecialistLifecycleFixtures } from './specialist-lifecycle-fixtures';
++import { buildFactionPowerFixtures } from './faction-powers-fixtures';
+ import { SAVE_VERSION } from '../../src/core/saves';
+ import { SIMULATION_REVISION } from '../../src/core/versions';
+ 
+@@ -14,6 +15,7 @@ export function buildNativeAcceptanceFixtures(output: string, sourceCommit: stri
+   const out = resolve(output); assert(!existsSync(out), 'Use a new fixture directory');
+   mkdirSync(out, { recursive: true });
+   const groups = {
++    factions: buildFactionPowerFixtures(resolve(out, 'factions'), sourceCommit),
+     direction: buildDirectionDefenseFixtures(resolve(out, 'direction'), sourceCommit),
+     capture: buildCaptureAmbushMoraleFixtures(resolve(out, 'capture'), sourceCommit),
+     specialists: (() => {
+diff --git a/scripts/acceptance/verify-native-acceptance.mjs b/scripts/acceptance/verify-native-acceptance.mjs
+index 3a5ebd1da517438b60b3c6a215c454417c756327..602b36e3606181b379ab3117f232d4cd14888fcb 100644
+--- a/scripts/acceptance/verify-native-acceptance.mjs
++++ b/scripts/acceptance/verify-native-acceptance.mjs
+@@ -9,6 +9,7 @@ import { loadPinnedHelper } from './helper-provenance.mjs';
+ import { runDirectionDefense } from './direction-defense.mjs';
+ import { runCaptureAmbushMorale } from './capture-ambush.mjs';
+ import { runSpecialistLifecycle } from './specialist-lifecycle.mjs';
++import { runFactionPowers } from './faction-powers.mjs';
+ 
+ const entry=fileURLToPath(import.meta.url);
+ if(process.argv[2]==='--freeze') {
+@@ -23,7 +24,7 @@ if(process.argv[2]==='--freeze') {
+ }
+ 
+ const [, , baseArg,rootArg,outArg,fixturesArg,freezeArg,helperArg,groupsArg]=process.argv;
+-assert(baseArg&&rootArg&&outArg&&fixturesArg&&freezeArg&&helperArg,'Use BASE ROOT NEW_EVIDENCE FIXTURES FREEZE AUDIT_BUNDLE [direction,capture,specialists]');
++assert(baseArg&&rootArg&&outArg&&fixturesArg&&freezeArg&&helperArg,'Use BASE ROOT NEW_EVIDENCE FIXTURES FREEZE AUDIT_BUNDLE [direction,capture,specialists,factions]');
+ const base=baseArg,root=resolve(rootArg),out=resolve(outArg),fixtures=resolve(fixturesArg),freezePath=resolve(freezeArg);
+ assert.equal(entry,resolve(root,'scripts/acceptance/verify-native-acceptance.mjs'),'Execute browser runner from pinned checkout');
+ assert(out!==fixtures&&!out.startsWith(`${fixtures}${sep}`),'Evidence output is outside frozen fixtures');
+@@ -34,7 +35,7 @@ const identity={saveVersion:frozen.source.saveVersion,simulationRevision:frozen.
+ const manifest=JSON.parse(await readFile(resolve(fixtures,'manifest.json'),'utf8'));
+ const {module:helper,provenance:helperProvenance}=await loadPinnedHelper(root,frozen.source.commit,helperArg,'scripts/acceptance/native-audit.ts');
+ assert.equal(typeof helper.observeNative,'function');
+-const runners={direction:runDirectionDefense,capture:runCaptureAmbushMorale,specialists:runSpecialistLifecycle};
++const runners={direction:runDirectionDefense,capture:runCaptureAmbushMorale,specialists:runSpecialistLifecycle,factions:runFactionPowers};
+ const groups=(groupsArg??'direction,capture,specialists').split(',');
+ assert(groups.length&&new Set(groups).size===groups.length&&groups.every(group=>Object.hasOwn(runners,group)),'Select known unique acceptance groups');
+ const distHtml=await readFile(resolve(root,'dist/index.html')),declaredAssets=htmlAssets(distHtml.toString(),base);
+@@ -74,6 +75,7 @@ try {
+     assert.deepEqual(evidence.assetFailures,[]);for(const url of declaredAssets)assert(capturedAssets.has(url),`Observed production HTML asset ${url}`);
+   };
+   ctx=createNativeContext({page,out,fixtures,manifest,identity,evidence,observeNative:helper.observeNative});
++  ctx.factionFacts=helper.observeFactionNative;
+   phase='open frozen production application';const response=await page.goto(base);assert(response?.ok());
+   const servedHtml=await response.body();assert.deepEqual(servedHtml,distHtml);evidence.source.servedHtmlSha256=digest(servedHtml);
+   await page.locator('.begin-match').click();await ctx.ready();await verifyAssets();

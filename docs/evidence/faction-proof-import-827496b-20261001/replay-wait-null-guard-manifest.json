@@ -1,0 +1,90 @@
+{
+  "kind": "separate-one-character-faction-proof-replay-wait-amendment",
+  "checkedAt": "2026-10-01T21:46:50.875543+00:00",
+  "sourcePin": "906e0bd25577a9d99473c88cc50e71700235754a",
+  "immutableRecipePin": "0bd7d51476cd855505b91ce76b232795afae867f",
+  "fixedSourcePin": "881dff253f0392c0e539efe21af744ed2a57b214",
+  "targetRootPin": "e976502f25df468b3edf1298fed887de78cd4730",
+  "immutableProductPin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "originalPacketTargetRootPin": "8b96f5197adf5b4ddfa160c2fe5a550afdf7e9d8",
+  "targetChangesSinceOriginalPacket": [
+    "A\tdocs/evidence/ai-453c221-browser-launcher-20261001/README.md",
+    "A\tdocs/evidence/ai-453c221-browser-launcher-20261001/followup-453c221-r4-chromium1243.sh",
+    "A\tdocs/evidence/ai-453c221-browser-launcher-20261001/launcher-adaptation.patch",
+    "A\tdocs/evidence/ai-453c221-browser-launcher-20261001/original-followup-453c221-r4.sh",
+    "A\tdocs/evidence/ai-453c221-browser-launcher-20261001/playwright-chromium-1243.mjs",
+    "A\tdocs/evidence/ai-453c221-browser-launcher-20261001/preparation.json",
+    "A\tdocs/evidence/ai-453c221-browser-launcher-20261001/proof-envelope.mjs",
+    "A\tdocs/evidence/ai-453c221-browser-launcher-20261001/retention.json",
+    "A\tdocs/evidence/ai-453c221-browser-launcher-20261001/verify-launcher.mjs",
+    "A\tdocs/evidence/root-assembly-20261001/autosave-8b96f51-passed-review/ovf-root-8b96f51-autosave-repair-admission-audit-gpt56-sol.json",
+    "A\tdocs/evidence/root-assembly-20261001/autosave-8b96f51-passed-review/ovf-root-8b96f51-autosave-repair-admission-review-gpt56-sol.md",
+    "A\tdocs/evidence/root-assembly-20261001/autosave-8b96f51-passed-review/retention.json",
+    "A\tdocs/evidence/root-assembly-20261001/autosave-8b96f51-passed-review/root-git-readback.json",
+    "M\tdocs/features/decisions.tsv"
+  ],
+  "sevenImportBaseIdentitiesUnchangedSinceOriginalPacket": true,
+  "path": "scripts/acceptance/faction-powers.mjs",
+  "line": 29,
+  "beforePredicate": "await ctx.wait(()=>window.rts.mode==='replay',null,60000);",
+  "afterPredicate": "await ctx.wait(()=>window.rts?.mode==='replay',null,60000);",
+  "before": {
+    "mode": "100644",
+    "type": "blob",
+    "gitBlob": "4d8393fe46844f4b8661f0579e8a22b0b5fbe6e2",
+    "bytes": 32685,
+    "sha256": "fb4917a1fd38da0799bb627c78bdf65bcdcf49b6179e6daacf370d37fd3a74fb"
+  },
+  "after": {
+    "mode": "100644",
+    "type": "blob",
+    "gitBlob": "9985107f6534e51621be2865711230323d5c5f4a",
+    "bytes": 32686,
+    "sha256": "c8fd9d2ba5539cc41b69d7e1ff527a4c8251188101ba8bb76c9e9e137a6c1c31"
+  },
+  "changedBytes": "One ASCII question mark inserted; every other byte unchanged.",
+  "fixedCommitChangesOnlyOneProofFile": true,
+  "sixOtherFilesMatchImmutableRecipe": true,
+  "originalPacketHashesUnchanged": true,
+  "all568RootProductInputsMatchFreeze": true,
+  "amendedCandidateTree": "0ba9d13ae4c7de9819cec4150e5085e0daf6752d",
+  "candidateIsPreviewTreeNotIntegratedCommit": true,
+  "amendedCandidateChangesExactlySevenPaths": [
+    "docs/features/FACTION_FINAL_VERIFICATION.md",
+    "scripts/acceptance/audit-faction-powers.ts",
+    "scripts/acceptance/faction-powers-fixtures.ts",
+    "scripts/acceptance/faction-powers.mjs",
+    "scripts/acceptance/native-audit.ts",
+    "scripts/acceptance/native-fixtures.ts",
+    "scripts/acceptance/verify-native-acceptance.mjs"
+  ],
+  "amendedCandidateRetainsAll568ProductInputs": true,
+  "amendedCandidateRetainsThreeApprovedRootHelpers": true,
+  "rootImportedOrExecuted": false,
+  "newIntegratedCommitStillRequired": true,
+  "acceptanceBoundaryUnchanged": "Existing default groups and all original native assertions remain unchanged; no additional gate.",
+  "syntaxCheck": {
+    "command": [
+      "node",
+      "--check",
+      "/home/morgana/.codex/worktrees/faction-economy-cleanup/orcs-vs-Fairies/scripts/acceptance/faction-powers.mjs"
+    ],
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": "",
+    "parserOnly": true
+  },
+  "patch": {
+    "path": "/tmp/ovf-faction-seven-file-import-453-8b96-20261001/replay-wait-null-guard.patch",
+    "bytes": 5198,
+    "sha256": "47345ada98dd11f434324dd29fa4729b6973d32cb789bb01247694bdc4a25023"
+  },
+  "attribution": {
+    "harness": "Codex",
+    "model": "GPT-6",
+    "email": "noreply@openai.com"
+  },
+  "commitMessage": "Guard faction replay wait during scene replacement\n\nWait for replay mode while the diagnostic getter is temporarily null.\nKeep the subsequent readiness check and all faction assertions unchanged.\n\n\ud83e\udd16 Generated with [Codex](https://openai.com/codex/)\n\nCo-Authored-By: GPT-6 <noreply@openai.com>\n\n",
+  "executionLimits": "Static Git/live-byte checks, scratch index and Node syntax parser only. Runtime remains held; no application import/build/test/fixture/browser/server/dependency execution.",
+  "allChecksPassed": true
+}
