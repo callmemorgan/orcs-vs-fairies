@@ -20,6 +20,7 @@ import { teamObservation } from './team-view';
 import { createTournamentService } from '../tournament/service';
 import { createCommunityHttp } from './community-http';
 import { CommunityPackageError } from './community-packages';
+import { rankedEligibility, RANKED_RULES, type CompetitionEntry } from '../online/competitions';
 
 const scrypt=promisify(scryptCallback);
 const SESSION_LIFETIME=7*24*60*60*1000;
@@ -78,6 +79,10 @@ export interface ServerOptions {
   trustProxy?:boolean;
   /** Configurations are supplied by the server operator, never by an HTTP request. */
   tournaments?:{cwd:string;configs:unknown[];outputRoot?:string};
+  /** Trusted host clock for UTC season/day boundaries; clients cannot supply it. */
+  competitionNow?:()=>number;
+  /** Simulation still advances in 1/20-second steps. Used by deterministic hosted verification. */
+  tickIntervalMs?:number;
 }
 
 /** Independent clients send inputs; only this process owns and advances GameState. */
@@ -90,6 +95,9 @@ export async function createRtsServer(options:ServerOptions){
   if(externalOrigin){const parsed=new URL(externalOrigin);if(parsed.origin!==externalOrigin||!['http:','https:'].includes(parsed.protocol))throw new Error('RTS_ORIGIN must be an exact HTTP(S) origin without a trailing slash.');}
   const store=new ServerStore(options.dataDir,compatibilityFingerprint());
   const communityHttp=createCommunityHttp(store.db);
+  const competitionNow=options.competitionNow??Date.now;
+  const interval=options.tickIntervalMs??1000/TICK_RATE;
+  if(!Number.isFinite(interval)||interval<1||interval>1000){store.close();throw new Error('Tick interval must be 1–1000ms.');}
   const lobbies=new Map<string,StoredLobby>(store.lobbies().map(lobby=>{const normalized=settings(lobby.settings),draft=lobby.draft?validateDraftState(lobby.draft,normalized.players!.map((p,id)=>({...p,id:id as Side})),normalizeMatchRules(normalized.rules)):createDraft(normalized.players!.map((p,id)=>({...p,id:id as Side})),normalizeMatchRules(normalized.rules));return [lobby.id,{...lobby,draft,settings:normalized,seats:roster(normalized,lobby.seats,undefined,false)}];}));
   const matches=new Map<string,ActiveMatch>();
   const tickets=new Map<string,Ticket>();
@@ -119,7 +127,7 @@ export async function createRtsServer(options:ServerOptions){
   }}catch(error){store.close();throw error;}
 
   function publicLobby(lobby:StoredLobby):LobbyObservation{
-    return {id:lobby.id,hostId:lobby.hostId,revision:lobby.revision,settings:lobby.settings,seats:lobby.seats,matchId:lobby.matchId,draft:lobby.draft?{...structuredClone(lobby.draft),remainingTicks:lobby.draftDeadlineAt?Math.max(1,Math.ceil((lobby.draftDeadlineAt-Date.now())/(1000/TICK_RATE))):lobby.draft.remainingTicks}:undefined};
+    return {id:lobby.id,hostId:lobby.hostId,revision:lobby.revision,settings:lobby.settings,seats:lobby.seats,matchId:lobby.matchId,...(lobby.ranked?{ranked:true}:{}),...(lobby.dailyDate?{dailyDate:lobby.dailyDate}:{}),draft:lobby.draft?{...structuredClone(lobby.draft),remainingTicks:lobby.draftDeadlineAt?Math.max(1,Math.ceil((lobby.draftDeadlineAt-Date.now())/(1000/TICK_RATE))):lobby.draft.remainingTicks}:undefined};
   }
   function send(socket:WebSocket,message:ServerMessage){
     if(socket.readyState===WebSocket.OPEN){
@@ -209,12 +217,36 @@ export async function createRtsServer(options:ServerOptions){
   function changed(lobby:StoredLobby){lobby.revision++;store.saveLobby(lobby);lobbies.set(lobby.id,lobby);}
   function matchSummary(match:ActiveMatch){return {id:match.id,lobbyId:match.lobbyId,tick:match.state.tick,finished:isGameOver(match.state),failed:match.failed};}
   const tournaments=options.tournaments?createTournamentService({cwd:options.tournaments.cwd,configs:options.tournaments.configs,outputRoot:options.tournaments.outputRoot??resolve(options.dataDir,'tournaments'),authorize:req=>!!session(req),principal:req=>session(req)?.id}):undefined;
+  function launchMatch(lobby:StoredLobby,configuration:CoreMatchConfig,competition?:CompetitionEntry){
+    const state=createMatch(configuration),sides=playerSides(state),id=randomUUID(),views=sides.map(side=>new OnlineView(side));
+    const frame={tick:0,views:views.map(view=>view.observe(state))},generations=sides.map(()=>0);
+    const started={...lobby,matchId:id,revision:lobby.revision+1};
+    store.startMatch(started,state,views.map(view=>view.snapshot()),generations,frame,configuration,competition);
+    matches.set(id,{id,lobbyId:lobby.id,state,views,frames:[frame],generations,pending:[],receipts:new Map(),lastSeq:sides.map(()=>0),peers:new Set(),eventBuffers:sides.map(()=>[]),failed:false});
+    lobbies.set(lobby.id,started);return started;
+  }
 
   async function route(req:IncomingMessage,res:ServerResponse){
     const url=new URL(req.url??'/',`http://${req.headers.host??'localhost'}`),path=url.pathname;
     if(req.method!=='GET'&&!allowedOrigin(req))throw new HttpError(403,'Origin is not allowed.');
     if(req.method==='GET'&&path==='/api/health'){respond(res,200,{ok:!closing,protocolVersion:PROTOCOL_VERSION,tickRate:TICK_RATE,activeMatches:[...matches.values()].filter(match=>!isGameOver(match.state)&&!match.failed).length});return;}
     if(req.method==='GET'&&path==='/api/session'){respond(res,200,{account:session(req)??null});return;}
+    if(req.method==='GET'&&path==='/api/ranked/seasons'){
+      const current=store.competitions.season(competitionNow());respond(res,200,{current,seasons:store.competitions.seasons(),rules:RANKED_RULES});return;
+    }
+    if(req.method==='GET'&&path==='/api/ranked/standings'){
+      const current=store.competitions.season(competitionNow()),seasonId=url.searchParams.get('season')??current.id;
+      if(!store.competitions.seasons().some(season=>season.id===seasonId))throw new HttpError(404,'Season not found.');
+      respond(res,200,{seasonId,standings:store.competitions.standings(seasonId)});return;
+    }
+    if(req.method==='GET'&&path==='/api/challenges/daily'){
+      const challenge=store.competitions.challenge(competitionNow());respond(res,200,{challenge,standings:store.competitions.dailyStandings(challenge.date),rules:'The server chooses the UTC date, map seed, factions and starting conditions. Fastest hosted victory wins. Each account keeps its fastest victory. Started runs count for their original date, including after midnight.'});return;
+    }
+    if(req.method==='GET'&&path==='/api/challenges/daily/standings'){
+      const date=url.searchParams.get('date')??store.competitions.challenge(competitionNow()).date;
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(date))throw new HttpError(400,'Use a UTC date in YYYY-MM-DD format.');
+      respond(res,200,{date,standings:store.competitions.dailyStandings(date)});return;
+    }
     if(req.method==='POST'&&path==='/api/auth/guest'){
       authLimit(req);const value=await body(req);
       if(!keys(value,['username'])||(value.username!==undefined&&(typeof value.username!=='string'||!/^[-_a-zA-Z0-9]{3,24}$/.test(value.username))))throw new HttpError(400,'Guest name must be 3–24 letters, digits, underscores or hyphens.');
@@ -247,20 +279,40 @@ export async function createRtsServer(options:ServerOptions){
       const user=account(req);
       if(await communityHttp({req,res,url,user,body,respond}))return;
       if(tournaments&&await tournaments.handle(req,res))return;
+      if(req.method==='POST'&&path==='/api/challenges/daily/start'){
+        const value=await body(req);if(!keys(value,[]))throw new HttpError(400,'The server chooses all daily challenge settings.');
+        const challenge=store.competitions.challenge(competitionNow());
+        const active=[...lobbies.values()].find(lobby=>lobby.dailyDate===challenge.date&&lobby.hostId===user.id&&lobby.matchId&&!isGameOver(matches.get(lobby.matchId)!.state));
+        if(active){respond(res,200,{lobby:publicLobby(active),challenge});return;}
+        const players:LobbyPlayerSettings[]=challenge.config.players.map(player=>({factionId:player.factionId,teamId:player.teamId,controller:player.controller==='ai'?'ai':'human'}));
+        const configuration:LobbySettings={mapSize:'small',factions:players.map(player=>player.factionId),players,sharedVision:true,startingAge:1};
+        const lobby:StoredLobby={id:randomUUID(),hostId:user.id,revision:1,settings:configuration,seed:challenge.seed,seats:roster(configuration,[],user),matchId:null,dailyDate:challenge.date};
+        const started=launchMatch(lobby,challenge.config,{kind:'daily',date:challenge.date,participant:user,challenge});
+        respond(res,201,{lobby:publicLobby(started),challenge});return;
+      }
+      const resultRoute=/^\/api\/competitions\/results\/([^/]+)$/.exec(path);
+      if(req.method==='GET'&&resultRoute){
+        const match=matches.get(resultRoute[1]);if(!match)throw new HttpError(404,'Match not found.');
+        if(!lobbies.get(match.lobbyId)?.seats.some(seat=>seat.account?.id===user.id))throw new HttpError(403,'This result belongs to the match participants.');
+        const result=store.competitions.result(match.id);
+        respond(res,200,{result,finished:result!==null,failed:match.failed});return;
+      }
       if(req.method==='GET'&&path==='/api/lobbies'){respond(res,200,{lobbies:[...lobbies.values()].map(publicLobby)});return;}
       if(req.method==='POST'&&path==='/api/lobbies'){
-        const value=await body(req);if(!keys(value,['settings','seed'])||(value.seed!==undefined&&!integer(value.seed,0,0xffffffff)))throw new HttpError(400,'Invalid lobby fields.');
+        const value=await body(req);if(!keys(value,['settings','seed','ranked'])||(value.seed!==undefined&&!integer(value.seed,0,0xffffffff))||(value.ranked!==undefined&&typeof value.ranked!=='boolean'))throw new HttpError(400,'Invalid lobby fields.');
         const configuration=settings(value.settings??{mapSize:'medium',factions:['orcs','fairies']});
-        const lobby:StoredLobby={id:randomUUID(),hostId:user.id,revision:1,settings:configuration,seed:(value.seed as number|undefined)??randomBytes(4).readUInt32LE(),seats:roster(configuration,[],user),matchId:null};
+        if(value.ranked){const reason=rankedEligibility(configuration);if(reason)throw new HttpError(400,reason);if(value.seed!==undefined)throw new HttpError(400,'The server chooses ranked map seeds.');}
+        const lobby:StoredLobby={id:randomUUID(),hostId:user.id,revision:1,settings:configuration,seed:(value.seed as number|undefined)??randomBytes(4).readUInt32LE(),seats:roster(configuration,[],user),matchId:null,...(value.ranked?{ranked:true}:{})};
         resetDraft(lobby);store.saveLobby(lobby);lobbies.set(lobby.id,lobby);respond(res,201,{lobby:publicLobby(lobby)});return;
       }
       const lobbyRoute=/^\/api\/lobbies\/([^/]+)(?:\/(join|settings|ready|start|leave|draft))?$/.exec(path);
       if(lobbyRoute){
-        const existing=getLobby(lobbyRoute[1]),action=lobbyRoute[2];
-        if(req.method==='GET'&&!action){respond(res,200,{lobby:publicLobby(existing)});return;}
-        const lobby=structuredClone(existing);
+        const action=lobbyRoute[2];
+        if(req.method==='GET'&&!action){respond(res,200,{lobby:publicLobby(getLobby(lobbyRoute[1]))});return;}
         if(req.method!=='POST')throw new HttpError(405,'Use POST.');
-        const value=await body(req);editLobby(lobby,value);
+        const value=await body(req);
+        // Read the revision after the asynchronous body read. Overlapping starts cannot use a stale clone.
+        const lobby=structuredClone(getLobby(lobbyRoute[1]));editLobby(lobby,value);
         const own=lobby.seats.find(seat=>seat.account?.id===user.id);
         if(action==='join'){
           if(!keys(value,['expectedRevision']))throw new HttpError(400,'Unknown join field.');
@@ -268,7 +320,9 @@ export async function createRtsServer(options:ServerOptions){
         }else if(action==='settings'){
           if(user.id!==lobby.hostId)throw new HttpError(403,'Only the host may change settings.');
           if(!keys(value,['expectedRevision','settings','seed'])||(value.seed!==undefined&&!integer(value.seed,0,0xffffffff)))throw new HttpError(400,'Unknown or invalid settings field.');
-          const configuration=settings(value.settings),seats=roster(configuration,lobby.seats);lobby.settings=configuration;lobby.seats=seats;if(value.seed!==undefined)lobby.seed=value.seed as number;resetDraft(lobby);changed(lobby);
+          const configuration=settings(value.settings);
+          if(lobby.ranked){const reason=rankedEligibility(configuration);if(reason)throw new HttpError(400,reason);if(value.seed!==undefined)throw new HttpError(400,'The server chooses ranked map seeds.');}
+          const seats=roster(configuration,lobby.seats);lobby.settings=configuration;lobby.seats=seats;if(value.seed!==undefined)lobby.seed=value.seed as number;resetDraft(lobby);changed(lobby);
         }else if(action==='ready'){
           if(!own)throw new HttpError(403,'Join a seat first.');
           if(!keys(value,['expectedRevision','ready'])||typeof value.ready!=='boolean')throw new HttpError(400,'Expected readiness.');if(value.ready&&lobby.draft?.status==='drafting')throw new HttpError(409,'Finish the draft before becoming ready.');own.ready=value.ready;changed(lobby);
@@ -287,13 +341,9 @@ export async function createRtsServer(options:ServerOptions){
           if(!keys(value,['expectedRevision']))throw new HttpError(400,'Unknown start field.');
           if(lobby.seats.some(seat=>seat.controller==='human'&&(!seat.account||!seat.ready)))throw new HttpError(409,'All human players must be present and ready.');
           if(lobby.draft?.status==='drafting')throw new HttpError(409,'Finish the draft before launching.');
-          const configuration=matchConfig(lobby),state=createMatch(configuration),sides=playerSides(state);
-          const id=randomUUID(),views=sides.map(side=>new OnlineView(side)),frame={tick:0,views:views.map(view=>view.observe(state))},generations=sides.map(()=>0);
-          const started={...lobby,matchId:id,revision:lobby.revision+1};
-          store.startMatch(started,state,views.map(view=>view.snapshot()),generations,frame,configuration);
-          matches.set(id,{id,lobbyId:lobby.id,state,views,frames:[frame],generations,pending:[],receipts:new Map(),lastSeq:sides.map(()=>0),peers:new Set(),eventBuffers:sides.map(()=>[]),failed:false});
-          Object.assign(lobby,started);
-          lobbies.set(lobby.id,lobby);
+          let competition:CompetitionEntry|undefined;
+          if(lobby.ranked){const reason=rankedEligibility(lobby.settings);if(reason)throw new HttpError(400,reason);competition={kind:'ranked',seasonId:store.competitions.season(competitionNow()).id,participants:lobby.seats.map(seat=>seat.account!) as [Account,Account]};}
+          Object.assign(lobby,launchMatch(lobby,matchConfig(lobby),competition));
         }else throw new HttpError(404,'Unknown lobby action.');
         respond(res,200,{lobby:publicLobby(lobby)});return;
       }
@@ -306,7 +356,9 @@ export async function createRtsServer(options:ServerOptions){
         const value=await body(req);if(!keys(value,['role','perspective','view'])||!['player','spectator'].includes(value.role as string)||(value.perspective!==undefined&&!integer(value.perspective,0,match.state.players.length-1))||(value.view!==undefined&&!['player','team'].includes(value.view as string)))throw new HttpError(400,'Expected a player/spectator role and a valid player/team perspective.');
         const seat=lobbies.get(match.lobbyId)!.seats.find(seat=>seat.account?.id===user.id);
         if(value.role==='player'&&!seat)throw new HttpError(403,'You do not own a seat.');
-        const role=value.role as 'player'|'spectator',side=role==='player'?seat!.side:(value.perspective??0) as Side;
+        const role=value.role as 'player'|'spectator',competitionLobby=lobbies.get(match.lobbyId);
+        const side=role==='player'?seat!.side:(value.perspective??((competitionLobby?.ranked||competitionLobby?.dailyDate)&&seat?seat.side:0)) as Side;
+        if(role==='spectator'&&seat&&(competitionLobby?.ranked||competitionLobby?.dailyDate)&&(!isGameOver(match.state)||match.failed)&&side!==seat.side)throw new HttpError(403,'Competition participants may only inspect their own perspective during the match.');
         const perspective=role==='spectator'&&value.view==='team'?'team':'player';
         const token=randomBytes(32).toString('hex');tickets.set(token,{account:user,matchId:match.id,role,side,perspective,expires:Date.now()+60000});
         respond(res,200,{ticket:token,expiresInSeconds:60,protocolVersion:PROTOCOL_VERSION,role,side,perspective,delayTicks:role==='spectator'?delayTicks:0});return;
@@ -417,7 +469,7 @@ export async function createRtsServer(options:ServerOptions){
     for(const peer of match.peers)deliver(peer,match);
   }
   function advanceDrafts(){for(const lobby of lobbies.values()){if(lobby.matchId||lobby.draft?.status!=='drafting'||!lobby.draftDeadlineAt)continue;const turn=lobby.draft.order[lobby.draft.turn];if(lobby.seats[turn.side].controller!=='ai'&&Date.now()<lobby.draftDeadlineAt)continue;const next=structuredClone(lobby),rules=normalizeMatchRules(next.settings.rules),players=next.settings.players!.map((p,id)=>({...p,id:id as Side}));for(const id of legalDraftChoices(next.draft!,players,turn.side))if(applyDraftChoice(next.draft!,rules,players,turn.side,id))break;next.draftDeadlineAt=next.draft!.status==='drafting'?Date.now()+next.draft!.remainingTicks*1000/TICK_RATE:undefined;next.seats.forEach(seat=>{seat.ready=false;});changed(next);}}
-  const timer=setInterval(()=>{try{advanceDrafts();}catch{}for(const match of matches.values()){try{advance(match);}catch{match.failed=true;for(const peer of match.peers)fail(peer.socket,'match-failure','The match paused after an internal error.');}}const now=Date.now();for(const [token,ticket] of tickets)if(ticket.expires<now)tickets.delete(token);},1000/TICK_RATE);
+  const timer=setInterval(()=>{try{advanceDrafts();}catch{}for(const match of matches.values()){try{advance(match);}catch{match.failed=true;for(const peer of match.peers)fail(peer.socket,'match-failure','The match paused after an internal error.');}}const now=Date.now();for(const [token,ticket] of tickets)if(ticket.expires<now)tickets.delete(token);},interval);
   try{await new Promise<void>((resolveListening,reject)=>{http.once('error',reject);http.listen(port,host,()=>{http.off('error',reject);resolveListening();});});}
   catch(error){clearInterval(timer);await tournaments?.dispose();websocket.close();store.close();throw error;}
   const address=http.address();if(!address||typeof address==='string')throw new Error('No server address.');

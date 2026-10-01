@@ -1,0 +1,66 @@
+{
+  "checks": [
+    "normal browser account, ranked creation/join/readiness/start and authoritative callback connection",
+    "ranked finish after UTC rollover keeps its starting season and displays 1016/984 archived ratings",
+    "reload keeps an owned finished match available to rejoin",
+    "ratings, results and HttpOnly account session persist across actual server restart",
+    "daily server date/config match across accounts and duplicate start resumes the same hosted run",
+    "a hosted daily loss records its result and does not create a leaderboard score"
+  ],
+  "rankedResult": {
+    "matchId": "2eb9b8d3-b08d-455b-bd8a-f2ed533c3407",
+    "seasonId": "2026-10",
+    "winner": "8193c7ae-bc88-44ef-8772-9861dbe4ea45",
+    "tick": 4,
+    "ratings": [
+      {
+        "accountId": "8193c7ae-bc88-44ef-8772-9861dbe4ea45",
+        "before": 1000,
+        "after": 1016
+      },
+      {
+        "accountId": "aee757df-2bd5-44ef-9ec0-35435e35b49e",
+        "before": 1000,
+        "after": 984
+      }
+    ]
+  },
+  "daily": {
+    "date": "2026-11-01",
+    "seed": 1663299288,
+    "expiresAt": "2026-11-02T00:00:00.000Z",
+    "scoring": "fastest-victory",
+    "tickRate": 20,
+    "config": {
+      "schemaVersion": 1,
+      "map": {
+        "seed": 1663299288,
+        "size": "small"
+      },
+      "players": [
+        {
+          "id": 0,
+          "teamId": 0,
+          "factionId": "orcs",
+          "controller": "external"
+        },
+        {
+          "id": 1,
+          "teamId": 1,
+          "factionId": "fairies",
+          "controller": "ai",
+          "ai": {
+            "difficulty": "normal",
+            "personality": "balanced",
+            "opening": "infantry-rush"
+          }
+        }
+      ],
+      "rules": {
+        "sharedVision": true,
+        "startingAge": 1
+      }
+    }
+  },
+  "limitations": "Standalone browser mounts and their real server callbacks were verified here. Mounting in the shipped Phaser entry and hosted deployment still need assembled verification."
+}

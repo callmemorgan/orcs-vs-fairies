@@ -18,7 +18,7 @@ export class OnlineApi {
     this.baseUrl=(options.baseUrl??globalThis.location?.origin??'http://localhost').replace(/\/$/,'');
     this.fetcher=options.fetch??globalThis.fetch.bind(globalThis);this.timeoutMs=options.timeoutMs??10000;
   }
-  private async request<T>(path:string,body?:unknown):Promise<T> {
+  protected async request<T>(path:string,body?:unknown):Promise<T> {
     const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),this.timeoutMs);
     try {
       const response=await this.fetcher(`${this.baseUrl}${path}`,{

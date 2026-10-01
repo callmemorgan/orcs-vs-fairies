@@ -19,6 +19,7 @@ export interface LobbySeat {
 export interface LobbyObservation {
   id:string; hostId:string; revision:number; settings:LobbySettings;
   seats:LobbySeat[]; matchId:string|null; draft?:DraftState;
+  ranked?:boolean; dailyDate?:string;
 }
 type CoreObservation=ReturnType<PlayerView['observe']>;
 export type PlayerObservation=Omit<CoreObservation,'map'|'entities'|'events'> & {

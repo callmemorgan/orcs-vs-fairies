@@ -1,0 +1,50 @@
+import assert from 'node:assert/strict';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { build } from 'esbuild';
+
+await mkdir(resolve('work/competitions/browser'),{recursive:true});
+await build({entryPoints:['src/server/server.ts'],bundle:true,platform:'node',format:'esm',packages:'external',outfile:'work/competitions/server.mjs'});
+await build({entryPoints:['scripts/competitions/browser.ts'],bundle:true,format:'esm',outfile:'work/competitions/browser/browser.js'});
+await writeFile(resolve('work/competitions/browser/index.html'),'<!doctype html><html><head><meta charset="utf-8"><title>Competition verification</title><link rel="stylesheet" href="/browser.css"><style>body{margin:0;background:#111e20;color:#f2ead2;font:16px system-ui}main{margin:100px 24px}pre{padding:18px;background:#203033}.hosted-surrender{padding:12px}</style></head><body><div id="app"></div><script type="module" src="/browser.js"></script></body></html>');
+const playwright=await import(process.env.OVF_PLAYWRIGHT_MODULE??'playwright');
+const {createRtsServer}=await import(resolve('work/competitions/server.mjs'));
+const evidence=resolve('docs/evidence/competitions-browser');await mkdir(evidence,{recursive:true});
+let now=Date.UTC(2026,9,31,23,59,59);
+const dataDir=resolve('work/competitions/browser-data-'+Date.now());
+let server=await createRtsServer({port:0,dataDir,staticDir:resolve('work/competitions/browser'),competitionNow:()=>now,spectatorDelaySeconds:0});
+const browser=await playwright.chromium.launch({headless:true}),contexts=await Promise.all([browser.newContext(),browser.newContext()]);
+const pages=await Promise.all(contexts.map(context=>context.newPage())),checks=[];
+async function record(name){checks.push(name);console.log('PASS '+name);}
+async function open(page){await page.getByRole('button',{name:'Competitions',exact:true}).click();await page.getByRole('button',{name:'Refresh competitions',exact:true}).waitFor({state:'visible'});await page.waitForFunction(()=>document.querySelector('.competition-season')?.textContent.includes('Season '));await page.waitForFunction(()=>!document.querySelector('[data-competition="refresh"]').disabled);}
+async function close(page){await page.getByRole('dialog',{name:'Competitions',exact:true}).getByRole('button',{name:'Close',exact:true}).click();}
+async function refresh(page){await page.getByRole('button',{name:'Refresh competitions',exact:true}).click();await page.waitForFunction(()=>!document.querySelector('[data-competition="refresh"]').disabled);}
+async function api(context,path){const response=await context.request.get(server.url+path);assert.equal(response.status(),200);return response.json();}
+try{
+  for(const [index,page]of pages.entries()){
+    await page.goto(server.url);await page.getByRole('button',{name:'Online',exact:true}).click();
+    await page.getByLabel('Online username',{exact:true}).fill(index?'BrowserGuest':'BrowserHost');await page.getByLabel('Online password',{exact:true}).fill('browser-proof-password');
+    await page.getByRole('button',{name:'Create account',exact:true}).click();await page.waitForFunction(()=>document.querySelector('.online-username')?.textContent.length>0);
+    await page.getByRole('dialog',{name:'Online play',exact:true}).getByRole('button',{name:'Close online play',exact:true}).click();
+  }
+  const [host,guest]=pages;await open(host);await host.getByRole('button',{name:'Create ranked lobby',exact:true}).click();await host.getByRole('region',{name:'Current ranked lobby'}).waitFor({state:'visible'});
+  await open(guest);await guest.getByRole('button',{name:'Join ranked lobby',exact:true}).click();await guest.getByRole('region',{name:'Current ranked lobby'}).waitFor({state:'visible'});
+  await refresh(host);await host.getByRole('button',{name:'Ready',exact:true}).click();await host.getByRole('button',{name:'Unready',exact:true}).waitFor({state:'visible'});await refresh(guest);await guest.getByRole('button',{name:'Ready',exact:true}).click();await guest.getByRole('button',{name:'Unready',exact:true}).waitFor({state:'visible'});await refresh(host);
+  await host.getByRole('button',{name:'Start ranked match',exact:true}).click();await host.getByRole('region',{name:'Hosted match'}).waitFor({state:'visible'});await refresh(guest);await guest.getByRole('button',{name:'Enter ranked match',exact:true}).click();
+  await guest.getByRole('region',{name:'Hosted match'}).waitFor({state:'visible'});const before=JSON.parse(await guest.locator('.hosted-frame').textContent());assert.equal(before.controller,'external');
+  await record('normal browser account, ranked creation/join/readiness/start and authoritative callback connection');
+  now=Date.UTC(2026,10,1);await guest.getByRole('button',{name:'Surrender hosted match',exact:true}).click();await guest.waitForFunction(()=>JSON.parse(document.querySelector('.hosted-frame').textContent||'{}').result?.finished);
+  await open(host);await host.getByLabel('Season standings',{exact:true}).selectOption('2026-10');await host.waitForFunction(()=>document.querySelector('.competition-rankings')?.textContent.includes('1016'));
+  assert.match(await host.locator('.competition-season').textContent(),/2026-11/);await record('ranked finish after UTC rollover keeps its starting season and displays 1016/984 archived ratings');
+  await host.screenshot({path:resolve(evidence,'ranked-standings.png'),fullPage:true});await close(host);
+  await host.reload();await open(host);await host.getByRole('button',{name:'Inspect ranked result',exact:true}).click();await host.waitForFunction(()=>JSON.parse(document.querySelector('.hosted-frame').textContent||'{}').result?.finished);await record('reload keeps an owned finished match available to rejoin');
+  const result=await api(contexts[0],'/api/competitions/results/'+before.matchId);assert.equal(result.finished,true);assert.equal(result.result.seasonId,'2026-10');
+  const port=server.port;await server.close();server=await createRtsServer({port,dataDir,staticDir:resolve('work/competitions/browser'),competitionNow:()=>now,spectatorDelaySeconds:0});
+  await host.reload();await open(host);await host.getByLabel('Season standings',{exact:true}).selectOption('2026-10');await host.waitForFunction(()=>document.querySelector('.competition-rankings')?.textContent.includes('1016'));assert.deepEqual((await api(contexts[0],'/api/competitions/results/'+before.matchId)).result,result.result);await record('ratings, results and HttpOnly account session persist across actual server restart');
+  await host.getByRole('button',{name:'Start or resume daily challenge',exact:true}).click();await host.waitForFunction((old)=>{const f=document.querySelector('.hosted-frame');return f&&f.textContent&&JSON.parse(f.textContent).matchId!==old;},before.matchId);
+  const dailyFrame=JSON.parse(await host.locator('.hosted-frame').textContent());assert.notEqual(dailyFrame.matchId,before.matchId);
+  const daily=await api(contexts[0],'/api/challenges/daily'),otherDaily=await api(contexts[1],'/api/challenges/daily');assert.deepEqual(daily.challenge,otherDaily.challenge);assert.equal(daily.challenge.date,'2026-11-01');
+  await open(host);await host.getByRole('button',{name:'Start or resume daily challenge',exact:true}).click();await host.waitForFunction((id)=>JSON.parse(document.querySelector('.hosted-frame').textContent||'{}').matchId===id,dailyFrame.matchId);await record('daily server date/config match across accounts and duplicate start resumes the same hosted run');
+  await host.getByRole('button',{name:'Surrender hosted match',exact:true}).click();await host.waitForFunction(()=>JSON.parse(document.querySelector('.hosted-frame').textContent||'{}').result?.finished);assert.equal((await api(contexts[0],'/api/competitions/results/'+dailyFrame.matchId)).result.won,false);assert.equal((await api(contexts[0],'/api/challenges/daily')).standings.length,0);await open(host);await host.screenshot({path:resolve(evidence,'daily-challenge.png'),fullPage:true});await record('a hosted daily loss records its result and does not create a leaderboard score');
+  await writeFile(resolve(evidence,'result.json'),JSON.stringify({checks,rankedResult:result.result,daily:daily.challenge,limitations:'Standalone browser mounts and their real server callbacks were verified here. Mounting in the shipped Phaser entry and hosted deployment still need assembled verification.'},null,2));
+}catch(error){for(const [index,page] of pages.entries()){console.error('BROWSER',index,await page.locator('.competition-message').textContent(),await page.locator('.hosted-status').textContent());await page.screenshot({path:resolve(evidence,'failure-'+index+'.png'),fullPage:true});}throw error;}finally{await browser.close();await server.close();}

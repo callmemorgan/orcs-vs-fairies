@@ -5,12 +5,15 @@ import { join } from 'node:path';
 import type { Account, CommandAck, LobbySettings, LobbySeat, PlayerObservation } from '../online/protocol';
 import type { GameState, Side, DraftState, MatchConfig as CoreMatchConfig } from '../core/types';
 import { saveGame, loadGame } from '../core/saves';
+import type { CompetitionEntry } from '../online/competitions';
+import { CompetitionStore } from './competitions';
 
 export interface StoredLobby {
   id:string; hostId:string; revision:number; settings:LobbySettings;
   seats:LobbySeat[]; seed:number; matchId:string|null; draft?:DraftState; draftDeadlineAt?:number;
+  ranked?:boolean; dailyDate?:string;
 }
-export interface MatchConfig extends LobbySettings { seed:number; matchConfig?:CoreMatchConfig }
+export interface MatchConfig extends LobbySettings { seed:number; matchConfig?:CoreMatchConfig; competition?:CompetitionEntry }
 export interface StoredMatch {
   id:string; lobbyId:string; config:MatchConfig; tick:number;
   save:ReturnType<typeof saveGame>; memory:ResourceMemory[]; generation:number[];
@@ -27,6 +30,7 @@ export interface StoredFrame { tick:number; views:PlayerObservation[] }
 /** The transaction writes a tick and its receipts together before clients see either. */
 export class ServerStore {
   readonly db:DatabaseSync;
+  readonly competitions:CompetitionStore;
   constructor(directory:string,readonly engineHash:string){
     mkdirSync(directory,{recursive:true});this.db=new DatabaseSync(join(directory,'server.sqlite'));
     this.db.exec(`PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000;
@@ -40,6 +44,7 @@ export class ServerStore {
     const columns=new Set(this.db.prepare('PRAGMA table_info(matches)').all().map(row=>row.name));
     if(!columns.has('engine_hash'))this.db.exec("ALTER TABLE matches ADD COLUMN engine_hash TEXT NOT NULL DEFAULT ''");
     if(!columns.has('state_hash'))this.db.exec("ALTER TABLE matches ADD COLUMN state_hash TEXT NOT NULL DEFAULT ''");
+    this.competitions=new CompetitionStore(this.db);
   }
   userByName(username:string):({id:string;username:string;password:string})|undefined {
     return this.db.prepare('SELECT id,username,password FROM users WHERE username=? COLLATE NOCASE').get(username) as {id:string;username:string;password:string}|undefined;
@@ -55,11 +60,11 @@ export class ServerStore {
   addMatch(id:string,lobbyId:string,config:MatchConfig,state:GameState,memory:ResourceMemory[],generation:number[]){
     this.db.prepare('INSERT INTO matches(id,lobby_id,config,tick,checkpoint_tick,checkpoint,memory,generation,engine_hash,state_hash) VALUES(?,?,?,?,?,?,?,?,?,?)').run(id,lobbyId,JSON.stringify(config),state.tick,state.tick,JSON.stringify(saveGame(state)),JSON.stringify(memory),JSON.stringify(generation),this.engineHash,this.hashState(state,memory));
   }
-  startMatch(lobby:StoredLobby,state:GameState,memory:ResourceMemory[],generation:number[],frame:StoredFrame,matchConfig?:CoreMatchConfig){
+  startMatch(lobby:StoredLobby,state:GameState,memory:ResourceMemory[],generation:number[],frame:StoredFrame,matchConfig?:CoreMatchConfig,competition?:CompetitionEntry){
     if(!lobby.matchId)throw new Error('Started lobby requires a match ID.');
     this.db.exec('BEGIN IMMEDIATE');
     try{
-      this.addMatch(lobby.matchId,lobby.id,{...lobby.settings,seed:lobby.seed,matchConfig},state,memory,generation);
+      this.addMatch(lobby.matchId,lobby.id,{...lobby.settings,seed:lobby.seed,matchConfig,competition},state,memory,generation);
       this.db.prepare('INSERT INTO frames(match_id,tick,views) VALUES(?,?,?)').run(lobby.matchId,frame.tick,JSON.stringify(frame.views));
       this.saveLobby(lobby);this.db.exec('COMMIT');
     }catch(error){this.db.exec('ROLLBACK');throw error;}
@@ -80,6 +85,11 @@ export class ServerStore {
       this.db.prepare('UPDATE matches SET tick=?,finished=?,state_hash=? WHERE id=?').run(state.tick,state.winner!==null||state.draw?1:0,this.hashState(state,memory),matchId);
       if(checkpoint)this.db.prepare('UPDATE matches SET checkpoint_tick=?,checkpoint=?,memory=? WHERE id=?').run(state.tick,JSON.stringify(saveGame(state)),JSON.stringify(memory),matchId);
       if(frame){this.db.prepare('INSERT OR REPLACE INTO frames(match_id,tick,views) VALUES(?,?,?)').run(matchId,frame.tick,JSON.stringify(frame.views));this.db.prepare('DELETE FROM frames WHERE match_id=? AND tick<?').run(matchId,frame.tick-2400);}
+      if(state.winner!==null||state.draw){
+        const row=this.db.prepare('SELECT config FROM matches WHERE id=?').get(matchId);
+        if(!row)throw new Error('Finished match must have a durable configuration.');
+        this.competitions.finish(matchId,(JSON.parse(row.config as string) as MatchConfig).competition,state);
+      }
       this.db.exec('COMMIT');
     }catch(error){this.db.exec('ROLLBACK');throw error;}
   }
