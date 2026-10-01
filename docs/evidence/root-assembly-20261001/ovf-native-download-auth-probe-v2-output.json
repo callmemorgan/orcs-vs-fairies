@@ -1,0 +1,36 @@
+{
+  "validRead": true,
+  "attemptedInvalidCases": 6,
+  "rejected": [
+    {
+      "label": "relative traversal",
+      "name": "../ovf-native-download-auth-outside-v2.json",
+      "message": "Native download uses a safe JSON basename"
+    },
+    {
+      "label": "absolute path",
+      "name": "/tmp/ovf-native-download-auth-outside-v2.json",
+      "message": "Native download uses a safe JSON basename"
+    },
+    {
+      "label": "symlink",
+      "name": "linked-save.json",
+      "message": "Native artifact linked-save.json is a regular retained file"
+    },
+    {
+      "label": "missing fingerprint",
+      "name": "valid-save.json",
+      "message": "Original browser fingerprint is required for valid-save.json"
+    },
+    {
+      "label": "changed byte count",
+      "name": "valid-save.json",
+      "message": "valid-save.json retained download size\n\n12 !== 13\n"
+    },
+    {
+      "label": "changed hash",
+      "name": "valid-save.json",
+      "message": "valid-save.json retained browser download hash\n+ actual - expected\n\n+ 'e5f1eb4d806641698a35efe20e098efd20d7d57a9b90ee69079d5bb650920726'\n- '0000000000000000000000000000000000000000000000000000000000000000'\n"
+    }
+  ]
+}
