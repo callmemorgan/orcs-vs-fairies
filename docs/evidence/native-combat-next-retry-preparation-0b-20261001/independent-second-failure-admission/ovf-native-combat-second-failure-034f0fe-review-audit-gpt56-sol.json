@@ -1,0 +1,105 @@
+{
+  "kind": "independent-native-combat-second-failure-archive-admission",
+  "reviewer": "GPT-5.6 Sol",
+  "result": "passed",
+  "checkedAt": "2026-10-01T20:02:18.717330+00:00",
+  "refs": {
+    "base": "0b697f781fb718752a554c6884b352b995311c06",
+    "tip": "034f0fe1b25ed1bfadad025773300e45b4dc3244",
+    "tipParent": "0b697f781fb718752a554c6884b352b995311c06",
+    "mergeBase": "0b697f781fb718752a554c6884b352b995311c06",
+    "commitCount": 1
+  },
+  "commit": {
+    "subject": "Retain second native combat failure and admitted fixture repair evidence",
+    "footerValid": true,
+    "changedFileCount": 212,
+    "allFilesAddedUnderEvidencePrefix": true,
+    "productSourceChanged": false,
+    "requirementsLedgerChanged": false
+  },
+  "archive": {
+    "path": "docs/evidence/native-combat-second-failure-287583c-20261001",
+    "files": 212,
+    "manifestFilesVerified": 210,
+    "manifestExclusions": [
+      "artifact-manifest.json",
+      "retention-audit.json"
+    ],
+    "jsonFilesParsed": 153,
+    "pngSignaturesChecked": 28
+  },
+  "externalRetention": {
+    "source": "/tmp/ovf-native-combat-287583c-retry-20261001",
+    "copiedFiles": 205,
+    "copiedBytes": 55884786,
+    "inventoriesEqual": true,
+    "allBytesEqual": true,
+    "originalSealedFiles": 182,
+    "laterArtifacts": 23
+  },
+  "failedRun": {
+    "proofCommit": "287583c6bf90b0df76475f8541e6694df1d5f901",
+    "productSourceCommit": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+    "completed": false,
+    "browserExitCode": 1,
+    "checks": 46,
+    "downloads": 79,
+    "completeGroups": 0,
+    "failurePhase": "native direction encounters",
+    "failureContains": "Timeout 15000ms exceeded"
+  },
+  "partialEvidence": {
+    "frontDamage": 12,
+    "sideDamage": 15,
+    "rearDamage": 18,
+    "noCoverDamage": 15,
+    "postDepletionDamage": 17,
+    "scope": "partial direction/shield/no-cover results only; cover-rock did not complete; capture, specialist, group, offline history, and CLI acceptance remain pending"
+  },
+  "repair": {
+    "commit": "0b697f781fb718752a554c6884b352b995311c06",
+    "changedProofPaths": [
+      "scripts/acceptance/direction-defense-fixtures.ts",
+      "scripts/acceptance/direction-defense.mjs",
+      "scripts/acceptance/native-context.mjs"
+    ],
+    "runtimeRetryExecuted": false,
+    "independentReviewSha256": "d78e0023cd63a04ba5d83a63dec2f04a9fe153481aea64544d599b4dc256d139",
+    "independentAuditSha256": "c28680a61fff355bc05dac3dfaf94bb5c9bbf01601c234e2f3c3166d3aa3687b"
+  },
+  "sourceFootprint": {
+    "root": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+    "pin": "0b697f781fb718752a554c6884b352b995311c06",
+    "productInputs": 567,
+    "proofInputs": 19,
+    "allLiveBytesAndModesEqual": true
+  },
+  "cleanup": {
+    "previewStopped": true,
+    "port5397DirectBind": "passed",
+    "protectedPort4173": "untouched"
+  },
+  "whitespace": {
+    "fullDiffExitCode": 2,
+    "matchesReceipt": true,
+    "expectedArchivedFiles": [
+      "docs/evidence/native-combat-second-failure-287583c-20261001/run/decisions.tsv",
+      "docs/evidence/native-combat-second-failure-287583c-20261001/run/proposed-rock-fixture-repair/proposed.patch"
+    ],
+    "authoredControlFilesPass": true
+  },
+  "verificationArtifacts": {
+    "retentionVerifierOutput": "/tmp/ovf-combat-second-failure-034f0fe-verify-output.json",
+    "externalByteAudit": "/tmp/ovf-combat-second-failure-034f0fe-external-byte-audit.json"
+  },
+  "behavioralInterrogation": {
+    "ordering": "none; evidence-only commit",
+    "failurePaths": "none; evidence-only commit",
+    "observability": "none; evidence-only commit",
+    "staleWrites": "none; evidence-only commit",
+    "testDelta": "no tests or runtime were added; archive controls recheck bytes and pins, and complete combat acceptance remains pending"
+  },
+  "findings": [],
+  "execution": "Ran only read-only Git, JSON, hash, PNG signature, manifest, and retention-verifier checks. No build, fixture producer, game, browser, server, simulation, or test ran."
+}

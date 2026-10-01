@@ -1,0 +1,5 @@
+The existing child `/root/combat_tactics/joint_weapon_design/modes_social_ideas` reviewed the recipe and source checks without execution. Its first review found an omitted editor entry, an unsealed live baseline, Python assertions removable by optimization, and a missing preview working directory. The second read-only review confirmed all four fixes and found no remaining concrete defect in the recipe or docs/runtime pin separation. It parsed the script, found zero assertions and checked both version patterns against the c074 declarations.
+
+Its child `/root/combat_tactics/joint_weapon_design/modes_social_ideas/specialist_proof_mapping` confirmed those fixes and identified a narrow Git replacement-object path around the pin check. Both Git helpers now pass `--no-replace-objects`. This is an added provenance gate; no replacement-object corruption was observed.
+
+These are static source reviews. The checker, fixture generation, build, browser, history audit and gameplay were not executed. Independent GPT-5.6 Sol admission of the final preparation commit remains pending.
