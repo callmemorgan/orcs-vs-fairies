@@ -3,7 +3,8 @@ import { captureScenario, createScenario, issueScenarioCommand } from '../src/co
 import { ScenarioRecorder, verifyScenarioRecording } from '../src/core/scenario-recordings';
 import { MatchRecorder, ReplayPlayer } from '../src/core/replays';
 import { saveGame, loadGame } from '../src/core/saves';
-import { issueCommand, stepGame } from '../src/core/simulation';
+import { issueCommand, refreshVisibility, stepGame } from '../src/core/simulation';
+import { generateWorldMap } from '../src/core/world-map';
 import type { Command } from '../src/core/types';
 import type { ScenarioDefinition } from '../src/core/scenario-types';
 
@@ -41,4 +42,28 @@ describe('economy inside canonical authored scenarios',()=>{
   const replay=new ReplayPlayer(archive);while(!replay.finished)replay.advance(50);expect(saveGame(replay.state)).toEqual(saveGame(session.state));
   expect(captureScenario(verifyScenarioRecording(recording))).toEqual(captureScenario(session));replay.dispose();recorder.dispose();journal.destroy();
  });
+});
+
+
+function villageMission(fixedArmy:boolean,budget:number){
+ const input=mission(fixedArmy,budget),world=generateWorldMap(input.seed,'small',2,'forest');
+ for(const level of world.levels){level.terrain.fill('grass');level.elevation.fill(0);}
+ world.resources=[];world.sites=[{id:1,kind:'village',x:12.5,y:8.5,level:0}];input.map!.world=world;input.map!.starts=world.starts.map(({slot,...point})=>point);
+ input.army.push({label:'engineer',side:0,kind:'unit',role:'special',definitionId:'core:orcs-engineer',x:11,y:11,order:{type:'hold'}});
+ const session=createScenario(input),site=session.state.world!.sites[0];site.supplied=true;site.owner=0;site.loyalty[0]=60;site.reward={wood:500,ore:500,crystal:100};refreshVisibility(session.state);return {session,site};
+}
+
+it('rejects engineer construction and village recruitment in a fixed army before any state changes',()=>{
+ const {session,site}=villageMission(true,0),before=captureScenario(session),engineer=session.runtime.labels.engineer,worker=session.runtime.labels.worker;
+ for(const command of [{type:'engineerBuild',ids:[engineer],kind:'barricade',x:13.5,y:11.5},{type:'recruitVillage',ids:[worker],target:site.id}] as const){
+  expect(issueCommand(session.state,0,{...command,ids:[...command.ids]})).toBe(false);expect(issueScenarioCommand(session,0,{...command,ids:[...command.ids]})).toBe(false);expect(captureScenario(session)).toEqual(before);
+ }
+});
+
+it('uses one village reinforcement allowance for a selected squad and rejects later recruitment through both entry points',()=>{
+ const {session,site}=villageMission(false,1),state=session.state,worker=session.runtime.labels.worker,engineer=session.runtime.labels.engineer,recorder=new MatchRecorder(state);
+ const before=state.entities.filter(e=>e.side===0&&e.kind==='unit').length;expect(issueScenarioCommand(session,0,{type:'recruitVillage',ids:[worker,engineer],target:site.id})).toBe(true);
+ expect(session.runtime.reinforcementRemaining).toBe(0);expect(session.runtime.commandCounts.recruitVillage).toBe(1);expect(session.runtime.variables['action.recruitVillage']).toBe(1);run(state,10);expect(state.entities.filter(e=>e.side===0&&e.kind==='unit')).toHaveLength(before+1);
+ const saved=saveGame(state);expect(issueCommand(state,0,{type:'recruitVillage',ids:[worker],target:site.id})).toBe(false);expect(issueScenarioCommand(session,0,{type:'trainCaravan',id:session.runtime.labels.base})).toBe(false);expect(saveGame(state)).toEqual(saved);
+ const replay=new ReplayPlayer(recorder.export());while(!replay.finished)replay.advance(20);expect(saveGame(replay.state)).toEqual(saved);replay.dispose();recorder.dispose();
 });
