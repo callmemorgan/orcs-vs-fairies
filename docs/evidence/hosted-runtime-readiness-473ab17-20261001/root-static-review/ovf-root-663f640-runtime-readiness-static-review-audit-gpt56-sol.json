@@ -1,0 +1,221 @@
+{
+  "auditKind": "independent static runtime-readiness retention review",
+  "reviewerHarness": "Codex",
+  "reviewerModel": "GPT-5.6 Sol",
+  "reviewedCommit": "663f640cd7d7c5ff4f8c2160264378fdf7940398",
+  "reviewedParent": "33d08ab0b2ae630a92cac1fa95576ea719733a1e",
+  "sourcePin": "473ab17642211c3610aed648ae5f813b7680edc1",
+  "productFreeze": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "executionBoundary": "Git object, retained JSON, recorded source, and independent static inspection reads only. No package import, syntax command, browser launch, build, test, simulation, server, dependency, or checkout operation.",
+  "firstAuditFailure": {
+    "path": "/tmp/ovf-root-663f640-runtime-readiness-static-review-audit-first-failure-gpt56-sol.json",
+    "sha256": "03b765a0335f11cf4f0776853b20f70622bbcd6011cf6674af93611a00af779d",
+    "cause": "The first helper chained hashlib.update calls; the failure is preserved and the failed command was not rerun."
+  },
+  "result": "passed",
+  "checks": [
+    {
+      "name": "commit identity",
+      "passed": true,
+      "details": {
+        "tip": "663f640cd7d7c5ff4f8c2160264378fdf7940398",
+        "parent": "33d08ab0b2ae630a92cac1fa95576ea719733a1e",
+        "tree": "580708158f44b4d847b6eb17f27f480e77aaa90c"
+      }
+    },
+    {
+      "name": "docs-only path boundary",
+      "passed": true,
+      "details": {
+        "changedPaths": [
+          "docs/evidence/hosted-runtime-readiness-473ab17-20261001/README.md",
+          "docs/evidence/hosted-runtime-readiness-473ab17-20261001/browser-runtime-discrepancy.json",
+          "docs/evidence/hosted-runtime-readiness-473ab17-20261001/historical-browser-runtime-readiness.json",
+          "docs/evidence/hosted-runtime-readiness-473ab17-20261001/integrated-source-readiness.json",
+          "docs/evidence/hosted-runtime-readiness-473ab17-20261001/retention.json",
+          "docs/features/decisions.tsv"
+        ],
+        "changedScripts": []
+      }
+    },
+    {
+      "name": "three retained Git blobs",
+      "passed": true,
+      "details": {
+        "fileCount": 3,
+        "bytes": 186041,
+        "files": [
+          {
+            "source": "/tmp/ovf-runtime-and-source-readiness-473-gj51stt7/integrated-source-readiness.json",
+            "retained": "docs/evidence/hosted-runtime-readiness-473ab17-20261001/integrated-source-readiness.json",
+            "sha256": "60d07851ac499cc566792e772223e5f65688faf260d0782b4338b680b7fc00f7",
+            "bytes": 172998
+          },
+          {
+            "source": "/tmp/ovf-runtime-and-source-readiness-473-gj51stt7/browser-runtime-discrepancy.json",
+            "retained": "docs/evidence/hosted-runtime-readiness-473ab17-20261001/browser-runtime-discrepancy.json",
+            "sha256": "e6960218932d77ebb15eafe1ddc4a4a3480c0419db93c8e4c6020c065c93c211",
+            "bytes": 10054
+          },
+          {
+            "source": "/home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/work/final-freeze-proof-20261001/browser-runtime-readiness.json",
+            "retained": "docs/evidence/hosted-runtime-readiness-473ab17-20261001/historical-browser-runtime-readiness.json",
+            "sha256": "5f1194afb30b6dcc5a5cbf2c765baaf7eb7c78323a86f2bc48653f66c3c2fdbb",
+            "bytes": 2989
+          }
+        ],
+        "failures": []
+      }
+    },
+    {
+      "name": "748 integrated source inputs",
+      "passed": true,
+      "details": {
+        "fileCount": 748,
+        "computedDigest": "f2e919ecc04527f44338b252305cd0df05f4d91d7a410c210f175f81735232f5",
+        "recordedDigest": "f2e919ecc04527f44338b252305cd0df05f4d91d7a410c210f175f81735232f5",
+        "failures": []
+      }
+    },
+    {
+      "name": "reviewed hosted scripts unchanged at source pin",
+      "passed": true,
+      "details": [
+        {
+          "path": "scripts/server/verify-hosted-teams-browser.mjs",
+          "bytes": 48236,
+          "sha256": "d844ab8547cbfc186ab98f62f727f7df46317c8e86a603e70fe11966fe59a30a",
+          "matches": true
+        },
+        {
+          "path": "scripts/server/verify-hosted-teams.mjs",
+          "bytes": 11410,
+          "sha256": "5343f858a62d76811536716e69d84c17f49a6bc8a8f34adccbecfe90e4036d4c",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "name": "narrow 1234 selection wording",
+      "passed": true,
+      "details": {
+        "package": {
+          "module": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs",
+          "playwrightVersion": "1.62.1",
+          "playwrightCoreVersion": "1.62.1"
+        },
+        "registry": {
+          "name": "chromium-headless-shell",
+          "revision": "1234",
+          "installByDefault": true,
+          "browserVersion": "151.0.7922.34",
+          "title": "Chrome Headless Shell"
+        },
+        "headlessExecutable": {
+          "path": "/home/morgana/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell",
+          "exists": true,
+          "resolved": "/home/morgana/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell",
+          "bytes": 196975952,
+          "mode": "0o755",
+          "regularFile": true,
+          "executableAccess": true,
+          "sha256": "e11fc9ce65c96313476f7ee9844b6fb6a9220fb048693cfe9eee00acf4170a9f",
+          "matchesManifest": true
+        },
+        "fullChromiumExecutable": {
+          "path": "/home/morgana/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome",
+          "exists": false,
+          "selection": "Chosen by full Chromium, explicit chromium channel or headed launch; not chosen by the hosted default headless recipes."
+        },
+        "launches": 0,
+        "historicalLaunch": {
+          "status": "passed-readiness-only",
+          "method": "Parent-authorized default headless launch/version/close. No page, app UI or proof loaded. Full Chromium executablePath does not describe default headless-shell selection.",
+          "observedBrowserVersion": "151.0.7922.34"
+        }
+      }
+    },
+    {
+      "name": "independent AI adapter comparison",
+      "passed": true,
+      "details": {
+        "inspectionPath": "/tmp/ovf-hosted-browser-static-tjx8jnl8/inspection.json",
+        "inspectionSha256": "15750351273366ba5cc8b6cdeb871b2375d86858b3fa171585b49ec35433b6da",
+        "packageVersion": "1.62.1",
+        "sameDirectPackageIndex": true,
+        "hostedDefault": {
+          "platform": "Linux",
+          "architecture": "x86_64",
+          "conditions": "headless true, no channel/custom executable, no browser path override or inspector override",
+          "browserName": "chromium-headless-shell",
+          "revision": "1234",
+          "browserVersionFromPackageMetadata": "151.0.7922.34",
+          "executablePath": "/home/morgana/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell",
+          "exists": true,
+          "executable": true,
+          "liveVersionOrLaunchReverified": false
+        },
+        "fullChromium1234": {
+          "path": "/home/morgana/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome",
+          "exists": false,
+          "isFile": false,
+          "executable": false,
+          "bytes": null,
+          "binaryHashedOrExecuted": false
+        },
+        "aiFullChromium1243": {
+          "path": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "exists": true,
+          "isFile": true,
+          "executable": true,
+          "bytes": 293285184,
+          "binaryHashedOrExecuted": false
+        },
+        "adapterPath": "docs/evidence/ai-453c221-browser-launcher-20261001/playwright-chromium-1243.mjs",
+        "adapterSha256": "7fe266503ffb4a65da331e6ae3fa7ffa248f805595dcb5e417a7669fc73bbd6d",
+        "driverPath": "docs/evidence/ai-453c221-browser-launcher-20261001/followup-453c221-r4-chromium1243.sh",
+        "driverSha256": "49721f151fd5cb98b80b5143c850c67051d7abe22b1deb1625f3a5932be65f9f"
+      }
+    },
+    {
+      "name": "one ledger row and no status gate",
+      "passed": true,
+      "details": {
+        "requirementsByteIdentical": true,
+        "statusCounts": {
+          "in-progress": 36,
+          "verified": 64
+        },
+        "appendedRows": [
+          "2026-10-01T22:15:06Z\thosted-browser-selection-correction\tBind hosted source473 and the installed default headless1234 runtime before dispatch\tThe missing full Chromium binary does not describe default headless shell selection\tdocs/evidence/hosted-runtime-readiness-473ab17-20261001/retention.json\t748 source inputs authenticated;10 runtime hashes match;earlier broad unavailable claim narrowed;fresh hosted runtime pending"
+        ]
+      }
+    },
+    {
+      "name": "execution remains held",
+      "passed": true,
+      "details": {
+        "readinessStatus": "Integrated source and selected browser files verified by static reads; execution held.",
+        "releaseRequired": "Await root explicit heavy-slot release before any build, proof, server or browser launch.",
+        "functionalRuns": 0,
+        "staticLaunches": 0,
+        "independentRuntimeExecuted": false
+      }
+    },
+    {
+      "name": "static diff check",
+      "passed": true,
+      "details": {
+        "returnCode": 0,
+        "output": []
+      }
+    }
+  ],
+  "findings": [],
+  "limits": [
+    "Installed and executable file status is a static filesystem observation, not a new browser launch.",
+    "The historical readiness launch remains a separate prior observation.",
+    "No live version or compatibility claim is made for headless shell 1234 or full Chromium 1243."
+  ],
+  "failedChecks": []
+}

@@ -1,0 +1,276 @@
+{
+  "auditKind": "independent static two-commit import and retention review",
+  "reviewerHarness": "Codex",
+  "reviewerModel": "GPT-5.6 Sol",
+  "commits": {
+    "import": "473ab17642211c3610aed648ae5f813b7680edc1",
+    "importParent": "83941bc80ce9ec08840b0645d9b33e8018d5309a",
+    "retention": "33d08ab0b2ae630a92cac1fa95576ea719733a1e",
+    "recipe": "7fe049f3ad3c3dd8ab6ae32962e73d000219aab5",
+    "originalReviewedRecipe": "a0aaa643de509d210b7879e796279a618c2cf290",
+    "productFreeze": "453c2218af9973b9eca8fb78392435bd9d46a740"
+  },
+  "executionBoundary": "Git object and retained JSON/source inspection only. No syntax command, build, test, simulation, browser, server, dependency, or checkout operation was run.",
+  "result": "passed",
+  "checks": [
+    {
+      "name": "commit identities",
+      "passed": true,
+      "details": {
+        "import": {
+          "commit": "473ab17642211c3610aed648ae5f813b7680edc1",
+          "tree": "0d9bfe20d3b1d8128f0883058fc69be7a73791ff",
+          "parents": [
+            "83941bc80ce9ec08840b0645d9b33e8018d5309a"
+          ]
+        },
+        "retention": {
+          "commit": "33d08ab0b2ae630a92cac1fa95576ea719733a1e",
+          "tree": "2eaa8d97631bb7d5783302d4f6fe67ebc8084f70",
+          "parents": [
+            "473ab17642211c3610aed648ae5f813b7680edc1"
+          ]
+        }
+      }
+    },
+    {
+      "name": "473ab17 changes only two verifier scripts",
+      "passed": true,
+      "details": {
+        "changedPaths": [
+          "scripts/server/verify-hosted-teams-browser.mjs",
+          "scripts/server/verify-hosted-teams.mjs"
+        ],
+        "numstat": [
+          "16\t2\tscripts/server/verify-hosted-teams-browser.mjs",
+          "4\t4\tscripts/server/verify-hosted-teams.mjs"
+        ]
+      }
+    },
+    {
+      "name": "imported scripts equal 7fe and a0aaa reviewed blobs",
+      "passed": true,
+      "details": [
+        {
+          "path": "scripts/server/verify-hosted-teams-browser.mjs",
+          "gitEntries": {
+            "7fe049f3ad3c3dd8ab6ae32962e73d000219aab5": {
+              "mode": "100644",
+              "type": "blob",
+              "oid": "32e5ae7b40631f202d1611dce13f5f38b061456b"
+            },
+            "a0aaa643de509d210b7879e796279a618c2cf290": {
+              "mode": "100644",
+              "type": "blob",
+              "oid": "32e5ae7b40631f202d1611dce13f5f38b061456b"
+            },
+            "473ab17642211c3610aed648ae5f813b7680edc1": {
+              "mode": "100644",
+              "type": "blob",
+              "oid": "32e5ae7b40631f202d1611dce13f5f38b061456b"
+            }
+          },
+          "bytes": 48236,
+          "sha256": "d844ab8547cbfc186ab98f62f727f7df46317c8e86a603e70fe11966fe59a30a",
+          "manifestBytes": 48236,
+          "manifestSha256": "d844ab8547cbfc186ab98f62f727f7df46317c8e86a603e70fe11966fe59a30a"
+        },
+        {
+          "path": "scripts/server/verify-hosted-teams.mjs",
+          "gitEntries": {
+            "7fe049f3ad3c3dd8ab6ae32962e73d000219aab5": {
+              "mode": "100644",
+              "type": "blob",
+              "oid": "ea318e48d8b811560c52296318981c5a868f5f15"
+            },
+            "a0aaa643de509d210b7879e796279a618c2cf290": {
+              "mode": "100644",
+              "type": "blob",
+              "oid": "ea318e48d8b811560c52296318981c5a868f5f15"
+            },
+            "473ab17642211c3610aed648ae5f813b7680edc1": {
+              "mode": "100644",
+              "type": "blob",
+              "oid": "ea318e48d8b811560c52296318981c5a868f5f15"
+            }
+          },
+          "bytes": 11410,
+          "sha256": "5343f858a62d76811536716e69d84c17f49a6bc8a8f34adccbecfe90e4036d4c",
+          "manifestBytes": 11410,
+          "manifestSha256": "5343f858a62d76811536716e69d84c17f49a6bc8a8f34adccbecfe90e4036d4c"
+        }
+      ]
+    },
+    {
+      "name": "recorded independent source and syntax review",
+      "passed": true,
+      "details": {
+        "verdict": "No defects found in the two-file proof extension.",
+        "tip": "a0aaa643de509d210b7879e796279a618c2cf290",
+        "reviewedBlobs": {
+          "scripts/server/verify-hosted-teams-browser.mjs": "d844ab8547cbfc186ab98f62f727f7df46317c8e86a603e70fe11966fe59a30a",
+          "scripts/server/verify-hosted-teams.mjs": "5343f858a62d76811536716e69d84c17f49a6bc8a8f34adccbecfe90e4036d4c"
+        },
+        "syntaxReceipt": true,
+        "notRun": [
+          "builds",
+          "tests",
+          "server",
+          "browser",
+          "simulation",
+          "native execution"
+        ]
+      }
+    },
+    {
+      "name": "existing gameplay assertions remain",
+      "passed": true,
+      "details": {
+        "removedAssertLines": [
+          "const hello = await battlefield(actor, matchId, side, 'spectator', { ...boundary, perspective: mode }); assert.equal(hello.delayTicks, 20); assert.equal(hello.perspective, mode);",
+          "const port = Number(new URL(base).port); await stop(); const recoveredHealth = await launch(port); assert.equal(recoveredHealth.protocolVersion, health.protocolVersion);"
+        ],
+        "replacementDelayAssertion": "const hello = await battlefield(actor, matchId, side, 'spectator', { ...boundary, perspective: mode }); assert.equal(hello.delayTicks, expectedDelayTicks); assert.equal(hello.perspective, mode);",
+        "allPriorCheckRecordsRemain": true,
+        "newBehavior": "The first generation keeps the default 20-tick delay; the restart passes zero and compares initial and advancing spectator/player public views.",
+        "replacementRestartAssertion": "const port = Number(new URL(base).port); await stop(); const recoveredHealth = await launch(port, 0); assert.equal(recoveredHealth.protocolVersion, health.protocolVersion);",
+        "correction": "The first audit allowed only the parameterized delay line as a changed assert-bearing line. The restart line also changed to pass zero to launch; its protocol-version assertion remains byte-identical within the line."
+      }
+    },
+    {
+      "name": "568 product paths unchanged",
+      "passed": true,
+      "details": {
+        "pathCount": 568,
+        "failures": []
+      }
+    },
+    {
+      "name": "33d08ab path boundary",
+      "passed": true,
+      "details": {
+        "changedPathCount": 17,
+        "changedPaths": [
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/README.md",
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/handoff.json",
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/preparation/00-ovf-453-proof-readiness-7fe049f.json",
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/preparation/01-ovf-hosted-zero-delay-import-7fe049f.diff",
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/preparation/02-review.json",
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/preparation/03-ovf-hosted-original-clause-bridge-453.json",
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/preparation/04-ovf-hosted-original-clause-bridge-453-supervisor-review.json",
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/preparation/05-ovf-daily-cosmetics-original-clause-admission-453.json",
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/preparation/06-inspection.json",
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/preparation/07-review.json",
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/retention.json",
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/supervisors/browser.mjs",
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/supervisors/daily.mjs",
+          "docs/evidence/modes-453c221-passed-20261001/root-static-admission/ovf-modes-efeb9a8-static-admission-review-audit-gpt56-sol.json",
+          "docs/evidence/modes-453c221-passed-20261001/root-static-admission/ovf-modes-efeb9a8-static-admission-review-gpt56-sol.md",
+          "docs/evidence/modes-453c221-passed-20261001/root-static-admission/retention.json",
+          "docs/features/decisions.tsv"
+        ],
+        "expectedOnly": [
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/README.md",
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/handoff.json",
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/preparation/00-ovf-453-proof-readiness-7fe049f.json",
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/preparation/01-ovf-hosted-zero-delay-import-7fe049f.diff",
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/preparation/02-review.json",
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/preparation/03-ovf-hosted-original-clause-bridge-453.json",
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/preparation/04-ovf-hosted-original-clause-bridge-453-supervisor-review.json",
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/preparation/05-ovf-daily-cosmetics-original-clause-admission-453.json",
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/preparation/06-inspection.json",
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/preparation/07-review.json",
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/retention.json",
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/supervisors/browser.mjs",
+          "docs/evidence/hosted-recipe-import-473ab17-20261001/supervisors/daily.mjs",
+          "docs/evidence/modes-453c221-passed-20261001/root-static-admission/ovf-modes-efeb9a8-static-admission-review-audit-gpt56-sol.json",
+          "docs/evidence/modes-453c221-passed-20261001/root-static-admission/ovf-modes-efeb9a8-static-admission-review-gpt56-sol.md",
+          "docs/evidence/modes-453c221-passed-20261001/root-static-admission/retention.json",
+          "docs/features/decisions.tsv"
+        ]
+      }
+    },
+    {
+      "name": "11 hosted files match Git-blob manifest",
+      "passed": true,
+      "details": {
+        "fileCount": 11,
+        "bytes": 432044,
+        "failures": []
+      }
+    },
+    {
+      "name": "two efeb review files match Git-blob manifest",
+      "passed": true,
+      "details": {
+        "fileCount": 2,
+        "bytes": 38655,
+        "files": [
+          {
+            "source": "/tmp/ovf-modes-efeb9a8-static-admission-review-gpt56-sol.md",
+            "retained": "docs/evidence/modes-453c221-passed-20261001/root-static-admission/ovf-modes-efeb9a8-static-admission-review-gpt56-sol.md",
+            "sha256": "f49055f75fdc09eaad6bcc7ec569a1e3321e59291a47ad52636c8b05f691eea4",
+            "bytes": 5162
+          },
+          {
+            "source": "/tmp/ovf-modes-efeb9a8-static-admission-review-audit-gpt56-sol.json",
+            "retained": "docs/evidence/modes-453c221-passed-20261001/root-static-admission/ovf-modes-efeb9a8-static-admission-review-audit-gpt56-sol.json",
+            "sha256": "5464f730539763e18dfa245692d6732300aee2ca980ce741cf0af93d87a0f2fd",
+            "bytes": 33493
+          }
+        ],
+        "failures": []
+      }
+    },
+    {
+      "name": "two ledger rows and no requirement status change",
+      "passed": true,
+      "details": {
+        "requirementsByteIdentical": true,
+        "statusCounts": {
+          "in-progress": 36,
+          "verified": 64
+        },
+        "appendedRows": [
+          "2026-10-01T22:11:38Z\tsurvival-root-static-admission\tRetain independent review of the survival promotion and preceding faction/combat preparation import\tThe committed bytes and status change need independent authentication\tdocs/evidence/modes-453c221-passed-20261001/root-static-admission/retention.json\tGPT-5.6 Sol passed17 static checks;64verified36inprogress;no runtime rerun",
+          "2026-10-01T22:11:38Z\thosted-zero-delay-proof-import\tImport two independently reviewed hosted proof scripts at473ab17\tCurrent native live spectator evidence needs an advancing zero-delay observation after the delayed generation\t473ab17642211c3610aed648ae5f813b7680edc1;docs/evidence/hosted-recipe-import-473ab17-20261001/retention.json\tExact reviewed bytes and syntax checks pass;product unchanged;runtime held"
+        ]
+      }
+    },
+    {
+      "name": "static diff checks",
+      "passed": true,
+      "details": {
+        "import": {
+          "returnCode": 0,
+          "output": []
+        },
+        "retention": {
+          "returnCode": 0,
+          "output": []
+        }
+      }
+    }
+  ],
+  "findings": [],
+  "behavioralInterrogation": {
+    "ordering": "The original delayed generation remains first. The restart remains serial and now launches with zero delay before the new native spectator comparison.",
+    "failurePaths": "The new spectator calls and assertions remain inside verifyRestart's existing catch/finally cleanup. No rejection is newly swallowed.",
+    "observability": "One new check and liveSpectator evidence object record the zero-delay initial and advancing comparisons. Existing check records remain.",
+    "staleWrites": "The new comparison reuses the restarted host only after existing receipt and bank checks. The existing finally block closes both contexts.",
+    "testDelta": "The imported verifier adds initial and advancing public-view equality assertions. Prior syntax success is retained as a receipt; this review did not rerun it or execute runtime behavior."
+  },
+  "limitations": [
+    "The syntax result is an authenticated retained receipt, not a new syntax run.",
+    "Runtime acceptance for the hosted recipe remains pending."
+  ],
+  "failedChecks": [],
+  "firstAudit": {
+    "path": "/tmp/ovf-root-473ab17-33d08ab-static-review-audit-first-gpt56-sol.json",
+    "sha256": "0c1963a35f02e16033efafbdaf8645c6b728f107907d60cfb830d57ea7f57b06",
+    "bytes": 14041,
+    "result": "failed",
+    "failedCheck": "existing gameplay assertions remain",
+    "cause": "Audit expectation omitted the assert-bearing restart line whose launch call gained the zero-delay argument."
+  }
+}

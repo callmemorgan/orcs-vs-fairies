@@ -1,0 +1,21 @@
+{
+  "artifactType": "preserved first audit failure",
+  "reviewerHarness": "Codex",
+  "reviewerModel": "GPT-5.6 Sol",
+  "reviewedCommit": "663f640cd7d7c5ff4f8c2160264378fdf7940398",
+  "command": "python3 /tmp/ovf-root-663f640-runtime-readiness-static-review-gpt56-sol.py",
+  "exitCode": 1,
+  "errorType": "AttributeError",
+  "error": "NoneType object has no attribute update",
+  "location": "line 138 source_digest.update(path.encode()).update(...)",
+  "cause": "The audit helper incorrectly chained hashlib.update calls; hashlib.update returns None.",
+  "repositoryFinding": false,
+  "retryPerformed": false,
+  "scriptSha256": "1ed7ff36ee32786e88976b846a28f65187d35bf616d2ee49869e8eb82b2cd9c5",
+  "traceback": [
+    "Traceback (most recent call last):",
+    "  File \"/tmp/ovf-root-663f640-runtime-readiness-static-review-gpt56-sol.py\", line 138, in <module>",
+    "    source_digest.update(path.encode()).update(b\"\\0\").update(data).update(b\"\\0\")",
+    "AttributeError: 'NoneType' object has no attribute 'update'"
+  ]
+}
