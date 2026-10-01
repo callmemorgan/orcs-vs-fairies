@@ -23,7 +23,7 @@ describe('saved match rules and objectives',()=>{
  });
  it('captures the hill by team, resets contested defense, and wins with opposing headquarters alive',()=>{
   const state=match({mode:'hill',hill:{captureTicks:3,holdTicks:80}},[0,0,1,1]),hill=state.objectives.hill;
-  const ally=spawnEntity(state,1,'unit','melee',hill.x,hill.y);expect(issueCommand(state,1,{type:'hold',ids:[ally.id]})).toBe(true);tick(state,5);expect(hill.ownerTeam).toBe(0);expect(hill.holdTicks).toBe(2);
+  const ally=spawnEntity(state,1,'unit','worker',hill.x,hill.y);expect(issueCommand(state,1,{type:'hold',ids:[ally.id]})).toBe(true);tick(state,5);expect(hill.ownerTeam).toBe(0);expect(hill.holdTicks).toBe(2);
   const enemy=spawnEntity(state,3,'unit','melee',hill.x+3,hill.y);tick(state,1);expect(hill.contested).toBe(true);expect(hill.holdTicks).toBe(0);
   move(state,3,enemy.id,hill.x+6,hill.y);expect(issueCommand(state,3,{type:'hold',ids:[enemy.id]})).toBe(true);tick(state,80);expect(state.winningTeam,JSON.stringify({hill,units:state.entities.filter(e=>e.kind==='unit'&&e.role!=='worker')})).toBe(0);expect(state.winner).toBe(0);expect(state.entities.filter(e=>e.role==='hq'&&e.hp>0)).toHaveLength(4);
  });
@@ -57,6 +57,14 @@ describe('saved match rules and objectives',()=>{
   expect(state.draft.status).toBe('complete');expect(state.entities.filter(e=>e.side===0&&e.kind==='unit'&&e.role!=='worker').map(e=>e.role)).toEqual(['ranged']);
   const barracks=spawnEntity(state,0,'building','barracks',12,8);expect(issueCommand(state,0,{type:'train',id:barracks.id,role:'melee'})).toBe(false);expect(issueCommand(state,0,{type:'train',id:barracks.id,role:'siege'})).toBe(false);expect(issueCommand(state,0,{type:'train',id:barracks.id,role:'ranged'})).toBe(true);expect(issueCommand(state,0,{type:'research',id:barracks.id,upgrade:'forged-weapons'})).toBe(false);
   expect(legalDraftChoices(state.draft,players,0)).not.toContain(banned);expect(loadGame(saveGame(state)).draft).toEqual(state.draft);
+ });
+ it('finishes a timed eight-player mirror draft and saves every player roster',()=>{
+  const state=match({draft:{enabled:true,banRounds:1,pickRounds:3,turnTicks:20}},[0,0,0,0,1,1,1,1]);tick(state,260);expect(state.draft.status).toBe('drafting');const resumed=loadGame(saveGame(state));tick(state,500);tick(resumed,500);expect(state.draft.status).toBe('complete');expect(state.draft.banned).toHaveLength(8);expect(state.draft.picks.every(p=>p.length===3)).toBe(true);expect(saveGame(resumed)).toEqual(saveGame(state));
+  for(let side=0;side<8;side++){const soldier=state.entities.find(e=>e.side===side&&e.kind==='unit'&&e.role!=='worker')!;expect(state.draft.picks[side]).toContain(FACTIONS[state.players[side].faction].units[soldier.role as 'melee'].id);expect(state.draft.banned).not.toContain(FACTIONS[state.players[side].faction].units[soldier.role as 'melee'].id);}
+ });
+ it('applies unit restrictions to survival attackers and to the starting soldier',()=>{
+  const state=match({mode:'survival',disabledDefinitionIds:[FACTIONS.orcs.units.melee.id,FACTIONS.fairies.units.melee.id],survival:{intervalTicks:20,unitsPerWave:2}});expect(state.entities.filter(e=>e.kind==='unit'&&e.side===0&&e.role!=='worker').map(e=>e.role)).toEqual(['ranged']);tick(state,20);expect(state.entities.filter(e=>state.objectives.survival.spawnedIds.includes(e.id)).map(e=>e.role)).not.toContain('melee');
+  const all=Object.values(FACTIONS.fairies.units).filter(u=>u.role!=='worker').map(u=>u.id);expect(()=>match({mode:'survival',disabledDefinitionIds:all})).toThrow(/enabled combat unit/);
  });
  it('rejects malformed save rule groups, absent carriers and impossible draft histories',()=>{
   const state=match({mode:'relic',relic:{count:1,required:1}}),save=saveGame(state);const partial=structuredClone(save);delete (partial.state as unknown as Partial<GameState>).draft;expect(()=>loadGame(partial)).toThrow(/stored together/);

@@ -1,7 +1,7 @@
 import { FACTIONS } from './content';
 import { TERRAIN } from './maps';
 import type { Command, Entity, GameState, Side, TeamId, UnitRole, Vec } from './types';
-import type { ObjectiveState } from './match-rules';
+import { definitionAllowed, type ObjectiveState } from './match-rules';
 interface Actions {spawn:(s:GameState,side:Side,kind:Entity['kind'],role:UnitRole,x:number,y:number)=>Entity;command:(s:GameState,side:Side,c:Command)=>boolean}
 const alive=(e:Entity)=>e.hp>0&&!e.illusion;
 function freePoint(s:GameState,point:Vec,offset=0):Vec {
@@ -19,6 +19,7 @@ export function initializeObjectives(s:GameState):void {
  if(s.rules.mode==='relic')for(let i=0;i<s.rules.relic.count;i++){const angle=i*Math.PI*2/s.rules.relic.count,point=freePoint(s,{x:s.width/2+Math.cos(angle)*6,y:s.height/2+Math.sin(angle)*6},i);s.objectives.relics.push({id:i+1,...point,carrierId:null,heldTeam:null});}
  if(s.rules.mode==='survival'){
   if(!s.teams.includes(s.rules.survival.defenderTeam)||new Set(s.teams).size!==2)throw new Error('Survival requires a defender team and one opposing wave team.');
+  if(!s.rules.draft.enabled&&s.players.some((player,side)=>s.teams[side]!==s.rules.survival.defenderTeam&&!Object.values(FACTIONS[player.faction].units).some(unit=>unit.role!=='worker'&&definitionAllowed(s,side as Side,unit.id))))throw new Error('Every wave slot needs an enabled combat unit.');
   // The wave roster is a published replacement for the opposing starting base/army.
   s.entities=s.entities.filter(e=>s.teams[e.side]===s.rules.survival.defenderTeam);s.objectives.survival.nextWaveTick=s.tick+s.rules.survival.intervalTicks;
  }
@@ -37,7 +38,7 @@ export function dropRelic(s:GameState,side:Side,id:number):boolean {
 export function evaluateObjectives(s:GameState,actions:Actions):void {
  if(s.winner!==null||s.draw)return;
  if(s.rules.mode==='hill'){
-  const h=s.objectives.hill,present=[...new Set(s.entities.filter(e=>alive(e)&&e.kind==='unit'&&e.role!=='worker'&&!s.eliminated[e.side]&&Math.hypot(e.x-h.x,e.y-h.y)<=s.rules.hill.radius).map(e=>s.teams[e.side]))];
+  const h=s.objectives.hill,present=[...new Set(s.entities.filter(e=>alive(e)&&e.kind==='unit'&&!s.eliminated[e.side]&&Math.hypot(e.x-h.x,e.y-h.y)<=s.rules.hill.radius).map(e=>s.teams[e.side]))];
   h.contested=present.length>1;
   if(present.length!==1){h.captureTeam=null;h.captureTicks=0;if(h.contested)h.holdTicks=0;return;}
   const team=present[0];if(h.ownerTeam!==team){if(h.captureTeam!==team){h.captureTeam=team;h.captureTicks=0;}h.captureTicks++;h.holdTicks=0;if(h.captureTicks>=s.rules.hill.captureTicks){h.ownerTeam=team;h.captureTeam=null;h.captureTicks=0;}}
@@ -56,6 +57,9 @@ export function evaluateObjectives(s:GameState,actions:Actions):void {
  if(s.rules.mode==='survival'){
   const rules=s.rules.survival,wave=s.objectives.survival,defenders=s.entities.filter(e=>alive(e)&&e.role==='hq'&&e.progress===1&&s.teams[e.side]===rules.defenderTeam),opponents=s.players.map((_,id)=>id as Side).filter(side=>s.teams[side]!==rules.defenderTeam);
   if(!defenders.length){wave.phase='complete';finish(s,s.teams[opponents[0]],'The defenders lost their last stronghold.');return;}
+  if(wave.phase==='fighting')for(const unit of s.entities.filter(e=>wave.spawnedIds.includes(e.id)&&alive(e)&&e.order.type==='idle')){
+   const target=[...defenders].sort((a,b)=>Math.hypot(a.x-unit.x,a.y-unit.y)-Math.hypot(b.x-unit.x,b.y-unit.y))[0];actions.command(s,unit.side,{type:'attackMove',ids:[unit.id],x:target.x,y:target.y});
+  }
   if(wave.phase==='fighting'&&!s.entities.some(e=>wave.spawnedIds.includes(e.id)&&alive(e))){
    const survivors=s.players.map((_,id)=>id as Side).filter(side=>s.teams[side]===rules.defenderTeam&&s.entities.some(e=>alive(e)&&e.role==='hq'&&e.side===side));
    // Each surviving defender receives the visible, configured wave reward.
@@ -65,7 +69,7 @@ export function evaluateObjectives(s:GameState,actions:Actions):void {
   }
   if((wave.phase==='waiting'||wave.phase==='recovery')&&s.tick>=wave.nextWaveTick){
    wave.wave++;wave.spawnedIds=[];wave.phase='fighting';const roles:UnitRole[]=wave.wave===1?['melee','ranged']:wave.wave===2?['spear','ranged','cavalry']:['melee','special','siege','cavalry'];
-   for(let i=0;i<rules.unitsPerWave*wave.wave;i++){const side=opponents[i%opponents.length],point=freePoint(s,{x:s.starts[side].x+(i%5)-2,y:s.starts[side].y+Math.floor(i/5)*.8},i),unit=actions.spawn(s,side,'unit',roles[i%roles.length],point.x,point.y);wave.spawnedIds.push(unit.id);const target=defenders[i%defenders.length];actions.command(s,side,{type:'attackMove',ids:[unit.id],x:target.x,y:target.y});}
+   for(let i=0;i<rules.unitsPerWave*wave.wave;i++){const side=opponents[i%opponents.length],point=freePoint(s,{x:s.starts[side].x+(i%5)-2,y:s.starts[side].y+Math.floor(i/5)*.8},i),allowed=Object.values(FACTIONS[s.players[side].faction].units).filter(unit=>unit.role!=='worker'&&definitionAllowed(s,side,unit.id)).map(unit=>unit.role),preferred=roles[i%roles.length],unit=actions.spawn(s,side,'unit',allowed.includes(preferred)?preferred:allowed[i%allowed.length],point.x,point.y);wave.spawnedIds.push(unit.id);const target=defenders[i%defenders.length];actions.command(s,side,{type:'attackMove',ids:[unit.id],x:target.x,y:target.y});}
    s.events.push({type:'message',side:defenders[0].side,...s.starts[defenders[0].side],text:`Survival wave ${wave.wave}: ${wave.spawnedIds.length} attackers`});
   }
  }
