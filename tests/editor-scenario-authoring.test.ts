@@ -4,6 +4,8 @@ import type { ScenarioAction } from '../src/core/scenario-types';
 import { generateWorldMap } from '../src/core/world-map';
 import { createEditorMap, makeMapPackage, type EditorPoint, type MapPackage } from '../src/editor/map-package';
 import { createScenarioDraft, decodeScenarioPackage, makeScenarioPackage, scenarioMapFromPackage, type ScenarioPackage } from '../src/editor/scenario-package';
+import { createContentBundle } from '../src/core/content-registry';
+import { exampleMod } from '../src/core/example-mod';
 import { mountScenarioAuthoring } from '../src/ui/ScenarioAuthoring';
 
 const mounted: ReturnType<typeof mountScenarioAuthoring>[] = [];
@@ -26,14 +28,14 @@ function playableWorldMap(): MapPackage {
   return makeMapPackage({ id: 'scenario-world', title: 'Scenario world', author: 'Map author', revision: 1 }, map);
 }
 
-function setup() {
+function setup(options: Pick<Parameters<typeof mountScenarioAuthoring>[1], 'contentOptions'> = {}) {
   const root = document.createElement('div');
   document.body.append(root);
   let currentMap = playableMap(), placement: ((point: EditorPoint) => void) | null = null;
   const onChange = vi.fn(), playScenario = vi.fn(async (_scenario: ScenarioPackage) => {});
   const onImportMap = vi.fn((map: MapPackage) => { currentMap = map; });
   const setPlacement = vi.fn((handler: ((point: EditorPoint) => void) | null) => { placement = handler; });
-  const panel = mountScenarioAuthoring(root, { getMap: () => currentMap, onChange, playScenario, onImportMap, setPlacement });
+  const panel = mountScenarioAuthoring(root, { ...options, getMap: () => currentMap, onChange, playScenario, onImportMap, setPlacement });
   mounted.push(panel);
   return {
     root, panel, onChange, playScenario, onImportMap, setPlacement,
@@ -678,5 +680,24 @@ describe('scenario authoring with the assembled registry', () => {
     expect(panel.getScenario().events[0].actions[0]).toEqual({ type: 'alliance', allied: true });
     toggle(root, 'Event 1 action 1 sides allied');
     expect(decodeScenarioPackage(panel.exportPackage()).scenario.events[0].actions[0]).toEqual({ type: 'alliance', allied: false });
+  });
+});
+
+
+describe('self-contained custom scenario content', () => {
+  it('uses a selected pinned package for authoring and preserves its complete export', () => {
+    const content = createContentBundle([exampleMod()]);
+    const { root, panel } = setup({ contentOptions: () => [{ id: 'lantern', label: 'Lantern Keepers 1.0.0', content }] });
+    change(root, 'Scenario content', 'lantern'); click(root, 'Use selected scenario content');
+    change(root, 'Player faction', 'lantern:keepers');
+    change(root, 'Actor 1 custom definition ID', 'lantern:duelist');
+    toggle(root, 'Actor 1 custom health');
+    expect(panel.getScenario().army[0].hp).toBe(110);
+    const exported = decodeScenarioPackage(panel.exportPackage());
+    expect(exported.scenario.content).toEqual(content);
+    expect(exported.scenario.faction).toBe('lantern:keepers');
+    expect(exported.scenario.army[0].definitionId).toBe('lantern:duelist');
+    const imported = setup(); imported.panel.importPackage(exported);
+    expect(imported.panel.exportPackage()).toEqual(exported);
   });
 });

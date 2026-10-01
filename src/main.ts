@@ -5,8 +5,16 @@ import { alliedAiStatus, createGame, createMatch, issueCommand, isGameOver } fro
 import { createScenario, scenarioSessionForState } from './core/scenarios';
 import { ScenarioOverlay } from './game/ScenarioOverlay';
 import { ScenarioCampaignHost } from './ui/ScenarioCampaignHost';
-import { ContentLibrary, productionQueueKey, upgradeFor, factionFor } from './core/content-registry';
+import { ContentLibrary, productionQueueKey, upgradeFor, factionFor, createContentBundle, decodeContentPackage } from './core/content-registry';
 import { mountModLibrary } from './ui/ModLibrary';
+import { mountEditorTools } from './ui/EditorTools';
+import { createEditedMatch } from './editor/launch';
+import { canonicalMapHash } from './editor/map-package';
+import { decodeScenarioPackage } from './editor/scenario-package';
+import { mountCommunityBrowser } from './ui/CommunityBrowser';
+import { CommunityLibrary } from './online/community-client';
+import { communityPackageValidators } from './editor/package-validation';
+import type { MapPackage } from './editor/map-package';
 import { mountShell } from './ui/Hud';
 import { mountWorldBiome, mountWorldTools } from './ui/WorldTools';
 import { mountObjectivePanel } from './ui/ObjectivePanel';
@@ -39,6 +47,7 @@ import { createTournamentDashboardSource } from './tournament/client';
 import './ui/style.css';
 declare const __OVF_BUILD_ID__:string;
 
+const editedPackages=new WeakMap<GameState,{packageHash:string;worldHash:string;label?:string}>();
 let game:Phaser.Game|undefined;
 let scene:GameScene|undefined;
 let scenarioOverlay:ScenarioOverlay|undefined;
@@ -306,6 +315,29 @@ mountOnlineLobby(root,{api:onlineApi,toolbar:sessionToolbar,onJoinMatch:joinOnli
 const teamAiTools=mountTeamAITools(root,{toolbar:sessionToolbar,command:command=>!teamAiBlocked()&&dispatchCommand(playerSide(),command),notice:shell.notice,onVisibility:open=>setModal('team-ai',open)});
 function teamAiBlocked(){return !scene||!!replay||scene.readOnly||scene.photoMode||scene.state.eliminated[playerSide()]||isGameOver(scene.state)||Array.from(openModals).some(source=>source!=='team-ai')||(scene.paused&&(!openModals.has('team-ai')||pausedBeforeModal));}
 const tournaments=mountTournamentDashboard(root,{source:createTournamentDashboardSource(),toolbar:sessionToolbar,onReplay:importReplay,onVisibility:open=>setModal('tournament',open)});
+const packageBadge=document.createElement('p');packageBadge.className='editor-package-badge';packageBadge.setAttribute('aria-label','Running community package');packageBadge.hidden=true;root.append(packageBadge);
+function rememberPackage(state:GameState,packageHash:string,worldHash:string,label?:string){editedPackages.set(state,{packageHash,worldHash,label});updatePackageBadge();}
+function updatePackageBadge(){const value=scene&&editedPackages.get(scene.state);packageBadge.textContent=value?.label??'';packageBadge.hidden=!value?.label;}
+function editorBlocked(source:string){return !!scene?.photoMode||Array.from(openModals).some(open=>open!==source);}
+const communityLibrary=new CommunityLibrary({validators:communityPackageValidators});
+const editor=mountEditorTools(root,{
+ toolbar:sessionToolbar,blocked:()=>editorBlocked('editor'),onOpen:open=>setModal('editor',open),
+ contentOptions:()=>[...(modLibrary.list().length?[{id:'local-mods',label:'Installed local mods',content:modLibrary.bundle()}]:[]),...communityLibrary.list().filter(record=>record.kind==='mod').map(record=>({id:record.hash,label:`${record.title} ${record.version}`,content:createContentBundle(communityLibrary.packagesFor(record.hash))}))],
+ playMap:pkg=>{campaignHost.clear();const state=createEditedMatch(pkg);rememberPackage(state,pkg.hash,canonicalMapHash(pkg.map));replacementGeneration++;launch(state);},
+ playScenario:pkg=>{const state=launchAuthoredScenario(pkg.scenario);rememberPackage(state,pkg.hash,pkg.map.contentHash);}
+});
+mountCommunityBrowser(root,{
+ library:communityLibrary,toolbar:sessionToolbar,blocked:()=>editorBlocked('community'),onOpen:open=>setModal('community',open),
+ getPublishedPackage:()=>editor.getMap(),getPublishedScenario:()=>editor.getScenarioPackage(),
+ play:record=>{
+  const label=`${record.title} · version ${record.version}`;
+  if(record.kind==='scenario'){const pkg=decodeScenarioPackage(record.package),state=launchAuthoredScenario(pkg.scenario,label);rememberPackage(state,pkg.hash,pkg.map.contentHash,label);return;}
+  const state=record.kind==='map'?createEditedMatch(record.package as MapPackage):(()=>{const pkg=decodeContentPackage(record.package);return createMatch({content:createContentBundle(communityLibrary.packagesFor(record.hash)),map:{seed:4127,size:'small'},players:[{id:0,teamId:0,factionId:pkg.factions[0].id,controller:'human'},{id:1,teamId:1,factionId:'orcs',controller:'ai',ai:aiOptions.value}]});})();
+  campaignHost.clear();const pkg=record.package as {hash:string;contentHash?:string};rememberPackage(state,pkg.hash,pkg.contentHash??'',label);replacementGeneration++;launch(state);
+ }
+});
+setInterval(updatePackageBadge,100);
+
 function alignToolPanels(){root.style.setProperty('--tool-panel-top',`${Math.max(126,Math.ceil(sessionToolbar.getBoundingClientRect().bottom)+8)}px`);}
 new ResizeObserver(alignToolPanels).observe(sessionToolbar);
 new MutationObserver(alignToolPanels).observe(sessionToolbar.parentElement!,{attributes:true,attributeFilter:['class']});
@@ -367,6 +399,12 @@ setInterval(()=>{
 const worldTools=mountWorldTools(root,{phase:()=>onlineRender?.worldPhase,state:()=>scene?.state,side:playerSide,level:()=>scene?.viewLevel??0,selected:()=>scene?.selected??[],canCommand:()=>!!scene&&scene.canIssueCommands,command:c=>scene?.command(c)??false,setLevel:level=>scene?.setViewLevel(level),select:ids=>scene?.selectEntities(ids),center:p=>scene?.centerOn(p.x,p.y),notice:shell.notice});
 setInterval(()=>worldTools.update(),100);
 Object.defineProperty(window,'rts',{get:()=>scene?.cameras?.main?{state:scene.state,get activeScenario(){const session=scenarioSessionForState(scene!.state);return session?structuredClone({definition:session.definition,runtime:session.runtime,simulationRevision:session.simulationRevision}):null;},viewLevel:scene.viewLevel,viewSide:scene.viewSide,readOnly:scene.readOnly,selected:[...scene.selected],art:scene.artStatus,fps:game?.loop.actualFps,paused:scene.paused,mode:onlineConnection?'online':replay?'replay':'local',simulationEnabled:scene.simulationEnabled,online:onlineConnection?{status:onlineConnection.status,role:onlineRender?.role,side:playerSide(),delayTicks:onlineConnection.connectionInfo?.delayTicks,pendingCommands:onlineConnection.pendingCommands,privateSides:[...(onlineRender?.privateSides??[])]}:null,camera:{x:scene.cameras.main.scrollX,y:scene.cameras.main.scrollY,zoom:scene.cameras.main.zoom,width:scene.cameras.main.width,height:scene.cameras.main.height}}:null});
+Object.defineProperty(window,'editorDiagnostics',{value:()=>{
+ if(!scene?.cameras?.main)return null;
+ const state=scene.state,metadata=editedPackages.get(state),scenario=state.scenario;
+ return {packageHash:metadata?.packageHash??'',worldHash:metadata?.worldHash??'',tick:state.tick,starts:structuredClone(state.starts),width:state.width,height:state.height,terrain:[...state.terrain],resources:structuredClone(state.resources),players:structuredClone(state.players),world:structuredClone(state.world),selected:[...scene.selected],viewLevel:scene.viewLevel,entities:structuredClone(state.entities),content:state.content?structuredClone(state.content):null,art:structuredClone(scene.artStatus),camera:{x:scene.cameras.main.scrollX,y:scene.cameras.main.scrollY,zoom:scene.cameras.main.zoom,width:scene.cameras.main.width,height:scene.cameras.main.height},scenario:scenario?{runtime:structuredClone(scenario.runtime),definition:structuredClone(scenario.definition),entities:structuredClone(state.entities)}:null};
+},writable:false});
+if(location.pathname.endsWith('/editor.html'))editor.open();
 if(location.hostname==='127.0.0.1'&&new URLSearchParams(location.search).has('qa'))setInterval(()=>{
  if(!scene||!game)return;
  const s=scene.state;

@@ -1,5 +1,5 @@
-import { FACTIONS } from '../core/content';
 import { contentFactions } from '../core/content-registry';
+import type { ContentBundle } from '../core/content-registry';
 import type { ScenarioAction, ScenarioActor, ScenarioCondition, ScenarioDefinition, ScenarioObjective, ScenarioOrder, ScenarioTrigger } from '../core/scenario-types';
 import type { BuildingRole, FactionId, Side, UnitRole, Vec } from '../core/types';
 import { EditorDocument } from '../editor/document';
@@ -10,6 +10,7 @@ import './scenario-authoring.css';
 
 export interface ScenarioAuthoringCallbacks {
   getMap: () => MapPackage;
+  contentOptions?: () => Array<{ id: string; label: string; content: ContentBundle }>;
   playScenario: (scenario: ScenarioPackage) => void | Promise<void>;
   onChange?: (scenario: ScenarioDefinition) => void;
   onImportMap?: (map: MapPackage) => void;
@@ -117,7 +118,7 @@ export function mountScenarioAuthoring(parent: HTMLElement, callbacks: ScenarioA
     select(box, `${label} role`, value.role, value.kind === 'unit' ? unitRoles : buildingRoles, role => { const next = { ...value, role }; delete next.definitionId; write(next); });
     position(box, `${label} position`, value, point => write({ ...value, ...point }));
     const faction = value.side === 0 ? doc.value.faction : doc.value.opponent;
-    const catalog = contentFactions()[faction];
+    const catalog = contentFactions(doc.value.content)[faction];
     const definitions = value.kind === 'unit' ? catalog.unitDefinitions : catalog.buildingDefinitions;
     const custom = definitions?.find(def => def.id === value.definitionId && def.role === value.role);
     const maxHp = custom?.hp ?? (value.kind === 'unit' ? catalog.units[value.role as UnitRole].hp : catalog.buildings[value.role as BuildingRole].hp);
@@ -255,7 +256,23 @@ export function mountScenarioAuthoring(parent: HTMLElement, callbacks: ScenarioA
     const metadata = group(content, 'Scenario');
     textInput(metadata, 'Scenario ID', s.id, id => edit('Change scenario ID', draft => { draft.id = id; }), 64); textInput(metadata, 'Scenario title', s.title, title => edit('Change scenario title', draft => { draft.title = title; }), 120);
     for (const [key, label] of [['briefing', 'Briefing'], ['successText', 'Victory text'], ['failureText', 'Defeat text']] as const) textInput(metadata, label, s[key], value => edit(`Change ${label.toLowerCase()}`, draft => { draft[key] = value; }), 8000, true);
-    const factions = Object.keys(FACTIONS) as FactionId[], factionNames = Object.fromEntries(factions.map(id => [id, FACTIONS[id].name]));
+    const catalog = contentFactions(s.content), factions = Object.keys(catalog) as FactionId[], factionNames = Object.fromEntries(factions.map(id => [id, catalog[id].name]));
+    if (callbacks.contentOptions) {
+      const choices = callbacks.contentOptions();
+      if (s.content && !choices.some(item => item.content.hash === s.content!.hash)) choices.unshift({ id: 'current-content', label: 'Current imported content', content: s.content });
+      const picker = element('select'); picker.setAttribute('aria-label', 'Scenario content');
+      for (const [value, label] of [['builtin', 'Built-in factions'], ...choices.map(item => [item.id, item.label])]) { const option = element('option', label); option.value = value; picker.append(option); }
+      picker.value = s.content ? choices.find(item => item.content.hash === s.content!.hash)!.id : 'builtin';
+      field(metadata, 'Scenario content', picker);
+      metadata.append(button('Use selected scenario content', () => edit('Change scenario content', draft => {
+        const selected = choices.find(item => item.id === picker.value);
+        if (selected) draft.content = structuredClone(selected.content); else delete draft.content;
+        const known = contentFactions(draft.content);
+        if (!known[draft.faction]) draft.faction = 'orcs';
+        if (!known[draft.opponent]) draft.opponent = 'fairies';
+      })));
+    }
+    if (s.content) metadata.append(element('p', `Pinned content: ${s.content.packages.map(pkg => `${pkg.name} ${pkg.version}`).join(', ')}`));
     select(metadata, 'Player faction', s.faction, factions, faction => edit('Change player faction', draft => { draft.faction = faction; }), factionNames); select(metadata, 'Opponent faction', s.opponent, factions, opponent => edit('Change opponent faction', draft => { draft.opponent = opponent; }), factionNames);
     textInput(metadata, 'Scenario author', author, value => { author = value; }, 120); numberInput(metadata, 'Scenario revision', revision, value => { revision = value; }, 1, 0x7fffffff, '1');
     const rules = group(content, 'Mission rules'); checkbox(rules, 'Fixed army', s.rules.fixedArmy, fixedArmy => edit('Change army rule', draft => { draft.rules.fixedArmy = fixedArmy; if (fixedArmy) draft.rules.reinforcementBudget = 0; })); const budget = numberInput(rules, 'Reinforcement budget', s.rules.reinforcementBudget, value => edit('Change reinforcement budget', draft => { draft.rules.reinforcementBudget = value; }), 0, 256, '1'); budget.disabled = s.rules.fixedArmy; numberInput(rules, 'Mission time limit seconds', s.rules.timeLimit, value => edit('Change time limit', draft => { draft.rules.timeLimit = value; }), 1, 7200); for (const kind of ['wood', 'ore', 'crystal'] as const) numberInput(rules, `Starting ${kind}`, s.rules.resources[kind], value => edit(`Change starting ${kind}`, draft => { draft.rules.resources[kind] = value; }), 0, 1e6);

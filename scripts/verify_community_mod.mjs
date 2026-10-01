@@ -77,7 +77,7 @@ async function publishFile(file, expected) {
   const waiting = publisherPage.waitForResponse(response => response.url().endsWith('/api/packages') && response.request().method() === 'POST');
   await publisherPage.getByLabel('Package file to publish', { exact: true }).setInputFiles(file);
   const response = await waiting;
-  assert.equal(response.status(), 201, `Publication accepts ${expected.id}@${expected.version}`);
+  assert.equal(response.status(), 201, `Publication accepts ${expected.id ?? expected.scenario?.id}@${expected.version ?? expected.revision}`);
   assert.deepEqual(response.request().postDataJSON().package, expected, 'Publication uses the exact fixture content');
   const publication = await response.json();
   assert.equal(publication.detail.packageHash, expected.hash);
@@ -197,6 +197,7 @@ try {
   const entry = path.join(helperDir, 'entry.ts'), bundle = path.join(helperDir, 'entry.mjs');
   await writeFile(entry, [
     `export { createRtsServer } from ${JSON.stringify(path.join(root, 'src/server/server.ts'))};`,
+    `export { decodeScenarioPackage } from ${JSON.stringify(path.join(root, 'src/editor/scenario-package.ts'))};`,
     `export { decodeContentPackage, createContentBundle, contentHash, buildingFor } from ${JSON.stringify(path.join(root, 'src/core/content-registry.ts'))};`,
   ].join('\n'));
   await promisify(execFile)(path.join(root, 'node_modules/.bin/esbuild'), [entry, '--bundle', '--platform=node', '--format=esm', '--packages=external', `--outfile=${bundle}`]);
@@ -215,14 +216,15 @@ try {
           description: 'Faction-only dependency for the native immutable installation proof.', color: 15973717, accent: '#f3bd55', units: [], buildings: [], research: [] }], art: {} };
       return helpers.decodeContentPackage({ ...body, hash: helpers.contentHash(body) });
     };
-    const leaf = support('lantern-proof-leaf', []);
-    const middle = support('lantern-proof-support', [{ id: leaf.id, version: leaf.version, hash: leaf.hash }]);
+    const leaf = support('aaa-lantern-proof-leaf', []);
+    const middle = support('aaa-lantern-proof-support', [{ id: leaf.id, version: leaf.version, hash: leaf.hash }]);
     dependencies.push(leaf, middle);
     const { hash: _hash, ...body } = original;
     body.dependencies = [{ id: middle.id, version: middle.version, hash: middle.hash }];
     original = helpers.decodeContentPackage({ ...body, hash: helpers.contentHash(body) });
   }
   originalBundle = helpers.createContentBundle([...dependencies, original]);
+  if (!dependencyPaths.length) assert.notEqual(originalBundle.packages[0].id, original.id, 'Dependency ordering makes a bundle-first faction launch fail this proof');
   await save('mod-original.json', original);
   await save('expected-original-bundle.json', originalBundle);
   const faction = original.factions[0];
@@ -252,7 +254,7 @@ try {
   publisherPage = await publisher.newPage(); receiverPage = await receiver.newPage();
   for (const page of [publisherPage, receiverPage]) { page.setDefaultTimeout(15000); page.on('pageerror', error => errors.push(error.message)); }
   const publisherBuild = await openWorkbench(publisherPage), receiverBuild = await openWorkbench(receiverPage);
-  await promisify(execFile)(process.execPath, [path.join(root, 'scripts/verify_served_build.mjs'), `${base}/editor.html`, path.join(evidence, 'served-build.json')], { cwd: root });
+  await promisify(execFile)(process.execPath, [path.join(root, 'scripts/verify_served_build.mjs'), `${base}/editor.html`, path.join(evidence, 'served-build.json'), staticDir], { cwd: root });
   const suffix = Date.now().toString(36);
   const author = await register(publisherPage, `ModPublisher${suffix}`);
   const viewer = await register(receiverPage, `ModReceiver${suffix}`);
@@ -360,6 +362,45 @@ try {
   assert(!pinned.content.packages.some(pkg => pkg.id === original.id && pkg.version === updated.version));
   await save('community-mod-old-revision-match.json', pinned);
   checked('installing a changed revision preserves the old installed package and its exact launch closure');
+
+  await receiverPage.getByRole('button', { name: 'Map and scenario editor', exact: true }).click();
+  await receiverPage.getByRole('tab', { name: 'Scenario editor', exact: true }).click();
+  await receiverPage.getByLabel('Scenario content', { exact: true }).selectOption(publishedOriginal.detail.hash);
+  await receiverPage.getByRole('button', { name: 'Use selected scenario content', exact: true }).click();
+  await receiverPage.getByLabel('Player faction', { exact: true }).selectOption(original.factions[0].id);
+  for (const [name, value] of [['Scenario ID', `lantern-mission-${suffix}`], ['Scenario title', 'Pinned Lantern survival'], ['Actor 1 custom definition ID', recruits[1].id], ['Objective 1 success seconds', '2']]) {
+    const field = receiverPage.getByLabel(name, { exact: true }); await field.fill(value); await field.press('Tab');
+  }
+  const scenarioDownloading = receiverPage.waitForEvent('download');
+  await receiverPage.getByRole('button', { name: 'Export scenario', exact: true }).click();
+  const scenarioFile = path.join(evidence, 'authored-pinned-lantern-scenario.json');
+  await (await scenarioDownloading).saveAs(scenarioFile);
+  const scenarioPackage = helpers.decodeScenarioPackage(JSON.parse(await readFile(scenarioFile, 'utf8')));
+  assert.deepEqual(scenarioPackage.scenario.content, originalBundle);
+  assert.equal(scenarioPackage.scenario.army[0].definitionId, recruits[1].id);
+  const scenarioPublication = await publishFile(scenarioFile, scenarioPackage);
+  await save('published-pinned-lantern-scenario.json', scenarioPublication);
+  await receiverPage.getByRole('button', { name: 'Close editor', exact: true }).click();
+  await openCommunity(receiverPage);
+  await receiverPage.getByLabel('Search packages', { exact: true }).fill(scenarioPackage.scenario.id);
+  await receiverPage.getByLabel('Package kind', { exact: true }).selectOption('scenario');
+  const scenarioSearch = receiverPage.waitForResponse(response => new URL(response.url()).pathname === '/api/packages' && new URL(response.url()).searchParams.get('kind') === 'scenario');
+  await receiverPage.getByRole('button', { name: 'Search community', exact: true }).click(); assert.equal((await scenarioSearch).status(), 200);
+  await receiverPage.locator('.community-results article').getByRole('button', { name: 'View package', exact: true }).click();
+  await receiverPage.locator('.community-details').getByRole('button', { name: 'Download and install', exact: true }).click();
+  await receiverPage.locator('.community-status').filter({ hasText: 'Installed Pinned Lantern survival, version 1.' }).waitFor();
+  await receiverPage.locator('.community-details').getByRole('button', { name: 'Play installed revision', exact: true }).click();
+  await receiverPage.waitForFunction(hash => window.editorDiagnostics?.()?.packageHash === hash && window.editorDiagnostics().scenario?.runtime.outcome === 'won', scenarioPackage.hash, { timeout: 20000 });
+  const playedScenario = await diagnostics(receiverPage);
+  assert.deepEqual(playedScenario.content, originalBundle);
+  assert.deepEqual(playedScenario.scenario.definition.content, originalBundle);
+  const actor = playedScenario.entities.find(entity => entity.id === playedScenario.scenario.runtime.labels.commander);
+  assert.equal(actor.definitionId, recruits[1].id); assert.equal(actor.maxHp, recruits[1].hp);
+  assert.equal(await receiverPage.locator('#overlay-description').innerText(), playedScenario.scenario.runtime.reason);
+  assert(!(await receiverPage.locator('#overlay-description').innerText()).includes('stronghold'));
+  await save('played-pinned-lantern-scenario.json', playedScenario);
+  await receiverPage.screenshot({ path: path.join(evidence, 'pinned-lantern-scenario-victory.png'), fullPage: true });
+  checked('native authoring, remote publication, installation and scenario launch preserve the old mod closure and custom actor definition');
   assert.deepEqual(errors, []);
   checked('both production browser profiles have no uncaught errors');
 } catch (error) {

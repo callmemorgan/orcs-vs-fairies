@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const base = (process.argv[2] || 'http://127.0.0.1:5364').replace(/\/$/, '');
 const evidence = path.resolve(process.env.OVF_EDITOR_EVIDENCE_DIR || path.join(root, 'docs/evidence/layered-scenario-editor-20261001'));
-const fixturePath = path.join(root, 'docs/evidence/editor-production-20261001/two-level-map.json');
+const fixturePath = path.resolve(process.env.OVF_EDITOR_MAP_FIXTURE || path.join(root, 'docs/evidence/editor-root-integration-20261001/map/two-level-map.json'));
 const fixture = JSON.parse(await readFile(fixturePath, 'utf8'));
 await mkdir(evidence, { recursive: true });
 

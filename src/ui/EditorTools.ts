@@ -5,9 +5,11 @@ import { TERRAIN } from '../core/maps';
 import type { MapSize, ResourceKind, TerrainKind } from '../core/types';
 import { mountScenarioAuthoring } from './ScenarioAuthoring';
 import type { ScenarioPackage } from '../editor/scenario-package';
+import type { ContentBundle } from '../core/content-registry';
 import './editor-tools.css';
 
 export interface EditorToolsCallbacks {
+  contentOptions?: () => Array<{ id: string; label: string; content: ContentBundle }>;
   playMap: (map: MapPackage) => void | Promise<void>;
   playScenario?: (scenario: ScenarioPackage) => void | Promise<void>;
   onOpen?: (open: boolean) => void;
@@ -57,6 +59,7 @@ export function mountEditorTools(root: HTMLElement, callbacks: EditorToolsCallba
   const players = select(creationFields, 'New map player count', Array.from({ length: 8 }, (_, index) => [String(index + 1), String(index + 1)])); players.value = '2';
   const seed = node('input'); seed.type = 'number'; seed.min = '0'; seed.max = '4294967295'; seed.step = '1'; seed.value = '4127'; field(creationFields, 'New map seed', seed);
   let documentModel = new EditorDocument<EditorMapData>(createEditorMap(4127, 'small', 2), decodeEditorMap);
+  let importGeneration = 0, disposed = false;
   let revision = 1, currentLevel = 0, activeTool: Tool = 'terrain', stroke = false, lastCell: { x: number; y: number } | undefined;
   let firstEntrance: { x: number; y: number; level: number } | undefined;
   let placement: ((point: { x: number; y: number; level: number }) => void) | null = null;
@@ -109,11 +112,14 @@ export function mountEditorTools(root: HTMLElement, callbacks: EditorToolsCallba
   }));
   button(actions, 'Export map package', () => run(() => { const pkg = getMap(); download(`${pkg.id}-v${pkg.revision}.ovf-map.json`, pkg); revision++; notice(`Exported ${pkg.title}, revision ${pkg.revision}.`); }));
   const file = node('input'); file.type = 'file'; file.accept = '.json,application/json'; file.setAttribute('aria-label', 'Import map package'); field(actions, 'Import map package', file);
-  file.addEventListener('change', () => { const selected = file.files?.[0]; file.value = ''; if (!selected) return;
+  file.addEventListener('change', () => { const selected = file.files?.[0]; file.value = ''; const generation = ++importGeneration; if (!selected) return;
+    const mutation = documentModel.mutationVersion, metadata = JSON.stringify([identity.value, title.value, author.value, revision]);
     void (async () => { try {
       if (selected.size > 16 * 1024 * 1024) throw new Error('Map package exceeds 16 MiB.');
-      const pkg = importMap(JSON.parse(await selected.text())); notice(`Imported ${pkg.title}.`);
-    } catch (error) { notice(error instanceof Error ? error.message : 'Map import failed.', true); } })();
+      const text = await selected.text();
+      if (disposed || generation !== importGeneration || documentModel.mutationVersion !== mutation || JSON.stringify([identity.value, title.value, author.value, revision]) !== metadata) return;
+      const pkg = importMap(JSON.parse(text)); notice(`Imported ${pkg.title}.`);
+    } catch (error) { if (!disposed && generation === importGeneration) notice(error instanceof Error ? error.message : 'Map import failed.', true); } })();
   });
   const play = button(actions, 'Play edited map', () => { void runAsync(async () => { const pkg = getMap(); await callbacks.playMap(pkg); close(); }); });
   aside.append(instructions, coordinates, validation, status, actions); workspace.append(canvasWrap, aside);
@@ -123,7 +129,7 @@ export function mountEditorTools(root: HTMLElement, callbacks: EditorToolsCallba
   const mapControls = node('section'); mapControls.append(metadata, creation, toolbar, layers);
   const scenarioHost = node('section'); scenarioHost.hidden = true;
   const scenario = mountScenarioAuthoring(scenarioHost, {
-    getMap, onImportMap: map => { importMap(map); },
+    getMap, contentOptions: callbacks.contentOptions, onImportMap: map => { importMap(map); },
     playScenario: async pkg => { if (!callbacks.playScenario) throw new Error('Scenario play is not connected in this window.'); await callbacks.playScenario(pkg); close(); },
     setPlacement: handler => { placement = handler; if (handler) { pointerUp(); firstEntrance = undefined; switchMode('map'); canvas.scrollIntoView({ block: 'center' }); canvas.focus(); notice('Click a tile for the scenario position. Escape cancels placement.'); } },
   });
@@ -237,7 +243,7 @@ export function mountEditorTools(root: HTMLElement, callbacks: EditorToolsCallba
   };
   const previousFocus = { value: undefined as HTMLElement | undefined };
   function open(next: 'map' | 'scenario' = 'map'): void { if (callbacks.blocked?.() || !overlay.hidden) return; previousFocus.value = document.activeElement as HTMLElement; overlay.hidden = false; callbacks.onOpen?.(true); refresh(); switchMode(next); (next === 'map' ? title : scenarioTab).focus(); }
-  function close(): void { pointerUp(); scenario.cancelPlacement(); overlay.hidden = true; firstEntrance = undefined; placement = null; callbacks.onOpen?.(false); previousFocus.value?.focus(); }
+  function close(): void { ++importGeneration; pointerUp(); scenario.cancelPlacement(); overlay.hidden = true; firstEntrance = undefined; placement = null; callbacks.onOpen?.(false); previousFocus.value?.focus(); }
   window.addEventListener('keydown', keyboard, true); refresh(); switchMode('map');
-  return { open, close, getMap, getScenarioPackage: scenario.exportPackage, importMap, importScenario: scenario.importPackage, destroy: () => { window.removeEventListener('keydown', keyboard, true); scenario.destroy(); overlay.remove(); entry.remove(); callbacks.onOpen?.(false); } };
+  return { open, close, getMap, getScenarioPackage: scenario.exportPackage, importMap, importScenario: scenario.importPackage, destroy: () => { disposed = true; ++importGeneration; window.removeEventListener('keydown', keyboard, true); scenario.destroy(); overlay.remove(); entry.remove(); callbacks.onOpen?.(false); } };
 }

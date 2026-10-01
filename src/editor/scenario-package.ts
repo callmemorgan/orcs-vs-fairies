@@ -1,4 +1,4 @@
-import { FACTIONS } from '../core/content';
+import { decodeContentBundle, contentFactions } from '../core/content-registry';
 import { TERRAIN } from '../core/maps';
 import { SAVE_VERSION } from '../core/saves';
 import { validateScenario } from '../core/scenario-validation';
@@ -129,10 +129,12 @@ function condition(value: unknown, path: string, refs: string[], width: number, 
 export function decodeScenarioDraft(input: unknown): ScenarioDefinition { return readScenario(jsonInput(input), false); }
 export function decodeScenarioDefinition(input: unknown): ScenarioDefinition { return validateScenario(readScenario(jsonInput(input), true)); }
 function readScenario(value: unknown, complete: boolean): ScenarioDefinition {
-  const s = object(value, 'scenario', ['schemaVersion', 'id', 'title', 'briefing', 'successText', 'failureText', 'faction', 'opponent', 'seed', 'army', 'objectives', 'events', 'rules'], ['map', 'escort', 'stealth', 'boss', 'requiredActions']);
+  const s = object(value, 'scenario', ['schemaVersion', 'id', 'title', 'briefing', 'successText', 'failureText', 'faction', 'opponent', 'seed', 'army', 'objectives', 'events', 'rules'], ['map', 'content', 'escort', 'stealth', 'boss', 'requiredActions']);
   if (s.schemaVersion !== 1) bad('scenario.schemaVersion', 'unsupported schema version');
   id(s.id, 'scenario.id'); text(s.title, 'scenario.title', 120); for (const field of ['briefing', 'successText', 'failureText']) text(s[field], `scenario.${field}`, 8000, true);
-  for (const field of ['faction', 'opponent']) choice(s[field], `scenario.${field}`, Object.keys(FACTIONS)); number(s.seed, 'scenario.seed', 0, 0xffffffff, true);
+  if (s.content !== undefined) s.content = decodeContentBundle(s.content);
+  const factions = contentFactions(s.content as ScenarioDefinition['content']);
+  for (const field of ['faction', 'opponent']) choice(s[field], `scenario.${field}`, Object.keys(factions)); number(s.seed, 'scenario.seed', 0, 0xffffffff, true);
   let width = 256, height = 256;
   if (s.map !== undefined) {
     const m = object(s.map, 'scenario.map', ['size', 'width', 'height', 'terrain', 'starts', 'resources'], ['world']); width = number(m.width, 'scenario.map.width', 8, 256, true); height = number(m.height, 'scenario.map.height', 8, 256, true);

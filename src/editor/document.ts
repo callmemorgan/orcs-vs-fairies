@@ -3,6 +3,7 @@ export interface EditorHistoryEntry<T> { label: string; value: T }
 /** Each edit owns a complete snapshot. A failed edit/import cannot alter history. */
 export class EditorDocument<T> {
   private current: T;
+  private mutations = 0;
   private undoEntries: EditorHistoryEntry<T>[] = [];
   private redoEntries: EditorHistoryEntry<T>[] = [];
   private pending?: EditorHistoryEntry<T>;
@@ -12,6 +13,7 @@ export class EditorDocument<T> {
     this.current = structuredClone(validate(value));
   }
   get value(): Readonly<T> { return this.current; }
+  get mutationVersion(): number { return this.mutations; }
   get canUndo(): boolean { return this.undoEntries.length > 0; }
   get canRedo(): boolean { return this.redoEntries.length > 0; }
   get undoLabel(): string { return this.undoEntries.at(-1)?.label ?? ''; }
@@ -25,7 +27,7 @@ export class EditorDocument<T> {
   change(mutator: (draft: T) => void): void {
     if (!this.pending) throw new Error('Begin an edit before changing a document.');
     const draft = this.snapshot(); mutator(draft);
-    this.current = structuredClone(this.validate(draft));
+    this.current = structuredClone(this.validate(draft)); this.mutations++;
   }
   finish(): boolean {
     const pending = this.pending; this.pending = undefined;
@@ -37,7 +39,7 @@ export class EditorDocument<T> {
   }
   cancel(): void {
     if (!this.pending) return;
-    this.current = this.pending.value; this.pending = undefined;
+    this.current = this.pending.value; this.pending = undefined; this.mutations++;
   }
   edit(label: string, mutator: (draft: T) => void): boolean {
     this.begin(label);
@@ -55,12 +57,12 @@ export class EditorDocument<T> {
     if (this.pending) this.cancel();
     const entry = this.undoEntries.pop(); if (!entry) return false;
     this.redoEntries.push({ label: entry.label, value: this.snapshot() });
-    this.current = entry.value; return true;
+    this.current = entry.value; this.mutations++; return true;
   }
   redo(): boolean {
     if (this.pending) this.cancel();
     const entry = this.redoEntries.pop(); if (!entry) return false;
     this.undoEntries.push({ label: entry.label, value: this.snapshot() });
-    this.current = entry.value; return true;
+    this.current = entry.value; this.mutations++; return true;
   }
 }

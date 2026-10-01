@@ -150,6 +150,14 @@ try {
   await b.getByRole('button', { name: 'Play replay', exact: true }).click();
   await b.getByRole('button', { name: 'Close session tools', exact: true }).click();
   await b.waitForFunction(() => window.rts?.state.tick === 40 && window.rts.paused, null, { timeout: 15000 });
+  assert(!(await b.locator('.notice').allTextContents()).some(text => text.includes('Replay stopped:')), 'Playback reached completion without a caught replay error');
+  await b.locator('[data-session-tool="saves"]').click();
+  const completedDownload = b.waitForEvent('download');
+  await b.getByRole('button', { name: 'Export save', exact: true }).click();
+  const completedFile = path.join(evidence, 'browser-played-complete.save.json');
+  await (await completedDownload).saveAs(completedFile);
+  assert.deepEqual(JSON.parse(await readFile(completedFile, 'utf8')).game, saveGame(oldState), 'Timed native playback reaches the full expected final state');
+  await b.getByRole('button', { name: 'Close session tools', exact: true }).click();
   await b.screenshot({ path: path.join(evidence, 'community-pinned-replay-viewer.png'), fullPage: true });
   checked('native browser viewer plays the original recording to completion after publication and restart');
   assert.deepEqual(errors, []); checked('both browser profiles have no uncaught errors');
