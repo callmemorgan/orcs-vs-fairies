@@ -98,6 +98,7 @@ describe('analysis of specialist command deaths', () => {
     expect(issueCommand(setup.state, 0, setup.ability)).toBe(true); assertLethal(setup.state, setup.victims);
     // This authored starting state has an earlier death in its history and a living survivor with the same ID.
     // Every health/animation adjustment is before recording; the new death must come from the normal ability command.
+    setup.state.corpses = setup.state.corpses.filter(body => body.id !== setup.victims[0].id);
     setup.victims[0].hp = 20; setup.victims[0].animation = 'idle'; setup.victims[0].animTime = 0; setup.commander.abilityReadyAt = 0;
     const state = loadGame(saveGame(setup.state)), survivor = state.entities.find(e => e.id === setup.victims[0].id)!;
     const earlier = state.events.find(e => e.type === 'death' && e.source === survivor.id)!;

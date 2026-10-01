@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { createMatch, refreshVisibility, issueCommand } from '../src/core/simulation';
+import { createMatch, refreshVisibility, issueCommand, spawnDefinition } from '../src/core/simulation';
 import type { Side } from '../src/core/types';
 import { canAmbush, isCrewless } from '../src/core/tactics';
 import type { TacticsCommand } from '../src/core/tactics';
@@ -25,6 +25,10 @@ function input<T extends HTMLInputElement|HTMLSelectElement>(root:HTMLElement,la
 async function settled(){await Promise.resolve();await Promise.resolve();}
 
 describe('live army tactics panel',()=>{
+  it('shows the registered commander name for its special role',()=>{
+    const f=setup(), hero=spawnDefinition(f.state,0,'unit','core:orcs-commander',15,15);
+    f.select([hero.id]);expect(f.root.querySelector('[aria-label="Selected unit tactics"]')!.textContent).toContain(`Gorak Ironvoice #${hero.id}`);
+  });
   it.each(['Line','Wedge','Square','Loose'] as const)('applies %s through a real formation command to selected owned army',async label=>{
     const f=setup(),workerOrder=structuredClone(f.worker.order),enemyOrder=structuredClone(f.enemy.order);
     f.select([...f.army.map(item=>item.id),f.worker.id,f.enemy.id]);

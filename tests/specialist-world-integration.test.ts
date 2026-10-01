@@ -9,6 +9,7 @@ import { MatchRecorder, ReplayPlayer, replayChecksum } from '../src/core/replays
 import { loadGame, saveGame } from '../src/core/saves';
 import { createMatch, issueCommand, refreshVisibility, spawnDefinition, stepGame } from '../src/core/simulation';
 import { createArtifact } from '../src/core/unit-progression';
+import { facingDamageFactor } from '../src/core/tactics';
 import { highGroundDamageFactor, setWorldTerrain } from '../src/core/world-map';
 import { observationToRenderState } from '../src/online/render-state';
 import type { PlayerObservation } from '../src/online/protocol';
@@ -81,6 +82,8 @@ describe('specialists in a layered world', () => {
     const s = fixture(), gun = actor(s, 1, FACTIONS.orcs.units.siege.id, 24.5, 20.5, level), traveler = actor(s, 0, FACTIONS.orcs.units.worker.id, 28.1, 20.5, level), tile = 20 * s.width + 27;
     s.world.levels[level].terrain[tile] = 'bridge'; const bridge = { id: s.nextId++, x: 27.5, y: 20.5, level, tiles: [tile], hp: 1, maxHp: 160, rebuilding: 0, repairSide: null }; s.world.bridges.push(bridge); ready(s);
     expect(walkable(s, traveler.x, traveler.y, level)).toBe(true); expect(issueCommand(s, 1, { type: 'worldAttack', ids: [gun.id], target: bridge.id })).toBe(true); stepGame(s, .05);
+    expect(bridge.hp).toBe(1); expect(s.projectiles).toHaveLength(1);
+    for (let i = 0; bridge.hp > 0 && i < 30; i++) stepGame(s, .05);
     expect(bridge.hp).toBe(0); expect(walkable(s, traveler.x, traveler.y, level)).toBe(true); expect(traveler.level).toBe(level); expect(traveler.order.type).toBe('idle'); expect(s.events.some(e => e.source === traveler.id && e.level === level && e.text?.includes('Bridge destroyed'))).toBe(true);
   });
   it('uses underground terrain for teleportation and keeps its event hidden from a surface observer', () => {
@@ -144,7 +147,7 @@ describe('specialist deaths and projectile environment', () => {
   });
   it.each([['clear', 0], ['rain', 0], ['rain', 1]] as const)('applies projectile weather=%s and high ground once on level-%s', (weather, level) => {
     const s = fixture(), gun = actor(s, 0, FACTIONS.orcs.units.siege.id, 18.5, 18.5, level), target = actor(s, 1, 'core:orcs-engineer', 25.5, 18.5, level); selectWeather(s, weather); s.world.levels[level].elevation[18 * s.width + 18] = 2; ready(s);
-    const expected = unitFor(s, gun).damage * projectileEnvironment(s, gun, target).damageFactor * highGroundDamageFactor(s, gun, target) - unitFor(s, target).armor, hp = target.hp;
+    const expected = unitFor(s, gun).damage * projectileEnvironment(s, gun, target).damageFactor * highGroundDamageFactor(s, gun, target) * facingDamageFactor(gun, target) - unitFor(s, target).armor, hp = target.hp;
     expect(issueCommand(s, 0, { type: 'ability', ids: [gun.id] })).toBe(true); expect(issueCommand(s, 0, { type: 'attack', ids: [gun.id], target: target.id })).toBe(true); stepGame(s, .05); expect(s.specialists!.shots![0].rawDamage).toBe(unitFor(s, gun).damage);
     advance(s, 1, .05); expect(hp - target.hp).toBeCloseTo(expected, 8); expect(target.burning?.[0].origin?.level).toBe(level);
   });

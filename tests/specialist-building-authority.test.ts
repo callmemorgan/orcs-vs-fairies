@@ -1,6 +1,7 @@
 // @vitest-environment happy-dom
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { buildingFor, contentHash, createContentBundle } from '../src/core/content-registry';
+import { FACTION_STRUCTURE_INFO, type FactionStructureKind } from '../src/core/faction-systems-content';
 import { exampleMod } from '../src/core/example-mod';
 import {
   addBlueprint, applyWorkerTargets, assignBlueprintWorkers, blueprintReason, cancelBlueprint,
@@ -102,11 +103,11 @@ describe('ordinary building authority', () => {
   });
 
   it.each([
-    ['fairies', 'core:fairies-enchanted-grove'],
-    ['dwarves', 'core:dwarves-tunnel'],
-    ['undead', 'core:undead-necropolis-outpost'],
-    ['automata', 'core:automata-power-relay'],
-  ] as const)('requires specialized placement for the %s structure %s across commands and normal catalogs', (faction, definitionId) => {
+    ['fairies', 'core:fairies-enchanted-grove', 'enchanted-grove'],
+    ['dwarves', 'core:dwarves-tunnel', 'tunnel'],
+    ['undead', 'core:undead-necropolis-outpost', 'necropolis'],
+    ['automata', 'core:automata-power-relay', 'power-relay'],
+  ] as const)('requires specialized placement for the %s structure %s across commands and normal catalogs', (faction, definitionId, structure) => {
     const { state, worker, point } = fixture(undefined, faction), def = buildingFor(state, 0, 'depot', definitionId), site = point(def.role, definitionId);
     expect(canPlace(state, 0, def.role, site.x, site.y, definitionId)).toBe(true);
     unchangedAfterRejectedBuild(state, worker.id, def.role, site, definitionId);
@@ -117,6 +118,11 @@ describe('ordinary building authority', () => {
     const { select } = mountPlanner(state, worker.id);
     expect(select.textContent).not.toContain(def.name);
     expect(select.querySelector('option[value="depot"]')!.textContent).toContain(ordinaryDepot.name);
+    // Dedicated authority still uses the physical placement predicate and pays once.
+    const before = resources(state), cost = FACTION_STRUCTURE_INFO[structure as FactionStructureKind].definition.cost;
+    expect(issueCommand(state, 0, { type: 'buildFactionStructure', ids: [worker.id], structure, ...site })).toBe(true);
+    expect(resources(state)).toEqual({ wood: before.wood - cost.wood, ore: before.ore - cost.ore, crystal: before.crystal - cost.crystal });
+    expect(state.entities.at(-1)).toMatchObject({ definitionId, progress: 0, ...site });
   });
 
   it('excludes an admitted custom default barricade from HUD and planning, and rejects direct, parsed and forged blueprint placement', () => {

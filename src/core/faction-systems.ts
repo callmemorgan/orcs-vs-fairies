@@ -83,8 +83,8 @@ export function issueFactionCommand(s:GameState,side:Side,c:FactionCommand,h:Fac
  if(!tiles.length)return false;pay(s,side,{wood:0,ore:0,crystal:25});for(const tile of tiles)h.setTerrain(tile,tile.after);system.terrainEffects.push({id:s.nextId++,side,until:s.time+20,tiles});(casterUnit.factionState??={}).waterReadyAt=s.time+20;note(s,casterUnit,'Water-shaped approach lasts twenty seconds');return true;
 }
 export function recordFactionDamage(s:GameState,source:Entity|undefined,amount:number):void {if(source&&source.kind==='unit'&&!source.illusion&&s.players[source.side].faction==='orcs')initializeFactionSystems(s).fury[source.side]=Math.min(100,initializeFactionSystems(s).fury[source.side]+Math.max(0,amount)*.12);}
-export function recordFactionDeath(s:GameState,victim:Entity):void {
- if(victim.kind!=='unit'||victim.illusion||victim.raised)return;const source=s.entities.find(e=>e.id===victim.lastAttacker);if(source&&source.kind==='unit'&&!source.illusion&&s.players[source.side].faction==='orcs'&&!allied(s,source.side,victim.side))(source.factionState??={}).trophyKills=(source.factionState?.trophyKills??0)+1;
+export function recordFactionDeath(s:GameState,victim:Entity,sourceSide?:Side):void {
+ if(victim.kind!=='unit'||victim.illusion||victim.raised)return;const source=s.entities.find(e=>e.id===victim.lastAttacker&&(sourceSide===undefined||e.side===sourceSide));if(source&&source.kind==='unit'&&!source.illusion&&s.players[source.side].faction==='orcs'&&!allied(s,source.side,victim.side))(source.factionState??={}).trophyKills=(source.factionState?.trophyKills??0)+1;
 }
 export function takeDeliveredCorpses(s:GameState,caster:Entity,count:number):Corpse[]{const cargo=caster.factionState?.deliveredCorpses;if(!cargo)return [];const fresh=cargo.filter(body=>body.expires>s.time);caster.factionState!.deliveredCorpses=fresh.slice(count);return fresh.slice(0,count);}
 export function stepFactionActor(s:GameState,e:Entity,dt:number,h:FactionSystemHooks):boolean {

@@ -1,6 +1,7 @@
 import { isBridgeTarget, isEntityTarget } from './combat-targets';
 import type { CombatTarget } from './combat-targets';
 import { elevationAt } from './world-map';
+import { isCrewless } from './tactics';
 import type { ArtilleryModification } from './faction-systems';
 import { DIRECTIONS_32, length2D } from './geometry';
 import { ABILITIES } from './content';
@@ -86,7 +87,7 @@ export function resolveSpecialistShots(s:GameState,hooks:SpecialistHooks):void {
  const friendlyFire=(s as GameState & {rules?:{friendlyFire?:boolean};friendlyFire?:boolean}).rules?.friendlyFire??(s as GameState & {friendlyFire?:boolean}).friendlyFire??true;
  for(const shot of state.shots){if(shot.impactAt>s.time){pending.push(shot);continue;}
   const radius=Math.max(shot.payload.radius,shot.modification==='grapeshot'?2.5:0);
-  for(const actor of hooks.impactTargets?.()??s.entities){const entity=isEntityTarget(actor),building=isBridgeTarget(actor)||entity&&actor.kind==='building';if(actor.hp<=0||(hooks.targetDistance?.(shot.target,actor)??dist(actor,shot.target))>(radius||.75)+(entity&&actor.kind==='building'?buildingFor(s,actor).size/2:0)||!friendlyFire&&entity&&allied(s,shot.source,actor))continue;
+  for(const actor of hooks.impactTargets?.()??s.entities){const entity=isEntityTarget(actor),building=isBridgeTarget(actor)||entity&&actor.kind==='building';if(actor.hp<=0||(hooks.targetDistance?.(shot.target,actor)??dist(actor,shot.target))>(radius||.75)+(entity&&actor.kind==='building'?buildingFor(s,actor).size/2:0)||!friendlyFire&&entity&&allied(s,shot.source,actor)&&!isCrewless(actor))continue;
    const falloff=radius?1-.4*Math.min(1,(hooks.targetDistance?.(shot.target,actor)??dist(actor,shot.target))/radius):1;
    hooks.damage(shot.source,actor,shot.rawDamage*shot.payload.damageFactor*(building?shot.buildingMultiplier:1)*(shot.modification==='stone'&&building?1.25:shot.modification==='grapeshot'&&!building?1.5:1)*falloff,{armorPiercing:shot.payload.armorPiercing,ranged:true});
    if(!entity||!active(actor))continue;

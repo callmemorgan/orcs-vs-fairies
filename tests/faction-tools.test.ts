@@ -3,8 +3,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { factionConcealment, factionArmorBonus, factionDamageFactor } from '../src/core/faction-systems';
 import type { FactionCommand } from '../src/core/faction-systems';
 import { FACTION_STRUCTURE_INFO, TROPHY_STANDARD } from '../src/core/faction-systems-content';
-import { issueCommand, refreshVisibility } from '../src/core/simulation';
+import { createMatch, issueCommand, refreshVisibility, spawnDefinition } from '../src/core/simulation';
 import type { Command, FactionId, Side } from '../src/core/types';
+import { createContentBundle } from '../src/core/content-registry';
+import { exampleMod } from '../src/core/example-mod';
 import { mountFactionTools } from '../src/ui/FactionTools';
 import type { FactionAction } from '../src/ui/FactionTools';
 import { advanceFactionFixture, createFactionFixture } from '../scripts/factions/fixture-state';
@@ -27,6 +29,15 @@ async function settled(){await Promise.resolve();await Promise.resolve();}
 function details(f:ReturnType<typeof setup>){return f.root.querySelector('[aria-label="Selected faction unit details"]')!.textContent!;}
 
 describe('live faction powers panel',()=>{
+  it('shows admitted custom faction and unit names without failing the panel update',()=>{
+    const f=setup(),state=createMatch({content:createContentBundle([exampleMod()]),map:{seed:4127},players:[{id:0,teamId:0,factionId:'lantern:keepers',controller:'external'},{id:1,teamId:1,factionId:'orcs',controller:'external'}]});
+    const soldier=state.entities.find(e=>e.side===0&&e.role==='melee')!;f.replaceState(state);f.select([soldier.id]);
+    expect(f.root.querySelector('h2')!.textContent).toBe('Lantern Keepers powers');expect(details(f)).toContain('Lantern Sentinel');expect(f.root.querySelector('.faction-error')).toBeNull();
+  });
+  it('shows the registered signal beacon name for its tower role',()=>{
+    const f=setup(), beacon=spawnDefinition(f.state,0,'building','core:orcs-beacon',25,25);
+    f.select([beacon.id]);expect(details(f)).toContain(`Ironclad Signal Beacon #${beacon.id}`);
+  });
   it.each(['assault','bulwark'] as const)('spends Fury and applies the %s chant through the real authority',async chant=>{
     const f=setup(),enemy=f.state.entities.find(item=>item.side===1&&item.role==='melee')!,before=structuredClone(enemy.order);
     f.select([f.soldier.id,f.worker.id,enemy.id]);button(f.root,chant==='assault'?'warChantAssault':'warChantBulwark').click();await settled();

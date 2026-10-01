@@ -93,6 +93,8 @@ describe('world orders interrupted through normal play', () => {
   ready(s); queueGather(s, worker, node);
   expect(issueCommand(s, 0, { type: 'worldAttack', ids: [siege.id], target: crossing.id })).toBe(true);
   stepGame(s, .05);
+  expect(s.projectiles).toHaveLength(1);
+  for (let i = 0; crossing.hp > 0 && i < 30; i++) stepGame(s, .05);
   expect(crossing.hp).toBe(0);
   expect(worker.hp).toBeGreaterThan(0);
   expect(worker.hp).toBeLessThan(worker.maxHp);
@@ -175,6 +177,8 @@ describe('world orders interrupted through normal play', () => {
   expect(s.players[0].ore).toBe(ore);
   expect(issueCommand(s, 0, { type: 'worldAttack', ids: [siege.id], target: crossing.id })).toBe(true);
   stepGame(s, .05);
+  expect(s.projectiles).toHaveLength(1);
+  for (let i = 0; crossing.hp > 0 && i < 30; i++) stepGame(s, .05);
   expect(crossing.hp).toBe(0);
   advance(s, 13);
   if (crossing.hp > 0 || crossing.rebuilding > 0 || worker.order.type === 'repairBridge') {
