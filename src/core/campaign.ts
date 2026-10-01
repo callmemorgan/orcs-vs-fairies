@@ -1,7 +1,7 @@
 import { CAMPAIGNS, SCENARIOS } from '../scenarios/campaigns';
 import { captureScenario, createScenario, restoreScenario } from './scenarios';
 import { scenarioJson } from './scenario-validation';
-import { decodeScenarioRecording, ScenarioRecorder, scenarioChecksum, verifyScenarioRecording } from './scenario-recordings';
+import { decodeScenarioRecording, ScenarioRecorder, scenarioChecksum, scenarioStateEquals, verifyScenarioRecording } from './scenario-recordings';
 import type { ScenarioRecording } from './scenario-recordings';
 import type { ScenarioCheckpoint, ScenarioSession } from './scenario-types';
 import type { Entity } from './types';
@@ -66,7 +66,7 @@ export function campaignArmy(profile: CampaignProfile): CampaignSoldier[] {
   return [...army.values()].sort((a, b) => a.entity.id - b.entity.id);
 }
 
-function installArmy(session: ScenarioSession, soldiers: CampaignSoldier[]): number[] {
+export function deployScenarioArmy(session: ScenarioSession, soldiers: CampaignSoldier[]): number[] {
   const deployed: number[] = [], available = [...soldiers];
   // Chapter-specific detachments preserve the fixed army size; unused survivors remain in reserve.
   const slots = session.definition.army.filter(a => a.side === 0 && a.kind === 'unit').sort((a, b) => Number(b.label === 'commander') - Number(a.label === 'commander'));
@@ -96,7 +96,7 @@ export function prepareCampaignMission(profile: CampaignProfile): CampaignMissio
   if (!missionId) throw new Error(profile.history.length === 4 ? 'This campaign is complete.' : 'Choose the next route before continuing.');
   const army = campaignArmy(profile), largestId = Math.max(0, ...army.map(s => s.entity.id), ...profile.history.map(h => h.checkpoint.game.state.nextId - 1));
   const session = createScenario(SCENARIOS[missionId], { firstEntityId: largestId + 1 });
-  const deployedIds = installArmy(session, army), recorder = new ScenarioRecorder(session);
+  const deployedIds = deployScenarioArmy(session, army), recorder = new ScenarioRecorder(session);
   const active: CampaignBattle = { missionId, checkpoint: captureScenario(session), recording: recorder.archive(), deployedIds };
   return { profile: { ...profile, active, revision: profile.revision + 1 }, session, recorder };
 }
@@ -111,14 +111,14 @@ export function completeCampaignMission(profile: CampaignProfile, session: Scena
   const resultId = `${profile.id}/${session.definition.id}`;
   const prior = profile.history.find(result => result.resultId === resultId);
   if (prior) {
-    if (prior.recording.finalChecksum !== input.finalChecksum) throw new Error('A different result already completed this mission.');
+    if (JSON.stringify(prior.recording) !== JSON.stringify(input)) throw new Error('A different result already completed this mission.');
     return profile;
   }
   if (!profile.active || profile.active.missionId !== nextCampaignMission(profile) || profile.active.missionId !== session.definition.id) throw new Error('Only the active campaign mission can advance its profile.');
   const recording = decodeScenarioRecording(input);
-  if (JSON.stringify(recording.initial.definition) !== JSON.stringify(SCENARIOS[session.definition.id]) || scenarioChecksum(restoreScenario(recording.initial)) !== scenarioChecksum(restoreScenario(profile.active.recording.initial))) throw new Error('The mission recording does not start from this campaign army and map.');
+  if (JSON.stringify(recording.initial.definition) !== JSON.stringify(SCENARIOS[session.definition.id]) || !scenarioStateEquals(restoreScenario(recording.initial), restoreScenario(profile.active.recording.initial))) throw new Error('The mission recording does not start from this campaign army and map.');
   const verified = verifyScenarioRecording(recording);
-  if (verified.runtime.outcome !== 'won' || verified.state.winner !== 0 || scenarioChecksum(verified) !== scenarioChecksum(session)) throw new Error('The mission result could not be verified.');
+  if (verified.runtime.outcome !== 'won' || verified.state.winner !== 0 || !scenarioStateEquals(verified, session)) throw new Error('The mission result could not be verified.');
   const checkpoint = captureScenario(verified), result: CampaignResult = { resultId, missionId: session.definition.id, checkpoint, recording, deployedIds: [...profile.active.deployedIds] };
   return { ...profile, history: [...profile.history, result], active: null, revision: profile.revision + 1 };
 }
@@ -143,6 +143,7 @@ export function decodeCampaignProfile(input: unknown): CampaignProfile {
     if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).some(k => !['missionId', 'checkpoint', 'recording', 'deployedIds', 'resultId'].includes(k)) || value.missionId !== expected || !Array.isArray(value.deployedIds) || value.deployedIds.some(id => !Number.isSafeInteger(id) || id < 1) || new Set(value.deployedIds).size !== value.deployedIds.length) throw new Error('Invalid campaign battle.');
     const checkpoint = restoreScenario(value.checkpoint), recording = decodeScenarioRecording(value.recording);
     if (checkpoint.definition.id !== expected || JSON.stringify(recording.initial.definition) !== JSON.stringify(SCENARIOS[expected]) || recording.finalChecksum !== scenarioChecksum(checkpoint) || recording.finalTick !== checkpoint.state.tick) throw new Error('Campaign battle checkpoint disagrees with its recording.');
+    if (!scenarioStateEquals(verifyScenarioRecording(recording), checkpoint)) throw new Error('Campaign checkpoint does not match its replay.');
     if (value.deployedIds.some(id => !recording.initial.game.state.entities.some(e => e.id === id && e.side === 0 && e.kind === 'unit'))) throw new Error('Invalid campaign deployed army.');
   };
   profile.history.forEach((result, index) => {
@@ -151,7 +152,7 @@ export function decodeCampaignProfile(input: unknown): CampaignProfile {
     validateBattle(result, expected);
     if (result.resultId !== `${profile.id}/${expected}` || seen.has(result.resultId)) throw new Error('Duplicate or invalid campaign result.'); seen.add(result.resultId);
     const prepared = prepareCampaignMission(canonical); prepared.recorder.destroy();
-    if (scenarioChecksum(prepared.session) !== scenarioChecksum(restoreScenario(result.recording.initial)) || JSON.stringify(prepared.profile.active!.deployedIds) !== JSON.stringify(result.deployedIds)) throw new Error('Campaign history starts from an altered detachment.');
+    if (!scenarioStateEquals(prepared.session, restoreScenario(result.recording.initial)) || JSON.stringify(prepared.profile.active!.deployedIds) !== JSON.stringify(result.deployedIds)) throw new Error('Campaign history starts from an altered detachment.');
     if (verifyScenarioRecording(result.recording).runtime.outcome !== 'won') throw new Error('Campaign history contains an unverified victory.');
     canonical = { ...prepared.profile, history: [...canonical.history, result], active: null };
   });
@@ -160,7 +161,7 @@ export function decodeCampaignProfile(input: unknown): CampaignProfile {
     const expected = nextCampaignMission({ ...profile, active: null }); if (!expected) throw new Error('A campaign cannot have an active battle before its branch choice or after its finale.');
     validateBattle(profile.active, expected);
     const prepared = prepareCampaignMission(canonical); prepared.recorder.destroy();
-    if (scenarioChecksum(prepared.session) !== scenarioChecksum(restoreScenario(profile.active.recording.initial)) || JSON.stringify(prepared.profile.active!.deployedIds) !== JSON.stringify(profile.active.deployedIds)) throw new Error('Campaign battle starts from an altered detachment.');
+    if (!scenarioStateEquals(prepared.session, restoreScenario(profile.active.recording.initial)) || JSON.stringify(prepared.profile.active!.deployedIds) !== JSON.stringify(profile.active.deployedIds)) throw new Error('Campaign battle starts from an altered detachment.');
     verifyScenarioRecording(profile.active.recording);
   }
   return profile;

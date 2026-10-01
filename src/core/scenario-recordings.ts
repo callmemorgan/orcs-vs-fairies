@@ -20,6 +20,16 @@ export function scenarioChecksum(session: ScenarioSession): string {
   for (let i = 0; i < text.length; i++) { hash ^= text.charCodeAt(i); hash = Math.imul(hash, 16777619); }
   return (hash >>> 0).toString(16).padStart(8, '0');
 }
+/** Compare every normalized state value when authorizing progression or rewards. */
+export function scenarioStateEquals(left: ScenarioSession, right: ScenarioSession): boolean {
+  const text = (session: ScenarioSession) => {
+    const checkpoint = captureScenario(session);
+    delete (checkpoint.runtime as Partial<typeof checkpoint.runtime>).lastEvaluatedTick;
+    const canonical = (value: unknown): unknown => Array.isArray(value) ? value.map(canonical) : value !== null && typeof value === 'object' ? Object.fromEntries(Object.entries(value).sort(([a], [b]) => a.localeCompare(b, 'en')).map(([key, child]) => [key, canonical(child)])) : value;
+    return JSON.stringify(canonical(checkpoint));
+  };
+  return text(left) === text(right);
+}
 export function decodeScenarioRecording(input: unknown): ScenarioRecording {
   let raw = input;
   if (typeof raw === 'string') { if (raw.length > 20 * 1024 * 1024) throw new Error('Scenario recording is too large.'); raw = JSON.parse(raw); }
@@ -62,7 +72,7 @@ export class ScenarioRecorder {
   constructor(private readonly session: ScenarioSession, previous?: ScenarioRecording) {
     if (previous) {
       const recording = decodeScenarioRecording(previous);
-      if (recording.finalTick !== session.state.tick || recording.finalChecksum !== scenarioChecksum(session)) throw new Error('Saved scenario recording does not match its checkpoint.');
+      if (recording.finalTick !== session.state.tick || !scenarioStateEquals(verifyScenarioRecording(recording), session)) throw new Error('Saved scenario recording does not match its checkpoint.');
       this.initial = recording.initial; this.commands = recording.commands;
     } else { this.initial = captureScenario(session); this.commands = []; }
     this.unsubscribe = subscribeScenarioCommands(session, (side, command) => {
