@@ -105,6 +105,7 @@ try {
   replay.advance(state.tick - replay.state.tick);
   assert(replay.finished); assert.deepEqual(core.saveGame(replay.state), core.saveGame(state));
   assert.deepEqual(replay.analysis, archive.analysis); assert.deepEqual(replay.technologyTimings, archive.technologies);
+  replay.seek(startTick); assert.equal(replay.state.tick, startTick);
   replay.seek(state.tick); assert.deepEqual(core.saveGame(replay.state), core.saveGame(state));
  } finally { replay.dispose(); }
  await writeFile(resolve(out, 'final.session.json'), JSON.stringify(core.createSessionFile(state, archive)) + '\n');
@@ -113,7 +114,7 @@ try {
   history: 'New history begins at the original raw SAVE4 wave-2 recovery game; the original 4.0.0 session and history are preserved as input.',
   startTick, finalTick: state.tick, publicStepSeconds: .05, comparedTicks, extraTicks: 100, expectedPhase,
   transitions, neutralized, afterExtraTicks: snapshot(), completeEnvelopesMatchEveryTick: true, recorderHistoriesEqual: true,
-  fullReplayEndpointEqual: true, replayAnalysisEqual: true, technologyTimingsEqual: true, endpointSeekEqual: true, pinned, bundleInputs };
+  fullReplayEndpointEqual: true, replayAnalysisEqual: true, technologyTimingsEqual: true, endpointSeekFromTick: startTick, endpointSeekEqual: true, pinned, bundleInputs };
  await writeFile(resolve(out, 'reproduction.json'), JSON.stringify(report, null, 2) + '\n');
  console.log(JSON.stringify({ sourcePin, sourceDigest, simulationRevision: core.SIMULATION_REVISION, startTick, finalTick: state.tick,
   comparedTicks, neutralizedTick: neutralized.tick, phase: state.objectives.survival.phase, out }));
