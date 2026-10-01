@@ -323,7 +323,7 @@ const communityLibrary=new CommunityLibrary({validators:communityPackageValidato
 const editor=mountEditorTools(root,{
  toolbar:sessionToolbar,blocked:()=>editorBlocked('editor'),onOpen:open=>setModal('editor',open),
  contentOptions:()=>[...(modLibrary.list().length?[{id:'local-mods',label:'Installed local mods',content:modLibrary.bundle()}]:[]),...communityLibrary.list().filter(record=>record.kind==='mod').map(record=>({id:record.hash,label:`${record.title} ${record.version}`,content:createContentBundle(communityLibrary.packagesFor(record.hash))}))],
- playMap:pkg=>{campaignHost.clear();const state=createEditedMatch(pkg);rememberPackage(state,pkg.hash,canonicalMapHash(pkg.map));replacementGeneration++;launch(state);},
+ playMap:pkg=>{const state=createEditedMatch(pkg);campaignHost.clear();rememberPackage(state,pkg.hash,canonicalMapHash(pkg.map));replacementGeneration++;launch(state);},
  playScenario:pkg=>{const state=launchAuthoredScenario(pkg.scenario);rememberPackage(state,pkg.hash,pkg.map.contentHash);}
 });
 mountCommunityBrowser(root,{

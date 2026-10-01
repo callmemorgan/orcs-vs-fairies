@@ -6,6 +6,7 @@ import { createSessionFile, decodeSessionFile } from '../src/core/session-storag
 import { issueCommand, stepGame } from '../src/core/simulation';
 import { loadGame } from '../src/core/saves';
 import type { GameState } from '../src/core/types';
+import { createCampaignProfile } from '../src/core/campaign';
 
 const fixture = (name: string) => readFileSync(`${process.cwd()}/tests/fixtures/scenario-save3-3.2/${name}.json`, 'utf8');
 afterEach(() => { document.body.replaceChildren(); localStorage.clear(); });
@@ -21,6 +22,42 @@ function setup() {
 }
 
 describe('campaign controls in the canonical app host', () => {
+  function deferredFile(input: HTMLInputElement, name: string) {
+    let resolve!: (text: string) => void, reject!: (error: Error) => void;
+    const text = new Promise<string>((yes, no) => { resolve = yes; reject = no; });
+    const file = new File(['placeholder'], name, { type: 'application/json' });
+    Object.defineProperty(file, 'text', { value: () => text });
+    Object.defineProperty(input, 'files', { configurable: true, value: [file] });
+    input.dispatchEvent(new Event('change'));
+    return { resolve, reject };
+  }
+  const settle = () => new Promise(resolve => setTimeout(resolve, 0));
+
+  it('discards a campaign file read after another match clears strategic ownership', async () => {
+    const ui = setup(), input = ui.root.querySelector<HTMLInputElement>('[aria-label="Import campaign profile"]')!;
+    const pending = deferredFile(input, 'old-campaign.json');
+    ui.host.clear(); pending.resolve(JSON.stringify(createCampaignProfile('campaign-orcs', 'old'))); await settle();
+    expect(ui.launch).not.toHaveBeenCalled(); expect(ui.host.snapshot()).toBeUndefined();
+    expect(localStorage.getItem('ovf.campaign.v1')).toBeNull();
+  });
+
+  it('keeps the newer campaign when two file reads resolve out of order', async () => {
+    const ui = setup(), input = ui.root.querySelector<HTMLInputElement>('[aria-label="Import campaign profile"]')!;
+    const old = deferredFile(input, 'old.json'), current = deferredFile(input, 'current.json');
+    current.resolve(JSON.stringify(createCampaignProfile('campaign-dwarves', 'current'))); await settle();
+    old.resolve(JSON.stringify(createCampaignProfile('campaign-orcs', 'old'))); await settle();
+    expect(ui.launch).toHaveBeenCalledTimes(1); expect(ui.getState().scenario!.definition.id).toBe('dwarves-1');
+    expect(ui.host.snapshot()!.profile.id).toBe('current');
+    expect(JSON.parse(localStorage.getItem('ovf.campaign.v1')!).id).toBe('current');
+  });
+
+  it('ignores stale read errors and reports an admitted current read error', async () => {
+    const ui = setup(), input = ui.root.querySelector<HTMLInputElement>('[aria-label="Import campaign profile"]')!;
+    const stale = deferredFile(input, 'stale.json'); ui.host.clear(); stale.reject(new Error('Stale failure')); await settle();
+    expect(ui.notice).not.toHaveBeenCalled();
+    const current = deferredFile(input, 'current.json'); current.reject(new Error('Current failure')); await settle();
+    expect(ui.notice).toHaveBeenLastCalledWith('Current failure'); expect(ui.launch).not.toHaveBeenCalled();
+  });
   it('starts a campaign from the menu and retains normal commands in generic save ownership', () => {
     const ui = setup(); ui.button('Campaigns and realms').click(); expect(ui.visibility).toHaveBeenCalledWith(true);
     ui.root.querySelector<HTMLButtonElement>('[data-campaign="campaign-dwarves"]')!.click();

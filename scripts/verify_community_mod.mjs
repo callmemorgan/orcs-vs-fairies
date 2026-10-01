@@ -74,12 +74,14 @@ async function register(page, name) {
   return account;
 }
 async function publishFile(file, expected) {
-  const waiting = publisherPage.waitForResponse(response => response.url().endsWith('/api/packages') && response.request().method() === 'POST');
-  await publisherPage.getByLabel('Package file to publish', { exact: true }).setInputFiles(file);
-  const response = await waiting;
+  const waiting = publisherPage.waitForResponse(response => response.url().endsWith('/api/packages') && response.request().method() === 'POST')
+    .then(async response => ({ response, publication: await response.json() }));
+  const [{ response, publication }] = await Promise.all([
+    waiting,
+    publisherPage.getByLabel('Package file to publish', { exact: true }).setInputFiles(file),
+  ]);
   assert.equal(response.status(), 201, `Publication accepts ${expected.id ?? expected.scenario?.id}@${expected.version ?? expected.revision}`);
   assert.deepEqual(response.request().postDataJSON().package, expected, 'Publication uses the exact fixture content');
-  const publication = await response.json();
   assert.equal(publication.detail.packageHash, expected.hash);
   assert.equal(publication.detail.hash, helpers.contentHash(expected));
   await publisherPage.locator('.community-status').filter({ hasText: 'Package file published.' }).waitFor();

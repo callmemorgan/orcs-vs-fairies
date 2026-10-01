@@ -36,6 +36,7 @@ export class ScenarioCampaignHost {
   private completionError = false;
   private checkpointAt = 0;
   private inspectionReason: string | undefined;
+  private campaignImportGeneration = 0;
   private readonly panel = node('section');
   private readonly status = node('p');
   private readonly missionTools: ScenarioTools;
@@ -66,7 +67,7 @@ export class ScenarioCampaignHost {
     this.resumeCampaign.onclick = () => this.run(() => { const saved = this.storage.getItem(campaignKey); if (!saved) throw new Error('No campaign is saved in this browser.'); this.restoreCampaign(saved); });
     this.saveCampaign.onclick = () => this.run(() => { if (this.owner?.kind === 'campaign') { const owner = this.snapshot()!; download(`${owner.profile.id}-campaign.json`, owner.profile); } });
     const file = node('input'); file.type = 'file'; file.accept = '.json,application/json'; file.setAttribute('aria-label', 'Import campaign profile');
-    file.onchange = () => { const selected = file.files?.[0]; file.value = ''; if (selected) void (async () => { try { if (selected.size > 20 * 1024 * 1024) throw new Error('Campaign profile exceeds 20 MiB.'); this.restoreCampaign(await selected.text()); } catch (error) { this.error(error); } })(); };
+    file.onchange = () => { const selected = file.files?.[0]; file.value = ''; if (selected) void this.importCampaignFile(selected); };
     const label = node('label', 'Load campaign profile'); label.append(file); profileControls.append(this.status, this.resumeCampaign, this.saveCampaign, label); this.panel.append(profileControls);
     this.realmTools = new ConquestTools(this.panel, {
       profile: () => this.owner?.kind === 'conquest' ? this.owner.profile : null, readOnlyReason: () => this.reason(),
@@ -90,9 +91,22 @@ export class ScenarioCampaignHost {
   }
   private error(error: unknown): void { this.callbacks.notice(error instanceof Error ? error.message : 'The campaign could not be opened.'); }
   private run(action: () => void): void { try { action(); this.update(); } catch (error) { this.error(error); } }
+  private async importCampaignFile(file: File): Promise<void> {
+    const request = ++this.campaignImportGeneration;
+    let input: string;
+    try {
+      if (file.size > 20 * 1024 * 1024) throw new Error('Campaign profile exceeds 20 MiB.');
+      input = await file.text();
+    } catch (error) {
+      if (request === this.campaignImportGeneration) this.error(error);
+      return;
+    }
+    if (request !== this.campaignImportGeneration) return;
+    this.run(() => this.restoreCampaign(input));
+  }
   private setOpen(open: boolean): void { this.panel.hidden = !open; this.callbacks.visibility(open); if (open) this.update(); }
   private persist(): void { if (this.owner) this.storage.setItem(this.owner.kind === 'campaign' ? campaignKey : realmKey, JSON.stringify(this.owner.profile)); }
-  clear(): void { this.realmTools?.cancelPendingImport(); this.recorder?.destroy(); this.recorder = undefined; this.owner = undefined; this.inspectionReason = undefined; this.completionError = false; }
+  clear(): void { this.campaignImportGeneration++; this.realmTools?.cancelPendingImport(); this.recorder?.destroy(); this.recorder = undefined; this.owner = undefined; this.inspectionReason = undefined; this.completionError = false; }
   private launch(session: ScenarioSession, reason?: string): void { this.inspectionReason = reason; this.setOpen(false); this.callbacks.launch(session, reason); this.checkpointAt = session.state.time; this.update(); }
   private installRun(kind: 'campaign', run: CampaignMission): void;
   private installRun(kind: 'conquest', run: ConquestMission): void;
