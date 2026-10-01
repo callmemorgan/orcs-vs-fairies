@@ -181,7 +181,7 @@ export function applyCargoCommand(s:GameState,side:Side,command:EconomyCommand,e
   let accepted=false;
   for(const id of new Set(command.ids)){
    const entity=ownUnit(s,side,id);
-   if(!entity||!canLoad(entity,economy)||economy.caravans.includes(entity.id)||(collecting?entity.role!=='worker':entity.role==='worker'))continue;
+   if(!entity||!Number.isFinite(distance(entity,target))||!canLoad(entity,economy)||economy.caravans.includes(entity.id)||(collecting?entity.role!=='worker':entity.role==='worker'))continue;
    startTask(s,entity,{entityId:id,kind:collecting?'collect':'raid',targetId:command.target,progress:0},economy,hooks);accepted=true;
   }
   return accepted;
@@ -223,7 +223,7 @@ function tickRoute(s:GameState,dt:number,entity:Entity,task:Extract<EconomyTask,
  }
  if(task.phase==='loading'){
   const source=permittedStorage(s,entity.side,task.sourceId,hooks),target=contract??permittedStorage(s,entity.side,task.targetId,hooks);
-  if(!source||source.side!==entity.side||!target){finishTask(s,entity,economy,hooks);return;}
+  if(!source||source.side!==entity.side||!target||!Number.isFinite(distance(entity,source))||!Number.isFinite(distance(entity,target))){finishTask(s,entity,economy,hooks);return;}
   if(!hooks.move(s,entity,source,dt,hooks.radius(s,source)+1))return;
   const sourceStock=economyStock(s,economy,source.id);
   if(!sourceStock||!payCost(sourceStock,task.amount))return;
@@ -233,7 +233,7 @@ function tickRoute(s:GameState,dt:number,entity:Entity,task:Extract<EconomyTask,
   return;
  }
  const target=contract??permittedStorage(s,entity.side,task.targetId,hooks);
- if(!target){returnCargo(s,entity,cargo,economy,hooks);return;}
+ if(!target||!Number.isFinite(distance(entity,target))){returnCargo(s,entity,cargo,economy,hooks);return;}
  const reach=contract?2:hooks.radius(s,target as Entity)+1;
  if(!hooks.move(s,entity,target,dt,reach))return;
  if(contract){
@@ -259,7 +259,7 @@ function tickCollection(s:GameState,dt:number,entity:Entity,task:Extract<Economy
  const target=salvage??enemy;
  const structure=enemy?economy.structures.find(item=>item.entityId===enemy.id&&item.kind==='warehouse'):undefined;
  const hostileCargo=enemy?cargoFor(economy,enemy.id):undefined;
- if(!target||!hooks.visible(s,entity.side,target)||enemy&&hooks.allied(s,entity.side,enemy.side)||!collecting&&!structure&&!hostileCargo){finishTask(s,entity,economy,hooks);return;}
+ if(!target||!Number.isFinite(distance(entity,target))||!hooks.visible(s,entity.side,target)||enemy&&hooks.allied(s,entity.side,enemy.side)||!collecting&&!structure&&!hostileCargo){finishTask(s,entity,economy,hooks);return;}
  const reach=enemy?hooks.radius(s,enemy)+.8:1;
  if(distance(entity,target)>reach){task.progress=0;hooks.move(s,entity,target,dt,reach);return;}
  entity.animation='attack';task.progress+=dt/(collecting?ECONOMY_RULES.salvage.channelSeconds:ECONOMY_RULES.raid.channelSeconds);

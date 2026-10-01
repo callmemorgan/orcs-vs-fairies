@@ -49,3 +49,36 @@ describe('planting cancellation through cargo commands and combat',()=>{
   expect(economy.groves[0].burned).toBe(true);expect(economy.tasks).toHaveLength(0);expect(economy.cargo[0].stock.wood).toBe(7);
  });
 });
+
+describe('cargo jobs when actors change map levels',()=>{
+ it('rejects raids and salvage collection across levels even when the target is visible',()=>{
+  const {s,worker,economy,hq}=fixture(),soldier=s.entities.find(entity=>entity.side===0&&entity.role==='melee')!,enemy=s.entities.find(entity=>entity.side===1&&entity.role==='hq')!;
+  enemy.x=hq.x+5;enemy.y=hq.y+2;economy.structures.push({entityId:enemy.id,kind:'warehouse',stock:{wood:20,ore:0,crystal:0},capacity:900,overcharge:false,nextIncident:12});
+  const pile={id:s.nextId++,x:worker.x,y:worker.y,stock:{wood:5,ore:0,crystal:0},expiresAt:120,owner:null,kind:'salvage' as const};economy.salvage.push(pile);refreshVisibility(s);
+  soldier.level=1;worker.level=1;
+  expect(issueCommand(s,0,{type:'raidSupply',ids:[soldier.id],target:enemy.id})).toBe(false);
+  expect(issueCommand(s,0,{type:'collectSalvage',ids:[worker.id],target:pile.id})).toBe(false);expect(economy.tasks).toHaveLength(0);
+ });
+ it('stops an accepted collection channel if the worker changes levels before completion',()=>{
+  const {s,worker,economy}=fixture(),pile={id:s.nextId++,x:worker.x,y:worker.y,stock:{wood:5,ore:0,crystal:0},expiresAt:120,owner:null,kind:'salvage' as const};economy.salvage.push(pile);
+  expect(issueCommand(s,0,{type:'collectSalvage',ids:[worker.id],target:pile.id})).toBe(true);run(s,.5);worker.level=1;run(s,.05);
+  expect(economy.tasks).toHaveLength(0);expect(pile.stock.wood).toBe(5);expect(economy.cargo).toHaveLength(0);
+ });
+ function routeFixture(){
+  const data=fixture(),{s,hq,economy}=data,target={...structuredClone(hq),id:s.nextId++,x:hq.x+12};s.entities.push(target);
+  expect(issueCommand(s,0,{type:'trainCaravan',id:hq.id})).toBe(true);run(s,20);
+  const cart=s.entities.find(entity=>entity.id===economy.caravans[0])!;return {...data,target,cart};
+ }
+ it('cancels an unloaded route after a level change without withdrawing its source stock',()=>{
+  const {s,hq,economy,target,cart}=routeFixture(),wood=s.players[0].wood;
+  expect(issueCommand(s,0,{type:'tradeRoute',id:cart.id,source:hq.id,target:target.id,kind:'wood',amount:30,repeat:false})).toBe(true);cart.level=1;run(s,.05);
+  expect(economy.tasks).toHaveLength(0);expect(s.players[0].wood).toBe(wood);expect(economy.cargo[0].stock.wood).toBe(0);
+ });
+ it('retains a loaded route cargo on its new level and abandons the old trade reward',()=>{
+  const {s,hq,economy,target,cart}=routeFixture(),wood=s.players[0].wood,crystal=s.players[0].crystal;
+  expect(issueCommand(s,0,{type:'tradeRoute',id:cart.id,source:hq.id,target:target.id,kind:'wood',amount:30,repeat:false})).toBe(true);run(s,2);
+  expect(economy.cargo[0].stock.wood).toBe(30);expect(economy.cargo[0].tradeValue).toBeGreaterThan(0);cart.level=1;run(s,.05);
+  expect(economy.tasks).toHaveLength(0);expect(economy.cargo[0].stock.wood).toBe(30);expect(economy.cargo[0].tradeValue).toBe(0);expect(economy.cargo[0].origin).toBe('delivery');expect(s.players[0].wood).toBe(wood-30);expect(s.players[0].crystal).toBe(crystal);
+  expect(loadGame(saveGame(s)).economy).toEqual(s.economy);
+ });
+});
