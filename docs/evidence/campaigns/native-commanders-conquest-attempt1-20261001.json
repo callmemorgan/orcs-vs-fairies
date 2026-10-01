@@ -1,0 +1,276 @@
+{
+  "format": "orcs-vs-fairies-conquest-review-proof",
+  "version": 1,
+  "generatedAt": "2026-10-01T12:58:50.811Z",
+  "sourceCommit": "e5cf87ec3600c1ea83ae1451be5d6e7efeae127b",
+  "dependencyCommit": "d1171b9",
+  "mode": "corrected",
+  "sourceFiles": {
+    "src/core/conquest.ts": "6243629a020b1ec590e7abb26cf8617df6922971b7aae6e6fe56b92925675ac8",
+    "src/core/conquest-types.ts": "5fe40ad55e5dd88a9be244f8686365437da80a1f3844a554fb493ea19a7c64bb",
+    "src/core/campaign.ts": "5875c5ebf947a535b28245e30ac7689aa6520d283db20537e869a005d4d16e62",
+    "src/core/scenario-recordings.ts": "311652f4b4505849928efe4ed4bf7e4d9641ab71716ecb37cc3d363e5f8f2780",
+    "src/core/scenarios.ts": "2ce74b317fc0e9b0c0080fcc6ba76cfbef17df0404e3c40c8b8bd27168eaa3e3",
+    "src/core/scenario-types.ts": "df05947dd6657d125e97f9aedf380ce8d4adc82e04dff0f55f6dea187af92f9f",
+    "src/core/scenario-validation.ts": "2db4d51350100f298465d92558508ee6b9aea20abef176ab147ed8e50184bf35",
+    "src/core/content.ts": "4495966583a38f122f23f40c8cfbc0c7655b00cc463b37efdf26a0c9b0a86160",
+    "src/core/geometry.ts": "d01cb8c5003443415cd43bef63dd087dad7238b1e82732222a1f6bb0bbccd283",
+    "src/core/simulation.ts": "69c3839be22a5bbae71201a5ca3f67b87ebf5820f378860b4ceab529aa5534e4",
+    "src/core/saves.ts": "87127e1651a36e9cf42d7056f01352c0cde375dc54c59bc2ed27b08b867d97e3",
+    "src/core/navigation.ts": "27924b6c886d55ee2288a61101e2fa2f34853f6a20241e770c9c50c5d9c796a0",
+    "src/core/types.ts": "9c542014a981a62610253da4ee55c78fce1110637503f7e19c01dff8710d7703",
+    "src/scenarios/conquest-world.ts": "b5a64d47ba13d5ed2b523a0ec781ac07f45bafbc1569d0bd3aed3d12cf74271c",
+    "scripts/scenarios/conquest-strategy.ts": "72c5ffc12db1b439fad3efe53e5f30e9599f2e7d62549bcc3f40c5d0dae461ab",
+    "scripts/scenarios/prove-conquest-review.ts": "141348944d5ac12f9d0dda56670a8903e5938170331a3634a78a33c63ea3f1c6"
+  },
+  "commandPath": "issueScenarioCommand",
+  "stepPath": "stepScenario",
+  "assertions": {
+    "historyAcceptsOnlyReloadableDecisions": true,
+    "expiredPassageCannotWin": true,
+    "aid-1-funding": true,
+    "aid-1-fresh-unit": true,
+    "aid-1-no-unfunded-treasury": true,
+    "aid-1-full-cost": true,
+    "aid-2-funding": true,
+    "aid-2-fresh-unit": true,
+    "aid-2-no-unfunded-treasury": true,
+    "aid-2-full-cost": true,
+    "aid-3-funding": true,
+    "aid-3-no-unfunded-treasury": true,
+    "aid-3-full-cost": true,
+    "multipleAidNoUnfundedTreasury": true,
+    "multipleAidChargesOnlyContributors": true,
+    "multipleAidLimit": true
+  },
+  "attempts": [
+    {
+      "id": "history-bound",
+      "acceptedHistory": 256,
+      "waitError": "Error: The conquest decision history is full. Start another realm.",
+      "tributeError": "Error: The conquest decision history is full. Start another realm.",
+      "battleError": "Error: The conquest decision history is full. Start another realm.",
+      "overflowAccepted": false,
+      "overflowDecodeError": null
+    },
+    {
+      "id": "expired-passage",
+      "outcome": "lost",
+      "time": 180.00000000000668,
+      "hostile": true,
+      "expiry": {
+        "count": 1,
+        "lastTime": 15.000000000000078
+      },
+      "protectionVariable": 0,
+      "acceptedTurn": 1
+    },
+    {
+      "id": "allied-passage-1",
+      "aidId": 22,
+      "aidExistedInRoster": false,
+      "funded": true,
+      "armyBefore": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "armyAfter": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        22
+      ],
+      "allyBefore": {
+        "wood": 150,
+        "ore": 350,
+        "crystal": 20
+      },
+      "allyAfter": {
+        "wood": 85,
+        "ore": 320,
+        "crystal": 20
+      },
+      "unitCost": {
+        "wood": 65,
+        "ore": 30,
+        "crystal": 0
+      }
+    },
+    {
+      "id": "allied-passage-2",
+      "aidId": 4133,
+      "aidExistedInRoster": false,
+      "funded": true,
+      "armyBefore": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        22
+      ],
+      "armyAfter": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        22,
+        4133
+      ],
+      "allyBefore": {
+        "wood": 85,
+        "ore": 320,
+        "crystal": 20
+      },
+      "allyAfter": {
+        "wood": 20,
+        "ore": 290,
+        "crystal": 20
+      },
+      "unitCost": {
+        "wood": 65,
+        "ore": 30,
+        "crystal": 0
+      }
+    },
+    {
+      "id": "allied-passage-3",
+      "aidId": null,
+      "aidExistedInRoster": false,
+      "funded": false,
+      "armyBefore": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        22,
+        4133
+      ],
+      "armyAfter": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        22,
+        4133
+      ],
+      "allyBefore": {
+        "wood": 20,
+        "ore": 290,
+        "crystal": 20
+      },
+      "allyAfter": {
+        "wood": 20,
+        "ore": 290,
+        "crystal": 20
+      },
+      "unitCost": {
+        "wood": 65,
+        "ore": 30,
+        "crystal": 0
+      }
+    },
+    {
+      "id": "multiple-allies",
+      "aid": {
+        "aid-fairies": 23,
+        "aid-undead": 24
+      },
+      "unitCost": {
+        "wood": 85,
+        "ore": 40,
+        "crystal": 0
+      },
+      "alliesBefore": {
+        "fairies": {
+          "wood": 150,
+          "ore": 350,
+          "crystal": 20
+        },
+        "undead": {
+          "wood": 150,
+          "ore": 350,
+          "crystal": 20
+        },
+        "tideborn": {
+          "wood": 150,
+          "ore": 350,
+          "crystal": 20
+        }
+      },
+      "alliesAfter": {
+        "fairies": {
+          "wood": 65,
+          "ore": 310,
+          "crystal": 20
+        },
+        "undead": {
+          "wood": 65,
+          "ore": 310,
+          "crystal": 20
+        },
+        "tideborn": {
+          "wood": 150,
+          "ore": 350,
+          "crystal": 20
+        }
+      }
+    }
+  ],
+  "journals": [
+    {
+      "id": "expired-passage",
+      "path": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/scenarios/native-conquest-archives-attempt1/expired-passage.json",
+      "sha256": "a6351e67a072bec4406b51e2a405eea7aff1ee4dd2c846b12d61ec32b94dad86",
+      "finalTick": 3600,
+      "commands": 1983,
+      "outcome": "lost"
+    },
+    {
+      "id": "allied-passage-1",
+      "path": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/scenarios/native-conquest-archives-attempt1/allied-passage-1.json",
+      "sha256": "d48b1bf1f422dbaf0f41bab4be4d6447197dbdcbeca04179cf53a04750479071",
+      "finalTick": 159,
+      "commands": 1,
+      "outcome": "won"
+    },
+    {
+      "id": "allied-passage-2",
+      "path": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/scenarios/native-conquest-archives-attempt1/allied-passage-2.json",
+      "sha256": "03f372b500936474689f3c119d536e96abdb7672f7afdd49cd9d84e2c96470e7",
+      "finalTick": 159,
+      "commands": 1,
+      "outcome": "won"
+    },
+    {
+      "id": "allied-passage-3",
+      "path": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/scenarios/native-conquest-archives-attempt1/allied-passage-3.json",
+      "sha256": "8a4abb24df38c5f45902fbeb4d4cf313f83c7dabe2920f0131b1a3b9155b68ce",
+      "finalTick": 159,
+      "commands": 1,
+      "outcome": "won"
+    },
+    {
+      "id": "multiple-allies",
+      "path": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/scenarios/native-conquest-archives-attempt1/multiple-allies.json",
+      "sha256": "737e28178a612043657a1fedb963fed3c4857dd808038eff673f51b18bc6f083",
+      "finalTick": 322,
+      "commands": 99,
+      "outcome": "won"
+    }
+  ]
+}

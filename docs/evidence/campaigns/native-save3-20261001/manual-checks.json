@@ -1,0 +1,35 @@
+{
+  "format": "orcs-vs-fairies-main-scenario-browser-checks",
+  "url": "http://127.0.0.1:5183/",
+  "save": {
+    "result": {
+      "type": "string",
+      "value": "{\"tick\":566,\"owner\":\"campaign\",\"campaign\":\"campaign-dwarves\",\"command\":{\"tick\":560,\"side\":0,\"command\":{\"type\":\"hold\",\"ids\":[1,2,3,4,5]}},\"rules\":\"3.2.0\"}"
+    }
+  },
+  "legacyBefore": {
+    "result": {
+      "type": "string",
+      "value": "{\"tick\":934,\"readOnly\":true,\"simulationEnabled\":false,\"paused\":true,\"scenario\":{\"id\":\"dwarves-1\",\"outcome\":\"won\"}}"
+    }
+  },
+  "legacyAfter": {
+    "result": {
+      "type": "string",
+      "value": "{\"tick\":934,\"readOnly\":true,\"simulationEnabled\":false,\"paused\":true,\"scenario\":{\"id\":\"dwarves-1\",\"outcome\":\"won\"}}"
+    }
+  },
+  "pageErrors": [],
+  "checks": [
+    "canonical menu starts native dwarf commander",
+    "campaign modal pauses mission",
+    "normal HUD hold increments mission counter",
+    "ordinary named save retains campaign profile and journal command",
+    "ordinary load restores current mission and simulation",
+    "legacy generic bound save restores recorded victory as inspection",
+    "reset disabled for historical mission",
+    "photo closes mission modal",
+    "historical tick remains934 through modal and photo checks"
+  ],
+  "limitation": "Development source before final SAVE4 freeze; download event observer timed out although UI confirmed Save downloaded."
+}
