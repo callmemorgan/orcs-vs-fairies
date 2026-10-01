@@ -131,7 +131,7 @@ export function validateScenario(input: unknown): ScenarioDefinition {
     coordinates(a, path);
     const def = factions[a.side === 0 ? faction : opponent];
     const id = a.definitionId;
-    if (id !== undefined && (typeof id !== 'string' || !/^[a-z][a-z0-9-]{0,39}:[a-z][a-z0-9-]{0,58}$/.test(id))) bad(`${path}.definitionId`, 'expected a namespaced definition ID');
+    if (id !== undefined && (typeof id !== 'string' || id.length > 100 || !/^[a-z][a-z0-9-]*(?::[a-z][a-z0-9-]*)?$/.test(id))) bad(`${path}.definitionId`, 'expected a registered definition ID');
     const roster = kind === 'unit' ? def.unitDefinitions ?? Object.values(def.units) : def.buildingDefinitions ?? Object.values(def.buildings);
     const definition = id === undefined ? kind === 'unit' ? def.units[role as UnitRole] : def.buildings[role as BuildingRole] : roster.find(d => d.id === id);
     if (!definition || definition.role !== role) bad(`${path}.definitionId`, 'definition is absent from the actor faction or has another kind or role');

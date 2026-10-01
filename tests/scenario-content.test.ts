@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createContentBundle, unitFor } from '../src/core/content-registry';
+import { FACTIONS } from '../src/core/content';
 import { exampleMod } from '../src/core/example-mod';
 import { captureScenario, createScenario, restoreScenario, validateScenario } from '../src/core/scenarios';
 import { ScenarioRecorder, verifyScenarioRecording } from '../src/core/scenario-recordings';
@@ -36,6 +37,11 @@ describe('pinned scenario actor admission', () => {
     const input = mission(); delete input.content; input.faction = 'dwarves'; input.army = [{ label: 'duelist', side: 0, kind: 'unit', role: 'special', definitionId: 'core:dwarves-commander', x: 8, y: 8 }];
     const session = createScenario(input), entity = session.state.entities[0];
     expect(entity.definitionId).toBe('core:dwarves-commander'); expect(unitFor(session.state, entity).ability).toBe('thane-ward');
+  });
+
+  it('admits explicit ordinary built-in IDs through the same roster check', () => {
+    const input = mission(); delete input.content; input.faction = 'orcs'; input.army = [{ label: 'duelist', side: 0, kind: 'unit', role: 'melee', definitionId: FACTIONS.orcs.units.melee.id, x: 8, y: 8 }];
+    expect(createScenario(input).state.entities[0].definitionId).toBe(FACTIONS.orcs.units.melee.id);
   });
 
   it.each([
