@@ -1,5 +1,5 @@
 import { ECONOMY_BUILDINGS, ECONOMY_CARAVAN, ECONOMY_RULES } from './economy-definitions';
-import { distance, economicState, economyMessage, ensureEconomy, payCost, RESOURCE_KINDS, zeroCost, levelOf, sameLevel } from './economy-common';
+import { createEconomyState, distance, economicState, economyMessage, ensureEconomy, payCost, RESOURCE_KINDS, zeroCost, levelOf, sameLevel } from './economy-common';
 import { walkable, openDestination } from './navigation';
 import { TERRAIN } from './maps';
 import type { Cost, Entity, GameState, ResourceNode, Side, Vec } from './types';
@@ -63,8 +63,8 @@ function buildEconomic(s:GameState,side:Side,c:Extract<EconomyCommand,{type:'bui
 export function applyEconomyCommand(s:GameState,side:Side,c:EconomyCommand,hooks:EconomyHooks):boolean {
  if(!s.players[side]||s.eliminated[side]||s.winner!==null||s.draw)return false;const economy=ensureEconomy(s);
  if(c.type==='plantGrove'){
-  const worker=chooseWork(s,side,c.ids,economy)[0],point={x:c.x,y:c.y,level:c.level??(worker?levelOf(worker):0)};if(!worker||levelOf(worker)!==point.level||economy.groves.filter(g=>g.side===side&&!g.burned).length>=ECONOMY_RULES.grove.limit||s.resources.length+economy.groves.filter(g=>!g.resourceId&&!g.burned).length>=8192||!freeGrove(s,side,point,hooks)||!payCost(s.players[side],ECONOMY_RULES.grove.cost))return false;
-  const id=s.nextId++;economy.groves.push({id,side,...point,plantedAt:-1,maturesAt:-1,burned:false});cancelEconomyTask(s,worker.id);hooks.assign(s,worker,{type:'idle'});economy.tasks.push({entityId:worker.id,kind:'plant',targetId:id,progress:0});economyMessage(s,worker,'Worker assigned to plant a grove.',id);return true;
+  const worker=chooseWork(s,side,c.ids,economy)[0],point={x:c.x,y:c.y,level:c.level??(worker?levelOf(worker):0)},retainedGroves=economy.groves.filter(g=>!g.burned||economy.tasks.some(task=>task.targetId===g.id));if(!worker||levelOf(worker)!==point.level||retainedGroves.length>=1600||economy.groves.filter(g=>g.side===side&&!g.burned).length>=ECONOMY_RULES.grove.limit||s.resources.length+economy.groves.filter(g=>!g.resourceId&&!g.burned).length>=8192||!freeGrove(s,side,point,hooks)||!payCost(s.players[side],ECONOMY_RULES.grove.cost))return false;
+  const id=s.nextId++;economy.groves=retainedGroves;economy.groves.push({id,side,...point,plantedAt:-1,maturesAt:-1,burned:false});cancelEconomyTask(s,worker.id);hooks.assign(s,worker,{type:'idle'});economy.tasks.push({entityId:worker.id,kind:'plant',targetId:id,progress:0});economyMessage(s,worker,'Worker assigned to plant a grove.',id);return true;
  }
  if(c.type==='buildEconomy')return buildEconomic(s,side,c,hooks);
  if(c.type==='setOvercharge'){
@@ -77,7 +77,7 @@ export function applyEconomyCommand(s:GameState,side:Side,c:EconomyCommand,hooks
  }
  if(c.type==='setWarehouse'){
   const workers=chooseWork(s,side,c.ids,economy),target=c.target===null?undefined:own(s,side,c.target),warehouse=economy.structures.find(item=>item.entityId===c.target&&item.kind==='warehouse');
-  if(!workers.length||c.target!==null&&(!target||target.progress<1||!warehouse))return false;
+  if(!workers.length||c.target!==null&&(!target||target.progress<1||!warehouse||workers.some(worker=>!sameLevel(worker,target))))return false;
   for(const worker of workers){economy.workerWarehouses=economy.workerWarehouses.filter(item=>item.entityId!==worker.id);if(c.target!==null)economy.workerWarehouses.push({entityId:worker.id,warehouseId:c.target});}return true;
  }
  if(c.type==='specializeSettlement'){
@@ -134,7 +134,7 @@ export function economyGatherFactor(s:GameState,e:Entity,node:ResourceNode):numb
 }
 export function economyProductionFactor(s:GameState,e:Entity):number{return region(s,e.side,e)==='military'?ECONOMY_RULES.specialization.military:1;}
 export function economyResearchFactor(s:GameState,e:Entity):number{return region(s,e.side,e)==='research'?ECONOMY_RULES.specialization.research:1;}
-export function economyGatherDepot(s:GameState,e:Entity):Entity|undefined{const record=economicState(s)?.workerWarehouses.find(item=>item.entityId===e.id);return record?s.entities.find(b=>b.id===record.warehouseId&&b.side===e.side&&b.hp>0&&b.progress===1):undefined;}
+export function economyGatherDepot(s:GameState,e:Entity):Entity|undefined{const record=economicState(s)?.workerWarehouses.find(item=>item.entityId===e.id);return record?s.entities.find(b=>b.id===record.warehouseId&&b.side===e.side&&b.hp>0&&b.progress===1&&sameLevel(e,b)):undefined;}
 /** Return how much of a worker's raw carried amount was accepted. */
 export function depositEconomyGather(s:GameState,e:Entity,depot:Entity,raw:number):number {
  const economy=ensureEconomy(s),warehouse=economy.structures.find(item=>item.entityId===depot.id&&item.kind==='warehouse'),factor=s.incomeFactors[e.side];
@@ -143,7 +143,7 @@ export function depositEconomyGather(s:GameState,e:Entity,depot:Entity,raw:numbe
  if(warehouse)warehouse.stock[e.carriedKind]+=income;else s.players[e.side][e.carriedKind]+=income;economy.ledgers[e.side].gathered[e.carriedKind]+=income;return accepted;
 }
 export function observeEconomy(s:GameState,side:Side,hooks:Pick<EconomyHooks,'visible'>):EconomyView {
- const economy=ensureEconomy(s),visible=(p:Vec)=>hooks.visible(s,side,p),entities=new Map(s.entities.map(e=>[e.id,e]));
+ const economy=economicState(s)??createEconomyState(s.players.length),visible=(p:Vec)=>hooks.visible(s,side,p),entities=new Map(s.entities.map(e=>[e.id,e]));
  const structures=economy.structures.flatMap(item=>{const e=entities.get(item.entityId);if(!e||e.hp<=0||e.side!==side&&!visible(e))return [];return [{...item,stock:e.side===side?{...item.stock}:zeroCost(),x:e.x,y:e.y,level:levelOf(e),hp:e.hp,maxHp:e.maxHp,progress:e.progress,side:e.side}];});
  const caravans=economy.cargo.flatMap(item=>{const e=entities.get(item.entityId);if(!e||e.hp<=0||!economy.caravans.includes(e.id)||e.side!==side&&!visible(e))return [];const task=e.side===side?economy.tasks.find(task=>task.entityId===e.id):undefined;return [{...item,stock:e.side===side?{...item.stock}:zeroCost(),sourceId:e.side===side?item.sourceId:undefined,destinationId:e.side===side?item.destinationId:undefined,tradeValue:e.side===side?item.tradeValue:0,contractId:e.side===side?item.contractId:undefined,x:e.x,y:e.y,level:levelOf(e),side:e.side,hp:e.hp,maxHp:e.maxHp,...(task?{task:structuredClone(task)}:{})}];});
  return {version:1,recruits:economy.recruits.filter(recruit=>recruit.side===side).map(({producerId,readyAt})=>({producerId,readyAt})),deepSites:economy.deepSites.filter(id=>s.resources.some(r=>r.id===id&&visible(r))),groves:economy.groves.filter(g=>g.side===side||visible(g)).map(g=>({...g})),structures,caravans,salvage:economy.salvage.filter(visible).map(item=>({...item,stock:{...item.stock}})),markets:economy.markets.filter(visible).map(m=>({...m,stock:{...m.stock},demand:{...m.demand},prices:marketPrices(m)})),contracts:economy.contracts.filter(c=>c.side===side||c.side===null&&visible(c)).map(c=>({...c,reward:{...c.reward}})),specializations:economy.specializations.filter(item=>entities.get(item.entityId)?.side===side).map(item=>({...item})),workerWarehouses:economy.workerWarehouses.filter(item=>entities.get(item.entityId)?.side===side).map(item=>({...item})),ledger:structuredClone(economy.ledgers[side])};

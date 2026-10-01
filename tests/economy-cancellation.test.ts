@@ -21,8 +21,8 @@ describe('planting cancellation through cargo commands and combat',()=>{
   const pile={id:s.nextId++,x:worker.x,y:worker.y,stock:{wood:5,ore:0,crystal:0},expiresAt:s.time+120,owner:null,kind:'salvage' as const};economy.salvage.push(pile);
   expect(issueCommand(s,0,{type:'collectSalvage',ids:[worker.id],target:pile.id})).toBe(true);
   expect(grove.burned).toBe(true);expect(economy.tasks.some(task=>task.kind==='plant'&&task.targetId===grove.id)).toBe(false);expect(s.players[0].wood).toBe(wood-8);
-  expect(issueCommand(s,0,{type:'plantGrove',ids:[worker.id],...point})).toBe(true);expect(economy.groves[1].burned).toBe(false);
-  run(s,70);expect(grove.resourceId).toBeUndefined();expect(economy.groves[1].resourceId).toBeDefined();expect(loadGame(saveGame(s)).economy).toEqual(s.economy);
+  expect(issueCommand(s,0,{type:'plantGrove',ids:[worker.id],...point})).toBe(true);const replacement=economy.groves.at(-1)!;expect(replacement.id).not.toBe(grove.id);expect(replacement.burned).toBe(false);expect(s.players[0].wood).toBe(wood-16);
+  run(s,70);expect(grove.resourceId).toBeUndefined();expect(replacement.resourceId).toBeDefined();expect(loadGame(saveGame(s)).economy).toEqual(s.economy);
  });
  it('a killed planter leaves no unfinished grove blocking future planting or save restoration',()=>{
   const {s,worker,economy,point}=fixture();
