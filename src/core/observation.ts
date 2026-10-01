@@ -1,11 +1,12 @@
-import { ABILITIES, FACTIONS, UPGRADES } from './content';
+import { ABILITIES } from './content';
+import { factionFor, unitFor, upgradesFor } from './content-registry';
 import { isAllied, isGameOver, isHostile, isVisible } from './simulation';
 import type { Entity, GameEvent, GameState, ResourceNode, Side, UnitRole } from './types';
 
 /** Health shown to a player, including enemy illusion disguises. */
 export function observedHealth(s:GameState,side:Side,e:Entity):Pick<Entity,'hp'|'maxHp'>{
  const disguise=isHostile(s,side,e.side)&&e.illusion&&e.kind==='unit';
- const maxHp=disguise?FACTIONS[s.players[e.side].faction].units[e.role as UnitRole].hp:e.maxHp;
+ const maxHp=disguise?unitFor(s,e).hp:e.maxHp;
  const hp=disguise&&e.maxHp?e.hp*(maxHp/e.maxHp):e.hp;
  return {hp,maxHp};
 }
@@ -62,13 +63,13 @@ export class PlayerView {
    player:{...s.players[side],upgrades:[...s.players[side].upgrades]},opponent:opponent?{side:opponent.side,faction:opponent.faction}:null,opponents,allies,
    entities:s.entities.filter(e=>e.hp>0&&(e.side===side||isVisible(s,side,e.x,e.y))).map(e=>{
     const {hp,maxHp}=observedHealth(s,side,e);
-    const publicFields={id:e.id,side:e.side,kind:e.kind,role:e.role,x:e.x,y:e.y,hp,maxHp,progress:e.progress,gateOpen:e.gateOpen,shield:e.shield,maxShield:e.maxShield,raised:e.raised,entrenchedAt:e.entrenchedAt,surgeUntil:e.surgeUntil};
-    return e.side===side?{...publicFields,illusion:e.illusion,order:{...e.order},orderQueue:e.orderQueue?.map(order=>({...order})),queue:[...e.queue],rally:e.rally?{...e.rally}:undefined,trainProgress:e.trainProgress,research:e.research,researchProgress:e.researchProgress,carried:e.carried,carriedKind:e.carriedKind,cooldown:e.cooldown,abilityReadyAt:e.abilityReadyAt,expires:e.expires,lastDamagedAt:e.lastDamagedAt}:isAllied(s,side,e.side)?{...publicFields,illusion:e.illusion}:publicFields;
+    const publicFields={id:e.id,side:e.side,kind:e.kind,role:e.role,definitionId:e.definitionId,definitionFaction:e.definitionFaction,x:e.x,y:e.y,hp,maxHp,progress:e.progress,gateOpen:e.gateOpen,shield:e.shield,maxShield:e.maxShield,raised:e.raised,entrenchedAt:e.entrenchedAt,surgeUntil:e.surgeUntil};
+    return e.side===side?{...publicFields,illusion:e.illusion,order:{...e.order},orderQueue:e.orderQueue?.map(order=>({...order})),queue:[...e.queue],queueDefinitionIds:e.queueDefinitionIds?[...e.queueDefinitionIds]:undefined,queuePaidCosts:e.queuePaidCosts?.map(cost=>({...cost})),rally:e.rally?{...e.rally}:undefined,trainProgress:e.trainProgress,research:e.research,researchProgress:e.researchProgress,carried:e.carried,carriedKind:e.carriedKind,cooldown:e.cooldown,abilityReadyAt:e.abilityReadyAt,expires:e.expires,lastDamagedAt:e.lastDamagedAt}:isAllied(s,side,e.side)?{...publicFields,illusion:e.illusion}:publicFields;
    }),
    resources:this.resourcesFor(s),
    corpses:s.corpses.filter(c=>isVisible(s,side,c.x,c.y)).map(c=>({...c})),
    visible:[...s.visible[side]].sort((a,b)=>a-b),explored:[...s.explored[side]].sort((a,b)=>a-b),
-   content:{faction:FACTIONS[s.players[side].faction],abilities:ABILITIES,upgrades:UPGRADES},
+   content:{faction:factionFor(s,side),abilities:ABILITIES,upgrades:upgradesFor(s,side),hash:s.content?.hash},
    result:{finished,winner:s.winner,winningTeam:s.winningTeam,draw:s.draw,eliminated:[...s.eliminated],outcome}
   };
  }

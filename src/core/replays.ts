@@ -1,6 +1,6 @@
 import { validateCommand } from './commands';
 import { subscribeSimulation } from './history-hooks';
-import { FACTIONS } from './content';
+import { entityDefinition } from './content-registry';
 import { saveGame, loadGame, SAVE_VERSION } from './saves';
 import { issueCommand, stepGame, isGameOver } from './simulation';
 import { LEGACY_SIMULATION_REVISIONS, SIMULATION_REVISION } from './versions';
@@ -47,7 +47,7 @@ export function replayChecksum(state:GameState,version=SAVE_VERSION):string {
 }
 
 function entityValue(s:GameState,e:Entity):number {
-  const faction=FACTIONS[s.players[e.side].faction],cost=e.kind==='unit'?faction.units[e.role as UnitRole].cost:faction.buildings[e.role as BuildingRole].cost;
+  const cost=entityDefinition(s,e).cost;
   return cost.wood+cost.ore+cost.crystal;
 }
 function armySample(s:GameState,side:Side,losses:number,gathered:number,buildingLosses:number,lostValue:number):ArmySample {

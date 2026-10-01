@@ -4,7 +4,7 @@ import GameAudio from './GameAudio';
 import type { Side, GameState, BuildingRole, Command, Entity, UnitRole } from '../core/types';
 import { canPlace, isHostile, isVisible, issueCommand, stepGame } from '../core/simulation';
 import { PlayerView } from '../core/observation';
-import { FACTIONS } from '../core/content';
+import { buildingFor, entityDefinition, factionFor, unitFor } from '../core/content-registry';
 import { ControlProfiles, inputIsSuppressed } from './Controls';
 import type { ControlAction, KeyboardState } from './Controls';
 import { GamepadController } from './Gamepad';
@@ -29,6 +29,7 @@ export default class GameScene extends Phaser.Scene {
   public state:GameState;
   public selected:number[]=[];
   public buildRole:BuildingRole|null=null;
+  public buildDefinitionId:string|undefined;
   public paused=false;
   private options:GameSceneOptions;
   public readonly controls:ControlProfiles;
@@ -119,7 +120,7 @@ export default class GameScene extends Phaser.Scene {
   }
   private get pixelDensity(){return this.options.pixelDensity??1;}
   private get dragThreshold(){return 6*this.pixelDensity;}
-  preload(){this.art=new ArtRuntime(this,new URLSearchParams(location.search).get('art')!=='placeholder');this.art.preload(this.state.players.map(p=>p.faction));}
+  preload(){this.art=new ArtRuntime(this,new URLSearchParams(location.search).get('art')!=='placeholder');this.art.preload(this.state.players.map(p=>p.faction),this.state.content);}
   create() {
     const audio=this.audio=new GameAudio(),canvas=this.game.canvas,lifecycle=this.events;
     this.art.ready();
@@ -159,7 +160,7 @@ export default class GameScene extends Phaser.Scene {
       if(this.placeBlueprint(pos))return;
       if(this.buildRole){
         const role=this.buildRole;
-        if(this.command({type:'build',ids:this.selected,role,x:role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y:role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5})) {this.setBuildRole(null);this.options.onNotice('Construction ordered.');this.audio?.play('order');}
+        if(this.command({type:'build',ids:this.selected,role,definitionId:this.buildDefinitionId,x:role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y:role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5})) {this.setBuildRole(null);this.options.onNotice('Construction ordered.');this.audio?.play('order');}
         else this.options.onNotice('Cannot build here. Select a worker and check resources and space.');
         return;
       }
@@ -197,7 +198,7 @@ export default class GameScene extends Phaser.Scene {
   public recallGroup(key:string){const ids=this.controlGroups()[key];if(ids?.length)this.select(ids);}
   public selectEntities(ids:number[]){this.select(ids.filter(id=>this.state.entities.some(e=>e.id===id&&e.hp>0&&this.visible(e))));}
   public beginAttackMove(){if(!this.canCommand||!this.selected.length)return;this.attackMode=true;this.buildRole=null;this.options.onNotice('Attack move: click a destination.');}
-  public setBuildRole(role:BuildingRole|null){this.buildRole=role&&this.canCommand?role:null;this.attackMode=false;}
+  public setBuildRole(role:BuildingRole|null,definitionId?:string){this.buildRole=role&&this.canCommand?role:null;this.buildDefinitionId=this.buildRole?definitionId:undefined;this.attackMode=false;}
   public centerOn(x:number,y:number){const q=project(x,y),camera=this.cameras.main;camera.centerOn(q.x,q.y);const bounds=this.photoMode?undefined:this.options.viewBounds?.();if(bounds)camera.scrollY+=(camera.height/2-(bounds.top+bounds.bottom)/2)/camera.zoom;}
   public restart(state:GameState){this.setPhotoMode(false);this.audio?.reset();this.resultSoundPlayed=false;this.art.reset();this.state=state;this.playerView=new PlayerView(this.viewSide);this.paused=false;this.accumulated=0;this.attackedNoticeAt.clear();this.buildingAlertAt=-Infinity;this.workerAlertAt=-Infinity;this.groups={};this.markers=[];this.combatEffects=[];this.heldKeys.clear();this.controller.reset();this.controllerCursor=null;this.setBuildRole(null);this.select([]);this.drawGround();this.drawFog();this.centerOn(this.state.starts[this.viewSide].x,this.state.starts[this.viewSide].y);}
   public holdPosition(){if(!this.command({type:'hold',ids:this.selected}))return false;this.attackMode=false;this.setBuildRole(null);this.audio?.play('order');this.options.onNotice('Holding position: attack in range without pursuing.');return true;}
@@ -270,7 +271,7 @@ export default class GameScene extends Phaser.Scene {
     if(this.blueprintPlacement){const world=this.cameras.main.getWorldPoint(x,y);this.placeBlueprint(unproject(world.x,world.y));return;}
     if(this.buildRole){
       const world=this.cameras.main.getWorldPoint(x,y),pos=unproject(world.x,world.y),role=this.buildRole;
-      if(this.command({type:'build',ids:this.selected,role,x:role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y:role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5})){this.setBuildRole(null);this.options.onNotice('Construction ordered.');this.audio?.play('order');}
+      if(this.command({type:'build',ids:this.selected,role,definitionId:this.buildDefinitionId,x:role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y:role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5})){this.setBuildRole(null);this.options.onNotice('Construction ordered.');this.audio?.play('order');}
       else this.options.onNotice('Cannot build here. Select a worker and check resources and space.');
       return;
     }
@@ -333,14 +334,14 @@ export default class GameScene extends Phaser.Scene {
     this.fogClock+=delta;if(this.fogClock>150){this.fogClock=0;this.drawFog();}
   }
   private processEvents(events:readonly GameEvent[]=this.state.events){
-    const state=this.state, faction=FACTIONS[state.players[this.viewSide].faction];
+    const state=this.state, faction=factionFor(state,this.viewSide);
     let buildingAlert:Entity|undefined,workerAlert:Entity|undefined;
     for(const event of events){
       if(event.type==='attack'&&isVisible(state,this.viewSide,event.x,event.y)){
         const source=state.entities.find(e=>e.id===event.source),target=state.entities.find(e=>e.id===event.target);
         if(source&&target&&this.visible(target)){
-          const def=source.kind==='unit'?FACTIONS[state.players[source.side].faction].units[source.role as UnitRole]:undefined;
-          if(source.kind==='building'||(def?.range??0)>3)this.combatEffects.push({from:project(source.x,source.y),to:project(target.x,target.y),born:state.time,color:FACTIONS[state.players[source.side].faction].color,heavy:!!def?.buildingDamageMultiplier});
+          const def=source.kind==='unit'?unitFor(state,source):undefined;
+          if(source.kind==='building'||(def?.range??0)>3)this.combatEffects.push({from:project(source.x,source.y),to:project(target.x,target.y),born:state.time,color:factionFor(state,source.side).color,heavy:!!def?.buildingDamageMultiplier});
         }
       }
       if(event.type==='attack'&&state.visible[this.viewSide].has(Math.floor(event.y)*state.width+Math.floor(event.x)))this.audio?.play('attack');
@@ -355,12 +356,12 @@ export default class GameScene extends Phaser.Scene {
         if(event.type==='build'&&event.text==='Construction complete'){
           this.audio?.play('build');
           const entity=state.entities.find(e=>e.side===this.viewSide&&e.kind==='building'&&Math.hypot(e.x-event.x,e.y-event.y)<.1);
-          this.options.onNotice(entity?`${faction.buildings[entity.role as BuildingRole].name} complete.`:'Construction complete.');
+          this.options.onNotice(entity?`${entityDefinition(state,entity).name} complete.`:'Construction complete.');
         }
         if(event.type==='train'){
           this.audio?.play('train');
           const entity=state.entities.find(e=>e.side===this.viewSide&&e.kind==='unit'&&Math.hypot(e.x-event.x,e.y-event.y)<.1);
-          this.options.onNotice(entity?`${faction.units[entity.role as UnitRole].name} ready.`:'Unit recruited.');
+          this.options.onNotice(entity?`${entityDefinition(state,entity).name} ready.`:'Unit recruited.');
         }
         if(event.type==='research'&&event.text?.endsWith('complete')){this.audio?.play('train');this.options.onNotice(`${event.text}.`);}
       }
@@ -368,7 +369,7 @@ export default class GameScene extends Phaser.Scene {
     if((state.winner!==null||state.draw)&&!this.resultSoundPlayed){this.resultSoundPlayed=true;this.audio?.play(state.winningTeam===state.teams[this.viewSide]?'victory':'defeat');}
     if(buildingAlert){
       this.attackedNoticeAt.set(buildingAlert.id,state.time);this.buildingAlertAt=state.time;
-      this.options.onNotice(`${faction.buildings[buildingAlert.role as BuildingRole].name} under attack!`);
+      this.options.onNotice(`${entityDefinition(state,buildingAlert).name} under attack!`);
     }else if(workerAlert&&state.time-this.buildingAlertAt>=12&&state.time-this.workerAlertAt>=12){
       this.workerAlertAt=state.time;this.options.onNotice('Workers under attack!');
     }
@@ -445,10 +446,10 @@ export default class GameScene extends Phaser.Scene {
     }
     if(this.blueprintSide===this.viewSide)for(const blueprint of this.blueprints){
       if(blueprint.status!=='planned'||!this.state.explored[this.viewSide].has(Math.floor(blueprint.y)*this.state.width+Math.floor(blueprint.x)))continue;
-      const q=project(blueprint.x,blueprint.y),size=FACTIONS[this.state.players[this.viewSide].faction].buildings[blueprint.role].size;
+      const q=project(blueprint.x,blueprint.y),size=buildingFor(this.state,this.viewSide,blueprint.role).size;
       this.diamond(g,q.x,q.y,size*64,size*32,0xa6d9d4,.18);g.lineStyle(2,blueprint.reason?0xe27964:0xa6d9d4,.8).strokeEllipse(q.x,q.y,size*64,size*32);
     }
-    if(this.blueprintPlacement){const pos=unproject(world.x,world.y),role=this.blueprintPlacement.role,x=role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y=role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5,q=project(x,y),size=FACTIONS[this.state.players[this.viewSide].faction].buildings[role].size;this.diamond(g,q.x,q.y,size*64,size*32,0xa6d9d4,.4);}
+    if(this.blueprintPlacement){const pos=unproject(world.x,world.y),role=this.blueprintPlacement.role,x=role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y=role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5,q=project(x,y),size=buildingFor(this.state,this.viewSide,role).size;this.diamond(g,q.x,q.y,size*64,size*32,0xa6d9d4,.4);}
     const appearance=this.appearance.value,teams=(this.state as GameState&{teams?:number[]}).teams;
     for(const unit of this.state.entities){
       if(unit.hp<=0||!this.visible(unit))continue;
@@ -463,7 +464,7 @@ export default class GameScene extends Phaser.Scene {
       if(unit.entrenchedAt!==undefined){
         const ready=this.state.time-unit.entrenchedAt>=3;g.lineStyle(ready?3:1,0xedc675,ready?.85:.4).strokeRect(c.x-16,c.y-8,32,16);
         if(unit.role==='special'&&this.selected.includes(unit.id)){
-          const range=FACTIONS[this.state.players[unit.side].faction].units.special.range+(ready?3:0);
+          const range=unitFor(this.state,unit).range+(ready?3:0);
           g.lineStyle(1,0xedc675,.3).strokeEllipse(c.x,c.y,range*64*Math.SQRT2,range*32*Math.SQRT2);
         }
         if(!ready)g.fillStyle(0xedc675,.8).fillRect(c.x-16,c.y+14,32*Math.min(1,(this.state.time-unit.entrenchedAt)/3),3);
@@ -479,7 +480,7 @@ export default class GameScene extends Phaser.Scene {
       if(e.kind==='building'&&e.progress<1){g.fillStyle(0x182b2a,.8).fillRect(q.x-27,y+7,54,4);g.fillStyle(0xe4c578).fillRect(q.x-27,y+7,54*e.progress,4);}
     }
     if(this.drag&&Math.hypot(p.x-this.drag.x,p.y-this.drag.y)>this.dragThreshold&&!this.buildRole){g.lineStyle(1,0xe5dca6).strokeRect(this.drag.wx,this.drag.wy,world.x-this.drag.wx,world.y-this.drag.wy);g.fillStyle(0xd6e9a5,.12).fillRect(this.drag.wx,this.drag.wy,world.x-this.drag.wx,world.y-this.drag.wy);}
-    if(this.buildRole){const pos=unproject(world.x,world.y);const x=this.buildRole==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y=this.buildRole==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5,q=project(x,y);const valid=canPlace(this.state,this.viewSide,this.buildRole,x,y);const size=FACTIONS[this.state.players[this.viewSide].faction].buildings[this.buildRole].size;this.diamond(g,q.x,q.y,size*64,size*32,valid?0xa6d99a:0xe27964,.5);}
+    if(this.buildRole){const pos=unproject(world.x,world.y);const x=this.buildRole==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y=this.buildRole==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5,q=project(x,y);const valid=canPlace(this.state,this.viewSide,this.buildRole,x,y,this.buildDefinitionId);const size=buildingFor(this.state,this.viewSide,this.buildRole,this.buildDefinitionId).size;this.diamond(g,q.x,q.y,size*64,size*32,valid?0xa6d99a:0xe27964,.5);}
     for(const building of this.state.entities){
       if(building.side!==this.viewSide||building.hp<=0||!building.rally||!this.selected.includes(building.id))continue;
       const from=project(building.x,building.y),to=project(building.rally.x,building.rally.y);

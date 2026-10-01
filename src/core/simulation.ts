@@ -2,10 +2,11 @@ import { aiProfile, chooseAiRecruit, counterWeights, normalizeAiConfig, openingB
 import type { EnemyMemory, EnemyObservation } from './ai-policy';
 import { playerAge, researchRequirement } from './progression';
 import { ECONOMY, FACTIONS, UPGRADES } from './content';
+import { availableBuildings, availableUnits, buildingFor, contentFactions, decodeContentBundle, factionFor, queuedUnitFor, unitFor, upgradeFor } from './content-registry';
 import { walkable, segmentWalkable, openDestination, route } from './navigation';
 import { generateMatchMap, terrainAt, TERRAIN } from './maps';
 import { notifyCommand, notifyStep } from './history-hooks';
-import type { BuildingDef, BuildingRole, Command, Entity, FactionId, GameOptions, GameState, MatchConfig, ResourceNode, Side, UnitDef, UnitRole, UpgradeId, Vec } from './types';
+import type { BuildingDef, BuildingRole, Command, Cost, Entity, FactionId, GameOptions, GameState, MatchConfig, ResourceNode, Side, UnitDef, UnitRole, UpgradeId, Vec } from './types';
 
 const distance = (a:Vec,b:Vec) => Math.hypot(a.x-b.x,a.y-b.y);
 const clamp=(n:number,a:number,b:number)=>Math.max(a,Math.min(b,n));
@@ -38,14 +39,14 @@ export function restoreRuntime(s:GameState,r:RuntimeSnapshot):void {
 }
 export const MAX_ORDER_QUEUE=32;
 const alive=(e:Entity)=>e.hp>0;
-function unitDef(s:GameState,e:Entity):UnitDef{return FACTIONS[s.players[e.side].faction].units[e.role as UnitRole];}
-function buildingDef(s:GameState,e:Entity):BuildingDef{return FACTIONS[s.players[e.side].faction].buildings[e.role as BuildingRole];}
+function unitDef(s:GameState,e:Entity):UnitDef{return unitFor(s,e);}
+function buildingDef(s:GameState,e:Entity):BuildingDef{return buildingFor(s,e);}
 function radius(s:GameState,e:Entity):number{return e.kind==='building'?buildingDef(s,e).size/2:0.3;}
 function near(s:GameState,a:Entity,b:Entity|ResourceNode,range:number):boolean{return distance(a,b)<=range+('kind' in b&&b.kind==='building'?radius(s,b):0);}
 function emit(s:GameState,type:GameState['events'][number]['type'],e:Vec & {side:Side;id?:number},target?:number,text?:string){const event:GameState['events'][number]={type,x:e.x,y:e.y,side:e.side,target,text,source:e.id};s.events.push(event);return event;}
-function spawn(s:GameState,side:Side,kind:Entity['kind'],role:UnitRole|BuildingRole,x:number,y:number,progress=1):Entity{
- const f=FACTIONS[s.players[side].faction];const def=kind==='unit'?f.units[role as UnitRole]:f.buildings[role as BuildingRole];
- const e:Entity={id:s.nextId++,side,kind,role,x,y,hp:progress===1?def.hp:Math.max(1,def.hp*.1),maxHp:def.hp,order:{type:'idle'},cooldown:0,progress,queue:[],trainProgress:0,researchProgress:0,facing:2,animation:'idle',animTime:0,momentum:0,illusion:false,expires:0,carried:0,carriedKind:'wood',path:[]};if(kind==='unit'&&(def as UnitDef).shield){e.maxShield=(def as UnitDef).shield;e.shield=e.maxShield;}s.entities.push(e);return e;
+function spawn(s:GameState,side:Side,kind:Entity['kind'],role:UnitRole|BuildingRole,x:number,y:number,progress=1,definitionId?:string):Entity{
+ const def=kind==='unit'?unitFor(s,side,role as UnitRole,definitionId):buildingFor(s,side,role as BuildingRole,definitionId);
+ const e:Entity={id:s.nextId++,side,kind,role,x,y,hp:progress===1?def.hp:Math.max(1,def.hp*.1),maxHp:def.hp,order:{type:'idle'},cooldown:0,progress,queue:[],trainProgress:0,researchProgress:0,facing:2,animation:'idle',animTime:0,momentum:0,illusion:false,expires:0,carried:0,carriedKind:'wood',path:[]};if(s.content||definitionId)e.definitionId=def.id;if(kind==='unit'&&(def as UnitDef).shield){e.maxShield=(def as UnitDef).shield;e.shield=e.maxShield;}s.entities.push(e);return e;
 }
 export function playerSides(s:GameState):Side[]{return s.players.map((_,i)=>i as Side);}
 export function isAllied(s:GameState,a:Side,b:Side):boolean{return !!s.players[a]&&!!s.players[b]&&s.teams[a]===s.teams[b];}
@@ -55,14 +56,15 @@ function matchObject(value:unknown,allowed:string[],name:string):Record<string,u
 }
 function matchNumber(value:unknown,min:number,max:number,name:string,integer=false):number{if(typeof value!=='number'||!Number.isFinite(value)||value<min||value>max||(integer&&!Number.isSafeInteger(value)))throw new Error(`Invalid ${name}.`);return value;}
 export function createMatch(config:MatchConfig):GameState{
- const c=matchObject(config,['schemaVersion','map','players','rules'],'match configuration');if(c.schemaVersion!==undefined&&c.schemaVersion!==1)throw new Error('Unsupported match configuration version.');
+ const c=matchObject(config,['schemaVersion','map','players','rules','content'],'match configuration');if(c.schemaVersion!==undefined&&c.schemaVersion!==1)throw new Error('Unsupported match configuration version.');
+ const content=c.content===undefined?undefined:decodeContentBundle(c.content),factions=contentFactions(content);
  const m=matchObject(c.map,['seed','size'],'match map');const seed=matchNumber(m.seed,0,0xffffffff,'map seed',true),size=m.size===undefined?'medium':m.size;if(!['small','medium','large','huge'].includes(size as string))throw new Error('Invalid map size.');
  if(!Array.isArray(c.players)||c.players.length<1||c.players.length>8)throw new Error('A match requires 1 to 8 players.');
  for(let i=0;i<c.players.length;i++)if(!Object.hasOwn(c.players,i))throw new Error('Player slots cannot contain gaps.');
  const slots=new Set<number>(),teams:Side[]=[],incomeFactors:number[]=[],populationLimits:number[]=[];
  const definitions=c.players.map((value,i)=>{
   const p=matchObject(value,['id','teamId','factionId','controller','startingSlot','handicap','ai'],'player');if(p.id!==i)throw new Error('Player IDs must be ordered contiguous slots starting at zero.');
-  teams.push(matchNumber(p.teamId,0,7,'team',true) as Side);if(typeof p.factionId!=='string'||!Object.hasOwn(FACTIONS,p.factionId))throw new Error('Unknown faction.');if(!['human','ai','external'].includes(p.controller as string))throw new Error('Unknown controller.');
+  teams.push(matchNumber(p.teamId,0,7,'team',true) as Side);if(typeof p.factionId!=='string'||!Object.hasOwn(factions,p.factionId))throw new Error('Unknown faction.');if(!['human','ai','external'].includes(p.controller as string))throw new Error('Unknown controller.');
   const slot=matchNumber(p.startingSlot===undefined?i:p.startingSlot,0,c.players instanceof Array?c.players.length-1:0,'starting slot',true);if(slots.has(slot))throw new Error('Starting slots must be unique.');slots.add(slot);
   const h=p.handicap===undefined?{}:matchObject(p.handicap,['startingResources','incomeFactor','populationCap'],'handicap');
   const resources=h.startingResources===undefined?{wood:420,ore:220,crystal:0}:matchObject(h.startingResources,['wood','ore','crystal'],'starting resources');
@@ -73,6 +75,7 @@ export function createMatch(config:MatchConfig):GameState{
  const rules=c.rules===undefined?{}:matchObject(c.rules,['sharedVision','startingAge'],'match rules');if(rules.sharedVision!==undefined&&typeof rules.sharedVision!=='boolean')throw new Error('Invalid shared vision.');const age=matchNumber(rules.startingAge===undefined?1:rules.startingAge,1,3,'starting age',true);
  const map=generateMatchMap(seed,size as GameState['mapSize'],definitions.length);
  const s:GameState={controllers:definitions.map(p=>p.controller),aiConfigs:definitions.map(p=>p.ai),teams,incomeFactors,populationLimits,sharedVision:rules.sharedVision!==false,eliminated:definitions.map(()=>false),winningTeam:null,mapSize:map.size,mapVersion:map.version,terrain:map.terrain,starts:definitions.map(p=>({...map.starts[p.slot]})),draw:false,tick:0,corpses:[],time:0,seed,width:map.width,height:map.height,entities:[],resources:[],players:definitions.map(p=>({faction:p.faction,wood:p.wood,ore:p.ore,crystal:p.crystal,population:0,cap:12,upgrades:age===3?['town-age','citadel-age']:age===2?['town-age']:[]})),winner:null,events:[],explored:definitions.map(()=>new Set()),visible:definitions.map(()=>new Set()),nextId:1};
+ if(content)s.content=content;
  for(const side of playerSides(s)){const {x,y}=s.starts[side],dir=y<s.height/2?1:-1;spawn(s,side,'building','hq',x,y);for(let i=0;i<5;i++)spawn(s,side,'unit','worker',x+(-2+i*.85)*dir,y+3*dir);spawn(s,side,'unit','melee',x+3*dir,y+dir);}
  for(const resource of map.resources)s.resources.push({...resource,id:s.nextId++});refreshVisibility(s);updatePopulation(s);return s;
 }
@@ -115,10 +118,10 @@ function movementOrder(s:GameState,e:Entity,order:Vec,dt:number,reach:number):bo
  // not change the destination visible in the accepted command.
  const destination=openDestination(s,order,e);return destination?move(s,e,destination,dt,reach):false;
 }
-function refundCost(s:GameState,side:Side,role:UnitRole):void{const cost=FACTIONS[s.players[side].faction].units[role].cost,p=s.players[side];p.wood+=cost.wood;p.ore+=cost.ore;p.crystal+=cost.crystal;}
-function refundQueue(s:GameState,e:Entity):void{if(!e.queue.length)return;for(const role of e.queue)refundCost(s,e.side,role);e.queue=[];e.trainProgress=0;}
-export function canPlace(s:GameState,side:Side,role:BuildingRole,x:number,y:number):boolean{
- if(!s.players[side])return false;const def=FACTIONS[s.players[side].faction].buildings[role];if(!def||playerAge(s.players[side])<(role==='hq'?2:def.age??1)||!Number.isFinite(x)||!Number.isFinite(y))return false;const r=def.size/2;if(x-r<.5||y-r<.5||x+r>s.width-.5||y+r>s.height-.5)return false;
+function refundCost(s:GameState,side:Side,role:UnitRole,id?:string,paid?:Cost):void{const cost=paid??unitFor(s,side,role,id).cost,p=s.players[side];p.wood+=cost.wood;p.ore+=cost.ore;p.crystal+=cost.crystal;}
+function refundQueue(s:GameState,e:Entity):void{if(!e.queue.length)return;for(const [index,role] of e.queue.entries())refundCost(s,e.side,role,e.queueDefinitionIds?.[index],e.queuePaidCosts?.[index]);e.queue=[];delete e.queueDefinitionIds;delete e.queuePaidCosts;e.trainProgress=0;}
+export function canPlace(s:GameState,side:Side,role:BuildingRole,x:number,y:number,definitionId?:string):boolean{
+ if(!s.players[side])return false;const def=definitionId?availableBuildings(s,side).find(d=>d.id===definitionId&&d.role===role):factionFor(s,side).buildings[role];if(!def||playerAge(s.players[side])<(role==='hq'?2:def.age??1)||!Number.isFinite(x)||!Number.isFinite(y))return false;const r=def.size/2;if(x-r<.5||y-r<.5||x+r>s.width-.5||y+r>s.height-.5)return false;
  for(const dx of [-r,0,r])for(const dy of [-r,0,r])if(!isVisible(s,side,x+dx,y+dy))return false;
  for(let ty=Math.floor(y-r);ty<Math.ceil(y+r);ty++)for(let tx=Math.floor(x-r);tx<Math.ceil(x+r);tx++)if(!TERRAIN[terrainAt(s,tx+.5,ty+.5)].buildable)return false;
  if(s.entities.some(e=>alive(e)&&e.kind==='building'&&Math.abs(e.x-x)<radius(s,e)+r+(['wall','gate'].includes(role)&&['wall','gate'].includes(e.role)?0:.4)&&Math.abs(e.y-y)<radius(s,e)+r+(['wall','gate'].includes(role)&&['wall','gate'].includes(e.role)?0:.4)))return false;
@@ -148,7 +151,7 @@ export function issueCommand(s:GameState,side:Side,c:Command):boolean{
  const accepted=applyCommand(s,side,c);if(accepted&&!runtime(s).stepping)notifyCommand(s,side,c);return accepted;
 }
 function applyCommand(s:GameState,side:Side,c:Command):boolean{
- if(isGameOver(s)||!s.players[side]||s.eliminated[side])return false;const p=s.players[side],f=FACTIONS[p.faction];
+ if(isGameOver(s)||!s.players[side]||s.eliminated[side])return false;const p=s.players[side],f=factionFor(s,side);
  if(c.type==='toggleGate'){
   let changed=false;
   for(const gate of s.entities.filter(e=>c.ids.includes(e.id)&&e.side===side&&alive(e)&&e.role==='gate'&&e.progress===1)){
@@ -170,31 +173,31 @@ function applyCommand(s:GameState,side:Side,c:Command):boolean{
  if(c.type==='cancelTrain'){
   const e=s.entities.find(e=>e.id===c.id&&e.side===side&&alive(e)&&e.kind==='building');
   if(!e||!Number.isInteger(c.index)||c.index<0||c.index>=e.queue.length)return false;
-  refundCost(s,side,e.queue[c.index]);
-  e.queue.splice(c.index,1);if(c.index===0)e.trainProgress=0;return true;
+  refundCost(s,side,e.queue[c.index],e.queueDefinitionIds?.[c.index],e.queuePaidCosts?.[c.index]);
+  e.queue.splice(c.index,1);e.queueDefinitionIds?.splice(c.index,1);e.queuePaidCosts?.splice(c.index,1);if(c.index===0)e.trainProgress=0;return true;
  }
  if(c.type==='reorderTrain'){
   const e=s.entities.find(e=>e.id===c.id&&e.side===side&&alive(e)&&e.kind==='building'&&e.progress===1&&(e.role==='hq'||e.role==='barracks'));
   if(!e||!Number.isInteger(c.from)||!Number.isInteger(c.to)||c.from<1||c.to<1||c.from>=e.queue.length||c.to>=e.queue.length||c.from===c.to)return false;
-  const [role]=e.queue.splice(c.from,1);e.queue.splice(c.to,0,role);return true;
+  const [role]=e.queue.splice(c.from,1);e.queue.splice(c.to,0,role);if(e.queueDefinitionIds){const [id]=e.queueDefinitionIds.splice(c.from,1);e.queueDefinitionIds.splice(c.to,0,id);if(e.queuePaidCosts){const [cost]=e.queuePaidCosts.splice(c.from,1);e.queuePaidCosts.splice(c.to,0,cost);}}return true;
  }
  if(c.type==='train'){
- const e=s.entities.find(e=>e.id===c.id&&e.side===side&&alive(e)&&e.kind==='building'&&e.progress===1);const d=f.units[c.role];if(!e||!d||playerAge(p)<(d.age??1)||(c.role==='worker'?e.role!=='hq':e.role!=='barracks')||e.queue.length>=5||p.wood<d.cost.wood||p.ore<d.cost.ore||p.crystal<d.cost.crystal||p.population+reserved(s,side)>=p.cap)return false;
- p.wood-=d.cost.wood;p.ore-=d.cost.ore;p.crystal-=d.cost.crystal;e.queue.push(c.role);return true;
+ const e=s.entities.find(e=>e.id===c.id&&e.side===side&&alive(e)&&e.kind==='building'&&e.progress===1);const d=c.definitionId?availableUnits(s,side).find(d=>d.id===c.definitionId&&d.role===c.role):f.units[c.role];if(!e||!d||playerAge(p)<(d.age??1)||(c.role==='worker'?e.role!=='hq':e.role!=='barracks')||e.queue.length>=5||p.wood<d.cost.wood||p.ore<d.cost.ore||p.crystal<d.cost.crystal||p.population+reserved(s,side)>=p.cap)return false;
+ p.wood-=d.cost.wood;p.ore-=d.cost.ore;p.crystal-=d.cost.crystal;if(s.content||c.definitionId){e.queueDefinitionIds??=e.queue.map(role=>f.units[role].id);e.queueDefinitionIds.push(d.id);e.queuePaidCosts??=e.queue.map(role=>({...f.units[role].cost}));e.queuePaidCosts.push({...d.cost});}e.queue.push(c.role);return true;
  }
  if(c.type==='research'){
- const e=s.entities.find(e=>e.id===c.id&&e.side===side&&alive(e)&&e.kind==='building'&&e.progress===1);const d=UPGRADES[c.upgrade];
+ const e=s.entities.find(e=>e.id===c.id&&e.side===side&&alive(e)&&e.kind==='building'&&e.progress===1);const d=(()=>{try{return upgradeFor(s,side,c.upgrade);}catch{return undefined;}})();
  if(!e||!d||d.building!==e.role||e.research||researchRequirement(s,side,c.upgrade)||p.wood<d.cost.wood||p.ore<d.cost.ore||p.crystal<d.cost.crystal)return false;
  p.wood-=d.cost.wood;p.ore-=d.cost.ore;p.crystal-=d.cost.crystal;e.research=c.upgrade;e.researchProgress=0;emit(s,'research',e,undefined,`${d.name} started`);return true;
  }
  const units=s.entities.filter(e=>c.ids.includes(e.id)&&e.side===side&&alive(e)&&e.kind==='unit'&&!e.illusion);
  if(!units.length)return false;
  if(c.type==='build'){
- const workers=units.filter(e=>e.role==='worker');const d=f.buildings[c.role];if(!workers.length||!d||(c.role==='hq'&&playerAge(p)<2)||p.wood<d.cost.wood||p.ore<d.cost.ore||p.crystal<d.cost.crystal||!canPlace(s,side,c.role,c.x,c.y))return false;
+ const workers=units.filter(e=>e.role==='worker');const d=c.definitionId?availableBuildings(s,side).find(d=>d.id===c.definitionId&&d.role===c.role):f.buildings[c.role];if(!workers.length||!d||(c.role==='hq'&&playerAge(p)<2)||p.wood<d.cost.wood||p.ore<d.cost.ore||p.crystal<d.cost.crystal||!canPlace(s,side,c.role,c.x,c.y,c.definitionId))return false;
  const overlapping=s.entities.filter(e=>e.kind==='unit'&&alive(e)&&isAllied(s,e.side,side)&&footprintOverlap(e,c.x,c.y,d.size));
  const shoves:{e:Entity;x:number;y:number}[]=[];
  for(const u of overlapping){const dest=shovePoint(s,c.x,c.y,d.size);if(!dest)return false;shoves.push({e:u,...dest});}
- p.wood-=d.cost.wood;p.ore-=d.cost.ore;p.crystal-=d.cost.crystal;const b=spawn(s,side,'building',c.role,c.x,c.y,0);for(const shove of shoves){shove.e.x=shove.x;shove.e.y=shove.y;shove.e.path=[];shove.e.entrenchedAt=undefined;runtime(s).routes.delete(shove.e.id);}for(const e of workers)commandOrder(s,e,{type:'build',target:b.id});emit(s,'build',b);return true;
+ p.wood-=d.cost.wood;p.ore-=d.cost.ore;p.crystal-=d.cost.crystal;const b=spawn(s,side,'building',c.role,c.x,c.y,0,c.definitionId);for(const shove of shoves){shove.e.x=shove.x;shove.e.y=shove.y;shove.e.path=[];shove.e.entrenchedAt=undefined;runtime(s).routes.delete(shove.e.id);}for(const e of workers)commandOrder(s,e,{type:'build',target:b.id});emit(s,'build',b);return true;
  }
  if(c.type==='ability'){let success=false;for(const e of units){if(useAbility(s,e))success=true;}return success;}
  if(c.type==='move'||c.type==='attackMove'){
@@ -229,7 +232,7 @@ function useAbility(s:GameState,e:Entity):boolean{
  for(const offset of [-.6,.6]){
   const desired={x:clamp(e.x+offset,.5,s.width-.5),y:clamp(e.y-offset,.5,s.height-.5)};
   const point=walkable(s,desired.x,desired.y)?desired:openDestination(s,desired,e);if(!point)continue;
-  const clone=spawn(s,e.side,'unit',e.role,point.x,point.y);clone.illusion=true;clone.hp=clone.maxHp*.4;clone.maxHp=clone.hp;clone.expires=s.time+18;clone.order={...e.order};placed++;
+  const clone=spawn(s,e.side,'unit',e.role,point.x,point.y,1,e.definitionId);clone.illusion=true;clone.hp=clone.maxHp*.4;clone.maxHp=clone.hp;clone.expires=s.time+18;clone.order={...e.order};placed++;
  }
  if(!placed)return false;runtime(s).abilities.set(e.id,s.time+35);
  }else if(ability==='surge'){
@@ -248,11 +251,11 @@ function walkTo(e:Entity,x:number,y:number):void{
  e.x=x;e.y=y;e.animation='walk';
 }
 function upgradeFactor(s:GameState,e:Entity,effect:'gather'|'speed'|'damage'):number{
- let factor=1;for(const id of s.players[e.side].upgrades){const u=UPGRADES[id];if(u.appliesTo===e.role)factor*=u.effects[effect]??1;}return factor;
+ let factor=1;for(const id of s.players[e.side].upgrades){const u=upgradeFor(s,e.side,id);if(u.appliesTo===e.role)factor*=u.effects[effect]??1;}return factor;
 }
 function movementSpeed(s:GameState,e:Entity):number{
  const terrain=terrainAt(s,e.x,e.y);
- const terrainSpeed=FACTIONS[s.players[e.side].faction].terrainSpeeds?.[terrain]??TERRAIN[terrain].speed;
+ const terrainSpeed=factionFor(s,e.side).terrainSpeeds?.[terrain]??TERRAIN[terrain].speed;
  return unitDef(s,e).speed*terrainSpeed*upgradeFactor(s,e,'speed')*(e.illusion?1.08:1)*((e.surgeUntil??0)>s.time?1.25:1);
 }
 function move(s:GameState,e:Entity,to:Vec,dt:number,reach=.45):boolean{
@@ -271,7 +274,7 @@ function move(s:GameState,e:Entity,to:Vec,dt:number,reach=.45):boolean{
 function emplaced(s:GameState,e:Entity):boolean{return e.entrenchedAt!==undefined&&s.time-e.entrenchedAt>=3;}
 function weaponRange(s:GameState,e:Entity):number{return e.kind==='building'?7:unitDef(s,e).range+(emplaced(s,e)&&e.role==='special'?3:0);}
 function damage(s:GameState,a:Entity,b:Entity):void{
- const d=a.kind==='unit'?unitDef(s,a):null;const armor=(b.kind==='unit'?unitDef(s,b).armor:3)+(emplaced(s,b)?2:0)+s.players[b.side].upgrades.reduce((sum,id)=>sum+(UPGRADES[id].appliesTo===b.role?(UPGRADES[id].effects.armor??0):0),0);
+ const d=a.kind==='unit'?unitDef(s,a):null;const armor=(b.kind==='unit'?unitDef(s,b).armor:3)+(emplaced(s,b)?2:0)+s.players[b.side].upgrades.reduce((sum,id)=>sum+(upgradeFor(s,b.side,id).appliesTo===b.role?(upgradeFor(s,b.side,id).effects.armor??0):0),0);
  const base=d?d.damage*upgradeFactor(s,a,'damage'):19;const bonus=d?.ability==='momentum'?1+a.momentum*.40:emplaced(s,a)?1.15:1;const hit=Math.max(1,base*bonus*(b.kind==='building'?(d?.buildingDamageMultiplier??1):(d?.bonusAgainst?.[b.role as UnitRole]??1))-armor)*(a.illusion?.25:1);
  a.cooldown=(d?.cooldown??1.4)/(d?.ability==='momentum'?1+a.momentum*.15:1);if(d?.ability==='momentum')a.momentum=Math.min(1,a.momentum+.15);a.animation='attack';a.animTime=0;const event=emit(s,'attack',a,b.id);runtime(s).hits.push({source:a,target:b,amount:hit,event});
 }
@@ -298,11 +301,11 @@ function construct(s:GameState,e:Entity,id:number,dt:number):void{
  else finishOrder(s,e);
 }
 function production(s:GameState,e:Entity,dt:number):void{
- if(e.progress<1||!e.queue.length)return;const role=e.queue[0],d=FACTIONS[s.players[e.side].faction].units[role];if(s.players[e.side].population>=s.players[e.side].cap)return;
+ if(e.progress<1||!e.queue.length)return;const role=e.queue[0],d=queuedUnitFor(s,e,0);if(s.players[e.side].population>=s.players[e.side].cap)return;
  if(e.trainProgress<1)e.trainProgress=Math.min(1,e.trainProgress+dt/d.trainTime);if(e.trainProgress<1)return;
  let point:Vec|undefined;for(let ring=radius(s,e)+1;ring<=radius(s,e)+6&&!point;ring+=.5)for(let i=0;i<24;i++){const angle=i/24*Math.PI*2+(e.side===0?0:Math.PI),p={x:e.x+Math.cos(angle)*ring,y:e.y+Math.sin(angle)*ring};if(walkable(s,p.x,p.y)){point=p;break;}}
- if(!point){refundCost(s,e.side,role);e.queue.shift();e.trainProgress=0;return;}
- const u=spawn(s,e.side,'unit',role,point.x,point.y);if(role!=='worker')runtime(s).producedFighters[e.side]++;e.trainProgress=0;e.queue.shift();emit(s,'train',u);updatePopulation(s);if(e.rally)issueCommand(s,e.side,{type:'move',ids:[u.id],...e.rally});
+ if(!point){refundCost(s,e.side,role,e.queueDefinitionIds?.[0],e.queuePaidCosts?.[0]);e.queue.shift();e.queueDefinitionIds?.shift();e.queuePaidCosts?.shift();e.trainProgress=0;return;}
+ const u=spawn(s,e.side,'unit',role,point.x,point.y,1,e.queueDefinitionIds?.[0]);if(role!=='worker')runtime(s).producedFighters[e.side]++;e.trainProgress=0;e.queue.shift();e.queueDefinitionIds?.shift();e.queuePaidCosts?.shift();emit(s,'train',u);updatePopulation(s);if(e.rally)issueCommand(s,e.side,{type:'move',ids:[u.id],...e.rally});
 }
 function separateUnits(s:GameState):void{
  const units=s.entities.filter(e=>e.kind==='unit'&&alive(e));for(let i=0;i<units.length;i++)for(let j=i+1;j<units.length;j++){const a=units[i],b=units[j],d=distance(a,b);if(d>=.58)continue;const dx=d>.001?(a.x-b.x)/d:(a.id%2?1:-1),dy=d>.001?(a.y-b.y)/d:.3,push=(.58-d)*.22;const ax=a.x+dx*push,ay=a.y+dy*push,bx=b.x-dx*push,by=b.y-dy*push;if(walkable(s,ax,ay)){a.x=ax;a.y=ay;}if(walkable(s,bx,by)){b.x=bx;b.y=by;}}
@@ -333,7 +336,7 @@ function applyStep(s:GameState,dt:number):void{
  if(due.size){const offset=rt.aiBatchTurns++%sides.length;for(let i=0;i<sides.length;i++){const side=sides[(i+offset)%sides.length];if(due.has(side)){runAI(s,side);rt.aiDecisionAt[side]=s.time+aiProfile(s.aiConfigs[side]).decisionInterval;}}}
  for(const e of [...s.entities]){
  e.animTime+=dt;if(!alive(e)){if(e.kind==='building')refundQueue(s,e);continue;}if(e.expires&&s.time>=e.expires){die(s,e);continue;}e.cooldown=Math.max(0,e.cooldown-dt);if(e.animation!=='attack'||e.animTime>.4)e.animation='idle';e.momentum=Math.max(0,e.momentum-dt*.014);
- if(e.kind==='building'){if(e.progress===1&&buildingDef(s,e).ability==='heal')for(const ally of s.entities)if(isAllied(s,ally.side,e.side)&&alive(ally)&&ally.kind==='unit'&&!ally.illusion&&distance(ally,e)<6)ally.hp=Math.min(ally.maxHp,ally.hp+dt*2.5);if(e.research){e.researchProgress+=dt/UPGRADES[e.research].researchTime;if(e.researchProgress>=1){s.players[e.side].upgrades.push(e.research);emit(s,'research',e,undefined,`${UPGRADES[e.research].name} complete`);e.research=undefined;e.researchProgress=0;}}production(s,e,dt);if(e.role==='tower'&&e.progress===1){const b=enemy(s,e,7);if(b)fight(s,e,b,dt);}continue;}
+ if(e.kind==='building'){if(e.progress===1&&buildingDef(s,e).ability==='heal')for(const ally of s.entities)if(isAllied(s,ally.side,e.side)&&alive(ally)&&ally.kind==='unit'&&!ally.illusion&&distance(ally,e)<6)ally.hp=Math.min(ally.maxHp,ally.hp+dt*2.5);if(e.research){e.researchProgress+=dt/upgradeFor(s,e.side,e.research).researchTime;if(e.researchProgress>=1){s.players[e.side].upgrades.push(e.research);emit(s,'research',e,undefined,`${upgradeFor(s,e.side,e.research).name} complete`);e.research=undefined;e.researchProgress=0;}}production(s,e,dt);if(e.role==='tower'&&e.progress===1){const b=enemy(s,e,7);if(b)fight(s,e,b,dt);}continue;}
  const d=unitDef(s,e);
  if(e.maxShield&&s.time-(e.lastDamagedAt??-6)>=6)e.shield=Math.min(e.maxShield,(e.shield??0)+4*dt);
  if(!e.illusion&&(d.ability==='raise'||d.ability==='ward'))useAbility(s,e);
@@ -351,7 +354,7 @@ function applyStep(s:GameState,dt:number):void{
 /** AI issues exactly the commands accepted for humans, using current visibility only. */
 export function runAI(s:GameState,side:Side=1):void{
  if(isGameOver(s)||!s.players[side]||s.eliminated[side])return;const owned=s.entities.filter(e=>e.side===side&&alive(e)),workers=owned.filter(e=>e.kind==='unit'&&e.role==='worker'),buildings=owned.filter(e=>e.kind==='building'),hq=buildings.find(e=>e.role==='hq');if(!hq)return;
- const f=FACTIONS[s.players[side].faction],p=s.players[side],age=playerAge(p),config=s.aiConfigs[side],profile=aiProfile(config),rt=runtime(s);
+ const f=factionFor(s,side),p=s.players[side],age=playerAge(p),config=s.aiConfigs[side],profile=aiProfile(config),rt=runtime(s);
  if(skipsAiDecision(config,++rt.aiDecisionTurns[side])){emit(s,'message',hq,undefined,'Easy commander hesitates before issuing orders.');return;}
  const available=s.resources.filter(n=>n.amount>0&&isVisible(s,side,n.x,n.y));
  const wantCrystal=(config.opening==='tower-defense'||buildings.some(b=>b.role==='barracks'))&&available.some(n=>n.kind==='crystal')?(p.crystal<40?2:p.crystal<100?1:0):0;

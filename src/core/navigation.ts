@@ -1,10 +1,10 @@
-import { FACTIONS } from './content';
+import { buildingFor, factionFor } from './content-registry';
 import { terrainAt, TERRAIN } from './maps';
 import type { GameState, Side, Vec } from './types';
 
 const distance=(a:Vec,b:Vec)=>Math.hypot(a.x-b.x,a.y-b.y);
 const clamp=(v:number,a:number,b:number)=>Math.max(a,Math.min(b,v));
-const buildingRadius=(s:GameState,e:GameState['entities'][number])=>FACTIONS[s.players[e.side].faction].buildings[e.role as 'hq'].size/2+.27;
+const buildingRadius=(s:GameState,e:GameState['entities'][number])=>buildingFor(s,e).size/2+.27;
 
 export function walkable(s:GameState,x:number,y:number):boolean{
  if(x<.35||y<.35||x>s.width-.35||y>s.height-.35)return false;
@@ -95,7 +95,7 @@ function routeOnGrid(s:GameState,from:Vec,to:Vec,reach:number,CELL:number,side?:
    const nx=x+dx,ny=y+dy;if(nx<0||ny<0||nx>=width||ny>=height)continue;const n=ny*width+nx;
    if(blocked[n]||closed[n]||(dx&&dy&&(blocked[y*width+nx]||blocked[ny*width+x])))continue;
    const edge=Math.min(k,n)*width*height+Math.max(k,n);let clear=grid.edges.get(edge);if(clear===undefined){clear=segmentWalkable(s,point(k),point(n));grid.edges.set(edge,clear);}if(!clear)continue;
-   const p=point(n),terrain=terrainAt(s,p.x,p.y),speed=(side!==undefined?FACTIONS[s.players[side].faction].terrainSpeeds?.[terrain]:undefined)??TERRAIN[terrain].speed;const value=score[k]+(dx&&dy?Math.SQRT2:1)*CELL/Math.max(.1,speed);if(value<score[n]){score[n]=value;parent[n]=k;push(n,value+heuristic(n));}
+   const p=point(n),terrain=terrainAt(s,p.x,p.y),speed=(side!==undefined?factionFor(s,side).terrainSpeeds?.[terrain]:undefined)??TERRAIN[terrain].speed;const value=score[k]+(dx&&dy?Math.SQRT2:1)*CELL/Math.max(.1,speed);if(value<score[n]){score[n]=value;parent[n]=k;push(n,value+heuristic(n));}
   }
  }
  if(end===-1)return [];

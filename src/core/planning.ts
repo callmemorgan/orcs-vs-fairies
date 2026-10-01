@@ -1,3 +1,4 @@
+import { buildingFor, factionFor } from './content-registry';
 import { FACTIONS } from './content';
 import { terrainAt, TERRAIN } from './maps';
 import { route, segmentWalkable, walkable } from './navigation';
@@ -130,7 +131,7 @@ function protectedWorkerOrders(state: GameState, side: Side): Set<number> {
     const node = target === undefined ? undefined : state.resources.find(node => node.id === target);
     const dropoff = dropoffs.slice().sort((a, b) => distance(worker, a) - distance(worker, b))[0];
     const pendingDelivery = worker.carried >= 18 || !!node && (node.kind !== worker.carriedKind || isVisible(state, side, node.x, node.y) && node.amount <= 0);
-    if (pendingDelivery || !dropoff || !reachable(view, worker, dropoff, FACTIONS[state.players[side].faction].buildings[dropoff.role as BuildingRole].size / 2 + 1, side)) protectedOrders.add(worker.id);
+    if (pendingDelivery || !dropoff || !reachable(view, worker, dropoff, buildingFor(state,dropoff).size / 2 + 1, side)) protectedOrders.add(worker.id);
   }
   return protectedOrders;
 }
@@ -174,7 +175,7 @@ export function applyWorkerTargets(state: GameState, side: Side, targets: Worker
       // Gathering returns to the closest completed drop-off. A farther reachable
       // depot cannot rescue an order if that automatic destination is blocked.
       const delivery = dropoffs.slice().sort((a, b) => distance(point, a) - distance(point, b))[0];
-      if (delivery && reachable(view, point, delivery, FACTIONS[state.players[side].faction].buildings[delivery.role as BuildingRole].size / 2 + 1, side)) candidates.push({ node, travel: distance(worker, node) + distance(node, delivery) });
+      if (delivery && reachable(view, point, delivery, buildingFor(state,delivery).size / 2 + 1, side)) candidates.push({ node, travel: distance(worker, node) + distance(node, delivery) });
     }
     options[kind] = candidates.sort((a, b) => Number(b.node.id === current) - Number(a.node.id === current) || a.travel - b.travel || a.node.id - b.node.id)[0]?.node;
     return options[kind];
@@ -276,7 +277,7 @@ export function blueprintReason(state: GameState, side: Side, item: Construction
   if (!validPlanningSide(state, side) || !roles.has(item.role) || !validPosition(item, state)) return 'Invalid blueprint.';
   if (isGameOver(state)) return 'The match is finished.';
   if (item.status === 'complete') return 'Construction is complete.';
-  const def = FACTIONS[state.players[side].faction].buildings[item.role];
+  const def = factionFor(state,side).buildings[item.role];
   const queued = protectedWorkerOrders(state, side);
   const eligible = freeAssignedWorkers(state, side, item, queued);
   if (item.status === 'building') {
@@ -326,7 +327,7 @@ export function executeBlueprints(state: GameState, side: Side, plan: Constructi
     if (item.status === 'complete') continue;
     const reason = blueprintReason(state, side, item);
     if (reason) { item.reason = reason; pending.push({ id: item.id, reason }); continue; }
-    const view = observedMap(state, side), reach = FACTIONS[state.players[side].faction].buildings[item.role].size / 2 + 1.1;
+    const view = observedMap(state, side), reach = factionFor(state,side).buildings[item.role].size / 2 + 1.1;
     const assigned = freeAssignedWorkers(state, side, item, queued).filter(worker => !reserved.has(worker.id) && reachable(view, worker, item, reach, side));
     if (!assigned.length) {
       if (item.status === 'building') continue;

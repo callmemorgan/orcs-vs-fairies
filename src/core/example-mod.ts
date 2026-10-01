@@ -1,8 +1,8 @@
 import { contentHash, decodeContentPackage } from './content-registry';
 import type { ContentPackage } from './content-registry';
-import sentinel from '../../public/mods/lantern/sentinel.svg?raw';
-import duelist from '../../public/mods/lantern/duelist.svg?raw';
-import banner from '../../public/mods/lantern/banner.svg?raw';
+import sentinel from '../content-art/lantern/sentinel.svg?raw';
+import duelist from '../content-art/lantern/duelist.svg?raw';
+import banner from '../content-art/lantern/banner.svg?raw';
 
 /** An authored package using the same admission path as imported files. */
 export function exampleMod():ContentPackage {

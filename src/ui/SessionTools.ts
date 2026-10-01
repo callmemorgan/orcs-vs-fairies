@@ -1,4 +1,4 @@
-import { FACTIONS } from '../core/content';
+import { availableUnits, entityDefinition, factionFor, productionQueueKey, queuedUnitFor, unitFor } from '../core/content-registry';
 import { AGE_NAMES, playerAge } from '../core/progression';
 import type { Entity, GameState, Side, UnitRole } from '../core/types';
 import './session-tools.css';
@@ -34,7 +34,7 @@ export interface SessionToolsCallbacks {
   setReplaySpeed:(speed:ReplaySpeed)=>ActionResult;
   setReplayPerspective:(side:Side)=>ActionResult;
   getAnalysis:()=>SessionAnalysis | null;
-  train:(id:number,role:UnitRole)=>ActionResult;
+  train:(id:number,role:UnitRole,definitionId?:string)=>ActionResult;
   cancelTrain:(id:number,index:number,expectedQueue:string)=>ActionResult;
   reorderTrain:(id:number,from:number,to:number,expectedQueue:string)=>ActionResult;
   selectBuilding:(id:number)=>void;
@@ -236,29 +236,29 @@ export function mountSessionTools(root:HTMLElement,callbacks:SessionToolsCallbac
   function seekAnalysisTick(tick:number){if(!canSeekAnalysisTick(tick))return;void run(async()=>{if(await callbacks.seekReplay(tick)===false)throw new Error('This replay timestamp could not be opened.');if(!disposed)switchTab('replay');});}
 
   const productionPanel=panels.get('production')!,productionSummary=create('p'),productionList=create('div',undefined,'session-production-list');productionPanel.append(create('p','Manage every recruitment building. The active recruit stays in slot 1; drag waiting recruits or use Move up and Move down.'),productionSummary,productionList);
-  type ProductionAction={button:HTMLButtonElement;id:number;role?:UnitRole;index?:number;from?:number;to?:number};const productionActions:ProductionAction[]=[];
+  type ProductionAction={button:HTMLButtonElement;id:number;role?:UnitRole;definitionId?:string;index?:number;from?:number;to?:number};const productionActions:ProductionAction[]=[];
   function refreshProduction(){
     if(!state){productionKey='';productionActions.length=0;productionList.replaceChildren();productionSummary.textContent='Start or load a match to manage recruitment.';return;}
-    const side=status.side??0,player=state.players[side],faction=FACTIONS[player.faction],buildings=state.entities.filter(e=>e.kind==='building'&&e.side===side&&e.hp>0&&(e.role==='hq'||e.role==='barracks')).sort((a,b)=>a.id-b.id);
-    const key=`${side}:${player.faction}:`+buildings.map(e=>`${e.id}/${e.role}/${e.queue.join(',')}`).join(';');
+    const side=status.side??0,player=state.players[side],faction=factionFor(state,side),buildings=state.entities.filter(e=>e.kind==='building'&&e.side===side&&e.hp>0&&(e.role==='hq'||e.role==='barracks')).sort((a,b)=>a.id-b.id);
+    const key=`${side}:${player.faction}:`+buildings.map(e=>`${e.id}/${e.role}/${productionQueueKey(e)}`).join(';');
     productionSummary.textContent=`${buildings.length} recruitment building${buildings.length===1?'':'s'} · ${player.population} fielded · ${reservedPlaces(state,side)} queued · ${player.cap} supply`;
     if(key!==productionKey){productionKey=key;productionActions.length=0;productionList.replaceChildren();for(const building of buildings){
       const card=create('section',undefined,'session-production-card');card.dataset.productionBuilding=String(building.id);
-      const heading=create('header');heading.append(create('h3',`${faction.buildings[building.role as 'hq'|'barracks'].name} #${building.id}`),button('Select building',()=>{callbacks.selectBuilding(building.id);close();}));card.append(heading,create('p',undefined,'session-building-status'));
-      const recruits=create('div',undefined,'session-recruits');for(const role of (building.role==='hq'?['worker']:['melee','ranged','special','spear','cavalry','siege']) as UnitRole[]){const def=faction.units[role];const recruit=button(`Recruit ${def.name}`,()=>{void run(()=>callbacks.train(building.id,role),undefined,recruit);});recruit.dataset.recruit=role;recruit.append(create('small',costText(def.cost)),create('small',undefined,'session-action-reason'));productionActions.push({button:recruit,id:building.id,role});recruits.append(recruit);}card.append(recruits);
+      const heading=create('header');heading.append(create('h3',`${entityDefinition(state,building).name} #${building.id}`),button('Select building',()=>{callbacks.selectBuilding(building.id);close();}));card.append(heading,create('p',undefined,'session-building-status'));
+      const recruits=create('div',undefined,'session-recruits');for(const def of availableUnits(state,side).filter(d=>building.role==='hq'?d.role==='worker':d.role!=='worker')){const role=def.role;const recruit=button(`Recruit ${def.name}`,()=>{void run(()=>state!.content?callbacks.train(building.id,role,def.id):callbacks.train(building.id,role),undefined,recruit);});recruit.dataset.recruit=role;recruit.append(create('small',costText(def.cost)),create('small',undefined,'session-action-reason'));productionActions.push({button:recruit,id:building.id,role,definitionId:def.id});recruits.append(recruit);}card.append(recruits);
       const queue=create('ol',undefined,'session-production-queue');queue.setAttribute('aria-label',`Production queue for building ${building.id}`);
       building.queue.forEach((role,index)=>{
-        const row=create('li');row.dataset.queueIndex=String(index);row.dataset.producer=String(building.id);row.draggable=index>0;row.append(create('span',`${index+1}. ${faction.units[role].name}${index===0?' · Active':' · Waiting'}`));
+        const row=create('li');row.dataset.queueIndex=String(index);row.dataset.producer=String(building.id);row.draggable=index>0;row.append(create('span',`${index+1}. ${queuedUnitFor(state!,building,index).name}${index===0?' · Active':' · Waiting'}`));
         if(index===0){const progress=create('progress');progress.max=1;progress.setAttribute('aria-label','Active recruitment progress');row.append(progress);}
-        const cancel=button('Cancel',()=>{void run(()=>callbacks.cancelTrain(building.id,index,card.dataset.expectedQueue!),undefined,cancel);});cancel.setAttribute('aria-label',`Cancel ${faction.units[role].name} in slot ${index+1} at building ${building.id}`);productionActions.push({button:cancel,id:building.id,index});row.append(cancel);
-        if(index>0){for(const [text,to] of [['Move up',index-1],['Move down',index+1]] as [string,number][]){const move=button(text,()=>{if(to<1||to>=building.queue.length)return;void run(()=>callbacks.reorderTrain(building.id,index,to,card.dataset.expectedQueue!),undefined,move);});move.setAttribute('aria-label',`${text} ${faction.units[role].name} in slot ${index+1} at building ${building.id}`);productionActions.push({button:move,id:building.id,from:index,to});row.append(move);}}
+        const cancel=button('Cancel',()=>{void run(()=>callbacks.cancelTrain(building.id,index,card.dataset.expectedQueue!),undefined,cancel);});cancel.setAttribute('aria-label',`Cancel ${queuedUnitFor(state!,building,index).name} in slot ${index+1} at building ${building.id}`);productionActions.push({button:cancel,id:building.id,index});row.append(cancel);
+        if(index>0){for(const [text,to] of [['Move up',index-1],['Move down',index+1]] as [string,number][]){const move=button(text,()=>{if(to<1||to>=building.queue.length)return;void run(()=>callbacks.reorderTrain(building.id,index,to,card.dataset.expectedQueue!),undefined,move);});move.setAttribute('aria-label',`${text} ${queuedUnitFor(state!,building,index).name} in slot ${index+1} at building ${building.id}`);productionActions.push({button:move,id:building.id,from:index,to});row.append(move);}}
         row.addEventListener('dragstart',event=>{if(index===0||productionDisabled()){event.preventDefault();return;}drag={id:building.id,from:index,expected:card.dataset.expectedQueue!};event.dataTransfer?.setData('text/plain',JSON.stringify(drag));if(event.dataTransfer)event.dataTransfer.effectAllowed='move';});
         row.addEventListener('dragover',event=>{if(drag&&index>0&&drag.id===building.id&&!productionDisabled())event.preventDefault();});
         row.addEventListener('drop',event=>{event.preventDefault();const current=drag;drag=null;if(!current||index===0||current.from===index||current.id!==building.id||current.expected!==card.dataset.expectedQueue||productionDisabled())return;void run(()=>callbacks.reorderTrain(building.id,current.from,index,current.expected));});row.addEventListener('dragend',()=>{drag=null;});queue.append(row);
       });if(!building.queue.length)queue.append(create('li','Queue is empty.'));card.append(queue);productionList.append(card);
     }}
-    for(const building of buildings){const card=productionList.querySelector<HTMLElement>(`[data-production-building="${building.id}"]`)!;card.dataset.expectedQueue=JSON.stringify(building.queue);card.querySelector('.session-building-status')!.textContent=building.progress<1?`Under construction · ${Math.floor(building.progress*100)}%`:`${Math.floor(building.hp)} / ${building.maxHp} health`;const progress=card.querySelector('progress');if(progress)progress.value=building.trainProgress;}
-    for(const action of productionActions){const building=buildings.find(e=>e.id===action.id);let reason=productionDisabled();if(!reason&&building){if(action.role)reason=trainReason(state,side,building,action.role);else if(action.from!==undefined&&action.to!<1)reason='The active recruit stays in slot 1';else if(action.from!==undefined&&action.to!>=building.queue.length)reason='Already last in the queue';}if(!building)reason='Building is no longer available';action.button.disabled=!!reason||action.button.dataset.busy==='true';action.button.title=reason;action.button.setAttribute('aria-disabled',String(action.button.disabled));const hint=action.button.querySelector('.session-action-reason');if(hint)hint.textContent=reason||'Ready';}
+    for(const building of buildings){const card=productionList.querySelector<HTMLElement>(`[data-production-building="${building.id}"]`)!;card.dataset.expectedQueue=productionQueueKey(building);card.querySelector('.session-building-status')!.textContent=building.progress<1?`Under construction · ${Math.floor(building.progress*100)}%`:`${Math.floor(building.hp)} / ${building.maxHp} health`;const progress=card.querySelector('progress');if(progress)progress.value=building.trainProgress;}
+    for(const action of productionActions){const building=buildings.find(e=>e.id===action.id);let reason=productionDisabled();if(!reason&&building){if(action.role)reason=trainReason(state,side,building,action.role,action.definitionId);else if(action.from!==undefined&&action.to!<1)reason='The active recruit stays in slot 1';else if(action.from!==undefined&&action.to!>=building.queue.length)reason='Already last in the queue';}if(!building)reason='Building is no longer available';action.button.disabled=!!reason||action.button.dataset.busy==='true';action.button.title=reason;action.button.setAttribute('aria-disabled',String(action.button.disabled));const hint=action.button.querySelector('.session-action-reason');if(hint)hint.textContent=reason||'Ready';}
   }
   function productionDisabled():string {return !state?'No active match':state.winner!==null||state.draw?'Match ended':status.replaySpectator||callbacks.getReplay()?'Replay playback is read only':'';}
 
@@ -321,8 +321,8 @@ export function mountSessionTools(root:HTMLElement,callbacks:SessionToolsCallbac
 }
 function costText(cost:{wood:number;ore:number;crystal:number}):string {return `${cost.wood} wood · ${cost.ore} ore${cost.crystal?` · ${cost.crystal} crystal`:''}`;}
 function reservedPlaces(state:GameState,side:Side):number{return state.entities.filter(e=>e.side===side&&e.hp>0).reduce((sum,e)=>sum+e.queue.length,0);}
-function trainReason(state:GameState,side:Side,building:Entity,role:UnitRole):string {
-  const player=state.players[side],unit=FACTIONS[player.faction].units[role];
+function trainReason(state:GameState,side:Side,building:Entity,role:UnitRole,definitionId?:string):string {
+  const player=state.players[side],unit=unitFor(state,side,role,definitionId);
   if(building.progress!==1)return 'Under construction';
   if(playerAge(player)<(unit.age??1))return `Requires ${AGE_NAMES[unit.age!]}`;
   if(building.queue.length>=5)return 'Queue full';

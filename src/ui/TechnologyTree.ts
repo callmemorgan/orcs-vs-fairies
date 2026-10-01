@@ -1,4 +1,4 @@
-import { FACTIONS, UPGRADES } from '../core/content';
+import { availableUnits, factionFor, upgradesFor } from '../core/content-registry';
 import { AGE_NAMES, playerAge, researchRequirement } from '../core/progression';
 import type { Age, GameState, Side, UpgradeId } from '../core/types';
 
@@ -13,16 +13,16 @@ export function technologyTree(host:HTMLElement,research:(id:UpgradeId,building:
   latest=s;latestPaused=paused;latestSide=side;latestReadOnly=readOnly;if(!dialog.open)return;
   const key=JSON.stringify([side,s.players[side],s.entities.filter(e=>e.side===side&&e.kind==='building').map(e=>[e.id,e.hp>0,e.progress===1,e.research,Math.floor(e.researchProgress*100)]),paused,readOnly,s.winner,s.draw]);
   if(key===lastKey)return;lastKey=key;
-  const player=s.players[side],f=FACTIONS[player.faction];
+  const player=s.players[side],f=factionFor(s,side);
   const columns=dialog.querySelector('.age-columns')!;
   const focused=(document.activeElement as HTMLElement)?.dataset.technology;
   columns.replaceChildren();
   for(const age of [1,2,3] as Age[]){
    const section=document.createElement('section');section.className=playerAge(player)>=age?'age-reached':'';
    const title=document.createElement('h3');title.textContent=`${age}. ${AGE_NAMES[age]}`;section.append(title);
-   const units=document.createElement('p');units.textContent=`Units: ${Object.values(f.units).filter(u=>(u.age??1)===age).map(u=>u.name).join(', ')}`;section.append(units);
+   const units=document.createElement('p');units.textContent=`Units: ${availableUnits(s,side).filter(u=>(u.age??1)===age).map(u=>u.name).join(', ')}`;section.append(units);
    const unlocks=document.createElement('p');unlocks.textContent=age===1?'Build: depots, barracks and towers':age===2?'Build: expansion headquarters, stone walls and gates':'Train siege engines at your barracks';section.append(unlocks);
-   for(const def of Object.values(UPGRADES).filter(u=>(u.advancesTo??u.age??1)===age)){
+   for(const def of Object.values(upgradesFor(s,side)).filter(u=>(u.advancesTo??u.age??1)===age)){
     const buildings=s.entities.filter(e=>e.side===side&&e.kind==='building'&&e.role===def.building&&e.hp>0&&e.progress===1);
     const active=buildings.find(e=>e.research===def.id),producer=buildings.find(e=>!e.research);
     let reason=researchRequirement(s,side,def.id);

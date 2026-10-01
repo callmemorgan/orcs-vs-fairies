@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import type { Entity, GameState, FactionId, BuildingRole, UnitRole, Side } from '../core/types';
-import { FACTIONS } from '../core/content';
+import { contentArt, contentFactions, entityDefinition, svgDataUrl } from '../core/content-registry';
+import type { ContentArt, ContentBundle } from '../core/content-registry';
 
 interface Animation {frames:number;fps:number;loop:boolean;directions:Record<string,string[]>}
 interface Asset {kind:'unit'|'building'|'environment';width:number;height:number;anchor:[number,number];visualTop?:number;pages?:string[];animations?:Record<string,Animation>;image?:string}
@@ -14,11 +15,14 @@ export default class ArtRuntime {
   private terrain:Phaser.GameObjects.RenderTexture|null=null;
   private complete=false;
   private requiredIds=new Set<string>();
+  private customArt:Record<string,ContentArt>={};
   public renderedUnits=0;
   constructor(private scene:Phaser.Scene,public enabled=true){}
-  preload(factions:FactionId[]){
-    this.requiredIds=new Set(factions.flatMap(id=>[...Object.values(FACTIONS[id].units),...Object.values(FACTIONS[id].buildings)].map(a=>a.id)));
+  preload(factions:FactionId[],content?:ContentBundle){
+    const definitions=contentFactions(content);this.customArt=contentArt(content);
+    this.requiredIds=new Set(factions.flatMap(id=>[...(definitions[id].unitDefinitions??Object.values(definitions[id].units)),...(definitions[id].buildingDefinitions??Object.values(definitions[id].buildings))].map(a=>a.id)));
     if(!this.enabled)return;
+    for(const id of this.requiredIds){const art=this.customArt[id];if(art)this.scene.load.svg(`mod:${id}`,svgDataUrl(art.svg),{width:art.width,height:art.height});}
     this.scene.load.once('filecomplete-json-rts-manifest',(_key:string,_type:string,data:Manifest)=>{
       if(data.schemaVersion!==1)return;
       this.manifest=data;
@@ -34,7 +38,7 @@ export default class ArtRuntime {
     for(const atlas of this.manifest.atlases){if(!this.scene.textures.exists(atlas.key))continue;for(const name of this.scene.textures.get(atlas.key).getFrameNames()){if(this.frames.has(name))unique=false;this.frames.set(name,atlas.key);}}
     const factionIds=[...this.requiredIds];
     const environmentIds=['tile-grass-0','tile-grass-1','tile-grass-2','tile-grass-3','tile-dirt-0','tile-dirt-1','tile-dirt-2','tile-stone','tree-pine','tree-oak','ore','stump','ruin-pillar','ruin-ring','flowers','crystal','reeds','tile-water','tile-shallows','tile-mud','tile-rock','tile-bridge'];
-    this.complete=unique&&factionIds.every(id=>!!this.manifest!.assets[id])&&environmentIds.every(id=>this.hasEnvironment(id))&&Object.entries(this.manifest.assets).filter(([id,a])=>a.kind==='environment'||this.requiredIds.has(id)).every(([id,a])=>a.kind==='environment'?this.hasEnvironment(id):!!a.animations&&Object.values(a.animations).every(animation=>Object.values(animation.directions).every(names=>names.length===animation.frames&&names.every(name=>a.pages?.includes(this.frames.get(name)??'')))));
+    this.complete=unique&&factionIds.every(id=>this.customArt[id]?this.scene.textures.exists(`mod:${id}`):!!this.manifest!.assets[id])&&environmentIds.every(id=>this.hasEnvironment(id))&&Object.entries(this.manifest.assets).filter(([id,a])=>a.kind==='environment'||this.requiredIds.has(id)).every(([id,a])=>a.kind==='environment'?this.hasEnvironment(id):!!a.animations&&Object.values(a.animations).every(animation=>Object.values(animation.directions).every(names=>names.length===animation.frames&&names.every(name=>a.pages?.includes(this.frames.get(name)??'')))));
   }
   get loaded(){return this.complete;}
   get loadedAtlasPages(){return this.manifest?.atlases.filter(a=>this.scene.textures.exists(a.key)).length??0;}
@@ -71,8 +75,8 @@ export default class ArtRuntime {
     return this.place(key,asset,`env:${id}`,undefined,x,y,y);
   }
   entity(e:Entity,state:GameState,x:number,y:number,viewSide:Side=0){
-    const faction=FACTIONS[state.players[e.side].faction];
-    const id=e.kind==='unit'?faction.units[e.role as UnitRole].id:faction.buildings[e.role as BuildingRole].id;
+    const id=entityDefinition(state,e).id,custom=this.customArt[id];
+    if(custom){if(!this.scene.textures.exists(`mod:${id}`))return false;if(e.kind==='unit'&&e.hp>0)this.renderedUnits++;const alpha=e.hp<=0?Math.max(0,1-e.animTime/1.2):e.illusion&&e.side===viewSide?.55:1;return this.place(`entity:${e.id}`,{...custom,kind:e.kind},`mod:${id}`,undefined,x,y,y,alpha);}
     const asset=this.manifest?.assets[id];if(!asset?.animations)return false;
     let name=e.hp<=0?'death':e.kind==='building'?(e.progress<1?'construction':e.gateOpen?'open':'idle'):e.animation;
     // The simulation's short attack marker must not truncate a longer rendered recovery.

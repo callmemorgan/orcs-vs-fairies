@@ -2,10 +2,11 @@ import Phaser from 'phaser';
 import GameScene, { project, unproject } from './game/GameScene';
 import { createPerformanceGame, countPerformanceUnits, FrameCollector, PERFORMANCE_CENTER } from './qa/performance';
 import { createGame, createMatch, issueCommand, isGameOver } from './core/simulation';
-import { FACTIONS, UPGRADES } from './core/content';
+import { ContentLibrary, productionQueueKey, upgradeFor, factionFor } from './core/content-registry';
+import { mountModLibrary } from './ui/ModLibrary';
 import { mountShell } from './ui/Hud';
 import type { HudCallbacks } from './ui/Hud';
-import type { FactionId, MapSize, GameState, Side } from './core/types';
+import type { FactionId, MapSize, GameState, Side, UpgradeId } from './core/types';
 import { mountSessionTools } from './ui/SessionTools';
 import type { SessionAnalysis, ReplaySpeed } from './ui/SessionTools';
 import { CONTROL_ACTIONS, ControlProfiles, displayBinding, parseDisplayedBinding } from './game/Controls';
@@ -49,6 +50,9 @@ const aiOptions=new SkirmishOptions(setupHost,normalizeAiConfig(),config=>roster
 roster=new SkirmishRoster(setupHost);roster.updateDefaults(menuFaction(),menuOpponent(),aiOptions.value);
 for(const button of Array.from(root.querySelectorAll<HTMLElement>('[data-faction]')))button.addEventListener('click',()=>roster.updateDefaults(menuFaction(),menuOpponent(),aiOptions.value));
 root.querySelector('#opponent')!.addEventListener('change',()=>roster.updateDefaults(menuFaction(),menuOpponent(),aiOptions.value));
+const modLibrary=new ContentLibrary();
+try{const installed=localStorage.getItem('ovf-mod-library-v1');if(installed)modLibrary.restore(JSON.parse(installed));}catch(error){console.error('Installed mods could not be restored',error);}
+mountModLibrary(root.querySelector<HTMLElement>('.menu-content')!,{installed:()=>modLibrary.list(),install:input=>{const admitted=modLibrary.install(input);localStorage.setItem('ovf-mod-library-v1',JSON.stringify(modLibrary.list()));return admitted;},launch:id=>{const size=root.querySelector<HTMLSelectElement>('#map-size')!.value as MapSize,seed=Number(root.querySelector<HTMLInputElement>('#map-seed')!.value);start(id as FactionId,root.querySelector<HTMLSelectElement>('#opponent')!.value as FactionId,size,seed);}});
 const controls=new ControlProfiles();
 const saves=new SaveRepository(localStorage);
 let recorder:MatchRecorder|undefined,replay:ReplayPlayer|undefined;
@@ -63,10 +67,10 @@ const onlineApi=new OnlineApi();
 let lastAutosaveTime=0,autosaveFailure=false,replacementGeneration=0;
 const playerSide=():Side=>scene?.viewSide??0;
 const callbacks:HudCallbacks={
- build:role=>{scene?.setBuildRole(role);shell.notice('Choose a clear location on explored ground. Right-click to cancel.');},
- train:role=>{if(!scene)return;const id=scene.selected.find(id=>scene!.state.entities.some(e=>e.id===id&&e.side===playerSide()&&e.kind==='building'&&e.role===(role==='worker'?'hq':'barracks')));if(id===undefined||!scene.command({type:'train',id,role}))shell.notice('Cannot recruit: check resources, population, and production building.');},
- cancelTrain:(id,index,expectedQueue)=>{if(!scene||scene.paused)return;const producer=scene.state.entities.find(e=>e.id===id);if(!producer||JSON.stringify(producer.queue)!==expectedQueue)return;if(scene.command({type:'cancelTrain',id,index})){shell.update(scene.state,scene.selected,callbacks);shell.notice('Recruitment canceled. Resources refunded.');}},
- research:(upgrade,building)=>{if(!scene||scene.paused)return;const id=building??scene.selected.find(id=>scene!.state.entities.some(e=>e.id===id&&e.side===playerSide()&&e.kind==='building'&&e.role===UPGRADES[upgrade].building));if(id===undefined||!scene.command({type:'research',id,upgrade}))shell.notice('Cannot research: check resources and the production building.');},
+ build:(role,definitionId)=>{scene?.setBuildRole(role,definitionId);shell.notice('Choose a clear location on explored ground. Right-click to cancel.');},
+ train:(role,definitionId)=>{if(!scene)return;const id=scene.selected.find(id=>scene!.state.entities.some(e=>e.id===id&&e.side===playerSide()&&e.kind==='building'&&e.role===(role==='worker'?'hq':'barracks')));if(id===undefined||!scene.command({type:'train',id,role,definitionId}))shell.notice('Cannot recruit: check resources, population, and production building.');},
+ cancelTrain:(id,index,expectedQueue)=>{if(!scene||scene.paused)return;const producer=scene.state.entities.find(e=>e.id===id);if(!producer||productionQueueKey(producer)!==expectedQueue)return;if(scene.command({type:'cancelTrain',id,index})){shell.update(scene.state,scene.selected,callbacks);shell.notice('Recruitment canceled. Resources refunded.');}},
+ research:(upgrade,building)=>{if(!scene||scene.paused)return;const id=building??scene.selected.find(id=>scene!.state.entities.some(e=>e.id===id&&e.side===playerSide()&&e.kind==='building'&&e.role===upgradeFor(scene!.state,playerSide(),upgrade).building));if(id===undefined||!scene.command({type:'research',id,upgrade}))shell.notice('Cannot research: check resources and the production building.');},
  toggleGate:()=>{
   if(!scene||scene.paused)return;
   const gates=scene.state.entities.filter(e=>scene!.selected.includes(e.id)&&e.side===playerSide()&&e.role==='gate'&&e.hp>0&&e.progress===1),closing=gates.some(e=>e.gateOpen);
@@ -134,8 +138,11 @@ function retireGame(onDestroyed?:()=>void){
  previous.destroy(true);
 }
 function start(next:FactionId,nextOpponent:FactionId=opponent,mapSize:MapSize="medium",seed=4127){
- try {const state=benchmark?createPerformanceGame():roster.enabled?createMatch({map:{seed,size:mapSize},players:roster.getPlayers(next,nextOpponent,aiOptions.value),rules:roster.getRules()}):createGame(next,seed,nextOpponent,{mapSize,ai:[{},aiOptions.value]});replacementGeneration++;launch(state);}
- catch(error){shell.notice(error instanceof Error?error.message:'Cannot start this skirmish.');}
+ try {
+  const custom=next.includes(':')||nextOpponent.includes(':');
+  const state=benchmark?createPerformanceGame():custom?createMatch({content:modLibrary.bundle(),map:{seed,size:mapSize},players:[{id:0,teamId:0,factionId:next,controller:'human'},{id:1,teamId:1,factionId:nextOpponent,controller:'ai',ai:aiOptions.value}]}):roster.enabled?createMatch({map:{seed,size:mapSize},players:roster.getPlayers(next,nextOpponent,aiOptions.value),rules:roster.getRules()}):createGame(next,seed,nextOpponent,{mapSize,ai:[{},aiOptions.value]});
+  replacementGeneration++;launch(state);
+ }catch(error){shell.notice(error instanceof Error?error.message:'Cannot start this skirmish.');}
 }
 function launch(state:GameState,history?:ReplayArchive,playback?:ReplayPlayer,remote?:{connection:OnlineMatchConnection;render:OnlineRenderState},generation=replacementGeneration,planningData?:SessionPlanning){
  if(generation!==replacementGeneration){remote?.connection.dispose();playback?.dispose();return;}
@@ -211,13 +218,13 @@ async function installFile(input:unknown){
  if(oldHistory)shell.notice('Saved match loaded. Its replay uses older simulation rules; new replay history starts from this save.');
 }
 function analysisView(samples:AnalysisSample[],complete:boolean,timings:TechnologyTiming[]):SessionAnalysis {
- const technologies=timings.map(t=>({side:t.side,tick:t.tick,time:t.time,name:UPGRADES[t.upgrade as keyof typeof UPGRADES]?.name??t.upgrade}));
+ const technologies=timings.map(t=>({side:t.side,tick:t.tick,time:t.time,name:(()=>{try{return upgradeFor(scene!.state,t.side,t.upgrade as UpgradeId).name;}catch{return undefined;}})()??t.upgrade}));
  const player=(p:ArmySample)=>({wood:p.wood,ore:p.ore,crystal:p.crystal,army:p.units,losses:p.losses,gathered:p.gathered,buildings:p.buildings,armyValue:p.armyValue,buildingLosses:p.buildingLosses,lostValue:p.lostValue});
- return {complete,samples:samples.map<SessionAnalysis['samples'][number]>(s=>({tick:s.tick,time:s.time,players:s.players.map(player)})),technologies,playerNames:scene?.state.players.map(p=>FACTIONS[p.faction].name)};
+ return {complete,samples:samples.map<SessionAnalysis['samples'][number]>(s=>({tick:s.tick,time:s.time,players:s.players.map(player)})),technologies,playerNames:scene?.state.players.map((_p,side)=>factionFor(scene!.state,side as Side).name)};
 }
 function productionCommand(command:Parameters<typeof issueCommand>[2],expectedQueue?:string):boolean {
  if(!scene||replay||scene.photoMode)return false;
- if(expectedQueue!==undefined){if(!('id' in command))return false;const building=scene.state.entities.find(e=>e.id===command.id);if(!building||JSON.stringify(building.queue)!==expectedQueue)return false;}
+ if(expectedQueue!==undefined){if(!('id' in command))return false;const building=scene.state.entities.find(e=>e.id===command.id);if(!building||productionQueueKey(building)!==expectedQueue)return false;}
  const accepted=dispatchCommand(playerSide(),command);
  if(accepted)shell.update(scene.state,scene.selected,callbacks);return accepted;
 }
@@ -226,7 +233,7 @@ const tools=mountSessionTools(root,{
  save:name=>{saves.save(name,currentFile());},load:async id=>{await installFile(saves.load(id).file);},deleteSave:id=>saves.delete(id),
  importSave:installFile,exportSave:currentFile,
  getAutosave:()=>saves.getAutosave(),setAutosave:settings=>{saves.setAutosave(settings);autosaveFailure=false;lastAutosaveTime=scene?.state.time??0;},
- getReplay:()=>replay&&scene?{initialTick:replay.archive.initial.state.tick,tick:replay.state.tick,totalTicks:replay.archive.finalTick,playing:replayPlaying&&!replay.finished,speed:replaySpeed,perspective:replayPerspective,roster:scene.state.players.map((p,id)=>({id:id as Side,name:FACTIONS[p.faction].name}))}:null,
+ getReplay:()=>replay&&scene?{initialTick:replay.archive.initial.state.tick,tick:replay.state.tick,totalTicks:replay.archive.finalTick,playing:replayPlaying&&!replay.finished,speed:replaySpeed,perspective:replayPerspective,roster:scene.state.players.map((_p,id)=>({id:id as Side,name:factionFor(scene!.state,id as Side).name}))}:null,
  importReplay:async input=>{const source=decodeReplay(input),request=++replacementGeneration,verified=await verifyArchive(source);if(request!==replacementGeneration)throw new Error('Another replay load replaced this request.');const player=verified.player.forkForSeek(source.initial.state.tick);replayPerspective=0;replayComplete=verified.complete;launch(player.state,undefined,player);},
  exportReplay:()=>replay?.archive??currentArchive(),
  seekReplay:async tick=>{
@@ -243,7 +250,7 @@ const tools=mountSessionTools(root,{
  setReplaySpeed:speed=>{if(![.25,.5,1,2,4].includes(speed))throw new Error('Unsupported playback speed.');replaySpeed=speed;},
  setReplayPerspective:side=>{if(!replay||!scene)throw new Error('Import a replay first.');replayPerspective=side;scene.viewSide=side;},
  getAnalysis:()=>{if(replay)return analysisView(replay.archive.analysis,replayComplete,replay.archive.technologies);if(!scene||!recorder||scene.state.winner===null&&!scene.state.draw)return null;return analysisView(recorder.analysis,true,recorder.technologyTimings);},
- train:(id,role)=>productionCommand({type:'train',id,role}),cancelTrain:(id,index,expected)=>productionCommand({type:'cancelTrain',id,index},expected),
+ train:(id,role,definitionId)=>productionCommand({type:'train',id,role,definitionId}),cancelTrain:(id,index,expected)=>productionCommand({type:'cancelTrain',id,index},expected),
  reorderTrain:(id,from,to,expected)=>productionCommand({type:'reorderTrain',id,from,to},expected),
  selectBuilding:id=>{scene?.selectEntities([id]);const building=scene?.state.entities.find(e=>e.id===id);if(building)scene?.centerOn(building.x,building.y);},
  getBindings:()=>CONTROL_ACTIONS.map(a=>({action:a.id,label:a.label,key:controls.bindingsFor(a.id).map(displayBinding).join(' or ')})),
@@ -304,7 +311,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)maybeAutosa
 window.addEventListener('pagehide',()=>maybeAutosave(true));
 setInterval(()=>{if(scene)shell.update(scene.state,scene.selected,callbacks);tools.update(scene?.state??null,{side:playerSide(),paused:scene?.paused,replaySpectator:!!replay||!!scene?.readOnly,remoteMatch:!!onlineConnection});planning.update({blocked:planningBlocked()});updateCoach();},100);
 // Read-only diagnostics for repeatable performance and state inspection. Player actions stay in the UI.
-Object.defineProperty(window,'rts',{get:()=>scene?{state:scene.state,viewSide:scene.viewSide,readOnly:scene.readOnly,selected:[...scene.selected],fps:game?.loop.actualFps,paused:scene.paused,mode:onlineConnection?'online':replay?'replay':'local',simulationEnabled:scene.simulationEnabled,online:onlineConnection?{status:onlineConnection.status,role:onlineRender?.role,side:playerSide(),delayTicks:onlineConnection.connectionInfo?.delayTicks,pendingCommands:onlineConnection.pendingCommands,privateSides:[...(onlineRender?.privateSides??[])]}:null,camera:{x:scene.cameras.main.scrollX,y:scene.cameras.main.scrollY,zoom:scene.cameras.main.zoom,width:scene.cameras.main.width,height:scene.cameras.main.height}}:null});
+Object.defineProperty(window,'rts',{get:()=>scene?{state:scene.state,viewSide:scene.viewSide,readOnly:scene.readOnly,selected:[...scene.selected],art:scene.artStatus,fps:game?.loop.actualFps,paused:scene.paused,mode:onlineConnection?'online':replay?'replay':'local',simulationEnabled:scene.simulationEnabled,online:onlineConnection?{status:onlineConnection.status,role:onlineRender?.role,side:playerSide(),delayTicks:onlineConnection.connectionInfo?.delayTicks,pendingCommands:onlineConnection.pendingCommands,privateSides:[...(onlineRender?.privateSides??[])]}:null,camera:{x:scene.cameras.main.scrollX,y:scene.cameras.main.scrollY,zoom:scene.cameras.main.zoom,width:scene.cameras.main.width,height:scene.cameras.main.height}}:null});
 if(location.hostname==='127.0.0.1'&&new URLSearchParams(location.search).has('qa'))setInterval(()=>{
  if(!scene||!game)return;
  const s=scene.state;

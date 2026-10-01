@@ -1,5 +1,6 @@
 import { normalizeAiConfig } from './ai-policy';
-import { FACTIONS, UPGRADES } from './content';
+import { availableBuildings, availableUnits, buildingFor, contentFactions, decodeContentBundle, entityDefinition, upgradesFor } from './content-registry';
+import type { Entity, Side } from './types';
 import { MAP_VERSION, TERRAIN } from './maps';
 import { captureRuntime, MAX_ORDER_QUEUE, restoreRuntime } from './simulation';
 import type { RuntimeSnapshot } from './simulation';
@@ -33,7 +34,7 @@ function choice(value:unknown,path:string,choices:readonly string[]):string {if(
 function list(value:unknown,path:string,max:number,length?:number):unknown[] {if(!Array.isArray(value)||value.length>max||(length!==undefined&&value.length!==length))bad(path,'invalid array length');return value;}
 function optionalNumber(record:RecordValue,key:string,path:string,min=0,max=MAX_VALUE,integer=false):void {if(record[key]!==undefined)number(record[key],`${path}.${key}`,min,max,integer);}
 function optionalFlag(record:RecordValue,key:string,path:string):void {if(record[key]!==undefined)flag(record[key],`${path}.${key}`);}
-interface Context {width:number;height:number;cells:number;time:number;nextId:number;playerCount:number;maxEntities:number;entityIds:Set<number>;entities:Map<number,RecordValue>;resourceIds:Set<number>;eventCount:number}
+interface Context {state:GameState;width:number;height:number;cells:number;time:number;nextId:number;playerCount:number;maxEntities:number;entityIds:Set<number>;entities:Map<number,RecordValue>;resourceIds:Set<number>;eventCount:number}
 function id(value:unknown,path:string,c:Context):number {return number(value,path,1,c.nextId-1,true);}
 function point(value:unknown,path:string,c:Context):void {const p=object(value,path,['x','y']);number(p.x,`${path}.x`,0,c.width);number(p.y,`${path}.y`,0,c.height);}
 function coordinates(value:RecordValue,path:string,c:Context):void {number(value.x,`${path}.x`,0,c.width);number(value.y,`${path}.y`,0,c.height);}
@@ -51,7 +52,7 @@ function fog(value:unknown,path:string,c:Context):Set<number>[] {
  return list(value,path,c.playerCount,c.playerCount).map((v,i)=>uniqueIds(list(v,`${path}[${i}]`,c.cells),`${path}[${i}]`,c.cells-1));
 }
 function validateEntity(value:unknown,path:string,c:Context):void {
- const e=object(value,path,['id','side','kind','role','x','y','hp','maxHp','order','cooldown','progress','queue','trainProgress','researchProgress','facing','animation','animTime','momentum','illusion','expires','carried','carriedKind','path'],['orderQueue','research','rally','gateOpen','lastAttacker','abilityReadyAt','entrenchedAt','raised','shield','maxShield','lastDamagedAt','surgeUntil']);
+ const e=object(value,path,['id','side','kind','role','x','y','hp','maxHp','order','cooldown','progress','queue','trainProgress','researchProgress','facing','animation','animTime','momentum','illusion','expires','carried','carriedKind','path'],['definitionId','definitionFaction','queueDefinitionIds','queuePaidCosts','orderQueue','research','rally','gateOpen','lastAttacker','abilityReadyAt','entrenchedAt','raised','shield','maxShield','lastDamagedAt','surgeUntil']);
  const entityId=id(e.id,`${path}.id`,c);if(c.entityIds.has(entityId))bad(`${path}.id`,'duplicate entity or resource id');c.entityIds.add(entityId);c.entities.set(entityId,e);
  number(e.side,`${path}.side`,0,c.playerCount-1,true);choice(e.kind,`${path}.kind`,['unit','building']);choice(e.role,`${path}.role`,e.kind==='unit'?UNIT_ROLES:BUILDING_ROLES);coordinates(e,path,c);
  const maxHp=number(e.maxHp,`${path}.maxHp`,Number.MIN_VALUE,1e9);number(e.hp,`${path}.hp`,0,maxHp);order(e.order,`${path}.order`,c);
@@ -60,10 +61,14 @@ function validateEntity(value:unknown,path:string,c:Context):void {
  // Completed research can reach 1+dt for a single tick before being reset.
  number(e.researchProgress,`${path}.researchProgress`,0,2);
  number(e.facing,`${path}.facing`,0,7,true);choice(e.animation,`${path}.animation`,['idle','walk','attack','death']);number(e.momentum,`${path}.momentum`,0,1);flag(e.illusion,`${path}.illusion`);number(e.carried,`${path}.carried`,0,18);choice(e.carriedKind,`${path}.carriedKind`,RESOURCE_KINDS);
+ if(e.definitionFaction!==undefined){choice(e.definitionFaction,`${path}.definitionFaction`,Object.keys(contentFactions(c.state.content)));if(e.kind!=='unit'||e.role!=='siege')bad(`${path}.definitionFaction`,'only captured siege can retain another faction definition');}
+ if(e.definitionId!==undefined){if(typeof e.definitionId!=='string'||e.definitionId.length>100)bad(`${path}.definitionId`,'invalid ID');try{entityDefinition(c.state,e as unknown as Entity);}catch{bad(`${path}.definitionId`,'definition is absent from the pinned faction or has another role');}}
  const queue=list(e.queue,`${path}.queue`,5);queue.forEach((role,i)=>{choice(role,`${path}.queue[${i}]`,UNIT_ROLES);if(e.kind!=='building'||(e.role!=='hq'&&e.role!=='barracks')||(e.role==='hq'&&role!=='worker')||(e.role==='barracks'&&role==='worker'))bad(`${path}.queue`,'invalid producer or recruit');});
+ if(e.queueDefinitionIds!==undefined){list(e.queueDefinitionIds,`${path}.queueDefinitionIds`,5,queue.length).forEach((id,i)=>{const def=availableUnits(c.state,e.side as Side).find(d=>d.id===id);if(!def||def.role!==queue[i])bad(`${path}.queueDefinitionIds[${i}]`,'definition is absent from the pinned faction or has another role');});}else if(c.state.content&&queue.length)bad(`${path}.queueDefinitionIds`,'pinned production requires definition IDs');
+ if(e.queuePaidCosts!==undefined){list(e.queuePaidCosts,`${path}.queuePaidCosts`,5,queue.length).forEach((value,i)=>{const paid=object(value,`${path}.queuePaidCosts[${i}]`,['wood','ore','crystal']);for(const key of RESOURCE_KINDS)number(paid[key],`${path}.queuePaidCosts[${i}].${key}`,0,100000);const expected=availableUnits(c.state,e.side as Side).find(d=>d.id===(e.queueDefinitionIds as string[]|undefined)?.[i])?.cost;if(!expected||RESOURCE_KINDS.some(key=>paid[key]!==expected[key as keyof typeof expected]))bad(`${path}.queuePaidCosts[${i}]`,'paid cost differs from pinned definition');});}else if(c.state.content&&queue.length)bad(`${path}.queuePaidCosts`,'pinned production requires charged cost records');
  list(e.path,`${path}.path`,c.cells*16).forEach((p,i)=>point(p,`${path}.path[${i}]`,c));
  if(e.orderQueue!==undefined){if(e.kind!=='unit'||e.illusion)bad(`${path}.orderQueue`,'only real units can queue orders');list(e.orderQueue,`${path}.orderQueue`,MAX_ORDER_QUEUE).forEach((o,i)=>order(o,`${path}.orderQueue[${i}]`,c));}
- if(e.research!==undefined){choice(e.research,`${path}.research`,Object.keys(UPGRADES));if(e.kind!=='building'||UPGRADES[e.research as keyof typeof UPGRADES].building!==e.role)bad(`${path}.research`,'wrong research building');}
+ if(e.research!==undefined){const upgrades=upgradesFor(c.state,e.side as Side);choice(e.research,`${path}.research`,Object.keys(upgrades));if(e.kind!=='building'||upgrades[e.research as keyof typeof upgrades].building!==e.role)bad(`${path}.research`,'wrong research building');}
  if(e.rally!==undefined)point(e.rally,`${path}.rally`,c);
  for(const key of ['gateOpen','raised'])optionalFlag(e,key,path);
  if(e.lastAttacker!==undefined)id(e.lastAttacker,`${path}.lastAttacker`,c);
@@ -100,11 +105,12 @@ function validateRuntime(value:unknown,c:Context,version:1|2|3):void {
 }
 function validate(envelope:unknown,version:1|2|3):void {
  const save=object(envelope,'save',['format','version','state','runtime']);if(save.format!=='orcs-vs-fairies-save')bad('format','unknown save format');if(save.version!==version)bad('version',`unsupported version ${String(save.version)}`);
- const s=object(save.state,'state',version===1?STATE_FIELDS:version===2?[...STATE_FIELDS,...TEAM_FIELDS]:[...STATE_FIELDS,...TEAM_FIELDS,'aiConfigs']);
+ const s=object(save.state,'state',version===1?STATE_FIELDS:version===2?[...STATE_FIELDS,...TEAM_FIELDS]:[...STATE_FIELDS,...TEAM_FIELDS,'aiConfigs'],version===3?['content']:[]);
+ if(s.content!==undefined)s.content=decodeContentBundle(s.content);
  const playerCount=list(s.players,'state.players',version===1?2:MAX_PLAYERS,version===1?2:undefined).length;
  if(playerCount===0)bad('state.players','expected between 1 and 8 players');
  const width=number(s.width,'state.width',8,256,true),height=number(s.height,'state.height',8,256,true),nextId=number(s.nextId,'state.nextId',1,MAX_ID,true);
- const c:Context={width,height,cells:width*height,time:number(s.time,'state.time'),nextId,playerCount,maxEntities:version===1?4096:MAX_ENTITIES,entityIds:new Set(),entities:new Map(),resourceIds:new Set(),eventCount:0};
+ const c:Context={state:s as unknown as GameState,width,height,cells:width*height,time:number(s.time,'state.time'),nextId,playerCount,maxEntities:version===1?4096:MAX_ENTITIES,entityIds:new Set(),entities:new Map(),resourceIds:new Set(),eventCount:0};
  if(version===3)playersArray(s.aiConfigs,'state.aiConfigs',c,(v,p)=>{const config=object(v,p,['difficulty','personality','opening']);choice(config.difficulty,`${p}.difficulty`,['easy','normal','hard']);choice(config.personality,`${p}.personality`,['balanced','rush','fortify','expand','raid']);choice(config.opening,`${p}.opening`,['infantry-rush','tower-defense','fast-expansion','cavalry-raids']);});
  playersArray(s.controllers,'state.controllers',c,(v,p)=>choice(v,p,['human','ai','external']));choice(s.mapSize,'state.mapSize',['small','medium','large','huge']);number(s.mapVersion,'state.mapVersion',1,MAP_VERSION,true);
  list(s.terrain,'state.terrain',c.cells,c.cells).forEach((v,i)=>choice(v,`state.terrain[${i}]`,Object.keys(TERRAIN)));playersArray(s.starts,'state.starts',c,(v,p)=>point(v,p,c));flag(s.draw,'state.draw');number(s.tick,'state.tick',0,MAX_VALUE,true);number(s.time,'state.time');number(s.seed,'state.seed',0,0xffffffff,true);
@@ -116,7 +122,7 @@ function validate(envelope:unknown,version:1|2|3):void {
  }
  list(s.entities,'state.entities',c.maxEntities).forEach((v,i)=>validateEntity(v,`state.entities[${i}]`,c));
  list(s.resources,'state.resources',MAX_RESOURCES).forEach((v,i)=>{const p=`state.resources[${i}]`,r=object(v,p,['id','x','y','kind','amount','maxAmount']),key=id(r.id,`${p}.id`,c);if(c.entityIds.has(key)||c.resourceIds.has(key))bad(`${p}.id`,'duplicate entity or resource id');c.resourceIds.add(key);coordinates(r,p,c);choice(r.kind,`${p}.kind`,RESOURCE_KINDS);const max=number(r.maxAmount,`${p}.maxAmount`,0,1e9);number(r.amount,`${p}.amount`,0,max);});
- playersArray(s.players,'state.players',c,(v,p)=>{const player=object(v,p,['faction','wood','ore','crystal','population','cap','upgrades']);choice(player.faction,`${p}.faction`,Object.keys(FACTIONS));for(const key of RESOURCE_KINDS)number(player[key],`${p}.${key}`);number(player.population,`${p}.population`,0,c.maxEntities,true);number(player.cap,`${p}.cap`,0,version===1?100:500,true);const upgrades=list(player.upgrades,`${p}.upgrades`,Object.keys(UPGRADES).length);upgrades.forEach((u,i)=>choice(u,`${p}.upgrades[${i}]`,Object.keys(UPGRADES)));if(new Set(upgrades).size!==upgrades.length)bad(`${p}.upgrades`,'duplicate upgrade');});
+ playersArray(s.players,'state.players',c,(v,p)=>{const player=object(v,p,['faction','wood','ore','crystal','population','cap','upgrades']);choice(player.faction,`${p}.faction`,Object.keys(contentFactions(c.state.content)));for(const key of RESOURCE_KINDS)number(player[key],`${p}.${key}`);number(player.population,`${p}.population`,0,c.maxEntities,true);number(player.cap,`${p}.cap`,0,version===1?100:500,true);const available=upgradesFor(c.state,(s.players as unknown[]).indexOf(v) as Side),upgrades=list(player.upgrades,`${p}.upgrades`,Object.keys(available).length);upgrades.forEach((u,i)=>choice(u,`${p}.upgrades[${i}]`,Object.keys(available)));if(new Set(upgrades).size!==upgrades.length)bad(`${p}.upgrades`,'duplicate upgrade');});
  const researching=Array.from({length:playerCount},()=>new Set<string>()),players=s.players as RecordValue[];
  for(const e of c.entities.values())if((e.hp as number)>0&&e.research!==undefined){const side=e.side as number,upgrade=e.research as string;if((players[side].upgrades as string[]).includes(upgrade)||researching[side].has(upgrade))bad('state.entities.research','upgrade is already complete or being researched');researching[side].add(upgrade);}
  if(s.winner!==null)number(s.winner,'state.winner',0,playerCount-1,true);if(s.draw&&s.winner!==null)bad('state.winner','draw cannot have a winner');

@@ -1,4 +1,4 @@
-import { FACTIONS } from '../core/content';
+import { unitFor } from '../core/content-registry';
 import { walkable } from '../core/navigation';
 import { isVisible } from '../core/simulation';
 import type { Entity, GameState, UnitRole } from '../core/types';
@@ -11,7 +11,7 @@ export function abilityTargetReason(state:GameState,casters:Entity[]):string {
   let reason='';
   for(const caster of casters){
     if((caster.abilityReadyAt??0)>state.time)continue;
-    const ability=FACTIONS[state.players[caster.side].faction].units[caster.role as UnitRole].ability;
+    const ability=unitFor(state,caster).ability;
     const nearby=state.entities.filter(e=>e.side===caster.side&&e.hp>0&&e.kind==='unit'&&!e.illusion&&Math.hypot(e.x-caster.x,e.y-caster.y)<5);
     if(ability==='raise'){
       const player=state.players[caster.side];
