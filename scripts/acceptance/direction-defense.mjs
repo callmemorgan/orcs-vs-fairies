@@ -29,7 +29,12 @@ export async function runDirectionDefense(ctx) {
     await ctx.pause();
   }
   async function attack(source, target) {
-    await ctx.selectTroop(source); await ctx.closePanels(); await ctx.resume(); await ctx.entityClick(target, 'right');
+    await ctx.selectTroop(source); await ctx.closePanels(); await ctx.resume();
+    const before = await ctx.snap(), victim = e(before, target);
+    const fogKey = (victim.level ?? 0) * before.width * before.height + Math.floor(victim.y) * before.width + Math.floor(victim.x);
+    assert.equal(victim.level ?? 0, before.viewLevel, 'Native attack target must be on the displayed level');
+    assert(before.visible[before.viewSide].includes(fogKey), `Native attack target #${target} must be visible before pointer input`);
+    await ctx.entityClick(target, 'right');
     await ctx.wait(({ source, target }) => { const order = window.rts.state.entities.find(item => item.id === source)?.order; return order?.type === 'attack' && order.target === target; }, { source, target });
   }
   async function move(source, destination) {

@@ -114,12 +114,17 @@ for (const cover of ['none', 'rock', 'building'] as const) {
   const source = unit(state, 0, 'ranged', 20.5, 24.5, 3);
   const target = unit(state, 1, 'melee', 25.5, 24.5);
   let coverId: number | undefined, siegeId: number | undefined;
-  if (cover === 'rock') state.terrain[24 * state.width + 23] = 'rock';
+  if (cover === 'rock') {
+    state.terrain[24 * state.width + 23] = 'rock';
+    // A direct ray through rock blocks both sight and fire. This visible lane
+    // passes 0.6 tiles from its center, inside the native 0.65 cover threshold.
+    source.y = target.y = 23.9;
+  }
   if (cover === 'building') {
     const depot = building(state, 1, 'depot', 22.5, 24.5); depot.hp = 100; coverId = depot.id;
     const siege = unit(state, 0, 'siege', 10.5, 20.5, 3); siegeId = siege.id;
   }
-  write(`cover-${cover}`, state, { source: source.id, target: target.id, cover: coverId, siege: siegeId, undergroundWorker, expectedDamage: cover === 'none' ? 15 : 8.7, withdrawal: { x: 18.5, y: 18.5 }, returnPoint: { x: 20.5, y: 24.5 } }, { targetFacing: 4, coverHealth: cover === 'building' ? 100 : undefined, description: cover === 'building' ? 'An authored wounded enemy Timber Yard covers the target. A public siege attack must destroy its remaining 100 HP. The Mothbow withdraws during demolition and then returns for an uncovered shot.' : `An independent native Mothbow first attack measures ${cover} cover.`, siegePreparation: 'Thorn Trebuchet is unprepared; its normal area shell needs no purchased payload. The enemy target is three tiles from the building center, outside shell splash.' });
+  write(`cover-${cover}`, state, { source: source.id, target: target.id, cover: coverId, siege: siegeId, undergroundWorker, expectedDamage: cover === 'none' ? 15 : 8.7, withdrawal: { x: 18.5, y: 18.5 }, returnPoint: { x: 20.5, y: 24.5 } }, { targetFacing: 4, coverHealth: cover === 'building' ? 100 : undefined, rockLane: cover === 'rock' ? 'Source and target y=23.9; rock tile (23,24), center y=24.5; 0.6-tile grazing cover with an observable target and unblocked firing ray.' : undefined, description: cover === 'building' ? 'An authored wounded enemy Timber Yard covers the target. A public siege attack must destroy its remaining 100 HP. The Mothbow withdraws during demolition and then returns for an uncovered shot.' : `An independent native Mothbow first attack measures ${cover} cover.`, siegePreparation: 'Thorn Trebuchet is unprepared; its normal area shell needs no purchased payload. The enemy target is three tiles from the building center, outside shell splash.' });
 }
 
 for (const friendlyFire of [false, true]) {

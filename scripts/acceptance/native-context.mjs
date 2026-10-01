@@ -59,13 +59,16 @@ export function createNativeContext({page,out,fixtures,manifest,identity,evidenc
   }
   async function point(x,y,level){
     if(level!==undefined){const current=await snap();if(current.viewLevel!==level){const world=await openWorld();await world.getByLabel('Map level',{exact:true}).selectOption(String(level));await wait(level=>window.rts.viewLevel===level,level);}}
-    return page.evaluate(({x,y})=>{const c=window.rts.camera,canvas=document.querySelector('#game-canvas canvas'),box=canvas.getBoundingClientRect(),scaleX=box.width/c.width,scaleY=box.height/c.height;return{x:box.left+((1600+(x-y)*32-c.x)*c.zoom+c.width/2*(1-c.zoom))*scaleX,y:box.top+((80+(x+y)*16-c.y)*c.zoom+c.height/2*(1-c.zoom))*scaleY,zoom:c.zoom,scaleX,scaleY};},{x,y});
+    return page.evaluate(({x,y})=>{const c=window.rts.camera,canvas=document.querySelector('#game-canvas canvas'),box=canvas.getBoundingClientRect(),scaleX=box.width/c.width,scaleY=box.height/c.height;return{x:box.left+((1600+(x-y)*32-c.x)*c.zoom+c.width/2*(1-c.zoom))*scaleX,y:box.top+((80+(x+y)*16-c.y)*c.zoom+c.height/2*(1-c.zoom))*scaleY,zoom:c.zoom,scaleX,scaleY,camera:{...c},canvas:{left:box.left,top:box.top,width:box.width,height:box.height}};},{x,y});
   }
   async function canvasInput(screen){const world=page.locator('.world-tools');if(await world.isVisible()&&await world.getAttribute('open')!==null)await world.locator(':scope > summary').click();assert(await page.evaluate(({x,y})=>document.elementFromPoint(x,y)===document.querySelector('#game-canvas canvas'),screen),'Native pointer action must reach the battlefield canvas');}
   async function ground(p,button='left'){await closePanels();const before=await snap();assert(p.level===undefined||p.level===before.viewLevel||!before.selected.length,'Changing Map level would discard the acting selection');const screen=await point(p.x,p.y,p.level);await canvasInput(screen);await page.mouse.click(screen.x,screen.y,{button});}
   async function entityClick(id,button='left'){
     await closePanels();const state=await snap(),entity=state.entities.find(e=>e.id===id);assert(entity,`Entity ${id}`);
-    const screen=await point(entity.x,entity.y,entity.level??0),hit={...screen,y:screen.y-30*screen.zoom*screen.scaleY};await canvasInput(hit);await page.mouse.click(hit.x,hit.y,{button});
+    const screen=await point(entity.x,entity.y,entity.level??0),hit={...screen,y:screen.y-30*screen.zoom*screen.scaleY};await canvasInput(hit);
+    const key=(entity.level??0)*state.width*state.height+Math.floor(entity.y)*state.width+Math.floor(entity.x);
+    (evidence.nativePointerInputs??=[]).push({kind:'entity',button,target:id,tick:state.tick,selected:state.selected,viewSide:state.viewSide,viewLevelBefore:state.viewLevel,targetWorld:{x:entity.x,y:entity.y,level:entity.level??0},targetFogKey:key,targetFogVisible:state.visible[state.viewSide].includes(key),screen:hit});
+    await page.mouse.click(hit.x,hit.y,{button});
   }
   async function selectBuilding(id){await entityClick(id);await wait(id=>window.rts.selected.includes(id),id);}
   async function selectMany(ids){
