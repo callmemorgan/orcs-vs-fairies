@@ -25,6 +25,8 @@ import type { PlanningEditContext } from './game/PlanningSession';
 import { SkirmishOptions } from './ui/SkirmishOptions';
 import { SkirmishRoster } from './ui/SkirmishRoster';
 import { normalizeAiConfig } from './core/ai-policy';
+import { PlayerView } from './core/observation';
+import { mountPracticeCoach } from './ui/PracticeCoach';
 import './ui/style.css';
 declare const __OVF_BUILD_ID__:string;
 
@@ -123,6 +125,7 @@ async function joinOnline(request:OnlineMatchRequest){
  catch(error){connection.dispose();if(onlineConnecting===connection)onlineConnecting=undefined;throw error;}
 }
 function retireGame(onDestroyed?:()=>void){
+ resetCoach();
  if(retiring){retiring.events.once(Phaser.Core.Events.DESTROY,()=>onDestroyed?.());return;}
  if(!game){onDestroyed?.();return;}
  if(scene){scene.paused=true;scene.input.keyboard?.removeAllListeners('keydown');}
@@ -266,6 +269,22 @@ const planning=mountPlanningSession(root,{
  beginPlacement:(role,point,cancel)=>{const current=scene;if(!current)throw new Error('Start a match before planning construction.');return current.beginBlueprintPlacement(role,point,cancel);},
  setBlueprints:(items,side)=>scene?.setBlueprints(items,side)
 });
+const coach=mountPracticeCoach(root,{focus:(ids,point)=>{
+ if(!scene||onlineConnection||replay||sessionModal||scene.photoMode)return;
+ const owned=ids.filter(id=>scene!.state.entities.some(entity=>entity.id===id&&entity.side===playerSide()&&entity.hp>0));
+ scene.selectEntities(owned);if(point&&scene.cameras?.main)scene.centerOn(point.x,point.y);
+}});
+let coachState:GameState|undefined,coachSide:Side=0,coachView=new PlayerView(0),coachObservedAt=-Infinity;
+function resetCoach(){coach.update(null);coachState=undefined;coachObservedAt=-Infinity;}
+function updateCoach(){
+ if(!scene||benchmark||onlineConnection||replay||scene.readOnly||scene.state.controllers[playerSide()]!=='human'||isGameOver(scene.state)){
+  if(coachState)resetCoach();return;
+ }
+ const state=scene.state,side=playerSide();
+ if(coachState!==state||coachSide!==side){resetCoach();coachState=state;coachSide=side;coachView=new PlayerView(side);}
+ if(state.time-coachObservedAt<1)return;
+ coachObservedAt=state.time;coach.update(coachView.observe(state));
+}
 const photoControls=document.createElement('section');photoControls.className='photo-controls';photoControls.hidden=true;
 const photoHint=document.createElement('span');photoHint.textContent='Photo mode · Pan and zoom to compose your image';
 const photoCapture=document.createElement('button');photoCapture.textContent='Download photo';photoCapture.onclick=()=>{
@@ -283,7 +302,7 @@ setInterval(()=>{
 },16);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)maybeAutosave(true);});
 window.addEventListener('pagehide',()=>maybeAutosave(true));
-setInterval(()=>{if(scene)shell.update(scene.state,scene.selected,callbacks);tools.update(scene?.state??null,{side:playerSide(),paused:scene?.paused,replaySpectator:!!replay||!!scene?.readOnly,remoteMatch:!!onlineConnection});planning.update({blocked:planningBlocked()});},100);
+setInterval(()=>{if(scene)shell.update(scene.state,scene.selected,callbacks);tools.update(scene?.state??null,{side:playerSide(),paused:scene?.paused,replaySpectator:!!replay||!!scene?.readOnly,remoteMatch:!!onlineConnection});planning.update({blocked:planningBlocked()});updateCoach();},100);
 // Read-only diagnostics for repeatable performance and state inspection. Player actions stay in the UI.
 Object.defineProperty(window,'rts',{get:()=>scene?{state:scene.state,viewSide:scene.viewSide,readOnly:scene.readOnly,selected:[...scene.selected],fps:game?.loop.actualFps,paused:scene.paused,mode:onlineConnection?'online':replay?'replay':'local',simulationEnabled:scene.simulationEnabled,online:onlineConnection?{status:onlineConnection.status,role:onlineRender?.role,side:playerSide(),delayTicks:onlineConnection.connectionInfo?.delayTicks,pendingCommands:onlineConnection.pendingCommands,privateSides:[...(onlineRender?.privateSides??[])]}:null,camera:{x:scene.cameras.main.scrollX,y:scene.cameras.main.scrollY,zoom:scene.cameras.main.zoom,width:scene.cameras.main.width,height:scene.cameras.main.height}}:null});
 if(location.hostname==='127.0.0.1'&&new URLSearchParams(location.search).has('qa'))setInterval(()=>{

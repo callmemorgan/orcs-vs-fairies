@@ -55,4 +55,12 @@ describe('roster replay and session contracts',()=>{
     const recorder=new MatchRecorder(state),fresh=recorder.export(),player=new ReplayPlayer(fresh);
     expect(saveGame(player.state)).toEqual(saveGame(state));recorder.dispose();player.dispose();
   });
+  it('retains a genuine prior v3 recording after an AI rule change without relabeling its history',()=>{
+    const source=JSON.parse(readFileSync(new URL('./fixtures/legacy-replay-v3.json',import.meta.url),'utf8'));
+    const archive=decodeReplay(source),state=loadGame(archive.initial);
+    expect(archive.initial.version).toBe(3);expect(archive.simulationRevision).toBe('3.0.0');
+    expect(archive.finalTick).toBe(11909);expect(archive.finalChecksum).toBe(source.finalChecksum);
+    expect(()=>new ReplayPlayer(archive)).toThrow('rules 3.0.0');
+    const fresh=new MatchRecorder(state);expect(fresh.export().simulationRevision).not.toBe('3.0.0');fresh.dispose();
+  });
 });
