@@ -15,6 +15,7 @@ function fixture() {
  const caravan=s.entities.find(entity=>entity.side===0&&entity.role==='worker')!;caravan.x=hq.x;caravan.y=hq.y;economy.caravans.push(caravan.id);
  const market:EconomyMarket={id:s.nextId++,x:hq.x,y:hq.y,stock:{wood:1500,ore:1500,crystal:1500},demand:zeroCost(),recoverAt:0};economy.markets.push(market);
  const hooks:EconomyHooks={
+  die:()=>{throw new Error('Cargo does not kill actors.');},
   visible:()=>true,allied:(state,a,b)=>state.teams[a]===state.teams[b],
   assign:(_state,entity,order)=>{entity.order=order;entity.path=[];},
   invalidateNavigation:(_state,entity)=>{entity.path=[];entity.entrenchedAt=undefined;},

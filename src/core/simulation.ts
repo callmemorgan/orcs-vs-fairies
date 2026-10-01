@@ -201,7 +201,7 @@ export function issueCommand(s:GameState,side:Side,c:Command):boolean{
 function applyCommand(s:GameState,side:Side,c:Command):boolean{
  if(!validateCommand(c)||isGameOver(s)||!s.players[side]||s.eliminated[side])return false;
  if(c.type==='draftChoice'){const accepted=applyDraftChoice(s.draft,s.rules,draftPlayers(s),side,c.definitionId,s.content);if(accepted&&s.draft.status==='complete')finalizeDraft(s);return accepted;}
- if(s.draft.status!=='complete')return false;if(isEconomyCommand(c))return applyEconomyCommand(s,side,c,economyHooks);
+ if(s.draft.status!=='complete')return false;if(isEconomyCommand(c)){if(c.type==='trainCaravan'&&!definitionAllowed(s,side,'economy:caravan'))return false;return applyEconomyCommand(s,side,c,economyHooks);}
  if(c.type==='collectRelic')return collectRelic(s,side,c.id,c.relicId);
  if(c.type==='dropRelic')return dropRelic(s,side,c.id);
  const p=s.players[side],f=factionFor(s,side);
@@ -453,16 +453,18 @@ function applyStep(s:GameState,dt:number):void{
   objectiveAi(s,side,issueCommand,requested);rt.aiDecisionAt[side]=s.time+aiProfile(s.aiConfigs[side]).decisionInterval;
  }}}
  if(s.rules.mode==='annihilation'&&(due.size||rt.teamAI.coordinator.waves.length))runTeamCoordination(s);
+ for(const actor of s.entities)if(alive(actor)&&actor.specialistBuffs?.some(buff=>buff.until>s.time&&buff.fearedFrom)&&economyEntityBusy(s,actor))interruptWorldOrder(s,actor);
+ const economicActors=new Set(economicState(s)?.tasks.map(task=>task.entityId));
  tickEconomy(s,dt,economyHooks);
  for(const e of [...s.entities]){
  e.animTime+=dt;if(!alive(e)){if(e.kind==='building')refundQueue(s,e);continue;}if(e.expires&&s.time>=e.expires){die(s,e);continue;}e.cooldown=Math.max(0,e.cooldown-dt);if(e.animation!=='attack'||e.animTime>.4)e.animation='idle';e.momentum=Math.max(0,e.momentum-dt*.014);
  if(e.kind==='building'){if(e.progress===1&&buildingDef(s,e).ability==='heal')for(const ally of s.entities)if(isAllied(s,ally.side,e.side)&&alive(ally)&&ally.kind==='unit'&&!ally.illusion&&distance(ally,e)<6)ally.hp=Math.min(ally.maxHp,ally.hp+dt*2.5);if(e.research){e.researchProgress+=dt*economyResearchFactor(s,e)/upgradeFor(s,e.side,e.research).researchTime;if(e.researchProgress>=1)finishResearch(s,e);}production(s,e,dt);if(e.role==='tower'&&e.progress===1&&!buildingDef(s,e).tags?.includes('beacon')){const b=enemy(s,e,7);if(b)fight(s,e,b,dt);}continue;}
- if(economyEntityBusy(s,e))continue;
  const d=unitDef(s,e);
- if(economyUnitDefinition(s,e)&&e.order.type!=='move'&&e.order.type!=='traverse'){if(e.order.type!=='idle')finishOrder(s,e);continue;}
  if(e.maxShield&&s.time-(e.lastDamagedAt??-6)>=6)e.shield=Math.min(e.maxShield,(e.shield??0)+4*dt);
  if(!e.illusion&&(d.ability==='raise'||d.ability==='ward'))useAbility(s,e);
  const feared=e.specialistBuffs?.find(buff=>buff.until>s.time&&buff.fearedFrom)?.fearedFrom;if(feared){const dx=e.x-feared.x,dy=e.y-feared.y,len=length2D(dx,dy)||1;move(s,e,{x:clamp(e.x+dx/len*3,.6,s.width-.6),y:clamp(e.y+dy/len*3,.6,s.height-.6),level:levelOf(e)},dt,.1);continue;}
+ if(economicActors.has(e.id))continue;
+ if(economyUnitDefinition(s,e)&&e.order.type!=='move'&&e.order.type!=='traverse'){if(e.order.type!=='idle')finishOrder(s,e);continue;}
  const o=e.order;
  if(processWorldAction(s,e,dt,{move:(actor,to,delta,reach)=>move(s,actor,to,delta,reach),finish:actor=>finishOrder(s,actor),interrupt:actor=>interruptWorldOrder(s,actor),die:(actor,text)=>die(s,actor,text)}))continue;
  if(processNeutralOrder(s,e,dt,neutralHooks(s)))continue;
@@ -778,4 +780,4 @@ export function applyScenarioDamage(s:GameState,source:Entity,target:Entity,amou
 export function spawnDefinition(s:GameState,side:Side,kind:Entity['kind'],definitionId:string,x:number,y:number,progress=1,level?:number):Entity {const d=kind==='unit'?availableUnits(s,side).find(d=>d.id===definitionId):availableBuildings(s,side).find(d=>d.id===definitionId);if(!d)throw new Error('Definition is absent from player content.');return spawnEntity(s,side,kind,d.role,x,y,progress,definitionId,level??0);}
 
 function specialistHooks(s:GameState):SpecialistHooks {return {die:(actor,text)=>die(s,actor,text),spawn:(...args)=>spawnDefinition(s,...args),setTerrain:(point,kind)=>setWorldTerrain(s,point,kind),damage:(source,target,raw,options)=>{if(target.hp<=0)return;if(options?.ranged)raw*=projectileEnvironment(s,source,target).damageFactor*highGroundDamageFactor(s,source,target);const def=target.kind==='unit'?unitFor(s,target):undefined,armor=options?.armorPiercing?0:(def?.armor??3)+progressionStats(s,target).armor+(emplaced(s,target)?2:0)+s.players[target.side].upgrades.reduce((sum,id)=>{const u=upgradeFor(s,target.side,id);return sum+(def&&upgradeAppliesTo(u,def)?u.effects.armor??0:0);},0),event=emit(s,'attack',source,target.id);runtime(s).hits.push({source,target,amount:Math.max(1,raw-armor),event});}};}
-const economyHooks:EconomyHooks={visible:(s,side,p)=>isVisible(s,side,p.x,p.y,p.level??0),allied:isAllied,spawn:spawnEntity,assign,invalidateNavigation,move,canPlace:(s,side,x,y,level)=>canPlace(s,side,'depot',x,y,'economy:warehouse',level),radius,buildingDef,unitDef};
+const economyHooks:EconomyHooks={visible:(s,side,p)=>isVisible(s,side,p.x,p.y,p.level??0),allied:isAllied,spawn:spawnEntity,die,assign,invalidateNavigation,move,canPlace:(s,side,x,y,level)=>canPlace(s,side,'depot',x,y,'economy:warehouse',level),radius,buildingDef,unitDef};

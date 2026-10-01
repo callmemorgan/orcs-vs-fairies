@@ -31,7 +31,7 @@ function num(value:unknown,min:number,max:number,name:string,integer=false):numb
 function bool(value:unknown,name:string):boolean {if(typeof value!=='boolean')throw new Error(`Invalid ${name}.`);return value;}
 function money(value:unknown,name:string):Cost {const c=fields(value,['wood','ore','crystal'],name);return {wood:num(c.wood,0,1e9,`${name} wood`),ore:num(c.ore,0,1e9,`${name} ore`),crystal:num(c.crystal,0,1e9,`${name} crystal`)};}
 const factionContext=(faction:FactionId,content?:ContentBundle)=>({content,players:[{faction}]});
-export function definitionIds(content?:ContentBundle):string[]{return [...new Set(Object.keys(contentFactions(content)).flatMap(faction=>{const context=factionContext(faction as FactionId,content);return [...availableUnits(context,0).map(u=>u.id),...Object.keys(upgradesFor(context,0))];}))];}
+export function definitionIds(content?:ContentBundle):string[]{return [...new Set(['economy:caravan',...Object.keys(contentFactions(content)).flatMap(faction=>{const context=factionContext(faction as FactionId,content);return [...availableUnits(context,0).map(u=>u.id),...Object.keys(upgradesFor(context,0))];})])];}
 export function normalizeMatchRules(value:unknown={},content?:ContentBundle):MatchRules {
  const r=fields(value,['mode','standardDefeat','startingAge','sharedVision','friendlyFire','startingResources','disabledDefinitionIds','hill','relic','survival','draft'],'match rules');
  if(Object.values(r).some(v=>v===null))throw new Error('Invalid null match rule.');
@@ -87,7 +87,7 @@ export function draftDefinitions(state:Pick<GameState,'players'|'content'>){retu
 export function draftPlayers(state:GameState):Pick<MatchPlayerConfig,'id'|'factionId'>[]{return state.players.map((p,id)=>({id:id as Side,factionId:p.faction}));}
 export function definitionAllowed(state:GameState,side:Side,id:string):boolean {
  if(state.rules.disabledDefinitionIds.includes(id)||state.draft.banned.includes(id))return false;
- const necessary=id==='town-age'||id==='citadel-age'||availableUnits(state,side).some(unit=>unit.role==='worker'&&unit.id===id);
+ const necessary=id==='economy:caravan'||id==='town-age'||id==='citadel-age'||availableUnits(state,side).some(unit=>unit.role==='worker'&&unit.id===id);
  return !state.rules.draft.enabled||necessary||state.draft.status==='complete'&&state.draft.picks[side].includes(id);
 }
 export function validateModeRoster(state:GameState):void {

@@ -54,7 +54,7 @@ function buildEconomic(s:GameState,side:Side,c:Extract<EconomyCommand,{type:'bui
   if(!destination)return false;shoves.push({entity:unit,point:destination});
  }
  if(!payCost(s.players[side],def.cost))return false;
- const entity=hooks.spawn(s,side,'building','depot',p.x,p.y,0);entity.level=level;
+ const entity=hooks.spawn(s,side,'building','depot',p.x,p.y,0,def.id,level);
  for(const shove of shoves){shove.entity.x=shove.point.x;shove.entity.y=shove.point.y;hooks.invalidateNavigation(s,shove.entity);}
  markDefinition(entity,def.id);entity.maxHp=def.hp;entity.hp=def.hp*.1;
  economy.structures.push({entityId:entity.id,kind:c.kind,...(resource?{resourceId:resource.id}:{}),stock:zeroCost(),capacity:c.kind==='warehouse'?ECONOMY_RULES.warehouse.capacity:0,overcharge:false,nextIncident:s.time+ECONOMY_RULES.extractor.incidentSeconds});
@@ -114,7 +114,7 @@ export function tickEconomy(s:GameState,dt:number,hooks:EconomyHooks):void {
   if(structure.kind==='extractor'&&s.time+1e-9>=structure.nextIncident){
    const cycle=Math.floor(structure.nextIncident/ECONOMY_RULES.extractor.incidentSeconds);let hash=(s.seed^Math.imul(entity.id,2654435761)^Math.imul(cycle,2246822519))>>>0;hash^=hash>>>16;hash=Math.imul(hash,2246822519)>>>0;const roll=(hash>>>0)/4294967296;
    structure.nextIncident+=ECONOMY_RULES.extractor.incidentSeconds;
-   if(structure.overcharge&&roll<ECONOMY_RULES.extractor.incidentChance){const amount=Math.min(entity.hp,ECONOMY_RULES.extractor.incidentDamage);entity.hp-=amount;entity.lastDamagedAt=s.time;s.events.push({type:'attack',x:entity.x,y:entity.y,level:levelOf(entity),side:entity.side,source:entity.id,target:entity.id,amount,text:'Extractor overcharge incident'});if(entity.hp<=0){entity.animation='death';entity.animTime=0;economicDeath(s,entity,economy,hooks);s.events.push({type:'death',x:entity.x,y:entity.y,level:levelOf(entity),side:entity.side,source:entity.id,text:'Extractor destroyed by overcharge.'});}else economyMessage(s,entity,`Overcharge incident caused ${amount} damage. Workers can repair the extractor.`);}
+   if(structure.overcharge&&roll<ECONOMY_RULES.extractor.incidentChance){const amount=Math.min(entity.hp,ECONOMY_RULES.extractor.incidentDamage);entity.hp-=amount;entity.lastDamagedAt=s.time;s.events.push({type:'attack',x:entity.x,y:entity.y,level:levelOf(entity),side:entity.side,source:entity.id,target:entity.id,amount,text:'Extractor overcharge incident'});if(entity.hp<=0)hooks.die(s,entity,'Extractor destroyed by overcharge.');else economyMessage(s,entity,`Overcharge incident caused ${amount} damage. Workers can repair the extractor.`);}
   }
  }
  for(const recruit of [...economy.recruits]){
@@ -122,7 +122,7 @@ export function tickEconomy(s:GameState,dt:number,hooks:EconomyHooks):void {
   if(!producer){for(const kind of RESOURCE_KINDS)s.players[recruit.side][kind]+=ECONOMY_RULES.caravan.cost[kind];economy.recruits=economy.recruits.filter(item=>item!==recruit);continue;}
   if(s.time<recruit.readyAt||s.players[recruit.side].population>=s.players[recruit.side].cap)continue;
   const point=openDestination(s,{x:producer.x+hooks.radius(s,producer)+1,y:producer.y,level:levelOf(producer)},producer);if(!point)continue;
-  const caravan=hooks.spawn(s,recruit.side,'unit','worker',point.x,point.y);caravan.level=levelOf(producer);markDefinition(caravan,ECONOMY_CARAVAN.id);caravan.hp=caravan.maxHp=ECONOMY_CARAVAN.hp;caravan.shield=undefined;caravan.maxShield=undefined;s.players[recruit.side].population++;economy.caravans.push(caravan.id);economy.cargo.push({entityId:caravan.id,stock:zeroCost(),capacity:ECONOMY_RULES.caravan.capacity,origin:'delivery',tradeValue:0});recordEconomyPaid(s,caravan,ECONOMY_RULES.caravan.cost);economy.recruits=economy.recruits.filter(item=>item!==recruit);s.events.push({type:'train',x:caravan.x,y:caravan.y,level:levelOf(caravan),side:caravan.side,source:caravan.id,text:'Trade caravan recruited.'});
+  const caravan=hooks.spawn(s,recruit.side,'unit','worker',point.x,point.y,1,ECONOMY_CARAVAN.id,levelOf(producer));markDefinition(caravan,ECONOMY_CARAVAN.id);caravan.hp=caravan.maxHp=ECONOMY_CARAVAN.hp;caravan.shield=undefined;caravan.maxShield=undefined;s.players[recruit.side].population++;economy.caravans.push(caravan.id);economy.cargo.push({entityId:caravan.id,stock:zeroCost(),capacity:ECONOMY_RULES.caravan.capacity,origin:'delivery',tradeValue:0});recordEconomyPaid(s,caravan,ECONOMY_RULES.caravan.cost);economy.recruits=economy.recruits.filter(item=>item!==recruit);s.events.push({type:'train',x:caravan.x,y:caravan.y,level:levelOf(caravan),side:caravan.side,source:caravan.id,text:'Trade caravan recruited.'});
  }
  tickCargo(s,dt,economy,hooks);
  const aliveIds=new Set(s.entities.filter(e=>e.hp>0).map(e=>e.id));economy.workerWarehouses=economy.workerWarehouses.filter(item=>aliveIds.has(item.entityId)&&aliveIds.has(item.warehouseId)&&sameLevel(s.entities.find(e=>e.id===item.entityId)!,s.entities.find(e=>e.id===item.warehouseId)!));economy.specializations=economy.specializations.filter(item=>aliveIds.has(item.entityId));
