@@ -1,5 +1,6 @@
 import type { BuildingRole, Cost, Entity, FactionId, GameState, MapSize, ResourceKind, Side, TerrainKind, UnitRole, Vec } from './types';
 import type { SaveEnvelope } from './saves';
+import type { WorldMapData } from './world-types';
 
 export type ScenarioCondition =
   | { type: 'alive' | 'dead'; actor: string }
@@ -11,7 +12,7 @@ export type ScenarioCondition =
   | { type: 'not'; condition: ScenarioCondition };
 
 export type ScenarioOrder =
-  | { type: 'move' | 'attackMove'; x: number; y: number }
+  | ({ type: 'move' | 'attackMove' } & Vec)
   | { type: 'hold' | 'stop' | 'ability' }
   | { type: 'attack'; actor: string };
 
@@ -33,6 +34,7 @@ export interface ScenarioMap {
   terrain: TerrainKind[];
   starts: Vec[];
   resources: Array<Vec & { kind: ResourceKind; amount: number; maxAmount: number }>;
+  world?: WorldMapData;
 }
 
 export type ScenarioAction =

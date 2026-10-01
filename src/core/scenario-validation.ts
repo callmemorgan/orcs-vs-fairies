@@ -1,5 +1,6 @@
 import { FACTIONS } from './content';
 import { MAP_SIZES, TERRAIN, generateMap } from './maps';
+import { generatedMapFromWorld, validateWorldMap } from './world-map';
 import type { BuildingRole, FactionId, UnitRole } from './types';
 import type { ScenarioActor, ScenarioCondition, ScenarioDefinition, ScenarioMap, ScenarioOrder } from './scenario-types';
 
@@ -88,28 +89,35 @@ export function validateScenario(input: unknown): ScenarioDefinition {
   const seed = number(s.seed, 'seed', 0, 0xffffffff, true);
   let map: ScenarioMap;
   if (s.map !== undefined) {
-    const m = object(s.map, 'map', ['size', 'width', 'height', 'terrain', 'starts', 'resources']);
+    const m = object(s.map, 'map', ['size', 'width', 'height', 'terrain', 'starts', 'resources'], ['world']);
     choice(m.size, 'map.size', Object.keys(MAP_SIZES));
     const width = number(m.width, 'map.width', 8, 128, true), height = number(m.height, 'map.height', 8, 128, true);
     list(m.terrain, 'map.terrain', width * height, width * height).forEach((tile, i) => choice(tile, `map.terrain[${i}]`, Object.keys(TERRAIN)));
     map = m as unknown as ScenarioMap;
+    if (m.world !== undefined) { const validation = validateWorldMap(m.world); if (!validation.valid) bad('map.world', validation.issues.join('; ')); }
     list(m.starts, 'map.starts', 2, 2).forEach((p, i) => point(p, `map.starts[${i}]`));
     list(m.resources, 'map.resources', 1024).forEach((resource, i) => {
-      const path = `map.resources[${i}]`, r = object(resource, path, ['x', 'y', 'kind', 'amount', 'maxAmount']);
+      const path = `map.resources[${i}]`, r = object(resource, path, ['x', 'y', 'kind', 'amount', 'maxAmount'], ['level']);
       coordinates(r, path); choice(r.kind, `${path}.kind`, ['wood', 'ore', 'crystal']);
       const max = number(r.maxAmount, `${path}.maxAmount`, 1, 1e7); number(r.amount, `${path}.amount`, 0, max);
     });
+    if (m.world !== undefined) {
+      const flattened = generatedMapFromWorld(map.world!, 2);
+      if (map.world!.seed !== seed || flattened.width !== map.width || flattened.height !== map.height || flattened.size !== map.size || JSON.stringify(flattened.terrain) !== JSON.stringify(map.terrain)) bad('map.world', 'layered map disagrees with the scenario ground map');
+      if (JSON.stringify(flattened.starts.map(p => [p.x, p.y, p.level ?? 0])) !== JSON.stringify(map.starts.map(p => [p.x, p.y, p.level ?? 0])) || JSON.stringify(flattened.resources.map(r => [r.x, r.y, r.level ?? 0, r.kind, r.amount, r.maxAmount])) !== JSON.stringify(map.resources.map(r => [r.x, r.y, r.level ?? 0, r.kind, r.amount, r.maxAmount]))) bad('map.world', 'layered starts or resources disagree with the scenario map');
+    }
   } else {
     const generated = generateMap(seed, 'small');
     map = { size: generated.size, width: generated.width, height: generated.height, terrain: generated.terrain, starts: generated.starts, resources: generated.resources };
   }
   function coordinates(record: RecordValue, path: string): void {
     number(record.x, `${path}.x`, .5, map.width - .5); number(record.y, `${path}.y`, .5, map.height - .5);
+    if (record.level !== undefined) number(record.level, `${path}.level`, 0, (map.world?.levels.length ?? 1) - 1, true);
   }
-  function point(v: unknown, path: string): void { coordinates(object(v, path, ['x', 'y']), path); }
+  function point(v: unknown, path: string): void { coordinates(object(v, path, ['x', 'y'], ['level']), path); }
   const actorLabels = new Set<string>(), actorByLabel = new Map<string, ScenarioActor>();
   function actor(v: unknown, path: string): void {
-    const a = object(v, path, ['label', 'side', 'kind', 'role', 'x', 'y'], ['hp', 'order', 'definitionId']);
+    const a = object(v, path, ['label', 'side', 'kind', 'role', 'x', 'y'], ['hp', 'order', 'definitionId', 'level']);
     const label = identifier(a.label, `${path}.label`);
     if (actorLabels.has(label)) bad(`${path}.label`, 'duplicate actor label');
     actorLabels.add(label); actorByLabel.set(label, a as unknown as ScenarioActor);
@@ -122,7 +130,8 @@ export function validateScenario(input: unknown): ScenarioDefinition {
     if (a.definitionId !== undefined) identifier(a.definitionId, `${path}.definitionId`);
     const radius = kind === 'building' ? def.buildings[role as BuildingRole].size / 2 : .27;
     for (let y = Math.floor((a.y as number) - radius); y <= Math.floor((a.y as number) + radius); y++) for (let x = Math.floor((a.x as number) - radius); x <= Math.floor((a.x as number) + radius); x++) {
-      if (x < 0 || y < 0 || x >= map.width || y >= map.height || !TERRAIN[map.terrain[y * map.width + x]].walkable) bad(path, 'actor is on impassable terrain');
+      const terrain = map.world?.levels[(a.level as number | undefined) ?? 0].terrain ?? map.terrain;
+      if (x < 0 || y < 0 || x >= map.width || y >= map.height || !TERRAIN[terrain[y * map.width + x]].walkable) bad(path, 'actor is on impassable terrain');
     }
   }
   list(s.army, 'army', 256, 1).forEach((v, i) => actor(v, `army[${i}]`));
@@ -160,9 +169,9 @@ export function validateScenario(input: unknown): ScenarioDefinition {
     }
   }
   function order(v: unknown, path: string): void {
-    const o = object(v, path, ['type'], ['x', 'y', 'actor']);
+    const o = object(v, path, ['type'], ['x', 'y', 'actor', 'level']);
     switch (o.type) {
-      case 'move': case 'attackMove': object(v, path, ['type', 'x', 'y']); coordinates(o, path); break;
+      case 'move': case 'attackMove': object(v, path, ['type', 'x', 'y'], ['level']); coordinates(o, path); break;
       case 'attack': object(v, path, ['type', 'actor']); reference(o.actor, `${path}.actor`); break;
       case 'stop': case 'hold': case 'ability': object(v, path, ['type']); break;
       default: bad(`${path}.type`, 'unknown order');
