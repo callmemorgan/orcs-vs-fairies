@@ -6,6 +6,8 @@ import './tournament-dashboard.css';
 export type { TournamentDashboardSource } from '../tournament/types';
 export interface TournamentDashboardOptions {
   source?: TournamentDashboardSource;
+  /** Reuse the host's toolbar when it already coordinates tool layout. */
+  toolbar?: HTMLElement;
   onReplay: (archive: ReplayArchive, match: TournamentMatch, report: TournamentReport) => void | Promise<void>;
   onVisibility?: (open: boolean) => void;
   download?: (filename: string, report: TournamentReport) => void | boolean | Promise<void | boolean>;
@@ -56,7 +58,7 @@ export function mountTournamentDashboard(root: HTMLElement, options: TournamentD
   let verifyRequest = 0, verifying = false, pollBusy = false, pollTimer: ReturnType<typeof setTimeout> | null = null;
   const host = create('section', undefined, 'tournament-dashboard'); host.setAttribute('aria-label', 'Tournament dashboard');
   const toolbar = create('nav', undefined, 'tournament-toolbar'); toolbar.setAttribute('aria-label', 'Tournament tools');
-  const launch = button('Tournaments', open); launch.dataset.tournamentTool = 'dashboard'; launch.setAttribute('aria-haspopup', 'dialog'); launch.setAttribute('aria-expanded', 'false'); toolbar.append(launch);
+  const launch = button('Tournaments', open); launch.dataset.tournamentTool = 'dashboard'; launch.setAttribute('aria-haspopup', 'dialog'); launch.setAttribute('aria-expanded', 'false'); (options.toolbar??toolbar).append(launch);
   const overlay = create('div', undefined, 'tournament-overlay'); overlay.hidden = true;
   const dialog = create('section', undefined, 'tournament-dialog'); dialog.setAttribute('role', 'dialog'); dialog.setAttribute('aria-modal', 'true'); dialog.setAttribute('aria-label', 'Tournament dashboard'); dialog.tabIndex = -1;
   const header = create('header'), closeButton = button('Close', close); closeButton.setAttribute('aria-label', 'Close tournament dashboard'); header.append(create('h2', 'Tournaments'), closeButton);
@@ -302,6 +304,6 @@ export function mountTournamentDashboard(root: HTMLElement, options: TournamentD
   return {
     update(status: { blocked?: boolean } = {}): void { if (disposed) return; blocked = !!status.blocked; refresh(); },
     loadReport,
-    dispose(): void { if (disposed) return; close(); disposed = true; ++verifyRequest; clearPoll(); document.removeEventListener('keydown', keyboard, true); host.remove(); },
+    dispose(): void { if (disposed) return; close(); disposed = true; ++verifyRequest; clearPoll(); document.removeEventListener('keydown', keyboard, true); launch.remove(); host.remove(); },
   };
 }

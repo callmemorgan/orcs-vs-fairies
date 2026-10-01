@@ -275,7 +275,12 @@ const tools=mountSessionTools(root,{
  onModal:open=>setModal('session',open)
 });
 mountOnlineLobby(root,{api:onlineApi,onJoinMatch:joinOnline,onVisibility:open=>setModal('online',open)});
-const tournaments=mountTournamentDashboard(root,{source:createTournamentDashboardSource(),onReplay:importReplay,onVisibility:open=>setModal('tournament',open)});
+const sessionToolbar=root.querySelector<HTMLElement>('.session-toolbar')!;
+const tournaments=mountTournamentDashboard(root,{source:createTournamentDashboardSource(),toolbar:sessionToolbar,onReplay:importReplay,onVisibility:open=>setModal('tournament',open)});
+function alignToolPanels(){root.style.setProperty('--tool-panel-top',`${Math.max(126,Math.ceil(sessionToolbar.getBoundingClientRect().bottom)+8)}px`);}
+new ResizeObserver(alignToolPanels).observe(sessionToolbar);
+new MutationObserver(alignToolPanels).observe(sessionToolbar.parentElement!,{attributes:true,attributeFilter:['class']});
+window.addEventListener('resize',alignToolPanels);alignToolPanels();
 function tournamentBlocked(){return !!scene?.photoMode||Array.from(openModals).some(source=>source!=='tournament');}
 function planningBlocked(){return !!scene?.photoMode||Array.from(openModals).some(source=>source!=='planning');}
 function canEditPlanning(side:Side,context:PlanningEditContext){

@@ -1,0 +1,25 @@
+{
+  "url": "http://127.0.0.1:4173",
+  "checks": [
+    {
+      "name": "desert launches through menu",
+      "biome": "desert",
+      "terrain": [
+        "rock",
+        "sand",
+        "grass",
+        "shallows",
+        "water",
+        "road",
+        "bridge",
+        "mud"
+      ],
+      "levels": 2,
+      "transitions": 2,
+      "viewLevel": 0,
+      "tick": 1
+    }
+  ],
+  "errors": [],
+  "failure": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.world-tools > summary')\u001b[22m\n\u001b[2m    - locator resolved to <summary>World · day · wind · spring</summary>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <button type=\"button\" aria-expanded=\"false\" aria-haspopup=\"dialog\" data-tournament-tool=\"dashboard\">Tournaments</button> from <section aria-label=\"Session tools\" class=\"session-tools session-in-match\">…</section> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <button type=\"button\" aria-expanded=\"false\" aria-haspopup=\"dialog\" data-tournament-tool=\"dashboard\">Tournaments</button> from <section aria-label=\"Session tools\" class=\"session-tools session-in-match\">…</section> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    41 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <button type=\"button\" aria-expanded=\"false\" aria-haspopup=\"dialog\" data-tournament-tool=\"dashboard\">Tournaments</button> from <section aria-label=\"Session tools\" class=\"session-tools session-in-match\">…</section> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at /home/morgana/Projects/orcs-vs-Fairies/scripts/verify_world.mjs:11:48"
+}

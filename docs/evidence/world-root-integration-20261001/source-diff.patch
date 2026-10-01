@@ -1,0 +1,55 @@
+diff --git a/src/main.ts b/src/main.ts
+index b88874d..7f5530f 100644
+--- a/src/main.ts
++++ b/src/main.ts
+@@ -275,7 +275,12 @@ const tools=mountSessionTools(root,{
+  onModal:open=>setModal('session',open)
+ });
+ mountOnlineLobby(root,{api:onlineApi,onJoinMatch:joinOnline,onVisibility:open=>setModal('online',open)});
+-const tournaments=mountTournamentDashboard(root,{source:createTournamentDashboardSource(),onReplay:importReplay,onVisibility:open=>setModal('tournament',open)});
++const sessionToolbar=root.querySelector<HTMLElement>('.session-toolbar')!;
++const tournaments=mountTournamentDashboard(root,{source:createTournamentDashboardSource(),toolbar:sessionToolbar,onReplay:importReplay,onVisibility:open=>setModal('tournament',open)});
++function alignToolPanels(){root.style.setProperty('--tool-panel-top',`${Math.max(126,Math.ceil(sessionToolbar.getBoundingClientRect().bottom)+8)}px`);}
++new ResizeObserver(alignToolPanels).observe(sessionToolbar);
++new MutationObserver(alignToolPanels).observe(sessionToolbar.parentElement!,{attributes:true,attributeFilter:['class']});
++window.addEventListener('resize',alignToolPanels);alignToolPanels();
+ function tournamentBlocked(){return !!scene?.photoMode||Array.from(openModals).some(source=>source!=='tournament');}
+ function planningBlocked(){return !!scene?.photoMode||Array.from(openModals).some(source=>source!=='planning');}
+ function canEditPlanning(side:Side,context:PlanningEditContext){
+diff --git a/src/ui/TournamentDashboard.ts b/src/ui/TournamentDashboard.ts
+index f9d9cd2..09a95a8 100644
+--- a/src/ui/TournamentDashboard.ts
++++ b/src/ui/TournamentDashboard.ts
+@@ -6,6 +6,8 @@ import './tournament-dashboard.css';
+ export type { TournamentDashboardSource } from '../tournament/types';
+ export interface TournamentDashboardOptions {
+   source?: TournamentDashboardSource;
++  /** Reuse the host's toolbar when it already coordinates tool layout. */
++  toolbar?: HTMLElement;
+   onReplay: (archive: ReplayArchive, match: TournamentMatch, report: TournamentReport) => void | Promise<void>;
+   onVisibility?: (open: boolean) => void;
+   download?: (filename: string, report: TournamentReport) => void | boolean | Promise<void | boolean>;
+@@ -56,7 +58,7 @@ export function mountTournamentDashboard(root: HTMLElement, options: TournamentD
+   let verifyRequest = 0, verifying = false, pollBusy = false, pollTimer: ReturnType<typeof setTimeout> | null = null;
+   const host = create('section', undefined, 'tournament-dashboard'); host.setAttribute('aria-label', 'Tournament dashboard');
+   const toolbar = create('nav', undefined, 'tournament-toolbar'); toolbar.setAttribute('aria-label', 'Tournament tools');
+-  const launch = button('Tournaments', open); launch.dataset.tournamentTool = 'dashboard'; launch.setAttribute('aria-haspopup', 'dialog'); launch.setAttribute('aria-expanded', 'false'); toolbar.append(launch);
++  const launch = button('Tournaments', open); launch.dataset.tournamentTool = 'dashboard'; launch.setAttribute('aria-haspopup', 'dialog'); launch.setAttribute('aria-expanded', 'false'); (options.toolbar??toolbar).append(launch);
+   const overlay = create('div', undefined, 'tournament-overlay'); overlay.hidden = true;
+   const dialog = create('section', undefined, 'tournament-dialog'); dialog.setAttribute('role', 'dialog'); dialog.setAttribute('aria-modal', 'true'); dialog.setAttribute('aria-label', 'Tournament dashboard'); dialog.tabIndex = -1;
+   const header = create('header'), closeButton = button('Close', close); closeButton.setAttribute('aria-label', 'Close tournament dashboard'); header.append(create('h2', 'Tournaments'), closeButton);
+@@ -302,6 +304,6 @@ export function mountTournamentDashboard(root: HTMLElement, options: TournamentD
+   return {
+     update(status: { blocked?: boolean } = {}): void { if (disposed) return; blocked = !!status.blocked; refresh(); },
+     loadReport,
+-    dispose(): void { if (disposed) return; close(); disposed = true; ++verifyRequest; clearPoll(); document.removeEventListener('keydown', keyboard, true); host.remove(); },
++    dispose(): void { if (disposed) return; close(); disposed = true; ++verifyRequest; clearPoll(); document.removeEventListener('keydown', keyboard, true); launch.remove(); host.remove(); },
+   };
+ }
+diff --git a/src/ui/world-tools.css b/src/ui/world-tools.css
+index 6cf1139..16cbf6a 100644
+--- a/src/ui/world-tools.css
++++ b/src/ui/world-tools.css
+@@ -1 +1 @@
+-.world-tools{position:fixed;right:14px;top:126px;z-index:40;color:#e9eee5;background:#152827ed;border:1px solid #8f9c77;border-radius:5px;max-width:310px;box-shadow:0 3px 14px #0008;font-size:12px}.world-tools>summary{padding:8px 12px;cursor:pointer;list-style-position:inside}.world-tools-body{padding:0 12px 12px;max-height:55vh;overflow:auto;display:grid;gap:9px;width:285px}.world-tools-body p{font-size:11px;line-height:1.4;margin:0}.world-tools-body label{display:grid;gap:4px}.world-tools-body select,.world-tools-body button{font:inherit;border:1px solid #73866c;background:#263b35;color:#f0f2e5;border-radius:3px;padding:5px}.world-tools-body button{cursor:pointer}.world-tools-body button:disabled{opacity:.5;cursor:default}.world-row{display:flex;flex-wrap:wrap;gap:4px;border-top:1px solid #485e4c;padding-top:6px;margin-top:6px}.world-row>span{width:100%}.world-tools-body details button{display:block;margin-top:4px}.world-tools-body fieldset{display:flex;flex-wrap:wrap;gap:4px;margin:0;border:1px solid #657961}.world-tools-body fieldset select{width:100%}.photo-mode .world-tools{visibility:hidden}
++.world-tools{position:fixed;right:14px;top:var(--tool-panel-top,126px);z-index:40;color:#e9eee5;background:#152827ed;border:1px solid #8f9c77;border-radius:5px;max-width:310px;box-shadow:0 3px 14px #0008;font-size:12px}.world-tools>summary{padding:8px 12px;cursor:pointer;list-style-position:inside}.world-tools-body{padding:0 12px 12px;max-height:min(55vh,calc(100dvh - var(--tool-panel-top,126px) - 216px));overflow:auto;display:grid;gap:9px;width:285px}.world-tools-body p{font-size:11px;line-height:1.4;margin:0}.world-tools-body label{display:grid;gap:4px}.world-tools-body select,.world-tools-body button{font:inherit;border:1px solid #73866c;background:#263b35;color:#f0f2e5;border-radius:3px;padding:5px}.world-tools-body button{cursor:pointer}.world-tools-body button:disabled{opacity:.5;cursor:default}.world-row{display:flex;flex-wrap:wrap;gap:4px;border-top:1px solid #485e4c;padding-top:6px;margin-top:6px}.world-row>span{width:100%}.world-tools-body details button{display:block;margin-top:4px}.world-tools-body fieldset{display:flex;flex-wrap:wrap;gap:4px;margin:0;border:1px solid #657961}.world-tools-body fieldset select{width:100%}.photo-mode .world-tools{visibility:hidden}

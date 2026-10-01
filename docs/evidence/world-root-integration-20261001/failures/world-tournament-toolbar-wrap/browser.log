@@ -1,0 +1,62 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.world-tools > summary')[22m
+[2m    - locator resolved to <summary>World · day · wind · spring</summary>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <button type="button" aria-expanded="false" aria-haspopup="dialog" data-tournament-tool="dashboard">Tournaments</button> from <section aria-label="Session tools" class="session-tools session-in-match">…</section> subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <button type="button" aria-expanded="false" aria-haspopup="dialog" data-tournament-tool="dashboard">Tournaments</button> from <section aria-label="Session tools" class="session-tools session-in-match">…</section> subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m      - waiting 100ms[22m
+[2m    41 × waiting for element to be visible, enabled and stable[22m
+[2m       - element is visible, enabled and stable[22m
+[2m       - scrolling into view if needed[22m
+[2m       - done scrolling[22m
+[2m       - <button type="button" aria-expanded="false" aria-haspopup="dialog" data-tournament-tool="dashboard">Tournaments</button> from <section aria-label="Session tools" class="session-tools session-in-match">…</section> subtree intercepts pointer events[22m
+[2m     - retrying click action[22m
+[2m       - waiting 500ms[22m
+
+    at /home/morgana/Projects/orcs-vs-Fairies/scripts/verify_world.mjs:11:48 {
+  log: [
+    "  - waiting for locator('.world-tools > summary')",
+    '    - locator resolved to <summary>World · day · wind · spring</summary>',
+    '  - attempting click action',
+    '    2 × waiting for element to be visible, enabled and stable',
+    '      - element is visible, enabled and stable',
+    '      - scrolling into view if needed',
+    '      - done scrolling',
+    '      - <button type="button" aria-expanded="false" aria-haspopup="dialog" data-tournament-tool="dashboard">Tournaments</button> from <section aria-label="Session tools" class="session-tools session-in-match">…</section> subtree intercepts pointer events',
+    '    - retrying click action',
+    '    - waiting 20ms',
+    '    2 × waiting for element to be visible, enabled and stable',
+    '      - element is visible, enabled and stable',
+    '      - scrolling into view if needed',
+    '      - done scrolling',
+    '      - <button type="button" aria-expanded="false" aria-haspopup="dialog" data-tournament-tool="dashboard">Tournaments</button> from <section aria-label="Session tools" class="session-tools session-in-match">…</section> subtree intercepts pointer events',
+    '    - retrying click action',
+    '      - waiting 100ms',
+    '    41 × waiting for element to be visible, enabled and stable',
+    '       - element is visible, enabled and stable',
+    '       - scrolling into view if needed',
+    '       - done scrolling',
+    '       - <button type="button" aria-expanded="false" aria-haspopup="dialog" data-tournament-tool="dashboard">Tournaments</button> from <section aria-label="Session tools" class="session-tools session-in-match">…</section> subtree intercepts pointer events',
+    '     - retrying click action',
+    '       - waiting 500ms'
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.21.0
