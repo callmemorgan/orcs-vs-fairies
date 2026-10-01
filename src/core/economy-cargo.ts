@@ -44,13 +44,21 @@ export function marketQuote(market:EconomyMarket,kind:ResourceKind,amount:number
 
 /** A normal move or attack cancels the job, while the unit keeps its paid cargo. */
 export function cancelCargoTask(entity:Entity,economy:EconomyState):void {
- economy.tasks=economy.tasks.filter(task => task.entityId !== entity.id || task.kind === 'plant');
+ cancelTasks(economy,entity.id);
  const cargo=cargoFor(economy,entity.id);
  if(cargo){delete cargo.destinationId;cargo.tradeValue=0;delete cargo.contractId;cargo.origin='delivery';}
 }
 
+function cancelTasks(economy:EconomyState,entityId:number):void {
+ for(const task of economy.tasks)if(task.entityId===entityId&&task.kind==='plant'){
+  const grove=economy.groves.find(item=>item.id===task.targetId&&item.plantedAt<0);
+  if(grove)grove.burned=true;
+ }
+ economy.tasks=economy.tasks.filter(task=>task.entityId!==entityId);
+}
+
 function startTask(s:GameState,entity:Entity,task:EconomyTask,economy:EconomyState,hooks:EconomyHooks):void {
- economy.tasks=economy.tasks.filter(previous => previous.entityId !== entity.id);
+ cancelTasks(economy,entity.id);
  delete entity.orderQueue;
  hooks.assign(s,entity,{type:'hold'});
  economy.tasks.push(task);
@@ -320,7 +328,7 @@ export function economicDeath(s:GameState,entity:Entity,economy:EconomyState,_ho
  economy.specializations=economy.specializations.filter(item=>item.entityId!==entity.id);
  entity.carried=0;
  economy.cargo=economy.cargo.filter(item=>item.entityId!==entity.id);
- economy.tasks=economy.tasks.filter(item=>item.entityId!==entity.id);
+ cancelTasks(economy,entity.id);
  economy.caravans=economy.caravans.filter(id=>id!==entity.id);
  economy.paidCosts=economy.paidCosts.filter(item=>item.entityId!==entity.id);
  economy.workerWarehouses=economy.workerWarehouses.filter(item=>item.entityId!==entity.id&&item.warehouseId!==entity.id);
