@@ -1,8 +1,9 @@
 import { buildingFor, factionFor } from './content-registry';
+import { DIRECTIONS_32, NEAREST_DIRECTION_INDICES_32, length2D } from './geometry';
 import { terrainAt, TERRAIN } from './maps';
 import type { GameState, Side, Vec } from './types';
 
-const distance=(a:Vec,b:Vec)=>Math.hypot(a.x-b.x,a.y-b.y);
+const distance=(a:Vec,b:Vec)=>length2D(a.x-b.x,a.y-b.y);
 const clamp=(v:number,a:number,b:number)=>Math.max(a,Math.min(b,v));
 const buildingRadius=(s:GameState,e:GameState['entities'][number])=>buildingFor(s,e).size/2+.27;
 
@@ -10,7 +11,7 @@ export function walkable(s:GameState,x:number,y:number):boolean{
  if(x<.35||y<.35||x>s.width-.35||y>s.height-.35)return false;
  for(let ty=Math.floor(y-.27);ty<=Math.floor(y+.27);ty++)for(let tx=Math.floor(x-.27);tx<=Math.floor(x+.27);tx++)if(!TERRAIN[terrainAt(s,tx+.5,ty+.5)].walkable)return false;
  for(const b of s.entities)if(b.hp>0&&b.kind==='building'&&!b.gateOpen){const r=buildingRadius(s,b);if(Math.abs(b.x-x)<r&&Math.abs(b.y-y)<r)return false;}
- for(const r of s.resources)if(r.amount>0&&Math.hypot(r.x-x,r.y-y)<.7)return false;
+ for(const r of s.resources)if(r.amount>0&&length2D(r.x-x,r.y-y)<.7)return false;
  return true;
 }
 
@@ -23,7 +24,7 @@ export function segmentWalkable(s:GameState,a:Vec,b:Vec):boolean{
   if(enter<leave)return false;
  }
 
- for(const r of s.resources){if(r.amount<=0)continue;const t=lengthSquared?clamp(((r.x-a.x)*dx+(r.y-a.y)*dy)/lengthSquared,0,1):0;if(Math.hypot(a.x+t*dx-r.x,a.y+t*dy-r.y)<.7)return false;}
+ for(const r of s.resources){if(r.amount<=0)continue;const t=lengthSquared?clamp(((r.x-a.x)*dx+(r.y-a.y)*dy)/lengthSquared,0,1):0;if(length2D(a.x+t*dx-r.x,a.y+t*dy-r.y)<.7)return false;}
  for(const obstacle of s.entities){if(obstacle.hp<=0||obstacle.kind!=='building'||obstacle.gateOpen)continue;const r=buildingRadius(s,obstacle);let enter=0,leave=1;
   for(const [origin,delta,center] of [[a.x,dx,obstacle.x],[a.y,dy,obstacle.y]]){if(delta===0){if(Math.abs(origin-center)>=r){enter=1;leave=0;break;}}else{const t1=(center-r-origin)/delta,t2=(center+r-origin)/delta;enter=Math.max(enter,Math.min(t1,t2));leave=Math.min(leave,Math.max(t1,t2));}}
   if(enter<leave)return false;
@@ -33,8 +34,10 @@ export function segmentWalkable(s:GameState,a:Vec,b:Vec):boolean{
 
 export function openDestination(s:GameState,to:Vec,from:Vec):Vec|undefined{
  if(walkable(s,to.x,to.y))return to;
- const angle=Math.atan2(from.y-to.y,from.x-to.x);
- for(let r=.25;r<=6;r+=.25){const candidates:Vec[]=[];for(let i=0;i<32;i++){const a=angle+i*Math.PI/16,p={x:to.x+Math.cos(a)*r,y:to.y+Math.sin(a)*r};if(walkable(s,p.x,p.y))candidates.push(p);}if(candidates.length)return candidates.sort((a,b)=>distance(from,a)-distance(from,b))[0];}
+ const dx=from.x-to.x,dy=from.y-to.y,length=length2D(dx,dy),ux=length?dx/length:1,uy=length?dy/length:0;
+ // For a fixed ring, distance from `from` increases with angular deviation.
+ // Visit mirror pairs in index order instead of sorting rounded near-ties.
+ for(let r=.25;r<=6;r+=.25)for(const i of NEAREST_DIRECTION_INDICES_32){const [x,y]=DIRECTIONS_32[i],p={x:to.x+(ux*x-uy*y)*r,y:to.y+(uy*x+ux*y)*r};if(walkable(s,p.x,p.y))return p;}
  return undefined;
 }
 
@@ -60,7 +63,7 @@ function gridFor(s:GameState,CELL:number):Grid{
   const r='role' in b?buildingRadius(s,b):.7;
   for(let y=Math.max(0,Math.floor((b.y-r)/CELL));y<Math.min(height,Math.ceil((b.y+r)/CELL));y++)for(let x=Math.max(0,Math.floor((b.x-r)/CELL));x<Math.min(width,Math.ceil((b.x+r)/CELL));x++){
    const dx=Math.abs((x+.5)*CELL-b.x),dy=Math.abs((y+.5)*CELL-b.y);
-   if('role' in b?dx<r&&dy<r:Math.hypot(dx,dy)<r)blocked[y*width+x]=1;
+   if('role' in b?dx<r&&dy<r:length2D(dx,dy)<r)blocked[y*width+x]=1;
   }
  }
  const grid={terrain:s.terrain,terrainSignature,signature,width,height,blocked,edges:new Map<number,boolean>()};caches.set(CELL,grid);return grid;

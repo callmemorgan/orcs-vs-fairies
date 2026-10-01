@@ -1,3 +1,4 @@
+import { MATCH_START_DIRECTIONS, length2D } from './geometry';
 import type { MapSize, ResourceKind, ResourceNode, TerrainKind, Vec } from './types';
 
 export const MAP_SIZES:Record<MapSize,number>={small:36,medium:48,large:64,huge:88};
@@ -41,10 +42,10 @@ export function generateMap(seed:number,size:MapSize='medium'):GeneratedMap{
  const before=[...terrain];
  for(let y=0;y<height;y++)for(let x=0;x<width;x++)if(before[y*width+x]==='water'&&[[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy])=>x+dx<0||y+dy<0||x+dx>=width||y+dy>=height||before[(y+dy)*width+x+dx]!=='water'))set(x,y,'shallows');
  const carve=(a:Vec,b:Vec,radius=1.65)=>{
-  const length=Math.hypot(b.x-a.x,b.y-a.y),steps=Math.ceil(length*3);
+  const length=length2D(b.x-a.x,b.y-a.y),steps=Math.ceil(length*3);
   for(let i=0;i<=steps;i++){
    const t=steps?i/steps:0,cx=a.x+(b.x-a.x)*t,cy=a.y+(b.y-a.y)*t;
-   for(let y=Math.max(0,Math.floor(cy-radius));y<Math.min(height,Math.ceil(cy+radius));y++)for(let x=Math.max(0,Math.floor(cx-radius));x<Math.min(width,Math.ceil(cx+radius));x++)if(Math.hypot(x+.5-cx,y+.5-cy)<=radius){const old=terrain[y*width+x];set(x,y,old==='water'||old==='shallows'||old==='bridge'?'bridge':'road');}
+   for(let y=Math.max(0,Math.floor(cy-radius));y<Math.min(height,Math.ceil(cy+radius));y++)for(let x=Math.max(0,Math.floor(cx-radius));x<Math.min(width,Math.ceil(cx+radius));x++)if(length2D(x+.5-cx,y+.5-cy)<=radius){const old=terrain[y*width+x];set(x,y,old==='water'||old==='shallows'||old==='bridge'?'bridge':'road');}
   }
  };
  const center={x:width/2,y:height/2},bend={x:width*(.32+rng()*.08),y:height*(.32+rng()*.08)};
@@ -55,8 +56,8 @@ export function generateMap(seed:number,size:MapSize='medium'):GeneratedMap{
  disk(starts[0].x,starts[0].y,8.1,8.1,'grass');
  const addPair=(p:Vec,kind:ResourceKind,amount:number)=>{
   const q=mirror(p);
-  if(Math.hypot(p.x-q.x,p.y-q.y)<2.2)return false;
-  if(map.resources.some(r=>Math.hypot(r.x-p.x,r.y-p.y)<2.05||Math.hypot(r.x-q.x,r.y-q.y)<2.05))return false;
+  if(length2D(p.x-q.x,p.y-q.y)<2.2)return false;
+  if(map.resources.some(r=>length2D(r.x-p.x,r.y-p.y)<2.05||length2D(r.x-q.x,r.y-q.y)<2.05))return false;
   for(const point of [p,q])map.resources.push({...point,kind,amount,maxAmount:amount});
   disk(p.x,p.y,1.75,1.75,'grass');return true;
  };
@@ -68,11 +69,11 @@ export function generateMap(seed:number,size:MapSize='medium'):GeneratedMap{
   const p={x:Math.floor(base+(center.x-base)*t+(rng()-.5)*10)+.5,y:Math.floor(base+(center.y-base)*t+(rng()-.5)*10)+.5};
   for(const [dx,dy,kind,amount] of [[-2,0,'wood',3000],[0,2,'ore',2200],[2,0,'crystal',400]] as const){
    const q={x:Math.max(2.5,Math.min(width-2.5,p.x+dx)),y:Math.max(2.5,Math.min(height-2.5,p.y+dy))};
-   if(starts.some(a=>Math.hypot(a.x-q.x,a.y-q.y)<7))continue;
+   if(starts.some(a=>length2D(a.x-q.x,a.y-q.y)<7))continue;
    if(addPair(q,kind,amount)){
     // Link each deposit to the road network with a navigable branch.
     let nearest:Vec|undefined,best=Infinity;
-    for(let y=0;y<height;y++)for(let x=0;x<width;x++)if(terrain[y*width+x]==='road'||terrain[y*width+x]==='bridge'){const d=Math.hypot(q.x-x-.5,q.y-y-.5);if(d<best){best=d;nearest={x:x+.5,y:y+.5};}}
+    for(let y=0;y<height;y++)for(let x=0;x<width;x++)if(terrain[y*width+x]==='road'||terrain[y*width+x]==='bridge'){const d=length2D(q.x-x-.5,q.y-y-.5);if(d<best){best=d;nearest={x:x+.5,y:y+.5};}}
     if(nearest)carve(q,nearest,1.1);
    }
   }
@@ -104,21 +105,18 @@ export function generateMatchMap(seed:number,size:MapSize='medium',playerCount=2
  if(playerCount===1)return {...map,starts:[map.starts[0]]};
  const {width,height,terrain}=map,center={x:width/2,y:height/2},radius=width/2-10.5;
  // Even spacing leaves room for each entire opening army, its HQ and its six deposits.
- map.starts=Array.from({length:playerCount},(_,slot)=>{
-  const angle=-Math.PI*3/4+slot*Math.PI*2/playerCount;
-  return {x:Math.floor(center.x+Math.cos(angle)*radius)+.5,y:Math.floor(center.y+Math.sin(angle)*radius)+.5};
- });
+ map.starts=MATCH_START_DIRECTIONS[playerCount].map(([dx,dy])=>({x:Math.floor(center.x+dx*radius)+.5,y:Math.floor(center.y+dy*radius)+.5}));
  // Original deposits belong to the duel layout. Replacing them avoids unequal reserves
  // and deposits colliding with any of the new HQs or opening workers.
  map.resources=[];
  const paintDisk=(p:Vec,r:number,kind:TerrainKind)=>{
-  for(let y=Math.max(1,Math.floor(p.y-r));y<Math.min(height-1,Math.ceil(p.y+r));y++)for(let x=Math.max(1,Math.floor(p.x-r));x<Math.min(width-1,Math.ceil(p.x+r));x++)if(Math.hypot(x+.5-p.x,y+.5-p.y)<=r)terrain[y*width+x]=kind;
+  for(let y=Math.max(1,Math.floor(p.y-r));y<Math.min(height-1,Math.ceil(p.y+r));y++)for(let x=Math.max(1,Math.floor(p.x-r));x<Math.min(width-1,Math.ceil(p.x+r));x++)if(length2D(x+.5-p.x,y+.5-p.y)<=r)terrain[y*width+x]=kind;
  };
  const carve=(a:Vec,b:Vec,r=1.8)=>{
-  const steps=Math.ceil(Math.hypot(b.x-a.x,b.y-a.y)*3);
+  const steps=Math.ceil(length2D(b.x-a.x,b.y-a.y)*3);
   for(let i=0;i<=steps;i++){
    const t=steps?i/steps:0,p={x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t};
-   for(let y=Math.max(1,Math.floor(p.y-r));y<Math.min(height-1,Math.ceil(p.y+r));y++)for(let x=Math.max(1,Math.floor(p.x-r));x<Math.min(width-1,Math.ceil(p.x+r));x++)if(Math.hypot(x+.5-p.x,y+.5-p.y)<=r){const old=terrain[y*width+x];terrain[y*width+x]=old==='water'||old==='shallows'||old==='bridge'?'bridge':'road';}
+   for(let y=Math.max(1,Math.floor(p.y-r));y<Math.min(height-1,Math.ceil(p.y+r));y++)for(let x=Math.max(1,Math.floor(p.x-r));x<Math.min(width-1,Math.ceil(p.x+r));x++)if(length2D(x+.5-p.x,y+.5-p.y)<=r){const old=terrain[y*width+x];terrain[y*width+x]=old==='water'||old==='shallows'||old==='bridge'?'bridge':'road';}
   }
  };
  // The outer connections permit flanking and prevent all traffic sharing one junction.
@@ -126,7 +124,7 @@ export function generateMatchMap(seed:number,size:MapSize='medium',playerCount=2
  paintDisk(center,7,'grass');
  for(const start of map.starts)paintDisk(start,8.1,'grass');
  const addResource=(point:Vec,kind:ResourceKind,amount:number)=>{
-  if(map.resources.some(r=>Math.hypot(point.x-r.x,point.y-r.y)<2.05))throw new Error('Multiplayer resource clusters overlap.');
+  if(map.resources.some(r=>length2D(point.x-r.x,point.y-r.y)<2.05))throw new Error('Multiplayer resource clusters overlap.');
   map.resources.push({...point,kind,amount,maxAmount:amount});paintDisk(point,1.75,'grass');
  };
  for(const start of map.starts){
@@ -138,7 +136,7 @@ export function generateMatchMap(seed:number,size:MapSize='medium',playerCount=2
  // Each base faces one equivalent rich camp toward the center. Its deposits are beyond
  // the private reserve radius and all connect to the common road network.
  for(const start of map.starts){
-  const dx=start.x-center.x,dy=start.y-center.y,length=Math.hypot(dx,dy),outward={x:dx/length,y:dy/length},tangent={x:-outward.y,y:outward.x};
+  const dx=start.x-center.x,dy=start.y-center.y,length=length2D(dx,dy),outward={x:dx/length,y:dy/length},tangent={x:-outward.y,y:outward.x};
   const camp={x:center.x+outward.x*radius*.42,y:center.y+outward.y*radius*.42};
   carve(camp,center,1.5);paintDisk(camp,4.5,'grass');
   for(const [along,across,kind,amount] of [[0,-2.5,'wood',4000],[0,2.5,'ore',3500],[2.5,0,'crystal',750]] as const){
@@ -156,7 +154,7 @@ export function validateMap(map:GeneratedMap):MapValidation{
  if(terrain.length!==width*height)issues.push('Terrain dimensions do not match.');
  if(!starts.length||starts.length>8)issues.push('Starting positions must number 1 through 8.');
  if(starts.some(p=>!Number.isFinite(p.x)||!Number.isFinite(p.y)||p.x<2.5||p.y<2.5||p.x>width-2.5||p.y>height-2.5))issues.push('Starting positions lie outside the playable map.');
- const free=(x:number,y:number)=>x>=0&&y>=0&&x<width&&y<height&&TERRAIN[terrain[y*width+x]??'rock'].walkable&&!resources.some(r=>r.amount>0&&Math.hypot(r.x-x-.5,r.y-y-.5)<.7)&&!starts.some(p=>Math.abs(p.x-x-.5)<1.77&&Math.abs(p.y-y-.5)<1.77);
+ const free=(x:number,y:number)=>x>=0&&y>=0&&x<width&&y<height&&TERRAIN[terrain[y*width+x]??'rock'].walkable&&!resources.some(r=>r.amount>0&&length2D(r.x-x-.5,r.y-y-.5)<.7)&&!starts.some(p=>Math.abs(p.x-x-.5)<1.77&&Math.abs(p.y-y-.5)<1.77);
  // Preserve the duel's two reference points; other matches require every HQ approach.
  const approaches=starts.length===2?[{x:Math.floor(starts[0].x),y:Math.floor(starts[0].y+3)},{x:Math.floor(starts[1].x),y:Math.floor(starts[1].y-3)}]:starts.flatMap(p=>[[0,3],[0,-3],[3,0],[-3,0]].map(([dx,dy])=>({x:Math.floor(p.x+dx),y:Math.floor(p.y+dy)})));
  const origin=approaches[0];
@@ -165,8 +163,8 @@ export function validateMap(map:GeneratedMap):MapValidation{
  for(let i=0;i<queue.length;i++){const key=queue[i],x=key%width,y=Math.floor(key/width);for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy,k=ny*width+nx;if(!seen.has(k)&&free(nx,ny)){seen.add(k);queue.push(k);}}}
  const startsConnected=approaches.length>0&&approaches.every(p=>seen.has(p.y*width+p.x));if(!startsConnected)issues.push('Starting armies are disconnected.');
  let reachableResources=0;
- for(const r of resources){let reached=false;for(let y=Math.floor(r.y)-1;y<=Math.floor(r.y)+1;y++)for(let x=Math.floor(r.x)-1;x<=Math.floor(r.x)+1;x++)if(seen.has(y*width+x)&&Math.hypot(x+.5-r.x,y+.5-r.y)<=1.25)reached=true;if(reached)reachableResources++;else issues.push(`Unreachable ${r.kind} at ${r.x},${r.y}.`);}
- for(const start of starts)for(const kind of ['wood','ore','crystal'] as const)if(!resources.some(r=>r.kind===kind&&Math.hypot(r.x-start.x,r.y-start.y)<9))issues.push(`Missing starting ${kind}.`);
+ for(const r of resources){let reached=false;for(let y=Math.floor(r.y)-1;y<=Math.floor(r.y)+1;y++)for(let x=Math.floor(r.x)-1;x<=Math.floor(r.x)+1;x++)if(seen.has(y*width+x)&&length2D(x+.5-r.x,y+.5-r.y)<=1.25)reached=true;if(reached)reachableResources++;else issues.push(`Unreachable ${r.kind} at ${r.x},${r.y}.`);}
+ for(const start of starts)for(const kind of ['wood','ore','crystal'] as const)if(!resources.some(r=>r.kind===kind&&length2D(r.x-start.x,r.y-start.y)<9))issues.push(`Missing starting ${kind}.`);
  if(starts.length===2){
   for(let y=0;y<height;y++)for(let x=0;x<width;x++)if(terrain[y*width+x]!==terrain[(height-1-y)*width+width-1-x]){issues.push('Terrain is not symmetric.');break;}
   for(const r of resources)if(!resources.some(q=>q.kind===r.kind&&q.amount===r.amount&&q.x===width-r.x&&q.y===height-r.y))issues.push('Resource pair is not symmetric.');

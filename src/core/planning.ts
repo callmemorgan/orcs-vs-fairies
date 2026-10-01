@@ -1,4 +1,5 @@
 import { buildingFor, factionFor } from './content-registry';
+import { length2D } from './geometry';
 import { FACTIONS } from './content';
 import { terrainAt, TERRAIN } from './maps';
 import { route, segmentWalkable, walkable } from './navigation';
@@ -47,7 +48,7 @@ const roles = new Set<string>(Object.keys(FACTIONS.orcs.buildings));
 const targetMemory = new WeakMap<GameState, Map<number, WorkerTargets>>();
 const emptyTargets = (): WorkerTargets => ({ wood: 0, ore: 0, crystal: 0 });
 const own = (value: object, key: string) => Object.prototype.hasOwnProperty.call(value, key);
-const distance = (a: Vec, b: Vec) => Math.hypot(a.x - b.x, a.y - b.y);
+const distance = (a: Vec, b: Vec) => length2D(a.x - b.x, a.y - b.y);
 const record = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === 'object' && !Array.isArray(value);
 const validId = (value: unknown): value is number => typeof value === 'number' && Number.isSafeInteger(value) && value > 0;
 const validSideNumber = (side: unknown): side is Side => typeof side === 'number' && Number.isSafeInteger(side) && side >= 0 && side <= 7;

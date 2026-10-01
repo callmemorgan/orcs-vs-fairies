@@ -1,3 +1,4 @@
+import { DIRECTIONS_24, DIRECTIONS_32, facing8, length2D } from './geometry';
 import { aiProfile, chooseAiRecruit, counterWeights, normalizeAiConfig, openingBuilding, rememberObservedUnits, shouldRetreat, skipsAiDecision } from './ai-policy';
 import type { EnemyMemory, EnemyObservation } from './ai-policy';
 import { playerAge, researchRequirement } from './progression';
@@ -8,7 +9,7 @@ import { generateMatchMap, terrainAt, TERRAIN } from './maps';
 import { notifyCommand, notifyStep } from './history-hooks';
 import type { BuildingDef, BuildingRole, Command, Cost, Entity, FactionId, GameOptions, GameState, MatchConfig, ResourceNode, Side, UnitDef, UnitRole, UpgradeId, Vec } from './types';
 
-const distance = (a:Vec,b:Vec) => Math.hypot(a.x-b.x,a.y-b.y);
+const distance = (a:Vec,b:Vec) => length2D(a.x-b.x,a.y-b.y);
 const clamp=(n:number,a:number,b:number)=>Math.max(a,Math.min(b,n));
 interface RetreatRecord { until:number; produced:number; afterId:number }
 interface Runtime { aiBatchTurns:number; aiDecisionAt:number[]; aiDecisionTurns:number[]; knownEnemyUnits:EnemyMemory[]; retreating:Map<number,RetreatRecord>[]; producedFighters:number[]; stepping?:boolean; fog:number; ai:number; aiTurns:number; hits:{source:Entity;target:Entity;amount:number;event:GameState['events'][number]}[]; routes:Map<number,{key:string;at:number}>; abilities:Map<number,number>; returning:Set<number>; queuedGather:Set<number>; aiWave:number[]; initialScoutDispatched:boolean[]; expansionScout:(number|null)[]; expansionScoutDispatched:boolean[]; knownEnemyBuildings:Map<number,Vec & {role:string}>[]; enemyStartCleared:boolean[]; clearedEnemyStarts:Set<Side>[]; searched:Set<number>[] }
@@ -87,7 +88,7 @@ export function isVisible(s:GameState,side:Side,x:number,y:number):boolean{retur
 export function refreshVisibility(s:GameState):void{
  for(const visible of s.visible)visible.clear();
  for(const e of s.entities){if(!alive(e))continue;const sight=e.kind==='unit'?unitDef(s,e).sight:buildingDef(s,e).sight,side=e.side;
-  for(let y=Math.max(0,Math.floor(e.y-sight));y<=Math.min(s.height-1,Math.ceil(e.y+sight));y++)for(let x=Math.max(0,Math.floor(e.x-sight));x<=Math.min(s.width-1,Math.ceil(e.x+sight));x++)if(Math.hypot(x+.5-e.x,y+.5-e.y)<=sight){const key=y*s.width+x;s.visible[side].add(key);s.explored[side].add(key);}
+  for(let y=Math.max(0,Math.floor(e.y-sight));y<=Math.min(s.height-1,Math.ceil(e.y+sight));y++)for(let x=Math.max(0,Math.floor(e.x-sight));x<=Math.min(s.width-1,Math.ceil(e.x+sight));x++)if(length2D(x+.5-e.x,y+.5-e.y)<=sight){const key=y*s.width+x;s.visible[side].add(key);s.explored[side].add(key);}
  }
  if(s.sharedVision)for(const team of new Set(s.teams)){
   const members=playerSides(s).filter(side=>s.teams[side]===team),visible=new Set<number>(),explored=new Set<number>();
@@ -100,7 +101,7 @@ function reserved(s:GameState,side:Side):number{return s.entities.filter(e=>e.si
 function footprintOverlap(e:Entity,x:number,y:number,size:number):boolean{return Math.abs(e.x-x)<size/2+.35&&Math.abs(e.y-y)<size/2+.35;}
 function shovePoint(s:GameState,x:number,y:number,size:number):Vec|undefined{
  // The building is not spawned yet; exclude its collision box, including navigation's .27 unit clearance.
- for(let ring=size/2+1;ring<size/2+5;ring+=.5)for(let i=0;i<32;i++){const a=i/32*Math.PI*2,px=x+Math.cos(a)*ring,py=y+Math.sin(a)*ring;if((Math.abs(px-x)>=size/2+.27||Math.abs(py-y)>=size/2+.27)&&walkable(s,px,py))return {x:px,y:py};}
+ for(let ring=size/2+1;ring<size/2+5;ring+=.5)for(const [dx,dy] of DIRECTIONS_32){const px=x+dx*ring,py=y+dy*ring;if((Math.abs(px-x)>=size/2+.27||Math.abs(py-y)>=size/2+.27)&&walkable(s,px,py))return {x:px,y:py};}
 }
 function rallyWalkable(s:GameState,side:Side,x:number,y:number):boolean{
  const fogged=new Set<Entity>();for(const e of s.entities)if(e.kind==='building'&&alive(e)&&isHostile(s,e.side,side)&&!isVisible(s,side,e.x,e.y))fogged.add(e);
@@ -247,7 +248,7 @@ function useAbility(s:GameState,e:Entity):boolean{
 }
 function walkTo(e:Entity,x:number,y:number):void{
  const dx=x-e.x,dy=y-e.y;
- if(dx!==0||dy!==0)e.facing=(Math.round(Math.atan2(dy,dx)/(Math.PI/4))+8)%8;
+ if(dx!==0||dy!==0)e.facing=facing8(dx,dy);
  e.x=x;e.y=y;e.animation='walk';
 }
 function upgradeFactor(s:GameState,e:Entity,effect:'gather'|'speed'|'damage'):number{
@@ -282,7 +283,7 @@ function die(s:GameState,e:Entity):void{if(e.kind==='building')refundQueue(s,e);
 function enemy(s:GameState,e:Entity,max:number,onlyInRange=false):Entity|undefined{
  let best:Entity|undefined,bestDist=Infinity;for(const b of s.entities){if(!alive(b)||!isHostile(s,b.side,e.side)||!isVisible(s,e.side,b.x,b.y)||onlyInRange&&!near(s,e,b,max))continue;const d=distance(e,b)-radius(s,b);if(d<=max&&(d<bestDist||best?.kind==='building'&&b.kind==='unit')){best=b;bestDist=d;}}return best;
 }
-function fight(s:GameState,e:Entity,b:Entity,dt:number):void{const range=weaponRange(s,e);if(near(s,e,b,range)){e.facing=(Math.round(Math.atan2(b.y-e.y,b.x-e.x)/(Math.PI/4))+8)%8;if(e.cooldown<=0)damage(s,e,b);}else if(e.kind==='unit')move(s,e,b,dt,range+(b.kind==='building'?radius(s,b):0)-.1);}
+function fight(s:GameState,e:Entity,b:Entity,dt:number):void{const range=weaponRange(s,e);if(near(s,e,b,range)){e.facing=facing8(b.x-e.x,b.y-e.y);if(e.cooldown<=0)damage(s,e,b);}else if(e.kind==='unit')move(s,e,b,dt,range+(b.kind==='building'?radius(s,b):0)-.1);}
 function gather(s:GameState,e:Entity,target:number,dt:number):void{
  const node=s.resources.find(n=>n.id===target);const rt=runtime(s),finite=rt.queuedGather.has(e.id)||!!e.orderQueue?.length;if(e.carried>=18||node?.amount===0&&e.carried>0||finite&&(!node||node.amount<=0)&&e.carried>0)rt.returning.add(e.id);
  if(rt.returning.has(e.id)){
@@ -303,7 +304,7 @@ function construct(s:GameState,e:Entity,id:number,dt:number):void{
 function production(s:GameState,e:Entity,dt:number):void{
  if(e.progress<1||!e.queue.length)return;const role=e.queue[0],d=queuedUnitFor(s,e,0);if(s.players[e.side].population>=s.players[e.side].cap)return;
  if(e.trainProgress<1)e.trainProgress=Math.min(1,e.trainProgress+dt/d.trainTime);if(e.trainProgress<1)return;
- let point:Vec|undefined;for(let ring=radius(s,e)+1;ring<=radius(s,e)+6&&!point;ring+=.5)for(let i=0;i<24;i++){const angle=i/24*Math.PI*2+(e.side===0?0:Math.PI),p={x:e.x+Math.cos(angle)*ring,y:e.y+Math.sin(angle)*ring};if(walkable(s,p.x,p.y)){point=p;break;}}
+ let point:Vec|undefined;const direction=e.side===0?1:-1;for(let ring=radius(s,e)+1;ring<=radius(s,e)+6&&!point;ring+=.5)for(const [dx,dy] of DIRECTIONS_24){const p={x:e.x+dx*ring*direction,y:e.y+dy*ring*direction};if(walkable(s,p.x,p.y)){point=p;break;}}
  if(!point){refundCost(s,e.side,role,e.queueDefinitionIds?.[0],e.queuePaidCosts?.[0]);e.queue.shift();e.queueDefinitionIds?.shift();e.queuePaidCosts?.shift();e.trainProgress=0;return;}
  const u=spawn(s,e.side,'unit',role,point.x,point.y,1,e.queueDefinitionIds?.[0]);if(role!=='worker')runtime(s).producedFighters[e.side]++;e.trainProgress=0;e.queue.shift();e.queueDefinitionIds?.shift();e.queuePaidCosts?.shift();emit(s,'train',u);updatePopulation(s);if(e.rally)issueCommand(s,e.side,{type:'move',ids:[u.id],...e.rally});
 }
@@ -383,18 +384,18 @@ export function runAI(s:GameState,side:Side=1):void{
  if(age>=2&&workers.length>=profile.expansionWorkers&&buildings.filter(b=>b.role==='hq').length<2&&!workers.some(w=>w.order.type==='build')&&p.wood>=(config.personality==='expand'?340:400)&&p.ore>=(config.personality==='expand'?160:220)){
   const deposit=available.filter(n=>n.amount>300&&distance(n,hq)>14&&!buildings.some(b=>(b.role==='hq'||b.role==='depot')&&distance(b,n)<8)).sort((a,b)=>distance(a,hq)-distance(b,hq))[0];
   if(deposit){const builder=workers.filter(w=>w.order.type==='gather'||w.order.type==='idle').sort((a,b)=>distance(a,deposit)-distance(b,deposit))[0];
-   if(builder){let placed=false;for(let r=4;r<=7&&!placed;r++)for(let i=0;i<12&&!placed;i++){const x=Math.floor(deposit.x+Math.cos(i*Math.PI/6)*r)+.5,y=Math.floor(deposit.y+Math.sin(i*Math.PI/6)*r)+.5;if(canPlace(s,side,'hq',x,y))placed=issueCommand(s,side,{type:'build',ids:[builder.id],role:'hq',x,y});}}
+   if(builder){let placed=false;for(let r=4;r<=7&&!placed;r++)for(let i=0;i<24&&!placed;i+=2){const [dx,dy]=DIRECTIONS_24[i],x=Math.floor(deposit.x+dx*r)+.5,y=Math.floor(deposit.y+dy*r)+.5;if(canPlace(s,side,'hq',x,y))placed=issueCommand(s,side,{type:'build',ids:[builder.id],role:'hq',x,y});}}
   }
  }
  const queued=reserved(s,side);
  let buildRole:BuildingRole|undefined=openingBuilding(config,buildings.map(b=>b.role as BuildingRole));
  if(!buildRole){if(p.cap-p.population-queued<5&&p.cap<s.populationLimits[side]&&!buildings.some(b=>b.role==='depot'&&b.progress<1))buildRole='depot';else if(s.time>100&&!buildings.some(b=>b.role==='tower'))buildRole='tower';else if(s.time>180&&buildings.filter(b=>b.role==='barracks').length<(age===3&&p.wood>700&&p.ore>300?5:(age>=2||s.time>420)&&p.wood>400?3:2))buildRole='barracks';}
- if(buildRole&&!workers.some(e=>e.order.type==='build')){const builder=workers[0];if(builder){const dir=s.starts[side].y<s.height/2?1:-1;let placed=false;for(let r=5;r<=10&&!placed;r+=2)for(let i=0;i<16&&!placed;i++){const angle=i*Math.PI/8;const x=hq.x+Math.round(Math.cos(angle)*r)*dir,y=hq.y+Math.round(Math.sin(angle)*r)*dir;if(canPlace(s,side,buildRole,x,y))placed=issueCommand(s,side,{type:'build',ids:[builder.id],role:buildRole,x,y});}}}
+ if(buildRole&&!workers.some(e=>e.order.type==='build')){const builder=workers[0];if(builder){const dir=s.starts[side].y<s.height/2?1:-1;let placed=false;for(let r=5;r<=10&&!placed;r+=2)for(let i=0;i<32&&!placed;i+=2){const [dx,dy]=DIRECTIONS_32[i],x=hq.x+Math.round(dx*r)*dir,y=hq.y+Math.round(dy*r)*dir;if(canPlace(s,side,buildRole,x,y))placed=issueCommand(s,side,{type:'build',ids:[builder.id],role:buildRole,x,y});}}}
  // A short defensive screen beside the tower leaves a gate in the army's route.
  if(age>=2&&p.wood>220&&p.ore>160&&!workers.some(w=>w.order.type==='build')){
   const tower=buildings.find(b=>b.role==='tower'&&b.progress===1),builder=workers.find(w=>w.order.type==='gather'||w.order.type==='idle');
   if(tower&&builder){const dir=s.starts[side].y<s.height/2?1:-1;const slots:[BuildingRole,number,number][]=[['gate',0,3.5],['wall',-1.5,3.5],['wall',1.5,3.5],['wall',-2.5,3.5],['wall',2.5,3.5]];
-   for(const [role,dx,dy] of slots){const x=tower.x+dx*dir,y=tower.y+dy*dir;if(buildings.some(b=>Math.hypot(b.x-x,b.y-y)<.4))continue;if(canPlace(s,side,role,x,y)&&issueCommand(s,side,{type:'build',ids:[builder.id],role,x,y}))break;}
+   for(const [role,dx,dy] of slots){const x=tower.x+dx*dir,y=tower.y+dy*dir;if(buildings.some(b=>length2D(b.x-x,b.y-y)<.4))continue;if(canPlace(s,side,role,x,y)&&issueCommand(s,side,{type:'build',ids:[builder.id],role,x,y}))break;}
   }
  }
  for(const gate of buildings.filter(b=>b.role==='gate'&&b.progress===1)){
