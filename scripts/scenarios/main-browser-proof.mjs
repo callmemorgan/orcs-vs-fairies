@@ -44,9 +44,9 @@ async function sourcePin(root, commit) {
   return { commit: exact, files, sourceFingerprint: fingerprint.digest('hex') };
 }
 async function newDirectory(path) {
-  try { await lstat(path); throw new Error('Evidence outputs are append-only. Choose a new directory.'); }
-  catch (error) { if (error.code !== 'ENOENT') throw error; }
-  await mkdir(path, { recursive: true });
+  await mkdir(dirname(path), { recursive: true });
+  try { await mkdir(path); }
+  catch (error) { if (error.code === 'EEXIST') throw new Error('Evidence outputs are append-only. Choose a new directory.'); throw error; }
 }
 async function verifyPackage(output) {
   const manifest = await json(join(output, 'package.json'));
@@ -125,32 +125,49 @@ async function pack([source, commit, target, supplied, destination]) {
 
 async function audit([destination, supplied]) {
   assert.ok(destination && supplied, 'audit requires PACKAGE_DIRECTORY UI_EXPORTS_JSON');
-  const output = resolve(destination), manifest = await verifyPackage(output), suppliedPath = resolve(supplied), exportsManifest = await json(suppliedPath);
-  assert.equal(exportsManifest.sourceCommit, manifest.source.commit);
-  const fixtures = {}, exports = {}, exportFiles = {};
-  for (const [name, path] of Object.entries(manifest.fixtures)) fixtures[name] = await json(join(output, path));
-  for (const name of exportNames) {
-    assert.equal(typeof exportsManifest.files?.[name], 'string', `Missing UI download ${name}`);
-    const path = resolve(dirname(suppliedPath), exportsManifest.files[name]), bytes = await readFile(path);
-    exports[name] = JSON.parse(bytes.toString()); exportFiles[name] = { path: `exports/${name}.json`, sha256: hash(bytes), bytes: bytes.length };
+  const output = resolve(destination), suppliedPath = resolve(supplied), reportPath = join(output, 'export-audit.json'), retainedManifestPath = join(output, 'ui-exports-manifest.json');
+  for (const path of [reportPath, retainedManifestPath]) {
+    try { await lstat(path); throw new Error('Export audit is append-only. Choose a new evidence package to rerun.'); }
+    catch (error) { if (error.code !== 'ENOENT') throw error; }
   }
-  const servedAfter = await verifyServed(manifest.url, manifest.dist);
-  const auditor = await import(pathToFileURL(join(output, 'audit.mjs')).href);
-  const result = auditor.auditMainBrowserExports(fixtures, exports, manifest.source.sourceFingerprint);
-  await verifyPackage(output);
-  const reportPath = join(output, 'export-audit.json');
-  try { await lstat(reportPath); throw new Error('Export audit is append-only. Choose a new evidence package to rerun.'); }
-  catch (error) { if (error.code !== 'ENOENT') throw error; }
   await newDirectory(join(output, 'exports'));
-  for (const name of exportNames) { const original = resolve(dirname(suppliedPath), exportsManifest.files[name]); await copyFile(original, join(output, exportFiles[name].path)); assert.equal(hash(await readFile(join(output, exportFiles[name].path))), exportFiles[name].sha256); }
-  await copyFile(suppliedPath, join(output, 'ui-exports-manifest.json'));
-  await writeFile(reportPath, JSON.stringify({ ...result, sourceCommit: manifest.source.commit, fixturePackageSha256: hash(await readFile(join(output, 'package.json'))), exportManifestSha256: hash(await readFile(suppliedPath)), exportFiles, servedAfter }, null, 2) + '\n');
+  const exportFiles = {}, retentionErrors = [];
+  let manifest, exportsManifest, exportManifestSha256, fixturePackageSha256, servedAfter, result, failure, phase = 'retain manifest';
+  try {
+    const manifestBytes = await readFile(suppliedPath);
+    await writeFile(retainedManifestPath, manifestBytes, { flag: 'wx' }); exportManifestSha256 = hash(manifestBytes);
+    exportsManifest = JSON.parse(manifestBytes.toString()); phase = 'retain downloads';
+    for (const name of exportNames) {
+      try {
+        assert.equal(typeof exportsManifest.files?.[name], 'string', `Missing UI download ${name}`);
+        const original = resolve(dirname(suppliedPath), exportsManifest.files[name]), bytes = await readFile(original), path = `exports/${name}.json`;
+        await writeFile(join(output, path), bytes, { flag: 'wx' });
+        exportFiles[name] = { path, sha256: hash(bytes), bytes: bytes.length };
+        assert.equal(hash(await readFile(join(output, path))), exportFiles[name].sha256);
+      } catch (error) { retentionErrors.push({ name, error: error instanceof Error ? error.message : String(error) }); }
+    }
+    assert.equal(retentionErrors.length, 0, 'Some UI downloads could not be retained; see retentionErrors in export-audit.json.');
+    phase = 'verify package'; fixturePackageSha256 = hash(await readFile(join(output, 'package.json'))); manifest = await verifyPackage(output);
+    assert.equal(exportsManifest.sourceCommit, manifest.source.commit);
+    const fixtures = {}, exports = {};
+    for (const [name, path] of Object.entries(manifest.fixtures)) fixtures[name] = await json(join(output, path));
+    phase = 'decode downloads';
+    for (const name of exportNames) exports[name] = await json(join(output, exportFiles[name].path));
+    phase = 'verify served production'; servedAfter = await verifyServed(manifest.url, manifest.dist);
+    phase = 'audit native exports';
+    const auditor = await import(pathToFileURL(join(output, 'audit.mjs')).href);
+    result = auditor.auditMainBrowserExports(fixtures, exports, manifest.source.sourceFingerprint);
+    phase = 'verify package after audit'; await verifyPackage(output); phase = 'complete';
+  } catch (error) { failure = error; }
+  await writeFile(reportPath, JSON.stringify({ ...result, format: 'orcs-vs-fairies-main-browser-export-audit', version: 1, status: failure ? 'failed' : 'passed', phase, sourceCommit: manifest?.source.commit ?? exportsManifest?.sourceCommit ?? null, fixturePackageSha256, exportManifestSha256, exportFiles, retentionErrors, servedAfter, error: failure ? { name: failure instanceof Error ? failure.name : 'Error', message: failure instanceof Error ? failure.message : String(failure) } : null }, null, 2) + '\n', { flag: 'wx' });
+  if (failure) throw failure;
   process.stdout.write(JSON.stringify({ status: 'downloaded artifacts verified; CUA observations remain separate', reportPath, ...result }) + '\n');
 }
 
 async function verify([destination]) {
   assert.ok(destination, 'verify requires PACKAGE_DIRECTORY');
   const output = resolve(destination), manifest = await verifyPackage(output), report = await json(join(output, 'export-audit.json')), fixtures = {}, exports = {};
+  assert.equal(report.format, 'orcs-vs-fairies-main-browser-export-audit'); assert.equal(report.version, 1); assert.equal(report.status, 'passed', 'A failed export audit remains evidence, not a verified browser proof.');
   assert.equal(report.sourceCommit, manifest.source.commit); assert.equal(report.fixturePackageSha256, hash(await readFile(join(output, 'package.json'))));
   assert.equal(report.exportManifestSha256, hash(await readFile(join(output, 'ui-exports-manifest.json'))));
   for (const [name, path] of Object.entries(manifest.fixtures)) fixtures[name] = await json(join(output, path));

@@ -57,7 +57,7 @@ node scripts/scenarios/main-browser-proof.mjs audit \
   /absolute/evidence-directory /absolute/ui-exports-manifest.json
 ```
 
-The audit verifies archived source, production, packaged fixture, and auditor bytes again before and after execution. It fetches the served production files again and compares them with the archived build. Native decoders and replay engines check the complete saved game, both recording histories, scenario ownership and equipment, historical inspection, canonical finale/War Cry/reason, and the build fingerprint in the UI report. It copies the unmodified JSON downloads into `exports`, retains the UI export manifest, and writes one append-only `export-audit.json` with every download's hash.
+The audit first reserves `exports` exclusively, copies the raw downloads, and retains the UI export manifest before checking their contents or the served build. It then verifies archived source, production, packaged fixture, and auditor bytes again before and after execution. It fetches the served production files again and compares them with the archived build. Native decoders and replay engines check the complete saved game, both recording histories, scenario ownership and equipment, historical inspection, canonical finale/War Cry/reason, and the build fingerprint in the UI report. One append-only `export-audit.json` records every retained download's hash and whether the audit passed or failed. A failed audit preserves the raw evidence and its failure phase; use a new evidence package to rerun it. If a download is missing, the audit still retains the other available downloads and lists the missing input.
 
 Afterward, the package can be checked on another machine without the original worktree, download folder or server:
 
@@ -65,7 +65,7 @@ Afterward, the package can be checked on another machine without the original wo
 node /absolute/evidence-directory/helper.mjs verify /absolute/evidence-directory
 ```
 
-This offline command verifies the frozen commit and source files from the archived Git bundle, all packaged bytes and downloaded artifacts, and the recorded before/after served-file inventories. It reruns the native artifact audit and writes no result over the original evidence. The package manifest's checksum is stored in the audit report; a manifest cannot hash itself. Keep the final report/hash in the parent's independent evidence record as well.
+This offline command requires a passed audit report, verifies the frozen commit and source files from the archived Git bundle, all packaged bytes and downloaded artifacts, and the recorded before/after served-file inventories. It reruns the native artifact audit and writes no result over the original evidence. The package manifest's checksum is stored in the audit report; a manifest cannot hash itself. Keep the final report/hash in the parent's independent evidence record as well.
 
 The artifact audit cannot establish what the browser showed or who issued an action. The CUA transcript and screenshots must independently prove actual imports, editor interaction, paused clocks, Escape behavior, native targeting, reward eligibility/retry/account switching, equip receipts, visual appearance, and the rendered photo. Inspect the downloaded photo as an image. A successful artifact audit alone is not a completed browser proof.
 
