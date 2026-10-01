@@ -1,0 +1,22 @@
+diff --git a/tests/faction-economy-interruption.test.ts b/tests/faction-economy-interruption.test.ts
+index 0acf1b5..35d25aa 100644
+--- a/tests/faction-economy-interruption.test.ts
++++ b/tests/faction-economy-interruption.test.ts
+@@ -131,7 +131,7 @@ describe('faction commands replace economy work through the public command bound
+   loadRaid(s,e,target,type!=='tunnelTravel');const oldTask=structuredClone(task(s,e)!),oldCargo=structuredClone(cargo(s,e)),oldRuntime=captureRuntime(s);
+   command(s,{type,ids:[e.id],target:factionTarget});
+   // Recreate the reachable pre-fix saved combination: the later faction command cleared queues/path, but left the old economy job and cached route.
+-  s.economy!.tasks.push(oldTask);Object.assign(cargo(s,e),oldCargo);restoreRuntime(s,oldRuntime);const recorder=record(s);run(s,.05);
++  s.economy!.tasks=s.economy!.tasks.filter(task=>task.entityId!==e.id);s.economy!.tasks.push(oldTask);Object.assign(cargo(s,e),oldCargo);restoreRuntime(s,oldRuntime);expect(s.economy!.tasks.filter(task=>task.entityId===e.id)).toEqual([oldTask]);const recorder=record(s);run(s,.05);
+   expect(task(s,e)).toBeUndefined();expect(e.orderQueue).toBeUndefined();expect(e.entrenchedAt).toBeUndefined();expect(cargo(s,e)).toMatchObject({stock:{wood:24,ore:0,crystal:0},origin:'delivery',tradeValue:0});expect(cargo(s,e).destinationId).toBeUndefined();expect(cargo(s,e).contractId).toBeUndefined();
+   const oldRoute=oldRuntime.routes.find(([id])=>id===e.id),newRoute=captureRuntime(s).routes.find(([id])=>id===e.id);if(oldRoute)expect(newRoute?.[1].key).not.toBe(oldRoute[1].key);
+   if(type==='tunnelTravel')expect(e.factionState!.tunnel!.progress).toBeGreaterThan(0);else expect(e.factionState!.corpseOrder).toBeDefined();
+@@ -140,7 +140,7 @@ describe('faction commands replace economy work through the public command bound
+  it('resuming an old planting task plus later faction construction releases planting and continues the foundation',()=>{
+   const s=fixture('undead'),worker=unit(s,'worker');refreshVisibility(s);command(s,{type:'plantGrove',ids:[worker.id],x:22.5,y:22.5});
+   const oldTask=structuredClone(task(s,worker)!),grove=s.economy!.groves[0];command(s,{type:'buildFactionStructure',ids:[worker.id],structure:'necropolis',x:24.5,y:20.5});
+-  const building=s.entities.find(e=>e.definitionId===FACTION_STRUCTURE_INFO.necropolis.definition.id)!;grove.burned=false;s.economy!.tasks.push(oldTask);const recorder=record(s);run(s,.05);
++  const building=s.entities.find(e=>e.definitionId===FACTION_STRUCTURE_INFO.necropolis.definition.id)!;grove.burned=false;s.economy!.tasks=s.economy!.tasks.filter(task=>task.entityId!==worker.id);s.economy!.tasks.push(oldTask);expect(s.economy!.tasks.filter(task=>task.entityId===worker.id)).toEqual([oldTask]);const recorder=record(s);run(s,.05);
+   expect(grove.burned).toBe(true);expect(task(s,worker)).toBeUndefined();expect(worker.order).toEqual({type:'build',target:building.id});continueAndReplay(s,recorder,5);expect(building.progress).toBeGreaterThan(0);
+  });
+ });
