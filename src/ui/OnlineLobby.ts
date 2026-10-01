@@ -13,6 +13,7 @@ export interface OnlineLobbyOptions {
   api?:OnlineApi;onJoinMatch:(request:OnlineMatchRequest)=>void|Promise<void>;
   onVisibility?:(visible:boolean)=>void;pollIntervalMs?:number;
   toolbar?:HTMLElement;
+  onAccount?:(account:Account|null)=>void;
 }
 const escape=(value:string)=>value.replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]!));
 const factionOptions=(selected:FactionId)=>Object.values(FACTIONS).map(faction=>`<option value="${faction.id}"${faction.id===selected?' selected':''}>${escape(faction.name)}</option>`).join('');
@@ -103,7 +104,7 @@ export function mountOnlineLobby(root:HTMLElement,options:OnlineLobbyOptions) {
     defaultPlayers(lobby.settings).forEach((player,index)=>{const row=line(`Player ${index+1} · ${FACTIONS[player.factionId].name} · Team ${player.teamId+1} · ${player.controller==='ai'?'Computer':'Human'} · Starting resources: ${resources(player.handicap?.startingResources??rules.startingResources)} · Income ×${player.handicap?.incomeFactor??1} · Population limit ${player.handicap?.populationCap??100}`,'online-received-player');row.dataset.receivedPlayer=String(index);});
   }
   function render() {
-    element('.online-auth').hidden=!!account;element('.online-account').hidden=!account;element('.online-browser').hidden=!account;
+    options.onAccount?.(account);element('.online-auth').hidden=!!account;element('.online-account').hidden=!account;element('.online-browser').hidden=!account;
     element('.online-username').textContent=account?.username??'';
     for(const node of Array.from(host.querySelectorAll<HTMLButtonElement>('button')))node.disabled=busy;
     const list=element('.online-lobby-list'),listKey=JSON.stringify({accountId:account?.id,busy,lobbies});

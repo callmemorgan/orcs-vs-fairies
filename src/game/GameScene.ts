@@ -19,6 +19,8 @@ import type { GameEvent } from '../core/types';
 import { AppearancePreferences, appearancePreferences, markerPolygon, ownershipStyle } from './Appearance';
 import { abilityNeedsTarget } from '../core/specialist-systems';
 import { ARTIFACTS, RANK_THRESHOLDS, equipmentEligible, observedArtifacts } from '../core/unit-progression';
+import { drawCosmeticBuilding } from './Cosmetics';
+import type { CosmeticLoadout } from './Cosmetics';
 
 const TILE_W = 64, TILE_H = 32, OX = 1600, OY = 80;
 const CAMERA_TAP:Partial<Record<ControlAction,readonly [number,number]>> = {
@@ -61,6 +63,12 @@ export default class GameScene extends Phaser.Scene {
   private ground!:Phaser.GameObjects.Graphics;
   private terrainDetails!:Phaser.GameObjects.Graphics;
   private actors!:Phaser.GameObjects.Graphics;
+  private cosmeticLayer!:Phaser.GameObjects.Graphics;
+  private cosmeticLoadouts=new Map<Side,CosmeticLoadout>();
+  private decoratedBuildings:number[]=[];
+  public setCosmeticLoadouts(loadouts:ReadonlyMap<Side,CosmeticLoadout>){this.cosmeticLoadouts=new Map([...loadouts].filter(([side])=>!!this.state.players[side]).map(([side,loadout])=>[side,Object.fromEntries(Object.entries(loadout).filter(([,item])=>item?.factionId===this.state.players[side].faction))]));if(this.cosmeticLayer)this.drawCosmetics();}
+  public getCosmetics(side:Side):CosmeticLoadout{return this.cosmeticLoadouts.get(side)??{};}
+  public get cosmeticStatus(){return {players:[...this.cosmeticLoadouts].map(([side,loadout])=>({side,...Object.fromEntries(Object.entries(loadout).map(([slot,item])=>[slot,item?.id]))})),buildings:[...this.decoratedBuildings]};}
   private fog!:Phaser.GameObjects.Graphics;
   private overlay!:Phaser.GameObjects.Graphics;
   private heldKeys=new Set<string>();
@@ -139,7 +147,7 @@ export default class GameScene extends Phaser.Scene {
     this.art.ready();
     if(this.art.enabled&&!this.art.loaded)this.options.onNotice('Artwork could not load. Check that the local server is running, then restart the match.');
     this.cameras.main.setBackgroundColor('#131f22');
-    this.ground=this.add.graphics().setDepth(-101);this.terrainDetails=this.add.graphics().setDepth(-99);this.actors=this.add.graphics().setDepth(0);this.fog=this.add.graphics().setDepth(100000);this.overlay=this.add.graphics().setDepth(100001);
+    this.ground=this.add.graphics().setDepth(-101);this.terrainDetails=this.add.graphics().setDepth(-99);this.actors=this.add.graphics().setDepth(0);this.cosmeticLayer=this.add.graphics().setDepth(99999);this.fog=this.add.graphics().setDepth(100000);this.overlay=this.add.graphics().setDepth(100001);
     this.drawGround();
     this.cameras.main.setBounds(OX-this.state.height*32-64,-80,(this.state.width+this.state.height)*32+128,(this.state.width+this.state.height)*16+320).setZoom(this.pixelDensity);
     this.centerOn(this.state.starts[this.viewSide].x,this.state.starts[this.viewSide].y);
@@ -510,7 +518,9 @@ export default class GameScene extends Phaser.Scene {
     for(const [id,graphic] of this.economyShapes)if(!economySeen.has(id)){graphic.destroy();this.economyShapes.delete(id);}
     this.drawWorldObjects(g);
     this.art.end();
+    this.drawCosmetics();
   }
+  private drawCosmetics(){const g=this.cosmeticLayer;g.clear();this.decoratedBuildings=[];for(const entity of this.state.entities){if(entity.kind!=='building'||entity.hp<=0||entity.progress<1||!this.visible(entity))continue;const loadout=this.getCosmetics(entity.side);if(!loadout.banner&&!loadout.decoration)continue;const point=project(entity.x,entity.y);drawCosmeticBuilding(g,loadout,point,this.art.top(`entity:${entity.id}`)??point.y-89);this.decoratedBuildings.push(entity.id);}}
   private drawElevation(){
     const g=this.terrainDetails;if(!g)return;g.clear();const heights=this.state.world?.levels[this.viewLevel]?.elevation;if(!heights)return;
     for(let tile=0;tile<heights.length;tile++){const height=heights[tile],key=this.viewLevel*this.state.width*this.state.height+tile;if(!height||!this.state.explored[this.viewSide].has(key))continue;const p=project(tile%this.state.width+.5,Math.floor(tile/this.state.width)+.5);g.lineStyle(1.5,0xe7d29c,.75);for(let tier=0;tier<height;tier++){g.lineBetween(p.x-18,p.y+6-tier*3,p.x,p.y+14-tier*3);g.lineBetween(p.x,p.y+14-tier*3,p.x+18,p.y+6-tier*3);}}

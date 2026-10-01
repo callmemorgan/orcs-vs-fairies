@@ -19,6 +19,7 @@ import { ARTIFACTS, PROMOTIONS, RANK_THRESHOLDS, equipmentEligible, observedArti
 import type { Command } from '../core/types';
 import './minimap-alerts.css';
 import './specialist-ui.css';
+import { cosmeticImage, type CosmeticLoadout } from '../game/Cosmetics';
 
 export interface HudCallbacks {
   economyReserved?:()=>number;
@@ -26,6 +27,7 @@ export interface HudCallbacks {
   canCommand?:()=>boolean;canPause?:()=>boolean;isInspection?:()=>boolean;
   resourceMemory?:()=>ReturnType<PlayerView['resourcesFor']>|undefined;
   command?:(command:Command)=>boolean|void; engineerBuild?:(kind:'bridge'|'barricade')=>void; fieldRepair?:()=>void;
+  cosmetics?:()=>CosmeticLoadout;
   build:(role:BuildingRole,definitionId?:string)=>void; train:(role:UnitRole,definitionId?:string)=>void; cancelTrain:(id:number,index:number,expectedQueue:string)=>void; research:(upgrade:UpgradeId,building?:number)=>void; ability:()=>void; clearRally:()=>void; toggleGate?:()=>void;
   stop:()=>void; hold:()=>void; attackMove:()=>void; select:(ids:number[])=>void; pause:()=>void; restart:()=>void; center:(x:number,y:number)=>void;
   toggleMuted:()=>void; isMuted:()=>boolean; isPaused?:()=>boolean; side?:()=>Side;level?:()=>number; bindingLabel?:(action:string)=>string;
@@ -90,7 +92,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
       </div>
     </section>
     <section class="war-hud" hidden aria-label="Game controls">
-      <header class="resource-bar panel"><div class="banner"><img class="banner-icon" id="banner-portrait" src="/assets/portrait-orcs.png" alt="" /><div><small>YOUR FACTION</small><strong id="faction-name"></strong></div></div>
+      <header class="resource-bar panel"><div class="banner"><img class="banner-icon" id="banner-portrait" src="/assets/portrait-orcs.png" alt="" /><span class="cosmetic-banner" aria-label="Equipped faction banner"></span><div><small>YOUR FACTION</small><strong id="faction-name"></strong></div></div>
         <div class="resource" title="Workers gather wood from trees"><span class="wood-symbol">♠</span><div><small>WOOD</small><b id="wood">0</b></div></div>
         <div class="resource" title="Workers gather ore from deposits"><span class="ore-symbol">◆</span><div><small>ORE</small><b id="ore">0</b></div></div>
         <div class="resource" title="Crystal funds advanced troops and defensive towers"><span class="crystal-symbol">◆</span><div><small>CRYSTAL</small><b id="crystal">0</b></div></div>
@@ -178,7 +180,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
     update:(s:GameState,selected:number[],cb:HudCallbacks)=>{
       if(cb.isReplay?.()&&state!==s)minimapAlerts.reset();state=s;callbacks=cb;paused=cb.isPaused?.()??paused;const nextSide=cb.side?.()??0;if(nextSide!==localSide){localSide=nextSide;playerView=new PlayerView(localSide);actionsKey='';}tree.update(s,paused,localSide,cb.canCommand?.()===false);if(!menu.hidden)return;const player=s.players[localSide],definition=factionFor(s,localSide);const art=(id:string)=>id.startsWith('economy:')?`/assets/selection-${id.replace(':','-')}.svg`:contentArt(s.content)[id]?contentAssetUrl(s,id):`/assets/selection-${id}.png`;
       setText('#sound-button',cb.isMuted()?'Enable sound':'Mute sound');el('#sound-button').setAttribute('aria-pressed',String(cb.isMuted()));
-      setText('#faction-name',definition.name);el<HTMLImageElement>('#banner-portrait').src=player.faction.includes(':')?art(definition.units.melee.id):`/assets/portrait-${player.faction}.png`;setText('#wood',Math.floor(player.wood).toString());setText('#ore',Math.floor(player.ore).toString());setText('#crystal',Math.floor(player.crystal).toString());setText('#population',`${player.population} / ${player.cap}`);
+      setText('#faction-name',definition.name);const loadout=callbacks?.cosmetics?.()??{},portrait=el<HTMLImageElement>('#banner-portrait');portrait.src=loadout.portrait?cosmeticImage(loadout.portrait):player.faction.includes(':')?art(definition.units.melee.id):`/assets/portrait-${player.faction}.png`;portrait.alt=loadout.portrait?.name??'';const banner=el('.cosmetic-banner'),bannerId=loadout.banner?.id??'';if(banner.dataset.cosmetic!==bannerId){banner.dataset.cosmetic=bannerId;banner.innerHTML=loadout.banner?`<img src="${cosmeticImage(loadout.banner)}" alt="${escape(loadout.banner.name)}" width="32" height="32" />`:'';}setText('#wood',Math.floor(player.wood).toString());setText('#ore',Math.floor(player.ore).toString());setText('#crystal',Math.floor(player.crystal).toString());setText('#population',`${player.population} / ${player.cap}`);
       el('.objective-tag').textContent=`${AGE_NAMES[playerAge(s.players[localSide])]} · ${s.scenario?.definition.title ?? (s.rules?.mode==='hill'?'Capture and defend the hill':s.rules?.mode==='relic'?'Collect and defend the relics':s.rules?.mode==='survival'?'Defeat every survival wave':s.rules?.mode==='scenario'?'Complete the scenario objectives':'Destroy all enemy strongholds')} · ${s.mapSize} · seed ${s.seed}`;
       setText('#clock',`${Math.floor(s.time/60).toString().padStart(2,'0')}:${Math.floor(s.time%60).toString().padStart(2,'0')}`);
       if(performance.now()>noticeUntil)el('.notice').hidden=true;

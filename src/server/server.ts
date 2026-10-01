@@ -106,7 +106,7 @@ export async function createRtsServer(options:ServerOptions){
   const matches=new Map<string,ActiveMatch>();
   const tickets=new Map<string,Ticket>();
   const attempts=new Map<string,{count:number;at:number}>();
-  let closing=false;
+  let closing=false,campaignClaimBusy=false;
 
   try{for(const saved of store.matches()){
     if(saved.engineHash!==store.engineHash)throw new Error(`Stored match ${saved.id} needs its original compatible server build. Keep its data and deploy that build.`);
@@ -283,16 +283,20 @@ export async function createRtsServer(options:ServerOptions){
       const user=account(req);
       if(await communityHttp({req,res,url,user,body,respond}))return;
       if(tournaments&&await tournaments.handle(req,res))return;
-      if(req.method==='GET'&&path==='/api/cosmetics'){respond(res,200,{catalog:COSMETICS,profile:store.cosmetics.profile(user.id),rules:'Earn faction cosmetics through verified victories: banner after 1 win, building decoration after 3 wins and commander portrait after 5 wins. Equipment changes appearance only.'});return;}
-      if(req.method==='POST'&&path==='/api/cosmetics/equip'){const value=await body(req);respond(res,200,{equipped:store.cosmetics.equip(user.id,value),profile:store.cosmetics.profile(user.id)});return;}
+      if(req.method==='GET'&&path==='/api/cosmetics'){respond(res,200,{account:user,catalog:COSMETICS,profile:store.cosmetics.profile(user.id),rules:'Earn faction cosmetics through verified victories: banner after 1 win, building decoration after 3 wins and commander portrait after 5 wins. Equipment changes appearance only.'});return;}
+      if(req.method==='POST'&&path==='/api/cosmetics/equip'){const value=await body(req);respond(res,200,{account:user,equipped:store.cosmetics.equip(user.id,value),profile:store.cosmetics.profile(user.id)});return;}
       if(req.method==='POST'&&path==='/api/cosmetics/campaign-victory'){
         if(!options.verifyCampaignVictory)throw new HttpError(503,'Canonical campaign verification is unavailable on this server.');
-        const value=await body(req,20*1024*1024);
+        if(campaignClaimBusy)throw new HttpError(503,'Campaign verification is busy. Retry this completed campaign shortly.');
+        campaignClaimBusy=true;try{
+        const uploadTimer=setTimeout(()=>req.destroy(new HttpError(408,'Campaign upload timed out.')),10000);
+        let value:Record<string,unknown>;try{value=await body(req,20*1024*1024);}finally{clearTimeout(uploadTimer);}
         if(!keys(value,['missionId','recording'])||typeof value.missionId!=='string'||!/^[-_a-zA-Z0-9]{1,96}$/.test(value.missionId)||value.recording===undefined)throw new HttpError(400,'Submit a completed canonical campaign recording and its finale mission ID.');
         let verified;
         try{verified=await options.verifyCampaignVictory(value.recording,value.missionId);}catch(error){if(error instanceof CampaignVerificationError)throw error;throw new HttpError(400,error instanceof Error?error.message:'Campaign victory could not be verified.');}
         if(!verified||typeof verified!=='object'||Array.isArray(verified)||verified.missionId!==value.missionId||typeof verified.campaignId!=='string'||!/^[-_a-zA-Z0-9]{1,96}$/.test(verified.campaignId)||typeof verified.factionId!=='string'||!Object.hasOwn(FACTIONS,verified.factionId))throw new HttpError(500,'Canonical campaign verifier returned an invalid result.');
         respond(res,200,{verified,profile:store.cosmetics.awardCampaignVictory(user.id,verified)});return;
+        }finally{campaignClaimBusy=false;}
       }
       const cosmeticsRoute=/^\/api\/matches\/([^/]+)\/cosmetics$/.exec(path);
       if(req.method==='GET'&&cosmeticsRoute){

@@ -1,6 +1,8 @@
 import { resolve } from 'node:path';
 import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { createRtsServer } from './server';
+import { createCampaignVerificationWorker } from './campaign-verification';
 
 const server=await createRtsServer({
   host:process.env.RTS_HOST??'127.0.0.1',
@@ -11,6 +13,7 @@ const server=await createRtsServer({
   secureCookie:process.env.RTS_SECURE_COOKIE==='1',
   trustProxy:process.env.RTS_TRUST_PROXY==='1',
   spectatorDelaySeconds:Number(process.env.RTS_SPECTATOR_DELAY_SECONDS??30),
+  verifyCampaignVictory:createCampaignVerificationWorker(fileURLToPath(new URL('./canonical-campaign.mjs',import.meta.url))),
   tournaments:{cwd:process.cwd(),configs:[JSON.parse(await readFile(resolve('scripts/tournaments/smoke.json'),'utf8'))]}
 });
 console.log(`Orcs vs Fairies authoritative server: ${server.url}`);

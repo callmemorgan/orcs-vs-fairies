@@ -6,7 +6,7 @@ import { OnlineRequestError } from '../online/client';
 import type { OnlineMatchRequest } from './OnlineLobby';
 import './competition-tools.css';
 
-export interface CompetitionToolsOptions {api?:CompetitionApi;onJoinMatch:(request:OnlineMatchRequest)=>void|Promise<void>;onVisibility?:(visible:boolean)=>void;pollIntervalMs?:number}
+export interface CompetitionToolsOptions {api?:CompetitionApi;toolbar?:HTMLElement;isBlocked?:()=>boolean;onJoinMatch:(request:OnlineMatchRequest)=>void|Promise<void>;onVisibility?:(visible:boolean)=>void;pollIntervalMs?:number}
 const escape=(value:string)=>value.replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]!));
 const factionOptions=Object.values(FACTIONS).map(faction=>`<option value="${faction.id}">${escape(faction.name)}</option>`).join('');
 
@@ -26,7 +26,8 @@ export function mountCompetitionTools(root:HTMLElement,options:CompetitionToolsO
   const element=<T extends HTMLElement>(selector:string)=>host.querySelector<T>(selector)!;
   const overlay=element<HTMLDivElement>('.competition-overlay'),dialog=element<HTMLElement>('.competition-dialog'),seasonSelect=element<HTMLSelectElement>('[aria-label="Season standings"]');
   element<HTMLSelectElement>('[aria-label="Ranked opponent faction"]').value='fairies';
-  let visible=false,busy=false,disposed=false,account:Account|null=null,current:LobbyObservation|null=null,previousFocus:HTMLElement|null=null,timer:ReturnType<typeof setInterval>|undefined,lobbySignature='';
+  const launch=element<HTMLButtonElement>('.competition-open');if(options.toolbar)options.toolbar.append(launch);launch.setAttribute('aria-expanded','false');
+  let visible=false,busy=false,disposed=false,blocked=false,account:Account|null=null,current:LobbyObservation|null=null,previousFocus:HTMLElement|null=null,timer:ReturnType<typeof setInterval>|undefined,lobbySignature='';
   const message=(text:string)=>{element('.competition-message').textContent=text;};
   const paint=(selector:string,html:string)=>{const node=element(selector);if(node.innerHTML!==html)node.innerHTML=html;};
   function controls(){for(const button of Array.from(host.querySelectorAll<HTMLButtonElement>('button')))if(!button.classList.contains('competition-close')&&!button.classList.contains('competition-open'))button.disabled=busy||(!account&&button.dataset.competition!=='refresh');for(const select of Array.from(host.querySelectorAll<HTMLSelectElement>('select')))select.disabled=busy;}
@@ -74,12 +75,12 @@ export function mountCompetitionTools(root:HTMLElement,options:CompetitionToolsO
     drawLobby();controls();
   }
   async function enter(matchId:string){await options.onJoinMatch({matchId,role:'player'});setVisible(false);}
-  function setVisible(next:boolean){if(disposed||visible===next)return;visible=next;overlay.hidden=!next;options.onVisibility?.(next);if(next){previousFocus=document.activeElement instanceof HTMLElement?document.activeElement:null;dialog.focus();void run(refresh);timer=setInterval(()=>{if(visible)void run(refresh);},options.pollIntervalMs??3000);}else{if(timer)clearInterval(timer);timer=undefined;previousFocus?.focus();}}
-  element<HTMLButtonElement>('.competition-open').onclick=()=>setVisible(true);element<HTMLButtonElement>('.competition-close').onclick=()=>setVisible(false);
+  function setVisible(next:boolean){if(disposed||visible===next||next&&(blocked||options.isBlocked?.()))return;visible=next;overlay.hidden=!next;launch.setAttribute('aria-expanded',String(next));options.onVisibility?.(next);if(next){previousFocus=document.activeElement instanceof HTMLElement?document.activeElement:null;dialog.focus();void run(refresh);timer=setInterval(()=>{if(visible)void run(refresh);},options.pollIntervalMs??3000);}else{if(timer)clearInterval(timer);timer=undefined;previousFocus?.focus();}}
+  launch.onclick=()=>setVisible(true);element<HTMLButtonElement>('.competition-close').onclick=()=>setVisible(false);
   element<HTMLButtonElement>('[data-competition="refresh"]').onclick=()=>void run(refresh);seasonSelect.onchange=()=>void run(rankings);
   element<HTMLFormElement>('.competition-create').onsubmit=event=>{event.preventDefault();void run(async()=>{if(!account)throw new Error('Sign in through Online play first.');const factions=[element<HTMLSelectElement>('[aria-label="Ranked host faction"]').value,element<HTMLSelectElement>('[aria-label="Ranked opponent faction"]').value] as FactionId[];current=await api.createRanked({mapSize:'small',factions,startingAge:1});message('Ranked lobby created. Both players must ready up.');await refresh();});};
   element<HTMLButtonElement>('[data-competition="daily"]').onclick=()=>void run(async()=>{const result=await api.startDaily();await enter(result.lobby.matchId!);});
   const onKey=(event:KeyboardEvent)=>{if(!visible)return;if(event.key==='Escape'){event.preventDefault();event.stopPropagation();setVisible(false);}else if(event.key==='Tab'){const focusable=Array.from(dialog.querySelectorAll<HTMLElement>('button:not(:disabled),select:not(:disabled)')).filter(node=>!node.closest('[hidden]'));if(!focusable.length)return;const first=focusable[0],last=focusable.at(-1)!;if(event.shiftKey&&(document.activeElement===first||document.activeElement===dialog)){event.preventDefault();last.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}}};
   document.addEventListener('keydown',onKey,true);
-  return {get visible(){return visible;},open:()=>setVisible(true),close:()=>setVisible(false),dispose(){if(disposed)return;if(visible){options.onVisibility?.(false);previousFocus?.focus();}disposed=true;if(timer)clearInterval(timer);document.removeEventListener('keydown',onKey,true);host.remove();}};
+  return {get visible(){return visible;},open:()=>setVisible(true),close:()=>setVisible(false),update(status:{blocked?:boolean}={}){blocked=!!status.blocked;launch.disabled=blocked;},dispose(){if(disposed)return;if(visible){options.onVisibility?.(false);previousFocus?.focus();}disposed=true;if(timer)clearInterval(timer);document.removeEventListener('keydown',onKey,true);launch.remove();host.remove();}};
 }

@@ -11,7 +11,7 @@
     "test:ladder": "vitest run --config vitest.ladder.config.ts && python3 scripts/ladder/report.py",
     "build:cli": "esbuild src/cli/main.ts --bundle --platform=node --format=esm --outfile=dist-cli/rts.js",
     "cli": "node dist-cli/rts.js",
-    "build:server": "esbuild src/server/main.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-server/rts-server.js",
+    "build:server": "node scripts/build-server.mjs",
     "server": "node dist-server/rts-server.js",
     "build:tournament": "esbuild src/tournament/main.ts --bundle --platform=node --format=esm --outfile=dist-tournament/run.js",
     "tournament": "node dist-tournament/run.js",

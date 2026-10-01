@@ -47,6 +47,11 @@ import { PlayerView } from './core/observation';
 import { mountPracticeCoach } from './ui/PracticeCoach';
 import { mountTournamentDashboard } from './ui/TournamentDashboard';
 import { createTournamentDashboardSource } from './tournament/client';
+import { mountCompetitionTools } from './ui/CompetitionTools';
+import { mountCosmeticTools } from './ui/CosmeticTools';
+import { CosmeticApi } from './online/cosmetic-client';
+import { resolveCosmeticLoadout, type CosmeticLoadout } from './game/Cosmetics';
+import type { Account } from './online/protocol';
 import './ui/style.css';
 declare const __OVF_BUILD_ID__:string;
 
@@ -88,6 +93,10 @@ const openModals=new Set<string>();
 let onlineConnection:OnlineMatchConnection|undefined,onlineRender:OnlineRenderState|undefined;
 let onlineConnecting:OnlineMatchConnection|undefined;
 const onlineApi=new OnlineApi();
+const cosmeticApi=new CosmeticApi();
+const accountLoadouts=new Map<FactionId,CosmeticLoadout>();
+let cosmeticAccountId:string|null|undefined;
+let hostedLoadouts=new Map<Side,CosmeticLoadout>();
 let lastAutosaveTime=0,autosaveFailure=false,replacementGeneration=0;
 const playerSide=():Side=>scene?.viewSide??0;
 const callbacks:HudCallbacks={
@@ -122,6 +131,7 @@ const callbacks:HudCallbacks={
  canPause:()=>!onlineConnection,
  isInspection:()=>!!replay||!!scene?.readOnly,
  resourceMemory:()=>onlineRender?.resourceMemory,
+ cosmetics:()=>scene?.getCosmetics(playerSide())??{},
  side:playerSide,
  level:()=>scene?.viewLevel??0,
  bindingLabel:action=>controls.bindingsFor(action as ControlAction).map(displayBinding).join(' / '),
@@ -132,6 +142,9 @@ const callbacks:HudCallbacks={
 
 };
 function closeOnline(){onlineConnecting?.dispose();onlineConnecting=undefined;onlineConnection?.dispose();onlineConnection=undefined;onlineRender=undefined;}
+function applyCosmetics(){if(!scene)return;scene.setCosmeticLoadouts(onlineConnection?hostedLoadouts:replay?new Map():new Map([[playerSide(),accountLoadouts.get(scene.state.players[playerSide()].faction)??{}]]));}
+async function refreshHostedCosmetics(){const connection=onlineConnection,generation=replacementGeneration;if(!connection)return;try{const result=await cosmeticApi.matchCosmetics(connection.matchId);if(connection!==onlineConnection||generation!==replacementGeneration||!scene)return;hostedLoadouts=new Map(result.players.filter(player=>scene!.state.players[player.side]?.faction===player.factionId).map(player=>[player.side,resolveCosmeticLoadout(player.factionId,player.loadout)]));applyCosmetics();}catch{if(connection===onlineConnection&&generation===replacementGeneration){hostedLoadouts.clear();applyCosmetics();}}}
+function accountChanged(account:Account|null){const id=account?.id??null;if(cosmeticAccountId===id)return;cosmeticAccountId=id;accountLoadouts.clear();applyCosmetics();cosmetics.reset();void cosmetics.refresh();}
 function setModal(source:string,open:boolean){
  const wasOpen=!!openModals.size;
  if(open)openModals.add(source);else openModals.delete(source);
@@ -202,6 +215,7 @@ function launch(state:GameState,history?:ReplayArchive,playback?:ReplayPlayer,re
   onPause:()=>{if(scene){if(replay)replayPlaying=!scene.paused;shell.update(scene.state,scene.selected,callbacks);}},onActionSlot:slot=>{shell.activateActionSlot(slot);},
   viewBounds:()=>{const b=shell.battlefieldBounds();return {top:b.top*renderDensity,bottom:b.bottom*renderDensity};}});
  scene.inputBlocked=sessionModal||objectiveOpen;scene.paused=!!playback||!!inspectionReason||sessionModal;
+ hostedLoadouts=new Map();applyCosmetics();if(remote)void refreshHostedCosmetics();
  planning.reset(state);if(planningData&&!planning.restore(planningData,state))throw new Error('Saved construction planning could not be restored.');planning.update({blocked:planningBlocked()});
  game=new Phaser.Game({type:Phaser.AUTO,parent:'game-canvas',backgroundColor:'#14201e',antialias:true,roundPixels:false,scale:{mode:Phaser.Scale.FIT,width:Math.round(innerWidth*renderDensity),height:Math.round(innerHeight*renderDensity)},scene:[scene],render:{pixelArt:false,smoothPixelArt:true},fps:{target:60}});
  const currentGame=game,density=renderDensity;
@@ -315,9 +329,11 @@ const campaignHost=new ScenarioCampaignHost(root,sessionToolbar,{
 });
 const canSubmitObjectives=()=>!!scene&&!scene.paused&&!scene.readOnly&&!scene.photoMode&&!sessionModal&&!isGameOver(scene.state)&&!scene.state.eliminated[playerSide()];
 const objectives=mountObjectivePanel(root,{toolbar:sessionToolbar,getState:()=>scene?.state,getObservation:()=>scene?.objectiveObservation,getContent:()=>scene?.state.content,side:playerSide,blocked:()=>!!scene?.photoMode||sessionModal,onVisibility:open=>{objectiveOpen=open;if(scene)scene.inputBlocked=sessionModal||objectiveOpen;},canSubmit:canSubmitObjectives,submit:command=>canSubmitObjectives()&&dispatchCommand(playerSide(),command)});
-mountOnlineLobby(root,{api:onlineApi,toolbar:sessionToolbar,onJoinMatch:joinOnline,onVisibility:open=>setModal('online',open)});
 const teamAiTools=mountTeamAITools(root,{toolbar:sessionToolbar,command:command=>!teamAiBlocked()&&dispatchCommand(playerSide(),command),notice:shell.notice,onVisibility:open=>setModal('team-ai',open)});
 function teamAiBlocked(){return !scene||!!replay||scene.readOnly||scene.photoMode||scene.state.eliminated[playerSide()]||isGameOver(scene.state)||Array.from(openModals).some(source=>source!=='team-ai')||(scene.paused&&(!openModals.has('team-ai')||pausedBeforeModal));}
+const cosmetics=mountCosmeticTools(root,{api:cosmeticApi,toolbar:sessionToolbar,isBlocked:()=>toolBlocked('cosmetics'),getFaction:()=>scene?.state.players[playerSide()].faction??menuFaction(),onVisibility:open=>setModal('cosmetics',open),onEquipment:(id,loadout,accountId)=>{if(accountId!==cosmeticAccountId)return;accountLoadouts.set(id,loadout);applyCosmetics();},onProfile:async(_profile,account)=>{if(account?.id===cosmeticAccountId)await refreshHostedCosmetics();}});
+const competitions=mountCompetitionTools(root,{toolbar:sessionToolbar,isBlocked:()=>toolBlocked('competition'),onJoinMatch:joinOnline,onVisibility:open=>setModal('competition',open)});
+mountOnlineLobby(root,{api:onlineApi,toolbar:sessionToolbar,onJoinMatch:joinOnline,onVisibility:open=>setModal('online',open),onAccount:accountChanged});
 const tournaments=mountTournamentDashboard(root,{source:createTournamentDashboardSource(),toolbar:sessionToolbar,onReplay:importReplay,onVisibility:open=>setModal('tournament',open)});
 const packageBadge=document.createElement('p');packageBadge.className='editor-package-badge';packageBadge.setAttribute('aria-label','Running community package');packageBadge.hidden=true;root.append(packageBadge);
 function rememberPackage(state:GameState,packageHash:string,worldHash:string,label?:string){editedPackages.set(state,{packageHash,worldHash,label});updatePackageBadge();}
@@ -347,6 +363,9 @@ new ResizeObserver(alignToolPanels).observe(sessionToolbar);
 new MutationObserver(alignToolPanels).observe(sessionToolbar.parentElement!,{attributes:true,attributeFilter:['class']});
 window.addEventListener('resize',alignToolPanels);alignToolPanels();
 function tournamentBlocked(){return !!scene?.photoMode||Array.from(openModals).some(source=>source!=='tournament');}
+function toolBlocked(source:string){return !!scene?.photoMode||Array.from(openModals).some(other=>other!==source);}
+let checkingAccount=false;async function refreshAccount(){if(checkingAccount)return;checkingAccount=true;try{accountChanged(await onlineApi.session());}catch{}finally{checkingAccount=false;}}
+void refreshAccount();setInterval(()=>void refreshAccount(),2000);
 function planningBlocked(){return !!scene?.photoMode||Array.from(openModals).some(source=>source!=='planning');}
 function canEditPlanning(side:Side,context:PlanningEditContext){
  if(!scene||replay||onlineConnection||scene.readOnly||scene.photoMode||isGameOver(scene.state)||scene.state.eliminated[side]||side!==playerSide()||planningBlocked())return false;
@@ -409,12 +428,12 @@ setInterval(()=>{
  const side=playerSide(),state=scene?.state,view=state?(onlineRender?onlineRender.alliedAi:alliedAiStatus(state,side)):null;
  const destination=state?.entities.find(e=>e.side===side&&e.hp>0&&scene!.selected.includes(e.id))??state?.entities.find(e=>e.side===side&&e.role==='hq'&&e.hp>0);
  teamAiTools.update({side,allies:(view?.allies??[]).map(ally=>({side:ally.side,name:`Player ${ally.side+1} · ${factionFor(state!,ally.side).name}`})),directives:view?.directives??[],width:state?.width??1,height:state?.height??1,levels:state?.world?.levels.map(l=>({id:l.id,name:l.title}))??[{id:0,name:'Surface'}],enabled:!teamAiBlocked(),...(destination?{destination:{x:destination.x,y:destination.y,...(destination.level===undefined?{}:{level:destination.level})}}:{})},{blocked:teamAiBlocked()});
- tools.update(state??null,{side,paused:scene?.paused,replaySpectator:!!replay||!!scene?.readOnly,remoteMatch:!!onlineConnection});objectives.update();planning.update({blocked:planningBlocked()});tournaments.update({blocked:tournamentBlocked()});campaignHost.update({blocked:Array.from(openModals).some(source=>source!=='campaign'),photo:scene?.photoMode});scenarioOverlay?.update(scene?scenarioSessionForState(scene.state):null,!!scene?.photoMode,scene?.viewLevel??0);updateCoach();economyTools.update({side:playerSide(),readOnly:!!replay||!!scene?.readOnly,blocked:economyBlocked()});
+ tools.update(state??null,{side,paused:scene?.paused,replaySpectator:!!replay||!!scene?.readOnly,remoteMatch:!!onlineConnection});objectives.update();planning.update({blocked:planningBlocked()});tournaments.update({blocked:tournamentBlocked()});campaignHost.update({blocked:Array.from(openModals).some(source=>source!=='campaign'),photo:scene?.photoMode});scenarioOverlay?.update(scene?scenarioSessionForState(scene.state):null,!!scene?.photoMode,scene?.viewLevel??0);competitions.update({blocked:toolBlocked('competition')});cosmetics.update({blocked:toolBlocked('cosmetics')});updateCoach();economyTools.update({side:playerSide(),readOnly:!!replay||!!scene?.readOnly,blocked:economyBlocked()});
 },100);
 // Read-only diagnostics for repeatable performance and state inspection. Player actions stay in the UI.
 const worldTools=mountWorldTools(root,{phase:()=>onlineRender?.worldPhase,state:()=>scene?.state,side:playerSide,level:()=>scene?.viewLevel??0,selected:()=>scene?.selected??[],canCommand:()=>!!scene&&scene.canIssueCommands,command:c=>scene?.command(c)??false,setLevel:level=>scene?.setViewLevel(level),select:ids=>scene?.selectEntities(ids),center:p=>scene?.centerOn(p.x,p.y),notice:shell.notice});
 setInterval(()=>worldTools.update(),100);
-Object.defineProperty(window,'rts',{get:()=>scene?.cameras?.main?{state:scene.state,get activeScenario(){const session=scenarioSessionForState(scene!.state);return session?structuredClone({definition:session.definition,runtime:session.runtime,simulationRevision:session.simulationRevision}):null;},viewLevel:scene.viewLevel,viewSide:scene.viewSide,readOnly:scene.readOnly,selected:[...scene.selected],art:scene.artStatus,fps:game?.loop.actualFps,paused:scene.paused,mode:onlineConnection?'online':replay?'replay':'local',simulationEnabled:scene.simulationEnabled,online:onlineConnection?{status:onlineConnection.status,role:onlineRender?.role,side:playerSide(),delayTicks:onlineConnection.connectionInfo?.delayTicks,pendingCommands:onlineConnection.pendingCommands,privateSides:[...(onlineRender?.privateSides??[])]}:null,camera:{x:scene.cameras.main.scrollX,y:scene.cameras.main.scrollY,zoom:scene.cameras.main.zoom,width:scene.cameras.main.width,height:scene.cameras.main.height}}:null});
+Object.defineProperty(window,'rts',{get:()=>scene?.cameras?.main?{state:scene.state,cosmetics:scene.cosmeticStatus,get activeScenario(){const session=scenarioSessionForState(scene!.state);return session?structuredClone({definition:session.definition,runtime:session.runtime,simulationRevision:session.simulationRevision}):null;},viewLevel:scene.viewLevel,viewSide:scene.viewSide,readOnly:scene.readOnly,selected:[...scene.selected],art:scene.artStatus,fps:game?.loop.actualFps,paused:scene.paused,mode:onlineConnection?'online':replay?'replay':'local',simulationEnabled:scene.simulationEnabled,online:onlineConnection?{status:onlineConnection.status,role:onlineRender?.role,side:playerSide(),delayTicks:onlineConnection.connectionInfo?.delayTicks,pendingCommands:onlineConnection.pendingCommands,privateSides:[...(onlineRender?.privateSides??[])]}:null,camera:{x:scene.cameras.main.scrollX,y:scene.cameras.main.scrollY,zoom:scene.cameras.main.zoom,width:scene.cameras.main.width,height:scene.cameras.main.height}}:null});
 Object.defineProperty(window,'editorDiagnostics',{value:()=>{
  if(!scene?.cameras?.main)return null;
  const state=scene.state,metadata=editedPackages.get(state),scenario=state.scenario;
