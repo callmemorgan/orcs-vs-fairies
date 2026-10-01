@@ -1,5 +1,6 @@
 import { writeFileSync,mkdirSync,readFileSync,readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import { createMatch,isGameOver,stepGame } from '../../src/core/simulation';
 import { loadGame,saveGame } from '../../src/core/saves';
 import { MatchRecorder,ReplayPlayer,replayChecksum } from '../../src/core/replays';
@@ -12,7 +13,7 @@ const cases:Array<{name:string;config:MatchConfig;limit:number}>=[
  {name:'hill-2v2',config:{map:{seed:4127,size:'small'},players:[{id:0,teamId:0,factionId:'orcs',controller:'ai'},{id:1,teamId:0,factionId:'fairies',controller:'ai'},{id:2,teamId:1,factionId:'orcs',controller:'ai'},{id:3,teamId:1,factionId:'fairies',controller:'ai'}],rules:{mode:'hill',startingAge:3,startingResources:{wood:1400,ore:1000,crystal:500},hill:{captureTicks:40,holdTicks:400}}},limit:20000},
  {name:'survival-five-waves',config:{map:{seed:4127,size:'small'},players:[{id:0,teamId:0,factionId:'automata',controller:'ai'},{id:1,teamId:1,factionId:'orcs',controller:'external'}],rules:{mode:'survival',startingAge:3,startingResources:{wood:2400,ore:1800,crystal:600},survival:{waveCount:5,intervalTicks:2400,recoveryTicks:300,unitsPerWave:1}}},limit:40000},
 ];
-const coreFiles=readdirSync('src/core').filter(f=>f.endsWith('.ts')).sort();const sourceFiles=Object.fromEntries(coreFiles.map(f=>[f,createHash('sha256').update(readFileSync(`src/core/${f}`)).digest('hex')]));writeFileSync(`${directory}/source-sha256.json`,JSON.stringify(sourceFiles,null,2));
+const coreFiles=readdirSync('src/core').filter(f=>f.endsWith('.ts')).sort();const sourceFiles=Object.fromEntries(coreFiles.map(f=>[f,createHash('sha256').update(readFileSync(`src/core/${f}`)).digest('hex')]));writeFileSync(`${directory}/source-sha256.json`,JSON.stringify(sourceFiles,null,2));writeFileSync(`${directory}/provenance.json`,JSON.stringify({sourceCommit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),node:process.version,runner:'scripts/modes/verify-runtime.ts',timestep:.05,sourceFiles},null,2));
 const result:unknown[]=[];
 for(const fixture of cases){const state=createMatch(fixture.config),recorder=new MatchRecorder(state);let restored:typeof state|undefined,resumeTick=0,resumeTicks:number[]=[],priorPhase=state.objectives.survival.phase,firstDifference:number|null=null;const waves:unknown[]=[];let prior=0;
  for(let i=0;i<fixture.limit&&!isGameOver(state);i++){
