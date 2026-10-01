@@ -1,0 +1,18 @@
+
+> orcs-vs-fairies@0.1.0 test
+> vitest run
+
+
+ RUN  v4.1.11 /home/morgana/Projects/orcs-vs-Fairies
+
+ ❯ tests/team-replays.test.ts (9 tests | 2 failed) 6050ms
+     × keeps genuine v1 saves readable but rejects their old playback rules 13ms
+     × keeps genuine v2 saves readable but rejects their old playback rules 6ms
+ ❯ tests/allied-ai.test.ts (43 tests | 2 failed) 10567ms
+     × restarts the defend arrival timer after an emergency pause 121ms
+     × restarts the attack arrival timer after an emergency pause 129ms
+ ❯ tests/hud-health.test.ts (3 tests | 1 failed) 461ms
+   × disguises enemy doubles in selection health, group totals and roster tooltips without changing simulation health 371ms
+ ❯ tests/skirmish-roster.test.ts (74 tests | 2 failed) 71215ms
+     × runs every local CPU economy from the 4v4 UI config 44029ms
+     × renders faction names as text without creating markup 8ms
