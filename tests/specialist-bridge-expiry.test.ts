@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { FACTIONS } from '../src/core/content';
 import { entityDefinition } from '../src/core/content-registry';
 import { environmentPhase } from '../src/core/environment';
+import { FACTION_STRUCTURE_INFO } from '../src/core/faction-systems-content';
 import { terrainAt } from '../src/core/maps';
 import { walkable } from '../src/core/navigation';
 import { MatchRecorder, ReplayPlayer } from '../src/core/replays';
@@ -15,11 +16,11 @@ type LayeredState = GameState & { world: WorldState };
 const crossing = { x: 18.5, y: 18.5 };
 const drowningText = 'A unit drowned when the temporary bridge expired.';
 
-function fixture(level: number) {
+function fixture(level: number, faction: 'orcs' | 'undead' = 'orcs') {
   const state = createMatch({
     map: { seed: 4127, size: 'small', biome: 'forest' }, rules: { startingAge: 3, sharedVision: false },
     players: [
-      { id: 0, teamId: 0, factionId: 'orcs', controller: 'external', handicap: { startingResources: { wood: 10000, ore: 10000, crystal: 10000 } } },
+      { id: 0, teamId: 0, factionId: faction, controller: 'external', handicap: { startingResources: { wood: 10000, ore: 10000, crystal: 10000 } } },
       { id: 1, teamId: 1, factionId: 'orcs', controller: 'external' },
     ],
   }) as LayeredState;
@@ -28,7 +29,7 @@ function fixture(level: number) {
   for (const layer of state.world.levels) { layer.terrain.fill(layer.id === level ? 'water' : 'grass'); layer.elevation.fill(0); }
   Object.assign(state.world, { biome: 'temperate', revision: 0, transitions: [], bridges: [], sites: [], creatures: [], fires: [], iceTiles: [], dayLength: 10000, seasonLength: 10000, weatherLength: 10000 });
   for (let seed = 1; seed < 1000; seed++) { state.seed = seed; if (environmentPhase(state).weather === 'clear') break; }
-  const engineer = actor(state, 'core:orcs-engineer', crossing.x - 3, crossing.y, level);
+  const engineer = actor(state, `core:${faction}-engineer`, crossing.x - 3, crossing.y, level);
   return { state, engineer };
 }
 
@@ -99,10 +100,9 @@ describe('temporary crossing expiry without reachable shore', () => {
     expect(state.players[0].heroRecovery).toEqual([{ definitionId: 'core:orcs-commander', availableAt: 90 }]); losses(recorder, 1, cost); recorder.dispose();
   });
 
-  it.each([[0, 'illusion'], [1, 'illusion'], [0, 'raised'], [1, 'raised']] as const)('kills a level-%s %s commander without permanent rewards or ordinary losses', (level, disposable) => {
+  it.each([0, 1])('kills a level-%s illusion commander without permanent rewards or ordinary losses', level => {
     const { state, engineer } = fixture(level), hero = actor(state, 'core:orcs-commander', crossing.x, crossing.y, level);
-    hero[disposable] = true;
-    if (disposable === 'raised') hero.orderQueue = [{ type: 'move', x: crossing.x + 2, y: crossing.y, level }];
+    hero.illusion = true;
     ready(state);
     const recorder = new MatchRecorder(state); build(state, engineer, level); advance(state, 60);
     expect(hero).toMatchObject({ hp: 0, animation: 'death', order: { type: 'idle' }, path: [] }); expect(hero.orderQueue).toBeUndefined();
@@ -112,6 +112,31 @@ describe('temporary crossing expiry without reachable shore', () => {
     expect(state.corpses).toEqual([]); expect(state.specialists!.artifacts).toEqual([]); expect(state.players[0].heroRecovery).toBeUndefined(); losses(recorder, 0, 0);
     const replay = new ReplayPlayer(recorder.export()); replay.seek(state.tick); expect(saveGame(replay.state)).toEqual(saveGame(state)); losses(replay, 0, 0);
     recorder.dispose(); replay.dispose();
+  });
+
+  it.each([0, 1])('kills a real level-%s raised troop at bridge expiry while a Necropolis sustains its lifetime', level => {
+    const { state, engineer } = fixture(level, 'undead');
+    const caster = actor(state, FACTIONS.undead.units.special.id, crossing.x - 3, crossing.y + 1, level);
+    spawnDefinition(state, 0, 'building', FACTION_STRUCTURE_INFO.necropolis.definition.id, crossing.x - 3, crossing.y - 1, 1, level);
+    state.corpses.push({ id: state.nextId++, ...crossing, level, expires: 45 }); ready(state);
+    const recorder = new MatchRecorder(state); build(state, engineer, level);
+    refreshVisibility(state); expect(issueCommand(state, 0, { type: 'ability', ids: [caster.id] })).toBe(true);
+    const troop = state.entities.find(e => e.raised)!;
+    expect(entityDefinition(state, troop)).toEqual(FACTIONS.undead.units.melee);
+    expect(troop.expires).toBe(35); expect(state.corpses).toEqual([]);
+    expect(issueCommand(state, 0, { type: 'hold', ids: [troop.id] })).toBe(true);
+    expect(issueCommand(state, 0, { type: 'move', ids: [troop.id], x: crossing.x + 2, y: crossing.y, level, queued: true })).toBe(true);
+    advance(state, 59.75); expect(troop.hp).toBeGreaterThan(0); expect(troop.expires - state.time).toBeCloseTo(35);
+    const resumed = loadGame(saveGame(state)); stepGame(state, .25); stepGame(resumed, .25);
+    expect(saveGame(resumed)).toEqual(saveGame(state));
+    expect(troop).toMatchObject({ hp: 0, animation: 'death', order: { type: 'idle' }, path: [] }); expect(troop.orderQueue).toBeUndefined();
+    expect(state.events.filter(e => e.type === 'death' && e.source === troop.id)).toEqual([expect.objectContaining({ level, text: drowningText })]);
+    expect(state.corpses.some(c => c.id === troop.id)).toBe(false); expect(state.players[0].heroRecovery).toBeUndefined();
+    expect(state.specialists!.artifacts).toEqual([]); losses(recorder, 0, 0); advance(state, 2);
+    expect(state.corpses).toEqual([]); expect(state.specialists!.artifacts).toEqual([]); losses(recorder, 0, 0);
+    const replay = new ReplayPlayer(recorder.export());
+    try { replay.seek(state.tick); expect(saveGame(replay.state)).toEqual(saveGame(state)); losses(replay, 0, 0); }
+    finally { recorder.dispose(); replay.dispose(); }
   });
 
   it.each([0, 1])('reproduces level-%s cleanup and loss counts from a native save and replay seeks across expiry', level => {
