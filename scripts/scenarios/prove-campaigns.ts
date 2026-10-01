@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { resolve } from 'node:path';
+import { basename, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { CAMPAIGNS, SCENARIOS } from '../../src/scenarios/campaigns';
 import { FACTIONS } from '../../src/core/content';
@@ -9,9 +9,11 @@ import { captureScenario, createScenario, resetScenario, restoreScenario, scenar
 import { ScenarioRecorder, verifyScenarioRecording } from '../../src/core/scenario-recordings';
 import type { ScenarioCondition, ScenarioSession } from '../../src/core/scenario-types';
 import type { Entity, GameEvent, UnitRole } from '../../src/core/types';
-import { puzzleStealthCommands, steerPuzzle, steerStealth } from './puzzle-stealth-strategy';
-import { finaleCommands, steerFinale } from './finale-strategy';
-import { routeCommands, steerDefense, steerEscort } from './route-strategy';
+import { puzzleStealthCommands } from './puzzle-stealth-strategy';
+import { finaleCommands } from './finale-strategy';
+import { routeCommands } from './route-strategy';
+import { steerMission } from './mission-strategy';
+export { solveMission, steerMission } from './mission-strategy';
 
 const hash=(value: unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const fileHash=(path:string)=>createHash('sha256').update(readFileSync(path)).digest('hex');
@@ -22,24 +24,7 @@ function deadLabels(condition: ScenarioCondition): string[] {
   return [];
 }
 const actorSummary=(entity:Entity|undefined)=>entity?{id:entity.id,role:entity.role,x:entity.x,y:entity.y,hp:entity.hp,shield:entity.shield,order:entity.order}:null;
-const sourceFiles=['src/scenarios/campaigns.ts','src/core/scenario-types.ts','src/core/scenario-validation.ts','src/core/scenarios.ts','src/core/scenario-recordings.ts','src/core/content.ts','src/core/simulation.ts','src/core/maps.ts','src/core/types.ts','src/core/match-rules.ts','src/core/objectives.ts','src/core/saves.ts','src/core/navigation.ts','scripts/scenarios/prove-campaigns.ts','scripts/scenarios/puzzle-stealth-strategy.ts','scripts/scenarios/finale-strategy.ts','scripts/scenarios/route-strategy.ts'];
-
-export function steerMission(session: ScenarioSession): void {
-  switch(missionKind(session)) {
-    case 'stealth': steerStealth(session);break;
-    case 'puzzle': steerPuzzle(session);break;
-    case 'boss': steerFinale(session);break;
-    case 'escort': steerEscort(session);break;
-    case 'defense': steerDefense(session);break;
-  }
-}
-
-/** Completes a prepared campaign detachment using the same bounded player strategies. */
-export function solveMission(session: ScenarioSession): ScenarioSession {
-  const lastTick=session.state.tick+Math.ceil(session.definition.rules.timeLimit/.05)+10;
-  while(session.runtime.outcome==='playing' && session.state.tick<lastTick) {steerMission(session);stepScenario(session);}
-  return session;
-}
+const sourceFiles=['src/scenarios/campaigns.ts','src/core/scenario-types.ts','src/core/scenario-validation.ts','src/core/scenarios.ts','src/core/scenario-recordings.ts','src/core/content.ts','src/core/simulation.ts','src/core/maps.ts','src/core/types.ts','src/core/match-rules.ts','src/core/objectives.ts','src/core/saves.ts','src/core/navigation.ts','scripts/scenarios/prove-campaigns.ts','scripts/scenarios/mission-strategy.ts','scripts/scenarios/puzzle-stealth-strategy.ts','scripts/scenarios/finale-strategy.ts','scripts/scenarios/route-strategy.ts'];
 
 export function proveCampaigns(kind='all', output=resolve(`docs/evidence/campaigns/author-playthrough-${kind}-${new Date().toISOString().replace(/[:.]/g,'-')}.json`)): void {
 if(existsSync(output)) throw new Error('Proof outputs are append-only. Choose a new output path.');
@@ -130,4 +115,4 @@ console.log(output);
 if(attempts.some(attempt=>Object.values(attempt.assertions).some(passed=>!passed))) process.exitCode=1;
 }
 
-if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href) proveCampaigns(process.argv[2]??'all',process.argv[3]?resolve(process.argv[3]):undefined);
+if(process.argv[1]&&/^prove-campaigns\.(?:mjs|js|ts)$/.test(basename(process.argv[1]))&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href) proveCampaigns(process.argv[2]??'all',process.argv[3]?resolve(process.argv[3]):undefined);
