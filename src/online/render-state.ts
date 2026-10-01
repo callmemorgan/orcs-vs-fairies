@@ -5,11 +5,13 @@ type PublicPlayer={side:Side;teamId:number;faction:FactionId};
 type TeamObservation=PlayerObservation & {
   teamId?:number;allies?:PublicPlayer[];opponents?:PublicPlayer[];sharedVision?:boolean;
   result:PlayerObservation['result'] & {winningTeam?:number|null;eliminated?:boolean[]};
+  teamPerspective?:boolean;teamPlayers?:Array<{side:Side;player:Player}>;
 };
 export interface OnlineRenderState {
   state:GameState;localSide:Side;role:'player'|'spectator';privateSides:ReadonlySet<Side>;
   hiddenStarts:ReadonlySet<Side>;unknownTerrain:ReadonlySet<number>;
   resourceMemory:PlayerObservation['resources'];
+  observedEvents:PlayerObservation['events'];
 }
 
 function ownPlayer(player:Player):Player {
@@ -31,6 +33,11 @@ export function observationToRenderState(view:PlayerObservation,role:'player'|'s
   const teams:number[]=Array.from({length:count},(_,index)=>index);
   for(const player of roster){players[player.side]=emptyPlayer(player.faction);teams[player.side]=player.teamId;}
   players[localSide]=ownPlayer(view.player);
+  const privateSides=new Set<Side>([localSide]);
+  if(role==='spectator'&&observation.teamPerspective)for(const member of observation.teamPlayers??[]) {
+    if(member.side>=count||teams[member.side]!==teams[localSide])continue;
+    players[member.side]=ownPlayer(member.player);privateSides.add(member.side);
+  }
   const visible=Array.from({length:count},()=>new Set<number>()),explored=Array.from({length:count},()=>new Set<number>());
   visible[localSide]=new Set(view.visible);explored[localSide]=new Set(view.explored);
   const unknownTerrain=new Set<number>();
@@ -55,12 +62,13 @@ export function observationToRenderState(view:PlayerObservation,role:'player'|'s
       order:{type:'idle'},cooldown:0,queue:[],trainProgress:0,researchProgress:0,
       momentum:0,illusion:false,expires:0,carried:0,carriedKind:'wood',path:[],
     };
-    if(source.side===localSide&&'order' in source) {
+    if(privateSides.has(source.side)&&'order' in source) {
       entity.order={...source.order};entity.queue=[...source.queue];entity.rally=source.rally?{...source.rally}:undefined;
       entity.trainProgress=source.trainProgress;entity.research=source.research;entity.researchProgress=source.researchProgress;
       entity.carried=source.carried;entity.carriedKind=source.carriedKind;entity.cooldown=source.cooldown;
       entity.abilityReadyAt=source.abilityReadyAt;entity.expires=source.expires;entity.illusion=source.illusion;
       if('orderQueue' in source&&Array.isArray(source.orderQueue))entity.orderQueue=source.orderQueue.map(order=>({...order}));
+      if('lastDamagedAt' in source&&typeof source.lastDamagedAt==='number')entity.lastDamagedAt=source.lastDamagedAt;
     }else if(alliedSides.has(source.side)&&'illusion' in source)entity.illusion=source.illusion;
     // Enemy health is already disguised. Setting illusion=true would disguise it twice.
     return entity;
@@ -77,10 +85,13 @@ export function observationToRenderState(view:PlayerObservation,role:'player'|'s
     corpses:view.corpses.map(corpse=>({id:corpse.id,x:corpse.x,y:corpse.y,expires:corpse.expires})),
     teams,sharedVision:observation.sharedVision??false,winningTeam:observation.result.winningTeam??null,
     eliminated:[...(observation.result.eliminated??Array.from({length:count},()=>false))],
-    incomeFactors:Array.from({length:count},()=>1),populationLimits:Array.from({length:count},()=>200),
+    incomeFactors:Array.from({length:count},()=>1),populationLimits:Array.from({length:count},()=>100),
   } as unknown as GameState;
-  return {state,localSide,role,privateSides:new Set([localSide]),hiddenStarts,unknownTerrain,
-    resourceMemory:view.resources.map(resource=>({...resource}))};
+  return {state,localSide,role,privateSides,hiddenStarts,unknownTerrain,
+    resourceMemory:view.resources.map(resource=>({...resource})),observedEvents:view.events.map(event=>({
+      type:event.type,tick:event.tick,x:event.x,y:event.y,side:event.side,text:event.text,
+      target:event.target,source:event.source,amount:event.amount,resource:event.resource,
+    }))};
 }
 
 /** Keep Phaser's references stable as authoritative frames arrive. No stepGame call. */

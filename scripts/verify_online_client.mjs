@@ -15,17 +15,21 @@ const server=await createRtsServer({host:'127.0.0.1',port:0,dataDir:join(directo
 const playwright=await import(process.env.OVF_PLAYWRIGHT_MODULE??'playwright');
 const browser=await playwright.chromium.launch({headless:true});
 const contexts=[];const errors=[];
-async function profile(){const context=await browser.newContext();contexts.push(context);const page=await context.newPage();page.on('pageerror',error=>errors.push(error.message));await page.goto(server.url);await page.getByRole('button',{name:'Online',exact:true}).click();await page.getByRole('button',{name:'Play as guest'}).click();await page.waitForFunction(()=>window.onlineFixture.lobby.account!==null);return page;}
+async function profile(){const context=await browser.newContext({viewport:{width:1280,height:1000}});contexts.push(context);const page=await context.newPage();page.on('pageerror',error=>errors.push(error.message));await page.goto(server.url);await page.getByRole('button',{name:'Online',exact:true}).click();await page.getByRole('button',{name:'Play as guest'}).click();await page.waitForFunction(()=>window.onlineFixture.lobby.account!==null);return page;}
 try {
   const first=await profile(),second=await profile();
   const firstId=await first.evaluate(()=>window.onlineFixture.lobby.account.id),secondId=await second.evaluate(()=>window.onlineFixture.lobby.account.id);assert.notEqual(firstId,secondId,'Profiles must have separate server accounts');
+  await first.getByLabel('Lobby player count',{exact:true}).selectOption('8');await first.getByLabel('Lobby map size',{exact:true}).selectOption('huge');
+  for(let player=3;player<=8;player++){await first.getByLabel(`Lobby player ${player} team`).selectOption(String((player-1)%2));await first.getByLabel(`Lobby player ${player} controller`).selectOption('ai');}
+  await first.getByLabel('Lobby player 3 faction').selectOption('automata');await first.getByLabel('Lobby player 4 faction').selectOption('undead');
   await first.getByRole('button',{name:'Create lobby',exact:true}).click();await first.waitForFunction(()=>window.onlineFixture.lobby.currentLobby!==null);
+  const configuration=await first.evaluate(()=>window.onlineFixture.lobby.currentLobby.settings);assert.equal(configuration.players.length,8);assert.deepEqual(configuration.players.map(player=>player.teamId),[0,1,0,1,0,1,0,1]);
   const lobbyId=await first.evaluate(()=>window.onlineFixture.lobby.currentLobby.id);
   await second.getByRole('button',{name:'Refresh lobbies',exact:true}).click();await second.getByRole('button',{name:`Join lobby ${lobbyId}`,exact:true}).click();
   await second.waitForFunction(()=>window.onlineFixture.lobby.currentLobby!==null);
   await first.getByRole('button',{name:'Refresh lobbies',exact:true}).click();await first.getByRole('button',{name:'Ready',exact:true}).click();await first.waitForFunction(()=>window.onlineFixture.lobby.currentLobby.seats[0].ready);
-  await second.getByRole('button',{name:'Refresh lobbies',exact:true}).click();await second.getByRole('button',{name:'Ready',exact:true}).click();await second.waitForFunction(()=>window.onlineFixture.lobby.currentLobby.seats.every(seat=>seat.ready));
-  await first.getByRole('button',{name:'Refresh lobbies',exact:true}).click();await first.screenshot({path:join(directory,'lobby-ready.png')});await first.getByRole('button',{name:'Start match',exact:true}).click();await first.waitForFunction(()=>window.onlineFixture.view?.tick>=0);
+  await second.getByRole('button',{name:'Refresh lobbies',exact:true}).click();await second.getByRole('button',{name:'Ready',exact:true}).click();await second.waitForFunction(()=>window.onlineFixture.lobby.currentLobby.seats.every(seat=>seat.controller==='ai'||seat.ready));
+  await first.getByRole('button',{name:'Refresh lobbies',exact:true}).click();await first.getByRole('button',{name:'Start match',exact:true}).click({trial:true});await first.screenshot({path:join(directory,'lobby-ready.png')});await first.getByRole('button',{name:'Start match',exact:true}).click();await first.waitForFunction(()=>window.onlineFixture.view?.tick>=0);
   await second.getByRole('button',{name:'Refresh lobbies',exact:true}).click();await second.getByRole('button',{name:'Rejoin match',exact:true}).last().click();await second.waitForFunction(()=>window.onlineFixture.view?.side===1);
   const matchId=await first.evaluate(()=>window.onlineFixture.connection.matchId);
   const views=await Promise.all([first,second].map(page=>page.evaluate(()=>window.onlineFixture.view)));
@@ -36,10 +40,11 @@ try {
   const generation=await second.evaluate(()=>window.onlineFixture.connection.connectionInfo.generation);
   await second.getByRole('button',{name:'Reconnect player',exact:true}).click();await second.waitForFunction(previous=>window.onlineFixture.connection.connectionInfo?.generation>previous,generation);
   await second.getByRole('button',{name:'Train worker',exact:true}).click();await second.waitForFunction(()=>window.onlineFixture.receipts.some(receipt=>receipt.accepted));
-  const spectator=await profile();await spectator.getByLabel('Spectator match ID').fill(matchId);await spectator.getByLabel('Spectator perspective').selectOption('1');await spectator.getByRole('button',{name:'Spectate match',exact:true}).click();
+  const spectator=await profile();await spectator.getByLabel('Spectator match ID').fill(matchId);await spectator.getByLabel('Spectator perspective').selectOption('1');await spectator.getByLabel('Spectator view').selectOption('team');await spectator.getByRole('button',{name:'Spectate match',exact:true}).click();
   await spectator.waitForFunction(()=>window.onlineFixture.view?.side===1);assert.equal(await spectator.evaluate(()=>window.onlineFixture.connection.connectionInfo.delayTicks),40);
+  assert.equal(await spectator.evaluate(()=>window.onlineFixture.view.teamPerspective),true);assert.deepEqual(await spectator.evaluate(()=>window.onlineFixture.view.teamPlayers.map(member=>member.side)),[1,3,5,7]);
   await first.waitForFunction(()=>window.onlineFixture.view.tick>50);const liveTick=await second.evaluate(()=>window.onlineFixture.view.tick),delayedTick=await spectator.evaluate(()=>window.onlineFixture.view.tick);assert.ok(liveTick-delayedTick>=32,'Spectator must receive delayed frames');
   assert.equal(await spectator.evaluate(()=>window.onlineFixture.connection.dispatch({type:'stop',ids:[1]})),false);
   await first.screenshot({path:join(directory,'player-one.png')});await second.screenshot({path:join(directory,'player-two.png')});await spectator.screenshot({path:join(directory,'spectator.png')});assert.deepEqual(errors,[]);
-  const result={checks:12,matchId,lobbyId,firstSide:0,secondSide:1,liveTick,delayedTick,receipts:await first.evaluate(()=>window.onlineFixture.receipts)};await writeFile(join(directory,'results.json'),JSON.stringify(result,null,2));console.log(JSON.stringify(result,null,2));
+  const result={checks:15,matchId,lobbyId,firstSide:0,secondSide:1,teams:[0,1,0,1,0,1,0,1],controllers:['human','human','ai','ai','ai','ai','ai','ai'],liveTick,delayedTick,receipts:await first.evaluate(()=>window.onlineFixture.receipts)};await writeFile(join(directory,'results.json'),JSON.stringify(result,null,2));console.log(JSON.stringify(result,null,2));
 }finally {for(const context of contexts)await context.close();await browser.close();await server.close();}

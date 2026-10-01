@@ -1,11 +1,12 @@
-import type { Command, Side } from '../core/types';
+import type { Side } from '../core/types';
 import { PROTOCOL_VERSION } from './protocol';
-import type { Account, CommandAck, CommandMessage, LobbyObservation, LobbySettings, PlayerObservation, ServerMessage } from './protocol';
+import type { Account, CommandAck, CommandMessage, LobbyObservation, LobbySettings, OnlineCommand,PlayerObservation, ServerMessage } from './protocol';
 
 export class OnlineRequestError extends Error {
   constructor(readonly status:number,message:string){super(message);this.name='OnlineRequestError';}
 }
 export interface MatchTicket { ticket:string; protocolVersion:number; role:'player'|'spectator'; side:Side; delayTicks:number }
+export type OnlineInput=OnlineCommand;
 export interface OnlineApiOptions { baseUrl?:string; fetch?:typeof fetch; timeoutMs?:number }
 
 /** Cookies remain HttpOnly. Nothing in the client stores passwords or session tokens. */
@@ -48,8 +49,8 @@ export class OnlineApi {
   async changeLobby(lobby:LobbyObservation,action:'join'|'leave'|'ready'|'settings'|'start',value:Record<string,unknown>={}) {
     return (await this.request<{lobby:LobbyObservation}>(`/api/lobbies/${encodeURIComponent(lobby.id)}/${action}`,{...value,expectedRevision:lobby.revision})).lobby;
   }
-  async ticket(matchId:string,role:'player'|'spectator',perspective?:Side) {
-    return this.request<MatchTicket>(`/api/matches/${encodeURIComponent(matchId)}/ticket`,{role,...(perspective===undefined?{}:{perspective})});
+  async ticket(matchId:string,role:'player'|'spectator',perspective?:Side,view?:'player'|'team') {
+    return this.request<MatchTicket>(`/api/matches/${encodeURIComponent(matchId)}/ticket`,{role,...(perspective===undefined?{}:{perspective}),...(view===undefined?{}:{view})});
   }
   socketUrl(ticket:string){const url=new URL('/ws',this.baseUrl);url.protocol=url.protocol==='https:'?'wss:':'ws:';url.searchParams.set('ticket',ticket);return url.href;}
 }
@@ -67,10 +68,11 @@ export interface MatchConnectionCallbacks {
   onWaiting?:(availableAtTick:number,currentTick:number)=>void;
 }
 export interface MatchConnectionOptions extends MatchConnectionCallbacks {
-  api:OnlineApi;matchId:string;role:'player'|'spectator';perspective?:Side;
+  api:OnlineApi;matchId:string;role:'player'|'spectator';perspective?:Side;view?:'player'|'team';
   createSocket?:(url:string)=>WebSocket;reconnectDelayMs?:number;receiptTimeoutMs?:number;
 }
-interface PendingCommand { message:CommandMessage;createdAt:number;resolve:(receipt:CommandAck)=>void;reject:(error:Error)=>void }
+type WireCommandMessage=CommandMessage;
+interface PendingCommand { message:WireCommandMessage;createdAt:number;resolve:(receipt:CommandAck)=>void;reject:(error:Error)=>void }
 
 /** Authoritative snapshots replace the display. Accepted receipts never mutate it locally. */
 export class OnlineMatchConnection {
@@ -107,7 +109,7 @@ export class OnlineMatchConnection {
     const attempt=++this.generation;
     this.statusChange(this.retries?'reconnecting':'connecting',this.retries?'Reconnecting to the match…':'Connecting to the match…');
     try {
-      const ticket=await this.options.api.ticket(this.matchId,this.options.role,this.options.perspective);
+      const ticket=await this.options.api.ticket(this.matchId,this.options.role,this.options.perspective,this.options.view);
       if(this.disposed||attempt!==this.generation)return;
       if(ticket.protocolVersion!==PROTOCOL_VERSION)throw new Error('The online server uses an unsupported protocol version.');
       const socket=this.options.createSocket?.(this.options.api.socketUrl(ticket.ticket))??new WebSocket(this.options.api.socketUrl(ticket.ticket));
@@ -189,13 +191,13 @@ export class OnlineMatchConnection {
       this.options.onNotice?.(message.message);this.stop(message.message);socket.close(4002,message.code.slice(0,100));
     }
   }
-  send(command:Command):Promise<CommandAck> {
+  send(command:OnlineInput):Promise<CommandAck> {
     if(!this.connected||this.socket?.readyState!==1)return Promise.reject(new Error('Wait for the match connection before issuing orders.'));
     if(this.options.role==='spectator')return Promise.reject(new Error('Spectators cannot issue orders.'));
     if(this.tick<0)return Promise.reject(new Error('Wait for the first server snapshot before issuing orders.'));
     if(this.pending.size>=64)return Promise.reject(new Error('Too many orders are waiting for server receipts.'));
     // Snapshot the payload so selection mutations cannot change retransmission.
-    const message:CommandMessage={kind:'command',protocolVersion:PROTOCOL_VERSION,clientSeq:this.nextSeq++,observedTick:this.tick,command:structuredClone(command)};
+    const message:WireCommandMessage={kind:'command',protocolVersion:PROTOCOL_VERSION,clientSeq:this.nextSeq++,observedTick:this.tick,command:structuredClone(command)};
     return new Promise((resolve,reject)=>{
       this.pending.set(message.clientSeq,{message,createdAt:Date.now(),resolve,reject});
       this.watchDeadline();
@@ -213,7 +215,7 @@ export class OnlineMatchConnection {
     });
   }
   /** GameScene's synchronous command callback reports dispatch; receipts report acceptance. */
-  dispatch(command:Command):boolean {
+  dispatch(command:OnlineInput):boolean {
     if(!this.connected||this.options.role==='spectator'||this.tick<0||this.pending.size>=64)return false;
     void this.send(command).catch(error=>this.options.onNotice?.(error instanceof Error?error.message:'The order could not be sent.'));
     return true;
