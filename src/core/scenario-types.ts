@@ -43,6 +43,7 @@ export type ScenarioAction =
   | { type: 'set' | 'add'; key: string; value: number }
   | { type: 'message'; text: string; speaker?: string }
   | { type: 'reward'; side: Side; resources: Cost }
+  | { type: 'alliance'; allied: boolean }
   | { type: 'finish'; outcome: 'won' | 'lost'; reason: string };
 
 export interface ScenarioTrigger {

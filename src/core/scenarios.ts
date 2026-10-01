@@ -86,7 +86,7 @@ function spawnActors(session: ScenarioSession, actors: ScenarioActor[]): void {
     if (definition.level !== undefined) entity.level = definition.level;
     if (definition.hp !== undefined) entity.hp = definition.hp;
     session.runtime.labels[definition.label] = entity.id; spawned.push(definition);
-    session.state.events.push({ type: definition.kind === 'unit' ? 'train' : 'build', side: definition.side, source: entity.id, x: entity.x, y: entity.y, text: definition.label });
+    session.state.events.push({ type: definition.kind === 'unit' ? 'train' : 'build', side: definition.side, source: entity.id, x: entity.x, y: entity.y, ...(entity.level === undefined ? {} : { level: entity.level }), text: definition.label });
   }
   updatePopulation(session.state); refreshVisibility(session.state);
   for (const definition of spawned) if (definition.order) orderActors(session, [definition.label], definition.order);
@@ -150,6 +150,7 @@ function action(session: ScenarioSession, value: ScenarioAction): void {
     case 'add': addVariable(session, value.key, value.value); break;
     case 'message': message(session, value.text, value.speaker); break;
     case 'reward': { const player = session.state.players[value.side]; for (const key of ['wood', 'ore', 'crystal'] as const) player[key] = Math.min(1e9, player[key] + value.resources[key]); break; }
+    case 'alliance': session.state.teams[1] = value.allied ? session.state.teams[0] : session.state.teams[0] === 0 ? 1 : 0; refreshVisibility(session.state); break;
     case 'finish': finish(session, value.outcome, value.reason); break;
   }
 }
@@ -257,11 +258,11 @@ function advanceStealth(session: ScenarioSession, dt: number): void {
 function hazardDamage(session: ScenarioSession, source: Entity, target: Entity, amount: number): void {
   const state = session.state, shield = Math.min(target.shield ?? 0, amount), actual = Math.min(target.hp, amount - shield) + shield;
   target.shield = Math.max(0, (target.shield ?? 0) - shield); target.hp = Math.max(0, target.hp - (amount - shield)); target.lastDamagedAt = state.time; target.lastAttacker = source.id;
-  state.events.push({ type: 'attack', source: source.id, target: target.id, side: source.side, x: source.x, y: source.y, amount: actual, text: 'Telegraphed boss strike' });
+  state.events.push({ type: 'attack', source: source.id, target: target.id, side: source.side, x: source.x, y: source.y, ...(source.level === undefined ? {} : { level: source.level }), amount: actual, text: 'Telegraphed boss strike' });
   if (target.hp <= 0) {
     target.order = { type: 'idle' }; delete target.orderQueue; target.path = []; target.animation = 'death'; target.animTime = 0;
     if (target.kind === 'unit' && !target.illusion && !target.raised) state.corpses.push({ id: target.id, x: target.x, y: target.y, expires: state.time + 45 });
-    state.events.push({ type: 'death', side: target.side, source: target.id, x: target.x, y: target.y });
+    state.events.push({ type: 'death', side: target.side, source: target.id, x: target.x, y: target.y, ...(target.level === undefined ? {} : { level: target.level }) });
     if (target.kind === 'unit' && !target.illusion && !target.raised) addVariable(session, `deaths.${target.side}`, 1);
   }
 }

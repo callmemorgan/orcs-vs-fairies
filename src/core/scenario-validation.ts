@@ -195,9 +195,10 @@ export function validateScenario(input: unknown): ScenarioDefinition {
     if (eventIds.has(id)) bad(`${p}.id`, 'duplicate event'); eventIds.add(id); condition(e.when, `${p}.when`);
     if (e.repeat !== undefined) { const r = object(e.repeat, `${p}.repeat`, ['seconds', 'count']); number(r.seconds, `${p}.repeat.seconds`, 1, 3600); number(r.count, `${p}.repeat.count`, 1, 256, true); }
     (e.actions as unknown[]).forEach((v, j) => {
-      const path = `${p}.actions[${j}]`, a = object(v, path, ['type'], ['actors', 'order', 'key', 'value', 'text', 'speaker', 'side', 'resources', 'outcome', 'reason']);
+      const path = `${p}.actions[${j}]`, a = object(v, path, ['type'], ['actors', 'order', 'key', 'value', 'text', 'speaker', 'side', 'resources', 'outcome', 'reason', 'allied']);
       switch (a.type) {
         case 'spawn': object(v, path, ['type', 'actors']); break;
+        case 'alliance': object(v, path, ['type', 'allied']); flag(a.allied, `${path}.allied`); break;
         case 'order': object(v, path, ['type', 'actors', 'order']); list(a.actors, `${path}.actors`, 256, 1).forEach((label, k) => reference(label, `${path}.actors[${k}]`)); order(a.order, `${path}.order`); break;
         case 'set': case 'add': object(v, path, ['type', 'key', 'value']); identifier(a.key, `${path}.key`); number(a.value, `${path}.value`, -1e6, 1e6); break;
         case 'message': object(v, path, ['type', 'text'], ['speaker']); text(a.text, `${path}.text`); if (a.speaker !== undefined) text(a.speaker, `${path}.speaker`, 96); break;
