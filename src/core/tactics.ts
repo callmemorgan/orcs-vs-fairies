@@ -60,7 +60,8 @@ export function canObserveTacticalEntity(s:GameState,side:Side,e:Entity):boolean
  return s.entities.some(observer=>observer.hp>0&&!observer.illusion&&!isCrewless(observer)&&sameLevel(observer,e)&&(observer.side===side||s.sharedVision&&allied(s,side,observer.side))&&distance(observer,e)<=(observer.role==='cavalry'?TACTICS.scoutDetection:TACTICS.contactDetection));
 }
 export function canCaptureSiege(s:GameState,captor:Entity,target:Entity):boolean {
- return captor.hp>0&&captor.kind==='unit'&&!captor.illusion&&!captor.raised&&!isCrewless(captor)&&['worker','melee','spear','special'].includes(captor.role)&&target.hp>0&&target.kind==='unit'&&target.role==='siege'&&isCrewless(target)&&sameLevel(captor,target)&&canObserveTacticalEntity(s,captor.side,target);
+ return captor.hp>0&&captor.kind==='unit'&&!captor.illusion&&!captor.raised&&!isCrewless(captor)&&['worker','melee','spear','special'].includes(captor.role)&&target.hp>0&&target.kind==='unit'&&target.role==='siege'&&isCrewless(target)&&sameLevel(captor,target)&&canObserveTacticalEntity(s,captor.side,target)
+  &&(target.side===captor.side||target.illusion||target.raised||!unitFor(s,target).tags?.includes('hero')||!commanderAdmissionReason(s,captor.side));
 }
 export function formationOffset(kind:FormationKind,slot:number,count:number,spacing:number):Vec {
  if(kind==='line')return {x:(slot-(count-1)/2)*spacing,y:0};
