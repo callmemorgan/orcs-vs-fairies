@@ -22,6 +22,7 @@ export type ConquestAction =
   | { type: 'battle'; regionId: string; mode: 'attack' | 'passage'; recording: ScenarioRecording };
 export interface ConquestProfile {
   format: 'orcs-vs-fairies-conquest'; version: 1; id: string; worldId: string; faction: FactionId;
+  simulationRevision?: string;
   turn: number; treasury: Cost; regions: Record<string, ConquestRegion>; relations: Record<string, ConquestRelation>;
   army: CampaignSoldier[]; history: ConquestAction[]; active: ConquestBattle | null;
 }

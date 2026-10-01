@@ -1,7 +1,8 @@
 import { FACTIONS } from './content';
 import { deployScenarioArmy, survivingScenarioArmy, type CampaignSoldier } from './campaign';
 import { captureScenario, createScenario, restoreScenario } from './scenarios';
-import { decodeScenarioRecording, ScenarioRecorder, scenarioStateEquals, verifyScenarioRecording } from './scenario-recordings';
+import { decodeScenarioRecording, ScenarioRecorder, scenarioCheckpointChecksum, scenarioRecordingRulesCompatibility, scenarioStateEquals, verifyScenarioRecording } from './scenario-recordings';
+import { SIMULATION_REVISION } from './versions';
 import { scenarioJson } from './scenario-validation';
 import { conquestWorldFor } from '../scenarios/conquest-world';
 import type { ConquestAction, ConquestBattle, ConquestMission, ConquestProfile } from './conquest-types';
@@ -22,6 +23,20 @@ function requireDecisionRoom(profile: ConquestProfile): void { if (profile.histo
 function conquestAid(profile: ConquestProfile): string[] {
   const cost = FACTIONS[profile.faction].units.ranged.cost;
   return Object.entries(profile.relations).filter(([, relation]) => relation.alliance && resources.every(key => relation.treasury[key] >= cost[key])).slice(0, 2).map(([faction]) => faction);
+}
+
+export function conquestRulesCompatibility(profile: ConquestProfile): { compatible: boolean; reason: string | null; revision: string } {
+  const revision = profile.simulationRevision ?? 'unknown';
+  let reason = profile.simulationRevision === undefined ? 'This conquest has no pinned simulation rules. It is available for inspection.'
+    : revision !== SIMULATION_REVISION ? `This conquest uses simulation rules ${revision}; this build uses ${SIMULATION_REVISION}. It is available for inspection.` : null;
+  if (reason === null) for (const recording of [...profile.history.flatMap(action => action.type === 'battle' ? [action.recording] : []), ...(profile.active ? [profile.active.recording] : [])]) {
+    const journal = scenarioRecordingRulesCompatibility(recording);
+    if (!journal.compatible) { reason = journal.reason; break; }
+  }
+  return { compatible: reason === null, reason, revision };
+}
+function requireConquestRules(profile: ConquestProfile): void {
+  const result = conquestRulesCompatibility(profile); if (!result.compatible) throw new Error(result.reason!);
 }
 
 /** Only owned and treaty-protected territory may connect an invasion to Hearth. */
@@ -84,11 +99,12 @@ function battleDefinition(profile: ConquestProfile, regionId: string, mode: 'att
 export function createConquestProfile(faction: FactionId, id: string): ConquestProfile {
   if (!Object.hasOwn(FACTIONS, faction) || typeof id !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,95}$/.test(id)) throw new Error('Invalid conquest faction or profile ID.');
   const definition = conquestWorldFor(faction);
-  const profile: ConquestProfile = { format: 'orcs-vs-fairies-conquest', version: 1, id, worldId: definition.id, faction, turn: 0, treasury: { wood: 500, ore: 350, crystal: 100 }, regions: Object.fromEntries(definition.regions.map(r => [r.id, { owner: r.owner, garrison: r.garrison }])), relations: Object.fromEntries(Object.keys(FACTIONS).map(other => [other, { score: 0, warPressure: 0, alliance: false, truceUntil: 0, treasury: { wood: 150, ore: 100, crystal: 20 } }])), army: [], history: [], active: null };
+  const profile: ConquestProfile = { format: 'orcs-vs-fairies-conquest', version: 1, simulationRevision: SIMULATION_REVISION, id, worldId: definition.id, faction, turn: 0, treasury: { wood: 500, ore: 350, crystal: 100 }, regions: Object.fromEntries(definition.regions.map(r => [r.id, { owner: r.owner, garrison: r.garrison }])), relations: Object.fromEntries(Object.keys(FACTIONS).map(other => [other, { score: 0, warPressure: 0, alliance: false, truceUntil: 0, treasury: { wood: 150, ore: 100, crystal: 20 } }])), army: [], history: [], active: null };
   profile.army = friendlyArmy(createScenario(battleDefinition(profile, 'grove', 'attack'))); return boundedProfile(profile);
 }
 
 export function proposeConquest(profile: ConquestProfile, action: Exclude<ConquestAction, { type: 'battle' | 'wait' }>): ConquestProfile {
+  requireConquestRules(profile);
   if (profile.active) throw new Error('Finish the active battlefield before negotiating.');
   requireDecisionRoom(profile);
   if (action.faction === profile.faction || !Object.hasOwn(profile.relations, action.faction)) throw new Error('Choose a foreign faction.');
@@ -108,12 +124,14 @@ export function proposeConquest(profile: ConquestProfile, action: Exclude<Conque
 }
 
 export function waitConquestTurn(profile: ConquestProfile): ConquestProfile {
+  requireConquestRules(profile);
   if (profile.active || profile.turn >= 1000) throw new Error('A conquest turn cannot advance now.');
   requireDecisionRoom(profile);
   return boundedProfile({ ...copy(profile), turn: profile.turn + 1, treasury: total(profile.treasury, conquestSupply(profile)), history: [...profile.history, { type: 'wait' }] });
 }
 
 export function prepareConquestBattle(profile: ConquestProfile, regionId: string, mode: 'attack' | 'passage' = 'attack'): ConquestMission {
+  requireConquestRules(profile);
   if (profile.active) { if (profile.active.regionId !== regionId || profile.active.mode !== mode) throw new Error('A different conquest battle is active.'); const session = restoreScenario(profile.active.checkpoint); return { profile, session, recorder: new ScenarioRecorder(session, profile.active.recording) }; }
   requireDecisionRoom(profile);
   if (!reachableConquestRegions(profile).includes(regionId)) throw new Error('This region is unreachable from owned or treaty-protected territory.');
@@ -133,15 +151,19 @@ export function prepareConquestBattle(profile: ConquestProfile, regionId: string
 }
 
 export function checkpointConquestBattle(profile: ConquestProfile, session: ScenarioSession, recorder: ScenarioRecorder): ConquestProfile {
+  requireConquestRules(profile);
   if (!profile.active || profile.active.checkpoint.definition.id !== session.definition.id) throw new Error('This battlefield does not belong to the conquest profile.');
   return boundedProfile({ ...copy(profile), active: { ...profile.active, checkpoint: captureScenario(session), recording: recorder.archive() } });
 }
 
 export function completeConquestBattle(profile: ConquestProfile, session: ScenarioSession, input: ScenarioRecording): ConquestProfile {
+  requireConquestRules(profile);
+  const recording = decodeScenarioRecording(input), compatibility = scenarioRecordingRulesCompatibility(recording);
+  if (!compatibility.compatible) throw new Error(compatibility.reason!);
   const prior = profile.history.find(a => a.type === 'battle' && a.recording.initial.definition.id === session.definition.id && JSON.stringify(a.recording) === JSON.stringify(input));
   if (prior) return profile;
   if (!profile.active || profile.active.checkpoint.definition.id !== session.definition.id) throw new Error('Only the active battlefield can update conquest.');
-  const recording = decodeScenarioRecording(input), canonical = prepareConquestBattle({ ...profile, active: null }, profile.active.regionId, profile.active.mode); canonical.recorder.destroy();
+  const canonical = prepareConquestBattle({ ...profile, active: null }, profile.active.regionId, profile.active.mode); canonical.recorder.destroy();
   if (!scenarioStateEquals(canonical.session, restoreScenario(recording.initial))) throw new Error('The conquest battle starts from an altered army or agreement.');
   const verified = verifyScenarioRecording(recording);
   if (verified.runtime.outcome === 'playing' || !scenarioStateEquals(verified, session)) throw new Error('The conquest battle result could not be verified.');
@@ -159,17 +181,74 @@ export function completeConquestBattle(profile: ConquestProfile, session: Scenar
   next.active = null; next.turn++; next.history.push({ type: 'battle', regionId, mode, recording }); return boundedProfile(next);
 }
 
-/** Rebuild the overworld from its accepted decisions and real battlefield journals. */
+/** Historical realms retain their recorded ownership; current realms must match their decisions. */
 export function decodeConquestProfile(input: unknown): ConquestProfile {
   let raw = input; if (typeof raw === 'string') { if (raw.length > 30 * 1024 * 1024) throw new Error('Conquest profile is too large.'); raw = JSON.parse(raw); }
   const saved = scenarioJson(raw, CONQUEST_PROFILE_LIMITS) as ConquestProfile;
-  const exact = (value: unknown, fields: string[]) => !!value && typeof value === 'object' && !Array.isArray(value) && fields.every(k => Object.hasOwn(value, k)) && Object.keys(value).every(k => fields.includes(k));
-  if (!exact(saved, ['format', 'version', 'id', 'worldId', 'faction', 'turn', 'treasury', 'regions', 'relations', 'army', 'history', 'active']) || saved.format !== 'orcs-vs-fairies-conquest' || saved.version !== 1 || !Array.isArray(saved.history) || saved.history.length > 256) throw new Error('Invalid conquest profile.');
-  let canonical = createConquestProfile(saved.faction, saved.id);
-  if (saved.worldId !== canonical.worldId) throw new Error('Unknown conquest world.');
+  const exact = (value: unknown, fields: string[], optional: string[] = []) => !!value && typeof value === 'object' && !Array.isArray(value) && fields.every(k => Object.hasOwn(value, k)) && Object.keys(value).every(k => fields.includes(k) || optional.includes(k));
+  const finite = (value: unknown, min: number, max: number, integer = false): value is number => typeof value === 'number' && Number.isFinite(value) && value >= min && value <= max && (!integer || Number.isSafeInteger(value));
+  const point = (value: { x: number; y: number; level?: number }) => exact(value, ['x', 'y'], ['level']) && finite(value.x, 0, 4096) && finite(value.y, 0, 4096) && (value.level === undefined || finite(value.level, 0, 63, true));
+  const order = (value: CampaignSoldier['entity']['order']) => {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+    if (value.type === 'idle' || value.type === 'hold') return exact(value, ['type']);
+    if (value.type === 'move' || value.type === 'attackMove') return exact(value, ['type', 'x', 'y'], ['level']) && point({ x: value.x, y: value.y, ...(value.level === undefined ? {} : { level: value.level }) });
+    if (value.type === 'traverse') return exact(value, ['type', 'transition']) && finite(value.transition, 1, 0x7fffffff, true);
+    return ['attack', 'gather', 'build', 'worldAttack', 'repairBridge', 'captureSite', 'supportVillage', 'recruitVillage'].includes(value.type) && exact(value, ['type', 'target']) && finite('target' in value ? value.target : undefined, 1, 0x7fffffff, true);
+  };
+  const faction = (value: unknown) => typeof value === 'string' && Object.hasOwn(FACTIONS, value);
+  const cost = (value: Cost) => exact(value, [...resources]) && resources.every(key => finite(value[key], 0, 1000000));
+  if (!exact(saved, ['format', 'version', 'id', 'worldId', 'faction', 'turn', 'treasury', 'regions', 'relations', 'army', 'history', 'active'], ['simulationRevision']) || saved.format !== 'orcs-vs-fairies-conquest' || saved.version !== 1 || !Array.isArray(saved.history) || saved.history.length > 256 || saved.simulationRevision !== undefined && (typeof saved.simulationRevision !== 'string' || saved.simulationRevision.length > 80 || !/^\d+\.\d+\.\d+$/.test(saved.simulationRevision))) throw new Error('Invalid conquest profile.');
+  if (!faction(saved.faction) || typeof saved.id !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,95}$/.test(saved.id)) throw new Error('Invalid conquest faction or profile ID.');
+  const definition = conquestWorldFor(saved.faction), regionIds = definition.regions.map(region => region.id);
+  if (saved.worldId !== definition.id) throw new Error('Unknown conquest world.');
+  if (!finite(saved.turn, 0, 1000, true) || !cost(saved.treasury) || !exact(saved.regions, regionIds) || !exact(saved.relations, Object.keys(FACTIONS))) throw new Error('Invalid conquest ownership, treasury or relations.');
+  for (const value of Object.values(saved.regions)) if (!exact(value, ['owner', 'garrison']) || !faction(value.owner) || !finite(value.garrison, 1, CONQUEST_PROFILE_LIMITS.maxArrayLength, true)) throw new Error('Invalid conquest region.');
+  for (const value of Object.values(saved.relations)) if (!exact(value, ['score', 'warPressure', 'alliance', 'truceUntil', 'treasury']) || !finite(value.score, -100, 100, true) || !finite(value.warPressure, 0, 10, true) || typeof value.alliance !== 'boolean' || !finite(value.truceUntil, 0, 1008, true) || !cost(value.treasury)) throw new Error('Invalid conquest relation.');
+  if (!Array.isArray(saved.army)) throw new Error('Invalid conquest army.');
+  const armyIds = new Set<number>();
+  for (const soldier of saved.army) {
+    const entity = soldier?.entity;
+    if (!exact(soldier, ['entity', 'label'], ['artifacts']) || !entity || typeof entity !== 'object' || Array.isArray(entity) || !finite(entity.id, 1, 0x7fffffff, true) || armyIds.has(entity.id) || entity.side !== 0 || entity.kind !== 'unit' || !['worker', 'melee', 'ranged', 'special', 'cavalry', 'spear', 'siege'].includes(entity.role) || !finite(entity.maxHp, Number.MIN_VALUE, 1e9) || !finite(entity.hp, Number.MIN_VALUE, entity.maxHp) || entity.illusion !== false || entity.raised !== undefined && entity.raised !== false || soldier.label !== null && (typeof soldier.label !== 'string' || soldier.label.length > 96 || !/^[a-zA-Z][a-zA-Z0-9_.-]*$/.test(soldier.label))) throw new Error('Invalid conquest soldier.');
+    for (const key of ['x', 'y', 'cooldown', 'animTime', 'expires'] as const) if (!finite(entity[key], 0, 1e9)) throw new Error('Invalid conquest soldier state.');
+    for (const key of ['progress', 'trainProgress', 'momentum'] as const) if (!finite(entity[key], 0, 1)) throw new Error('Invalid conquest soldier state.');
+    for (const key of ['abilityReadyAt', 'entrenchedAt', 'lastDamagedAt', 'surgeUntil', 'shield', 'maxShield'] as const) if (entity[key] !== undefined && !finite(entity[key], 0, 1e9)) throw new Error('Invalid conquest soldier state.');
+    for (const key of ['definitionId', 'definitionFaction'] as const) if (entity[key] !== undefined && (typeof entity[key] !== 'string' || entity[key]!.length < 1 || entity[key]!.length > 100)) throw new Error('Invalid conquest soldier definition.');
+    if (entity.lastAttacker !== undefined && !finite(entity.lastAttacker, 1, 0x7fffffff, true) || entity.gateOpen !== undefined && typeof entity.gateOpen !== 'boolean' || entity.shield !== undefined && entity.shield > (entity.maxShield ?? 0)) throw new Error('Invalid conquest soldier state.');
+    if (!finite(entity.researchProgress, 0, 2) || !finite(entity.facing, 0, 7, true) || !finite(entity.carried, 0, 18) || !resources.includes(entity.carriedKind) || !['idle', 'walk', 'attack', 'death'].includes(entity.animation) || !order(entity.order) || !Array.isArray(entity.queue) || entity.queue.length !== 0 || !Array.isArray(entity.path) || entity.path.some(value => !point(value)) || entity.orderQueue !== undefined && (!Array.isArray(entity.orderQueue) || entity.orderQueue.some(value => !order(value))) || entity.level !== undefined && !finite(entity.level, 0, 63, true)) throw new Error('Invalid conquest soldier state.');
+    const artifacts = soldier.artifacts ?? [], artifactIds = new Set<number>();
+    if (!Array.isArray(artifacts)) throw new Error('Invalid conquest soldier artifacts.');
+    for (const item of artifacts) {
+      if (!exact(item, ['id', 'definitionId', 'owner', 'holder']) || !finite(item.id, 1, 0x7fffffff, true) || artifactIds.has(item.id) || !['core:ember-blade', 'core:iron-aegis', 'core:wind-charm'].includes(item.definitionId) || item.owner !== 0 || item.holder !== entity.id) throw new Error('Invalid conquest soldier artifact.');
+      artifactIds.add(item.id);
+    }
+    if (entity.equipment !== undefined && (!exact(entity.equipment, [], ['weapon', 'armor', 'trinket']) || Object.values(entity.equipment).some(id => !artifactIds.has(id)))) throw new Error('Invalid conquest soldier equipment.');
+    armyIds.add(entity.id);
+  }
+  const validateRecording = (recording: ScenarioRecording, regionId: string, mode: 'attack' | 'passage') => {
+    if (!regionIds.includes(regionId) || !['attack', 'passage'].includes(mode)) throw new Error('Invalid conquest battle reference.');
+    const decoded = decodeScenarioRecording(recording), expected = `conquest-${saved.faction}-${regionId}-${mode}`;
+    if (decoded.initial.definition.id !== expected || decoded.initial.runtime.definitionId !== expected || decoded.initial.definition.faction !== saved.faction) throw new Error('Invalid conquest battle identity.');
+    return decoded;
+  };
+  let turns = 0;
   for (const action of saved.history) {
-    const fields = action.type === 'tribute' ? ['type', 'faction', 'amount'] : action.type === 'truce' ? ['type', 'faction', 'turns'] : action.type === 'alliance' ? ['type', 'faction'] : action.type === 'wait' ? ['type'] : action.type === 'battle' ? ['type', 'regionId', 'mode', 'recording'] : [];
+    const fields = action?.type === 'tribute' ? ['type', 'faction', 'amount'] : action?.type === 'truce' ? ['type', 'faction', 'turns'] : action?.type === 'alliance' ? ['type', 'faction'] : action?.type === 'wait' ? ['type'] : action?.type === 'battle' ? ['type', 'regionId', 'mode', 'recording'] : [];
     if (!fields.length || !exact(action, fields)) throw new Error('Invalid conquest decision.');
+    if (action.type === 'battle') { validateRecording(action.recording, action.regionId, action.mode); turns++; }
+    else if (action.type === 'wait') turns++;
+    else if (!faction(action.faction) || action.faction === saved.faction || action.type === 'tribute' && !finite(action.amount, 25, 300, true) || action.type === 'truce' && !finite(action.turns, 1, 8, true)) throw new Error('Invalid conquest diplomatic decision.');
+  }
+  if (saved.turn !== turns) throw new Error('Conquest turn disagrees with its recorded decisions.');
+  if (saved.active !== null) {
+    if (!exact(saved.active, ['regionId', 'mode', 'deployedIds', 'checkpoint', 'recording']) || !Array.isArray(saved.active.deployedIds) || saved.active.deployedIds.length > 4096 || saved.active.deployedIds.some(id => !finite(id, 1, 0x7fffffff, true)) || new Set(saved.active.deployedIds).size !== saved.active.deployedIds.length) throw new Error('Invalid active conquest battle.');
+    const recording = validateRecording(saved.active.recording, saved.active.regionId, saved.active.mode), checkpoint = restoreScenario(saved.active.checkpoint);
+    if (checkpoint.definition.id !== recording.initial.definition.id || JSON.stringify(saved.active.checkpoint.definition) !== JSON.stringify(recording.initial.definition) || recording.finalTick !== saved.active.checkpoint.game.state.tick || recording.finalChecksum !== scenarioCheckpointChecksum(saved.active.checkpoint)) throw new Error('The conquest checkpoint disagrees with its recording.');
+    if (saved.active.deployedIds.some(id => !armyIds.has(id) || !recording.initial.game.state.entities.some(entity => entity.id === id && entity.side === 0 && entity.kind === 'unit'))) throw new Error('Invalid conquest deployed army.');
+  }
+  if (!conquestRulesCompatibility(saved).compatible) return saved;
+
+  let canonical = createConquestProfile(saved.faction, saved.id);
+  for (const action of saved.history) {
     if (action.type === 'battle') {
       const prepared = prepareConquestBattle(canonical, action.regionId, action.mode); prepared.recorder.destroy();
       const verified = verifyScenarioRecording(action.recording); canonical = completeConquestBattle(prepared.profile, verified, action.recording);
@@ -177,7 +256,6 @@ export function decodeConquestProfile(input: unknown): ConquestProfile {
     else canonical = proposeConquest(canonical, action);
   }
   if (saved.active !== null) {
-    if (!exact(saved.active, ['regionId', 'mode', 'deployedIds', 'checkpoint', 'recording'])) throw new Error('Invalid active conquest battle.');
     const prepared = prepareConquestBattle(canonical, saved.active.regionId, saved.active.mode); prepared.recorder.destroy();
     if (!scenarioStateEquals(prepared.session, restoreScenario(saved.active.recording.initial)) || JSON.stringify(prepared.profile.active!.deployedIds) !== JSON.stringify(saved.active.deployedIds)) throw new Error('The saved conquest detachment was altered.');
     const replayed = verifyScenarioRecording(saved.active.recording);
