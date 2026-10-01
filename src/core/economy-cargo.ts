@@ -4,7 +4,7 @@ import type { EconomyCargo, EconomyCommand, EconomyHooks, EconomyMarket, Economy
 import type { Cost, Entity, GameState, ResourceKind, Side } from './types';
 
 const EPSILON = 1e-8;
-const active = (entity:Entity) => entity.hp > 0 && !entity.illusion && !entity.raised;
+const active = (entity:Entity) => entity.hp > 0 && !entity.illusion && !entity.raised && !entity.tactics?.siegeCrew?.uncrewed;
 const cargoFor = (economy:EconomyState,id:number) => economy.cargo.find(cargo => cargo.entityId === id);
 const entityFor = (s:GameState,id:number) => s.entities.find(entity => entity.id === id && entity.hp > 0);
 const validAmount = (amount:number,max=10000) => Number.isFinite(amount) && amount > 0 && amount <= max;
@@ -294,7 +294,7 @@ export function tickCargo(s:GameState,dt:number,economy:EconomyState,hooks:Econo
  }
  for(const cargo of economy.cargo){
   const entity=entityFor(s,cargo.entityId);
-  if(!entity||economy.tasks.some(task=>task.entityId===entity.id)||costTotal(cargo.stock)<=EPSILON||entity.order.type!=='idle'&&entity.order.type!=='hold')continue;
+  if(!entity||!active(entity)||economy.tasks.some(task=>task.entityId===entity.id)||costTotal(cargo.stock)<=EPSILON||entity.order.type!=='idle'&&entity.order.type!=='hold')continue;
   cargo.origin='delivery';cargo.tradeValue=0;delete cargo.contractId;
   const target=nearestStorage(s,entity,economy);
   if(target&&distance(entity,target)<=hooks.radius(s,target)+1)depositCargo(s,entity,target,cargo,economy);

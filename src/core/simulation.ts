@@ -479,7 +479,7 @@ function resolveHits(s:GameState):void{
   }
   if(target.kind==='unit')initializeTactics(s,target);const crew=target.tactics?.siegeCrew,crewHits=crew&&!crew.uncrewed?hits.filter(hit=>hit.crew):[],engineHits=hits.filter(hit=>!crewHits.includes(hit));
   const crewDamage=crewHits.reduce((n,h)=>n+h.amount,0);
-  if(crew&&crewDamage>0){const actual=Math.min(crew.hp,crewDamage);for(const hit of crewHits){hit.event.amount=actual*hit.amount/crewDamage;credit(hit.source,target,hit.event.amount);}crew.hp=Math.max(0,crew.hp-crewDamage);if(crew.hp===0){crew.uncrewed=true;target.order={type:'idle'};target.path=[];delete target.orderQueue;delete target.tactics!.formation;delete target.tactics!.capture;delete target.tactics!.ambush;emit(s,'message',target,undefined,'Siege crew defeated: engine uncrewed');}}
+  if(crew&&crewDamage>0){const actual=Math.min(crew.hp,crewDamage);for(const hit of crewHits){hit.event.amount=actual*hit.amount/crewDamage;credit(hit.source,target,hit.event.amount);}crew.hp=Math.max(0,crew.hp-crewDamage);if(crew.hp===0){crew.uncrewed=true;interruptWorldOrder(s,target);emit(s,'message',target,undefined,'Siege crew defeated: engine uncrewed');}}
   for(const hit of engineHits){const protection=hit.ranged?interceptDirectionalShield(s,hit.source,target,hit.amount):{remaining:hit.amount,intercepted:[]};hit.amount=protection.remaining;for(const interception of protection.intercepted){const event=emit(s,'attack',hit.source,interception.bearer.id,'Shield intercepted shot');event.amount=interception.amount;credit(hit.source,interception.bearer,interception.amount);recordCombatExposure(s,interception.bearer);}}
   const total=engineHits.reduce((n,h)=>n+h.amount,0),networkAbsorbed=absorbFactionShield(s,target,total),ownAbsorbed=Math.min(target.shield??0,total-networkAbsorbed),absorbed=networkAbsorbed+ownAbsorbed,actual=Math.min(target.hp,total-absorbed)+absorbed;
   target.shield=Math.max(0,(target.shield??0)-ownAbsorbed);target.hp=Math.max(0,target.hp-(total-absorbed));if(total||crewDamage)target.lastDamagedAt=s.time;
@@ -531,10 +531,17 @@ function applyStep(s:GameState,dt:number):void{
   objectiveAi(s,side,issueCommand,requested);rt.aiDecisionAt[side]=s.time+aiProfile(s.aiConfigs[side]).decisionInterval;
  }}}
  if(s.rules.mode==='annihilation'&&(due.size||rt.teamAI.coordinator.waves.length))runTeamCoordination(s);
+ for(const actor of s.entities)if(alive(actor)&&isCrewless(actor))interruptWorldOrder(s,actor);
+ // Economy orders already cleared these states in older builds, so a saved
+ // channel or construction order is the later command and must replace the job.
+ for(const actor of s.entities)if(alive(actor)&&economyEntityBusy(s,actor)){
+  const faction=actor.factionState,tunnel=faction?.tunnel,corpseOrder=faction?.corpseOrder,order=actor.order;
+  if(tunnel||corpseOrder||order.type==='build'){interruptWorldOrder(s,actor,order.type==='build'?order:{type:'hold'});if(tunnel)faction!.tunnel=tunnel;if(corpseOrder)faction!.corpseOrder=corpseOrder;}
+ }
  for(const actor of s.entities)if(alive(actor)&&actor.specialistBuffs?.some(buff=>buff.until>s.time&&buff.fearedFrom)&&economyEntityBusy(s,actor))interruptWorldOrder(s,actor);
  const economicActors=new Set(economicState(s)?.tasks.map(task=>task.entityId));
  // Older saves can contain a formation left behind when a later economy job took over.
- for(const actor of s.entities)if(economicActors.has(actor.id))delete actor.tactics?.formation;
+ for(const actor of s.entities)if(economicActors.has(actor.id)&&actor.tactics?.formation){delete actor.tactics.formation;actor.order={type:'hold'};invalidateNavigation(s,actor);}
  stepFactionSystems(s,dt,factionHooks(s));
  tickEconomy(s,dt,economyHooks);
  for(const e of [...s.entities]){

@@ -398,7 +398,7 @@ describe('retained faction definitions, cooldowns and pending-order cleanup', ()
     roundTripAndContinue(s);
   });
 
-  it('capture callback clears a real pending tunnel while preserving a fitted engine', () => {
+  it('crew defeat clears pending tunnel travel and capture preserves the fitted engine', () => {
     const s = fixture(['dwarves', 'orcs']), engine = unit(s, 0, 'siege');
     spawnDefinition(s, 0, 'building', FACTION_STRUCTURE_INFO.tunnel.definition.id, engine.x - 3, engine.y, 1, 1);
     const exit = spawnDefinition(s, 0, 'building', FACTION_STRUCTURE_INFO.tunnel.definition.id, 40.5, 32.5, 1, 1);
@@ -407,10 +407,10 @@ describe('retained faction definitions, cooldowns and pending-order cleanup', ()
     const raiders = [-.6, -.4, -.2, .2, .4, .6].map(dy => unit(s, 1, 'melee', engine.x - 1.1, engine.y + dy));
     for (const raider of raiders) raider.cooldown = 0;
     command(s, 1, { type: 'attack', ids: raiders.map(e => e.id), target: engine.id }); advance(s, .05);
-    expect(engine.tactics!.siegeCrew!.uncrewed).toBe(true); expect(engine.factionState!.tunnel!.target).toBe(exit.id);
+    expect(engine.tactics!.siegeCrew!.uncrewed).toBe(true); expect(engine.factionState!.tunnel).toBeUndefined();
     command(s, 1, { type: 'stop', ids: raiders.map(e => e.id) });
     command(s, 1, { type: 'captureSiege', ids: [raiders[2].id], target: engine.id });
-    // The next full step cancels damaged travel first; isolate the capture callback.
+    // Crew defeat already interrupted travel; isolate capture completion to verify the fitting survives.
     for (let i = 0; i < 16; i++) updateSiegeCapture(s, raiders[2], .25);
     expect(engine.side).toBe(1); expect(engine.definitionFaction).toBe('dwarves');
     expect(engine.factionState!.tunnel).toBeUndefined(); expect(engine.factionState!.artillery).toBe('reinforced');
