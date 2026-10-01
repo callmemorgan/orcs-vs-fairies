@@ -90,7 +90,7 @@ export function createNativeContext({page,out,fixtures,manifest,identity,evidenc
       assert(saved.replay);await openSessions('replay');const archive=await download('Export replay',`${name}-replay.json`);compareReplayExport(archive,saved.replay,name,identity);
       await sessions.getByLabel('Import replay JSON',{exact:true}).setInputFiles(resolve(out,`${name}-replay.json`));await sessions.getByRole('button',{name:'Import replay',exact:true}).click();
       await wait(()=>document.querySelector('[aria-label="Import replay JSON"]')?.files?.length===0&&[...document.querySelectorAll('.session-notice')].some(e=>!e.hidden&&e.textContent==='Replay loaded.'),null,60000);
-      await wait(()=>window.rts.mode==='replay');await ready();await sessions.getByLabel('Replay tick',{exact:true}).press('End');await wait(tick=>window.rts.state.tick===tick,archive.finalTick,60000);
+      await wait(()=>window.rts?.mode==='replay');await ready();await sessions.getByLabel('Replay tick',{exact:true}).press('End');await wait(tick=>window.rts.state.tick===tick,archive.finalTick,60000);
       const endpoint=await exportSave(`${name}-replay-endpoint`);comparePersisted(endpoint.game,saved.game,`${name} replay`);
       record(`${name} complete replay endpoint`,{tick:archive.finalTick,checksum:archive.finalChecksum,commands:archive.actions.filter(a=>a.type==='command')});
       await closeSessions();await screenshot(`${name}-replay`);
