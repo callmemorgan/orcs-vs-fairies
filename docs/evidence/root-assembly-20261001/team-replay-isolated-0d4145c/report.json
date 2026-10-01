@@ -1,0 +1,67 @@
+{
+  "pin": "0d4145cfa768fb47fe21d4d257c8e1ea5d07549a",
+  "argv": [
+    "npm",
+    "test",
+    "--",
+    "tests/team-replays.test.ts",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile.json=/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/team-replay-isolated-0d4145c-r1/tests.json"
+  ],
+  "exitCode": 0,
+  "inputIntegrityPassed": true,
+  "tests": {
+    "success": true,
+    "numTotalTests": 9,
+    "numPassedTests": 9,
+    "numFailedTests": 0
+  },
+  "timings": [
+    {
+      "name": "roster replay and session contracts replays high-side commands, gathering and research in a 3-player match",
+      "durationMs": 576.202486,
+      "status": "passed"
+    },
+    {
+      "name": "roster replay and session contracts replays high-side commands, gathering and research in a 8-player match",
+      "durationMs": 2001.160522,
+      "status": "passed"
+    },
+    {
+      "name": "roster replay and session contracts validates analysis and action sides against the 1-player roster",
+      "durationMs": 13.957965000000058,
+      "status": "passed"
+    },
+    {
+      "name": "roster replay and session contracts validates analysis and action sides against the 3-player roster",
+      "durationMs": 41.868915000000015,
+      "status": "passed"
+    },
+    {
+      "name": "roster replay and session contracts validates analysis and action sides against the 8-player roster",
+      "durationMs": 130.65848099999994,
+      "status": "passed"
+    },
+    {
+      "name": "roster replay and session contracts stores a one-player session without reading a nonexistent opponent",
+      "durationMs": 11.64533500000016,
+      "status": "passed"
+    },
+    {
+      "name": "roster replay and session contracts keeps genuine v1 saves readable but rejects their old playback rules",
+      "durationMs": 15.923729000000094,
+      "status": "passed"
+    },
+    {
+      "name": "roster replay and session contracts keeps genuine v2 saves readable but rejects their old playback rules",
+      "durationMs": 12.788594999999987,
+      "status": "passed"
+    },
+    {
+      "name": "roster replay and session contracts retains a genuine prior v3 recording after an AI rule change without relabeling its history",
+      "durationMs": 6.416784999999891,
+      "status": "passed"
+    }
+  ]
+}
