@@ -359,8 +359,8 @@ export function scenarioCommandPermitted(state: GameState, side: Side, command: 
   const session = scenarioSessionForState(state); if (!session || isScenarioScriptedCommand(state)) return true;
   if (!scenarioRulesCompatibility(session).compatible) return false;
   if (side !== 0 || session.runtime.outcome !== 'playing') return false;
-  if (side === 0 && (command.type === 'build' || command.type === 'research') && session.definition.rules.fixedArmy) return false;
-  return !(side === 0 && command.type === 'train' && (session.definition.rules.fixedArmy || session.runtime.reinforcementRemaining <= 0));
+  if (side === 0 && ['build', 'research', 'buildEconomy', 'plantGrove', 'specializeSettlement'].includes(command.type) && session.definition.rules.fixedArmy) return false;
+  return !(side === 0 && (command.type === 'train' || command.type === 'trainCaravan') && (session.definition.rules.fixedArmy || session.runtime.reinforcementRemaining <= 0));
 }
 
 /** Core calls this only for accepted external input, before history notification. */
@@ -368,7 +368,7 @@ export function afterScenarioCommand(state: GameState, side: Side, command: Comm
   const session = scenarioSessionForState(state); if (!session || isScenarioScriptedCommand(state)) return;
   commandGeneration.set(state, (commandGeneration.get(state) ?? 0) + 1);
   if (side === 0) {
-    if (command.type === 'train') session.runtime.reinforcementRemaining--;
+    if (command.type === 'train' || command.type === 'trainCaravan') session.runtime.reinforcementRemaining--;
     if (command.type !== 'ability') { session.runtime.commandCounts[command.type] = (session.runtime.commandCounts[command.type] ?? 0) + 1; addVariable(session, `action.${command.type}`, 1); }
     recordEvents(session, eventStart);
   }
