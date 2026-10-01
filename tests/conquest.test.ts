@@ -4,6 +4,7 @@ import { captureScenario, issueScenarioCommand, stepScenario } from '../src/core
 import { isHostile } from '../src/core/simulation';
 import { solveConquest } from '../scripts/scenarios/conquest-strategy';
 import { FACTIONS } from '../src/core/content';
+import { decodeScenarioRecording } from '../src/core/scenario-recordings';
 
 describe('connected conquest and negotiated diplomacy', () => {
   it('rejects malformed profile identities and non-null active placeholders', () => {
@@ -19,6 +20,35 @@ describe('connected conquest and negotiated diplomacy', () => {
     expect(() => proposeConquest(profile, { type: 'tribute', faction: 'fairies', amount: 25 })).toThrow('history is full');
     expect(() => prepareConquestBattle(profile, 'quarry')).toThrow('history is full');
   });
+  it('rejects aggregate journal growth before returning a profile that cannot reload', () => {
+    let profile = createConquestProfile('undead', 'profile-storage-bound');
+    profile = proposeConquest(profile, { type: 'tribute', faction: 'fairies', amount: 250 });
+    profile = proposeConquest(profile, { type: 'alliance', faction: 'fairies' });
+    for (let battle = 0; battle < 4; battle++) {
+      const run = prepareConquestBattle(profile, 'grove', 'passage');
+      const previous = JSON.stringify(run.profile), commander = run.session.runtime.labels.commander;
+      const ids = run.session.state.entities.filter(e => e.side === 0 && e.kind === 'unit' && e.hp > 0).map(e => e.id);
+      for (let command = 0; command < 30000; command++) expect(issueScenarioCommand(run.session, 0, { type: 'hold', ids })).toBe(true);
+      expect(issueScenarioCommand(run.session, 0, { type: 'move', ids: [commander], x: 29, y: 16 })).toBe(true);
+      for (let tick = 0; tick < 1000 && run.session.runtime.outcome === 'playing'; tick++) stepScenario(run.session);
+      expect(run.session.runtime.outcome).toBe('won');
+      const journal = run.recorder.archive();
+      expect(decodeScenarioRecording(journal).commands).toHaveLength(30001);
+      if (battle < 3) {
+        profile = checkpointConquestBattle(run.profile, run.session, run.recorder);
+        expect(decodeConquestProfile(JSON.stringify(profile)).active!.recording.commands).toHaveLength(30001);
+        profile = completeConquestBattle(profile, run.session, journal);
+        expect(decodeConquestProfile(JSON.stringify(profile)).history).toHaveLength(battle + 3);
+      } else {
+        expect(() => checkpointConquestBattle(run.profile, run.session, run.recorder)).toThrow('package is too large');
+        expect(() => completeConquestBattle(run.profile, run.session, journal)).toThrow('package is too large');
+        expect(JSON.stringify(run.profile)).toBe(previous);
+        expect(decodeConquestProfile(previous).active!.recording.commands).toHaveLength(0);
+      }
+      run.recorder.destroy();
+    }
+  }, 60000);
+
   it('captures connected regions through ordinary combat and reloads real surviving armies', () => {
     let profile = createConquestProfile('dwarves', 'conquest-proof');
     expect(reachableConquestRegions(profile)).toEqual(['grove', 'quarry']);

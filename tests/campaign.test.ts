@@ -10,6 +10,28 @@ describe('verified connected campaign progression', () => {
     expect(() => createCampaignProfile('toString', 'bad-campaign')).toThrow('Unknown campaign');
     expect(() => decodeCampaignProfile({ ...createCampaignProfile('campaign-orcs', 'typed-campaign'), id: 123 })).toThrow('Invalid campaign profile');
   });
+  it('preserves the previous profile when accumulated chapter journals exceed import limits', () => {
+    let profile = createCampaignProfile('campaign-dwarves', 'campaign-storage-bound');
+    for (let chapter = 0; chapter < 3; chapter++) {
+      if (chapter === 2) profile = chooseCampaignBranch(profile, 'surveyor');
+      const run = prepareCampaignMission(profile), previous = JSON.stringify(run.profile);
+      const ids = run.session.state.entities.filter(e => e.side === 0 && e.kind === 'unit' && e.hp > 0).map(e => e.id);
+      for (let command = 0; command < 30000; command++) expect(issueScenarioCommand(run.session, 0, { type: 'hold', ids })).toBe(true);
+      solveMission(run.session); expect(run.session.runtime.outcome).toBe('won');
+      const journal = run.recorder.archive();
+      if (chapter < 2) {
+        profile = completeCampaignMission(run.profile, run.session, journal);
+        expect(decodeCampaignProfile(JSON.stringify(profile)).history).toHaveLength(chapter + 1);
+      } else {
+        expect(() => checkpointCampaignMission(run.profile, run.session, run.recorder)).toThrow('package is too large');
+        expect(() => completeCampaignMission(run.profile, run.session, journal)).toThrow('package is too large');
+        expect(JSON.stringify(run.profile)).toBe(previous);
+        expect(decodeCampaignProfile(previous).active!.recording.commands).toHaveLength(0);
+      }
+      run.recorder.destroy();
+    }
+  }, 60000);
+
   for (const campaign of Object.values(CAMPAIGNS)) it(`${campaign.faction} completes four chapters with stable survivors and a persisted route`, () => {
     let profile = createCampaignProfile(campaign.id, `main-${campaign.faction}`);
     const completed: string[] = [];

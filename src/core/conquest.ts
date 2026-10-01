@@ -10,6 +10,8 @@ import type { ScenarioRecording } from './scenario-recordings';
 import type { Cost, FactionId, TerrainKind } from './types';
 
 const copy = <T>(value: T): T => structuredClone(value);
+const CONQUEST_PROFILE_LIMITS = { maxBytes: 30 * 1024 * 1024, maxNodes: 1500000, maxArrayLength: 100000 };
+function boundedProfile(profile: ConquestProfile): ConquestProfile { scenarioJson(profile, CONQUEST_PROFILE_LIMITS); return profile; }
 const resources = ['wood', 'ore', 'crystal'] as const;
 const empty = (): Cost => ({ wood: 0, ore: 0, crystal: 0 });
 const total = (a: Cost, b: Cost): Cost => ({ wood: Math.min(1000000, a.wood + b.wood), ore: Math.min(1000000, a.ore + b.ore), crystal: Math.min(1000000, a.crystal + b.crystal) });
@@ -83,7 +85,7 @@ export function createConquestProfile(faction: FactionId, id: string): ConquestP
   if (!Object.hasOwn(FACTIONS, faction) || typeof id !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,95}$/.test(id)) throw new Error('Invalid conquest faction or profile ID.');
   const definition = conquestWorldFor(faction);
   const profile: ConquestProfile = { format: 'orcs-vs-fairies-conquest', version: 1, id, worldId: definition.id, faction, turn: 0, treasury: { wood: 500, ore: 350, crystal: 100 }, regions: Object.fromEntries(definition.regions.map(r => [r.id, { owner: r.owner, garrison: r.garrison }])), relations: Object.fromEntries(Object.keys(FACTIONS).map(other => [other, { score: 0, warPressure: 0, alliance: false, truceUntil: 0, treasury: { wood: 150, ore: 100, crystal: 20 } }])), army: [], history: [], active: null };
-  profile.army = friendlyArmy(createScenario(battleDefinition(profile, 'grove', 'attack'))); return profile;
+  profile.army = friendlyArmy(createScenario(battleDefinition(profile, 'grove', 'attack'))); return boundedProfile(profile);
 }
 
 export function proposeConquest(profile: ConquestProfile, action: Exclude<ConquestAction, { type: 'battle' | 'wait' }>): ConquestProfile {
@@ -102,13 +104,13 @@ export function proposeConquest(profile: ConquestProfile, action: Exclude<Conque
     if (relation.score < 50 + relation.warPressure * 12) throw new Error('The faction rejects an alliance because relations and war pressure do not meet its terms.');
     relation.alliance = true;
   } else throw new Error('Unknown diplomatic proposal.');
-  next.history.push(copy(action)); return next;
+  next.history.push(copy(action)); return boundedProfile(next);
 }
 
 export function waitConquestTurn(profile: ConquestProfile): ConquestProfile {
   if (profile.active || profile.turn >= 1000) throw new Error('A conquest turn cannot advance now.');
   requireDecisionRoom(profile);
-  return { ...copy(profile), turn: profile.turn + 1, treasury: total(profile.treasury, conquestSupply(profile)), history: [...profile.history, { type: 'wait' }] };
+  return boundedProfile({ ...copy(profile), turn: profile.turn + 1, treasury: total(profile.treasury, conquestSupply(profile)), history: [...profile.history, { type: 'wait' }] });
 }
 
 export function prepareConquestBattle(profile: ConquestProfile, regionId: string, mode: 'attack' | 'passage' = 'attack'): ConquestMission {
@@ -126,12 +128,13 @@ export function prepareConquestBattle(profile: ConquestProfile, regionId: string
   session.state.players[0].population = session.state.entities.filter(e => e.side === 0 && e.kind === 'unit').length;
   recorder.destroy(); const readyRecorder = new ScenarioRecorder(session);
   const active: ConquestBattle = { regionId, mode, deployedIds, checkpoint: captureScenario(session), recording: readyRecorder.archive() };
-  return { profile: { ...copy(profile), active }, session, recorder: readyRecorder };
+  try { return { profile: boundedProfile({ ...copy(profile), active }), session, recorder: readyRecorder }; }
+  catch (error) { readyRecorder.destroy(); throw error; }
 }
 
 export function checkpointConquestBattle(profile: ConquestProfile, session: ScenarioSession, recorder: ScenarioRecorder): ConquestProfile {
   if (!profile.active || profile.active.checkpoint.definition.id !== session.definition.id) throw new Error('This battlefield does not belong to the conquest profile.');
-  return { ...copy(profile), active: { ...profile.active, checkpoint: captureScenario(session), recording: recorder.archive() } };
+  return boundedProfile({ ...copy(profile), active: { ...profile.active, checkpoint: captureScenario(session), recording: recorder.archive() } });
 }
 
 export function completeConquestBattle(profile: ConquestProfile, session: ScenarioSession, input: ScenarioRecording): ConquestProfile {
@@ -153,13 +156,13 @@ export function completeConquestBattle(profile: ConquestProfile, session: Scenar
   }
   if (won) next.treasury = total({ wood: verified.state.players[0].wood, ore: verified.state.players[0].ore, crystal: verified.state.players[0].crystal }, conquestSupply(next));
   for (const [faction, relation] of Object.entries(next.relations)) if (relation.alliance && verified.runtime.labels[`aid-${faction}`]) for (const key of resources) relation.treasury[key] -= FACTIONS[profile.faction].units.ranged.cost[key];
-  next.active = null; next.turn++; next.history.push({ type: 'battle', regionId, mode, recording }); return next;
+  next.active = null; next.turn++; next.history.push({ type: 'battle', regionId, mode, recording }); return boundedProfile(next);
 }
 
 /** Rebuild the overworld from its accepted decisions and real battlefield journals. */
 export function decodeConquestProfile(input: unknown): ConquestProfile {
   let raw = input; if (typeof raw === 'string') { if (raw.length > 30 * 1024 * 1024) throw new Error('Conquest profile is too large.'); raw = JSON.parse(raw); }
-  const saved = scenarioJson(raw, { maxBytes: 30 * 1024 * 1024, maxNodes: 1500000, maxArrayLength: 100000 }) as ConquestProfile;
+  const saved = scenarioJson(raw, CONQUEST_PROFILE_LIMITS) as ConquestProfile;
   const exact = (value: unknown, fields: string[]) => !!value && typeof value === 'object' && !Array.isArray(value) && fields.every(k => Object.hasOwn(value, k)) && Object.keys(value).every(k => fields.includes(k));
   if (!exact(saved, ['format', 'version', 'id', 'worldId', 'faction', 'turn', 'treasury', 'regions', 'relations', 'army', 'history', 'active']) || saved.format !== 'orcs-vs-fairies-conquest' || saved.version !== 1 || !Array.isArray(saved.history) || saved.history.length > 256) throw new Error('Invalid conquest profile.');
   let canonical = createConquestProfile(saved.faction, saved.id);

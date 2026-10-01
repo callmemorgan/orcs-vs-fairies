@@ -33,6 +33,13 @@ describe('shared scenario execution', () => {
     expect(() => decodeScenarioRecording(recording)).toThrow('Invalid scenario command');
   });
 
+  it('refuses to export a journal that exceeds its own import node budget', () => {
+    const session = createScenario(definition({ army: [troop('commander', 0, 'special', 8, 8), ...Array.from({ length: 8 }, (_, i) => troop(`ally-${i}`, 0, 'melee', 10 + i % 3, 8 + Math.floor(i / 3))), troop('enemy', 1, 'melee', 25, 25)] })), recorder = new ScenarioRecorder(session);
+    for (let command = 0; command < 80000; command++) expect(issueScenarioCommand(session, 0, { type: 'hold', ids: owned(session) })).toBe(true);
+    expect(() => recorder.archive()).toThrow('package is too large');
+    recorder.destroy();
+  }, 30000);
+
   it('rejects executable recording and checkpoint properties without evaluating them', () => {
     const session = createScenario(definition()), recorder = new ScenarioRecorder(session);
     const recording = recorder.archive(); recorder.destroy(); let evaluations = 0;

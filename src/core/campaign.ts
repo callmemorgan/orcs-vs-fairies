@@ -34,6 +34,8 @@ export function survivingScenarioArmy(session: ScenarioSession): CampaignSoldier
 }
 export interface CampaignMission { profile: CampaignProfile; session: ScenarioSession; recorder: ScenarioRecorder }
 const copy = <T>(value: T): T => structuredClone(value);
+const CAMPAIGN_PROFILE_LIMITS = { maxBytes: 20 * 1024 * 1024, maxNodes: 1000000, maxArrayLength: 100000 };
+function boundedProfile(profile: CampaignProfile): CampaignProfile { scenarioJson(profile, CAMPAIGN_PROFILE_LIMITS); return profile; }
 function campaign(profile: CampaignProfile) { if (!Object.hasOwn(CAMPAIGNS, profile.campaignId)) throw new Error('Unknown campaign.'); return CAMPAIGNS[profile.campaignId]; }
 
 export function createCampaignProfile(campaignId: string, id: string): CampaignProfile {
@@ -63,7 +65,7 @@ export function chooseCampaignBranch(profile: CampaignProfile, choiceId: string)
   if (!definition.choice.options.some(choice => choice.id === choiceId)) throw new Error('Unknown campaign branch.');
   if (profile.choiceId && profile.choiceId !== choiceId) throw new Error('This campaign already chose its branch. Start another profile to take the other route.');
   if (profile.choiceId === choiceId) return profile;
-  return { ...profile, choiceId, revision: profile.revision + 1 };
+  return boundedProfile({ ...profile, choiceId, revision: profile.revision + 1 });
 }
 
 /** Reserves survive while deployed losses disappear; illusions and raised troops never enter the roster. */
@@ -123,12 +125,13 @@ export function prepareCampaignMission(profile: CampaignProfile): CampaignMissio
   const session = createScenario(SCENARIOS[missionId], { firstEntityId: largestId + 1 });
   const deployedIds = deployScenarioArmy(session, army), recorder = new ScenarioRecorder(session);
   const active: CampaignBattle = { missionId, checkpoint: captureScenario(session), recording: recorder.archive(), deployedIds };
-  return { profile: { ...profile, active, revision: profile.revision + 1 }, session, recorder };
+  try { return { profile: boundedProfile({ ...profile, active, revision: profile.revision + 1 }), session, recorder }; }
+  catch (error) { recorder.destroy(); throw error; }
 }
 
 export function checkpointCampaignMission(profile: CampaignProfile, session: ScenarioSession, recorder: ScenarioRecorder): CampaignProfile {
   if (!profile.active || profile.active.missionId !== session.definition.id) throw new Error('The mission does not belong to the active campaign.');
-  return { ...profile, revision: profile.revision + 1, active: { ...profile.active, checkpoint: captureScenario(session), recording: recorder.archive() } };
+  return boundedProfile({ ...profile, revision: profile.revision + 1, active: { ...profile.active, checkpoint: captureScenario(session), recording: recorder.archive() } });
 }
 
 /** Applies a result once, after replaying its real commands and matching the authoritative checkpoint. */
@@ -145,20 +148,21 @@ export function completeCampaignMission(profile: CampaignProfile, session: Scena
   const verified = verifyScenarioRecording(recording);
   if (verified.runtime.outcome !== 'won' || verified.state.winner !== 0 || !scenarioStateEquals(verified, session)) throw new Error('The mission result could not be verified.');
   const checkpoint = captureScenario(verified), result: CampaignResult = { resultId, missionId: session.definition.id, checkpoint, recording, deployedIds: [...profile.active.deployedIds] };
-  return { ...profile, history: [...profile.history, result], active: null, revision: profile.revision + 1 };
+  return boundedProfile({ ...profile, history: [...profile.history, result], active: null, revision: profile.revision + 1 });
 }
 
 export function resetCampaignMission(profile: CampaignProfile): CampaignMission {
   if (!profile.active) throw new Error('There is no active mission to reset.');
   const session = restoreScenario(profile.active.recording.initial), recorder = new ScenarioRecorder(session);
   const active = { ...profile.active, checkpoint: captureScenario(session), recording: recorder.archive() };
-  return { profile: { ...profile, active, revision: profile.revision + 1 }, session, recorder };
+  try { return { profile: boundedProfile({ ...profile, active, revision: profile.revision + 1 }), session, recorder }; }
+  catch (error) { recorder.destroy(); throw error; }
 }
 
 export function decodeCampaignProfile(input: unknown): CampaignProfile {
   let raw = input;
   if (typeof raw === 'string') { if (raw.length > 20 * 1024 * 1024) throw new Error('Campaign profile is too large.'); raw = JSON.parse(raw); }
-  const profile = scenarioJson(raw, { maxBytes: 20 * 1024 * 1024, maxNodes: 1000000, maxArrayLength: 100000 }) as CampaignProfile;
+  const profile = scenarioJson(raw, CAMPAIGN_PROFILE_LIMITS) as CampaignProfile;
   if (!profile || typeof profile !== 'object' || Array.isArray(profile) || Object.keys(profile).some(k => !['format', 'version', 'id', 'campaignId', 'choiceId', 'revision', 'history', 'active'].includes(k)) || profile.format !== 'orcs-vs-fairies-campaign' || profile.version !== 1 || typeof profile.id !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,95}$/.test(profile.id) || !Number.isSafeInteger(profile.revision) || profile.revision < 0 || !Array.isArray(profile.history) || profile.history.length > 4) throw new Error('Invalid campaign profile.');
   const definition = campaign(profile);
   if (profile.choiceId !== null && !definition.choice.options.some(c => c.id === profile.choiceId) || profile.history.length < 2 && profile.choiceId !== null || profile.history.length > 2 && profile.choiceId === null) throw new Error('Invalid saved campaign branch.');

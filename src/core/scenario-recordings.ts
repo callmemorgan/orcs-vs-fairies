@@ -4,6 +4,8 @@ import type { ScenarioCheckpoint, ScenarioSession } from './scenario-types';
 import type { Command, Side } from './types';
 import { scenarioJson } from './scenario-validation';
 
+const SCENARIO_RECORDING_LIMITS = { maxBytes: 20 * 1024 * 1024, maxNodes: 1000000, maxArrayLength: 100000 };
+
 export interface ScenarioRecording {
   format: 'orcs-vs-fairies-scenario-recording'; version: 1;
   initial: ScenarioCheckpoint;
@@ -34,7 +36,7 @@ export function decodeScenarioRecording(input: unknown): ScenarioRecording {
   let raw = input;
   if (typeof raw === 'string') { if (raw.length > 20 * 1024 * 1024) throw new Error('Scenario recording is too large.'); raw = JSON.parse(raw); }
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) throw new Error('Invalid scenario recording.');
-  const record = scenarioJson(raw, { maxBytes: 20 * 1024 * 1024, maxNodes: 1000000, maxArrayLength: 100000 }) as ScenarioRecording;
+  const record = scenarioJson(raw, SCENARIO_RECORDING_LIMITS) as ScenarioRecording;
   if (Object.keys(record).some(key => !['format', 'version', 'initial', 'commands', 'finalTick', 'finalChecksum'].includes(key)) || record.format !== 'orcs-vs-fairies-scenario-recording' || record.version !== 1) throw new Error('Unsupported scenario recording.');
   const initial = restoreScenario(record.initial);
   if (!Number.isSafeInteger(record.finalTick) || record.finalTick < initial.state.tick || record.finalTick - initial.state.tick > 144000 || typeof record.finalChecksum !== 'string' || !/^[a-f0-9]{8}$/.test(record.finalChecksum)) throw new Error('Invalid scenario recording duration or checksum.');
@@ -80,6 +82,6 @@ export class ScenarioRecorder {
       this.commands.push({ tick: session.state.tick, side, command });
     });
   }
-  archive(): ScenarioRecording { if (this.failure) throw new Error(this.failure); return { format: 'orcs-vs-fairies-scenario-recording', version: 1, initial: structuredClone(this.initial), commands: structuredClone(this.commands), finalTick: this.session.state.tick, finalChecksum: scenarioChecksum(this.session) }; }
+  archive(): ScenarioRecording { if (this.failure) throw new Error(this.failure); return decodeScenarioRecording({ format: 'orcs-vs-fairies-scenario-recording', version: 1, initial: structuredClone(this.initial), commands: structuredClone(this.commands), finalTick: this.session.state.tick, finalChecksum: scenarioChecksum(this.session) }); }
   destroy(): void { this.unsubscribe(); }
 }
