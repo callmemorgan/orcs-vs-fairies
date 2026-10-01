@@ -21,6 +21,9 @@ import { createTournamentService } from '../tournament/service';
 import { createCommunityHttp } from './community-http';
 import { CommunityPackageError } from './community-packages';
 import { rankedEligibility, RANKED_RULES, type CompetitionEntry } from '../online/competitions';
+import { COSMETICS } from '../online/cosmetics';
+import { CosmeticRequestError } from './cosmetics';
+import { CampaignVerificationError, type CampaignVictoryVerifier } from './campaign-verification';
 
 const scrypt=promisify(scryptCallback);
 const SESSION_LIFETIME=7*24*60*60*1000;
@@ -83,6 +86,7 @@ export interface ServerOptions {
   competitionNow?:()=>number;
   /** Simulation still advances in 1/20-second steps. Used by deterministic hosted verification. */
   tickIntervalMs?:number;
+  verifyCampaignVictory?:CampaignVictoryVerifier;
 }
 
 /** Independent clients send inputs; only this process owns and advances GameState. */
@@ -279,6 +283,22 @@ export async function createRtsServer(options:ServerOptions){
       const user=account(req);
       if(await communityHttp({req,res,url,user,body,respond}))return;
       if(tournaments&&await tournaments.handle(req,res))return;
+      if(req.method==='GET'&&path==='/api/cosmetics'){respond(res,200,{catalog:COSMETICS,profile:store.cosmetics.profile(user.id),rules:'Earn faction cosmetics through verified victories: banner after 1 win, building decoration after 3 wins and commander portrait after 5 wins. Equipment changes appearance only.'});return;}
+      if(req.method==='POST'&&path==='/api/cosmetics/equip'){const value=await body(req);respond(res,200,{equipped:store.cosmetics.equip(user.id,value),profile:store.cosmetics.profile(user.id)});return;}
+      if(req.method==='POST'&&path==='/api/cosmetics/campaign-victory'){
+        if(!options.verifyCampaignVictory)throw new HttpError(503,'Canonical campaign verification is unavailable on this server.');
+        const value=await body(req,20*1024*1024);
+        if(!keys(value,['missionId','recording'])||typeof value.missionId!=='string'||!/^[-_a-zA-Z0-9]{1,96}$/.test(value.missionId)||value.recording===undefined)throw new HttpError(400,'Submit a completed canonical campaign recording and its finale mission ID.');
+        let verified;
+        try{verified=await options.verifyCampaignVictory(value.recording,value.missionId);}catch(error){if(error instanceof CampaignVerificationError)throw error;throw new HttpError(400,error instanceof Error?error.message:'Campaign victory could not be verified.');}
+        if(!verified||typeof verified!=='object'||Array.isArray(verified)||verified.missionId!==value.missionId||typeof verified.campaignId!=='string'||!/^[-_a-zA-Z0-9]{1,96}$/.test(verified.campaignId)||typeof verified.factionId!=='string'||!Object.hasOwn(FACTIONS,verified.factionId))throw new HttpError(500,'Canonical campaign verifier returned an invalid result.');
+        respond(res,200,{verified,profile:store.cosmetics.awardCampaignVictory(user.id,verified)});return;
+      }
+      const cosmeticsRoute=/^\/api\/matches\/([^/]+)\/cosmetics$/.exec(path);
+      if(req.method==='GET'&&cosmeticsRoute){
+        const configuration=store.matchConfiguration(cosmeticsRoute[1]);if(!configuration)throw new HttpError(404,'Match not found.');
+        respond(res,200,{players:(configuration.participants??[]).map(participant=>{const factionId=configuration.factions[participant.side];return {side:participant.side,factionId,loadout:store.cosmetics.loadout(participant.account.id,factionId)};})});return;
+      }
       if(req.method==='POST'&&path==='/api/challenges/daily/start'){
         const value=await body(req);if(!keys(value,[]))throw new HttpError(400,'The server chooses all daily challenge settings.');
         const challenge=store.competitions.challenge(competitionNow());
@@ -373,7 +393,7 @@ export async function createRtsServer(options:ServerOptions){
     const data=await readFile(filename),types:Record<string,string>={'.html':'text/html; charset=utf-8','.js':'application/javascript','.css':'text/css','.json':'application/json','.png':'image/png','.svg':'image/svg+xml','.woff2':'font/woff2','.ico':'image/x-icon'};
     res.writeHead(200,{'Content-Type':types[extname(filename)]??'application/octet-stream','X-Content-Type-Options':'nosniff','Cache-Control':extname(filename)==='.html'?'no-cache':'public,max-age=3600'});res.end(data);
   }
-  const http=createServer((req,res)=>{void route(req,res).catch(error=>{if(res.headersSent){res.destroy();return;}const known=error instanceof HttpError||error instanceof CommunityPackageError;respond(res,known?error.status:500,{error:known?error.message:'Server request failed.'});});});
+  const http=createServer((req,res)=>{void route(req,res).catch(error=>{if(res.headersSent){res.destroy();return;}const known=error instanceof HttpError||error instanceof CommunityPackageError||error instanceof CosmeticRequestError||error instanceof CampaignVerificationError;respond(res,known?error.status:500,{error:known?error.message:'Server request failed.'});});});
   const websocket=new WebSocketServer({noServer:true,maxPayload:MAX_BODY_BYTES,perMessageDeflate:false});
 
   function deliver(peer:Peer,match:ActiveMatch){

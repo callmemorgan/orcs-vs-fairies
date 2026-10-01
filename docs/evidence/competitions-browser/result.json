@@ -5,21 +5,24 @@
     "reload keeps an owned finished match available to rejoin",
     "ratings, results and HttpOnly account session persist across actual server restart",
     "daily server date/config match across accounts and duplicate start resumes the same hosted run",
-    "a hosted daily loss records its result and does not create a leaderboard score"
+    "a hosted daily loss records its result and does not create a leaderboard score",
+    "five real hosted faction wins unlock banner, decoration and portrait; losing account earns none",
+    "earned UI selections persist before callback and change rendered building pixels and commander portrait",
+    "earned inventory and equipped rendering restore after browser reload and a real server restart"
   ],
   "rankedResult": {
-    "matchId": "2eb9b8d3-b08d-455b-bd8a-f2ed533c3407",
+    "matchId": "531097b0-59d4-4ccc-be6e-b324dca52f9c",
     "seasonId": "2026-10",
-    "winner": "8193c7ae-bc88-44ef-8772-9861dbe4ea45",
+    "winner": "c603c410-e6e8-46ee-b3ae-509763f8a7b4",
     "tick": 4,
     "ratings": [
       {
-        "accountId": "8193c7ae-bc88-44ef-8772-9861dbe4ea45",
+        "accountId": "c603c410-e6e8-46ee-b3ae-509763f8a7b4",
         "before": 1000,
         "after": 1016
       },
       {
-        "accountId": "aee757df-2bd5-44ef-9ec0-35435e35b49e",
+        "accountId": "a6dd3f1f-15d7-425b-804e-dd6919a93b75",
         "before": 1000,
         "after": 984
       }
@@ -62,5 +65,25 @@
       }
     }
   },
-  "limitations": "Standalone browser mounts and their real server callbacks were verified here. Mounting in the shipped Phaser entry and hosted deployment still need assembled verification."
+  "cosmeticProfile": {
+    "owned": [
+      "orcs-commander",
+      "orcs-honor-seal",
+      "orcs-victory-banner"
+    ],
+    "wins": {
+      "orcs": 5
+    },
+    "equipment": {
+      "orcs": {
+        "revision": 1,
+        "loadout": {
+          "banner": "orcs-victory-banner",
+          "decoration": "orcs-honor-seal",
+          "portrait": "orcs-commander"
+        }
+      }
+    }
+  },
+  "limitations": "Standalone browser mounts, their real server callbacks, vector assets and shared building renderer were verified here. Mounting in the shipped Phaser entry and hosted deployment still need assembled verification."
 }

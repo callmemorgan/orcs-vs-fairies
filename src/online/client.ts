@@ -18,8 +18,8 @@ export class OnlineApi {
     this.baseUrl=(options.baseUrl??globalThis.location?.origin??'http://localhost').replace(/\/$/,'');
     this.fetcher=options.fetch??globalThis.fetch.bind(globalThis);this.timeoutMs=options.timeoutMs??10000;
   }
-  protected async request<T>(path:string,body?:unknown):Promise<T> {
-    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),this.timeoutMs);
+  protected async request<T>(path:string,body?:unknown,timeoutMs=this.timeoutMs):Promise<T> {
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);
     try {
       const response=await this.fetcher(`${this.baseUrl}${path}`,{
         method:body===undefined?'GET':'POST',credentials:'include',cache:'no-store',signal:controller.signal,

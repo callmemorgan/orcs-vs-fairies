@@ -1,0 +1,39 @@
+{
+  "checks": [
+    "four canonical chapters replay on the server and grant one authenticated faction victory",
+    "authoritative hosted ticks and health requests continue during off-thread campaign replay",
+    "retry and edited local profile IDs do not grant the canonical campaign twice",
+    "forged checksums, wrong finales and client winner fields cannot award inventory",
+    "a replay-valid recording with recomputed checksum and altered initial state cannot authorize canonical rewards",
+    "campaign reward and canonical duplicate gate survive a real server restart"
+  ],
+  "sourceCommit": "9c1c9d062789662fe52707bf4b08d5c8f18be73e",
+  "supplementalCommits": [
+    "d1171b91743a99ac5873918d1e170d94ec3c3c9e"
+  ],
+  "metadata": {
+    "campaignId": "campaign-orcs",
+    "missionId": "orcs-4",
+    "factionId": "orcs"
+  },
+  "profile": {
+    "owned": [
+      "orcs-victory-banner"
+    ],
+    "wins": {
+      "orcs": 1
+    },
+    "equipment": {}
+  },
+  "recordingArtifact": {
+    "file": "campaign-recording.json.gz",
+    "sha256": "79b83f36166d3b6390a7ea82b8249a7e599ecad419e03661ea2cd50c417c5fe7",
+    "bytes": 44360
+  },
+  "hostedTicks": {
+    "before": 1,
+    "after": 14,
+    "healthReads": 58
+  },
+  "method": "The authoritative service loads the canonical module in a worker, replays all chapter commands, compares the full normalized canonical initial detachments and carried-army checkpoints, and awards by authenticated account plus canonical campaign/finale. The service is never given a client winner or score."
+}

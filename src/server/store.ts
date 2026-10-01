@@ -7,13 +7,14 @@ import type { GameState, Side, DraftState, MatchConfig as CoreMatchConfig } from
 import { saveGame, loadGame } from '../core/saves';
 import type { CompetitionEntry } from '../online/competitions';
 import { CompetitionStore } from './competitions';
+import { CosmeticStore } from './cosmetics';
 
 export interface StoredLobby {
   id:string; hostId:string; revision:number; settings:LobbySettings;
   seats:LobbySeat[]; seed:number; matchId:string|null; draft?:DraftState; draftDeadlineAt?:number;
   ranked?:boolean; dailyDate?:string;
 }
-export interface MatchConfig extends LobbySettings { seed:number; matchConfig?:CoreMatchConfig; competition?:CompetitionEntry }
+export interface MatchConfig extends LobbySettings { seed:number; matchConfig?:CoreMatchConfig; competition?:CompetitionEntry; participants?:Array<{side:Side;account:Account}> }
 export interface StoredMatch {
   id:string; lobbyId:string; config:MatchConfig; tick:number;
   save:ReturnType<typeof saveGame>; memory:ResourceMemory[]; generation:number[];
@@ -31,6 +32,7 @@ export interface StoredFrame { tick:number; views:PlayerObservation[] }
 export class ServerStore {
   readonly db:DatabaseSync;
   readonly competitions:CompetitionStore;
+  readonly cosmetics:CosmeticStore;
   constructor(directory:string,readonly engineHash:string){
     mkdirSync(directory,{recursive:true});this.db=new DatabaseSync(join(directory,'server.sqlite'));
     this.db.exec(`PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000;
@@ -45,6 +47,7 @@ export class ServerStore {
     if(!columns.has('engine_hash'))this.db.exec("ALTER TABLE matches ADD COLUMN engine_hash TEXT NOT NULL DEFAULT ''");
     if(!columns.has('state_hash'))this.db.exec("ALTER TABLE matches ADD COLUMN state_hash TEXT NOT NULL DEFAULT ''");
     this.competitions=new CompetitionStore(this.db);
+    this.cosmetics=new CosmeticStore(this.db);
   }
   userByName(username:string):({id:string;username:string;password:string})|undefined {
     return this.db.prepare('SELECT id,username,password FROM users WHERE username=? COLLATE NOCASE').get(username) as {id:string;username:string;password:string}|undefined;
@@ -64,7 +67,7 @@ export class ServerStore {
     if(!lobby.matchId)throw new Error('Started lobby requires a match ID.');
     this.db.exec('BEGIN IMMEDIATE');
     try{
-      this.addMatch(lobby.matchId,lobby.id,{...lobby.settings,seed:lobby.seed,matchConfig,competition},state,memory,generation);
+      this.addMatch(lobby.matchId,lobby.id,{...lobby.settings,seed:lobby.seed,matchConfig,competition,participants:lobby.seats.flatMap(seat=>seat.account?[{side:seat.side,account:seat.account}]:[])},state,memory,generation);
       this.db.prepare('INSERT INTO frames(match_id,tick,views) VALUES(?,?,?)').run(lobby.matchId,frame.tick,JSON.stringify(frame.views));
       this.saveLobby(lobby);this.db.exec('COMMIT');
     }catch(error){this.db.exec('ROLLBACK');throw error;}
@@ -77,6 +80,7 @@ export class ServerStore {
   }
   frames(matchId:string,minimumTick:number):StoredFrame[]{return this.db.prepare('SELECT tick,views FROM frames WHERE match_id=? AND tick>=? ORDER BY tick').all(matchId,minimumTick).map(row=>({tick:row.tick as number,views:JSON.parse(row.views as string)}));}
   generation(matchId:string,generation:number[]){this.db.prepare('UPDATE matches SET generation=? WHERE id=?').run(JSON.stringify(generation),matchId);}
+  matchConfiguration(matchId:string):MatchConfig|undefined{const row=this.db.prepare('SELECT config FROM matches WHERE id=?').get(matchId);return row?JSON.parse(row.config as string):undefined;}
   commitTick(matchId:string,state:GameState,commands:StoredCommand[],memory:ResourceMemory[],frame?:StoredFrame,checkpoint=false){
     this.db.exec('BEGIN IMMEDIATE');
     try{
@@ -88,7 +92,11 @@ export class ServerStore {
       if(state.winner!==null||state.draw){
         const row=this.db.prepare('SELECT config FROM matches WHERE id=?').get(matchId);
         if(!row)throw new Error('Finished match must have a durable configuration.');
-        this.competitions.finish(matchId,(JSON.parse(row.config as string) as MatchConfig).competition,state);
+        const configuration=JSON.parse(row.config as string) as MatchConfig;
+        this.competitions.finish(matchId,configuration.competition,state);
+        if(!state.draw)for(const participant of configuration.participants??[]){
+          if(state.teams[participant.side]===state.winningTeam)this.cosmetics.awardVerifiedVictory(`hosted:${matchId}`,participant.account.id,state.players[participant.side].faction);
+        }
       }
       this.db.exec('COMMIT');
     }catch(error){this.db.exec('ROLLBACK');throw error;}
