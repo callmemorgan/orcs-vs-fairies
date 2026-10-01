@@ -39,6 +39,7 @@ describe('allied AI with the canonical mode admission', () => {
     expect(saveGame(player.state)).toEqual(saveGame(state)); player.dispose(); recorder.dispose();
   });
 
+  // Keep all 430 complete SAVE4 comparisons under full-suite worker contention.
   for (const mode of ['hill', 'relic'] as const) {
     it(`keeps an accepted defense request in ${mode} through save, continuation and replay`, () => {
       const state = createMatch({ map: { seed: 4127, size: 'small' }, players: [
@@ -67,6 +68,6 @@ describe('allied AI with the canonical mode admission', () => {
       expect(starter.order.type).toBe('attackMove');
       const replay = new ReplayPlayer(recorder.export()); while (!replay.finished) replay.advance(50);
       expect(saveGame(replay.state)).toEqual(saveGame(state)); replay.dispose(); recorder.dispose();
-    });
+    }, 20_000);
   }
 });
