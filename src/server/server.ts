@@ -201,7 +201,7 @@ export async function createRtsServer(options:ServerOptions){
   function editLobby(lobby:StoredLobby,value:Record<string,unknown>){if(value.expectedRevision!==lobby.revision)throw new HttpError(409,'Lobby changed. Refresh its current revision.');if(lobby.matchId)throw new HttpError(409,'The match has started.');}
   function changed(lobby:StoredLobby){lobby.revision++;store.saveLobby(lobby);lobbies.set(lobby.id,lobby);}
   function matchSummary(match:ActiveMatch){return {id:match.id,lobbyId:match.lobbyId,tick:match.state.tick,finished:isGameOver(match.state),failed:match.failed};}
-  const tournaments=options.tournaments?createTournamentService({cwd:options.tournaments.cwd,configs:options.tournaments.configs,outputRoot:options.tournaments.outputRoot??resolve(options.dataDir,'tournaments'),authorize:req=>!!session(req)}):undefined;
+  const tournaments=options.tournaments?createTournamentService({cwd:options.tournaments.cwd,configs:options.tournaments.configs,outputRoot:options.tournaments.outputRoot??resolve(options.dataDir,'tournaments'),authorize:req=>!!session(req),principal:req=>session(req)?.id}):undefined;
 
   async function route(req:IncomingMessage,res:ServerResponse){
     const url=new URL(req.url??'/',`http://${req.headers.host??'localhost'}`),path=url.pathname;
