@@ -10,6 +10,13 @@ describe('verified connected campaign progression', () => {
     expect(() => createCampaignProfile('toString', 'bad-campaign')).toThrow('Unknown campaign');
     expect(() => decodeCampaignProfile({ ...createCampaignProfile('campaign-orcs', 'typed-campaign'), id: 123 })).toThrow('Invalid campaign profile');
   });
+  it('rejects a transition before its accepted revision becomes unreadable', () => {
+    const profile = decodeCampaignProfile({ ...createCampaignProfile('campaign-dwarves', 'revision-bound'), revision: Number.MAX_SAFE_INTEGER });
+    const previous = JSON.stringify(profile);
+    expect(() => prepareCampaignMission(profile)).toThrow('revision limit');
+    expect(JSON.stringify(profile)).toBe(previous); expect(decodeCampaignProfile(previous).revision).toBe(Number.MAX_SAFE_INTEGER);
+  });
+
   it('preserves the previous profile when accumulated chapter journals exceed import limits', () => {
     let profile = createCampaignProfile('campaign-dwarves', 'campaign-storage-bound');
     for (let chapter = 0; chapter < 3; chapter++) {

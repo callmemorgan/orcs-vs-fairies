@@ -35,7 +35,10 @@ export function survivingScenarioArmy(session: ScenarioSession): CampaignSoldier
 export interface CampaignMission { profile: CampaignProfile; session: ScenarioSession; recorder: ScenarioRecorder }
 const copy = <T>(value: T): T => structuredClone(value);
 const CAMPAIGN_PROFILE_LIMITS = { maxBytes: 20 * 1024 * 1024, maxNodes: 1000000, maxArrayLength: 100000 };
-function boundedProfile(profile: CampaignProfile): CampaignProfile { scenarioJson(profile, CAMPAIGN_PROFILE_LIMITS); return profile; }
+function boundedProfile(profile: CampaignProfile): CampaignProfile {
+  if (!Number.isSafeInteger(profile.revision) || profile.revision < 0) throw new Error('The campaign revision limit has been reached. Start another profile.');
+  scenarioJson(profile, CAMPAIGN_PROFILE_LIMITS); return profile;
+}
 function campaign(profile: CampaignProfile) { if (!Object.hasOwn(CAMPAIGNS, profile.campaignId)) throw new Error('Unknown campaign.'); return CAMPAIGNS[profile.campaignId]; }
 
 export function createCampaignProfile(campaignId: string, id: string): CampaignProfile {
