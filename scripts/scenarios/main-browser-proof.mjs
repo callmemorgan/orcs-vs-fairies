@@ -10,9 +10,17 @@ import { tmpdir } from 'node:os';
 const scriptPath = fileURLToPath(import.meta.url), scriptRelative = 'scripts/scenarios/main-browser-proof.mjs';
 const fixtureNames = ['currentCampaignSession', 'authoredScenarioPackage', 'historicalGenericSession', 'historicalCampaignProfile', 'historicalRealmProfile', 'finaleCampaignProfile'];
 const exportNames = ['ordinaryBefore', 'ordinaryReloaded', 'editorMapPackage', 'editorMapImported', 'editorMapBefore', 'editorMapReloaded', 'authoredPackage', 'authoredImported', 'authoredBefore', 'authoredReloaded', 'authoredAbility', 'campaignBefore', 'campaignContinued', 'historicalBefore', 'historicalAfter', 'historicalCampaignExport', 'historicalRealmExport', 'finaleSession', 'finaleCampaignExport', 'buildReport'];
+const buildConfigPaths = ['package.json', 'package-lock.json', 'vite.config.ts', 'tsconfig.json', 'vitest.config.ts', 'index.html', 'editor.html'];
+const buildScriptRoots = ['scripts/controls-proof', 'scripts/minimap-alerts', 'scripts/verify_minimap_levels.mjs'];
+const buildTestPaths = ['tests/appearance.test.ts', 'tests/display-settings.test.ts', 'tests/gamepad.test.ts', 'tests/minimap-alerts.test.ts', 'tests/minimap-level-focus.test.ts', 'tests/session-storage.test.ts', 'tests/session-tools.test.ts'];
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const json = async path => JSON.parse(await readFile(path, 'utf8'));
 const git = (root, args) => execFileSync('git', ['-C', root, ...args], { maxBuffer: 64 * 1024 * 1024 });
+const treeFiles = (root, commit) => git(root, ['ls-tree', '-r', '-z', commit]).toString().split('\0').filter(Boolean).map(entry => {
+  const separator = entry.indexOf('\t'), [mode, type, gitBlob] = entry.slice(0, separator).split(' ');
+  assert.equal(type, 'blob'); assert.ok(['100644', '100755'].includes(mode), `Unsupported frozen file mode: ${entry.slice(separator + 1)}`);
+  return { path: entry.slice(separator + 1), gitBlob };
+});
 async function filesUnder(root, prefix = '') {
   const files = [];
   for (const entry of await readdir(join(root, prefix), { withFileTypes: true })) {
@@ -30,18 +38,35 @@ async function inventory(root) {
 async function sourcePin(root, commit) {
   const exact = git(root, ['rev-parse', `${commit}^{commit}`]).toString().trim();
   assert.equal(git(root, ['rev-parse', 'HEAD']).toString().trim(), exact, 'Source checkout must be at the frozen commit.');
-  const paths = git(root, ['ls-tree', '-r', '--name-only', '-z', exact]).toString().split('\0').filter(Boolean), files = {};
-  for (const path of paths) {
+  const entries = treeFiles(root, exact), paths = entries.map(entry => entry.path), files = {};
+  for (const { path, gitBlob } of entries) {
     const actual = await readFile(join(root, path)), expected = git(root, ['show', `${exact}:${path}`]);
     assert.equal(hash(actual), hash(expected), `Tracked bytes differ from the frozen commit: ${path}`);
-    files[path] = { sha256: hash(actual), bytes: actual.length };
+    files[path] = { sha256: hash(actual), bytes: actual.length, gitBlob };
   }
   const sourcePaths = paths.filter(path => path.startsWith('src/')).map(path => path.slice(4)).sort();
   assert.deepEqual(await filesUnder(join(root, 'src')), sourcePaths, 'The complete src inventory must match the frozen Git tree.');
+  assert.deepEqual(await filesUnder(join(root, 'public')), paths.filter(path => path.startsWith('public/')).map(path => path.slice(7)).sort(), 'The complete public inventory must match the frozen Git tree.');
   const fingerprint = createHash('sha256');
   for (const path of sourcePaths.filter(path => /\.(ts|css)$/.test(path))) { fingerprint.update(path); fingerprint.update(await readFile(join(root, 'src', path))); }
   assert.equal(hash(await readFile(scriptPath)), files[scriptRelative]?.sha256, 'Executing helper must match the frozen helper bytes.');
   return { commit: exact, files, sourceFingerprint: fingerprint.digest('hex') };
+}
+function verifyBuildManifest(build, pinned, dist) {
+  const select = accepts => Object.fromEntries(Object.entries(pinned.files).filter(([path]) => accepts(path)));
+  const named = paths => Object.fromEntries(paths.map(path => { assert.ok(pinned.files[path], `Canonical build input missing from frozen source: ${path}`); return [path, pinned.files[path]]; }));
+  assert.equal(build.sourcePin, pinned.commit, 'Build manifest must name the frozen source commit.');
+  assert.equal(build.buildId, pinned.sourceFingerprint, 'Build manifest must name the frozen source fingerprint.');
+  const expected = {
+    sourceFiles: select(path => path.startsWith('src/')),
+    assetFiles: select(path => path.startsWith('public/')),
+    configFiles: named(buildConfigPaths),
+    scriptFiles: select(path => buildScriptRoots.some(root => path === root || path.startsWith(`${root}/`))),
+    testFiles: named(buildTestPaths),
+  };
+  for (const path of ['scripts/controls-proof/prepare.mjs', 'scripts/controls-proof/browser-common.mjs']) assert.ok(expected.scriptFiles[path], `Canonical build producer missing from frozen source: ${path}`);
+  for (const [kind, files] of Object.entries(expected)) assert.deepEqual(build[kind], files, `Build manifest ${kind} differ from the frozen Git inputs.`);
+  assert.deepEqual(build.compiledFiles, dist, 'Compiled production bytes differ from the canonical build manifest.');
 }
 async function newDirectory(path) {
   await mkdir(dirname(path), { recursive: true });
@@ -61,10 +86,14 @@ async function verifyPackage(output) {
     git(temporary, ['fetch', '--quiet', join(output, 'source.bundle'), 'HEAD']);
     const exact = git(temporary, ['rev-parse', 'FETCH_HEAD']).toString().trim();
     assert.equal(exact, manifest.source.commit);
-    const paths = git(temporary, ['ls-tree', '-r', '--name-only', '-z', exact]).toString().split('\0').filter(Boolean), files = {}, fingerprint = createHash('sha256');
-    for (const path of paths) { const bytes = git(temporary, ['show', `${exact}:${path}`]); files[path] = { sha256: hash(bytes), bytes: bytes.length }; }
+    const entries = treeFiles(temporary, exact), paths = entries.map(entry => entry.path), files = {}, fingerprint = createHash('sha256');
+    for (const { path, gitBlob } of entries) { const bytes = git(temporary, ['show', `${exact}:${path}`]); files[path] = { sha256: hash(bytes), bytes: bytes.length, gitBlob }; }
     for (const path of paths.filter(path => /^src\/.*\.(ts|css)$/.test(path)).sort()) { fingerprint.update(path.slice(4)); fingerprint.update(git(temporary, ['show', `${exact}:${path}`])); }
     assert.deepEqual({ commit: exact, files, sourceFingerprint: fingerprint.digest('hex') }, manifest.source);
+    assert.equal(manifest.buildManifest.path, 'build-manifest.json');
+    const buildBytes = await readFile(join(output, manifest.buildManifest.path));
+    assert.equal(hash(buildBytes), manifest.buildManifest.sha256); assert.equal(buildBytes.length, manifest.buildManifest.bytes);
+    verifyBuildManifest(JSON.parse(buildBytes.toString()), manifest.source, manifest.dist);
     assert.equal(hash(await readFile(scriptPath)), files[scriptRelative]?.sha256, 'Executing helper must match the archived frozen helper.');
     for (const [packaged, source] of [['helper.mjs', scriptRelative], ['audit-source.ts', 'scripts/scenarios/main-browser-proof/audit.ts'], ['checklist.md', 'scripts/scenarios/main-browser-proof/checklist.md'], ['README.md', 'scripts/scenarios/main-browser-proof/README.md']]) assert.equal(hash(await readFile(join(output, packaged))), files[source]?.sha256, `Packaged helper source differs: ${packaged}`);
   } finally { await rm(temporary, { recursive: true, force: true }); }
@@ -81,14 +110,15 @@ async function verifyServed(url, expected) {
   return { checkedAt: new Date().toISOString(), files: Object.fromEntries(paths.map(path => [path, served[path]])) };
 }
 
-async function pack([source, commit, target, supplied, destination]) {
-  assert.ok(source && commit && target && supplied && destination, 'pack requires SOURCE_ROOT COMMIT URL FIXTURES_JSON NEW_OUTPUT');
-  const root = resolve(source), output = resolve(destination), url = new URL(target);
+async function pack([source, commit, target, supplied, preparedBuild, destination]) {
+  assert.ok(source && commit && target && supplied && preparedBuild && destination, 'pack requires SOURCE_ROOT COMMIT URL FIXTURES_JSON BUILD_MANIFEST_JSON NEW_OUTPUT');
+  const root = resolve(source), output = resolve(destination), url = new URL(target), buildPath = resolve(preparedBuild), distRoot = join(dirname(buildPath), 'dist');
   assert.equal(url.pathname, '/index.html', 'Use the canonical main /index.html application.');
-  const pinned = await sourcePin(root, commit), dist = await inventory(join(root, 'dist'));
+  const pinned = await sourcePin(root, commit), dist = await inventory(distRoot), buildBytes = await readFile(buildPath);
+  verifyBuildManifest(JSON.parse(buildBytes.toString()), pinned, dist);
   assert.ok(dist['index.html'], 'Build the frozen production application before packaging.');
   const bundles = Object.keys(dist).filter(path => path.endsWith('.js'));
-  assert.ok((await Promise.all(bundles.map(path => readFile(join(root, 'dist', path), 'utf8')))).some(bytes => bytes.includes(pinned.sourceFingerprint)), 'Production JavaScript lacks the frozen src fingerprint.');
+  assert.ok((await Promise.all(bundles.map(path => readFile(join(distRoot, path), 'utf8')))).some(bytes => bytes.includes(pinned.sourceFingerprint)), 'Production JavaScript lacks the frozen src fingerprint.');
   const suppliedPath = resolve(supplied), fixtureManifest = await json(suppliedPath);
   assert.equal(fixtureManifest.sourceCommit, pinned.commit, 'Current fixtures must name the frozen source commit.');
   for (const name of fixtureNames) assert.equal(typeof fixtureManifest.files?.[name], 'string', `Missing fixture path ${name}`);
@@ -96,7 +126,8 @@ async function pack([source, commit, target, supplied, destination]) {
   const servedBefore = await verifyServed(url.href, dist);
   await newDirectory(output); await mkdir(join(output, 'fixtures')); await mkdir(join(output, 'production'));
   git(root, ['bundle', 'create', join(output, 'source.bundle'), 'HEAD']);
-  for (const path of Object.keys(dist)) { await mkdir(dirname(join(output, 'production', path)), { recursive: true }); await copyFile(join(root, 'dist', path), join(output, 'production', path)); }
+  for (const path of Object.keys(dist)) { await mkdir(dirname(join(output, 'production', path)), { recursive: true }); await copyFile(join(distRoot, path), join(output, 'production', path)); }
+  await writeFile(join(output, 'build-manifest.json'), buildBytes, { flag: 'wx' });
   const fixtures = {};
   for (const name of fixtureNames) {
     const sourcePath = resolve(dirname(suppliedPath), fixtureManifest.files[name]), path = `fixtures/${name}.json`;
@@ -115,9 +146,9 @@ async function pack([source, commit, target, supplied, destination]) {
   const esbuild = await import(pathToFileURL(join(root, 'node_modules/esbuild/lib/main.js')).href);
   await esbuild.build({ entryPoints: [join(helperDirectory, 'audit.ts')], bundle: true, platform: 'node', format: 'esm', outfile: join(output, 'audit.mjs'), logLevel: 'silent' });
   await writeFile(join(output, 'exports-template.json'), JSON.stringify({ sourceCommit: pinned.commit, files: Object.fromEntries(exportNames.map(name => [name, `downloads/${name}.json`])) }, null, 2) + '\n');
-  assert.deepEqual(await sourcePin(root, commit), pinned); assert.deepEqual(await inventory(join(root, 'dist')), dist);
+  assert.deepEqual(await sourcePin(root, commit), pinned); assert.deepEqual(await inventory(distRoot), dist); assert.deepEqual(await readFile(buildPath), buildBytes, 'Canonical build manifest changed during packaging.');
   const packageFiles = await inventory(output);
-  const manifest = { format: 'orcs-vs-fairies-main-browser-proof', version: 1, createdAt: new Date().toISOString(), url: url.href, source: pinned, dist, fixtures, packageFiles, servedBefore, runtime: { node: process.version, esbuild: esbuild.version }, limits: 'This binds archived source, production files, preparation and downloaded artifact audits. The CUA transcript and screenshots prove native browser actions, appearance, modal pause and cosmetics.' };
+  const manifest = { format: 'orcs-vs-fairies-main-browser-proof', version: 1, createdAt: new Date().toISOString(), url: url.href, source: pinned, dist, buildManifest: { path: 'build-manifest.json', sha256: hash(buildBytes), bytes: buildBytes.length, producer: 'scripts/controls-proof/prepare.mjs' }, fixtures, packageFiles, servedBefore, runtime: { node: process.version, esbuild: esbuild.version }, limits: 'This binds archived source, admitted canonical build preparation, production files and downloaded artifact audits. The CUA transcript and screenshots prove native browser actions, appearance, modal pause and cosmetics.' };
   await writeFile(join(output, 'package.json'), JSON.stringify(manifest, null, 2) + '\n');
   await verifyPackage(output);
   process.stdout.write(JSON.stringify({ status: 'prepared; browser not executed', output, url: manifest.url, sourceCommit: pinned.commit, sourceFingerprint: pinned.sourceFingerprint, fixtures }) + '\n');
@@ -181,4 +212,4 @@ const [mode, ...args] = process.argv.slice(2);
 if (mode === 'pack') await pack(args);
 else if (mode === 'audit') await audit(args);
 else if (mode === 'verify') await verify(args);
-else throw new Error('Usage: node scripts/scenarios/main-browser-proof.mjs pack SOURCE_ROOT COMMIT URL FIXTURES_JSON NEW_OUTPUT | audit PACKAGE_DIRECTORY UI_EXPORTS_JSON | verify PACKAGE_DIRECTORY');
+else throw new Error('Usage: node scripts/scenarios/main-browser-proof.mjs pack SOURCE_ROOT COMMIT URL FIXTURES_JSON BUILD_MANIFEST_JSON NEW_OUTPUT | audit PACKAGE_DIRECTORY UI_EXPORTS_JSON | verify PACKAGE_DIRECTORY');
