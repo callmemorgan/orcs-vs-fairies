@@ -1,0 +1,275 @@
+{
+  "schemaVersion": 1,
+  "review": "original53-exact-commit-retention-and-promotion",
+  "verdict": "pass",
+  "commit": "d61b708fc570063a09147b51c7bf2cea6fac4270",
+  "parent": "37bf0e794e7f62cf33347d2e92c739d593bf1cc4",
+  "model": "GPT-6 Sol",
+  "method": "Static Git-object, filesystem-source, JSON, TSV, and byte inspection. No project runtime or acceptance gate executed.",
+  "summary": {
+    "checks": 16,
+    "passed": 16,
+    "failed": 0
+  },
+  "checks": [
+    {
+      "name": "commit identity",
+      "passed": true,
+      "details": {
+        "resolved": "d61b708fc570063a09147b51c7bf2cea6fac4270",
+        "parent": "37bf0e794e7f62cf33347d2e92c739d593bf1cc4"
+      }
+    },
+    {
+      "name": "54 raw retention blobs, sources, and modes",
+      "passed": true,
+      "details": {
+        "entries": 54,
+        "uniqueTargets": 54,
+        "bytes": 14269125,
+        "sourceFilesPresent": 54,
+        "modeCounts": {
+          "0o644": 53,
+          "0o755": 1
+        },
+        "failures": []
+      }
+    },
+    {
+      "name": "evidence directory closure",
+      "passed": true,
+      "details": {
+        "committedFiles": 60,
+        "rawFiles": 54,
+        "authoredFiles": 6,
+        "missing": [],
+        "extra": []
+      }
+    },
+    {
+      "name": "46 source-to-target imports and modes",
+      "passed": true,
+      "details": {
+        "entries": 46,
+        "bytes": 13945798,
+        "modeCounts": {
+          "0o644": 45,
+          "0o755": 1
+        },
+        "failures": []
+      }
+    },
+    {
+      "name": "import-map coverage of original corpus and outline",
+      "passed": true,
+      "details": {
+        "originalInventoryFiles": 44,
+        "expectedImportSources": 46,
+        "missing": [],
+        "extra": []
+      }
+    },
+    {
+      "name": "recorded source and root-copy readback",
+      "passed": true,
+      "details": {
+        "checks": 92,
+        "roles": {
+          "source": 46,
+          "retained": 46
+        },
+        "failures": []
+      }
+    },
+    {
+      "name": "retained native builds and frozen product inputs",
+      "passed": true,
+      "details": {
+        "bundles": 2,
+        "metafiles": 2,
+        "productFiles": 170,
+        "driverInputs": 51,
+        "validatorInputs": 50,
+        "buildFailures": [],
+        "productFailures": []
+      }
+    },
+    {
+      "name": "four native session files and verifier results",
+      "passed": true,
+      "details": {
+        "sessions": [
+          {
+            "arm": "infantry-control",
+            "file": "docs/evidence/ai-original-coverage-20261001/id53-opening-probe-453c221/run/infantry-control/endpoint-session.json",
+            "tick": 1761,
+            "sha256": "d22fbefa0cf88dae94caa3affa7533f9e6ce3d6fecfe11b16e097c6bc5b3901e"
+          },
+          {
+            "arm": "infantry-control",
+            "file": "docs/evidence/ai-original-coverage-20261001/id53-opening-probe-453c221/run/infantry-control/checkpoint-at-first-worker-attack-command-session.json",
+            "tick": 1380,
+            "sha256": "e48a9e1897e047205df0ff2447b035af605983aeac2914849744d2e1473bfbf4"
+          },
+          {
+            "arm": "depot-first-pressure",
+            "file": "docs/evidence/ai-original-coverage-20261001/id53-opening-probe-453c221/run/depot-first-pressure/endpoint-session.json",
+            "tick": 2261,
+            "sha256": "538b8938848c44bfcf21e261b54804f424cf5baf7314f0fffcc3e936529dc6bb"
+          },
+          {
+            "arm": "depot-first-pressure",
+            "file": "docs/evidence/ai-original-coverage-20261001/id53-opening-probe-453c221/run/depot-first-pressure/checkpoint-at-first-worker-attack-command-session.json",
+            "tick": 1360,
+            "sha256": "2ecd2dcd14fbc4499a8aedd5b7a73487ab929a61d263b80fcc5223f350cb92fd"
+          }
+        ],
+        "failures": []
+      }
+    },
+    {
+      "name": "original CRLF whitespace failure preserved",
+      "passed": true,
+      "details": {
+        "exitCode": 2,
+        "reportedLines": 229,
+        "tsvLineEndings": {
+          "docs/evidence/ai-original-coverage-20261001/id53-opening-probe-453c221/import-plan/import-map.tsv": {
+            "bytes": 13521,
+            "lf": 47,
+            "crlf": 47,
+            "bareCr": 0
+          },
+          "docs/evidence/ai-original-coverage-20261001/id53-opening-probe-453c221/import-plan/excluded-files.tsv": {
+            "bytes": 74254,
+            "lf": 182,
+            "crlf": 182,
+            "bareCr": 0
+          }
+        },
+        "stdoutSha256": "4b328bf5843bfc87a25f2ebb4f063b35869504e4ee902ba6d4d40be4984a8f17",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "authored metadata whitespace check",
+      "passed": true,
+      "details": {
+        "recordedExit": 0,
+        "independentExit": 0,
+        "paths": [
+          "docs/evidence/ai-original-coverage-20261001/id53-opening-probe-453c221/README.md",
+          "docs/evidence/ai-original-coverage-20261001/id53-opening-probe-453c221/retention.json",
+          "docs/evidence/ai-original-coverage-20261001/id53-opening-probe-453c221/root-copy-readback.json",
+          "docs/features/requirements.json",
+          "docs/features/decisions.tsv"
+        ],
+        "stdout": "",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "independent admission artifacts retained",
+      "passed": true,
+      "details": {
+        "auditSummary": {
+          "checks": 29,
+          "passed": 29,
+          "failed": 0
+        }
+      }
+    },
+    {
+      "name": "only requirement 53 promoted",
+      "passed": true,
+      "details": {
+        "changedFeatures": [
+          53
+        ],
+        "before": {
+          "id": 53,
+          "title": "AI opening strategies",
+          "requirement": "opponents use recognizable builds with exploitable weaknesses.",
+          "status": "in-progress",
+          "evidence": []
+        },
+        "after": {
+          "id": 53,
+          "title": "AI opening strategies",
+          "requirement": "opponents use recognizable builds with exploitable weaknesses.",
+          "status": "verified",
+          "evidence": [
+            "docs/evidence/ai-original-coverage-20261001/id53-opening-probe-453c221/README.md",
+            "docs/evidence/ai-original-coverage-20261001/id53-opening-probe-453c221/retention.json",
+            "docs/evidence/ai-original-coverage-20261001/id53-opening-probe-453c221/run/final-receipt.json",
+            "docs/evidence/ai-original-coverage-20261001/id53-opening-probe-453c221/run/comparison.json",
+            "docs/evidence/ai-original-coverage-20261001/id53-opening-probe-453c221/run/infantry-control/endpoint-verification.json",
+            "docs/evidence/ai-original-coverage-20261001/id53-opening-probe-453c221/run/depot-first-pressure/endpoint-verification.json",
+            "docs/evidence/ai-original-coverage-20261001/id53-opening-probe-453c221/source/raw-evidence-crosscheck.json",
+            "docs/evidence/ai-original-coverage-20261001/id53-opening-probe-453c221/independent-admission/review.md",
+            "docs/evidence/ai-original-coverage-20261001/id53-opening-probe-453c221/independent-admission/audit.json",
+            "docs/evidence/ai-original-coverage-20261001/id53-opening-probe-453c221/artifact-inventory.json"
+          ]
+        },
+        "statusCounts": {
+          "in-progress": 33,
+          "verified": 67
+        },
+        "evidencePathsExist": true
+      }
+    },
+    {
+      "name": "single decision append",
+      "passed": true,
+      "details": {
+        "prefixBytes": 104417,
+        "appendedBytes": 562,
+        "appendedRows": [
+          [
+            "2026-10-01T23:02:25Z",
+            "ai-opening-current-original53-admission",
+            "Mark original53 verified from recognizable native builds and paid observed-worker exploitation",
+            "The matched pressure probe demonstrates the declared expansion military weakness with native history equality",
+            "docs/evidence/ai-original-coverage-20261001/id53-opening-probe-453c221/retention.json;docs/evidence/ai-original-coverage-20261001/id53-opening-probe-453c221/independent-admission/review.md",
+            "67 verified33 in progress;500-tick25-second delay;four native sessions;no full-match or continuation claim"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "commit scope leaves product and acceptance gates untouched",
+      "passed": true,
+      "details": {
+        "changedFiles": 62,
+        "evidenceFiles": 60,
+        "outsideEvidence": [
+          "docs/features/decisions.tsv",
+          "docs/features/requirements.json"
+        ],
+        "productOrGateChanges": [],
+        "runtimeExecutedByRoot": false
+      }
+    },
+    {
+      "name": "commit file modes",
+      "passed": true,
+      "details": {
+        "executablePaths": [
+          "docs/evidence/ai-original-coverage-20261001/id53-opening-probe-453c221/source/run.sh"
+        ],
+        "failures": []
+      }
+    },
+    {
+      "name": "behavioral risk checklist",
+      "passed": true,
+      "details": {
+        "ordering": "none; no product/runtime code changed",
+        "failurePaths": "none; no active promises, branches, or early returns changed",
+        "observability": "one decisions.tsv row added; no runtime logging changed",
+        "staleWrites": "none; commit adds immutable evidence and updates the ledger",
+        "testDelta": "no new acceptance gate; prior native and independent results are retained byte-for-byte"
+      }
+    }
+  ]
+}

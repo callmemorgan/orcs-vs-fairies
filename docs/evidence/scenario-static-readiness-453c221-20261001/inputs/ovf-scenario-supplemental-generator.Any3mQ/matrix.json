@@ -1,0 +1,148 @@
+{
+  "format": "ovf-scenario-supplemental-fixture-readiness",
+  "version": 1,
+  "executionHeld": true,
+  "readPin": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+  "rawInputs": {
+    "tests/fixtures/scenario-save3-3.2/scenario-recording.json": {
+      "sha256": "7cfddadfe96f2a68824775822ac1e41dbd10a52878b799292e5ac518674083c1",
+      "bytes": 36396,
+      "format": "orcs-vs-fairies-scenario-recording",
+      "version": 1,
+      "simulationRevision": null
+    },
+    "tests/fixtures/scenario-save3-3.2/scenario-final.json": {
+      "sha256": "3b42b969377ffdbcde86bae8bd8b6b299dcef88d2ff24fe4a50fa45a756698f9",
+      "bytes": 37738,
+      "format": "orcs-vs-fairies-scenario",
+      "version": 1,
+      "simulationRevision": null
+    },
+    "tests/fixtures/scenario-save3-3.2/generic-bound-final.json": {
+      "sha256": "168b2945760b01a28d3c0af238dd1533ed83f8f8038aa8016cbbb0ad8c8408c9",
+      "bytes": 37694,
+      "format": "orcs-vs-fairies-save",
+      "version": 3,
+      "simulationRevision": null
+    },
+    "tests/fixtures/scenario-save3-3.2/campaign-active.json": {
+      "sha256": "78f5304454e4ed366fa28a014b3f29c65fa11831bfe439956ec9ab25bc79c7f5",
+      "bytes": 70827,
+      "format": "orcs-vs-fairies-campaign",
+      "version": 1,
+      "simulationRevision": null,
+      "historyEntries": 0,
+      "active": true
+    },
+    "tests/fixtures/scenario-save3-3.2/campaign-completed.json": {
+      "sha256": "e2dfd357497d41d1b1df0d31de6dc136fcbaff02095d01aff67bb4ec0f6db230",
+      "bytes": 74411,
+      "format": "orcs-vs-fairies-campaign",
+      "version": 1,
+      "simulationRevision": null,
+      "historyEntries": 1,
+      "active": false
+    },
+    "tests/fixtures/scenario-save3-3.2/conquest-active.json": {
+      "sha256": "833fd111059922cf09d177e0bf6ca6619f4781adb84000d95ce837110895b040",
+      "bytes": 185675,
+      "format": "orcs-vs-fairies-conquest",
+      "version": 1,
+      "simulationRevision": null,
+      "historyEntries": 4,
+      "active": true
+    },
+    "tests/fixtures/scenario-save3-3.2/conquest-completed.json": {
+      "sha256": "f7c450da643603df391cf0b1404d4b6c4321a463bd77682246beb0cb22903bdb",
+      "bytes": 95799,
+      "format": "orcs-vs-fairies-conquest",
+      "version": 1,
+      "simulationRevision": null,
+      "historyEntries": 4,
+      "active": false
+    },
+    "docs/evidence/campaigns/native-save3-20261001/current-completed-mission.json": {
+      "sha256": "099f2d1356de851c4f9d19ad18b4946948391b96d0405c4538bcb710f2f86e31",
+      "bytes": 40435,
+      "format": "orcs-vs-fairies-scenario",
+      "version": 1,
+      "simulationRevision": "3.2.0"
+    },
+    "docs/evidence/content-root-integration-20261001/browser-save.json": {
+      "sha256": "035900319b8a31ef6aa7c57e2962490ffa348f760f6f2069e305a965923376b2",
+      "bytes": 178964,
+      "format": "orcs-vs-fairies/session",
+      "version": 1,
+      "simulationRevision": null
+    },
+    "tests/scenario-historical-content.test.ts": {
+      "sha256": "9086eb2798ca2cc376a2dd83b87144bdccec71a73536bc8be9325ab775a7de7f",
+      "bytes": 6956
+    }
+  },
+  "cases": [
+    {
+      "id": "genuine-campaign-active",
+      "source": "tests/fixtures/scenario-save3-3.2/campaign-active.json",
+      "route": "Load campaign profile",
+      "retention": "Copy bytes unchanged; native imported profile structure unchanged; frozen active battlefield."
+    },
+    {
+      "id": "genuine-campaign-completed",
+      "source": "tests/fixtures/scenario-save3-3.2/campaign-completed.json",
+      "route": "Load campaign profile",
+      "retention": "Copy bytes unchanged; latest earned completed checkpoint for recorded-result inspection; original nested history unchanged."
+    },
+    {
+      "id": "genuine-conquest-active",
+      "source": "tests/fixtures/scenario-save3-3.2/conquest-active.json",
+      "route": "Load realm profile",
+      "retention": "Copy bytes unchanged; frozen active checkpoint; regions/army/equipment/diplomacy unchanged."
+    },
+    {
+      "id": "genuine-conquest-completed",
+      "source": "tests/fixtures/scenario-save3-3.2/conquest-completed.json",
+      "route": "Load realm profile",
+      "retention": "Copy bytes unchanged; strategic view with no invented active battle; progression blocked."
+    },
+    {
+      "id": "genuine-recorded-victory-mission",
+      "source": "docs/evidence/campaigns/native-save3-20261001/current-completed-mission.json",
+      "route": "Load mission",
+      "retention": "Copy bytes unchanged. Recorded victory/completed objective labels and hidden live result overlay."
+    },
+    {
+      "id": "genuine-bound-final-session",
+      "source": "tests/fixtures/scenario-save3-3.2/generic-bound-final.json",
+      "route": "Saves import",
+      "retention": "Copy bytes unchanged. Export migrated stable SAVE4 loaded game; do not require whole-file identity with SAVE3 input."
+    },
+    {
+      "id": "historical-owner-main-companions",
+      "sources": [
+        "tests/fixtures/scenario-save3-3.2/campaign-active.json",
+        "tests/fixtures/scenario-save3-3.2/campaign-completed.json",
+        "tests/fixtures/scenario-save3-3.2/conquest-active.json"
+      ],
+      "generation": "After release, native restoreScenario(selected saved checkpoint)+createSessionFile(state,undefined,undefined,{kind,profile:rawHistoricalOwner}); decodeSessionFile validation. These are expressly new SAVE4 wrappers of original historical owner/checkpoint, not old captured gameplay. Keep raw owner unchanged and rule pin old/missing."
+    },
+    {
+      "id": "missing-pin-empty-profiles",
+      "generation": "After release, native createCampaignProfile/createConquestProfile; remove only outer simulationRevision and label as synthetic empty missing-pin probes. No historic gameplay claim, active:null and history empty. Native decode/profile compatibility confirms frozen strategic view. Preserve original probe during every writer/claim/reset attempt."
+    },
+    {
+      "id": "current-outer-incompatible-history",
+      "generation": "After release, explicitly synthetic probe sets only outer simulationRevision4.0.1 on copies of genuine four campaign/conquest owner inputs; nested checkpoints/journals/history remain unchanged. Native decode must remain read-only."
+    },
+    {
+      "id": "lantern-checkpoint-and-bound-session",
+      "source": "docs/evidence/content-root-integration-20261001/browser-save.json",
+      "generation": "Follow pinned tests/scenario-historical-content.test.ts native APIs. Authenticate genuine original content hash; declared synthetic SAVE3 checkpoint/session wrappers contain unchanged historical content and3.2.0 pin. Verify matched migrated definition/game content, frozen commands and unchanged raw journal checksum. Separate current migrated Lantern recording accepts command and replays normally."
+    }
+  ],
+  "missingPreparation": [
+    "Native supplemental generator and independent static review of its exact bytes.",
+    "Actual fixture bytes/decoding/validation intentionally deferred until root freeze+release."
+  ],
+  "scope": "Inventory and derivation plan only. No generated fixtures, game creation, replay, simulation, build, test, browser or server execution."
+}

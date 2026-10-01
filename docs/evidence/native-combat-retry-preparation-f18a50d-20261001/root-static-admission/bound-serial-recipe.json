@@ -1,0 +1,177 @@
+{
+  "schema": 1,
+  "scope": "Recorded future serial recipe only; no command in this plan has been executed",
+  "actualCheckerDocsPin": "37bf0e794e7f62cf33347d2e92c739d593bf1cc4",
+  "checkerDocsRoot": "/home/morgana/Projects/orcs-vs-Fairies",
+  "checkerRelativePath": "docs/evidence/native-combat-retry-preparation-f18a50d-20261001/verify-product-applicability.py",
+  "checkerSha256": "0b0ffee14fec657bd15c91ee910ba791e1791d706ca5f98cf1bd2183d2074f9b",
+  "fixedProductPin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "runtimeProofPin": "f18a50d904c57ae1652f157b946ebd39d8d8923c",
+  "ownedCheckoutCurrentlyHeldAt": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "executionHeld": true,
+  "currentSlotOwner": "Faction827 per root latest coordination update",
+  "releaseOwner": "Root, after independent review and explicit serial slot release",
+  "newRunPlaceholder": "ACCEPTANCE_RUN must be a fresh physical external directory created only after release; its logs directory must exist",
+  "requiredEnvironment": {
+    "GIT_NO_REPLACE_OBJECTS": "1",
+    "OVF_PLAYWRIGHT_MODULE": "Resolve/record actual module and package version before browser",
+    "OVF_CHROMIUM_EXECUTABLE": "Resolve/record actual executable and actual launched browser version"
+  },
+  "requiredPreconditions": [
+    "Root admits cross-model preparation review and explicitly releases combat execution after faction827 cleanup",
+    "Move only owned checkout to full runtime proof pin f18 after release; preserve state and record HEAD",
+    "Copy checker and unchanged raw launcher from actual separate docs pin37 into fresh run and verify hashes",
+    "Generate helpers against full22 current proof inventory and fresh complete62-scenario fixture manifest",
+    "Record actual Node, Playwright module/package and Chromium identities",
+    "Retain first-dist emitted receipt digest before preview/browser; do not recompute expected digest later",
+    "Preserve original frozen-input bytes and SHA for browser, native history and final gate",
+    "Retain separate preview supervisor argv,cwd,PID/process group and raw output; stop owned preview on failure"
+  ],
+  "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+  "launcherSha256": "3ea6c74f53dddf6a10361c791f231200c5e33468cfa7a6db1aace9573cc81f14",
+  "launcherPrefix": [
+    "python3",
+    "${ACCEPTANCE_RUN}/launch-step.py"
+  ],
+  "serialSteps": [
+    {
+      "label": "00-applicability",
+      "commandArgvTemplate": [
+        "python3",
+        "${ACCEPTANCE_RUN}/verify-product-applicability.py",
+        "/home/morgana/Projects/orcs-vs-Fairies",
+        "37bf0e794e7f62cf33347d2e92c739d593bf1cc4",
+        "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+        "f18a50d904c57ae1652f157b946ebd39d8d8923c",
+        "${ACCEPTANCE_RUN}/product-applicability.json"
+      ]
+    },
+    {
+      "label": "01-helpers",
+      "commandArgvTemplate": [
+        "node",
+        "scripts/acceptance/build-native-helpers.mjs",
+        "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+        "${ACCEPTANCE_RUN}/helpers",
+        "f18a50d904c57ae1652f157b946ebd39d8d8923c"
+      ]
+    },
+    {
+      "label": "02-fixtures",
+      "commandArgvTemplate": [
+        "node",
+        "scripts/acceptance/generate-native-fixtures.mjs",
+        "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+        "${ACCEPTANCE_RUN}/helpers/fixtures.mjs",
+        "${ACCEPTANCE_RUN}/fixtures",
+        "f18a50d904c57ae1652f157b946ebd39d8d8923c"
+      ]
+    },
+    {
+      "label": "03-product-build",
+      "commandArgvTemplate": [
+        "npm",
+        "run",
+        "build"
+      ]
+    },
+    {
+      "label": "04-freeze",
+      "commandArgvTemplate": [
+        "node",
+        "scripts/acceptance/verify-native-acceptance.mjs",
+        "--freeze",
+        "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+        "${ACCEPTANCE_RUN}/fixtures",
+        "${ACCEPTANCE_RUN}/frozen-inputs.json",
+        "f18a50d904c57ae1652f157b946ebd39d8d8923c"
+      ]
+    },
+    {
+      "label": "05-dist-public-assets",
+      "commandArgvTemplate": [
+        "python3",
+        "${ACCEPTANCE_RUN}/verify-product-applicability.py",
+        "--dist",
+        "/home/morgana/Projects/orcs-vs-Fairies",
+        "37bf0e794e7f62cf33347d2e92c739d593bf1cc4",
+        "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+        "f18a50d904c57ae1652f157b946ebd39d8d8923c",
+        "${ACCEPTANCE_RUN}/frozen-inputs.json",
+        "${ACCEPTANCE_RUN}/dist-public-assets.json"
+      ]
+    },
+    {
+      "label": "06-browser",
+      "commandArgvTemplate": [
+        "node",
+        "scripts/acceptance/verify-native-acceptance.mjs",
+        "http://127.0.0.1:5397",
+        "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+        "${ACCEPTANCE_RUN}/browser",
+        "${ACCEPTANCE_RUN}/fixtures",
+        "${ACCEPTANCE_RUN}/frozen-inputs.json",
+        "${ACCEPTANCE_RUN}/helpers/audit.mjs",
+        "direction,capture,specialists"
+      ]
+    },
+    {
+      "label": "07-native-history",
+      "commandArgvTemplate": [
+        "node",
+        "scripts/acceptance/verify-native-history.mjs",
+        "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+        "${ACCEPTANCE_RUN}/helpers/audit.mjs",
+        "${ACCEPTANCE_RUN}/fixtures",
+        "${ACCEPTANCE_RUN}/browser",
+        "f18a50d904c57ae1652f157b946ebd39d8d8923c",
+        "${ACCEPTANCE_RUN}/frozen-inputs.json"
+      ]
+    },
+    {
+      "label": "08-final-dist-public-assets",
+      "commandArgvTemplate": [
+        "python3",
+        "${ACCEPTANCE_RUN}/verify-product-applicability.py",
+        "--dist",
+        "/home/morgana/Projects/orcs-vs-Fairies",
+        "37bf0e794e7f62cf33347d2e92c739d593bf1cc4",
+        "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+        "f18a50d904c57ae1652f157b946ebd39d8d8923c",
+        "${ACCEPTANCE_RUN}/frozen-inputs.json",
+        "${ACCEPTANCE_RUN}/final-dist-public-assets.json",
+        "${ACCEPTANCE_RUN}/dist-public-assets.json",
+        "${ACCEPTANCE_FIRST_DIST_SHA256}"
+      ]
+    }
+  ],
+  "ownedPreview": {
+    "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+    "argv": [
+      "node",
+      "node_modules/vite/bin/vite.js",
+      "preview",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "5397",
+      "--strictPort"
+    ],
+    "startAfter": "05-dist-public-assets passes and original digest is independently retained; port5397 is verified free",
+    "stopAfter": "Any first failure or after final gate, preserving raw artifacts and direct cleanup checks"
+  },
+  "completeGroupsRequired": [
+    "direction",
+    "capture",
+    "specialists"
+  ],
+  "selectedEncounterCount": 39,
+  "staticExpectedGeneratedScenarioCount": 62,
+  "mandatoryNativeHistoryFinalArgument": "${ACCEPTANCE_RUN}/frozen-inputs.json",
+  "stopOnAnyStageFailure": true,
+  "protectedRoot": "/home/morgana/Projects/orcs-vs-Fairies",
+  "protectedDist": "/home/morgana/Projects/orcs-vs-Fairies/dist",
+  "protectedPreviewPort": 4173,
+  "protectedPreviewPid": 1063,
+  "notExecuted": true
+}

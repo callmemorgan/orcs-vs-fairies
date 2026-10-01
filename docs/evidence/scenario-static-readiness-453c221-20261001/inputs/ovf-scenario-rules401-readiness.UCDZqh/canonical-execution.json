@@ -1,0 +1,86 @@
+{
+  "format": "ovf-canonical-browser-compact-execution-recipe",
+  "version": 2,
+  "executionHeld": true,
+  "sourceReadPin": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+  "futurePin": "ROOT_SUPPLIED_FULL_FINAL_COMMIT_AFTER_RELEASE",
+  "fixtureManifest": {
+    "sourceCommit": "${SCENARIO_FINAL_PIN}",
+    "files": {
+      "currentCampaignSession": "${SCENARIO_FIXTURE_DIR}/current-equipped-session.json",
+      "authoredScenarioPackage": "${SCENARIO_FIXTURE_DIR}/authored-commander-scenario.json",
+      "historicalGenericSession": "${SCENARIO_FINAL_CHECKOUT}/docs/evidence/campaigns/native-save3-20261001/current-campaign-session.json",
+      "historicalCampaignProfile": "${SCENARIO_FINAL_CHECKOUT}/tests/fixtures/scenario-save3-3.2/campaign-active.json",
+      "historicalRealmProfile": "${SCENARIO_FINAL_CHECKOUT}/tests/fixtures/scenario-save3-3.2/conquest-active.json",
+      "finaleCampaignProfile": "${SCENARIO_FIXTURE_DIR}/canonical-orcs-active-finale.json"
+    }
+  },
+  "fixtureDerivation": {
+    "currentCampaignSession": "At new pin: decodeCampaignProfile(genuine persistent-army chapter1-equipped-active-profile), prepareCampaignMission(profile), require restored state and active battle equal genuine chapter1-equipped-checkpoint/profile, createSessionFile(run.session.state, undefined, undefined, {kind:\"campaign\",profile:run.profile}), decodeSessionFile validation, recorder.destroy(). Earned core:iron-aegis owner/holder/equipment and original checkpoint/recording prefix stay unchanged.",
+    "finaleCampaignProfile": "At new pin: completed=decodeCampaignProfile(genuine completed primary campaign-orcs earned profile); prefix=decodeCampaignProfile({...completed,history:completed.history.slice(0,3),active:null}); run=prepareCampaignMission(prefix); require same id/choice/exact first-three records and active.missionId orcs-4; write new run.profile and recorder.destroy(). No GameState or equipment/history edits; native deployment uses earned survivors/reserves.",
+    "authoredScenarioPackage": "New reviewed generator uses native makeMapPackage/makeScenarioPackage/decodeScenarioPackage APIs; flat36x36grass level, commander at6.5,26.5, allies8.5,25.5 and8.5,27.5, ability target7.5,26.5 and existing finish at14.5,26.5; no authored gameplay commands; native validation may replay genuine current journals.",
+    "historicalFiles": "All three path candidates exist and have the required original formats; preserve bytes. Selected historical generic native SAVE3 main session is an active campaign-owned playing checkpoint, so it does not cover recorded-victory labels. Use original current-completed-mission.json as a separate supplied supplemental recorded-victory case if required.",
+    "notesRequired": "All six fixture hashes/source versions/owner ids/visible actors/safe destinations, authored finish reason and source-to-derived hashes; current fixtures must pin4.0.1. No generation performed."
+  },
+  "commands": {
+    "pack": "node \"$SCENARIO_FINAL_CHECKOUT/scripts/scenarios/main-browser-proof.mjs\" pack \"$SCENARIO_FINAL_CHECKOUT\" \"$SCENARIO_FINAL_PIN\" \"$SCENARIO_BASE_URL\" \"$SCENARIO_FIXTURE_MANIFEST\" \"$SCENARIO_CONTROLS_OUTPUT/build-manifest.json\" \"$SCENARIO_BROWSER_PACKAGE\"",
+    "copyTemplate": "cp \"$SCENARIO_BROWSER_PACKAGE/exports-template.json\" \"$SCENARIO_UI_EXPORTS\"",
+    "audit": "node \"$SCENARIO_FINAL_CHECKOUT/scripts/scenarios/main-browser-proof.mjs\" audit \"$SCENARIO_BROWSER_PACKAGE\" \"$SCENARIO_UI_EXPORTS\"",
+    "verify": "node \"$SCENARIO_BROWSER_PACKAGE/helper.mjs\" verify \"$SCENARIO_BROWSER_PACKAGE\""
+  },
+  "commandPreconditions": [
+    "Frozen source must be root-supplied combined pin; current auditor requires4.0.1. Historical checklist baseline labels stay historical. Commands and fixtures all match actual dispatch pin.",
+    "Use admitted controls prepare build-manifest.json and its sibling dist from that same new pin. BUILD_MANIFEST_JSON is positional immediately before NEW_OUTPUT. Old af44 manifest cannot pass new-pin packaging.",
+    "SCENARIO_BROWSER_PACKAGE must not exist. Template has20raw export roles; fill paths with preserved downloads, never normalized/rebuilt equivalent JSON. Equality pairs stay paused at the same tick.",
+    "CUA conducts actual native file imports, visible gameplay and finale victory. Audit/verify validate native histories/state but do not establish UI actions/reward/pixels. Every failed package/audit remains retained; rerun with fresh package."
+  ],
+  "ownedFreshServerSetup": {
+    "status": "Future root-owned setup only; nothing started/built/stopped here.",
+    "build": "cd \"$SCENARIO_FINAL_CHECKOUT\"\nnode scripts/build-server.mjs \"$SCENARIO_SERVER_BUILD\"",
+    "dependencyLinkIfNeeded": "ln -s \"$SCENARIO_FINAL_CHECKOUT/node_modules\" \"$SCENARIO_SERVER_BUILD/node_modules\"",
+    "serve": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/start-server.sh FROZEN_CHECKOUT FULL_PIN SERVER_BUILD CONTROLS_DIST EXCLUSIVE_DB NEW_RECEIPT_PREFIX intact|unavailable|restored",
+    "ownership": "SCENARIO_SERVER_BUILD is a fresh directory. Root assigns port/origin and records exact new-pin3server bundle hashes/runtime/process. Retained ranked DB/account artifacts transfer only after former sole writer stops, under root ownership. Never run two servers against a mutable DB or copy it live. Keep retained af44 and protected services unchanged unless their owner explicitly performs the handoff.",
+    "explicitContext": "Every launch repeats frozen cwd and fixed origin http://127.0.0.2:5307; all recipe instances share an exclusive lock, record PID and bundle hashes, and require preceding owned writer termination."
+  },
+  "rewardProof": {
+    "accounts": "A and B have known zero prior Orc wins/no campaign-orcs/orcs-4 award; sign in/out through native Online UI. Root keeps credentials private. Same completed campaign owner remains installed throughout account switches.",
+    "flow": "Real finale with ordinary War Cry -> export full completed owner/session -> unsigned claim failure and enabled retry -> sign inA claim to1win/banner -> reload/restored same profile duplicate stays1 -> accountB switch enables claim with owner unchanged -> real unavailable-verifier failure/no award then retry to1 -> A duplicate still1 -> visible earned banner equip receipt/persistence/new-pin local-HQ/HUD pixels. Keep supplemental raw owner/game before-after exports and actual receipts.",
+    "allSlotsReuse": "Parent reports admitted ranked af44 canonical18checks proving feature99 thresholds/allslots and1313changedpixels with game hash equality. Root obtains exact account/unlock/retainedDB artifacts and checks changed source inputs before applying that supplement. Do not recreate ranked matches/accounts or duplicate DB. It does not prove new-pin campaign claims.",
+    "genuineFailureWithoutProductionEdits": "Root may gracefully stop owned canonical service, provision a new staging directory containing exact authenticated rts-server.js+canonical-campaign.mjs with campaign-runtime.mjs intentionally absent, and start it serially against the same exclusive DB/endpoint/dist. Visible claim reaches real trusted worker import503; capture no award, pending end and enabled retry. Stop staging then restart the intact authenticated three-bundle server at same endpoint/DB and retry visibly. Retained original bundles remain unchanged. Source worker import/unavailable guards support this; no network mocks, injected handlers, DB mutations or product edits. A naturally concurrent legitimate verification can alternatively yield production busy503.",
+    "accountGuards": "ScenarioCampaignHost.resetCampaignReward leaves owner/recorder intact; main account id/epoch guards and CosmeticTools request epochs clear stale account equipment/claims. Close missions is available during pending; a visible close->Online switch is optional if a real pending interval exists, with no artificial delay or forced controls.",
+    "renderer": "Finale has no friendly building, so earned banner requires ordinary local Orc match with living completed HQ. Compare game envelope/checksum and completed owner before/after claim/equip; cosmetics are presentation data, separate from earned soldier armor."
+  },
+  "sourceReferences": {
+    "auditorVersion": "scripts/scenarios/main-browser-proof/audit.ts:20",
+    "rewardUI": "src/ui/ScenarioCampaignHost.ts:114-116,154-167,189-191",
+    "accountGuards": "src/main.ts:151,334-340,347; src/ui/CosmeticTools.ts:36-43,46-51",
+    "serverClaim": "src/server/server.ts:288-300",
+    "workerFailure": "src/server/campaign-verification.ts:8-37; src/server/canonical-campaign.ts",
+    "durableAwardAndEquip": "src/server/cosmetics.ts:16-27,39-51"
+  },
+  "limits": [
+    "Read-only recipe, all execution held until root supplies combined pin/build/server/fixtures.",
+    "Six supplied files plus one extracted map support20artifact roles. Full checklist invalid imports and historical active/completed/empty/session variants require separate supplied evidence; selected primary profiles alone do not prove that matrix.",
+    "CUA transcript/screenshots/actual reward receipts and inspected downloaded photo remain separate required evidence. No current live service or unseen ranked artifacts were audited here."
+  ],
+  "longerReadRecord": "/tmp/ovf-canonical-browser-final-plan.lnl70j6s/plan.json",
+  "invocationReference": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/invocations.sh",
+  "fixtureGenerator": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/generate-browser-fixtures.mjs",
+  "missingPreparationBeforeDispatch": [
+    "Actual full freeze and execution release; c86e273 is an inspection candidate only.",
+    "Fresh native output, native admission, six fixtures, same-pin admitted controls manifest/dist and authenticated3bundle server are deliberately not produced during hold.",
+    "Supplemental historical active/completed/empty/history owner and Lantern matrix fixture plan outside primary six.",
+    "Root accountA/B credentials and zero-Orc-award baselines; rank/allslots reuse needs root source applicability admission."
+  ],
+  "stageOrder": [
+    "Native admission then six-fixture generation",
+    "Same-pin controls build and3bundle server build",
+    "Owned intact server health/provenance",
+    "Package before first CUA import; use extracted editorMapPackage",
+    "Primary CUA cases and genuine canonical finale",
+    "Serial unavailable/restored service handoffs within visible reward retry case",
+    "Finalize actual raw downloads manifest then audit and offline verify",
+    "Separate reward HTTP proof from retained genuine completed native Orc profile"
+  ],
+  "browserAuditorProvenance": "Frozen pack retains full authenticated Git source, exact producer/helper/audit-source and compiled audit bytes. Current frozen pack does not emit an auditor metafile; do not claim one exists."
+}

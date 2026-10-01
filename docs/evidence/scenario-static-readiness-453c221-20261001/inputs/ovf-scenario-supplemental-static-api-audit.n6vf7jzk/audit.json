@@ -1,0 +1,100 @@
+{
+  "format": "ovf-scenario-supplemental-static-api-audit",
+  "version": 1,
+  "reviewer": "/root/scenario_final_resume/feature_ideas_world/supplemental_api_review",
+  "recordedAt": "2026-10-01T19:03:49.974325+00:00",
+  "reviewedDirectory": "/tmp/ovf-scenario-supplemental-generator.Any3mQ",
+  "reviewedFiles": {
+    "generate-supplemental-fixtures.mjs": {
+      "path": "/tmp/ovf-scenario-supplemental-generator.Any3mQ/generate-supplemental-fixtures.mjs",
+      "sha256": "bb0bfb3721dec90e7a6d48ee2cb7944938bbff0a9067c565fbf670e7699178e2",
+      "bytes": 12116
+    },
+    "fixture-source.ts.template": {
+      "path": "/tmp/ovf-scenario-supplemental-generator.Any3mQ/fixture-source.ts.template",
+      "sha256": "dea00928088c039c26b63cd5046012a18cfcdd7a1d726a51bd7d75f5f8dfca0e",
+      "bytes": 19826
+    },
+    "matrix.json": {
+      "path": "/tmp/ovf-scenario-supplemental-generator.Any3mQ/matrix.json",
+      "sha256": "b33d21041e1a85422094c32d431434d870d0802a7e75916946c8c392b521f748",
+      "bytes": 7162
+    },
+    "NOTES.md": {
+      "path": "/tmp/ovf-scenario-supplemental-generator.Any3mQ/NOTES.md",
+      "sha256": "c71d977ea51d3d916794a8dc3aa943988155c6565a7260693ab74db0eb281c47",
+      "bytes": 5173
+    }
+  },
+  "inspectedSourceCommit": "01b5ae61a365a45447df7aa548f7bfde9ed6cc22",
+  "matrixReadCommit": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+  "sourceComparison": {
+    "targetedApiAndLanternTestDiffEmpty": true,
+    "originalMatrixInputHashesAndByteCountsMatch": true,
+    "inputCount": 10
+  },
+  "verdict": "accepted-after-template-retention-fix",
+  "remainingStaticBlockers": [],
+  "requiredFix": {
+    "finding": "The original prepared template was neither retained nor receipted while provenance described a retained template.",
+    "correctionAccepted": true,
+    "correctedBehavior": "Checks the reviewed template SHA256 before substitution, copies exact template bytes exclusively, records preparedTemplate SHA256 and bytes in bundle provenance, and verifies retained template hash after derivation.",
+    "reviewedOuterSha256": "bb0bfb3721dec90e7a6d48ee2cb7944938bbff0a9067c565fbf670e7699178e2",
+    "reviewedTemplateSha256": "dea00928088c039c26b63cd5046012a18cfcdd7a1d726a51bd7d75f5f8dfca0e"
+  },
+  "staticChecks": {
+    "absoluteNativeImportSubstitutions": 9,
+    "substitutionLeavesNoMarker": true,
+    "releaseEnvironmentMatchesFullPinRequired": true,
+    "admittedNativeSourcePinSaveAndRulesChecksPresent": true,
+    "admittedNativeCountsChecksPresent": true,
+    "preparedMatrixHashCheckPresent": true,
+    "rawInputsRetainedByteForByte": true,
+    "sourceShaByteAndGitBlobChecksPresent": true,
+    "oneGeneratedMetafileEntryAllowed": true,
+    "requiredNativeGraphInputsCheckedBeforeRuntimeImport": true,
+    "postDerivationReauthenticationPresent": true,
+    "freshOutputAndExclusiveWritesRequired": true,
+    "postReservationFailurePhaseAndErrorRecorded": true,
+    "threeHistoricalSessionCompanionsUseNativeOwnerMatching": true,
+    "completedConquestRemainsStrategic": true,
+    "missingPinEmptyConquestRetainsNativeStartingArmy": true,
+    "fourCurrentOuterProbesPreserveAllNestedInputFields": true,
+    "lanternSyntheticWrappersAndGenuineOldContentDistinguished": true,
+    "frozenPermissionCheckUsesPureScenarioCommandPermitted": true
+  },
+  "compilerProvenanceContract": {
+    "acceptedForExistingNativeManifestContract": true,
+    "checks": "Authenticates esbuild package metadata SHA256/bytes and compiler version against native source manifest; records loader SHA256/bytes.",
+    "limitation": "Compiler executable bytes are not authenticated against the native manifest, whose dependency contract records package metadata only."
+  },
+  "executionFlags": {
+    "generatorExecuted": false,
+    "bundleBuilt": false,
+    "fixtureFilesGenerated": false,
+    "nativeFixtureApisInvoked": false,
+    "acceptedCommandsIssued": false,
+    "rejectedCommandsIssued": false,
+    "simulationStepped": false,
+    "recordingsReplayed": false,
+    "recordersCreated": false,
+    "ownerWritersInvoked": false,
+    "testsRun": false,
+    "browserActionsRun": false,
+    "serverStarted": false,
+    "httpRequestsIssued": false,
+    "sourceEdited": false,
+    "draftEdited": false,
+    "executionReleaseGranted": false
+  },
+  "nativeRuntimeAssertionsVerified": false,
+  "decoderInternalReplay": "Deferred until root releases the final full pin; native decoders may internally replay compatible owners. The selected incompatible historical probes should take inspection-only paths.",
+  "finalFreezeAndRootRelease": "Pending; this audit does not authorize execution.",
+  "separateVerificationObligations": [
+    "Actual rejected command, step, recorder, owner writer, claim and reset attempts.",
+    "Current Lantern accepted-command and replay behavior.",
+    "Canonical browser imports, frozen views and raw UI exports.",
+    "Independent admission of actual generated and execution evidence."
+  ],
+  "scope": "Static source review and filesystem read/write of this newly reserved review artifact only."
+}

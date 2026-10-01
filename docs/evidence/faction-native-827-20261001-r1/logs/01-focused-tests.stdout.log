@@ -1,0 +1,52 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/morgana/.codex/worktrees/faction-economy-cleanup/orcs-vs-Fairies[39m
+
+ [32m✓[39m tests/faction-save-semantics.test.ts [2m([22m[2m55 tests[22m[2m)[22m[33m 1605[2mms[22m[39m
+ [32m✓[39m tests/joint-combat-integration.test.ts [2m([22m[2m32 tests[22m[2m)[22m[33m 1596[2mms[22m[39m
+ [32m✓[39m tests/faction-economy-interruption.test.ts [2m([22m[2m32 tests[22m[2m)[22m[33m 1168[2mms[22m[39m
+ [32m✓[39m tests/faction-systems.test.ts [2m([22m[2m32 tests[22m[2m)[22m[33m 563[2mms[22m[39m
+ [32m✓[39m tests/online-render-state.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 135[2mms[22m[39m
+ [32m✓[39m tests/faction-tools.test.ts [2m([22m[2m29 tests[22m[2m)[22m[33m 947[2mms[22m[39m
+ [32m✓[39m tests/captured-summon-rules.test.ts [2m([22m[2m27 tests[22m[2m)[22m[33m 1578[2mms[22m[39m
+ [32m✓[39m tests/saves.test.ts [2m([22m[2m56 tests[22m[2m)[22m[33m 7328[2mms[22m[39m
+     [33m[2m✓[22m[39m continues two AI players identically for 600 ticks with scouting and economic memory [33m 3092[2mms[22m[39m
+     [33m[2m✓[22m[39m preserves returning workers, partial loads, queued orders and production over 500 ticks [33m 1788[2mms[22m[39m
+     [33m[2m✓[22m[39m preserves active illusions, ability cooldowns, shields, corpses and a paid research project [33m 1361[2mms[22m[39m
+     [33m[2m✓[22m[39m preserves the final queued gather through save/load after its waiting list is empty [33m 511[2mms[22m[39m
+ [32m✓[39m tests/team-observation.test.ts [2m([22m[2m20 tests[22m[2m)[22m[33m 1004[2mms[22m[39m
+ [32m✓[39m tests/joint-world-ignition.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 642[2mms[22m[39m
+ [32m✓[39m tests/world-interruptions.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 936[2mms[22m[39m
+ [31m❯[39m tests/replays.test.ts [2m([22m[2m10 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 748[2mms[22m[39m
+[31m     [31m×[31m keeps the genuine prior 3.1 match inspectable and rejects its older numerical rules[39m[32m 2[2mms[22m[39m
+     [32m✓[39m rejects another deterministic rules revision before playback despite an unchanged save schema[32m 37[2mms[22m[39m
+     [32m✓[39m reproduces external orders and AI decisions from accepted commands and completed steps[32m 89[2mms[22m[39m
+     [32m✓[39m continues recording a restored saved match without losing its original history[32m 25[2mms[22m[39m
+     [32m✓[39m rejects unbounded work and malformed or divergent replay data[32m 14[2mms[22m[39m
+     [32m✓[39m does not record invalid or postgame timesteps[32m 3[2mms[22m[39m
+     [32m✓[39m records research completion on its real tick rather than a chart sample interval[32m 105[2mms[22m[39m
+     [32m✓[39m seeks using proven checkpoints while preserving recording and future state[32m 136[2mms[22m[39m
+     [32m✓[39m keeps chart cadence unchanged by exports, reads and replay checkpoint creation[32m 258[2mms[22m[39m
+     [32m✓[39m derives economy deposits and unit/building loss values from simulation events[32m 78[2mms[22m[39m
+ [32m✓[39m tests/joint-special-surrender-fire.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 498[2mms[22m[39m
+ [32m✓[39m tests/economy-cargo-integration.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 1570[2mms[22m[39m
+     [33m[2m✓[22m[39m trains a caravan, trades between real constructed settlements and restores a loaded save [33m 366[2mms[22m[39m
+     [33m[2m✓[22m[39m raids a paid hostile warehouse, saves the channel, and returns stolen local stock [33m 318[2mms[22m[39m
+     [33m[2m✓[22m[39m accepts a neutral contract locally and delivers its stock for a finite village reward [33m 316[2mms[22m[39m
+ [32m✓[39m tests/economy-cancellation.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 523[2mms[22m[39m
+ [32m✓[39m tests/captured-gravecaller-grove.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 602[2mms[22m[39m
+ [32m✓[39m tests/joint-trophy-ownership.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 196[2mms[22m[39m
+ [32m✓[39m tests/captured-gravecaller-definition.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 1483[2mms[22m[39m
+     [33m[2m✓[22m[39m surrender, public raise, native continuation and replay (pinned true) [33m 599[2mms[22m[39m
+     [33m[2m✓[22m[39m surrender, public raise, native continuation and replay (pinned false) [33m 544[2mms[22m[39m
+ [32m✓[39m tests/terrain-economy.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 735[2mms[22m[39m
+   [33m[2m✓[22m[39m AI workers discover and deposit crystal through ordinary gathering rules [33m 608[2mms[22m[39m
+ [32m✓[39m tests/captured-illusion-definition.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 290[2mms[22m[39m
+ [31m❯[39m tests/save4-rule-revision.test.ts [2m([22m[2m2 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[32m 3[2mms[22m[39m
+[31m     [31m×[31m preserves the genuine browser game and replay while requiring new history for continuation[39m[32m 2[2mms[22m[39m
+[31m     [31m×[31m keeps an omitted SAVE4 replay rules pin mapped to its original revision[39m[32m 0[2mms[22m[39m
+
+[2m Test Files [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m19 passed[39m[22m[90m (21)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m364 passed[39m[22m[90m (367)[39m
+[2m   Start at [22m 15:59:52
+[2m   Duration [22m 27.01s[2m (transform 627ms, setup 0ms, import 1.66s, tests 24.15s, environment 86ms)[22m
+

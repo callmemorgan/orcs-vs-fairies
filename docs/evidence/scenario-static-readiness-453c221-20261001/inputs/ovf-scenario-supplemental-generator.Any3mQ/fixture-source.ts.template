@@ -1,0 +1,194 @@
+import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { readFile, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { campaignRulesCompatibility, createCampaignProfile, decodeCampaignProfile } from __SOURCE_ROOT__ + '/src/core/campaign.ts';
+import { conquestRulesCompatibility, createConquestProfile, decodeConquestProfile } from __SOURCE_ROOT__ + '/src/core/conquest.ts';
+import { captureScenario, createScenario, restoreScenario, scenarioCommandPermitted, scenarioRulesCompatibility, scenarioSessionForState } from __SOURCE_ROOT__ + '/src/core/scenarios.ts';
+import { decodeScenarioRecording, scenarioCheckpointChecksum, scenarioRecordingRulesCompatibility, scenarioStateEquals } from __SOURCE_ROOT__ + '/src/core/scenario-recordings.ts';
+import { createSessionFile, decodeSessionFile } from __SOURCE_ROOT__ + '/src/core/session-storage.ts';
+import { decodeHistoricalContentBundle, migrateHistoricalContentBundle, unitFor } from __SOURCE_ROOT__ + '/src/core/content-registry.ts';
+import { createDraft, draftPlayers } from __SOURCE_ROOT__ + '/src/core/match-rules.ts';
+import { SAVE_VERSION } from __SOURCE_ROOT__ + '/src/core/saves.ts';
+import { SIMULATION_REVISION } from __SOURCE_ROOT__ + '/src/core/versions.ts';
+
+const sha = (bytes: string | Uint8Array) => createHash('sha256').update(bytes).digest('hex');
+const text = (value: unknown) => JSON.stringify(value);
+const sameRaw = (value: unknown, before: string, name: string) => assert.equal(text(value), before, `${name}: original object changed`);
+
+export async function derive(output: string, pin: string, retained: Record<string, { retainedPath: string; sha256: string; bytes: number }>) {
+  assert.equal(SAVE_VERSION, 4); assert.equal(SIMULATION_REVISION, '4.0.1');
+  const files: Record<string, unknown> = {}, assertions: Record<string, unknown> = {};
+  const input = async (path: string) => {
+    const receipt = retained[path]; assert(receipt, `Undeclared raw input: ${path}`);
+    const bytes = await readFile(join(output, receipt.retainedPath));
+    assert.equal(sha(bytes), receipt.sha256); assert.equal(bytes.length, receipt.bytes);
+    return JSON.parse(bytes.toString());
+  };
+  const save = async (role: string, name: string, value: unknown, declaration: Record<string, unknown>) => {
+    const bytes = Buffer.from(JSON.stringify(value, null, 2) + '\n');
+    await writeFile(join(output, name), bytes, { flag: 'wx' });
+    files[role] = { path: name, bytes: bytes.length, sha256: sha(bytes), ...declaration };
+  };
+  const frozenMission = (session: ReturnType<typeof restoreScenario>) => {
+    const compatibility = scenarioRulesCompatibility(session); assert.equal(compatibility.compatible, false); assert(compatibility.reason?.includes('inspection'));
+    const before = text(captureScenario(session));
+    const unit = session.state.entities.find(entity => entity.side === 0 && entity.kind === 'unit' && entity.hp > 0); assert(unit);
+    assert.equal(scenarioCommandPermitted(session.state, 0, { type: 'hold', ids: [unit.id] }), false);
+    sameRaw(captureScenario(session), before, 'frozen mission guard');
+    return compatibility;
+  };
+  for (const [path, receipt] of Object.entries(retained)) files[`raw:${path}`] = {
+    path: receipt.retainedPath, bytes: receipt.bytes, sha256: receipt.sha256,
+    classification: path.endsWith('.ts') ? 'pinned-reference-source' : 'genuine-original-raw-input', originalSource: path,
+  };
+  const ownerCases = [
+    { name: 'campaign-active', kind: 'campaign', source: 'tests/fixtures/scenario-save3-3.2/campaign-active.json' },
+    { name: 'campaign-completed', kind: 'campaign', source: 'tests/fixtures/scenario-save3-3.2/campaign-completed.json' },
+    { name: 'conquest-active', kind: 'conquest', source: 'tests/fixtures/scenario-save3-3.2/conquest-active.json' },
+    { name: 'conquest-completed', kind: 'conquest', source: 'tests/fixtures/scenario-save3-3.2/conquest-completed.json' },
+  ] as const;
+  for (const spec of ownerCases) {
+    const raw = await input(spec.source), before = text(raw);
+    const decode = spec.kind === 'campaign' ? decodeCampaignProfile : decodeConquestProfile;
+    const compatible = spec.kind === 'campaign' ? campaignRulesCompatibility : conquestRulesCompatibility;
+    const profile = decode(raw as never); assert.deepEqual(profile, raw); sameRaw(raw, before, spec.name);
+    const originalCompatibility = compatible(profile as never); assert.equal(originalCompatibility.compatible, false);
+    assert(originalCompatibility.reason?.includes('inspection'));
+    const outerProbe = { ...structuredClone(raw), simulationRevision: SIMULATION_REVISION };
+    const withoutOuter = structuredClone(outerProbe); delete withoutOuter.simulationRevision;
+    assert.equal(Object.hasOwn(raw, 'simulationRevision'), false, 'These four matrix owners must retain their missing original outer pin.');
+    assert.deepEqual(withoutOuter, raw, 'Only the declared synthetic outer pin may change.');
+    const decodedProbe = decode(outerProbe as never); assert.deepEqual(decodedProbe, outerProbe);
+    const probeCompatibility = compatible(decodedProbe as never); assert.equal(probeCompatibility.compatible, false);
+    assert(probeCompatibility.reason?.includes('inspection')); assert.equal(probeCompatibility.revision, SIMULATION_REVISION);
+    assert.deepEqual(decodedProbe.history, raw.history); assert.deepEqual(decodedProbe.active, raw.active);
+    await save(`currentOuter:${spec.name}`, `synthetic-current-outer-${spec.name}.json`, outerProbe, {
+      classification: 'synthetic-current-outer-incompatible-history-probe', originalSource: spec.source,
+      changedFields: ['simulationRevision'], retainedFields: 'Every original nested checkpoint, journal, command, checksum, history record, army, region and diplomacy field.',
+      originalCompatibility, probeCompatibility,
+    });
+    if (spec.name !== 'conquest-completed') {
+      const checkpoint = raw.active?.checkpoint ?? raw.history.at(-1)?.checkpoint; assert(checkpoint);
+      const checkpointBefore = text(checkpoint), restored = restoreScenario(checkpoint), compatibility = frozenMission(restored);
+      const owner = { kind: spec.kind, profile: raw } as Parameters<typeof createSessionFile>[3];
+      const companion = createSessionFile(restored.state, undefined, undefined, owner);
+      assert.equal(companion.game.version, SAVE_VERSION); assert.deepEqual(companion.scenarioProfile, owner);
+      assert.equal(Object.hasOwn(companion, 'replay'), false, 'No invented generic match replay is attached.');
+      const loaded = decodeSessionFile(companion), loadedSession = scenarioSessionForState(loaded.state); assert(loadedSession);
+      assert.deepEqual(loaded.file, companion); assert.deepEqual(loaded.file.scenarioProfile?.profile, raw);
+      assert.equal(scenarioStateEquals(loadedSession, restored), true); assert.deepEqual(captureScenario(loadedSession), captureScenario(restored));
+      assert.equal(loadedSession.simulationRevision, checkpoint.simulationRevision);
+      assert.equal(Object.hasOwn(loadedSession, 'simulationRevision'), Object.hasOwn(checkpoint, 'simulationRevision'));
+      assert.equal(scenarioRulesCompatibility(loadedSession).compatible, false); frozenMission(loadedSession);
+      sameRaw(checkpoint, checkpointBefore, `${spec.name} original checkpoint`); sameRaw(raw, before, spec.name);
+      await save(`historicalMain:${spec.name}`, `historical-${spec.name}-main-session.save4.json`, companion, {
+        classification: 'new-save4-main-session-companion-of-original-historical-owner', originalSource: spec.source,
+        checkpointSelection: raw.active ? 'original active checkpoint' : 'original latest earned completed checkpoint',
+        ownerPreserved: true, historicalRulePinPreserved: true, migratedStateSaveVersion: SAVE_VERSION, compatibility,
+        gameplayClaim: 'This wrapper is newly derived. Its owner, saved history and battlefield come from the unchanged genuine historical input.',
+      });
+    }
+    assertions[spec.name] = { rawOwnerUnchanged: true, originalCompatibility, syntheticOuterOnlyChanged: true, probeCompatibility,
+      mainCompanion: spec.name !== 'conquest-completed',
+      ...(spec.name === 'conquest-completed' ? { limitation: 'Kept strategic; a main-session owner fallback would attempt to verify the historical final battle journal.' } : {}) };
+    sameRaw(raw, before, spec.name);
+  }
+  const newCampaign = createCampaignProfile('campaign-dwarves', 'supplemental-empty-campaign');
+  const newConquest = createConquestProfile('orcs', 'supplemental-empty-conquest');
+  for (const [kind, current, decode, compatible] of [
+    ['campaign', newCampaign, decodeCampaignProfile, campaignRulesCompatibility],
+    ['conquest', newConquest, decodeConquestProfile, conquestRulesCompatibility],
+  ] as const) {
+    assert.equal(current.simulationRevision, SIMULATION_REVISION); assert.equal(current.active, null); assert.deepEqual(current.history, []);
+    const probe = structuredClone(current); delete probe.simulationRevision;
+    assert.deepEqual({ ...probe, simulationRevision: SIMULATION_REVISION }, current);
+    const before = text(probe), decoded = decode(probe as never); assert.deepEqual(decoded, probe);
+    const compatibility = compatible(decoded as never); assert.equal(compatibility.compatible, false); assert.equal(compatibility.revision, 'unknown');
+    assert(compatibility.reason?.includes('inspection')); sameRaw(probe, before, `empty ${kind} probe`);
+    await save(`missingPinEmpty:${kind}`, `synthetic-missing-pin-empty-${kind}.json`, probe, {
+      classification: 'synthetic-empty-profile-missing-outer-rule-pin-probe', changedFields: ['deleted simulationRevision'],
+      nativeCreation: kind === 'campaign' ? 'createCampaignProfile' : 'createConquestProfile', activeNull: true, historyEmpty: true, compatibility,
+      ...(kind === 'conquest' ? { armyDeclaration: 'The native API creates a starting army; empty describes the decision history and absence of an active battle.' } : {}),
+      gameplayClaim: 'Created now under current native APIs. This is not historical gameplay or an earned result.',
+    });
+    assertions[`missingPinEmpty:${kind}`] = { onlyOuterPinDeleted: true, activeNull: true, historyEmpty: true, compatibility };
+  }
+  const recordingRaw = await input('tests/fixtures/scenario-save3-3.2/scenario-recording.json');
+  const finalRaw = await input('tests/fixtures/scenario-save3-3.2/scenario-final.json');
+  const recordingBefore = text(recordingRaw), finalBefore = text(finalRaw), decodedRecording = decodeScenarioRecording(recordingRaw);
+  assert.deepEqual(decodedRecording, recordingRaw); assert.equal(scenarioRecordingRulesCompatibility(decodedRecording).compatible, false);
+  assert.equal(scenarioCheckpointChecksum(finalRaw), recordingRaw.finalChecksum);
+  frozenMission(restoreScenario(finalRaw)); sameRaw(recordingRaw, recordingBefore, 'genuine historical recording'); sameRaw(finalRaw, finalBefore, 'genuine historical final');
+  const completedRaw = await input('docs/evidence/campaigns/native-save3-20261001/current-completed-mission.json'), completedBefore = text(completedRaw);
+  const completed = restoreScenario(completedRaw); assert.equal(completed.runtime.outcome, 'won'); assert.equal(completed.state.winner, 0); frozenMission(completed);
+  sameRaw(completedRaw, completedBefore, 'genuine pinned recorded victory');
+  const genericRaw = await input('tests/fixtures/scenario-save3-3.2/generic-bound-final.json'), genericBefore = text(genericRaw);
+  const genericWrapper = { format: 'orcs-vs-fairies/session', version: 1, game: genericRaw };
+  const genericLoaded = decodeSessionFile(genericWrapper); assert.deepEqual(genericLoaded.file.game, genericRaw);
+  const genericSession = scenarioSessionForState(genericLoaded.state); assert(genericSession); frozenMission(genericSession);
+  sameRaw(genericRaw, genericBefore, 'genuine original generic SAVE3');
+  assertions.genuineRecordedMissionInputs = { scenarioJournalChecksumMatchesRawFinal: true, rawHistoricalRecordingRetained: true,
+    currentCompletedMissionRecordedVictory: true, genericSave3OriginalPreservedOnDecode: true };
+
+  // This definition and wrapper derivation follow the retained pinned native test.
+  // The historical content is genuine. Every scenario/checkpoint wrapper below is new and synthetic.
+  const oldCapture = await input('docs/evidence/content-root-integration-20261001/browser-save.json');
+  const contentRaw = structuredClone(oldCapture.game.state.content), contentBefore = text(contentRaw);
+  const oldContent = decodeHistoricalContentBundle(contentRaw), migratedContent = migrateHistoricalContentBundle(contentRaw);
+  assert.deepEqual(oldContent, contentRaw); assert.equal(oldContent.hash, '2fe954644f4b3a4d5b20e3d39b83744b9d39761869b325933446145304ba966a');
+  const definition = {
+    schemaVersion: 1, id: 'historical-content-wrapper', title: 'Lantern wrapper admission', briefing: 'Move the duelist.', successText: 'Arrived.', failureText: 'Lost.',
+    faction: 'lantern:keepers', opponent: 'orcs', seed: 42, content: migratedContent,
+    map: { size: 'small', width: 36, height: 36, terrain: Array(36 * 36).fill('grass'), starts: [{ x: 5, y: 5 }, { x: 30, y: 30 }], resources: [] },
+    army: [{ label: 'duelist', side: 0, kind: 'unit', role: 'melee', definitionId: 'lantern:duelist', hp: 100, x: 8, y: 8 },
+      { label: 'hall', side: 0, kind: 'building', role: 'barracks', definitionId: 'lantern:hall', x: 13, y: 13 }],
+    objectives: [{ id: 'arrive', text: 'Reach the mark.', success: { type: 'at', actor: 'duelist', point: { x: 17, y: 8 }, radius: 1 } }], events: [],
+    rules: { fixedArmy: true, reinforcementBudget: 0, resources: { wood: 0, ore: 0, crystal: 0 }, timeLimit: 60 },
+  };
+  const currentSession = createScenario(definition as Parameters<typeof createScenario>[0]), current = captureScenario(currentSession);
+  assert.equal(currentSession.state.tick, 0); assert.equal(currentSession.state.time, 0);
+  const oldDefinition = { ...current.definition, content: structuredClone(oldContent) };
+  const checkpoint = { ...current, definition: oldDefinition, simulationRevision: '3.2.0', game: { ...current.game, version: 3,
+    state: { ...current.game.state, content: structuredClone(oldContent), draft: createDraft(draftPlayers(currentSession.state), currentSession.state.rules, oldContent) } } };
+  const bound = { ...createSessionFile(currentSession.state), game: { ...checkpoint.game,
+    state: { ...checkpoint.game.state, scenario: { definition: structuredClone(oldDefinition), runtime: structuredClone(checkpoint.runtime), simulationRevision: '3.2.0' } } } };
+  const checkpointBefore = text(checkpoint), boundBefore = text(bound);
+  assert.deepEqual(checkpoint.definition.content, contentRaw); assert.deepEqual(checkpoint.game.state.content, contentRaw);
+  assert.deepEqual(bound.game.state.scenario.definition.content, contentRaw); assert.deepEqual(bound.game.state.content, contentRaw);
+  const restored = restoreScenario(checkpoint), imported = decodeSessionFile(bound), boundSession = scenarioSessionForState(imported.state); assert(boundSession);
+  assert.deepEqual(restored.definition.content, migratedContent); assert.deepEqual(restored.state.content, migratedContent);
+  assert.deepEqual(boundSession.definition.content, migratedContent); assert.deepEqual(boundSession.state.content, migratedContent);
+  assert.deepEqual(captureScenario(boundSession), captureScenario(restored)); assert.deepEqual(imported.file, bound);
+  assert.equal(unitFor(restored.state, restored.state.entities[0]).damage, 24);
+  assert.equal(unitFor(boundSession.state, boundSession.state.entities[0]).damage, 24);
+  const lanternCompatibility = frozenMission(restored); assert.equal(lanternCompatibility.revision, '3.2.0'); frozenMission(boundSession);
+  sameRaw(checkpoint, checkpointBefore, 'synthetic Lantern raw checkpoint'); sameRaw(bound, boundBefore, 'synthetic Lantern original SAVE3 session'); sameRaw(contentRaw, contentBefore, 'genuine old content');
+  const journal = { format: 'orcs-vs-fairies-scenario-recording', version: 1, initial: checkpoint, commands: [],
+    finalTick: checkpoint.game.state.tick, finalChecksum: scenarioCheckpointChecksum(checkpoint) };
+  const journalBefore = text(journal), journalChecksum = journal.finalChecksum;
+  assert.deepEqual(decodeScenarioRecording(journal), journal); assert.equal(scenarioCheckpointChecksum(journal.initial), journalChecksum);
+  assert.equal(scenarioRecordingRulesCompatibility(journal as Parameters<typeof scenarioRecordingRulesCompatibility>[0]).compatible, false);
+  sameRaw(journal, journalBefore, 'synthetic Lantern raw historical journal');
+  const lanternDeclaration = { classification: 'synthetic-save3-lantern-wrapper-of-genuine-original-content',
+    originalSource: 'docs/evidence/content-root-integration-20261001/browser-save.json', referenceTest: 'tests/scenario-historical-content.test.ts',
+    originalContentHash: oldContent.hash, originalContentJsonSha256: sha(contentBefore), migratedContentHash: migratedContent.hash,
+    simulationRevision: '3.2.0', gameSaveVersion: 3, gameplayClaim: 'The native mission was created at tick zero. Wrappers are newly synthesized, contain no played commands, and do not claim old captured gameplay.',
+    compatibility: lanternCompatibility };
+  await save('lantern:checkpoint', 'synthetic-lantern-historical-checkpoint.save3.json', checkpoint, lanternDeclaration);
+  await save('lantern:mainSession', 'synthetic-lantern-historical-main-session.save3.json', bound, lanternDeclaration);
+  await save('lantern:journal', 'synthetic-lantern-historical-journal.v1.json', journal, { ...lanternDeclaration, rawJournalChecksum: journalChecksum });
+  await save('lantern:originalContent', 'genuine-original-lantern-content.json', contentRaw, { classification: 'unchanged-content-extracted-from-genuine-historical-capture', originalSource: lanternDeclaration.originalSource,
+    originalContentHash: oldContent.hash, preservation: 'Parsed content values remain unchanged; the complete source file is separately retained byte-for-byte.' });
+  assertions.lantern = { originalContentUnchanged: true, originalContentHash: oldContent.hash, migratedContentHash: migratedContent.hash,
+    matchingMigratedDefinitionAndGame: true, originalSave3SessionRetainedOnDecode: true, frozenCommandGuard: true,
+    rawJournalUnchanged: true, rawJournalChecksum: journalChecksum, currentAcceptedCommandReplay: 'Deferred to pinned native test; not generated here.' };
+  await writeFile(join(output, 'derivation.json'), JSON.stringify({ sourceCommit: pin, simulationRevision: SIMULATION_REVISION, saveVersion: SAVE_VERSION,
+    assertions, execution: { directAcceptedPlayerCommands: 0, directSimulationSteps: 0, directReplayVerifierCalls: 0,
+      note: 'The generator runs only after release. Native decoders may perform internal replay when admitting current compatible owners. The retained historical and incompatible probes skip canonical replay through native compatibility guards.' },
+    limitations: ['Empty conquest retains the native starting army.', 'Completed conquest remains a raw strategic profile without an invented active checkpoint.',
+      'Browser writer/claim/reset attempts and native rejected-command/step/recorder assertions belong to separate final verification.',
+      'The Lantern wrapper mission is synthetic; unchanged genuine content does not turn its tick-zero checkpoint into historical gameplay.'] }, null, 2) + '\n', { flag: 'wx' });
+  await writeFile(join(output, 'supplemental-fixtures.json'), JSON.stringify({ format: 'ovf-scenario-supplemental-fixtures', version: 1,
+    sourceCommit: pin, simulationRevision: SIMULATION_REVISION, saveVersion: SAVE_VERSION, files }, null, 2) + '\n', { flag: 'wx' });
+}

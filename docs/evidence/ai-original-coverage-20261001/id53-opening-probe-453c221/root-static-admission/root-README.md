@@ -1,0 +1,1 @@
+The GPT-6 Sol review admits the original feature 53 promotion at d61b708. All 54 raw blobs, 46 imports, native sessions, compiled bundles and the appended decision row pass. The ledger is 67 verified and 33 in progress. The original CRLF observation is preserved. This review adds no runtime or acceptance gate.

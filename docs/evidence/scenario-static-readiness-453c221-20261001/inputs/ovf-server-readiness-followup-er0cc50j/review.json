@@ -1,0 +1,88 @@
+{
+  "format": "ovf-static-server-readiness-followup",
+  "scope": "/tmp/ovf-scenario-rules401-readiness.UCDZqh",
+  "executionHeld": true,
+  "hashesBefore": {
+    "start-server.sh": "5105b85ac991ce98ad35145a15fc40f39a6ee1927f359b1c294388847eab2e20",
+    "record-server-launch.py": "dc932b04ddbd68dceb07086acd9e39a7d34eaa33e5093477ec898f8b359e2845",
+    "canonical-execution.json": "e47c45c21e91959150bb9e8dffaa555697ba6741ed67740fd415ce9924958624",
+    "invocations.sh": "91c62a6b47bc02aeed9239565d2c680fae9bbd8e50971064d97853a28eb08b4f"
+  },
+  "hashesAfter": {
+    "start-server.sh": "5105b85ac991ce98ad35145a15fc40f39a6ee1927f359b1c294388847eab2e20",
+    "record-server-launch.py": "dc932b04ddbd68dceb07086acd9e39a7d34eaa33e5093477ec898f8b359e2845",
+    "canonical-execution.json": "e47c45c21e91959150bb9e8dffaa555697ba6741ed67740fd415ce9924958624",
+    "invocations.sh": "b8671210a364ca68db791519b607f3ce867a72eec4d5d51f7bdfd462789f6b7c"
+  },
+  "changeDuringReview": {
+    "invocations.sh": "Parent strengthened completed-profile binding after initial review; all other scoped files unchanged."
+  },
+  "parentFinalSnapshotHashesMatch": true,
+  "syntax": {
+    "bash": "bash -n start-server.sh/invocations.sh passed on final bytes",
+    "python": "ast.parse recorder and embedded PYPROFILE passed on final bytes"
+  },
+  "observations": [
+    {
+      "topic": "alias alignment",
+      "result": "corrected",
+      "references": [
+        "canonical-execution.json:10-15,26-29",
+        "invocations.sh:9,12-17,54"
+      ],
+      "description": "JSON and shell now agree on SCENARIO_FIXTURE_DIR, SCENARIO_CONTROLS_OUTPUT/build-manifest.json, and SCENARIO_BROWSER_PACKAGE. No stale aliases remain."
+    },
+    {
+      "topic": "pack before CUA",
+      "result": "corrected",
+      "references": [
+        "invocations.sh:50-55,75-79",
+        "canonical-execution.json:75-83"
+      ],
+      "description": "Intact server health/served-byte admission precedes pack; pack precedes first CUA import. Audit and verify follow all raw downloads. These are reference commands in separate tool sessions, as the foreground launch comment requires."
+    },
+    {
+      "topic": "completed Orc profile binding",
+      "result": "corrected",
+      "references": [
+        "invocations.sh:83-106",
+        "check-results.py:14-32,42-47,58-67,116-125"
+      ],
+      "description": "Selector now requires the expected SCENARIO_FINAL_PIN in passing4.0.1 admission, authenticates primary.json SHA256 and byte length before reading profiles, requires matching report/admission pin, selects campaign-orcs, follows admitted original-path to retainedPath, authenticates retained profile SHA256, and requires Orc/rules/four completed records/active:null. Referenced admission/report/artifact fields match check-results.py. Earlier expected-pin and primary-report hash strengthening suggestions are resolved."
+    },
+    {
+      "topic": "staged service bundle copies",
+      "result": "unchanged static readiness",
+      "references": [
+        "invocations.sh:60-73",
+        "canonical-execution.json:49"
+      ],
+      "description": "Fresh unavailable staging copies only rts-server.js and canonical-campaign.mjs, verifies each against the original through cmp, and requires absent campaign-runtime.mjs. Restored stage uses the original intact directory. Original bundles are not removed or modified by these commands."
+    },
+    {
+      "topic": "server launch mechanics",
+      "result": "prior static findings remain usable",
+      "references": [
+        "start-server.sh:15-33",
+        "record-server-launch.py:9-40"
+      ],
+      "description": "Wrapper and recorder hashes are unchanged from prior audit. All3 launch stages repeat frozen cwd and fixed origin. FD9 exclusive flock spans Node exec; $$ becomes the Node PID. Exclusive receipt creation and noclobber log protect fresh output ownership. Lazy runtime absence503 mapping before award remains documented by original source review."
+    },
+    {
+      "topic": "actual server build authentication and receipt admission",
+      "result": "dispatch prerequisite",
+      "references": [
+        "invocations.sh:40-48,60-73",
+        "canonical-execution.json:42-43,49,71",
+        "record-server-launch.py:12-26"
+      ],
+      "description": "Recipe treats authenticated server bundles as future preparation. The recorder records supplied hashes without validating an admitted source-to-server-build inventory. Before dispatch root must authenticate frozen source before/after server build, retain invocation/build log and all3 exact bundle hashes, compare intact receipt to admitted3bundle inventory, unavailable receipt to admitted2bundle hashes plus runtime absence, and restored receipt to admitted3bundle inventory. Check owned live PID/health/served bytes and predecessor graceful termination at each handoff. No current runtime/build authentication is claimed."
+    }
+  ],
+  "conclusion": "No concrete remaining server/invocation/JSON defect in final reviewed snapshot. Static readiness is conditional on root satisfying final-pin, server-build authentication, receipt comparison, and live-service admission prerequisites after execution release.",
+  "priorStructuralReport": "/tmp/ovf-static-server-readiness-14ardwq0/review.json",
+  "limits": [
+    "No builds, simulations, tests, browsers, servers, HTTP, wrappers, draft edits or root product edits.",
+    "No live startup, HTTP503, UI or reward execution proof is asserted. Timer revisions are outside this server-launch review scope."
+  ]
+}

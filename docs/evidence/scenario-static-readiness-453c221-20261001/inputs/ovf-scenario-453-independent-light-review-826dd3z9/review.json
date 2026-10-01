@@ -1,0 +1,96 @@
+{
+  "format": "ovf-scenario-453-independent-light-source-inventory-review",
+  "version": 1,
+  "reviewer": "/root/scenario_final_resume/prep_audit",
+  "reviewedAt": "2026-10-01T21:46:49.975666+00:00",
+  "verdict": "accepted-static-source-bridge-and-file-inventory; protected-execution-held",
+  "productFreeze": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "priorProductPin": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+  "rootRecordPin": "8b96f5197adf5b4ddfa160c2fe5a550afdf7e9d8",
+  "reviewedFiles": {
+    "source-bridge.py": {
+      "sha256": "8a2427fde1ea62dc903a42a00da3843c8ba133dcdac999b09690e7ef3ef79755",
+      "bytes": 7118
+    },
+    "verify-production-inventory.py": {
+      "sha256": "8c66b05aff6df1512b3fa23c1a15eef98f7204dc57f9c0be49e06b483c5de867",
+      "bytes": 3136
+    },
+    "bridge-current/source-bridge.json": {
+      "sha256": "88fd2631f160e06d4b680b617c4d20db26a333b5b81908630924c9bb332cb290",
+      "bytes": 354092
+    },
+    "bridge-current/requirements.json": {
+      "sha256": "876e7941b1ec3f1e47ecaa6db31a75204c00a0e2571bcd429ed5308d37509e21",
+      "bytes": 5622
+    },
+    "bridge-current/historical-coverage.json": {
+      "sha256": "9ef600e537c3666d657c75565de1099a8fc5dff55b274d9037da2c0a67284c0e",
+      "bytes": 8342
+    },
+    "intact-producer-production-inventory.json": {
+      "sha256": "b0da44cc14c8ccad9345ba663f53003b7c354e479fa43061ead3b2cc6de746ef",
+      "bytes": 60289
+    }
+  },
+  "independentChecks": {
+    "all1073NonDocModeBlobShaAndByteEntriesMatchedImmutableGit": true,
+    "all394PublicEntriesMatched": true,
+    "rootNonDocTreeEqual": true,
+    "historical205PathsMatched": true,
+    "historicalSrcDiffOnlyDocumentedMainAccountGuard": true,
+    "saveVersion": 4,
+    "simulationRevision": "4.0.1",
+    "pythonAstParsed": true,
+    "priorNineAndSupplementalFourHashesUnchanged": true,
+    "priorC074OverlayHashesUnchanged": true
+  },
+  "productDelta": {
+    "path": "public/favicon.ico",
+    "change": "added",
+    "gitBlob": "82fa500660fbf8a022166b806cb5cdb372ad83d5",
+    "sha256": "5e0bf0f72488bc693d779cd7a3ebc7fdfca8db9916a6e3e0811fff59113253c2",
+    "bytes": 32038
+  },
+  "packerBehavior": {
+    "helperSha256": "c2e91adda307ad9727a86ce3693eee6d590879120556081b9f67bec925c6463a",
+    "fullPublicPathsAndTrackedBytesChecked": true,
+    "assetManifestAndCompleteActualDistChecked": true,
+    "everyDistFileCopiedAndFetchedAtPackAndAudit": true,
+    "sourceFingerprintExcludesPublicAssets": true,
+    "sourceFingerprint": "5e49e689af13d4eef08c0760f904ad0bce2c2eebaa1144dea5d89cadecf310c0",
+    "noHardcodedFaviconPresenceCheck": "Corrected file-inventory checker independently requires all public assets at dist paths, including exact favicon."
+  },
+  "checkerCorrectionAccepted": "Parsed bridge/manifest raw buffers are also hashed in receipts, both inputs must remain unchanged afterward, report paths inside dist are rejected.",
+  "rootAdmittedIntactProducer": {
+    "path": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/prepared",
+    "lightReadHashMappingConfirmed": true,
+    "regularFiles": 412,
+    "directories": 6,
+    "symlinks": 0,
+    "distFiles": 398,
+    "publicFiles": 394,
+    "buildManifest": {
+      "path": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/prepared/build-manifest.json",
+      "sha256": "41cf5734c905ee1911e0218594b7dcd5bcbe89194dafd3448e73ff58f9a2506f",
+      "bytes": 184914
+    },
+    "prepare": {
+      "path": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/prepared/prepare.json",
+      "sha256": "4dff0f8b11ebf9c3ca308ae4b4bda4b29550064eac120f26b62b5ef4e60b6ef4",
+      "bytes": 126579
+    }
+  },
+  "retainedDocsDistLimit": "Immutable8b96 autosave docs archive retains five dist files matching the398-entry manifest; that subset is not a canonical dist input. The admitted intact producer has all398 matching files.",
+  "exactDispatchAdaptation": [
+    "Set SCENARIO_FINAL_PIN to full453 product freeze and use an isolated checkout whose HEAD is exactly453; keep c074/c86 prior audit/read pins unchanged.",
+    "Keep SAVE4/rules4.0.1, original native/primary/supplemental/server/pack/audit/verify command interfaces and20export roles unchanged; use fresh native, fixture, server-receipt and browser-evidence outputs.",
+    "Set SCENARIO_CONTROLS_OUTPUT to the root-admitted intact453 prepared path above when reusing it; pass its build-manifest.json and sibling dist. Do not substitute the five-file docs archive or a c074 manifest.",
+    "Use bridge-current/source-bridge.json, bridge-current/requirements.json and bridge-current/historical-coverage.json in the new adaptation; retain the initial98-path iteration separately.",
+    "Supplemental OVF_SCENARIO_RELEASED_PIN must equal the same full dispatch pin; current native-admission and fixture manifests must bind that pin.",
+    "Root8b96 is product-equivalent but is a different full Git pin; choosing it instead requires a matching explicitly admitted source/build/fixture provenance set, not relabeling453 receipts.",
+    "Root explicitly releases the protected execution slot before native/build/browser/server/HTTP work; retain serial owned DB service handoffs and unchanged separate current-realm/supplemental evidence obligations."
+  ],
+  "limits": "Git/file/JSON/hash reads and owned new/tmp review only. No build/test/native API/replay/simulation/browser/server/HTTP/install/copy/serve or root/evidence/dist writes. File inventory is not current canonical browser proof.",
+  "findingsRequiringCorrection": []
+}

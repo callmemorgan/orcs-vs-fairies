@@ -1,0 +1,163 @@
+{
+  "format": "ovf-scenario-453-exact-dispatch-reference",
+  "version": 1,
+  "executionHeld": true,
+  "commandsAreUnexecuted": true,
+  "releasePrerequisites": [
+    "Root explicitly releases the heavy slot and confirms453 is still the full dispatch pin. A pin change needs a new bridge; do not relabel this packet.",
+    "Root assigns origin/endpoint and exclusive DB owner, and any private earned accounts/baselines.",
+    "Preserve retainedaf44 and current root-admitted producer output. Create only owned fresh execution paths after release.",
+    "Create fresh execution/browser-output/exclusive-db parents as needed after release; never overwrite existing proof output."
+  ],
+  "paths": {
+    "source": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source",
+    "native": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/native",
+    "primary-fixtures": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/primary-fixtures",
+    "supplemental-fixtures": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/supplemental-fixtures",
+    "server-build": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/server-build",
+    "browser-package": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/browser-package",
+    "browser-output": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/browser-output",
+    "exclusive-db": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/exclusive-db",
+    "unavailable-server-build": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/unavailable-server-build",
+    "controlsPrepared": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/prepared",
+    "baseUrl": "http://127.0.0.2:5307/index.html",
+    "primaryFixtureManifest": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/primary-fixtures/fixtures.json",
+    "uiExportsManifest": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/browser-output/ui-exports.json"
+  },
+  "exactCommands": {
+    "createFreshCheckout": {
+      "argv": [
+        "git",
+        "-C",
+        "/home/morgana/.codex/worktrees/scenario-final-save4/orcs-vs-Fairies",
+        "worktree",
+        "add",
+        "--detach",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source",
+        "453c2218af9973b9eca8fb78392435bd9d46a740"
+      ]
+    },
+    "dependencyLinkIfNeeded": {
+      "argv": [
+        "ln",
+        "-s",
+        "/home/morgana/Projects/orcs-vs-Fairies/node_modules",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/node_modules"
+      ]
+    },
+    "native": {
+      "argv": [
+        "bash",
+        "/tmp/ovf-scenario-rules401-readiness.UCDZqh/run-native.sh",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source",
+        "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "4.0.1",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/native"
+      ]
+    },
+    "primaryFixtures": {
+      "argv": [
+        "node",
+        "/tmp/ovf-scenario-rules401-readiness.UCDZqh/generate-browser-fixtures.mjs",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source",
+        "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/native",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/primary-fixtures"
+      ]
+    },
+    "optionalSupplementalFixtures": {
+      "env": {
+        "OVF_SCENARIO_RELEASED_PIN": "453c2218af9973b9eca8fb78392435bd9d46a740"
+      },
+      "argv": [
+        "node",
+        "/tmp/ovf-scenario-supplemental-generator.Any3mQ/generate-supplemental-fixtures.mjs",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source",
+        "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/native",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/supplemental-fixtures"
+      ]
+    },
+    "readAdmittedProductionInventory": {
+      "argv": [
+        "python3",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/verify-production-inventory.py",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/bridge-current/source-bridge.json",
+        "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/prepared/build-manifest.json",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/browser-output/production-inventory-before.json"
+      ]
+    },
+    "buildOwnedThreeBundleServer": {
+      "cwd": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source",
+      "argv": [
+        "node",
+        "scripts/build-server.mjs",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/server-build"
+      ]
+    },
+    "serverDependencyLinkIfNeeded": {
+      "argv": [
+        "ln",
+        "-s",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/node_modules",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/server-build/node_modules"
+      ]
+    },
+    "ownedIntactServer": {
+      "argv": [
+        "bash",
+        "/tmp/ovf-scenario-rules401-readiness.UCDZqh/start-server.sh",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source",
+        "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/server-build",
+        "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/prepared/dist",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/exclusive-db",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/browser-output/intact-server",
+        "intact"
+      ]
+    },
+    "packBeforeCuaImport": {
+      "argv": [
+        "node",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/scripts/scenarios/main-browser-proof.mjs",
+        "pack",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source",
+        "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "http://127.0.0.2:5307/index.html",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/primary-fixtures/fixtures.json",
+        "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/prepared/build-manifest.json",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/browser-package"
+      ]
+    },
+    "fullTwentyRoleAuditIfSelected": {
+      "argv": [
+        "node",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/scripts/scenarios/main-browser-proof.mjs",
+        "audit",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/browser-package",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/browser-output/ui-exports.json"
+      ]
+    },
+    "fullTwentyRoleOfflineVerifyIfSelected": {
+      "argv": [
+        "node",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/browser-package/helper.mjs",
+        "verify",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/browser-package"
+      ]
+    }
+  },
+  "controlsBuildReuse": "Use the intact admitted453 producer in place. Its existing complete public/dist inventory is already mapped. No new controls preparation/build is in the smallest dispatch. If it changes or is unavailable, retain failure and ask root to assign a fresh same-pin producer; never use the committed five-file dist subset.",
+  "primaryFixtureManifestName": "Unchanged primary generator writes fixtures.json at line114; exact supplied path uses that confirmed filename. No derived fixtures exist yet.",
+  "canonical20RoleScope": "The unchanged pack/auditor still uses exactly20raw export roles. A full audit needs all20 actual downloads; the minimum original-feature sequence does not imply that the optional broader checklist has passed. Root can coordinate these original roles with the already-authorized canonical integration workflow.",
+  "currentRealm": "Separate four actual profile/session downloads in feature-gaps.json: completed SAVE4 SessionFile plus negotiated profile before import, re-export after native import/reload/resume, and active adjacent-battle SAVE4 SessionFile after ordinary combat. No generator or synthetic state is required.",
+  "separatelyAuthorizedRewardFlow": "Use unchanged canonical-execution.json/invocations.sh reward flow only when root assigns it. Genuine campaign claim, duplicate, A/B, runtime-missing503/restored retry, equipment persistence/game equality and pixels remain distinct from the minimum original99 wording.",
+  "serverHandoffs": "All intact/unavailable/restored launches are serial under the unchanged exclusive DB lock and frozen cwd/origin wrapper. The former writer must terminate before the next begins. No handoff during preparation.",
+  "optionalSupplementalMatrix": "Existing separately reviewed supplemental generator remains unexecuted and optional to original71\u201380/99 gates. Synthetic wrappers and historical pins must stay declared.",
+  "limits": [
+    "No current CUA/server/HTTP run is claimed.",
+    "Existing frozen pack emits no auditor metafile.",
+    "Compiler package metadata provenance does not authenticate executable bytes.",
+    "Every actual download and failed attempt stays retained."
+  ]
+}

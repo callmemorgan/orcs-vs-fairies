@@ -1,0 +1,3 @@
+This archive retains 48 independently accepted static scenario preparation files with original bytes, modes, paths and attribution. It covers nine bound artifacts, 11 transitive receipts, 32 support references and the final runtime and retention reviews at product 453c221, SAVE4 and rules 4.0.1. The accepted 000cf retention plan and f633 admission remain unchanged. Execution for original features 71–80 is held.
+
+This import contains no compiled canonical payload or source.bundle, public or dist files. The complete canonical package and 185 historical raw paths remain at their original locations. Four realm downloads remain approved. Estimates are 4–7 minutes for native work and 30–60 minutes for canonical work; these are unmeasured. No campaign stress gate is added.

@@ -1,0 +1,1289 @@
+{
+  "kind": "original71-80-frozen-producer-output-pointer-map",
+  "reviewedAt": "2026-10-01T22:30:10.201129+00:00",
+  "productPin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "executionHeld": true,
+  "scope": "Static immutable Git/file reads only. No application/runtime/build/test/simulation/native game API/browser/server/HTTP/install/copy or repository edit occurred. Only this new owned report was written.",
+  "freshOutputStatus": "Every fresh proof-root filename and JSON field below is an expectation from the accepted recipe and frozen producers. No current run or current passed native-admission result is claimed.",
+  "futureExpectedOutputLayout": {
+    "all30.json": {
+      "recipe": {
+        "path": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/run-native.sh",
+        "line": 41
+      },
+      "producer": {
+        "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-campaigns.ts",
+        "line": 113,
+        "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+      },
+      "rawJournals": "work/campaign-content/recordings/<producer timestamp>/<definition.id>.json, reached through attempts[].journal.archivePath"
+    },
+    "primary.json": {
+      "recipe": {
+        "path": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/run-native.sh",
+        "line": 45
+      },
+      "producer": {
+        "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-alternate-profiles.ts",
+        "line": 71,
+        "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+      },
+      "rawJournalsAndProfiles": "work/campaign-content/profiles/<producer timestamp>/<faction>-<chapter>.json and <faction>-profile.json, reached through journal.archivePath/profilePath"
+    },
+    "alternate.json": {
+      "recipe": {
+        "path": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/run-native.sh",
+        "line": 49
+      },
+      "producer": {
+        "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-alternate-profiles.ts",
+        "line": 71,
+        "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+      },
+      "rawJournalsAndProfiles": "Separate producer timestamp directory; same per-faction chapter/profile filenames. Use recorded absolute paths, not guessed timestamps."
+    },
+    "conquest.json": {
+      "recipe": {
+        "path": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/run-native.sh",
+        "line": 53
+      },
+      "producer": {
+        "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-conquest-review.ts",
+        "line": 101,
+        "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+      },
+      "rawJournals": "conquest-journals/expired-passage.json, allied-passage-1.json, allied-passage-2.json, allied-passage-3.json, multiple-allies.json"
+    },
+    "persistent-army/report.json": {
+      "recipe": {
+        "path": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/run-native.sh",
+        "line": 57
+      },
+      "producer": {
+        "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-persistent-army.ts",
+        "line": 150,
+        "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+      },
+      "rawCoreFiles": [
+        "earned-army.json",
+        "chapter1-initial.json",
+        "chapter1-recording.json",
+        "chapter1-final.json",
+        "chapter1-completed-profile.json",
+        "chapter2-initial.json",
+        "chapter2-recording.json",
+        "chapter2-final.json",
+        "chapter2-completed-profile.json",
+        "chapter3-initial.json",
+        "chapter3-recording.json",
+        "chapter3-final.json",
+        "chapter3-completed-profile.json",
+        "chapter1-equipped-checkpoint.json",
+        "chapter1-equipped-recording.json",
+        "chapter1-equipped-active-profile.json",
+        "chapter2-casualty-checkpoint.json",
+        "chapter2-casualty-recording.json",
+        "chapter2-casualty-active-profile.json",
+        "chapter3-reserves-checkpoint.json",
+        "chapter3-reserves-recording.json",
+        "chapter3-reserves-active-profile.json",
+        "final-army.json",
+        "accepted-commands.json",
+        "combat-events.json"
+      ],
+      "supplementalFiles": "Armor-effect and artifact-allocation output are retained by the accepted producer; they do not add original74 clauses."
+    }
+  },
+  "features": [
+    {
+      "id": 71,
+      "title": "Six faction campaigns",
+      "requirement": "give each faction its own characters and strategic problems.",
+      "requirementReference": {
+        "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/features/requirements.json",
+        "line": 754,
+        "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+      },
+      "clausePointers": [
+        {
+          "clause": "each faction has its own characters",
+          "producerReferences": [
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-campaigns.ts",
+              "line": 100,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-campaigns.ts",
+              "line": 109,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-campaigns.ts",
+              "line": 113,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/src/scenarios/campaigns.ts",
+              "line": 426,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            }
+          ],
+          "expectedOutputPointers": [
+            "all30.json: attempts[id=<mission>].journal.archivePath → recording.initial.definition.faction, briefing, army, events[].actions[type=message].speaker/text, boss.name where present",
+            "primary.json / alternate.json: profiles[].campaignId and chapters[].journal.archivePath",
+            "Frozen src/scenarios/campaigns.ts: CAMPAIGNS[campaign-<faction>].commander, cast, introduction"
+          ],
+          "example": "orcs-1 initial.definition.briefing names Rakka and Torg; its messages identify Torg. Frozen campaign-orcs cast names Torg and Brass Keeper. Other faction entries are the actual six authored rows at campaigns.ts:427–432."
+        },
+        {
+          "clause": "each faction has its own strategic problems",
+          "producerReferences": [
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-campaigns.ts",
+              "line": 77,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-campaigns.ts",
+              "line": 94,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/src/scenarios/campaigns.ts",
+              "line": 61,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/src/scenarios/campaigns.ts",
+              "line": 427,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            }
+          ],
+          "expectedOutputPointers": [
+            "all30.json: attempts[].assertions.missionWon, allRequiredObjectives, noFailureCondition, requiredActions where declared, journalRecomputed",
+            "Referenced recording.initial.definition: briefing, objectives, rules, map, army and faction-specific requiredActions",
+            "all30.json: attempts[].commandTrace, combatEvents, mechanics, snapshots"
+          ],
+          "example": "Authored mission bytes specify escort/defense/stealth/puzzle/boss problems, terrain and army. Boss rows check the real faction mechanic through actual ability events and state, rather than a story label."
+        }
+      ],
+      "nativeFacts": "The six campaign IDs and 30 replayed mission results connect each faction’s authored characters/problems to executed missions. Report counts support completeness; the actual definitions and campaign source bytes provide the character/story content.",
+      "currentCanonicalObservation": "Use the planned current main campaign menu and shared owner/mission integration. ScenarioTools.ts:51 displays campaign title, commander, faction and introduction. No additional complete browser campaign is added.",
+      "limits": "There is no story property in the observed recording schema. Story content is briefing/successText/failureText and message speaker/text. campaigns:6 alone does not prove distinct characters or problems. Source content repeated inside initial.definition is not a second gameplay run.",
+      "supportedCanonicalRoleLinks": {
+        "roles": [
+          "campaignBefore",
+          "campaignContinued",
+          "finaleSession",
+          "finaleCampaignExport"
+        ],
+        "references": [
+          {
+            "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/main-browser-proof/audit.ts",
+            "line": 88,
+            "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+          },
+          {
+            "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/main-browser-proof/audit.ts",
+            "line": 133,
+            "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+          }
+        ],
+        "supported": "Shared current campaign-owner import/continued-journal and finale integration. CUA menu/mission screenshots supply visible faction commander/introduction/story. These roles do not independently prove all six stories."
+      }
+    },
+    {
+      "id": 72,
+      "title": "World conquest",
+      "requirement": "fight connected battles on a persistent regional map.",
+      "requirementReference": {
+        "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/features/requirements.json",
+        "line": 761,
+        "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+      },
+      "clausePointers": [
+        {
+          "clause": "fight connected battles",
+          "producerReferences": [
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-conquest-review.ts",
+              "line": 30,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-conquest-review.ts",
+              "line": 69,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-conquest-review.ts",
+              "line": 90,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/tests/conquest.test.ts",
+              "line": 53,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            }
+          ],
+          "expectedOutputPointers": [
+            "conquest.json: journals[].{id,path,sha256,finalTick,commands,outcome}; attempts[id=allied-passage-<n>].armyBefore/armyAfter",
+            "conquest-journals/{expired-passage,allied-passage-1,allied-passage-2,allied-passage-3,multiple-allies}.json: initial.definition.id, commands, finalTick/finalChecksum",
+            "Retained admitted tests.json: conquest.test.ts assertion titled captures connected regions through ordinary combat and reloads real surviving armies"
+          ],
+          "example": "The admitted native test captures quarry then crossroads through ordinary combat; it rejects unreachable keep before the captures and decodes survivors after each result."
+        },
+        {
+          "clause": "on a persistent regional map",
+          "producerReferences": [
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-conquest-review.ts",
+              "line": 36,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/conquest.ts",
+              "line": 47,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/conquest.ts",
+              "line": 137,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/conquest.ts",
+              "line": 163,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            }
+          ],
+          "expectedOutputPointers": [
+            "Current canonical downloads B/C: id, worldId, faction, turn, regions, army, relations, ordered history, active:null",
+            "Current A.scenarioProfile.profile equals B; D.scenarioProfile.profile retains quarry ownership/history and active.regionId=crossroads"
+          ],
+          "example": "Conquest finish verifies replay equality, applies completion once and decodes the resulting profile. The owner map and full ordered decisions require the actual realm exports."
+        }
+      ],
+      "nativeFacts": "The native conquest review executes three same-profile protected passages and one Crossroads attack, plus an expiry case. Its finish() enforces replay equality, idempotent completion and decode; these are thrown checks, not separate Boolean assertion names.",
+      "currentCanonicalObservation": "Keep the narrowed four realm downloads: diplomacy before A/B, native B import plus reload/resume to C, then ordinary Crossroads combat to D. The original requirement needs the next battle fought; merely opening it is weak evidence. A second complete canonical win is not a new gate.",
+      "limits": "prove-conquest-review does not export completed realm profiles or assert a quarry-to-Crossroads capture route. Its five review journals do not replace the current connected-map observation. The admitted two-capture native test remains applicable unchanged.",
+      "supportedCanonicalRoleLinks": {
+        "roles": [
+          "realmCompletedSession",
+          "realmNegotiatedProfile",
+          "realmReloadedProfile",
+          "realmNextBattleSession"
+        ],
+        "references": [
+          {
+            "path": "/tmp/ovf-scenario-453-retention.jl9ctb2_/retention-plan.json",
+            "section": "completePacketSections[four-current-realm-downloads]"
+          }
+        ],
+        "supported": "Separate four-role raw-download index. A.profile=B, B=C after native import/reload/resume, D continues the same owner/map into real Crossroads combat. Primary historicalRealmExport is historical preservation only, not current progression."
+      }
+    },
+    {
+      "id": 73,
+      "title": "Branching missions",
+      "requirement": "earlier decisions change later objectives and allies.",
+      "requirementReference": {
+        "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/features/requirements.json",
+        "line": 768,
+        "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+      },
+      "clausePointers": [
+        {
+          "clause": "earlier decisions change later objectives",
+          "producerReferences": [
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-alternate-profiles.ts",
+              "line": 20,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-alternate-profiles.ts",
+              "line": 25,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-alternate-profiles.ts",
+              "line": 58,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-alternate-profiles.ts",
+              "line": 61,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            }
+          ],
+          "expectedOutputPointers": [
+            "primary.json and alternate.json: route, profiles[campaignId=campaign-dwarves].choiceId, assertions.choicePersisted/selectedChapterUsed/fourVerifiedChapters/finished",
+            "profiles[campaignId=campaign-dwarves].chapters[2].missionId and journal.archivePath → recording.initial.definition.objectives",
+            "Referenced <faction>-profile.json: choiceId, history[2].missionId, history[2].recording.initial.definition.objectives"
+          ],
+          "example": "Primary dwarves choice surveyor selects dwarves-3 escort objectives; alternate works selects dwarves-3-alt recovery/extraction objectives."
+        },
+        {
+          "clause": "earlier decisions change later allies",
+          "producerReferences": [
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-alternate-profiles.ts",
+              "line": 31,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-alternate-profiles.ts",
+              "line": 44,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/src/scenarios/campaigns.ts",
+              "line": 251,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/src/scenarios/campaigns.ts",
+              "line": 262,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            }
+          ],
+          "expectedOutputPointers": [
+            "The selected third-chapter recording.initial.definition.army (side0 labels/roles/definitionId) and initial.game.state.entities; initial.runtime.labels binds those authored actors to entity IDs",
+            "Referenced third-chapter profile/history checkpoint carries the actual friendly party"
+          ],
+          "example": "The surveyor route has Sena as moving convoy with the escort party; the works route keeps a sena worker near the start and restricts the infiltrator to commander. These are different ally roles and parties in the actual selected definition."
+        }
+      ],
+      "nativeFacts": "Both route reports require four verified chapter wins, persist the choice before chapter3, check the expected selected mission list, and retain the raw chapter journals and final profile. Native raw definitions show the chosen objectives and friendly actor composition.",
+      "currentCanonicalObservation": "Admit both native route sets plus the planned current main branch/owner preservation. Do not add another full 24-chapter browser route.",
+      "limits": "There is no alliesChanged Boolean assertion. Use the actual chosen journal’s objectives, friendly actor bytes and runtime binding. Story consequences and repeated definition copies are content evidence, not another gameplay result.",
+      "supportedCanonicalRoleLinks": {
+        "roles": [
+          "finaleCampaignExport",
+          "finaleSession",
+          "campaignBefore",
+          "campaignContinued"
+        ],
+        "references": [
+          {
+            "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/main-browser-proof/audit.ts",
+            "line": 88,
+            "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+          },
+          {
+            "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/main-browser-proof/audit.ts",
+            "line": 133,
+            "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+          }
+        ],
+        "supported": "Decoded finale profile retains owner identity and first3 supplied history records, then adds verified orcs-4. Read its choiceId/selected history from actual raw bytes alongside both native route profiles; no dedicated alliesChanged assertion exists."
+      }
+    },
+    {
+      "id": 74,
+      "title": "Persistent armies",
+      "requirement": "surviving units carry experience into the next mission.",
+      "requirementReference": {
+        "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/features/requirements.json",
+        "line": 775,
+        "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+      },
+      "clausePointers": [
+        {
+          "clause": "surviving units carry experience into the next mission",
+          "producerReferences": [
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-persistent-army.ts",
+              "line": 18,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-persistent-army.ts",
+              "line": 108,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-persistent-army.ts",
+              "line": 110,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-persistent-army.ts",
+              "line": 114,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-persistent-army.ts",
+              "line": 117,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            }
+          ],
+          "expectedOutputPointers": [
+            "persistent-army/earned-army.json: [soldier.entity.id=<id>].entity.veteran.experience",
+            "persistent-army/chapter2-initial.json: game.state.entities[id=<same id>].veteran.experience",
+            "persistent-army/report.json: assertions[\"cannon earned rank and promotion in combat\"] and assertions[\"chapter2: survivor <id> identity and earned progress\"]",
+            "persistent-army/report.json: chapters[].deployed/survivors; chapter1-completed-profile.json history/army reconstruction"
+          ],
+          "example": "The producer requires cannon combat damage and earned experience>=40, then compares permanent fields including id, definition, experience, rank and promotions for carried commander/cannon in chapter2."
+        }
+      ],
+      "nativeFacts": "The persistent-army producer supplies the direct earned-experience carry comparison. Ordinary route carry records check role/max health/max shield/rest, but do not directly record experience; use the dedicated proof for this clause.",
+      "currentCanonicalObservation": "Use the already-planned current campaign owner import/export/reload/continuation. The real equipped-owner scenario may supply that shared integration.",
+      "limits": "The original clause asks experience retention. Promotions, equipment, artifact ownership, casualties, reserves, armor and allocator tests are retained supplemental facts from the accepted proof; they are not new original74 gates.",
+      "supportedCanonicalRoleLinks": {
+        "roles": [
+          "campaignBefore",
+          "campaignContinued"
+        ],
+        "references": [
+          {
+            "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/main-browser-proof/audit.ts",
+            "line": 88,
+            "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+          }
+        ],
+        "supported": "Current owner and complete paused game equal the genuine supplied earned fixture; scenario/ordinary journal prefixes persist and one accepted hold input is appended. The experience transfer across missions is supplied by the dedicated native persistent-army proof, not by claiming these same-mission canonical roles perform another chapter transition."
+      }
+    },
+    {
+      "id": 75,
+      "title": "Campaign diplomacy",
+      "requirement": "negotiate alliances, tribute and temporary truces.",
+      "requirementReference": {
+        "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/features/requirements.json",
+        "line": 782,
+        "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+      },
+      "clausePointers": [
+        {
+          "clause": "negotiate tribute",
+          "producerReferences": [
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-conquest-review.ts",
+              "line": 54,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-conquest-review.ts",
+              "line": 65,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-conquest-review.ts",
+              "line": 84,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            }
+          ],
+          "expectedOutputPointers": [
+            "Native producer calls proposeConquest with real tribute100 for truce and tribute250 for alliances; throw/error on invalid acceptance stops the proof",
+            "conquest.json: attempts[].allyBefore/allyAfter and alliesBefore/alliesAfter provide treasury facts for later funded aid",
+            "Current realm B/C: history[type=tribute].faction/amount, treasury, relations.<foreign>.treasury/score"
+          ],
+          "example": "Current shared Dwarf/Fairies observation transfers250 ore and records the proposal; the producer summary does not itself retain ordered proposals."
+        },
+        {
+          "clause": "negotiate temporary truces",
+          "producerReferences": [
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-conquest-review.ts",
+              "line": 55,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-conquest-review.ts",
+              "line": 59,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            }
+          ],
+          "expectedOutputPointers": [
+            "conquest.json: assertions.expiredPassageCannotWin; attempts[id=expired-passage].expiry/protectionVariable/hostile/acceptedTurn",
+            "conquest-journals/expired-passage.json: initial.definition.events[id=truce-expiry] and commands",
+            "Current realm B/C: history[type=truce].turns and relations.fairies.truceUntil"
+          ],
+          "example": "Native review accepts one-turn truce then checks actual expiry/protected passage outcome. Current controls need only the representative accepted two-turn truce observation."
+        },
+        {
+          "clause": "negotiate alliances",
+          "producerReferences": [
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-conquest-review.ts",
+              "line": 67,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-conquest-review.ts",
+              "line": 73,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-conquest-review.ts",
+              "line": 87,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-conquest-review.ts",
+              "line": 97,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            }
+          ],
+          "expectedOutputPointers": [
+            "conquest.json: assertions[aid-<n>-funding], conditional aid-<n>-fresh-unit, aid-<n>-no-unfunded-treasury, aid-<n>-full-cost, multipleAidNoUnfundedTreasury/multipleAidChargesOnlyContributors/multipleAidLimit",
+            "conquest.json: attempts[id=allied-passage-<n>].funded/aidId/armyBefore/armyAfter/allyBefore/allyAfter/unitCost",
+            "Current realm B/C: history[type=alliance].faction and relations.fairies.alliance=true"
+          ],
+          "example": "Accepted native alliances permit three ordinary passages and fund/deduct actual allied units. These supplemental effects do not require a repeated UI matrix."
+        }
+      ],
+      "nativeFacts": "The native review invokes real proposal functions and executes treaty/aid effects. Full ordered diplomatic history comes from the current realm profile downloads, not conquest.json.",
+      "currentCanonicalObservation": "Share the original72 four-download flow: real Fairies tribute250 → two-turn truce visibly accepted → alliance; B/C preserve the proposal history and owner. No new expiry/protection/aid/loss matrix.",
+      "limits": "Replay equality/idempotence/decode in finish() are enforced by thrown checks, not assertion-map entries. The current UI controls remain a separate observation from direct native proposal calls.",
+      "supportedCanonicalRoleLinks": {
+        "roles": [
+          "realmCompletedSession",
+          "realmNegotiatedProfile",
+          "realmReloadedProfile",
+          "realmNextBattleSession"
+        ],
+        "references": [
+          {
+            "path": "/tmp/ovf-scenario-453-retention.jl9ctb2_/retention-plan.json",
+            "section": "completePacketSections[four-current-realm-downloads]"
+          }
+        ],
+        "supported": "Same four sidecars as72. B/C contain real tribute/truce/alliance history and relation/treasury state. Visible acceptance/actions are separate CUA records. No additional treaty/aid roles are added to the original20role auditor."
+      }
+    },
+    {
+      "id": 76,
+      "title": "Escort missions",
+      "requirement": "protect caravans, refugees or moving siege equipment.",
+      "requirementReference": {
+        "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/features/requirements.json",
+        "line": 789,
+        "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+      },
+      "clausePointers": [
+        {
+          "clause": "protect caravans, refugees or moving siege equipment",
+          "producerReferences": [
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-campaigns.ts",
+              "line": 86,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-campaigns.ts",
+              "line": 90,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-campaigns.ts",
+              "line": 109,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/src/scenarios/campaigns.ts",
+              "line": 69,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            }
+          ],
+          "expectedOutputPointers": [
+            "all30.json: attempts[type=escort].assertions.allEscortCheckpoints/allAuthoredWavesFired/allWaveEnemiesKilled/noFailureCondition/missionWon/journalRecomputed",
+            "attempts[type=escort].variables[escort.checkpoints], triggers, commandTrace, combatEvents and journal.archivePath",
+            "Referenced recording.initial.definition.escort.actor/route/escortRadius and objectives[].failure; initial.game.state.entities and commands establish an actual moving protected actor"
+          ],
+          "example": "orcs-1 protects Torg’s forge convoy; fairies-2 protects Oren along the moving route. Existing passed native tests additionally prove actual movement and stop when guards separate."
+        }
+      ],
+      "nativeFacts": "Real checkpoint arrival, living protected actors and defeated ambushes are executed checks. Route commands use ordinary move/attack/ability calls and retain accepted traces/journals.",
+      "currentCanonicalObservation": "Use planned shared current mission integration; an existing representative escort observation can document movement. Do not require every illustrative convoy type or repeat its negative cases.",
+      "limits": "The clause uses or. Do not add an all-category escort matrix. all30 snapshots do not directly include convoy coordinates; use the raw initial/journal plus accepted native movement test if that detail is needed.",
+      "supportedCanonicalRoleLinks": {
+        "roles": [
+          "campaignBefore",
+          "campaignContinued",
+          "authoredBefore",
+          "authoredReloaded"
+        ],
+        "references": [
+          {
+            "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/main-browser-proof/audit.ts",
+            "line": 61,
+            "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+          },
+          {
+            "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/main-browser-proof/audit.ts",
+            "line": 88,
+            "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+          }
+        ],
+        "supported": "Shared current authored/campaign host binding and native file/ordinary replay continuity. These roles are not named escort cases; convoy mechanics remain native proof. Representative UI observations already in the authorized plan may supplement without adding category gates."
+      }
+    },
+    {
+      "id": 77,
+      "title": "Fortress defense missions",
+      "requirement": "survive a siege with limited reinforcements.",
+      "requirementReference": {
+        "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/features/requirements.json",
+        "line": 796,
+        "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+      },
+      "clausePointers": [
+        {
+          "clause": "survive a siege with limited reinforcements",
+          "producerReferences": [
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-campaigns.ts",
+              "line": 86,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-campaigns.ts",
+              "line": 91,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/src/scenarios/campaigns.ts",
+              "line": 84,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/route-strategy.ts",
+              "line": 87,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            }
+          ],
+          "expectedOutputPointers": [
+            "all30.json: attempts[type=defense].assertions.missionWon/allRequiredObjectives/noFailureCondition/allAuthoredWavesFired/allWaveEnemiesKilled/finiteReinforcements/journalRecomputed",
+            "Referenced recording.initial.definition.rules.reinforcementBudget/resources and fortress objective; raw commands, finalTick/finalChecksum",
+            "attempts[type=defense].commandTrace[command.type=train].accepted, combatEvents[type=train] and triggers"
+          ],
+          "example": "orcs-2 authors a70-second fortress defense with a two-soldier reserve. Native admitted scenarios.test.ts:91–103 proves real production consumes the finite budget and rejects an extra order."
+        }
+      ],
+      "nativeFacts": "The future all30 report combines accepted survival/objectives/waves with a bounded remaining budget. The existing admitted native test supplies explicit excess-order rejection.",
+      "currentCanonicalObservation": "Admit planned current mission/owner integration; retained standalone defense pixels keep their historical pin.",
+      "limits": "finiteReinforcements alone is a final-range check, not the explicit rejection test. No fresh loss/rejection browser matrix is required.",
+      "supportedCanonicalRoleLinks": {
+        "roles": [
+          "campaignBefore",
+          "campaignContinued",
+          "authoredBefore",
+          "authoredReloaded"
+        ],
+        "references": [
+          {
+            "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/main-browser-proof/audit.ts",
+            "line": 61,
+            "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+          },
+          {
+            "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/main-browser-proof/audit.ts",
+            "line": 88,
+            "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+          }
+        ],
+        "supported": "Shared current authored/campaign host binding and continuation. Do not relabel these generic roles as a new canonical fortress/rejection matrix; real defense/finite production facts remain in native output and admitted cases."
+      }
+    },
+    {
+      "id": 78,
+      "title": "Stealth missions",
+      "requirement": "infiltrate territory using scouts, illusions and restricted armies.",
+      "requirementReference": {
+        "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/features/requirements.json",
+        "line": 803,
+        "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+      },
+      "clausePointers": [
+        {
+          "clause": "infiltrate territory using scouts and restricted armies",
+          "producerReferences": [
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-campaigns.ts",
+              "line": 92,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/src/scenarios/campaigns.ts",
+              "line": 95,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/puzzle-stealth-strategy.ts",
+              "line": 43,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            }
+          ],
+          "expectedOutputPointers": [
+            "all30.json: attempts[type=stealth].assertions.noAlarm/archiveRecovered/allRequiredObjectives/noFailureCondition/missionWon/journalRecomputed",
+            "Referenced recording.initial.definition.stealth.infiltrators/guards/patrols/alarmLimit and rules.fixedArmy/reinforcementBudget/resources; army plus actual initial.game.state.entities",
+            "attempts[type=stealth].commandTrace, variables[archive.recovered], commandCounts, completed and raw recording.commands"
+          ],
+          "example": "dwarves-3-alt uses commander-only infiltration, real recovery and extraction with authored patrol cones."
+        },
+        {
+          "clause": "use illusions during infiltration",
+          "producerReferences": [
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/tests/scenarios.test.ts",
+              "line": 130,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/puzzle-stealth-strategy.ts",
+              "line": 54,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            }
+          ],
+          "expectedOutputPointers": [
+            "Retained admitted suite tests.json: scenarios.test.ts assertionResults[title=\"uses a legitimate Veilweaver cast to divert a guard while the real infiltrator escapes\"].status=passed",
+            "Native test expectations: accepted ability command, two real illusion entities, won extraction, zero alarms and stealth.diversions>=1",
+            "Where present, all30.json attempts[].mechanics.abilityEvents.illusion/illusionIds and raw commands identify actual casts"
+          ],
+          "example": "The passed native diversion case tests the real cast and escape. all30’s stealth assertions do not require every successful route to cast an illusion."
+        }
+      ],
+      "nativeFacts": "all30 checks real low-alarm infiltration and recovery/extraction. The unchanged admitted native diversion case provides the illusion behavior, including the real infiltrator escaping.",
+      "currentCanonicalObservation": "Admit planned current restricted-army mission integration with source applicability. Do not rerun already-admitted patrol/alarm/diversion failures.",
+      "limits": "Do not invent an all30 illusion-diversion Boolean or require every stealth route to use an illusion. Source steering may cast when a guard is near; retained raw commands determine whether a specific historical run cast.",
+      "supportedCanonicalRoleLinks": {
+        "roles": [
+          "campaignBefore",
+          "campaignContinued",
+          "authoredBefore",
+          "authoredReloaded"
+        ],
+        "references": [
+          {
+            "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/main-browser-proof/audit.ts",
+            "line": 61,
+            "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+          },
+          {
+            "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/main-browser-proof/audit.ts",
+            "line": 88,
+            "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+          }
+        ],
+        "supported": "Shared current authored/campaign host binding and continuation. These roles do not independently assert stealth/diversion; native raw missions and admitted legitimate illusion test supply those facts."
+      }
+    },
+    {
+      "id": 79,
+      "title": "Boss encounters",
+      "requirement": "fight creatures requiring positioning and coordinated abilities.",
+      "requirementReference": {
+        "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/features/requirements.json",
+        "line": 810,
+        "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+      },
+      "clausePointers": [
+        {
+          "clause": "fight creatures requiring positioning and coordinated abilities",
+          "producerReferences": [
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-campaigns.ts",
+              "line": 94,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-campaigns.ts",
+              "line": 98,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/finale-strategy.ts",
+              "line": 50,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/finale-strategy.ts",
+              "line": 91,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            }
+          ],
+          "expectedOutputPointers": [
+            "all30.json: attempts[type=boss].assertions.allBossPhases/realBossDeath/bossResponse/actualFactionMechanic/requiredActions/missionWon/journalRecomputed",
+            "attempts[type=boss].commandTrace[command.type=move/attack/ability], mechanics.abilityEvents and faction-specific real state, combatEvents[death/attack], snapshots[].commander.x/y and boss",
+            "Referenced recording.initial.definition.boss.phases warning/radius/interruptDamage and requiredActions; recording.commands"
+          ],
+          "example": "Native checks require phases[0,1,2], an observed real boss death, at least one dodge/interrupt and the faction’s actual mechanic. The strategy issues ordinary movement outside warnings and concentrated attacks/abilities."
+        }
+      ],
+      "nativeFacts": "Native outcome and state assertions prove encounter mechanics, commanded positioning/response and actual faction ability use. Raw accepted commands and events explain how the victory happened.",
+      "currentCanonicalObservation": "Use the planned genuine current canonical finale for visible warnings, abilities, positioning and final owner. Pixels are a separate observation from native journals.",
+      "limits": "Do not edit phases/outcome or add every boss response/failure variant as a new gate. A report’s bossResponse can be a dodge or an interrupt; inspect its trace/state when describing which occurred.",
+      "supportedCanonicalRoleLinks": {
+        "roles": [
+          "finaleSession",
+          "finaleCampaignExport"
+        ],
+        "references": [
+          {
+            "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/main-browser-proof/audit.ts",
+            "line": 133,
+            "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+          }
+        ],
+        "supported": "Current orcs-4 SessionFile and completed campaign owner share actual replayed state/history, won reason and ordinary War Cry. Full CUA originals must separately show warnings, positions and abilities."
+      }
+    },
+    {
+      "id": 80,
+      "title": "Tactical puzzles",
+      "requirement": "solve short scenarios with a fixed army and limited resources.",
+      "requirementReference": {
+        "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/features/requirements.json",
+        "line": 817,
+        "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+      },
+      "clausePointers": [
+        {
+          "clause": "solve short scenarios with a fixed army and limited resources",
+          "producerReferences": [
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-campaigns.ts",
+              "line": 20,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-campaigns.ts",
+              "line": 77,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-campaigns.ts",
+              "line": 83,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            },
+            {
+              "path": "/home/morgana/Projects/orcs-vs-Fairies/src/scenarios/campaigns.ts",
+              "line": 108,
+              "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+            }
+          ],
+          "expectedOutputPointers": [
+            "all30.json: attempts[type=puzzle].assertions.missionWon/allRequiredObjectives/noFailureCondition/markedTargetsKilled/requiredActions where declared/resetRestoresInitialState/checkpointRoundtrip/journalRecomputed",
+            "Referenced recording.initial.definition.rules.fixedArmy=true, reinforcementBudget=0, resources={wood:0,ore:0,crystal:0}, timeLimit=180; actual initial.game.state.entities",
+            "attempts[type=puzzle].commandTrace, initialSha256/finalSha256 and raw recording.commands"
+          ],
+          "example": "dwarves-1 uses the cannon firing shelf and real target destruction; orcs-3 uses a cavalry flank and marked archer kills with the fixed party."
+        }
+      ],
+      "nativeFacts": "The generator classifies actual fixed-army puzzles, executes required objectives through recorded commands and compares reset capture with the initial capture. The raw definition supplies the finite army/resource/time bounds.",
+      "currentCanonicalObservation": "Use planned current authored-host package/definition/save/replay integration. Native puzzle/reset output supplies the genre-specific facts. Historical demo puzzle/reset bytes stay pinned to their original run.",
+      "limits": "Reset equality is retained as a producer Boolean and initial semantic capture hash; the script does not export a separate raw reset checkpoint. requiredActions is meaningful only when the definition declares actions.",
+      "supportedCanonicalRoleLinks": {
+        "roles": [
+          "authoredPackage",
+          "authoredImported",
+          "authoredBefore",
+          "authoredReloaded",
+          "authoredAbility"
+        ],
+        "references": [
+          {
+            "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/main-browser-proof/audit.ts",
+            "line": 61,
+            "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+          },
+          {
+            "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/main-browser-proof/audit.ts",
+            "line": 70,
+            "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+          },
+          {
+            "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/main-browser-proof/audit.ts",
+            "line": 73,
+            "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+          }
+        ],
+        "supported": "Current authored package import, definition binding, paused game/ordinary replay equality and one genuine targeted Iron Command. This is shared main authored-host integration; fixed-army puzzle/reset facts remain native and no fictitious puzzle/reset export role is added."
+      }
+    }
+  ],
+  "hashDomains": {
+    "all30Raw": "attempts[].journal.sha256 is SHA256 of the actual compact JSON file plus trailing newline, written at prove-campaigns.ts:101–102 and read by fileHash at18–19/109.",
+    "all30Semantic": "attempts[].definitionSha256, initialSha256, finalSha256 and sourceDefinitionSha256 hash JSON.stringify(object), not saved raw file bytes.",
+    "alternateSemantic": "chapters[].journal.sha256, profileSha256 and finalCheckpointSha256 hash JSON.stringify(object) at prove-alternate-profiles.ts:17,58,65. The archive files at44–45/63–64 include a trailing newline. These are not raw file receipts.",
+    "conquestRaw": "journals[].sha256 hashes JSON.stringify(recording)+newline, the exact bytes written at prove-conquest-review.ts:32–39.",
+    "persistentSemantic": "deterministicSha256 hashes JSON.stringify(deterministic), a selected result object, at prove-persistent-army.ts:16,148–150. Archives use pretty JSON plus newline at26; the producer has no per-file archive digest.",
+    "sourceFileRaw": "All sourceFiles maps hash actual source bytes/text. Frozen SHA receipts below bind the producer bytes; future check-results compares those maps with source-before.files.",
+    "admissionRaw": "native-admission.json.artifacts[original absolute path].sha256/bytes always describe raw bytes. retainedPath is relative to proof root. External native journals/profiles are retained under retained-native/<rawdigest>-<filename>; the mapping preserves original path and bytes.",
+    "admissionLimits": "check-results verifies all30/conquest journal raw hashes, pins, sourceFiles, formats and checksums. It does not compare the alternate producer’s semantic journal/profile digests to raw file digests; its artifact manifest supplies independent raw receipts."
+  },
+  "expectedAdmissionPointers": {
+    "sourceBinding": {
+      "path": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/check-results.py",
+      "line": 6,
+      "fields": "source-before.json equals source-after.json; report.sourceCommit equals source-before.sourceCommit; report.sourceFiles[name] equals source-before.files[name].sha256"
+    },
+    "rawRetention": {
+      "path": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/check-results.py",
+      "line": 14,
+      "fields": "artifacts[originalPath].sha256/bytes/retainedPath"
+    },
+    "journalRules": {
+      "path": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/check-results.py",
+      "line": 34,
+      "fields": "version2, checksumVersion4, simulationRevision=current rules, initial.game.version4, initial.simulationRevision=current rules"
+    },
+    "missionAndRoutes": {
+      "path": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/check-results.py",
+      "line": 49,
+      "fields": "all30=30 wins/all assertions; primary and alternate each6 profiles/24 chapters, raw histories4/active:null"
+    },
+    "conquestAndArmy": {
+      "path": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/check-results.py",
+      "line": 75,
+      "fields": "corrected conquest/all assertions/5 journals; persistent3 chapters/3 continuations; retains all army JSON and two deterministic repeat reports"
+    },
+    "ruleInputBinding": {
+      "path": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/check-results.py",
+      "line": 102,
+      "fields": "four bundle meta files include commander-rules.ts and versions.ts; every input exists in source-before.files"
+    },
+    "finalExpectedAdmission": {
+      "path": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/check-results.py",
+      "line": 116,
+      "fields": "native-admission.json: sourceCommit, simulationRevision, saveVersion4, counts, status, artifacts, retention, limits. Browser/visual cosmetics/reward HTTP/independent admission remain separate."
+    }
+  },
+  "historicalRawSchemaSamples": [
+    {
+      "path": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/orcs-1.json",
+      "originalPin": "e5cf87ec3600c1ea83ae1451be5d6e7efeae127b",
+      "kind": "recording",
+      "sha256": "f92de4230e4b87361900f4af4a8a17af1e532b8f308bce9ac3ae9b8c32534ff9",
+      "topLevelKeys": [
+        "format",
+        "version",
+        "simulationRevision",
+        "checksumVersion",
+        "initial",
+        "commands",
+        "finalTick",
+        "finalChecksum"
+      ],
+      "recordingVersion": 2,
+      "checksumVersion": 3,
+      "simulationRevision": "3.2.0",
+      "initialKeys": [
+        "format",
+        "version",
+        "definition",
+        "runtime",
+        "game",
+        "simulationRevision"
+      ],
+      "definitionKeys": [
+        "schemaVersion",
+        "id",
+        "title",
+        "briefing",
+        "successText",
+        "failureText",
+        "faction",
+        "opponent",
+        "seed",
+        "map",
+        "army",
+        "objectives",
+        "events",
+        "rules",
+        "escort"
+      ],
+      "limit": "Genuine historical SAVE3/rules3.2.0 schema sample. It is not a453 run."
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/dwarves-profile.json",
+      "originalPin": "e5cf87ec3600c1ea83ae1451be5d6e7efeae127b",
+      "kind": "primary-profile",
+      "sha256": "c8946c73f14899329e66f45b5a9a6e33156fccabe5766643a6e828ce0502358c",
+      "topLevelKeys": [
+        "format",
+        "version",
+        "simulationRevision",
+        "id",
+        "campaignId",
+        "choiceId",
+        "revision",
+        "history",
+        "active"
+      ],
+      "choiceId": "surveyor",
+      "historyKeys": [
+        "resultId",
+        "missionId",
+        "checkpoint",
+        "recording",
+        "deployedIds"
+      ],
+      "limit": "Genuine historical completed route profile, kept at original pin."
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/dwarves-profile.json",
+      "originalPin": "e5cf87ec3600c1ea83ae1451be5d6e7efeae127b",
+      "kind": "alternate-profile",
+      "sha256": "f30dd249c9c0130b40d158317886e9b21101498559f2bc47839ae456fcf74f61",
+      "topLevelKeys": [
+        "format",
+        "version",
+        "simulationRevision",
+        "id",
+        "campaignId",
+        "choiceId",
+        "revision",
+        "history",
+        "active"
+      ],
+      "choiceId": "works",
+      "historyKeys": [
+        "resultId",
+        "missionId",
+        "checkpoint",
+        "recording",
+        "deployedIds"
+      ],
+      "limit": "Genuine historical completed route profile, kept at original pin."
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/conquest-review-20261001/targeted-corrected.json",
+      "originalPin": "031dd2f3685443f090dbc47d262aff1d725e77ba",
+      "kind": "conquest-report",
+      "sha256": "b707af06909bef907e8a020a595891f92d9a9d941892981bda3ad13f3593ca63",
+      "topLevelKeys": [
+        "format",
+        "version",
+        "generatedAt",
+        "sourceCommit",
+        "dependencyCommit",
+        "mode",
+        "sourceFiles",
+        "commandPath",
+        "stepPath",
+        "assertions",
+        "attempts",
+        "journals"
+      ]
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/campaigns/native-save3-20261001/persistent-army-report.json",
+      "originalPin": "e5cf87ec3600c1ea83ae1451be5d6e7efeae127b",
+      "kind": "public-army-report",
+      "sha256": "fd3a7899cb18eb1fc11059e3b950b523274212f01abf7912dbb3e22b938bad8e",
+      "topLevelKeys": [
+        "format",
+        "version",
+        "sourceCommit",
+        "sourceFiles",
+        "generatedAt",
+        "commandPath",
+        "stepPath",
+        "deterministicSha256",
+        "assertions",
+        "chapters",
+        "continuations",
+        "casualty",
+        "recruited",
+        "reserves",
+        "promotions",
+        "equipment",
+        "armorEffect",
+        "allocation",
+        "finalArmy"
+      ],
+      "deterministicSha256": "15ec09e15a625225a18a05e3f6721948fefd1c509337947322110b37f09d9735"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/tests/fixtures/scenario-save3-persistent-army/report.json",
+      "originalPin": "e32f1bd7e9667123069e1cd4605834f459fd2bb7",
+      "kind": "fixture-army-report",
+      "sha256": "09711e4cf46cd032e3f155c49f24bfc3b427bde35e4ee1ab34586e49cd5eb970",
+      "topLevelKeys": [
+        "format",
+        "version",
+        "sourceCommit",
+        "sourceFiles",
+        "generatedAt",
+        "commandPath",
+        "stepPath",
+        "deterministicSha256",
+        "assertions",
+        "chapters",
+        "continuations",
+        "casualty",
+        "recruited",
+        "reserves",
+        "promotions",
+        "equipment",
+        "armorEffect",
+        "allocation",
+        "finalArmy"
+      ],
+      "deterministicSha256": "15ec09e15a625225a18a05e3f6721948fefd1c509337947322110b37f09d9735"
+    }
+  ],
+  "sourcePublicDuplicates": {
+    "sameArmyResult": "The public e5cf persistent-army report and e32 fixture report have different raw SHA/pin metadata but the same deterministicSha25615ec09e15a625225a18a05e3f6721948fefd1c509337947322110b37f09d9735. Treat them as the same substantive result, not two independent gameplay cases.",
+    "embeddedCaptures": "The fixture chapter1-equipped-active-profile embeds a recording equal to chapter1-equipped-recording.json and a checkpoint equal to chapter1-equipped-checkpoint.json. Direct JSON equality was inspected. Those wrappers are repeated retained bytes, not additional execution.",
+    "sourceAndPublic": "Frozen CAMPAIGNS source, each embedded initial.definition, copied source evidence and derived summaries document content/provenance. They do not add gameplay observations. No frozen public filename contains campaign/scenario/conquest; public asset files are not separate mission-run proof.",
+    "historicalRules": "Observed genuine fixture recordings are v2/rules3.2.0/checksum SAVE3. Keep their original pins and schema. Do not relabel them current453/SAVE4."
+  },
+  "unchangedAdmittedNativeCases": {
+    "suitePin": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+    "testsJson": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+    "status": "Retained complete suite passed2920 tests; relevant source/test/producers unchanged through453. Source comparison read only.",
+    "cases": [
+      "Real moving convoy and stopped convoy on separation, tests/scenarios.test.ts:69/84",
+      "Finite production/rejection and fortress loss, tests/scenarios.test.ts:91/106",
+      "Scout/no-alarm infiltration and legitimate illusion diversion, tests/scenarios.test.ts:116/130",
+      "Boss phases/interrupt and exact reset, tests/scenarios.test.ts:141/52",
+      "Two connected quarry/crossroads captures, tests/conquest.test.ts:53"
+    ]
+  },
+  "retainedCanonicalNarrowing": {
+    "report": "/tmp/ovf-original71-80-99-narrowing453.IUWux3/report.json",
+    "fourDownloads": "A ordinary completed quarry save and B realm profile both after diplomacy; native B import/reload/resume to C realm export; adjacent Crossroads ordinary combat to D active SessionFile. Optional already-authorized ordinary A import does not rewind diplomacy.",
+    "estimates": {
+      "nativeMinutes": [
+        4,
+        7
+      ],
+      "canonicalMinutes": [
+        30,
+        60
+      ],
+      "status": "Retained planning estimates, not remeasured in this read-only task."
+    },
+    "campaignClaims": "Campaign reward/claim/stress work remains supplemental and already authorized separately. It is never an added gate for original71–80 or original99."
+  },
+  "frozenSourceReceipts": [
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/features/requirements.json",
+      "gitPath": "docs/features/requirements.json",
+      "pin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "sha256": "721660671af9d8e6211d07ea101087af5ecb4cf6fa2f98918c79b54a059e25c9"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-campaigns.ts",
+      "gitPath": "scripts/scenarios/prove-campaigns.ts",
+      "pin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "sha256": "ca69444191161b8543f0fe55aa5b214a7889091551d88b1d7e527af3724ed9ea"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-alternate-profiles.ts",
+      "gitPath": "scripts/scenarios/prove-alternate-profiles.ts",
+      "pin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "sha256": "f62fff3fd6d26798a58b53af427b1927879e73c07a82b9976bcd1d3ba5de9b1f"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-conquest-review.ts",
+      "gitPath": "scripts/scenarios/prove-conquest-review.ts",
+      "pin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "sha256": "141348944d5ac12f9d0dda56670a8903e5938170331a3634a78a33c63ea3f1c6"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/prove-persistent-army.ts",
+      "gitPath": "scripts/scenarios/prove-persistent-army.ts",
+      "pin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "sha256": "fd980ff78a1a283e583fad9ca887b3a391e5322c58ac90cf95b0368f41ecdf5a"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/scenarios/campaigns.ts",
+      "gitPath": "src/scenarios/campaigns.ts",
+      "pin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "sha256": "5b651b94b6cbd30e7667e4745a65ceb53b7fde886754382a099a648588384c2a"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/scenario-recordings.ts",
+      "gitPath": "src/core/scenario-recordings.ts",
+      "pin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "sha256": "311652f4b4505849928efe4ed4bf7e4d9641ab71716ecb37cc3d363e5f8f2780"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/tests/scenarios.test.ts",
+      "gitPath": "tests/scenarios.test.ts",
+      "pin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "sha256": "31ebcbf53f971551dab86ff9495c5ff09bfbd2705e803e725e0a4cb881616204"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/tests/conquest.test.ts",
+      "gitPath": "tests/conquest.test.ts",
+      "pin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "sha256": "14185e0082a7313b3e952b60d2706748af5f77c30999d2d1f894cfbcc3c379af"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/main-browser-proof/audit.ts",
+      "gitPath": "scripts/scenarios/main-browser-proof/audit.ts",
+      "pin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "sha256": "3369e4bb046c96bead74ae86a813d1f666933abb7f9c4238cd7fcd6165820e5d"
+    }
+  ],
+  "acceptedRecipeReceipts": [
+    {
+      "path": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/check-results.py",
+      "sha256": "bfe37d368ab892dea4ab36d08d1cd11171294220400bfb8de5e1e84981cf165e"
+    },
+    {
+      "path": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/run-native.sh",
+      "sha256": "1908122b4f016e96a0134e6398838bd3b03b480b562a97e85f811ecb946e5a22"
+    }
+  ],
+  "conclusion": "This pointer map identifies what accepted producers will retain, what existing historical bytes contain and what current canonical observations remain. It neither executes the accepted recipe nor changes any feature status, requirement or acceptance scope.",
+  "supportedCanonicalRoleContract": {
+    "primaryAuditor": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/main-browser-proof/audit.ts",
+      "line": 15,
+      "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+    },
+    "primaryRoles": [
+      "ordinaryBefore",
+      "ordinaryReloaded",
+      "editorMapPackage",
+      "editorMapImported",
+      "editorMapBefore",
+      "editorMapReloaded",
+      "authoredPackage",
+      "authoredImported",
+      "authoredBefore",
+      "authoredReloaded",
+      "authoredAbility",
+      "campaignBefore",
+      "campaignContinued",
+      "historicalBefore",
+      "historicalAfter",
+      "historicalCampaignExport",
+      "historicalRealmExport",
+      "finaleSession",
+      "finaleCampaignExport",
+      "buildReport"
+    ],
+    "minimumSeparateRealmRoles": [
+      "realmCompletedSession",
+      "realmNegotiatedProfile",
+      "realmReloadedProfile",
+      "realmNextBattleSession"
+    ],
+    "manifestPolicy": "Use the actual executed ui-exports-manifest.json mappings for physical raw filenames; retain all20 primary roles. Four realm downloads remain a separate raw index. These source-supported roles are expected future output, not current acceptance.",
+    "browserOriginRequirement": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/scenarios/main-browser-proof/audit.ts",
+      "line": 18,
+      "gitPin": "453c2218af9973b9eca8fb78392435bd9d46a740"
+    },
+    "sourceReferences": [
+      {
+        "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/browser-supervisor.json",
+        "sha256": "a894a8727eb74c9bf443f5b4d5cf574a7e039cd899f6665d09a4cb758242efcb"
+      },
+      {
+        "path": "/tmp/ovf-scenario-453-retention.jl9ctb2_/retention-plan.json",
+        "sha256": "128b004ce6900a0ffccc28e5b26ab56999a64fbd3f96cfbfc5954ceea18b880e"
+      }
+    ]
+  }
+}

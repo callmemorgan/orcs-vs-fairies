@@ -1,0 +1,19 @@
+{
+  "reviewer": "GPT-5.6 Sol in Codex",
+  "failures": [
+    {
+      "sequence": 1,
+      "operation": "First static-audit generator dispatch",
+      "result": "The JavaScript wrapper interpreted the literal ${ACCEPTANCE_RUN} text in the embedded Python source and failed with ReferenceError before the shell command started.",
+      "preservation": "No audit directory or audit result was produced by the failed dispatch. The later generator uses ordinary string construction and is a separate corrected call."
+    },
+    {
+      "sequence": 2,
+      "operation": "First corrected static-audit generator",
+      "result": "The combined assertion that the moving root checkout was clean and both packet directories were unchanged failed after the root advanced concurrently.",
+      "preservation": "No audit result was written. A separate read-only inspection determines whether the failure came from unrelated root status or packet drift before a narrower corrected audit."
+    }
+  ],
+  "checkerOrRuntimeExecuted": false,
+  "reviewResultAffected": false
+}

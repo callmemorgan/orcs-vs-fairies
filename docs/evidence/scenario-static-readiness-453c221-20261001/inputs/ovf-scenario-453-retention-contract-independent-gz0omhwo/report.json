@@ -1,0 +1,2524 @@
+{
+  "format": "ovf-scenario-453-retention-contract-independent-read",
+  "version": 1,
+  "reviewedAt": "2026-10-01T22:25:18.487840+00:00",
+  "reviewer": "/root/scenario_final_resume/prep_audit",
+  "status": "retention-contracts-inspected; future-execution-held",
+  "productFreeze": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "heavySlot": "hosted473 sole owner; no runtime action here",
+  "scope": "Immutable453 Git/file/JSON/hash reads plus this exclusive owned/tmp report. No product, root, producer, ledger, trail, dist, or original evidence edits.",
+  "acceptedPreparation": {
+    "overlay": {
+      "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/browser-supervisor.json",
+      "sha256": "a894a8727eb74c9bf443f5b4d5cf574a7e039cd899f6665d09a4cb758242efcb",
+      "bytes": 12422
+    },
+    "dispatch": {
+      "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/exact-dispatch.json",
+      "sha256": "c9904ecb591e6284fa62d9a1c75e88d9f1d1a77bc2fdb0c6c3df1e42ba78a725",
+      "bytes": 9093
+    },
+    "requirementsPlan": {
+      "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/feature-gaps.json",
+      "sha256": "f558574f71b36a919fc07d89f5bd5c6e7b0b00821a7b841f75120f53cf541bec",
+      "bytes": 14341
+    },
+    "lightAdmission": {
+      "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/light-admission.json",
+      "sha256": "9eae7993d645790f62b4518bf70e33fd98576722a0fddee855a306dd1f388a77",
+      "bytes": 2958
+    },
+    "supportReferenceCount": 28,
+    "uniqueSupportPaths": 28,
+    "supportReferences": [
+      {
+        "path": "/tmp/ovf-scenario-c074-supervisor.hd6qbj_b/browser-supervisor.json",
+        "sha256": "80b5302d5aa9035bacc673a1bb021ac17a844ca109390cf0b901cd90b6357c28",
+        "bytes": 7838
+      },
+      {
+        "path": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/readiness.json",
+        "sha256": "6d821ca0686fa2d1f9e136975b94eef015e311a7b6277f649cb06448c901ff31",
+        "bytes": 7881
+      },
+      {
+        "path": "/tmp/ovf-scenario-rules401-readiness-independent-wbln21ia/audit.json",
+        "sha256": "8b12228fb5e9139031fb49ca6416fe41ae017732ba9ea62cd22edc3a0058e781",
+        "bytes": 37826
+      },
+      {
+        "path": "/tmp/ovf-scenario-supplemental-static-api-audit.n6vf7jzk/audit.json",
+        "sha256": "5ede5748a7c87d963df46c570151894c0d5fa1ef7456c01930e399d17ec6faca",
+        "bytes": 5034
+      },
+      {
+        "path": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/authenticate.py",
+        "sha256": "557d72d57b997c5703ba4ee54f0205dd33eaf7d7a61e8e2620dc6a654daa7efb",
+        "bytes": 2630
+      },
+      {
+        "path": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/canonical-execution.json",
+        "sha256": "e47c45c21e91959150bb9e8dffaa555697ba6741ed67740fd415ce9924958624",
+        "bytes": 10869
+      },
+      {
+        "path": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/check-results.py",
+        "sha256": "bfe37d368ab892dea4ab36d08d1cd11171294220400bfb8de5e1e84981cf165e",
+        "bytes": 6236
+      },
+      {
+        "path": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/generate-browser-fixtures.mjs",
+        "sha256": "364a9ea3283a98807d95cbe0ad90732185425f120458ef1728c9e4f66b426952",
+        "bytes": 11004
+      },
+      {
+        "path": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/invocations.sh",
+        "sha256": "b8671210a364ca68db791519b607f3ce867a72eec4d5d51f7bdfd462789f6b7c",
+        "bytes": 6666
+      },
+      {
+        "path": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/record-server-launch.py",
+        "sha256": "dc932b04ddbd68dceb07086acd9e39a7d34eaa33e5093477ec898f8b359e2845",
+        "bytes": 2093
+      },
+      {
+        "path": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/run-native.sh",
+        "sha256": "1908122b4f016e96a0134e6398838bd3b03b480b562a97e85f811ecb946e5a22",
+        "bytes": 5557
+      },
+      {
+        "path": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/start-server.sh",
+        "sha256": "5105b85ac991ce98ad35145a15fc40f39a6ee1927f359b1c294388847eab2e20",
+        "bytes": 1824
+      },
+      {
+        "path": "/tmp/ovf-scenario-rules401-readiness.UCDZqh/timed.py",
+        "sha256": "1ab0fad83c85b74bb711ad6f8eaf4f8001832e231102a8790cb9999e57bd6f74",
+        "bytes": 2710
+      },
+      {
+        "path": "/tmp/ovf-scenario-supplemental-generator.Any3mQ/NOTES.md",
+        "sha256": "c71d977ea51d3d916794a8dc3aa943988155c6565a7260693ab74db0eb281c47",
+        "bytes": 5173
+      },
+      {
+        "path": "/tmp/ovf-scenario-supplemental-generator.Any3mQ/fixture-source.ts.template",
+        "sha256": "dea00928088c039c26b63cd5046012a18cfcdd7a1d726a51bd7d75f5f8dfca0e",
+        "bytes": 19826
+      },
+      {
+        "path": "/tmp/ovf-scenario-supplemental-generator.Any3mQ/generate-supplemental-fixtures.mjs",
+        "sha256": "bb0bfb3721dec90e7a6d48ee2cb7944938bbff0a9067c565fbf670e7699178e2",
+        "bytes": 12116
+      },
+      {
+        "path": "/tmp/ovf-scenario-supplemental-generator.Any3mQ/matrix.json",
+        "sha256": "b33d21041e1a85422094c32d431434d870d0802a7e75916946c8c392b521f748",
+        "bytes": 7162
+      },
+      {
+        "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/source-bridge.py",
+        "sha256": "8a2427fde1ea62dc903a42a00da3843c8ba133dcdac999b09690e7ef3ef79755",
+        "bytes": 7118
+      },
+      {
+        "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/verify-production-inventory.py",
+        "sha256": "8c66b05aff6df1512b3fa23c1a15eef98f7204dc57f9c0be49e06b483c5de867",
+        "bytes": 3136
+      },
+      {
+        "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/map-admitted-producer.py",
+        "sha256": "7bb4d7a93c22d242bfca571b0c2c0fa612f0b9a467f0982481ba2fdbc26dd0eb",
+        "bytes": 5822
+      },
+      {
+        "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/bridge-current/source-bridge.json",
+        "sha256": "88fd2631f160e06d4b680b617c4d20db26a333b5b81908630924c9bb332cb290",
+        "bytes": 354092
+      },
+      {
+        "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/bridge-current/requirements.json",
+        "sha256": "876e7941b1ec3f1e47ecaa6db31a75204c00a0e2571bcd429ed5308d37509e21",
+        "bytes": 5622
+      },
+      {
+        "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/bridge-current/historical-coverage.json",
+        "sha256": "9ef600e537c3666d657c75565de1099a8fc5dff55b274d9037da2c0a67284c0e",
+        "bytes": 8342
+      },
+      {
+        "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/intact-producer-production-inventory.json",
+        "sha256": "b0da44cc14c8ccad9345ba663f53003b7c354e479fa43061ead3b2cc6de746ef",
+        "bytes": 60289
+      },
+      {
+        "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/intact-producer-read-map.json",
+        "sha256": "dffedd3d207df0c3b624da5b28857574f1768fed4a4fed22b5f677fa95cab9db",
+        "bytes": 141014
+      },
+      {
+        "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/feature-gaps.json",
+        "sha256": "f558574f71b36a919fc07d89f5bd5c6e7b0b00821a7b841f75120f53cf541bec",
+        "bytes": 14341
+      },
+      {
+        "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/exact-dispatch.json",
+        "sha256": "c9904ecb591e6284fa62d9a1c75e88d9f1d1a77bc2fdb0c6c3df1e42ba78a725",
+        "bytes": 9093
+      },
+      {
+        "path": "/tmp/ovf-original71-80-99-narrowing453.IUWux3/report.json",
+        "sha256": "75ff37a8c2e39f1bf0be94f7a0c12049fc4b845c0206f8dbc6c05897fcfb6bf6",
+        "bytes": 24435
+      }
+    ]
+  },
+  "sourceReceipts": [
+    {
+      "gitPath": "scripts/scenarios/main-browser-proof.mjs",
+      "sourceCommit": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "sha256": "c2e91adda307ad9727a86ce3693eee6d590879120556081b9f67bec925c6463a",
+      "bytes": 20177
+    },
+    {
+      "gitPath": "scripts/scenarios/main-browser-proof/README.md",
+      "sourceCommit": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "sha256": "75c7aaf7a5facf43d4909a208a88f09fc8038298f55f0d5d633a0da747703c7e",
+      "bytes": 9027
+    },
+    {
+      "gitPath": "scripts/scenarios/main-browser-proof/audit.ts",
+      "sourceCommit": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "sha256": "3369e4bb046c96bead74ae86a813d1f666933abb7f9c4238cd7fcd6165820e5d",
+      "bytes": 15125
+    },
+    {
+      "gitPath": "scripts/controls-proof/prepare.mjs",
+      "sourceCommit": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "sha256": "55481a03847949346e813bb363bfadd5eeb67b4d93daa4886f5279218a45befd",
+      "bytes": 3712
+    },
+    {
+      "gitPath": "scripts/scenarios/prove-campaigns.ts",
+      "sourceCommit": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "sha256": "ca69444191161b8543f0fe55aa5b214a7889091551d88b1d7e527af3724ed9ea",
+      "bytes": 11574
+    },
+    {
+      "gitPath": "scripts/scenarios/prove-alternate-profiles.ts",
+      "sourceCommit": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "sha256": "f62fff3fd6d26798a58b53af427b1927879e73c07a82b9976bcd1d3ba5de9b1f",
+      "bytes": 7438
+    },
+    {
+      "gitPath": "scripts/scenarios/prove-conquest-review.ts",
+      "sourceCommit": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "sha256": "141348944d5ac12f9d0dda56670a8903e5938170331a3634a78a33c63ea3f1c6",
+      "bytes": 9954
+    },
+    {
+      "gitPath": "scripts/scenarios/prove-persistent-army.ts",
+      "sourceCommit": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "sha256": "fd980ff78a1a283e583fad9ca887b3a391e5322c58ac90cf95b0368f41ecdf5a",
+      "bytes": 16601
+    },
+    {
+      "gitPath": "scripts/scenarios/persistent-army/armor-effect-proof.ts",
+      "sourceCommit": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "sha256": "1b3a5cc8b0a6543f2628a2c31e8b9cec9830609df1c9c4d9993cf5be73526b82",
+      "bytes": 6078
+    },
+    {
+      "gitPath": "scripts/scenarios/persistent-army/artifact-allocation-proof.ts",
+      "sourceCommit": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "sha256": "df48ad881aa45f77822404d043c9a619b417d35ec94dbd6410284aa1f01cbf4e",
+      "bytes": 11876
+    },
+    {
+      "gitPath": "docs/features/requirements.json",
+      "sourceCommit": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "sha256": "721660671af9d8e6211d07ea101087af5ecb4cf6fa2f98918c79b54a059e25c9",
+      "bytes": 43903
+    }
+  ],
+  "nativeContract": {
+    "admissionFormat": "orcs-vs-fairies-native-scenario-result-admission/version1",
+    "artifactMap": "Original absolute path -> raw sha256,bytes,retainedPath for JSON/metafiles. External bytes are retained-native/<raw SHA256>-<basename>; internal bytes use root-relative retainedPath.",
+    "compiledOutputs": "check-results.py110-115 adds four runner output hashes/bytes without retainedPath. Parent must map original output names separately.",
+    "groups": [
+      {
+        "path": "all30.json",
+        "references": "attempts[].journal.archivePath;30 raw recordings",
+        "originalDirectory": "SOURCE/work/campaign-content/recordings/<timestamp>/",
+        "names": "<faction>-1.json,-2.json,-3.json,-3-alt.json,-4.json for all six factions"
+      },
+      {
+        "path": "primary.json and alternate.json",
+        "references": "profiles[].profilePath and profiles[].chapters[].journal.archivePath;30 external files per route",
+        "originalDirectory": "SOURCE/work/campaign-content/profiles/<timestamp>/",
+        "names": "six <faction>-profile.json and24 <faction>-<chapter-number>.json per route; alternate chapter3 filename remains -3.json"
+      },
+      {
+        "path": "conquest.json",
+        "references": "journals[].path; five proof-root raw recordings",
+        "required": [
+          "conquest-journals/expired-passage.json",
+          "conquest-journals/allied-passage-1.json",
+          "conquest-journals/allied-passage-2.json",
+          "conquest-journals/allied-passage-3.json",
+          "conquest-journals/multiple-allies.json"
+        ]
+      },
+      {
+        "path": "persistent-army/",
+        "references": "Every JSON, including active/completed profiles, checkpoints, recordings, commands, combat events, earned/final army, report, armor effect and allocator evidence. All *recording.json get recording-schema checks."
+      },
+      {
+        "path": "test-temporary/campaign-persistent-army-*/first/ and second/",
+        "references": "Both genuine deterministic reports and every JSON sibling. Do not retain report.json alone."
+      },
+      {
+        "path": "bundles/",
+        "references": "Four .mjs/.meta.json/.build.log/.build.timing.json sets",
+        "entries": [
+          "prove-campaigns",
+          "prove-alternate-profiles",
+          "prove-conquest-review",
+          "prove-persistent-army"
+        ]
+      }
+    ],
+    "outsideArtifactMapRetainSeparately": [
+      "native-admission.json",
+      "source-before.json",
+      "source-after.json",
+      "source-before.timing.json",
+      "source-after.timing.json",
+      "source.bundle",
+      "source-bundle-create.log",
+      "source-bundle-create.timing.json",
+      "source-bundle-verify.log",
+      "executed-recipe.sh",
+      "authenticate.py",
+      "check-results.py",
+      "timed.py",
+      "all30.log",
+      "all30.timing.json",
+      "primary.log",
+      "primary.timing.json",
+      "alternate.log",
+      "alternate.timing.json",
+      "conquest.log",
+      "conquest.timing.json",
+      "persistent-army.log",
+      "persistent-army.timing.json",
+      "tests.log",
+      "tests.timing.json",
+      "native-admission.timing.json"
+    ],
+    "recordingSchema": {
+      "version": 2,
+      "checksumVersion": 4,
+      "simulationRevision": "4.0.1",
+      "initial.game.version": 4,
+      "initial.simulationRevision": "4.0.1"
+    },
+    "hashMeanings": "All30/conquest declared journal sha256 hashes raw files. Route journal/profile hashes use JSON.stringify values while files have a trailing newline. Use admission.artifacts raw SHA/bytes for retention; preserve semantic hashes separately.",
+    "sourceContract": "Equal source-before/after records authenticate complete tracked map and src/public inventory, full pin, SAVE4/rules4.0.1. Exact source.bundle and create/verify logs must remain. Dependency package metadata paths need corresponding bytes/origin mapping if retained as provenance; they do not authenticate executable compiler bytes.",
+    "completeRetention": "Keep untouched fresh proof root, every external original artifact mapped to retained-native, all partial/failure outputs, and parent inventory covering files omitted from artifacts.",
+    "lines": [
+      "check-results.py14-39,49-115,116-122",
+      "run-native.sh17-40,41-78",
+      "authenticate.py9-42",
+      "timed.py59-69"
+    ]
+  },
+  "primaryFixtureContract": {
+    "sourceInputs": "source-after.json, native-admission.json, persistent-army equipped active profile/checkpoint, primary.json and its original completed Orc profilePath are read directly.",
+    "importantOrdering": "Generator does not resolve retainedPath automatically. Generate before original external archive paths are removed, or preserve those original paths. Do not silently rewrite accepted generator.",
+    "retain": [
+      "fixture-source.ts",
+      "generator.mjs",
+      "fixture-runtime.mjs",
+      "fixture-runtime.meta.json",
+      "derivation.json",
+      "fixtures.json",
+      "bundle-admission.json",
+      "generation-status.json",
+      "current-equipped-session.json",
+      "authored-commander-scenario.json",
+      "canonical-orcs-active-finale.json",
+      "historicalGenericSession.json",
+      "historicalCampaignProfile.json",
+      "historicalRealmProfile.json"
+    ],
+    "closure": "derivation.sourceInputs[*].path must resolve through the final raw native retention map. Generated stdin pseudo-input scenario-browser-fixture-input.ts maps to retained fixture-source.ts. Frozen graph inputs map to full pin Git source. Historical fixture bytes/version stay historical.",
+    "filename": "fixtures.json at generator114",
+    "sourceLines": "generate-browser-fixtures.mjs15-19,41-56,83-119"
+  },
+  "fullBrowserContract": {
+    "scope": "Conditional inventory if unchanged full20-role pack/audit is selected. Its complete workflow is separate from narrowed original feature gates.",
+    "packageFormat": "orcs-vs-fairies-main-browser-proof/version1",
+    "distFiles": 398,
+    "preManifestPayloadFiles": 413,
+    "formula": "398production +7fixtures +8support =413 packageFiles; package.json is then written and hashes no self.",
+    "supportFiles": [
+      "source.bundle",
+      "build-manifest.json",
+      "helper.mjs",
+      "checklist.md",
+      "README.md",
+      "audit-source.ts",
+      "audit.mjs",
+      "exports-template.json"
+    ],
+    "fixtures": "Six input files plus extracted fixtures/editorMapPackage.json. Preserve fixture values and generated map bytes as emitted.",
+    "auditAdds": {
+      "rawExportFiles": [
+        "exports/ordinaryBefore.json",
+        "exports/ordinaryReloaded.json",
+        "exports/editorMapPackage.json",
+        "exports/editorMapImported.json",
+        "exports/editorMapBefore.json",
+        "exports/editorMapReloaded.json",
+        "exports/authoredPackage.json",
+        "exports/authoredImported.json",
+        "exports/authoredBefore.json",
+        "exports/authoredReloaded.json",
+        "exports/authoredAbility.json",
+        "exports/campaignBefore.json",
+        "exports/campaignContinued.json",
+        "exports/historicalBefore.json",
+        "exports/historicalAfter.json",
+        "exports/historicalCampaignExport.json",
+        "exports/historicalRealmExport.json",
+        "exports/finaleSession.json",
+        "exports/finaleCampaignExport.json",
+        "exports/buildReport.json"
+      ],
+      "otherFiles": [
+        "ui-exports-manifest.json",
+        "export-audit.json"
+      ],
+      "count": 22
+    },
+    "completedPackageFilesBeforeExtraObservations": 436,
+    "closure": "Original packageFiles is immutable and excludes package.json and later22 audit files. Final parent inventory must hash all436 plus every extra observation/download. Audit fixturePackageSha256 hashes original package.json; exportManifestSha256 hashes original ui-exports-manifest.json; exportFiles points to retained exports.",
+    "rawManifestPaths": "ui-exports-manifest.json retains original external/relative paths verbatim. Close through separate original-path-to-retained-byte mapping, not rewriting. Offline helper.verify resolves actual exports from export-audit.exportFiles, so it needs no original download folder. exports-template paths are planning placeholders, not evidence files.",
+    "sourceClosure": "manifest.source.files maps all tracked Git paths, including public and docs, to source.bundle frozen HEAD. Do not flatten this to the src fingerprint.",
+    "distClosure": "manifest.dist/buildManifest.compiledFiles and servedBefore/servedAfter.files bind all398 production bytes, including394public copies. Do not replace with the five-file committed autosave dist subset.",
+    "failureRetention": "Append-only outputs and audit retain available raw downloads, retentionErrors and phase/error. Keep each failed packet whole, even when package.json or audit report could not be emitted; fresh rerun output is required.",
+    "noAuditorMetafile": "Frozen pack emits audit.mjs but no auditor metafile. Do not invent or require one under the original contract.",
+    "sourceLines": "main-browser-proof.mjs11-15,38-69,76-99,113-154,157-208"
+  },
+  "minimumRealmDownloads": {
+    "roles": [
+      "realmCompletedSession",
+      "realmNegotiatedProfile",
+      "realmReloadedProfile",
+      "realmNextBattleSession"
+    ],
+    "separateFromOriginal20Roles": true,
+    "order": "Create Deepforge/Dwarf realm; win Quarry with ordinary commands; while completed battlefield remains installed negotiate Fairy250ore tribute/two-turn truce/alliance; download A completedSession and B negotiatedProfile before completed realm import retires battlefield; import B,reload,resume,download C; fight connected Crossroads with ordinary commands,download D activeSession.",
+    "comparisons": "Complete parsed B==C; A.scenarioProfile.profile==B; A SAVE4/Quarry won/winner0. D retains profileID,captured map,diplomatic history,survivor IDs/roles/definitions/veterancy; crossroads/attack active owner and real command journal. Deployment heals/repositions/clears transients, so full soldier entity equality is inappropriate.",
+    "retention": "All four actual unmodified raw files, native import reference to B, role/hash/byte/origin map, relevant screenshots/transcript and independent comparison record.",
+    "noNewGate": "Second full canonical win, passage/expiry/aid matrix, broader claim stress and supplemental campaign rewards remain separate options."
+  },
+  "actualProducer": {
+    "preparedRoot": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/prepared",
+    "broaderPacketRoot": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001",
+    "preparedFiles": 412,
+    "broaderPacketFiles": 462,
+    "distFiles": 398,
+    "publicCopies": 394,
+    "sourceGroups": {
+      "assetFiles": 394,
+      "configFiles": 7,
+      "scriptFiles": 15,
+      "sourceFiles": 163,
+      "testFiles": 7
+    },
+    "schema": {
+      "replayChecksumVersion": 4,
+      "replayFormat": "orcs-vs-fairies/replay",
+      "replayInitialSaveVersion": 4,
+      "replayVersion": 1,
+      "saveFormat": "orcs-vs-fairies-save",
+      "saveVersion": 4,
+      "sessionFormat": "orcs-vs-fairies/session",
+      "sessionVersion": 1,
+      "simulationRevision": "4.0.1"
+    },
+    "metadata": {
+      "prepare.json": {
+        "path": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/prepared/prepare.json",
+        "sha256": "4dff0f8b11ebf9c3ca308ae4b4bda4b29550064eac120f26b62b5ef4e60b6ef4",
+        "bytes": 126579
+      },
+      "build-manifest.json": {
+        "path": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/prepared/build-manifest.json",
+        "sha256": "41cf5734c905ee1911e0218594b7dcd5bcbe89194dafd3448e73ff58f9a2506f",
+        "bytes": 184914
+      },
+      "modules/manifest.json": {
+        "path": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/prepared/modules/manifest.json",
+        "sha256": "98cb960fe957fdb4af05a21a13d7753fe66cb2a6b0dd5ad5d6d1580b36266dd1",
+        "bytes": 123684
+      },
+      "schema.json": {
+        "path": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-453c221-20261001/prepared/schema.json",
+        "sha256": "67ddb368aa7188ed25020a34073bc21ff238c7ea6d258fedea0ac5183fcdde9b",
+        "bytes": 294
+      }
+    },
+    "supportOutsideDist": {
+      "build-manifest.json": {
+        "bytes": 184914,
+        "sha256": "41cf5734c905ee1911e0218594b7dcd5bcbe89194dafd3448e73ff58f9a2506f"
+      },
+      "build.log": {
+        "bytes": 605,
+        "sha256": "1711073f6a1e987fed925ddfe19e88f6e9e41f767573e18c21cee588b9539bd4"
+      },
+      "minimap/fixture-validation.json": {
+        "bytes": 2459,
+        "sha256": "5ad5ac53410d72d1bc8cb1ff079fb5b2d10a9e6204d5719537fb1c7d08cd0e81"
+      },
+      "minimap/level-alerts-ids.json": {
+        "bytes": 1220,
+        "sha256": "08d1fb9e16a8d71aadb8859d045118f4e9387d3d5e92cc9f458a68cb98bb3772"
+      },
+      "minimap/level-alerts-session.json": {
+        "bytes": 399628,
+        "sha256": "b76e8dcdaa2b5fad4bc43b69b3ef164d9fd004133514305e2e1b51e325f37911"
+      },
+      "modules/level-scenario.mjs": {
+        "bytes": 765870,
+        "sha256": "1721e3a8182b43174b9f9ea78d591c005ea013e3e4e69ff6de81d236fba0c269"
+      },
+      "modules/level-scenario.mjs.meta.json": {
+        "bytes": 38675,
+        "sha256": "15ca03d56c58121a9c62c5bfdfd5db8e023a051d9981558110bfd7aa904eb5af"
+      },
+      "modules/manifest.json": {
+        "bytes": 123684,
+        "sha256": "98cb960fe957fdb4af05a21a13d7753fe66cb2a6b0dd5ad5d6d1580b36266dd1"
+      },
+      "modules/schema.mjs": {
+        "bytes": 752645,
+        "sha256": "2bdf688d3544ad5acb00c3b36583efbe876e7fb51e39d24e306c96b1e707ca0b"
+      },
+      "modules/schema.mjs.meta.json": {
+        "bytes": 38315,
+        "sha256": "94c69240894f2d7e5b4f4b9e57ed6efa7ea1fe29fb9f9a61c718fba9d6e7c4f0"
+      },
+      "modules/verify-native.mjs": {
+        "bytes": 774148,
+        "sha256": "b643d9edc6febdfb4af633499e683f79a569826b4d2f15273add8688273bf9f2"
+      },
+      "modules/verify-native.mjs.meta.json": {
+        "bytes": 38874,
+        "sha256": "d7648873d108f5318f7e5d4563e005ed1a639651a7edd9f61e868903c9f340f0"
+      },
+      "prepare.json": {
+        "bytes": 126579,
+        "sha256": "4dff0f8b11ebf9c3ca308ae4b4bda4b29550064eac120f26b62b5ef4e60b6ef4"
+      },
+      "schema.json": {
+        "bytes": 294,
+        "sha256": "67ddb368aa7188ed25020a34073bc21ff238c7ea6d258fedea0ac5183fcdde9b"
+      }
+    },
+    "closure": "prepare.outputRoot/distDir/modulesDir and compiler metafile output paths refer to the original producer. Keep original metadata and separately map those original prefixes to retained paths if a future copy is admitted. Module manifest6byte entries, all3metafiles, build.log, minimap3files and complete398dist stay retained by existing412/462-file admission.",
+    "reuse": "Reuse admitted intact output in place. No copy/rebuild/relabel performed or authorized by this report."
+  },
+  "extraCanonicalEvidence": {
+    "retainWhenPerformed": "CUA transcript,screenshots,actual photo download with image inspection,cosmetic equipment receipts,persistence/game equality/pixel comparisons,current build bug report,server build/runtime/launch/health/served-byte receipts,and all failure/retry evidence.",
+    "serverFiles": "rts-server.js,canonical-campaign.mjs,campaign-runtime.mjs; any emitted build metafiles/manifests/logs; intact/unavailable/restored .launch.json and .log; origin/endpoint/process/DB ownership and prior-writer stop records.",
+    "serverClosure": "Launch controlsManifest.path/staticDirectory/serverDirectory/cwd/databaseDirectory are original context paths. Map retained bundle/static source bytes separately. Deliberate unavailable runtime absence remains declared; retain original intact runtime bytes. A mutable DB reference requires root-controlled final quiescent retention; no live copy or writer handoff here.",
+    "supplementalIfPerformed": "Keep original ten raw inputs, prepared template, generated source/runtime/metafile, generator/matrix, bundle provenance, every fixture/derivation/admission/status file and all partial failures. Close supplemental sourceAfter/nativeAdmission and compiler metadata/loader references. Preserve synthetic/current-outer/historical declarations."
+  },
+  "historicalRetention": {
+    "trackedReports": [
+      {
+        "gitPath": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "containerPin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "originalRunPin": "879c926e3a6f12e9306b960f7bb6e9ccc5e5eadb",
+        "sha256": "1ef956a504917aa1115e5add7a496899bf2c47af06f9d5e9706d34ed0c079d76",
+        "bytes": 1496407
+      },
+      {
+        "gitPath": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "containerPin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "originalRunPin": "e5cf87ec3600c1ea83ae1451be5d6e7efeae127b",
+        "sha256": "b5d8ae3b1c8e5aba0f16e51e2962e38ed6fcfabf005d18159f0209ae0da40337",
+        "bytes": 1496407
+      },
+      {
+        "gitPath": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "containerPin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "originalRunPin": "7ede5450b1f4402d78e75c017a895320cb707412",
+        "sha256": "5f0890e1c7abc9744e7968feb4bee43d4bdcda4bcbed75159eb50cf00bf1ac26",
+        "bytes": 64616
+      },
+      {
+        "gitPath": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "containerPin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "originalRunPin": "e5cf87ec3600c1ea83ae1451be5d6e7efeae127b",
+        "sha256": "03265180f2c04fb4855ae2dae2fa2ad36497fefd3ce73219adeffbc1bafc0235",
+        "bytes": 64616
+      },
+      {
+        "gitPath": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "containerPin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "originalRunPin": "7ede5450b1f4402d78e75c017a895320cb707412",
+        "sha256": "90c0a5194fef51000cfe0b53434a1286f9940730f78c4527fa1f6aeeb2c8bd89",
+        "bytes": 63518
+      },
+      {
+        "gitPath": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "containerPin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "originalRunPin": "e5cf87ec3600c1ea83ae1451be5d6e7efeae127b",
+        "sha256": "606b7887dcdca35d6c0dbad53f3ebaf6e1b07e2bced2bc8a427d8af5c23a51e7",
+        "bytes": 63518
+      },
+      {
+        "gitPath": "docs/evidence/campaigns/native-commanders-conquest-attempt1-20261001.json",
+        "containerPin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "originalRunPin": "e5cf87ec3600c1ea83ae1451be5d6e7efeae127b",
+        "sha256": "16bf610b6bb903c2f74cb0d0e6e557fd4b14c9060821a73ec1b4eb47cef39aa8",
+        "bytes": 7735
+      }
+    ],
+    "externalReferenceCount": 185,
+    "presentAtRead": 185,
+    "missingAtRead": 0,
+    "references": [
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/orcs-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "f92de4230e4b87361900f4af4a8a17af1e532b8f308bce9ac3ae9b8c32534ff9",
+        "bytes": 51257,
+        "declaredSha256": "f92de4230e4b87361900f4af4a8a17af1e532b8f308bce9ac3ae9b8c32534ff9",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/orcs-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "0365ee9b64d9ec0965ecc23cdaff9af2ced34909459173a57e04766fd8d140d4",
+        "bytes": 42524,
+        "declaredSha256": "0365ee9b64d9ec0965ecc23cdaff9af2ced34909459173a57e04766fd8d140d4",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/orcs-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "2f7f495d8e360d5443ca8ec1de903df479d11d09697bb218ddb8b35d8bc4c83a",
+        "bytes": 38429,
+        "declaredSha256": "2f7f495d8e360d5443ca8ec1de903df479d11d09697bb218ddb8b35d8bc4c83a",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/orcs-3-alt.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "0b873d97edc4827b2b2b5e0248479703250eecbef95e16942406ee6c2dc605f8",
+        "bytes": 37501,
+        "declaredSha256": "0b873d97edc4827b2b2b5e0248479703250eecbef95e16942406ee6c2dc605f8",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[4].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/orcs-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "78603622589094d70b1e14d26b47c5c1b224e055638837cfd02a49ab438e0ec4",
+        "bytes": 38295,
+        "declaredSha256": "78603622589094d70b1e14d26b47c5c1b224e055638837cfd02a49ab438e0ec4",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[5].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/fairies-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "80b444e3b80140fca2281eb0795b50f5bf374f529b1c0f0aef50531002449a13",
+        "bytes": 43160,
+        "declaredSha256": "80b444e3b80140fca2281eb0795b50f5bf374f529b1c0f0aef50531002449a13",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[6].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/fairies-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "337e206ca4607e9241af6d5ab4ae11b705d7ea511dcd9a0813902c6aebfe28a1",
+        "bytes": 49146,
+        "declaredSha256": "337e206ca4607e9241af6d5ab4ae11b705d7ea511dcd9a0813902c6aebfe28a1",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[7].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/fairies-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "c9a16599736ac130b0a2d79268083733feb3805b49d870357407cb82d59e2f6a",
+        "bytes": 43206,
+        "declaredSha256": "c9a16599736ac130b0a2d79268083733feb3805b49d870357407cb82d59e2f6a",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[8].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/fairies-3-alt.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "10289d6c479ea4091e68b04dd62720424484d463b542eb85804534a18631253f",
+        "bytes": 35277,
+        "declaredSha256": "10289d6c479ea4091e68b04dd62720424484d463b542eb85804534a18631253f",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[9].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/fairies-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "4ea41ffdf7e3a483af9c9fd04ac2c8395e3021584b8feadcd8fb3419faad4fd8",
+        "bytes": 39117,
+        "declaredSha256": "4ea41ffdf7e3a483af9c9fd04ac2c8395e3021584b8feadcd8fb3419faad4fd8",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[10].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/dwarves-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "11abf5c2f7a882e5b96ed1eeea2f573b97bcf60019f78a345b509311702460ff",
+        "bytes": 39603,
+        "declaredSha256": "11abf5c2f7a882e5b96ed1eeea2f573b97bcf60019f78a345b509311702460ff",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[11].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/dwarves-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "962c4469da98300f26312517efa973ccdd016487dce2fe6387a7d25fc5a9e9a9",
+        "bytes": 43049,
+        "declaredSha256": "962c4469da98300f26312517efa973ccdd016487dce2fe6387a7d25fc5a9e9a9",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[12].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/dwarves-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "fef334de6a9b352d13fa8dd137f5ee7360cc179d9c99e24592e928e6e07bca70",
+        "bytes": 54273,
+        "declaredSha256": "fef334de6a9b352d13fa8dd137f5ee7360cc179d9c99e24592e928e6e07bca70",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[13].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/dwarves-3-alt.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "ab3155325864ea40125235c8a0b716b20f59d00e474fafb1fb6b9f3678533c19",
+        "bytes": 39307,
+        "declaredSha256": "ab3155325864ea40125235c8a0b716b20f59d00e474fafb1fb6b9f3678533c19",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[14].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/dwarves-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "5f9ce9d293410dabbcacc93075b8d7facb62bd579329620055141ba37373ec4f",
+        "bytes": 37791,
+        "declaredSha256": "5f9ce9d293410dabbcacc93075b8d7facb62bd579329620055141ba37373ec4f",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[15].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/undead-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "90c95c17c72591fbac19f733669bbc088f204e598b694ac44ba7814550cbbf88",
+        "bytes": 45211,
+        "declaredSha256": "90c95c17c72591fbac19f733669bbc088f204e598b694ac44ba7814550cbbf88",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[16].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/undead-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "04cec52ce9af14265df8e8cfbc41ae8e0950500d923514412fb5bdcd993e6330",
+        "bytes": 38077,
+        "declaredSha256": "04cec52ce9af14265df8e8cfbc41ae8e0950500d923514412fb5bdcd993e6330",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[17].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/undead-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "173082064201b71683f60c36f667657071f3bcb285da7d4152c5f3543728e831",
+        "bytes": 59812,
+        "declaredSha256": "173082064201b71683f60c36f667657071f3bcb285da7d4152c5f3543728e831",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[18].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/undead-3-alt.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "2dd2f758fdcd819edebaf845ceadac05ce1f0aa5c4aa12731436cc4956788185",
+        "bytes": 39066,
+        "declaredSha256": "2dd2f758fdcd819edebaf845ceadac05ce1f0aa5c4aa12731436cc4956788185",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[19].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/undead-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "060e6cd425aae707c8a2c6c129c23691ed934b844518702f913e9f79d05ddd15",
+        "bytes": 45958,
+        "declaredSha256": "060e6cd425aae707c8a2c6c129c23691ed934b844518702f913e9f79d05ddd15",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[20].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/tideborn-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "800e83da691bd358e1e6bd32b504cf32262be2ca5328bcc3fb6bf7e33e0ba761",
+        "bytes": 54191,
+        "declaredSha256": "800e83da691bd358e1e6bd32b504cf32262be2ca5328bcc3fb6bf7e33e0ba761",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[21].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/tideborn-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "31a3afb0a49bd0b5596cd003ac1bafcb41043cc34a3e5a9101c490509743d61d",
+        "bytes": 37874,
+        "declaredSha256": "31a3afb0a49bd0b5596cd003ac1bafcb41043cc34a3e5a9101c490509743d61d",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[22].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/tideborn-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "19178dbb2498f4b95755d71b239ffad23101ce59680b727c2f85b1ed7efcb678",
+        "bytes": 39322,
+        "declaredSha256": "19178dbb2498f4b95755d71b239ffad23101ce59680b727c2f85b1ed7efcb678",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[23].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/tideborn-3-alt.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "5f551339f25051997aed4cfb06b332cbb7a5b43f7e753700875eba360504adae",
+        "bytes": 46288,
+        "declaredSha256": "5f551339f25051997aed4cfb06b332cbb7a5b43f7e753700875eba360504adae",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[24].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/tideborn-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "1a6a945ebab362d4afdc3646a6e395790cae9322ba97ffa045da73271b0663e3",
+        "bytes": 39537,
+        "declaredSha256": "1a6a945ebab362d4afdc3646a6e395790cae9322ba97ffa045da73271b0663e3",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[25].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/automata-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "af4f38748a29853a0f896db00130b68bb7d0ba6452661d230a9ea094c5c1462b",
+        "bytes": 35054,
+        "declaredSha256": "af4f38748a29853a0f896db00130b68bb7d0ba6452661d230a9ea094c5c1462b",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[26].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/automata-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "3be72053d12d4cd9654bf7276eee4d2e6726f88067fc571f46a2af703a3f139c",
+        "bytes": 37945,
+        "declaredSha256": "3be72053d12d4cd9654bf7276eee4d2e6726f88067fc571f46a2af703a3f139c",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[27].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/automata-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "61b03fefab166cb047af52f168ca19a284b3483e7a33e18dc1853560204d32f6",
+        "bytes": 43821,
+        "declaredSha256": "61b03fefab166cb047af52f168ca19a284b3483e7a33e18dc1853560204d32f6",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[28].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/automata-3-alt.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "7f93173bf0516baa79ee5eebd5aa5abbbb27c33829a435b436d22247a06e9734",
+        "bytes": 55481,
+        "declaredSha256": "7f93173bf0516baa79ee5eebd5aa5abbbb27c33829a435b436d22247a06e9734",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt1-20261001.json",
+        "field": "$.attempts[29].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-41-23-345Z/automata-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "5deefb59bb06538438b81d40239d88b9fbd0052abb1f927b0eab4a0e09b6560b",
+        "bytes": 40181,
+        "declaredSha256": "5deefb59bb06538438b81d40239d88b9fbd0052abb1f927b0eab4a0e09b6560b",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/orcs-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "f92de4230e4b87361900f4af4a8a17af1e532b8f308bce9ac3ae9b8c32534ff9",
+        "bytes": 51257,
+        "declaredSha256": "f92de4230e4b87361900f4af4a8a17af1e532b8f308bce9ac3ae9b8c32534ff9",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/orcs-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "0365ee9b64d9ec0965ecc23cdaff9af2ced34909459173a57e04766fd8d140d4",
+        "bytes": 42524,
+        "declaredSha256": "0365ee9b64d9ec0965ecc23cdaff9af2ced34909459173a57e04766fd8d140d4",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/orcs-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "2f7f495d8e360d5443ca8ec1de903df479d11d09697bb218ddb8b35d8bc4c83a",
+        "bytes": 38429,
+        "declaredSha256": "2f7f495d8e360d5443ca8ec1de903df479d11d09697bb218ddb8b35d8bc4c83a",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/orcs-3-alt.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "0b873d97edc4827b2b2b5e0248479703250eecbef95e16942406ee6c2dc605f8",
+        "bytes": 37501,
+        "declaredSha256": "0b873d97edc4827b2b2b5e0248479703250eecbef95e16942406ee6c2dc605f8",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[4].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/orcs-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "78603622589094d70b1e14d26b47c5c1b224e055638837cfd02a49ab438e0ec4",
+        "bytes": 38295,
+        "declaredSha256": "78603622589094d70b1e14d26b47c5c1b224e055638837cfd02a49ab438e0ec4",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[5].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/fairies-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "80b444e3b80140fca2281eb0795b50f5bf374f529b1c0f0aef50531002449a13",
+        "bytes": 43160,
+        "declaredSha256": "80b444e3b80140fca2281eb0795b50f5bf374f529b1c0f0aef50531002449a13",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[6].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/fairies-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "337e206ca4607e9241af6d5ab4ae11b705d7ea511dcd9a0813902c6aebfe28a1",
+        "bytes": 49146,
+        "declaredSha256": "337e206ca4607e9241af6d5ab4ae11b705d7ea511dcd9a0813902c6aebfe28a1",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[7].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/fairies-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "c9a16599736ac130b0a2d79268083733feb3805b49d870357407cb82d59e2f6a",
+        "bytes": 43206,
+        "declaredSha256": "c9a16599736ac130b0a2d79268083733feb3805b49d870357407cb82d59e2f6a",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[8].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/fairies-3-alt.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "10289d6c479ea4091e68b04dd62720424484d463b542eb85804534a18631253f",
+        "bytes": 35277,
+        "declaredSha256": "10289d6c479ea4091e68b04dd62720424484d463b542eb85804534a18631253f",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[9].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/fairies-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "4ea41ffdf7e3a483af9c9fd04ac2c8395e3021584b8feadcd8fb3419faad4fd8",
+        "bytes": 39117,
+        "declaredSha256": "4ea41ffdf7e3a483af9c9fd04ac2c8395e3021584b8feadcd8fb3419faad4fd8",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[10].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/dwarves-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "11abf5c2f7a882e5b96ed1eeea2f573b97bcf60019f78a345b509311702460ff",
+        "bytes": 39603,
+        "declaredSha256": "11abf5c2f7a882e5b96ed1eeea2f573b97bcf60019f78a345b509311702460ff",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[11].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/dwarves-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "962c4469da98300f26312517efa973ccdd016487dce2fe6387a7d25fc5a9e9a9",
+        "bytes": 43049,
+        "declaredSha256": "962c4469da98300f26312517efa973ccdd016487dce2fe6387a7d25fc5a9e9a9",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[12].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/dwarves-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "fef334de6a9b352d13fa8dd137f5ee7360cc179d9c99e24592e928e6e07bca70",
+        "bytes": 54273,
+        "declaredSha256": "fef334de6a9b352d13fa8dd137f5ee7360cc179d9c99e24592e928e6e07bca70",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[13].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/dwarves-3-alt.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "ab3155325864ea40125235c8a0b716b20f59d00e474fafb1fb6b9f3678533c19",
+        "bytes": 39307,
+        "declaredSha256": "ab3155325864ea40125235c8a0b716b20f59d00e474fafb1fb6b9f3678533c19",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[14].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/dwarves-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "5f9ce9d293410dabbcacc93075b8d7facb62bd579329620055141ba37373ec4f",
+        "bytes": 37791,
+        "declaredSha256": "5f9ce9d293410dabbcacc93075b8d7facb62bd579329620055141ba37373ec4f",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[15].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/undead-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "90c95c17c72591fbac19f733669bbc088f204e598b694ac44ba7814550cbbf88",
+        "bytes": 45211,
+        "declaredSha256": "90c95c17c72591fbac19f733669bbc088f204e598b694ac44ba7814550cbbf88",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[16].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/undead-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "04cec52ce9af14265df8e8cfbc41ae8e0950500d923514412fb5bdcd993e6330",
+        "bytes": 38077,
+        "declaredSha256": "04cec52ce9af14265df8e8cfbc41ae8e0950500d923514412fb5bdcd993e6330",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[17].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/undead-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "173082064201b71683f60c36f667657071f3bcb285da7d4152c5f3543728e831",
+        "bytes": 59812,
+        "declaredSha256": "173082064201b71683f60c36f667657071f3bcb285da7d4152c5f3543728e831",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[18].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/undead-3-alt.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "2dd2f758fdcd819edebaf845ceadac05ce1f0aa5c4aa12731436cc4956788185",
+        "bytes": 39066,
+        "declaredSha256": "2dd2f758fdcd819edebaf845ceadac05ce1f0aa5c4aa12731436cc4956788185",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[19].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/undead-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "060e6cd425aae707c8a2c6c129c23691ed934b844518702f913e9f79d05ddd15",
+        "bytes": 45958,
+        "declaredSha256": "060e6cd425aae707c8a2c6c129c23691ed934b844518702f913e9f79d05ddd15",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[20].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/tideborn-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "800e83da691bd358e1e6bd32b504cf32262be2ca5328bcc3fb6bf7e33e0ba761",
+        "bytes": 54191,
+        "declaredSha256": "800e83da691bd358e1e6bd32b504cf32262be2ca5328bcc3fb6bf7e33e0ba761",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[21].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/tideborn-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "31a3afb0a49bd0b5596cd003ac1bafcb41043cc34a3e5a9101c490509743d61d",
+        "bytes": 37874,
+        "declaredSha256": "31a3afb0a49bd0b5596cd003ac1bafcb41043cc34a3e5a9101c490509743d61d",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[22].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/tideborn-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "19178dbb2498f4b95755d71b239ffad23101ce59680b727c2f85b1ed7efcb678",
+        "bytes": 39322,
+        "declaredSha256": "19178dbb2498f4b95755d71b239ffad23101ce59680b727c2f85b1ed7efcb678",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[23].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/tideborn-3-alt.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "5f551339f25051997aed4cfb06b332cbb7a5b43f7e753700875eba360504adae",
+        "bytes": 46288,
+        "declaredSha256": "5f551339f25051997aed4cfb06b332cbb7a5b43f7e753700875eba360504adae",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[24].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/tideborn-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "1a6a945ebab362d4afdc3646a6e395790cae9322ba97ffa045da73271b0663e3",
+        "bytes": 39537,
+        "declaredSha256": "1a6a945ebab362d4afdc3646a6e395790cae9322ba97ffa045da73271b0663e3",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[25].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/automata-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "af4f38748a29853a0f896db00130b68bb7d0ba6452661d230a9ea094c5c1462b",
+        "bytes": 35054,
+        "declaredSha256": "af4f38748a29853a0f896db00130b68bb7d0ba6452661d230a9ea094c5c1462b",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[26].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/automata-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "3be72053d12d4cd9654bf7276eee4d2e6726f88067fc571f46a2af703a3f139c",
+        "bytes": 37945,
+        "declaredSha256": "3be72053d12d4cd9654bf7276eee4d2e6726f88067fc571f46a2af703a3f139c",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[27].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/automata-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "61b03fefab166cb047af52f168ca19a284b3483e7a33e18dc1853560204d32f6",
+        "bytes": 43821,
+        "declaredSha256": "61b03fefab166cb047af52f168ca19a284b3483e7a33e18dc1853560204d32f6",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[28].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/automata-3-alt.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "7f93173bf0516baa79ee5eebd5aa5abbbb27c33829a435b436d22247a06e9734",
+        "bytes": 55481,
+        "declaredSha256": "7f93173bf0516baa79ee5eebd5aa5abbbb27c33829a435b436d22247a06e9734",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-all30-attempt2-20261001.json",
+        "field": "$.attempts[29].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/recordings/2026-10-01T12-58-47-056Z/automata-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "5deefb59bb06538438b81d40239d88b9fbd0052abb1f927b0eab4a0e09b6560b",
+        "bytes": 40181,
+        "declaredSha256": "5deefb59bb06538438b81d40239d88b9fbd0052abb1f927b0eab4a0e09b6560b",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[0].chapters[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/orcs-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "f92de4230e4b87361900f4af4a8a17af1e532b8f308bce9ac3ae9b8c32534ff9",
+        "bytes": 51257,
+        "declaredSha256": "3f5f99d1effd7d8f85ac488884d60e562de41b7e2c49b293218ace988a77f52d"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[0].chapters[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/orcs-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "8c997724490f837cabfdb2e78a2a51727e3ccae2fd62115f971adbb7a311a96f",
+        "bytes": 43156,
+        "declaredSha256": "ccd84c40bf6f649632a7d8b6b9822c386ea8e612324522ec417f5ea50659858c"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[0].chapters[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/orcs-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "56442610884ac99bd77500cbda8513f38ea2ab8298dd05e9c137a4859fe89276",
+        "bytes": 38901,
+        "declaredSha256": "a0e3fa51922fd600a4953ce377beeb18626024e5499e445d3d7c1fa2ae327cb2"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[0].chapters[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/orcs-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "9799e024bf95e5170c20e283fe3906f5ad255026d73e31ce702acd5bfc66865a",
+        "bytes": 38822,
+        "declaredSha256": "4268201ce1c922dcb9cf099dffbffd1a61ec6beb25f2c0d4072c1594851db86e"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[0].profilePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/orcs-profile.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "aed74b995867599f490bdbbff7e91afab3c56cab09296f8236895aaf51e2f163",
+        "bytes": 334934,
+        "declaredSha256": "47d5060bb695c08fc0faca044d2a013c1632c35c506479b703567549e5275e18"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[1].chapters[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/fairies-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "80b444e3b80140fca2281eb0795b50f5bf374f529b1c0f0aef50531002449a13",
+        "bytes": 43160,
+        "declaredSha256": "61433fd33f18db8ae1ab9b18f2614281951ac4e3d73bf096bc73dc2f1c769b1c"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[1].chapters[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/fairies-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "8b75e2f2f89a3f741da9b3033fb77f52283bfb8b1af73e9816038cc109eb6a77",
+        "bytes": 49257,
+        "declaredSha256": "6b7edb2013a992245ce32f50affe12b49587e20e9502dbab1864b03defe803ff"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[1].chapters[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/fairies-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "528acf93264c78017483bb34bf9a444a99a1b1f447a005473d1b901289db7453",
+        "bytes": 43894,
+        "declaredSha256": "7f11405673d210fe74f4ba4522eff58da4f0d2b2cc9d40dd7aaa12866723caf0"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[1].chapters[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/fairies-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "817faa7c7100a0ff48a60121a4a69fa2ed75968eb363dbee53e35166a0cfabc2",
+        "bytes": 39824,
+        "declaredSha256": "c580fcad71ff528ce73e9e9616fc260cc690f055a28faed61479ac02a2ea3dfa"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[1].profilePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/fairies-profile.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "25e298b7bdb446370bbe7910479fd25abd04cbbd92c52f1b08d3e1749552b23b",
+        "bytes": 338165,
+        "declaredSha256": "4ad8c4d66a239c46151cf3fea054b9861dc10d1041fe395a824fb1349f5886cc"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[2].chapters[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/dwarves-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "11abf5c2f7a882e5b96ed1eeea2f573b97bcf60019f78a345b509311702460ff",
+        "bytes": 39603,
+        "declaredSha256": "6e8ac146be4eafcc5817f0f933d37751ca8612859ab0a3fd6de0f68460f6b9fd"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[2].chapters[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/dwarves-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "9fc6f9c41377153954520d575093e5f3b09ebd724262ce8e9beaa7ada58b007d",
+        "bytes": 43693,
+        "declaredSha256": "0307e75d66a2a141169b798a343304cc5fafc5f187bcab133922b5b9626d1064"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[2].chapters[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/dwarves-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "8e8ed1e5345b9f2b7d1ab063ebf433e1f9ca8fd61d8c3575a8ea815760c58827",
+        "bytes": 55060,
+        "declaredSha256": "cc822967266613050017322734e78a5d9bd719b2908afc0076ba6896c1dc9379"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[2].chapters[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/dwarves-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "cbd37d7aa833e5032faf5bf12f2c7ccb5cf7ff43aedf1a248bf203a697792c06",
+        "bytes": 38511,
+        "declaredSha256": "5425ed27e0f8fa639361de2df56b7f116a62433668f3a42f7773a3acfcdb3663"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[2].profilePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/dwarves-profile.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "c8946c73f14899329e66f45b5a9a6e33156fccabe5766643a6e828ce0502358c",
+        "bytes": 345326,
+        "declaredSha256": "b1b997a8c82e8f02cfc4606b283c80f7ee77c0f7381fde8f3368c27246bd7510"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[3].chapters[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/undead-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "90c95c17c72591fbac19f733669bbc088f204e598b694ac44ba7814550cbbf88",
+        "bytes": 45211,
+        "declaredSha256": "124fe9a7f8b4400a939dbf80ea43bac46127a0c772580dcbb26818f51cda953b"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[3].chapters[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/undead-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "ac20bb0a19426146378fdc741df0273bbb125fa4451d8e4d42e514e8afde62ad",
+        "bytes": 38235,
+        "declaredSha256": "2239fcbf626918ca29273a9356403509ac27befae934d31cb7eea11532834c71"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[3].chapters[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/undead-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "c6dde8838d9467bc55c8a704575cb89c9f351ce0f890eba1458592433d0f4095",
+        "bytes": 60536,
+        "declaredSha256": "61de7fb1af7847e0422de62beb5865f91a490c467e6b4734286149031dd0fc0e"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[3].chapters[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/undead-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "5f2d13ad82225baf65544e118badcc7bf83fde96c62ba5b1192e451a1479519e",
+        "bytes": 46560,
+        "declaredSha256": "64bd010f8b64b2bc9979f29a2f4df7c6cba01a6d6a23c9069edba0d538316dd7"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[3].profilePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/undead-profile.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "9a3919871bd319194b63f6e44b4299e2dfdf81d605779abf658bfad59a07df1b",
+        "bytes": 360035,
+        "declaredSha256": "e840eecf64be8011ad232e727be7a347f9aedccd3484e2d5928e2f46815c0119"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[4].chapters[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/tideborn-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "800e83da691bd358e1e6bd32b504cf32262be2ca5328bcc3fb6bf7e33e0ba761",
+        "bytes": 54191,
+        "declaredSha256": "795661d2421d3d8bae7b0a5109ee09f64b07dc989097700028aec42bafe6fbd9"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[4].chapters[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/tideborn-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "46d924c98646a90d69327fc565261f051daaf51e04b7594d052c395e6b5c7de6",
+        "bytes": 38482,
+        "declaredSha256": "c1a8104ab5cea9ebbb049f89027580c477177b5e79e875e4c4de53462fc39163"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[4].chapters[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/tideborn-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "f39a3670e27f9b3e1c3e4e6227d568176e2624f01ccc5164f4dd0631c7e65222",
+        "bytes": 39477,
+        "declaredSha256": "7c30d6f173c3a53ac70a51eb8f4907380c50e60c42be5cc4996a08b8ffc3ad53"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[4].chapters[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/tideborn-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "ef5d4ad428e934e8f318ad46455be8184886a48863fecaf29e4f4df91abc80a7",
+        "bytes": 40220,
+        "declaredSha256": "504616926a5b9bfaea4d01c15b3e69e735312d74d9a481b6c941cbcb733d6a07"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[4].profilePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/tideborn-profile.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "43b262b515a7a28f2c6fc1b53315d45a620af60e01f32d077c14530c773339fe",
+        "bytes": 336831,
+        "declaredSha256": "cc209599ed130ff5c8ce2a5e4fc864cfe23c8f8f1cba4bbc1c30f7b202c0e1ab"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[5].chapters[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/automata-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "af4f38748a29853a0f896db00130b68bb7d0ba6452661d230a9ea094c5c1462b",
+        "bytes": 35054,
+        "declaredSha256": "020db357c5e461217c60d863a57e2dd12d2918598e0095486763bb3b3249865b"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[5].chapters[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/automata-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "7b83e08156f99fdf747ee85427e0264f9b14633cd75c1ccb1b85b1025489b73a",
+        "bytes": 38044,
+        "declaredSha256": "fdcf2d790ccb3a814060dbd8da5975ce39ec61a5df57d5989020cb1b92a6ada2"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[5].chapters[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/automata-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "80c4bf87b435f266729ddc87dba7f7b759525ea67903dbc20275672c8cafa144",
+        "bytes": 44321,
+        "declaredSha256": "914cd13151b191e31af838bd40e4945dea4de5ccda2569294adb4844a0510fe7"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[5].chapters[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/automata-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "1d2127f023bf45734d2a42b7a0c0f9d253945eddedbad14be2e9808d3f79e208",
+        "bytes": 40758,
+        "declaredSha256": "a03bd73b2d63d49c571d65d2afaffa39811f1a1d0a160a65fbbd2dac0060183f"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt1-20261001.json",
+        "field": "$.profiles[5].profilePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-18-411Z/automata-profile.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "4fcafe8eb6ad3cb7a4a1d35aae04bda18f259c26ae6b748001ad66b8dc7bd4da",
+        "bytes": 317068,
+        "declaredSha256": "ab09cae31697029376d3e6eaabdcae5fd1fdbb42e3f70e2ae05f76fc8a7a735c"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[0].chapters[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/orcs-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "f92de4230e4b87361900f4af4a8a17af1e532b8f308bce9ac3ae9b8c32534ff9",
+        "bytes": 51257,
+        "declaredSha256": "3f5f99d1effd7d8f85ac488884d60e562de41b7e2c49b293218ace988a77f52d"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[0].chapters[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/orcs-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "8c997724490f837cabfdb2e78a2a51727e3ccae2fd62115f971adbb7a311a96f",
+        "bytes": 43156,
+        "declaredSha256": "ccd84c40bf6f649632a7d8b6b9822c386ea8e612324522ec417f5ea50659858c"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[0].chapters[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/orcs-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "56442610884ac99bd77500cbda8513f38ea2ab8298dd05e9c137a4859fe89276",
+        "bytes": 38901,
+        "declaredSha256": "a0e3fa51922fd600a4953ce377beeb18626024e5499e445d3d7c1fa2ae327cb2"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[0].chapters[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/orcs-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "9799e024bf95e5170c20e283fe3906f5ad255026d73e31ce702acd5bfc66865a",
+        "bytes": 38822,
+        "declaredSha256": "4268201ce1c922dcb9cf099dffbffd1a61ec6beb25f2c0d4072c1594851db86e"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[0].profilePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/orcs-profile.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "aed74b995867599f490bdbbff7e91afab3c56cab09296f8236895aaf51e2f163",
+        "bytes": 334934,
+        "declaredSha256": "47d5060bb695c08fc0faca044d2a013c1632c35c506479b703567549e5275e18"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[1].chapters[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/fairies-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "80b444e3b80140fca2281eb0795b50f5bf374f529b1c0f0aef50531002449a13",
+        "bytes": 43160,
+        "declaredSha256": "61433fd33f18db8ae1ab9b18f2614281951ac4e3d73bf096bc73dc2f1c769b1c"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[1].chapters[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/fairies-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "8b75e2f2f89a3f741da9b3033fb77f52283bfb8b1af73e9816038cc109eb6a77",
+        "bytes": 49257,
+        "declaredSha256": "6b7edb2013a992245ce32f50affe12b49587e20e9502dbab1864b03defe803ff"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[1].chapters[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/fairies-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "528acf93264c78017483bb34bf9a444a99a1b1f447a005473d1b901289db7453",
+        "bytes": 43894,
+        "declaredSha256": "7f11405673d210fe74f4ba4522eff58da4f0d2b2cc9d40dd7aaa12866723caf0"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[1].chapters[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/fairies-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "817faa7c7100a0ff48a60121a4a69fa2ed75968eb363dbee53e35166a0cfabc2",
+        "bytes": 39824,
+        "declaredSha256": "c580fcad71ff528ce73e9e9616fc260cc690f055a28faed61479ac02a2ea3dfa"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[1].profilePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/fairies-profile.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "25e298b7bdb446370bbe7910479fd25abd04cbbd92c52f1b08d3e1749552b23b",
+        "bytes": 338165,
+        "declaredSha256": "4ad8c4d66a239c46151cf3fea054b9861dc10d1041fe395a824fb1349f5886cc"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[2].chapters[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/dwarves-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "11abf5c2f7a882e5b96ed1eeea2f573b97bcf60019f78a345b509311702460ff",
+        "bytes": 39603,
+        "declaredSha256": "6e8ac146be4eafcc5817f0f933d37751ca8612859ab0a3fd6de0f68460f6b9fd"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[2].chapters[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/dwarves-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "9fc6f9c41377153954520d575093e5f3b09ebd724262ce8e9beaa7ada58b007d",
+        "bytes": 43693,
+        "declaredSha256": "0307e75d66a2a141169b798a343304cc5fafc5f187bcab133922b5b9626d1064"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[2].chapters[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/dwarves-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "8e8ed1e5345b9f2b7d1ab063ebf433e1f9ca8fd61d8c3575a8ea815760c58827",
+        "bytes": 55060,
+        "declaredSha256": "cc822967266613050017322734e78a5d9bd719b2908afc0076ba6896c1dc9379"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[2].chapters[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/dwarves-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "cbd37d7aa833e5032faf5bf12f2c7ccb5cf7ff43aedf1a248bf203a697792c06",
+        "bytes": 38511,
+        "declaredSha256": "5425ed27e0f8fa639361de2df56b7f116a62433668f3a42f7773a3acfcdb3663"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[2].profilePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/dwarves-profile.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "c8946c73f14899329e66f45b5a9a6e33156fccabe5766643a6e828ce0502358c",
+        "bytes": 345326,
+        "declaredSha256": "b1b997a8c82e8f02cfc4606b283c80f7ee77c0f7381fde8f3368c27246bd7510"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[3].chapters[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/undead-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "90c95c17c72591fbac19f733669bbc088f204e598b694ac44ba7814550cbbf88",
+        "bytes": 45211,
+        "declaredSha256": "124fe9a7f8b4400a939dbf80ea43bac46127a0c772580dcbb26818f51cda953b"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[3].chapters[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/undead-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "ac20bb0a19426146378fdc741df0273bbb125fa4451d8e4d42e514e8afde62ad",
+        "bytes": 38235,
+        "declaredSha256": "2239fcbf626918ca29273a9356403509ac27befae934d31cb7eea11532834c71"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[3].chapters[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/undead-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "c6dde8838d9467bc55c8a704575cb89c9f351ce0f890eba1458592433d0f4095",
+        "bytes": 60536,
+        "declaredSha256": "61de7fb1af7847e0422de62beb5865f91a490c467e6b4734286149031dd0fc0e"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[3].chapters[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/undead-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "5f2d13ad82225baf65544e118badcc7bf83fde96c62ba5b1192e451a1479519e",
+        "bytes": 46560,
+        "declaredSha256": "64bd010f8b64b2bc9979f29a2f4df7c6cba01a6d6a23c9069edba0d538316dd7"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[3].profilePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/undead-profile.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "9a3919871bd319194b63f6e44b4299e2dfdf81d605779abf658bfad59a07df1b",
+        "bytes": 360035,
+        "declaredSha256": "e840eecf64be8011ad232e727be7a347f9aedccd3484e2d5928e2f46815c0119"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[4].chapters[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/tideborn-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "800e83da691bd358e1e6bd32b504cf32262be2ca5328bcc3fb6bf7e33e0ba761",
+        "bytes": 54191,
+        "declaredSha256": "795661d2421d3d8bae7b0a5109ee09f64b07dc989097700028aec42bafe6fbd9"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[4].chapters[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/tideborn-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "46d924c98646a90d69327fc565261f051daaf51e04b7594d052c395e6b5c7de6",
+        "bytes": 38482,
+        "declaredSha256": "c1a8104ab5cea9ebbb049f89027580c477177b5e79e875e4c4de53462fc39163"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[4].chapters[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/tideborn-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "f39a3670e27f9b3e1c3e4e6227d568176e2624f01ccc5164f4dd0631c7e65222",
+        "bytes": 39477,
+        "declaredSha256": "7c30d6f173c3a53ac70a51eb8f4907380c50e60c42be5cc4996a08b8ffc3ad53"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[4].chapters[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/tideborn-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "ef5d4ad428e934e8f318ad46455be8184886a48863fecaf29e4f4df91abc80a7",
+        "bytes": 40220,
+        "declaredSha256": "504616926a5b9bfaea4d01c15b3e69e735312d74d9a481b6c941cbcb733d6a07"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[4].profilePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/tideborn-profile.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "43b262b515a7a28f2c6fc1b53315d45a620af60e01f32d077c14530c773339fe",
+        "bytes": 336831,
+        "declaredSha256": "cc209599ed130ff5c8ce2a5e4fc864cfe23c8f8f1cba4bbc1c30f7b202c0e1ab"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[5].chapters[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/automata-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "af4f38748a29853a0f896db00130b68bb7d0ba6452661d230a9ea094c5c1462b",
+        "bytes": 35054,
+        "declaredSha256": "020db357c5e461217c60d863a57e2dd12d2918598e0095486763bb3b3249865b"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[5].chapters[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/automata-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "7b83e08156f99fdf747ee85427e0264f9b14633cd75c1ccb1b85b1025489b73a",
+        "bytes": 38044,
+        "declaredSha256": "fdcf2d790ccb3a814060dbd8da5975ce39ec61a5df57d5989020cb1b92a6ada2"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[5].chapters[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/automata-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "80c4bf87b435f266729ddc87dba7f7b759525ea67903dbc20275672c8cafa144",
+        "bytes": 44321,
+        "declaredSha256": "914cd13151b191e31af838bd40e4945dea4de5ccda2569294adb4844a0510fe7"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[5].chapters[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/automata-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "1d2127f023bf45734d2a42b7a0c0f9d253945eddedbad14be2e9808d3f79e208",
+        "bytes": 40758,
+        "declaredSha256": "a03bd73b2d63d49c571d65d2afaffa39811f1a1d0a160a65fbbd2dac0060183f"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-primary-attempt2-20261001.json",
+        "field": "$.profiles[5].profilePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-58-47-076Z/automata-profile.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "4fcafe8eb6ad3cb7a4a1d35aae04bda18f259c26ae6b748001ad66b8dc7bd4da",
+        "bytes": 317068,
+        "declaredSha256": "ab09cae31697029376d3e6eaabdcae5fd1fdbb42e3f70e2ae05f76fc8a7a735c"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[0].chapters[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/orcs-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "f92de4230e4b87361900f4af4a8a17af1e532b8f308bce9ac3ae9b8c32534ff9",
+        "bytes": 51257,
+        "declaredSha256": "3f5f99d1effd7d8f85ac488884d60e562de41b7e2c49b293218ace988a77f52d"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[0].chapters[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/orcs-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "8c997724490f837cabfdb2e78a2a51727e3ccae2fd62115f971adbb7a311a96f",
+        "bytes": 43156,
+        "declaredSha256": "ccd84c40bf6f649632a7d8b6b9822c386ea8e612324522ec417f5ea50659858c"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[0].chapters[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/orcs-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "401b26e77c9c270cc15a29144de89988fa36d5e62a146c62d7fa4e5219d7dcb7",
+        "bytes": 37656,
+        "declaredSha256": "86c34fa399288a924f7dcc45da2a6cbd8484d3eba58deaf4deccbae317e25a12"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[0].chapters[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/orcs-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "4af68597151c6bdbef5d113a151de734cd7ba0e6e02f44587676d6b8e38f57ac",
+        "bytes": 38822,
+        "declaredSha256": "57e62ed326331cf9cea949a9a34e5c62bac3da891a77264c782c18ceef00236a"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[0].profilePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/orcs-profile.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "5856045b877c7bf646c123444da9613b03fd7fef0e9efb13aadea7bf7c79735c",
+        "bytes": 331450,
+        "declaredSha256": "54b4dd0431bd2f13134089f6779eeb7bc192f762b5c4e7e2d9f7971dbf28faaf"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[1].chapters[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/fairies-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "80b444e3b80140fca2281eb0795b50f5bf374f529b1c0f0aef50531002449a13",
+        "bytes": 43160,
+        "declaredSha256": "61433fd33f18db8ae1ab9b18f2614281951ac4e3d73bf096bc73dc2f1c769b1c"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[1].chapters[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/fairies-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "8b75e2f2f89a3f741da9b3033fb77f52283bfb8b1af73e9816038cc109eb6a77",
+        "bytes": 49257,
+        "declaredSha256": "6b7edb2013a992245ce32f50affe12b49587e20e9502dbab1864b03defe803ff"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[1].chapters[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/fairies-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "d4f8f923f9e14bd3efecfee82f89d4d65d085ba5b89094e6a0edaf83a0dba4fb",
+        "bytes": 35799,
+        "declaredSha256": "68615ea7a1ca8764b64d8a2db9269aa5d8f0907ef71cf782cdee14f8a86ec187"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[1].chapters[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/fairies-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "86e680226d49cf9ad0e1977b364199ed8cbacdf7bd147e5ff2c3eedc806d6588",
+        "bytes": 39889,
+        "declaredSha256": "0d67b867c064ba080f9ba580ad23fc9b6cbe56541522b81ab97bedc49075cb45"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[1].profilePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/fairies-profile.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "a4aa2b2cc4a1f5a1d791c4122eabf662fc2cf04562485a527f891fcaed3a21f0",
+        "bytes": 326014,
+        "declaredSha256": "8172781bf1c4fbea373028c3287e0705136eebf59546d4c5bad92ab288803ac9"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[2].chapters[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/dwarves-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "11abf5c2f7a882e5b96ed1eeea2f573b97bcf60019f78a345b509311702460ff",
+        "bytes": 39603,
+        "declaredSha256": "6e8ac146be4eafcc5817f0f933d37751ca8612859ab0a3fd6de0f68460f6b9fd"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[2].chapters[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/dwarves-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "9fc6f9c41377153954520d575093e5f3b09ebd724262ce8e9beaa7ada58b007d",
+        "bytes": 43693,
+        "declaredSha256": "0307e75d66a2a141169b798a343304cc5fafc5f187bcab133922b5b9626d1064"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[2].chapters[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/dwarves-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "bfa29da9c7ff80372cb8172751835be4ed13d36261dae4d824d1360d3917e523",
+        "bytes": 39626,
+        "declaredSha256": "f65e6678166f78373d966c50ddf4b4a88f547b0043517a9ce8d5e4c3731b2676"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[2].chapters[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/dwarves-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "a6af971b12c7caa277d5ea1bb973a55a8348579bcb32c5cb954c02fb3ad532e0",
+        "bytes": 38502,
+        "declaredSha256": "06cf35b91febe37f4a39a07f11aaaa1158e77bba90404f1fb6d69cd0c35eea69"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[2].profilePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/dwarves-profile.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "f30dd249c9c0130b40d158317886e9b21101498559f2bc47839ae456fcf74f61",
+        "bytes": 326751,
+        "declaredSha256": "10487b4b5472418cbe61f07c4a1f7d85dbd19b83e73bfb28aca43ac0378ae152"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[3].chapters[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/undead-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "90c95c17c72591fbac19f733669bbc088f204e598b694ac44ba7814550cbbf88",
+        "bytes": 45211,
+        "declaredSha256": "124fe9a7f8b4400a939dbf80ea43bac46127a0c772580dcbb26818f51cda953b"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[3].chapters[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/undead-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "ac20bb0a19426146378fdc741df0273bbb125fa4451d8e4d42e514e8afde62ad",
+        "bytes": 38235,
+        "declaredSha256": "2239fcbf626918ca29273a9356403509ac27befae934d31cb7eea11532834c71"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[3].chapters[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/undead-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "fd7585771bcb128e71de39ee712764dc6427f89a4b426668e6f7738d74d5d7cf",
+        "bytes": 39768,
+        "declaredSha256": "add952b64c01ae1920df3b07a96f27c61f7060c171fc839a9869b9494de5ce29"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[3].chapters[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/undead-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "58e0997ee46d444cfcc224c1831ad9940c35caf2d8a2a896e5efb5dbd51a9cd5",
+        "bytes": 46540,
+        "declaredSha256": "9734cfdf96bca48cff2edfd4dac1454aa473e2f43f789420c385ef99c31bfed9"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[3].profilePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/undead-profile.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "cbca948a03d6ca4ce708cb19df7b6f6df9b7b46a22b98df2467ec4718a8e8154",
+        "bytes": 337586,
+        "declaredSha256": "308a501d828a2d8eb32dc170d3b65fd28fbf628840e88d847fa6b0f9c1523300"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[4].chapters[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/tideborn-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "800e83da691bd358e1e6bd32b504cf32262be2ca5328bcc3fb6bf7e33e0ba761",
+        "bytes": 54191,
+        "declaredSha256": "795661d2421d3d8bae7b0a5109ee09f64b07dc989097700028aec42bafe6fbd9"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[4].chapters[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/tideborn-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "46d924c98646a90d69327fc565261f051daaf51e04b7594d052c395e6b5c7de6",
+        "bytes": 38482,
+        "declaredSha256": "c1a8104ab5cea9ebbb049f89027580c477177b5e79e875e4c4de53462fc39163"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[4].chapters[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/tideborn-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "cd8514faf5b846a999fcd2dbc7720653f579c4e177accf739c784907edfd9f28",
+        "bytes": 46974,
+        "declaredSha256": "ce81de15d66583d10447387972242dd12880136730461d28ae2be94a4fcedaab"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[4].chapters[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/tideborn-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "5d168e67fe9b63c725504a1f63b30bf87458a2f83cf2d35843cda18f25e20987",
+        "bytes": 40375,
+        "declaredSha256": "d38934e156fe8ed49cb074adbb89fad9f84c8b33eb2d0577f5c027eb41b58357"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[4].profilePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/tideborn-profile.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "7f70f2dc202fb14e9b97f704f16a3f81ac1050bb21e635c6de27dc82d028df38",
+        "bytes": 353619,
+        "declaredSha256": "3ce6e1d8a476ff83c96eddec3089dcbb7231b984503e93247946f1347a589df0"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[5].chapters[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/automata-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "af4f38748a29853a0f896db00130b68bb7d0ba6452661d230a9ea094c5c1462b",
+        "bytes": 35054,
+        "declaredSha256": "020db357c5e461217c60d863a57e2dd12d2918598e0095486763bb3b3249865b"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[5].chapters[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/automata-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "7b83e08156f99fdf747ee85427e0264f9b14633cd75c1ccb1b85b1025489b73a",
+        "bytes": 38044,
+        "declaredSha256": "fdcf2d790ccb3a814060dbd8da5975ce39ec61a5df57d5989020cb1b92a6ada2"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[5].chapters[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/automata-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "b02d34762fc3a82e84bd41f7cbe36b42ce003bcf17b9f5be7e75ad9e3074e702",
+        "bytes": 55994,
+        "declaredSha256": "1f2e3df17a0da2c4ed2f0f4f7a0992baac4856cca702c17cce685d059c04c043"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[5].chapters[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/automata-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "05252aa965f0a5f867fba59be5e0b21480e8c0aae487cafa4c15280483d02fb3",
+        "bytes": 40737,
+        "declaredSha256": "626b506bf200572d9f0bfa5e79b8477774c3af624b0c135e4a7c04a9783d0185"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt1-20261001.json",
+        "field": "$.profiles[5].profilePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-47-31-507Z/automata-profile.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "08848a1c55a88774d4630ff8decc343305727124d85d36188a26376a902849b6",
+        "bytes": 326803,
+        "declaredSha256": "b3cd52127ee3cd7f489d9ccef3e4c6fab0c053af150aadfbead344eb1a8af9ea"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[0].chapters[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/orcs-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "f92de4230e4b87361900f4af4a8a17af1e532b8f308bce9ac3ae9b8c32534ff9",
+        "bytes": 51257,
+        "declaredSha256": "3f5f99d1effd7d8f85ac488884d60e562de41b7e2c49b293218ace988a77f52d"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[0].chapters[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/orcs-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "8c997724490f837cabfdb2e78a2a51727e3ccae2fd62115f971adbb7a311a96f",
+        "bytes": 43156,
+        "declaredSha256": "ccd84c40bf6f649632a7d8b6b9822c386ea8e612324522ec417f5ea50659858c"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[0].chapters[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/orcs-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "401b26e77c9c270cc15a29144de89988fa36d5e62a146c62d7fa4e5219d7dcb7",
+        "bytes": 37656,
+        "declaredSha256": "86c34fa399288a924f7dcc45da2a6cbd8484d3eba58deaf4deccbae317e25a12"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[0].chapters[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/orcs-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "4af68597151c6bdbef5d113a151de734cd7ba0e6e02f44587676d6b8e38f57ac",
+        "bytes": 38822,
+        "declaredSha256": "57e62ed326331cf9cea949a9a34e5c62bac3da891a77264c782c18ceef00236a"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[0].profilePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/orcs-profile.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "5856045b877c7bf646c123444da9613b03fd7fef0e9efb13aadea7bf7c79735c",
+        "bytes": 331450,
+        "declaredSha256": "54b4dd0431bd2f13134089f6779eeb7bc192f762b5c4e7e2d9f7971dbf28faaf"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[1].chapters[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/fairies-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "80b444e3b80140fca2281eb0795b50f5bf374f529b1c0f0aef50531002449a13",
+        "bytes": 43160,
+        "declaredSha256": "61433fd33f18db8ae1ab9b18f2614281951ac4e3d73bf096bc73dc2f1c769b1c"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[1].chapters[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/fairies-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "8b75e2f2f89a3f741da9b3033fb77f52283bfb8b1af73e9816038cc109eb6a77",
+        "bytes": 49257,
+        "declaredSha256": "6b7edb2013a992245ce32f50affe12b49587e20e9502dbab1864b03defe803ff"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[1].chapters[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/fairies-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "d4f8f923f9e14bd3efecfee82f89d4d65d085ba5b89094e6a0edaf83a0dba4fb",
+        "bytes": 35799,
+        "declaredSha256": "68615ea7a1ca8764b64d8a2db9269aa5d8f0907ef71cf782cdee14f8a86ec187"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[1].chapters[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/fairies-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "86e680226d49cf9ad0e1977b364199ed8cbacdf7bd147e5ff2c3eedc806d6588",
+        "bytes": 39889,
+        "declaredSha256": "0d67b867c064ba080f9ba580ad23fc9b6cbe56541522b81ab97bedc49075cb45"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[1].profilePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/fairies-profile.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "a4aa2b2cc4a1f5a1d791c4122eabf662fc2cf04562485a527f891fcaed3a21f0",
+        "bytes": 326014,
+        "declaredSha256": "8172781bf1c4fbea373028c3287e0705136eebf59546d4c5bad92ab288803ac9"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[2].chapters[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/dwarves-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "11abf5c2f7a882e5b96ed1eeea2f573b97bcf60019f78a345b509311702460ff",
+        "bytes": 39603,
+        "declaredSha256": "6e8ac146be4eafcc5817f0f933d37751ca8612859ab0a3fd6de0f68460f6b9fd"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[2].chapters[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/dwarves-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "9fc6f9c41377153954520d575093e5f3b09ebd724262ce8e9beaa7ada58b007d",
+        "bytes": 43693,
+        "declaredSha256": "0307e75d66a2a141169b798a343304cc5fafc5f187bcab133922b5b9626d1064"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[2].chapters[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/dwarves-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "bfa29da9c7ff80372cb8172751835be4ed13d36261dae4d824d1360d3917e523",
+        "bytes": 39626,
+        "declaredSha256": "f65e6678166f78373d966c50ddf4b4a88f547b0043517a9ce8d5e4c3731b2676"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[2].chapters[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/dwarves-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "a6af971b12c7caa277d5ea1bb973a55a8348579bcb32c5cb954c02fb3ad532e0",
+        "bytes": 38502,
+        "declaredSha256": "06cf35b91febe37f4a39a07f11aaaa1158e77bba90404f1fb6d69cd0c35eea69"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[2].profilePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/dwarves-profile.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "f30dd249c9c0130b40d158317886e9b21101498559f2bc47839ae456fcf74f61",
+        "bytes": 326751,
+        "declaredSha256": "10487b4b5472418cbe61f07c4a1f7d85dbd19b83e73bfb28aca43ac0378ae152"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[3].chapters[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/undead-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "90c95c17c72591fbac19f733669bbc088f204e598b694ac44ba7814550cbbf88",
+        "bytes": 45211,
+        "declaredSha256": "124fe9a7f8b4400a939dbf80ea43bac46127a0c772580dcbb26818f51cda953b"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[3].chapters[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/undead-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "ac20bb0a19426146378fdc741df0273bbb125fa4451d8e4d42e514e8afde62ad",
+        "bytes": 38235,
+        "declaredSha256": "2239fcbf626918ca29273a9356403509ac27befae934d31cb7eea11532834c71"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[3].chapters[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/undead-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "fd7585771bcb128e71de39ee712764dc6427f89a4b426668e6f7738d74d5d7cf",
+        "bytes": 39768,
+        "declaredSha256": "add952b64c01ae1920df3b07a96f27c61f7060c171fc839a9869b9494de5ce29"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[3].chapters[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/undead-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "58e0997ee46d444cfcc224c1831ad9940c35caf2d8a2a896e5efb5dbd51a9cd5",
+        "bytes": 46540,
+        "declaredSha256": "9734cfdf96bca48cff2edfd4dac1454aa473e2f43f789420c385ef99c31bfed9"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[3].profilePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/undead-profile.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "cbca948a03d6ca4ce708cb19df7b6f6df9b7b46a22b98df2467ec4718a8e8154",
+        "bytes": 337586,
+        "declaredSha256": "308a501d828a2d8eb32dc170d3b65fd28fbf628840e88d847fa6b0f9c1523300"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[4].chapters[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/tideborn-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "800e83da691bd358e1e6bd32b504cf32262be2ca5328bcc3fb6bf7e33e0ba761",
+        "bytes": 54191,
+        "declaredSha256": "795661d2421d3d8bae7b0a5109ee09f64b07dc989097700028aec42bafe6fbd9"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[4].chapters[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/tideborn-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "46d924c98646a90d69327fc565261f051daaf51e04b7594d052c395e6b5c7de6",
+        "bytes": 38482,
+        "declaredSha256": "c1a8104ab5cea9ebbb049f89027580c477177b5e79e875e4c4de53462fc39163"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[4].chapters[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/tideborn-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "cd8514faf5b846a999fcd2dbc7720653f579c4e177accf739c784907edfd9f28",
+        "bytes": 46974,
+        "declaredSha256": "ce81de15d66583d10447387972242dd12880136730461d28ae2be94a4fcedaab"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[4].chapters[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/tideborn-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "5d168e67fe9b63c725504a1f63b30bf87458a2f83cf2d35843cda18f25e20987",
+        "bytes": 40375,
+        "declaredSha256": "d38934e156fe8ed49cb074adbb89fad9f84c8b33eb2d0577f5c027eb41b58357"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[4].profilePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/tideborn-profile.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "7f70f2dc202fb14e9b97f704f16a3f81ac1050bb21e635c6de27dc82d028df38",
+        "bytes": 353619,
+        "declaredSha256": "3ce6e1d8a476ff83c96eddec3089dcbb7231b984503e93247946f1347a589df0"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[5].chapters[0].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/automata-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "af4f38748a29853a0f896db00130b68bb7d0ba6452661d230a9ea094c5c1462b",
+        "bytes": 35054,
+        "declaredSha256": "020db357c5e461217c60d863a57e2dd12d2918598e0095486763bb3b3249865b"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[5].chapters[1].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/automata-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "7b83e08156f99fdf747ee85427e0264f9b14633cd75c1ccb1b85b1025489b73a",
+        "bytes": 38044,
+        "declaredSha256": "fdcf2d790ccb3a814060dbd8da5975ce39ec61a5df57d5989020cb1b92a6ada2"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[5].chapters[2].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/automata-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "b02d34762fc3a82e84bd41f7cbe36b42ce003bcf17b9f5be7e75ad9e3074e702",
+        "bytes": 55994,
+        "declaredSha256": "1f2e3df17a0da2c4ed2f0f4f7a0992baac4856cca702c17cce685d059c04c043"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[5].chapters[3].journal.archivePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/automata-4.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "05252aa965f0a5f867fba59be5e0b21480e8c0aae487cafa4c15280483d02fb3",
+        "bytes": 40737,
+        "declaredSha256": "626b506bf200572d9f0bfa5e79b8477774c3af624b0c135e4a7c04a9783d0185"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-alternate-attempt2-20261001.json",
+        "field": "$.profiles[5].profilePath",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/campaign-content/profiles/2026-10-01T12-59-01-820Z/automata-profile.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "JSON.stringify-value",
+        "sha256": "08848a1c55a88774d4630ff8decc343305727124d85d36188a26376a902849b6",
+        "bytes": 326803,
+        "declaredSha256": "b3cd52127ee3cd7f489d9ccef3e4c6fab0c053af150aadfbead344eb1a8af9ea"
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-conquest-attempt1-20261001.json",
+        "field": "$.journals[0].path",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/scenarios/native-conquest-archives-attempt1/expired-passage.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "a6351e67a072bec4406b51e2a405eea7aff1ee4dd2c846b12d61ec32b94dad86",
+        "bytes": 202517,
+        "declaredSha256": "a6351e67a072bec4406b51e2a405eea7aff1ee4dd2c846b12d61ec32b94dad86",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-conquest-attempt1-20261001.json",
+        "field": "$.journals[1].path",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/scenarios/native-conquest-archives-attempt1/allied-passage-1.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "d48b1bf1f422dbaf0f41bab4be4d6447197dbdcbeca04179cf53a04750479071",
+        "bytes": 46353,
+        "declaredSha256": "d48b1bf1f422dbaf0f41bab4be4d6447197dbdcbeca04179cf53a04750479071",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-conquest-attempt1-20261001.json",
+        "field": "$.journals[2].path",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/scenarios/native-conquest-archives-attempt1/allied-passage-2.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "03f372b500936474689f3c119d536e96abdb7672f7afdd49cd9d84e2c96470e7",
+        "bytes": 46396,
+        "declaredSha256": "03f372b500936474689f3c119d536e96abdb7672f7afdd49cd9d84e2c96470e7",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-conquest-attempt1-20261001.json",
+        "field": "$.journals[3].path",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/scenarios/native-conquest-archives-attempt1/allied-passage-3.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "8a4abb24df38c5f45902fbeb4d4cf313f83c7dabe2920f0131b1a3b9155b68ce",
+        "bytes": 45769,
+        "declaredSha256": "8a4abb24df38c5f45902fbeb4d4cf313f83c7dabe2920f0131b1a3b9155b68ce",
+        "declaredRawHashMatches": true
+      },
+      {
+        "report": "docs/evidence/campaigns/native-commanders-conquest-attempt1-20261001.json",
+        "field": "$.journals[4].path",
+        "originalPath": "/home/morgana/.codex/worktrees/scenario-campaign/orcs-vs-Fairies/work/scenarios/native-conquest-archives-attempt1/multiple-allies.json",
+        "presentAtRead": true,
+        "declaredHashMeaning": "raw-file",
+        "sha256": "737e28178a612043657a1fedb963fed3c4857dd808038eff673f51b18bc6f083",
+        "bytes": 45541,
+        "declaredSha256": "737e28178a612043657a1fedb963fed3c4857dd808038eff673f51b18bc6f083",
+        "declaredRawHashMatches": true
+      }
+    ],
+    "limits": "Existence/raw hash mapping is retention evidence only; no journal decode/replay or original success claim is inferred. These earlier attempt files contain old run pins and both successful/intended-failure journals.",
+    "preservation": "Keep all historical attempt reports, failed/partial native/browser packets, source snapshots, logs, receipts and originals unchanged. Older demo/main-save3 labels and old pins remain old. If Git already preserves bytes, reference their immutable blob plus separate external closure rather than recopying convenience trees."
+  },
+  "duplicatePolicy": {
+    "avoidNewConvenienceCopies": "Tracked src/public/config/scripts/tests bytes can be preserved once in Git with full pin/blob/hash/byte mapping; do not add fresh unreferenced source/ or public/ copies solely for a handoff.",
+    "mandatoryEmittedPayloadsRemain": "This does not permit stripping native/browser source.bundle, the complete canonical production/public files, fixtures/raw downloads, exact compiled helper bytes, historical source snapshots or any manifest-listed file. Each frozen interface still needs its named paths and bytes.",
+    "newRelocationRecord": "Keep original manifests and path keys untouched. Add a separate parent inventory mapping every required original/logical path to retained relative path or immutable Git blob,sha256,bytes,original run pin,role and hash meaning. Give partial/failure packets their own inventories.",
+    "independentFinalHash": "Hash final parent manifest and admission/review artifacts independently; avoid self-hash claims."
+  },
+  "requirementsUnchanged": "Original71-80/99 titles, clauses,status=in-progress,evidence=[] stay unchanged. No supplemental campaign/diplomacy/claim examples become gates. Static retention planning grants no execution release or feature promotion.",
+  "remainingBeforeFinalStaticReview": "Parent creates a new owned/tmp retention-plan; independently review its exact bytes and references. No actual future native/fixture/browser packet exists from this planning task."
+}

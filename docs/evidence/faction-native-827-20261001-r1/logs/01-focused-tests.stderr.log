@@ -1,0 +1,47 @@
+Running as unit: ovf-faction-827-r1-01-focused-tests.service
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 3 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/replays.test.ts[2m > [22mbrowser replay simulation[2m > [22mkeeps the genuine prior 3.1 match inspectable and rejects its older numerical rules
+[31m[1mError[22m: ENOENT: no such file or directory, open '/home/morgana/.codex/worktrees/faction-economy-cleanup/orcs-vs-Fairies/docs/evidence/rules-3.1-replay-20261001/replay.json'[39m
+[36m [2m❯[22m tests/replays.test.ts:[2m11:43[22m[39m
+    [90m  9|[39m [34mdescribe[39m([32m'browser replay simulation'[39m[33m,[39m()[33m=>[39m{
+    [90m 10|[39m   it('keeps the genuine prior 3.1 match inspectable and rejects its ol…
+    [90m 11|[39m     const archive=decodeReplay(JSON.parse(readFileSync(new URL('../doc…
+    [90m   |[39m                                           [31m^[39m
+    [90m 12|[39m     [34mexpect[39m(archive[33m.[39minitial[33m.[39mversion)[33m.[39m[34mtoBe[39m([34m3[39m)[33m;[39m
+    [90m 13|[39m     [34mexpect[39m(archive[33m.[39msimulationRevision)[33m.[39m[34mtoBe[39m([32m'3.1.0'[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/save4-rule-revision.test.ts[2m > [22mSAVE4 rules 4.0.0 history after the 4.0.1 gameplay repairs[2m > [22mpreserves the genuine browser game and replay while requiring new history for continuation
+[31m[1mError[22m: ENOENT: no such file or directory, open '/home/morgana/.codex/worktrees/faction-economy-cleanup/orcs-vs-Fairies/docs/evidence/controls-final-af44da4-20261001/gamepad/gamepad-native-session.json'[39m
+[36m [2m❯[22m capturedSession tests/save4-rule-revision.test.ts:[2m11:17[22m[39m
+    [90m  9|[39m
+    [90m 10|[39m [35mconst[39m capturedSession [33m=[39m () [33m=>[39m {
+    [90m 11|[39m   const bytes = readFileSync(new URL('../docs/evidence/controls-final-…
+    [90m   |[39m                 [31m^[39m
+    [90m 12|[39m   expect(createHash('sha256').update(bytes).digest('hex')).toBe('91ae0…
+    [90m 13|[39m   [35mreturn[39m [33mJSON[39m[33m.[39m[34mparse[39m(bytes[33m.[39m[34mtoString[39m())[33m;[39m
+[90m [2m❯[22m tests/save4-rule-revision.test.ts:[2m18:20[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/save4-rule-revision.test.ts[2m > [22mSAVE4 rules 4.0.0 history after the 4.0.1 gameplay repairs[2m > [22mkeeps an omitted SAVE4 replay rules pin mapped to its original revision
+[31m[1mError[22m: ENOENT: no such file or directory, open '/home/morgana/.codex/worktrees/faction-economy-cleanup/orcs-vs-Fairies/docs/evidence/controls-final-af44da4-20261001/gamepad/gamepad-native-session.json'[39m
+[36m [2m❯[22m capturedSession tests/save4-rule-revision.test.ts:[2m11:17[22m[39m
+    [90m  9|[39m
+    [90m 10|[39m [35mconst[39m capturedSession [33m=[39m () [33m=>[39m {
+    [90m 11|[39m   const bytes = readFileSync(new URL('../docs/evidence/controls-final-…
+    [90m   |[39m                 [31m^[39m
+    [90m 12|[39m   expect(createHash('sha256').update(bytes).digest('hex')).toBe('91ae0…
+    [90m 13|[39m   [35mreturn[39m [33mJSON[39m[33m.[39m[34mparse[39m(bytes[33m.[39m[34mtoString[39m())[33m;[39m
+[90m [2m❯[22m tests/save4-rule-revision.test.ts:[2m51:20[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯[22m[39m
+
+          Finished with result: exit-code
+Main processes terminated with: code=exited, status=1/FAILURE
+               Service runtime: 27.190s
+             CPU time consumed: 38.638s
+                   Memory peak: 589M (swap: 0B)

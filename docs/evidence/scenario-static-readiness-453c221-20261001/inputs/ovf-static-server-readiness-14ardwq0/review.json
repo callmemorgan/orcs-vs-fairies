@@ -1,0 +1,55 @@
+{
+  "format": "ovf-static-server-readiness-review",
+  "reviewedSourceReadPin": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+  "observedCleanRootHead": "01b5ae61a365a45447df7aa548f7bfde9ed6cc22",
+  "serverSourceAndBuildScriptUnchangedBetweenPins": true,
+  "executionHeld": true,
+  "checksPerformed": [
+    "File reads and Git comparisons only",
+    "bash -n start-server.sh invocations.sh passed",
+    "Python ast.parse record-server-launch.py passed"
+  ],
+  "hashes": {
+    "/tmp/ovf-scenario-rules401-readiness.UCDZqh/start-server.sh": "5105b85ac991ce98ad35145a15fc40f39a6ee1927f359b1c294388847eab2e20",
+    "/tmp/ovf-scenario-rules401-readiness.UCDZqh/record-server-launch.py": "dc932b04ddbd68dceb07086acd9e39a7d34eaa33e5093477ec898f8b359e2845",
+    "/tmp/ovf-scenario-rules401-readiness.UCDZqh/canonical-execution.json": "f53ae0e733967f7c6ff1e5fb5b981d7577a2caaa901b4e33085c6a4e3a0acf0b",
+    "/tmp/ovf-scenario-rules401-readiness.UCDZqh/invocations.sh": "4d9a3904d098b5ef3b22edc77df8514ed6ca3dc5428fe259b7def91e7370aea7",
+    "/home/morgana/Projects/orcs-vs-Fairies/src/server/main.ts": "51363f67f3e7b1829e6e20d346c561b7dcdeb2ba223fb7f1d9de28ad19c379ac",
+    "/home/morgana/Projects/orcs-vs-Fairies/src/server/campaign-verification.ts": "786e60e4db0d65dcaadf7f6d8bb3aa1af9633cc27d5a36374ae70f07f71a6c27",
+    "/home/morgana/Projects/orcs-vs-Fairies/src/server/canonical-campaign.ts": "bf87aa9996a58ddceb7e097069b4f971324f49e44a035a8c1768ea226f1703bf",
+    "/home/morgana/Projects/orcs-vs-Fairies/scripts/build-server.mjs": "6f036a184206640a48f503915fa08d267109a7c408aa4e97837bb2eab8d137bd"
+  },
+  "findings": [
+    {
+      "kind": "concrete-recipe-inconsistency",
+      "references": [
+        "/tmp/ovf-scenario-rules401-readiness.UCDZqh/canonical-execution.json:10",
+        "/tmp/ovf-scenario-rules401-readiness.UCDZqh/canonical-execution.json:26",
+        "/tmp/ovf-scenario-rules401-readiness.UCDZqh/invocations.sh:9",
+        "/tmp/ovf-scenario-rules401-readiness.UCDZqh/invocations.sh:12",
+        "/tmp/ovf-scenario-rules401-readiness.UCDZqh/invocations.sh:17",
+        "/tmp/ovf-scenario-rules401-readiness.UCDZqh/invocations.sh:72"
+      ],
+      "description": "JSON refers to SCENARIO_BROWSER_FIXTURE_DIR, SCENARIO_CONTROLS_BUILD_MANIFEST and SCENARIO_BROWSER_EVIDENCE; the shell reference defines SCENARIO_FIXTURE_DIR, uses SCENARIO_CONTROLS_OUTPUT/build-manifest.json, and defines SCENARIO_BROWSER_PACKAGE. JSON commands cannot be copied into that variable context without aliases or consistent names.",
+      "suggestedResolution": "Use the shell names throughout JSON or define explicit aliases before any JSON command is copied."
+    }
+  ],
+  "readyMechanics": {
+    "cwdOrigin": "All three launches use one start-server.sh wrapper. It changes to the absolute frozen source, checks full HEAD pin, and sets fixed host127.0.0.2/port5307/originhttp://127.0.0.2:5307. main.ts reads the tournament smoke config relative to that cwd.",
+    "databaseWriterLock": "start-server.sh:29-33 opens FD9 on the DB lock file and obtains exclusive nonblocking flock before receipt/exec. Bash exec preserves the open lock descriptor in Node; the lock lasts until that owned process exits. Using > truncates content but keeps the inode and does not replace the lock file. Root termination checks remain required for services that do not use this advisory lock.",
+    "runtimeAbsence503": "invocations.sh:53-58 creates a new staging directory, copies the intact rts-server.js and canonical-campaign.mjs unchanged, verifies equality with cmp, and requires absent runtime. main.ts:16 constructs a worker lazily. canonical-campaign.ts:5-7 fails the worker import when runtime is absent; campaign-verification.ts:23-27 maps import rejection to503, and server.ts:296,298,400 returns that status before any award call.",
+    "receiptPid": "start-server.sh:31 records $$ and line33 execs env then Node, preserving PID. Recorder uses exclusive create for receipt (line38) and launcher uses noclobber for log (line32). The receipt records stage, real resolved paths, pin, Node version, server hashes, manifest hash and index hash.",
+    "ordering": "All launch handoffs are explicitly separate foreground sessions. flock rejects a recipe launch while its predecessor still holds this same DB lock.",
+    "failurePaths": "set-e causes path/pin/stage/flock/receipt failure to stop before Node. Missing runtime becomes real verification503; awards occur only after successful verified worker result. A failed bind can leave a launch receipt and log because the receipt is written before exec.",
+    "observability": "Receipt is a pre-exec launch record. Its processId must be checked against the owned live process and actual health/served-byte evidence prescribed at invocations.sh:68-69; existence of receipt alone is not proof of startup success.",
+    "staleWrites": "Same DB is serial for wrapper instances. Missing-runtime claim cannot reach awardCampaignVictory. Original intact bundles are never removed by unavailable provisioning.",
+    "verification": "No runtime tests performed because all execution is held; conclusions about launch and503 behavior are static."
+  },
+  "dispatchPrerequisites": [
+    "Supply actual full final freeze pin in invocations.sh:5; current inspected c86 candidate is historical to observed01b5 clean root.",
+    "Authenticate freshly built server bundles against frozen inputs and retain expected hashes before launch. record-server-launch.py:12-26 records hashes but does not itself compare bundle bytes to an admitted build inventory; scripts/build-server.mjs:5-9 does not emit source-to-bundle provenance.",
+    "Compare unavailable receipts to the admitted intact bundle hashes, and restored receipt to all three admitted bundle hashes. cp/cmp checks link staging to current original files, while future receipt comparisons link them to the admitted build.",
+    "Verify actual owned process exit and DB writer termination before every handoff, and health plus served static-byte authentication after launch.",
+    "Supply genuine completed Orc profile path before the separate HTTP proof at invocations.sh:81."
+  ]
+}
