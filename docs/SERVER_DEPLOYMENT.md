@@ -45,6 +45,8 @@ A player ticket always uses the account's owned side. The server ignores a reque
 
 A spectator ticket accepts `perspective` for any configured side and `view: "player"` or `view: "team"`. Team views merge only stored teammate observations at the delayed tick, including their private player data in `teamPlayers`. They never read current match state to fill gaps. The configured delay applies to both spectator views, and spectators cannot issue commands. The online command `{ "type": "surrender" }` removes the owning player's forces through the authoritative match; teammates may continue until the core determines the team result. The receipt and result use the same journal and checkpoint recovery as other commands.
 
+The [team server verification](evidence/SERVER_TEAMS.md) records the eight-client, co-op, handicap, spectator and restart checks. Run `node scripts/server/team-smoke.mjs ORIGIN` for the external eight-client service check. Its `--save` and `--resume` modes verify the same sessions and receipt after restarting a compatible build with the same data directory.
+
 ## Configuration
 
 Paths are relative to the server process's working directory unless they are absolute. Keep the data directory separate from the build outputs so a release cannot replace persistent data.
