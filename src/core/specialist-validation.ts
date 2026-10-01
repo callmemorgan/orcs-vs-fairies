@@ -22,8 +22,8 @@ function number(value:unknown,path:string,min=0,max=MAX_ID,integer=false):number
 function flag(value:unknown,path:string):boolean {if(typeof value!=='boolean')bad(path,'expected a boolean');return value;}
 function choice(value:unknown,path:string,values:readonly string[]):string {if(typeof value!=='string'||!values.includes(value))bad(path,'unknown value');return value;}
 function list(value:unknown,path:string,max:number):unknown[] {if(!Array.isArray(value)||value.length>max)bad(path,'invalid array length');return value;}
-function position(value:unknown,path:string,s:GameState,extraRequired:string[]=[]):RecordValue {
- const p=object(value,path,['x','y',...extraRequired],['level']);
+function position(value:unknown,path:string,s:GameState,extraRequired:string[]=[],extraOptional:string[]=[]):RecordValue {
+ const p=object(value,path,['x','y',...extraRequired],['level',...extraOptional]);
  number(p.x,`${path}.x`,0,s.width);number(p.y,`${path}.y`,0,s.height);
  if(p.level!==undefined)number(p.level,`${path}.level`,0,3,true);
  return p;
@@ -81,7 +81,8 @@ function validateBurning(s:GameState,e:Entity,path:string,entities:Map<number,En
  list(e.burning,`${path}.burning`,64).forEach((value,i)=>{
   const p=`${path}.burning[${i}]`,fire=object(value,p,['source','side','until','nextAt','damage'],['origin']);
   const source=number(fire.source,`${p}.source`,1,s.nextId-1,true),side=number(fire.side,`${p}.side`,0,s.players.length-1,true);
-  if(entities.has(source)&&entities.get(source)!.side!==side)bad(`${p}.side`,'fire side differs from the source entity');
+  const actor=entities.get(source);
+  if(actor&&actor.side!==side&&!(actor.kind==='unit'&&actor.role==='siege'&&actor.definitionFaction!==undefined))bad(`${p}.side`,'fire side differs from the source entity');
   number(fire.until,`${p}.until`,0,s.time+6);
   number(fire.nextAt,`${p}.nextAt`,0,s.time+1);number(fire.damage,`${p}.damage`,Number.MIN_VALUE,100);
   if(fire.origin!==undefined)position(fire.origin,`${p}.origin`,s);
@@ -142,14 +143,16 @@ function validateStructures(s:GameState,state:RecordValue,entities:Map<number,En
    const points=list(record.tiles,`${p}.tiles`,3);if(points.length!==3)bad(`${p}.tiles`,'temporary bridge requires three tiles');
    let previous:RecordValue|undefined;
    points.forEach((value,j)=>{
-    const q=`${p}.tiles[${j}]`,point=position(value,q,s,['previous','placed']);
+    const q=`${p}.tiles[${j}]`,point=position(value,q,s,['previous','placed'],['stamp']);
     if((point.x as number)%1!==.5||(point.y as number)%1!==.5)bad(q,'bridge tiles must use tile centers');
+    if(point.stamp!==undefined)number(point.stamp,`${q}.stamp`,0,1e12,true);
     choice(point.previous,`${q}.previous`,['water','shallows','grass','road']);if(point.placed!=='bridge')bad(`${q}.placed`,'temporary bridge must place bridge terrain');
     if(previous&&((point.x as number)!==(previous.x as number)+1||point.y!==previous.y||(point.level??0)!==(previous.level??0)))bad(q,'bridge tiles must be consecutive on the same level');
     const key=`${point.level??0}:${point.x}:${point.y}`;if(tiles.has(key))bad(q,'temporary bridge tiles overlap');tiles.add(key);previous=point;
    });
   }
  });
+ for(const e of s.entities)if(e.hp>0&&e.kind==='building'&&buildingFor(s,e).tags?.includes('barricade')&&!barricades.has(e.id))bad('state.specialists.structures','living barricade has no temporary structure record');
 }
 function validateShots(s:GameState,state:RecordValue):void {
  const counter=state.nextShotId===undefined?1:number(state.nextShotId,'state.specialists.nextShotId',1,MAX_ID,true),ids=new Set<number>();
@@ -164,7 +167,7 @@ function validateShots(s:GameState,state:RecordValue):void {
   let ability:string|undefined;
   try {ability=unitFor(s,{...source,kind:'unit',role:'siege',definitionFaction:source.faction} as unknown as Entity).ability;}
   catch {bad(`${p}.source.definitionId`,'shot source must resolve a siege definition in its original faction');}
-  position(shot.target,`${p}.target`,s);number(shot.impactAt,`${p}.impactAt`,0,s.time+30);
+  const target=position(shot.target,`${p}.target`,s);if((target.level??0)!==(source.level??0))bad(`${p}.target.level`,'siege shots cannot cross world levels');number(shot.impactAt,`${p}.impactAt`,0,s.time+30);
   number(shot.rawDamage,`${p}.rawDamage`,0,1e9);number(shot.buildingMultiplier,`${p}.buildingMultiplier`,.1,10);
   const payload=object(shot.payload,`${p}.payload`,['kind','damageFactor','armorPiercing','radius']),kind=choice(payload.kind,`${p}.payload.kind`,['incendiary','rooting','corpse','flood','beam','cannon']);
   const expectedKind=ability==='ammunition-cannon'?'cannon':ability==='powered-beam'?'beam':PREPARED[ability??''];
@@ -197,6 +200,7 @@ function validateHeroes(s:GameState):void {
 export function validateSpecialists(s:GameState):void {
  const entities=new Map(s.entities.map(e=>[e.id,e])),equipped=new Set<number>();let artifacts=new Map<number,RecordValue>();
  if(s.specialists!==undefined){const state=object(s.specialists,'state.specialists',['artifacts','structures','nextArtifactId','nextStructureId'],['shots','nextShotId']);artifacts=validateArtifacts(s,state,entities);validateStructures(s,state,entities);validateShots(s,state);}
+ if(s.specialists===undefined&&s.entities.some(e=>e.hp>0&&e.kind==='building'&&buildingFor(s,e).tags?.includes('barricade')))bad('state.specialists','living barricade requires temporary structure records');
  s.entities.forEach((e,i)=>{const p=`state.entities[${i}]`;validateVeteran(s,e,p);validateBuffs(s,e,p);validateSiege(s,e,p);validateBurning(s,e,p,entities);validateBeacon(s,e,p);validateEquipment(s,e,p,artifacts,equipped);});
  validateHeroes(s);
 }
