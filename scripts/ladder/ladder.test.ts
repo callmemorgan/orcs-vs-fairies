@@ -44,6 +44,8 @@ function manifest(bytes?:Map<string,Buffer>) {
 }
 const before=manifest(sourceBytes);
 if(JSON.stringify(before.sourceFiles)!==JSON.stringify(files))throw new Error('Source paths changed while preparing the run.');
+const committedCoreFiles=execFileSync('git',['ls-tree','-r','--name-only',before.sourceCommit,'--','src/core'],{encoding:'utf8'}).split('\n').filter(file=>file.endsWith('.ts')).sort();
+if(JSON.stringify(files.filter(file=>file.startsWith('src/core/')))!==JSON.stringify(committedCoreFiles))throw new Error('Core source paths do not match the pinned commit. Restore deleted files and commit additions before running.');
 for(const file of files)if(!sourceBytes.get(file)!.equals(execFileSync('git',['show',`${before.sourceCommit}:${file}`])))throw new Error(`Commit the ladder source before running: ${file}`);
 mkdirSync('docs/evidence',{recursive:true});
 mkdirSync(out);
