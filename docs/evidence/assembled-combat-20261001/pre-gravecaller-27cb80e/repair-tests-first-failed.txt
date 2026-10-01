@@ -1,0 +1,30 @@
+
+ RUN  v4.1.11 /home/morgana/.codex/worktrees/assembled-combat/orcs-vs-Fairies
+
+ ❯ tests/specialist-world-integration.test.ts (27 tests | 2 failed) 2439ms
+     × evacuates a level-0 unit whose footprint overlaps a destroyed permanent bridge from adjacent bank 16ms
+     × evacuates a level-1 unit whose footprint overlaps a destroyed permanent bridge from adjacent bank 10ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/specialist-world-integration.test.ts > specialists in a layered world > evacuates a level-0 unit whose footprint overlaps a destroyed permanent bridge from adjacent bank
+ FAIL  tests/specialist-world-integration.test.ts > specialists in a layered world > evacuates a level-1 unit whose footprint overlaps a destroyed permanent bridge from adjacent bank
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/specialist-world-integration.test.ts:86:287
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  2 failed | 48 passed (50)
+   Start at  04:36:07
+   Duration  2.70s (transform 602ms, setup 0ms, import 840ms, tests 3.46s, environment 89ms)
+

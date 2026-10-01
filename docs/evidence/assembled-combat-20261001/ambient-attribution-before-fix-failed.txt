@@ -1,0 +1,33 @@
+
+ RUN  v4.1.11 /home/morgana/.codex/worktrees/assembled-combat/orcs-vs-Fairies
+
+ ❯ tests/joint-special-surrender-fire.test.ts (2 tests | 1 failed) 292ms
+     × 'does not award stale attacker trophie…' after a fitted Dwarf special cannon really surrenders to Orcs 111ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/joint-special-surrender-fire.test.ts > fitted special artillery surrender with an existing world fire > 'does not award stale attacker trophie…' after a fitted Dwarf special cannon really surrenders to Orcs
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/joint-special-surrender-fire.test.ts:102:52
+    100|         // Environment fire has no current combat attacker. The earlie…
+    101|         // hit's stale entity ID must not become a kill for the new Or…
+    102|         expect(gun.factionState?.trophyKills ?? 0).toBe(trophies);
+       |                                                    ^
+    103|         expect(gun.veteran?.experience ?? 0).toBe(xp); expect(state.fa…
+    104|       } else expect(victim.hp).toBeGreaterThan(0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  05:26:20
+   Duration  553ms (transform 163ms, setup 0ms, import 201ms, tests 292ms, environment 0ms)
+

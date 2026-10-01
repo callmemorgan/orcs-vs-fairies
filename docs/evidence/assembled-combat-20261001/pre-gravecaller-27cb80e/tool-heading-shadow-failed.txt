@@ -1,0 +1,465 @@
+
+ RUN  v4.1.11 /home/morgana/.codex/worktrees/assembled-combat/orcs-vs-Fairies
+
+ ❯ tests/faction-tools.test.ts (29 tests | 27 failed) 539ms
+     × shows admitted custom faction and unit names without failing the panel update 32ms
+     × shows the registered signal beacon name for its tower role 8ms
+     × spends Fury and applies the assault chant through the real authority 8ms
+     × spends Fury and applies the bulwark chant through the real authority 4ms
+     × consumes earned trophies to raise a real standard and refreshes selected troop stats 6ms
+     × conjures real doubles and swaps a selected combat troop through the owned illusion picker 7ms
+     × constructs the fairies faction structure through selected workers 117ms
+     × constructs the dwarves faction structure through selected workers 111ms
+     × constructs the undead faction structure through selected workers 88ms
+     × constructs the automata faction structure through selected workers 89ms
+     × fits stone to real selected artillery with per-engine payment 3ms
+     × fits grapeshot to real selected artillery with per-engine payment 3ms
+     × fits incendiary to real selected artillery with per-engine payment 3ms
+     × fits reinforced to real selected artillery with per-engine payment 3ms
+     × shows normalized tunnel channel progress and completes travel to the selected owned exit 3ms
+     × recruits a real wagon through ordinary production and preserves the paid custom definition 3ms
+     × collects a body and delivers it to the selected Gravecaller without extending its decay deadline 6ms
+     × shapes mud terrain and restores it through real simulation expiry 4ms
+     × shapes shallows terrain and restores it through real simulation expiry 5ms
+     × shapes water terrain and restores it through real simulation expiry 3ms
+     × filters hidden levels and expired bodies from the corpse picker 3ms
+     × does not dispatch a retained illusion target after the target dies 4ms
+     × rejects construction without a worker on the chosen level and preserves cost information 3ms
+     × rechecks host permissions before dispatch and disables all visible faction commands in ended matches 6ms
+     × uses live profile bindings, stops battlefield input, and ignores editable fields and other modals 3ms
+     × serializes pending commands and reports host rejection 3ms
+     × shows only the current faction and clears stale target choices after replacement 4ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 27 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > shows admitted custom faction and unit names without failing the panel update
+AssertionError: expected 'Faction powers' to be 'Lantern Keepers powers' // Object.is equality
+
+Expected: "Lantern Keepers powers"
+Received: "Faction powers"
+
+ ❯ tests/faction-tools.test.ts:35:53
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/27]⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > shows the registered signal beacon name for its tower role
+AssertionError: expected '' to contain 'Ironclad Signal Beacon #40'
+
+- Expected
++ Received
+
+- Ironclad Signal Beacon #40
+
+ ❯ tests/faction-tools.test.ts:39:46
+     37|   it('shows the registered signal beacon name for its tower role',()=>{
+     38|     const f=setup(), beacon=spawnDefinition(f.state,0,'building','core…
+     39|     f.select([beacon.id]);expect(details(f)).toContain(`Ironclad Signa…
+       |                                              ^
+     40|   });
+     41|   it.each(['assault','bulwark'] as const)('spends Fury and applies the…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/27]⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > spends Fury and applies the assault chant through the real authority
+AssertionError: expected '' to contain 'assault chant'
+
+- Expected
++ Received
+
+- assault chant
+
+ ❯ tests/faction-tools.test.ts:45:157
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/27]⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > spends Fury and applies the bulwark chant through the real authority
+AssertionError: expected '' to contain 'bulwark chant'
+
+- Expected
++ Received
+
+- bulwark chant
+
+ ❯ tests/faction-tools.test.ts:45:157
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/27]⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > consumes earned trophies to raise a real standard and refreshes selected troop stats
+AssertionError: expected '' to contain '2 trophies'
+
+- Expected
++ Received
+
+- 2 trophies
+
+ ❯ tests/faction-tools.test.ts:49:40
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/27]⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > conjures real doubles and swaps a selected combat troop through the owned illusion picker
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/faction-tools.test.ts:54:241
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/27]⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > constructs the fairies faction structure through selected workers
+AssertionError: expected '' to contain 'Enchanted Grove'
+
+- Expected
++ Received
+
+- Enchanted Grove
+
+ ❯ tests/faction-tools.test.ts:65:175
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/27]⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > constructs the dwarves faction structure through selected workers
+AssertionError: expected '' to contain 'Tunnel Entrance'
+
+- Expected
++ Received
+
+- Tunnel Entrance
+
+ ❯ tests/faction-tools.test.ts:65:175
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/27]⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > constructs the undead faction structure through selected workers
+AssertionError: expected '' to contain 'Necropolis Outpost'
+
+- Expected
++ Received
+
+- Necropolis Outpost
+
+ ❯ tests/faction-tools.test.ts:65:175
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/27]⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > constructs the automata faction structure through selected workers
+AssertionError: expected '' to contain 'Power Relay'
+
+- Expected
++ Received
+
+- Power Relay
+
+ ❯ tests/faction-tools.test.ts:65:175
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/27]⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > fits stone to real selected artillery with per-engine payment
+AssertionError: expected '' to contain 'Artillery fitted: stone'
+
+- Expected
++ Received
+
+- Artillery fitted: stone
+
+ ❯ tests/faction-tools.test.ts:72:291
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/27]⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > fits grapeshot to real selected artillery with per-engine payment
+AssertionError: expected '' to contain 'Artillery fitted: grapeshot'
+
+- Expected
++ Received
+
+- Artillery fitted: grapeshot
+
+ ❯ tests/faction-tools.test.ts:72:291
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/27]⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > fits incendiary to real selected artillery with per-engine payment
+AssertionError: expected '' to contain 'Artillery fitted: incendiary'
+
+- Expected
++ Received
+
+- Artillery fitted: incendiary
+
+ ❯ tests/faction-tools.test.ts:72:291
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/27]⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > fits reinforced to real selected artillery with per-engine payment
+AssertionError: expected '' to contain 'Artillery fitted: reinforced'
+
+- Expected
++ Received
+
+- Artillery fitted: reinforced
+
+ ❯ tests/faction-tools.test.ts:72:291
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/27]⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > shows normalized tunnel channel progress and completes travel to the selected owned exit
+AssertionError: expected "vi.fn()" to be called with arguments: [ { type: 'tunnelTravel', …(2) } ]
+
+Number of calls: 0
+
+ ❯ tests/faction-tools.test.ts:76:23
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/27]⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > recruits a real wagon through ordinary production and preserves the paid custom definition
+AssertionError: expected "vi.fn()" to be called with arguments: [ { type: 'train', id: 39, …(2) } ]
+
+Number of calls: 0
+
+ ❯ tests/faction-tools.test.ts:81:27
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/27]⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > collects a body and delivers it to the selected Gravecaller without extending its decay deadline
+AssertionError: expected undefined to match object [ { id: 41, expires: 45 } ]
+
+- Expected:
+[
+  {
+    "expires": 45,
+    "id": 41,
+  },
+]
+
++ Received:
+undefined
+
+ ❯ tests/faction-tools.test.ts:86:48
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/27]⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > shapes mud terrain and restores it through real simulation expiry
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > shapes shallows terrain and restores it through real simulation expiry
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > shapes water terrain and restores it through real simulation expiry
+AssertionError: expected '' to contain 'Water shaping ready in 20s'
+
+- Expected
++ Received
+
+- Water shaping ready in 20s
+
+ ❯ tests/faction-tools.test.ts:92:524
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/27]⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > filters hidden levels and expired bodies from the corpse picker
+AssertionError: expected [] to deeply equal [ '41' ]
+
+- Expected
++ Received
+
+- [
+-   "41",
+- ]
++ []
+
+ ❯ tests/faction-tools.test.ts:97:125
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/27]⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > does not dispatch a retained illusion target after the target dies
+AssertionError: expected 'Faction powersCloseaction.startsWith …' to contain 'owned living illusion'
+
+Expected: "owned living illusion"
+Received: "Faction powersCloseaction.startsWith is not a functionUse map coordinates for new structures and water shaping. The site must be visible, legal and within the selected caster’s range when required.Destination XDestination YDestination levelSurfaceUndergroundWar chantsSpend 25 Fury to support the selected combat troops for 12 seconds. Assault increases damage; Bulwark adds armor.Assault chantBulwark chantTrophy standardsA selected warrior with two earned kill trophies can raise a standard. Raising it consumes the trophies.Raise trophy standardIllusion swapUse a Veilweaver to conjure doubles, then select ready combat troops within ten tiles to swap with a living illusion. Swapping costs 15 crystal.Owned illusionConjure illusionsSwap with illusionEnchanted groveSelected workers plant a grove at the destination. Completed groves conceal nearby allied troops and send decoys toward observed enemy scouts.Build enchanted groveArtillery modificationsTune selected artillery for the next encounter. Each fitting costs 25 wood and 20 ore per eligible artillery unit. Each incendiary shot also costs 15 wood and 5 ore; the engine holds fire without that ammunition. Choose a shot type or reinforce the engine.Stone shotGrapeshotIncendiary shotReinforce artilleryTunnel networkBuild two entrances, select troops near an entrance, and choose another completed owned entrance as the exit.Owned tunnel exitBuild tunnel entranceTravel through tunnelCorpse wagonsRecruit a wagon through a completed owned barracks. Wagons collect up to six visible bodies, preserving their remaining lifetimes, and deliver them to a Gravecaller.Corpse wagon barracksVisible corpseOwned GravecallerRecruit corpse wagonCollect corpsesDeliver corpsesNecropolisSelected workers build a necropolis at the destination to heal nearby raised allies and preserve their remaining lifetimes.Build necropolisWater shapingA selected Tidecaller shapes nearby ground for 20 seconds. It costs 25 crystal and has a 20-second cooldown; rocks and bridges keep their terrain.Shaped terrainMudShallowsWaterShape waterPower networkSelected workers build power relays at the destination. Connected buildings share shield reserves, and defensive towers need a headquarters connection.Build power relaySelected units and buildingsOwned faction structuresFaction powers"
+
+ ❯ tests/faction-tools.test.ts:102:111
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/27]⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > rejects construction without a worker on the chosen level and preserves cost information
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/faction-tools.test.ts:105:120
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/27]⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > rechecks host permissions before dispatch and disables all visible faction commands in ended matches
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/faction-tools.test.ts:112:108
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/27]⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > uses live profile bindings, stops battlefield input, and ignores editable fields and other modals
+AssertionError: expected 'Assault chant' to contain 'Alt+A'
+
+Expected: "Alt+A"
+Received: "Assault chant"
+
+ ❯ tests/faction-tools.test.ts:116:129
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/27]⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > serializes pending commands and reports host rejection
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/faction-tools.test.ts:123:356
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/27]⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > shows only the current faction and clears stale target choices after replacement
+AssertionError: expected <div hidden>…(2)</div> to be null
+
+- Expected:
+null
+
++ Received:
+<div
+  hidden=""
+>
+  <section>
+    <h3>
+      Corpse wagons
+    </h3>
+    <p>
+      Recruit a wagon through a completed owned barracks. Wagons collect up to six visible bodies, preserving their remaining lifetimes, and deliver them to a Gravecaller.
+    </p>
+    <label
+      class="faction-field"
+    >
+      Corpse wagon barracks
+      <select
+        aria-label="Corpse wagon barracks"
+      />
+    </label>
+    <label
+      class="faction-field"
+    >
+      Visible corpse
+      <select
+        aria-label="Visible corpse"
+      />
+    </label>
+    <label
+      class="faction-field"
+    >
+      Owned Gravecaller
+      <select
+        aria-label="Owned Gravecaller"
+      />
+    </label>
+    <button
+      aria-describedby="faction-tools-29-recruitCorpseWagon"
+      aria-label="Recruit corpse wagon"
+      data-faction-action="recruitCorpseWagon"
+      type="button"
+    >
+      Recruit corpse wagon
+    </button>
+    <p
+      class="faction-reason"
+      id="faction-tools-29-recruitCorpseWagon"
+    />
+    <button
+      aria-describedby="faction-tools-29-collectCorpses"
+      aria-label="Collect corpses"
+      data-faction-action="collectCorpses"
+      type="button"
+    >
+      Collect corpses
+    </button>
+    <p
+      class="faction-reason"
+      id="faction-tools-29-collectCorpses"
+    />
+    <button
+      aria-describedby="faction-tools-29-deliverCorpses"
+      aria-label="Deliver corpses"
+      data-faction-action="deliverCorpses"
+      type="button"
+    >
+      Deliver corpses
+    </button>
+    <p
+      class="faction-reason"
+      id="faction-tools-29-deliverCorpses"
+    />
+  </section>
+  <section>
+    <h3>
+      Necropolis
+    </h3>
+    <p>
+      Selected workers build a necropolis at the destination to heal nearby raised allies and preserve their remaining lifetimes.
+    </p>
+    <button
+      aria-describedby="faction-tools-29-buildNecropolis"
+      aria-label="Build necropolis"
+      data-faction-action="buildNecropolis"
+      type="button"
+    >
+      Build necropolis
+    </button>
+    <p
+      class="faction-reason"
+      id="faction-tools-29-buildNecropolis"
+    />
+  </section>
+</div>
+
+ ❯ tests/faction-tools.test.ts:130:93
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/27]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  27 failed | 53 passed (80)
+   Start at  04:45:41
+   Duration  871ms (transform 468ms, setup 0ms, import 595ms, tests 1.29s, environment 175ms)
+

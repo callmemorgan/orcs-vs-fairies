@@ -1,0 +1,26 @@
+
+ RUN  v4.1.11 /home/morgana/.codex/worktrees/assembled-combat/orcs-vs-Fairies
+
+ ❯ tests/neutral-siege-shells.test.ts (2 tests | 1 failed) 220ms
+     × dwarves keeps the neutral-engine target exception with friendly fire disabled 91ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/neutral-siege-shells.test.ts > explicit fire on an allied crewless engine > dwarves keeps the neutral-engine target exception with friendly fire disabled
+AssertionError: expected 185 to be less than 185
+ ❯ tests/neutral-siege-shells.test.ts:44:26
+     42|     command(s, { type: 'stop', ids: [gun.id] }); gun.cooldown = 100;
+     43|     const resumed = loadGame(saveGame(s)), events = advance(s, 1.05); …
+     44|     expect(abandoned.hp).toBeLessThan(abandonedHp); expect(crewedAlly.…
+       |                          ^
+     45|     expect(events.filter(e => e.type === 'attack' && e.target === aban…
+     46|     expect(events.some(e => e.type === 'attack' && e.target === crewed…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 2 passed (3)
+   Start at  04:50:49
+   Duration  673ms (transform 560ms, setup 0ms, import 700ms, tests 454ms, environment 0ms)
+

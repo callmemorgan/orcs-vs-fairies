@@ -1,0 +1,53 @@
+
+ RUN  v4.1.11 /home/morgana/.codex/worktrees/assembled-combat/orcs-vs-Fairies
+
+ ❯ tests/captured-illusion-definition.test.ts (2 tests | 2 failed) 200ms
+     × preserves original clone identity after actual surrender (pinned true) 117ms
+     × preserves original clone identity after actual surrender (pinned false) 82ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/captured-illusion-definition.test.ts > captured Fairy caster uses its original illusion definition > preserves original clone identity after actual surrender (pinned true)
+AssertionError: expected 'Unit definition fairy-special is abse…' to be undefined
+
+- Expected:
+undefined
+
++ Received:
+"Unit definition fairy-special is absent from faction orcs."
+
+ ❯ tests/captured-illusion-definition.test.ts:50:26
+     48|   it.each([true, false])('preserves original clone identity after actu…
+     49|     const { s, clones, result } = probeCapturedIllusions(pinned);
+     50|     expect(result.error).toBeUndefined(); expect(result.accepted).toBe…
+       |                          ^
+     51|     for (const clone of clones) {
+     52|       expect(clone.side).toBe(1); expect(clone.definitionFaction).toBe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/captured-illusion-definition.test.ts > captured Fairy caster uses its original illusion definition > preserves original clone identity after actual surrender (pinned false)
+AssertionError: expected undefined to be 'fairies' // Object.is equality
+
+- Expected:
+"fairies"
+
++ Received:
+undefined
+
+ ❯ tests/captured-illusion-definition.test.ts:52:67
+     50|     expect(result.error).toBeUndefined(); expect(result.accepted).toBe…
+     51|     for (const clone of clones) {
+     52|       expect(clone.side).toBe(1); expect(clone.definitionFaction).toBe…
+       |                                                                   ^
+     53|       expect(entityDefinition(s, clone).id).toBe(FACTIONS.fairies.unit…
+     54|       expect(clone.maxHp).toBe(FACTIONS.fairies.units.special.hp * .4);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  05:48:35
+   Duration  796ms (transform 392ms, setup 0ms, import 480ms, tests 200ms, environment 0ms)
+

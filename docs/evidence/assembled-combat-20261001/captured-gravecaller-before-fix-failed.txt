@@ -1,0 +1,61 @@
+
+ RUN  v4.1.11 /home/morgana/.codex/worktrees/assembled-combat/orcs-vs-Fairies
+
+ ❯ tests/captured-gravecaller-definition.test.ts (9 tests | 6 failed) 304ms
+     × surrender, public raise, native continuation and replay (pinned true) 58ms
+     × surrender, public raise, native continuation and replay (pinned false) 32ms
+     × rejects forged inflated capacity 32ms
+     × rejects forged extended lifetime 29ms
+     × rejects forged permanent summon 35ms
+     × rejects forged illusion marked raised 29ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/captured-gravecaller-definition.test.ts > captured Gravecaller preserves its original raised fighter definition > surrender, public raise, native continuation and replay (pinned true)
+ FAIL  tests/captured-gravecaller-definition.test.ts > captured Gravecaller preserves its original raised fighter definition > surrender, public raise, native continuation and replay (pinned false)
+AssertionError: expected undefined to be 'undead' // Object.is equality
+
+- Expected:
+"undead"
+
++ Received:
+undefined
+
+ ❯ tests/captured-gravecaller-definition.test.ts:47:69
+     45|     const { s, caster, raised, recorder } = encounter(pinned);
+     46|     try {
+     47|       expect(raised.side).toBe(1); expect(raised.definitionFaction).to…
+       |                                                                     ^
+     48|       expect(entityDefinition(s, raised)).toEqual(FACTIONS.undead.unit…
+     49|       expect(entityDefinition(s, raised).damage).toBe(FACTIONS.undead.…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/captured-gravecaller-definition.test.ts > captured Gravecaller preserves its original raised fighter definition > rejects forged inflated capacity
+ FAIL  tests/captured-gravecaller-definition.test.ts > captured Gravecaller preserves its original raised fighter definition > rejects forged extended lifetime
+ FAIL  tests/captured-gravecaller-definition.test.ts > captured Gravecaller preserves its original raised fighter definition > rejects forged permanent summon
+ FAIL  tests/captured-gravecaller-definition.test.ts > captured Gravecaller preserves its original raised fighter definition > rejects forged illusion marked raised
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/captured-gravecaller-definition.test.ts:80:37
+     78|     try {
+     79|       const saved = saveGame(s); corrupt(saved.state.entities.find(e =…
+     80|       expect(() => loadGame(saved)).toThrow(/raised|definitionFaction|…
+       |                                     ^
+     81|     } finally { recorder.dispose(); }
+     82|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 3 passed (9)
+   Start at  06:04:52
+   Duration  568ms (transform 153ms, setup 0ms, import 190ms, tests 304ms, environment 0ms)
+

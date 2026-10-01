@@ -1,0 +1,50 @@
+Source checkout: /home/morgana/.codex/worktrees/assembled-combat/orcs-vs-Fairies
+Source commit: 470099e120ae270aa726d1eb831724d292006238
+Source build ID: 75019b785cd1829cd60ccab6a4c762209ed61f88aec0c42e00da19d582ce80c0
+
+Frozen verification driver (records command timestamps, actual returncodes and log hashes):
+python3 docs/evidence/assembled-combat-20261001/run-frozen-verification.py
+
+focused-tests (exit 0; log final-tests.txt):
+node_modules/.bin/vitest run tests/captured-gravecaller-definition.test.ts tests/captured-gravecaller-grove.test.ts tests/captured-illusion-definition.test.ts tests/combat-tactics.test.ts tests/faction-save-semantics.test.ts tests/faction-systems.test.ts tests/faction-tools.test.ts tests/joint-combat-integration.test.ts tests/joint-special-surrender-fire.test.ts tests/joint-trophy-ownership.test.ts tests/joint-world-ignition.test.ts tests/neutral-siege-shells.test.ts tests/online-render-state.test.ts tests/replays.test.ts tests/saves.test.ts tests/specialist-bridge-expiry.test.ts tests/specialist-building-authority.test.ts tests/specialist-command-analysis.test.ts tests/specialist-gameplay.test.ts tests/specialist-saves.test.ts tests/specialist-world-integration.test.ts tests/tactics-direction-saves.test.ts tests/tactics-tools.test.ts tests/team-observation.test.ts tests/world-combined.test.ts tests/world-interruptions.test.ts --testTimeout=30000 --maxWorkers=2
+
+typecheck (exit 0; log final-typecheck.txt):
+node_modules/.bin/tsc --noEmit
+
+browser-build (exit 0; log final-build.txt):
+npm run build
+
+cli-build (exit 0; log final-cli-build.txt):
+npm run build:cli
+
+server-build (exit 0; log final-server-build.txt):
+npm run build:server
+
+repository-tests (exit 1; log repository-excluding-soak-failed.txt):
+node_modules/.bin/vitest run --exclude tests/skirmish.test.ts --testTimeout=30000 --maxWorkers=2
+
+Authored fixtures (exit0):
+node_modules/.bin/esbuild scripts/combined_combat_scenarios.ts --bundle --platform=node --format=esm --outfile=/tmp/combined-combat-scenarios.mjs
+node /tmp/combined-combat-scenarios.mjs docs/evidence/assembled-combat-20261001/fixtures
+
+Production server:
+npm run preview -- --port 5397 --strictPort
+
+Production browser proof (exit 0; 29 checks, zero browser errors):
+OVF_PLAYWRIGHT_MODULE=/home/morgana/.codex/worktrees/9cd5/hype-comms/node_modules/playwright/index.mjs node scripts/verify_combined_combat.mjs http://127.0.0.1:5397 .
+
+Pre-admission comparison:
+The earlier archive /tmp/ovf-pre-admission-24fae67.mmVWAg ran the six failing files at24fae67:185pass,16fail. pre-admission-baseline-repository-failed.txt and baseline-failure-comparison.json retain its results and exact failure names.
+
+Whole suite extra AI soak:
+The older whole-suite attempt was terminated with no completed count. whole-repository-soak-terminated.txt is historical partial output; it is not AI-skirmish proof. Final repository command excludes only tests/skirmish.test.ts (36 pairings, up to45simulated minutes each).
+
+Hash checks from the frozen source checkout:
+sha256sum -c docs/evidence/assembled-combat-20261001/source-files.sha256
+sha256sum -c docs/evidence/assembled-combat-20261001/proof-code.sha256
+sha256sum -c docs/evidence/assembled-combat-20261001/production-build.sha256
+sha256sum -c docs/evidence/assembled-combat-20261001/evidence.sha256
+sha256sum -c docs/evidence/assembled-combat-20261001/pre-gravecaller-27cb80e/archive.sha256
+
+Regenerate manifests after rerun and documentation edits, while HEAD is frozen source470099e:
+python3 docs/evidence/assembled-combat-20261001/refresh-evidence.py --repo . refresh --commit 470099e120ae270aa726d1eb831724d292006238

@@ -1,0 +1,29 @@
+PASS Native session import preserves orcs-formation authored world and underground troop
+PASS line formation reaches selected army through Tactics controls
+PASS wedge formation reaches selected army through Tactics controls
+PASS square formation reaches selected army through Tactics controls
+PASS loose formation reaches selected army through Tactics controls
+PASS orcs-formation native exported save restores exact combat, faction and layered world fields
+PASS orcs-formation native replay reaches matching final combat and faction state
+PASS Native session import preserves orcs-rally authored world and underground troop
+PASS Wounded isolated warrior enters a real low morale retreat
+PASS Assault and Bulwark chants each spend 25 authored Fury through Faction controls
+PASS Trophy standard consumes two authored trophies and creates a completed production structure
+PASS Retreating warrior recovers morale near allied support and standard, then returns to holding
+PASS War chant expires during real running production ticks
+PASS orcs-rally native exported save restores exact combat, faction and layered world fields
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.waitForFunction: TypeError: Cannot read properties of null (reading 'mode')
+    at eval (eval at predicate (eval at evaluate (:311:30)), <anonymous>:1:18)
+    at predicate (eval at evaluate (:311:30), <anonymous>:7:27)
+    at next (eval at evaluate (:311:30), <anonymous>:29:33)
+    at wait (/home/morgana/.codex/worktrees/assembled-combat/orcs-vs-Fairies/scripts/verify_combined_combat.mjs:41:56)
+    at persistence (/home/morgana/.codex/worktrees/assembled-combat/orcs-vs-Fairies/scripts/verify_combined_combat.mjs:110:26)
+    at async file:///home/morgana/.codex/worktrees/assembled-combat/orcs-vs-Fairies/scripts/verify_combined_combat.mjs:172:53 {
+  log: []
+}
+
+Node.js v24.21.0

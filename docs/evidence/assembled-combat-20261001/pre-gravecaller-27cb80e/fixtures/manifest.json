@@ -1,0 +1,104 @@
+{
+  "schema": 1,
+  "setup": "Authored layered encounters, generated and validated with production createSessionFile/decodeSessionFile. No fixture page or browser state mutation.",
+  "scenarios": {
+    "orcs-formation": {
+      "file": "orcs-formation.json",
+      "ids": {
+        "army": [
+          18,
+          54,
+          55,
+          56
+        ],
+        "bearer": 18,
+        "undergroundWorker": 17
+      },
+      "authored": {
+        "resources": {
+          "wood": 2000,
+          "ore": 2000,
+          "crystal": 500
+        },
+        "fury": 100,
+        "bearerTrophies": 2,
+        "description": "Four uninjured combat troops. Trophies and Fury are authored starting conditions."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "orcs"
+    },
+    "orcs-rally": {
+      "file": "orcs-rally.json",
+      "ids": {
+        "bearer": 18,
+        "support": 54,
+        "retreater": 55,
+        "enemy": 25,
+        "undergroundWorker": 17
+      },
+      "authored": {
+        "resources": {
+          "wood": 2000,
+          "ore": 2000,
+          "crystal": 500
+        },
+        "fury": 50,
+        "bearerTrophies": 2,
+        "retreaterMorale": 28,
+        "retreaterHealth": 78,
+        "enemyCooldown": 100,
+        "description": "One wounded isolated warrior near a visible enemy loses morale. A distant friendly band and a player-raised standard provide support during its retreat."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "orcs"
+    },
+    "dwarves": {
+      "file": "dwarves.json",
+      "ids": {
+        "cannon": 54,
+        "bridge": 55,
+        "undergroundWorker": 17
+      },
+      "authored": {
+        "resources": {
+          "wood": 2000,
+          "ore": 2000,
+          "crystal": 500
+        },
+        "cannonAmmo": 0,
+        "bridgeHealth": 1000,
+        "description": "An unloaded Deepforge cannon faces a neutral world bridge within range. Deployment, ammunition and the stone fitting must be purchased through controls."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "dwarves"
+    },
+    "automata": {
+      "file": "automata.json",
+      "ids": {
+        "hq": 12,
+        "worker": 13,
+        "tower": 54,
+        "undergroundWorker": 17,
+        "placement": {
+          "x": 13.5,
+          "y": 16.5,
+          "level": 0
+        }
+      },
+      "authored": {
+        "resources": {
+          "wood": 2000,
+          "ore": 2000,
+          "crystal": 500
+        },
+        "description": "A disconnected tower is fourteen tiles from headquarters. A worker can build a Power Relay seven tiles from each endpoint."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "automata"
+    }
+  }
+}

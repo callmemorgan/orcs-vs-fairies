@@ -1,0 +1,4 @@
+tests/faction-save-semantics.test.ts(19,5): error TS2322: Type '{ id: number; teamId: number; factionId: BuiltinFactionId; controller: "external"; handicap: { startingResources: { wood: number; ore: number; crystal: number; }; }; }[]' is not assignable to type 'MatchPlayerConfig[]'.
+  Type '{ id: number; teamId: number; factionId: BuiltinFactionId; controller: "external"; handicap: { startingResources: { wood: number; ore: number; crystal: number; }; }; }' is not assignable to type 'MatchPlayerConfig'.
+    Types of property 'id' are incompatible.
+      Type 'number' is not assignable to type 'Side'.

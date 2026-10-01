@@ -1,0 +1,38 @@
+{"name": "focused-tests", "command": ["node_modules/.bin/vitest", "run", "tests/captured-gravecaller-definition.test.ts", "tests/captured-gravecaller-grove.test.ts", "tests/captured-illusion-definition.test.ts", "tests/combat-tactics.test.ts", "tests/faction-save-semantics.test.ts", "tests/faction-systems.test.ts", "tests/faction-tools.test.ts", "tests/joint-combat-integration.test.ts", "tests/joint-special-surrender-fire.test.ts", "tests/joint-trophy-ownership.test.ts", "tests/joint-world-ignition.test.ts", "tests/neutral-siege-shells.test.ts", "tests/online-render-state.test.ts", "tests/replays.test.ts", "tests/saves.test.ts", "tests/specialist-bridge-expiry.test.ts", "tests/specialist-building-authority.test.ts", "tests/specialist-command-analysis.test.ts", "tests/specialist-gameplay.test.ts", "tests/specialist-saves.test.ts", "tests/specialist-world-integration.test.ts", "tests/tactics-direction-saves.test.ts", "tests/tactics-tools.test.ts", "tests/team-observation.test.ts", "tests/world-combined.test.ts", "tests/world-interruptions.test.ts", "--testTimeout=30000", "--maxWorkers=2"], "sourceCommit": "90fd47d4af0deba34ccaae99d91ddf5ad8b7a25d", "sourceBuildId": "75019b785cd1829cd60ccab6a4c762209ed61f88aec0c42e00da19d582ce80c0", "startedAt": "2026-10-01T13:15:15.939206+00:00"}
+
+ RUN  v4.1.11 /home/morgana/.codex/worktrees/assembled-combat/orcs-vs-Fairies
+
+ ❯ tests/specialist-bridge-expiry.test.ts (12 tests | 2 failed) 1903ms
+     × kills a level-0 raised commander without permanent rewards or ordinary losses 8ms
+     × kills a level-1 raised commander without permanent rewards or ordinary losses 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/specialist-bridge-expiry.test.ts > temporary crossing expiry without reachable shore > kills a level-0 raised commander without permanent rewards or ordinary losses
+ FAIL  tests/specialist-bridge-expiry.test.ts > temporary crossing expiry without reachable shore > kills a level-1 raised commander without permanent rewards or ordinary losses
+AssertionError: expected [Function] to not throw an error but 'Error: Invalid save at state.entities…' was thrown
+
+- Expected:
+undefined
+
++ Received:
+"Error: Invalid save at state.entities[3].raised: raised troops require the raising faction melee definition and their summon lifetime."
+
+ ❯ ready tests/specialist-bridge-expiry.test.ts:38:105
+     36|   const unit = spawnDefinition(state, 0, 'unit', definitionId, x, y, 1…
+     37| }
+     38| function ready(state: LayeredState): void { refreshVisibility(state); …
+       |                                                                                                         ^
+     39| function build(state: LayeredState, engineer: Entity, level: number): …
+     40|   const wood = state.players[0].wood;
+ ❯ tests/specialist-bridge-expiry.test.ts:106:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed | 25 passed (26)
+      Tests  2 failed | 595 passed (597)
+   Start at  06:15:16
+   Duration  14.89s (transform 619ms, setup 0ms, import 1.48s, tests 26.35s, environment 260ms)
+
+{"returncode": 1, "completedAt": "2026-10-01T13:15:31.002331+00:00"}

@@ -1,0 +1,33 @@
+# Combat and faction integration evidence
+
+This directory records the assembled combat and faction branch for features 1–10 and 21–30. The verified source is `d6b95d25a784dbb8960ba933492e24197539676f`, based on `7552ca5`. It includes the specialist weapons, layered world, permanent and temporary bridge cleanup, content registry, remote presentation, mounted controls and native session recorder. SAVE3 and simulation revision `3.2.0` are unchanged.
+
+The source build ID is `c204af86e4ec835a78b11b3974516ab298cfde6af0c9faf6ad7db998e82a31fa`. All 93 source TypeScript/CSS files match their committed bytes. The native bug report reports that build ID, and the served production HTML hash matches local `dist/index.html`. `verification-summary.json` records these checks; `commands.txt` records the commands.
+
+## Completed checks
+
+The focused suite passes 577 tests in 23 files. Browser, CLI and server production builds pass; the browser build also runs TypeScript checking. The Vite build reports the existing large-bundle warning.
+
+The tests cover the shared entity/bridge/creature combat ledger, fitted artillery and specialist payloads, atomic readiness and payment, one-shot ammo/payload consumption, saved launch position and elevation, same-level collateral, closest bridge-tile distance, original ownership after removal or capture, simultaneous lethal rewards, temporary and permanent bridge cleanup, and public construction authority. Six artillery cases ignite real surface/cavern forest and timber through public commands, then prove world-fire damage, layer isolation, no extra payment, native continuation and replay equality. Two further cases fire a fitted special cannon, let it surrender through actual combat, and preserve its fitting and live world fire through native sessions. An ambient fire death cannot award the source's new Orc owner a trophy from a stale last-attacker ID; ordinary weapon and delayed actor-burning kills still award once.
+
+Fifty-five save-admission cases reject guard/crew capacity inflation, role-ineligible faction fields, absent original factions, contradictory ownership markers, changed captured health capacity, shields without admitted power, and forged remote roots. Real captures and surrenders retain original shields, physical artillery fittings, collected corpse cargo and eligible cooldowns. Ownership transfer clears chants, tunnel travel and active corpse orders. Power admission requires an initialized HQ and eight-tile links whose records share its stored root. The graph retains same-frame dead HQ/relay records; genuine stale snapshots save and continue, while unrefreshed/disconnected connectors cannot explain a forged connection. Three pending-order cleanup cases call the actual transfer callbacks directly because active faction channels precede tactical updates in ordinary steps; the tests label that limit.
+
+The production browser verifier passes 29 checks with zero browser errors against `http://127.0.0.1:5397`. It imports four authored layered encounters through native Session tools and uses the mounted controls. It dispatches all four formation kinds, moves a line, sets facing, observes low-morale retreat and supported recovery, buys both chants and a standard, loads and fits a Deepforge cannon, attacks a world bridge, exports a real pending shell and lets its imported continuation resolve once, and builds an 18-second Power Relay that connects a remote tower. Each encounter's exported save and replay reach matching state. Browser access to `window.rts` is read-only.
+
+Screenshots were inspected for the Orc controls/standard and the completed Automata relay. They show the authored registry art and shared toolbar/Tournaments control. `browser-combined-combat.json` contains the assertions, timing, build identity and download hashes; the native save/replay downloads and `production-build-report.json` remain beside it.
+
+## Limits and repository failures
+
+The encounters author resources, Fury, trophies, health, cooldowns, positions and terrain. Their initial conditions are recorded in `fixtures/manifest.json` and each browser check. They do not prove those resources or trophies were earned during a normal match. Formation browser evidence proves all four command dispatches and movement for line; it does not claim all four layouts fully settled visually. The production browser covers Orc, Dwarf and Automata controls. Other factions have simulation and mounted-panel tests and earlier isolated evidence, which is not assembled production proof.
+
+This is a combat/faction integration checkpoint, not completion of all 100 features or proof of the parent's later economy/scenario merge. That merged source needs its own build and gameplay verification.
+
+The repository check excluding `tests/skirmish.test.ts` has 1,793 passes and 16 failures in six files. The same 16 failure names reproduce in a separate archive of pre-admission `24fae67`, with 185 passes in those six files. They concern neutral relic damage, progression/research combat assumptions, legacy AI/team migrations, and environmental crossing/provenance assumptions. `baseline-failure-comparison.json` enumerates them, and both failed logs are retained. No full-repository green claim is made.
+
+An additional whole-suite run was stopped while its long AI-skirmish soak remained active. Its partial output is retained, and `commands.txt` explains the exclusion. AI-soak completion is unverified.
+
+## Evidence history and hashes
+
+`pre-admission-24fae67/` preserves the previous 29-check production success, native downloads and screenshots before semantic admission repairs. Its source build is `53482a02ce542c9e50af33729a85f86782e3fb846a821cf79c8b320cef0d6eec`; it is historical evidence, not verification of the final source. Other files containing `failed`, `first` or `before` record intermediate test/proof failures and must not be read as final successes. In particular, the ambient attribution test failed before the explicit-source death guard, and the first semantic suite/typecheck failures were test-regex and fixture-side typing issues.
+
+`source-files.sha256` binds all source files. `proof-code.sha256` binds the two proof scripts and all 23 focused test files. `production-build.sha256` binds local browser, CLI and server output. `evidence.sha256` binds this directory's records, downloads and screenshots. Run the commands in `commands.txt` from the frozen source checkout to check them.

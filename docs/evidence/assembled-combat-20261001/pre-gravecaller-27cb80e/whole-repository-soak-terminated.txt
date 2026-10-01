@@ -1,0 +1,25 @@
+
+ RUN  v4.1.11 /home/morgana/.codex/worktrees/assembled-combat/orcs-vs-Fairies
+
+ ❯ tests/neutral-world-integration.test.ts (5 tests | 1 failed) 4033ms
+     × captures a cavern relic, changes ordinary combat damage and loses the bonus after enemy recapture 228ms
+ ❯ tests/progression.test.ts (12 tests | 2 failed) 1925ms
+   × applies siege damage outside tower range through ordinary attack commands 16ms
+   × applies both weapon tiers and armor research to existing melee troops 7ms
+ ❯ tests/technology-branches.test.ts (9 tests | 2 failed) 7025ms
+     × changes ranged combat damage, cavalry damage received and siege movement through ordinary research commands 1225ms
+     × admits definition targets and upgrades one custom melee definition without upgrading the other 1060ms
+ ❯ tests/ai-saves.test.ts (18 tests | 2 failed) 378ms
+     × migrates a complete version 2 snapshot after validating the original schema 67ms
+     × checks the byte limit again after a valid legacy migration adds AI fields 150ms
+ ❯ tests/environment.test.ts (30 tests | 2 failed) 276ms
+     × saves a crossing destroyed, rebuilt and destroyed again during the same winter 28ms
+     × rejects malformed bounds, absent levels, nonfuel impacts and invalid provenance without events 3ms
+ ❯ tests/team-saves.test.ts (127 tests | 7 failed) 35062ms
+     × validates a real two-player snapshot before adding team defaults, without losing AI memory 97ms
+     × derives eliminated status from a missing HQ 3ms
+     × derives eliminated status from a unfinished HQ 3ms
+     × derives eliminated status from a dead HQ 2ms
+     × preserves each cleared enemy base from the legacy two-player scouting flags 2ms
+     × retains the old 4096-entity bound when validating legacy saves 25ms
+     × preserves finite queued gathering, orders and ability state through migration 3ms

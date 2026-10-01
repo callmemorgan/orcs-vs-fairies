@@ -1,0 +1,28 @@
+{
+  "baselineCommit": "24fae67b9e714c78af4b1b3c4b92f9e75ca4d4d4",
+  "currentSourceCommit": "27cb80e6618d6bdd6a3ca9788513d8986d55b4d9",
+  "sameFailureNames": true,
+  "failedTests": 16,
+  "baselineFiles": 6,
+  "currentFiles": 84,
+  "currentPassedTests": 1795,
+  "excluded": "tests/skirmish.test.ts",
+  "failures": [
+    "tests/ai-saves.test.ts > AI save version 3 > checks the byte limit again after a valid legacy migration adds AI fields",
+    "tests/ai-saves.test.ts > AI save version 3 > migrates a complete version 2 snapshot after validating the original schema",
+    "tests/environment.test.ts > artillery ignition and simulation interruption hooks > rejects malformed bounds, absent levels, nonfuel impacts and invalid provenance without events",
+    "tests/environment.test.ts > seasonal lake crossings > saves a crossing destroyed, rebuilt and destroyed again during the same winter",
+    "tests/neutral-world-integration.test.ts > neutral features through normal match commands, ticks and checkpoints > captures a cavern relic, changes ordinary combat damage and loses the bonus after enemy recapture",
+    "tests/progression.test.ts > applies both weapon tiers and armor research to existing melee troops",
+    "tests/progression.test.ts > applies siege damage outside tower range through ordinary attack commands",
+    "tests/team-saves.test.ts > legacy version 1 migration > derives eliminated status from a dead HQ",
+    "tests/team-saves.test.ts > legacy version 1 migration > derives eliminated status from a missing HQ",
+    "tests/team-saves.test.ts > legacy version 1 migration > derives eliminated status from a unfinished HQ",
+    "tests/team-saves.test.ts > legacy version 1 migration > preserves each cleared enemy base from the legacy two-player scouting flags",
+    "tests/team-saves.test.ts > legacy version 1 migration > preserves finite queued gathering, orders and ability state through migration",
+    "tests/team-saves.test.ts > legacy version 1 migration > retains the old 4096-entity bound when validating legacy saves",
+    "tests/team-saves.test.ts > legacy version 1 migration > validates a real two-player snapshot before adding team defaults, without losing AI memory",
+    "tests/technology-branches.test.ts > role-specific researched stats > admits definition targets and upgrades one custom melee definition without upgrading the other",
+    "tests/technology-branches.test.ts > role-specific researched stats > changes ranged combat damage, cavalry damage received and siege movement through ordinary research commands"
+  ]
+}

@@ -1,0 +1,113 @@
+
+ RUN  v4.1.11 /home/morgana/.codex/worktrees/assembled-combat/orcs-vs-Fairies
+
+ ❯ tests/specialist-command-analysis.test.ts (6 tests | 1 failed) 494ms
+     × counts a new death event for an authored survivor whose ID occurs in initial historical deaths 16ms
+ ❯ tests/world-interruptions.test.ts (8 tests | 3 failed) 928ms
+     × clears queued gather memory when bridge collapse evacuates a worker 69ms
+     × charges a rebuilding fee or cancels a live repair after allied siege destruction (0 ore) 19ms
+     × charges a rebuilding fee or cancels a live repair after allied siege destruction (220 ore) 18ms
+ ❯ tests/specialist-world-integration.test.ts (27 tests | 5 failed) 4060ms
+     × evacuates a level-0 unit whose footprint overlaps a destroyed permanent bridge from adjacent bank 18ms
+     × evacuates a level-1 unit whose footprint overlaps a destroyed permanent bridge from adjacent bank 14ms
+     × applies projectile weather=clear and high ground once on level-0 22ms
+     × applies projectile weather=rain and high ground once on level-0 16ms
+     × applies projectile weather=rain and high ground once on level-1 24ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/specialist-command-analysis.test.ts > analysis of specialist command deaths > counts a new death event for an authored survivor whose ID occurs in initial historical deaths
+Error: Invalid save at state.corpses[1]: body belongs to more than one location.
+ ❯ bad src/core/saves.ts:22:54
+     20| const RESOURCE_KINDS=['wood','ore','crystal'];
+     21| type RecordValue=Record<string,unknown>;
+     22| function bad(path:string,detail:string):never {throw new Error(`Invali…
+       |                                                      ^
+     23| function object(value:unknown,path:string,required:string[],optional:s…
+     24|  if(!value||typeof value!=='object'||Array.isArray(value))bad(path,'ex…
+ ❯ claimBody src/core/saves.ts:175:148
+ ❯ src/core/saves.ts:175:259
+ ❯ validate src/core/saves.ts:175:244
+ ❯ validateCurrent src/core/saves.ts:183:78
+ ❯ saveGame src/core/saves.ts:223:22
+ ❯ replayChecksum src/core/replays.ts:30:15
+ ❯ MatchRecorder.export src/core/replays.ts:132:221
+ ❯ tests/specialist-command-analysis.test.ts:110:46
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/specialist-world-integration.test.ts > specialists in a layered world > evacuates a level-0 unit whose footprint overlaps a destroyed permanent bridge from adjacent bank
+ FAIL  tests/specialist-world-integration.test.ts > specialists in a layered world > evacuates a level-1 unit whose footprint overlaps a destroyed permanent bridge from adjacent bank
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/specialist-world-integration.test.ts:84:23
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  tests/specialist-world-integration.test.ts > specialist deaths and projectile environment > applies projectile weather=clear and high ground once on level-0
+ FAIL  tests/specialist-world-integration.test.ts > specialist deaths and projectile environment > applies projectile weather=rain and high ground once on level-1
+AssertionError: expected 40.66399999999999 to be close to 33.72, received difference is 6.943999999999988, but expected 5e-9
+ ❯ tests/specialist-world-integration.test.ts:149:48
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  tests/specialist-world-integration.test.ts > specialist deaths and projectile environment > applies projectile weather=rain and high ground once on level-0
+AssertionError: expected 36.497600000000006 to be close to 30.247999999999998, received difference is 6.249600000000008, but expected 5e-9
+ ❯ tests/specialist-world-integration.test.ts:149:48
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  tests/world-interruptions.test.ts > world orders interrupted through normal play > clears queued gather memory when bridge collapse evacuates a worker
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/world-interruptions.test.ts:96:23
+     94|   expect(issueCommand(s, 0, { type: 'worldAttack', ids: [siege.id], ta…
+     95|   stepGame(s, .05);
+     96|   expect(crossing.hp).toBe(0);
+       |                       ^
+     97|   expect(worker.hp).toBeGreaterThan(0);
+     98|   expect(worker.hp).toBeLessThan(worker.maxHp);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  tests/world-interruptions.test.ts > world orders interrupted through normal play > charges a rebuilding fee or cancels a live repair after allied siege destruction (0 ore)
+ FAIL  tests/world-interruptions.test.ts > world orders interrupted through normal play > charges a rebuilding fee or cancels a live repair after allied siege destruction (220 ore)
+AssertionError: expected 2 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 2
+
+ ❯ tests/world-interruptions.test.ts:178:23
+    176|   expect(issueCommand(s, 0, { type: 'worldAttack', ids: [siege.id], ta…
+    177|   stepGame(s, .05);
+    178|   expect(crossing.hp).toBe(0);
+       |                       ^
+    179|   advance(s, 13);
+    180|   if (crossing.hp > 0 || crossing.rebuilding > 0 || worker.order.type …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+
+ Test Files  3 failed | 11 passed (14)
+      Tests  9 failed | 421 passed (430)
+   Start at  04:30:12
+   Duration  8.59s (transform 4.27s, setup 0ms, import 5.91s, tests 33.44s, environment 281ms)
+

@@ -1,0 +1,33 @@
+
+ RUN  v4.1.11 /home/morgana/.codex/worktrees/assembled-combat/orcs-vs-Fairies
+
+ ❯ tests/faction-save-semantics.test.ts (28 tests | 1 failed) 728ms
+     × rejects an Automata connected node whose root is unfinished 16ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/faction-save-semantics.test.ts > semantic faction and tactics save admission > rejects an Automata connected node whose root is unfinished
+AssertionError: expected [Function] to throw error matching /power.*root/ but got 'Invalid save at state.entities[0].fac…'
+
+- Expected:
+/power.*root/
+
++ Received:
+"Invalid save at state.entities[0].factionState.power: power requires a completed Automata building with an 80-point shield capacity."
+
+ ❯ tests/faction-save-semantics.test.ts:262:37
+    260|       else if (corruption === 'wrong-level') savedEntity(saved, hq).le…
+    261|       else savedEntity(saved, hq).progress = .5;
+    262|       expect(() => loadGame(saved)).toThrow(/power.*root/);
+       |                                     ^
+    263|     },
+    264|   );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 27 passed (28)
+   Start at  05:13:55
+   Duration  983ms (transform 154ms, setup 0ms, import 188ms, tests 728ms, environment 0ms)
+

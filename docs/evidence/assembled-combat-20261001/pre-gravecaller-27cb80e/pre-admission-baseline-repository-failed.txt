@@ -1,0 +1,264 @@
+
+ RUN  v4.1.11 /tmp/ovf-pre-admission-24fae67.mmVWAg
+
+ ❯ tests/technology-branches.test.ts (9 tests | 2 failed) 4623ms
+     × changes ranged combat damage, cavalry damage received and siege movement through ordinary research commands 847ms
+     × admits definition targets and upgrades one custom melee definition without upgrading the other 679ms
+ ❯ tests/neutral-world-integration.test.ts (5 tests | 1 failed) 2681ms
+     × captures a cavern relic, changes ordinary combat damage and loses the bonus after enemy recapture 162ms
+ ❯ tests/progression.test.ts (12 tests | 2 failed) 1230ms
+   × applies siege damage outside tower range through ordinary attack commands 11ms
+   × applies both weapon tiers and armor research to existing melee troops 4ms
+ ❯ tests/ai-saves.test.ts (18 tests | 2 failed) 235ms
+     × migrates a complete version 2 snapshot after validating the original schema 45ms
+     × checks the byte limit again after a valid legacy migration adds AI fields 105ms
+ ❯ tests/environment.test.ts (30 tests | 2 failed) 162ms
+     × saves a crossing destroyed, rebuilt and destroyed again during the same winter 17ms
+     × rejects malformed bounds, absent levels, nonfuel impacts and invalid provenance without events 2ms
+ ❯ tests/team-saves.test.ts (127 tests | 7 failed) 49876ms
+     × validates a real two-player snapshot before adding team defaults, without losing AI memory 130ms
+     × derives eliminated status from a missing HQ 4ms
+     × derives eliminated status from a unfinished HQ 3ms
+     × derives eliminated status from a dead HQ 2ms
+     × preserves each cleared enemy base from the legacy two-player scouting flags 2ms
+     × retains the old 4096-entity bound when validating legacy saves 28ms
+     × preserves finite queued gathering, orders and ability state through migration 4ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 16 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/ai-saves.test.ts > AI save version 3 > migrates a complete version 2 snapshot after validating the original schema
+Error: Invalid save at state.friendlyFire: unknown field.
+ ❯ bad src/core/saves.ts:22:54
+     20| const RESOURCE_KINDS=['wood','ore','crystal'];
+     21| type RecordValue=Record<string,unknown>;
+     22| function bad(path:string,detail:string):never {throw new Error(`Invali…
+       |                                                      ^
+     23| function object(value:unknown,path:string,required:string[],optional:s…
+     24|  if(!value||typeof value!=='object'||Array.isArray(value))bad(path,'ex…
+ ❯ object src/core/saves.ts:27:91
+ ❯ validate src/core/saves.ts:143:10
+ ❯ migrateAi src/core/saves.ts:192:2
+ ❯ loadGame src/core/saves.ts:229:68
+ ❯ tests/ai-saves.test.ts:10:45
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/16]⎯
+
+ FAIL  tests/ai-saves.test.ts > AI save version 3 > checks the byte limit again after a valid legacy migration adds AI fields
+AssertionError: expected [Function] to throw error matching /size limit/ but got 'Invalid save at state.friendlyFire: u…'
+
+- Expected:
+/size limit/
+
++ Received:
+"Invalid save at state.friendlyFire: unknown field."
+
+ ❯ tests/ai-saves.test.ts:21:63
+     19|   let remaining=target-bytes(save);if(remaining<bytes(event)+1){save.s…
+     20|   const textBytes=remaining-bytes(event)-1;save.state.events.push({...…
+     21|   expect(bytes(save)).toBe(target);expect(()=>loadGame(save)).toThrow(…
+       |                                                               ^
+     22|   // The original schema is valid; leaving room for the added fields p…
+     23|   save.state.events.at(-1).text=save.state.events.at(-1).text.slice(0,…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/16]⎯
+
+ FAIL  tests/environment.test.ts > seasonal lake crossings > saves a crossing destroyed, rebuilt and destroyed again during the same winter
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/environment.test.ts:217:21
+    215|   s.visible=s.players.map(()=>new Set(Array.from({length:256},(_,i)=>i…
+    216|   expect(issueCommand(s,0,{type:'worldAttack',ids:[actor.id],target:br…
+    217|   expect(bridge.hp).toBe(0);expect(s.world.iceTiles).toEqual(tiles.map…
+       |                     ^
+    218|   actor.role='worker';expect(issueCommand(s,0,{type:'repairBridge',ids…
+    219|   for(let i=0;i<100&&bridge.hp===0;i++)stepGame(s,.25);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/16]⎯
+
+ FAIL  tests/environment.test.ts > artillery ignition and simulation interruption hooks > rejects malformed bounds, absent levels, nonfuel impacts and invalid provenance without events
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/environment.test.ts:251:71
+    249|   for(const p of [{x:-.1,y:8.5},{x:16,y:8.5},{x:8.5,y:16},{x:NaN,y:8.5…
+    250|   for(const id of [0,-1,.5,s.nextId,Infinity,NaN])expect(igniteWorldAt…
+    251|   expect(igniteWorldAt(s,{x:8.5,y:8.5},{side:0,id:s.entities[1].id})).…
+       |                                                                       ^
+    252|   expect(igniteWorldAt(s,{x:8.5,y:8.5},{side:7})).toBe(false);
+    253|   expect(s.world.fires).toEqual([]);expect(s.events).toEqual([]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/16]⎯
+
+ FAIL  tests/neutral-world-integration.test.ts > neutral features through normal match commands, ticks and checkpoints > captures a cavern relic, changes ordinary combat damage and loses the bonus after enemy recapture
+AssertionError: expected 17.159999999999997 to be close to 13.8, received difference is 3.359999999999996, but expected 0.005
+ ❯ tests/neutral-world-integration.test.ts:77:38
+     75|   stepGame(state,.05);stepGame(baseline,.05);
+     76|   const ordinary=baseline.entities.find(e=>e.id===defender.id)!;expect…
+     77|   expect(defender.maxHp-defender.hp).toBeCloseTo(FACTIONS.orcs.units.m…
+       |                                      ^
+     78|   const damage={ordinary:ordinary.maxHp-ordinary.hp,withRelic:defender…
+     79|   expect(issueCommand(state,0,{type:'move',ids:[unit.id],x:site.x-10,y…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/16]⎯
+
+ FAIL  tests/progression.test.ts > applies siege damage outside tower range through ordinary attack commands
+AssertionError: expected 750 to be 641 // Object.is equality
+
+- Expected
++ Received
+
+- 641
++ 750
+
+ ❯ tests/progression.test.ts:124:35
+    122|  tower.role='tower';tower.x=29;tower.y=20;tower.hp=tower.maxHp=750;
+    123|  refreshVisibility(s);expect(issueCommand(s,0,{type:'attack',ids:[sieg…
+    124|  stepGame(s,.05);expect(tower.hp).toBe(641);expect(siege.hp).toBe(185);
+       |                                   ^
+    125| });
+    126| it('applies both weapon tiers and armor research to existing melee tro…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/16]⎯
+
+ FAIL  tests/progression.test.ts > applies both weapon tiers and armor research to existing melee troops
+AssertionError: expected 23 to be close to 18.5, received difference is 4.5, but expected 0.005
+ ❯ tests/progression.test.ts:132:36
+    130|  s.players[0].upgrades.push('town-age','citadel-age','forged-weapons',…
+    131|  refreshVisibility(s);expect(issueCommand(s,0,{type:'attack',ids:[a.id…
+    132|  stepGame(s,.05);expect(1000-b.hp).toBeCloseTo(15*1.2*1.25-FACTIONS.fa…
+       |                                    ^
+    133| });
+    134| it('lets workers reach a huge-map flank camp, build a headquarters and…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/16]⎯
+
+ FAIL  tests/team-saves.test.ts > legacy version 1 migration > validates a real two-player snapshot before adding team defaults, without losing AI memory
+Error: Invalid save at state.friendlyFire: unknown field.
+ ❯ bad src/core/saves.ts:22:54
+     20| const RESOURCE_KINDS=['wood','ore','crystal'];
+     21| type RecordValue=Record<string,unknown>;
+     22| function bad(path:string,detail:string):never {throw new Error(`Invali…
+       |                                                      ^
+     23| function object(value:unknown,path:string,required:string[],optional:s…
+     24|  if(!value||typeof value!=='object'||Array.isArray(value))bad(path,'ex…
+ ❯ object src/core/saves.ts:27:91
+ ❯ validate src/core/saves.ts:143:10
+ ❯ migrateLegacy src/core/saves.ts:186:2
+ ❯ loadGame src/core/saves.ts:229:24
+ ❯ tests/team-saves.test.ts:163:225
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/16]⎯
+
+ FAIL  tests/team-saves.test.ts > legacy version 1 migration > derives eliminated status from a missing HQ
+ FAIL  tests/team-saves.test.ts > legacy version 1 migration > derives eliminated status from a unfinished HQ
+ FAIL  tests/team-saves.test.ts > legacy version 1 migration > derives eliminated status from a dead HQ
+Error: Invalid save at state.friendlyFire: unknown field.
+ ❯ bad src/core/saves.ts:22:54
+     20| const RESOURCE_KINDS=['wood','ore','crystal'];
+     21| type RecordValue=Record<string,unknown>;
+     22| function bad(path:string,detail:string):never {throw new Error(`Invali…
+       |                                                      ^
+     23| function object(value:unknown,path:string,required:string[],optional:s…
+     24|  if(!value||typeof value!=='object'||Array.isArray(value))bad(path,'ex…
+ ❯ object src/core/saves.ts:27:91
+ ❯ validate src/core/saves.ts:143:10
+ ❯ migrateLegacy src/core/saves.ts:186:2
+ ❯ loadGame src/core/saves.ts:229:24
+ ❯ tests/team-saves.test.ts:172:40
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/16]⎯
+
+ FAIL  tests/team-saves.test.ts > legacy version 1 migration > preserves each cleared enemy base from the legacy two-player scouting flags
+Error: Invalid save at state.friendlyFire: unknown field.
+ ❯ bad src/core/saves.ts:22:54
+     20| const RESOURCE_KINDS=['wood','ore','crystal'];
+     21| type RecordValue=Record<string,unknown>;
+     22| function bad(path:string,detail:string):never {throw new Error(`Invali…
+       |                                                      ^
+     23| function object(value:unknown,path:string,required:string[],optional:s…
+     24|  if(!value||typeof value!=='object'||Array.isArray(value))bad(path,'ex…
+ ❯ object src/core/saves.ts:27:91
+ ❯ validate src/core/saves.ts:143:10
+ ❯ migrateLegacy src/core/saves.ts:186:2
+ ❯ loadGame src/core/saves.ts:229:24
+ ❯ tests/team-saves.test.ts:177:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/16]⎯
+
+ FAIL  tests/team-saves.test.ts > legacy version 1 migration > retains the old 4096-entity bound when validating legacy saves
+AssertionError: expected [Function] to throw error matching /state.entities: invalid array length/ but got 'Invalid save at state.friendlyFire: u…'
+
+- Expected:
+/state.entities: invalid array length/
+
++ Received:
+"Invalid save at state.friendlyFire: unknown field."
+
+ ❯ tests/team-saves.test.ts:187:34
+    185|   const snapshot=legacy(createGame('orcs',4127)),unit=snapshot.state.e…
+    186|   while(snapshot.state.entities.length<=4096)snapshot.state.entities.p…
+    187|   expect(()=>loadGame(snapshot)).toThrow(/state.entities: invalid arra…
+       |                                  ^
+    188|  });
+    189|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/16]⎯
+
+ FAIL  tests/team-saves.test.ts > legacy version 1 migration > preserves finite queued gathering, orders and ability state through migration
+Error: Invalid save at state.friendlyFire: unknown field.
+ ❯ bad src/core/saves.ts:22:54
+     20| const RESOURCE_KINDS=['wood','ore','crystal'];
+     21| type RecordValue=Record<string,unknown>;
+     22| function bad(path:string,detail:string):never {throw new Error(`Invali…
+       |                                                      ^
+     23| function object(value:unknown,path:string,required:string[],optional:s…
+     24|  if(!value||typeof value!=='object'||Array.isArray(value))bad(path,'ex…
+ ❯ object src/core/saves.ts:27:91
+ ❯ validate src/core/saves.ts:143:10
+ ❯ migrateLegacy src/core/saves.ts:186:2
+ ❯ loadGame src/core/saves.ts:229:24
+ ❯ tests/team-saves.test.ts:194:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/16]⎯
+
+ FAIL  tests/technology-branches.test.ts > role-specific researched stats > changes ranged combat damage, cavalry damage received and siege movement through ordinary research commands
+AssertionError: expected 4.319999999999993 to be close to 3.6, received difference is 0.7199999999999931, but expected 0.005
+ ❯ tests/technology-branches.test.ts:169:60
+    167|     const beforeRanged = hit(state, ranged.id, enemy.id), beforeCavalr…
+    168|     research(state, barracks, 'core:ranged-arms');
+    169|     expect(hit(state, ranged.id, enemy.id) - beforeRanged).toBeCloseTo…
+       |                                                            ^
+    170|     research(state, barracks, 'core:cavalry-barding');
+    171|     expect(beforeCavalry - hit(state, enemy.id, cavalry.id)).toBeClose…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/16]⎯
+
+ FAIL  tests/technology-branches.test.ts > role-specific researched stats > admits definition targets and upgrades one custom melee definition without upgrading the other
+AssertionError: expected 11.519999999999982 to be close to 9.600000000000001, received difference is 1.9199999999999804, but expected 0.005
+ ❯ tests/technology-branches.test.ts:200:62
+    198|     research(state, barracks, 'lantern:bright-blades');
+    199|     expect(hit(state, sentinel.id, enemy.id)).toBeCloseTo(sentinelDama…
+    200|     expect(hit(state, duelist.id, enemy.id) - duelistDamage).toBeClose…
+       |                                                              ^
+    201|   });
+    202|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/16]⎯
+
+
+ Test Files  6 failed (6)
+      Tests  16 failed | 185 passed (201)
+   Start at  05:29:43
+   Duration  50.25s (transform 509ms, setup 0ms, import 807ms, tests 58.81s, environment 0ms)
+

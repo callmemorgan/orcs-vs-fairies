@@ -1,0 +1,168 @@
+
+ RUN  v4.1.11 /home/morgana/.codex/worktrees/assembled-combat/orcs-vs-Fairies
+
+ ❯ tests/joint-combat-integration.test.ts (26 tests | 26 failed) 235ms
+     × blocks empty ammunition and delays one paid cannon round against a unit 23ms
+     × blocks empty ammunition and delays one paid cannon round against a bridge 15ms
+     × blocks empty ammunition and delays one paid cannon round against a creature 10ms
+     × 'stone' applies the target multiplier once to a 'unit' 9ms
+     × 'stone' applies the target multiplier once to a 'building' 9ms
+     × 'stone' applies the target multiplier once to a 'bridge' 8ms
+     × 'stone' applies the target multiplier once to a 'creature' 8ms
+     × 'grapeshot' applies the target multiplier once to a 'unit' 8ms
+     × 'grapeshot' applies the target multiplier once to a 'building' 8ms
+     × 'grapeshot' applies the target multiplier once to a 'bridge' 8ms
+     × 'grapeshot' applies the target multiplier once to a 'creature' 8ms
+     × grapeshot uses each splash victim class when the primary target is a building 8ms
+     × insufficient incendiary funds preserve cannon ammo against a 'unit' (14 wood, 20 ore) 7ms
+     × insufficient incendiary funds preserve cannon ammo against a 'unit' (20 wood, 4 ore) 8ms
+     × insufficient incendiary funds preserve cannon ammo against a 'bridge' (14 wood, 20 ore) 7ms
+     × insufficient incendiary funds preserve cannon ammo against a 'bridge' (20 wood, 4 ore) 7ms
+     × insufficient incendiary funds preserve cannon ammo against a 'creature' (14 wood, 20 ore) 7ms
+     × insufficient incendiary funds preserve cannon ammo against a 'creature' (20 wood, 4 ore) 7ms
+     × a cavern grapeshot impact leaves actors, permanent bridges and creatures at the same surface coordinates untouched 7ms
+     × a saved shot uses its launch origin and elevation after its living shooter moves off the hill 7ms
+     × an admitted long-range shell survives source death, removal and a pending-impact checkpoint 17ms
+     × real crew defeat and capture cannot transfer an earlier incendiary hit to the new owner 7ms
+     × simultaneous cannon impacts collapse one permanent bridge and evacuate its occupant once 7ms
+     × simultaneous grapeshot kills claim the den reward once and preserve both respawn deadlines 7ms
+     × mutual lethal hits award completed XP, Fury and one corpse per unit with Orc-first ID order true 7ms
+     × mutual lethal hits award completed XP, Fury and one corpse per unit with Orc-first ID order false 7ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 26 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > blocks empty ammunition and delays one paid cannon round against a unit
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > blocks empty ammunition and delays one paid cannon round against a bridge
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > blocks empty ammunition and delays one paid cannon round against a creature
+Error: Start0 lacks nearbywood.; Start0 lacks nearbyore.; Start0 lacks nearbycrystal.; Start1 lacks nearbywood.; Start1 lacks nearbyore.; Start1 lacks nearbycrystal.
+ ❯ generatedMapFromWorld src/core/world-map.ts:118:78
+
+ ❯ createMatch src/core/simulation.ts:105:23
+ ❯ match tests/joint-combat-integration.test.ts:31:13
+ ❯ fixture tests/joint-combat-integration.test.ts:93:13
+ ❯ tests/joint-combat-integration.test.ts:119:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/26]⎯
+
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > 'stone' applies the target multiplier once to a 'unit'
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > 'stone' applies the target multiplier once to a 'building'
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > 'stone' applies the target multiplier once to a 'bridge'
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > 'stone' applies the target multiplier once to a 'creature'
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > 'grapeshot' applies the target multiplier once to a 'unit'
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > 'grapeshot' applies the target multiplier once to a 'building'
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > 'grapeshot' applies the target multiplier once to a 'bridge'
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > 'grapeshot' applies the target multiplier once to a 'creature'
+Error: Start0 lacks nearbywood.; Start0 lacks nearbyore.; Start0 lacks nearbycrystal.; Start1 lacks nearbywood.; Start1 lacks nearbyore.; Start1 lacks nearbycrystal.
+ ❯ generatedMapFromWorld src/core/world-map.ts:118:78
+
+ ❯ createMatch src/core/simulation.ts:105:23
+ ❯ match tests/joint-combat-integration.test.ts:31:13
+ ❯ fixture tests/joint-combat-integration.test.ts:93:13
+ ❯ tests/joint-combat-integration.test.ts:134:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/26]⎯
+
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > grapeshot uses each splash victim class when the primary target is a building
+Error: Start0 lacks nearbywood.; Start0 lacks nearbyore.; Start0 lacks nearbycrystal.; Start1 lacks nearbywood.; Start1 lacks nearbyore.; Start1 lacks nearbycrystal.
+ ❯ generatedMapFromWorld src/core/world-map.ts:118:78
+
+ ❯ createMatch src/core/simulation.ts:105:23
+ ❯ tests/joint-combat-integration.test.ts:148:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/26]⎯
+
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > insufficient incendiary funds preserve cannon ammo against a 'unit' (14 wood, 20 ore)
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > insufficient incendiary funds preserve cannon ammo against a 'unit' (20 wood, 4 ore)
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > insufficient incendiary funds preserve cannon ammo against a 'bridge' (14 wood, 20 ore)
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > insufficient incendiary funds preserve cannon ammo against a 'bridge' (20 wood, 4 ore)
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > insufficient incendiary funds preserve cannon ammo against a 'creature' (14 wood, 20 ore)
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > insufficient incendiary funds preserve cannon ammo against a 'creature' (20 wood, 4 ore)
+Error: Start0 lacks nearbywood.; Start0 lacks nearbyore.; Start0 lacks nearbycrystal.; Start1 lacks nearbywood.; Start1 lacks nearbyore.; Start1 lacks nearbycrystal.
+ ❯ generatedMapFromWorld src/core/world-map.ts:118:78
+
+ ❯ createMatch src/core/simulation.ts:105:23
+ ❯ match tests/joint-combat-integration.test.ts:31:13
+ ❯ fixture tests/joint-combat-integration.test.ts:93:13
+ ❯ tests/joint-combat-integration.test.ts:168:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/26]⎯
+
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > a cavern grapeshot impact leaves actors, permanent bridges and creatures at the same surface coordinates untouched
+Error: Start0 lacks nearbywood.; Start0 lacks nearbyore.; Start0 lacks nearbycrystal.; Start1 lacks nearbywood.; Start1 lacks nearbyore.; Start1 lacks nearbycrystal.
+ ❯ generatedMapFromWorld src/core/world-map.ts:118:78
+
+ ❯ createMatch src/core/simulation.ts:105:23
+ ❯ match tests/joint-combat-integration.test.ts:31:13
+ ❯ fixture tests/joint-combat-integration.test.ts:93:13
+ ❯ tests/joint-combat-integration.test.ts:181:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/26]⎯
+
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > a saved shot uses its launch origin and elevation after its living shooter moves off the hill
+Error: Start0 lacks nearbywood.; Start0 lacks nearbyore.; Start0 lacks nearbycrystal.; Start1 lacks nearbywood.; Start1 lacks nearbyore.; Start1 lacks nearbycrystal.
+ ❯ generatedMapFromWorld src/core/world-map.ts:118:78
+
+ ❯ createMatch src/core/simulation.ts:105:23
+ ❯ match tests/joint-combat-integration.test.ts:31:13
+ ❯ fixture tests/joint-combat-integration.test.ts:93:13
+ ❯ tests/joint-combat-integration.test.ts:197:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/26]⎯
+
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > an admitted long-range shell survives source death, removal and a pending-impact checkpoint
+Error: Start0 lacks nearbywood.; Start0 lacks nearbyore.; Start0 lacks nearbycrystal.; Start1 lacks nearbywood.; Start1 lacks nearbyore.; Start1 lacks nearbycrystal.
+ ❯ generatedMapFromWorld src/core/world-map.ts:118:78
+
+ ❯ createMatch src/core/simulation.ts:105:23
+ ❯ tests/joint-combat-integration.test.ts:215:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/26]⎯
+
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > real crew defeat and capture cannot transfer an earlier incendiary hit to the new owner
+Error: Start0 lacks nearbywood.; Start0 lacks nearbyore.; Start0 lacks nearbycrystal.; Start1 lacks nearbywood.; Start1 lacks nearbyore.; Start1 lacks nearbycrystal.
+ ❯ generatedMapFromWorld src/core/world-map.ts:118:78
+
+ ❯ createMatch src/core/simulation.ts:105:23
+ ❯ match tests/joint-combat-integration.test.ts:31:13
+ ❯ tests/joint-combat-integration.test.ts:232:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/26]⎯
+
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > simultaneous cannon impacts collapse one permanent bridge and evacuate its occupant once
+Error: Start0 lacks nearbywood.; Start0 lacks nearbyore.; Start0 lacks nearbycrystal.; Start1 lacks nearbywood.; Start1 lacks nearbyore.; Start1 lacks nearbycrystal.
+ ❯ generatedMapFromWorld src/core/world-map.ts:118:78
+
+ ❯ createMatch src/core/simulation.ts:105:23
+ ❯ match tests/joint-combat-integration.test.ts:31:13
+ ❯ fixture tests/joint-combat-integration.test.ts:93:13
+ ❯ tests/joint-combat-integration.test.ts:251:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/26]⎯
+
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > simultaneous grapeshot kills claim the den reward once and preserve both respawn deadlines
+Error: Start0 lacks nearbywood.; Start0 lacks nearbyore.; Start0 lacks nearbycrystal.; Start1 lacks nearbywood.; Start1 lacks nearbyore.; Start1 lacks nearbycrystal.
+ ❯ generatedMapFromWorld src/core/world-map.ts:118:78
+
+ ❯ createMatch src/core/simulation.ts:105:23
+ ❯ match tests/joint-combat-integration.test.ts:31:13
+ ❯ tests/joint-combat-integration.test.ts:266:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/26]⎯
+
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > mutual lethal hits award completed XP, Fury and one corpse per unit with Orc-first ID order true
+ FAIL  tests/joint-combat-integration.test.ts > mixed authoritative weapon paths > mutual lethal hits award completed XP, Fury and one corpse per unit with Orc-first ID order false
+Error: Start0 lacks nearbywood.; Start0 lacks nearbyore.; Start0 lacks nearbycrystal.; Start1 lacks nearbywood.; Start1 lacks nearbyore.; Start1 lacks nearbycrystal.
+ ❯ generatedMapFromWorld src/core/world-map.ts:118:78
+
+ ❯ createMatch src/core/simulation.ts:105:23
+ ❯ match tests/joint-combat-integration.test.ts:31:13
+ ❯ tests/joint-combat-integration.test.ts:286:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/26]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  26 failed (26)
+   Start at  04:41:18
+   Duration  477ms (transform 145ms, setup 0ms, import 178ms, tests 235ms, environment 0ms)
+

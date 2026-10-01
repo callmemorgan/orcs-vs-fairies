@@ -1,0 +1,53 @@
+
+ RUN  v4.1.11 /home/morgana/.codex/worktrees/assembled-combat/orcs-vs-Fairies
+
+ ❯ tests/tactics-direction-saves.test.ts (24 tests | 2 failed) 646ms
+     × preserves direction undefined/1 independently of map layers 8ms
+     × preserves direction 0/1 independently of map layers 16ms
+ ❯ tests/faction-tools.test.ts (28 tests | 1 failed) 948ms
+     × shows the registered signal beacon name for its tower role 21ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/faction-tools.test.ts > live faction powers panel > shows the registered signal beacon name for its tower role
+AssertionError: expected 'Ironclad Signal Beacon #40' to contain 'Ironclaw Signal Beacon #40'
+
+Expected: "Ironclaw Signal Beacon #40"
+Received: "Ironclad Signal Beacon #40"
+
+ ❯ tests/faction-tools.test.ts:32:46
+     30|   it('shows the registered signal beacon name for its tower role',()=>{
+     31|     const f=setup(), beacon=spawnDefinition(f.state,0,'building','core…
+     32|     f.select([beacon.id]);expect(details(f)).toContain(`Ironclaw Signa…
+       |                                              ^
+     33|   });
+     34|   it.each(['assault','bulwark'] as const)('spends Fury and applies the…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/tactics-direction-saves.test.ts > tactical directions in native saves and replays > preserves direction undefined/1 independently of map layers
+ FAIL  tests/tactics-direction-saves.test.ts > tactical directions in native saves and replays > preserves direction 0/1 independently of map layers
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/tactics-direction-saves.test.ts:25:44
+     23|     expect(issueCommand(s,0,{type:'move',ids:[rider.id],x:rider.x+dx*5…
+     24|     for(let i=0;i<10;i++)stepGame(s,.05);
+     25|     expect(rider.tactics?.charge?.heading).toBe(facing);expect(rider.t…
+       |                                            ^
+     26|     const restored=loadGame(saveGame(s));
+     27|     expect(restored.entities.find(e=>e.id===troop.id)?.tactics?.format…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+
+ Test Files  2 failed | 1 passed (3)
+      Tests  3 failed | 68 passed (71)
+   Start at  04:39:40
+   Duration  1.27s (transform 464ms, setup 0ms, import 582ms, tests 1.80s, environment 172ms)
+

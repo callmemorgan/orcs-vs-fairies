@@ -1,0 +1,1084 @@
+{
+  "completed": true,
+  "base": "http://127.0.0.1:5397",
+  "startedAt": "2026-10-01T11:48:58.302Z",
+  "setup": "Authored layered encounters, generated and validated with production createSessionFile/decodeSessionFile. No fixture page or browser state mutation.",
+  "source": {
+    "commit": "d1978ea2562b879405a07506c0d63037e2262a48",
+    "status": "M src/core/faction-systems.ts\n M src/core/saves.ts\n M src/core/simulation.ts\n M src/ui/FactionTools.ts\n M src/ui/TacticsTools.ts\n M tests/faction-tools.test.ts\n M tests/specialist-building-authority.test.ts\n M tests/specialist-command-analysis.test.ts\n M tests/specialist-world-integration.test.ts\n M tests/tactics-tools.test.ts\n M tests/world-interruptions.test.ts\n?? docs/evidence/assembled-combat-20261001/\n?? node_modules\n?? scripts/combined_combat_scenarios.ts\n?? scripts/verify_combined_combat.mjs\n?? tests/joint-combat-integration.test.ts\n?? tests/tactics-direction-saves.test.ts",
+    "expectedBuildId": "3bdeb96c554cb963f8f8f79ac1507e27ae2caf45f802c1f5255bebcd1e936be2",
+    "distHtmlSha256": "d971bdc003e70c8f5b932232ac420cff1bff2956bfd97dab80faf6af4d892c9e",
+    "servedHtmlSha256": "d971bdc003e70c8f5b932232ac420cff1bff2956bfd97dab80faf6af4d892c9e"
+  },
+  "checks": [
+    {
+      "name": "Native session import preserves orcs-formation authored world and underground troop",
+      "tick": 0,
+      "scenarioSha256": "00541ae14fbc8234c36d195f349a91561e313b96f49fa46c6a6d5ecbc82a339e",
+      "authored": {
+        "resources": {
+          "wood": 2000,
+          "ore": 2000,
+          "crystal": 500
+        },
+        "fury": 100,
+        "bearerTrophies": 2,
+        "description": "Four uninjured combat troops. Trophies and Fury are authored starting conditions."
+      }
+    },
+    {
+      "name": "line formation reaches selected army through Tactics controls",
+      "tick": 11,
+      "army": [
+        18,
+        54,
+        55,
+        56
+      ],
+      "facing": 6,
+      "spacing": 1.4
+    },
+    {
+      "name": "wedge formation reaches selected army through Tactics controls",
+      "tick": 20,
+      "army": [
+        18,
+        54,
+        55,
+        56
+      ],
+      "facing": 6,
+      "spacing": 1.4
+    },
+    {
+      "name": "square formation reaches selected army through Tactics controls",
+      "tick": 25,
+      "army": [
+        18,
+        54,
+        55,
+        56
+      ],
+      "facing": 6,
+      "spacing": 1.4
+    },
+    {
+      "name": "loose formation reaches selected army through Tactics controls",
+      "tick": 30,
+      "army": [
+        18,
+        54,
+        55,
+        56
+      ],
+      "facing": 6,
+      "spacing": 1.4
+    },
+    {
+      "name": "orcs-formation native exported save restores exact combat, faction and layered world fields",
+      "tick": 54
+    },
+    {
+      "name": "orcs-formation native replay reaches matching final combat and faction state",
+      "tick": 54,
+      "checksum": "7df73ce1",
+      "commands": [
+        "formation",
+        "formation",
+        "formation",
+        "formation",
+        "face"
+      ]
+    },
+    {
+      "name": "Native session import preserves orcs-rally authored world and underground troop",
+      "tick": 0,
+      "scenarioSha256": "5fe8c2d30945b806e150562a93114f9b94d2eb8dfab0971f71b606465cdec06f",
+      "authored": {
+        "resources": {
+          "wood": 2000,
+          "ore": 2000,
+          "crystal": 500
+        },
+        "fury": 50,
+        "bearerTrophies": 2,
+        "retreaterMorale": 28,
+        "retreaterHealth": 78,
+        "enemyCooldown": 100,
+        "description": "One wounded isolated warrior near a visible enemy loses morale. A distant friendly band and a player-raised standard provide support during its retreat."
+      }
+    },
+    {
+      "name": "Wounded isolated warrior enters a real low morale retreat",
+      "entity": {
+        "id": 55,
+        "side": 0,
+        "kind": "unit",
+        "role": "melee",
+        "x": 22.414618503175454,
+        "y": 17.528460498941516,
+        "level": 0,
+        "hp": 78,
+        "maxHp": 175,
+        "order": {
+          "type": "move",
+          "x": 6.5,
+          "y": 16.5,
+          "level": 0
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 4,
+        "animation": "walk",
+        "animTime": 1.5500000000000007,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 21.75,
+            "y": 17.75
+          },
+          {
+            "x": 21.25,
+            "y": 17.75
+          },
+          {
+            "x": 20.75,
+            "y": 17.75
+          },
+          {
+            "x": 20.25,
+            "y": 17.75
+          },
+          {
+            "x": 19.75,
+            "y": 17.75
+          },
+          {
+            "x": 19.25,
+            "y": 17.75
+          },
+          {
+            "x": 18.75,
+            "y": 17.75
+          },
+          {
+            "x": 18.25,
+            "y": 17.75
+          },
+          {
+            "x": 17.75,
+            "y": 17.75
+          },
+          {
+            "x": 17.25,
+            "y": 17.75
+          },
+          {
+            "x": 16.75,
+            "y": 17.75
+          },
+          {
+            "x": 16.25,
+            "y": 17.75
+          },
+          {
+            "x": 15.75,
+            "y": 17.75
+          },
+          {
+            "x": 15.25,
+            "y": 17.75
+          },
+          {
+            "x": 14.75,
+            "y": 17.75
+          },
+          {
+            "x": 14.25,
+            "y": 17.75
+          },
+          {
+            "x": 13.75,
+            "y": 17.75
+          },
+          {
+            "x": 13.25,
+            "y": 17.75
+          },
+          {
+            "x": 12.75,
+            "y": 17.75
+          },
+          {
+            "x": 12.25,
+            "y": 17.75
+          },
+          {
+            "x": 11.75,
+            "y": 17.75
+          },
+          {
+            "x": 11.25,
+            "y": 17.75
+          },
+          {
+            "x": 10.75,
+            "y": 17.75
+          },
+          {
+            "x": 10.25,
+            "y": 17.75
+          },
+          {
+            "x": 9.75,
+            "y": 17.25
+          },
+          {
+            "x": 9.25,
+            "y": 17.25
+          }
+        ],
+        "definitionId": "orc-melee",
+        "tactics": {
+          "morale": 21.800000000000022,
+          "recentLoss": 0,
+          "retreat": {
+            "x": 6.5,
+            "y": 16.5,
+            "level": 0,
+            "until": 9.55
+          }
+        }
+      }
+    },
+    {
+      "name": "Assault and Bulwark chants each spend 25 authored Fury through Faction controls",
+      "before": {
+        "version": 1,
+        "fury": [
+          50,
+          0
+        ],
+        "terrainEffects": []
+      },
+      "after": {
+        "version": 1,
+        "fury": [
+          0,
+          0
+        ],
+        "terrainEffects": []
+      },
+      "bearer": {
+        "id": 18,
+        "side": 0,
+        "kind": "unit",
+        "role": "melee",
+        "x": 14.5,
+        "y": 17.5,
+        "level": 0,
+        "hp": 175,
+        "maxHp": 175,
+        "order": {
+          "type": "hold"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 4.199999999999993,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "factionState": {
+          "trophyKills": 2,
+          "chant": {
+            "kind": "bulwark",
+            "until": 15.999999999999993
+          }
+        }
+      }
+    },
+    {
+      "name": "Trophy standard consumes two authored trophies and creates a completed production structure",
+      "standard": {
+        "id": 56,
+        "side": 0,
+        "kind": "building",
+        "role": "depot",
+        "x": 15.5,
+        "y": 17.5,
+        "level": 0,
+        "hp": 160,
+        "maxHp": 160,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 0.15000000000000002,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 184.5,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "definitionId": "core:orcs-trophy-standard"
+      },
+      "bearer": {
+        "id": 18,
+        "side": 0,
+        "kind": "unit",
+        "role": "melee",
+        "x": 14.5,
+        "y": 17.5,
+        "level": 0,
+        "hp": 175,
+        "maxHp": 175,
+        "order": {
+          "type": "hold"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 4.6499999999999915,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "factionState": {
+          "trophyKills": 0,
+          "chant": {
+            "kind": "bulwark",
+            "until": 15.999999999999993
+          }
+        }
+      }
+    },
+    {
+      "name": "Retreating warrior recovers morale near allied support and standard, then returns to holding",
+      "before": {
+        "id": 55,
+        "side": 0,
+        "kind": "unit",
+        "role": "melee",
+        "x": 22.414618503175454,
+        "y": 17.528460498941516,
+        "level": 0,
+        "hp": 78,
+        "maxHp": 175,
+        "order": {
+          "type": "move",
+          "x": 6.5,
+          "y": 16.5,
+          "level": 0
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 4,
+        "animation": "walk",
+        "animTime": 1.5500000000000007,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 21.75,
+            "y": 17.75
+          },
+          {
+            "x": 21.25,
+            "y": 17.75
+          },
+          {
+            "x": 20.75,
+            "y": 17.75
+          },
+          {
+            "x": 20.25,
+            "y": 17.75
+          },
+          {
+            "x": 19.75,
+            "y": 17.75
+          },
+          {
+            "x": 19.25,
+            "y": 17.75
+          },
+          {
+            "x": 18.75,
+            "y": 17.75
+          },
+          {
+            "x": 18.25,
+            "y": 17.75
+          },
+          {
+            "x": 17.75,
+            "y": 17.75
+          },
+          {
+            "x": 17.25,
+            "y": 17.75
+          },
+          {
+            "x": 16.75,
+            "y": 17.75
+          },
+          {
+            "x": 16.25,
+            "y": 17.75
+          },
+          {
+            "x": 15.75,
+            "y": 17.75
+          },
+          {
+            "x": 15.25,
+            "y": 17.75
+          },
+          {
+            "x": 14.75,
+            "y": 17.75
+          },
+          {
+            "x": 14.25,
+            "y": 17.75
+          },
+          {
+            "x": 13.75,
+            "y": 17.75
+          },
+          {
+            "x": 13.25,
+            "y": 17.75
+          },
+          {
+            "x": 12.75,
+            "y": 17.75
+          },
+          {
+            "x": 12.25,
+            "y": 17.75
+          },
+          {
+            "x": 11.75,
+            "y": 17.75
+          },
+          {
+            "x": 11.25,
+            "y": 17.75
+          },
+          {
+            "x": 10.75,
+            "y": 17.75
+          },
+          {
+            "x": 10.25,
+            "y": 17.75
+          },
+          {
+            "x": 9.75,
+            "y": 17.25
+          },
+          {
+            "x": 9.25,
+            "y": 17.25
+          }
+        ],
+        "definitionId": "orc-melee",
+        "tactics": {
+          "morale": 21.800000000000022,
+          "recentLoss": 0,
+          "retreat": {
+            "x": 6.5,
+            "y": 16.5,
+            "level": 0,
+            "until": 9.55
+          }
+        }
+      },
+      "after": {
+        "id": 55,
+        "side": 0,
+        "kind": "unit",
+        "role": "melee",
+        "x": 9.740941857109632,
+        "y": 16.285748713339967,
+        "level": 0,
+        "hp": 78,
+        "maxHp": 175,
+        "order": {
+          "type": "hold"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 4,
+        "animation": "idle",
+        "animTime": 11.60000000000003,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 9.75,
+            "y": 16.25
+          },
+          {
+            "x": 9.25,
+            "y": 16.25
+          }
+        ],
+        "definitionId": "orc-melee",
+        "tactics": {
+          "morale": 59.52000000000004,
+          "recentLoss": 0
+        }
+      }
+    },
+    {
+      "name": "War chant expires during real running production ticks",
+      "tick": 322
+    },
+    {
+      "name": "orcs-rally native exported save restores exact combat, faction and layered world fields",
+      "tick": 337
+    },
+    {
+      "name": "orcs-rally native replay reaches matching final combat and faction state",
+      "tick": 337,
+      "checksum": "25893238",
+      "commands": [
+        "warChant",
+        "warChant",
+        "trophyStandard"
+      ]
+    },
+    {
+      "name": "Native session import preserves dwarves authored world and underground troop",
+      "tick": 0,
+      "scenarioSha256": "2fc3fb80bdd62db8ad43dc947481c67a009465125df5073cdde3ad0dfa524999",
+      "authored": {
+        "resources": {
+          "wood": 2000,
+          "ore": 2000,
+          "crystal": 500
+        },
+        "cannonAmmo": 0,
+        "bridgeHealth": 1000,
+        "description": "An unloaded Deepforge cannon faces a neutral world bridge within range. Deployment, ammunition and the stone fitting must be purchased through controls."
+      }
+    },
+    {
+      "name": "Deepforge specialist cannon loads five shells for 15 ore and fits stone for 25 wood / 20 ore",
+      "cannon": {
+        "id": 54,
+        "side": 0,
+        "kind": "unit",
+        "role": "siege",
+        "x": 14.777769486853156,
+        "y": 17.416669153944053,
+        "level": 0,
+        "hp": 185,
+        "maxHp": 185,
+        "order": {
+          "type": "hold"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 1.2500000000000004,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "definitionId": "dwarf-siege",
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0,
+          "siegeCrew": {
+            "hp": 42,
+            "maxHp": 42,
+            "uncrewed": false
+          }
+        },
+        "siegeMode": {
+          "ammo": 5,
+          "deployed": true
+        },
+        "abilityReadyAt": 0.65,
+        "factionState": {
+          "artillery": "stone"
+        }
+      },
+      "resourcesBefore": {
+        "faction": "dwarves",
+        "wood": 2000,
+        "ore": 2000,
+        "crystal": 500,
+        "population": 7,
+        "cap": 12,
+        "upgrades": [
+          "town-age",
+          "citadel-age"
+        ]
+      },
+      "resourcesAfter": {
+        "faction": "dwarves",
+        "wood": 1975,
+        "ore": 1965,
+        "crystal": 500,
+        "population": 7,
+        "cap": 12,
+        "upgrades": [
+          "town-age",
+          "citadel-age"
+        ]
+      }
+    },
+    {
+      "name": "World tools bridge order launches fitted specialist projectile and consumes one real shell",
+      "tick": 48,
+      "pending": {
+        "id": 1,
+        "source": {
+          "id": 54,
+          "side": 0,
+          "definitionId": "dwarf-siege",
+          "faction": "dwarves",
+          "elevation": 0,
+          "x": 14.777769622641769,
+          "y": 17.416669113207476,
+          "level": 0
+        },
+        "target": {
+          "x": 21.5,
+          "y": 17.5,
+          "level": 0
+        },
+        "rawDamage": 28,
+        "buildingMultiplier": 4,
+        "payload": {
+          "kind": "cannon",
+          "damageFactor": 1.5,
+          "armorPiercing": false,
+          "radius": 0
+        },
+        "modification": "stone",
+        "impactAt": 2.7602289046239865
+      },
+      "cannon": {
+        "id": 54,
+        "side": 0,
+        "kind": "unit",
+        "role": "siege",
+        "x": 14.777769622713917,
+        "y": 17.416669113185833,
+        "level": 0,
+        "hp": 185,
+        "maxHp": 185,
+        "order": {
+          "type": "worldAttack",
+          "target": 55
+        },
+        "cooldown": 3.3500000000000014,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "attack",
+        "animTime": 0.44999999999999996,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "definitionId": "dwarf-siege",
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0,
+          "siegeCrew": {
+            "hp": 42,
+            "maxHp": 42,
+            "uncrewed": false
+          }
+        },
+        "siegeMode": {
+          "ammo": 4,
+          "deployed": true
+        },
+        "abilityReadyAt": 0.65,
+        "factionState": {
+          "artillery": "stone"
+        }
+      }
+    },
+    {
+      "name": "dwarves-in-flight native exported save restores exact combat, faction and layered world fields",
+      "tick": 48
+    },
+    {
+      "name": "dwarves-in-flight native replay reaches matching final combat and faction state",
+      "tick": 48,
+      "checksum": "e84b7743",
+      "commands": [
+        "ability",
+        "modifyArtillery",
+        "worldAttack"
+      ]
+    },
+    {
+      "name": "Imported in-flight cannon shell resolves against the real world bridge once",
+      "tick": 56,
+      "bridge": {
+        "id": 55,
+        "x": 21.5,
+        "y": 17.5,
+        "level": 0,
+        "hp": 810.777884838547,
+        "maxHp": 1000,
+        "tiles": [
+          633
+        ],
+        "rebuilding": 0,
+        "repairSide": null
+      },
+      "cannon": {
+        "id": 54,
+        "side": 0,
+        "kind": "unit",
+        "role": "siege",
+        "x": 14.777769622714134,
+        "y": 17.41666911318577,
+        "level": 0,
+        "hp": 185,
+        "maxHp": 185,
+        "order": {
+          "type": "worldAttack",
+          "target": 55
+        },
+        "cooldown": 2.950000000000003,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "attack",
+        "animTime": 0.8500000000000002,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "definitionId": "dwarf-siege",
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0,
+          "siegeCrew": {
+            "hp": 42,
+            "maxHp": 42,
+            "uncrewed": false
+          }
+        },
+        "siegeMode": {
+          "ammo": 4,
+          "deployed": true
+        },
+        "abilityReadyAt": 0.65,
+        "factionState": {
+          "artillery": "stone"
+        }
+      }
+    },
+    {
+      "name": "dwarves-impact native exported save restores exact combat, faction and layered world fields",
+      "tick": 78
+    },
+    {
+      "name": "dwarves-impact native replay reaches matching final combat and faction state",
+      "tick": 78,
+      "checksum": "0f8776bd",
+      "commands": [
+        "ability",
+        "modifyArtillery",
+        "worldAttack",
+        "hold"
+      ]
+    },
+    {
+      "name": "Native session import preserves automata authored world and underground troop",
+      "tick": 0,
+      "scenarioSha256": "d7454c7d6c6215c7d3124f63a4348d582a283bf3e0c0c764ef6a5a56da5998c7",
+      "authored": {
+        "resources": {
+          "wood": 2000,
+          "ore": 2000,
+          "crystal": 500
+        },
+        "description": "A disconnected tower is fourteen tiles from headquarters. A worker can build a Power Relay seven tiles from each endpoint."
+      }
+    },
+    {
+      "name": "Faction destination controls pay for Power Relay and assign the selected worker construction",
+      "relay": {
+        "id": 55,
+        "side": 0,
+        "kind": "building",
+        "role": "depot",
+        "x": 13.5,
+        "y": 16.5,
+        "level": 0,
+        "hp": 36.75,
+        "maxHp": 350,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 0.005555555555555556,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 0.1,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "definitionId": "core:automata-power-relay"
+      },
+      "worker": {
+        "id": 13,
+        "side": 0,
+        "kind": "unit",
+        "role": "worker",
+        "x": 15.693674633994219,
+        "y": 16.558102390198265,
+        "level": 0,
+        "hp": 55,
+        "maxHp": 55,
+        "order": {
+          "type": "build",
+          "target": 55
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "attack",
+        "animTime": 1.3000000000000005,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "maxShield": 12,
+        "shield": 12,
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        }
+      }
+    },
+    {
+      "name": "Completed production relay connects remote tower to headquarters",
+      "relay": {
+        "id": 55,
+        "side": 0,
+        "kind": "building",
+        "role": "depot",
+        "x": 13.5,
+        "y": 16.5,
+        "level": 0,
+        "hp": 350,
+        "maxHp": 350,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 18.300000000000125,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "definitionId": "core:automata-power-relay",
+        "factionState": {
+          "power": {
+            "connected": true,
+            "root": 12
+          }
+        },
+        "maxShield": 80,
+        "shield": 80
+      },
+      "tower": {
+        "id": 54,
+        "side": 0,
+        "kind": "building",
+        "role": "tower",
+        "x": 20.5,
+        "y": 16.5,
+        "level": 0,
+        "hp": 740,
+        "maxHp": 740,
+        "order": {
+          "type": "hold"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 19.500000000000142,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "definitionId": "automata-tower",
+        "factionState": {
+          "power": {
+            "connected": true,
+            "root": 12
+          }
+        },
+        "maxShield": 80,
+        "shield": 80
+      },
+      "hq": 12
+    },
+    {
+      "name": "automata-relay native exported save restores exact combat, faction and layered world fields",
+      "tick": 415
+    },
+    {
+      "name": "automata-relay native replay reaches matching final combat and faction state",
+      "tick": 415,
+      "checksum": "bb82124e",
+      "commands": [
+        "buildFactionStructure"
+      ]
+    },
+    {
+      "name": "Native bug report confirms served production build identity and matching recorded session",
+      "buildId": "3bdeb96c554cb963f8f8f79ac1507e27ae2caf45f802c1f5255bebcd1e936be2",
+      "tick": 415
+    }
+  ],
+  "downloads": {
+    "orcs-formation-save.json": {
+      "sha256": "a9104096d27a58d971e7d442cd7a2d134d6829412e4522cc3d01bff7e3fe5f2a",
+      "bytes": 361520
+    },
+    "orcs-formation-replay.json": {
+      "sha256": "019f29a0f7b4c7aaf6b03f20c1a6a4e5d68e273df406f99e5f479f982d1a3dc0",
+      "bytes": 171874
+    },
+    "orcs-rally-save.json": {
+      "sha256": "316fb8bd0bc9350fc382a11e534e25ece6388bcc40f19c17c5f4d7f70b4d8e74",
+      "bytes": 371644
+    },
+    "orcs-rally-replay.json": {
+      "sha256": "3ff241660b142bebdc47710f654bc0e5329c6c1771de71f09cbf1b2962503c7c",
+      "bytes": 178453
+    },
+    "dwarves-in-flight-save.json": {
+      "sha256": "a6bfbf414d74162bca9d5943a978ca5b23768188b5da8b9d46e2923e61477ddb",
+      "bytes": 363625
+    },
+    "dwarves-in-flight-replay.json": {
+      "sha256": "dbe0ab4dd7331212f04fa5db255061233502e802d8860933a44202d09dbc442d",
+      "bytes": 172706
+    },
+    "dwarves-impact-save.json": {
+      "sha256": "253df0e284eea42708e6eaa1e52868ca7891ad8fbb28b1154ad071958e59d156",
+      "bytes": 363045
+    },
+    "dwarves-impact-replay.json": {
+      "sha256": "62bd3cc6427985ee17cc9330cb1e2c72271b1e40c518fb41014dee3353c0fee5",
+      "bytes": 172924
+    },
+    "automata-relay-save.json": {
+      "sha256": "5397ecd5f8448d75ab5fb8745310de8e1fad7850e62d1895f238b213fd51331c",
+      "bytes": 373471
+    },
+    "automata-relay-replay.json": {
+      "sha256": "3c3ad8bee9fc84d31e6496624fd35ba552fbfd171a852fa6c8bd9a697fdd1ef7",
+      "bytes": 178716
+    },
+    "production-build-report.json": {
+      "sha256": "4bfcc96c56241c636fcfae12788223a51567144b9144d59ab4fcd38693a001d8",
+      "bytes": 412448
+    }
+  },
+  "errors": [],
+  "completedAt": "2026-10-01T11:50:29.974Z"
+}

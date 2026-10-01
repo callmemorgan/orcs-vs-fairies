@@ -1,0 +1,41 @@
+Source checkout: /home/morgana/.codex/worktrees/assembled-combat/orcs-vs-Fairies
+Source commit: d6b95d25a784dbb8960ba933492e24197539676f
+Source build ID: c204af86e4ec835a78b11b3974516ab298cfde6af0c9faf6ad7db998e82a31fa
+
+Focused combat and faction suite (exit 0; 577 tests, 23 files):
+node_modules/.bin/vitest run tests/combat-tactics.test.ts tests/faction-systems.test.ts tests/specialist-gameplay.test.ts tests/specialist-saves.test.ts tests/specialist-command-analysis.test.ts tests/specialist-world-integration.test.ts tests/specialist-building-authority.test.ts tests/specialist-bridge-expiry.test.ts tests/tactics-direction-saves.test.ts tests/world-combined.test.ts tests/world-interruptions.test.ts tests/online-render-state.test.ts tests/tactics-tools.test.ts tests/faction-tools.test.ts tests/team-observation.test.ts tests/replays.test.ts tests/saves.test.ts tests/joint-combat-integration.test.ts tests/joint-trophy-ownership.test.ts tests/neutral-siege-shells.test.ts tests/faction-save-semantics.test.ts tests/joint-world-ignition.test.ts tests/joint-special-surrender-fire.test.ts --testTimeout=30000 --maxWorkers=2
+
+Production builds (each exit 0; browser command includes tsc --noEmit):
+npm run build
+npm run build:cli
+npm run build:server
+
+Authored scenarios (exit 0):
+node_modules/.bin/esbuild scripts/combined_combat_scenarios.ts --bundle --platform=node --format=esm --outfile=/tmp/combined-combat-scenarios.mjs
+node /tmp/combined-combat-scenarios.mjs docs/evidence/assembled-combat-20261001/fixtures
+
+Production server (still serving final dist on this host):
+npm run preview -- --port 5397 --strictPort
+
+Production browser proof (exit 0; 29 checks, zero browser errors):
+OVF_PLAYWRIGHT_MODULE=/home/morgana/.codex/worktrees/9cd5/hype-comms/node_modules/playwright/index.mjs node scripts/verify_combined_combat.mjs http://127.0.0.1:5397 .
+
+Repository check excluding AI skirmish soak (exit 1; 1793 pass, 16 fail, 83 files):
+node_modules/.bin/vitest run --exclude tests/skirmish.test.ts --testTimeout=30000 --maxWorkers=2
+
+Pre-admission comparison (archive of 24fae67, dependency symlink, separate /tmp directory; exit 1; 185 pass, same 16 fail in 6 files):
+git archive 24fae67 | tar -x -C <separate-baseline-directory>
+ln -s /home/morgana/Projects/orcs-vs-Fairies/node_modules <separate-baseline-directory>/node_modules
+cd <separate-baseline-directory>
+node_modules/.bin/vitest run tests/neutral-world-integration.test.ts tests/progression.test.ts tests/technology-branches.test.ts tests/ai-saves.test.ts tests/environment.test.ts tests/team-saves.test.ts --testTimeout=30000 --maxWorkers=2
+Actual baseline directory: /tmp/ovf-pre-admission-24fae67.mmVWAg
+
+Whole suite (terminated, no completed count; extra AI skirmish soak was still running):
+node_modules/.bin/vitest run --testTimeout=30000
+The run was stopped after the focused checks and production builds had passed. It had found the same 16 failures; its uncompleted output is retained in whole-repository-soak-terminated.txt. The excluded file runs 36 roster pairings, each with up to 45 simulated minutes and a declared 120-second test timeout. This run is not a successful full-repository or AI-skirmish proof.
+
+Hash checks from the source checkout:
+sha256sum -c docs/evidence/assembled-combat-20261001/source-files.sha256
+sha256sum -c docs/evidence/assembled-combat-20261001/proof-code.sha256
+sha256sum -c docs/evidence/assembled-combat-20261001/production-build.sha256
+sha256sum -c docs/evidence/assembled-combat-20261001/evidence.sha256
