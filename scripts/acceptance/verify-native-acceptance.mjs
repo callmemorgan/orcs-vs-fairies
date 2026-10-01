@@ -9,6 +9,7 @@ import { loadPinnedHelper } from './helper-provenance.mjs';
 import { runDirectionDefense } from './direction-defense.mjs';
 import { runCaptureAmbushMorale } from './capture-ambush.mjs';
 import { runSpecialistLifecycle } from './specialist-lifecycle.mjs';
+import { runFactionPowers } from './faction-powers.mjs';
 
 const entry=fileURLToPath(import.meta.url);
 if(process.argv[2]==='--freeze') {
@@ -23,7 +24,7 @@ if(process.argv[2]==='--freeze') {
 }
 
 const [, , baseArg,rootArg,outArg,fixturesArg,freezeArg,helperArg,groupsArg]=process.argv;
-assert(baseArg&&rootArg&&outArg&&fixturesArg&&freezeArg&&helperArg,'Use BASE ROOT NEW_EVIDENCE FIXTURES FREEZE AUDIT_BUNDLE [direction,capture,specialists]');
+assert(baseArg&&rootArg&&outArg&&fixturesArg&&freezeArg&&helperArg,'Use BASE ROOT NEW_EVIDENCE FIXTURES FREEZE AUDIT_BUNDLE [direction,capture,specialists,factions]');
 const base=baseArg,root=resolve(rootArg),out=resolve(outArg),fixtures=resolve(fixturesArg),freezePath=resolve(freezeArg);
 assert.equal(entry,resolve(root,'scripts/acceptance/verify-native-acceptance.mjs'),'Execute browser runner from pinned checkout');
 assert(out!==fixtures&&!out.startsWith(`${fixtures}${sep}`),'Evidence output is outside frozen fixtures');
@@ -34,7 +35,7 @@ const identity={saveVersion:frozen.source.saveVersion,simulationRevision:frozen.
 const manifest=JSON.parse(await readFile(resolve(fixtures,'manifest.json'),'utf8'));
 const {module:helper,provenance:helperProvenance}=await loadPinnedHelper(root,frozen.source.commit,helperArg,'scripts/acceptance/native-audit.ts');
 assert.equal(typeof helper.observeNative,'function');
-const runners={direction:runDirectionDefense,capture:runCaptureAmbushMorale,specialists:runSpecialistLifecycle};
+const runners={direction:runDirectionDefense,capture:runCaptureAmbushMorale,specialists:runSpecialistLifecycle,factions:runFactionPowers};
 const groups=(groupsArg??'direction,capture,specialists').split(',');
 assert(groups.length&&new Set(groups).size===groups.length&&groups.every(group=>Object.hasOwn(runners,group)),'Select known unique acceptance groups');
 const distHtml=await readFile(resolve(root,'dist/index.html')),declaredAssets=htmlAssets(distHtml.toString(),base);
@@ -74,6 +75,7 @@ try {
     assert.deepEqual(evidence.assetFailures,[]);for(const url of declaredAssets)assert(capturedAssets.has(url),`Observed production HTML asset ${url}`);
   };
   ctx=createNativeContext({page,out,fixtures,manifest,identity,evidence,observeNative:helper.observeNative});
+  ctx.factionFacts=helper.observeFactionNative;
   phase='open frozen production application';const response=await page.goto(base);assert(response?.ok());
   const servedHtml=await response.body();assert.deepEqual(servedHtml,distHtml);evidence.source.servedHtmlSha256=digest(servedHtml);
   await page.locator('.begin-match').click();await ctx.ready();await verifyAssets();

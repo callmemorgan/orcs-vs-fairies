@@ -12,7 +12,9 @@ import { SIMULATION_REVISION } from '../../src/core/versions';
 import { observeNative, verifyCaptureAmbushNativeArtifacts } from './capture-ambush-native-checks';
 import { verifyDirectionDefenseNativeArtifacts } from './audit-direction-defense';
 import { readAuthenticatedDownload } from './native-downloads';
+import { observeFactionNative,verifyFactionPowerNativeArtifacts } from './audit-faction-powers';
 export { observeNative };
+export { observeFactionNative };
 
 const digest = (bytes: string | Buffer) => createHash('sha256').update(bytes).digest('hex');
 function commandSuffix(partial: SessionFile, full: SessionFile): ReplayAction[] {
@@ -46,7 +48,7 @@ export function verifyNativeAcceptanceArtifacts({ evidenceDir, fixturesDir, mani
   assert.equal(receipt.completed, true, 'Browser must complete before its histories are admitted');
   const selectedGroups = receipt.selectedGroups;
   assert(Array.isArray(selectedGroups) && selectedGroups.length > 0 && new Set(selectedGroups).size === selectedGroups.length);
-  assert(selectedGroups.every(group => ['direction', 'capture', 'specialists'].includes(group)), 'Browser requested known acceptance groups');
+  assert(selectedGroups.every(group => ['direction', 'capture', 'specialists', 'factions'].includes(group)), 'Browser requested known acceptance groups');
   assert.deepEqual(Object.keys(receipt.groups).sort(), [...selectedGroups].sort(), 'Every requested browser group has its completed receipt');
   for(const group of selectedGroups)assert(receipt.groups[group]&&typeof receipt.groups[group]==='object'&&!Array.isArray(receipt.groups[group]),`Nonempty completed receipt for requested ${group}`);
   assert(Object.keys(receipt.downloads).length > 0, 'Retained native downloads are required');
@@ -80,6 +82,33 @@ export function verifyNativeAcceptanceArtifacts({ evidenceDir, fixturesDir, mani
   }
   assert(checks.length > 0, 'An admitted history audit must inspect original native saves');
   const pairs: [string, string][] = [];
+  if(selectedGroups.includes('factions')) {
+    assert.equal(receipt.groups.factions.completed,true);
+    const required: [string,string][] = [
+      ['factions-orcs-bulwark-active','factions-orcs-chants-expired'],
+      ['factions-orcs-earned-trophies','factions-orcs-standard-outside'],
+      ['factions-standard-before-destruction','factions-standard-destroyed'],
+      ['factions-fairies-before-swap','factions-fairies-swapped'],
+      ['factions-fairies-grove-complete','factions-fairies-grove-decoy'],
+      ['factions-dwarves-tunnel-transit','factions-dwarves-tunnel-arrived'],
+      ['factions-dwarves-exit-pending','factions-dwarves-exit-canceled'],
+      ['factions-undead-wagon-queued','factions-undead-wagon-recruited'],
+      ['factions-undead-wagon-cargo','factions-undead-wagon-raised'],
+      ['factions-undead-sustained','factions-undead-decaying'],
+      ['factions-undead-source-before-destruction','factions-undead-source-decay'],
+      ['factions-automata-network-before-hit','factions-automata-reconnected'],
+    ];
+    for(const prefix of ['factions-fairies-grove','factions-dwarves-entrance','factions-dwarves-exit','factions-undead-necropolis','factions-automata-relay','factions-automata-rebuilt-relay'])required.push([`${prefix}-foundation`,`${prefix}-complete`]);
+    for(const fitting of ['baseline','stone','grapeshot','incendiary','reinforced'])required.push([`factions-dwarves-${fitting}-pending`,`factions-dwarves-${fitting}-impact`]);
+    for(const terrain of ['mud','shallows','water'])required.push([`factions-tideborn-${terrain}-active`,`factions-tideborn-${terrain}-restored`]);
+    const supplied=receipt.groups.factions.continuations;
+    assert(Array.isArray(supplied),'Faction continuations are declared');
+    for(const pair of supplied)assert(Array.isArray(pair)&&pair.length===2&&pair[0]!==pair[1]&&pair.every(name=>typeof name==='string'&&name.startsWith('factions-')),'Distinct faction continuation endpoints');
+    const keys=supplied.map((pair:string[])=>JSON.stringify(pair));
+    assert.equal(new Set(keys).size,keys.length,'Unique faction continuation pairs');
+    assert.deepEqual(keys.sort(),required.map(pair=>JSON.stringify(pair)).sort(),'Every required faction continuation is retained');
+    pairs.push(...required);
+  }
   if (selectedGroups.includes('specialists')) {
     for (const faction of ['orcs', 'fairies', 'dwarves', 'undead', 'tideborn', 'automata']) pairs.push([`specialists-${faction}-pending`, `specialists-${faction}-active`]);
     pairs.push(['specialists-death-recovery', 'specialists-paid-rerecruit-complete'], ['specialists-paid-rerecruit-queued', 'specialists-paid-rerecruit-complete'], ['specialists-bridge-before-expiry', 'specialists-bridge-expired'], ['specialists-barricade-obstructs', 'specialists-barricade-expired-crossed'], ['specialists-beacon-connected-alert', 'specialists-beacon-link-destroyed']);
@@ -95,6 +124,7 @@ export function verifyNativeAcceptanceArtifacts({ evidenceDir, fixturesDir, mani
     return { from, to, checkpointTick: partial.game.state.tick, finalTick: full.game.state.tick, suffix, completeNativeContinuation: true };
   });
   const groupAudits: any = {};
+  if(selectedGroups.includes('factions'))groupAudits.factions=verifyFactionPowerNativeArtifacts({evidenceDir,fixturesDir,manifest,receipt:receipt.groups.factions,files});
   if (selectedGroups.includes('capture')) groupAudits.capture = verifyCaptureAmbushNativeArtifacts(evidenceDir, manifest, receipt.groups.capture, receipt.downloads);
   if (selectedGroups.includes('direction')) groupAudits.direction = verifyDirectionDefenseNativeArtifacts({ evidenceDir, fixturesDir, manifest: { ...manifest, scenarios: Object.fromEntries(Object.entries(manifest.scenarios).filter(([, scenario]: [string, any]) => scenario.group === 'direction')) }, browserReceipt: receipt.groups.direction, downloads:receipt.downloads, outputPath: resolve(evidenceDir, 'direction-defense-native-checks.json'), sourceCommit });
   const result = { sourceCommit, saveVersion: SAVE_VERSION, simulationRevision: SIMULATION_REVISION, completeNativeSaves: checks.length, checks, continuations, groupAudits };

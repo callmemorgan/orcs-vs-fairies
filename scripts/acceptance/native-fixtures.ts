@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import { buildDirectionDefenseFixtures } from './direction-defense-fixtures';
 import { buildCaptureAmbushMoraleFixtures } from './capture-ambush-fixtures';
 import { buildSpecialistLifecycleFixtures } from './specialist-lifecycle-fixtures';
+import { buildFactionPowerFixtures } from './faction-powers-fixtures';
 import { SAVE_VERSION } from '../../src/core/saves';
 import { SIMULATION_REVISION } from '../../src/core/versions';
 
@@ -14,6 +15,7 @@ export function buildNativeAcceptanceFixtures(output: string, sourceCommit: stri
   const out = resolve(output); assert(!existsSync(out), 'Use a new fixture directory');
   mkdirSync(out, { recursive: true });
   const groups = {
+    factions: buildFactionPowerFixtures(resolve(out, 'factions'), sourceCommit),
     direction: buildDirectionDefenseFixtures(resolve(out, 'direction'), sourceCommit),
     capture: buildCaptureAmbushMoraleFixtures(resolve(out, 'capture'), sourceCommit),
     specialists: (() => {
