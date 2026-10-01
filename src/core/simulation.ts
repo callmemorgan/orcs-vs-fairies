@@ -9,7 +9,7 @@ import { generateMatchMap, terrainAt, TERRAIN } from './maps';
 import { notifyCommand, notifyStep } from './history-hooks';
 import { validateCommand } from './commands';
 import { BIOMES, fogKey, generatedMapFromWorld, generateWorldMap, highGroundDamageFactor, highGroundRangeBonus, highGroundSightBonus, initializeWorld, levelOf, sameLevel, terrainLineOfSight } from './world-map';
-import { issueWorldAction, processWorldAction } from './world-actions';
+import { issueWorldAction, processWorldAction, stepWorldActions } from './world-actions';
 import { environmentalMovementFactor, environmentalSightFactor, issueEnvironmentCommand, projectileEnvironment, stepEnvironment } from './environment';
 import { initializeWorldSites, issueNeutralWorldCommand, processNeutralOrder, relicBonus, stepNeutralWorld } from './neutral-world';
 import type { NeutralCreature, WorldCommand } from './world-types';
@@ -140,6 +140,7 @@ export function canPlace(s:GameState,side:Side,role:BuildingRole,x:number,y:numb
  if(s.resources.some(e=>e.amount>0&&levelOf(e)===level&&Math.abs(e.x-x)<r+.8&&Math.abs(e.y-y)<r+.8))return false;return true;
 }
 function assign(s:GameState,e:Entity,order:Entity['order']):void{if(order.type!=='hold')e.entrenchedAt=undefined;e.order=order;e.path=[];runtime(s).routes.delete(e.id);runtime(s).returning.delete(e.id);runtime(s).queuedGather.delete(e.id);}
+function interruptWorldOrder(s:GameState,e:Entity):void {delete e.orderQueue;assign(s,e,{type:'idle'});}
 function commandOrder(s:GameState,e:Entity,order:Entity['order'],queued=false):boolean {
  if(queued&&e.order.type!=='idle'&&e.order.type!=='hold'){
   if((e.orderQueue?.length??0)>=MAX_ORDER_QUEUE)return false;
@@ -150,7 +151,7 @@ function commandOrder(s:GameState,e:Entity,order:Entity['order'],queued=false):b
 function finishOrder(s:GameState,e:Entity):void {
  while(e.orderQueue?.length){
   const order=e.orderQueue.shift()!;
-  if(order.type==='attack'){const target=s.entities.find(t=>t.id===order.target&&alive(t)&&isHostile(s,t.side,e.side));if(!target||!isVisible(s,e.side,target.x,target.y,levelOf(target)))continue;}
+  if(order.type==='attack'){const target=s.entities.find(t=>t.id===order.target&&alive(t)&&isHostile(s,t.side,e.side));if(!target||!sameLevel(e,target)||!isVisible(s,e.side,target.x,target.y,levelOf(target)))continue;}
   if(order.type==='gather'&&!s.resources.some(n=>n.id===order.target&&n.amount>0))continue;
   if(order.type==='build'&&!s.entities.some(t=>t.id===order.target&&alive(t)&&isAllied(s,t.side,e.side)&&t.kind==='building'&&(t.progress<1||t.hp<t.maxHp)))continue;
   if(!e.orderQueue.length)delete e.orderQueue;
@@ -375,7 +376,7 @@ export function stepGame(s:GameState,dt:number):void{
  if(s.tick!==before)notifyStep(s,Math.min(dt,.25));
 }
 function applyStep(s:GameState,dt:number):void{
- if(isGameOver(s)||!Number.isFinite(dt)||dt<=0)return;s.events=[];dt=Math.min(dt,.25);s.time+=dt;s.tick++;stepEnvironment(s,dt);const rt=runtime(s);rt.hits=[];rt.fog-=dt;if(rt.fog<=0){refreshVisibility(s);rt.fog=.2;}rt.ai-=dt;if(rt.ai<=0){rt.aiTurns++;rt.ai+=1;}
+ if(isGameOver(s)||!Number.isFinite(dt)||dt<=0)return;s.events=[];dt=Math.min(dt,.25);s.time+=dt;s.tick++;stepEnvironment(s,dt,{interrupt:actor=>interruptWorldOrder(s,actor)});const rt=runtime(s);rt.hits=[];rt.fog-=dt;if(rt.fog<=0){refreshVisibility(s);rt.fog=.2;}rt.ai-=dt;if(rt.ai<=0){rt.aiTurns++;rt.ai+=1;}
  const sides=playerSides(s),due=new Set(sides.filter(side=>s.controllers[side]==='ai'&&!s.eliminated[side]&&s.time+1e-9>=rt.aiDecisionAt[side]));
  if(due.size){const offset=rt.aiBatchTurns++%sides.length;for(let i=0;i<sides.length;i++){const side=sides[(i+offset)%sides.length];if(due.has(side)){runAI(s,side);rt.aiDecisionAt[side]=s.time+aiProfile(s.aiConfigs[side]).decisionInterval;}}}
  for(const e of [...s.entities]){
@@ -385,14 +386,15 @@ function applyStep(s:GameState,dt:number):void{
  if(e.maxShield&&s.time-(e.lastDamagedAt??-6)>=6)e.shield=Math.min(e.maxShield,(e.shield??0)+4*dt);
  if(!e.illusion&&(d.ability==='raise'||d.ability==='ward'))useAbility(s,e);
  const o=e.order;
- if(processWorldAction(s,e,dt,{move:(actor,to,delta,reach)=>move(s,actor,to,delta,reach),finish:actor=>finishOrder(s,actor)}))continue;
+ if(processWorldAction(s,e,dt,{move:(actor,to,delta,reach)=>move(s,actor,to,delta,reach),finish:actor=>finishOrder(s,actor),interrupt:actor=>interruptWorldOrder(s,actor)}))continue;
  if(processNeutralOrder(s,e,dt,neutralHooks(s)))continue;
  // Holding units defend within weapon range without pursuing beyond their position.
  if(o.type==='hold'){const b=enemy(s,e,weaponRange(s,e),true);if(b&&near(s,e,b,weaponRange(s,e))){fight(s,e,b,dt);if(!e.illusion&&(d.ability==='illusion'||d.ability==='heal'||d.ability==='surge'&&s.entities.some(a=>isAllied(s,a.side,e.side)&&alive(a)&&a.kind==='unit'&&a.hp<=a.maxHp-15&&distance(e,a)<5)))useAbility(s,e);}continue;}
  if(o.type==='gather'){gather(s,e,o.target,dt);continue;}if(o.type==='build'){construct(s,e,o.target,dt);continue;}if(o.type==='move'){if(movementOrder(s,e,o,dt,.5))finishOrder(s,e);continue;}
- if(o.type==='attack'){const b=s.entities.find(b=>b.id===o.target&&alive(b)&&isHostile(s,b.side,e.side));if(!b||!isVisible(s,e.side,b.x,b.y,levelOf(b))){finishOrder(s,e);continue;}fight(s,e,b,dt);continue;}
+ if(o.type==='attack'){const b=s.entities.find(b=>b.id===o.target&&alive(b)&&isHostile(s,b.side,e.side));if(!b||!sameLevel(e,b)||!isVisible(s,e.side,b.x,b.y,levelOf(b))){finishOrder(s,e);continue;}fight(s,e,b,dt);continue;}
  const b=enemy(s,e,d.role==='worker'?2:Math.min(d.sight,7));if(b){fight(s,e,b,dt);if(!e.illusion&&(d.ability==='illusion'||d.ability==='heal'||d.ability==='surge'&&s.entities.some(a=>isAllied(s,a.side,e.side)&&alive(a)&&a.kind==='unit'&&a.hp<=a.maxHp-15&&distance(e,a)<5)))useAbility(s,e);}else if(o.type==='attackMove'&&movementOrder(s,e,o,dt,.65))finishOrder(s,e);
  }
+ stepWorldActions(s);
  stepNeutralWorld(s,dt,neutralHooks(s));
  resolveHits(s);
  s.corpses=s.corpses.filter(c=>c.expires>s.time);

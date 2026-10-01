@@ -231,7 +231,7 @@ export default class GameScene extends Phaser.Scene {
       case 'pause':this.togglePause();return;
       case 'zoomIn':this.zoomBy(.15*this.pixelDensity);return;
       case 'zoomOut':this.zoomBy(-.15*this.pixelDensity);return;
-      case 'centerHQ':{const hq=this.state.entities.find(v=>v.side===this.viewSide&&v.role==='hq'&&v.hp>0);if(hq)this.centerOn(hq.x,hq.y);return;}
+      case 'centerHQ':{const hq=this.state.entities.find(v=>v.side===this.viewSide&&v.role==='hq'&&v.hp>0);if(hq){this.setViewLevel(levelOf(hq));this.centerOn(hq.x,hq.y);}return;}
       case 'selectArmy':this.select(this.state.entities.filter(unit=>unit.side===this.viewSide&&this.visible(unit)&&unit.kind==='unit'&&unit.role!=='worker'&&unit.hp>0).map(unit=>unit.id));return;
       case 'attackMove':this.beginAttackMove();return;
       case 'hold':this.holdPosition();return;
@@ -292,7 +292,7 @@ export default class GameScene extends Phaser.Scene {
     if(!entities.length)return;
     const index=entities.findIndex(e=>e.id===this.selected[0]);
     const next=entities[index<0?(direction>0?0:entities.length-1):(index+direction+entities.length)%entities.length];
-    this.select([next.id]);this.centerOn(next.x,next.y);
+    this.selectEntities([next.id]);this.centerOn(next.x,next.y);
     const camera=this.cameras.main,bounds=this.options.viewBounds?.();this.controllerCursor={x:camera.width/2,y:bounds?(bounds.top+bounds.bottom)/2:camera.height/2};
   }
   private updateController(delta:number,suppressed:boolean){
