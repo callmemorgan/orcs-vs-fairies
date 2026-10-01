@@ -1,0 +1,494 @@
+
+> orcs-vs-fairies@0.1.0 test
+> vitest run --reporter=default --reporter=json --outputFile.json=/home/morgana/Projects/orcs-vs-Fairies/work/hundred-features/root-final-guard-suite-6a634b2-run2/tests.json
+
+
+ RUN  v4.1.11 /home/morgana/Projects/orcs-vs-Fairies
+
+ ✓ tests/economy-world-integration.test.ts (20 tests) 6228ms
+     ✓ preserves a loaded caravan route when side 0 places an allied warehouse beneath it  976ms
+     ✓ preserves a loaded caravan route when side 1 places an allied warehouse beneath it  897ms
+     ✓ initializes strict economy IDs from real generated world villages and saves them  347ms
+     ✓ cancels loaded trade on a commanded transition, keeps the goods and deposits on the new level  338ms
+     ✓ clears worker warehouse assignment after a real layer transition and preserves save continuation  465ms
+     ✓ drops loaded paid cargo once when a commanded fire kills a caravan  338ms
+     ✓ drops loaded paid cargo once when an attacked bridge drowns a caravan  340ms
+     ✓ drops loaded cargo once when spring thaw leaves no reachable bank  324ms
+     ✓ records world traversal and economic payment in a same-build replay  808ms
+     ✓ uses size-2 economic placement beside a size-6 mod depot and salvages the charged mod siege cost  586ms
+ ✓ tests/neutral-world-integration.test.ts (5 tests) 6366ms
+     ✓ completes a real den battle and resumes every subsequent tick with identical HP, reward and AI state  5576ms
+     ✓ captures a cavern relic, changes ordinary combat damage and loses the bonus after enemy recapture  518ms
+ ✓ tests/specialist-world-integration.test.ts (27 tests) 6527ms
+     ✓ builds and expires a level-0 bridge through the world terrain API, and replays a real crossing  1636ms
+     ✓ builds and expires a level-1 bridge through the world terrain API, and replays a real crossing  1330ms
+     ✓ restores untouched temporary tiles despite unrelated edits and preserves changed terrain on either level  407ms
+     ✓ records field repair and barricade commands on level-0  797ms
+     ✓ records field repair and barricade commands on level-1  808ms
+ ✓ tests/team-replays.test.ts (9 tests) 7170ms
+     ✓ replays high-side commands, gathering and research in a 3-player match  1852ms
+     ✓ replays high-side commands, gathering and research in a 8-player match  4735ms
+     ✓ validates analysis and action sides against the 8-player roster  313ms
+ ✓ tests/specialist-bridge-expiry.test.ts (12 tests) 7418ms
+     ✓ kills a normal level-0 troop once and leaves the same coordinates on the other level alive  450ms
+     ✓ kills a normal level-1 troop once and leaves the same coordinates on the other level alive  319ms
+     ✓ kills a level-0 illusion commander without permanent rewards or ordinary losses  517ms
+     ✓ kills a level-1 illusion commander without permanent rewards or ordinary losses  583ms
+     ✓ kills a real level-0 raised troop at bridge expiry while a Necropolis sustains its lifetime  1013ms
+     ✓ kills a real level-1 raised troop at bridge expiry while a Necropolis sustains its lifetime  909ms
+     ✓ reproduces level-0 cleanup and loss counts from a native save and replay seeks across expiry  1322ms
+     ✓ reproduces level-1 cleanup and loss counts from a native save and replay seeks across expiry  1307ms
+ ✓ tests/editor-scenario-authoring.test.ts (22 tests) 7073ms
+     ✓ adds, edits and removes actors including health, faction side and initial orders  454ms
+     ✓ authors nested all and not objective conditions and restores removed branches  394ms
+     ✓ authors spawn, order, variable, message, reward and finish actions in their event order  906ms
+     ✓ edits and reorders escort checkpoints and copies the destination into an objective  352ms
+     ✓ keeps the newest file selection and ignores file reads superseded by an edit  405ms
+     ✓ imports the file package and binds play to the map currently supplied by the editor  367ms
+     ✓ preserves imported world levels through coordinate edits, map placement, timed waves, export and play  1724ms
+     ✓ uses a selected pinned package for authoring and preserves its complete export  400ms
+ ✓ tests/editor-scenario-package.test.ts (176 tests) 7606ms
+     ✓ rejects a map with three valid starting positions during export and import  446ms
+     ✓ round trips both levels, elevation, sites, entrances and resource levels with authored cavern controls  303ms
+ ✓ tests/world-map.test.ts (26 tests) 7866ms
+     ✓ traverses both real levels and returns through the far entrance  1091ms
+     ✓ destroys, invalidates and rebuilds a targetable bridge through orders  1302ms
+     ✓ continues world weather and tunnel transit from exact checkpoint  2546ms
+     ✓ replays normal world commands and seeks across levels  597ms
+ ✓ tests/technology-branches.test.ts (9 tests) 8065ms
+     ✓ enforces age, prerequisite, building and paid cost before reserving a branch across barracks  1468ms
+     ✓ rechecks completion and refunds the captured charge once after a forced conflicting choice  507ms
+     ✓ preserves pending reservations, original charges and the completed choice across save and replay  1052ms
+     ✓ rejects corrupt completed, pending and charged-cost conflicts during save loading  705ms
+     ✓ changes ranged combat damage, cavalry damage received and siege movement through ordinary research commands  1930ms
+     ✓ applies the movement branch only to ranged units and keeps its damage branch locked  1152ms
+     ✓ admits definition targets and upgrades one custom melee definition without upgrading the other  972ms
+ ✓ tests/tournament-runtime.test.ts (16 tests) 11083ms
+     ✓ pins seeds and seat swaps, writes replay evidence, and repeats state hashes and commands  2423ms
+     ✓ forfeits timed out, crashed, malformed, out-of-sequence, and oversized processes and kills every child  4843ms
+     ✓ cancels an active hung process, saves a verifiable aborted match, and waits for child termination  387ms
+     ✓ rejects changed configuration, checkpoint, outcome, and accepted-command evidence  376ms
+     ✓ keeps results public to authorized accounts but only lets the durable creator cancel  538ms
+     ✓ rolls back a failed ownership write without launching a process or keeping a reservation  428ms
+     ✓ authorizes requests, accepts registered configuration IDs, bounds concurrency, and cancels active agents  684ms
+     ✓ serves verified results and replays and restores completed reports after a new server starts  650ms
+ ✓ tests/economy-regressions.test.ts (7 tests) 5156ms
+     ✓ round trips 27 paid recruits across nine constructed headquarters and continues their production  3868ms
+     ✓ records economy commands and produces the same state after observed playback  804ms
+ ✓ tests/server-allied.test.ts (2 tests) 5556ms
+     ✓ runs AI requests through public receipts, preserves issuer ownership, and hides them from opponents  3746ms
+     ✓ conserves the authenticated payer bank and retries each transfer once before and after restart  1808ms
+ ✓ tests/faction-save-semantics.test.ts (55 tests) 4341ms
+ ✓ tests/ai-cost-recovery.test.ts (14 tests) 4729ms
+     ✓ uses the final assault when a partial same-kind cargo load cannot reach collection or enter return  2264ms
+     ✓ continues the no-income final assault identically through a real save  1756ms
+ ✓ tests/economy-cargo-integration.test.ts (6 tests) 4317ms
+     ✓ trains a caravan, trades between real constructed settlements and restores a loaded save  1140ms
+     ✓ stopping a loaded route retains its cargo and prevents a cancelled trip reward  805ms
+     ✓ raids a paid hostile warehouse, saves the channel, and returns stolen local stock  878ms
+     ✓ destroys a paid structure in combat and collects its finite salvage with a real worker  571ms
+     ✓ accepts a neutral contract locally and delivers its stock for a finite village reward  755ms
+ ✓ tests/joint-combat-integration.test.ts (32 tests) 4657ms
+     ✓ blocks empty ammunition and delays one paid cannon round against a unit  381ms
+ ✓ tests/specialist-saves.test.ts (101 tests) 5251ms
+     ✓ resumes and replays accepted specialist commands through combat, fire, promotions and structure expiry  3574ms
+ ✓ tests/economy-settlements.test.ts (8 tests) 6470ms
+     ✓ plants paid groves, saves growth, harvests wood and burns finite saplings  1463ms
+     ✓ opens exactly one paid finite deep reserve at a depleted ore deposit  568ms
+     ✓ overcharges physical crystal harvest, reproduces damage and permits worker repair  1547ms
+     ✓ gathers into local stock and physically delivers it before the wallet changes  872ms
+     ✓ uses exclusive local expansion specializations for gathering, recruitment and research  1445ms
+     ✓ enforces command shapes and hides foreign cargo, warehouse stock and contracts  336ms
+ ✓ tests/server-teams.test.ts (7 tests) 5505ms
+     ✓ runs eight human seats, preserves private ownership and durable receipts, and resolves team forfeits after restart  3204ms
+     ✓ starts cooperative human seats without AI readiness and runs both computer opponents through delayed team observations  1670ms
+     ✓ assigns the host after AI slots and changes a roster without evicting present accounts or keeping stale readiness  333ms
+ ✓ tests/specialist-gameplay.test.ts (86 tests) 13357ms
+     ✓ orcs recruits its named commander, engineer, cavalry and siege through constructed barracks  830ms
+     ✓ fairies recruits its named commander, engineer, cavalry and siege through constructed barracks  715ms
+     ✓ dwarves recruits its named commander, engineer, cavalry and siege through constructed barracks  654ms
+     ✓ undead recruits its named commander, engineer, cavalry and siege through constructed barracks  559ms
+     ✓ tideborn recruits its named commander, engineer, cavalry and siege through constructed barracks  519ms
+     ✓ automata recruits its named commander, engineer, cavalry and siege through constructed barracks  565ms
+     ✓ orcs keeps paid definition records aligned when explicit and default queues drain and refill  707ms
+     ✓ fairies keeps paid definition records aligned when explicit and default queues drain and refill  639ms
+     ✓ dwarves keeps paid definition records aligned when explicit and default queues drain and refill  665ms
+     ✓ undead keeps paid definition records aligned when explicit and default queues drain and refill  559ms
+     ✓ tideborn keeps paid definition records aligned when explicit and default queues drain and refill  591ms
+     ✓ automata keeps paid definition records aligned when explicit and default queues drain and refill  702ms
+     ✓ earns all three ranks from hostile damage and grants survival XP only while combat exposure is recent  461ms
+     ✓ limits commanders while queued and alive, then requires the full death recovery and recruitment price  374ms
+     ✓ builds a three-tile bridge, lets a unit cross, then restores water after 60 seconds  529ms
+ ✓ tests/allied-modes-binding.test.ts (4 tests) 13493ms
+     ✓ keeps allied hill orders on the objective and reproduces their authoritative step  397ms
+     ✓ keeps an accepted defense request in hill through save, continuation and replay  6524ms
+     ✓ keeps an accepted defense request in relic through save, continuation and replay  6499ms
+ ✓ tests/allied-ai.test.ts (43 tests) 15804ms
+     ✓ moves a 64-fighter public formation into an empty requested area and completes after saving  3059ms
+     ✓ restarts the defend arrival timer after an emergency pause  310ms
+     ✓ keeps one distinct scout and launches both approved armies in the same tick despite different decision cadences  838ms
+     ✓ lets a healthy ally launch its ordinary solo wave when its partner cannot replenish troops  856ms
+     ✓ bounds a full army wait when its recoverable allied economy has no fighters  3038ms
+     ✓ releases existing scout and wave plans when observed wood is exhausted, then follows each owner cadence  532ms
+     ✓ continues pending directives, support and coordinated plans byte for byte after saving on every tick  4618ms
+     ✓ cleans dead assigned troops before a save and continues the same ordinary combat after loading  651ms
+ ✓ tests/captured-summon-rules.test.ts (27 tests) 4315ms
+     ✓ blocks a captured Gravecaller when its original melee is disabled  350ms
+ ✓ tests/settlement-military-runtime.test.ts (2 tests) 4246ms
+     ✓ finishes the same paid unit earlier at a local producer and preserves the full save and command replay  3030ms
+     ✓ keeps unpicked and foreign recruits rejected after public draft completion and military specialization  1215ms
+ ✓ tests/campaign-persistent-army.test.ts (1 test) 16634ms
+     ✓ replays earned ranks and artifacts, removes a deployed casualty, and preserves reserves deterministically  16632ms
+ ✓ tests/modes-combined.test.ts (13 tests) 4148ms
+     ✓ continues complete world/content/objective saves and paid queues at every tick and replays the endpoint  3237ms
+ ✓ tests/faction-economy-interruption.test.ts (32 tests) 3711ms
+     ✓ grouped collectCorpses leaves an out-of-level loaded wagon and its delivery unchanged  529ms
+     ✓ grouped deliverCorpses leaves an out-of-level loaded wagon and its delivery unchanged  476ms
+ ✓ tests/ai-modes.test.ts (16 tests) 3320ms
+     ✓ uses the same gathering rate when given the same orders at each difficulty  330ms
+     ✓ retreats wounded troops, waits for a newly trained reinforcement, then returns them to the army  308ms
+     ✓ does not mistake a raised unit for a living paid reinforcement  347ms
+     ✓ preserves configured modes, observed armies, retreat decisions and future cadence through saving  1382ms
+ ✓ tests/specialist-hud.test.ts (11 tests) 3955ms
+   ✓ recruits the named orcs commander and explains the queue and recovery limits  465ms
+   ✓ recruits the named automata commander and explains the queue and recovery limits  330ms
+   ✓ offers earned role promotions and updates the rank, experience and combat stats after a choice  475ms
+   ✓ recovers, equips, unequips and drops an observed artifact through the selected commander controls  382ms
+   ✓ limits artifact recovery by distance and hides enemy equipment and experience  411ms
+   ✓ offers engineer cursor actions and disables unaffordable or paused actions  347ms
+   ✓ shows the extra beacon build definition and reports its connection and invasion alert  574ms
+ ✓ tests/planning.test.ts (85 tests) 4179ms
+     ✓ preserves partial cargo when its current delivery route is blocked even if a different resource is deliverable  635ms
+     ✓ moves an existing gatherer to ore so an isolated idle worker can fill the wood target  1118ms
+     ✓ does not substitute a farther reachable drop-off when the simulation would choose a blocked nearest one  523ms
+ ✓ tests/simulation.test.ts (69 tests) 4146ms
+     ✓ resumes AI construction after builder loss when the player chooses orcs  723ms
+     ✓ resumes AI construction after builder loss when the player chooses fairies  596ms
+     ✓ cannot conjure resources or construction when its economy is empty  695ms
+ ✓ tests/captured-gravecaller-definition.test.ts (9 tests) 4152ms
+     ✓ surrender, public raise, native continuation and replay (pinned true)  1715ms
+     ✓ surrender, public raise, native continuation and replay (pinned false)  1520ms
+ ✓ tests/coach.test.ts (28 tests) 4390ms
+     ✓ assigning real gathering removes idle advice and produces income  332ms
+     ✓ dismissal waits for simulation time and expires at the exact cooldown boundary  328ms
+     ✓ is deterministic at repeated ticks, respects limits and does not mutate observations  317ms
+ ✓ tests/community-client.test.ts (15 tests) 3681ms
+     ✓ uses the existing HttpOnly account session and exact authenticated publication routes  533ms
+     ✓ persists a verified installation and retains older pinned content after a new revision is installed  526ms
+     ✓ keeps every installed record unchanged when atomic persistence fails  352ms
+     ✓ uses immutable storage batches so independent local library instances preserve both revisions  440ms
+     ✓ installs a scenario and its exact embedded map as a complete durable closure  491ms
+ ✓ tests/team-maps.test.ts (39 tests) 18399ms
+   ✓ generates reproducible connected maps for 3 players across 30 seeds  359ms
+   ✓ generates reproducible connected maps for 4 players across 30 seeds  369ms
+   ✓ generates reproducible connected maps for 5 players across 30 seeds  890ms
+   ✓ generates reproducible connected maps for 6 players across 30 seeds  955ms
+   ✓ generates reproducible connected maps for 7 players across 30 seeds  908ms
+   ✓ generates reproducible connected maps for 8 players across 30 seeds  1006ms
+   ✓ gives all 8 opening armies the same gathering distance and income  535ms
+   ✓ routes from every opening army to every HQ approach with 4 players  333ms
+   ✓ routes from every opening army to every HQ approach with 5 players  936ms
+   ✓ routes from every opening army to every HQ approach with 6 players  1575ms
+   ✓ routes from every opening army to every HQ approach with 7 players  1882ms
+   ✓ routes from every opening army to every HQ approach with 8 players  2314ms
+   ✓ lets every player gather its private reserves and the contested camps with 5 players  791ms
+   ✓ lets every player gather its private reserves and the contested camps with 6 players  934ms
+   ✓ lets every player gather its private reserves and the contested camps with 7 players  1181ms
+   ✓ lets every player gather its private reserves and the contested camps with 8 players  1372ms
+ ✓ tests/saves.test.ts (56 tests) 18860ms
+     ✓ continues two AI players identically for 600 ticks with scouting and economic memory  7999ms
+     ✓ preserves returning workers, partial loads, queued orders and production over 500 ticks  4721ms
+     ✓ preserves active illusions, ability cooldowns, shields, corpses and a paid research project  3421ms
+     ✓ preserves the final queued gather through save/load after its waiting list is empty  1379ms
+     ✓ keeps repair spending nonnegative and saveable when workers exhaust fractional funds  553ms
+ ✓ tests/planning-tools.test.ts (23 tests) 3013ms
+     ✓ saves targets without changing orders, then issues real gathering commands when applied  389ms
+     ✓ plans several buildings with no cost, assigns workers, and pays only for issued construction  391ms
+     ✓ assigns a replacement worker and resumes a stopped foundation without buying another building  462ms
+ ✓ tests/practice-coach.test.ts (40 tests) 3006ms
+     ✓ dismisses one topic for 120 simulation seconds and keeps other advice  300ms
+     ✓ uses the eighth human seat in a team match  407ms
+ ✓ tests/editor-map-package.test.ts (50 tests) 3044ms
+ ✓ tests/team-terminal.test.ts (18 tests) 2379ms
+     ✓ saves and restores side 7 with identical queued orders, production and subsequent simulation  1047ms
+     ✓ replays a four-player match and hashes private runtime state  325ms
+ ✓ tests/maps.test.ts (6 tests) 3015ms
+   ✓ generates connected, symmetric large maps for 100 seeds  687ms
+   ✓ generates connected, symmetric huge maps for 100 seeds  1813ms
+ ✓ tests/modes-objectives.test.ts (13 tests) 2281ms
+     ✓ delivers, steals, interrupts and recovers a relic through ordinary movement and collection commands  452ms
+     ✓ continues contested hill/relic/survival state and draft timers identically after saving  898ms
+     ✓ finishes a timed eight-player mirror draft and saves every player roster  573ms
+ ✓ tests/world-interruptions.test.ts (8 tests) 2337ms
+     ✓ finishes an attack and its queued move after a still-visible target traverses to another level  409ms
+     ✓ charges a rebuilding fee or cancels a live repair after allied siege destruction (0 ore)  385ms
+     ✓ charges a rebuilding fee or cancels a live repair after allied siege destruction (220 ore)  355ms
+ ✓ tests/server-modes.test.ts (3 tests) 2609ms
+     ✓ rejects stale/foreign choices and launches the chosen soldier with actual restricted commands  330ms
+     ✓ retains the draft turn across process restart and advances expired server-owned turns  2167ms
+ ✓ tests/server-competitions.test.ts (8 tests) 2395ms
+     ✓ keeps failed final awards unfinished and restricts opponent inspection until recovery commits the result  434ms
+     ✓ records simultaneous forfeits as one draw with unchanged ratings  1022ms
+ ✓ tests/team-observation.test.ts (20 tests) 2646ms
+     ✓ does not reveal hidden buildings through move destinations with queued=false  371ms
+ ✓ tests/scenario-demo-compatibility.test.ts (19 tests) 2802ms
+     ✓ preserves a legacy campaign active profile through import, blocked actions, export and periodic saves  474ms
+ ✓ tests/faction-tools.test.ts (29 tests) 2435ms
+     ✓ constructs the dwarves faction structure through selected workers  302ms
+ ✓ tests/planning-session.test.ts (26 tests) 2126ms
+     ✓ spends resources only on an explicit construction action and snapshots real progress  416ms
+ ✓ tests/tactics-direction-saves.test.ts (24 tests) 2192ms
+ ✓ tests/server/community-http.test.ts (7 tests) 2403ms
+     ✓ accepts playable packages above 64 KiB only through publication and retains the normal body limit  851ms
+     ✓ preserves immutable revisions, profile ownership, sessions and old download hashes through an actual server restart  470ms
+     ✓ admits a scenario and serves its exact embedded map dependency as a separate content envelope  307ms
+ ✓ tests/settlement-mining-runtime.test.ts (2 tests) 2467ms
+     ✓ gathers faster on the same path, deposits earlier, conserves physical ore, and resumes full saves and replay  1784ms
+     ✓ leaves an ordinary owned HQ resource path and deposit rate unchanged outside the mining region  681ms
+ ✓ tests/replays.test.ts (10 tests) 1996ms
+     ✓ reproduces external orders and AI decisions from accepted commands and completed steps  326ms
+     ✓ seeks using proven checkpoints while preserving recording and future state  317ms
+     ✓ keeps chart cadence unchanged by exports, reads and replay checkpoint creation  671ms
+ ✓ tests/progression.test.ts (12 tests) 2109ms
+     ✓ advances only after paid research completes and preserves earlier technologies  646ms
+   ✓ lets workers reach a huge-map flank camp, build a headquarters and deliver its ore  1193ms
+ ✓ tests/rally.test.ts (11 tests) 1815ms
+     ✓ rallies all six military roles from a barracks  1285ms
+ ✓ tests/mod-gameplay.test.ts (7 tests) 1905ms
+     ✓ constructs custom art-backed production, pays distinct costs and recruits two melee definitions  358ms
+     ✓ research changes the custom unit combat multiplier and worker economy uses the same faction  370ms
+     ✓ save/resume and replay pin admitted content independently of the installed revision  603ms
+ ✓ tests/technology-branches-ui.test.ts (2 tests) 2210ms
+   ✓ presents the exclusive alternatives, reserves the selected branch and permanently locks its alternative  686ms
+   ✓ shows researched damage, armor and speed for owned roles while preserving enemy research privacy  1522ms
+ ✓ tests/terrain-economy.test.ts (7 tests) 2151ms
+   ✓ AI workers discover and deposit crystal through ordinary gathering rules  1771ms
+ ✓ tests/tournament-dashboard.test.ts (15 tests) 1967ms
+     ✓ releases a finished run when its replay verification fails, keeping the previous report and allowing import or another run  338ms
+ ✓ tests/allied-world-combined.test.ts (8 tests) 9738ms
+     ✓ leaves surface troops unassigned to a cavern request and completes with real cavern movement after saving  5102ms
+     ✓ reserves a custom worker crystal cost and transfers support only once through public commands  767ms
+     ✓ releases a defender and its arrival timer during real traversal before the next AI decision  1101ms
+     ✓ keeps authoritative state and future simulation unchanged during observations and remote rendering  2644ms
+ ✓ tests/server/community-packages.test.ts (28 tests) 2002ms
+ ✓ tests/server.test.ts (9 tests) 2272ms
+     ✓ creates a real guest session and bounds malformed nested inputs without stopping a match  457ms
+     ✓ runs two independent human sockets, filters fog, enforces ownership and deduplicates paid commands  314ms
+     ✓ fences an old player connection and preserves receipt identity after reconnect  324ms
+     ✓ recovers command journal, account sessions and gathering memory after server restart  331ms
+     ✓ delays actual spectator frames and rejects spectator commands  475ms
+ ✓ tests/session-tools.test.ts (50 tests) 1877ms
+ ✓ tests/joint-world-ignition.test.ts (6 tests) 1662ms
+     ✓ 'prepared Orc incendiary payload' ignites level +0 timber once and continues through native saves  414ms
+ ✓ tests/minimap-level-focus.test.ts (7 tests) 1866ms
+     ✓ cycles within cavern production and switches between surface and cavern groups without centering on the wrong layer  731ms
+     ✓ refreshes authored layer labels and regrouping when an idle producer keeps its alert ID  365ms
+ ✓ tests/world-combined.test.ts (4 tests) 1232ms
+     ✓ builds and produces paid custom definitions in the cavern with exact save continuation  712ms
+     ✓ allocates real cavern workers only to same-level harvesting and delivery  457ms
+ ✓ tests/captured-gravecaller-grove.test.ts (9 tests) 1659ms
+     ✓ preserves original summon and decoy definitions through native/save/replay (pinned true)  503ms
+     ✓ preserves original summon and decoy definitions through native/save/replay (pinned false)  455ms
+ ✓ tests/scenario-core-binding.test.ts (6 tests) 1805ms
+     ✓ keeps generic save continuation and tick-600 replay seeking equal through a terminal mission  1239ms
+ ✓ tests/team-world-observation.test.ts (14 tests) 1380ms
+ ✓ tests/economy-cancellation.test.ts (8 tests) 1615ms
+     ✓ a planted grove still matures after the planter dies  528ms
+     ✓ retains a loaded route cargo on its new level and abandons the old trade reward  403ms
+ ✓ tests/joint-pre-impact-surrender-ignition.test.ts (2 tests) 1301ms
+     ✓ keeps original launch-side world ignition after public surrender on level 0  750ms
+     ✓ keeps original launch-side world ignition after public surrender on level 1  550ms
+ ✓ tests/ai-recovery.test.ts (14 tests) 1707ms
+     ✓ restores the same recovery decisions and ordinary attacks after saving  1540ms
+ ✓ tests/allied-cli.test.ts (5 tests) 1422ms
+     ✓ publishes request status, advances the AI, cancels its request, and replays the same state  695ms
+     ✓ uses the selected terminal side as payer, supports recipient zero, and preserves receipts after loading  309ms
+ ✓ tests/profile-rules-migration.test.ts (14 tests) 7266ms
+     ✓ guards every writer when a current outer rules pin contains an incompatible journal  368ms
+     ✓ validates legacy conquest state, roster fields, battle references and active checksums  363ms
+     ✓ continues current campaign journals and guards chosen-branch and duplicate-result shortcuts  3745ms
+     ✓ continues current conquest journals and keeps canonical ownership validation  1822ms
+ ✓ tests/combat-tactics.test.ts (22 tests) 1554ms
+     ✓ line preserves stable slots, routes around a building, and regroups after a casualty  356ms
+ ✓ tests/joint-special-surrender-fire.test.ts (2 tests) 1494ms
+     ✓ 'continues a live cavern fire through …' after a fitted Dwarf special cannon really surrenders to Orcs  838ms
+     ✓ 'does not award stale attacker trophie…' after a fitted Dwarf special cannon really surrenders to Orcs  655ms
+ ✓ tests/session-storage.test.ts (4 tests) 1808ms
+     ✓ rotates three autosaves and preserves all old data on a quota failure  525ms
+     ✓ validates imports, names, capacity and autosave settings without replacing a match  1018ms
+ ✓ tests/faction-systems.test.ts (32 tests) 1599ms
+ ✓ tests/server-cosmetics.test.ts (7 tests) 1687ms
+     ✓ awards each verified match once, unlocks all three cosmetic types and preserves choices through restart  1017ms
+ ✓ tests/specialist-economy-integration.test.ts (12 tests) 1284ms
+ ✓ tests/specialist-command-analysis.test.ts (7 tests) 1011ms
+     ✓ undead records lethal command losses once before stepping, through resumed history and replay seek  358ms
+ ✓ tests/production-reorder.test.ts (23 tests) 1190ms
+     ✓ produces the revised order after moving slot 3 to 1 without charging again  509ms
+     ✓ produces the revised order after moving slot 1 to 3 without charging again  369ms
+ ✓ tests/neutral-world.test.ts (13 tests) 722ms
+ ✓ tests/captured-illusion-definition.test.ts (2 tests) 903ms
+     ✓ preserves original clone identity after actual surrender (pinned true)  462ms
+     ✓ preserves original clone identity after actual surrender (pinned false)  439ms
+ ✓ tests/ai-saves.test.ts (18 tests) 965ms
+     ✓ checks the byte limit again after a valid legacy migration adds AI fields  462ms
+ ✓ tests/economy-scenario-integration.test.ts (6 tests) 1041ms
+     ✓ charges caravan and ordinary reinforcements once across both histories and equal continuation  346ms
+   ✓ uses one village reinforcement allowance for a selected squad and rejects later recruitment through both entry points  332ms
+ ✓ tests/modes-combined-ui.test.ts (15 tests) 721ms
+     ✓ shows custom definition names and applies selected exclusions to recruitment and research  304ms
+ ✓ tests/editor-tools.test.ts (4 tests) 1015ms
+     ✓ keeps the later requested file when reads finish in reverse order  349ms
+ ✓ tests/team-session-tools.test.ts (26 tests) 1141ms
+ ✓ tests/campaign-verification.test.ts (5 tests) 1061ms
+     ✓ terminates a timed-out replay and accepts the next verification  545ms
+ ✓ tests/online-lobby.test.ts (7 tests) 918ms
+ ✓ tests/navigation.test.ts (12 tests) 841ms
+   ✓ moves a crowded group around a building and finishes the formation order  423ms
+ ✓ tests/joint-trophy-ownership.test.ts (2 tests) 530ms
+     ✓ a real capture cannot give the new Orc owner a trophy or XP for an earlier owner’s lethal burn  367ms
+ ✓ tests/session-scenario-profile.test.ts (7 tests) 1668ms
+     ✓ retains the active campaign and matching battlefield through export and reload  321ms
+     ✓ continues both SAVE4 histories from the loaded campaign without changing their initial checkpoint or accepted prefix  807ms
+ ✓ tests/economy-specialist-core.test.ts (6 tests) 845ms
+ ✓ tests/neutral-siege-shells.test.ts (2 tests) 514ms
+ ✓ tests/upgrades.test.ts (9 tests) 695ms
+     ✓ researches a worker upgrade at the headquarters over its research time  305ms
+ ✓ tests/terminal.test.ts (8 tests) 760ms
+   ✓ advances the same simulation as direct engine steps and verifies deterministic replays  578ms
+ ✓ tests/scenarios.test.ts (15 tests) 3305ms
+     ✓ refuses to export a journal that exceeds its own import node budget  2016ms
+     ✓ preserves schedules, orders, alarms and an active boss warning across exact checkpoints  755ms
+ ✓ tests/factions.test.ts (47 tests) 915ms
+     ✓ real combat deaths leave expiring corpses  379ms
+ ✓ tests/order-queue.test.ts (26 tests) 751ms
+ ✓ tests/save4-corpus.test.ts (22 tests) 2188ms
+     ✓ preserves the Lantern original game/history pair through import and local storage  374ms
+     ✓ preserves the world original game/history pair through import and local storage  344ms
+ ✓ tests/match-rules-ui.test.ts (9 tests) 698ms
+ ✓ tests/scenario-campaign-host.test.ts (9 tests) 1794ms
+     ✓ starts a campaign from the menu and retains normal commands in generic save ownership  343ms
+     ✓ continues an equipped SAVE4 campaign after ordinary save installation without replacing or duplicating its journal  1237ms
+ ✓ tests/tactics-tools.test.ts (19 tests) 593ms
+ ✓ tests/economy-tools.test.ts (30 tests) 876ms
+ ✓ tests/environment.test.ts (31 tests) 521ms
+ ✓ tests/conquest-ui.test.ts (11 tests) 467ms
+ ✓ tests/authored-commanders.test.ts (57 tests) 505ms
+ ✓ tests/online-render-state.test.ts (13 tests) 342ms
+ ✓ tests/economy-cargo.test.ts (21 tests) 156ms
+ ✓ tests/technology-tree.test.ts (4 tests) 469ms
+ ✓ tests/save-envelope-source.test.ts (23 tests) 220ms
+ ✓ tests/mod-library.test.ts (9 tests) 397ms
+ ✓ tests/specialist-building-authority.test.ts (9 tests) 282ms
+ ✓ tests/scenario-tools-readonly.test.ts (11 tests) 218ms
+ ✓ tests/minimap-alerts.test.ts (9 tests) 148ms
+ ✓ tests/scenario-ability-strategy.test.ts (6 tests) 85ms
+ ✓ tests/scenario-save4-wrapper-migration.test.ts (10 tests) 477ms
+ ✓ tests/content-registry.test.ts (17 tests) 96ms
+ ✓ tests/specialist-scene.test.ts (6 tests) 197ms
+ ✓ tests/ai-policy.test.ts (7 tests) 80ms
+ ✓ tests/scenario-content.test.ts (12 tests) 313ms
+ ✓ tests/scenario-recording-compatibility.test.ts (14 tests) 429ms
+ ✓ tests/hud-health.test.ts (3 tests) 175ms
+ ✓ tests/planning-storage.test.ts (2 tests) 83ms
+ ✓ tests/scenario-declared-abilities.test.ts (3 tests) 54ms
+ ✓ tests/queue-cancel.test.ts (4 tests) 66ms
+ ✓ tests/online-client.test.ts (11 tests) 47ms
+ ✓ tests/profile-checkpoint-rules-compatibility.test.ts (6 tests) 1963ms
+     ✓ checks completed campaign checkpoint rules undefined before duplicates or reward claims  882ms
+     ✓ checks completed campaign checkpoint rules 3.2.0 before duplicates or reward claims  631ms
+ ✓ tests/controls.test.ts (10 tests) 15ms
+ ✓ tests/historical-content.test.ts (4 tests) 48ms
+ ✓ tests/team-ai-policy.test.ts (55 tests) 31ms
+ ✓ tests/ui-availability.test.ts (4 tests) 42ms
+ ✓ tests/appearance.test.ts (5 tests) 41ms
+ ✓ tests/display-settings.test.ts (10 tests) 61ms
+ ✓ tests/editor-document.test.ts (3 tests) 4ms
+ ✓ tests/gamepad.test.ts (13 tests) 9ms
+ ✓ tests/geometry.test.ts (28 tests) 25ms
+ ✓ tests/ally-directives-ui.test.ts (11 tests) 51ms
+ ✓ tests/render-density.test.ts (3 tests) 3ms
+ ✓ tests/skirmish-options.test.ts (12 tests) 32ms
+ ✓ tests/scenario-campaign-reward.test.ts (8 tests) 859ms
+ ✓ tests/team-ai-tools.test.ts (2 tests) 14ms
+ ✓ tests/competition-tools-integration.test.ts (7 tests) 23ms
+ ✓ tests/tideborn-automata.test.ts (8 tests) 34228ms
+   ✓ tideborn AI gathers crystal and recruits its full roster  22104ms
+   ✓ automata AI gathers crystal and recruits its full roster  11755ms
+ ✓ tests/team-match.test.ts (91 tests) 35798ms
+     ✓ gives every player legal, distinct starting units in a 6-player match  327ms
+     ✓ gives every player legal, distinct starting units in a 8-player match  393ms
+     ✓ runs real gathering, construction and training for all 4 players over 400 ticks  3936ms
+     ✓ runs real gathering, construction and training for all 6 players over 400 ticks  7881ms
+     ✓ runs real gathering, construction and training for all 8 players over 400 ticks  17340ms
+     ✓ stops buying housing once AI reaches its configured population limit of 8  673ms
+     ✓ stops buying housing once AI reaches its configured population limit of 17  964ms
+     ✓ continues normal AI housing expansion with the default population limit  1362ms
+     ✓ multiplies delivered harvest income without changing worker extraction  874ms
+ ✓ tests/conquest.test.ts (5 tests) 37753ms
+     ✓ rejects aggregate journal growth before returning a profile that cannot reload  35134ms
+     ✓ captures connected regions through ordinary combat and reloads real surviving armies  1462ms
+     ✓ transfers tribute atomically, rejects weak proposals and applies passage, expiry and alliance aid  875ms
+ ✓ tests/campaign.test.ts (12 tests) 40185ms
+     ✓ preserves the previous profile when accumulated chapter journals exceed import limits  14665ms
+     ✓ orcs completes four chapters with stable survivors and a persisted route  6639ms
+     ✓ fairies completes four chapters with stable survivors and a persisted route  6890ms
+     ✓ dwarves completes four chapters with stable survivors and a persisted route  3814ms
+     ✓ undead completes four chapters with stable survivors and a persisted route  3292ms
+     ✓ tideborn completes four chapters with stable survivors and a persisted route  1952ms
+     ✓ automata completes four chapters with stable survivors and a persisted route  2596ms
+ ✓ tests/skirmish-roster.test.ts (74 tests) 71068ms
+     ✓ uses a zero-resource, zero-income, minimum-cap handicap without substituting defaults  340ms
+     ✓ changes real delivered harvest income from the human handicap  481ms
+     ✓ runs every local CPU economy from the 2v2 UI config  24252ms
+     ✓ runs every local CPU economy from the 4v4 UI config  44238ms
+ ✓ tests/team-saves.test.ts (127 tests) 85489ms
+     ✓ continues 4-player team matches identically for 500 ticks with AI, queued workers and abilities  20402ms
+     ✓ continues 6-player team matches identically for 500 ticks with AI, queued workers and abilities  23163ms
+     ✓ continues 8-player team matches identically for 500 ticks with AI, queued workers and abilities  34582ms
+     ✓ supports full 256-cell map dimensions with dense fog and search memory for eight players  1317ms
+     ✓ validates a historical two-player projection before adding team defaults, without losing AI memory  2099ms
+     ✓ preserves finite queued gathering, orders and ability state through migration  541ms
+ ✓ tests/skirmish.test.ts (36 tests) 762151ms
+   ✓ completes a real orcs vs orcs AI skirmish  59900ms
+   ✓ completes a real orcs vs fairies AI skirmish  5601ms
+   ✓ completes a real orcs vs dwarves AI skirmish  11761ms
+   ✓ completes a real orcs vs undead AI skirmish  22499ms
+   ✓ completes a real orcs vs tideborn AI skirmish  10468ms
+   ✓ completes a real orcs vs automata AI skirmish  14897ms
+   ✓ completes a real fairies vs orcs AI skirmish  8682ms
+   ✓ completes a real fairies vs fairies AI skirmish  27833ms
+   ✓ completes a real fairies vs dwarves AI skirmish  7812ms
+   ✓ completes a real fairies vs undead AI skirmish  22180ms
+   ✓ completes a real fairies vs tideborn AI skirmish  14953ms
+   ✓ completes a real fairies vs automata AI skirmish  9584ms
+   ✓ completes a real dwarves vs orcs AI skirmish  32275ms
+   ✓ completes a real dwarves vs fairies AI skirmish  7106ms
+   ✓ completes a real dwarves vs dwarves AI skirmish  58581ms
+   ✓ completes a real dwarves vs undead AI skirmish  18945ms
+   ✓ completes a real dwarves vs tideborn AI skirmish  30393ms
+   ✓ completes a real dwarves vs automata AI skirmish  39451ms
+   ✓ completes a real undead vs orcs AI skirmish  7836ms
+   ✓ completes a real undead vs fairies AI skirmish  8243ms
+   ✓ completes a real undead vs dwarves AI skirmish  51742ms
+   ✓ completes a real undead vs undead AI skirmish  21425ms
+   ✓ completes a real undead vs tideborn AI skirmish  17530ms
+   ✓ completes a real undead vs automata AI skirmish  45377ms
+   ✓ completes a real tideborn vs orcs AI skirmish  33191ms
+   ✓ completes a real tideborn vs fairies AI skirmish  7849ms
+   ✓ completes a real tideborn vs dwarves AI skirmish  13138ms
+   ✓ completes a real tideborn vs undead AI skirmish  17415ms
+   ✓ completes a real tideborn vs tideborn AI skirmish  15475ms
+   ✓ completes a real tideborn vs automata AI skirmish  11319ms
+   ✓ completes a real automata vs orcs AI skirmish  10702ms
+   ✓ completes a real automata vs fairies AI skirmish  6344ms
+   ✓ completes a real automata vs dwarves AI skirmish  69017ms
+   ✓ completes a real automata vs undead AI skirmish  9004ms
+   ✓ completes a real automata vs tideborn AI skirmish  5426ms
+   ✓ completes a real automata vs automata AI skirmish  8195ms
+
+ Test Files  152 passed (152)
+      Tests  2889 passed (2889)
+   Start at  09:31:48
+   Duration  762.71s (transform 11.27s, setup 0ms, import 35.89s, tests 1469.09s, environment 6.78s)
+
+JSON report written to /home/morgana/Projects/orcs-vs-Fairies/work/hundred-features/root-final-guard-suite-6a634b2-run2/tests.json
