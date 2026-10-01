@@ -1,5 +1,5 @@
 import { technologyTree } from './TechnologyTree';
-import { researchRequirement, playerAge, AGE_NAMES } from '../core/progression';
+import { researchRequirement, playerAge, buildingAgeRequired, AGE_NAMES } from '../core/progression';
 import { observedHealth, PlayerView } from '../core/observation';
 import { isAllied } from '../core/simulation';
 import { ABILITIES, FACTIONS } from '../core/content';
@@ -208,7 +208,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
         let reason=missing.length?`Need ${missing.join(', ')}`:'';
         if(action.train){if(action.entity!.progress<1)reason='Under construction';else if(action.entity!.queue.length>=5)reason='Queue full';else if(player.population+reserved>=player.cap)reason='Build a depot for supply';}
         if(action.unitRole&&playerAge(player)<(unitFor(s,localSide,action.unitRole,action.definitionId).age??1))reason=`Requires ${AGE_NAMES[unitFor(s,localSide,action.unitRole,action.definitionId).age!]}`;
-        if(action.buildRole&&playerAge(player)<(action.buildRole==='hq'?2:buildingFor(s,localSide,action.buildRole,action.definitionId).age??1))reason='Requires Town Age';
+        if(action.buildRole){const age=buildingAgeRequired(buildingFor(s,localSide,action.buildRole,action.definitionId));if(playerAge(player)<age)reason=`Requires ${AGE_NAMES[age]}`;}
         if(action.upgrade){if(action.entity!.progress<1)reason='Under construction';else if(action.entity!.research)reason=`Researching ${upgradeFor(s,localSide,action.entity!.research).name}`;else reason=researchRequirement(s,localSide,action.upgrade)??reason;}
         if(action.ability){const remaining=Math.max(0,Math.ceil(Math.min(...casters.map(e=>(e.abilityReadyAt??0)-s.time))));if(remaining>0)reason=`${remaining}s cooldown`;else reason=abilityTargetReason(s,casters);action.button.style.setProperty('--cooldown',`${remaining?Math.min(100,remaining/Math.max(...abilityIds.map(id=>ABILITIES[id].cooldown))*100):0}%`);}
         if(cb.canCommand?.()===false)reason=s.eliminated[localSide]?'Player eliminated':'Viewing match';if(paused)reason='Battle paused';if(s.winner!==null||s.draw)reason='Match ended';

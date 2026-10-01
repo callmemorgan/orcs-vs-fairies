@@ -1,7 +1,8 @@
 import { upgradeFor } from './content-registry';
-import type { Age, GameState, Player, Side, UpgradeId } from './types';
+import type { Age, BuildingDef, GameState, Player, Side, UpgradeId } from './types';
 
 export const AGE_NAMES:Record<Age,string>={1:'Settlement Age',2:'Town Age',3:'Citadel Age'};
+export function buildingAgeRequired(def:Pick<BuildingDef,'role'|'age'>):Age {return def.age??(def.role==='hq'?2:1);}
 export function playerAge(player:Player):Age {
   return player.upgrades.includes('citadel-age')?3:player.upgrades.includes('town-age')?2:1;
 }

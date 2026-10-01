@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
 import { createGame, issueCommand, stepGame } from '../src/core/simulation';
 import { MatchRecorder, ReplayPlayer, decodeReplay, replayChecksum } from '../src/core/replays';
 import { saveGame, loadGame } from '../src/core/saves';
@@ -6,6 +7,14 @@ import { FACTIONS, UPGRADES } from '../src/core/content';
 import { SIMULATION_REVISION } from '../src/core/versions';
 
 describe('browser replay simulation',()=>{
+  it('keeps the genuine prior 3.1 match inspectable and rejects its older numerical rules',()=>{
+    const archive=decodeReplay(JSON.parse(readFileSync(new URL('../docs/evidence/rules-3.1-replay-20261001/replay.json',import.meta.url),'utf8')));
+    expect(archive.initial.version).toBe(3);
+    expect(archive.simulationRevision).toBe('3.1.0');
+    expect(archive.finalTick).toBe(11909);
+    expect(()=>new ReplayPlayer(archive)).toThrow('rules 3.1.0');
+    expect(()=>new MatchRecorder(loadGame(archive.initial),archive)).toThrow('Older replay history');
+  });
   it('rejects another deterministic rules revision before playback despite an unchanged save schema',()=>{
     const state=createGame('orcs',4127,'fairies',{mapSize:'small',controllers:['external','external']}),recorder=new MatchRecorder(state);
     stepGame(state,.05);const archive=recorder.export();recorder.dispose();

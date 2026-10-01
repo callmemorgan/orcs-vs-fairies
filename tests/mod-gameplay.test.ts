@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { availableUnits, contentHash, createContentBundle, unitFor } from '../src/core/content-registry';
 import { exampleMod } from '../src/core/example-mod';
+import { addBlueprint, blueprintReason, createConstructionPlan } from '../src/core/planning';
 import { canPlace, createMatch, issueCommand, refreshVisibility, stepGame } from '../src/core/simulation';
 import { loadGame, saveGame } from '../src/core/saves';
 import { MatchRecorder, ReplayPlayer, replayChecksum } from '../src/core/replays';
@@ -9,6 +10,30 @@ function match(){return createMatch({content:createContentBundle([exampleMod()])
 function advance(state:GameState,seconds:number){for(let i=0;i<Math.round(seconds*20);i++)stepGame(state,.05);}
 function buildHall(state:GameState){const worker=state.entities.find(e=>e.side===0&&e.role==='worker')!;const hq=state.entities.find(e=>e.side===0&&e.role==='hq')!;for(let y=Math.floor(hq.y-7)+.5;y<hq.y+7;y++)for(let x=Math.floor(hq.x-7)+.5;x<hq.x+7;x++)if(canPlace(state,0,'barracks',x,y,'lantern:hall')){expect(issueCommand(state,0,{type:'build',ids:[worker.id],role:'barracks',definitionId:'lantern:hall',x,y})).toBe(true);advance(state,35);const hall=state.entities.find(e=>e.definitionId==='lantern:hall')!;expect(hall.progress).toBe(1);return hall;}throw new Error('No build location');}
 describe('custom content in the authoritative game',()=>{
+  it('honors a custom Citadel Age headquarters in placement, commands and blueprints',()=>{
+    const packageValue=structuredClone(exampleMod()),faction=packageValue.factions[0];
+    const hall=faction.buildings.find(def=>def.role==='barracks')!;
+    faction.buildings.push({...hall,id:'lantern:citadel',name:'Lantern Citadel',role:'hq',age:3});
+    faction.defaultBuildings={...faction.defaultBuildings,hq:'lantern:citadel'};
+    packageValue.art['lantern:citadel']={...packageValue.art[hall.id]};
+    const {hash:_,...body}=packageValue;packageValue.hash=contentHash(body);
+    const state=createMatch({content:createContentBundle([packageValue]),map:{seed:4127,size:'small'},players:[{id:0,teamId:0,factionId:'lantern:keepers',controller:'human'},{id:1,teamId:1,factionId:'orcs',controller:'external'}]});
+    state.players[0].upgrades=['town-age','citadel-age'];
+    let position:{x:number;y:number}|undefined;
+    for(let y=2.5;y<20&&!position;y++)for(let x=2.5;x<20;x++)if(canPlace(state,0,'hq',x,y)){position={x,y};break;}
+    expect(position).toBeDefined();
+    state.players[0].upgrades=['town-age'];
+    const worker=state.entities.find(entity=>entity.side===0&&entity.role==='worker')!;
+    const before={...state.players[0]};
+    expect(canPlace(state,0,'hq',position!.x,position!.y)).toBe(false);
+    expect(issueCommand(state,0,{type:'build',ids:[worker.id],role:'hq',definitionId:'lantern:citadel',...position!})).toBe(false);
+    expect(state.players[0]).toEqual(before);
+    const blueprint=addBlueprint(state,0,createConstructionPlan(0),{role:'hq',...position!});
+    expect(blueprintReason(state,0,blueprint)).toBe('Requires Citadel Age.');
+    state.players[0].upgrades.push('citadel-age');
+    expect(canPlace(state,0,'hq',position!.x,position!.y)).toBe(true);
+    expect(issueCommand(state,0,{type:'build',ids:[worker.id],role:'hq',definitionId:'lantern:citadel',...position!})).toBe(true);
+  });
   it('constructs custom art-backed production, pays distinct costs and recruits two melee definitions',()=>{const state=match(),wood=state.players[0].wood,ore=state.players[0].ore,hall=buildHall(state);expect(state.players[0].wood).toBe(wood-140);expect(state.players[0].ore).toBe(ore-40);expect(issueCommand(state,0,{type:'train',id:hall.id,role:'melee',definitionId:'lantern:sentinel'})).toBe(true);expect(issueCommand(state,0,{type:'train',id:hall.id,role:'melee',definitionId:'lantern:duelist'})).toBe(true);expect(hall.queueDefinitionIds).toEqual(['lantern:sentinel','lantern:duelist']);advance(state,15);expect(state.entities.some(e=>e.definitionId==='lantern:duelist')).toBe(true);expect(state.entities.filter(e=>e.definitionId==='lantern:sentinel')).toHaveLength(2);expect(state.players[0].wood).toBe(wood-140-65-55);expect(state.players[0].ore).toBe(ore-40-25-35);});
   it('uses distinct combat damage and a permitted ability on the custom definition',()=>{const state=match(),hall=buildHall(state);expect(issueCommand(state,0,{type:'train',id:hall.id,role:'melee',definitionId:'lantern:duelist'})).toBe(true);advance(state,7);const duelist=state.entities.find(e=>e.definitionId==='lantern:duelist')!,sentinel=state.entities.find(e=>e.definitionId==='lantern:sentinel')!,enemy=state.entities.find(e=>e.side===1&&e.kind==='unit'&&e.role==='melee')!;enemy.x=duelist.x+.3;enemy.y=duelist.y;sentinel.x=duelist.x-2;sentinel.y=duelist.y;sentinel.hp-=50;refreshVisibility(state);expect(issueCommand(state,0,{type:'ability',ids:[sentinel.id]})).toBe(true);expect(sentinel.hp).toBe(sentinel.maxHp-15);expect(sentinel.abilityReadyAt).toBeCloseTo(state.time+18);expect(issueCommand(state,0,{type:'ability',ids:[sentinel.id]})).toBe(false);const hp=enemy.hp;expect(issueCommand(state,0,{type:'attack',ids:[duelist.id],target:enemy.id})).toBe(true);stepGame(state,.05);expect(state.events.some(e=>e.type==='attack'&&e.source===duelist.id&&e.amount===21)).toBe(true);advance(state,.3);expect(enemy.hp).toBeLessThan(hp);expect(unitFor(state,duelist).damage).toBe(24);});
   it('research changes the custom unit combat multiplier and worker economy uses the same faction',()=>{const state=match(),hall=buildHall(state);expect(issueCommand(state,0,{type:'research',id:hall.id,upgrade:'lantern:bright-blades'})).toBe(true);advance(state,11);expect(state.players[0].upgrades).toContain('lantern:bright-blades');const worker=state.entities.find(e=>e.side===0&&e.role==='worker')!,node=state.resources.find(e=>e.kind==='wood'&&state.visible[0].has(Math.floor(e.y)*state.width+Math.floor(e.x)))!,before=state.players[0].wood;expect(issueCommand(state,0,{type:'gather',ids:[worker.id],target:node.id})).toBe(true);advance(state,40);expect(state.players[0].wood).toBeGreaterThan(before);});

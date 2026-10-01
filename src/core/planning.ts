@@ -3,7 +3,7 @@ import { length2D } from './geometry';
 import { FACTIONS } from './content';
 import { terrainAt, TERRAIN } from './maps';
 import { route, segmentWalkable, walkable } from './navigation';
-import { AGE_NAMES, playerAge } from './progression';
+import { AGE_NAMES, buildingAgeRequired, playerAge } from './progression';
 import { canPlace, captureRuntime, isGameOver, issueCommand, isVisible } from './simulation';
 import type { BuildingRole, Command, Entity, GameState, ResourceKind, ResourceNode, Side, Vec } from './types';
 
@@ -287,7 +287,7 @@ export function blueprintReason(state: GameState, side: Side, item: Construction
     if (state.entities.some(worker => worker.side === side && worker.hp > 0 && worker.role === 'worker' && worker.order.type === 'build' && worker.order.target === building.id)) return '';
     return eligible.length ? '' : 'Assign an available worker to resume construction.';
   }
-  const age = item.role === 'hq' ? 2 : def.age ?? 1;
+  const age = buildingAgeRequired(def);
   if (playerAge(state.players[side]) < age) return `Requires ${AGE_NAMES[age]}.`;
   const missing = KINDS.filter(kind => state.players[side][kind] < def.cost[kind]);
   if (missing.length) return `Insufficient ${missing.join(', ')}.`;
