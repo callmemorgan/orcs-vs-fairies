@@ -216,7 +216,9 @@ describe('seasonal lake crossings',()=>{
   s.world={version:1,biome:'temperate',levels:[{id:0,title:'Surface',terrain:s.terrain,elevation:Array(256).fill(0)}],transitions:[],bridges:[bridge],fires:[],sites:[],creatures:[],dayLength:240,seasonLength:100,weatherLength:10000,nextEnvironmentAt:0,iceTiles:[],thawWarned:false};
   s.objectives=emptyObjectives(s);
   s.visible=s.players.map(()=>new Set(Array.from({length:256},(_,i)=>i)));s.explored=s.visible.map(v=>new Set(v));s.players.forEach(p=>{p.wood=10000;p.ore=10000;});s.time=300;
-  expect(issueCommand(s,0,{type:'worldAttack',ids:[actor.id],target:bridge.id})).toBe(true);stepGame(s,.25);stepGame(s,.25);
+  expect(issueCommand(s,0,{type:'worldAttack',ids:[actor.id],target:bridge.id})).toBe(true);stepGame(s,.25);
+  expect(bridge.hp).toBe(1);expect(s.projectiles).toHaveLength(1);expect(s.projectiles![0].impactAt).toBeGreaterThan(s.time);
+  for(let i=0;i<12&&bridge.hp>0;i++)stepGame(s,.25);stepGame(s,.25);
   expect(bridge.hp).toBe(0);expect(s.world.iceTiles).toEqual(tiles.map(tile=>({level:0,tile})));
   actor.role='worker';expect(issueCommand(s,0,{type:'repairBridge',ids:[actor.id],target:bridge.id})).toBe(true);
   for(let i=0;i<100&&bridge.hp===0;i++)stepGame(s,.25);
@@ -251,9 +253,16 @@ describe('artillery ignition and simulation interruption hooks',()=>{
   const s=scenario();tree(s,8.5,8.5);
   for(const p of [{x:-.1,y:8.5},{x:16,y:8.5},{x:8.5,y:16},{x:NaN,y:8.5},{x:8.5,y:8.5,level:1},{x:8.5,y:8.5,level:.5},{x:9.5,y:9.5}])expect(igniteWorldAt(s,p,{side:0})).toBe(false);
   for(const id of [0,-1,.5,s.nextId,Infinity,NaN])expect(igniteWorldAt(s,{x:8.5,y:8.5},{side:0,id})).toBe(false);
-  expect(igniteWorldAt(s,{x:8.5,y:8.5},{side:0,id:s.entities[1].id})).toBe(false);
   expect(igniteWorldAt(s,{x:8.5,y:8.5},{side:7})).toBe(false);
   expect(s.world.fires).toEqual([]);expect(s.events).toEqual([]);
+ });
+ it('accepts recorded launch provenance independently of current source ownership',()=>{
+  const s=scenario();tree(s,8.5,8.5);const source=s.entities[0],launch={side:source.side,id:source.id};source.side=1;
+  // This unit fixture supplies historical provenance directly; public ownership transfers have integration coverage.
+  const before=s.players.map(p=>({wood:p.wood,ore:p.ore}));
+  expect(igniteWorldAt(s,{x:8.5,y:8.5},launch)).toBe(true);
+  expect(s.events.at(-1)).toMatchObject({type:'ability',side:0,source:source.id,text:'Incendiary shell ignited timber.'});
+  expect(s.players.map(p=>({wood:p.wood,ore:p.ore}))).toEqual(before);
  });
  it('retains an allocated dead or removed launch source, with same-level impacts on both maps',()=>{
   const s=scenario();cave(s);tree(s,8.5,8.5,60,0);tree(s,8.5,8.5,60,1);const source=s.entities[0];source.hp=0;

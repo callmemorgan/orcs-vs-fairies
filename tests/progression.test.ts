@@ -40,7 +40,7 @@ describe('three-age research progression',()=>{
  });
 });
 
-import { canPlace, refreshVisibility } from '../src/core/simulation';
+import { canPlace, refreshVisibility, spawnDefinition } from '../src/core/simulation';
 import { FACTIONS } from '../src/core/content';
 import { generateMap, validateMap } from '../src/core/maps';
 import { walkable, segmentWalkable } from '../src/core/navigation';
@@ -117,18 +117,20 @@ it('remembers observed enemy buildings and searches after clearing the known bas
 });
 it('applies siege damage outside tower range through ordinary attack commands',()=>{
  const {s}=setup();s.terrain.fill('grass');s.resources=[];
- const siege=s.entities.find(e=>e.side===0&&e.role==='melee')!,tower=s.entities.find(e=>e.side===1&&e.role==='hq')!;
- siege.role='siege';siege.x=20;siege.y=20;siege.hp=siege.maxHp=185;
- tower.role='tower';tower.x=29;tower.y=20;tower.hp=tower.maxHp=750;
+ const siege=spawnDefinition(s,0,'unit',FACTIONS.orcs.units.siege.id,20,20),tower=spawnDefinition(s,1,'building',FACTIONS.fairies.buildings.tower.id,29,20);
+ const initialTowerHp=tower.hp;
  refreshVisibility(s);expect(issueCommand(s,0,{type:'attack',ids:[siege.id],target:tower.id})).toBe(true);
- stepGame(s,.05);expect(tower.hp).toBe(641);expect(siege.hp).toBe(185);
+ stepGame(s,.05);expect(tower.hp).toBe(initialTowerHp);expect(siege.hp).toBe(185);
+ const shot=s.projectiles!.find(shot=>shot.source===siege.id)!;expect(shot).toBeDefined();expect(shot.impactAt).toBeGreaterThan(s.time);
+ const deadline=s.time+2;while(s.projectiles!.some(shot=>shot.source===siege.id)&&s.time<deadline){const before=s.time;stepGame(s,.05);expect(s.time).toBeGreaterThan(before);}
+ expect(s.projectiles!.some(shot=>shot.source===siege.id)).toBe(false);expect(initialTowerHp-tower.hp).toBe(109);expect(siege.hp).toBe(185);
 });
 it('applies both weapon tiers and armor research to existing melee troops',()=>{
  const {s}=setup();s.terrain.fill('grass');s.resources=[];
  const a=s.entities.find(e=>e.side===0&&e.role==='melee')!,b=s.entities.find(e=>e.side===1&&e.role==='melee')!;
  a.x=20;a.y=20;b.x=21;b.y=20;b.hp=b.maxHp=1000;b.cooldown=100;
  s.players[0].upgrades.push('town-age','citadel-age','forged-weapons','veteran-arms');s.players[1].upgrades.push('tempered-armor');
- refreshVisibility(s);expect(issueCommand(s,0,{type:'attack',ids:[a.id],target:b.id})).toBe(true);
+ refreshVisibility(s);expect(issueCommand(s,1,{type:'face',ids:[b.id],facing:4})).toBe(true);expect(issueCommand(s,0,{type:'attack',ids:[a.id],target:b.id})).toBe(true);
  stepGame(s,.05);expect(1000-b.hp).toBeCloseTo(15*1.2*1.25-FACTIONS.fairies.units.melee.armor-2);
 });
 it('lets workers reach a huge-map flank camp, build a headquarters and deliver its ore',()=>{

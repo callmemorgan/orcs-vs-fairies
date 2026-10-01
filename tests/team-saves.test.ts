@@ -3,6 +3,7 @@ import { FACTIONS } from '../src/core/content';
 import { loadGame, MAX_SAVE_BYTES, SAVE_VERSION, saveGame } from '../src/core/saves';
 import { captureRuntime, createGame, createMatch, issueCommand, refreshVisibility, restoreRuntime, runAI, stepGame } from '../src/core/simulation';
 import type { Entity, FactionId, GameState, MatchConfig, Side } from '../src/core/types';
+import { expectedHistoricalMigration, historicalSave } from './helpers/historical-save';
 
 const factions=Object.keys(FACTIONS) as FactionId[];
 const teamFields=['teams','incomeFactors','populationLimits','sharedVision','eliminated','winningTeam'] as const;
@@ -14,13 +15,8 @@ function config(count:number,ai=false):MatchConfig {
  return {map:{seed:4127,size:'small'},players:Array.from({length:count},(_,id)=>({id:id as Side,teamId:(id<count/2?0:1) as Side,factionId:id===count-1?'fairies':factions[id%factions.length],controller:ai?'ai':'external'})),rules:{sharedVision:true}};
 }
 function good(count=8) {return saveGame(createMatch(config(count)));}
-function legacy(state:GameState):any {
- const save:any=saveGame(state);save.version=1;for(const key of ['rules','objectives','draft'])delete save.state[key];
- for(const key of teamFields)delete save.state[key];
- delete save.state.economy;delete save.state.aiConfigs;delete save.runtime.aiBatchTurns;for(const key of aiFields)delete save.runtime[key];
- delete save.runtime.clearedEnemyStarts;
- return save;
-}
+function legacy(state:GameState):any {return historicalSave(state,1);}
+const expectedMigration=expectedHistoricalMigration;
 function advance(state:GameState,ticks:number):void {for(let i=0;i<ticks;i++)stepGame(state,.25);}
 function compareContinuation(original:GameState,ticks:number):GameState {
  const before=saveGame(original),restored=loadGame(JSON.stringify(before));
@@ -42,7 +38,7 @@ function special(state:GameState,side:Side):Entity {
 describe('team match saves',()=>{
  it.each([1,2,3,4,5,6,7,8])('round-trips all player and runtime arrays for %i players',count=>{
   const state=createMatch(config(count)),save=saveGame(state),loaded=loadGame(save);
-  expect(save.version).toBe(SAVE_VERSION);expect(SAVE_VERSION).toBe(3);expect(saveGame(loaded)).toEqual(save);
+  expect(save.version).toBe(SAVE_VERSION);expect(saveGame(loaded)).toEqual(save);
   for(const key of playerArrays)expect(save.state[key]).toHaveLength(count);
   for(const key of runtimeArrays)expect(save.runtime[key]).toHaveLength(count);
   loaded.teams[0]=7;loaded.incomeFactors[0]=3;loaded.populationLimits[0]=500;loaded.eliminated[0]=true;
@@ -158,27 +154,28 @@ describe('team match saves',()=>{
 });
 
 describe('legacy version 1 migration',()=>{
- it('validates a real two-player snapshot before adding team defaults, without losing AI memory',()=>{
+ it('validates a historical two-player projection before adding team defaults, without losing AI memory',()=>{
   const state=createGame('orcs',4127,'fairies',{controllers:['ai','ai'],mapSize:'small'});advance(state,160);
   const snapshot=legacy(state),before=structuredClone(snapshot),runtime={...structuredClone(snapshot.runtime),clearedEnemyStarts:snapshot.runtime.enemyStartCleared.map((value:boolean,side:number)=>value?[1-side]:[])},loaded=loadGame(snapshot);
   expect(snapshot).toEqual(before);expect(loaded.teams).toEqual([0,1]);expect(loaded.incomeFactors).toEqual([1,1]);expect(loaded.populationLimits).toEqual([100,100]);expect(loaded.sharedVision).toBe(true);expect(loaded.eliminated).toEqual([false,false]);expect(loaded.winningTeam).toBeNull();
-  expect(captureRuntime(loaded)).toMatchObject(runtime);expect(saveGame(loaded).version).toBe(SAVE_VERSION);const migrated=captureRuntime(loaded),original=captureRuntime(state);original.aiBatchTurns=migrated.aiBatchTurns;for(const key of aiFields)(original[key] as unknown)=structuredClone(migrated[key]);restoreRuntime(state,original);delete state.economy;expect(saveGame(loaded)).toEqual(saveGame(state));
-  for(let i=0;i<500;i++){stepGame(state,.125);stepGame(loaded,.125);expect(saveGame(loaded)).toEqual(saveGame(state));}
+  expect(captureRuntime(loaded)).toMatchObject(runtime);expect(saveGame(loaded).version).toBe(SAVE_VERSION);expect(legacy(loaded)).toEqual(snapshot);expect(saveGame(loaded)).toEqual(expectedMigration(snapshot));
+  expect(snapshot.version).toBe(1);expect(snapshot.state.rules).toBeUndefined();expect(snapshot.state.economy).toBeUndefined();expect(snapshot.state.entities.every((e:any)=>e.tactics===undefined&&e.veteran===undefined)).toBe(true);
+  compareContinuation(loaded,500);
  },90000);
 
  it.each(['missing','unfinished','dead'] as const)('derives eliminated status from a %s HQ',kind=>{
   const state=createGame('orcs',4127,'fairies',{controllers:['external','external']}),snapshot=legacy(state),hq=snapshot.state.entities.find((e:any)=>e.side===1&&e.role==='hq');
   if(kind==='missing')snapshot.state.entities=snapshot.state.entities.filter((e:any)=>e.id!==hq.id);else if(kind==='unfinished')hq.progress=.9;else hq.hp=0;
-  snapshot.state.winner=0;const loaded=loadGame(snapshot);expect(loaded.eliminated).toEqual([false,true]);expect(loaded.winner).toBe(0);expect(loaded.winningTeam).toBe(0);expect(saveGame(loaded).version).toBe(SAVE_VERSION);
+  snapshot.state.winner=0;const loaded=loadGame(snapshot);expect(loaded.eliminated).toEqual([false,true]);expect(loaded.winner).toBe(0);expect(loaded.winningTeam).toBe(0);expect(saveGame(loaded).version).toBe(SAVE_VERSION);expect(saveGame(loaded)).toEqual(expectedMigration(snapshot,[false,true]));
  });
 
  it('preserves each cleared enemy base from the legacy two-player scouting flags',()=>{
   const snapshot=legacy(createGame('orcs',4127));snapshot.runtime.enemyStartCleared=[true,true];
-  const loaded=loadGame(snapshot);expect(captureRuntime(loaded).enemyStartCleared).toEqual([true,true]);expect(captureRuntime(loaded).clearedEnemyStarts).toEqual([[1],[0]]);
+  const loaded=loadGame(snapshot);expect(captureRuntime(loaded).enemyStartCleared).toEqual([true,true]);expect(captureRuntime(loaded).clearedEnemyStarts).toEqual([[1],[0]]);expect(saveGame(loaded)).toEqual(expectedMigration(snapshot));
  });
 
  it.each(teamFields)('rejects a supplied version 2 state.%s field in a legacy save',key=>{
-  const state=createGame('orcs',4127),snapshot=legacy(state);snapshot.state[key]=saveGame(state).state[key];expect(()=>loadGame(snapshot)).toThrow(/unknown field/);
+  const state=createGame('orcs',4127),snapshot=legacy(state);snapshot.state[key]=saveGame(state).state[key];expect(()=>loadGame(snapshot)).toThrow(new RegExp('state\\.'+key+': unknown field'));
  });
 
  it('retains the old 4096-entity bound when validating legacy saves',()=>{
@@ -191,8 +188,8 @@ describe('legacy version 1 migration',()=>{
   const state=createGame('fairies',4127,'orcs',{controllers:['external','external']}),worker=state.entities.find(e=>e.side===0&&e.role==='worker')!,node=state.resources.find(n=>n.kind==='wood')!;
   worker.x=node.x+1.1;worker.y=node.y;node.amount=1;refreshVisibility(state);
   expect(issueCommand(state,0,{type:'gather',ids:[worker.id],target:node.id,queued:true})).toBe(true);const caster=special(state,0);expect(issueCommand(state,0,{type:'ability',ids:[caster.id]})).toBe(true);
-  const loaded=loadGame(legacy(state));delete state.economy;expect(captureRuntime(loaded).queuedGather).toContain(worker.id);expect(saveGame(loaded)).toEqual(saveGame(state));
-  for(let i=0;i<200;i++){stepGame(state,.125);stepGame(loaded,.125);expect(saveGame(loaded)).toEqual(saveGame(state));}
+  const snapshot=legacy(state),loaded=loadGame(snapshot);expect(captureRuntime(loaded).queuedGather).toContain(worker.id);expect(legacy(loaded)).toEqual(snapshot);expect(saveGame(loaded)).toEqual(expectedMigration(snapshot));
+  expect(loaded.entities.find(e=>e.id===worker.id)!.order).toEqual(worker.order);expect(captureRuntime(loaded).abilities).toEqual(snapshot.runtime.abilities);compareContinuation(loaded,200);
  });
 
  it.each(invalidCases([
@@ -202,6 +199,8 @@ describe('legacy version 1 migration',()=>{
   ['cap above 100',(s:any)=>s.state.players[0].cap=101],['missing ability memory',(s:any)=>delete s.runtime.abilities],
   ['future route',(s:any)=>s.runtime.routes=[[1,{key:'x',at:s.state.time+1}]]],
  ]))('rejects invalid legacy %s before migration',(_name,mutate)=>{
-  const snapshot=legacy(createGame('orcs',4127));mutate(snapshot);const before=structuredClone(snapshot);expect(()=>loadGame(snapshot)).toThrow(Error);expect(snapshot).toEqual(before);
+  const snapshot=legacy(createGame('orcs',4127));mutate(snapshot);const before=structuredClone(snapshot);
+  const paths:Record<string,RegExp>={'new team field':/state\.teams: unknown field/,'missing finite gather memory':/runtime\.queuedGather: missing field/,'third player':/state\.players: invalid array length/,'third controller':/state\.controllers: invalid array length/,'third runtime row':/runtime\.aiWave: invalid array length/,'side 2 entity':/state\.entities\[0\]\.side: expected an integer between 0 and 1/,'cap above 100':/state\.players\[0\]\.cap: expected an integer between 0 and 100/,'missing ability memory':/runtime\.abilities: missing field/,'future route':/runtime\.routes\[0\]\[1\]\.at: expected a finite number between 0 and 0/};
+  expect(()=>loadGame(snapshot)).toThrow(paths[_name]);expect(snapshot).toEqual(before);
  });
 });

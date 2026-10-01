@@ -1,18 +1,20 @@
 import { describe, expect, it } from 'vitest';
 import { loadGame, MAX_SAVE_BYTES, SAVE_VERSION, saveGame } from '../src/core/saves';
 import { captureRuntime, createGame, createMatch, runAI, stepGame } from '../src/core/simulation';
+import { expectedHistoricalMigration, historicalSave } from './helpers/historical-save';
 
 const aiFields=['aiDecisionAt','aiDecisionTurns','knownEnemyUnits','retreating','producedFighters'] as const;
 function match(){return createGame('orcs',4127,'fairies',{controllers:['external','external']});}
-describe('AI save version 3',()=>{
+describe('AI save migration and current schema',()=>{
  it('migrates a complete version 2 snapshot after validating the original schema',()=>{
-  const state=match();for(let tick=0;tick<100;tick++)stepGame(state,.05);const save:any=saveGame(state);save.version=2;for(const key of ['rules','objectives','draft'])delete save.state[key];delete save.state.aiConfigs;delete save.runtime.aiBatchTurns;for(const key of aiFields)delete save.runtime[key];
+  const state=match();for(let tick=0;tick<100;tick++)stepGame(state,.05);const save=historicalSave(state,2);
   const before=structuredClone(save),loaded=loadGame(save);expect(save).toEqual(before);expect(saveGame(loaded).version).toBe(SAVE_VERSION);expect(loaded.aiConfigs).toEqual([{difficulty:'normal',personality:'balanced',opening:'infantry-rush'},{difficulty:'normal',personality:'balanced',opening:'infantry-rush'}]);
-  expect(captureRuntime(loaded).aiDecisionAt).toEqual([state.time,state.time]);expect(captureRuntime(loaded).knownEnemyUnits).toEqual([[],[]]);expect(loaded.entities).toEqual(state.entities);
-  const corrupted=structuredClone(save);delete corrupted.runtime.knownEnemyBuildings;expect(()=>loadGame(corrupted)).toThrow(/missing field/);
+  expect(captureRuntime(loaded).aiDecisionAt).toEqual([state.time,state.time]);expect(captureRuntime(loaded).knownEnemyUnits).toEqual([[],[]]);expect(historicalSave(loaded,2)).toEqual(before);expect(captureRuntime(loaded)).toMatchObject(before.runtime);expect(saveGame(loaded)).toEqual(expectedHistoricalMigration(before));
+  const corrupted=structuredClone(save);delete corrupted.runtime.knownEnemyBuildings;expect(()=>loadGame(corrupted)).toThrow(/runtime\.knownEnemyBuildings: missing field/);
+  const resumed=loadGame(saveGame(loaded));for(let tick=0;tick<20;tick++){stepGame(loaded,.05);stepGame(resumed,.05);expect(saveGame(resumed)).toEqual(saveGame(loaded));}
  });
  it('checks the byte limit again after a valid legacy migration adds AI fields',()=>{
-  const save:any=saveGame(match());save.version=2;for(const key of ['rules','objectives','draft'])delete save.state[key];delete save.state.aiConfigs;delete save.runtime.aiBatchTurns;for(const key of aiFields)delete save.runtime[key];
+  const save=historicalSave(match(),2);
   const event={type:'message',x:0,y:0,side:0,text:''},full={...event,text:'一'.repeat(4000)};
   const bytes=(value:unknown)=>new TextEncoder().encode(JSON.stringify(value)).byteLength,target=MAX_SAVE_BYTES-64;
   const count=Math.floor((target-bytes(save))/(bytes(full)+1));save.state.events=Array.from({length:count},()=>({...full}));

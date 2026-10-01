@@ -69,11 +69,13 @@ describe('neutral features through normal match commands, ticks and checkpoints'
  it('captures a cavern relic, changes ordinary combat damage and loses the bonus after enemy recapture',()=>{
   const {state,site,unit}=scenario('relic',1);expect(issueCommand(state,0,{type:'captureSite',ids:[unit.id],target:site.id})).toBe(true);advance(state,205);
   expect(site.owner).toBe(0);expect(relicBonus(state,0,unit)).toBe(NEUTRAL_RULES.relicDamageBonus);
-  const defender=recruitFixtureUnit(state,1,unit.x+1.2,unit.y,1);refreshVisibility(state);
+  const defender=recruitFixtureUnit(state,1,unit.x+1.2,unit.y,1);
+  expect(issueCommand(state,1,{type:'face',ids:[defender.id],facing:4})).toBe(true);refreshVisibility(state);
   const baseline=loadGame(saveGame(state));baseline.world!.sites[0].owner=null;
   expect(issueCommand(state,0,{type:'attack',ids:[unit.id],target:defender.id})).toBe(true);expect(issueCommand(baseline,0,{type:'attack',ids:[unit.id],target:defender.id})).toBe(true);
   stepGame(state,.05);stepGame(baseline,.05);
   const ordinary=baseline.entities.find(e=>e.id===defender.id)!;expect(defender.hp).toBeLessThan(ordinary.hp);
+  expect(ordinary.maxHp-ordinary.hp).toBeCloseTo(FACTIONS.orcs.units.melee.damage-FACTIONS.orcs.units.melee.armor);
   expect(defender.maxHp-defender.hp).toBeCloseTo(FACTIONS.orcs.units.melee.damage*(1+NEUTRAL_RULES.relicDamageBonus)-FACTIONS.orcs.units.melee.armor);
   const damage={ordinary:ordinary.maxHp-ordinary.hp,withRelic:defender.maxHp-defender.hp};
   expect(issueCommand(state,0,{type:'move',ids:[unit.id],x:site.x-10,y:site.y,level:1})).toBe(true);

@@ -48,6 +48,7 @@ function hit(state: GameState, attackerId: number, targetId: number): number {
   Object.assign(attacker, { x: 20.5, y: 20.5, cooldown: 0, momentum: 0, order: { type: 'idle' } });
   Object.assign(target, { x: 21.5, y: 20.5, cooldown: 100, order: { type: 'hold' } });
   refreshVisibility(arena);
+  expect(issueCommand(arena, target.side, { type: 'face', ids: [target.id], facing: 4 })).toBe(true);
   const before = target.hp;
   expect(issueCommand(arena, attacker.side, { type: 'attack', ids: [attacker.id], target: target.id })).toBe(true);
   stepGame(arena, .05);
