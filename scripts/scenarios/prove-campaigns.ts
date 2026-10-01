@@ -4,11 +4,11 @@ import { execFileSync } from 'node:child_process';
 import { basename, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { CAMPAIGNS, SCENARIOS } from '../../src/scenarios/campaigns';
-import { FACTIONS } from '../../src/core/content';
+import { unitFor } from '../../src/core/content-registry';
 import { captureScenario, createScenario, resetScenario, restoreScenario, scenarioCondition, stepScenario } from '../../src/core/scenarios';
 import { ScenarioRecorder, verifyScenarioRecording } from '../../src/core/scenario-recordings';
 import type { ScenarioCondition, ScenarioSession } from '../../src/core/scenario-types';
-import type { Entity, GameEvent, UnitRole } from '../../src/core/types';
+import type { Entity, GameEvent } from '../../src/core/types';
 import { puzzleStealthCommands } from './puzzle-stealth-strategy';
 import { finaleCommands } from './finale-strategy';
 import { routeCommands } from './route-strategy';
@@ -23,8 +23,8 @@ function deadLabels(condition: ScenarioCondition): string[] {
   if(condition.type==='all'||condition.type==='any') return condition.conditions.flatMap(deadLabels);
   return [];
 }
-const actorSummary=(entity:Entity|undefined)=>entity?{id:entity.id,role:entity.role,x:entity.x,y:entity.y,hp:entity.hp,shield:entity.shield,order:entity.order}:null;
-const sourceFiles=['src/scenarios/campaigns.ts','src/core/scenario-types.ts','src/core/scenario-validation.ts','src/core/scenarios.ts','src/core/scenario-recordings.ts','src/core/content.ts','src/core/simulation.ts','src/core/maps.ts','src/core/types.ts','src/core/match-rules.ts','src/core/objectives.ts','src/core/saves.ts','src/core/navigation.ts','scripts/scenarios/prove-campaigns.ts','scripts/scenarios/mission-strategy.ts','scripts/scenarios/puzzle-stealth-strategy.ts','scripts/scenarios/finale-strategy.ts','scripts/scenarios/route-strategy.ts'];
+const actorSummary=(entity:Entity|undefined)=>entity?{id:entity.id,role:entity.role,definitionId:entity.definitionId,x:entity.x,y:entity.y,hp:entity.hp,shield:entity.shield,order:entity.order}:null;
+const sourceFiles=['src/scenarios/campaigns.ts','src/core/scenario-types.ts','src/core/scenario-validation.ts','src/core/scenarios.ts','src/core/scenario-recordings.ts','src/core/content.ts','src/core/content-registry.ts','src/core/specialist-content.ts','src/core/specialist-systems.ts','src/core/unit-progression.ts','src/core/simulation.ts','src/core/maps.ts','src/core/types.ts','src/core/match-rules.ts','src/core/objectives.ts','src/core/saves.ts','src/core/navigation.ts','scripts/scenarios/prove-campaigns.ts','scripts/scenarios/mission-strategy.ts','scripts/scenarios/ability-strategy.ts','scripts/scenarios/puzzle-stealth-strategy.ts','scripts/scenarios/finale-strategy.ts','scripts/scenarios/route-strategy.ts'];
 
 export function proveCampaigns(kind='all', output=resolve(`docs/evidence/campaigns/author-playthrough-${kind}-${new Date().toISOString().replace(/[:.]/g,'-')}.json`)): void {
 if(existsSync(output)) throw new Error('Proof outputs are append-only. Choose a new output path.');
@@ -46,7 +46,7 @@ for(const definition of Object.values(SCENARIOS)) {
       if(event.type==='death' && event.source!==undefined) actualDeaths.add(event.source);
       if(event.type==='ability' && event.side===0 && event.source!==undefined) {
         const caster=session.state.entities.find(entity=>entity.id===event.source);
-        const ability=caster?.kind==='unit'?FACTIONS[definition.faction].units[caster.role as UnitRole].ability:undefined;
+        const ability=caster?.kind==='unit'?unitFor(session.state,caster).ability:undefined;
         if(ability) abilityEvents[ability]=(abilityEvents[ability]??0)+1;
       }
     }
@@ -78,7 +78,7 @@ for(const definition of Object.values(SCENARIOS)) {
     missionWon:session.runtime.outcome==='won',
     allRequiredObjectives:definition.objectives.filter(objective=>!objective.optional).every(objective=>session.runtime.completed.includes(objective.id)&&scenarioCondition(session,objective.success)),
     noFailureCondition:definition.objectives.every(objective=>!objective.failure||!scenarioCondition(session,objective.failure)),
-    requiredActions:(definition.requiredActions??[]).every(action=>(session.runtime.commandCounts[action.action]??0)>=action.count),
+    requiredActions:(definition.requiredActions??[]).every(action=>(session.runtime.commandCounts[action.ability?`ability.${action.ability}`:action.action]??0)>=action.count),
     markedTargetsKilled:targets.every(label=>actualDeaths.has(session.runtime.labels[label])),
     resetRestoresInitialState:hash(captureScenario(resetScenario(session)))===initial,
     checkpointRoundtrip:hash(captureScenario(restoreScenario(captureScenario(session))))===hash(captureScenario(session)),

@@ -1,6 +1,9 @@
 import { length2D } from '../../src/core/geometry';
 import { issueScenarioCommand } from '../../src/core/scenarios';
 import { isVisible } from '../../src/core/simulation';
+import { unitFor } from '../../src/core/content-registry';
+import { observedArtifacts } from '../../src/core/unit-progression';
+import { missionAbilityCommand } from './ability-strategy';
 import type { ScenarioSession } from '../../src/core/scenario-types';
 import type { Command, Entity, Vec } from '../../src/core/types';
 
@@ -10,7 +13,18 @@ const distance = (a: Vec, b: Vec) => length2D(a.x-b.x,a.y-b.y);
 const own = (session: ScenarioSession) => session.state.entities.filter(entity => entity.hp>0 && entity.side===0 && entity.kind==='unit' && !entity.illusion && !entity.raised);
 const named = (session: ScenarioSession, label: string) => session.state.entities.find(entity => entity.id===session.runtime.labels[label] && entity.hp>0 && (entity.side===0 || isVisible(session.state,0,entity.x,entity.y)));
 const move = (session: ScenarioSession, entities: Entity[], point: Vec, attack = false) => entities.length>0 && submit(session,{type: attack?'attackMove':'move',ids: entities.map(entity=>entity.id),...point});
-const ability = (session: ScenarioSession, entities: Entity[]) => entities.length>0 && submit(session,{type:'ability',ids:entities.map(entity=>entity.id)});
+function ability(session: ScenarioSession, entities: Entity[]): boolean {
+  let accepted = false;
+  for (const entity of entities) {
+    const command = missionAbilityCommand(session.state, entity);
+    if (command && submit(session, command)) accepted = true;
+  }
+  return accepted;
+}
+function hold(session: ScenarioSession, entities: Entity[]): void {
+  const ids = entities.filter(entity => entity.order.type !== 'hold').map(entity => entity.id);
+  if (ids.length) submit(session, { type: 'hold', ids });
+}
 function steering(session: ScenarioSession): Steering {
   let state = states.get(session);
   if(!state) {state={phase:0,nextCommand:0,started:false,deaths:new Set(),commands:[]};states.set(session,state);}
@@ -37,6 +51,12 @@ export function steerStealth(session: ScenarioSession): void {
   if(state.phase===1 && session.runtime.variables['archive.recovered']) state.phase=2;
   if(state.phase<route.length-1 && distance(commander,route[state.phase])<1) state.phase++;
   move(session,[commander],route[state.phase]);
+  const weaver = named(session, 'weaver');
+  if (weaver) {
+    move(session, [weaver], route[state.phase]);
+    const guard = session.state.entities.some(entity => entity.side === 1 && entity.hp > 0 && isVisible(session.state, 0, entity.x, entity.y) && distance(weaver, entity) < 7);
+    if (guard) ability(session, [weaver]);
+  }
 }
 
 /** The fixed-army puzzles use their declared counter, firing shelf, wet flank, or real corpses. */
@@ -61,19 +81,66 @@ export function steerPuzzle(session: ScenarioSession): void {
       if(!state.started) {
         move(session,troops.filter(entity=>entity.role==='melee'),{x:26,y:18},true);
         move(session,troops.filter(entity=>entity.role!=='melee'),{x:27,y:18},true);
-        ability(session,troops.filter(entity=>entity.role==='special'));state.started=true;
+        ability(session,troops.filter(entity=>unitFor(session.state,entity).ability==='illusion'));state.started=true;
       }
       break;
     }
     case 'dwarves-1': {
       const cannon=named(session,'cannon');
       if(!cannon) return;
-      if(state.phase===0 && distance(cannon,{x:19,y:18})>.8) move(session,[cannon],{x:19,y:18});
-      else if(state.phase===0) {ability(session,[cannon]);state.phase=1;}
+      const artifacts = observedArtifacts(session.state, 0);
+      const held = artifacts.find(item => item.holder === commander.id && item.owner === 0);
+      const equipped = held && Object.values(commander.equipment ?? {}).includes(held.id);
+      if (equipped) state.phase = 3;
+      else if (held || artifacts.some(item => item.position) || observedDead(session, state, 'raider')) state.phase = Math.max(state.phase, 1);
+      if (state.phase === 0) {
+        const escort = troops.filter(entity => entity.id !== cannon.id);
+        const raider = named(session, 'raider');
+        if (raider) submit(session, { type: 'attack', ids: escort.map(entity => entity.id), target: raider.id });
+        else move(session, escort, { x: 20, y: 24 }, true);
+        ability(session, [commander]);
+        break;
+      }
+      hold(session, troops.filter(entity => entity.id !== commander.id && (state.phase < 3 || entity.id !== cannon.id)));
+      if (state.phase < 3) {
+        if (held) {
+          if (submit(session, { type: 'equipArtifact', id: commander.id, artifact: held.id })) state.phase = 3;
+        } else {
+          const drop = artifacts.find(item => item.position);
+          if (!drop?.position) {
+            move(session, [commander], { x: 23.2, y: 24 });
+          } else if (distance(commander, drop.position) <= 2) {
+            if (submit(session, { type: 'recoverArtifact', id: commander.id, artifact: drop.id }) &&
+              submit(session, { type: 'equipArtifact', id: commander.id, artifact: drop.id })) state.phase = 3;
+          } else {
+            const tower = session.definition.army.find(actor => actor.label === 'target-tower')!;
+            const separation = Math.max(.01, distance(drop.position, tower));
+            move(session, [commander], {
+              x: drop.position.x + (drop.position.x - tower.x) / separation * .8,
+              y: drop.position.y + (drop.position.y - tower.y) / separation * .8,
+              ...(drop.position.level === undefined ? {} : { level: drop.position.level }),
+            });
+          }
+        }
+        ability(session, [commander]);
+      }
+      if (state.phase === 3) {
+        if (distance(commander, { x: 14, y: 18 }) > 1) move(session, [commander], { x: 14, y: 18 });
+        else hold(session, [commander]);
+        ability(session, [commander]);
+        if (distance(cannon,{x:19,y:18})>.8) move(session,[cannon],{x:19,y:18});
+        else if (cannon.entrenchedAt === undefined) ability(session,[cannon]);
+      }
       break;
     }
     case 'undead-3-alt': {
-      if(observedDead(session,state,'wounded-a') && observedDead(session,state,'wounded-b') && (session.runtime.commandCounts.ability??0)>0 && !state.started) {move(session,troops,{x:29,y:18},true);state.started=true;}
+      const gravecaller = named(session, 'gravecaller');
+      if (gravecaller) ability(session, [gravecaller]);
+      ability(session, [commander]);
+      if(observedDead(session,state,'wounded-a') && observedDead(session,state,'wounded-b') && (session.runtime.commandCounts['ability.raise']??0)>0 && !state.started) {
+        const army = session.state.entities.filter(entity => entity.side === 0 && entity.hp > 0 && entity.kind === 'unit' && !entity.illusion);
+        move(session,army,{x:29,y:18},true);state.started=true;
+      }
       break;
     }
     case 'tideborn-2': {

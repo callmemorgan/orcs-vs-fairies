@@ -1,8 +1,9 @@
 import { length2D } from '../../src/core/geometry';
-import { FACTIONS } from '../../src/core/content';
+import { unitFor } from '../../src/core/content-registry';
+import { missionAbilityCommand } from './ability-strategy';
 import { issueScenarioCommand, type ScenarioSession } from '../../src/core/scenarios';
 import { isHostile, isVisible } from '../../src/core/simulation';
-import type { Command, Entity, UnitRole, Vec } from '../../src/core/types';
+import type { Command, Entity, Vec } from '../../src/core/types';
 
 export interface RouteCommandTrace { tick: number; time: number; side: 0; command: Command; accepted: boolean }
 const commandTraces = new WeakMap<ScenarioSession, RouteCommandTrace[]>();
@@ -24,7 +25,7 @@ const distance = (a: Vec, b: Vec) => length2D(a.x - b.x, a.y - b.y);
 const own = (session: ScenarioSession) => session.state.entities.filter(e => e.side === 0 && e.hp > 0 && !e.illusion);
 const enemies = (session: ScenarioSession) => session.state.entities.filter(e => e.hp > 0 && isHostile(session.state, 0, e.side) && isVisible(session.state, 0, e.x, e.y));
 const troops = (session: ScenarioSession) => own(session).filter(e => e.kind === 'unit' && e.role !== 'worker');
-const definition = (session: ScenarioSession, e: Entity) => FACTIONS[session.state.players[0].faction].units[e.role as UnitRole];
+const definition = (session: ScenarioSession, e: Entity) => unitFor(session.state, e);
 const pausedConvoys = new WeakMap<ScenarioSession, Vec>();
 
 function advance(session: ScenarioSession, unit: Entity, point: Vec, fight = false): void {
@@ -44,7 +45,8 @@ function engage(session: ScenarioSession, unit: Entity, target: Entity): void {
   if (unit.order.type !== 'attack' || unit.order.target !== target.id) issue(session, { type: 'attack', ids: [unit.id], target: target.id });
   if (d.ability && d.ability !== 'entrench') {
     const wounded = troops(session).some(ally => distance(unit, ally) < 5 && ally.hp < ally.maxHp - 15);
-    if (d.ability !== 'surge' || wounded) issue(session, { type: 'ability', ids: [unit.id] });
+    const command = missionAbilityCommand(session.state, unit);
+    if (command && (d.ability !== 'surge' || wounded)) issue(session, command);
   }
 }
 

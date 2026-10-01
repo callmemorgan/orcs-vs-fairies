@@ -1,9 +1,10 @@
 import { length2D } from '../../src/core/geometry';
-import { FACTIONS } from '../../src/core/content';
+import { unitFor } from '../../src/core/content-registry';
+import { missionAbilityCommand } from './ability-strategy';
 import { issueScenarioCommand } from '../../src/core/scenarios';
 import { isVisible } from '../../src/core/simulation';
 import type { ScenarioSession } from '../../src/core/scenario-types';
-import type { Command, Entity, UnitRole, Vec } from '../../src/core/types';
+import type { Command, Entity, Vec } from '../../src/core/types';
 
 const distance = (a: Vec, b: Vec) => length2D(a.x - b.x, a.y - b.y);
 interface Orders { nextDecision: number; dodgeUntil: number; warningAt: number; dodging: Set<number> }
@@ -62,14 +63,14 @@ export function steerFinale(session: ScenarioSession): void {
     }
   }
   for (const unit of units) {
-    const definition = FACTIONS[session.definition.faction].units[unit.role as UnitRole];
+    const definition = unitFor(session.state, unit);
     if (session.state.time < plan.dodgeUntil && plan.dodging.has(unit.id)) {
       if (unit.order.type !== 'move' && unit.order.type !== 'hold') issue(session, { type: 'hold', ids: [unit.id] });
       continue;
     }
-    // Keep the protected melee commander out of the Grave Warden's firing range.
-    if (session.definition.faction === 'dwarves') {
-      const range = unit.role === 'special' || unit === commander ? 8.3 : definition.range - .2;
+    // Only ordinary emplacement troops use the prepared firing shelf.
+    if (session.definition.faction === 'dwarves' && definition.ability === 'entrench') {
+      const range = unit.role === 'special' ? 8.3 : definition.range - .2;
       const center = boss ?? bossActor;
       const angle = Math.atan2(session.state.starts[0].y - center.y, session.state.starts[0].x - center.x);
       const index = units.indexOf(unit), offset = (index - (units.length - 1) / 2) * .12;
@@ -89,7 +90,8 @@ export function steerFinale(session: ScenarioSession): void {
     const target = close && distance(unit, close) < 8 ? close : boss;
     if (target) {
       attack(session, unit, target);
-      if (definition.ability && (unit.abilityReadyAt ?? 0) <= session.state.time && distance(unit, target) < 8) issue(session, { type: 'ability', ids: [unit.id] });
+      const command = missionAbilityCommand(session.state, unit);
+      if (command && distance(unit, target) < 8) issue(session, command);
     } else if (unit.order.type !== 'attackMove') issue(session, { type: 'attackMove', ids: [unit.id], x: bossActor.x, y: bossActor.y });
   }
 }
