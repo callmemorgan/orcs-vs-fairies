@@ -290,7 +290,7 @@ async function renderer(actor, layout, privateSides = [actor.side]) {
   for (const entity of value.entities.filter(row => !privateSides.includes(row.side))) { assert.deepEqual(entity.order, { type: 'idle' }); assert.deepEqual(entity.queue, []); assert.equal(entity.research, undefined); assert.equal(entity.carried, 0); }
   return { tick: value.tick, side: value.side, privateSides: value.privateSides, hud: value.hud, readOnly: value.readOnly, banks: value.players.map(bank) };
 }
-async function spectator(actor, layout, matchId, side, mode, base, liveActor) {
+async function spectator(actor, layout, matchId, side, mode, base, liveActor, expectedDelayTicks = 20) {
   await online(actor); const dialog = await online(actor);
   await dialog.getByLabel('Spectator match ID', { exact: true }).fill(matchId);
   await dialog.getByLabel('Spectator perspective', { exact: true }).selectOption(String(side));
@@ -298,7 +298,7 @@ async function spectator(actor, layout, matchId, side, mode, base, liveActor) {
   await enabled(dialog.getByRole('button', { name: 'Spectate match', exact: true }));
   const boundary = await connectionBoundary(actor);
   await dialog.getByRole('button', { name: 'Spectate match', exact: true }).click();
-  const hello = await battlefield(actor, matchId, side, 'spectator', { ...boundary, perspective: mode }); assert.equal(hello.delayTicks, 20); assert.equal(hello.perspective, mode);
+  const hello = await battlefield(actor, matchId, side, 'spectator', { ...boundary, perspective: mode }); assert.equal(hello.delayTicks, expectedDelayTicks); assert.equal(hello.perspective, mode);
   const expectedSides = mode === 'team' ? layout.players.flatMap((player, s) => player.teamId === layout.players[side].teamId ? [s] : []) : [side];
   const rendered = await renderer(actor, layout, expectedSides); assert.equal(rendered.readOnly, true);
   const frame = actor.frames.get(rendered.tick);
@@ -480,8 +480,22 @@ export async function verifyRestart({ browser, base, output, protocolVersion, ch
     const wire = [];
     for (const actor of actors) { await Promise.all(actor.assetTasks); const parseErrors = await actor.page.evaluate(() => window.__hostedTeamWire.parseErrors); assert.deepEqual(parseErrors, []); assert.deepEqual(actor.errors, []); wire.push({ name: actor.name, hellos: actor.hellos, commands: actor.sent, receipts: actor.receipts, errors: actor.errors, uiActions: actor.actions, parseErrors }); await screenshot(actor, directory, 'restarted-transfer-receipt-replay', result.screenshots); }
     result.wire = await saveEvidence(directory, 'restart-wire', wire);
+    // Reuse the restarted host after all player receipt and bank checks. The
+    // other participant stays connected as the live source for this perspective.
+    const live = await spectator(actors[0], restart.layout, restart.matchId, 1, 'player', base, actors[1], 0);
+    const playerFrame = await poll(() => actors[1].frames.get(live.frame.tick), 'live player frame matching native zero-delay spectator capture');
+    assert.deepEqual(live.frame.view, playerFrame.view, 'Zero-delay spectator capture differs from the live player wire view');
+    const advanced = await futureCommon(actors, live.frame.tick + 4);
+    assert.deepEqual(advanced.frames[0].view, advanced.frames[1].view, 'Zero-delay spectator did not follow the advancing live player view');
+    result.liveSpectator = {
+      hello: live.hello, renderer: live.rendered, initialTick: live.frame.tick, advancingTick: advanced.tick,
+      firstFrames: await Promise.all([live.frame, playerFrame].map((frame, i) => saveFrame(directory, `restart-live-first-${i === 0 ? 'spectator' : 'player'}`, frame))),
+      advancingFrames: await Promise.all(advanced.frames.map((frame, i) => saveFrame(directory, `restart-live-advancing-${i === 0 ? 'spectator' : 'player'}`, frame))),
+    };
+    await screenshot(actors[0], directory, 'restarted-zero-delay-live-spectator', result.screenshots);
     assert.deepEqual(errors, []); result.passed = true;
     checks.push({ name: 'native cooperative sessions, seats, durable sequences and unchanged transfer receipts survive packaged-server restart without double charge', evidence: { seats: result.seats.map(row => ({ side: row.side, priorSequence: row.hello.lastClientSeq, acceptedSequence: row.stop.ack.clientSeq })), replayedSequence: durableAck.clientSeq, beforeTick: before.tick, afterTick: after.tick, beforeBanks, afterBanks } });
+    checks.push({ name: 'native zero-delay spectator renders the same advancing public wire view as the live player in read-only mode', evidence: result.liveSpectator });
     console.log('PASS native cooperative sessions, seats, durable sequences and unchanged transfer receipts survive packaged-server restart without double charge'); return result;
   } catch (error) {
     result.error = error.stack ?? String(error);

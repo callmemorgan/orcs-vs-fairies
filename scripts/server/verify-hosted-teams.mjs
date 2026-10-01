@@ -59,11 +59,11 @@ async function run(command, args, name) {
   finally { log.end(); await finished(log); }
   assert.equal(status.code, 0, `${name} failed (${status.code ?? status.signal}); inspect ${name}.log`);
 }
-async function launch(port = 0) {
+async function launch(port = 0, spectatorDelaySeconds = 1) {
   const log = createWriteStream(join(output, `server-${++generation}.log`));
   const child = spawn(process.execPath, [join(serverDirectory, 'rts-server.js')], { cwd, stdio: ['ignore', 'pipe', 'pipe'], env: {
     ...process.env, RTS_HOST: '127.0.0.1', RTS_PORT: String(port), RTS_DATA_DIR: dataDirectory,
-    RTS_STATIC_DIR: browserDirectory, RTS_ORIGIN: '', RTS_SECURE_COOKIE: '0', RTS_TRUST_PROXY: '0', RTS_SPECTATOR_DELAY_SECONDS: '1',
+    RTS_STATIC_DIR: browserDirectory, RTS_ORIGIN: '', RTS_SECURE_COOKIE: '0', RTS_TRUST_PROXY: '0', RTS_SPECTATOR_DELAY_SECONDS: String(spectatorDelaySeconds),
   } });
   let buffer = '', ready, failed;
   const address = new Promise((resolveAddress, rejectAddress) => { ready = resolveAddress; failed = rejectAddress; });
@@ -113,7 +113,7 @@ try {
   pass('current production server package and Vite app start', { protocolVersion: health.protocolVersion, buildId: source.buildId, browserVersion: browser.version(), nodeVersion: process.version });
   const { restart, ...serializable } = await verifyBrowser({ browser, base, output, protocolVersion: health.protocolVersion, checks, expectedBuildId: source.buildId });
   assert(restart, 'Browser proof must preserve an in-memory restart descriptor'); result = serializable;
-  const port = Number(new URL(base).port); await stop(); const recoveredHealth = await launch(port); assert.equal(recoveredHealth.protocolVersion, health.protocolVersion);
+  const port = Number(new URL(base).port); await stop(); const recoveredHealth = await launch(port, 0); assert.equal(recoveredHealth.protocolVersion, health.protocolVersion);
   result.restart = await verifyRestart({ browser, base, output, protocolVersion: health.protocolVersion, checks, restart });
   assert.equal((await sourceSnapshot()).sha256, source.sha256, 'Source changed during verification');
   assert.deepEqual({ server: await packageSnapshot(serverDirectory), browser: await packageSnapshot(browserDirectory) }, packages, 'Served packages changed during verification');
@@ -123,7 +123,7 @@ finally {
   await browser?.close().catch(error => cleanupErrors.push(error.message));
   await stop().catch(error => cleanupErrors.push(error.message));
   if (!failure && cleanupErrors.length) failure = new Error(`Cleanup failed: ${cleanupErrors.join('; ')}`);
-  if (created) await writeFile(join(output, 'result.json'), JSON.stringify({ status: failure ? 'failed' : 'passed', generatedAt: new Date().toISOString(), cwd, output, source, packages, checks, browser: result, cleanupErrors, ...(failure ? { error: failure.stack ?? String(failure) } : {}), method: 'Build and serve the production server entry and Vite app. Native browser accounts, lobby controls and mounted authoritative games; public authenticated commands on captured native WebSockets. One-second delayed player/team spectator views. Graceful restart with the same package and durable data. No direct game-state writes, surrender, fabricated winners or natural-victory claim.', limits: ['Loopback production hosting; remote public deployment was not tested.', 'Brief layout, ownership, view and transport runs do not prove natural coordinated team victory.'] }, null, 2));
+  if (created) await writeFile(join(output, 'result.json'), JSON.stringify({ status: failure ? 'failed' : 'passed', generatedAt: new Date().toISOString(), cwd, output, source, packages, checks, browser: result, cleanupErrors, ...(failure ? { error: failure.stack ?? String(failure) } : {}), method: 'Build and serve the production server entry and Vite app. Native browser accounts, lobby controls and mounted authoritative games; public authenticated commands on captured native WebSockets. One-second delayed player/team spectator views. Graceful restart with the same package and durable data, followed by native zero-delay spectator viewing. No direct game-state writes, surrender, fabricated winners or natural-victory claim.', limits: ['Loopback production hosting; remote public deployment was not tested.', 'Brief layout, ownership, view and transport runs do not prove natural coordinated team victory.'] }, null, 2));
 }
 if (failure) throw failure;
 console.log(`Evidence: ${join(output, 'result.json')}`);
