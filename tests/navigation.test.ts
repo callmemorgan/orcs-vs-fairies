@@ -55,10 +55,11 @@ it('moves a crowded group around a building and finishes the formation order',()
  expect(army.every(e=>Math.hypot(e.x-27,e.y-20)<2.5)).toBe(true);
 });
 
-it('lets both sides execute lethal attacks from the same simulation step',()=>{
- const s=createGame('orcs',4127,'orcs');s.terrain.fill('grass');s.resources=[];s.players[1].wood=s.players[1].ore=0;
+it.each([false,true])('lets both sides execute lethal attacks from the same simulation step with reversed entity order=%s',reverse=>{
+ const s=createGame('orcs',4127,'orcs',{controllers:['external','external']});s.terrain.fill('grass');s.resources=[];s.players[1].wood=s.players[1].ore=0;
  const fighters=s.entities.filter(e=>e.role==='melee');s.entities=s.entities.filter(e=>e.kind==='building'||e.role==='melee');
  fighters.forEach((e,i)=>{e.x=20+i;e.y=20;e.hp=1;e.order={type:'hold'};});
+ if(reverse)s.entities.reverse();
  stepGame(s,.05);
  expect(fighters.map(e=>e.hp)).toEqual([0,0]);
 });

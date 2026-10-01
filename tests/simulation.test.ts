@@ -416,7 +416,13 @@ describe('AI fairness and editable content', () => {
     advance(s, def.trainTime + 1); runAI(s, side);
     const replacement = s.entities.find(e => e.side === side && e.kind === 'unit' && e.hp > 0)!;
     expect(replacement).toBeDefined(); expect(replacement.id).not.toBe(scout.id);
+    // Paid recruits now travel to the producer's home rally point. They must
+    // finish that trip and stay grouped rather than replace the dead scout.
+    expect(barracks.rally).toBeDefined();
+    expect(replacement.order).toEqual({ type: 'move', ...barracks.rally });
+    advance(s, 8); runAI(s, side);
     expect(replacement.order).toEqual({ type: 'idle' });
+    expect(Math.hypot(replacement.x-barracks.rally!.x,replacement.y-barracks.rally!.y)).toBeLessThan(.75);
     expect(s.players[side].wood).toBe(0); expect(s.players[side].ore).toBe(0);
     // An immediate visible threat may still pull this small force into defense.
     const intruder = add(s, side === 0 ? 1 : 0, 'unit', 'worker', home.x, home.y + direction * 5);
