@@ -6,7 +6,7 @@ import type { WorldCommand, WorldFire, WorldState } from './world-types';
 
 type WorldGame = GameState & { world?:WorldState };
 type Positioned = Vec & { level?:number };
-export interface EnvironmentHooks { interrupt(actor:Entity):void }
+export interface EnvironmentHooks { interrupt(actor:Entity):void; die?:(actor:Entity,text:string)=>void }
 export interface EnvironmentPhase {
  day:'day'|'dusk'|'night'|'dawn'; season:'spring'|'summer'|'autumn'|'winter';
  weather:'clear'|'rain'|'fog'|'wind'; wind:Vec;
@@ -91,6 +91,7 @@ function hurt(s:GameState,e:Entity,amount:number,text:string,bypassShield=false,
  const damage=Math.min(e.hp,amount-absorbed);e.hp=Math.max(0,e.hp-damage);e.lastDamagedAt=s.time;
  const event={type:'ability' as const,side:e.side,x:e.x,y:e.y,level:levelOf(e),source:e.id,target:e.id,amount:damage+absorbed,text};s.events.push(event);
  if(e.hp>0)return;
+ if(hooks?.die){hooks.die(e,text);return;}
  e.animation='death';e.animTime=0;e.order={type:'idle'};e.path=[];delete e.orderQueue;
  hooks?.interrupt(e);
  if(e.kind==='unit'&&!e.illusion&&!e.raised){const corpse={id:e.id,x:e.x,y:e.y,level:levelOf(e),expires:s.time+45};s.corpses.push(corpse);}

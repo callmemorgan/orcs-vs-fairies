@@ -16,7 +16,7 @@ function fixture():GameState {
  expect(promote(s,0,hero.id,'bulwark')).toBe(true);expect(promote(s,0,hero.id,'bulwark')).toBe(true);
  refreshVisibility(s);
  for(const id of ['core:ember-blade','core:iron-aegis','core:wind-charm'] as const){const item=createArtifact(s,id,hero);expect(recoverArtifact(s,0,hero.id,item.id)).toBe(true);expect(equipArtifact(s,0,hero.id,item.id)).toBe(true);}
- const ground=createArtifact(s,'core:iron-aegis',{x:10,y:10});Object.assign(ground.position!,{level:2});
+ const ground=createArtifact(s,'core:iron-aegis',{x:10,y:10});Object.assign(ground.position!,{level:0});
  hero.specialistBuffs=[{until:20,damageFactor:1.25},{until:15,fearedFrom:{x:21,y:20}}];
  victim.burning=[{source:hero.id,side:0,until:18,nextAt:13,damage:5}];
  const beacon=spawnDefinition(s,0,'building','core:orcs-beacon',25,20);beacon.beacon={connected:true,nextAlertAt:20};
@@ -45,7 +45,7 @@ describe('specialist save validation',()=>{
  it('round-trips progression, equipped and ground artifacts, structures and timers without sharing records',()=>{
   const original=fixture(),before=saveGame(original),restored=loadGame(JSON.stringify(before));expect(saveGame(restored)).toEqual(before);
   restored.specialists!.artifacts[0].holder=999;restored.entities.find(e=>e.definitionId==='core:orcs-commander')!.veteran!.promotions[0].id='medic';
-  expect(saveGame(original)).toEqual(before);expect((before.state.specialists!.artifacts[3].position as any).level).toBe(2);
+  expect(saveGame(original)).toEqual(before);expect((before.state.specialists!.artifacts[3].position as any).level).toBe(0);
  });
  it('preserves an earned pending promotion and allows the same role choice at later ranks',()=>{
   const s=fixture(),e=s.entities.find(e=>e.definitionId==='core:orcs-commander')!,victim=s.entities.find(e=>e.side===1&&e.role==='worker')!;

@@ -13,7 +13,7 @@ import { GamepadController } from './Gamepad';
 import { applyOnlineRenderState } from '../online/render-state';
 import type { OnlineRenderState } from '../online/render-state';
 import type { ConstructionBlueprint } from '../core/planning';
-import type { GameEvent, Vec } from '../core/types';
+import type { GameEvent } from '../core/types';
 import { AppearancePreferences, appearancePreferences, markerPolygon, ownershipStyle } from './Appearance';
 import { abilityNeedsTarget } from '../core/specialist-systems';
 import { ARTIFACTS, RANK_THRESHOLDS, equipmentEligible, observedArtifacts } from '../core/unit-progression';
@@ -74,7 +74,6 @@ export default class GameScene extends Phaser.Scene {
   private targetMode:{kind:'ability'|'fieldRepair'|'bridge'|'barricade';ids:number[]}|null=null;
   private accumulated=0;
   private fogClock=0;
-  private groundTerrain:GameState['terrain']=[];
   private attackedNoticeAt=new Map<number,number>();
   private buildingAlertAt=-Infinity;
   private workerAlertAt=-Infinity;
@@ -374,7 +373,6 @@ export default class GameScene extends Phaser.Scene {
       while(this.accumulated>=.05&&this.state.winner===null&&!this.state.draw){stepGame(this.state,.05);this.accumulated-=.05;this.processEvents();this.options.onStep?.(this.state);}
     }
     const living=this.selected.filter(id=>this.state.entities.some(e=>e.id===id&&e.hp>0&&this.visible(e)));if(living.length!==this.selected.length)this.select(living,false);
-    if(this.groundTerrain.length!==this.state.terrain.length||this.state.terrain.some((terrain,i)=>terrain!==this.groundTerrain[i]))this.drawGround();
     const suppressed=this.inputSuppressed();if(suppressed)this.heldKeys.clear();
     const c=this.cameras.main,s=(suppressed?0:Math.min(delta,40))*.75*this.pixelDensity/c.zoom;
     for(const [action,direction] of Object.entries(CAMERA_TAP))if(this.controls.isHeld(action as ControlAction,this.keyboardState,this.controlContext)){c.scrollX+=direction![0]*s;c.scrollY+=direction![1]*s;}
@@ -426,7 +424,7 @@ export default class GameScene extends Phaser.Scene {
   }
   private diamond(g:Phaser.GameObjects.Graphics,x:number,y:number,w:number,h:number,color:number,alpha=1){g.fillStyle(color,alpha);g.beginPath();g.moveTo(x,y-h/2);g.lineTo(x+w/2,y);g.lineTo(x,y+h/2);g.lineTo(x-w/2,y);g.closePath();g.fillPath();}
   private drawGround(){
-    this.groundTerrain=this.state.terrain.slice();
+    this.groundSignature=`${this.viewLevel}|${(this.viewLevel===0?this.state.terrain:this.state.world?.levels[this.viewLevel]?.terrain??[]).join(',')}`;
     this.art.ground(this.state,project,this.viewLevel);
     const g=this.ground;g.clear();
     for(let y=0;y<this.state.height;y++)for(let x=0;x<this.state.width;x++){
@@ -555,7 +553,7 @@ export default class GameScene extends Phaser.Scene {
     }
     if(this.drag&&Math.hypot(p.x-this.drag.x,p.y-this.drag.y)>this.dragThreshold&&!this.buildRole&&!this.targetMode){g.lineStyle(1,0xe5dca6).strokeRect(this.drag.wx,this.drag.wy,world.x-this.drag.wx,world.y-this.drag.wy);g.fillStyle(0xd6e9a5,.12).fillRect(this.drag.wx,this.drag.wy,world.x-this.drag.wx,world.y-this.drag.wy);}
     if(this.buildRole){const pos=unproject(world.x,world.y);const x=this.buildRole==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y=this.buildRole==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5,q=project(x,y);const valid=canPlace(this.state,this.viewSide,this.buildRole,x,y,this.buildDefinitionId,this.viewLevel);const size=buildingFor(this.state,this.viewSide,this.buildRole,this.buildDefinitionId).size;this.diamond(g,q.x,q.y,size*64,size*32,valid?0xa6d99a:0xe27964,.5);}
-    if(this.targetMode){const pos=unproject(world.x,world.y),q=project(Math.floor(pos.x)+.5,Math.floor(pos.y)+.5),visible=isVisible(this.state,this.viewSide,pos.x,pos.y);if(this.targetMode.kind==='bridge')for(const dx of [-1,0,1]){const tile=project(Math.floor(pos.x)+.5+dx,Math.floor(pos.y)+.5);this.diamond(g,tile.x,tile.y,64,32,visible?0xa6d99a:0xe27964,.5);}else if(this.targetMode.kind==='barricade')this.diamond(g,q.x,q.y,64,32,visible?0xa6d99a:0xe27964,.5);else g.lineStyle(2,visible?0xf4d77f:0xe27964,.9).strokeCircle(world.x,world.y,14).lineBetween(world.x-20,world.y,world.x+20,world.y).lineBetween(world.x,world.y-20,world.x,world.y+20);}
+    if(this.targetMode){const pos=unproject(world.x,world.y),q=project(Math.floor(pos.x)+.5,Math.floor(pos.y)+.5),visible=isVisible(this.state,this.viewSide,pos.x,pos.y,this.viewLevel);if(this.targetMode.kind==='bridge')for(const dx of [-1,0,1]){const tile=project(Math.floor(pos.x)+.5+dx,Math.floor(pos.y)+.5);this.diamond(g,tile.x,tile.y,64,32,visible?0xa6d99a:0xe27964,.5);}else if(this.targetMode.kind==='barricade')this.diamond(g,q.x,q.y,64,32,visible?0xa6d99a:0xe27964,.5);else g.lineStyle(2,visible?0xf4d77f:0xe27964,.9).strokeCircle(world.x,world.y,14).lineBetween(world.x-20,world.y,world.x+20,world.y).lineBetween(world.x,world.y-20,world.x,world.y+20);}
     for(const building of this.state.entities){
       if(building.side!==this.viewSide||building.hp<=0||!building.rally||!this.selected.includes(building.id))continue;
       const from=project(building.x,building.y),to=project(building.rally.x,building.rally.y);

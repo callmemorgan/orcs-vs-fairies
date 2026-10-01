@@ -18,7 +18,7 @@ export interface OnlineRenderState {
 
 function ownPlayer(player:Player):Player {
   return {faction:player.faction,wood:player.wood,ore:player.ore,crystal:player.crystal,
-    population:player.population,cap:player.cap,upgrades:[...player.upgrades]};
+    population:player.population,cap:player.cap,heroRecovery:player.heroRecovery?.map(recovery=>({...recovery})),upgrades:[...player.upgrades]};
 }
 function emptyPlayer(faction:FactionId):Player {
   // These are display placeholders. HUDs must use privateSides before showing banks.
@@ -68,6 +68,7 @@ export function observationToRenderState(view:PlayerObservation,role:'player'|'s
       entity.order={...source.order};entity.queue=[...source.queue];entity.queueDefinitionIds=source.queueDefinitionIds?[...source.queueDefinitionIds]:undefined;entity.queuePaidCosts=source.queuePaidCosts?.map(cost=>({...cost}));entity.rally=source.rally?{...source.rally}:undefined;
       entity.trainProgress=source.trainProgress;entity.research=source.research;entity.researchProgress=source.researchProgress;
       entity.carried=source.carried;entity.carriedKind=source.carriedKind;entity.cooldown=source.cooldown;
+      entity.veteran=source.veteran?structuredClone(source.veteran):undefined;entity.equipment=source.equipment?{...source.equipment}:undefined;entity.specialistBuffs=source.specialistBuffs?.map(buff=>({...buff,fearedFrom:buff.fearedFrom?{...buff.fearedFrom}:undefined}));entity.beacon=source.beacon?{...source.beacon}:undefined;entity.siegeMode=source.siegeMode?{...source.siegeMode}:undefined;
       entity.abilityReadyAt=source.abilityReadyAt;entity.expires=source.expires;entity.illusion=source.illusion;
       if('orderQueue' in source&&Array.isArray(source.orderQueue))entity.orderQueue=source.orderQueue.map(order=>({...order}));
       if('lastDamagedAt' in source&&typeof source.lastDamagedAt==='number')entity.lastDamagedAt=source.lastDamagedAt;
@@ -94,7 +95,7 @@ export function observationToRenderState(view:PlayerObservation,role:'player'|'s
   const state={
     controllers:Array.from({length:count},():Controller=>'external'),mapSize:view.map.size,mapVersion:view.map.version,
     terrain,starts,...(world?{world}:{}),draw:view.result.draw,tick:view.tick,time:view.time,seed:0,width:view.map.width,height:view.map.height,
-    entities,resources:view.resources.map(resource=>({id:resource.id,x:resource.x,y:resource.y,...(resource.level===undefined?{}:{level:resource.level}),kind:resource.kind,amount:resource.amount,maxAmount:resource.maxAmount})),
+    entities,specialists:{artifacts:(view.artifacts??[]).map(item=>({...item,position:item.position?{...item.position}:undefined})),structures:[],nextArtifactId:1,nextStructureId:1},resources:view.resources.map(resource=>({id:resource.id,x:resource.x,y:resource.y,...(resource.level===undefined?{}:{level:resource.level}),kind:resource.kind,amount:resource.amount,maxAmount:resource.maxAmount})),
     players,winner:view.result.winner,events,explored,visible,nextId:1,
     corpses:view.corpses.map(corpse=>({id:corpse.id,x:corpse.x,y:corpse.y,...(corpse.level===undefined?{}:{level:corpse.level}),expires:corpse.expires})),
     teams,sharedVision:observation.sharedVision??false,winningTeam:observation.result.winningTeam??null,

@@ -25,7 +25,7 @@ function list(value:unknown,path:string,max:number):unknown[] {if(!Array.isArray
 function position(value:unknown,path:string,s:GameState,extraRequired:string[]=[],extraOptional:string[]=[]):RecordValue {
  const p=object(value,path,['x','y',...extraRequired],['level',...extraOptional]);
  number(p.x,`${path}.x`,0,s.width);number(p.y,`${path}.y`,0,s.height);
- if(p.level!==undefined)number(p.level,`${path}.level`,0,3,true);
+ if(p.level!==undefined){const level=number(p.level,`${path}.level`,0,1,true);if(level!==0&&!s.world?.levels[level])bad(`${path}.level`,'world level is absent');}
  return p;
 }
 function realUnit(e:Entity):boolean {return e.kind==='unit'&&!e.illusion&&!e.raised;}

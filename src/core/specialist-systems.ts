@@ -1,3 +1,4 @@
+import { DIRECTIONS_32, length2D } from './geometry';
 import { ABILITIES } from './content';
 import { availableUnits, buildingFor, unitFor } from './content-registry';
 import { walkable } from './navigation';
@@ -13,7 +14,7 @@ export interface SpecialistHooks {
  terrainRevision?:(point:Vec)=>number;
 }
 const sameLevel=(a:Vec,b:Vec)=>(a.level??0)===(b.level??0);
-const dist=(a:Vec,b:Vec)=>sameLevel(a,b)?Math.hypot(a.x-b.x,a.y-b.y):Infinity;
+const dist=(a:Vec,b:Vec)=>sameLevel(a,b)?length2D(a.x-b.x,a.y-b.y):Infinity;
 const allied=(s:GameState,a:{side:Side},b:{side:Side})=>s.teams[a.side]===s.teams[b.side];
 const visible=(s:GameState,side:Side,p:Vec)=>s.visible[side].has((p.level??0)*s.width*s.height+Math.floor(p.y)*s.width+Math.floor(p.x));
 const active=(e:Entity)=>e.hp>0&&e.kind==='unit'&&!e.illusion&&!e.raised;
@@ -53,7 +54,7 @@ export function specialistAbility(s:GameState,e:Entity,c:Extract<Command,{type:'
   case 'flood-shell':if(s.players[e.side].crystal<6||e.siegeMode?.prepared)return false;s.players[e.side].crystal-=6;e.siegeMode??={ammo:0,deployed:false};e.siegeMode.prepared='flood';break;
   case 'powered-beam':if(s.players[e.side].crystal<8||(e.siegeMode?.ammo??0)>4)return false;s.players[e.side].crystal-=8;e.siegeMode??={ammo:0,deployed:false};e.siegeMode.ammo+=4;break;
  }
- e.abilityReadyAt=s.time+ABILITIES[ability].cooldown;s.events.push({type:'ability',side:e.side,x:e.x,y:e.y,source:e.id,text:ABILITIES[ability].name,target:target?.id});return true;
+ e.abilityReadyAt=s.time+ABILITIES[ability].cooldown;s.events.push({type:'ability',side:e.side,x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level}),source:e.id,text:ABILITIES[ability].name,target:target?.id});return true;
 }
 export function prepareSiegeShot(s:GameState,e:Entity):SiegePayload|false|undefined {
  if(e.kind!=='unit'||e.role!=='siege')return undefined;const ability=unitFor(s,e).ability,mode=e.siegeMode;
@@ -65,7 +66,7 @@ export function prepareSiegeShot(s:GameState,e:Entity):SiegePayload|false|undefi
 export function launchSpecialistShot(s:GameState,e:Entity,target:Entity,rawDamage:number):boolean|undefined {
  if(e.illusion)return undefined;const payload=prepareSiegeShot(s,e);if(payload===undefined)return undefined;if(payload===false)return false;
  const state=specialistState(s);state.nextShotId??=1;state.shots??=[];state.shots.push({id:state.nextShotId++,source:{id:e.id,side:e.side,definitionId:unitFor(s,e).id,faction:e.definitionFaction??s.players[e.side].faction,x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level})},target:{x:target.x,y:target.y,...(target.level===undefined?{}:{level:target.level})},rawDamage,buildingMultiplier:unitFor(s,e).buildingDamageMultiplier??1,payload,impactAt:s.time+.25+dist(e,target)/12});
- s.events.push({type:'ability',side:e.side,x:e.x,y:e.y,source:e.id,target:target.id,text:'Specialist siege shot launched.'});return true;
+ s.events.push({type:'ability',side:e.side,x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level}),source:e.id,target:target.id,text:'Specialist siege shot launched.'});return true;
 }
 export function resolveSpecialistShots(s:GameState,hooks:SpecialistHooks):void {
  const state=s.specialists;if(!state?.shots)return;const pending:NonNullable<typeof state.shots>=[];
@@ -78,12 +79,12 @@ export function resolveSpecialistShots(s:GameState,hooks:SpecialistHooks):void {
    if(!active(actor))continue;
    if(shot.payload.kind==='rooting')buff(s,actor,{rooted:true},4);else if(shot.payload.kind==='flood')buff(s,actor,{speedFactor:.5},6);else if(shot.payload.kind==='incendiary'){actor.burning??=[];if(actor.burning.length>=64)actor.burning.shift();actor.burning.push({source:shot.source.id,side:shot.source.side,origin:{x:shot.source.x,y:shot.source.y,...(shot.source.level===undefined?{}:{level:shot.source.level})},until:s.time+6,nextAt:s.time+1,damage:5});}
   }
-  s.events.push({type:'ability',side:shot.source.side,x:shot.target.x,y:shot.target.y,source:shot.source.id,text:`${shot.payload.kind} impact.`});
+  s.events.push({type:'ability',side:shot.source.side,x:shot.target.x,y:shot.target.y,...(shot.target.level===undefined?{}:{level:shot.target.level}),source:shot.source.id,text:`${shot.payload.kind} impact.`});
  }
  state.shots=pending;
 }
-function fieldWalkable(s:GameState,point:Vec):boolean {return (walkable as (s:GameState,x:number,y:number,level?:number)=>boolean)(s,point.x,point.y,point.level??0);}
-function fieldTerrainAt(s:GameState,point:Vec):TerrainKind {return (terrainAt as (s:GameState,x:number,y:number,level?:number)=>TerrainKind)(s,point.x,point.y,point.level??0);}
+function fieldWalkable(s:GameState,point:Vec):boolean {return walkable(s,point.x,point.y,point.level??0);}
+function fieldTerrainAt(s:GameState,point:Vec):TerrainKind {return terrainAt(s,point.x,point.y,point.level??0);}
 function fieldSetTerrain(s:GameState,point:Vec,kind:TerrainKind,hooks:SpecialistHooks):boolean {if(hooks.setTerrain)return hooks.setTerrain(point,kind);if((point.level??0)!==0)return false;const index=Math.floor(point.y)*s.width+Math.floor(point.x);if(index<0||index>=s.terrain.length)return false;s.terrain[index]=kind;for(const e of s.entities)e.path=[];return true;}
 export function engineerBuild(s:GameState,side:Side,c:Extract<Command,{type:'engineerBuild'}>,hooks:SpecialistHooks):boolean {
  const engineers=s.entities.filter(e=>e.side===side&&c.ids.includes(e.id)&&active(e)&&unitFor(s,e).tags?.includes('engineer')),point={x:Math.floor(c.x)+.5,y:Math.floor(c.y)+.5,...(c.level===undefined?{}:{level:c.level})};
@@ -99,17 +100,17 @@ export function engineerBuild(s:GameState,side:Side,c:Extract<Command,{type:'eng
   if(point.x<.5||point.y<.5||point.x>s.width-.5||point.y>s.height-.5||!fieldWalkable(s,point)||s.entities.some(e=>e.hp>0&&dist(e,point)<1))return false;
   const barricade=hooks.spawn(side,'building','core:field-barricade',point.x,point.y,1,point.level);state.structures.push({id:state.nextStructureId++,kind:'barricade',owner:side,expires:s.time+60,entityId:barricade.id});
  }
- player.wood-=cost.wood;player.ore-=cost.ore;s.events.push({type:'build',side,x:point.x,y:point.y,text:`Temporary ${c.kind}: expires in 60 seconds.`});return true;
+ player.wood-=cost.wood;player.ore-=cost.ore;s.events.push({type:'build',side,x:point.x,y:point.y,...(point.level===undefined?{}:{level:point.level}),text:`Temporary ${c.kind}: expires in 60 seconds.`});return true;
 }
 export function fieldRepair(s:GameState,side:Side,id:number,targetId:number):boolean {
  const engineer=s.entities.find(e=>e.id===id&&e.side===side&&active(e)&&unitFor(s,e).tags?.includes('engineer')),target=s.entities.find(e=>e.id===targetId&&e.hp>0&&s.teams[e.side]===s.teams[side]);
  if(!engineer||!target||target.kind!=='building'&&target.role!=='siege'||target.hp>=target.maxHp||dist(engineer,target)>4||!visible(s,side,target))return false;
- const p=s.players[side],amount=Math.min(60,target.maxHp-target.hp),ore=Math.ceil(amount/10);if(p.ore<ore)return false;p.ore-=ore;target.hp+=amount;s.events.push({type:'ability',side,x:target.x,y:target.y,source:engineer.id,target:target.id,text:`Field repair: ${amount} health for ${ore} ore.`});return true;
+ const p=s.players[side],amount=Math.min(60,target.maxHp-target.hp),ore=Math.ceil(amount/10);if(p.ore<ore)return false;p.ore-=ore;target.hp+=amount;s.events.push({type:'ability',side,x:target.x,y:target.y,...(target.level===undefined?{}:{level:target.level}),source:engineer.id,target:target.id,text:`Field repair: ${amount} health for ${ore} ore.`});return true;
 }
 export function updateBeacons(s:GameState,alerts=true):void {
  const beacons=s.entities.filter(e=>e.kind==='building'&&e.hp>0&&e.progress===1&&buildingFor(s,e).tags?.includes('beacon')),connected=new Set<number>(),sources=s.entities.filter(e=>e.kind==='building'&&e.hp>0&&e.progress===1&&(e.role==='hq'||e.role==='depot')&&!buildingFor(s,e).tags?.includes('beacon'));
  for(let changed=true;changed;){changed=false;for(const beacon of beacons)if(!connected.has(beacon.id)&&[...sources,...beacons.filter(b=>connected.has(b.id))].some(source=>s.teams[source.side]===s.teams[beacon.side]&&dist(source,beacon)<=12)){connected.add(beacon.id);changed=true;}}
- for(const beacon of beacons){beacon.beacon??={connected:false,nextAlertAt:0};beacon.beacon.connected=connected.has(beacon.id);if(!alerts||!beacon.beacon.connected||s.time<beacon.beacon.nextAlertAt)continue;const intruder=s.entities.find(e=>e.hp>0&&s.teams[e.side]!==s.teams[beacon.side]&&dist(e,beacon)<=buildingFor(s,beacon).sight&&visible(s,beacon.side,e));if(intruder){s.events.push({type:'message',side:beacon.side,x:intruder.x,y:intruder.y,source:beacon.id,target:intruder.id,text:'Beacon invasion alert.'});beacon.beacon.nextAlertAt=s.time+8;}}
+ for(const beacon of beacons){beacon.beacon??={connected:false,nextAlertAt:0};beacon.beacon.connected=connected.has(beacon.id);if(!alerts||!beacon.beacon.connected||s.time<beacon.beacon.nextAlertAt)continue;const intruder=s.entities.find(e=>e.hp>0&&s.teams[e.side]!==s.teams[beacon.side]&&dist(e,beacon)<=buildingFor(s,beacon).sight&&visible(s,beacon.side,e));if(intruder){s.events.push({type:'message',side:beacon.side,x:intruder.x,y:intruder.y,...(intruder.level===undefined?{}:{level:intruder.level}),source:beacon.id,target:intruder.id,text:'Beacon invasion alert.'});beacon.beacon.nextAlertAt=s.time+8;}}
 }
 export function stepSpecialists(s:GameState,hooks:SpecialistHooks):void {
  for(const e of s.entities){if(e.specialistBuffs)e.specialistBuffs=e.specialistBuffs.filter(buff=>buff.until>s.time);
@@ -124,9 +125,9 @@ export function stepSpecialists(s:GameState,hooks:SpecialistHooks):void {
   if(entity){entity.expires=s.time;}
   const restored:Vec[]=[];
   for(const tile of item.tiles??[])if(fieldTerrainAt(s,tile)===tile.placed&&(tile.stamp===undefined||!hooks.terrainRevision||hooks.terrainRevision(tile)===tile.stamp)&&fieldSetTerrain(s,tile,tile.previous as TerrainKind,hooks))restored.push(tile);
-  for(const actor of s.entities)if(active(actor)&&restored.some(tile=>sameLevel(actor,tile)&&Math.floor(actor.x)===Math.floor(tile.x)&&Math.floor(actor.y)===Math.floor(tile.y))&&!fieldWalkable(s,actor)){
-   let shore:Vec|undefined;for(let ring=.5;ring<=8&&!shore;ring+=.5)for(let i=0;i<32;i++){const candidate={x:actor.x+Math.cos(i*Math.PI/16)*ring,y:actor.y+Math.sin(i*Math.PI/16)*ring,level:actor.level};if(fieldWalkable(s,candidate)){shore=candidate;break;}}
-   if(shore){actor.x=shore.x;actor.y=shore.y;actor.path=[];actor.order={type:'idle'};delete actor.orderQueue;s.events.push({type:'message',side:actor.side,x:actor.x,y:actor.y,source:actor.id,text:'Temporary bridge expired; moved to nearby shore.'});}
+  for(const actor of s.entities)if(active(actor)&&restored.some(tile=>sameLevel(actor,tile)&&Math.abs(actor.x-tile.x)<.77&&Math.abs(actor.y-tile.y)<.77)&&!fieldWalkable(s,actor)){
+   let shore:Vec|undefined;for(let ring=.5;ring<=8&&!shore;ring+=.5)for(const [dx,dy] of DIRECTIONS_32){const candidate={x:actor.x+dx*ring,y:actor.y+dy*ring,level:actor.level};if(fieldWalkable(s,candidate)){shore=candidate;break;}}
+   if(shore){actor.x=shore.x;actor.y=shore.y;actor.path=[];actor.order={type:'idle'};delete actor.orderQueue;s.events.push({type:'message',side:actor.side,x:actor.x,y:actor.y,...(actor.level===undefined?{}:{level:actor.level}),source:actor.id,text:'Temporary bridge expired; moved to nearby shore.'});}
   }
   state.structures=state.structures.filter(current=>current.id!==item.id);
  }

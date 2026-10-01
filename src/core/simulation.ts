@@ -12,7 +12,7 @@ import { walkable, segmentWalkable, openDestination, route } from './navigation'
 import { generateMatchMap, terrainAt, TERRAIN } from './maps';
 import { notifyCommand, notifyStep } from './history-hooks';
 import { validateCommand } from './commands';
-import { BIOMES, fogKey, generatedMapFromWorld, generateWorldMap, highGroundDamageFactor, highGroundRangeBonus, highGroundSightBonus, initializeWorld, levelOf, sameLevel, terrainLineOfSight } from './world-map';
+import { BIOMES, fogKey, generatedMapFromWorld, generateWorldMap, highGroundDamageFactor, highGroundRangeBonus, highGroundSightBonus, initializeWorld, levelOf, sameLevel, setWorldTerrain, terrainLineOfSight } from './world-map';
 import { issueWorldAction, processWorldAction, stepWorldActions } from './world-actions';
 import { environmentalMovementFactor, environmentalSightFactor, issueEnvironmentCommand, projectileEnvironment, stepEnvironment } from './environment';
 import { initializeWorldSites, issueNeutralWorldCommand, processNeutralOrder, relicBonus, stepNeutralWorld } from './neutral-world';
@@ -317,10 +317,11 @@ function emplaced(s:GameState,e:Entity):boolean{return e.entrenchedAt!==undefine
 function weaponRange(s:GameState,e:Entity):number{const range=e.kind==='building'?7:unitDef(s,e).range+progressionStats(s,e).range+(emplaced(s,e)&&e.role==='special'?3:0);return range+(range>2?highGroundRangeBonus(s,e):0);}
 function damage(s:GameState,a:Entity,b:Entity):void{
  const d=a.kind==='unit'?unitDef(s,a):null;const armor=(b.kind==='unit'?unitDef(s,b).armor:3)+progressionStats(s,b).armor+(emplaced(s,b)?2:0)+s.players[b.side].upgrades.reduce((sum,id)=>{const upgrade=upgradeFor(s,b.side,id);return sum+(b.kind==='unit'&&upgradeAppliesTo(upgrade,unitDef(s,b))?(upgrade.effects.armor??0):0);},0);
- const environment=projectileEnvironment(s,a,b),base=(d?d.damage*upgradeFactor(s,a,'damage')*progressionStats(s,a).damageFactor:19)*(1+relicBonus(s,a.side,a))*((d?.range??7)>2?environment.damageFactor*highGroundDamageFactor(s,a,b):1);const bonus=d?.ability==='momentum'?1+a.momentum*.40:emplaced(s,a)?1.15:1;const hit=Math.max(1,base*bonus*(b.kind==='building'?(d?.buildingDamageMultiplier??1):(d?.bonusAgainst?.[b.role as UnitRole]??1))-armor)*(a.illusion?.25:1);
+ const environment=projectileEnvironment(s,a,b),base=(d?d.damage*upgradeFactor(s,a,'damage')*progressionStats(s,a).damageFactor:19)*(1+relicBonus(s,a.side,a));const bonus=d?.ability==='momentum'?1+a.momentum*.40:emplaced(s,a)?1.15:1;const hit=Math.max(1,base*bonus*((d?.range??7)>2?environment.damageFactor*highGroundDamageFactor(s,a,b):1)*(b.kind==='building'?(d?.buildingDamageMultiplier??1):(d?.bonusAgainst?.[b.role as UnitRole]??1))-armor)*(a.illusion?.25:1);
+ if(a.kind==='unit'&&a.role==='siege'){const shot=launchSpecialistShot(s,a,b,base*bonus);if(shot===false)return;if(shot){a.cooldown=d!.cooldown;a.animation='attack';a.animTime=0;return;}}
  a.cooldown=(d?.cooldown??1.4)/(d?.ability==='momentum'?1+a.momentum*.15:1);if(d?.ability==='momentum')a.momentum=Math.min(1,a.momentum+.15);a.animation='attack';a.animTime=0;const event=emit(s,'attack',a,b.id);runtime(s).hits.push({source:a,target:b,amount:hit,event});
 }
-function die(s:GameState,e:Entity):void{if(e.animation==='death')return;commanderDied(s,e);commanderArtifact(s,e);dropArtifacts(s,e);if(s.specialists)s.specialists.structures=s.specialists.structures.filter(item=>item.entityId!==e.id);if(e.kind==='building')refundQueue(s,e);if(e.kind==='unit'&&!e.illusion&&!e.raised)s.corpses.push({id:e.id,x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level}),expires:s.time+45});e.hp=0;e.animation='death';e.animTime=0;e.order={type:'idle'};delete e.orderQueue;runtime(s).queuedGather.delete(e.id);e.path=[];emit(s,'death',e);}
+function die(s:GameState,e:Entity,text?:string):void{if(e.animation==='death')return;commanderDied(s,e);commanderArtifact(s,e);dropArtifacts(s,e);if(s.specialists)s.specialists.structures=s.specialists.structures.filter(item=>item.entityId!==e.id);if(e.kind==='building')refundQueue(s,e);if(e.kind==='unit'&&!e.illusion&&!e.raised)s.corpses.push({id:e.id,x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level}),expires:s.time+45});e.hp=0;e.animation='death';e.animTime=0;e.order={type:'idle'};delete e.orderQueue;runtime(s).queuedGather.delete(e.id);e.path=[];emit(s,'death',e,undefined,text);}
 function enemy(s:GameState,e:Entity,max:number,onlyInRange=false):Entity|undefined{
  let best:Entity|undefined,bestDist=Infinity;for(const b of s.entities){if(!alive(b)||!isHostile(s,b.side,e.side)||!isVisible(s,e.side,b.x,b.y,levelOf(b))||onlyInRange&&!near(s,e,b,max))continue;const d=distance(e,b)-radius(s,b);if(d<=max&&(d<bestDist||best?.kind==='building'&&b.kind==='unit')){best=b;bestDist=d;}}return best;
 }
@@ -378,13 +379,13 @@ function moveNeutral(s:GameState,actor:Entity|NeutralCreature,to:Vec,dt:number,r
  return distance(actor,to)<=reach;
 }
 function neutralHooks(s:GameState){return {
- attackStats:(e:Entity)=>{const def=unitDef(s,e);return {damage:def.damage*upgradeFactor(s,e,'damage'),range:weaponRange(s,e),cooldown:def.cooldown};},
+ attackStats:(e:Entity)=>{const def=unitDef(s,e);return {damage:def.damage*upgradeFactor(s,e,'damage')*progressionStats(s,e).damageFactor,range:weaponRange(s,e),cooldown:def.cooldown};},
  recruitCost:(side:Side,role:UnitRole)=>unitFor(s,side,role).cost,
  move:(actor:Entity|NeutralCreature,to:Vec,dt:number,reach:number)=>moveNeutral(s,actor,to,dt,reach),
  spawn:(side:Side,role:UnitRole,x:number,y:number,level:number)=>{const point=openDestination(s,{x,y,level},{x,y,level});if(!point)return undefined;return spawn(s,side,'unit',role,point.x,point.y,1,undefined,level);},
  hit:(source:Entity|NeutralCreature,target:Entity|NeutralCreature,amount:number)=>{
   if('side' in source){const def=unitDef(s,source);amount*=1+relicBonus(s,source.side,source);if(def.range>2)amount*=projectileEnvironment(s,source,target).damageFactor*highGroundDamageFactor(s,source,target);}
-  if('side' in target){const armor=target.kind==='unit'?unitDef(s,target).armor:3;amount=Math.max(1,amount-armor);}const shield='shield' in target?Math.min(target.shield??0,amount):0,actual=Math.min(target.hp,amount-shield)+shield;
+  if('side' in target){const armor=(target.kind==='unit'?unitDef(s,target).armor:3)+progressionStats(s,target).armor;amount=Math.max(1,amount-armor);}const shield='shield' in target?Math.min(target.shield??0,amount):0,actual=Math.min(target.hp,amount-shield)+shield;
   if('shield' in target)target.shield=Math.max(0,(target.shield??0)-shield);target.hp=Math.max(0,target.hp-(amount-shield));
   if('side' in target){target.lastDamagedAt=s.time;target.lastAttacker=source.id;}const side='side' in source?source.side:'side' in target?target.side:0;
   s.events.push({type:'attack' as const,side,x:source.x,y:source.y,level:levelOf(source),source:source.id,target:target.id,amount:actual});if('side' in target&&target.hp===0)die(s,target);
@@ -397,7 +398,7 @@ export function stepGame(s:GameState,dt:number):void{
  if(s.tick!==before)notifyStep(s,Math.min(dt,.25));
 }
 function applyStep(s:GameState,dt:number):void{
- if(isGameOver(s)||!Number.isFinite(dt)||dt<=0)return;s.events=[];dt=Math.min(dt,.25);s.time+=dt;s.tick++;stepEnvironment(s,dt,{interrupt:actor=>interruptWorldOrder(s,actor)});const rt=runtime(s);rt.hits=[];stepSpecialists(s,specialistHooks(s));resolveSpecialistShots(s,specialistHooks(s));stepVeterans(s);rt.fog-=dt;if(rt.fog<=0){refreshVisibility(s);rt.fog=.2;}rt.ai-=dt;if(rt.ai<=0){rt.aiTurns++;rt.ai+=1;}
+ if(isGameOver(s)||!Number.isFinite(dt)||dt<=0)return;s.events=[];dt=Math.min(dt,.25);s.time+=dt;s.tick++;stepEnvironment(s,dt,{interrupt:actor=>interruptWorldOrder(s,actor),die:(actor,text)=>die(s,actor,text)});const rt=runtime(s);rt.hits=[];stepSpecialists(s,specialistHooks(s));resolveSpecialistShots(s,specialistHooks(s));stepVeterans(s);rt.fog-=dt;if(rt.fog<=0){refreshVisibility(s);rt.fog=.2;}rt.ai-=dt;if(rt.ai<=0){rt.aiTurns++;rt.ai+=1;}
  const sides=playerSides(s),due=new Set(sides.filter(side=>s.controllers[side]==='ai'&&!s.eliminated[side]&&s.time+1e-9>=rt.aiDecisionAt[side]));
  if(due.size){const offset=rt.aiBatchTurns++%sides.length;for(let i=0;i<sides.length;i++){const side=sides[(i+offset)%sides.length];if(due.has(side)){runAI(s,side);rt.aiDecisionAt[side]=s.time+aiProfile(s.aiConfigs[side]).decisionInterval;}}}
  for(const e of [...s.entities]){
@@ -406,7 +407,7 @@ function applyStep(s:GameState,dt:number):void{
  const d=unitDef(s,e);
  if(e.maxShield&&s.time-(e.lastDamagedAt??-6)>=6)e.shield=Math.min(e.maxShield,(e.shield??0)+4*dt);
  if(!e.illusion&&(d.ability==='raise'||d.ability==='ward'))useAbility(s,e);
- const feared=e.specialistBuffs?.find(buff=>buff.until>s.time&&buff.fearedFrom)?.fearedFrom;if(feared){const dx=e.x-feared.x,dy=e.y-feared.y,len=Math.hypot(dx,dy)||1;move(s,e,{x:clamp(e.x+dx/len*3,.6,s.width-.6),y:clamp(e.y+dy/len*3,.6,s.height-.6)},dt,.1);continue;}
+ const feared=e.specialistBuffs?.find(buff=>buff.until>s.time&&buff.fearedFrom)?.fearedFrom;if(feared){const dx=e.x-feared.x,dy=e.y-feared.y,len=length2D(dx,dy)||1;move(s,e,{x:clamp(e.x+dx/len*3,.6,s.width-.6),y:clamp(e.y+dy/len*3,.6,s.height-.6),level:levelOf(e)},dt,.1);continue;}
  const o=e.order;
  if(processWorldAction(s,e,dt,{move:(actor,to,delta,reach)=>move(s,actor,to,delta,reach),finish:actor=>finishOrder(s,actor),interrupt:actor=>interruptWorldOrder(s,actor)}))continue;
  if(processNeutralOrder(s,e,dt,neutralHooks(s)))continue;
@@ -472,7 +473,6 @@ export function runAI(s:GameState,side:Side=1):void{
   const danger=s.entities.some(e=>isHostile(s,e.side,side)&&alive(e)&&isVisible(s,side,e.x,e.y,levelOf(e))&&distance(e,gate)<9);
   if(!!gate.gateOpen===danger)issueCommand(s,side,{type:'toggleGate',ids:[gate.id]});
  }
- runSpecialistAI(s,side,c=>issueCommand(s,side,c));
  const army=owned.filter(e=>e.kind==='unit'&&e.role!=='worker'&&!e.illusion);
  const visibleEnemy=s.entities.filter(e=>isHostile(s,e.side,side)&&alive(e)&&e.kind==='unit'&&isVisible(s,side,e.x,e.y,levelOf(e)));
  const planned=[...army.filter(e=>!e.raised).map(e=>e.role),...buildings.flatMap(e=>e.queue).filter(r=>r!=='worker')];
@@ -542,9 +542,10 @@ export function runAI(s:GameState,side:Side=1):void{
  }
 issueCommand(s,side,{type:'attackMove',ids:readyArmy.filter(e=>e.entrenchedAt===undefined&&(!incomeRecoverable||e.id!==rt.expansionScout[side])).map(e=>e.id),x:destination.x,y:destination.y});rt.aiWave[side]=s.time;
  }else if(!rt.initialScoutDispatched[side]&&s.time>profile.scoutAt&&readyArmy.length&&readyArmy.every(e=>e.order.type==='idle')){const scout=readyArmy[0];if(issueCommand(s,side,{type:'attackMove',ids:[scout.id],x:hq.x+(enemyStart.x-hq.x)*.7,y:hq.y+(enemyStart.y-hq.y)*.7}))rt.initialScoutDispatched[side]=true;}
+ runSpecialistAI(s,side,c=>issueCommand(s,side,c));
 }
 
 /** Constructor for validated deterministic systems; the caller charges costs and checks rules. */
 export function spawnDefinition(s:GameState,side:Side,kind:Entity['kind'],definitionId:string,x:number,y:number,progress=1,level?:number):Entity {const d=kind==='unit'?availableUnits(s,side).find(d=>d.id===definitionId):availableBuildings(s,side).find(d=>d.id===definitionId);if(!d)throw new Error('Definition is absent from player content.');return spawn(s,side,kind,d.role,x,y,progress,definitionId,level??0);}
 
-function specialistHooks(s:GameState):SpecialistHooks {return {spawn:(...args)=>spawnDefinition(s,...args),damage:(source,target,raw,options)=>{if(target.hp<=0)return;const def=target.kind==='unit'?unitFor(s,target):undefined,armor=options?.armorPiercing?0:(def?.armor??3)+progressionStats(s,target).armor+(emplaced(s,target)?2:0)+s.players[target.side].upgrades.reduce((sum,id)=>{const u=upgradeFor(s,target.side,id);return sum+(def&&upgradeAppliesTo(u,def)?u.effects.armor??0:0);},0),event=emit(s,'attack',source,target.id);runtime(s).hits.push({source,target,amount:Math.max(1,raw-armor),event});}};}
+function specialistHooks(s:GameState):SpecialistHooks {return {spawn:(...args)=>spawnDefinition(s,...args),setTerrain:(point,kind)=>setWorldTerrain(s,point,kind),damage:(source,target,raw,options)=>{if(target.hp<=0)return;if(options?.ranged)raw*=projectileEnvironment(s,source,target).damageFactor*highGroundDamageFactor(s,source,target);const def=target.kind==='unit'?unitFor(s,target):undefined,armor=options?.armorPiercing?0:(def?.armor??3)+progressionStats(s,target).armor+(emplaced(s,target)?2:0)+s.players[target.side].upgrades.reduce((sum,id)=>{const u=upgradeFor(s,target.side,id);return sum+(def&&upgradeAppliesTo(u,def)?u.effects.armor??0:0);},0),event=emit(s,'attack',source,target.id);runtime(s).hits.push({source,target,amount:Math.max(1,raw-armor),event});}};}

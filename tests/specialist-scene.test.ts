@@ -61,7 +61,7 @@ it('arms targeted abilities and emits ground coordinates on a normal battlefield
   const { scene, command, actor, click, notice } = setup(), hero = actor('core:fairies-commander', 20.5, 20.5);
   scene.selectEntities([hero.id]); expect(scene.useAbility()).toBe(true); expect(command).not.toHaveBeenCalled();
   expect(notice).toHaveBeenLastCalledWith('Ability: click a visible target or ground. Esc cancels.');
-  click(22.5, 20.5); expect(command).toHaveBeenLastCalledWith(0, { type: 'ability', ids: [hero.id], x: 22.5, y: 20.5 });
+  click(22.5, 20.5); expect(command).toHaveBeenLastCalledWith(0, { type: 'ability', ids: [hero.id], x: 22.5, y: 20.5, level: 0 });
   expect(scene.selected).toEqual([hero.id]);
   click(24.5, 20.5); expect(command).toHaveBeenCalledTimes(1); scene.events.emit('shutdown');
 });
@@ -82,7 +82,7 @@ it('does not resolve a hidden entity as an ability target and suppresses command
   const hidden = state.entities.find(e => e.side === 1 && e.kind === 'unit')!; hidden.x = 22.5; hidden.y = 20.5;
   state.visible[0].delete(Math.floor(hidden.y) * state.width + Math.floor(hidden.x));
   scene.selectEntities([hero.id]); scene.useAbility(); click(hidden.x, hidden.y);
-  expect(command).toHaveBeenLastCalledWith(0, { type: 'ability', ids: [hero.id], x: hidden.x, y: hidden.y });
+  expect(command).toHaveBeenLastCalledWith(0, { type: 'ability', ids: [hero.id], x: hidden.x, y: hidden.y, level: 0 });
   scene.paused = true; expect(scene.useAbility()).toBe(false); click(23.5, 20.5); expect(command).toHaveBeenCalledTimes(1);
   scene.paused = false; scene.readOnly = true; expect(scene.useAbility()).toBe(false);
   expect(scene.beginEngineerBuild('bridge')).toBe(false); scene.events.emit('shutdown');
@@ -91,9 +91,9 @@ it('does not resolve a hidden entity as an ability target and suppresses command
 it('places bridge and barricade commands and targets field repair with the nearest selected engineer', () => {
   const { state, scene, command, actor, click } = setup(), far = actor('core:fairies-engineer', 20.5, 20.5), near = actor('core:fairies-engineer', 24.5, 20.5);
   scene.selectEntities([far.id, near.id]); expect(scene.beginEngineerBuild('bridge')).toBe(true); click(22.8, 20.7);
-  expect(command).toHaveBeenLastCalledWith(0, { type: 'engineerBuild', ids: [far.id, near.id], kind: 'bridge', x: 22.5, y: 20.5 });
+  expect(command).toHaveBeenLastCalledWith(0, { type: 'engineerBuild', ids: [far.id, near.id], kind: 'bridge', x: 22.5, y: 20.5, level: 0 });
   scene.beginEngineerBuild('barricade'); click(23.2, 21.9);
-  expect(command).toHaveBeenLastCalledWith(0, { type: 'engineerBuild', ids: [far.id, near.id], kind: 'barricade', x: 23.5, y: 21.5 });
+  expect(command).toHaveBeenLastCalledWith(0, { type: 'engineerBuild', ids: [far.id, near.id], kind: 'barricade', x: 23.5, y: 21.5, level: 0 });
   const hq = state.entities.find(e => e.side === 0 && e.role === 'hq')!; hq.x = 25.5; hq.y = 20.5; hq.hp -= 60;
   scene.beginFieldRepair(); click(hq.x, hq.y); expect(command).toHaveBeenLastCalledWith(0, { type: 'fieldRepair', id: near.id, target: hq.id });
   expect(scene.selected).toEqual([far.id, near.id]); scene.events.emit('shutdown');
@@ -123,7 +123,7 @@ it('recovers a visible ground marker, draws veteran rank and experience, and red
   const marker = project(21.5, 20.5), pointer = { x: marker.x, y: marker.y - 12, button: 0, event: new MouseEvent('click'), rightButtonDown: () => false, middleButtonDown: () => false };
   (scene.input as any).activePointer = pointer; scene.input.emit('pointerdown', pointer); scene.input.emit('pointerup', pointer);
   expect(command).toHaveBeenLastCalledWith(0, { type: 'recoverArtifact', id: hero.id, artifact: item.id });
-  scene.update(0, 16); const overlay = (scene as any).graphics[3], point = project(hero.x, hero.y);
+  scene.update(0, 16); const overlay = (scene as any).graphics[4], point = project(hero.x, hero.y);
   expect(overlay.lineBetween).toHaveBeenCalledWith(point.x - 5, point.y - 55, point.x, point.y - 58);
   expect(overlay.fillRect).toHaveBeenCalledWith(point.x - 15, point.y + 19, 7, 3);
   expect(overlay.strokeCircle).toHaveBeenCalledWith(marker.x, marker.y - 12, 14);
