@@ -1,5 +1,5 @@
 import { length2D } from './geometry';
-import { FACTIONS } from './content';
+import { unitFor } from './content-registry';
 import { openDestination, walkable } from './navigation';
 import { levelOf, sameLevel, fogKey, setWorldTerrain } from './world-map';
 import type { Command, Entity, GameState, Side, Vec } from './types';
@@ -67,7 +67,7 @@ export function processWorldAction(s:GameState,e:Entity,dt:number,hooks:WorldAct
  if(o.type!=='worldAttack'&&o.type!=='repairBridge')return false;
  const bridge=world.bridges.find(b=>b.id===o.target);if(!bridge)return false;
  if(!sameLevel(e,bridge)){hooks.finish(e);return true;}
- const def=FACTIONS[s.players[e.side].faction].units[e.role as 'melee'],edge=bridgeEdge(bridge,s,e),reach=o.type==='worldAttack'?def.range:1.4;
+ const def=unitFor(s,e),edge=bridgeEdge(bridge,s,e),reach=o.type==='worldAttack'?def.range:1.4;
  if(!hooks.move(e,edge,dt,reach))return true;
  e.animation='attack';
  if(o.type==='worldAttack'){

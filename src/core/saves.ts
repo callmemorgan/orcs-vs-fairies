@@ -95,14 +95,14 @@ function validateRuntime(value:unknown,c:Context,version:1|2|3):void {
  playersArray(r.aiWave,'runtime.aiWave',c,(v,p)=>number(v,p,0,c.time));
  for(const key of ['initialScoutDispatched','expansionScoutDispatched','enemyStartCleared'])playersArray(r[key],`runtime.${key}`,c,flag);
  playersArray(r.expansionScout,'runtime.expansionScout',c,(v,p)=>{if(v!==null)id(v,p,c);});
- playersArray(r.knownEnemyBuildings,'runtime.knownEnemyBuildings',c,(v,p)=>entries(v,p,c.maxEntities,c,(value,q)=>{const b=object(value,q,['x','y','role']);coordinates(b,q,c);choice(b.role,`${q}.role`,BUILDING_ROLES);}));
+ playersArray(r.knownEnemyBuildings,'runtime.knownEnemyBuildings',c,(v,p)=>entries(v,p,c.maxEntities,c,(value,q)=>{const b=object(value,q,['x','y','role'],['level']);coordinates(b,q,c);choice(b.role,`${q}.role`,BUILDING_ROLES);}));
  playersArray(r.searched,'runtime.searched',c,(v,p)=>uniqueIds(list(v,p,c.cells),p,c.cells-1));
  if(version>=2)playersArray(r.clearedEnemyStarts,'runtime.clearedEnemyStarts',c,(v,p)=>uniqueIds(list(v,p,c.playerCount),p,c.playerCount-1));
  if(version===3){
   number(r.aiBatchTurns,'runtime.aiBatchTurns',0,MAX_VALUE,true);
   playersArray(r.aiDecisionAt,'runtime.aiDecisionAt',c,(v,p)=>number(v,p,0,c.time+3));
   for(const key of ['aiDecisionTurns','producedFighters'])playersArray(r[key],`runtime.${key}`,c,(v,p)=>number(v,p,0,MAX_VALUE,true));
-  playersArray(r.knownEnemyUnits,'runtime.knownEnemyUnits',c,(v,p)=>entries(v,p,c.maxEntities,c,(value,q)=>{const observation=object(value,q,['x','y','role','seenAt','hpFraction']);coordinates(observation,q,c);choice(observation.role,`${q}.role`,UNIT_ROLES.filter(role=>role!=='worker'));number(observation.seenAt,`${q}.seenAt`,0,c.time);number(observation.hpFraction,`${q}.hpFraction`,0,1);}));
+  playersArray(r.knownEnemyUnits,'runtime.knownEnemyUnits',c,(v,p)=>entries(v,p,c.maxEntities,c,(value,q)=>{const observation=object(value,q,['x','y','role','seenAt','hpFraction'],['level']);coordinates(observation,q,c);choice(observation.role,`${q}.role`,UNIT_ROLES.filter(role=>role!=='worker'));number(observation.seenAt,`${q}.seenAt`,0,c.time);number(observation.hpFraction,`${q}.hpFraction`,0,1);}));
   playersArray(r.retreating,'runtime.retreating',c,(v,p)=>entries(v,p,c.maxEntities,c,(value,q)=>{const record=object(value,q,['until','produced','afterId']);number(record.until,`${q}.until`,0,c.time+30);number(record.produced,`${q}.produced`,0,MAX_VALUE,true);number(record.afterId,`${q}.afterId`,0,c.nextId-1,true);}));
  }
 

@@ -1,5 +1,5 @@
 import { length2D, DIRECTIONS_32 } from './geometry';
-import { FACTIONS } from './content';
+import { buildingFor, unitFor } from './content-registry';
 import { setWorldTerrain } from './world-map';
 import type { Entity, GameState, Side, TerrainKind, Vec } from './types';
 import type { WorldCommand, WorldFire, WorldState } from './world-types';
@@ -122,7 +122,7 @@ export function issueEnvironmentCommand(s:GameState,side:Side,command:WorldComma
  const fire=world.fires.find(f=>f.level===p.level&&tileOf(s,f)===tileOf(s,p));
  if(c.type==='ignite'&&(!flammable(state,p)||fire)||c.type==='firebreak'&&!flammable(state,p)&&!fire)return false;
  const actors=s.entities.filter(e=>c.ids.includes(e.id)&&e.side===side&&e.hp>0&&e.kind==='unit'&&!e.illusion&&levelOf(e)===p.level&&e.cooldown<=0&&(e.role==='worker'||c.type==='ignite'&&e.role==='siege'));
- const actor=actors.sort((a,b)=>a.id-b.id).find(e=>length2D(e.x-p.x,e.y-p.y)<=(e.role==='siege'?FACTIONS[s.players[side].faction].units.siege.range:ENVIRONMENT_RULES.workerReach));
+ const actor=actors.sort((a,b)=>a.id-b.id).find(e=>length2D(e.x-p.x,e.y-p.y)<=(e.role==='siege'?unitFor(s,e).range:ENVIRONMENT_RULES.workerReach));
  const player=s.players[side],wood=c.type==='ignite'?ENVIRONMENT_RULES.igniteWood:ENVIRONMENT_RULES.firebreakWood,ore=c.type==='ignite'?ENVIRONMENT_RULES.igniteOre:0;
  if(!actor||player.wood<wood||player.ore<ore)return false;
  player.wood-=wood;player.ore-=ore;actor.cooldown=actor.role==='siege'?1.5:.8;actor.animation='attack';actor.animTime=0;
@@ -140,7 +140,7 @@ function bankClear(s:WorldGame,p:Positioned):boolean {
  if(p.x<.35||p.y<.35||p.x>s.width-.35||p.y>s.height-.35)return false;
  for(let y=Math.floor(p.y-.27);y<=Math.floor(p.y+.27);y++)for(let x=Math.floor(p.x-.27);x<=Math.floor(p.x+.27);x++)if(['water','rock','forest','ice'].includes(terrain(s,{x:x+.5,y:y+.5,level:p.level})))return false;
  if(s.resources.some(n=>n.amount>0&&levelOf(n)===levelOf(p)&&length2D(n.x-p.x,n.y-p.y)<.7))return false;
- return !s.entities.some(e=>e.hp>0&&e.kind==='building'&&!e.gateOpen&&levelOf(e)===levelOf(p)&&Math.abs(e.x-p.x)<FACTIONS[s.players[e.side].faction].buildings[e.role as 'hq'].size/2+.27&&Math.abs(e.y-p.y)<FACTIONS[s.players[e.side].faction].buildings[e.role as 'hq'].size/2+.27);
+ return !s.entities.some(e=>e.hp>0&&e.kind==='building'&&!e.gateOpen&&levelOf(e)===levelOf(p)&&Math.abs(e.x-p.x)<buildingFor(s,e).size/2+.27&&Math.abs(e.y-p.y)<buildingFor(s,e).size/2+.27);
 }
 function evacuate(s:WorldGame,e:Entity,hooks?:EnvironmentHooks):void {
  let best:Positioned|undefined,bestDistance=Infinity;
@@ -165,7 +165,7 @@ function touchesIce(s:GameState,e:Entity,tiles:WorldState['iceTiles']):boolean {
 }
 function exposed(s:GameState,e:Entity,fire:WorldFire):boolean {
  if(levelOf(e)!==fire.level)return false;
- const radius=e.kind==='building'?FACTIONS[s.players[e.side].faction].buildings[e.role as 'hq'].size/2:0;
+ const radius=e.kind==='building'?buildingFor(s,e).size/2:0;
  return length2D(Math.max(0,Math.abs(e.x-fire.x)-radius),Math.max(0,Math.abs(e.y-fire.y)-radius))<.9;
 }
 function seasons(s:WorldGame,phase:EnvironmentPhase,hooks?:EnvironmentHooks):void {

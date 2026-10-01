@@ -1,3 +1,4 @@
+import { levelOf } from './world-map';
 import type { PlayerView } from './observation';
 import type { Cost, Side, UnitDef, UnitRole, Vec } from './types';
 
@@ -42,7 +43,7 @@ type SeenEntity = CoachObservation['entities'][number];
 type OwnEntity = Extract<SeenEntity, { order: unknown }>;
 type Recruitment = { building: OwnEntity; unit: UnitDef };
 const distance = (a: Vec, b: Vec) => Math.hypot(a.x - b.x, a.y - b.y);
-const pointOf = (entity: Vec): Vec => ({ x: entity.x, y: entity.y });
+const pointOf = (entity: Vec): Vec => ({ x: entity.x, y: entity.y,...(entity.level===undefined?{}:{level:entity.level}) });
 const affordable = (bank: Cost, cost: Cost) => bank.wood >= cost.wood && bank.ore >= cost.ore && bank.crystal >= cost.crystal;
 const costText = (cost: Cost) => (['wood', 'ore', 'crystal'] as const).filter(kind => cost[kind] > 0).map(kind => `${cost[kind]} ${kind}`).join(', ');
 const bankText = (bank: Cost) => `${Math.floor(bank.wood)} wood, ${Math.floor(bank.ore)} ore and ${Math.floor(bank.crystal)} crystal`;
@@ -196,7 +197,9 @@ export function coachAdvice(view: CoachObservation, memory: CoachMemory, maxAdvi
       entityIds: scout ? [scout.id] : [], point });
   }
 
-  const waitingArmy = army.filter(entity => waiting(entity) && !inCombat(view, entity) && !stationaryScout(view, entity, owned, explored));
+  const allWaitingArmy = army.filter(entity => waiting(entity) && !inCombat(view, entity) && !stationaryScout(view, entity, owned, explored));
+  const groups=[...new Set(allWaitingArmy.map(levelOf))].map(level=>allWaitingArmy.filter(entity=>levelOf(entity)===level));
+  const waitingArmy=groups.sort((a,b)=>b.length-a.length)[0]??[];
   if (waitingArmy.length >= COACH_THRESHOLDS.armyMinimum) {
     let spread = 0;
     for (let first = 0; first < waitingArmy.length; first++) for (let second = first + 1; second < waitingArmy.length; second++) spread = Math.max(spread, distance(waitingArmy[first], waitingArmy[second]));

@@ -1,4 +1,5 @@
 import { buildingFor, factionFor } from './content-registry';
+import { levelOf,sameLevel } from './world-map';
 import { length2D } from './geometry';
 import { FACTIONS } from './content';
 import { terrainAt, TERRAIN } from './maps';
@@ -48,7 +49,7 @@ const roles = new Set<string>(Object.keys(FACTIONS.orcs.buildings));
 const targetMemory = new WeakMap<GameState, Map<number, WorkerTargets>>();
 const emptyTargets = (): WorkerTargets => ({ wood: 0, ore: 0, crystal: 0 });
 const own = (value: object, key: string) => Object.prototype.hasOwnProperty.call(value, key);
-const distance = (a: Vec, b: Vec) => length2D(a.x - b.x, a.y - b.y);
+const distance = (a: Vec, b: Vec) => sameLevel(a,b)?length2D(a.x - b.x, a.y - b.y):Infinity;
 const record = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === 'object' && !Array.isArray(value);
 const validId = (value: unknown): value is number => typeof value === 'number' && Number.isSafeInteger(value) && value > 0;
 const validSideNumber = (side: unknown): side is Side => typeof side === 'number' && Number.isSafeInteger(side) && side >= 0 && side <= 7;
@@ -93,28 +94,31 @@ export function workerAllocation(state: GameState, side: Side): WorkerAllocation
 function observedMap(state: GameState, side: Side): GameState {
   return {
     ...state,
-    entities: state.entities.filter(e => e.side === side || isVisible(state, side, e.x, e.y)),
-    resources: state.resources.filter(node => isVisible(state, side, node.x, node.y)),
+    entities: state.entities.filter(e => e.side === side || isVisible(state, side, e.x, e.y,levelOf(e))),
+    resources: state.resources.filter(node => isVisible(state, side, node.x, node.y,levelOf(node))),
     terrain: state.terrain.map((tile, index) => state.explored[side].has(index) ? tile : 'rock'),
+    world:state.world?{...state.world,levels:state.world.levels.map(level=>({...level,terrain:level.terrain.map((tile,index)=>state.explored[side].has(level.id*state.width*state.height+index)?tile:'rock')}))}:undefined,
   };
 }
 function reachable(view: GameState, worker: Vec, target: Vec, reach: number, side: Side): boolean {
+  if(!sameLevel(worker,target))return false;
   const d = distance(worker, target);
   if (d <= reach) return true;
   // Connect to the interaction radius, since a resource center itself is an obstacle.
-  const approach = { x: target.x + (worker.x - target.x) / d * reach, y: target.y + (worker.y - target.y) / d * reach };
+  const approach = { x: target.x + (worker.x - target.x) / d * reach, y: target.y + (worker.y - target.y) / d * reach,...(target.level===undefined?{}:{level:target.level}) };
   return segmentWalkable(view, worker, approach) || route(view, worker, target, reach, side).length > 0;
 }
 function harvestPoint(view: GameState, worker: Entity, node: ResourceNode, side: Side): Vec | undefined {
+  if(!sameLevel(worker,node))return undefined;
   const d = distance(worker, node);
-  if (d <= 1.2 && walkable(view, worker.x, worker.y)) return worker;
-  const approach = { x: node.x + (worker.x - node.x) / d * 1.1, y: node.y + (worker.y - node.y) / d * 1.1 };
+  if (d <= 1.2 && walkable(view, worker.x, worker.y,levelOf(worker))) return worker;
+  const approach = { x: node.x + (worker.x - node.x) / d * 1.1, y: node.y + (worker.y - node.y) / d * 1.1,...(node.level===undefined?{}:{level:node.level}) };
   if (segmentWalkable(view, worker, approach)) return approach;
   const endpoint = route(view, worker, node, 1.1, side).at(-1);
   if (!endpoint) return undefined;
   const remaining = distance(endpoint, node);
   if (remaining <= 1.2) return endpoint;
-  const interaction = { x: node.x + (endpoint.x - node.x) / remaining * 1.1, y: node.y + (endpoint.y - node.y) / remaining * 1.1 };
+  const interaction = { x: node.x + (endpoint.x - node.x) / remaining * 1.1, y: node.y + (endpoint.y - node.y) / remaining * 1.1,...(node.level===undefined?{}:{level:node.level}) };
   if (segmentWalkable(view, endpoint, interaction)) return interaction;
   // Navigation allows .2 beyond its requested reach. A tighter fallback ensures
   // the endpoint is within the simulation's 1.2 harvesting distance.
@@ -130,8 +134,8 @@ function protectedWorkerOrders(state: GameState, side: Side): Set<number> {
   for (const worker of loaded) {
     const target = worker.order.type === 'gather' ? worker.order.target : undefined;
     const node = target === undefined ? undefined : state.resources.find(node => node.id === target);
-    const dropoff = dropoffs.slice().sort((a, b) => distance(worker, a) - distance(worker, b))[0];
-    const pendingDelivery = worker.carried >= 18 || !!node && (node.kind !== worker.carriedKind || isVisible(state, side, node.x, node.y) && node.amount <= 0);
+    const dropoff = dropoffs.filter(dropoff=>sameLevel(worker,dropoff)).sort((a, b) => distance(worker, a) - distance(worker, b))[0];
+    const pendingDelivery = worker.carried >= 18 || !!node && (node.kind !== worker.carriedKind || isVisible(state, side, node.x, node.y,levelOf(node)) && node.amount <= 0);
     if (pendingDelivery || !dropoff || !reachable(view, worker, dropoff, buildingFor(state,dropoff).size / 2 + 1, side)) protectedOrders.add(worker.id);
   }
   return protectedOrders;
@@ -157,7 +161,7 @@ export function applyWorkerTargets(state: GameState, side: Side, targets: Worker
   const quotas = Object.fromEntries(KINDS.map(kind => [kind, Math.max(0, targets[kind] - locked[kind])])) as WorkerTargets;
   const available = owned.filter(worker => freeWorker(worker, queued)).sort((a, b) => a.id - b.id);
   const view = observedMap(state, side);
-  const nodes = state.resources.filter(node => node.amount > 0 && isVisible(state, side, node.x, node.y));
+  const nodes = state.resources.filter(node => node.amount > 0 && isVisible(state, side, node.x, node.y,levelOf(node)));
   const dropoffs = state.entities.filter(e => e.side === side && e.hp > 0 && e.kind === 'building' && e.progress === 1 && (e.role === 'hq' || e.role === 'depot'));
   const cached = new Map<number, Partial<Record<ResourceKind, ResourceNode>>>();
   const harvestable = new Map<number, Set<ResourceKind>>();
@@ -175,7 +179,7 @@ export function applyWorkerTargets(state: GameState, side: Side, targets: Worker
       known.add(kind);
       // Gathering returns to the closest completed drop-off. A farther reachable
       // depot cannot rescue an order if that automatic destination is blocked.
-      const delivery = dropoffs.slice().sort((a, b) => distance(point, a) - distance(point, b))[0];
+      const delivery = dropoffs.filter(dropoff=>sameLevel(point,dropoff)).sort((a, b) => distance(point, a) - distance(point, b))[0];
       if (delivery && reachable(view, point, delivery, buildingFor(state,delivery).size / 2 + 1, side)) candidates.push({ node, travel: distance(worker, node) + distance(node, delivery) });
     }
     options[kind] = candidates.sort((a, b) => Number(b.node.id === current) - Number(a.node.id === current) || a.travel - b.travel || a.node.id - b.node.id)[0]?.node;
@@ -238,17 +242,17 @@ export function createConstructionPlan(side: Side): ConstructionPlan {
   return { version: 1, side, nextId: 1, blueprints: [] };
 }
 function validPosition(input: Vec, state?: GameState): boolean {
-  return Number.isFinite(input.x) && Number.isFinite(input.y) && input.x >= 0 && input.y >= 0 && input.x < Math.min(state?.width ?? MAX_COORDINATE, MAX_COORDINATE) && input.y < Math.min(state?.height ?? MAX_COORDINATE, MAX_COORDINATE);
+  return (input.level===undefined||Number.isInteger(input.level)&&input.level>=0&&input.level<(state?.world?.levels.length??(state?1:2))) && Number.isFinite(input.x) && Number.isFinite(input.y) && input.x >= 0 && input.y >= 0 && input.x < Math.min(state?.width ?? MAX_COORDINATE, MAX_COORDINATE) && input.y < Math.min(state?.height ?? MAX_COORDINATE, MAX_COORDINATE);
 }
 function requirePlan(state: GameState, side: Side, plan: ConstructionPlan): void {
   requireSide(state, side);
   if (plan.side !== side || plan.version !== 1 || !Array.isArray(plan.blueprints) || !validId(plan.nextId) || plan.nextId >= Number.MAX_SAFE_INTEGER) throw new RangeError('Invalid construction plan.');
 }
-export function addBlueprint(state: GameState, side: Side, plan: ConstructionPlan, input: { role: BuildingRole; x: number; y: number }): ConstructionBlueprint {
+export function addBlueprint(state: GameState, side: Side, plan: ConstructionPlan, input: { role: BuildingRole } & Vec): ConstructionBlueprint {
   requirePlan(state, side, plan);
   if (!roles.has(input.role) || !validPosition(input, state)) throw new RangeError('Blueprint must have a building role and a position inside the map.');
   if (plan.blueprints.length >= MAX_BLUEPRINTS) throw new RangeError('A construction plan can contain at most 100 blueprints.');
-  const item: ConstructionBlueprint = { id: `blueprint-${plan.nextId++}`, role: input.role, x: input.x, y: input.y, workerIds: [], status: 'planned' };
+  const item: ConstructionBlueprint = { id: `blueprint-${plan.nextId++}`, role: input.role, x: input.x, y: input.y,...(input.level===undefined?{}:{level:input.level}), workerIds: [], status: 'planned' };
   plan.blueprints.push(item);
   return item;
 }
@@ -269,10 +273,10 @@ export function assignBlueprintWorkers(state: GameState, side: Side, plan: Const
   return true;
 }
 function matchingBuilding(state: GameState, side: Side, item: ConstructionBlueprint): Entity | undefined {
-  return state.entities.find(e => e.id === item.buildingId && e.side === side && e.kind === 'building' && e.role === item.role && Math.abs(e.x - item.x) < .000001 && Math.abs(e.y - item.y) < .000001 && e.hp > 0);
+  return state.entities.find(e => e.id === item.buildingId && e.side === side && e.kind === 'building' && e.role === item.role && sameLevel(e,item) && Math.abs(e.x - item.x) < .000001 && Math.abs(e.y - item.y) < .000001 && e.hp > 0);
 }
 function freeAssignedWorkers(state: GameState, side: Side, item: ConstructionBlueprint, queued: Set<number>): Entity[] {
-  return workers(state, side).filter(worker => item.workerIds.includes(worker.id) && freeWorker(worker, queued));
+  return workers(state, side).filter(worker => item.workerIds.includes(worker.id) && sameLevel(worker,item) && freeWorker(worker, queued));
 }
 export function blueprintReason(state: GameState, side: Side, item: ConstructionBlueprint): string {
   if (!validPlanningSide(state, side) || !roles.has(item.role) || !validPosition(item, state)) return 'Invalid blueprint.';
@@ -295,10 +299,10 @@ export function blueprintReason(state: GameState, side: Side, item: Construction
   if (!eligible.length) return 'Assigned workers are unavailable or have other orders.';
   const r = def.size / 2;
   if (item.x - r < .5 || item.y - r < .5 || item.x + r > state.width - .5 || item.y + r > state.height - .5) return 'Building footprint is outside the map.';
-  for (const dx of [-r, 0, r]) for (const dy of [-r, 0, r]) if (!isVisible(state, side, item.x + dx, item.y + dy)) return 'The entire building site must be visible.';
-  for (let y = Math.floor(item.y - r); y < Math.ceil(item.y + r); y++) for (let x = Math.floor(item.x - r); x < Math.ceil(item.x + r); x++) if (!TERRAIN[terrainAt(state, x + .5, y + .5)].buildable) return 'Terrain cannot support this building.';
+  for (const dx of [-r, 0, r]) for (const dy of [-r, 0, r]) if (!isVisible(state, side, item.x + dx, item.y + dy,levelOf(item))) return 'The entire building site must be visible.';
+  for (let y = Math.floor(item.y - r); y < Math.ceil(item.y + r); y++) for (let x = Math.floor(item.x - r); x < Math.ceil(item.x + r); x++) if (!TERRAIN[terrainAt(state, x + .5, y + .5,levelOf(item))].buildable) return 'Terrain cannot support this building.';
   const view = observedMap(state, side);
-  if (!canPlace(view, side, item.role, item.x, item.y)) return 'Building site overlaps a building, resource or enemy unit.';
+  if (!canPlace(view, side, item.role, item.x, item.y,undefined,levelOf(item))) return 'Building site overlaps a building, resource or enemy unit.';
   if (!eligible.some(worker => reachable(view, worker, item, r + 1.1, side))) return 'Assigned workers cannot reach this site.';
   return '';
 }
@@ -338,7 +342,7 @@ export function executeBlueprints(state: GameState, side: Side, plan: Constructi
     }
     const accepted = item.status === 'building'
       ? dispatch(side, { type: 'repair', ids: assigned.map(worker => worker.id), target: item.buildingId! })
-      : dispatch(side, { type: 'build', ids: assigned.map(worker => worker.id), role: item.role, x: item.x, y: item.y });
+      : dispatch(side, { type: 'build', ids: assigned.map(worker => worker.id), role: item.role, x: item.x, y: item.y,...(item.level===undefined?{}:{level:item.level}) });
     if (!accepted) { item.reason = 'Construction could not start; check the site and assigned workers.'; pending.push({ id: item.id, reason: item.reason }); continue; }
     const order = assigned[0].order;
     if (order.type === 'build') item.buildingId = order.target;
@@ -357,15 +361,15 @@ export function decodeConstructionPlan(input: unknown, state?: GameState, side?:
   if ((side !== undefined && planSide !== side) || (state && !validPlanningSide(state, planSide))) return undefined;
   const ids = new Set<string>(), buildings = new Set<number>(), blueprints: ConstructionBlueprint[] = [];
   for (const value of input.blueprints) {
-    if (!record(value) || Object.keys(value).some(key => !['id', 'role', 'x', 'y', 'workerIds', 'status', 'buildingId', 'reason'].includes(key))) return undefined;
-    if (typeof value.id !== 'string' || !/^blueprint-[1-9]\d*$/.test(value.id) || ids.has(value.id) || typeof value.role !== 'string' || !roles.has(value.role) || typeof value.x !== 'number' || typeof value.y !== 'number' || !validPosition({ x: value.x, y: value.y }, state)) return undefined;
+    if (!record(value) || Object.keys(value).some(key => !['id', 'role', 'x', 'y', 'level', 'workerIds', 'status', 'buildingId', 'reason'].includes(key))) return undefined;
+    if (typeof value.id !== 'string' || !/^blueprint-[1-9]\d*$/.test(value.id) || ids.has(value.id) || typeof value.role !== 'string' || !roles.has(value.role) || typeof value.x !== 'number' || typeof value.y !== 'number' || !validPosition({ x: value.x, y: value.y,level:value.level as number|undefined }, state)) return undefined;
     const sequence = Number(value.id.slice('blueprint-'.length));
     if (!Number.isSafeInteger(sequence) || sequence >= input.nextId) return undefined;
     if (!Array.isArray(value.workerIds) || value.workerIds.length > 100 || value.workerIds.some(id => !validId(id)) || new Set(value.workerIds).size !== value.workerIds.length) return undefined;
     if (value.status !== 'planned' && value.status !== 'building' && value.status !== 'complete') return undefined;
     if ((value.buildingId !== undefined && (!validId(value.buildingId) || buildings.has(value.buildingId))) || (value.status === 'planned' ? value.buildingId !== undefined : value.buildingId === undefined)) return undefined;
     if (value.reason !== undefined && (typeof value.reason !== 'string' || value.reason.length > 500)) return undefined;
-    const item: ConstructionBlueprint = { id: value.id, role: value.role as BuildingRole, x: value.x, y: value.y, workerIds: [...value.workerIds] as number[], status: value.status, ...(value.buildingId === undefined ? {} : { buildingId: value.buildingId as number }), ...(value.reason === undefined ? {} : { reason: value.reason as string }) };
+    const item: ConstructionBlueprint = { id: value.id, role: value.role as BuildingRole, x: value.x, y: value.y,...(value.level===undefined?{}:{level:value.level as number}), workerIds: [...value.workerIds] as number[], status: value.status, ...(value.buildingId === undefined ? {} : { buildingId: value.buildingId as number }), ...(value.reason === undefined ? {} : { reason: value.reason as string }) };
     if (state) {
       const owned = new Set(workers(state, planSide).map(worker => worker.id));
       if (item.workerIds.some(id => !owned.has(id))) return undefined;

@@ -152,8 +152,8 @@ function finishOrder(s:GameState,e:Entity):void {
  while(e.orderQueue?.length){
   const order=e.orderQueue.shift()!;
   if(order.type==='attack'){const target=s.entities.find(t=>t.id===order.target&&alive(t)&&isHostile(s,t.side,e.side));if(!target||!sameLevel(e,target)||!isVisible(s,e.side,target.x,target.y,levelOf(target)))continue;}
-  if(order.type==='gather'&&!s.resources.some(n=>n.id===order.target&&n.amount>0))continue;
-  if(order.type==='build'&&!s.entities.some(t=>t.id===order.target&&alive(t)&&isAllied(s,t.side,e.side)&&t.kind==='building'&&(t.progress<1||t.hp<t.maxHp)))continue;
+  if(order.type==='gather'&&!s.resources.some(n=>n.id===order.target&&n.amount>0&&sameLevel(e,n)))continue;
+  if(order.type==='build'&&!s.entities.some(t=>t.id===order.target&&alive(t)&&isAllied(s,t.side,e.side)&&t.kind==='building'&&sameLevel(e,t)&&(t.progress<1||t.hp<t.maxHp)))continue;
   if(!e.orderQueue.length)delete e.orderQueue;
   assign(s,e,order);if(order.type==='gather')runtime(s).queuedGather.add(e.id);return;
  }
@@ -165,6 +165,9 @@ export function issueCommand(s:GameState,side:Side,c:Command):boolean{
 }
 function applyCommand(s:GameState,side:Side,c:Command):boolean{
  if(!validateCommand(c)||isGameOver(s)||!s.players[side]||s.eliminated[side])return false;const p=s.players[side],f=factionFor(s,side);
+ const environmentAction=issueEnvironmentCommand(s,side,c);if(environmentAction!==undefined)return environmentAction;
+ const worldAction=issueWorldAction(s,side,c,(e,o)=>{commandOrder(s,e,o);});if(worldAction!==undefined)return worldAction;
+ const neutralAction=issueNeutralWorldCommand(s,side,c as WorldCommand);if(neutralAction!==undefined){if(neutralAction&&'ids' in c)for(const actor of s.entities)if(c.ids.includes(actor.id)&&actor.side===side&&['worldAttack','captureSite','supportVillage','recruitVillage'].includes(actor.order.type))assign(s,actor,{...actor.order});return neutralAction;}
  if(c.type==='toggleGate'){
   let changed=false;
   for(const gate of s.entities.filter(e=>c.ids.includes(e.id)&&e.side===side&&alive(e)&&e.role==='gate'&&e.progress===1)){
@@ -237,7 +240,7 @@ function useAbility(s:GameState,e:Entity):boolean{
  for(const corpse of [...s.corpses].sort((a,b)=>distance(e,a)-distance(e,b))){
  if(count>=2||s.players[e.side].population+reserved(s,e.side)>=s.players[e.side].cap)break;
  if(corpse.expires<=s.time||distance(e,corpse)>6||!isVisible(s,e.side,corpse.x,corpse.y,levelOf(corpse))||!walkable(s,corpse.x,corpse.y,levelOf(corpse)))continue;
- const raised=spawn(s,e.side,'unit','melee',corpse.x,corpse.y,1,levelOf(corpse));raised.hp=raised.maxHp*.5;raised.raised=true;raised.expires=s.time+35;raised.order={type:'attackMove',x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level})};s.corpses=s.corpses.filter(c=>c.id!==corpse.id);count++;updatePopulation(s);
+ const raised=spawn(s,e.side,'unit','melee',corpse.x,corpse.y,1,undefined,levelOf(corpse));raised.hp=raised.maxHp*.5;raised.raised=true;raised.expires=s.time+35;raised.order={type:'attackMove',x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level})};s.corpses=s.corpses.filter(c=>c.id!==corpse.id);count++;updatePopulation(s);
  }
  if(!count)return false;runtime(s).abilities.set(e.id,s.time+22);
  }else if(ability==='illusion'){
@@ -360,9 +363,12 @@ function moveNeutral(s:GameState,actor:Entity|NeutralCreature,to:Vec,dt:number,r
  return distance(actor,to)<=reach;
 }
 function neutralHooks(s:GameState){return {
+ attackStats:(e:Entity)=>{const def=unitDef(s,e);return {damage:def.damage*upgradeFactor(s,e,'damage'),range:weaponRange(s,e),cooldown:def.cooldown};},
+ recruitCost:(side:Side,role:UnitRole)=>unitFor(s,side,role).cost,
  move:(actor:Entity|NeutralCreature,to:Vec,dt:number,reach:number)=>moveNeutral(s,actor,to,dt,reach),
- spawn:(side:Side,role:UnitRole,x:number,y:number,level:number)=>{const point=openDestination(s,{x,y,level},{x,y,level});if(!point)return undefined;return spawn(s,side,'unit',role,point.x,point.y,1,level);},
+ spawn:(side:Side,role:UnitRole,x:number,y:number,level:number)=>{const point=openDestination(s,{x,y,level},{x,y,level});if(!point)return undefined;return spawn(s,side,'unit',role,point.x,point.y,1,undefined,level);},
  hit:(source:Entity|NeutralCreature,target:Entity|NeutralCreature,amount:number)=>{
+  if('side' in source){const def=unitDef(s,source);amount*=1+relicBonus(s,source.side,source);if(def.range>2)amount*=projectileEnvironment(s,source,target).damageFactor*highGroundDamageFactor(s,source,target);}
   if('side' in target){const armor=target.kind==='unit'?unitDef(s,target).armor:3;amount=Math.max(1,amount-armor);}const shield='shield' in target?Math.min(target.shield??0,amount):0,actual=Math.min(target.hp,amount-shield)+shield;
   if('shield' in target)target.shield=Math.max(0,(target.shield??0)-shield);target.hp=Math.max(0,target.hp-(amount-shield));
   if('side' in target){target.lastDamagedAt=s.time;target.lastAttacker=source.id;}const side='side' in source?source.side:'side' in target?target.side:0;
@@ -483,7 +489,7 @@ export function runAI(s:GameState,side:Side=1):void{
  const seen=s.entities.filter(e=>isHostile(s,e.side,side)&&alive(e)&&isVisible(s,side,e.x,e.y,levelOf(e)));const threat=seen.find(e=>distance(e,hq)<12);
  const remembered=rt.knownEnemyBuildings[side];
  for(const [id,point] of remembered)if(isVisible(s,side,point.x,point.y,levelOf(point))&&!seen.some(e=>e.id===id))remembered.delete(id);
- for(const e of seen)if(e.kind==='building')remembered.set(e.id,{x:e.x,y:e.y,role:e.role});
+ for(const e of seen)if(e.kind==='building')remembered.set(e.id,{x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level}),role:e.role});
  const enemySides=playerSides(s).filter(other=>isHostile(s,side,other)&&!s.eliminated[other]);const enemySide=enemySides.sort((a,b)=>distance(hq,s.starts[a])-distance(hq,s.starts[b]))[0];if(enemySide===undefined)return;const enemyStart=s.starts[enemySide];
  const forward={x:hq.x+(enemyStart.x-hq.x)*.12,y:hq.y+(enemyStart.y-hq.y)*.12};
  const rally=commandDestination(s,side,forward,hq)??{x:hq.x+4,y:hq.y};

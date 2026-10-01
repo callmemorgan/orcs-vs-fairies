@@ -1,3 +1,4 @@
+import type { WorldState } from '../core/world-types';
 import type { Controller, Entity, FactionId, GameEvent, GameState, Player, Side, TerrainKind, Vec } from '../core/types';
 import type { PlayerObservation } from './protocol';
 
@@ -10,6 +11,7 @@ type TeamObservation=PlayerObservation & {
 export interface OnlineRenderState {
   state:GameState;localSide:Side;role:'player'|'spectator';privateSides:ReadonlySet<Side>;
   hiddenStarts:ReadonlySet<Side>;unknownTerrain:ReadonlySet<number>;
+  worldPhase?:NonNullable<PlayerObservation['world']>['phase'];
   resourceMemory:PlayerObservation['resources'];
   observedEvents:PlayerObservation['events'];
 }
@@ -47,14 +49,14 @@ export function observationToRenderState(view:PlayerObservation,role:'player'|'s
   });
   const hiddenStarts=new Set<Side>();
   const starts:Vec[]=Array.from({length:count},(_,index)=>{
-    const start=view.map.starts[index];if(start)return {x:start.x,y:start.y};
+    const start=view.map.starts[index];if(start)return {...start};
     hiddenStarts.add(index as Side);return {x:view.map.width/2,y:view.map.height/2};
   });
   const alliedSides=new Set([localSide,...(observation.allies??[]).map(player=>player.side)]);
   const entities:Entity[]=view.entities.map(source=>{
     // Using an allowlist also discards accidental private fields in hostile records.
     const entity:Entity={
-      id:source.id,side:source.side,kind:source.kind,role:source.role,x:source.x,y:source.y,
+      id:source.id,side:source.side,kind:source.kind,role:source.role,x:source.x,y:source.y,...(source.level===undefined?{}:{level:source.level}),definitionId:source.definitionId,definitionFaction:source.definitionFaction,
       hp:source.hp,maxHp:source.maxHp,progress:source.progress,gateOpen:source.gateOpen,
       shield:source.shield,maxShield:source.maxShield,raised:source.raised,
       entrenchedAt:source.entrenchedAt,surgeUntil:source.surgeUntil,
@@ -63,7 +65,7 @@ export function observationToRenderState(view:PlayerObservation,role:'player'|'s
       momentum:0,illusion:false,expires:0,carried:0,carriedKind:'wood',path:[],
     };
     if(privateSides.has(source.side)&&'order' in source) {
-      entity.order={...source.order};entity.queue=[...source.queue];entity.rally=source.rally?{...source.rally}:undefined;
+      entity.order={...source.order};entity.queue=[...source.queue];entity.queueDefinitionIds=source.queueDefinitionIds?[...source.queueDefinitionIds]:undefined;entity.queuePaidCosts=source.queuePaidCosts?.map(cost=>({...cost}));entity.rally=source.rally?{...source.rally}:undefined;
       entity.trainProgress=source.trainProgress;entity.research=source.research;entity.researchProgress=source.researchProgress;
       entity.carried=source.carried;entity.carriedKind=source.carriedKind;entity.cooldown=source.cooldown;
       entity.abilityReadyAt=source.abilityReadyAt;entity.expires=source.expires;entity.illusion=source.illusion;
@@ -74,22 +76,34 @@ export function observationToRenderState(view:PlayerObservation,role:'player'|'s
     return entity;
   });
   const events:GameEvent[]=view.events.map(source=>({
-    type:source.type as GameEvent['type'],x:source.x,y:source.y,side:source.side??localSide,
+    type:source.type as GameEvent['type'],x:source.x,y:source.y,...(source.level===undefined?{}:{level:source.level}),side:source.side??localSide,
     text:source.text,target:source.target,source:source.source,amount:source.amount,resource:source.resource as GameEvent['resource'],
   }));
+  const world:WorldState|undefined=view.world?{
+    version:view.world.version,revision:view.world.revision,biome:view.world.biome,
+    levels:view.world.levels.map(level=>({id:level.id,title:level.title,terrain:level.terrain.map((tile,index)=>{
+      const key=level.id*view.map.width*view.map.height+index;if(tile===null||!explored[localSide].has(key)){unknownTerrain.add(key);return 'rock';}return tile;
+    }),elevation:level.elevation.map((height,index)=>explored[localSide].has(level.id*view.map.width*view.map.height+index)?height??0:0)})),
+    transitions:view.world.transitions.map(transition=>({id:transition.id,from:{...transition.from},to:{...transition.to}})),
+    bridges:view.world.bridges.map(bridge=>({...bridge,tiles:[],repairSide:null})),fires:view.world.fires.map(fire=>({...fire})),
+    sites:view.world.sites.map(site=>({...site,loyalty:players.map((_player,side)=>side===localSide?site.loyalty:0),reward:{...site.stock},request:{...site.request},rewarded:site.rewardClaimed?[localSide]:[],creatureIds:[],})),
+    creatures:view.world.creatures.map(creature=>({...creature,cooldown:0,target:null,path:[],patrol:0,respawnAt:0})),
+    dayLength:1,seasonLength:1,weatherLength:1,nextEnvironmentAt:0,iceTiles:[],thawWarned:false,
+  }:undefined;
+  // The disclosed phase is presentation data; no weather seed or private clocks arrive.
   const state={
     controllers:Array.from({length:count},():Controller=>'external'),mapSize:view.map.size,mapVersion:view.map.version,
-    terrain,starts,draw:view.result.draw,tick:view.tick,time:view.time,seed:0,width:view.map.width,height:view.map.height,
-    entities,resources:view.resources.map(resource=>({id:resource.id,x:resource.x,y:resource.y,kind:resource.kind,amount:resource.amount,maxAmount:resource.maxAmount})),
+    terrain,starts,...(world?{world}:{}),draw:view.result.draw,tick:view.tick,time:view.time,seed:0,width:view.map.width,height:view.map.height,
+    entities,resources:view.resources.map(resource=>({id:resource.id,x:resource.x,y:resource.y,...(resource.level===undefined?{}:{level:resource.level}),kind:resource.kind,amount:resource.amount,maxAmount:resource.maxAmount})),
     players,winner:view.result.winner,events,explored,visible,nextId:1,
-    corpses:view.corpses.map(corpse=>({id:corpse.id,x:corpse.x,y:corpse.y,expires:corpse.expires})),
+    corpses:view.corpses.map(corpse=>({id:corpse.id,x:corpse.x,y:corpse.y,...(corpse.level===undefined?{}:{level:corpse.level}),expires:corpse.expires})),
     teams,sharedVision:observation.sharedVision??false,winningTeam:observation.result.winningTeam??null,
     eliminated:[...(observation.result.eliminated??Array.from({length:count},()=>false))],
     incomeFactors:Array.from({length:count},()=>1),populationLimits:Array.from({length:count},()=>100),
   } as unknown as GameState;
-  return {state,localSide,role,privateSides,hiddenStarts,unknownTerrain,
+  return {state,localSide,role,privateSides,hiddenStarts,unknownTerrain,worldPhase:view.world?.phase?structuredClone(view.world.phase):undefined,
     resourceMemory:view.resources.map(resource=>({...resource})),observedEvents:view.events.map(event=>({
-      type:event.type,tick:event.tick,x:event.x,y:event.y,side:event.side,text:event.text,
+      type:event.type,tick:event.tick,x:event.x,y:event.y,...(event.level===undefined?{}:{level:event.level}),side:event.side,text:event.text,
       target:event.target,source:event.source,amount:event.amount,resource:event.resource,
     }))};
 }

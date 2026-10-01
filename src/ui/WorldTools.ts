@@ -2,10 +2,11 @@ import { environmentPhase, ENVIRONMENT_RULES } from '../core/environment';
 import { observeNeutralWorld } from '../core/neutral-world';
 import { elevationAt, fogKey, levelOf } from '../core/world-map';
 import type { Command, GameState, Side, Vec } from '../core/types';
+import type { EnvironmentPhase } from '../core/environment';
 import type { Biome } from '../core/world-types';
 import './world-tools.css';
 
-interface WorldToolsCallbacks {state:()=>GameState|undefined;side:()=>Side;level:()=>number;selected:()=>number[];canCommand:()=>boolean;command:(c:Command)=>boolean;setLevel:(level:number)=>void;select:(ids:number[])=>void;center:(p:Vec)=>void;notice:(text:string)=>void}
+interface WorldToolsCallbacks {phase?:()=>EnvironmentPhase|undefined;state:()=>GameState|undefined;side:()=>Side;level:()=>number;selected:()=>number[];canCommand:()=>boolean;command:(c:Command)=>boolean;setLevel:(level:number)=>void;select:(ids:number[])=>void;center:(p:Vec)=>void;notice:(text:string)=>void}
 const element=<K extends keyof HTMLElementTagNameMap>(tag:K,text?:string)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;return node;};
 export function mountWorldBiome(menu:HTMLElement){
  const label=element('label','World'),select=element('select');select.id='world-biome';select.setAttribute('aria-label','World biome');
@@ -22,7 +23,7 @@ export function mountWorldTools(root:HTMLElement,c:WorldToolsCallbacks){
  let signature='',current:GameState|undefined;
  const addButton=(parent:HTMLElement,label:string,command:()=>Command)=>{const button=element('button',label);button.addEventListener('click',()=>action(command()));button.dataset.command='true';parent.append(button);return button;};
  function update(){
-  const s=c.state(),world=s?.world;host.hidden=!world;if(!s||!world){signature='';return;}const side=c.side(),level=c.level(),phase=environmentPhase(s);summary.textContent=`World · ${phase.day} · ${phase.weather} · ${phase.season}`;
+  const s=c.state(),world=s?.world;host.hidden=!world;if(!s||!world){signature='';return;}const side=c.side(),level=c.level(),phase=c.phase?.()??environmentPhase(s);summary.textContent=`World · ${phase.day} · ${phase.weather} · ${phase.season}`;
   if(current!==s||levels.options.length!==world.levels.length){levels.replaceChildren(...world.levels.map(l=>{const option=element('option',l.title);option.value=String(l.id);return option;}));current=s;signature='';}levels.value=String(level);
   description.textContent=`${world.biome} · ${phase.day==='night'?'Night reduces surface sight; Undead keep full sight.':'Daylight changes surface sight.'} ${phase.weather==='rain'?'Rain slows troops and weakens ranged attacks; it stops fire spread.':phase.weather==='fog'?'Fog reduces surface sight to 65%.':phase.weather==='wind'?'Wind changes ranged reach and projectile drift.':'Clear weather.'}${phase.thawIn!==null?` Lake ice thaws in ${Math.ceil(phase.thawIn)}s; leave lake crossings.`:''} Caverns use independent fog and paths.`;
   const known=(p:Vec)=>levelOf(p)===level&&s.visible[side].has(fogKey(s,p)),observed=observeNeutralWorld(s,side),entrances=world.transitions.flatMap(t=>[t.from,t.to].filter(known).map(p=>({id:t.id,p}))),bridges=world.bridges.filter(known),sites=observed.sites.filter(known),creatures=observed.creatures.filter(known),troops=s.entities.filter(e=>e.side===side&&e.hp>0&&e.kind==='unit');

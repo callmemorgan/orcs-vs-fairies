@@ -1,5 +1,6 @@
 import { length2D, DIRECTIONS_32 } from './geometry';
-import { FACTIONS, UPGRADES } from './content';
+import { unitFor, upgradeFor } from './content-registry';
+import { upgradeAppliesTo } from './progression';
 import { fogKey, sameLevel, terrainLineOfSight } from './world-map';
 import type { Cost, Entity, GameState, Side, UnitRole, Vec } from './types';
 import type { NeutralCreature, WorldCommand, WorldPoint, WorldSite, WorldState } from './world-types';
@@ -85,7 +86,7 @@ function validTarget(s:WorldGame,side:Side,c:NeutralOrder) {
   ?nonempty(site.request)&&affordable(s.players[side],site.request)
   :!site.rewarded.includes(side)&&nonempty(site.reward));
  return c.type==='recruitVillage'&&services(site,side)&&s.players[side].population<s.players[side].cap
-  &&affordable(site.reward,FACTIONS[s.players[side].faction].units.melee.cost);
+  &&affordable(site.reward,unitFor(s,side,'melee').cost);
 }
 
 /** Undefined means another world command handler owns this command. */
@@ -106,9 +107,9 @@ export function issueNeutralWorldCommand(s:WorldGame,side:Side,command:WorldComm
 
 function attackStats(s:GameState,e:Entity,hooks:NeutralWorldHooks) {
  if(hooks.attackStats)return hooks.attackStats(e);
- const def=FACTIONS[s.players[e.side].faction].units[e.role as UnitRole];
+ const def=unitFor(s,e);
  let damage=def.damage;
- for(const id of s.players[e.side].upgrades)if(UPGRADES[id].appliesTo===e.role)damage*=UPGRADES[id].effects.damage??1;
+ for(const id of s.players[e.side].upgrades){const upgrade=upgradeFor(s,e.side,id);if(upgradeAppliesTo(upgrade,def))damage*=upgrade.effects.damage??1;}
  return {damage,range:def.range,cooldown:def.cooldown};
 }
 function defeatCreature(s:WorldGame,creature:NeutralCreature,side:Side) {
@@ -171,7 +172,7 @@ export function processNeutralOrder(s:WorldGame,e:Entity,dt:number,hooks:Neutral
    message(s,e.side,site,'Village request delivered. Loyalty increased; local supplies and defenders are available at 60 loyalty.');
   }
  }else{
-  const cost=hooks.recruitCost?.(e.side,'melee')??FACTIONS[s.players[e.side].faction].units.melee.cost;
+  const cost=hooks.recruitCost?.(e.side,'melee')??unitFor(s,e.side,'melee').cost;
   if(affordable(site.reward,cost)&&s.players[e.side].population<s.players[e.side].cap){
    const recruit=hooks.spawn(e.side,'melee',site.x+1.7,site.y,site.level);
    if(recruit){for(const kind of resources)site.reward[kind]-=cost[kind];s.players[e.side].population++;

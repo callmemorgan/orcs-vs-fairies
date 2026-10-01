@@ -1,0 +1,74 @@
+{
+  "inputs": [
+    {
+      "op": "startMatch",
+      "side": 0,
+      "config": {
+        "map": {
+          "seed": 4127,
+          "size": "small",
+          "biome": "forest"
+        },
+        "players": [
+          {
+            "id": 0,
+            "teamId": 0,
+            "factionId": "orcs",
+            "controller": "external"
+          },
+          {
+            "id": 1,
+            "teamId": 1,
+            "factionId": "fairies",
+            "controller": "external"
+          }
+        ]
+      }
+    },
+    {
+      "op": "command",
+      "command": {
+        "type": "traverse",
+        "ids": [
+          18
+        ],
+        "transition": 1
+      }
+    },
+    {
+      "op": "advance",
+      "ticks": 200
+    },
+    {
+      "op": "save"
+    }
+  ],
+  "accepted": true,
+  "advanced": 200,
+  "actor": {
+    "id": 18,
+    "side": 0,
+    "kind": "unit",
+    "role": "melee",
+    "x": 7.5,
+    "y": 12.5,
+    "level": 1,
+    "hp": 175,
+    "maxHp": 175,
+    "progress": 1,
+    "illusion": false,
+    "order": {
+      "type": "idle"
+    },
+    "queue": [],
+    "trainProgress": 0,
+    "researchProgress": 0,
+    "carried": 0,
+    "carriedKind": "wood",
+    "cooldown": 0,
+    "expires": 0
+  },
+  "savedVersion": 3,
+  "levels": 2,
+  "errors": []
+}

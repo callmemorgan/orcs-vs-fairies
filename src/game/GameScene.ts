@@ -89,7 +89,7 @@ export default class GameScene extends Phaser.Scene {
     const terrainChanged=this.state.terrain.some((tile,i)=>tile!==frame.state.terrain[i]);
     applyOnlineRenderState(this.state,frame);this.remoteFrame=frame;
     const events=frame.observedEvents.filter(event=>event.tick>this.remoteEventTick);
-    if(this.actors){if(terrainChanged)this.drawGround();this.processEvents(events.map(event=>({type:event.type as GameEvent['type'],x:event.x,y:event.y,side:event.side??this.viewSide,source:event.source,target:event.target,text:event.text,amount:event.amount,resource:event.resource as GameEvent['resource']})));this.drawFog();}
+    if(this.actors){if(terrainChanged)this.drawGround();this.processEvents(events.map(event=>({type:event.type as GameEvent['type'],x:event.x,y:event.y,...(event.level===undefined?{}:{level:event.level}),side:event.side??this.viewSide,source:event.source,target:event.target,text:event.text,amount:event.amount,resource:event.resource as GameEvent['resource']})));this.drawFog();}
     this.remoteEventTick=Math.max(this.remoteEventTick,frame.state.tick);
   }
   public setBlueprints(items:readonly ConstructionBlueprint[],side:Side){this.blueprints=items.map(item=>({...item,workerIds:[...item.workerIds]}));this.blueprintSide=side;}
@@ -100,7 +100,7 @@ export default class GameScene extends Phaser.Scene {
   private cancelBlueprintPlacement(){const pending=this.blueprintPlacement;this.blueprintPlacement=undefined;pending?.cancel();}
   private placeBlueprint(pos:Vec):boolean {
     const pending=this.blueprintPlacement;if(!pending)return false;
-    this.blueprintPlacement=undefined;pending.point({x:pending.role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y:pending.role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5});return true;
+    this.blueprintPlacement=undefined;pending.point({x:pending.role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y:pending.role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5,level:this.viewLevel});return true;
   }
   public get viewSide(){return this._viewSide;}
   public set viewSide(side:Side){if(!Number.isInteger(side)||!this.state.players[side])throw new Error('Perspective must identify a player in this match.');if(this._viewSide===side)return;this._viewSide=side;this.playerView=new PlayerView(side);this.groups={};this.select([]);if(this.fog)this.drawFog();}
@@ -206,7 +206,7 @@ export default class GameScene extends Phaser.Scene {
   public beginAttackMove(){if(!this.canCommand||!this.selected.length)return;this.attackMode=true;this.buildRole=null;this.options.onNotice('Attack move: click a destination.');}
   public setBuildRole(role:BuildingRole|null,definitionId?:string){this.buildRole=role&&this.canCommand?role:null;this.buildDefinitionId=this.buildRole?definitionId:undefined;this.attackMode=false;}
   public centerOn(x:number,y:number){const q=project(x,y),camera=this.cameras.main;camera.centerOn(q.x,q.y);const bounds=this.photoMode?undefined:this.options.viewBounds?.();if(bounds)camera.scrollY+=(camera.height/2-(bounds.top+bounds.bottom)/2)/camera.zoom;}
-  public restart(state:GameState){this.setPhotoMode(false);this.audio?.reset();this.resultSoundPlayed=false;this.art.reset();this.state=state;this.playerView=new PlayerView(this.viewSide);this.paused=false;this.accumulated=0;this.attackedNoticeAt.clear();this.buildingAlertAt=-Infinity;this.workerAlertAt=-Infinity;this.groups={};this.markers=[];this.combatEffects=[];this.heldKeys.clear();this.controller.reset();this.controllerCursor=null;this.setBuildRole(null);this.select([]);this.drawGround();this.drawFog();this.centerOn(this.state.starts[this.viewSide].x,this.state.starts[this.viewSide].y);}
+  public restart(state:GameState){this.setPhotoMode(false);this.audio?.reset();this.resultSoundPlayed=false;this.art.reset();this.state=state;this.viewLevel=levelOf(state.starts[this.viewSide]);this.playerView=new PlayerView(this.viewSide);this.paused=false;this.accumulated=0;this.attackedNoticeAt.clear();this.buildingAlertAt=-Infinity;this.workerAlertAt=-Infinity;this.groups={};this.markers=[];this.combatEffects=[];this.heldKeys.clear();this.controller.reset();this.controllerCursor=null;this.setBuildRole(null);this.select([]);this.drawGround();this.drawFog();this.centerOn(this.state.starts[this.viewSide].x,this.state.starts[this.viewSide].y);}
   public holdPosition(){if(!this.command({type:'hold',ids:this.selected}))return false;this.attackMode=false;this.setBuildRole(null);this.audio?.play('order');this.options.onNotice('Holding position: attack in range without pursuing.');return true;}
   private select(ids:number[],audible=true){const changed=ids.length!==this.selected.length||ids.some((id,index)=>id!==this.selected[index]);this.selected=ids;this.options.onSelection(ids);if(audible&&changed&&ids.length)this.audio?.play('selection');}
   private key(e:KeyboardEvent){
@@ -344,7 +344,7 @@ export default class GameScene extends Phaser.Scene {
     const state=this.state, faction=factionFor(state,this.viewSide);
     let buildingAlert:Entity|undefined,workerAlert:Entity|undefined;
     for(const event of events){
-      if(event.type==='attack'&&isVisible(state,this.viewSide,event.x,event.y)){
+      if(event.type==='attack'&&levelOf(event)===this.viewLevel&&isVisible(state,this.viewSide,event.x,event.y,levelOf(event))){
         const source=state.entities.find(e=>e.id===event.source),target=state.entities.find(e=>e.id===event.target);
         if(source&&target&&this.visible(target)){
           const def=source.kind==='unit'?unitFor(state,source):undefined;
@@ -362,12 +362,12 @@ export default class GameScene extends Phaser.Scene {
         if(event.type==='message'&&event.text)this.options.onNotice(event.text);
         if(event.type==='build'&&event.text==='Construction complete'){
           this.audio?.play('build');
-          const entity=state.entities.find(e=>e.side===this.viewSide&&e.kind==='building'&&Math.hypot(e.x-event.x,e.y-event.y)<.1);
+          const entity=state.entities.find(e=>e.side===this.viewSide&&levelOf(e)===levelOf(event)&&e.kind==='building'&&Math.hypot(e.x-event.x,e.y-event.y)<.1);
           this.options.onNotice(entity?`${entityDefinition(state,entity).name} complete.`:'Construction complete.');
         }
         if(event.type==='train'){
           this.audio?.play('train');
-          const entity=state.entities.find(e=>e.side===this.viewSide&&e.kind==='unit'&&Math.hypot(e.x-event.x,e.y-event.y)<.1);
+          const entity=state.entities.find(e=>e.side===this.viewSide&&levelOf(e)===levelOf(event)&&e.kind==='unit'&&Math.hypot(e.x-event.x,e.y-event.y)<.1);
           this.options.onNotice(entity?`${entityDefinition(state,entity).name} ready.`:'Unit recruited.');
         }
         if(event.type==='research'&&event.text?.endsWith('complete')){this.audio?.play('train');this.options.onNotice(`${event.text}.`);}
@@ -465,7 +465,7 @@ export default class GameScene extends Phaser.Scene {
       const c=project(corpse.x,corpse.y);g.lineStyle(2,0xbbb79f,.6).lineBetween(c.x-5,c.y-2,c.x+5,c.y+2);g.lineBetween(c.x-5,c.y+2,c.x+5,c.y-2);
     }
     if(this.blueprintSide===this.viewSide)for(const blueprint of this.blueprints){
-      if(blueprint.status!=='planned'||!this.state.explored[this.viewSide].has(Math.floor(blueprint.y)*this.state.width+Math.floor(blueprint.x)))continue;
+      if(blueprint.status!=='planned'||levelOf(blueprint)!==this.viewLevel||!this.state.explored[this.viewSide].has(fogKey(this.state,blueprint)))continue;
       const q=project(blueprint.x,blueprint.y),size=buildingFor(this.state,this.viewSide,blueprint.role).size;
       this.diamond(g,q.x,q.y,size*64,size*32,0xa6d9d4,.18);g.lineStyle(2,blueprint.reason?0xe27964:0xa6d9d4,.8).strokeEllipse(q.x,q.y,size*64,size*32);
     }

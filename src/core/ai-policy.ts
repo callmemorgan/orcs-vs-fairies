@@ -60,7 +60,7 @@ export type EnemyMemory = Map<number,EnemyObservation>;
 /** Callers supply only visible hostiles. This function never reads the full match. */
 export function rememberObservedUnits(memory:EnemyMemory,visible:readonly Entity[],time:number):void {
  for(const [id,observation] of memory)if(time-observation.seenAt>90)memory.delete(id);
- for(const enemy of visible)if(enemy.kind==='unit'&&enemy.role!=='worker'&&!enemy.illusion&&enemy.hp>0)memory.set(enemy.id,{role:enemy.role as UnitRole,x:enemy.x,y:enemy.y,seenAt:time,hpFraction:enemy.hp/enemy.maxHp});
+ for(const enemy of visible)if(enemy.kind==='unit'&&enemy.role!=='worker'&&!enemy.illusion&&enemy.hp>0)memory.set(enemy.id,{role:enemy.role as UnitRole,x:enemy.x,y:enemy.y,...(enemy.level===undefined?{}:{level:enemy.level}),seenAt:time,hpFraction:enemy.hp/enemy.maxHp});
 }
 export function counterWeights(faction:FactionDef,config:AiConfig,observed:Iterable<EnemyObservation>):Partial<Record<UnitRole,number>> {
  const weights:Partial<Record<UnitRole,number>>={...faction.ai.composition,spear:.1,cavalry:.16,siege:.18};

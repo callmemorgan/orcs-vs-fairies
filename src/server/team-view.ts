@@ -17,11 +17,22 @@ export function teamObservation(views:PlayerObservation[],perspective:Side):Play
       if(!existing){events.set(key,event);continue;}
       // A victim-only observation can relocate an unseen hit. Keep a known source's location.
       const location=existing.source!==undefined?existing:event.source!==undefined?event:existing;
-      events.set(key,{...existing,...event,x:location.x,y:location.y});
+      events.set(key,{...existing,...event,x:location.x,y:location.y,...(location.level===undefined?{}:{level:location.level})});
     }
   }
-  return {...base,teamPerspective:true,teamPlayers:members.map(view=>({side:view.side,player:view.player})),
-    entities:[...entities.values()].sort((a,b)=>a.id-b.id),resources:[...resources.values()].sort((a,b)=>a.id-b.id).map(resource=>({...resource,visible:visible.has(Math.floor(resource.y)*base.map.width+Math.floor(resource.x))})),corpses:[...corpses.values()].sort((a,b)=>a.id-b.id),events:[...events.values()].sort((a,b)=>a.tick-b.tick),
+  const worlds=members.flatMap(view=>view.world?[view.world]:[]),worldBase=base.world??worlds[0];
+  const unionById=<T extends {id:number}>(lists:T[][])=>[...new Map(lists.flat().map(item=>[item.id,item])).values()];
+  const world=worldBase?{...worldBase,
+    levels:worldBase.levels.map(level=>({...level,
+      terrain:level.terrain.map((tile,index)=>tile??worlds.map(world=>world.levels[level.id]?.terrain[index]).find(tile=>tile!==null&&tile!==undefined)??null),
+      elevation:level.elevation.map((height,index)=>height??worlds.map(world=>world.levels[level.id]?.elevation[index]).find(height=>height!==null&&height!==undefined)??null)})),
+    transitions:unionById(worlds.map(world=>world.transitions)),bridges:unionById(worlds.map(world=>world.bridges)),
+    sites:unionById(worlds.map(world=>world.sites)).map(site=>({...site,loyalty:base.world?.sites.find(own=>own.id===site.id)?.loyalty??0})),
+    creatures:unionById(worlds.map(world=>world.creatures)),
+    fires:[...new Map(worlds.flatMap(world=>world.fires).map(fire=>[`${fire.level},${fire.x},${fire.y}`,fire])).values()],
+  }:undefined;
+  return {...base,...(world?{world}:{}),teamPerspective:true,teamPlayers:members.map(view=>({side:view.side,player:view.player})),
+    entities:[...entities.values()].sort((a,b)=>a.id-b.id),resources:[...resources.values()].sort((a,b)=>a.id-b.id).map(resource=>({...resource,visible:visible.has((resource.level??0)*base.map.width*base.map.height+Math.floor(resource.y)*base.map.width+Math.floor(resource.x))})),corpses:[...corpses.values()].sort((a,b)=>a.id-b.id),events:[...events.values()].sort((a,b)=>a.tick-b.tick),
     map:{...base.map,terrain:base.map.terrain.map((tile,index)=>tile??members.map(view=>view.map.terrain[index]).find(tile=>tile!==null)??null),starts:base.map.starts.map((point,index)=>point??members.map(view=>view.map.starts[index]).find(point=>point!==null)??null)},
     visible:[...visible].sort((a,b)=>a-b),explored:[...new Set(members.flatMap(view=>view.explored))].sort((a,b)=>a-b)};
 }
