@@ -1,0 +1,34 @@
+.economy-tools { position: absolute; inset: 0; z-index: 96; pointer-events: none; color: #ecebdc; font: 14px system-ui, sans-serif; }
+.economy-tools [hidden] { display: none !important; }
+.economy-toolbar { position: absolute; top: 122px; left: 16px; pointer-events: auto; }
+.economy-tools button, .economy-tools input, .economy-tools select { font: inherit; }
+.economy-tools button { color: #f3eddc; background: #26392e; border: 1px solid #70896b; border-radius: 4px; padding: 8px 12px; cursor: pointer; }
+.economy-toolbar button { font-size: 12px; background: #142018ed; }
+.economy-tools button:hover:not(:disabled) { background: #39543a; border-color: #d1b778; }
+.economy-tools button:disabled { opacity: .5; cursor: default; }
+.economy-tools :focus-visible { outline: 3px solid #edc975; outline-offset: 3px; }
+.economy-overlay { position: fixed; inset: 0; padding: 16px; display: grid; place-items: center; background: #08100ddd; pointer-events: auto; }
+.economy-dialog { display: flex; flex-direction: column; width: min(1040px, 100%); max-height: 94dvh; box-sizing: border-box; padding: 20px; background: #18241d; border: 1px solid #ad9f79; border-radius: 8px; box-shadow: 0 18px 80px #000b; }
+.economy-dialog > header { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.economy-dialog h2 { margin: 0; font-size: 24px; }
+.economy-dialog h3 { margin: 0 0 8px; font-size: 17px; }
+.economy-dialog p { line-height: 1.5; margin: 8px 0; }
+.economy-content { overflow: auto; padding: 10px 3px 16px; overscroll-behavior: contain; }
+.economy-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 12px 0; }
+.economy-tabs button[aria-selected=true] { background: #49583b; border-color: #d1b778; }
+.economy-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr)); gap: 12px; }
+.economy-card { border: 1px solid #4c6551; border-radius: 5px; padding: 14px; }
+.economy-card > p { color: #cdd5c9; }
+.economy-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px 12px; }
+.economy-field { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; min-width: 0; }
+.economy-tools input, .economy-tools select { box-sizing: border-box; width: 100%; color: #f2ecdb; background: #0f1813; border: 1px solid #667c66; padding: 9px; border-radius: 4px; }
+.economy-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.economy-summary { color: #e1d4ac; }
+.economy-notice { margin: 12px 0 0; padding: 10px; background: #263e2a; border: 1px solid #7eab77; line-height: 1.5; }
+.economy-notice.economy-error { border-color: #dc8e79; background: #482720; }
+.economy-list { list-style: none; padding: 0; margin: 10px 0 0; }
+.economy-list > li { padding: 8px 0; border-top: 1px solid #3d5542; line-height: 1.5; }
+.economy-reason { font-size: 13px; color: #d4c39d; }
+@media (max-width: 600px) { .economy-toolbar { top: 145px; left: 8px; } .economy-toolbar button { padding: 5px 7px; } .economy-dialog { padding: 12px; max-height: 96dvh; } .economy-overlay { padding: 6px; } .economy-tabs button { flex: 1; } }
+
+@media (max-height: 520px) { .economy-dialog { display: block; overflow-y: auto; } .economy-content { overflow: visible; } }
