@@ -1,11 +1,14 @@
-import { saveGame, loadGame } from './saves';
+import { saveGame, loadGame, SAVE_VERSION } from './saves';
 import { decodeReplay, replayChecksum } from './replays';
 import { ECONOMY, FACTIONS, UPGRADES } from './content';
 import type { ReplayArchive } from './replays';
-import type { GameState } from './types';
+import type { GameState, Side } from './types';
+import { decodePlanningRuntime } from './planning';
+import type { PlanningRuntime } from './planning';
 
 export interface StoragePort {getItem(key:string):string|null;setItem(key:string,value:string):void;removeItem(key:string):void}
-export interface SessionFile {format:'orcs-vs-fairies/session';version:1;game:ReturnType<typeof saveGame>;replay?:ReplayArchive}
+export interface SessionPlanning {version:1;players:PlanningRuntime[];automaticSides:Side[]}
+export interface SessionFile {format:'orcs-vs-fairies/session';version:1;game:ReturnType<typeof saveGame>;replay?:ReplayArchive;planning?:SessionPlanning}
 export interface SaveSlot {id:string;name:string;updatedAt:string;time:number;faction:string;opponent:string;autosave:boolean;file:SessionFile}
 export interface AutosaveSettings {enabled:boolean;intervalSeconds:number}
 const STORAGE_KEY='orcs-vs-fairies:sessions:v1';
@@ -15,16 +18,27 @@ const MAX_SLOTS=15;
 const MAX_MANUAL_SLOTS=12;
 const record=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v);
 
-export function createSessionFile(state:GameState,replay?:ReplayArchive):SessionFile {
+export function decodeSessionPlanning(input:unknown,state:GameState):SessionPlanning {
+  if(!record(input)||input.version!==1||Object.keys(input).some(key=>!['version','players','automaticSides'].includes(key))||!Array.isArray(input.players)||input.players.length!==state.players.length)throw new Error('Invalid saved planning roster.');
+  const players:PlanningRuntime[]=[];
+  for(let side=0;side<input.players.length;side++){if(!Object.hasOwn(input.players,side))throw new Error('Saved plans cannot contain missing player slots.');const runtime=decodePlanningRuntime(input.players[side],state,side as Side);if(!runtime)throw new Error(`Invalid saved plans for player ${side+1}.`);players.push(runtime);}
+  const automatic=input.automaticSides===undefined?[]:input.automaticSides;
+  if(!Array.isArray(automatic)||!Array.from(automatic).every(side=>Number.isInteger(side)&&side>=0&&side<players.length)||new Set(automatic).size!==automatic.length)throw new Error('Invalid automatic worker allocation players.');
+  return {version:1,players,automaticSides:[...automatic]};
+}
+
+export function createSessionFile(state:GameState,replay?:ReplayArchive,planning?:SessionPlanning):SessionFile {
   const game=saveGame(state);
-  if(replay){const archive=decodeReplay(replay);if(archive.finalTick!==state.tick||archive.finalChecksum!==replayChecksum(state,archive.checksumVersion??archive.initial.version))throw new Error('Replay does not match this game.');return {format:'orcs-vs-fairies/session',version:1,game,replay:archive};}
-  return {format:'orcs-vs-fairies/session',version:1,game};
+  const file:SessionFile={format:'orcs-vs-fairies/session',version:1,game};
+  if(replay){const archive=decodeReplay(replay);if(archive.finalTick!==state.tick||archive.finalChecksum!==replayChecksum(state,archive.checksumVersion??archive.initial.version))throw new Error('Replay does not match this game.');file.replay=archive;}
+  if(planning!==undefined)file.planning=decodeSessionPlanning(planning,state);
+  return file;
 }
 
 export function decodeSessionFile(input:unknown):{file:SessionFile;state:GameState} {
   if(typeof input==='string'){if(input.length>MAX_BYTES)throw new Error('Save exceeds 20 MiB.');try{input=JSON.parse(input);}catch{throw new Error('Invalid save JSON.');}}
-  if(!record(input)||input.format!=='orcs-vs-fairies/session'||input.version!==1||Object.keys(input).some(k=>!['format','version','game','replay'].includes(k)))throw new Error('Unsupported session file or version.');
-  const state=loadGame(input.game),file=createSessionFile(state,input.replay===undefined?undefined:decodeReplay(input.replay));
+  if(!record(input)||input.format!=='orcs-vs-fairies/session'||input.version!==1||Object.keys(input).some(k=>!['format','version','game','replay','planning'].includes(k)))throw new Error('Unsupported session file or version.');
+  const state=loadGame(input.game),planning=input.planning===undefined?undefined:decodeSessionPlanning(input.planning,state),file=createSessionFile(state,input.replay===undefined?undefined:decodeReplay(input.replay),planning);
   return {state,file};
 }
 
@@ -84,10 +98,10 @@ export class SaveRepository {
   }
 }
 
-export function createBugReport(description:string,state:GameState,replay:ReplayArchive,diagnostics:Record<string,unknown>={},buildId='development') {
+export function createBugReport(description:string,state:GameState,replay:ReplayArchive,diagnostics:Record<string,unknown>={},buildId='development',planning?:SessionPlanning) {
   if(!description.trim()||description.length>4000)throw new Error('Describe the problem in 1 to 4000 characters.');
   const archive=decodeReplay(replay);
   if(archive.finalChecksum!==replayChecksum(state,archive.checksumVersion??archive.initial.version))throw new Error('Report replay does not match the current match.');
   let contentHash=2166136261;for(const char of JSON.stringify({FACTIONS,UPGRADES,ECONOMY})){contentHash^=char.charCodeAt(0);contentHash=Math.imul(contentHash,16777619);}
-  return {format:'orcs-vs-fairies/bug-report',version:1,id:`local-${crypto.randomUUID()}`,createdAt:new Date().toISOString(),description:description.trim(),versions:{buildId,save:archive.initial.version,replay:archive.version,contentHash:(contentHash>>>0).toString(16).padStart(8,'0')},session:createSessionFile(state,archive),diagnostics:structuredClone(diagnostics)};
+  return {format:'orcs-vs-fairies/bug-report',version:1,id:`local-${crypto.randomUUID()}`,createdAt:new Date().toISOString(),description:description.trim(),versions:{buildId,save:SAVE_VERSION,replay:archive.version,replaySimulation:archive.initial.version,simulationRevision:archive.simulationRevision,contentHash:(contentHash>>>0).toString(16).padStart(8,'0')},session:createSessionFile(state,archive,planning),diagnostics:structuredClone(diagnostics)};
 }

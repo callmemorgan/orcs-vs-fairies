@@ -2,12 +2,16 @@ import Phaser from 'phaser';
 import ArtRuntime from './ArtRuntime';
 import GameAudio from './GameAudio';
 import type { Side, GameState, BuildingRole, Command, Entity, UnitRole } from '../core/types';
-import { canPlace, isVisible, issueCommand, stepGame } from '../core/simulation';
+import { canPlace, isHostile, isVisible, issueCommand, stepGame } from '../core/simulation';
 import { PlayerView } from '../core/observation';
 import { FACTIONS } from '../core/content';
 import { ControlProfiles, inputIsSuppressed } from './Controls';
 import type { ControlAction, KeyboardState } from './Controls';
 import { GamepadController } from './Gamepad';
+import { applyOnlineRenderState } from '../online/render-state';
+import type { OnlineRenderState } from '../online/render-state';
+import type { ConstructionBlueprint } from '../core/planning';
+import type { GameEvent, Vec } from '../core/types';
 import { AppearancePreferences, appearancePreferences, markerPolygon, ownershipStyle } from './Appearance';
 
 const TILE_W = 64, TILE_H = 32, OX = 1600, OY = 80;
@@ -18,7 +22,7 @@ export function project(x:number,y:number) { return {x:OX+(x-y)*TILE_W/2,y:OY+(x
 export function unproject(x:number,y:number) { return {x:((x-OX)/32+(y-OY)/16)/2,y:((y-OY)/16-(x-OX)/32)/2}; }
 export interface GameSceneOptions {
   pixelDensity?:number;state:GameState;onSelection:(ids:number[])=>void;onNotice:(text:string)=>void;onReady?:()=>void;viewBounds?:()=>{top:number;bottom:number};
-  controls?:ControlProfiles;appearance?:AppearancePreferences;viewSide?:Side;readOnly?:boolean;simulationEnabled?:boolean;
+  controls?:ControlProfiles;appearance?:AppearancePreferences;viewSide?:Side;readOnly?:boolean;simulationEnabled?:boolean;remoteFrame?:OnlineRenderState;
   onCommand?:(side:Side,command:Command)=>boolean;onStep?:(state:GameState)=>void;onPhotoMode?:(enabled:boolean)=>void;onPause?:(paused:boolean)=>void;onActionSlot?:(slot:number)=>void;
 }
 export default class GameScene extends Phaser.Scene {
@@ -65,7 +69,32 @@ export default class GameScene extends Phaser.Scene {
   private workerAlertAt=-Infinity;
   private combatEffects:{from:{x:number;y:number};to:{x:number;y:number};born:number;color:number;heavy:boolean}[]=[];
   private markers:{x:number;y:number;born:number;attack:boolean}[]=[];
-  constructor(options:GameSceneOptions) {super({key:'world'});this.options=options;this.state=options.state;this.controls=options.controls??new ControlProfiles();this.appearance=options.appearance??appearancePreferences;this._viewSide=options.viewSide??0;this.playerView=new PlayerView(this._viewSide);this.readOnly=options.readOnly??false;this.simulationEnabled=options.simulationEnabled??true;}
+  private remoteFrame:OnlineRenderState|undefined;
+  private remoteEventTick=-1;
+  private blueprints:readonly ConstructionBlueprint[]=[];
+  private blueprintSide:Side=0;
+  private blueprintPlacement:{role:BuildingRole;point:(point:Vec)=>void;cancel:()=>void}|undefined;
+  constructor(options:GameSceneOptions) {super({key:'world'});this.options=options;this.state=options.state;this.controls=options.controls??new ControlProfiles();this.appearance=options.appearance??appearancePreferences;this._viewSide=options.viewSide??0;this.playerView=new PlayerView(this._viewSide);this.readOnly=options.readOnly??false;this.simulationEnabled=options.simulationEnabled??true;this.remoteFrame=options.remoteFrame;if(this.remoteFrame)this.remoteEventTick=this.state.tick;}
+  public get remote(){return !!this.remoteFrame;}
+  public get canIssueCommands(){return this.canCommand;}
+  public applyRemoteFrame(frame:OnlineRenderState){
+    if(!this.remote||frame.localSide!==this.viewSide)throw new Error('Online frame has a different match perspective.');
+    const terrainChanged=this.state.terrain.some((tile,i)=>tile!==frame.state.terrain[i]);
+    applyOnlineRenderState(this.state,frame);this.remoteFrame=frame;
+    const events=frame.observedEvents.filter(event=>event.tick>this.remoteEventTick);
+    if(this.actors){if(terrainChanged)this.drawGround();this.processEvents(events.map(event=>({type:event.type as GameEvent['type'],x:event.x,y:event.y,side:event.side??this.viewSide,source:event.source,target:event.target,text:event.text,amount:event.amount,resource:event.resource as GameEvent['resource']})));this.drawFog();}
+    this.remoteEventTick=Math.max(this.remoteEventTick,frame.state.tick);
+  }
+  public setBlueprints(items:readonly ConstructionBlueprint[],side:Side){this.blueprints=items.map(item=>({...item,workerIds:[...item.workerIds]}));this.blueprintSide=side;}
+  public beginBlueprintPlacement(role:BuildingRole,point:(point:Vec)=>void,cancel:()=>void):()=>void {
+    this.cancelBlueprintPlacement();this.setBuildRole(null);this.blueprintPlacement={role,point,cancel};
+    return ()=>this.cancelBlueprintPlacement();
+  }
+  private cancelBlueprintPlacement(){const pending=this.blueprintPlacement;this.blueprintPlacement=undefined;pending?.cancel();}
+  private placeBlueprint(pos:Vec):boolean {
+    const pending=this.blueprintPlacement;if(!pending)return false;
+    this.blueprintPlacement=undefined;pending.point({x:pending.role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y:pending.role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5});return true;
+  }
   public get viewSide(){return this._viewSide;}
   public set viewSide(side:Side){if(!Number.isInteger(side)||!this.state.players[side])throw new Error('Perspective must identify a player in this match.');if(this._viewSide===side)return;this._viewSide=side;this.playerView=new PlayerView(side);this.groups={};this.select([]);if(this.fog)this.drawFog();}
   public get photoMode(){return this._photoMode;}
@@ -76,9 +105,9 @@ export default class GameScene extends Phaser.Scene {
     this._photoMode=enabled;this.options.onPhotoMode?.(enabled);this.options.onPause?.(this.paused);this.events.emit('photomode',enabled);
     if(this.actors){this.drawActors();this.drawOverlay();}
   }
-  public togglePause(){if(this.photoMode||this.state.winner!==null||this.state.draw)return;this.paused=!this.paused;this.options.onPause?.(this.paused);}
+  public togglePause(){if(this.remote){this.options.onNotice('The online match clock keeps running.');return;}if(this.photoMode||this.state.winner!==null||this.state.draw)return;this.paused=!this.paused;this.options.onPause?.(this.paused);}
   public command(command:Command):boolean {if(!this.canCommand)return false;return this.options.onCommand?.(this.viewSide,command)??issueCommand(this.state,this.viewSide,command);}
-  private get canCommand(){return !this.readOnly&&!this.photoMode&&!this.inputBlocked&&!this.paused&&this.state.winner===null&&!this.state.draw;}
+  private get canCommand(){return !this.readOnly&&!this.photoMode&&!this.inputBlocked&&!this.paused&&!this.state.eliminated[this.viewSide]&&this.state.winner===null&&!this.state.draw;}
   private get controlContext(){return {selected:!!this.selected.length,playable:!this.photoMode&&(this.readOnly||!this.paused&&this.state.winner===null&&!this.state.draw)};}
   private inputSuppressed(target:EventTarget|null=document.activeElement){const modal=!!document.querySelector('dialog[open],.session-overlay:not([hidden]) [role="dialog"]')||Array.from(document.querySelectorAll('[role="dialog"][aria-modal="true"]:not(dialog)')).some(element=>!element.closest('[hidden]'));return this.inputBlocked||inputIsSuppressed(target,modal);}
   private queueModifier(event?:{shiftKey?:boolean;ctrlKey?:boolean;metaKey?:boolean;altKey?:boolean}){
@@ -127,6 +156,7 @@ export default class GameScene extends Phaser.Scene {
       const drag=this.drag;this.drag=null;const world=this.cameras.main.getWorldPoint(p.x,p.y);
       if(this.photoMode||this.inputSuppressed()||!this.controlContext.playable)return;
       const pos=unproject(world.x,world.y);
+      if(this.placeBlueprint(pos))return;
       if(this.buildRole){
         const role=this.buildRole;
         if(this.command({type:'build',ids:this.selected,role,x:role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y:role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5})) {this.setBuildRole(null);this.options.onNotice('Construction ordered.');this.audio?.play('order');}
@@ -156,6 +186,7 @@ export default class GameScene extends Phaser.Scene {
       window.removeEventListener('keydown',keydown);window.removeEventListener('keyup',keyup);window.removeEventListener('blur',clearPointerDrag);
       for(const type of ['mousedown','mouseup','touchstart','touchend'])canvas.removeEventListener(type,captureQueue,true);
       clearPointerDrag();this.controllerCursor=null;this.gamepadConnected=false;audio.dispose();
+      this.cancelBlueprintPlacement();this.blueprints=[];
       if(this.photoMode){this._photoMode=false;this.paused=this.photoPreviousPause;this.options.onPhotoMode?.(false);this.options.onPause?.(this.paused);}
     };
     lifecycle.once(Phaser.Scenes.Events.SHUTDOWN,cleanup);lifecycle.once(Phaser.Scenes.Events.DESTROY,cleanup);
@@ -188,7 +219,7 @@ export default class GameScene extends Phaser.Scene {
   private updateModifiers(e:KeyboardEvent){this.keyboardState={codes:this.heldKeys,ctrl:e.ctrlKey,meta:e.metaKey,alt:e.altKey,shift:e.shiftKey};}
   private activateControl(action:ControlAction){
     switch(action){
-      case 'cancel':if(this.photoMode)this.setPhotoMode(false);else {this.setBuildRole(null);this.attackMode=false;this.drag=null;}return;
+      case 'cancel':if(this.photoMode)this.setPhotoMode(false);else {this.cancelBlueprintPlacement();this.setBuildRole(null);this.attackMode=false;this.drag=null;}return;
       case 'photoMode':this.setPhotoMode(!this.photoMode);return;
       case 'pause':this.togglePause();return;
       case 'zoomIn':this.zoomBy(.15*this.pixelDensity);return;
@@ -212,6 +243,7 @@ export default class GameScene extends Phaser.Scene {
   }
   private orderAt(x:number,y:number,attack=false,queued=false){
     if(!this.canCommand)return;
+    if(this.blueprintPlacement){this.cancelBlueprintPlacement();return;}
     if(this.buildRole){this.setBuildRole(null);return;}
     const world=this.cameras.main.getWorldPoint(x,y);const pos=unproject(world.x,world.y);const hit=this.hit(world.x,world.y);
     let ok=false;
@@ -223,7 +255,7 @@ export default class GameScene extends Phaser.Scene {
       if(ok)this.audio?.play('order');
       return;
     }
-    if(hit&&hit.side!==this.viewSide)ok=this.command({type:'attack',ids:this.selected,target:hit.id,queued});
+    if(hit&&isHostile(this.state,this.viewSide,hit.side))ok=this.command({type:'attack',ids:this.selected,target:hit.id,queued});
     else if(hit&&hit.side===this.viewSide&&hit.kind==='building'&&hit.hp<hit.maxHp)ok=this.command({type:'repair',ids:this.selected,target:hit.id,queued});
     else {
       const resource=[...this.state.resources].sort((a,b)=>(b.x+b.y)-(a.x+a.y)).find(r=>{if(r.amount<=0||!this.state.visible[this.viewSide].has(Math.floor(r.y)*this.state.width+Math.floor(r.x)))return false;const rendered=this.art.contains(`resource:${r.id}`,world.x,world.y);if(rendered!==null)return rendered;const q=project(r.x,r.y);return Math.abs(q.x-world.x)<24&&Math.abs(q.y-15-world.y)<30;});
@@ -235,6 +267,7 @@ export default class GameScene extends Phaser.Scene {
   private controllerSelect(queued:boolean){
     if(!this.controlContext.playable||!this.controllerCursor)return;
     const {x,y}=this.controllerCursor;
+    if(this.blueprintPlacement){const world=this.cameras.main.getWorldPoint(x,y);this.placeBlueprint(unproject(world.x,world.y));return;}
     if(this.buildRole){
       const world=this.cameras.main.getWorldPoint(x,y),pos=unproject(world.x,world.y),role=this.buildRole;
       if(this.command({type:'build',ids:this.selected,role,x:role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y:role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5})){this.setBuildRole(null);this.options.onNotice('Construction ordered.');this.audio?.play('order');}
@@ -299,10 +332,10 @@ export default class GameScene extends Phaser.Scene {
     this.drawActors();this.drawOverlay();
     this.fogClock+=delta;if(this.fogClock>150){this.fogClock=0;this.drawFog();}
   }
-  private processEvents(){
+  private processEvents(events:readonly GameEvent[]=this.state.events){
     const state=this.state, faction=FACTIONS[state.players[this.viewSide].faction];
     let buildingAlert:Entity|undefined,workerAlert:Entity|undefined;
-    for(const event of state.events){
+    for(const event of events){
       if(event.type==='attack'&&isVisible(state,this.viewSide,event.x,event.y)){
         const source=state.entities.find(e=>e.id===event.source),target=state.entities.find(e=>e.id===event.target);
         if(source&&target&&this.visible(target)){
@@ -332,7 +365,7 @@ export default class GameScene extends Phaser.Scene {
         if(event.type==='research'&&event.text?.endsWith('complete')){this.audio?.play('train');this.options.onNotice(`${event.text}.`);}
       }
     }
-    if((state.winner!==null||state.draw)&&!this.resultSoundPlayed){this.resultSoundPlayed=true;this.audio?.play(state.winner===this.viewSide?'victory':'defeat');}
+    if((state.winner!==null||state.draw)&&!this.resultSoundPlayed){this.resultSoundPlayed=true;this.audio?.play(state.winningTeam===state.teams[this.viewSide]?'victory':'defeat');}
     if(buildingAlert){
       this.attackedNoticeAt.set(buildingAlert.id,state.time);this.buildingAlertAt=state.time;
       this.options.onNotice(`${faction.buildings[buildingAlert.role as BuildingRole].name} under attack!`);
@@ -356,7 +389,7 @@ export default class GameScene extends Phaser.Scene {
   private drawActors(){
     const g=this.actors;g.clear();this.art.begin();
     const appearance=this.appearance.value,teams=(this.state as GameState&{teams?:number[]}).teams;
-    const remembered=this.playerView.resourcesFor(this.state);
+    const remembered=this.remoteFrame?.resourceMemory??this.playerView.resourcesFor(this.state);
     const objects=[...remembered.filter(r=>r.amount>0).map(r=>({sort:r.x+r.y,r})),...this.state.entities.filter(e=>this.visible(e)).map(e=>({sort:e.x+e.y,e}))].sort((a,b)=>a.sort-b.sort);
     for(const obj of objects){
       if('r' in obj){const r=obj.r,p=project(r.x,r.y);if(!this.state.explored[this.viewSide].has(Math.floor(r.y)*this.state.width+Math.floor(r.x)))continue;
@@ -410,6 +443,12 @@ export default class GameScene extends Phaser.Scene {
       if(!isVisible(this.state,this.viewSide,corpse.x,corpse.y))continue;
       const c=project(corpse.x,corpse.y);g.lineStyle(2,0xbbb79f,.6).lineBetween(c.x-5,c.y-2,c.x+5,c.y+2);g.lineBetween(c.x-5,c.y+2,c.x+5,c.y-2);
     }
+    if(this.blueprintSide===this.viewSide)for(const blueprint of this.blueprints){
+      if(blueprint.status!=='planned'||!this.state.explored[this.viewSide].has(Math.floor(blueprint.y)*this.state.width+Math.floor(blueprint.x)))continue;
+      const q=project(blueprint.x,blueprint.y),size=FACTIONS[this.state.players[this.viewSide].faction].buildings[blueprint.role].size;
+      this.diamond(g,q.x,q.y,size*64,size*32,0xa6d9d4,.18);g.lineStyle(2,blueprint.reason?0xe27964:0xa6d9d4,.8).strokeEllipse(q.x,q.y,size*64,size*32);
+    }
+    if(this.blueprintPlacement){const pos=unproject(world.x,world.y),role=this.blueprintPlacement.role,x=role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y=role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5,q=project(x,y),size=FACTIONS[this.state.players[this.viewSide].faction].buildings[role].size;this.diamond(g,q.x,q.y,size*64,size*32,0xa6d9d4,.4);}
     const appearance=this.appearance.value,teams=(this.state as GameState&{teams?:number[]}).teams;
     for(const unit of this.state.entities){
       if(unit.hp<=0||!this.visible(unit))continue;
@@ -450,6 +489,6 @@ export default class GameScene extends Phaser.Scene {
     }
     this.markers=this.markers.filter(m=>this.time.now-m.born<700);for(const m of this.markers){const age=(this.time.now-m.born)/700;g.lineStyle(2,m.attack?0xe38b6b:0xf0dfa3,1-age).strokeEllipse(m.x,m.y,15+age*35,7+age*17);}
     if(this.controllerActive&&this.controllerCursor){g.lineStyle(2,0xffefb6,.95).strokeCircle(world.x,world.y,7/this.cameras.main.zoom).lineBetween(world.x-12/this.cameras.main.zoom,world.y,world.x+12/this.cameras.main.zoom,world.y).lineBetween(world.x,world.y-12/this.cameras.main.zoom,world.x,world.y+12/this.cameras.main.zoom);}
-    this.game.canvas.style.cursor=this.buildRole||this.attackMode?'crosshair':'default';
+    this.game.canvas.style.cursor=this.buildRole||this.attackMode||this.blueprintPlacement?'crosshair':'default';
   }
 }

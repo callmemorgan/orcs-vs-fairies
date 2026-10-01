@@ -1,0 +1,227 @@
+{
+  "base": "http://127.0.0.1:8788",
+  "startedAt": "2026-10-01T09:28:51.043Z",
+  "buildLabel": "root8101f1f plus assembled integration; rules3.0.0; postpauseownership",
+  "pageBuilds": [
+    {
+      "profile": "player-one",
+      "capturedAt": "2026-10-01T09:28:51.929Z",
+      "url": "http://127.0.0.1:8788/",
+      "moduleScripts": [
+        "http://127.0.0.1:8788/assets/index-BaWRdUx_.js"
+      ],
+      "stylesheets": [
+        "http://127.0.0.1:8788/assets/index-BhUreVxI.css"
+      ]
+    },
+    {
+      "profile": "player-two",
+      "capturedAt": "2026-10-01T09:29:13.353Z",
+      "url": "http://127.0.0.1:8788/",
+      "moduleScripts": [
+        "http://127.0.0.1:8788/assets/index-BaWRdUx_.js"
+      ],
+      "stylesheets": [
+        "http://127.0.0.1:8788/assets/index-BhUreVxI.css"
+      ]
+    },
+    {
+      "profile": "team-spectator",
+      "capturedAt": "2026-10-01T09:30:28.408Z",
+      "url": "http://127.0.0.1:8788/",
+      "moduleScripts": [
+        "http://127.0.0.1:8788/assets/index-BaWRdUx_.js"
+      ],
+      "stylesheets": [
+        "http://127.0.0.1:8788/assets/index-BhUreVxI.css"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "player-one starts from a paused local through normal controls",
+      "details": {
+        "mode": "local",
+        "paused": true,
+        "tick": 19
+      }
+    },
+    {
+      "name": "player-two starts from a paused replay through normal controls",
+      "details": {
+        "mode": "replay",
+        "paused": true,
+        "tick": 0
+      }
+    },
+    {
+      "name": "Separate browser profiles receive separate server guest accounts",
+      "details": true
+    },
+    {
+      "name": "Normal lobby starts eight-slot server match and both Phaser clients join",
+      "details": {
+        "matchId": "64694cbf-f64d-4c20-9a12-4ba6cbaa60eb",
+        "teams": [
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "name": "player-one joins online from paused local with input unpaused",
+      "details": true
+    },
+    {
+      "name": "player-two joins online from paused replay with input unpaused",
+      "details": true
+    },
+    {
+      "name": "Player one renderer contains only authorized observations",
+      "details": {
+        "tick": 80,
+        "entities": 31,
+        "disclosedResources": 24,
+        "unknownTerrain": 6306,
+        "visibleHostiles": 0
+      }
+    },
+    {
+      "name": "Player two renderer contains only authorized observations",
+      "details": {
+        "tick": 80,
+        "entities": 31,
+        "disclosedResources": 24,
+        "unknownTerrain": 6312,
+        "visibleHostiles": 0
+      }
+    },
+    {
+      "name": "Online pause controls are disabled",
+      "details": true
+    },
+    {
+      "name": "Session global production receives an accepted server receipt",
+      "details": {
+        "clientSeq": 1,
+        "appliedTick": 101,
+        "producerId": 1
+      }
+    },
+    {
+      "name": "HUD recruitment uses an authoritative receipt and observed queue",
+      "details": {
+        "clientSeq": 2,
+        "appliedTick": 129
+      }
+    },
+    {
+      "name": "Player two accepts normal HUD recruitment after paused replay transition",
+      "details": {
+        "clientSeq": 1,
+        "appliedTick": 160,
+        "producerId": 8
+      }
+    },
+    {
+      "name": "Every sampled browser tick and time came from a server frame",
+      "details": {
+        "samples": 25
+      }
+    },
+    {
+      "name": "Normal selection and attack-move send scouts toward another player base",
+      "details": {
+        "army": [
+          7
+        ],
+        "targetSide": 1,
+        "appliedTick": 192
+      }
+    },
+    {
+      "name": "Modal blocks battlefield shortcuts while server snapshots advance",
+      "details": {
+        "before": 200,
+        "after": 208
+      }
+    },
+    {
+      "name": "Local saves and save exports are gated",
+      "details": {
+        "savePolicy": "disabled",
+        "exportPolicy": "disabled"
+      }
+    },
+    {
+      "name": "Failed local import keeps the online renderer",
+      "details": true
+    },
+    {
+      "name": "Online local replay export is gated",
+      "details": "Online replay exports are not available in this client yet."
+    },
+    {
+      "name": "Online replay-backed bug report is gated",
+      "details": "Online replay exports are not available in this client yet."
+    },
+    {
+      "name": "Photo mode blocks orders, keeps the server clock running and downloads canvas",
+      "details": {
+        "before": 308,
+        "after": 316
+      }
+    },
+    {
+      "name": "Lobby rejoin receives a fresh generation and filtered resource memory",
+      "details": {
+        "tick": 384,
+        "entities": 35,
+        "disclosedResources": 24,
+        "unknownTerrain": 6310,
+        "visibleHostiles": 1
+      }
+    },
+    {
+      "name": "Team spectator receives delayed authorized team observations",
+      "details": {
+        "tick": 548,
+        "entities": 38,
+        "disclosedResources": 24,
+        "unknownTerrain": 6295,
+        "visibleHostiles": 1,
+        "delayTicks": 40,
+        "liveTick": 588,
+        "delayedTick": 548
+      }
+    },
+    {
+      "name": "Spectator production and battlefield orders remain disabled",
+      "details": true
+    },
+    {
+      "name": "Visible hostile entities keep orders, queues, research and cargo private",
+      "details": {
+        "tick": 620,
+        "entities": 46,
+        "disclosedResources": 27,
+        "unknownTerrain": 5990,
+        "visibleHostiles": 7
+      }
+    },
+    {
+      "name": "No browser page errors",
+      "details": true
+    }
+  ],
+  "matchId": "64694cbf-f64d-4c20-9a12-4ba6cbaa60eb",
+  "lobbyId": "e06890a5-c891-4ae9-8f16-7c8512747891",
+  "completed": true,
+  "completedAt": "2026-10-01T09:30:56.979Z"
+}

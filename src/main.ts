@@ -1,8 +1,8 @@
 import Phaser from 'phaser';
 import GameScene, { project, unproject } from './game/GameScene';
 import { createPerformanceGame, countPerformanceUnits, FrameCollector, PERFORMANCE_CENTER } from './qa/performance';
-import { createGame, issueCommand, isGameOver } from './core/simulation';
-import { UPGRADES } from './core/content';
+import { createGame, createMatch, issueCommand, isGameOver } from './core/simulation';
+import { FACTIONS, UPGRADES } from './core/content';
 import { mountShell } from './ui/Hud';
 import type { HudCallbacks } from './ui/Hud';
 import type { FactionId, MapSize, GameState, Side } from './core/types';
@@ -11,10 +11,20 @@ import type { SessionAnalysis, ReplaySpeed } from './ui/SessionTools';
 import { CONTROL_ACTIONS, ControlProfiles, displayBinding, parseDisplayedBinding } from './game/Controls';
 import type { ControlAction } from './game/Controls';
 import { GAMEPAD_HELP } from './game/Gamepad';
-import { MatchRecorder, ReplayPlayer, decodeReplay } from './core/replays';
+import { MatchRecorder, ReplayPlayer, decodeReplay, replayRulesCompatible } from './core/replays';
 import type { ReplayArchive, AnalysisSample, ArmySample, TechnologyTiming } from './core/replays';
 import { SaveRepository, createSessionFile, decodeSessionFile, createBugReport } from './core/session-storage';
-import type { SessionFile } from './core/session-storage';
+import type { SessionFile, SessionPlanning } from './core/session-storage';
+import { OnlineApi, OnlineMatchConnection } from './online/client';
+import { observationToRenderState } from './online/render-state';
+import type { OnlineRenderState } from './online/render-state';
+import { mountOnlineLobby } from './ui/OnlineLobby';
+import type { OnlineMatchRequest } from './ui/OnlineLobby';
+import { mountPlanningSession } from './game/PlanningSession';
+import type { PlanningEditContext } from './game/PlanningSession';
+import { SkirmishOptions } from './ui/SkirmishOptions';
+import { SkirmishRoster } from './ui/SkirmishRoster';
+import { normalizeAiConfig } from './core/ai-policy';
 import './ui/style.css';
 declare const __OVF_BUILD_ID__:string;
 
@@ -29,6 +39,14 @@ let benchmarkCentered=false;
 let renderDensity=1;
 const root=document.querySelector<HTMLElement>('#app')!;
 const shell=mountShell(root,start);
+const setupHost=document.createElement('section');root.querySelector('.begin-match')!.before(setupHost);
+let roster:SkirmishRoster;
+const menuFaction=()=>root.querySelector<HTMLElement>('[data-faction].selected')!.dataset.faction as FactionId;
+const menuOpponent=()=>root.querySelector<HTMLSelectElement>('#opponent')!.value as FactionId;
+const aiOptions=new SkirmishOptions(setupHost,normalizeAiConfig(),config=>roster?.updateDefaults(menuFaction(),menuOpponent(),config));
+roster=new SkirmishRoster(setupHost);roster.updateDefaults(menuFaction(),menuOpponent(),aiOptions.value);
+for(const button of Array.from(root.querySelectorAll<HTMLElement>('[data-faction]')))button.addEventListener('click',()=>roster.updateDefaults(menuFaction(),menuOpponent(),aiOptions.value));
+root.querySelector('#opponent')!.addEventListener('change',()=>roster.updateDefaults(menuFaction(),menuOpponent(),aiOptions.value));
 const controls=new ControlProfiles();
 const saves=new SaveRepository(localStorage);
 let recorder:MatchRecorder|undefined,replay:ReplayPlayer|undefined;
@@ -36,6 +54,10 @@ let replayPlaying=false;
 let replayComplete=false;
 let replaySpeed:ReplaySpeed=1,replayPerspective:Side=0,replayAccumulated=0,replayClock=performance.now();
 let sessionModal=false,modalScene:GameScene|undefined,pausedBeforeModal=false;
+const openModals=new Set<string>();
+let onlineConnection:OnlineMatchConnection|undefined,onlineRender:OnlineRenderState|undefined;
+let onlineConnecting:OnlineMatchConnection|undefined;
+const onlineApi=new OnlineApi();
 let lastAutosaveTime=0,autosaveFailure=false,replacementGeneration=0;
 const playerSide=():Side=>scene?.viewSide??0;
 const callbacks:HudCallbacks={
@@ -57,11 +79,15 @@ const callbacks:HudCallbacks={
  select:ids=>scene?.selectEntities(ids),
  stop:()=>{if(scene)scene.command({type:'stop',ids:scene.selected});},
  pause:()=>{if(scene)scene.togglePause();},
- restart:()=>{replacementGeneration++;recorder?.dispose();recorder=undefined;replay?.dispose();replay=undefined;retireGame();shell.showMenu();tools.update(null);},
+ restart:()=>{replacementGeneration++;closeOnline();recorder?.dispose();recorder=undefined;replay?.dispose();replay=undefined;retireGame();shell.showMenu();tools.update(null);},
  toggleMuted:()=>scene?.toggleMuted(),
  isMuted:()=>scene?.muted??false,
  isPaused:()=>scene?.paused??false,
  isReplay:()=>!!replay,
+ canCommand:()=>!!scene&&!scene.readOnly&&!scene.photoMode&&!scene.state.eliminated[playerSide()]&&!isGameOver(scene.state),
+ canPause:()=>!onlineConnection,
+ isInspection:()=>!!replay||!!scene?.readOnly,
+ resourceMemory:()=>onlineRender?.resourceMemory,
  side:playerSide,
  bindingLabel:action=>controls.bindingsFor(action as ControlAction).map(displayBinding).join(' / '),
  center:(x,y)=>scene?.centerOn(x,y),
@@ -70,6 +96,32 @@ const callbacks:HudCallbacks={
  cameraCorners:()=>{if(!scene?.cameras?.main)return [];const c=scene.cameras.main;const {top,bottom}=shell.battlefieldBounds();return [[0,top],[innerWidth,top],[innerWidth,bottom],[0,bottom]].map(([x,y])=>{const p=c.getWorldPoint(x*renderDensity,y*renderDensity);return unproject(p.x,p.y);});}
 
 };
+function closeOnline(){onlineConnecting?.dispose();onlineConnecting=undefined;onlineConnection?.dispose();onlineConnection=undefined;onlineRender=undefined;}
+function setModal(source:string,open:boolean){
+ const wasOpen=!!openModals.size;
+ if(open)openModals.add(source);else openModals.delete(source);
+ sessionModal=!!openModals.size;
+ if(sessionModal&&!wasOpen){modalScene=scene;pausedBeforeModal=scene?.paused??false;}
+ if(scene){scene.inputBlocked=sessionModal;if(sessionModal)scene.paused=true;else if(wasOpen)scene.paused=replay?!replayPlaying:scene===modalScene?pausedBeforeModal:false;shell.update(scene.state,scene.selected,callbacks);}
+ if(!sessionModal)modalScene=undefined;
+}
+function dispatchCommand(side:Side,command:Parameters<typeof issueCommand>[2]):boolean {
+ if(!scene||scene.readOnly||replay||scene.photoMode||side!==playerSide()||scene.state.eliminated[side]||isGameOver(scene.state))return false;
+ return onlineConnection?onlineConnection.dispatch(command):issueCommand(scene.state,side,command);
+}
+async function joinOnline(request:OnlineMatchRequest){
+ const generation=++replacementGeneration;let latest:OnlineRenderState|undefined;
+ onlineConnecting?.dispose();
+ const connection=new OnlineMatchConnection({api:onlineApi,...request,
+  onObservation:view=>{latest=observationToRenderState(view,request.role);if(onlineConnection===connection){onlineRender=latest;scene?.applyRemoteFrame(latest);}},
+  onStatus:(_status,message)=>{if(onlineConnection===connection||onlineConnecting===connection)shell.notice(message);},
+  onReceipt:receipt=>{if(onlineConnection!==connection)return;shell.notice(receipt.accepted?'The server accepted the order.':`The server rejected the order (${receipt.reason??'unavailable'}).`);},
+  onNotice:message=>{if(onlineConnection===connection||onlineConnecting===connection)shell.notice(message);}
+ });
+ onlineConnecting=connection;
+ try {await connection.connect();await connection.waitForSnapshot(45000);if(generation!==replacementGeneration||!latest)throw new Error('Another match replaced this connection request.');launch(latest.state,undefined,undefined,{connection,render:latest},generation);}
+ catch(error){connection.dispose();if(onlineConnecting===connection)onlineConnecting=undefined;throw error;}
+}
 function retireGame(onDestroyed?:()=>void){
  if(retiring){retiring.events.once(Phaser.Core.Events.DESTROY,()=>onDestroyed?.());return;}
  if(!game){onDestroyed?.();return;}
@@ -79,28 +131,31 @@ function retireGame(onDestroyed?:()=>void){
  previous.destroy(true);
 }
 function start(next:FactionId,nextOpponent:FactionId=opponent,mapSize:MapSize="medium",seed=4127){
- replacementGeneration++;
- const state=benchmark?createPerformanceGame():createGame(next,seed,nextOpponent,{mapSize});
- launch(state);
+ try {const state=benchmark?createPerformanceGame():roster.enabled?createMatch({map:{seed,size:mapSize},players:roster.getPlayers(next,nextOpponent,aiOptions.value),rules:roster.getRules()}):createGame(next,seed,nextOpponent,{mapSize,ai:[{},aiOptions.value]});replacementGeneration++;launch(state);}
+ catch(error){shell.notice(error instanceof Error?error.message:'Cannot start this skirmish.');}
 }
-function launch(state:GameState,history?:ReplayArchive,playback?:ReplayPlayer){
- if(game||retiring){retireGame(()=>launch(state,history,playback));return;}
- recorder?.dispose();replay?.dispose();replay=playback;recorder=playback?undefined:new MatchRecorder(state,history);
- faction=state.players[0].faction;opponent=state.players[1].faction;lastAutosaveTime=state.time;autosaveFailure=false;
+function launch(state:GameState,history?:ReplayArchive,playback?:ReplayPlayer,remote?:{connection:OnlineMatchConnection;render:OnlineRenderState},generation=replacementGeneration,planningData?:SessionPlanning){
+ if(generation!==replacementGeneration){remote?.connection.dispose();playback?.dispose();return;}
+ if(game||retiring){retireGame(()=>launch(state,history,playback,remote,generation,planningData));return;}
+ if(onlineConnection!==remote?.connection){onlineConnection?.dispose();onlineConnection=remote?.connection;onlineRender=remote?.render;}
+ if(remote&&onlineConnecting===remote.connection)onlineConnecting=undefined;
+ recorder?.dispose();replay?.dispose();replay=playback;recorder=playback||remote?undefined:new MatchRecorder(state,history);
+ faction=state.players[0].faction;opponent=state.players[1]?.faction??faction;lastAutosaveTime=state.time;autosaveFailure=false;
  replayPlaying=false;replayAccumulated=0;replayClock=performance.now();shell.showGame();
  const human=state.controllers.findIndex(c=>c==='human'),external=state.controllers.findIndex(c=>c==='external');
- const side=(playback?replayPerspective:human>=0?human:external>=0?external:0) as Side;
+ const side=(remote?remote.render.localSide:playback?replayPerspective:human>=0?human:external>=0?external:0) as Side;
  if(benchmark){collector=new FrameCollector();benchmarkCentered=false;}
  // Phaser scales the canvas in CSS; use a physical-pixel game size and
  // matching camera zoom so high-DPI displays do not stretch a low-res buffer.
  renderDensity=Math.min(2,Math.max(1,window.devicePixelRatio||1));
- scene=new GameScene({state,controls,viewSide:side,readOnly:!!playback,simulationEnabled:!playback,pixelDensity:renderDensity,
-  onCommand:(side,command)=>!sessionModal&&!replay&&!!scene&&issueCommand(scene.state,side,command),
+ scene=new GameScene({state,controls,viewSide:side,readOnly:!!playback||remote?.render.role==='spectator',simulationEnabled:!playback&&!remote,remoteFrame:remote?.render,pixelDensity:renderDensity,
+  onCommand:(side,command)=>!sessionModal&&dispatchCommand(side,command),
   onSelection:ids=>{if(scene)shell.update(scene.state,ids,callbacks);},onNotice:text=>shell.notice(text),onReady:()=>shell.ready(),
-  onStep:()=>maybeAutosave(),onPhotoMode:enabled=>{root.classList.toggle('photo-mode',enabled);photoControls.hidden=!enabled;},
+  onStep:()=>{planning.update({blocked:planningBlocked()});maybeAutosave();},onPhotoMode:enabled=>{root.classList.toggle('photo-mode',enabled);photoControls.hidden=!enabled;planning.update({blocked:planningBlocked()});},
   onPause:()=>{if(scene){if(replay)replayPlaying=!scene.paused;shell.update(scene.state,scene.selected,callbacks);}},onActionSlot:slot=>{shell.activateActionSlot(slot);},
   viewBounds:()=>{const b=shell.battlefieldBounds();return {top:b.top*renderDensity,bottom:b.bottom*renderDensity};}});
  scene.inputBlocked=sessionModal;scene.paused=!!playback||sessionModal;
+ planning.reset(state);if(planningData&&!planning.restore(planningData,state))throw new Error('Saved construction planning could not be restored.');planning.update({blocked:planningBlocked()});
  game=new Phaser.Game({type:Phaser.AUTO,parent:'game-canvas',backgroundColor:'#14201e',antialias:true,roundPixels:false,scale:{mode:Phaser.Scale.FIT,width:Math.round(innerWidth*renderDensity),height:Math.round(innerHeight*renderDensity)},scene:[scene],render:{pixelArt:false,smoothPixelArt:true},fps:{target:60}});
  const currentGame=game,density=renderDensity;
  const resize=()=>currentGame.scale.setGameSize(Math.round(innerWidth*density),Math.round(innerHeight*density));
@@ -122,13 +177,15 @@ function launch(state:GameState,history?:ReplayArchive,playback?:ReplayPlayer){
  shell.update(state,[],callbacks);
 }
 function currentArchive():ReplayArchive {
+ if(onlineConnection)throw new Error('Online replay exports are not available in this client yet.');
  if(replay)return replay.exportCurrent();
  if(!recorder||!scene)throw new Error('Start or load a match first.');
  return recorder.export();
 }
 function currentFile():SessionFile {
  if(!scene)throw new Error('Start or load a match first.');
- return createSessionFile(scene.state,currentArchive());
+ if(onlineConnection)throw new Error('Online matches are saved by the server. Local save exports are available for local matches.');
+ return createSessionFile(scene.state,currentArchive(),planning.snapshot()??undefined);
 }
 function maybeAutosave(force=false){
  if(!scene||!recorder||replay||benchmark||autosaveFailure)return;
@@ -144,19 +201,21 @@ async function verifyArchive(archive:ReplayArchive):Promise<{player:ReplayPlayer
 }
 async function installFile(input:unknown){
  const {file,state}=decodeSessionFile(input),request=++replacementGeneration;
- if(file.replay)file.replay=(await verifyArchive(file.replay)).player.archive;
+ const oldHistory=file.replay&&!replayRulesCompatible(file.replay);
+ if(file.replay&&!oldHistory)file.replay=(await verifyArchive(file.replay)).player.archive;
  if(request!==replacementGeneration)throw new Error('Another match load replaced this request.');
- launch(state,file.replay);
+ launch(state,oldHistory?undefined:file.replay,undefined,undefined,request,file.planning);
+ if(oldHistory)shell.notice('Saved match loaded. Its replay uses older simulation rules; new replay history starts from this save.');
 }
 function analysisView(samples:AnalysisSample[],complete:boolean,timings:TechnologyTiming[]):SessionAnalysis {
  const technologies=timings.map(t=>({side:t.side,tick:t.tick,time:t.time,name:UPGRADES[t.upgrade as keyof typeof UPGRADES]?.name??t.upgrade}));
  const player=(p:ArmySample)=>({wood:p.wood,ore:p.ore,crystal:p.crystal,army:p.units,losses:p.losses,gathered:p.gathered,buildings:p.buildings,armyValue:p.armyValue,buildingLosses:p.buildingLosses,lostValue:p.lostValue});
- return {complete,samples:samples.map<SessionAnalysis['samples'][number]>(s=>({tick:s.tick,time:s.time,players:[player(s.players[0]),player(s.players[1])]})),technologies,playerNames:[faction,opponent]};
+ return {complete,samples:samples.map<SessionAnalysis['samples'][number]>(s=>({tick:s.tick,time:s.time,players:s.players.map(player)})),technologies,playerNames:scene?.state.players.map(p=>FACTIONS[p.faction].name)};
 }
 function productionCommand(command:Parameters<typeof issueCommand>[2],expectedQueue?:string):boolean {
  if(!scene||replay||scene.photoMode)return false;
  if(expectedQueue!==undefined){if(!('id' in command))return false;const building=scene.state.entities.find(e=>e.id===command.id);if(!building||JSON.stringify(building.queue)!==expectedQueue)return false;}
- const accepted=issueCommand(scene.state,playerSide(),command);
+ const accepted=dispatchCommand(playerSide(),command);
  if(accepted)shell.update(scene.state,scene.selected,callbacks);return accepted;
 }
 const tools=mountSessionTools(root,{
@@ -164,7 +223,7 @@ const tools=mountSessionTools(root,{
  save:name=>{saves.save(name,currentFile());},load:async id=>{await installFile(saves.load(id).file);},deleteSave:id=>saves.delete(id),
  importSave:installFile,exportSave:currentFile,
  getAutosave:()=>saves.getAutosave(),setAutosave:settings=>{saves.setAutosave(settings);autosaveFailure=false;lastAutosaveTime=scene?.state.time??0;},
- getReplay:()=>replay&&scene?{initialTick:replay.archive.initial.state.tick,tick:replay.state.tick,totalTicks:replay.archive.finalTick,playing:replayPlaying&&!replay.finished,speed:replaySpeed,perspective:replayPerspective}:null,
+ getReplay:()=>replay&&scene?{initialTick:replay.archive.initial.state.tick,tick:replay.state.tick,totalTicks:replay.archive.finalTick,playing:replayPlaying&&!replay.finished,speed:replaySpeed,perspective:replayPerspective,roster:scene.state.players.map((p,id)=>({id:id as Side,name:FACTIONS[p.faction].name}))}:null,
  importReplay:async input=>{const source=decodeReplay(input),request=++replacementGeneration,verified=await verifyArchive(source);if(request!==replacementGeneration)throw new Error('Another replay load replaced this request.');const player=verified.player.forkForSeek(source.initial.state.tick);replayPerspective=0;replayComplete=verified.complete;launch(player.state,undefined,player);},
  exportReplay:()=>replay?.archive??currentArchive(),
  seekReplay:async tick=>{
@@ -190,13 +249,22 @@ const tools=mountSessionTools(root,{
  saveBindingProfile:name=>{const result=controls.saveProfile(name);if(!result.ok)throw new Error(result.error);if(controls.persistenceError)throw new Error(controls.persistenceError);},
  loadBindingProfile:name=>controls.selectProfile(name),resetBindings:()=>controls.resetDefaults(),getGamepadHelp:()=>GAMEPAD_HELP,
  photoExitHint:()=>`Press ${controls.bindingsFor('cancel').map(displayBinding).join(' or ')||'Photo mode'} or Select / View to leave photo mode.`,
- bugReport:description=>{if(!scene)throw new Error('Start or load a match first.');return createBugReport(description,scene.state,currentArchive(),{renderDensity,viewport:{width:innerWidth,height:innerHeight},fps:game?.loop.actualFps,art:scene.artStatus,userAgent:navigator.userAgent},__OVF_BUILD_ID__);},
+ bugReport:description=>{if(!scene)throw new Error('Start or load a match first.');return createBugReport(description,scene.state,currentArchive(),{renderDensity,viewport:{width:innerWidth,height:innerHeight},fps:game?.loop.actualFps,art:scene.artStatus,userAgent:navigator.userAgent},__OVF_BUILD_ID__,planning.snapshot()??undefined);},
  photo:()=>{if(scene)scene.setPhotoMode(!scene.photoMode);},
- onModal:open=>{
-  sessionModal=open;
-  if(open){modalScene=scene;pausedBeforeModal=scene?.paused??false;if(scene){scene.paused=true;scene.inputBlocked=true;}}
-  else {if(scene){scene.inputBlocked=false;scene.paused=replay?!replayPlaying:pausedBeforeModal;}modalScene=undefined;}
- }
+ onModal:open=>setModal('session',open)
+});
+mountOnlineLobby(root,{api:onlineApi,onJoinMatch:joinOnline,onVisibility:open=>setModal('online',open)});
+function planningBlocked(){return !!scene?.photoMode||Array.from(openModals).some(source=>source!=='planning');}
+function canEditPlanning(side:Side,context:PlanningEditContext){
+ if(!scene||replay||onlineConnection||scene.readOnly||scene.photoMode||isGameOver(scene.state)||scene.state.eliminated[side]||side!==playerSide()||planningBlocked())return false;
+ return context==='dialog'||!scene.paused&&!sessionModal;
+}
+const planning=mountPlanningSession(root,{
+ getState:()=>scene?.state??null,getSide:playerSide,canEdit:canEditPlanning,
+ dispatch:(side,command)=>!!scene&&!onlineConnection&&!replay&&issueCommand(scene.state,side,command),
+ selectedWorkerIds:()=>scene?.selected??[],onVisibility:open=>setModal('planning',open),
+ beginPlacement:(role,point,cancel)=>{const current=scene;if(!current)throw new Error('Start a match before planning construction.');return current.beginBlueprintPlacement(role,point,cancel);},
+ setBlueprints:(items,side)=>scene?.setBlueprints(items,side)
 });
 const photoControls=document.createElement('section');photoControls.className='photo-controls';photoControls.hidden=true;
 const photoHint=document.createElement('span');photoHint.textContent='Photo mode · Pan and zoom to compose your image';
@@ -215,9 +283,9 @@ setInterval(()=>{
 },16);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)maybeAutosave(true);});
 window.addEventListener('pagehide',()=>maybeAutosave(true));
-setInterval(()=>{if(scene)shell.update(scene.state,scene.selected,callbacks);tools.update(scene?.state??null,{side:playerSide(),paused:scene?.paused,replaySpectator:!!replay});},100);
+setInterval(()=>{if(scene)shell.update(scene.state,scene.selected,callbacks);tools.update(scene?.state??null,{side:playerSide(),paused:scene?.paused,replaySpectator:!!replay||!!scene?.readOnly,remoteMatch:!!onlineConnection});planning.update({blocked:planningBlocked()});},100);
 // Read-only diagnostics for repeatable performance and state inspection. Player actions stay in the UI.
-Object.defineProperty(window,'rts',{get:()=>scene?{state:scene.state,selected:[...scene.selected],fps:game?.loop.actualFps,paused:scene.paused,camera:{x:scene.cameras.main.scrollX,y:scene.cameras.main.scrollY,zoom:scene.cameras.main.zoom}}:null});
+Object.defineProperty(window,'rts',{get:()=>scene?{state:scene.state,viewSide:scene.viewSide,readOnly:scene.readOnly,selected:[...scene.selected],fps:game?.loop.actualFps,paused:scene.paused,mode:onlineConnection?'online':replay?'replay':'local',simulationEnabled:scene.simulationEnabled,online:onlineConnection?{status:onlineConnection.status,role:onlineRender?.role,side:playerSide(),delayTicks:onlineConnection.connectionInfo?.delayTicks,pendingCommands:onlineConnection.pendingCommands,privateSides:[...(onlineRender?.privateSides??[])]}:null,camera:{x:scene.cameras.main.scrollX,y:scene.cameras.main.scrollY,zoom:scene.cameras.main.zoom,width:scene.cameras.main.width,height:scene.cameras.main.height}}:null});
 if(location.hostname==='127.0.0.1'&&new URLSearchParams(location.search).has('qa'))setInterval(()=>{
  if(!scene||!game)return;
  const s=scene.state;

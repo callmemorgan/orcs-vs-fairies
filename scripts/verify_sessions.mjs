@@ -25,7 +25,7 @@ try {
  await page.waitForFunction(tick=>window.rts.state.tick>tick,savedTick);
  await page.locator('[data-session-tool="saves"]').click();
  await page.getByRole('button',{name:'Load Browser match',exact:true}).click();
- await page.waitForFunction(tick=>window.rts.state.tick===tick,savedTick);
+ await page.waitForFunction(tick=>{try{return window.rts?.state.tick===tick;}catch{return false;}},savedTick);
  await page.waitForFunction(()=>document.querySelector('.session-notice')?.textContent.includes('Loaded Browser match'));
  await page.waitForSelector('.loading-battle[hidden]',{state:'attached',timeout:60000});
  evidence.namedSaveLoadsExactTick=true;
@@ -63,10 +63,11 @@ try {
  const reportPromise=page.waitForEvent('download');await page.getByRole('button',{name:'Download bug report',exact:true}).click();const report=await reportPromise;await report.saveAs(`${out}/browser-report.json`);
  const reportData=JSON.parse(await readFile(`${out}/browser-report.json`,'utf8'));assert.equal(reportData.format,'orcs-vs-fairies/bug-report');assert.equal(reportData.session.replay.finalTick,reportData.session.game.state.tick);assert.equal(reportData.versions.buildId,expectedBuildId,'Build identity is stale: rebuild the preview or restart the development server.');evidence.reportContainsMatchingReplay=true;
  await page.locator('[data-session-tab="replay"]').click();
- const fixture=JSON.parse(await readFile(`${out}/complete-replay.json`,'utf8'));
+ const fixture=JSON.parse(await readFile(process.argv[3]??`${out}/current-replay.json`,'utf8'));
  await page.getByLabel('Import replay JSON',{exact:true}).setInputFiles({name:'complete-replay.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture))});
  await page.getByRole('button',{name:'Import replay',exact:true}).click();
  await page.waitForFunction(()=>document.querySelector('.session-notice')?.textContent.includes('Replay loaded'),null,{timeout:60000});
+ await page.waitForFunction(tick=>{try{return window.rts?.state.tick===tick;}catch{return false;}},fixture.initial.state.tick,{timeout:60000});
  assert.equal(await page.evaluate(()=>window.rts.state.tick),fixture.initial.state.tick);
  await page.locator('[data-session-tab="analysis"]').click();
  await page.waitForSelector('[data-session-page="analysis"] svg');

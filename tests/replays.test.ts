@@ -3,8 +3,20 @@ import { createGame, issueCommand, stepGame } from '../src/core/simulation';
 import { MatchRecorder, ReplayPlayer, decodeReplay, replayChecksum } from '../src/core/replays';
 import { saveGame, loadGame } from '../src/core/saves';
 import { FACTIONS, UPGRADES } from '../src/core/content';
+import { SIMULATION_REVISION } from '../src/core/versions';
 
 describe('browser replay simulation',()=>{
+  it('rejects another deterministic rules revision before playback despite an unchanged save schema',()=>{
+    const state=createGame('orcs',4127,'fairies',{mapSize:'small',controllers:['external','external']}),recorder=new MatchRecorder(state);
+    stepGame(state,.05);const archive=recorder.export();recorder.dispose();
+    expect(archive.simulationRevision).toBe(SIMULATION_REVISION);
+    const changed={...archive,simulationRevision:'different-rules'};
+    expect(()=>new ReplayPlayer(changed)).toThrow('rules different-rules');
+    expect(()=>new MatchRecorder(loadGame(saveGame(state)),changed)).toThrow('Older replay history');
+    expect(decodeReplay(changed).initial.version).toBe(archive.initial.version);
+    expect(()=>decodeReplay({...archive,simulationRevision:{value:SIMULATION_REVISION}})).toThrow('rules revision');
+    const same=new ReplayPlayer(archive);same.advance(1);expect(saveGame(same.state)).toEqual(saveGame(state));same.dispose();
+  });
   it('reproduces external orders and AI decisions from accepted commands and completed steps',()=>{
     const state=createGame('orcs',4127,'automata',{mapSize:'small'}),recorder=new MatchRecorder(state);
     const worker=state.entities.find(e=>e.side===0&&e.role==='worker')!;
@@ -67,6 +79,16 @@ describe('browser replay simulation',()=>{
     expect(candidate.exportCurrent().finalChecksum).toBe(archive.finalChecksum);
     expect(candidate.analysis).toEqual(player.analysis);
     player.seek(615);expect(player.state.tick).toBe(615);player.seek(650);expect(saveGame(player.state)).toEqual(saveGame(state));
+    candidate.dispose();player.dispose();recorder.dispose();
+  });
+  it('keeps chart cadence unchanged by exports, reads and replay checkpoint creation',()=>{
+    const state=createGame('fairies',42,'orcs',{mapSize:'small',controllers:['external','external']}),recorder=new MatchRecorder(state);
+    for(let tick=0;tick<1300;tick++){stepGame(state,.05);if(tick%37===0){recorder.export();recorder.analysis;}}
+    const archive=recorder.export(),player=new ReplayPlayer(archive);player.advance(1300);
+    expect(player.analysis).toEqual(archive.analysis);
+    const candidate=player.forkForSeek(1230);candidate.advance(1300-candidate.state.tick);
+    expect(candidate.analysis).toEqual(archive.analysis);
+    expect(archive.analysis.map(sample=>sample.tick)).toEqual(Array.from({length:14},(_,i)=>i*100));
     candidate.dispose();player.dispose();recorder.dispose();
   });
   it('derives economy deposits and unit/building loss values from simulation events',()=>{

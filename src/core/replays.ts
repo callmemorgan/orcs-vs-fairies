@@ -3,6 +3,7 @@ import { subscribeSimulation } from './history-hooks';
 import { FACTIONS } from './content';
 import { saveGame, loadGame, SAVE_VERSION } from './saves';
 import { issueCommand, stepGame, isGameOver } from './simulation';
+import { LEGACY_SIMULATION_REVISIONS, SIMULATION_REVISION } from './versions';
 import type { BuildingRole, Command, Entity, GameState, Side, UnitRole } from './types';
 
 export type ReplayAction = {type:'command';side:Side;command:Command} | {type:'advance';dt:number;ticks:number};
@@ -13,7 +14,7 @@ export interface ReplayArchive {
   format:'orcs-vs-fairies/replay';version:1;
   initial:ReturnType<typeof saveGame>;
   actions:ReplayAction[];
-  finalTick:number;finalChecksum:string;checksumVersion?:number;
+  finalTick:number;finalChecksum:string;checksumVersion?:number;simulationRevision?:string;
   analysis:AnalysisSample[];
   technologies:TechnologyTiming[];
 }
@@ -27,12 +28,19 @@ const exactKeys=(v:Record<string,unknown>,keys:string[])=>Object.keys(v).every(k
 /** A divergence check, not a signature or a claim of trusted authorship. */
 export function replayChecksum(state:GameState,version=SAVE_VERSION):string {
   const saved=saveGame(state);
+  if(![1,2,SAVE_VERSION].includes(version))throw new Error('Replay checksum version is unsupported by this build.');
+  if(version===1&&state.players.length!==2)throw new Error('Legacy replay checksums require two players.');
+  const legacy=saved as unknown as {version:number;state:Record<string,unknown>;runtime:Record<string,unknown>};
+  legacy.version=version;
+  if(version<3){
+    delete legacy.state.aiConfigs;
+    for(const key of ['aiDecisionAt','aiDecisionTurns','aiBatchTurns','knownEnemyUnits','retreating','producedFighters'])delete legacy.runtime[key];
+  }
   if(version===1){
     // The two-player envelope remains readable; its checksum excludes fields added in v2.
-    const legacy=saved as unknown as {version:number;state:Record<string,unknown>;runtime:Record<string,unknown>};legacy.version=1;
     for(const key of ['teams','incomeFactors','populationLimits','sharedVision','eliminated','winningTeam'])delete legacy.state[key];
     delete legacy.runtime.clearedEnemyStarts;
-  }else if(version!==SAVE_VERSION)throw new Error('Replay checksum version is unsupported by this build.');
+  }
   const text=JSON.stringify(saved);let hash=2166136261;
   for(let i=0;i<text.length;i++){hash^=text.charCodeAt(i);hash=Math.imul(hash,16777619);}
   return (hash>>>0).toString(16).padStart(8,'0');
@@ -58,7 +66,7 @@ export class MatchRecorder {
   private lostValue:number[];
   private technologies:TechnologyTiming[]=[];
   private knownUpgrades:Set<string>[];
-  private sampledAt=-Infinity;
+  private sampledBucket=-1;
   private unsubscribe:()=>void;
   private error:string|null=null;
   constructor(private state:GameState,previous?:ReplayArchive) {
@@ -66,12 +74,13 @@ export class MatchRecorder {
     this.losses=state.players.map(()=>0);this.gathered=state.players.map(()=>0);this.buildingLosses=state.players.map(()=>0);this.lostValue=state.players.map(()=>0);
     if(previous){
       const archive=decodeReplay(previous);
+      if(!replayRulesCompatible(archive))throw new Error('Older replay history cannot be continued under the current simulation rules. Start new replay history from the saved match.');
       if(archive.finalTick!==state.tick||archive.finalChecksum!==replayChecksum(state,archive.checksumVersion??archive.initial.version))throw new Error('Saved replay does not match the saved game.');
-      this.initial=saveGame(loadGame(archive.initial));this.actions=structuredClone(archive.actions);this.samples=structuredClone(archive.analysis);
+      this.initial=saveGame(loadGame(archive.initial));this.actions=structuredClone(archive.actions);
+      this.samples=structuredClone(archive.analysis).filter(sample=>{const bucket=this.sampleBucket(sample.time);if(bucket<=this.sampledBucket)return false;this.sampledBucket=bucket;return true;});
       this.technologies=structuredClone(archive.technologies);
-      const last=this.samples.at(-1);if(last){this.losses=last.players.map(p=>p.losses);this.gathered=last.players.map(p=>p.gathered);this.buildingLosses=last.players.map(p=>p.buildingLosses??0);this.lostValue=last.players.map(p=>p.lostValue??0);}
-    }else this.initial=saveGame(state);
-    this.sample(true);
+      const last=archive.analysis.at(-1);if(last){this.losses=last.players.map(p=>p.losses);this.gathered=last.players.map(p=>p.gathered);this.buildingLosses=last.players.map(p=>p.buildingLosses??0);this.lostValue=last.players.map(p=>p.lostValue??0);}
+    }else {this.initial=saveGame(state);this.sample(true);}
     this.unsubscribe=subscribeSimulation(state,{
       command:(side,command)=>{if(this.actions.length>=MAX_ACTIONS){this.fail('Replay command limit reached.');return;}this.actions.push({type:'command',side,command});},
       step:dt=>{
@@ -99,28 +108,30 @@ export class MatchRecorder {
     });
   }
   private fail(message:string){this.error=message;this.unsubscribe?.();}
+  private sampleBucket(time:number){return Math.floor((time-this.initial.state.time+1e-8)/5);}
+  private sampleValue():AnalysisSample {return {tick:this.state.tick,time:this.state.time,players:this.state.players.map((_,side)=>armySample(this.state,side as Side,this.losses[side],this.gathered[side],this.buildingLosses[side],this.lostValue[side]))};}
   private sample(force=false){
-    if(!force&&this.state.time-this.sampledAt<5)return;
-    const sample:AnalysisSample={tick:this.state.tick,time:this.state.time,players:this.state.players.map((_,side)=>armySample(this.state,side as Side,this.losses[side],this.gathered[side],this.buildingLosses[side],this.lostValue[side]))};
+    const bucket=this.sampleBucket(this.state.time);if(!force&&bucket<=this.sampledBucket)return;
+    const sample=this.sampleValue();
     if(this.samples.at(-1)?.tick===sample.tick)this.samples[this.samples.length-1]=sample;else this.samples.push(sample);
-    this.sampledAt=this.state.time;
+    this.sampledBucket=bucket;
   }
   get failure(){return this.error;}
-  get analysis(){this.sample(true);return structuredClone(this.samples);}
+  get analysis(){const samples=structuredClone(this.samples),sample=this.sampleValue();if(samples.at(-1)?.tick===sample.tick)samples[samples.length-1]=sample;else samples.push(sample);return samples;}
   get technologyTimings(){return structuredClone(this.technologies);}
   export():ReplayArchive {
     if(this.error)throw new Error(this.error);
-    this.sample(true);
-    return {format:FORMAT,version:1,initial:structuredClone(this.initial),actions:structuredClone(this.actions),finalTick:this.state.tick,finalChecksum:replayChecksum(this.state),analysis:structuredClone(this.samples),technologies:this.technologyTimings};
+    return {format:FORMAT,version:1,checksumVersion:SAVE_VERSION,simulationRevision:SIMULATION_REVISION,initial:structuredClone(this.initial),actions:structuredClone(this.actions),finalTick:this.state.tick,finalChecksum:replayChecksum(this.state),analysis:this.analysis,technologies:this.technologyTimings};
   }
   dispose(){this.unsubscribe();}
 }
 
 export function decodeReplay(input:unknown):ReplayArchive {
   if(typeof input==='string'){if(input.length>20*1024*1024)throw new Error('Replay exceeds 20 MiB.');try{input=JSON.parse(input);}catch{throw new Error('Invalid replay JSON.');}}
-  if(!record(input)||!exactKeys(input,['format','version','initial','actions','finalTick','finalChecksum','analysis','technologies','checksumVersion'])||input.format!==FORMAT||input.version!==1)throw new Error('Unsupported replay format or version.');
+  if(!record(input)||!exactKeys(input,['format','version','initial','actions','finalTick','finalChecksum','analysis','technologies','checksumVersion','simulationRevision'])||input.format!==FORMAT||input.version!==1)throw new Error('Unsupported replay format or version.');
   const initial=loadGame(input.initial);
-  if(input.checksumVersion!==undefined&&(!integer(input.checksumVersion)||input.checksumVersion<1||input.checksumVersion>SAVE_VERSION))throw new Error('Unsupported replay checksum version.');
+  if(!record(input.initial)||!integer(input.initial.version)||![1,2,SAVE_VERSION].includes(input.initial.version)||input.checksumVersion!==undefined&&input.checksumVersion!==input.initial.version)throw new Error('Replay checksum version must match its original save version.');
+  if(input.simulationRevision!==undefined&&(typeof input.simulationRevision!=='string'||!/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,63}$/.test(input.simulationRevision)))throw new Error('Invalid simulation rules revision.');
   const validSide=(side:unknown)=>integer(side)&&side<initial.players.length;
   if(!Array.isArray(input.actions)||input.actions.length>MAX_ACTIONS)throw new Error('Invalid replay actions.');
   let ticks=0;
@@ -148,9 +159,12 @@ export function decodeReplay(input:unknown):ReplayArchive {
     if(!record(tech)||!exactKeys(tech,['side','upgrade','tick','time'])||!validSide(tech.side)||typeof tech.upgrade!=='string'||tech.upgrade.length>80||!integer(tech.tick)||tech.tick<initial.tick||tech.tick>input.finalTick||typeof tech.time!=='number'||!Number.isFinite(tech.time)||tech.time<initial.time)throw new Error('Invalid technology timing.');
   }
   const decoded=structuredClone(input) as unknown as ReplayArchive;
-  if(record(input.initial)&&input.initial.version===1){decoded.initial=saveGame(initial);decoded.checksumVersion=1;}
+  decoded.checksumVersion=input.initial.version;
+  decoded.simulationRevision=input.simulationRevision as string|undefined??LEGACY_SIMULATION_REVISIONS[input.initial.version];
   return decoded;
 }
+
+export function replayRulesCompatible(archive:ReplayArchive):boolean {return archive.initial.version===SAVE_VERSION&&(archive.simulationRevision??LEGACY_SIMULATION_REVISIONS[archive.initial.version])===SIMULATION_REVISION;}
 
 export class ReplayPlayer {
   readonly archive:ReplayArchive;
@@ -159,7 +173,7 @@ export class ReplayPlayer {
   private stepOffset=0;
   private recorder:MatchRecorder;
   private checkpoints:Array<{save:ReturnType<typeof saveGame>;history:ReplayArchive;cursor:number;offset:number}>=[];
-  constructor(input:unknown){this.archive=decodeReplay(input);this.state=loadGame(this.archive.initial);this.recorder=new MatchRecorder(this.state);this.settleCommands();}
+  constructor(input:unknown){this.archive=decodeReplay(input);if(!replayRulesCompatible(this.archive))throw new Error(`This replay uses simulation version ${this.archive.initial.version}, rules ${this.archive.simulationRevision}. This build plays version ${SAVE_VERSION}, rules ${SIMULATION_REVISION}. Its saved match can be loaded with new replay history.`);this.state=loadGame(this.archive.initial);this.recorder=new MatchRecorder(this.state);this.settleCommands();}
   get finished(){return this.cursor===this.archive.actions.length;}
   /** Recompute charts from playback rather than trusting imported chart values. */
   get analysis(){return this.recorder.analysis;}

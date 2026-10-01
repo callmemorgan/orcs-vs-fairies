@@ -180,7 +180,15 @@ try {
   assert.notEqual(planFor(constructed, first).buildingId, planFor(constructed, second).buildingId); evidence.blueprintFoundationAndOrderIdsMatch = true;
   await loadNamed('Deferred plans'); await loadNamed('Constructed plans'); const restored = await saveNamed('Constructed restored'); assert.deepEqual(restored.game, constructed.game); assert.deepEqual(restored.planning, constructed.planning); assert.equal(restored.replay.finalChecksum, constructed.replay.finalChecksum); evidence.targetsAndPlansPersistThroughSaveLoad = true;
 
-  step = 'photo and replay restrictions'; await selectWorker(workers.at(-1)); await page.keyboard.press('F9'); await page.locator('.photo-controls:not([hidden])').waitFor({ state: 'visible' }); const photo = await snap();
+  step = 'photo and replay restrictions';
+  // Observe the builder reach its foundation before aiming at its rendered body.
+  // Closing the save dialog resumes ordinary movement; a stale position can miss.
+  await closeSessions();
+  await page.waitForFunction(id => {
+    const state=window.rts?.state,worker=state?.entities.find(e=>e.id===id);
+    return worker?.order.type==='build'&&state.entities.some(e=>e.id===worker.order.target&&e.progress>0&&e.progress<1);
+  },workers.at(-1),{timeout:20000});
+  await selectWorker(workers.at(-1)); await page.keyboard.press('F9'); await page.locator('.photo-controls:not([hidden])').waitFor({ state: 'visible' }); const photo = await snap();
   assert.equal(photo.workers.find(w => w.id === workers.at(-1)).order.type, 'build');
   assert.equal(await page.locator('[data-planning-launch]').isVisible(), false); for (const key of ['p', 'x', 'F2']) await page.keyboard.press(key); await clickCanvas(await screenPoint(12.5, 12.5), { button: 'right' }); await page.waitForTimeout(120); assert.equal((await snap()).tick, photo.tick); assert.deepEqual(workerOrders(await snap()), workerOrders(photo)); await screenshot('photo-mode'); evidence.photoModeDisablesPlanningAndOrders = true;
   await page.getByRole('button', { name: 'Exit photo mode', exact: true }).click(); await openSessions('replay');

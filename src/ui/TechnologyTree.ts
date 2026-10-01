@@ -8,10 +8,10 @@ export function technologyTree(host:HTMLElement,research:(id:UpgradeId,building:
  dialog.innerHTML='<header><div><small>PLAN YOUR SETTLEMENT</small><h2>Technology tree</h2></div><button aria-label="Close technology tree">Close</button></header><p>Research uses resources immediately. Each building can research one technology at a time while recruiting troops.</p><div class="age-columns"></div>';
  host.append(dialog);dialog.querySelector('button')!.onclick=()=>dialog.close();
  dialog.addEventListener('keydown',event=>event.stopPropagation());
- let latest:GameState|undefined;let lastKey='';let latestPaused=false;let latestSide:Side=0;
- function update(s:GameState,paused:boolean,side:Side=0){
-  latest=s;latestPaused=paused;latestSide=side;if(!dialog.open)return;
-  const key=JSON.stringify([side,s.players[side],s.entities.filter(e=>e.side===side&&e.kind==='building').map(e=>[e.id,e.hp>0,e.progress===1,e.research,Math.floor(e.researchProgress*100)]),paused,s.winner,s.draw]);
+ let latest:GameState|undefined;let lastKey='';let latestPaused=false;let latestSide:Side=0;let latestReadOnly=false;
+ function update(s:GameState,paused:boolean,side:Side=0,readOnly=false){
+  latest=s;latestPaused=paused;latestSide=side;latestReadOnly=readOnly;if(!dialog.open)return;
+  const key=JSON.stringify([side,s.players[side],s.entities.filter(e=>e.side===side&&e.kind==='building').map(e=>[e.id,e.hp>0,e.progress===1,e.research,Math.floor(e.researchProgress*100)]),paused,readOnly,s.winner,s.draw]);
   if(key===lastKey)return;lastKey=key;
   const player=s.players[side],f=FACTIONS[player.faction];
   const columns=dialog.querySelector('.age-columns')!;
@@ -29,7 +29,7 @@ export function technologyTree(host:HTMLElement,research:(id:UpgradeId,building:
     if(active)reason=`Researching · ${Math.ceil((1-active.researchProgress)*def.researchTime)}s`;
     if(!reason&&!producer)reason=buildings.length?'Production building is researching':`Requires ${f.buildings[def.building].name}`;
     if(!reason&&(['wood','ore','crystal'] as const).some(r=>player[r]<def.cost[r]))reason='Not enough resources';
-    if(paused)reason='Battle paused';if(s.winner!==null||s.draw)reason='Match ended';
+    if(readOnly&&!reason)reason='Viewing match';if(paused)reason='Battle paused';if(s.winner!==null||s.draw)reason='Match ended';
     const button=document.createElement('button');button.dataset.technology=def.id;button.disabled=!!reason;
     const name=document.createElement('strong');name.textContent=def.name;
     const description=document.createElement('span');description.textContent=def.description;
@@ -41,5 +41,5 @@ export function technologyTree(host:HTMLElement,research:(id:UpgradeId,building:
   }
   if(focused)dialog.querySelector<HTMLElement>(`[data-technology="${focused}"]`)?.focus({preventScroll:true});
  }
- return {open:()=>{lastKey='';dialog.showModal();if(latest)update(latest,latestPaused,latestSide);},update,close:()=>dialog.close()};
+ return {open:()=>{lastKey='';dialog.showModal();if(latest)update(latest,latestPaused,latestSide,latestReadOnly);},update,close:()=>dialog.close()};
 }

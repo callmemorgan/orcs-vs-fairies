@@ -1,6 +1,7 @@
 import { technologyTree } from './TechnologyTree';
 import { researchRequirement, playerAge, AGE_NAMES } from '../core/progression';
 import { observedHealth, PlayerView } from '../core/observation';
+import { isAllied } from '../core/simulation';
 import { ABILITIES, FACTIONS, UPGRADES } from '../core/content';
 import type { BuildingRole, Cost, Entity, FactionId, GameState, MapSize, UnitRole, UpgradeId, Side } from '../core/types';
 import './style.css';
@@ -13,6 +14,8 @@ import './minimap-alerts.css';
 
 export interface HudCallbacks {
   isReplay?:()=>boolean;
+  canCommand?:()=>boolean;canPause?:()=>boolean;isInspection?:()=>boolean;
+  resourceMemory?:()=>ReturnType<PlayerView['resourcesFor']>|undefined;
   build:(role:BuildingRole)=>void; train:(role:UnitRole)=>void; cancelTrain:(id:number,index:number,expectedQueue:string)=>void; research:(upgrade:UpgradeId,building?:number)=>void; ability:()=>void; clearRally:()=>void; toggleGate?:()=>void;
   stop:()=>void; hold:()=>void; attackMove:()=>void; select:(ids:number[])=>void; pause:()=>void; restart:()=>void; center:(x:number,y:number)=>void;
   toggleMuted:()=>void; isMuted:()=>boolean; isPaused?:()=>boolean; side?:()=>Side; bindingLabel?:(action:string)=>string;
@@ -93,7 +96,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
     if(!input.value.trim()||!Number.isSafeInteger(seed)||seed<0||seed>4294967295){input.setCustomValidity('Enter a whole-number seed from 0 to 4294967295.');input.reportValidity();return;}
     onStart(faction,el<HTMLSelectElement>('#opponent').value as FactionId,el<HTMLSelectElement>('#map-size').value as MapSize,seed);
   });
-  const togglePause=()=>{if(!callbacks||(state?.winner!==null||state?.draw))return;paused=!paused;callbacks.pause();};
+  const togglePause=()=>{if(!callbacks||callbacks.canPause?.()===false||(state?.winner!==null||state?.draw))return;paused=!paused;callbacks.pause();};
   el('#pause-button').addEventListener('click',togglePause);
   el('#sound-button').addEventListener('click',()=>callbacks?.toggleMuted());
   el('#resume-button').addEventListener('click',togglePause);
@@ -105,7 +108,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
     const cw=map.width/s.width,ch=map.height/s.height;
     ctx.fillStyle='#070e10';ctx.fillRect(0,0,map.width,map.height);
     for(const i of s.explored[localSide]){ctx.fillStyle=s.visible[localSide].has(i)?({grass:'#45654a',road:'#8e8058',mud:'#69593f',water:'#316579',shallows:'#609690',rock:'#7c8386',bridge:'#b49a6b'}[s.terrain[i]]):'#22342d';ctx.fillRect((i%s.width)*cw,Math.floor(i/s.width)*ch,Math.ceil(cw),Math.ceil(ch));}
-    for(const r of playerView.resourcesFor(s)){const i=Math.floor(r.y)*s.width+Math.floor(r.x);if(r.amount<=0||!s.explored[localSide].has(i))continue;ctx.fillStyle=r.kind==='wood'?'#688c53':r.kind==='crystal'?'#b497e7':'#b49c76';ctx.fillRect(r.x*cw-1,r.y*ch-1,2,2);}
+    for(const r of callbacks?.resourceMemory?.()??playerView.resourcesFor(s)){const i=Math.floor(r.y)*s.width+Math.floor(r.x);if(r.amount<=0||!s.explored[localSide].has(i))continue;ctx.fillStyle=r.kind==='wood'?'#688c53':r.kind==='crystal'?'#b497e7':'#b49c76';ctx.fillRect(r.x*cw-1,r.y*ch-1,2,2);}
     const settings=appearance.value,teams=(s as GameState&{teams?:number[]}).teams;
     for(const e of s.entities){
       if(e.hp<=0||e.side!==localSide&&!s.visible[localSide].has(Math.floor(e.y)*s.width+Math.floor(e.x)))continue;
@@ -139,7 +142,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
     notice,
     activateActionSlot:(slot:number)=>{const action=actions.find(a=>a.hotkey===['Z','C','B','V','N','M'][slot-1]);if(!action||display.isOpen()||paused||!menu.hidden||document.querySelector('.session-overlay:not([hidden])'))return false;action.button.click();return true;},
     update:(s:GameState,selected:number[],cb:HudCallbacks)=>{
-      if(cb.isReplay?.()&&state!==s)minimapAlerts.reset();state=s;callbacks=cb;paused=cb.isPaused?.()??paused;const nextSide=cb.side?.()??0;if(nextSide!==localSide){localSide=nextSide;playerView=new PlayerView(localSide);actionsKey='';}tree.update(s,paused,localSide);if(!menu.hidden)return;const player=s.players[localSide],definition=FACTIONS[player.faction];
+      if(cb.isReplay?.()&&state!==s)minimapAlerts.reset();state=s;callbacks=cb;paused=cb.isPaused?.()??paused;const nextSide=cb.side?.()??0;if(nextSide!==localSide){localSide=nextSide;playerView=new PlayerView(localSide);actionsKey='';}tree.update(s,paused,localSide,cb.canCommand?.()===false);if(!menu.hidden)return;const player=s.players[localSide],definition=FACTIONS[player.faction];
       setText('#sound-button',cb.isMuted()?'Enable sound':'Mute sound');el('#sound-button').setAttribute('aria-pressed',String(cb.isMuted()));
       setText('#faction-name',definition.name);el<HTMLImageElement>('#banner-portrait').src=`/assets/portrait-${player.faction}.png`;setText('#wood',Math.floor(player.wood).toString());setText('#ore',Math.floor(player.ore).toString());setText('#crystal',Math.floor(player.crystal).toString());setText('#population',`${player.population} / ${player.cap}`);
       el('.objective-tag').textContent=`${AGE_NAMES[playerAge(s.players[localSide])]} · Destroy all enemy strongholds · ${s.mapSize} · seed ${s.seed}`;
@@ -151,7 +154,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
       setText('#selection-name',entities.length>1?`${entities.length} selected`:entityDef?.name??'Your command awaits');
       const portraitId=entityDef?.id??'';if(el('#portrait').dataset.asset!==portraitId){el('#portrait').dataset.asset=portraitId;el('#portrait').innerHTML=portraitId?`<img src="/assets/selection-${portraitId}.png" alt="${escape(entityDef!.name)}" />`:'⚑';}
       el('.health-track').hidden=!first;
-      if(first){el('#health-fill').style.width=`${Math.max(0,first.hp/first.maxHp)*100}%`;setText('#selection-status',`${Math.ceil(first.hp)} / ${first.maxHp} health${first.progress<1?` · Building ${Math.floor(first.progress*100)}%`:first.kind==='unit'?` · ${first.order.type==='idle'?'Ready':first.order.type==='hold'?'Holding position':first.order.type}`:''}${first.entrenchedAt!==undefined?(s.time-first.entrenchedAt>=3?' · Emplaced':' · Preparing emplacement'):''}${first.maxShield?` · Shield ${Math.ceil(first.shield??0)}/${first.maxShield}`:''}${(first.surgeUntil??0)>s.time?' · Surging':''}${first.raised?' · Raised · '+Math.ceil(first.expires-s.time)+'s remaining':''}${first.rally?' · Rally set':''}${first.role==='gate'?(first.gateOpen?' · Gate open':' · Gate closed'):''}${first.research?` · Researching ${UPGRADES[first.research].name} ${Math.floor(first.researchProgress*100)}%`:''}${first.side!==localSide?' · Enemy':''}`);}
+      if(first){el('#health-fill').style.width=`${Math.max(0,first.hp/first.maxHp)*100}%`;setText('#selection-status',`${Math.ceil(first.hp)} / ${first.maxHp} health${first.progress<1?` · Building ${Math.floor(first.progress*100)}%`:first.kind==='unit'?` · ${first.order.type==='idle'?'Ready':first.order.type==='hold'?'Holding position':first.order.type}`:''}${first.entrenchedAt!==undefined?(s.time-first.entrenchedAt>=3?' · Emplaced':' · Preparing emplacement'):''}${first.maxShield?` · Shield ${Math.ceil(first.shield??0)}/${first.maxShield}`:''}${(first.surgeUntil??0)>s.time?' · Surging':''}${first.raised?' · Raised'+(first.expires>s.time?' · '+Math.ceil(first.expires-s.time)+'s remaining':''):''}${first.rally?' · Rally set':''}${first.role==='gate'?(first.gateOpen?' · Gate open':' · Gate closed'):''}${first.research?` · Researching ${UPGRADES[first.research].name} ${Math.floor(first.researchProgress*100)}%`:''}${first.side!==localSide?(isAllied(s,localSide,first.side)?' · Ally':' · Enemy'):''}`);}
       else setText('#selection-status','Select a worker to gather resources or raise your first buildings.');
       const construction=el('.construction-track');construction.hidden=!first||(first.progress>=1&&!first.research);if(first)construction.querySelector<HTMLElement>('i')!.style.width=`${(first.progress<1?first.progress:first.researchProgress)*100}%`;
       if(entities.length>1){const hp=entities.reduce((total,e)=>total+e.hp,0),maxHp=entities.reduce((total,e)=>total+e.maxHp,0);el('#health-fill').style.width=`${hp/maxHp*100}%`;setText('#selection-status',`${Math.ceil(hp)} / ${maxHp} group health`);construction.hidden=true;}
@@ -207,7 +210,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
         if(action.buildRole&&playerAge(player)<(action.buildRole==='hq'?2:definition.buildings[action.buildRole].age??1))reason='Requires Town Age';
         if(action.upgrade){if(action.entity!.progress<1)reason='Under construction';else if(action.entity!.research)reason=`Researching ${UPGRADES[action.entity!.research].name}`;else reason=researchRequirement(s,localSide,action.upgrade)??reason;}
         if(action.ability){const remaining=Math.max(0,Math.ceil(Math.min(...casters.map(e=>(e.abilityReadyAt??0)-s.time))));if(remaining>0)reason=`${remaining}s cooldown`;else reason=abilityTargetReason(s,casters);action.button.style.setProperty('--cooldown',`${remaining?Math.min(100,remaining/Math.max(...abilityIds.map(id=>ABILITIES[id].cooldown))*100):0}%`);}
-        if(paused)reason='Battle paused';if(s.winner!==null||s.draw)reason='Match ended';
+        if(cb.canCommand?.()===false)reason=s.eliminated[localSide]?'Player eliminated':'Viewing match';if(paused)reason='Battle paused';if(s.winner!==null||s.draw)reason='Match ended';
         action.button.setAttribute('aria-disabled',String(!!reason));action.button.classList.toggle('unavailable',!!reason);
         action.button.querySelector<HTMLElement>('.action-state')!.textContent=action.ability?(reason.includes('cooldown')?reason.replace(' cooldown',''):reason?'Unavailable':'Ready'):reason?'×':'';
         action.button.dataset.tooltip=`<h3>${escape(action.name)} ${action.hotkey?`<kbd>${action.hotkey}</kbd>`:''}</h3>${action.cost?`<div class="tooltip-cost">${costMarkup(action.cost)}</div>`:''}<p>${escape(action.description)}</p>${reason?`<p class="unavailable-reason">${escape(reason)}</p>`:'<p class="ready-reason">Ready</p>'}`;
@@ -215,13 +218,13 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
       const producers=own.filter(e=>e.queue.length>0);const queue=el('#production-queue');
       const queueKey=producers.map(e=>`${e.id}:${e.queue.join(',')}`).join(';');
       if(queue.dataset.key!==queueKey){queue.dataset.key=queueKey;queue.innerHTML=producers.map(producer=>`<div class="queue-row" data-producer="${producer.id}"><span class="queue-label">RECRUITING</span>${producer.queue.map((role,i)=>`<button type="button" class="queue-item" data-index="${i}" aria-label="Cancel ${escape(definition.units[role].name)} in queue slot ${i+1}" data-tooltip="${escape(`<h3>${definition.units[role].name}</h3><p>${i===0?'In production':'Queued'} • ${definition.units[role].trainTime}s recruitment</p><p>Click to cancel. Full refund: ${costText(definition.units[role].cost)}.</p>`)}"><img src="${art(definition.units[role].id)}" alt="${escape(definition.units[role].name)}"/>${i===0?'<b></b><span class="queue-progress"><i></i></span>':`<em>${i+1}</em>`}</button>`).join('')}</div>`).join('');}
-      for(const producer of producers){const row=queue.querySelector<HTMLElement>(`[data-producer="${producer.id}"]`)!;for(const button of Array.from(row.querySelectorAll<HTMLButtonElement>('.queue-item'))){button.disabled=paused||s.winner!==null||s.draw;const expected=JSON.stringify(producer.queue);button.onclick=()=>callbacks?.cancelTrain(producer.id,Number(button.dataset.index),expected);}}
+      for(const producer of producers){const row=queue.querySelector<HTMLElement>(`[data-producer="${producer.id}"]`)!;for(const button of Array.from(row.querySelectorAll<HTMLButtonElement>('.queue-item'))){button.disabled=cb.canCommand?.()===false||paused||s.winner!==null||s.draw;const expected=JSON.stringify(producer.queue);button.onclick=()=>callbacks?.cancelTrain(producer.id,Number(button.dataset.index),expected);}}
       for(const producer of producers){const row=queue.querySelector<HTMLElement>(`[data-producer="${producer.id}"]`)!;row.querySelector('b')!.textContent=`${Math.max(0,Math.ceil((1-producer.trainProgress)*definition.units[producer.queue[0]].trainTime))}s`;row.querySelector<HTMLElement>('.queue-progress i')!.style.width=`${producer.trainProgress*100}%`;}
       for(const action of actions){const slot=['Z','C','B','V','N','M'].indexOf(action.hotkey??'');const id=slot>=0?`action${slot+1}`:({A:'attackMove',X:'stop',H:'hold',Q:'ability'} as Record<string,string>)[action.hotkey??''];const label=id?cb.bindingLabel?.(id):undefined;if(label!==undefined){const key=action.button.querySelector('kbd');if(key)key.textContent=label;}}
       tooltip.refresh();
-      overlay.hidden=!!cb.isReplay?.()||!paused&&s.winner===null&&!s.draw;
-      if(!overlay.hidden){const ended=s.winner!==null||s.draw;setText('#overlay-title',ended?s.draw?'Draw':s.winner===localSide?'Victory':'Defeat':'Battle paused');setText('#overlay-eyebrow',ended?'THE BATTLE IS OVER':'SKIRMISH');setText('#overlay-description',ended?s.draw?'Both sides lost their last stronghold in the same exchange.':s.winner===localSide?'The last enemy stronghold has fallen. The Elderwood is yours.':'Your last stronghold has fallen. Raise your banner and try again.':'Take a moment to plan your next move.');el('#resume-button').hidden=ended;}
-      setText('#pause-button',paused?'Resume':'Pause');drawMinimap(s);
+      overlay.hidden=!!cb.isInspection?.()||!!cb.isReplay?.()||!paused&&s.winner===null&&!s.draw;
+      if(!overlay.hidden){const ended=s.winner!==null||s.draw;setText('#overlay-title',ended?s.draw?'Draw':s.winningTeam===s.teams[localSide]?'Victory':'Defeat':'Battle paused');setText('#overlay-eyebrow',ended?'THE BATTLE IS OVER':'SKIRMISH');setText('#overlay-description',ended?s.draw?'Both sides lost their last stronghold in the same exchange.':s.winningTeam===s.teams[localSide]?'The last enemy stronghold has fallen. The Elderwood is yours.':'Your team has lost its last stronghold. Raise your banner and try again.':'Take a moment to plan your next move.');el('#resume-button').hidden=ended;}
+      el<HTMLButtonElement>('#pause-button').disabled=cb.canPause?.()===false;setText('#pause-button',paused?'Resume':'Pause');drawMinimap(s);
     }
   };
 }
