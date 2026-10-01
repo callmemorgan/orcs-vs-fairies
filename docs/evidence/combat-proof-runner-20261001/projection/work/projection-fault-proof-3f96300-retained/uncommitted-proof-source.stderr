@@ -1,0 +1,117 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Adapter source bytes differ from its committed HEAD blob
++ actual - expected
+... Skipped lines
+
++ Buffer(18115) [Uint8Array] [
+- Buffer(18054) [Uint8Array] [
+    105,
+    109,
+    112,
+    111,
+    114,
+...
+    10,
++   10,
++   47,
++   47,
++   32,
++   85,
++   110,
++   99,
++   111,
++   109,
++   109,
++   105,
++   116,
++   116,
++   101,
++   100,
++   32,
++   112,
++   114,
++   111,
++   111,
++   102,
++   32,
++   115,
++   111,
++   117,
++   114,
++   99,
++   101,
++   32,
++   102,
++   97,
++   117,
++   108,
++   116,
++   32,
++   105,
++   110,
++   32,
++   116,
++   104,
++   101,
++   32,
++   105,
++   115,
++   111,
++   108,
++   97,
++   116,
++   101,
++   100,
++   32,
++   99,
++   104,
++   101,
++   99,
++   107,
++   111,
++   117,
++   116,
++   46,
++   10
+  ]
+
+    at prepareCombatCliProjection (file:///tmp/combat-projection-portable-receipts-proof-20261001/source/work/prepare-combat-cli-projection.mjs:11072:12)
+    at main (file:///tmp/combat-projection-portable-receipts-proof-20261001/source/work/prepare-combat-cli-projection.mjs:11147:30)
+    at file:///tmp/combat-projection-portable-receipts-proof-20261001/source/work/prepare-combat-cli-projection.mjs:11149:85
+    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+    at async node:internal/modules/esm/loader:647:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: Buffer(18115) [Uint8Array] [
+    105, 109, 112, 111, 114, 116,  32,  97, 115, 115, 101, 114,
+    116,  32, 102, 114, 111, 109,  32,  39, 110, 111, 100, 101,
+     58,  97, 115, 115, 101, 114, 116,  47, 115, 116, 114, 105,
+     99, 116,  39,  59,  10, 105, 109, 112, 111, 114, 116,  32,
+    123,  32,  99, 114, 101,  97, 116, 101,  72,  97, 115, 104,
+     32, 125,  32, 102, 114, 111, 109,  32,  39, 110, 111, 100,
+    101,  58,  99, 114, 121, 112, 116, 111,  39,  59,  10, 105,
+    109, 112, 111, 114, 116,  32, 123,  32, 101, 120, 101,  99,
+     70, 105, 108, 101,
+    ... 18015 more items
+  ],
+  expected: Buffer(18054) [Uint8Array] [
+    105, 109, 112, 111, 114, 116,  32,  97, 115, 115, 101, 114,
+    116,  32, 102, 114, 111, 109,  32,  39, 110, 111, 100, 101,
+     58,  97, 115, 115, 101, 114, 116,  47, 115, 116, 114, 105,
+     99, 116,  39,  59,  10, 105, 109, 112, 111, 114, 116,  32,
+    123,  32,  99, 114, 101,  97, 116, 101,  72,  97, 115, 104,
+     32, 125,  32, 102, 114, 111, 109,  32,  39, 110, 111, 100,
+    101,  58,  99, 114, 121, 112, 116, 111,  39,  59,  10, 105,
+    109, 112, 111, 114, 116,  32, 123,  32, 101, 120, 101,  99,
+     70, 105, 108, 101,
+    ... 17954 more items
+  ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.21.0

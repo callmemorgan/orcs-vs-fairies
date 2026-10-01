@@ -1,0 +1,257 @@
+{
+  "sourcePin": "3f963008a3ce79e4615a8ca115954f9f4ce077ab",
+  "generatorSource": "/tmp/combat-projection-portable-receipts-proof-20261001/source/work/combat-projection-fixture.ts",
+  "generatorSourceSha256": "7cef57b5686196e9ab73f4e7cd0be4c795572c99edb813a958cd57b6fe9f2710",
+  "controllerPolicy": {
+    "native": [
+      "human",
+      "external"
+    ],
+    "cliLoadSide": 0,
+    "normalized": [
+      "external",
+      "external"
+    ]
+  },
+  "actorIds": {
+    "mover": 45,
+    "cannon": 46,
+    "target": 8
+  },
+  "targetKind": "hostile-hq",
+  "movement": {
+    "initialPosition": {
+      "x": 8.5,
+      "y": 20.5
+    },
+    "firstMovedPosition": {
+      "x": 12.028624037799434,
+      "y": 20.590579811544792
+    },
+    "finalPosition": {
+      "x": 14.139650753210118,
+      "y": 22.176902004902256
+    }
+  },
+  "payment": {
+    "initialFunds": {
+      "wood": 2000,
+      "ore": 2000,
+      "crystal": 1000
+    },
+    "finalFunds": {
+      "wood": 1975,
+      "ore": 1965,
+      "crystal": 1000
+    },
+    "loadOre": 15,
+    "fittingWood": 25,
+    "fittingOre": 20
+  },
+  "ammunition": {
+    "loaded": 5,
+    "pending": 4,
+    "coalescedPending": 3,
+    "final": 3
+  },
+  "impacts": {
+    "initialHp": 1800,
+    "firstImpactHp": 1593,
+    "finalHp": 1386,
+    "damage": 414,
+    "firstShot": {
+      "id": 1,
+      "source": {
+        "id": 46,
+        "side": 0,
+        "definitionId": "dwarf-siege",
+        "faction": "dwarves",
+        "elevation": 0,
+        "x": 18.5,
+        "y": 20.5
+      },
+      "target": {
+        "x": 26.5,
+        "y": 20.5
+      },
+      "rawDamage": 28,
+      "buildingMultiplier": 4,
+      "payload": {
+        "kind": "cannon",
+        "damageFactor": 1.5,
+        "armorPiercing": false,
+        "radius": 0
+      },
+      "modification": "stone",
+      "impactAt": 2.9666666666666672
+    },
+    "secondShot": {
+      "id": 2,
+      "source": {
+        "id": 46,
+        "side": 0,
+        "definitionId": "dwarf-siege",
+        "faction": "dwarves",
+        "elevation": 0,
+        "x": 18.5,
+        "y": 20.5
+      },
+      "target": {
+        "x": 26.5,
+        "y": 20.5
+      },
+      "rawDamage": 28,
+      "buildingMultiplier": 4,
+      "payload": {
+        "kind": "cannon",
+        "damageFactor": 1.5,
+        "armorPiercing": false,
+        "radius": 0
+      },
+      "modification": "stone",
+      "impactAt": 6.816666666666654
+    }
+  },
+  "pending": {
+    "path": "/tmp/combat-projection-portable-receipts-proof-20261001/source/work/projection-fixtures/pending.session.json",
+    "tick": 41,
+    "time": 2.0500000000000007,
+    "sha256": "346993656b44329cc09f4a07d91f32d44659f64cd41435d6377c520e846ed9b5",
+    "actionCount": 7,
+    "lastAction": {
+      "type": "advance",
+      "dt": 0.05,
+      "ticks": 1
+    },
+    "fullNativeRoundtripPassed": true,
+    "fullReplayEnvelopePassed": true
+  },
+  "coalescedPending": {
+    "path": "/tmp/combat-projection-portable-receipts-proof-20261001/source/work/projection-fixtures/coalesced-pending.session.json",
+    "tick": 118,
+    "time": 5.899999999999987,
+    "sha256": "78c30e94a76fe3a6722553359a2fc20b692ca971f64d84c7a88a1aec1e6d5a1b",
+    "actionCount": 12,
+    "lastAction": {
+      "type": "advance",
+      "dt": 0.05,
+      "ticks": 57
+    },
+    "fullNativeRoundtripPassed": true,
+    "fullReplayEnvelopePassed": true
+  },
+  "final": {
+    "path": "/tmp/combat-projection-portable-receipts-proof-20261001/source/work/projection-fixtures/final.session.json",
+    "tick": 138,
+    "time": 6.8999999999999835,
+    "sha256": "8828fc54756be806c21484efc8fc71e1a2fb9f1ae2f8b3d29c0fac1351c6c650",
+    "actionCount": 12,
+    "lastAction": {
+      "type": "advance",
+      "dt": 0.05,
+      "ticks": 77
+    },
+    "fullNativeRoundtripPassed": true,
+    "fullReplayEnvelopePassed": true
+  },
+  "commands": [
+    {
+      "tick": 0,
+      "side": 0,
+      "command": {
+        "type": "move",
+        "ids": [
+          45
+        ],
+        "x": 12.5,
+        "y": 20.5
+      },
+      "accepted": true
+    },
+    {
+      "tick": 40,
+      "side": 0,
+      "command": {
+        "type": "stop",
+        "ids": [
+          45
+        ]
+      },
+      "accepted": true
+    },
+    {
+      "tick": 40,
+      "side": 0,
+      "command": {
+        "type": "ability",
+        "ids": [
+          46
+        ]
+      },
+      "accepted": true
+    },
+    {
+      "tick": 40,
+      "side": 0,
+      "command": {
+        "type": "modifyArtillery",
+        "ids": [
+          46
+        ],
+        "modification": "stone"
+      },
+      "accepted": true
+    },
+    {
+      "tick": 40,
+      "side": 0,
+      "command": {
+        "type": "attack",
+        "ids": [
+          46
+        ],
+        "target": 8
+      },
+      "accepted": true
+    },
+    {
+      "tick": 41,
+      "side": 0,
+      "command": {
+        "type": "stop",
+        "ids": [
+          46
+        ]
+      },
+      "accepted": true
+    },
+    {
+      "tick": 61,
+      "side": 0,
+      "command": {
+        "type": "move",
+        "ids": [
+          45
+        ],
+        "x": 14.5,
+        "y": 22.5
+      },
+      "accepted": true
+    },
+    {
+      "tick": 61,
+      "side": 0,
+      "command": {
+        "type": "attack",
+        "ids": [
+          46
+        ],
+        "target": 8
+      },
+      "accepted": true
+    }
+  ],
+  "sameTickStopAfterPending": true,
+  "finalAdvanceExtendedBy": 20,
+  "completeNativeDecoderAndReplayEqualityPassed": true
+}

@@ -1,0 +1,130 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Executed adapter bundle does not match the pinned current-source rebuild
++ actual - expected
+... Skipped lines
+
++ Buffer(748161) [Uint8Array] [
+- Buffer(748087) [Uint8Array] [
+    47,
+    47,
+    32,
+    115,
+    99,
+...
+    10,
++   10,
++   47,
++   47,
++   32,
++   68,
++   105,
++   118,
++   101,
++   114,
++   103,
++   101,
++   110,
++   116,
++   32,
++   101,
++   120,
++   101,
++   99,
++   117,
++   116,
++   101,
++   100,
++   32,
++   98,
++   121,
++   116,
++   101,
++   115,
++   32,
++   119,
++   105,
++   116,
++   104,
++   32,
++   105,
++   100,
++   101,
++   110,
++   116,
++   105,
++   99,
++   97,
++   108,
++   32,
++   100,
++   101,
++   99,
++   108,
++   97,
++   114,
++   101,
++   100,
++   32,
++   115,
++   105,
++   109,
++   117,
++   108,
++   97,
++   116,
++   105,
++   111,
++   110,
++   32,
++   118,
++   101,
++   114,
++   115,
++   105,
++   111,
++   110,
++   115,
++   46,
++   10
+  ]
+
+    at prepareCombatCliProjection (file:///tmp/combat-projection-portable-receipts-proof-20261001/source/work/projection-fault-proof-3f96300-retained/stale-adapter.mjs:11086:12)
+    at main (file:///tmp/combat-projection-portable-receipts-proof-20261001/source/work/projection-fault-proof-3f96300-retained/stale-adapter.mjs:11147:30)
+    at file:///tmp/combat-projection-portable-receipts-proof-20261001/source/work/projection-fault-proof-3f96300-retained/stale-adapter.mjs:11149:85
+    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+    at async node:internal/modules/esm/loader:647:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: Buffer(748161) [Uint8Array] [
+     47,  47,  32, 115,  99, 114, 105, 112, 116, 115,  47, 112,
+    114, 101, 112,  97, 114, 101,  95,  99, 111, 109,  98,  97,
+    116,  95,  99, 108, 105,  95, 112, 114, 111, 106, 101,  99,
+    116, 105, 111, 110,  46, 116, 115,  10, 105, 109, 112, 111,
+    114, 116,  32,  97, 115, 115, 101, 114, 116,  32, 102, 114,
+    111, 109,  32,  34, 110, 111, 100, 101,  58,  97, 115, 115,
+    101, 114, 116,  47, 115, 116, 114, 105,  99, 116,  34,  59,
+     10, 105, 109, 112, 111, 114, 116,  32, 123,  32,  99, 114,
+    101,  97, 116, 101,
+    ... 748061 more items
+  ],
+  expected: Buffer(748087) [Uint8Array] [
+     47,  47,  32, 115,  99, 114, 105, 112, 116, 115,  47, 112,
+    114, 101, 112,  97, 114, 101,  95,  99, 111, 109,  98,  97,
+    116,  95,  99, 108, 105,  95, 112, 114, 111, 106, 101,  99,
+    116, 105, 111, 110,  46, 116, 115,  10, 105, 109, 112, 111,
+    114, 116,  32,  97, 115, 115, 101, 114, 116,  32, 102, 114,
+    111, 109,  32,  34, 110, 111, 100, 101,  58,  97, 115, 115,
+    101, 114, 116,  47, 115, 116, 114, 105,  99, 116,  34,  59,
+     10, 105, 109, 112, 111, 114, 116,  32, 123,  32,  99, 114,
+    101,  97, 116, 101,
+    ... 747987 more items
+  ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.21.0

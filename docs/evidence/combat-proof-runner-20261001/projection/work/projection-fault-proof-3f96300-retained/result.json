@@ -1,0 +1,133 @@
+{
+  "sourcePin": "3f963008a3ce79e4615a8ca115954f9f4ce077ab",
+  "passed": 27,
+  "records": [
+    {
+      "name": "equal action streams have empty suffix",
+      "passed": true
+    },
+    {
+      "name": "partial coalesced checkpoint advance retains remaining ticks",
+      "passed": true
+    },
+    {
+      "name": "same-tick commands after checkpoint remain in suffix",
+      "passed": true
+    },
+    {
+      "name": "adjacent equal-dt chunks are equivalent without crossing commands",
+      "passed": true
+    },
+    {
+      "name": "checkpoint before any action retains all actions",
+      "passed": true
+    },
+    {
+      "name": "nonlast checkpoint advance cannot be shortened",
+      "passed": true,
+      "error": "Only the last checkpoint advance may be a strict tick prefix\n\n1 !== 3\n"
+    },
+    {
+      "name": "checkpoint cannot extend beyond final",
+      "passed": true,
+      "error": "Checkpoint tick exceeds the final replay"
+    },
+    {
+      "name": "commands cannot cross an advance boundary",
+      "passed": true,
+      "error": "Checkpoint command/action differs at action 1\n+ actual - expected\n\n  {\n+   command: {\n+     ids: [\n+       1\n+     ],\n+     type: 'hold'\n+   },\n+   side: 0,\n+   type: 'command'\n-   dt: 0.05,\n-   ticks: 20,\n-   type: 'advance'\n  }\n"
+    },
+    {
+      "name": "changed command is rejected",
+      "passed": true,
+      "error": "Checkpoint command/action differs at action 0\n+ actual - expected\n\n  {\n    command: {\n      ids: [\n        1\n      ],\n+     type: 'hold'\n-     type: 'stop'\n    },\n    side: 0,\n    type: 'command'\n  }\n"
+    },
+    {
+      "name": "changed dt is rejected",
+      "passed": true,
+      "error": "Checkpoint advance dt differs at action 1\n\n0.1 !== 0.05\n"
+    },
+    {
+      "name": "different original initial is rejected",
+      "passed": true,
+      "error": "Checkpoint and final replay must have the same original initial envelope\n+ actual - expected\n... Skipped lines\n\n  {\n    format: 'orcs-vs-fairies-save',\n    runtime: {\n      abilities: [],\n      ai: 0,\n...\n          upgrades: [],\n+         wood: 2001\n-         wood: 2000\n        },\n        {\n          cap: 12,\n          crystal: 1000,\n          faction: 'orcs',\n"
+    },
+    {
+      "name": "different rules revision is rejected",
+      "passed": true,
+      "error": "Checkpoint rules revision differs\n+ actual - expected\n\n+ 'different'\n- '3.2.0'\n"
+    },
+    {
+      "name": "different checksum version is rejected",
+      "passed": true,
+      "error": "Checkpoint checksum version differs\n\n2 !== 3\n"
+    },
+    {
+      "name": "normalization changes only cloned controller0 and preserves runtime",
+      "passed": true
+    },
+    {
+      "name": "alternate human side normalization is rejected",
+      "passed": true,
+      "error": "Alternate human sides require an independent AI-continuation reference and are unsupported"
+    },
+    {
+      "name": "AI controlled side0 projection is rejected",
+      "passed": true,
+      "error": "Side 0 must be human or external before projection"
+    },
+    {
+      "name": "tampered full game with adjusted import checksum fails playback",
+      "passed": true,
+      "error": "Replay final state diverged."
+    },
+    {
+      "name": "import-pair validity cannot substitute for native playback",
+      "passed": true
+    },
+    {
+      "name": "alternate-human",
+      "passed": true,
+      "error": "Alternate human sides require an independent AI-continuation reference and are unsupported"
+    },
+    {
+      "name": "other-side",
+      "passed": true,
+      "error": "Action 0 is not controlled by side 0\n\n1 !== 0\n"
+    },
+    {
+      "name": "different-dt",
+      "passed": true,
+      "error": "Action 0 is not the CLI timestep .05\n\n0.1 !== 0.05\n"
+    },
+    {
+      "name": "wrong-source",
+      "passed": true,
+      "error": "Adapter must use the requested full source commit\n+ actual - expected\n\n+ '3f963008a3ce79e4615a8ca115954f9f4ce077ab'\n- '0000000000000000000000000000000000000000'\n"
+    },
+    {
+      "name": "valid planning wrapper is retained and explicitly omitted from derived CLI session",
+      "passed": true
+    },
+    {
+      "name": "invalid planning metadata is still rejected by the native decoder",
+      "passed": true,
+      "error": "Invalid saved plans for player 1."
+    },
+    {
+      "name": "stale-executed-bundle",
+      "passed": true,
+      "error": "Executed adapter bundle does not match the pinned current-source rebuild\n+ actual - expected\n... Skipped lines\n\n+ Buffer(748161) [Uint8Array] [\n- Buffer(748087) [Uint8Array] [\n    47,\n    47,\n    32,\n    115,\n    99,\n...\n    10,\n+   10,\n+   47,\n+   47,\n+   32,\n+   68,\n+   105,\n+   118,\n+   101,\n+   114,\n+   103,\n+   101,\n+   110,\n+   116,\n+   32,\n+   101,\n+   120,\n+   101,\n+   99,\n+   117,\n+   116,\n+   101,\n+   100,\n+   32,\n+   98,\n+   121,\n+   116,\n+   101,\n+   115,\n+   32,\n+   119,\n+   105,\n+   116,\n+   104,\n+   32,\n+   105,\n+   100,\n+   101,\n+   110,\n+   116,\n+   105,\n+   99,\n+   97,\n+   108,\n+   32,\n+   100,\n+   101,\n+   99,\n+   108,\n+   97,\n+   114,\n+   101,\n+   100,\n+   32,\n+   115,\n+   105,\n+   109,\n+   117,\n+   108,\n+   97,\n+   116,\n+   105,\n+   111,\n+   110,\n+   32,\n+   118,\n+   101,\n+   114,\n+   115,\n+   105,\n+   111,\n+   110,\n+   115,\n+   46,\n+   10\n  ]\n"
+    },
+    {
+      "name": "uncommitted-proof-source",
+      "passed": true,
+      "error": "Adapter source bytes differ from its committed HEAD blob\n+ actual - expected\n... Skipped lines\n\n+ Buffer(18115) [Uint8Array] [\n- Buffer(18054) [Uint8Array] [\n    105,\n    109,\n    112,\n    111,\n    114,\n...\n    10,\n+   10,\n+   47,\n+   47,\n+   32,\n+   85,\n+   110,\n+   99,\n+   111,\n+   109,\n+   109,\n+   105,\n+   116,\n+   116,\n+   101,\n+   100,\n+   32,\n+   112,\n+   114,\n+   111,\n+   111,\n+   102,\n+   32,\n+   115,\n+   111,\n+   117,\n+   114,\n+   99,\n+   101,\n+   32,\n+   102,\n+   97,\n+   117,\n+   108,\n+   116,\n+   32,\n+   105,\n+   110,\n+   32,\n+   116,\n+   104,\n+   101,\n+   32,\n+   105,\n+   115,\n+   111,\n+   108,\n+   97,\n+   116,\n+   101,\n+   100,\n+   32,\n+   99,\n+   104,\n+   101,\n+   99,\n+   107,\n+   111,\n+   117,\n+   116,\n+   46,\n+   10\n  ]\n"
+    },
+    {
+      "name": "hidden-modified-source",
+      "passed": true,
+      "error": "Core source bytes differ from HEAD: src/core/versions.ts\n+ actual - expected\n\n+ '0ef2b47a1ccc1fa1f1fd56072c3ef2cbccc0c67e'\n- 'b57f5e33a41b3198e015edc540820cc0e49556b0'\n"
+    }
+  ]
+}

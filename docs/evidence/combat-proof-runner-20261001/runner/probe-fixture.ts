@@ -1,0 +1,10 @@
+import { writeFileSync } from 'node:fs';
+import { createGame } from './src/core/simulation';
+import { MatchRecorder } from './src/core/replays';
+import { createSessionFile } from './src/core/session-storage';
+const state=createGame('orcs',4127,'fairies',{controllers:['external','external']});
+const recorder=new MatchRecorder(state);
+const file=createSessionFile(state,recorder.export());
+recorder.dispose();
+if(file.game.version!==4)throw new Error('Expected native SAVE4 fixture');
+writeFileSync(process.argv[2],JSON.stringify(file,null,2)+'\n');

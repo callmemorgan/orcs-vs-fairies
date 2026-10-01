@@ -1,0 +1,100 @@
+{
+  "sourceRef": "3f963008a3ce79e4615a8ca115954f9f4ce077ab",
+  "receipts": [
+    {
+      "label": "adapter-build",
+      "command": [
+        "/home/morgana/.codex/worktrees/baseline-fixes-100features/orcs-vs-Fairies/node_modules/.bin/esbuild",
+        "scripts/prepare_combat_cli_projection.ts",
+        "--bundle",
+        "--platform=node",
+        "--format=esm",
+        "--outfile=work/prepare-combat-cli-projection.mjs",
+        "--metafile=work/prepare-combat-cli-projection.mjs.metafile.json"
+      ],
+      "cwd": "/tmp/combat-projection-portable-receipts-proof-20261001/source",
+      "exitCode": 0
+    },
+    {
+      "label": "fixture-build",
+      "command": [
+        "/home/morgana/.codex/worktrees/baseline-fixes-100features/orcs-vs-Fairies/node_modules/.bin/esbuild",
+        "work/combat-projection-fixture.ts",
+        "--bundle",
+        "--platform=node",
+        "--format=esm",
+        "--outfile=work/combat-projection-fixture.mjs",
+        "--metafile=work/combat-projection-fixture.mjs.metafile.json"
+      ],
+      "cwd": "/tmp/combat-projection-portable-receipts-proof-20261001/source",
+      "exitCode": 0
+    },
+    {
+      "label": "fault-build",
+      "command": [
+        "/home/morgana/.codex/worktrees/baseline-fixes-100features/orcs-vs-Fairies/node_modules/.bin/esbuild",
+        "work/combat-projection-faults.ts",
+        "--bundle",
+        "--platform=node",
+        "--format=esm",
+        "--outfile=work/combat-projection-faults.mjs",
+        "--metafile=work/combat-projection-faults.mjs.metafile.json"
+      ],
+      "cwd": "/tmp/combat-projection-portable-receipts-proof-20261001/source",
+      "exitCode": 0
+    },
+    {
+      "label": "fixture-generation",
+      "command": [
+        "node",
+        "work/combat-projection-fixture.mjs",
+        "work/projection-fixtures"
+      ],
+      "cwd": "/tmp/combat-projection-portable-receipts-proof-20261001/source",
+      "exitCode": 0
+    },
+    {
+      "label": "pending",
+      "command": [
+        "node",
+        "work/prepare-combat-cli-projection.mjs",
+        "work/projection-fixtures/final.session.json",
+        "work/pending-projection",
+        "3f963008a3ce79e4615a8ca115954f9f4ce077ab",
+        "--checkpoint",
+        "work/projection-fixtures/pending.session.json",
+        "--root",
+        "/tmp/combat-projection-portable-receipts-proof-20261001/source"
+      ],
+      "cwd": "/tmp/combat-projection-portable-receipts-proof-20261001/source",
+      "exitCode": 0
+    },
+    {
+      "label": "coalesced",
+      "command": [
+        "node",
+        "work/prepare-combat-cli-projection.mjs",
+        "work/projection-fixtures/final.session.json",
+        "work/coalesced-projection",
+        "3f963008a3ce79e4615a8ca115954f9f4ce077ab",
+        "--checkpoint",
+        "work/projection-fixtures/coalesced-pending.session.json",
+        "--root",
+        "/tmp/combat-projection-portable-receipts-proof-20261001/source"
+      ],
+      "cwd": "/tmp/combat-projection-portable-receipts-proof-20261001/source",
+      "exitCode": 0
+    },
+    {
+      "label": "faults",
+      "command": [
+        "node",
+        "work/combat-projection-faults.mjs",
+        "3f963008a3ce79e4615a8ca115954f9f4ce077ab",
+        "retained"
+      ],
+      "cwd": "/tmp/combat-projection-portable-receipts-proof-20261001/source",
+      "exitCode": 0
+    }
+  ]
+}

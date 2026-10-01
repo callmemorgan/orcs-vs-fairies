@@ -1,0 +1,179 @@
+import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { FACTIONS } from '../src/core/content';
+import { MatchRecorder, ReplayPlayer } from '../src/core/replays';
+import { saveGame } from '../src/core/saves';
+import { createSessionFile, decodeSessionFile } from '../src/core/session-storage';
+import { createGame, issueCommand, isGameOver, refreshVisibility, spawnEntity, stepGame } from '../src/core/simulation';
+import type { Command } from '../src/core/types';
+
+const ROOT = '/tmp/combat-cli-parity-b2e8e6-rHYrDn';
+const PIN = 'b2e8e6daa87dc38d0d37e547afe465052103a436';
+const SOURCE = resolve(ROOT, 'work/combat-projection-fixture.ts');
+const sha256 = (value: string | Buffer) => createHash('sha256').update(value).digest('hex');
+
+export function generateCombatProjectionFixtures(outputDirectory = resolve(ROOT, 'work/projection-fixtures')) {
+  assert.equal(execFileSync('git', ['rev-parse', 'HEAD'], { cwd: ROOT, encoding: 'utf8' }).trim(), PIN);
+  assert.equal(execFileSync('git', ['diff', 'HEAD', '--name-only', '--', 'src'], { cwd: ROOT, encoding: 'utf8' }).trim(), '');
+  mkdirSync(outputDirectory, { recursive: true });
+  const s = createGame('dwarves', 984, 'orcs', { mapSize: 'small', controllers: ['human', 'external'] });
+  s.terrain.fill('grass');
+  s.resources = [];
+  s.entities = s.entities.filter(e => e.kind === 'building' && e.role === 'hq');
+  const ownHQ = s.entities.find(e => e.side === 0)!;
+  const target = s.entities.find(e => e.side === 1)!;
+  assert(ownHQ && target);
+  ownHQ.x = 4.5; ownHQ.y = 4.5;
+  target.x = 26.5; target.y = 20.5;
+  for (const p of s.players) { p.wood = 2000; p.ore = 2000; p.crystal = 1000; }
+  const mover = spawnEntity(s, 0, 'unit', 'melee', 8.5, 20.5, 1, FACTIONS.dwarves.units.melee.id);
+  const cannon = spawnEntity(s, 0, 'unit', 'siege', 18.5, 20.5, 1, FACTIONS.dwarves.units.siege.id);
+  mover.order = { type: 'hold' };
+  cannon.order = { type: 'hold' };
+  refreshVisibility(s);
+  // All authoring ends before recording. Everything below is a public command or engine step.
+  const recorder = new MatchRecorder(s);
+  const commands: Array<{ tick: number; side: 0; command: Command; accepted: true }> = [];
+  const log: unknown[] = [];
+  const command = (c: Command) => {
+    const tick = s.tick;
+    assert.equal(issueCommand(s, 0, c), true, `Command rejected at tick ${tick}: ${JSON.stringify(c)}`);
+    commands.push({ tick, side: 0, command: structuredClone(c), accepted: true });
+    log.push({ kind: 'command', tick, side: 0, command: c, accepted: true });
+  };
+  const advance = (ticks: number) => {
+    const fromTick = s.tick;
+    for (let i = 0; i < ticks; i++) {
+      assert.equal(isGameOver(s), false, 'Fixture must retain live headquarters');
+      const before = s.tick;
+      stepGame(s, .05);
+      assert.equal(s.tick, before + 1);
+    }
+    log.push({ kind: 'advance', fromTick, ticks, dt: .05, toTick: s.tick });
+  };
+  const verifyAndWrite = (name: string) => {
+    const file = createSessionFile(s, recorder.export());
+    const json = JSON.stringify(file, null, 2) + '\n';
+    const decoded = decodeSessionFile(json);
+    assert.deepEqual(decoded.file, file, `${name}: complete native session`);
+    assert.deepEqual(decoded.file.game, file.game, `${name}: decoder envelope`);
+    assert.deepEqual(saveGame(decoded.state), file.game, `${name}: native roundtrip`);
+    const player = new ReplayPlayer(file.replay!);
+    try {
+      assert.equal(player.advance(file.game.state.tick - file.replay!.initial.state.tick), file.game.state.tick - file.replay!.initial.state.tick);
+      assert.equal(player.finished, true, `${name}: finished replay`);
+      assert.deepEqual(saveGame(player.state), file.game, `${name}: full replay envelope`);
+    } finally { player.dispose(); }
+    const path = resolve(outputDirectory, name);
+    writeFileSync(path, json);
+    const result = { path, tick: s.tick, time: s.time, sha256: sha256(json), actionCount: file.replay!.actions.length, lastAction: file.replay!.actions.at(-1), fullNativeRoundtripPassed: true, fullReplayEnvelopePassed: true };
+    log.push({ kind: 'checkpoint', ...result });
+    return { file, ...result };
+  };
+
+  try {
+    const initialPosition = { x: mover.x, y: mover.y };
+    const initialFunds = { wood: s.players[0].wood, ore: s.players[0].ore, crystal: s.players[0].crystal };
+    const initialHp = target.hp;
+    command({ type: 'move', ids: [mover.id], x: 12.5, y: 20.5 });
+    advance(40);
+    assert(mover.x > initialPosition.x + 1, 'Public move must change the actor position');
+    const firstMovedPosition = { x: mover.x, y: mover.y };
+    command({ type: 'stop', ids: [mover.id] });
+    command({ type: 'ability', ids: [cannon.id] });
+    assert.equal(cannon.siegeMode?.ammo, 5);
+    assert.equal(cannon.siegeMode?.deployed, true);
+    assert.equal(s.players[0].ore, initialFunds.ore - 15);
+    command({ type: 'modifyArtillery', ids: [cannon.id], modification: 'stone' });
+    assert.equal(cannon.factionState?.artillery, 'stone');
+    assert.equal(s.players[0].wood, initialFunds.wood - 25);
+    assert.equal(s.players[0].ore, initialFunds.ore - 35);
+    command({ type: 'attack', ids: [cannon.id], target: target.id });
+    advance(1);
+    assert.equal(s.specialists?.shots?.length, 1, 'A real native cannon shell must be pending');
+    const firstShot = structuredClone(s.specialists!.shots![0]);
+    assert.equal(firstShot.payload.kind, 'cannon');
+    assert.equal(firstShot.modification, 'stone');
+    assert(firstShot.impactAt > s.time);
+    assert.equal(cannon.siegeMode?.ammo, 4);
+    assert.equal(target.hp, initialHp, 'Pending first shell has not hit yet');
+    const pending = verifyAndWrite('pending.session.json');
+    assert.equal(pending.file.game.state.entities.find(e => e.id === cannon.id)!.order.type, 'attack');
+
+    // This accepted stop belongs after the checkpoint at the same simulation tick.
+    command({ type: 'stop', ids: [cannon.id] });
+    assert.equal(cannon.order.type, 'idle');
+    advance(20);
+    assert.equal(s.specialists?.shots?.length, 0);
+    assert(target.hp < initialHp, 'The checkpoint shell must damage the target after continuation');
+    const firstImpactHp = target.hp;
+    command({ type: 'move', ids: [mover.id], x: 14.5, y: 22.5 });
+    command({ type: 'attack', ids: [cannon.id], target: target.id });
+    let waited = 0;
+    while (!(s.specialists?.shots ?? []).some(shot => shot.id > firstShot.id)) {
+      advance(1);
+      assert(++waited < 160, 'The second public attack must launch a shell');
+    }
+    assert.equal(s.specialists?.shots?.length, 1);
+    const secondShot = structuredClone(s.specialists!.shots![0]);
+    assert(secondShot.impactAt > s.time);
+    assert.equal(secondShot.modification, 'stone');
+    assert.equal(cannon.siegeMode?.ammo, 3);
+    assert.equal(target.hp, firstImpactHp);
+    const coalesced = verifyAndWrite('coalesced-pending.session.json');
+    assert.equal(coalesced.lastAction?.type, 'advance');
+    advance(20);
+    assert.equal(s.specialists?.shots?.length, 0);
+    assert(target.hp < firstImpactHp, 'The second checkpoint shell must damage the target');
+    assert(target.hp > 0, 'Target remains alive for parity comparison');
+    assert(Math.hypot(mover.x - firstMovedPosition.x, mover.y - firstMovedPosition.y) > 1, 'The later move must also execute');
+    assert.equal(cannon.siegeMode?.ammo, 3, 'Two launched shells must consume two loaded rounds');
+    assert.equal(s.players[0].wood, initialFunds.wood - 25);
+    assert.equal(s.players[0].ore, initialFunds.ore - 35);
+    const final = verifyAndWrite('final.session.json');
+    const before = coalesced.file.replay!.actions;
+    const after = final.file.replay!.actions;
+    assert.equal(before.length, after.length);
+    assert.deepEqual(before.slice(0, -1), after.slice(0, -1));
+    const oldAdvance = before.at(-1)!;
+    const extendedAdvance = after.at(-1)!;
+    assert(oldAdvance.type === 'advance' && extendedAdvance.type === 'advance');
+    assert.equal(extendedAdvance.dt, oldAdvance.dt);
+    assert.equal(extendedAdvance.ticks, oldAdvance.ticks + 20, 'Final replay must extend the checkpoint advance');
+    assert.equal(after[pending.actionCount].type, 'command');
+    const sameTickStop = after[pending.actionCount];
+    assert(sameTickStop.type === 'command');
+    assert.deepEqual(sameTickStop.command, { type: 'stop', ids: [cannon.id] });
+    assert(after.every(action => action.type === 'advance' ? action.dt === .05 : action.side === 0));
+
+    const descriptor = ({ file: _file, ...metadata }: typeof final) => metadata;
+    const manifest = {
+      sourcePin: PIN, generatorSource: SOURCE, generatorSourceSha256: sha256(readFileSync(SOURCE)),
+      controllerPolicy: { native: ['human', 'external'], cliLoadSide: 0, normalized: ['external', 'external'] },
+      actorIds: { mover: mover.id, cannon: cannon.id, target: target.id }, targetKind: 'hostile-hq',
+      movement: { initialPosition, firstMovedPosition, finalPosition: { x: mover.x, y: mover.y } },
+      payment: { initialFunds, finalFunds: { wood: s.players[0].wood, ore: s.players[0].ore, crystal: s.players[0].crystal }, loadOre: 15, fittingWood: 25, fittingOre: 20 },
+      ammunition: { loaded: 5, pending: 4, coalescedPending: 3, final: cannon.siegeMode!.ammo },
+      impacts: { initialHp, firstImpactHp, finalHp: target.hp, damage: initialHp - target.hp, firstShot, secondShot },
+      pending: descriptor(pending), coalescedPending: descriptor(coalesced), final: descriptor(final),
+      commands, sameTickStopAfterPending: true, finalAdvanceExtendedBy: 20,
+      completeNativeDecoderAndReplayEqualityPassed: true,
+    };
+    const manifestPath = resolve(outputDirectory, 'manifest.json');
+    writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
+    log.push({ kind: 'verified', manifestPath, sourcePin: PIN, finalTick: s.tick, targetDamage: initialHp - target.hp });
+    writeFileSync(resolve(outputDirectory, 'generator.ndjson'), log.map(row => JSON.stringify(row)).join('\n') + '\n');
+    console.log(JSON.stringify({ manifestPath, final: final.path, pending: pending.path, coalescedPending: coalesced.path, finalTick: s.tick, targetDamage: initialHp - target.hp, completeNativeDecoderAndReplayEqualityPassed: true }));
+    return manifest;
+  } catch (error) {
+    mkdirSync(outputDirectory, { recursive: true });
+    log.push({ kind: 'failure', message: error instanceof Error ? error.stack : String(error), tick: s.tick });
+    writeFileSync(resolve(outputDirectory, 'generator.ndjson'), log.map(row => JSON.stringify(row)).join('\n') + '\n');
+    throw error;
+  } finally { recorder.dispose(); }
+}
+
+generateCombatProjectionFixtures(process.argv[2] ? resolve(process.argv[2]) : undefined);

@@ -1,0 +1,28 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Core source bytes differ from HEAD: src/core/versions.ts
++ actual - expected
+
++ '0ef2b47a1ccc1fa1f1fd56072c3ef2cbccc0c67e'
+- 'b57f5e33a41b3198e015edc540820cc0e49556b0'
+
+    at file:///tmp/combat-projection-portable-receipts-proof-20261001/source/work/prepare-combat-cli-projection.mjs:10955:12
+    at Array.map (<anonymous>)
+    at pinnedSourceFiles (file:///tmp/combat-projection-portable-receipts-proof-20261001/source/work/prepare-combat-cli-projection.mjs:10950:137)
+    at prepareCombatCliProjection (file:///tmp/combat-projection-portable-receipts-proof-20261001/source/work/prepare-combat-cli-projection.mjs:11070:25)
+    at main (file:///tmp/combat-projection-portable-receipts-proof-20261001/source/work/prepare-combat-cli-projection.mjs:11147:30)
+    at file:///tmp/combat-projection-portable-receipts-proof-20261001/source/work/prepare-combat-cli-projection.mjs:11149:85
+    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+    at async node:internal/modules/esm/loader:647:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '0ef2b47a1ccc1fa1f1fd56072c3ef2cbccc0c67e',
+  expected: 'b57f5e33a41b3198e015edc540820cc0e49556b0',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.21.0

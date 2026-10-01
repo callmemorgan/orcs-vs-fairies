@@ -1,0 +1,83 @@
+{
+  "completed": true,
+  "scope": "Offline proof-contract fault probes; no browser or CLI final proof",
+  "sourceRef": "5cba15c8f4113af57dde2f1f05c3fa82f42bce3d",
+  "runnerPath": "/home/morgana/.codex/worktrees/baseline-fixes-100features/orcs-vs-Fairies/scripts/verify_combined_combat.mjs",
+  "sourceRepository": "/home/morgana/.codex/worktrees/baseline-fixes-100features/orcs-vs-Fairies",
+  "generationReceipt": "/tmp/combat-runner-final-portable-probe-20261001/generation-receipt.json",
+  "nativeFixtureSha256": "b1422fb7bf97ea17c638fd058324b870c2cad3d4f51f03a9b2350d639e21e45b",
+  "runnerSha256": "6919e61c36a86ab2ee0efb2f110a9c5078d0bc2a2ef432d6aa037b3e76ad180a",
+  "checks": [
+    {
+      "name": "Full native SAVE4 positive control",
+      "saveVersion": 4,
+      "rulesRevision": "4.0.0"
+    },
+    {
+      "name": "Missing runtime change",
+      "oldAllowlistAccepted": true,
+      "fullNativeEnvelopeRejected": true
+    },
+    {
+      "name": "Missing rules change",
+      "oldAllowlistAccepted": true,
+      "fullNativeEnvelopeRejected": true
+    },
+    {
+      "name": "Missing economy ledger change",
+      "oldAllowlistAccepted": true,
+      "fullNativeEnvelopeRejected": true
+    },
+    {
+      "name": "Missing event change",
+      "oldAllowlistAccepted": true,
+      "fullNativeEnvelopeRejected": true
+    },
+    {
+      "name": "SAVE3 fixture rejected",
+      "rejectedBeforeBrowser": true
+    },
+    {
+      "name": "Incompatible replay revision rejected",
+      "rejected": true
+    },
+    {
+      "name": "Altered original replay initial rejected",
+      "rejected": true
+    },
+    {
+      "name": "Executed asset byte and identity faults rejected",
+      "sameSizeStaleBytesRejected": true,
+      "unknownAssetRejected": true
+    },
+    {
+      "name": "Executable entry and path controls",
+      "scriptAndCssRequired": true,
+      "emptyEntryRejected": true,
+      "traversalRejected": true
+    },
+    {
+      "name": "Frozen fixture bytes detect mutation",
+      "rejected": true
+    },
+    {
+      "name": "Source/Git blob positive control",
+      "sourceRef": "5cba15c8f4113af57dde2f1f05c3fa82f42bce3d",
+      "sourceFiles": 162
+    },
+    {
+      "name": "Deleted committed source rejected before seal",
+      "rejected": true
+    },
+    {
+      "name": "Index-hidden source mutation rejected",
+      "gitDiffAccepted": true,
+      "gitBlobCheckRejected": true
+    },
+    {
+      "name": "Raw SVG source corruption rejected",
+      "viteBuildIdScopeOmitsSvg": true,
+      "sourceBlobCheckRejectsSvg": true
+    }
+  ]
+}
