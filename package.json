@@ -10,13 +10,18 @@
     "test": "vitest run",
     "test:ladder": "vitest run --config vitest.ladder.config.ts && python3 scripts/ladder/report.py",
     "build:cli": "esbuild src/cli/main.ts --bundle --platform=node --format=esm --outfile=dist-cli/rts.js",
-    "cli": "node dist-cli/rts.js"
+    "cli": "node dist-cli/rts.js",
+    "build:server": "esbuild src/server/main.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-server/rts-server.js",
+    "server": "node dist-server/rts-server.js",
+    "test:server": "vitest run tests/server.test.ts"
   },
   "dependencies": {
-    "phaser": "4.2.1"
+    "phaser": "4.2.1",
+    "ws": "^8.22.0"
   },
   "devDependencies": {
     "@types/node": "^22.20.1",
+    "@types/ws": "^8.18.2",
     "esbuild": "^0.28.2",
     "happy-dom": "^20.14.5",
     "typescript": "~5.9.3",

@@ -1,0 +1,35 @@
+name: orcs-vs-fairies-server
+
+services:
+  server:
+    build:
+      context: ..
+      dockerfile: Dockerfile.server
+    image: orcs-vs-fairies-server:${RTS_IMAGE_TAG:-local}
+    init: true
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    ports:
+      - "127.0.0.1:${RTS_PUBLISHED_PORT:-8787}:8787"
+    environment:
+      RTS_HOST: 0.0.0.0
+      RTS_PORT: "8787"
+      RTS_DATA_DIR: /data
+      RTS_STATIC_DIR: /app/dist
+      RTS_ORIGIN: ${RTS_ORIGIN:-}
+      RTS_SECURE_COOKIE: ${RTS_SECURE_COOKIE:-0}
+      RTS_TRUST_PROXY: ${RTS_TRUST_PROXY:-0}
+      RTS_SPECTATOR_DELAY_SECONDS: ${RTS_SPECTATOR_DELAY_SECONDS:-30}
+    volumes:
+      - server-data:/data
+    stop_grace_period: 30s
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  server-data:
+    name: ${RTS_VOLUME_NAME:-orcs-vs-fairies-server-data}
