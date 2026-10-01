@@ -533,6 +533,8 @@ function applyStep(s:GameState,dt:number):void{
  if(s.rules.mode==='annihilation'&&(due.size||rt.teamAI.coordinator.waves.length))runTeamCoordination(s);
  for(const actor of s.entities)if(alive(actor)&&actor.specialistBuffs?.some(buff=>buff.until>s.time&&buff.fearedFrom)&&economyEntityBusy(s,actor))interruptWorldOrder(s,actor);
  const economicActors=new Set(economicState(s)?.tasks.map(task=>task.entityId));
+ // Older saves can contain a formation left behind when a later economy job took over.
+ for(const actor of s.entities)if(economicActors.has(actor.id))delete actor.tactics?.formation;
  stepFactionSystems(s,dt,factionHooks(s));
  tickEconomy(s,dt,economyHooks);
  for(const e of [...s.entities]){

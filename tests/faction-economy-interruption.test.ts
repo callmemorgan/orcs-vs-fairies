@@ -7,20 +7,21 @@ import { loadGame, saveGame } from '../src/core/saves';
 import { captureRuntime, createMatch, issueCommand, refreshVisibility, spawnDefinition, spawnEntity, stepGame } from '../src/core/simulation';
 import type { BuiltinFactionId, Command, Entity, GameState, Side, UnitRole } from '../src/core/types';
 
-function fixture(faction: BuiltinFactionId): GameState {
- const s=createMatch({map:{seed:4127,size:'small'},rules:{startingAge:3},players:[
+function fixture(faction: BuiltinFactionId,layered=false): GameState {
+ const s=createMatch({map:{seed:4127,size:'small',...(layered?{biome:'forest' as const}:{})},rules:{startingAge:3},players:[
   {id:0,teamId:0,factionId:faction,controller:'external',handicap:{startingResources:{wood:10000,ore:10000,crystal:1000}}},
   {id:1,teamId:1,factionId:'orcs',controller:'external',handicap:{startingResources:{wood:10000,ore:10000,crystal:1000}}},
  ]});
  s.entities=s.entities.filter(e=>e.role==='hq');s.resources=[];s.terrain.fill('grass');s.economy=createEconomyState(2);
+ if(s.world){for(const level of s.world.levels){level.terrain.fill('grass');level.elevation.fill(0);}Object.assign(s.world,{transitions:[],bridges:[],sites:[],creatures:[],fires:[],iceTiles:[],dayLength:10000,seasonLength:10000,weatherLength:10000});}
  for(const e of s.entities){e.x=e.side===0?2.5:s.width-2.5;e.y=e.side===0?2.5:s.height-2.5;}
  refreshVisibility(s);return s;
 }
 function unit(s:GameState,role:UnitRole,x=20.5,y=20.5,side:Side=0):Entity {
  const e=spawnDefinition(s,side,'unit',FACTIONS[s.players[side].faction].units[role].id,x,y);e.order={type:'hold'};e.cooldown=100;return e;
 }
-function warehouse(s:GameState):Entity {
- const e=spawnEntity(s,1,'building','depot',26.5,20.5,1,'economy:warehouse');
+function warehouse(s:GameState,level=0):Entity {
+ const e=spawnEntity(s,1,'building','depot',26.5,20.5,1,'economy:warehouse',level);
  s.economy!.structures.push({entityId:e.id,kind:'warehouse',stock:{wood:80,ore:0,crystal:0},capacity:900,overcharge:false,nextIncident:12});
  return e;
 }
@@ -111,6 +112,17 @@ describe('faction commands replace economy work through the public command bound
   expectInterrupted(s,wagon);expect(wagon.factionState!.corpseOrder).toBeDefined();continueAndReplay(s,recorder,10);
   expect(cargo(s,wagon).stock.wood).toBe(24);expect(s.economy!.structures[0].stock.wood).toBe(56);
  });
+ it.each(['collectCorpses','deliverCorpses'] as const)('grouped %s leaves an out-of-level loaded wagon and its delivery unchanged',type=>{
+  const s=fixture('undead',true),wagon=spawnDefinition(s,0,'unit',CORPSE_WAGON.id,20.5,20.5,1,0),other=spawnDefinition(s,0,'unit',CORPSE_WAGON.id,20.5,20.5,1,1);
+  spawnDefinition(s,0,'building',FACTIONS.undead.buildings.hq.id,2.5,2.5,1,1);
+  const target=warehouse(s),otherTarget=warehouse(s,1),body={id:s.nextId++,x:21.5,y:22.5,level:0,expires:45},otherBody={...body,id:s.nextId++,level:1},caster=unit(s,'special',30.5,23.5);
+  if(type==='collectCorpses'){s.corpses.push(body);unit(s,'worker',22.5,23.5);}else {wagon.factionState={corpseCargo:[body]};other.factionState={corpseCargo:[otherBody]};}
+  loadRaid(s,wagon,target);loadRaid(s,other,otherTarget);const recorder=record(s),before=saveGame(s),oldTask=structuredClone(task(s,other)),oldCargo=structuredClone(cargo(s,other)),oldRoute=structuredClone(captureRuntime(s).routes.find(([id])=>id===other.id));
+  command(s,{type,ids:[wagon.id,other.id],target:type==='collectCorpses'?body.id:caster.id});expectInterrupted(s,wagon);expect(wagon.factionState!.corpseOrder).toBeDefined();
+  expect(saveGame(s).state.entities.find(e=>e.id===other.id)).toEqual(before.state.entities.find(e=>e.id===other.id));
+  expect(task(s,other)).toEqual(oldTask);expect(cargo(s,other)).toEqual(oldCargo);expect(captureRuntime(s).routes.find(([id])=>id===other.id)).toEqual(oldRoute);expect(other.factionState?.corpseOrder).toBeUndefined();
+  continueAndReplay(s,recorder,.2);
+ });
 });
 
 describe('tactical ownership and orders interrupt economy work',()=>{
@@ -153,6 +165,25 @@ describe('tactical ownership and orders interrupt economy work',()=>{
   // The previous engine admitted this competing state into saves; resume it through the real runtime.
   e.tactics!.retreat={x:10.5,y:10.5,until:0};e.tactics!.morale=50;const recorder=record(s);run(s,.05);
   expect(e.tactics!.retreat).toBeUndefined();expect(task(s,e)).toBeUndefined();expect(e.order).toEqual({type:'hold'});continueAndReplay(s,recorder,.2);
+ });
+ it('an old raid/formation combination retains its later economy job and discards stale formation movement',()=>{
+  const s=fixture('orcs'),e=unit(s,'melee'),target=warehouse(s);refreshVisibility(s);
+  command(s,{type:'formation',ids:[e.id],formation:'line',spacing:1,facing:2});const formation=structuredClone(e.tactics!.formation!);
+  command(s,{type:'raidSupply',ids:[e.id],target:target.id});e.tactics!.formation=formation;const recorder=record(s);run(s,.05);
+  expect(e.tactics!.formation).toBeUndefined();expect(task(s,e)).toMatchObject({kind:'raid',targetId:target.id});expect(e.order).toEqual({type:'hold'});continueAndReplay(s,recorder,.2);
+ });
+ it('an automatic ambush trigger cancels an admitted old raid job before attacking',()=>{
+  const s=fixture('orcs'),e=unit(s,'ranged'),target=warehouse(s),enemy=unit(s,'melee',23.5,20.5,1);s.terrain[20*s.width+20]='forest';refreshVisibility(s);
+  command(s,{type:'ambush',ids:[e.id],radius:3,target:'melee'});const ambush=structuredClone(e.tactics!.ambush!);
+  command(s,{type:'raidSupply',ids:[e.id],target:target.id});e.tactics!.ambush=ambush;const recorder=record(s);run(s,.05);
+  expect(e.tactics!.ambush!.concealed).toBe(false);expect(task(s,e)).toBeUndefined();expect(e.order).toEqual({type:'attack',target:enemy.id});continueAndReplay(s,recorder,.2);
+ });
+ it('an admitted old raid/capture combination retains its channel until completion then cancels the captor job',()=>{
+  const s=fixture('orcs'),e=unit(s,'melee'),target=warehouse(s),engine=unit(s,'siege',21.5,20.5,1);engine.tactics!.siegeCrew!.hp=0;engine.tactics!.siegeCrew!.uncrewed=true;refreshVisibility(s);
+  command(s,{type:'captureSiege',ids:[e.id],target:engine.id});const capture=structuredClone(e.tactics!.capture!);
+  command(s,{type:'raidSupply',ids:[e.id],target:target.id});e.tactics!.capture={...capture,progress:.95};const recorder=record(s);run(s,.05);
+  expect(e.tactics!.capture).toBeDefined();expect(task(s,e)).toBeDefined();expect(engine.side).toBe(1);
+  continueAndReplay(s,recorder,.3);expect(engine.side).toBe(0);expect(e.tactics!.capture).toBeUndefined();expect(task(s,e)).toBeUndefined();expect(e.order).toEqual({type:'hold'});
  });
  it.each(['ambush','capture','retreat'] as const)('an accepted raid clears competing %s state, but a failed raid keeps it',mode=>{
   const s=fixture('orcs'),e=unit(s,'melee'),target=warehouse(s);
