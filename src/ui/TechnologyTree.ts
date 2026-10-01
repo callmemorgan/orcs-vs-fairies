@@ -35,6 +35,7 @@ export function technologyTree(host:HTMLElement,research:(id:UpgradeId,building:
     const description=document.createElement('span');description.textContent=def.description;
     const cost=document.createElement('small');cost.textContent=`${def.cost.wood} wood · ${def.cost.ore} ore · ${def.cost.crystal} crystal · ${def.researchTime}s`;
     const status=document.createElement('em');status.textContent=reason??`Research at ${f.buildings[def.building].name}`;
+    if(def.exclusiveGroup){const choice=document.createElement('small');choice.className='technology-choice';choice.dataset.technologyGroup=def.exclusiveGroup;choice.textContent=`Choose one: ${Object.values(upgradesFor(s,side)).filter(other=>other.exclusiveGroup===def.exclusiveGroup).map(other=>other.name).join(' or ')}`;button.append(choice);}
     button.append(name,description,cost,status);button.onclick=()=>{if(producer)research(def.id,producer.id);};section.append(button);
    }
    columns.append(section);

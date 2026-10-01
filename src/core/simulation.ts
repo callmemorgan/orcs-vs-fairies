@@ -1,7 +1,7 @@
 import { DIRECTIONS_24, DIRECTIONS_32, facing8, length2D } from './geometry';
 import { aiProfile, chooseAiRecruit, counterWeights, normalizeAiConfig, openingBuilding, rememberObservedUnits, shouldRetreat, skipsAiDecision } from './ai-policy';
 import type { EnemyMemory, EnemyObservation } from './ai-policy';
-import { buildingAgeRequired, playerAge, researchRequirement } from './progression';
+import { buildingAgeRequired, canCompleteResearch, playerAge, researchRequirement, upgradeAppliesTo } from './progression';
 import { ECONOMY, FACTIONS, UPGRADES } from './content';
 import { availableBuildings, availableUnits, buildingFor, contentFactions, decodeContentBundle, factionFor, queuedUnitFor, unitFor, upgradeFor } from './content-registry';
 import { walkable, segmentWalkable, openDestination, route } from './navigation';
@@ -189,7 +189,7 @@ function applyCommand(s:GameState,side:Side,c:Command):boolean{
  if(c.type==='research'){
  const e=s.entities.find(e=>e.id===c.id&&e.side===side&&alive(e)&&e.kind==='building'&&e.progress===1);const d=(()=>{try{return upgradeFor(s,side,c.upgrade);}catch{return undefined;}})();
  if(!e||!d||d.building!==e.role||e.research||researchRequirement(s,side,c.upgrade)||p.wood<d.cost.wood||p.ore<d.cost.ore||p.crystal<d.cost.crystal)return false;
- p.wood-=d.cost.wood;p.ore-=d.cost.ore;p.crystal-=d.cost.crystal;e.research=c.upgrade;e.researchProgress=0;emit(s,'research',e,undefined,`${d.name} started`);return true;
+ p.wood-=d.cost.wood;p.ore-=d.cost.ore;p.crystal-=d.cost.crystal;e.research=c.upgrade;if(d.exclusiveGroup)e.researchPaidCost={...d.cost};e.researchProgress=0;emit(s,'research',e,undefined,`${d.name} started`);return true;
  }
  const units=s.entities.filter(e=>c.ids.includes(e.id)&&e.side===side&&alive(e)&&e.kind==='unit'&&!e.illusion);
  if(!units.length)return false;
@@ -251,8 +251,19 @@ function walkTo(e:Entity,x:number,y:number):void{
  if(dx!==0||dy!==0)e.facing=facing8(dx,dy);
  e.x=x;e.y=y;e.animation='walk';
 }
+function finishResearch(s:GameState,e:Entity):void {
+ const id=e.research!,def=upgradeFor(s,e.side,id);
+ if(canCompleteResearch(s,e.side,id,e.id)){
+  s.players[e.side].upgrades.push(id);emit(s,'research',e,undefined,`${def.name} complete`);
+ }else{
+  // Only a command that charged this choice records a refundable cost.
+  if(e.researchPaidCost)for(const resource of ['wood','ore','crystal'] as const)s.players[e.side][resource]+=e.researchPaidCost[resource];
+  emit(s,'message',e,undefined,`${def.name} canceled: research requirements changed.`);
+ }
+ e.research=undefined;delete e.researchPaidCost;e.researchProgress=0;
+}
 function upgradeFactor(s:GameState,e:Entity,effect:'gather'|'speed'|'damage'):number{
- let factor=1;for(const id of s.players[e.side].upgrades){const u=upgradeFor(s,e.side,id);if(u.appliesTo===e.role)factor*=u.effects[effect]??1;}return factor;
+ let factor=1;for(const id of s.players[e.side].upgrades){const u=upgradeFor(s,e.side,id);if(upgradeAppliesTo(u,unitDef(s,e)))factor*=u.effects[effect]??1;}return factor;
 }
 function movementSpeed(s:GameState,e:Entity):number{
  const terrain=terrainAt(s,e.x,e.y);
@@ -275,7 +286,7 @@ function move(s:GameState,e:Entity,to:Vec,dt:number,reach=.45):boolean{
 function emplaced(s:GameState,e:Entity):boolean{return e.entrenchedAt!==undefined&&s.time-e.entrenchedAt>=3;}
 function weaponRange(s:GameState,e:Entity):number{return e.kind==='building'?7:unitDef(s,e).range+(emplaced(s,e)&&e.role==='special'?3:0);}
 function damage(s:GameState,a:Entity,b:Entity):void{
- const d=a.kind==='unit'?unitDef(s,a):null;const armor=(b.kind==='unit'?unitDef(s,b).armor:3)+(emplaced(s,b)?2:0)+s.players[b.side].upgrades.reduce((sum,id)=>sum+(upgradeFor(s,b.side,id).appliesTo===b.role?(upgradeFor(s,b.side,id).effects.armor??0):0),0);
+ const d=a.kind==='unit'?unitDef(s,a):null;const armor=(b.kind==='unit'?unitDef(s,b).armor:3)+(emplaced(s,b)?2:0)+s.players[b.side].upgrades.reduce((sum,id)=>{const upgrade=upgradeFor(s,b.side,id);return sum+(b.kind==='unit'&&upgradeAppliesTo(upgrade,unitDef(s,b))?(upgrade.effects.armor??0):0);},0);
  const base=d?d.damage*upgradeFactor(s,a,'damage'):19;const bonus=d?.ability==='momentum'?1+a.momentum*.40:emplaced(s,a)?1.15:1;const hit=Math.max(1,base*bonus*(b.kind==='building'?(d?.buildingDamageMultiplier??1):(d?.bonusAgainst?.[b.role as UnitRole]??1))-armor)*(a.illusion?.25:1);
  a.cooldown=(d?.cooldown??1.4)/(d?.ability==='momentum'?1+a.momentum*.15:1);if(d?.ability==='momentum')a.momentum=Math.min(1,a.momentum+.15);a.animation='attack';a.animTime=0;const event=emit(s,'attack',a,b.id);runtime(s).hits.push({source:a,target:b,amount:hit,event});
 }
@@ -337,7 +348,7 @@ function applyStep(s:GameState,dt:number):void{
  if(due.size){const offset=rt.aiBatchTurns++%sides.length;for(let i=0;i<sides.length;i++){const side=sides[(i+offset)%sides.length];if(due.has(side)){runAI(s,side);rt.aiDecisionAt[side]=s.time+aiProfile(s.aiConfigs[side]).decisionInterval;}}}
  for(const e of [...s.entities]){
  e.animTime+=dt;if(!alive(e)){if(e.kind==='building')refundQueue(s,e);continue;}if(e.expires&&s.time>=e.expires){die(s,e);continue;}e.cooldown=Math.max(0,e.cooldown-dt);if(e.animation!=='attack'||e.animTime>.4)e.animation='idle';e.momentum=Math.max(0,e.momentum-dt*.014);
- if(e.kind==='building'){if(e.progress===1&&buildingDef(s,e).ability==='heal')for(const ally of s.entities)if(isAllied(s,ally.side,e.side)&&alive(ally)&&ally.kind==='unit'&&!ally.illusion&&distance(ally,e)<6)ally.hp=Math.min(ally.maxHp,ally.hp+dt*2.5);if(e.research){e.researchProgress+=dt/upgradeFor(s,e.side,e.research).researchTime;if(e.researchProgress>=1){s.players[e.side].upgrades.push(e.research);emit(s,'research',e,undefined,`${upgradeFor(s,e.side,e.research).name} complete`);e.research=undefined;e.researchProgress=0;}}production(s,e,dt);if(e.role==='tower'&&e.progress===1){const b=enemy(s,e,7);if(b)fight(s,e,b,dt);}continue;}
+ if(e.kind==='building'){if(e.progress===1&&buildingDef(s,e).ability==='heal')for(const ally of s.entities)if(isAllied(s,ally.side,e.side)&&alive(ally)&&ally.kind==='unit'&&!ally.illusion&&distance(ally,e)<6)ally.hp=Math.min(ally.maxHp,ally.hp+dt*2.5);if(e.research){e.researchProgress+=dt/upgradeFor(s,e.side,e.research).researchTime;if(e.researchProgress>=1)finishResearch(s,e);}production(s,e,dt);if(e.role==='tower'&&e.progress===1){const b=enemy(s,e,7);if(b)fight(s,e,b,dt);}continue;}
  const d=unitDef(s,e);
  if(e.maxShield&&s.time-(e.lastDamagedAt??-6)>=6)e.shield=Math.min(e.maxShield,(e.shield??0)+4*dt);
  if(!e.illusion&&(d.ability==='raise'||d.ability==='ward'))useAbility(s,e);

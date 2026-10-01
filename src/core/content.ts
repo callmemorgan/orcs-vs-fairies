@@ -98,6 +98,12 @@ export const UPGRADES:Record<UpgradeDef['id'],UpgradeDef>={
  'tempered-armor':{id:'tempered-armor',name:'Tempered Armor',description:'Melee troops gain 2 armor.',cost:{wood:80,ore:150,crystal:0},researchTime:40,building:'barracks',appliesTo:'melee',age:2,effects:{armor:2}},
  'veteran-arms':{id:'veteran-arms',name:'Veteran Arms',description:'Melee troops deal another 25% damage.',cost:{wood:160,ore:220,crystal:35},researchTime:50,building:'barracks',appliesTo:'melee',age:3,requires:['forged-weapons'],effects:{damage:1.25}},
 
+ 'core:ranged-arms':{id:'core:ranged-arms',name:'Ranged Arms',description:'Ranged troops deal 20% more damage.',cost:{wood:90,ore:110,crystal:0},researchTime:35,building:'barracks',appliesTo:'ranged',age:2,requires:['town-age'],effects:{damage:1.2}},
+ 'core:cavalry-barding':{id:'core:cavalry-barding',name:'Cavalry Barding',description:'Cavalry gain 2 armor.',cost:{wood:100,ore:160,crystal:0},researchTime:40,building:'barracks',appliesTo:'cavalry',age:2,requires:['town-age'],effects:{armor:2}},
+ 'core:siege-gears':{id:'core:siege-gears',name:'Siege Gears',description:'Siege engines move 30% faster.',cost:{wood:150,ore:160,crystal:25},researchTime:45,building:'barracks',appliesTo:'siege',age:3,requires:['citadel-age'],effects:{speed:1.3}},
+ 'core:ranged-focus':{id:'core:ranged-focus',name:'Focused Volleys',description:'Ranged troops deal another 25% damage. Locks Skirmish Drills.',cost:{wood:140,ore:180,crystal:25},researchTime:45,building:'barracks',appliesTo:'ranged',age:3,requires:['core:ranged-arms'],exclusiveGroup:'core:ranged-doctrine',effects:{damage:1.25}},
+ 'core:ranged-mobility':{id:'core:ranged-mobility',name:'Skirmish Drills',description:'Ranged troops move 25% faster. Locks Focused Volleys.',cost:{wood:120,ore:160,crystal:25},researchTime:40,building:'barracks',appliesTo:'ranged',age:3,requires:['core:ranged-arms'],exclusiveGroup:'core:ranged-doctrine',effects:{speed:1.25}},
+
  'worker-harvest':{id:'worker-harvest',name:'Harvest Drills',description:'Workers gather 30% faster.',cost:{wood:100,ore:50,crystal:0},researchTime:30,building:'hq',appliesTo:'worker',effects:{gather:1.3}},
  'worker-speed':{id:'worker-speed',name:'Courier Training',description:'Workers move 20% faster.',cost:{wood:75,ore:50,crystal:0},researchTime:25,building:'hq',appliesTo:'worker',effects:{speed:1.2}},
 };

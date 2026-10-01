@@ -55,10 +55,12 @@ function building(v:unknown,path:string,namespace:string):void {
   if(value.age!==undefined)num(value.age,`${path}.age`,1,3,true);if(value.ability!==undefined)one(value.ability,`${path}.ability`,['heal']);
 }
 function research(v:unknown,path:string,namespace:string):void {
-  const value=obj(v,path,['id','name','description','cost','researchTime','building','appliesTo','effects'],['age','requires']);
+  const value=obj(v,path,['id','name','description','cost','researchTime','building','appliesTo','effects'],['age','requires','exclusiveGroup','appliesToDefinitions']);
   definitionId(value.id,`${path}.id`,namespace);str(value.name,`${path}.name`);str(value.description,`${path}.description`,2000);cost(value.cost,`${path}.cost`);num(value.researchTime,`${path}.researchTime`,.05,600);one(value.building,`${path}.building`,buildingRoles);one(value.appliesTo,`${path}.appliesTo`,unitRoles);
   if(value.age!==undefined)num(value.age,`${path}.age`,1,3,true);
   if(value.requires!==undefined)arr(value.requires,`${path}.requires`,16).forEach((id,i)=>str(id,`${path}.requires[${i}]`,100));
+  if(value.exclusiveGroup!==undefined)definitionId(value.exclusiveGroup,`${path}.exclusiveGroup`,namespace);
+  if(value.appliesToDefinitions!==undefined){const targets=arr(value.appliesToDefinitions,`${path}.appliesToDefinitions`,64);if(!targets.length)fail(`${path}.appliesToDefinitions`,'at least one definition target is required');targets.forEach((id,i)=>str(id,`${path}.appliesToDefinitions[${i}]`,100));if(new Set(targets).size!==targets.length)fail(`${path}.appliesToDefinitions`,'duplicate definition target');}
   const effects=obj(value.effects,`${path}.effects`,[],['gather','speed','damage','armor']);
   if(!Object.keys(effects).length)fail(`${path}.effects`,'research must change a permitted stat');
   for(const [key,factor] of Object.entries(effects))num(factor,`${path}.effects.${key}`,key==='armor'?0:.1,key==='armor'?10:3);
@@ -116,6 +118,7 @@ function buildRegistry(packages:ContentPackage[]):Registry {
     for(const d of [...f.units,...f.buildings,...f.research]){if(ids.has(d.id))fail('definitions',`duplicate ${d.id}`);ids.add(d.id);}
     for(const [role,id] of Object.entries(f.defaultUnits??{})){const d=f.units.find(d=>d.id===id);if(!d||d.role!==role)fail('defaultUnits',`${id} is absent or has another role`);units[role as UnitRole]=d;}
     for(const [role,id] of Object.entries(f.defaultBuildings??{})){const d=f.buildings.find(d=>d.id===id);if(!d||d.role!==role)fail('defaultBuildings',`${id} is absent or has another role`);buildings[role as BuildingRole]=d;}
+    const targetUnits=[...Object.values(units),...f.units];for(const research of f.research)for(const id of research.appliesToDefinitions??[]){const target=targetUnits.find(unit=>unit.id===id);if(!target||target.role!==research.appliesTo)fail('research.appliesToDefinitions',`${id} is absent or has another role`);}
     const available=new Map([...Object.values(PINNED_BASE_RESEARCH),...f.research].map(d=>[d.id,d])),done=new Set<string>(),pending=new Set<string>();const check=(id:string)=>{if(pending.has(id))fail('research',`prerequisite cycle includes ${id}`);if(done.has(id))return;const d=available.get(id as UpgradeId);if(!d)fail('research',`missing prerequisite ${id}`);pending.add(id);for(const dep of d.requires??[])check(dep);pending.delete(id);done.add(id);};f.research.forEach(d=>check(d.id));
     for(const d of [...f.units,...f.buildings])if(!Object.hasOwn(p.art,d.id))fail('art',`missing custom artwork for ${d.id}`);
     factions[f.id]=freeze({...base,...f,units,buildings,unitDefinitions:[...Object.values(units),...f.units.filter(d=>!Object.values(units).some(base=>base.id===d.id))],buildingDefinitions:[...Object.values(buildings),...f.buildings.filter(d=>!Object.values(buildings).some(base=>base.id===d.id))],research:f.research});Object.assign(art,p.art);
