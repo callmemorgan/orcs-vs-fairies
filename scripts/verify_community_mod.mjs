@@ -353,6 +353,12 @@ try {
   await openCommunity(receiverPage);
   await searchMod(receiverPage);
   await installRevision(receiverPage, publishedUpdated, updated);
+  const revised = await playInstalled(receiverPage, updated, updatedBundle);
+  assert.deepEqual(revised.content.packages.find(pkg => pkg.id === updated.id), updated);
+  await save('community-mod-updated-revision-match.json', revised);
+  checked('the revised mod launches its changed definitions and exact dependency closure');
+  await openCommunity(receiverPage);
+  await searchMod(receiverPage);
   await receiverPage.getByLabel('Published revision', { exact: true }).selectOption(original.version);
   const installed = await receiverPage.locator('.community-installed').innerText();
   assert(installed.includes(`version ${original.version}`) && installed.includes(`version ${updated.version}`));

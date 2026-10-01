@@ -27,7 +27,7 @@ describe('native map editor import ownership', () => {
     const { root, editor } = setup(); let finish!: (value: string) => void;
     upload(root, () => new Promise(resolve => { finish = resolve; }));
     root.querySelector<HTMLInputElement>('[aria-label="New map seed"]')!.value = '87';
-    [...root.querySelectorAll('button')].find(button => button.textContent === 'Create new map')!.click();
+    Array.from(root.querySelectorAll('button')).find(button => button.textContent === 'Create new map')!.click();
     finish(JSON.stringify(fixture(4127))); await Promise.resolve(); await Promise.resolve();
     expect(editor.getMap().map.seed).toBe(87);
   });

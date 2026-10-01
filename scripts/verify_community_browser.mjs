@@ -49,9 +49,13 @@ async function search(page) {
   assert.equal((await wait).status(), 200); await page.locator('.community-results article').getByRole('button', { name: 'View package', exact: true }).click();
   await page.getByLabel('Published revision', { exact: true }).waitFor();
 }
-async function install(page, name = 'Download and install') {
+async function install(page, publication, name = 'Download and install') {
+  const receipt = page.waitForResponse(response => response.url().endsWith(`/api/packages/content/${publication.detail.hash}`) && response.request().method() === 'GET');
   await page.locator('.community-details').getByRole('button', { name, exact: true }).click();
-  await page.locator('.community-status').filter({ hasText: /^Installed / }).waitFor();
+  const response = await receipt; assert.equal(response.status(), 200);
+  assert.deepEqual((await response.json()).package, publication.pkg);
+  await page.locator('.community-status').getByText(`Installed ${publication.pkg.title}, version ${publication.detail.version}.`, { exact: true }).waitFor();
+  await page.waitForFunction(() => Array.from(document.querySelectorAll('.community-details button')).some(button => button.textContent === 'Play installed revision' && !button.disabled));
 }
 async function paint(page, kind) {
   await page.getByLabel('Editor tool', { exact: true }).selectOption('terrain');
@@ -80,7 +84,7 @@ try {
   await b.getByLabel('Map preview level 1', { exact: true }).waitFor();
   await b.screenshot({ path: path.join(evidence, 'community-preview.png'), fullPage: true });
   checked('independent authenticated profile searches remote metadata and sees the package preview');
-  await install(b); await b.locator('.community-details').getByRole('button', { name: 'Play installed revision', exact: true }).click();
+  await install(b, first); await b.locator('.community-details').getByRole('button', { name: 'Play installed revision', exact: true }).click();
   await b.waitForFunction(hash => window.editorDiagnostics?.()?.packageHash === hash && window.editorDiagnostics().tick > 10, first.pkg.hash);
   assert.equal(await b.getByLabel('Running community package', { exact: true }).innerText(), 'Community river pass · version 1');
   let observation = await b.evaluate(() => window.editorDiagnostics()); assert.deepEqual(observation.terrain, first.pkg.map.levels[0].terrain);
@@ -95,19 +99,24 @@ try {
   await a.getByRole('button', { name: 'Close editor', exact: true }).click(); await openCommunity(a); second = await publishMap();
   assert.equal(second.pkg.revision, 2); assert.notEqual(second.detail.hash, first.detail.hash); assert.deepEqual(second.detail.revisions.map(row => row.version), ['2', '1']);
   await writeFile(path.join(evidence, 'published-map-v2.json'), JSON.stringify(second.pkg));
-  await openCommunity(b); await search(b); await install(b);
+  await openCommunity(b); await search(b); await install(b, second);
+  await b.locator('.community-details').getByRole('button', { name: 'Play installed revision', exact: true }).click();
+  await b.waitForFunction(hash => window.editorDiagnostics?.()?.packageHash === hash && window.editorDiagnostics().tick > 10 && !window.rts.paused, second.pkg.hash);
+  assert.deepEqual((await b.evaluate(() => window.editorDiagnostics())).terrain, second.pkg.map.levels[0].terrain);
+  checked('the revised package replaces the paused old match with its authored terrain');
+  await openCommunity(b); await search(b);
   await b.getByLabel('Published revision', { exact: true }).selectOption('1');
-  await install(b, 'Verify and reinstall revision');
+  await install(b, first, 'Verify and reinstall revision');
   const installed = await b.locator('.community-installed').innerText(); assert.match(installed, /version 1/); assert.match(installed, /version 2/);
   checked('new publication keeps both immutable revisions and installation preserves the original');
   await b.screenshot({ path: path.join(evidence, 'community-pinned-revisions.png'), fullPage: true });
   await b.locator('.community-details').getByRole('button', { name: 'Play installed revision', exact: true }).click();
-  await b.waitForFunction(hash => window.editorDiagnostics?.()?.packageHash === hash && window.editorDiagnostics().tick > 10, first.pkg.hash);
+  await b.waitForFunction(hash => window.editorDiagnostics?.()?.packageHash === hash && window.editorDiagnostics().tick > 10 && !window.rts.paused, first.pkg.hash);
   checked('launching a pinned revision starts its new match after the prior match was paused');
 
   await server.close(); server = await createRtsServer({ port, dataDir, staticDir: path.resolve('dist') });
   await b.reload(); await b.getByRole('button', { name: 'Close editor', exact: true }).click(); await openCommunity(b); await search(b);
-  await b.getByLabel('Published revision', { exact: true }).selectOption('1'); await install(b, 'Verify and reinstall revision');
+  await b.getByLabel('Published revision', { exact: true }).selectOption('1'); await install(b, first, 'Verify and reinstall revision');
   await b.locator('.community-details').getByRole('button', { name: 'Play installed revision', exact: true }).click();
   await b.waitForFunction(hash => window.editorDiagnostics?.()?.packageHash === hash && window.editorDiagnostics().tick > 10, first.pkg.hash);
   observation = await b.evaluate(() => window.editorDiagnostics()); assert.equal(observation.terrain[37], 'sand'); assert.deepEqual(observation.terrain, first.pkg.map.levels[0].terrain);

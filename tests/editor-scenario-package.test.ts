@@ -28,7 +28,7 @@ function controls(): ScenarioDefinition {
     { label: 'boss', side: 1, kind: 'unit', role: 'special', x: 24.5, y: 24.5 },
     { label: 'tower', side: 1, kind: 'building', role: 'tower', x: 28.5, y: 28.5 },
   );
-  draft.army[0].definitionId = 'custom-commander';
+  draft.army[0].definitionId = FACTIONS.orcs.units.melee.id;
   draft.objectives = [{
     id: 'escort-home', text: 'Escort the convoy and defeat the boss.', optional: false,
     success: { type: 'all', conditions: [
