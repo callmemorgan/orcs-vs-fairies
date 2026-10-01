@@ -1,0 +1,51 @@
+{
+  "sourceCommit": "3f376c9ea75b9bcaed6643ea678ce3c4e5e80f77",
+  "runnerScope": "Gameplay loop unchanged; expanded source provenance, actual AI metadata and final save-v3 round trips added to the committed runner.",
+  "saveVersion": 3,
+  "defaultAiConfig": {
+    "difficulty": "normal",
+    "personality": "balanced",
+    "opening": "infantry-rush"
+  },
+  "games": 108,
+  "seeds": [
+    4127
+  ],
+  "sizes": [
+    "small",
+    "medium",
+    "large"
+  ],
+  "seedIsUsed": true,
+  "stepSeconds": 0.05,
+  "controllers": [
+    "ai",
+    "ai"
+  ],
+  "decisionIntervalSeconds": 1,
+  "decisionOrder": "Per-player aiDecisionAt schedules default normal decisions on the same ticks; aiBatchTurns rotates player command order each due batch.",
+  "maxMinutes": 45,
+  "drawPolicy": "Simultaneous stronghold loss is a draw. No winner at 45 minutes is a timeout, with no tiebreak.",
+  "pathfindingMetric": "Sample movement orders every 5s. Flag >20s with <0.35 tile displacement while >1.5 tiles from destination and no visible enemy within 10 tiles. This is a diagnostic suspicion, not proof of an unreachable path.",
+  "sourceSha256": {
+    "src/core/ai-policy.ts": "5b306994d60509e2774ba73217918eb3ba3400a18d542023d8bcca974f5cb0f9",
+    "src/core/commands.ts": "e93f149cfd6fb9458105a5ea61d9702614b10a2408f2aaadd93a42fea5550911",
+    "src/core/content.ts": "b1a17ec7839e458ce6bf8cba63fe19ba3a27de0ed2e2ed9c7a08226f406da4f2",
+    "src/core/history-hooks.ts": "56a53b84aa389f3ccf189f72df2ecf2d632677f8a664b49fc16865e46bdf6f82",
+    "src/core/maps.ts": "e0d2f499bc8c49a071a750a3541d635fa66c9ad6ebe8329f91828749390bab55",
+    "src/core/navigation.ts": "d0b2f4b1557cd0ed66b0887d6ef5b9a34ebc825bdea104bc79554f7475257ac0",
+    "src/core/observation.ts": "639da862db0a27eacb5a05690ad54233c204269458ca072f210c69e84848e810",
+    "src/core/planning.ts": "c1db332af55b3c66c8d39a9836315b9937b144c0baa833ae53c507cc5c09c01d",
+    "src/core/progression.ts": "8539ffc473d5587d4ef9e0181accb216fe20ffbaee82f7a64e96ff9215004c95",
+    "src/core/replays.ts": "422feddf8ddb368a9865cfb0d1fc82b2ff0d6d200db37cb1ee4170a9d12d5756",
+    "src/core/saves.ts": "6cb0788de61a3ba2ca755ae77eb8c4356b563b414b9c601db6c37c466e5bd660",
+    "src/core/session-storage.ts": "0dc9082bc2bdf4f3b698957e8f35f0d7c0f61e38d5062a42c91ae75eb2ce2960",
+    "src/core/simulation.ts": "10a8e0d4eb949ba01262573bef69b52c972d06db65791808fedc2e413788acbc",
+    "src/core/types.ts": "0a1ac2e525dbb3126d545398c53bd4471036221b567e3e4d26c6d2213c6954de",
+    "scripts/ladder/ladder.test.ts": "f943ebe0e52d66e9752c12ff13450bf5ee993d2c99471f58d79f0c9ca8a00386",
+    "scripts/ladder/report.py": "02ec80786f9ffe5164f5ca40e804cf9413ee3444606a1730ab8dac8ca3861900",
+    "vitest.ladder.config.ts": "f624cde6dece250cc15bce4f8cf83928f2f5d9bca1211fa18194355a04e5a07f",
+    "package.json": "92f97aac6e085187b5294a587198c9a45da0dc82b51315777ecd22f516a97c72",
+    "package-lock.json": "057f94325ad52a6e3f75d5decdb513baa4b9a0af2350651bb8886a61749a8c3d"
+  }
+}

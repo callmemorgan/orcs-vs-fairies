@@ -1,0 +1,17 @@
+{
+  "reviewer": "/root/simulation/queue_regressions",
+  "remainingDataOrCheckerFindings": [],
+  "verified": [
+    "Exact 108 unique ordered pair inputs",
+    "All 19 source snapshot hashes",
+    "All 14 core files byte-equal to frozen commit 3f376c9",
+    "Recorded default AI settings and save-v3 equality flags",
+    "Finite coherent metrics and outcome relations",
+    "Corrected reporter bytes match summary reporter SHA-256",
+    "Checker execution with writes intercepted reproduces provenance except checkedAt",
+    "Altered seed, null duration, AI configuration, outcome and save hash are rejected"
+  ],
+  "reportFinding": "The reproduction command lacked LADDER_SEEDS=4127 and would produce 216 games with default seeds.",
+  "reportFindingResolved": true,
+  "scope": "Independent read-only review; no games rerun and no files edited by the reviewer. Simulation completion remains 100/108; Vitest passed 107/108 because of a separate wall-clock timeout."
+}

@@ -1,0 +1,26 @@
+--- a/scripts/ladder/ladder.test.ts
++++ b/scripts/ladder/ladder.test.ts
+@@ -2 +2,2 @@
+-import { readFileSync, mkdirSync, writeFileSync, existsSync } from 'node:fs';
++import { execFileSync } from 'node:child_process';
++import { readFileSync, readdirSync, mkdirSync, writeFileSync, existsSync } from 'node:fs';
+@@ -3,0 +5 @@
++import { DEFAULT_AI_CONFIG, aiProfile } from '../../src/core/ai-policy';
+@@ -4,0 +7 @@
++import { loadGame, saveGame, SAVE_VERSION } from '../../src/core/saves';
+@@ -16 +19,4 @@
+-const files=['src/core/types.ts','src/core/content.ts','src/core/simulation.ts','src/core/maps.ts','src/core/navigation.ts','scripts/ladder/ladder.test.ts'];
++const sourceCommit=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
++if(sourceCommit!=='3f376c9ea75b9bcaed6643ea678ce3c4e5e80f77')throw new Error('The final AI ladder requires frozen source commit 3f376c9.');
++const files=[...readdirSync('src/core').filter(file=>file.endsWith('.ts')).sort().map(file=>`src/core/${file}`),'scripts/ladder/ladder.test.ts','scripts/ladder/report.py','vitest.ladder.config.ts','package.json','package-lock.json'];
++for(const file of files.filter(file=>file.startsWith('src/core/')))if(!readFileSync(file).equals(execFileSync('git',['show',`${sourceCommit}:${file}`])))throw new Error(`Frozen core changed: ${file}`);
+@@ -19 +25 @@
+-writeFileSync(`${out}/method.json`,JSON.stringify({games:games.length,seeds,sizes,seedIsUsed:true,stepSeconds:.05,controllers:['ai','ai'],decisionIntervalSeconds:1,decisionOrder:'Alternates each pulse; both receive their first decision on the same tick.',maxMinutes:45,drawPolicy:'Simultaneous stronghold loss is a draw. No winner at 45 minutes is a timeout, with no tiebreak.',pathfindingMetric:'Sample movement orders every 5s. Flag >20s with <0.35 tile displacement while >1.5 tiles from destination and no visible enemy within 10 tiles. This is a diagnostic suspicion, not proof of an unreachable path.',sourceSha256:Object.fromEntries(files.map(f=>[f,createHash('sha256').update(readFileSync(f)).digest('hex')]))},null,2));
++writeFileSync(`${out}/method.json`,JSON.stringify({sourceCommit,runnerScope:'Gameplay loop unchanged; expanded source provenance, actual AI metadata and final save-v3 round trips added to the committed runner.',saveVersion:SAVE_VERSION,defaultAiConfig:{...DEFAULT_AI_CONFIG},games:games.length,seeds,sizes,seedIsUsed:true,stepSeconds:.05,controllers:['ai','ai'],decisionIntervalSeconds:aiProfile({...DEFAULT_AI_CONFIG}).decisionInterval,decisionOrder:'Per-player aiDecisionAt schedules default normal decisions on the same ticks; aiBatchTurns rotates player command order each due batch.',maxMinutes:45,drawPolicy:'Simultaneous stronghold loss is a draw. No winner at 45 minutes is a timeout, with no tiebreak.',pathfindingMetric:'Sample movement orders every 5s. Flag >20s with <0.35 tile displacement while >1.5 tiles from destination and no visible enemy within 10 tiles. This is a diagnostic suspicion, not proof of an unreachable path.',sourceSha256:Object.fromEntries(files.map(f=>[f,createHash('sha256').update(readFileSync(f)).digest('hex')]))},null,2));
+@@ -52 +58,2 @@
+- const report={seed,mapSize,faction,opponent,seconds:s.time,winner:s.winner,draw:s.draw,timeout:!isGameOver(s),lastAttack,secondsWithoutCombat:s.time-lastAttack,invalidEconomy,invalidPosition,trained,deposited,hitsByRole,damageByRole,abilities,built:built.map(x=>[...x]),roles:roles.map(x=>[...x]),maxPopulation,maxWood,maxOre,maxCrystal,pathStalls,finalPlayers:s.players,hq:s.entities.filter(e=>e.role==='hq').map(e=>({side:e.side,hp:e.hp})),survivors:s.entities.filter(e=>e.hp>0).map(e=>({id:e.id,side:e.side,role:e.role,x:e.x,y:e.y,hp:e.hp,order:e.order}))};
++ const finalSave=saveGame(s),finalSaveJson=JSON.stringify(finalSave),saveRoundTrip=JSON.stringify(saveGame(loadGame(finalSave)))===finalSaveJson;
++ const report={sourceCommit,saveVersion:finalSave.version,saveRoundTrip,finalSaveSha256:createHash('sha256').update(finalSaveJson).digest('hex'),aiConfigs:s.aiConfigs.map(config=>({...config})),seed,mapSize,faction,opponent,seconds:s.time,winner:s.winner,winningTeam:s.winningTeam,draw:s.draw,timeout:!isGameOver(s),lastAttack,secondsWithoutCombat:s.time-lastAttack,invalidEconomy,invalidPosition,trained,deposited,hitsByRole,damageByRole,abilities,built:built.map(x=>[...x]),roles:roles.map(x=>[...x]),maxPopulation,maxWood,maxOre,maxCrystal,pathStalls,finalPlayers:s.players,hq:s.entities.filter(e=>e.role==='hq').map(e=>({side:e.side,hp:e.hp})),survivors:s.entities.filter(e=>e.hp>0).map(e=>({id:e.id,side:e.side,role:e.role,x:e.x,y:e.y,hp:e.hp,order:e.order}))};
+@@ -55 +62 @@
+- expect(invalidEconomy).toBe(false);expect(invalidPosition).toBe(false);
++ expect(invalidEconomy).toBe(false);expect(invalidPosition).toBe(false);expect(saveRoundTrip).toBe(true);expect(finalSave.version).toBe(3);
