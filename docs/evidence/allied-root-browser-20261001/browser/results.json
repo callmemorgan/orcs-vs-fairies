@@ -1,0 +1,432 @@
+{
+  "base": "http://127.0.0.1:9285",
+  "sourceRoot": "/home/morgana/Projects/orcs-vs-Fairies",
+  "expectedBuildId": "400ea6e63bf11dc5d93827ae7223c3e1f90bd192d4b500fa797e85199914cbbd",
+  "startedAt": "2026-10-01T12:29:13.896Z",
+  "checks": [
+    {
+      "name": "Ordinary local controls launch human 0 with allied AI 1 against enemy AI 2/3",
+      "details": {
+        "teams": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "controllers": [
+          "human",
+          "ai",
+          "ai",
+          "ai"
+        ]
+      }
+    },
+    {
+      "name": "Ally modal pauses local time, traps focus and blocks battlefield selection/orders/keyboard/camera",
+      "details": {
+        "tick": 6,
+        "selected": [
+          2
+        ]
+      }
+    },
+    {
+      "name": "Selected-unit destination helper reads the owned worker selected through battlefield controls",
+      "details": {
+        "id": 2,
+        "x": 14.5,
+        "y": 19.5
+      }
+    },
+    {
+      "name": "Local form accepts a scout while paused and its own Cancel control cancels it",
+      "details": {
+        "id": 1
+      }
+    },
+    {
+      "name": "Closing restores running simulation and the ally activates the request with owned troops",
+      "details": {
+        "id": 2,
+        "assigned": [
+          14
+        ],
+        "savedStatus": "active",
+        "savedTick": 41
+      }
+    },
+    {
+      "name": "Local ally scout reaches its destination and displays Completed; replacement cancels the prior defend",
+      "details": {
+        "completed": {
+          "id": 3,
+          "issuer": 0,
+          "recipient": 1,
+          "kind": "scout",
+          "destination": {
+            "x": 50.490867601257555,
+            "y": 17.47610740025851
+          },
+          "createdAt": 2.4499999999999993,
+          "expiresAt": 152.45,
+          "status": "completed",
+          "assigned": [],
+          "reason": "Scout reached and observed the destination."
+        },
+        "replacedId": 2
+      }
+    },
+    {
+      "name": "Manual pause disables requests; closing a competing session modal preserves the prior pause",
+      "details": {
+        "tick": 82
+      }
+    },
+    {
+      "name": "Photo mode disables ally requests and gameplay, then restores the running match",
+      "details": true
+    },
+    {
+      "name": "Production build matches source; its unchanged exported replay imports with ally requests disabled",
+      "details": {
+        "buildId": "400ea6e63bf11dc5d93827ae7223c3e1f90bd192d4b500fa797e85199914cbbd",
+        "replayActions": 7,
+        "finalTick": 98
+      }
+    },
+    {
+      "name": "Real guest creates and starts an authoritative 2v2 with one human and three AI seats",
+      "details": {
+        "username": "Guest-b9575f",
+        "matchId": "0f619455-2c64-4654-91b0-4498df2c2da2",
+        "seats": [
+          "Player 1: Guest-b9575f · Ironclad · Team 1 · Ready",
+          "Player 2: AI · Ironclad · Team 1 · AI ready",
+          "Player 3: AI · Ironclad · Team 2 · AI ready",
+          "Player 4: AI · Wild Court · Team 2 · AI ready"
+        ]
+      }
+    },
+    {
+      "name": "Online modal blocks gameplay commands and selections while server snapshots keep advancing",
+      "details": {
+        "beforeTick": 60,
+        "afterTick": 88,
+        "sentCommands": 0
+      }
+    },
+    {
+      "name": "Online form and cancellation use public commands with authenticated accepted acknowledgements and authoritative receipts",
+      "details": {
+        "sent": {
+          "kind": "command",
+          "protocolVersion": 1,
+          "clientSeq": 1,
+          "observedTick": 116,
+          "command": {
+            "type": "allyDirective",
+            "ally": 1,
+            "directive": "scout",
+            "x": 32,
+            "y": 32
+          }
+        },
+        "ack": {
+          "kind": "commandAck",
+          "clientSeq": 1,
+          "appliedTick": 121,
+          "accepted": true
+        },
+        "initialStatus": "active",
+        "cancellation": {
+          "kind": "command",
+          "protocolVersion": 1,
+          "clientSeq": 2,
+          "observedTick": 136,
+          "command": {
+            "type": "cancelAllyDirective",
+            "directiveId": 1
+          }
+        },
+        "cancellationAck": {
+          "kind": "commandAck",
+          "clientSeq": 2,
+          "appliedTick": 140,
+          "accepted": true
+        },
+        "cancelledTick": 140
+      }
+    },
+    {
+      "name": "Server activates defend and completes scout through real AI simulation; the mounted list applies snapshot transitions",
+      "details": {
+        "defendId": 2,
+        "activeTick": 184,
+        "scoutId": 3,
+        "completedTick": 264
+      }
+    },
+    {
+      "name": "Online Attack request activates and completes an observed clear area through authenticated public commands",
+      "details": {
+        "command": {
+          "kind": "command",
+          "protocolVersion": 1,
+          "clientSeq": 5,
+          "observedTick": 308,
+          "command": {
+            "type": "allyDirective",
+            "ally": 1,
+            "directive": "attack",
+            "x": 47.73788470820163,
+            "y": 19.367996100558244
+          }
+        },
+        "ack": {
+          "kind": "commandAck",
+          "clientSeq": 5,
+          "appliedTick": 313,
+          "accepted": true
+        },
+        "activeTick": 324,
+        "completedTick": 384
+      }
+    },
+    {
+      "name": "Own team receives public directive and transfer metadata without assigned troop IDs or foreign banks",
+      "details": {
+        "initialPrivacy": {
+          "directives": [
+            {
+              "id": 1,
+              "status": "cancelled",
+              "keys": [
+                "createdAt",
+                "destination",
+                "expiresAt",
+                "id",
+                "issuer",
+                "kind",
+                "reason",
+                "recipient",
+                "status"
+              ]
+            },
+            {
+              "id": 2,
+              "status": "active",
+              "keys": [
+                "createdAt",
+                "destination",
+                "expiresAt",
+                "id",
+                "issuer",
+                "kind",
+                "recipient",
+                "status"
+              ]
+            }
+          ],
+          "transfers": [],
+          "ownBank": {
+            "wood": 420,
+            "ore": 220,
+            "crystal": 0
+          },
+          "privateRosterBanksAbsent": true
+        },
+        "supportPrivacy": {
+          "directives": [
+            {
+              "id": 1,
+              "status": "cancelled",
+              "keys": [
+                "createdAt",
+                "destination",
+                "expiresAt",
+                "id",
+                "issuer",
+                "kind",
+                "reason",
+                "recipient",
+                "status"
+              ]
+            },
+            {
+              "id": 2,
+              "status": "cancelled",
+              "keys": [
+                "arrivedAt",
+                "createdAt",
+                "destination",
+                "expiresAt",
+                "id",
+                "issuer",
+                "kind",
+                "reason",
+                "recipient",
+                "status"
+              ]
+            },
+            {
+              "id": 3,
+              "status": "completed",
+              "keys": [
+                "createdAt",
+                "destination",
+                "expiresAt",
+                "id",
+                "issuer",
+                "kind",
+                "reason",
+                "recipient",
+                "status"
+              ]
+            },
+            {
+              "id": 4,
+              "status": "completed",
+              "keys": [
+                "arrivedAt",
+                "createdAt",
+                "destination",
+                "expiresAt",
+                "id",
+                "issuer",
+                "kind",
+                "reason",
+                "recipient",
+                "status"
+              ]
+            },
+            {
+              "id": 5,
+              "status": "completed",
+              "keys": [
+                "createdAt",
+                "expiresAt",
+                "id",
+                "issuer",
+                "kind",
+                "reason",
+                "recipient",
+                "resources",
+                "status"
+              ]
+            }
+          ],
+          "transfers": [
+            {
+              "id": 1,
+              "sender": 1,
+              "recipient": 0,
+              "resources": {
+                "wood": 0,
+                "ore": 1,
+                "crystal": 0
+              },
+              "time": 22.05000000000018
+            }
+          ],
+          "ownBank": {
+            "wood": 420,
+            "ore": 221,
+            "crystal": 0
+          },
+          "privateRosterBanksAbsent": true
+        },
+        "renderedPrivateSides": [
+          0
+        ],
+        "foreignBankDisplayPlaceholders": [
+          {
+            "side": 1,
+            "wood": 0,
+            "ore": 0,
+            "crystal": 0
+          },
+          {
+            "side": 2,
+            "wood": 0,
+            "ore": 0,
+            "crystal": 0
+          },
+          {
+            "side": 3,
+            "wood": 0,
+            "ore": 0,
+            "crystal": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "Online photo mode disables requests and commands while server time advances",
+      "details": {
+        "beforeTick": 480,
+        "afterTick": 496
+      }
+    },
+    {
+      "name": "Separate authenticated enemy-perspective spectator cannot issue requests or commands and receives no requester-team receipts",
+      "details": {
+        "username": "Guest-019754",
+        "perspective": 2,
+        "tick": 444,
+        "delayTicks": 600,
+        "sentCommands": 0,
+        "directives": [],
+        "transfers": []
+      }
+    },
+    {
+      "name": "Browsers report no page errors or WebSocket capture errors",
+      "details": true
+    }
+  ],
+  "pageBuilds": [
+    {
+      "profile": "local",
+      "url": "http://127.0.0.1:9285/",
+      "moduleScripts": [
+        "http://127.0.0.1:9285/assets/index-DutIHz3I.js"
+      ],
+      "stylesheets": [
+        "http://127.0.0.1:9285/assets/index-DLxWNg4k.css"
+      ]
+    },
+    {
+      "profile": "online",
+      "url": "http://127.0.0.1:9285/",
+      "moduleScripts": [
+        "http://127.0.0.1:9285/assets/index-DutIHz3I.js"
+      ],
+      "stylesheets": [
+        "http://127.0.0.1:9285/assets/index-DLxWNg4k.css"
+      ]
+    },
+    {
+      "profile": "spectator",
+      "url": "http://127.0.0.1:9285/",
+      "moduleScripts": [
+        "http://127.0.0.1:9285/assets/index-DutIHz3I.js"
+      ],
+      "stylesheets": [
+        "http://127.0.0.1:9285/assets/index-DLxWNg4k.css"
+      ]
+    }
+  ],
+  "limits": [
+    "This run proves local and loopback-hosted production UI integration. It does not establish public remote hosting, natural coordinated team victory, scouting across a map, all factions, underground directives, or other players cancelling foreign requests."
+  ],
+  "exploratory": false,
+  "knownFailures": [],
+  "buildId": "400ea6e63bf11dc5d93827ae7223c3e1f90bd192d4b500fa797e85199914cbbd",
+  "lobbyId": "6b3f85a9-c24a-460c-a1b3-3729394c77d3 · Server revision 1 · Annihilation",
+  "matchId": "0f619455-2c64-4654-91b0-4498df2c2da2",
+  "complete": true,
+  "completedAt": "2026-10-01T12:30:31.209Z",
+  "phase": "final evidence and browser errors",
+  "pageErrors": [],
+  "captureErrors": []
+}

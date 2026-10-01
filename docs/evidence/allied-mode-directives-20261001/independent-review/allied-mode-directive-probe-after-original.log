@@ -1,0 +1,145 @@
+
+ RUN  v4.1.11 /tmp
+
+stdout | allied-mode-directive-probe.test.ts > hill > keeps an accepted directive order
+{
+  "mode": "hill",
+  "hill": {
+    "x": 32.5,
+    "y": 32.5,
+    "ownerTeam": null,
+    "captureTeam": null,
+    "captureTicks": 0,
+    "holdTicks": 0,
+    "contested": false
+  },
+  "relics": [],
+  "destination": {
+    "x": 54.5,
+    "y": 28.5
+  },
+  "directive": {
+    "id": 1,
+    "issuer": 0,
+    "recipient": 1,
+    "kind": "defend",
+    "destination": {
+      "x": 54.5,
+      "y": 28.5
+    },
+    "createdAt": 0,
+    "expiresAt": 90,
+    "status": "active",
+    "assigned": [
+      14
+    ],
+    "arrivedAt": 0.05
+  },
+  "units": [
+    {
+      "id": 14,
+      "order": {
+        "type": "hold"
+      }
+    }
+  ]
+}
+
+stdout | allied-mode-directive-probe.test.ts > relic > keeps an accepted directive order
+{
+  "mode": "relic",
+  "hill": {
+    "x": 32.5,
+    "y": 32.5,
+    "ownerTeam": null,
+    "captureTeam": null,
+    "captureTicks": 0,
+    "holdTicks": 0,
+    "contested": false
+  },
+  "relics": [
+    {
+      "id": 1,
+      "x": 38.5,
+      "y": 32.5,
+      "carrierId": null,
+      "heldTeam": null
+    },
+    {
+      "id": 2,
+      "x": 28.5,
+      "y": 36.5,
+      "carrierId": null,
+      "heldTeam": null
+    },
+    {
+      "id": 3,
+      "x": 28.5,
+      "y": 27.5,
+      "carrierId": null,
+      "heldTeam": null
+    }
+  ],
+  "destination": {
+    "x": 54.5,
+    "y": 28.5
+  },
+  "directive": {
+    "id": 1,
+    "issuer": 0,
+    "recipient": 1,
+    "kind": "defend",
+    "destination": {
+      "x": 54.5,
+      "y": 28.5
+    },
+    "createdAt": 0,
+    "expiresAt": 90,
+    "status": "active",
+    "assigned": [
+      14
+    ],
+    "arrivedAt": 0.05
+  },
+  "units": [
+    {
+      "id": 14,
+      "order": {
+        "type": "hold"
+      }
+    }
+  ]
+}
+
+ ❯ allied-mode-directive-probe.test.ts (2 tests | 2 failed) 49ms
+     × keeps an accepted directive order 35ms
+     × keeps an accepted directive order 13ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  allied-mode-directive-probe.test.ts > hill > keeps an accepted directive order
+ FAIL  allied-mode-directive-probe.test.ts > relic > keeps an accepted directive order
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ allied-mode-directive-probe.test.ts:16:119
+     14|  const units=state.entities.filter(e=>directive.assigned.includes(e.id…
+     15|  console.log(JSON.stringify({mode,hill:state.objectives.hill,relics:st…
+     16|  expect(units.every(({order})=>order.type==='attackMove'&&Math.hypot(o…
+       |                                                                                                                       ^
+     17| }));
+     18|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  05:41:02
+   Duration  296ms (transform 158ms, setup 0ms, import 191ms, tests 49ms, environment 0ms)
+
