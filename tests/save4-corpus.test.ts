@@ -23,7 +23,7 @@ describe('SAVE4 genuine historical corpus',()=>{
  it.each(sessions)('preserves the %s original game/history pair through import and local storage',(_name,path,checksum)=>{
   const source=json(path),gameText=JSON.stringify(source.game),initialText=JSON.stringify(source.replay.initial),{file,state}=decodeSessionFile(source);
   expect(checksumSaveEnvelope(file.game)).toBe(checksum);expect(JSON.stringify(file.game)).toBe(gameText);expect(JSON.stringify(file.replay!.initial)).toBe(initialText);
-  expect(saveGame(state).version).toBe(4);expect(SAVE_VERSION).toBe(4);expect(SIMULATION_REVISION).toBe('4.0.0');
+  expect(saveGame(state).version).toBe(4);expect(SAVE_VERSION).toBe(4);expect(SIMULATION_REVISION).toBe('4.0.1');
   expect(state.projectiles).toBeDefined();expect(state.factionSystems).toBeDefined();expect(state.economy).toBeDefined();expect(state.entities.filter(e=>e.kind==='unit').every(e=>e.tactics)).toBe(true);
   expect(JSON.stringify(decodeSessionFile(JSON.stringify(file)).file.game)).toBe(gameText);
   const storage=new Map<string,string>(),repo=new SaveRepository({getItem:k=>storage.get(k)??null,setItem:(k,v)=>{storage.set(k,v);},removeItem:k=>{storage.delete(k);}}),id=repo.save('Historical match',file);
@@ -31,7 +31,7 @@ describe('SAVE4 genuine historical corpus',()=>{
   expect(replayRulesCompatible(file.replay!)).toBe(false);expect(()=>new ReplayPlayer(file.replay)).toThrow('simulation version');expect(()=>new MatchRecorder(state,file.replay)).toThrow('Older replay history');
   expect(()=>createSessionFile(state,file.replay)).toThrow('does not match');
   const recorder=new MatchRecorder(state),fresh=createSessionFile(state,recorder.export());recorder.dispose();const resumed=decodeSessionFile(fresh),player=new ReplayPlayer(fresh.replay);
-  expect(resumed.file.game.version).toBe(4);expect(resumed.file.replay!.initial.version).toBe(4);expect(resumed.file.replay!.simulationRevision).toBe('4.0.0');expect(saveGame(player.state)).toEqual(saveGame(state));player.dispose();
+  expect(resumed.file.game.version).toBe(4);expect(resumed.file.replay!.initial.version).toBe(4);expect(resumed.file.replay!.simulationRevision).toBe('4.0.1');expect(saveGame(player.state)).toEqual(saveGame(state));player.dispose();
   expect(JSON.stringify(source.game)).toBe(gameText);
  });
  it('authenticates the old content before admitting entity and queue definitions',()=>{
@@ -103,7 +103,7 @@ describe('SAVE4 genuine historical corpus',()=>{
   expect(JSON.stringify(file.game)).toBe(JSON.stringify(historical.game));expect(JSON.stringify(file.replay!.initial)).toBe(JSON.stringify(historical.replay.initial));expect(file.game.version).toBe(1);expect(file.replay!.initial.version).toBe(1);expect(file.replay!.checksumVersion).toBe(1);expect(file.replay!.simulationRevision).toBe('1.0.0');expect(historical.replay.checksumVersion).toBeUndefined();expect(historical.replay.simulationRevision).toBeUndefined();expect(checksumSaveEnvelope(file.game)).toBe('2556964e');expect(Object.getOwnPropertyDescriptors(historical.game.state.entities)).toEqual(descriptors);expect(JSON.stringify(historical)).toBe(before);
   const recorder=new MatchRecorder(state),current=createSessionFile(state,recorder.export());recorder.dispose();for(const game of [current.game,current.replay!.initial])Object.defineProperty(game.state.entities,'0',{enumerable:false});
   const currentBefore=JSON.stringify(current),currentDescriptors=Object.getOwnPropertyDescriptors(current.game.state.entities),decoded=decodeSessionFile(current);
-  expect(JSON.stringify(decoded.file)).toBe(currentBefore);expect(decoded.file.game.version).toBe(4);expect(decoded.file.replay!.simulationRevision).toBe('4.0.0');expect(saveGame(decoded.state)).toEqual(decoded.file.game);expect(Object.getOwnPropertyDescriptors(current.game.state.entities)).toEqual(currentDescriptors);expect(JSON.stringify(current)).toBe(currentBefore);
+  expect(JSON.stringify(decoded.file)).toBe(currentBefore);expect(decoded.file.game.version).toBe(4);expect(decoded.file.replay!.simulationRevision).toBe('4.0.1');expect(saveGame(decoded.state)).toEqual(decoded.file.game);expect(Object.getOwnPropertyDescriptors(current.game.state.entities)).toEqual(currentDescriptors);expect(JSON.stringify(current)).toBe(currentBefore);
  });
  it('keeps the scenario wrapper checksum separate from the nested core forwarding guard',()=>{
   const final=json('./fixtures/scenario-save3-3.2/scenario-final.json'),recording=json('./fixtures/scenario-save3-3.2/scenario-recording.json'),before=JSON.stringify(recording.initial);

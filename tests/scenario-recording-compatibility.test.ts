@@ -30,7 +30,7 @@ describe('scenario journal rules compatibility', () => {
   it('preserves a genuine pinned SAVE3 equipment journal and rejects continuation under SAVE4 rules', () => {
     const raw = armyFixture('chapter1-equipped-recording'), checkpoint = armyFixture('chapter1-equipped-checkpoint');
     const before = JSON.stringify(raw), checkpointBefore = JSON.stringify(checkpoint), decoded = decodeScenarioRecording(raw);
-    expect(SAVE_VERSION).toBe(4); expect(SIMULATION_REVISION).toBe('4.0.0');
+    expect(SAVE_VERSION).toBe(4); expect(SIMULATION_REVISION).toBe('4.0.1');
     expect(decoded).toMatchObject({ version: 2, simulationRevision: '3.2.0', checksumVersion: 3, finalTick: 226 });
     expect(decoded.initial.game.version).toBe(3); expect(decoded.initial.simulationRevision).toBe('3.2.0');
     expect(JSON.stringify(decoded)).toBe(before); expect(scenarioCheckpointChecksum(checkpoint)).toBe(decoded.finalChecksum);
@@ -57,7 +57,7 @@ describe('scenario journal rules compatibility', () => {
   it('pins both versions on new journals and verifies current state', () => {
     const session = createScenario(SCENARIOS['automata-2']), recorder = new ScenarioRecorder(session), recording = recorder.archive(); recorder.destroy();
     expect(recording).toMatchObject({ version: 2, simulationRevision: SIMULATION_REVISION, checksumVersion: SAVE_VERSION });
-    expect(recording.initial.game.version).toBe(4); expect(recording.initial.simulationRevision).toBe('4.0.0');
+    expect(recording.initial.game.version).toBe(4); expect(recording.initial.simulationRevision).toBe('4.0.1');
     expect(scenarioRecordingRulesCompatible(recording)).toBe(true); expect(captureScenario(verifyScenarioRecording(recording))).toEqual(captureScenario(session));
   });
 
@@ -76,7 +76,7 @@ describe('scenario journal rules compatibility', () => {
     delete (raw as unknown as Record<string, unknown>)[key]; expect(() => decodeScenarioRecording(raw)).toThrow('Unsupported');
   });
 
-  it.each([undefined, '3.2.0'])('blocks a current journal whose initial checkpoint rules pin is %s', initialRevision => {
+  it.each([undefined, '3.2.0', '4.0.0'])('blocks a current journal whose initial checkpoint rules pin is %s', initialRevision => {
     const session = createScenario(SCENARIOS['automata-2']), recorder = new ScenarioRecorder(session), raw = recorder.archive(); recorder.destroy();
     if (initialRevision === undefined) delete raw.initial.simulationRevision;
     else raw.initial.simulationRevision = initialRevision;

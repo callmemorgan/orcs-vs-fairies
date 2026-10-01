@@ -54,7 +54,7 @@ export async function worldSourceProof(sourcePin=process.env.OVF_PRODUCTION_SOUR
  const sourceDigest=sha(Object.entries(inputs).sort(([a],[b])=>a<b?-1:a>b?1:0).map(([path,item])=>`${path}\0${item.sha256}\n`).join(''));
  const saveSource=await readFile('src/core/saves.ts','utf8'),rulesSource=await readFile('src/core/versions.ts','utf8');
  const saveVersion=Number(saveSource.match(/export const SAVE_VERSION\s*=\s*(\d+)/)?.[1]),simulationRevision=rulesSource.match(/export const SIMULATION_REVISION\s*=\s*['"]([^'"]+)/)?.[1];
- assert.equal(saveVersion,4,'Regenerate final proof from SAVE4 source');assert.equal(simulationRevision,'4.0.0','Use the approved SAVE4 rules revision');
+ assert.equal(saveVersion,4,'Regenerate final proof from SAVE4 source');assert.equal(simulationRevision,'4.0.1','Use the approved SAVE4 rules revision');
  return {...provenance,worldScriptFiles,sourceDigest,saveVersion,simulationRevision};
 }
 

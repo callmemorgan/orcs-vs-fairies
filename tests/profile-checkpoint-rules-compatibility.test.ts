@@ -7,7 +7,7 @@ import { solveMission } from '../scripts/scenarios/mission-strategy';
 describe('current outer profiles cannot authorize historical checkpoint pins', () => {
   // These are explicitly modified current profiles. No historical fixture is
   // rewritten; raw checksums remain valid so the missing rule guard is isolated.
-  it.each([undefined, '3.2.0'])('keeps a campaign checkpoint with rules %s inspection-only before writers or replay', revision => {
+  it.each([undefined, '3.2.0', '4.0.0'])('keeps a campaign checkpoint with rules %s inspection-only before writers or replay', revision => {
     const run = prepareCampaignMission(createCampaignProfile('campaign-dwarves', 'checkpoint-pin-campaign'));
     try {
       const profile = structuredClone(run.profile), checkpoint = profile.active!.checkpoint;
@@ -25,7 +25,7 @@ describe('current outer profiles cannot authorize historical checkpoint pins', (
     } finally { run.recorder.destroy(); }
   });
 
-  it.each([undefined, '3.2.0'])('checks completed campaign checkpoint rules %s before duplicates or reward claims', revision => {
+  it.each([undefined, '3.2.0', '4.0.0'])('checks completed campaign checkpoint rules %s before duplicates or reward claims', revision => {
     const run = prepareCampaignMission(createCampaignProfile('campaign-dwarves', 'checkpoint-pin-history'));
     try {
       solveMission(run.session);
@@ -46,7 +46,7 @@ describe('current outer profiles cannot authorize historical checkpoint pins', (
     } finally { run.recorder.destroy(); }
   });
 
-  it.each([undefined, '3.2.0'])('keeps a conquest checkpoint with rules %s inspection-only before writers or replay', revision => {
+  it.each([undefined, '3.2.0', '4.0.0'])('keeps a conquest checkpoint with rules %s inspection-only before writers or replay', revision => {
     const run = prepareConquestBattle(createConquestProfile('orcs', 'checkpoint-pin-realm'), 'quarry');
     try {
       const profile = structuredClone(run.profile), checkpoint = profile.active!.checkpoint;

@@ -49,7 +49,7 @@ describe('campaign finale cosmetic claim', () => {
     expect(ui.claim).not.toHaveBeenCalled();
   });
 
-  it.each([undefined, '3.2.0'])('disables reward claims when a completed checkpoint has rules %s', async revision => {
+  it.each([undefined, '3.2.0', '4.0.0'])('disables reward claims when a completed checkpoint has rules %s', async revision => {
     const ui = setup(), profile = completedUiProfile();
     if (revision === undefined) delete profile.history[0].checkpoint.simulationRevision;
     else profile.history[0].checkpoint.simulationRevision = revision;

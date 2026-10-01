@@ -16,7 +16,7 @@ function write(name:string,value:unknown){writeFileSync(resolve(out,name),JSON.s
 const state=createMatch({content:createContentBundle([exampleMod()]),map:{seed:4127,size:'small'},players:[{id:0,teamId:0,factionId:'lantern:keepers',controller:'human',handicap:{startingResources:{wood:2000,ore:1000,crystal:100}}},{id:1,teamId:1,factionId:'orcs',controller:'external'}]});
 const sentinel=state.entities.find(e=>e.definitionId==='lantern:sentinel')!,enemy=state.entities.find(e=>e.side===1&&e.role==='melee')!;
 sentinel.hp-=45;enemy.x=22.5;enemy.y=15.5;while(!walkable(state,enemy.x,enemy.y)&&enemy.y<25)enemy.y++;enemy.order={type:'hold'};refreshVisibility(state);
-if(SAVE_VERSION!==4||SIMULATION_REVISION!=='4.0.0')throw new Error('The mod proof requires SAVE4 and simulation revision 4.0.0.');
+if(SAVE_VERSION!==4||SIMULATION_REVISION!=='4.0.1')throw new Error('The mod proof requires SAVE4 and simulation revision 4.0.1.');
 const session=createSessionFile(state);assert.deepEqual(saveGame(decodeSessionFile(JSON.stringify(session)).state),session.game);write('scenario.json',session);
 write('lantern.json',exampleMod());
 

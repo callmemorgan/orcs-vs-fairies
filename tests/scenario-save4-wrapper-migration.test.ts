@@ -45,7 +45,7 @@ describe('SAVE4 migration of genuine equipped scenario wrappers', () => {
   it('migrates an equipped checkpoint while preserving its original raw game, rules pin and veteran values', () => {
     const raw = fixture<ScenarioCheckpoint>('chapter1-equipped-checkpoint'), before = JSON.stringify(raw);
     const session = restoreScenario(raw), migrated = captureScenario(session);
-    expect(SAVE_VERSION).toBe(4); expect(SIMULATION_REVISION).toBe('4.0.0');
+    expect(SAVE_VERSION).toBe(4); expect(SIMULATION_REVISION).toBe('4.0.1');
     expect(raw.game.version).toBe(3); expect(raw.simulationRevision).toBe('3.2.0');
     expect(migrated.game.version).toBe(4); expect(migrated.simulationRevision).toBe('3.2.0');
     expect(session.state.scenario?.simulationRevision).toBe('3.2.0');
