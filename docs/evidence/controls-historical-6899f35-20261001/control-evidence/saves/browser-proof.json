@@ -1,0 +1,165 @@
+{
+  "pin": "6899f35ae1e8d8b08781005bf766b9bcce2755b6",
+  "base": "http://127.0.0.1:5193/",
+  "buildId": "af7934a8bdcdb7e7e885f460a1215c8e7cc25f3bbaf8dcaf347c9332a946e9d7",
+  "feature": 90,
+  "method": "Fresh production matches; DOM/keyboard actions only. page.evaluate and waitForFunction read state/storage only. Actual wall-clock waits drive normal simulation. No fixtures, clock override, commands, runtime writes, or source edits.",
+  "checks": [
+    {
+      "id": "named-save-and-native-export",
+      "snapshot": {
+        "tick": 10,
+        "time": 0.49999999999999994,
+        "paused": true,
+        "winner": null,
+        "draw": false,
+        "entities": 15
+      },
+      "slot": "slot-1",
+      "format": "orcs-vs-fairies/session",
+      "sessionVersion": 1,
+      "gameSaveVersion": 3,
+      "replayFinalTick": 10
+    },
+    {
+      "id": "named-load-restores-complete-game-envelope",
+      "advancedTick": 21,
+      "restoredTick": 10,
+      "gameHash": "a378d4636dceeab8a21fae11e17626da43c35c694eabdf56aa1ae6c85af6ec89"
+    },
+    {
+      "id": "invalid-import-preserves-current-game",
+      "restoredTick": 10
+    },
+    {
+      "id": "automatic-native-generation-1",
+      "generation": 1,
+      "tick": 610,
+      "time": 30.5000000000003,
+      "ids": [
+        "autosave"
+      ]
+    },
+    {
+      "id": "automatic-native-generation-2",
+      "generation": 2,
+      "tick": 1211,
+      "time": 60.5499999999987,
+      "ids": [
+        "autosave-1",
+        "autosave"
+      ]
+    },
+    {
+      "id": "automatic-native-generation-3",
+      "generation": 3,
+      "tick": 1812,
+      "time": 90.599999999997,
+      "ids": [
+        "autosave-2",
+        "autosave-1",
+        "autosave"
+      ]
+    },
+    {
+      "id": "three-autosaves-rotate-with-manual-save-preserved",
+      "generations": [
+        {
+          "generation": 1,
+          "tick": 610,
+          "time": 30.5000000000003,
+          "ids": [
+            "autosave"
+          ]
+        },
+        {
+          "generation": 2,
+          "tick": 1211,
+          "time": 60.5499999999987,
+          "ids": [
+            "autosave-1",
+            "autosave"
+          ]
+        },
+        {
+          "generation": 3,
+          "tick": 1812,
+          "time": 90.599999999997,
+          "ids": [
+            "autosave-2",
+            "autosave-1",
+            "autosave"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native-pagehide-forces-checkpoint-on-reload",
+      "beforeReload": {
+        "tick": 1828,
+        "time": 91.39999999999695,
+        "paused": true,
+        "winner": null,
+        "draw": false,
+        "entities": 23
+      },
+      "checkpointTick": 1828
+    },
+    {
+      "id": "reload-and-ui-load-recover-autosave-envelope",
+      "tick": 1828,
+      "gameHash": "2d68f7c9534a9d41659956881934d576e994d8f73bf1ef6cb4508fa7e32ec8c8"
+    },
+    {
+      "id": "fresh-browser-native-import-restores-complete-envelope",
+      "tick": 10,
+      "gameHash": "a378d4636dceeab8a21fae11e17626da43c35c694eabdf56aa1ae6c85af6ec89",
+      "localSlots": 0
+    },
+    {
+      "id": "disabled-autosave-allows-simulation-without-new-checkpoint",
+      "start": {
+        "tick": 1828,
+        "time": 91.39999999999695,
+        "paused": true,
+        "winner": null,
+        "draw": false,
+        "entities": 23
+      },
+      "end": {
+        "tick": 2457,
+        "time": 122.84999999999516,
+        "paused": true,
+        "winner": null,
+        "draw": false,
+        "entities": 26
+      },
+      "simulationSeconds": 31.449999999998212
+    },
+    {
+      "id": "disabled-preference-persists-and-prevents-pagehide-save",
+      "intervalSeconds": 30,
+      "enabled": false
+    },
+    {
+      "id": "served-production-build-identity",
+      "buildId": "af7934a8bdcdb7e7e885f460a1215c8e7cc25f3bbaf8dcaf347c9332a946e9d7",
+      "assetPath": "/assets/index-Qj459tjm.js",
+      "assetHash": "17f4d5517a735e98c297829678dc90d411efabbb3f3f0c48b3065f457ba1a802"
+    }
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "servedAssets": {
+    "/assets/index-Qj459tjm.js": "17f4d5517a735e98c297829678dc90d411efabbb3f3f0c48b3065f457ba1a802"
+  },
+  "startedAt": "2026-10-01T12:59:03.511Z",
+  "result": "passed",
+  "finishedAt": "2026-10-01T13:01:17.785Z",
+  "limits": [
+    "Local fresh skirmish on one production origin; no online, historical-save, campaign, quota-exhaustion or 12-slot browser exercise.",
+    "Native page reload exercises pagehide. Visibility-hidden autosave hook is source/test evidence, not separately browser-triggered.",
+    "Recovery is manual through Saves; browser data and origin must persist."
+  ],
+  "browserClosed": true
+}

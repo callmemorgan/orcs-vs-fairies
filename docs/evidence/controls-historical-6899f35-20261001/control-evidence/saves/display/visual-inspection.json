@@ -1,0 +1,53 @@
+{
+  "sourcePin": "6899f35ae1e8d8b08781005bf766b9bcce2755b6",
+  "method": "Each of the nine screenshot files was loaded with view_image and visually inspected after browser completion.",
+  "observations": [
+    {
+      "image": "01-default-game-idle.png",
+      "observation": "Idle1 button visible below the minimap at00:13; the fresh Orc HQ and workers have green diamond markers with white ownership outlines."
+    },
+    {
+      "image": "02-minimap-camera-moved.png",
+      "observation": "Ordinary minimap click moves the camera into fog; the minimap camera polygon changes position while the Idle1 button remains visible."
+    },
+    {
+      "image": "03-default-display.png",
+      "observation": "Default palette, checked toggles and all eight distinct preview shapes are visible. Player1 has a white outline; Player2 has cyan; Players3\u20138 have amber."
+    },
+    {
+      "image": "04-deuteranopia-display.png",
+      "observation": "Deuteranopia(red-green) selection visible. All eight preview fill colors changed, with shapes and ownership outlines retained."
+    },
+    {
+      "image": "05-deuteranopia-game.png",
+      "observation": "The same fresh Orc HQ and workers now have blue diamond markers; white ownership outlines remain. The minimap markers also use the blue color."
+    },
+    {
+      "image": "06-tritanopia-display.png",
+      "observation": "Tritanopia(blue-yellow) selection visible. Its colors differ from the default and deuteranopia previews; shapes and outlines remain."
+    },
+    {
+      "image": "07-tritanopia-shapes-outlines-off.png",
+      "observation": "Both toggles unchecked. All eight markers are plain squares with no ownership outlines."
+    },
+    {
+      "image": "08-reloaded-persistence.png",
+      "observation": "After page reload and ordinary fresh match launch at00:00, tritanopia and both unchecked toggles remain; markers remain plain squares."
+    },
+    {
+      "image": "09-reset-display.png",
+      "observation": "Reset restored Default, both checked toggles, eight distinct shapes, and ownership outlines."
+    }
+  ],
+  "layout": "At1600\u00d71000 the display dialog fits fully, all labels and controls are readable, and no controls overlap.",
+  "coverageGaps": [
+    "No naturally occurring raid or expansion threat occurred during this fresh-match idle check; those alert kinds were not exercised.",
+    "The example-team preview proves all eight marker colors and shapes, including own/ally/enemy outlines; fresh gameplay contained only the default two factions.",
+    "No physical gamepad, saved fixture, or runtime command was used."
+  ],
+  "runtimeMethodsInvoked": false,
+  "pageStateMutatedOutsideUI": false,
+  "fixtureUsed": false,
+  "nativeSelectInput": "Mouse click followed by Home, ArrowDown(one or two presses), Enter. No selectOption, evaluate assignment, or dispatchEvent used.",
+  "browserClosed": true
+}

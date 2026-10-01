@@ -1,0 +1,17 @@
+Feature 90 requires suspending long matches and recovering interrupted games. This production browser run passed all 13 checks against frozen Git commit `6899f35ae1e8d8b08781005bf766b9bcce2755b6`. The archive was built once with `npm run build`; the browser received that compiled JavaScript, with matching SHA256 and build identity `af7934a8bdcdb7e7e885f460a1215c8e7cc25f3bbaf8dcaf347c9332a946e9d7`. `archive-pin-check.json` independently matches 125 source, configuration, ledger and test files to their Git blobs. No game source, root checkout, ledger, or save/replay version was changed.
+
+The run started a normal medium-map skirmish through the menu. Session tools saved and exported a named match at tick 10, allowed normal advancement to tick 21, and restored the complete native game envelope through Load. A rejected session-version import kept that envelope intact. A new browser context imported the downloaded native JSON and exported the same complete game envelope, with no fabricated local save slot.
+
+Autosaves ran through normal simulation and actual wall-clock waits. Applying the 30-second preference produced checkpoints at ticks 610, 1211 and 1812 (simulation times 30.50, 60.55 and 90.60). The three native autosave slots rotated correctly, and the named save remained unchanged. Reloading the page triggered its native pagehide checkpoint at tick 1828; the menu's Saves -> Load Autosave restored the complete exported game envelope. Disabling autosaves allowed another 31.45 seconds of simulation without altering the saved store. A subsequent reload preserved both the disabled preference and the 30-second interval, and created no pagehide checkpoint.
+
+All match actions used normal DOM, mouse or keyboard controls. Browser evaluation only read state, DOM and localStorage. The script used no fixtures, command calls, scene changes, game clock writes, or browser virtual-time overrides. Both browser contexts closed normally, with zero page exceptions and zero console errors. All eight screenshots were visually inspected. `browser-proof.json` records the checks; the downloaded and observed `native-*.json` files preserve the real envelopes and local store generations. `manifest.json` records SHA256 hashes of source, compiled output and evidence. The separate `display/` directory contains the additional feature 81/87 proof requested by the parent.
+
+This browser proof covers local skirmish saves on one origin. It does not exercise historical saves, online saves, campaigns, quota exhaustion, or all 12 manual slots. Native reload proves pagehide saving; the separate visibility-hidden hook is supported by source inspection, not a distinct browser action in this run. Recovery requires selecting a save through Saves and keeping browser storage and the origin; the app does not automatically resume. The ledger still records feature 90 as in-progress because this task did not authorize ledger edits.
+
+To reproduce from the frozen archive, build once, serve `npm run preview -- --port 5193`, and run:
+
+```sh
+OVF_PLAYWRIGHT_MODULE=/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs node control-evidence/saves/verify-saves.mjs http://127.0.0.1:5193/
+```
+
+The earlier frozen pin `45e4c63efd366bbe53d217e8875dc858b18fcb62` failed TypeScript compilation before a browser could launch. Its unchanged failure log remains in `/tmp/ovf-controls-45e4c63.NhNlpN/control-evidence/saves/build.log`; it is not the source tested by this passing browser evidence.

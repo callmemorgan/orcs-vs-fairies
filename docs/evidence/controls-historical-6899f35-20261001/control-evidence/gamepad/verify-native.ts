@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync} from 'node:fs';
+import {decodeSessionFile} from '../../src/core/session-storage';
+import {ReplayPlayer,replayChecksum} from '../../src/core/replays';
+import {saveGame} from '../../src/core/saves';
+const file=JSON.parse(readFileSync('control-evidence/gamepad/gamepad-native-session.json','utf8'));
+const {state}=decodeSessionFile(file);const replay=new ReplayPlayer(file.replay);replay.seek(state.tick);
+assert.deepEqual(saveGame(replay.state),saveGame(state));assert.equal(replayChecksum(replay.state),file.replay.finalChecksum);
+const commands=file.replay.actions.filter((a:any)=>a.type==='command').map((a:any)=>a.command);
+for(const type of ['hold','stop','move'])assert(commands.some((c:any)=>c.type===type));assert(commands.some((c:any)=>c.type==='move'&&c.queued));
+const result={source:'6899f35ae1e8d8b08781005bf766b9bcce2755b6',tick:state.tick,checksum:replayChecksum(state),saveVersion:file.game.version,simulationRevision:file.replay.simulationRevision,acceptedCommands:commands,exactReplay:true};
+writeFileSync('control-evidence/gamepad/native-verification.json',JSON.stringify(result,null,2));replay.dispose();console.log(`PASS native session decoder + replay exact state at tick ${state.tick}, ${commands.length} accepted gamepad orders`);

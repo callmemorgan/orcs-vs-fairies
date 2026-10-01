@@ -1,0 +1,70 @@
+
+ RUN  v4.1.11 /tmp/ovf-controls-6899f35.oZddGk
+
+ ❯ control-evidence/minimap-accessibility/mounted-controls.test.ts (5 tests | 3 failed) 243ms
+   × uses the normal Display button and native preferences to change minimap colors, eight shapes and ownership outlines, persist/reopen/reset, without changing save/checksum 66ms
+   × draws idle production after real simulation time, centers the normal alert button, and clears the alert through the normal Recruit action 57ms
+   × draws threatened expansion and raid markers from accepted build/attack commands and actual damage, centers buttons, and removes markers after danger expires 9ms
+   ✓ keeps hidden raiders out of HUD buttons and pixels and reproduces off-layer alert navigation without a layer switch 24ms
+   ✓ takes normal Display preferences through GameScene ownership rendering for all eight seats, suppressing shape/outline cues when toggled 85ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  control-evidence/minimap-accessibility/mounted-controls.test.ts [ control-evidence/minimap-accessibility/mounted-controls.test.ts ]
+TypeError: The URL must be of scheme file
+ ❯ control-evidence/minimap-accessibility/mounted-controls.test.ts:43:16
+     41| type Draw = { kind: string; color: string; width: number; path: Path };
+     42| const proof: Record<string, unknown> = { source: '6899f35ae1e8d8b08781…
+     43| afterAll(() => writeFileSync(new URL('./mounted-observations.json', im…
+       |                ^
+     44| afterEach(() => { vi.restoreAllMocks(); document.body.replaceChildren(…
+     45| const advance = (state: GameState, seconds: number) => { for (let i = …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  control-evidence/minimap-accessibility/mounted-controls.test.ts > uses the normal Display button and native preferences to change minimap colors, eight shapes and ownership outlines, persist/reopen/reset, without changing save/checksum
+Error: Invalid save at state.visible[0]: visible tiles must be explored.
+ ❯ bad src/core/saves.ts:26:54
+     24| const RESOURCE_KINDS=['wood','ore','crystal'];
+     25| type RecordValue=Record<string,unknown>;
+     26| function bad(path:string,detail:string):never {throw new Error(`Invali…
+       |                                                      ^
+     27| function object(value:unknown,path:string,required:string[],optional:s…
+     28|  if(!value||typeof value!=='object'||Array.isArray(value))bad(path,'ex…
+ ❯ src/core/saves.ts:149:177
+ ❯ validate src/core/saves.ts:149:101
+ ❯ validateCurrent src/core/saves.ts:156:78
+ ❯ Module.saveGame src/core/saves.ts:198:22
+ ❯ control-evidence/minimap-accessibility/mounted-controls.test.ts:83:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  control-evidence/minimap-accessibility/mounted-controls.test.ts > draws idle production after real simulation time, centers the normal alert button, and clears the alert through the normal Recruit action
+AssertionError: expected undefined to be defined
+ ❯ control-evidence/minimap-accessibility/mounted-controls.test.ts:118:24
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  control-evidence/minimap-accessibility/mounted-controls.test.ts > draws threatened expansion and raid markers from accepted build/attack commands and actual damage, centers buttons, and removes markers after danger expires
+AssertionError: expected undefined to be defined
+ ❯ control-evidence/minimap-accessibility/mounted-controls.test.ts:131:16
+    129|     const d = Math.hypot(x - origin.x, y - origin.y); if (d > 10 && d …
+    130|   }
+    131|   expect(site).toBeDefined(); expect(issueCommand(state, 0, { type: 'b…
+       |                ^
+    132|   const expansion = state.entities.at(-1)!; advance(state, 70); expect…
+    133|   // Relocate a starting raider to the completed building for a short …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 2 passed (5)
+   Start at  05:59:08
+   Duration  870ms (transform 362ms, setup 0ms, import 433ms, tests 243ms, environment 111ms)
+
+JSON report written to /tmp/ovf-controls-6899f35.oZddGk/control-evidence/minimap-accessibility/vitest-results.json

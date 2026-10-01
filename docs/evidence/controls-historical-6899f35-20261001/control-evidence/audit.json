@@ -1,0 +1,104 @@
+{
+  "sourcePin": "6899f35ae1e8d8b08781005bf766b9bcce2755b6",
+  "buildId": "af7934a8bdcdb7e7e885f460a1215c8e7cc25f3bbaf8dcaf347c9332a946e9d7",
+  "rootSourceOrLedgerChanged": false,
+  "counts": {
+    "baselineTestsAt45e4c63": 147,
+    "baselineFiles": 7,
+    "additionalMountedTests": 5,
+    "displayPrimaryAppSteps": 14,
+    "gamepadEvidenceEntries": 12,
+    "savePrimaryAppChecks": 13
+  },
+  "features": [
+    {
+      "id": 81,
+      "title": "Minimap alerts",
+      "finding": "Current-layer raid, idle production and threatened expansion behavior is implemented. A reproduced off-layer navigation defect remains: grouped alert buttons omit the level and center the current map layer, without labeling the affected level.",
+      "source": [
+        "src/ui/Hud.ts:151",
+        "src/ui/Hud.ts:161",
+        "src/main.ts:115",
+        "src/game/GameScene.ts:249"
+      ],
+      "evidence": [
+        "minimap-accessibility/report.md",
+        "minimap-accessibility/mounted-controls.test.ts",
+        "minimap-accessibility/mounted-observations.json",
+        "minimap-accessibility/mounted-tests.log",
+        "saves/display/display-proof.json"
+      ],
+      "limits": [
+        "Raid and expansion checks use authored mounted fixtures with real simulation commands, not production browser encounters.",
+        "Production browser proves native idle alert and camera navigation only."
+      ],
+      "recommendation": "Keep in-progress pending layer correction or explicit current-layer scope."
+    },
+    {
+      "id": 87,
+      "title": "Accessible faction colors",
+      "finding": "Alternative palettes, eight player marker shapes, ownership outline rings, native controls, persistence and reset are implemented and exercised. No missing behavior found for the stated requirement.",
+      "evidence": [
+        "minimap-accessibility/mounted-controls.test.ts",
+        "minimap-accessibility/mounted-observations.json",
+        "saves/display/display-proof.json",
+        "saves/display/evidence-manifest.json"
+      ],
+      "limits": [
+        "Eight-seat gameplay rendering is instrumented; the production match contains two factions.",
+        "No perceptual color-vision study or pixel-level contrast measurement."
+      ],
+      "recommendation": "Ready for final-source certification rerun."
+    },
+    {
+      "id": 89,
+      "title": "Gamepad controls",
+      "finding": "Selection, camera pan/zoom, hold, stop, cursor movement, queued orders, pause, modal blocking and reconnect safety pass in the ordinary production app. Native history preserves accepted orders and replays to the exact exported state.",
+      "evidence": [
+        "gamepad/verify-primary-gamepad.mjs",
+        "gamepad/gamepad-primary-proof.json",
+        "gamepad/gamepad-native-session.json",
+        "gamepad/native-verification.json",
+        "gamepad/browser.log",
+        "gamepad/gamepad-production.png"
+      ],
+      "limits": [
+        "A virtual standard-mapped controller is injected only at navigator.getGamepads. Physical hardware and other browser/controller mappings were not exercised."
+      ],
+      "recommendation": "Ready for final-source certification rerun with the hardware limit stated."
+    },
+    {
+      "id": 90,
+      "title": "Save/load and autosaves",
+      "finding": "Named save/load, native export/import, rejected import preservation, three natural autosave rotations, reload recovery and disabled persistence pass in the production app. No missing local skirmish behavior found.",
+      "evidence": [
+        "saves/README.md",
+        "saves/browser-proof.json",
+        "saves/manifest.json",
+        "saves/native-manual.json",
+        "saves/native-loaded.json",
+        "saves/native-imported-fresh-browser.json",
+        "saves/native-pagehide-autosave.json",
+        "saves/native-recovered-autosave.json"
+      ],
+      "limits": [
+        "Local skirmish and browser-origin storage; recovery is manual through Saves.",
+        "Historical saves, online/campaign saves, quota exhaustion and 12 manual slots were not browser-exercised.",
+        "Reload proves pagehide; visibility-hidden was not separately triggered."
+      ],
+      "recommendation": "Ready for final-source certification rerun after SAVE4."
+    }
+  ],
+  "commands": [
+    "npm run build",
+    "npm run preview -- --port 5193",
+    "node control-evidence/gamepad/verify-primary-gamepad.mjs http://127.0.0.1:5193",
+    "npx esbuild control-evidence/gamepad/verify-native.ts --bundle --platform=node --format=esm --loader:.svg=text --outfile=control-evidence/gamepad/verify-native.mjs",
+    "node control-evidence/gamepad/verify-native.mjs",
+    "npx vitest run --config control-evidence/minimap-accessibility/vitest.config.ts",
+    "OVF_PLAYWRIGHT_MODULE=/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs node control-evidence/saves/verify-saves.mjs http://127.0.0.1:5193/",
+    "OVF_PLAYWRIGHT_MODULE=/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs node control-evidence/saves/display/verify-display.mjs http://127.0.0.1:5193/"
+  ],
+  "cleanup": "All verifier browsers and isolated preview5193 are closed. No commits or root source/ledger/version writes.",
+  "rerunNote": "These proof scripts record the frozen pin. Update their provenance for final-root reruns, and rebuild the native verification bundle after SAVE4."
+}
