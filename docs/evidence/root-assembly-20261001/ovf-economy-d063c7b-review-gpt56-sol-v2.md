@@ -1,0 +1,22 @@
+# Economy promotion correction at d063c7b
+
+GPT-5.6 Sol supersedes the promotion section of `/tmp/ovf-economy-d063c7b-review-gpt56-sol.md`. The package admission, hashes and no-finding verdict remain unchanged. Against the immutable source requirements in `docs/features/requirements.json`, all economy IDs **11 through 20** have enough fresh browser and current passing-suite evidence to promote from in progress to complete.
+
+The first review used every clause and example in `docs/HUNDRED_FEATURE_ARCHITECTURE.md:196-205` as a release gate. That was too strict for this status ledger. The source requirements are the ten shorter statements in `docs/features/requirements.json`. The architecture cases remain useful supplemental coverage unless they expose a concrete defect.
+
+| ID | Source requirement | Fresh browser proof | Passing-suite proof | Recommendation |
+| --- | --- | --- | --- | --- |
+| 11 | Workers plant groves that become future wood supplies. | `forestryOrderAndPayment`, `actualConstructionAndGroveMaturity`, `canvasHarvestDepositedWood` | `tests/economy-settlements.test.ts:18` proves payment, saved growth, maturity and harvested deposit. | Promote. |
+| 12 | Expensive structures extend depleted ore deposits. | `deepMineFoundation` | `tests/economy-settlements.test.ts:19` proves paid construction after depletion and a finite second reserve. | Promote. |
+| 13 | Extract faster at the risk of extractor damage. | `extractorFoundation`, `overchargeToggled` | `tests/economy-settlements.test.ts:20` proves 1.9 versus 1.15 harvest, deterministic damage, save equality and repair. | Promote. |
+| 14 | Caravans transport resources between settlements for income. | `caravanRecruitmentPaid`, `physicalTradeRouteOrdered`, `completedRoutePaidFromFiniteMarket` | `tests/economy-cargo.test.ts:40-96` and `tests/economy-cargo-integration.test.ts:38-53` prove physical loading, settlement arrival, finite income and save continuation. | Promote. |
+| 15 | Markets exchange resources at demand-responsive prices. | `marketDemandAndCurrency` | `tests/economy-cargo.test.ts:108-140` proves a purchase increases the quote, integrated bulk/split pricing, currency conservation and atomic rejection. `tests/economy-cargo-integration.test.ts:55-62` proves the public market command. | Promote. |
+| 16 | Raids attack caravans or storage to steal resources. | `militarySupplyRaidOrdered`, `raidAndSalvageReachedOwnedStorage` | `tests/economy-cargo.test.ts:143-182` proves warehouse theft, carried stock, return deposit and death drops. `tests/economy-world-integration.test.ts:96-115` proves killed loaded caravans drop recoverable cargo. | Promote. |
+| 17 | Workers recover materials from destroyed buildings and siege engines. | `workerSalvageCollectionOrdered`, `raidAndSalvageReachedOwnedStorage` | `tests/economy-cargo-integration.test.ts:72-82` proves paid-building destruction and worker recovery. `tests/economy-world-integration.test.ts:146-154` proves siege-cost salvage. | Promote. |
+| 18 | Warehouses stockpile locally and organize deliveries. | `warehouseFoundationAndWorkerOrder`, `workerLocalDeliveryConfigured`, `localStockDeliveryOrdered` | `tests/economy-settlements.test.ts:21` and `tests/economy-cargo.test.ts:57-79` prove local stock, physical transfers, capacity and allied endpoints. | Promote. |
+| 19 | Expansion bases specialize into mining, military or research centers. | `expansionSpecializationPaid` | `tests/economy-settlements.test.ts:22-25`, `tests/settlement-military-runtime.test.ts:94-192` and `tests/settlement-mining-runtime.test.ts:33-75` prove paid exclusive local effects, SAVE4 continuation and replay. | Promote. |
+| 20 | Resource contracts exchange completed neutral deliveries for rewards. | `contractAcceptedAndDeliveryOrdered`, `completedContractReward` | `tests/economy-cargo.test.ts:186-215` and `tests/economy-cargo-integration.test.ts:84-94` prove physical completion, one finite reward, expiry and save continuation. | Promote. |
+
+The extra cases from the architecture table are not all directly asserted: obstructed grove placement, a route-distance/value comparison, bounded demand recovery, salvage expiry and destruction of a warehouse during an active transfer. I found no concrete defect in those behaviors during this read-only review, and they do not block the source requirement statuses.
+
+The corrected machine-readable audit is `/tmp/ovf-economy-d063c7b-package-promotion-audit-v2.json`. The earlier review and audit remain intact so the decision change is auditable.
