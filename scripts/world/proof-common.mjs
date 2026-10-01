@@ -117,10 +117,11 @@ export function worldBundleProof(provenance) {
  assert.equal(compiledPin,provenance.sourcePin,'Native module must be prepared from the current full source pin');
  assert.equal(compiledDigest,provenance.sourceDigest,'Native module must be prepared from the current authenticated inputs');
  const path=resolve(process.argv[1]),prepared=verifyWorldPreparation(provenance,process.env.OVF_WORLD_MODULES??dirname(path),process.env.OVF_WORLD_PREPARATION_SHA256);
- const entry=Object.values(prepared.manifest.modules).find(item=>resolve(prepared.out,item.path)===path);assert(entry,'Executing native module must be named in the preparation receipt');
+ const entry=prepared.manifest.modules[process.env.OVF_WORLD_MODULE_NAME];assert(entry,'Executing native module must be named by the authenticated launcher');
+ assert.equal(path,process.env.OVF_WORLD_EXECUTED_MODULE,'Execute the private bundle rebuilt by the current launcher');
  const sha256=sha(preparedFile(path));assert.equal(sha256,entry.sha256,'Executing native module bytes differ from preparation');
  assert.equal(sha256,process.env.OVF_WORLD_REBUILT_SHA256,'Run the native module through the current authenticated launcher and fresh rebuild');
- return {path,sha256,sourcePin:compiledPin,sourceDigest:compiledDigest,preparationSha256:prepared.preparationSha256,manifestSha256:prepared.manifestSha256,freshRebuildSha256:process.env.OVF_WORLD_REBUILT_SHA256};
+ return {path,sha256,sourcePin:compiledPin,sourceDigest:compiledDigest,preparationSha256:prepared.preparationSha256,manifestSha256:prepared.manifestSha256,launcherExpectedSha256:process.env.OVF_WORLD_REBUILT_SHA256,preparedPath:join(prepared.out,entry.path)};
 }
 
 export async function freshWorldOutput(out) {

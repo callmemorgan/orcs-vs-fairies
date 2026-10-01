@@ -5,7 +5,8 @@ drivers authenticate source, public assets, build configuration and proof inputs
 against that commit. Preparation records the compiler inputs and bundle hashes.
 The current unbundled launcher checks the retained preparation receipt, rebuilds
 the selected module from authenticated inputs, and compares its bytes before
-execution. Commit and digest labels alone cannot authenticate a stale bundle.
+execution. It executes that private rebuild and retains a launcher-written
+`launches/*/binding.json` receipt. Commit and digest labels alone cannot authenticate a stale bundle.
 Historical SAVE3 captures remain migration controls; they do not certify SAVE4.
 
 The world browser drivers retain the existing menu, traversal, village, den,
@@ -62,7 +63,9 @@ node scripts/world/run-native.mjs "$OVF_PRODUCTION_SOURCE_COMMIT" "$OVF_WORLD_MO
 The launcher's fresh compilation also rejects a stale executable with current
 labels and rewritten sidecars. It authenticates its own unbundled helpers against
 Git before importing them, and checks source and prepared bytes again after the
-child exits. Retain the original `logs/prepare-modules.json`; changing its recorded
+child exits. Each successful launch retains its own binding receipt beside the
+prepared modules; native reports record the expected hash supplied by the launcher.
+Retain the original `logs/prepare-modules.json`; changing its recorded
 receipt hash would lose the preparation chain. Direct execution of a module is
 not an accepted proof command.
 
