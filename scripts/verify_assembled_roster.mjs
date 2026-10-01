@@ -112,12 +112,20 @@ async function proveLegacy(page){
   await waitMode(page,'local');await page.waitForFunction(tick=>window.rts.state.tick===tick,historical.game.state.tick,{timeout:60000});
   await page.waitForFunction(()=>document.querySelector('.session-tools:not(.planning-tools) .session-notice')?.textContent==='Save loaded.');
   const {data:migrated}=await exportData(page,'Export save','migrated-historical-save.json');
-  assert.equal(migrated.game.version,3);for(const [key,value] of Object.entries(historical.game.state))assert.deepEqual(migrated.game.state[key],value,`Historical state.${key} must be preserved`);
+  assert.equal(migrated.game.version,4);
+  for(const [key,value] of Object.entries(historical.game.state))if(key!=='entities')assert.deepEqual(migrated.game.state[key],value,`Historical state.${key} must be preserved`);
+  assert.deepEqual(migrated.game.state.entities.map(entity=>entity.id),historical.game.state.entities.map(entity=>entity.id),'Historical entity count, IDs and ordering must be preserved');
+  for(const [index,entity] of historical.game.state.entities.entries()) {
+    const current=migrated.game.state.entities[index];
+    assert.deepEqual(Object.keys(current).sort(),[...Object.keys(entity),...(entity.kind==='unit'?['tactics']:[])].sort(),`Historical entity ${entity.id} may gain only required SAVE4 tactics`);
+    for(const [key,value] of Object.entries(entity))assert.deepEqual(current[key],value,`Historical entity ${entity.id}.${key} must be preserved`);
+    if(entity.kind==='unit')assert.deepEqual(current.tactics,{morale:100,recentLoss:0},`Historical unit ${entity.id} must receive SAVE4 tactics defaults`);
+  }
   for(const [key,value] of Object.entries(historical.game.runtime))assert.deepEqual(migrated.game.runtime[key],value,`Historical runtime.${key} must be preserved`);
   assert.deepEqual(migrated.game.state.teams,[0,1]);assert.deepEqual(migrated.game.state.incomeFactors,[1,1]);assert.deepEqual(migrated.game.state.populationLimits,[100,100]);assert.equal(migrated.game.state.sharedVision,true);
   assert.equal(migrated.replay.initial.state.tick,historical.game.state.tick);assert.equal(migrated.replay.finalTick,historical.game.state.tick);
   assert.match(await page.locator('.war-hud .notice').textContent(),/older simulation rules/);
-  record('Unchanged historical version 1 session imports as version 3 with original state/runtime and new team defaults',{source:legacyPath,capturedSource,sourceSha256,sourceVersion:historical.game.version,migratedVersion:migrated.game.version,tick:migrated.game.state.tick,teams:migrated.game.state.teams,replayInitialTick:migrated.replay.initial.state.tick});
+  record('Unchanged historical version 1 session imports as version 4 with original state/runtime fields, team defaults and unit tactics defaults',{source:legacyPath,capturedSource,sourceSha256,sourceVersion:historical.game.version,migratedVersion:migrated.game.version,tick:migrated.game.state.tick,teams:migrated.game.state.teams,replayInitialTick:migrated.replay.initial.state.tick,tacticsDefaults:migrated.game.state.entities.filter(entity=>entity.kind==='unit').map(entity=>({id:entity.id,tactics:entity.tactics}))});
   await closeTool(page);await page.waitForFunction(()=>window.rts.paused===false);await page.waitForFunction(tick=>window.rts.state.tick>tick+4,historical.game.state.tick);
   assert.equal(await page.locator('.game-overlay').isVisible(),false);record('Historical save replacing a paused replay resumes its new local simulation');
   await openTool(page,'production');const row=page.locator('[data-production-building]').first();const id=Number(await row.getAttribute('data-production-building'));
