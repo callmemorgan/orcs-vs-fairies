@@ -1,0 +1,320 @@
+{
+  "kind": "exact-commit-autosave-admission-review",
+  "result": "failed-retention-incomplete",
+  "findingCount": 1,
+  "reviewer": "GPT-6",
+  "method": "Static Git object, committed-blob, source-file, SHA-256, JSON semantic, screenshot and byte-prefix inspection. No build, browser, game, server, native validator, TypeScript or repository module executed.",
+  "base": "523f395e45a3823482fffae0dd774bd834c6b63f",
+  "tip": "f2c03771e63cc940467e11b4ad7bfbdd57ad160b",
+  "head": "f2c03771e63cc940467e11b4ad7bfbdd57ad160b",
+  "parent": "523f395e45a3823482fffae0dd774bd834c6b63f",
+  "mergeBase": "523f395e45a3823482fffae0dd774bd834c6b63f",
+  "review": {
+    "path": "/tmp/ovf-root-f2c0377-autosave-admission-review-gpt6-sol.md",
+    "bytes": 7143,
+    "sha256": "e64a376299d355ae8eede3df6f51a7cad78be727a8d44bab922180cffb064a1d"
+  },
+  "knownNegativeSearch": {
+    "symbol": "THIS_SYMBOL_DOES_NOT_EXIST_OVF_F2C_66191",
+    "result": "no match"
+  },
+  "findings": [
+    {
+      "severity": "P1",
+      "title": "Five manifest-listed compiled app files are absent from the commit",
+      "paths": [
+        "prepared/dist/assets/main-BxMb13AF.js",
+        "prepared/dist/assets/main-CxCO6VnC.css",
+        "prepared/dist/editor.html",
+        "prepared/dist/favicon.ico",
+        "prepared/dist/index.html"
+      ],
+      "bytes": 2565158,
+      "cause": "All five paths match the repository dist/ ignore rule and were not added to the Git tree.",
+      "impact": "The retention manifest and README claim 69 files and 11,181,643 bytes were retained, but Git contains 64 of those files and 8,616,485 bytes. The browser build executed by the proof is therefore not fully preserved in the admitted evidence commit."
+    }
+  ],
+  "commitScope": {
+    "changedFiles": 73,
+    "added": 71,
+    "modified": 2,
+    "other": [],
+    "allUnderDocs": true,
+    "productDiff": []
+  },
+  "retention": {
+    "recordedCount": 69,
+    "manifestEntries": 69,
+    "recordedBytes": 11181643,
+    "manifestByteSum": 11181643,
+    "committedRawCount": 64,
+    "committedManifestEntryCount": 64,
+    "committedManifestEntryBytes": 8616485,
+    "committedHashFailures": [],
+    "sourceHashFailures": [],
+    "rawPathsNotInManifest": [],
+    "missingFromCommit": [
+      {
+        "name": "prepared/dist/assets/main-BxMb13AF.js",
+        "committed": false,
+        "recordedBytes": 2454689,
+        "recordedSha256": "2066a3347ad2ff3ffb6a1bcc39255f8c54bd91771a243e2c662645a155925902",
+        "sourceExists": true,
+        "sourceBytes": 2454689,
+        "sourceSha256": "2066a3347ad2ff3ffb6a1bcc39255f8c54bd91771a243e2c662645a155925902",
+        "sourceMatches": true
+      },
+      {
+        "name": "prepared/dist/assets/main-CxCO6VnC.css",
+        "committed": false,
+        "recordedBytes": 77477,
+        "recordedSha256": "101588d2cea582bbfbf023001329935a58a5a213e23d3201d1f4a9af25f50781",
+        "sourceExists": true,
+        "sourceBytes": 77477,
+        "sourceSha256": "101588d2cea582bbfbf023001329935a58a5a213e23d3201d1f4a9af25f50781",
+        "sourceMatches": true
+      },
+      {
+        "name": "prepared/dist/editor.html",
+        "committed": false,
+        "recordedBytes": 454,
+        "recordedSha256": "a7bbacac06e0bcefd1943c8dad3c77094ea8db0ff76b82d7ba9779cdde3536e7",
+        "sourceExists": true,
+        "sourceBytes": 454,
+        "sourceSha256": "a7bbacac06e0bcefd1943c8dad3c77094ea8db0ff76b82d7ba9779cdde3536e7",
+        "sourceMatches": true
+      },
+      {
+        "name": "prepared/dist/favicon.ico",
+        "committed": false,
+        "recordedBytes": 32038,
+        "recordedSha256": "5e0bf0f72488bc693d779cd7a3ebc7fdfca8db9916a6e3e0811fff59113253c2",
+        "sourceExists": true,
+        "sourceBytes": 32038,
+        "sourceSha256": "5e0bf0f72488bc693d779cd7a3ebc7fdfca8db9916a6e3e0811fff59113253c2",
+        "sourceMatches": true
+      },
+      {
+        "name": "prepared/dist/index.html",
+        "committed": false,
+        "recordedBytes": 500,
+        "recordedSha256": "353c0f8eeb0eb9e7707b470a151c2852148179ee4604fe49dc65f25d07e56a39",
+        "sourceExists": true,
+        "sourceBytes": 500,
+        "sourceSha256": "353c0f8eeb0eb9e7707b470a151c2852148179ee4604fe49dc65f25d07e56a39",
+        "sourceMatches": true
+      }
+    ],
+    "missingBytes": 2565158
+  },
+  "packet": {
+    "recordedAuthenticated": 461,
+    "manifestEntries": 461,
+    "manifestSha256": "49a163b153ca8faf0019230cb00e7a7718acbdaef928e8a84262a5c65d636472",
+    "recordedManifestSha256": "49a163b153ca8faf0019230cb00e7a7718acbdaef928e8a84262a5c65d636472",
+    "sourceFailures": [],
+    "retainedPacketEntries": 68,
+    "externalPacketEntries": 393,
+    "unclassifiedPacketEntries": []
+  },
+  "externalPublicCopies": {
+    "recordedCount": 393,
+    "recordedAllMatch": true,
+    "failures": []
+  },
+  "independentReviews": {
+    "count": 2,
+    "failures": []
+  },
+  "priorRootReview": {
+    "reviewedTip": "523f395e45a3823482fffae0dd774bd834c6b63f",
+    "reviewedBase": "ce3faceca7e93a41f716d767aca6c56487b1830b",
+    "directoryFiles": [
+      "docs/evidence/root-assembly-20261001/root-523f395-review/ovf-root-523f395-integration-review-audit-gpt56-sol.json",
+      "docs/evidence/root-assembly-20261001/root-523f395-review/ovf-root-523f395-integration-review-gpt56-sol.md",
+      "docs/evidence/root-assembly-20261001/root-523f395-review/retention.json"
+    ],
+    "listedCopies": 2,
+    "failures": []
+  },
+  "proofResults": {
+    "browser": {
+      "result": "passed",
+      "productPin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "proofPin": "9e5fd2340b9a0823d1ab9f566c52b947a094278e",
+      "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "checkCount": 6,
+      "pageErrors": 0,
+      "consoleErrors": 0,
+      "failedRequests": 0,
+      "httpErrors": 0,
+      "browserClosed": true
+    },
+    "wrapper": {
+      "result": "passed",
+      "stepCount": 7,
+      "nonzeroSteps": [],
+      "portClosed": true,
+      "frozenBytesUnchanged": true
+    },
+    "validators": [
+      {
+        "name": "recovered-verification.json",
+        "result": "passed",
+        "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "saveVersion": 4,
+        "simulationRevision": "4.0.1",
+        "nativeDecoderPassed": true,
+        "completeEnvelopeRoundtripPassed": true,
+        "completeReplayEnvelopePassed": true,
+        "sourceUnchangedDuringVerification": true,
+        "bundleSourceBindingPassed": true,
+        "recomputedAnalysisPassed": true,
+        "technologyTimingsPassed": true,
+        "continuationAdvancedTicks": 100,
+        "continuationCommandCount": 6,
+        "continuationChecks": {
+          "completeEnvelopeEqualityPassed": true,
+          "recorderEqualityPassed": true,
+          "allAcceptedContinuationCommandsRecorded": true,
+          "extendedReplayEqualityPassed": true
+        }
+      },
+      {
+        "name": "continued-verification.json",
+        "result": "passed",
+        "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "saveVersion": 4,
+        "simulationRevision": "4.0.1",
+        "nativeDecoderPassed": true,
+        "completeEnvelopeRoundtripPassed": true,
+        "completeReplayEnvelopePassed": true,
+        "sourceUnchangedDuringVerification": true,
+        "bundleSourceBindingPassed": true,
+        "recomputedAnalysisPassed": true,
+        "technologyTimingsPassed": true,
+        "continuationAdvancedTicks": 100,
+        "continuationCommandCount": 6,
+        "continuationChecks": {
+          "completeEnvelopeEqualityPassed": true,
+          "recorderEqualityPassed": true,
+          "allAcceptedContinuationCommandsRecorded": true,
+          "extendedReplayEqualityPassed": true
+        }
+      },
+      {
+        "name": "imported-verification.json",
+        "result": "passed",
+        "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "saveVersion": 4,
+        "simulationRevision": "4.0.1",
+        "nativeDecoderPassed": true,
+        "completeEnvelopeRoundtripPassed": true,
+        "completeReplayEnvelopePassed": true,
+        "sourceUnchangedDuringVerification": true,
+        "bundleSourceBindingPassed": true,
+        "recomputedAnalysisPassed": true,
+        "technologyTimingsPassed": true,
+        "continuationAdvancedTicks": 100,
+        "continuationCommandCount": 6,
+        "continuationChecks": {
+          "completeEnvelopeEqualityPassed": true,
+          "recorderEqualityPassed": true,
+          "allAcceptedContinuationCommandsRecorded": true,
+          "extendedReplayEqualityPassed": true
+        }
+      }
+    ]
+  },
+  "inspection": {
+    "recordedCheckCount": 4747,
+    "failedChecks": [],
+    "wrapperPatchBlankContextLines": [
+      4
+    ],
+    "wrapperPatchSha256": "a02b3926efd29704133974f3fa3f11ac1f93c901839c644097124009ee16043f"
+  },
+  "ledger": {
+    "changedRequirementIds": [
+      90
+    ],
+    "id90Before": {
+      "id": 90,
+      "title": "Save/load and autosaves",
+      "requirement": "suspend long matches and recover interrupted games.",
+      "status": "in-progress",
+      "evidence": [
+        "tests/saves.test.ts",
+        "tests/session-storage.test.ts",
+        "scripts/verify_sessions.mjs:namedSaveLoadsExactTick",
+        "docs/evidence/controls-final-af44da4-20261001/saves/browser-proof.json",
+        "docs/evidence/controls-final-af44da4-20261001/README.md"
+      ]
+    },
+    "id90After": {
+      "id": 90,
+      "title": "Save/load and autosaves",
+      "requirement": "suspend long matches and recover interrupted games.",
+      "status": "verified",
+      "evidence": [
+        "tests/saves.test.ts",
+        "tests/session-storage.test.ts",
+        "scripts/verify_sessions.mjs:namedSaveLoadsExactTick",
+        "docs/evidence/controls-final-af44da4-20261001/saves/browser-proof.json",
+        "docs/evidence/controls-final-af44da4-20261001/README.md",
+        "docs/evidence/autosave-453c221-passed-20261001/retention.json",
+        "docs/evidence/autosave-453c221-passed-20261001/raw/autosave-browser-r1/browser-proof.json",
+        "docs/evidence/autosave-453c221-passed-20261001/reviews/completed-packet.json",
+        "docs/evidence/ai-c86-corrected-native-audit-20261001/raw/native-audit-work/autosave-medium-native-receipt.provisional.json",
+        "docs/evidence/ai-c86-corrected-native-audit-20261001/raw/native-audit-work/autosave-large-native-receipt.provisional.json"
+      ]
+    },
+    "finalStatusCounts": {
+      "in-progress": 37,
+      "verified": 63
+    },
+    "decisionParentIsPrefix": true,
+    "appendedDecisionLines": [
+      "2026-10-01T21:16:00.312768+00:00\tautosave-current-original90-admission\tMark original save/load/autosave requirement90 verified after fresh strict browser and native acceptance\tReal timed autosave and reload recover paid in-flight recruitment; all complete native comparisons and advancing replay continuations pass\tdocs/evidence/autosave-453c221-passed-20261001/retention.json;docs/features/requirements.json\t63 verified and37 in progress;453product/proof9e5;6browserchecks and3validators pass; priorfailedrun retained; ownedpreviewclosed"
+    ],
+    "endsWithNewline": true
+  },
+  "allRequirementEvidencePathsExist": true,
+  "oldFailedRun": {
+    "parentTree": "060528725a9697002c02cc7b22c96f8da7bf5db4",
+    "tipTree": "060528725a9697002c02cc7b22c96f8da7bf5db4",
+    "preserved": true,
+    "secondStringIndividuallyUnattributed": true
+  },
+  "commitFooterValid": true,
+  "behavioralInterrogation": {
+    "ordering": "none",
+    "failurePaths": "none",
+    "observability": "none",
+    "staleWrites": "none",
+    "testDelta": "No product behavior changed. Existing browser, wrapper and native outputs were authenticated without rerunning them. The finding concerns incomplete Git retention of the executed build."
+  },
+  "assertions": {
+    "refs": true,
+    "commitScope": true,
+    "retainedRecordsInternallyConsistent": true,
+    "retainedCommitComplete": false,
+    "retainedCommittedHashes": true,
+    "retainedSourceHashes": true,
+    "packet": true,
+    "externalPublicCopies": true,
+    "independentReviews": true,
+    "priorRootReview": true,
+    "ledger": true,
+    "evidencePaths": true,
+    "browser": true,
+    "wrapper": true,
+    "validators": true,
+    "inspection": true,
+    "oldFailure": true,
+    "footer": true
+  },
+  "failedAssertions": [
+    "retainedCommitComplete"
+  ]
+}
