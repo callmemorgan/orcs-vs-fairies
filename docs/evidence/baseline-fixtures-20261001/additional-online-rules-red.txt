@@ -1,0 +1,68 @@
+
+ RUN  v4.1.11 /home/morgana/.codex/worktrees/baseline-fixes-100features/orcs-vs-Fairies
+
+ ❯ tests/online-render-state.test.ts (13 tests | 1 failed) 132ms
+     × retains disclosed projectiles and splash rules without copying damage or hidden launch origins 8ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/online-render-state.test.ts > display-only online state > retains disclosed projectiles and splash rules without copying damage or hidden launch origins
+AssertionError: expected { mode: 'annihilation', …(11) } to deeply equal { friendlyFire: false }
+
+- Expected
++ Received
+
+  {
++   "disabledDefinitionIds": [],
++   "draft": {
++     "banRounds": 1,
++     "enabled": false,
++     "pickRounds": 3,
++     "turnTicks": 600,
++   },
+    "friendlyFire": false,
++   "hill": {
++     "captureTicks": 100,
++     "holdTicks": 2400,
++     "radius": 5,
++   },
++   "mode": "annihilation",
++   "privateUpgrade": "secret",
++   "relic": {
++     "count": 3,
++     "holdTicks": 2400,
++     "pickupRadius": 1.5,
++     "required": 2,
++   },
++   "sharedVision": true,
++   "standardDefeat": true,
++   "startingAge": 2,
++   "startingResources": {
++     "crystal": 0,
++     "ore": 220,
++     "wood": 420,
++   },
++   "survival": {
++     "defenderTeam": 0,
++     "intervalTicks": 1200,
++     "recoveryTicks": 400,
++     "rewardPerWave": {
++       "crystal": 0,
++       "ore": 30,
++       "wood": 60,
++     },
++     "unitsPerWave": 2,
++     "waveCount": 5,
++   },
+  }
+
+ ❯ tests/online-render-state.test.ts:146:126
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 12 passed (13)
+   Start at  07:02:38
+   Duration  477ms (transform 235ms, setup 0ms, import 283ms, tests 132ms, environment 0ms)

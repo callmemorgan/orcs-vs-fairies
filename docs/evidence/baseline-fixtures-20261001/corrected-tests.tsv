@@ -1,0 +1,17 @@
+file	original_suite	original_test	correction
+tests/ai-saves.test.ts	AI save version 3	migrates a complete version 2 snapshot after validating the original schema	historical v2 projection and complete independent migrated envelope
+tests/ai-saves.test.ts	AI save version 3	checks the byte limit again after a valid legacy migration adds AI fields	valid historical input reaches post-migration byte budget
+tests/team-saves.test.ts	legacy version 1 migration	validates a real two-player snapshot before adding team defaults, without losing AI memory	historical v1 projection and complete independent migrated envelope
+tests/team-saves.test.ts	legacy version 1 migration	derives eliminated status from a missing HQ	valid historical input reaches HQ migration
+tests/team-saves.test.ts	legacy version 1 migration	derives eliminated status from a unfinished HQ	valid historical input reaches HQ migration
+tests/team-saves.test.ts	legacy version 1 migration	derives eliminated status from a dead HQ	valid historical input reaches HQ migration
+tests/team-saves.test.ts	legacy version 1 migration	preserves each cleared enemy base from the legacy two-player scouting flags	preserved historical scouting flags and complete migrated envelope
+tests/team-saves.test.ts	legacy version 1 migration	retains the old 4096-entity bound when validating legacy saves	valid historical input reaches the original entity bound
+tests/team-saves.test.ts	legacy version 1 migration	preserves finite queued gathering, orders and ability state through migration	preserved historical memory and native continuation
+tests/progression.test.ts		applies siege damage outside tower range through ordinary attack commands	registered siege and tower, surviving headquarters, delayed 109-damage impact
+tests/progression.test.ts		applies both weapon tiers and armor research to existing melee troops	public frontal defender facing isolates weapon and armor upgrades
+tests/technology-branches.test.ts	role-specific researched stats	changes ranged combat damage, cavalry damage received and siege movement through ordinary research commands	public frontal defender facing isolates research stats
+tests/technology-branches.test.ts	role-specific researched stats	admits definition targets and upgrades one custom melee definition without upgrading the other	public frontal defender facing isolates custom research targets
+tests/environment.test.ts	seasonal lake crossings	saves a crossing destroyed, rebuilt and destroyed again during the same winter	assert pending shell, then bounded impact wait before bridge collapse
+tests/environment.test.ts	artillery ignition and simulation interruption hooks	rejects malformed bounds, absent levels, nonfuel impacts and invalid provenance without events	historical launch ownership separated from invalid provenance
+tests/neutral-world-integration.test.ts	neutral features through normal match commands, ticks and checkpoints	captures a cavern relic, changes ordinary combat damage and loses the bonus after enemy recapture	public frontal defender facing and exact ordinary damage assertion

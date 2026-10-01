@@ -1,0 +1,73 @@
+{
+  "productionBase": "115a537dd90d5e26ca04c7003f47310a71e67879",
+  "fixtureSourceCommit": "5e7a606aff7a4fd27f6d36fcff9a9c38c25b5166",
+  "productionSourceChanged": false,
+  "saveVersion": 3,
+  "rulesRevision": "3.2.0",
+  "sourceManifestFiles": 169,
+  "validation": [
+    {
+      "label": "original six affected files at 7c66a7c",
+      "tests": 202,
+      "files": 6,
+      "exitCode": 0,
+      "log": "affected-green.txt"
+    },
+    {
+      "label": "ownership/save/replay regressions",
+      "tests": 229,
+      "files": 6,
+      "exitCode": 0,
+      "log": "ownership-regressions-green.txt"
+    },
+    {
+      "label": "final environment plus real pre-impact surrender cases",
+      "tests": 33,
+      "files": 2,
+      "exitCode": 0,
+      "log": "pre-impact-green.txt"
+    },
+    {
+      "label": "final TypeScript noEmit",
+      "exitCode": 0,
+      "log": "typecheck.txt"
+    }
+  ],
+  "baselineRed": {
+    "tests": 201,
+    "failed": 16,
+    "passed": 185,
+    "files": 6,
+    "log": "affected-red.txt"
+  },
+  "limits": [
+    "No whole-suite or ladder run; parent owns final combined validation.",
+    "SAVE4 owner must add its expected migration defaults to the shared helper without changing literal historical v1/v2 input.",
+    "Online rule projection failure was reproduced and sent to the parent; online-render-state was excluded from these source commits."
+  ],
+  "independentReview": {
+    "model": "GPT-5.6 Sol",
+    "sourceCommit": "5e7a606aff7a4fd27f6d36fcff9a9c38c25b5166",
+    "decision": "admit both source commits",
+    "reruns": [
+      {
+        "tests": 202,
+        "files": 6,
+        "log": "independent-affected-green.txt"
+      },
+      {
+        "tests": 33,
+        "files": 2,
+        "log": "independent-pre-impact-green.txt"
+      },
+      {
+        "log": "independent-historical-proof.txt"
+      },
+      {
+        "files": 169,
+        "log": "independent-source-manifest.txt"
+      }
+    ],
+    "report": "independent-review.md"
+  }
+}
