@@ -80,7 +80,7 @@ function battleDefinition(profile: ConquestProfile, regionId: string, mode: 'att
 }
 
 export function createConquestProfile(faction: FactionId, id: string): ConquestProfile {
-  if (!Object.hasOwn(FACTIONS, faction) || !/^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,95}$/.test(id)) throw new Error('Invalid conquest faction or profile ID.');
+  if (!Object.hasOwn(FACTIONS, faction) || typeof id !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,95}$/.test(id)) throw new Error('Invalid conquest faction or profile ID.');
   const definition = conquestWorldFor(faction);
   const profile: ConquestProfile = { format: 'orcs-vs-fairies-conquest', version: 1, id, worldId: definition.id, faction, turn: 0, treasury: { wood: 500, ore: 350, crystal: 100 }, regions: Object.fromEntries(definition.regions.map(r => [r.id, { owner: r.owner, garrison: r.garrison }])), relations: Object.fromEntries(Object.keys(FACTIONS).map(other => [other, { score: 0, warPressure: 0, alliance: false, truceUntil: 0, treasury: { wood: 150, ore: 100, crystal: 20 } }])), army: [], history: [], active: null };
   profile.army = friendlyArmy(createScenario(battleDefinition(profile, 'grove', 'attack'))); return profile;
@@ -173,7 +173,7 @@ export function decodeConquestProfile(input: unknown): ConquestProfile {
     } else if (action.type === 'wait') canonical = waitConquestTurn(canonical);
     else canonical = proposeConquest(canonical, action);
   }
-  if (saved.active) {
+  if (saved.active !== null) {
     if (!exact(saved.active, ['regionId', 'mode', 'deployedIds', 'checkpoint', 'recording'])) throw new Error('Invalid active conquest battle.');
     const prepared = prepareConquestBattle(canonical, saved.active.regionId, saved.active.mode); prepared.recorder.destroy();
     if (!scenarioStateEquals(prepared.session, restoreScenario(saved.active.recording.initial)) || JSON.stringify(prepared.profile.active!.deployedIds) !== JSON.stringify(saved.active.deployedIds)) throw new Error('The saved conquest detachment was altered.');

@@ -6,6 +6,10 @@ import { scenarioChecksum, verifyScenarioRecording } from '../src/core/scenario-
 import { solveMission } from '../scripts/scenarios/mission-strategy';
 
 describe('verified connected campaign progression', () => {
+  it('rejects non-string profile IDs and inherited registry names', () => {
+    expect(() => createCampaignProfile('toString', 'bad-campaign')).toThrow('Unknown campaign');
+    expect(() => decodeCampaignProfile({ ...createCampaignProfile('campaign-orcs', 'typed-campaign'), id: 123 })).toThrow('Invalid campaign profile');
+  });
   for (const campaign of Object.values(CAMPAIGNS)) it(`${campaign.faction} completes four chapters with stable survivors and a persisted route`, () => {
     let profile = createCampaignProfile(campaign.id, `main-${campaign.faction}`);
     const completed: string[] = [];

@@ -6,6 +6,11 @@ import { solveConquest } from '../scripts/scenarios/conquest-strategy';
 import { FACTIONS } from '../src/core/content';
 
 describe('connected conquest and negotiated diplomacy', () => {
+  it('rejects malformed profile identities and non-null active placeholders', () => {
+    const profile = createConquestProfile('orcs', 'typed-profile');
+    for (const active of [false, 0, '']) expect(() => decodeConquestProfile({ ...profile, active })).toThrow('active conquest');
+    expect(() => decodeConquestProfile({ ...profile, id: 123 })).toThrow('profile ID');
+  });
   it('rejects decisions before they exceed the reloadable history bound', () => {
     let profile = createConquestProfile('orcs', 'history-bound');
     for (let i = 0; i < 256; i++) profile = waitConquestTurn(profile);

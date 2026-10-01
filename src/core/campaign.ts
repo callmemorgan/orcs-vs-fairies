@@ -34,11 +34,11 @@ export function survivingScenarioArmy(session: ScenarioSession): CampaignSoldier
 }
 export interface CampaignMission { profile: CampaignProfile; session: ScenarioSession; recorder: ScenarioRecorder }
 const copy = <T>(value: T): T => structuredClone(value);
-function campaign(profile: CampaignProfile) { const result = CAMPAIGNS[profile.campaignId]; if (!result) throw new Error('Unknown campaign.'); return result; }
+function campaign(profile: CampaignProfile) { if (!Object.hasOwn(CAMPAIGNS, profile.campaignId)) throw new Error('Unknown campaign.'); return CAMPAIGNS[profile.campaignId]; }
 
 export function createCampaignProfile(campaignId: string, id: string): CampaignProfile {
-  if (!CAMPAIGNS[campaignId]) throw new Error('Unknown campaign.');
-  if (!/^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,95}$/.test(id)) throw new Error('Campaign profile ID is invalid.');
+  if (!Object.hasOwn(CAMPAIGNS, campaignId)) throw new Error('Unknown campaign.');
+  if (typeof id !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,95}$/.test(id)) throw new Error('Campaign profile ID is invalid.');
   return { format: 'orcs-vs-fairies-campaign', version: 1, id, campaignId, choiceId: null, revision: 0, history: [], active: null };
 }
 
@@ -159,7 +159,7 @@ export function decodeCampaignProfile(input: unknown): CampaignProfile {
   let raw = input;
   if (typeof raw === 'string') { if (raw.length > 20 * 1024 * 1024) throw new Error('Campaign profile is too large.'); raw = JSON.parse(raw); }
   const profile = scenarioJson(raw, { maxBytes: 20 * 1024 * 1024, maxNodes: 1000000, maxArrayLength: 100000 }) as CampaignProfile;
-  if (!profile || typeof profile !== 'object' || Array.isArray(profile) || Object.keys(profile).some(k => !['format', 'version', 'id', 'campaignId', 'choiceId', 'revision', 'history', 'active'].includes(k)) || profile.format !== 'orcs-vs-fairies-campaign' || profile.version !== 1 || !/^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,95}$/.test(profile.id) || !Number.isSafeInteger(profile.revision) || profile.revision < 0 || !Array.isArray(profile.history) || profile.history.length > 4) throw new Error('Invalid campaign profile.');
+  if (!profile || typeof profile !== 'object' || Array.isArray(profile) || Object.keys(profile).some(k => !['format', 'version', 'id', 'campaignId', 'choiceId', 'revision', 'history', 'active'].includes(k)) || profile.format !== 'orcs-vs-fairies-campaign' || profile.version !== 1 || typeof profile.id !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,95}$/.test(profile.id) || !Number.isSafeInteger(profile.revision) || profile.revision < 0 || !Array.isArray(profile.history) || profile.history.length > 4) throw new Error('Invalid campaign profile.');
   const definition = campaign(profile);
   if (profile.choiceId !== null && !definition.choice.options.some(c => c.id === profile.choiceId) || profile.history.length < 2 && profile.choiceId !== null || profile.history.length > 2 && profile.choiceId === null) throw new Error('Invalid saved campaign branch.');
   const seen = new Set<string>();
