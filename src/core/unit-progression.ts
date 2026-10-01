@@ -20,8 +20,8 @@ function award(s:GameState,e:Entity,amount:number):void{
  const pending=([1,2,3] as const).find(rank=>rank<=v.rank&&!v.promotions.some(p=>p.rank===rank));if(pending)v.pendingPromotion=pending;
 }
 /** Credit only damage paid by living hostile actors; decoys and disposable summons cannot farm ranks. */
-export function creditCombat(s:GameState,attacker:Entity,target:Entity,amount:number,killed=false):void{
- if(!eligible(attacker)||attacker.hp<=0||target.illusion||target.raised||s.teams[attacker.side]===s.teams[target.side]||amount<=0&&!killed)return;
+export function creditCombat(s:GameState,attacker:Entity,target:Entity,amount:number,killed=false,completedAttack=false):void{
+ if(!eligible(attacker)||attacker.hp<=0&&!completedAttack||target.illusion||target.raised||s.teams[attacker.side]===s.teams[target.side]||amount<=0&&!killed)return;
  award(s,attacker,Math.min(30,amount*.3)+(killed?(target.kind==='building'?25:target.role==='worker'?8:18):0));
 }
 export function stepVeterans(s:GameState):void {for(const e of s.entities){const v=e.veteran;if(!v||!eligible(e)||e.hp<=0)continue;if(s.time>=v.nextSurvivalAt){v.nextSurvivalAt=s.time+30;if(s.time-v.lastCombatAt<20)award(s,e,5);}}}

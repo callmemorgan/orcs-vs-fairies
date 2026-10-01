@@ -161,7 +161,7 @@ describe('specialist siege impacts', () => {
     advance(s, .5, .05); expect(target.hp).toBe(hp); advance(s, .5, .05); expect(target.hp).toBeLessThan(hp); expect(s.specialists?.shots).toHaveLength(0);
     expect(gun.siegeMode?.prepared).toBeUndefined();
     if (faction === 'dwarves') expect(gun.siegeMode?.ammo).toBe(4);
-    if (faction === 'automata') { expect(gun.siegeMode?.ammo).toBe(3); expect(hp - target.hp).toBeCloseTo(unitFor(s, gun).damage); }
+    if (faction === 'automata') { expect(gun.siegeMode?.ammo).toBe(3); expect(hp - target.hp).toBeCloseTo(unitFor(s, gun).damage*1.2); }
     if (faction === 'fairies') expect(target.specialistBuffs?.some(b => b.rooted)).toBe(true);
     if (faction === 'tideborn') expect(target.specialistBuffs?.some(b => b.speedFactor === .5)).toBe(true);
     if (faction === 'orcs') expect(target.burning).toHaveLength(1);

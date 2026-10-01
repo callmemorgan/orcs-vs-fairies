@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Faction powers browser proof</title>
+  <style>
+    html,body { margin: 0; color: #efeade; background: #142019; font: 13px system-ui,sans-serif; }
+    #game { position: fixed; inset: 0; }
+    #faction-root { position: fixed; inset: 0; pointer-events: none; z-index: 20; }
+    #fixture { position: fixed; right: 12px; top: 12px; width: min(470px,42vw); max-height: 94vh; overflow: auto; z-index: 10; padding: 12px; box-sizing: border-box; border: 1px solid #899b78; background: #142019ef; }
+    h1 { font-size: 17px; margin: 0 0 8px; } button,select { padding: 7px; margin: 3px; } pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 11px; }
+  </style>
+</head>
+<body>
+  <div id="game"></div><div id="faction-root"></div>
+  <aside id="fixture" aria-label="Browser proof setup">
+    <h1>Faction powers browser proof</h1>
+    <p>Selecting a faction resets the test scenario. Power controls send normal game commands. The clock buttons advance the real simulation in fixed steps. The Gravecaller starts with a 60-second raising cooldown so cargo delivery remains visible.</p>
+    <label>Fixture faction <select id="faction" aria-label="Fixture faction"><option value="orcs">Orcs</option><option value="fairies">Fairies</option><option value="dwarves">Dwarves</option><option value="undead">Undead</option><option value="tideborn">Tideborn</option><option value="automata">Automata</option></select></label>
+    <button type="button" id="select-soldier">Select fixture soldier</button>
+    <button type="button" id="select-worker">Select fixture worker</button>
+    <button type="button" id="select-special">Select fixture specialist</button>
+    <button type="button" id="select-siege">Select fixture artillery</button>
+    <button type="button" id="select-wagon">Select fixture wagon</button>
+    <button type="button" id="select-tower">Select fixture tower</button>
+    <button type="button" id="advance-one">Advance fixture simulation by 1 second</button>
+    <button type="button" id="advance-thirty">Advance fixture simulation by 30 seconds</button>
+    <button type="button" id="readonly">Toggle fixture read-only</button>
+    <p id="fixture-notice"></p>
+    <pre id="proof-status" aria-label="Faction simulation evidence"></pre>
+    <details><summary>Detailed simulation snapshot</summary><pre id="proof-data"></pre></details>
+  </aside>
+  <script type="module" src="./fixture.ts"></script>
+</body>
+</html>

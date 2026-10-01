@@ -10,6 +10,7 @@ type NeutralOrder = { type:'worldAttack'|'captureSite'|'supportVillage'|'recruit
 export interface NeutralWorldHooks {
  move(actor:Entity|NeutralCreature,target:WorldPoint,dt:number,reach:number):boolean;
  spawn(side:Side,role:UnitRole,x:number,y:number,level:number):Entity|undefined;
+ attack?:(source:Entity,target:NeutralCreature)=>void;
  hit(source:Entity|NeutralCreature,target:Entity|NeutralCreature,amount:number):void;
  attackStats?(entity:Entity):{damage:number;range:number;cooldown:number};
  recruitCost?(side:Side,role:UnitRole):Cost;
@@ -112,7 +113,7 @@ function attackStats(s:GameState,e:Entity,hooks:NeutralWorldHooks) {
  for(const id of s.players[e.side].upgrades){const upgrade=upgradeFor(s,e.side,id);if(upgradeAppliesTo(upgrade,def))damage*=upgrade.effects.damage??1;}
  return {damage,range:def.range,cooldown:def.cooldown};
 }
-function defeatCreature(s:WorldGame,creature:NeutralCreature,side:Side) {
+export function defeatCreature(s:WorldGame,creature:NeutralCreature,side:Side) {
  const site=s.world!.sites.find(site=>site.id===creature.site);if(!site||creature.respawnAt>0)return;
  creature.hp=0;creature.target=null;creature.path=[];
  creature.respawnAt=s.time+(site.kind==='monster'?NEUTRAL_RULES.monsterRespawnSeconds:NEUTRAL_RULES.defenderRespawnSeconds);
@@ -142,6 +143,7 @@ export function processNeutralOrder(s:WorldGame,e:Entity,dt:number,hooks:Neutral
   if(distance(e,at)>stats.range){hooks.move(e,point(at),dt,stats.range);return true;}
   if(!(hooks.lineOfSight?.(point(e),point(at))??terrainLineOfSight(s,e,at))){hooks.move(e,point(at),dt,.8);return true;}
   if(e.cooldown>0)return true;
+  if(target&&hooks.attack){hooks.attack(e,target);return true;}
   e.cooldown=stats.cooldown;e.animation='attack';e.animTime=0;
   if(target){hooks.hit(e,target,stats.damage);if(target.hp<=0)defeatCreature(s,target,e.side);}
   else if(targetSite.kind==='village'){

@@ -1,3 +1,7 @@
+import { isBridgeTarget, isEntityTarget } from './combat-targets';
+import type { CombatTarget } from './combat-targets';
+import { elevationAt } from './world-map';
+import type { ArtilleryModification } from './faction-systems';
 import { DIRECTIONS_32, length2D } from './geometry';
 import { ABILITIES } from './content';
 import { availableUnits, buildingFor, unitFor } from './content-registry';
@@ -8,13 +12,17 @@ import type { Command, Cost, Entity, GameState, Side, TerrainKind, Vec } from '.
 import type { SiegePayload, SpecialistAbility, SpecialistBuff, SpecialistSource } from './specialist-types';
 export type { SiegePayload } from './specialist-types';
 export interface SpecialistHooks {
- damage:(source:Entity|SpecialistSource,target:Entity,amount:number,options?:{armorPiercing?:boolean;ranged?:boolean})=>void;
+ damage:(source:Entity|SpecialistSource,target:CombatTarget,amount:number,options?:{armorPiercing?:boolean;ranged?:boolean})=>void;
  die:(actor:Entity,text:string)=>void;
  spawn:(side:Side,kind:Entity['kind'],definitionId:string,x:number,y:number,progress?:number,level?:number)=>Entity;
  interrupt?:(actor:Entity)=>void;
  recordPaid?:(actor:Entity,cost:Cost)=>void;
  setTerrain?:(point:Vec,kind:TerrainKind)=>boolean;
  terrainRevision?:(point:Vec)=>number;
+ impactTargets?:()=>CombatTarget[];
+ targetDistance?:(at:Vec,target:CombatTarget)=>number;
+ targetRadius?:(target:CombatTarget)=>number;
+ ignite?:(point:Vec,source:SpecialistSource)=>void;
 }
 const sameLevel=(a:Vec,b:Vec)=>(a.level??0)===(b.level??0);
 const dist=(a:Vec,b:Vec)=>sameLevel(a,b)?length2D(a.x-b.x,a.y-b.y):Infinity;
@@ -67,22 +75,24 @@ export function prepareSiegeShot(s:GameState,e:Entity):SiegePayload|false|undefi
  const prepared=mode?.prepared;if(!prepared)return undefined;delete mode!.prepared;return {kind:prepared,damageFactor:prepared==='corpse'?1.4:1,armorPiercing:false,radius:prepared==='corpse'?2.5:2};
 }
 /** undefined follows the normal weapon path, false blocks an unloaded cannon. */
-export function launchSpecialistShot(s:GameState,e:Entity,target:Entity,rawDamage:number):boolean|undefined {
- if(e.illusion)return undefined;const payload=prepareSiegeShot(s,e);if(payload===undefined)return undefined;if(payload===false)return false;
- const state=specialistState(s);state.nextShotId??=1;state.shots??=[];state.shots.push({id:state.nextShotId++,source:{id:e.id,side:e.side,definitionId:unitFor(s,e).id,faction:e.definitionFaction??s.players[e.side].faction,x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level})},target:{x:target.x,y:target.y,...(target.level===undefined?{}:{level:target.level})},rawDamage,buildingMultiplier:unitFor(s,e).buildingDamageMultiplier??1,payload,impactAt:s.time+.25+dist(e,target)/12});
+export function specialistShotReady(s:GameState,e:Entity):boolean {const ability=unitFor(s,e).ability;return ability==='ammunition-cannon'?!!e.siegeMode?.deployed&&(e.siegeMode.ammo??0)>0:ability==='powered-beam'?(e.siegeMode?.ammo??0)>0:true;}
+export function launchSpecialistShot(s:GameState,e:Entity,target:CombatTarget,rawDamage:number,modification?:ArtilleryModification):boolean|undefined {
+ if(e.illusion)return undefined;if(!specialistShotReady(s,e))return false;const player=s.players[e.side];if(modification==='incendiary'&&(player.wood<15||player.ore<5))return false;const payload=prepareSiegeShot(s,e);if(payload===undefined)return undefined;if(payload===false)return false;if(modification==='incendiary'){player.wood-=15;player.ore-=5;}
+ const state=specialistState(s);state.nextShotId??=1;state.shots??=[];state.shots.push({id:state.nextShotId++,source:{id:e.id,side:e.side,definitionId:unitFor(s,e).id,faction:e.definitionFaction??s.players[e.side].faction,elevation:elevationAt(s,e),x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level})},target:{x:target.x,y:target.y,...(target.level===undefined?{}:{level:target.level})},rawDamage,buildingMultiplier:unitFor(s,e).buildingDamageMultiplier??1,payload,modification,impactAt:s.time+.25+dist(e,target)/12});
  s.events.push({type:'ability',side:e.side,x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level}),source:e.id,target:target.id,text:'Specialist siege shot launched.'});return true;
 }
 export function resolveSpecialistShots(s:GameState,hooks:SpecialistHooks):void {
  const state=s.specialists;if(!state?.shots)return;const pending:NonNullable<typeof state.shots>=[];
  const friendlyFire=(s as GameState & {rules?:{friendlyFire?:boolean};friendlyFire?:boolean}).rules?.friendlyFire??(s as GameState & {friendlyFire?:boolean}).friendlyFire??true;
  for(const shot of state.shots){if(shot.impactAt>s.time){pending.push(shot);continue;}
-  const radius=shot.payload.radius;
-  for(const actor of s.entities){if(actor.hp<=0||dist(actor,shot.target)>(radius||.75)+(actor.kind==='building'?buildingFor(s,actor).size/2:0)||!friendlyFire&&allied(s,shot.source,actor))continue;
-   const falloff=radius?1-.4*Math.min(1,dist(actor,shot.target)/radius):1;
-   hooks.damage(shot.source,actor,shot.rawDamage*shot.payload.damageFactor*(actor.kind==='building'?shot.buildingMultiplier:1)*falloff,{armorPiercing:shot.payload.armorPiercing,ranged:true});
-   if(!active(actor))continue;
-   if(shot.payload.kind==='rooting')buff(s,actor,{rooted:true},4);else if(shot.payload.kind==='flood')buff(s,actor,{speedFactor:.5},6);else if(shot.payload.kind==='incendiary'){actor.burning??=[];if(actor.burning.length>=64)actor.burning.shift();actor.burning.push({source:shot.source.id,side:shot.source.side,origin:{x:shot.source.x,y:shot.source.y,...(shot.source.level===undefined?{}:{level:shot.source.level})},until:s.time+6,nextAt:s.time+1,damage:5});}
+  const radius=Math.max(shot.payload.radius,shot.modification==='grapeshot'?2.5:0);
+  for(const actor of hooks.impactTargets?.()??s.entities){const entity=isEntityTarget(actor),building=isBridgeTarget(actor)||entity&&actor.kind==='building';if(actor.hp<=0||(hooks.targetDistance?.(shot.target,actor)??dist(actor,shot.target))>(radius||.75)+(entity&&actor.kind==='building'?buildingFor(s,actor).size/2:0)||!friendlyFire&&entity&&allied(s,shot.source,actor))continue;
+   const falloff=radius?1-.4*Math.min(1,(hooks.targetDistance?.(shot.target,actor)??dist(actor,shot.target))/radius):1;
+   hooks.damage(shot.source,actor,shot.rawDamage*shot.payload.damageFactor*(building?shot.buildingMultiplier:1)*(shot.modification==='stone'&&building?1.25:shot.modification==='grapeshot'&&!building?1.5:1)*falloff,{armorPiercing:shot.payload.armorPiercing,ranged:true});
+   if(!entity||!active(actor))continue;
+   if(shot.payload.kind==='rooting')buff(s,actor,{rooted:true},4);else if(shot.payload.kind==='flood')buff(s,actor,{speedFactor:.5},6);else if(shot.payload.kind==='incendiary'||shot.modification==='incendiary'){actor.burning??=[];if(actor.burning.length>=64)actor.burning.shift();actor.burning.push({source:shot.source.id,side:shot.source.side,origin:{x:shot.source.x,y:shot.source.y,...(shot.source.level===undefined?{}:{level:shot.source.level})},until:s.time+6,nextAt:s.time+1,damage:5});}
   }
+  if(shot.payload.kind==='incendiary'||shot.modification==='incendiary')hooks.ignite?.(shot.target,shot.source);
   s.events.push({type:'ability',side:shot.source.side,x:shot.target.x,y:shot.target.y,...(shot.target.level===undefined?{}:{level:shot.target.level}),source:shot.source.id,text:`${shot.payload.kind} impact.`});
  }
  state.shots=pending;

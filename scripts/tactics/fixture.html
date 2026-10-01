@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Army tactics browser proof</title>
+  <style>
+    html,body { margin: 0; color: #efeade; background: #142019; font: 13px system-ui,sans-serif; }
+    #game { position: fixed; inset: 0; }
+    #tactics-root { position: fixed; inset: 0; pointer-events: none; z-index: 20; }
+    #fixture { position: fixed; right: 12px; top: 12px; width: min(430px,40vw); max-height: 94vh; overflow: auto; z-index: 10; padding: 12px; box-sizing: border-box; border: 1px solid #899b78; background: #142019ef; }
+    h1 { font-size: 17px; margin: 0 0 8px; } button { padding: 7px; margin: 3px; } pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 11px; }
+  </style>
+</head>
+<body>
+  <div id="game"></div><div id="tactics-root"></div>
+  <aside id="fixture" aria-label="Browser proof setup">
+    <h1>Army tactics browser proof</h1>
+    <p>Test scenario: four owned infantry, a worker, standing trees and one abandoned enemy engine. The panel sends normal game commands.</p>
+    <button type="button" id="select-army">Select fixture army</button>
+    <button type="button" id="select-worker">Select fixture worker</button>
+    <button type="button" id="select-engine">Select fixture engine</button>
+    <button type="button" id="woodland">Place fixture army in woodland</button>
+    <button type="button" id="readonly">Toggle fixture read-only</button>
+    <p id="fixture-notice"></p>
+    <pre id="proof-status" aria-label="Tactics simulation evidence"></pre>
+    <details><summary>Detailed simulation snapshot</summary><pre id="proof-data"></pre></details>
+  </aside>
+  <script type="module" src="./fixture.ts"></script>
+</body>
+</html>

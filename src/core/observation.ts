@@ -1,3 +1,4 @@
+import { canObserveTacticalEntity, isCrewless } from './tactics';
 import { observedArtifacts } from './unit-progression';
 import { draftDefinitions, draftPlayers, legalDraftChoices } from './match-rules';
 import { publicObjectives } from './objectives';
@@ -34,7 +35,7 @@ export class PlayerView {
   const side=this.side,entities=new Map(s.entities.map(e=>[e.id,e])),resources=new Map(s.resources.map(r=>[r.id,r]));
   const known=(id:number|undefined)=>{
    if(id===undefined)return false;
-   const entity=entities.get(id);if(entity)return entity.side===side||isVisible(s,side,entity.x,entity.y,levelOf(entity));
+   const entity=entities.get(id);if(entity)return canObserveTacticalEntity(s,side,entity);
    const resource=resources.get(id);return !!resource&&isVisible(s,side,resource.x,resource.y,levelOf(resource));
   };
   return s.events.flatMap(event=>{
@@ -42,7 +43,7 @@ export class PlayerView {
    if(!own&&['gather','research','message'].includes(event.type))return [];
    const target=event.target===undefined?undefined:entities.get(event.target);
    const affected=target&&isAllied(s,side,target.side)&&(target.side===side||isVisible(s,side,target.x,target.y,levelOf(target)));
-   const visible=isVisible(s,side,event.x,event.y,levelOf(event));
+   const source=event.source===undefined?undefined:entities.get(event.source);const visible=isVisible(s,side,event.x,event.y,levelOf(event))&&(!source||canObserveTacticalEntity(s,side,source));
    if(!own&&!visible&&!affected)return [];
    const result:GameEvent & {eventId?:string}={...event};
    if(identify)result.eventId=identify(event);
@@ -67,14 +68,16 @@ export class PlayerView {
   return {
    version:1,tick:s.tick,time:s.time,side,teamId,rules:structuredClone(s.rules),objectives:publicObjectives(s,side),draft:structuredClone(s.draft),draftDefinitions:draftDefinitions(s),draftChoices:legalDraftChoices(s.draft,draftPlayers(s),side,s.content),controller:s.controllers[side],sharedVision:s.sharedVision,winningTeam:s.winningTeam,eliminated:[...s.eliminated],
    map:{size:s.mapSize,width:s.width,height:s.height,version:s.mapVersion,seed:s.seed,starts:s.starts.map(p=>({...p})),terrain:s.terrain.map((t,i)=>s.explored[side].has(i)?t:null)},
-   player:{...s.players[side],heroRecovery:s.players[side].heroRecovery?.map(r=>({...r})),upgrades:[...s.players[side].upgrades]},opponent:opponent?{side:opponent.side,faction:opponent.faction}:null,opponents,allies,alliedAi:alliedAiStatus(s,side),
-   entities:s.entities.filter(e=>e.hp>0&&(e.side===side||isVisible(s,side,e.x,e.y,levelOf(e)))).map(e=>{
+   factionSystems:{fury:s.factionSystems?.fury[side]??0},player:{...s.players[side],heroRecovery:s.players[side].heroRecovery?.map(r=>({...r})),upgrades:[...s.players[side].upgrades]},opponent:opponent?{side:opponent.side,faction:opponent.faction}:null,opponents,allies,alliedAi:alliedAiStatus(s,side),
+   entities:s.entities.filter(e=>e.hp>0&&canObserveTacticalEntity(s,side,e)).map(e=>{
     const {hp,maxHp}=observedHealth(s,side,e);
-    const publicFields={id:e.id,side:e.side,kind:e.kind,role:e.role,definitionId:e.definitionId,definitionFaction:e.definitionFaction,x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level}),hp,maxHp,progress:e.progress,gateOpen:e.gateOpen,shield:e.shield,maxShield:e.maxShield,raised:e.raised,entrenchedAt:e.entrenchedAt,surgeUntil:e.surgeUntil};
-    return e.side===side?{...publicFields,veteran:e.veteran?structuredClone(e.veteran):undefined,equipment:e.equipment?{...e.equipment}:undefined,specialistBuffs:e.specialistBuffs?.map(buff=>({...buff,fearedFrom:buff.fearedFrom?{...buff.fearedFrom}:undefined})),beacon:e.beacon?{...e.beacon}:undefined,siegeMode:e.siegeMode?{...e.siegeMode}:undefined,illusion:e.illusion,order:{...e.order},orderQueue:e.orderQueue?.map(order=>({...order})),queue:[...e.queue],queueDefinitionIds:e.queueDefinitionIds?[...e.queueDefinitionIds]:undefined,queuePaidCosts:e.queuePaidCosts?.map(cost=>({...cost})),rally:e.rally?{...e.rally}:undefined,trainProgress:e.trainProgress,research:e.research,researchProgress:e.researchProgress,carried:e.carried,carriedKind:e.carriedKind,cooldown:e.cooldown,abilityReadyAt:e.abilityReadyAt,expires:e.expires,lastDamagedAt:e.lastDamagedAt}:isAllied(s,side,e.side)?{...publicFields,illusion:e.illusion}:publicFields;
+    const publicTactics=e.tactics?{morale:e.tactics.morale,recentLoss:0,siegeCrew:e.tactics.siegeCrew?{...e.tactics.siegeCrew}:undefined,guard:e.tactics.guard?{...e.tactics.guard}:undefined}:undefined;
+    const publicFields={id:e.id,side:e.side,owner:isCrewless(e)?null:e.side,tactics:publicTactics,factionState:e.factionState?{chant:e.factionState.chant?{...e.factionState.chant}:undefined,artillery:e.factionState.artillery,power:e.factionState.power?{connected:e.factionState.power.connected,root:null}:undefined}:undefined,facing:e.facing,kind:e.kind,role:e.role,definitionId:e.definitionId,definitionFaction:e.definitionFaction,x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level}),hp,maxHp,progress:e.progress,gateOpen:e.gateOpen,shield:e.shield,maxShield:e.maxShield,raised:e.raised,entrenchedAt:e.entrenchedAt,surgeUntil:e.surgeUntil};
+    return e.side===side&&!isCrewless(e)?{...publicFields,tactics:e.tactics?structuredClone(e.tactics):undefined,factionState:e.factionState?structuredClone(e.factionState):undefined,veteran:e.veteran?structuredClone(e.veteran):undefined,equipment:e.equipment?{...e.equipment}:undefined,specialistBuffs:e.specialistBuffs?.map(buff=>({...buff,fearedFrom:buff.fearedFrom?{...buff.fearedFrom}:undefined})),beacon:e.beacon?{...e.beacon}:undefined,siegeMode:e.siegeMode?{...e.siegeMode}:undefined,illusion:e.illusion,order:{...e.order},orderQueue:e.orderQueue?.map(order=>({...order})),queue:[...e.queue],queueDefinitionIds:e.queueDefinitionIds?[...e.queueDefinitionIds]:undefined,queuePaidCosts:e.queuePaidCosts?.map(cost=>({...cost})),rally:e.rally?{...e.rally}:undefined,trainProgress:e.trainProgress,research:e.research,researchProgress:e.researchProgress,carried:e.carried,carriedKind:e.carriedKind,cooldown:e.cooldown,abilityReadyAt:e.abilityReadyAt,expires:e.expires,lastDamagedAt:e.lastDamagedAt}:isAllied(s,side,e.side)?{...publicFields,illusion:e.illusion}:publicFields;
    }),
    world:s.world?{version:s.world.version,revision:s.world.revision,biome:s.world.biome,phase:environmentPhase(s),levels:s.world.levels.map(l=>({id:l.id,title:l.title,terrain:l.terrain.map((t,i)=>s.explored[side].has(l.id*s.width*s.height+i)?t:null),elevation:l.elevation.map((e,i)=>s.explored[side].has(l.id*s.width*s.height+i)?e:null)})),transitions:s.world.transitions.filter(t=>s.explored[side].has(fogKey(s,t.from))||s.explored[side].has(fogKey(s,t.to))).map(t=>({id:t.id,from:{...t.from},to:{...t.to}})),bridges:s.world.bridges.filter(b=>isVisible(s,side,b.x,b.y,b.level)).map(b=>({id:b.id,x:b.x,y:b.y,level:b.level,hp:b.hp,maxHp:b.maxHp,rebuilding:b.rebuilding})),fires:s.world.fires.filter(f=>isVisible(s,side,f.x,f.y,f.level)).map(f=>({...f})),...observeNeutralWorld(s,side)}:undefined,
    resources:this.resourcesFor(s),economy:observeEconomy(s,side,{visible:(state,observer,p)=>isVisible(state,observer,p.x,p.y,levelOf(p))}),artifacts:observedArtifacts(s,side),
+   projectiles:(s.projectiles??[]).filter(p=>isVisible(s,side,p.x,p.y,levelOf(p))||p.side===side).map(p=>({id:p.id,side:p.side,x:p.x,y:p.y,...(p.level===undefined?{}:{level:p.level}),from:isVisible(s,side,p.from.x,p.from.y,levelOf(p.from))||p.side===side?{x:p.from.x,y:p.from.y,...(p.from.level===undefined?{}:{level:p.from.level})}:undefined,impactAt:p.impactAt,radius:p.radius})),
    corpses:s.corpses.filter(c=>isVisible(s,side,c.x,c.y,levelOf(c))).map(c=>({...c})),
    visible:[...s.visible[side]].sort((a,b)=>a-b),explored:[...s.explored[side]].sort((a,b)=>a-b),
    content:{faction:factionFor(s,side),abilities:ABILITIES,upgrades:upgradesFor(s,side),hash:s.content?.hash},

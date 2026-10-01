@@ -55,6 +55,7 @@ export class SkirmishRoster {
   private readonly preset: HTMLSelectElement;
   private readonly count: HTMLSelectElement;
   private readonly sharedVision: HTMLInputElement;
+  private readonly friendlyFire: HTMLInputElement;
   private readonly startingAge: HTMLSelectElement;
   private readonly playersHost: HTMLElement;
   private readonly summary: HTMLElement;
@@ -79,6 +80,7 @@ export class SkirmishRoster {
     this.preset = select(controls, 'Match preset', Object.entries(presets));
     this.count = select(controls, 'Player count', Array.from({ length: 7 }, (_, index) => [String(index + 2), String(index + 2)] as const));
     this.sharedVision = element('input'); this.sharedVision.type = 'checkbox'; this.sharedVision.checked = true; this.sharedVision.setAttribute('aria-label', 'Shared team vision'); label(controls, 'Shared team vision', this.sharedVision);
+    this.friendlyFire = element('input'); this.friendlyFire.type = 'checkbox'; this.friendlyFire.checked = true; this.friendlyFire.setAttribute('aria-label', 'Siege friendly fire'); label(controls, 'Siege friendly fire', this.friendlyFire);
     this.startingAge = select(controls, 'Starting age', ([1, 2, 3] as Age[]).map(age => [String(age), AGE_NAMES[age]]));
     this.summary = element('p', undefined, 'skirmish-roster-summary'); this.summary.setAttribute('aria-live', 'polite');
     this.error = element('p', undefined, 'skirmish-roster-error'); this.error.setAttribute('role', 'alert'); this.error.hidden = true;
@@ -97,6 +99,7 @@ export class SkirmishRoster {
       this.resize(count); this.preset.value = 'custom'; this.refresh(); this.emit();
     });
     this.listen(this.sharedVision, 'change', () => { this.refresh(); this.emit(); });
+    this.listen(this.friendlyFire, 'change', () => { this.refresh(); this.emit(); });
     this.listen(this.startingAge, 'change', () => { this.refresh(); this.emit(); });
     this.refresh();
   }
@@ -131,7 +134,7 @@ export class SkirmishRoster {
     if (!this.enabled) return structuredClone(MATCH_RULE_DEFAULTS);
     const age = Number(this.startingAge.value);
     if (!Number.isInteger(age) || age < 1 || age > 3) { this.showError('Choose a starting age.'); throw new Error('Choose a starting age.'); }
-    return { ...this.customRules.value, sharedVision: this.sharedVision.checked, startingAge: age as Age };
+    return { ...this.customRules.value, sharedVision: this.sharedVision.checked, startingAge: age as Age,friendlyFire:this.friendlyFire.checked };
   }
 
   destroy(): void {

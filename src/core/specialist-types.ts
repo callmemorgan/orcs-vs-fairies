@@ -16,5 +16,5 @@ export interface SpecialistBuff {until:number;damageFactor?:number;speedFactor?:
 export interface DefinitionExtras {faction:FactionId;unitIds:string[];buildingIds:string[]}
 
 export interface SiegePayload {kind:'incendiary'|'rooting'|'corpse'|'flood'|'beam'|'cannon';damageFactor:number;armorPiercing:boolean;radius:number}
-export interface SpecialistSource extends Vec {id:number;side:Side;definitionId:string;faction:FactionId}
-export interface SpecialistSiegeShot {id:number;source:SpecialistSource;target:Vec;impactAt:number;rawDamage:number;buildingMultiplier:number;payload:SiegePayload}
+export interface SpecialistSource extends Vec {id:number;side:Side;definitionId:string;faction:FactionId;elevation?:number}
+export interface SpecialistSiegeShot {id:number;source:SpecialistSource;target:Vec;impactAt:number;rawDamage:number;buildingMultiplier:number;payload:SiegePayload;modification?:import('./faction-systems').ArtilleryModification}

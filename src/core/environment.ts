@@ -105,7 +105,7 @@ function ignition(s:WorldGame,p:Positioned):WorldFire {
 /** Artillery calls this at its saved impact point after paying ammunition at launch. */
 export function igniteWorldAt(s:GameState,at:Vec,source?:{side:Side;id?:number}):boolean {
  const state=s as WorldGame,world=state.world,level=levelOf(at);if(!world||!Number.isFinite(at.x)||!Number.isFinite(at.y)||!Number.isInteger(level)||!world.levels.some(l=>l.id===level)||at.x<0||at.y<0||at.x>=s.width||at.y>=s.height||source&&!s.players[source.side])return false;
- if(source?.id!==undefined&&(!Number.isSafeInteger(source.id)||source.id<1||source.id>=s.nextId||s.entities.some(e=>e.id===source.id&&e.side!==source.side)))return false;
+ if(source?.id!==undefined&&(!Number.isSafeInteger(source.id)||source.id<1||source.id>=s.nextId))return false;
  const p={x:Math.floor(at.x)+.5,y:Math.floor(at.y)+.5,level};if(!flammable(state,p)||world.fires.some(f=>f.level===level&&tileOf(s,f)===tileOf(s,p)))return false;
  world.fires.push(ignition(state,p));if(source)message(s,source.side,p,'Incendiary shell ignited timber.','ability',source.id);return true;
 }

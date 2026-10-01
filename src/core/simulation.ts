@@ -4,9 +4,15 @@ import { initializeObjectives, emptyObjectives, evaluateObjectives, collectRelic
 import { ECONOMY_BUILDINGS, applyEconomyCommand, cancelEconomyTask, depositEconomyGather, economicState, economyEntityBusy, economyGatherDepot, economyGatherFactor, economyProductionFactor, economyResearchFactor, economyUnitDefinition, initializeEconomySites, onEconomyDeath, recordEconomyPaid, tickEconomy } from './economy';
 import { isEconomyCommand } from './economy-validation';
 import type { EconomyHooks } from './economy-types';
+import { combatTargets, isBridgeTarget, isEntityTarget } from './combat-targets';
+import type { CombatTarget } from './combat-targets';
+import { ageCharge, canAmbush, canCaptureSiege, canObserveTacticalEntity, cavalryImpact, facingDamageFactor, formationDestination, initializeTactics, interceptDirectionalShield, isCrewless, rangedCoverFactor, recordTacticsDamage, recordTacticsDeath, refreshFormations, setFormation, tacticalUnitDef, TACTICS, updateCharge, updateSiegeCapture, updateTactics } from './tactics';
+import { absorbFactionShield, factionArmorBonus, factionCanFire, factionDamageFactor, factionMovementFactor, factionSplashRadius, initializeFactionSystems, isFactionCommand, issueFactionCommand, recordFactionDamage, recordFactionDeath, stepFactionActor, stepFactionSystems } from './faction-systems';
+import { factionSystemDefinition, TROPHY_STANDARD } from './faction-systems-content';
+import type { FactionSystemHooks } from './faction-systems';
 import { DIRECTIONS_24, DIRECTIONS_32, facing8, length2D } from './geometry';
 import { commanderArtifact, creditCombat, dropArtifact, dropArtifacts, equipArtifact, promote, progressionStats, recordCombatExposure, recoverArtifact, stepVeterans, unequipArtifact } from './unit-progression';
-import { commanderDied, engineerBuild, fieldRepair, heroRecruitmentReason, launchSpecialistShot, resolveSpecialistShots, runSpecialistAI, specialistAbility, stepSpecialists, updateBeacons } from './specialist-systems';
+import { commanderDied, engineerBuild, fieldRepair, heroRecruitmentReason, launchSpecialistShot, specialistShotReady, resolveSpecialistShots, runSpecialistAI, specialistAbility, stepSpecialists, updateBeacons } from './specialist-systems';
 import type { SpecialistHooks } from './specialist-systems';
 import type { SpecialistSource } from './specialist-types';
 import { aiProfile, chooseAiRecruit, counterWeights, normalizeAiConfig, openingBuilding, rememberObservedUnits, shouldRetreat, skipsAiDecision } from './ai-policy';
@@ -22,17 +28,17 @@ import { walkable, segmentWalkable, openDestination, route } from './navigation'
 import { generateMatchMap, terrainAt, TERRAIN } from './maps';
 import { notifyCommand, notifyStep } from './history-hooks';
 import { validateCommand } from './commands';
-import { BIOMES, fogKey, generatedMapFromWorld, generateWorldMap, highGroundDamageFactor, highGroundRangeBonus, highGroundSightBonus, initializeWorld, levelOf, sameLevel, setWorldTerrain, terrainLineOfSight } from './world-map';
-import { issueWorldAction, processWorldAction, stepWorldActions } from './world-actions';
-import { environmentalMovementFactor, environmentalSightFactor, issueEnvironmentCommand, projectileEnvironment, stepEnvironment } from './environment';
-import { initializeWorldSites, issueNeutralWorldCommand, processNeutralOrder, relicBonus, stepNeutralWorld } from './neutral-world';
+import { BIOMES, elevationAt, fogKey, generatedMapFromWorld, generateWorldMap, highGroundDamageFactor, highGroundRangeBonus, highGroundSightBonus, initializeWorld, levelOf, sameLevel, setWorldTerrain, terrainLineOfSight } from './world-map';
+import { collapseBridge, issueWorldAction, processWorldAction, stepWorldActions } from './world-actions';
+import { environmentalMovementFactor, environmentalSightFactor, issueEnvironmentCommand, projectileEnvironment, stepEnvironment, igniteWorldAt } from './environment';
+import { defeatCreature, initializeWorldSites, issueNeutralWorldCommand, processNeutralOrder, relicBonus, stepNeutralWorld } from './neutral-world';
 import type { NeutralCreature, WorldCommand } from './world-types';
 import type { BuildingDef, BuildingRole, Command, Cost, Entity, FactionId, GameOptions, GameState, MatchConfig, ResourceNode, Side, UnitDef, UnitRole, UpgradeId, Vec } from './types';
 
 const distance = (a:Vec,b:Vec) => sameLevel(a,b)?length2D(a.x-b.x,a.y-b.y):Infinity;
 const clamp=(n:number,a:number,b:number)=>Math.max(a,Math.min(b,n));
 interface RetreatRecord { until:number; produced:number; afterId:number }
-interface Runtime { teamAI:TeamAiState; aiBatchTurns:number; aiDecisionAt:number[]; aiDecisionTurns:number[]; knownEnemyUnits:EnemyMemory[]; retreating:Map<number,RetreatRecord>[]; producedFighters:number[]; stepping?:boolean; fog:number; ai:number; aiTurns:number; hits:{source:Entity|SpecialistSource;target:Entity;amount:number;event:GameState['events'][number]}[]; routes:Map<number,{key:string;at:number}>; abilities:Map<number,number>; returning:Set<number>; queuedGather:Set<number>; aiWave:number[]; initialScoutDispatched:boolean[]; expansionScout:(number|null)[]; expansionScoutDispatched:boolean[]; knownEnemyBuildings:Map<number,Vec & {role:string}>[]; enemyStartCleared:boolean[]; clearedEnemyStarts:Set<Side>[]; searched:Set<number>[] }
+interface Runtime { teamAI:TeamAiState; aiBatchTurns:number; aiDecisionAt:number[]; aiDecisionTurns:number[]; knownEnemyUnits:EnemyMemory[]; retreating:Map<number,RetreatRecord>[]; producedFighters:number[]; stepping?:boolean; fog:number; ai:number; aiTurns:number; hits:{source:Pick<Entity,'id'|'side'> & Vec & {furyEligible?:boolean};target:CombatTarget;amount:number;crew?:boolean;ranged?:boolean;event:GameState['events'][number]}[]; routes:Map<number,{key:string;at:number}>; abilities:Map<number,number>; returning:Set<number>; queuedGather:Set<number>; aiWave:number[]; initialScoutDispatched:boolean[]; expansionScout:(number|null)[]; expansionScoutDispatched:boolean[]; knownEnemyBuildings:Map<number,Vec & {role:string}>[]; enemyStartCleared:boolean[]; clearedEnemyStarts:Set<Side>[]; searched:Set<number>[] }
 /** The complete simulation memory that is not stored on GameState itself. */
 export interface RuntimeSnapshot {
  teamAI?:TeamAiState;
@@ -70,8 +76,18 @@ function near(s:GameState,a:Entity,b:Entity|ResourceNode,range:number):boolean{r
 function emit(s:GameState,type:GameState['events'][number]['type'],e:Vec & {side:Side;id?:number},target?:number,text?:string){const event:GameState['events'][number]={type,x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level}),side:e.side,target,text,source:e.id};s.events.push(event);return event;}
 export function spawnEntity(s:GameState,side:Side,kind:Entity['kind'],role:UnitRole|BuildingRole,x:number,y:number,progress=1,definitionId?:string,level=0):Entity{
  const def=kind==='unit'?unitFor(s,side,role as UnitRole,definitionId):buildingFor(s,side,role as BuildingRole,definitionId);
- const e:Entity={id:s.nextId++,side,kind,role,x,y,...(s.world||level?{level}:{}),hp:progress===1?def.hp:Math.max(1,def.hp*.1),maxHp:def.hp,order:{type:'idle'},cooldown:0,progress,queue:[],trainProgress:0,researchProgress:0,facing:2,animation:'idle',animTime:0,momentum:0,illusion:false,expires:0,carried:0,carriedKind:'wood',path:[]};if(s.content||definitionId)e.definitionId=def.id;if(kind==='unit'&&(def as UnitDef).shield){e.maxShield=(def as UnitDef).shield;e.shield=e.maxShield;}s.entities.push(e);return e;
+ const e:Entity={id:s.nextId++,side,kind,role,x,y,...(s.world||level?{level}:{}),hp:progress===1?def.hp:Math.max(1,def.hp*.1),maxHp:def.hp,order:{type:'idle'},cooldown:0,progress,queue:[],trainProgress:0,researchProgress:0,facing:2,animation:'idle',animTime:0,momentum:0,illusion:false,expires:0,carried:0,carriedKind:'wood',path:[]};if(s.content||definitionId)e.definitionId=def.id;if(kind==='unit'&&(def as UnitDef).shield){e.maxShield=(def as UnitDef).shield;e.shield=e.maxShield;}if(kind==='unit')initializeTactics(s,e);s.entities.push(e);return e;
 }
+export function spawnFactionDefinition(s:GameState,side:Side,definitionId:string,point:Vec,progress=1):Entity {
+ const definition=factionSystemDefinition(definitionId);if(!definition)throw new Error('Unknown faction definition.');
+ return spawnEntity(s,side,'trainTime' in definition?'unit':'building',definition.role,point.x,point.y,progress,definitionId,levelOf(point));
+}
+function factionHooks(s:GameState):FactionSystemHooks{return {
+ canPlace:(side,p,id)=>{const d=factionSystemDefinition(id);return !!d&&!('trainTime' in d)&&canPlace(s,side,d.role,p.x,p.y,id,levelOf(p))&&s.entities.filter(e=>alive(e)&&e.kind==='unit'&&sameLevel(e,p)&&isAllied(s,e.side,side)&&footprintOverlap(e,p.x,p.y,d.size)).every(()=>!!shovePoint(s,p.x,p.y,d.size,levelOf(p)));},
+ spawnDefinition:(side,id,p,progress)=>{const d=factionSystemDefinition(id) as BuildingDef;if(progress===0)for(const e of s.entities.filter(e=>alive(e)&&e.kind==='unit'&&sameLevel(e,p)&&isAllied(s,e.side,side)&&footprintOverlap(e,p.x,p.y,d.size))){const point=shovePoint(s,p.x,p.y,d.size,levelOf(p))!;e.x=point.x;e.y=point.y;e.path=[];e.entrenchedAt=undefined;runtime(s).routes.delete(e.id);}return spawnFactionDefinition(s,side,id,p,progress);},
+ move:(e,to,dt,reach)=>move(s,e,to,dt,reach),openDestination:(to,from)=>openDestination(s,to,from),
+ terrainAt:p=>terrainAt(s,p.x,p.y,levelOf(p)),setTerrain:(p,kind)=>setWorldTerrain(s,p,kind)
+};}
 export function playerSides(s:GameState):Side[]{return s.players.map((_,i)=>i as Side);}
 export function isAllied(s:GameState,a:Side,b:Side):boolean{return !!s.players[a]&&!!s.players[b]&&s.teams[a]===s.teams[b];}
 export function isHostile(s:GameState,a:Side,b:Side):boolean{return !!s.players[a]&&!!s.players[b]&&s.teams[a]!==s.teams[b];}
@@ -104,6 +120,7 @@ export function createMatch(config:MatchConfig,options:{scenario?:boolean}={}):G
  const map=packageMap?generatedMapFromWorld(packageMap,definitions.length,options):generateMatchMap(seed,size as GameState['mapSize'],definitions.length);
  if(packageMap&&packageMap.seed!==seed)throw new Error('Map package seed must match the match configuration.');
  const s:GameState={rules,draft:c.draft===undefined?createDraft(config.players,rules,content):validateDraftState(c.draft,config.players,rules,content),objectives:emptyObjectives(map),controllers:definitions.map(p=>p.controller),aiConfigs:definitions.map(p=>p.ai),teams,incomeFactors,populationLimits,sharedVision:rules.sharedVision!==false,eliminated:definitions.map(()=>false),winningTeam:null,mapSize:map.size,mapVersion:map.version,terrain:map.terrain,starts:definitions.map(p=>({...map.starts[p.slot]})),draw:false,tick:0,corpses:[],time:0,seed,width:map.width,height:map.height,entities:[],resources:[],players:definitions.map(p=>({faction:p.faction,wood:p.wood,ore:p.ore,crystal:p.crystal,population:0,cap:12,upgrades:age===3?['town-age','citadel-age']:age===2?['town-age']:[]})),winner:null,events:[],explored:definitions.map(()=>new Set()),visible:definitions.map(()=>new Set()),nextId:1};
+ s.friendlyFire=rules.friendlyFire!==false;s.projectiles=[];initializeFactionSystems(s);
  if(content)s.content=content;
  if(packageMap)initializeWorld(s,packageMap,m.biome as typeof BIOMES[number]??'temperate');
  if(!options.scenario)for(const side of playerSides(s)){const {x,y}=s.starts[side],level=levelOf(s.starts[side]),dir=y<s.height/2?1:-1;spawnEntity(s,side,'building','hq',x,y,1,undefined,level);for(let i=0;i<5;i++)spawnEntity(s,side,'unit','worker',x+(-2+i*.85)*dir,y+3*dir,1,undefined,level);const starter=availableUnits(s,side).find(unit=>unit.role!=='worker'&&!rules.disabledDefinitionIds.includes(unit.id));if(starter)spawnEntity(s,side,'unit',starter.role,x+3*dir,y+dir,1,starter.id.includes(':')?starter.id:undefined,level);}
@@ -137,7 +154,7 @@ export function refreshVisibility(s:GameState):void{
   for(const side of members){s.visible[side].clear();for(const tile of visible)s.visible[side].add(tile);for(const tile of explored)s.explored[side].add(tile);}
  }
 }
-function updatePopulation(s:GameState):void{for(const side of playerSides(s)){const es=s.entities.filter(e=>e.side===side&&alive(e));s.players[side].population=es.filter(e=>e.kind==='unit'&&!e.illusion).length;s.players[side].cap=Math.min(s.populationLimits[side],es.filter(e=>e.kind==='building'&&e.progress===1).reduce((v,e)=>v+(e.role==='hq'?12:e.role==='depot'?10:0),0));}}
+function updatePopulation(s:GameState):void{for(const side of playerSides(s)){const es=s.entities.filter(e=>e.side===side&&alive(e)&&!isCrewless(e));s.players[side].population=es.filter(e=>e.kind==='unit'&&!e.illusion).length;s.players[side].cap=Math.min(s.populationLimits[side],es.filter(e=>e.kind==='building'&&e.progress===1).reduce((v,e)=>v+(e.role==='hq'?12:e.role==='depot'&&e.definitionId!==TROPHY_STANDARD.id?10:0),0));}}
 function reserved(s:GameState,side:Side):number{return s.entities.filter(e=>e.side===side&&alive(e)).reduce((v,e)=>v+e.queue.length,0)+(economicState(s)?.recruits.filter(r=>r.side===side).length??0);}
 function footprintOverlap(e:Entity,x:number,y:number,size:number):boolean{return Math.abs(e.x-x)<size/2+.35&&Math.abs(e.y-y)<size/2+.35;}
 function shovePoint(s:GameState,x:number,y:number,size:number,level=0):Vec|undefined{
@@ -152,7 +169,7 @@ function rallyWalkable(s:GameState,side:Side,x:number,y:number,level=0):boolean{
 }
 /** Destination choices exposed in owned orders use only permitted obstacles. */
 function commandDestination(s:GameState,side:Side,to:Vec,from:Vec):Vec|undefined{
- const observed={...s,entities:s.entities.filter(e=>e.side===side||isVisible(s,side,e.x,e.y,levelOf(e))),resources:s.resources.filter(r=>isVisible(s,side,r.x,r.y,levelOf(r)))};
+ const observed={...s,entities:s.entities.filter(e=>canObserveTacticalEntity(s,side,e)),resources:s.resources.filter(r=>isVisible(s,side,r.x,r.y,levelOf(r)))};
  return openDestination(observed,to,from);
 }
 function movementOrder(s:GameState,e:Entity,order:Vec,dt:number,reach:number):boolean{
@@ -171,7 +188,7 @@ export function canPlace(s:GameState,side:Side,role:BuildingRole,x:number,y:numb
  if(s.resources.some(e=>e.amount>0&&levelOf(e)===level&&Math.abs(e.x-x)<r+.8&&Math.abs(e.y-y)<r+.8))return false;return true;
 }
 function invalidateNavigation(s:GameState,e:Entity):void{e.path=[];e.entrenchedAt=undefined;runtime(s).routes.delete(e.id);}
-function assign(s:GameState,e:Entity,order:Entity['order']):void{cancelEconomyTask(s,e.id);if(e.siegeMode?.deployed&&(order.type==='move'||order.type==='attackMove'))e.siegeMode.deployed=false;if(order.type!=='hold')e.entrenchedAt=undefined;e.order=order;e.path=[];runtime(s).routes.delete(e.id);runtime(s).returning.delete(e.id);runtime(s).queuedGather.delete(e.id);}
+function assign(s:GameState,e:Entity,order:Entity['order']):void{cancelEconomyTask(s,e.id);if(e.factionState){delete e.factionState.tunnel;delete e.factionState.corpseOrder;}if(e.siegeMode?.deployed&&(order.type==='move'||order.type==='attackMove'))e.siegeMode.deployed=false;if(order.type!=='hold')e.entrenchedAt=undefined;e.order=order;e.path=[];runtime(s).routes.delete(e.id);runtime(s).returning.delete(e.id);runtime(s).queuedGather.delete(e.id);}
 function interruptWorldOrder(s:GameState,e:Entity):void {if(e.hp<=0)onEconomyDeath(s,e,economyHooks);delete e.orderQueue;assign(s,e,{type:'idle'});}
 function commandOrder(s:GameState,e:Entity,order:Entity['order'],queued=false):boolean {
  if(queued&&e.order.type!=='idle'&&e.order.type!=='hold'){
@@ -183,7 +200,7 @@ function commandOrder(s:GameState,e:Entity,order:Entity['order'],queued=false):b
 function finishOrder(s:GameState,e:Entity):void {
  while(e.orderQueue?.length){
   const order=e.orderQueue.shift()!;
-  if(order.type==='attack'){const target=s.entities.find(t=>t.id===order.target&&alive(t)&&isHostile(s,t.side,e.side));if(!target||!sameLevel(e,target)||!isVisible(s,e.side,target.x,target.y,levelOf(target)))continue;}
+  if(order.type==='attack'){const target=s.entities.find(t=>t.id===order.target&&alive(t)&&isHostile(s,t.side,e.side));if(!target||!sameLevel(e,target)||!canObserveTacticalEntity(s,e.side,target))continue;}
   if(order.type==='gather'&&!s.resources.some(n=>n.id===order.target&&n.amount>0&&sameLevel(e,n)))continue;
   if(order.type==='build'&&!s.entities.some(t=>t.id===order.target&&alive(t)&&isAllied(s,t.side,e.side)&&t.kind==='building'&&sameLevel(e,t)&&(t.progress<1||t.hp<t.maxHp)))continue;
   if(!e.orderQueue.length)delete e.orderQueue;
@@ -204,6 +221,7 @@ function applyCommand(s:GameState,side:Side,c:Command):boolean{
  if(s.draft.status!=='complete')return false;if(isEconomyCommand(c)){if(c.type==='trainCaravan'&&!definitionAllowed(s,side,'economy:caravan'))return false;return applyEconomyCommand(s,side,c,economyHooks);}
  if(c.type==='collectRelic')return collectRelic(s,side,c.id,c.relicId);
  if(c.type==='dropRelic')return dropRelic(s,side,c.id);
+ if(isFactionCommand(c))return issueFactionCommand(s,side,c,factionHooks(s));
  const p=s.players[side],f=factionFor(s,side);
  if(isPlayerCommand(c))return applyAlliedPlayerCommand(s,side,c,runtime(s).teamAI,(viewer,x,y,level)=>isVisible(s,viewer,x,y,level));
  if('ids' in c&&['worldAttack','repairBridge','captureSite','supportVillage','recruitVillage','ignite','firebreak'].includes(c.type)){
@@ -259,8 +277,23 @@ function applyCommand(s:GameState,side:Side,c:Command):boolean{
  if(c.type==='fieldRepair')return fieldRepair(s,side,c.id,c.target);
  if(c.type==='engineerBuild')return engineerBuild(s,side,c,specialistHooks(s));
  if(!('ids' in c))return false;
- const units=s.entities.filter(e=>c.ids.includes(e.id)&&e.side===side&&alive(e)&&e.kind==='unit'&&!e.illusion&&!(['attack','attackMove','ability'].includes(c.type)&&economyUnitDefinition(s,e)));
+ const units=s.entities.filter(e=>c.ids.includes(e.id)&&e.side===side&&alive(e)&&e.kind==='unit'&&!e.illusion&&!isCrewless(e)&&!(['attack','attackMove','ability'].includes(c.type)&&economyUnitDefinition(s,e))).sort((a,b)=>a.id-b.id);
  if(!units.length)return false;
+ if(c.type==='formation'){
+  const army=units.filter(e=>e.role!=='worker'&&e.role!=='siege'&&sameLevel(e,units[0]));if(!army.length)return false;
+  const anchor=army.reduce((p,e)=>({x:p.x+e.x/army.length,y:p.y+e.y/army.length}),{x:0,y:0});setFormation(s,army,c.formation,c.spacing,c.facing,{...anchor,level:levelOf(army[0])});
+  for(const e of army){const to=commandDestination(s,side,formationDestination(e.tactics!.formation!,s),e);if(to)commandOrder(s,e,{type:'move',...to});}return true;
+ }
+ if(c.type==='face'){for(const e of units){e.facing=c.facing;commandOrder(s,e,{type:'hold'});if(e.tactics?.formation)e.tactics.formation.facing=c.facing;}return true;}
+ if(c.type==='ambush'){
+  const concealed=units.filter(e=>canAmbush(s,e));if(!concealed.length)return false;
+  for(const e of concealed){const t=initializeTactics(s,e);delete t.formation;delete t.capture;commandOrder(s,e,{type:'hold'});t.ambush={radius:c.radius,target:c.target,concealed:true,armedAt:s.time};}return true;
+ }
+ if(c.type==='releaseAmbush'){let changed=false;for(const e of units)if(e.tactics?.ambush){delete e.tactics.ambush;changed=true;}return changed;}
+ if(c.type==='captureSiege'){
+  const target=s.entities.find(e=>e.id===c.target),captors=target?units.filter(e=>canCaptureSiege(s,e,target)):[];if(!captors.length)return false;
+  for(const e of captors){const t=initializeTactics(s,e);delete t.ambush;delete t.formation;commandOrder(s,e,{type:'hold'});t.capture={target:target!.id,progress:0};}return true;
+ }
  if(c.type==='build'){
  const level=c.level??0,workers=units.filter(e=>e.role==='worker'&&!economyUnitDefinition(s,e)&&levelOf(e)===level);const d=c.definitionId?availableBuildings(s,side).find(d=>d.id===c.definitionId&&d.role===c.role):f.buildings[c.role];if(!workers.length||!d||!isNormalBuildingDefinition(d)||playerAge(p)<buildingAgeRequired(d)||p.wood<d.cost.wood||p.ore<d.cost.ore||p.crystal<d.cost.crystal||!canPlace(s,side,c.role,c.x,c.y,c.definitionId,level))return false;
  const overlapping=s.entities.filter(e=>e.kind==='unit'&&alive(e)&&levelOf(e)===level&&isAllied(s,e.side,side)&&footprintOverlap(e,c.x,c.y,d.size));
@@ -271,15 +304,17 @@ function applyCommand(s:GameState,side:Side,c:Command):boolean{
  if(c.type==='ability'){let success=false;for(const e of units){const special=specialistAbility(s,e,c,specialistHooks(s));if(special??useAbility(s,e))success=true;}return success;}
  if(c.type==='move'||c.type==='attackMove'){
  if(!Number.isFinite(c.x)||!Number.isFinite(c.y))return false;
+ const formed=units.filter(e=>!!e.tactics?.formation&&levelOf(e)===(c.level??0));if(formed.length&&!c.queued){const f=formed[0].tactics!.formation!;setFormation(s,formed,f.kind,f.spacing,f.facing,{x:clamp(c.x,.6,s.width-.6),y:clamp(c.y,.6,s.height-.6),level:c.level??0});}
  const width=Math.ceil(Math.sqrt(units.length)),dir=s.starts[side].y<s.height/2?1:-1;
- const destinations=units.map((e,i)=>{const dx=units.length===1?0:(i%width-(width-1)/2)*.8*dir,dy=units.length===1?0:(Math.floor(i/width)-(width-1)/2)*.8*dir;return commandDestination(s,side,{x:clamp(c.x+dx,.6,s.width-.6),y:clamp(c.y+dy,.6,s.height-.6),...(c.level===undefined?{}:{level:c.level})},e);});
+ const destinations=units.map((e,i)=>{const dx=units.length===1?0:(i%width-(width-1)/2)*.8*dir,dy=units.length===1?0:(Math.floor(i/width)-(width-1)/2)*.8*dir;return commandDestination(s,side,e.tactics?.formation&&!c.queued?formationDestination(e.tactics.formation,s):{x:clamp(c.x+dx,.6,s.width-.6),y:clamp(c.y+dy,.6,s.height-.6),...(c.level===undefined?{}:{level:c.level})},e);});
+ for(const e of units)if(e.tactics){delete e.tactics.ambush;delete e.tactics.capture;}
  let moved=false;units.forEach((e,i)=>{if(destinations[i]&&commandOrder(s,e,{type:c.type,...destinations[i]!},c.queued))moved=true;});return moved;
  }
- if(c.type==='stop'||c.type==='hold'){for(const e of units)commandOrder(s,e,{type:c.type==='hold'?'hold':'idle'});return true;}
+ if(c.type==='stop'||c.type==='hold'){for(const e of units){if(e.tactics){delete e.tactics.formation;delete e.tactics.ambush;delete e.tactics.capture;}commandOrder(s,e,{type:c.type==='hold'?'hold':'idle'});}return true;}
  if(!('target' in c))return false;
  const target=c.type==='gather'?s.resources.find(e=>e.id===c.target&&e.amount>0):s.entities.find(e=>e.id===c.target&&alive(e));
- if(!target||!isVisible(s,side,target.x,target.y,levelOf(target)))return false;
- if(c.type==='attack'){if(!('side' in target)||!isHostile(s,target.side,side))return false;return units.filter(e=>sameLevel(e,target)).reduce((accepted,e)=>commandOrder(s,e,{type:'attack',target:target.id},c.queued)||accepted,false);}
+ if(!target||!isVisible(s,side,target.x,target.y,levelOf(target))||'side' in target&&!canObserveTacticalEntity(s,side,target))return false;
+ if(c.type==='attack'){if(!('side' in target)||!isHostile(s,target.side,side)&&!isCrewless(target))return false;for(const e of units)if(e.tactics){delete e.tactics.ambush;delete e.tactics.capture;if(e.tactics.formation)e.tactics.formation.phase='broken';}return units.filter(e=>sameLevel(e,target)).reduce((accepted,e)=>commandOrder(s,e,{type:'attack',target:target.id},c.queued)||accepted,false);}
  const workers=units.filter(e=>e.role==='worker'&&!economyUnitDefinition(s,e)&&sameLevel(e,target));if(!workers.length)return false;
  if(c.type==='repair'&&(!('side' in target)||!isAllied(s,target.side,side)||target.kind!=='building'||(target.hp>=target.maxHp&&target.progress>=1)))return false;
  return workers.reduce((accepted,e)=>commandOrder(s,e,{type:c.type==='gather'?'gather':'build',target:target.id},c.queued)||accepted,false);
@@ -291,10 +326,12 @@ function useAbility(s:GameState,e:Entity):boolean{
  }else if(ability==='raise'){
  const raisedDefinition=availableUnits(s,e.side).find(unit=>unit.role==='melee'&&definitionAllowed(s,e.side,unit.id));if(!raisedDefinition)return false;
  updatePopulation(s);let count=0;
- for(const corpse of [...s.corpses].sort((a,b)=>distance(e,a)-distance(e,b))){
+ const delivered=e.factionState?.deliveredCorpses??[];
+ for(const corpse of [...delivered,...s.corpses].sort((a,b)=>distance(e,a)-distance(e,b))){
  if(count>=2||s.players[e.side].population+reserved(s,e.side)>=s.players[e.side].cap)break;
- if(corpse.expires<=s.time||distance(e,corpse)>6||!isVisible(s,e.side,corpse.x,corpse.y,levelOf(corpse))||!walkable(s,corpse.x,corpse.y,levelOf(corpse)))continue;
- const raised=spawnEntity(s,e.side,'unit','melee',corpse.x,corpse.y,1,raisedDefinition.id,levelOf(corpse));raised.hp=raised.maxHp*.5;raised.raised=true;raised.expires=s.time+35;raised.order={type:'attackMove',x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level})};s.corpses=s.corpses.filter(c=>c.id!==corpse.id);count++;updatePopulation(s);
+ const cached=delivered.includes(corpse),point=cached?openDestination(s,{x:e.x+.7,y:e.y+.7,level:levelOf(e)},e):corpse;
+ if(corpse.expires<=s.time||!point||!cached&&(distance(e,corpse)>6||!isVisible(s,e.side,corpse.x,corpse.y,levelOf(corpse)))||!walkable(s,point.x,point.y,levelOf(point)))continue;
+ const raised=spawnEntity(s,e.side,'unit','melee',point.x,point.y,1,undefined,levelOf(point));raised.hp=raised.maxHp*.5;raised.raised=true;raised.expires=s.time+35;raised.order={type:'attackMove',x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level})};s.corpses=s.corpses.filter(c=>c.id!==corpse.id);if(e.factionState?.deliveredCorpses)e.factionState.deliveredCorpses=e.factionState.deliveredCorpses.filter(c=>c.id!==corpse.id);count++;updatePopulation(s);
  }
  if(!count)return false;runtime(s).abilities.set(e.id,s.time+22);
  }else if(ability==='illusion'){
@@ -337,7 +374,7 @@ function upgradeFactor(s:GameState,e:Entity,effect:'gather'|'speed'|'damage'):nu
 function movementSpeed(s:GameState,e:Entity):number{
  const terrain=terrainAt(s,e.x,e.y,levelOf(e));
  const terrainSpeed=factionFor(s,e.side).terrainSpeeds?.[terrain]??TERRAIN[terrain].speed;
- return unitDef(s,e).speed*progressionStats(s,e).speedFactor*terrainSpeed*environmentalMovementFactor(s,e)*upgradeFactor(s,e,'speed')*(e.illusion?1.08:1)*((e.surgeUntil??0)>s.time?1.25:1);
+ return unitDef(s,e).speed*progressionStats(s,e).speedFactor*terrainSpeed*environmentalMovementFactor(s,e)*upgradeFactor(s,e,'speed')*factionMovementFactor(e)*(e.illusion?1.08:1)*((e.surgeUntil??0)>s.time?1.25:1);
 }
 function move(s:GameState,e:Entity,to:Vec,dt:number,reach=.45):boolean{
  if(!sameLevel(e,to))return false;
@@ -355,21 +392,54 @@ function move(s:GameState,e:Entity,to:Vec,dt:number,reach=.45):boolean{
 }
 function emplaced(s:GameState,e:Entity):boolean{return e.entrenchedAt!==undefined&&s.time-e.entrenchedAt>=3;}
 function weaponRange(s:GameState,e:Entity):number{const range=e.kind==='building'?7:unitDef(s,e).range+progressionStats(s,e).range+(emplaced(s,e)&&e.role==='special'?3:0);return range+(range>2?highGroundRangeBonus(s,e):0);}
-function damage(s:GameState,a:Entity,b:Entity):void{
- const d=a.kind==='unit'?unitDef(s,a):null;const armor=(b.kind==='unit'?unitDef(s,b).armor:3)+progressionStats(s,b).armor+(emplaced(s,b)?2:0)+s.players[b.side].upgrades.reduce((sum,id)=>{const upgrade=upgradeFor(s,b.side,id);return sum+(b.kind==='unit'&&upgradeAppliesTo(upgrade,unitDef(s,b))?(upgrade.effects.armor??0):0);},0);
- const environment=projectileEnvironment(s,a,b),base=(d?d.damage*upgradeFactor(s,a,'damage')*progressionStats(s,a).damageFactor:19)*(1+relicBonus(s,a.side,a));const bonus=d?.ability==='momentum'?1+a.momentum*.40:emplaced(s,a)?1.15:1;const hit=Math.max(1,base*bonus*((d?.range??7)>2?environment.damageFactor*highGroundDamageFactor(s,a,b):1)*(b.kind==='building'?(d?.buildingDamageMultiplier??1):(d?.bonusAgainst?.[b.role as UnitRole]??1))-armor)*(a.illusion?.25:1);
- if(a.kind==='unit'&&a.role==='siege'){const shot=launchSpecialistShot(s,a,b,base*bonus);if(shot===false)return;if(shot){a.cooldown=d!.cooldown;a.animation='attack';a.animTime=0;return;}}
- a.cooldown=(d?.cooldown??1.4)/(d?.ability==='momentum'?1+a.momentum*.15:1);if(d?.ability==='momentum')a.momentum=Math.min(1,a.momentum+.15);a.animation='attack';a.animTime=0;const event=emit(s,'attack',a,b.id);runtime(s).hits.push({source:a,target:b,amount:hit,event});
+function targetRadius(s:GameState,target:CombatTarget):number{return isEntityTarget(target)?radius(s,target):0;}
+function targetDistance(s:GameState,at:Vec,target:CombatTarget):number {return isBridgeTarget(target)?Math.min(...target.tiles.map(tile=>distance(at,{x:tile%s.width+.5,y:Math.floor(tile/s.width)+.5,level:target.level}))):distance(at,target);}
+function targetPoint(s:GameState,source:Vec,target:CombatTarget):Vec {return isBridgeTarget(target)?target.tiles.map(tile=>({x:tile%s.width+.5,y:Math.floor(tile/s.width)+.5,level:target.level})).sort((a,b)=>distance(source,a)-distance(source,b))[0]:target;}
+function queueWeaponHit(s:GameState,a:Pick<Entity,'id'|'side'> & Vec & {elevation?:number;furyEligible?:boolean},b:CombatTarget,raw:number,ranged:boolean,crew=false,armorPiercing=false,weapon=true):void {
+ const entity=isEntityTarget(b),def=entity&&b.kind==='unit'?unitDef(s,b):undefined;
+ const armor=!entity||armorPiercing?0:(def?.armor??3)+progressionStats(s,b).armor+factionArmorBonus(s,b)+(emplaced(s,b)?2:0)+s.players[b.side].upgrades.reduce((sum,id)=>{const u=upgradeFor(s,b.side,id);return sum+(def&&upgradeAppliesTo(u,def)?u.effects.armor??0:0);},0);
+ const point=targetPoint(s,a,b),height=a.elevation===undefined?highGroundDamageFactor(s,a,point):1+.12*Math.max(0,Math.min(3,a.elevation-elevationAt(s,point))),environment=ranged?projectileEnvironment(s,a,point).damageFactor*height:1;
+ const flank=entity&&weapon?facingDamageFactor(a,b):1,cover=entity&&ranged&&weapon?rangedCoverFactor(s,a,b):1,event=emit(s,'attack',a,b.id),hit=Math.max(1,raw*environment*flank*cover-armor);
+ runtime(s).hits.push({source:{id:a.id,side:a.side,x:a.x,y:a.y,furyEligible:a.furyEligible??('kind' in a?(a as Entity).kind==='unit'&&!(a as Entity).illusion:'definitionId' in a),...(a.level===undefined?{}:{level:a.level})},target:b,amount:hit,event,crew,ranged});
 }
-function die(s:GameState,e:Entity,text?:string):void{if(e.animation==='death')return;onEconomyDeath(s,e,economyHooks);commanderDied(s,e);commanderArtifact(s,e);dropArtifacts(s,e);if(s.specialists)s.specialists.structures=s.specialists.structures.filter(item=>item.entityId!==e.id);if(e.kind==='building')refundQueue(s,e);if(e.kind==='unit'&&!e.illusion&&!e.raised)s.corpses.push({id:e.id,x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level}),expires:s.time+45});e.hp=0;e.animation='death';e.animTime=0;e.order={type:'idle'};delete e.orderQueue;runtime(s).queuedGather.delete(e.id);e.path=[];emit(s,'death',e,undefined,text);}
+function damage(s:GameState,a:Entity,b:CombatTarget):void {
+ if(!factionCanFire(s,a)||isCrewless(a)||!sameLevel(a,b))return;
+ const d=a.kind==='unit'?unitDef(s,a):null,base=(d?d.damage*upgradeFactor(s,a,'damage')*progressionStats(s,a).damageFactor:19)*(1+relicBonus(s,a.side,a)),bonus=d?.ability==='momentum'?1+a.momentum*.40:emplaced(s,a)?1.15:1;
+ const shelling=!a.illusion&&(a.role==='siege'||a.role==='special'&&d?.ability==='entrench'&&!!a.factionState?.artillery),raw=base*bonus*factionDamageFactor(s,a)*(a.illusion?.25:1),modification=a.factionState?.artillery,point=targetPoint(s,a,b);
+ if(shelling){
+  if(!specialistShotReady(s,a))return;
+  const shot=a.role==='siege'?launchSpecialistShot(s,a,{...b,...point},raw,modification):undefined;if(shot===false)return;
+  if(!shot){if(modification==='incendiary'){const p=s.players[a.side];if(p.wood<15||p.ore<5)return;p.wood-=15;p.ore-=5;}
+   (s.projectiles??=[]).push({id:s.nextId++,source:a.id,side:a.side,faction:a.definitionFaction??s.players[a.side].faction,from:{x:a.x,y:a.y,level:levelOf(a),elevation:elevationAt(s,a)},x:point.x,y:point.y,level:levelOf(point),damage:raw,buildingMultiplier:d?.buildingDamageMultiplier??1,impactAt:s.time+.25+distance(a,point)/12,radius:factionSplashRadius(a),modification});emit(s,'ability',a,b.id,'Siege shell launched');
+  }
+ }else{
+  const entity=isEntityTarget(b),building=isBridgeTarget(b)||entity&&b.kind==='building',impact=entity?cavalryImpact(s,a,b):{factor:1,pikeDamage:0},multiplier=building?(d?.buildingDamageMultiplier??1):entity?(d?.bonusAgainst?.[b.role as UnitRole]??1):1,crew=entity&&b.role==='siege'&&!isCrewless(b)&&(d?.range??7)<=2.2;
+  queueWeaponHit(s,a,b,raw*multiplier*impact.factor*(modification==='stone'&&building?1.25:modification==='grapeshot'&&!building?1.5:1),(d?.range??7)>2.2,crew);
+  if(impact.pikeDamage>0&&entity){queueWeaponHit(s,b,a,impact.pikeDamage,false);emit(s,'message',a,b.id,'Charge stopped by braced pikes');}
+ }
+ a.cooldown=(d?.cooldown??1.4)/(d?.ability==='momentum'?1+a.momentum*.15:1);if(d?.ability==='momentum')a.momentum=Math.min(1,a.momentum+.15);a.animation='attack';a.animTime=0;
+}
+function resolveProjectiles(s:GameState):void {
+ const pending:NonNullable<GameState['projectiles']>=[],friendlyFire=(s as GameState & {rules?:{friendlyFire?:boolean}}).rules?.friendlyFire??s.friendlyFire??true;
+ for(const shell of s.projectiles??[]){if(shell.impactAt>s.time){pending.push(shell);continue;}
+  const source={id:shell.source,side:shell.side,...shell.from,furyEligible:true};
+  for(const target of combatTargets(s)){const entity=isEntityTarget(target),building=isBridgeTarget(target)||entity&&target.kind==='building',range=targetDistance(s,shell,target);
+   if(target.hp<=0||!sameLevel(shell,target)||range>shell.radius+targetRadius(s,target)||!friendlyFire&&entity&&isAllied(s,shell.side,target.side)&&!isCrewless(target))continue;
+   queueWeaponHit(s,source,target,shell.damage*(shell.modification==='stone'&&building?1.25:shell.modification==='grapeshot'&&!building?1.5:1)*(building?shell.buildingMultiplier:1)*(1-.4*Math.min(1,range/shell.radius)),true);
+  }
+  if(shell.modification==='incendiary')igniteWorldAt(s,shell,{id:shell.source,side:shell.side});emit(s,'ability',{id:shell.source,side:shell.side,x:shell.x,y:shell.y,level:levelOf(shell)},undefined,'Siege impact');
+ }
+ s.projectiles=pending;
+}
+function die(s:GameState,e:Entity,text?:string):void{if(e.animation==='death')return;onEconomyDeath(s,e,economyHooks);for(const body of [...e.factionState?.corpseCargo??[],...e.factionState?.deliveredCorpses??[]])if(body.expires>s.time)s.corpses.push({...body,x:e.x,y:e.y,level:e.level});if(e.factionState){delete e.factionState.corpseCargo;delete e.factionState.deliveredCorpses;}recordFactionDeath(s,e);recordTacticsDeath(s,e);commanderDied(s,e);commanderArtifact(s,e);dropArtifacts(s,e);if(s.specialists)s.specialists.structures=s.specialists.structures.filter(item=>item.entityId!==e.id);if(e.kind==='building')refundQueue(s,e);if(e.kind==='unit'&&!e.illusion&&!e.raised)s.corpses.push({id:e.id,x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level}),expires:s.time+45});e.hp=0;e.animation='death';e.animTime=0;e.order={type:'idle'};delete e.orderQueue;runtime(s).queuedGather.delete(e.id);e.path=[];emit(s,'death',e,undefined,text);}
 function enemy(s:GameState,e:Entity,max:number,onlyInRange=false):Entity|undefined{
- let best:Entity|undefined,bestDist=Infinity;for(const b of s.entities){if(!alive(b)||!isHostile(s,b.side,e.side)||!isVisible(s,e.side,b.x,b.y,levelOf(b))||onlyInRange&&!near(s,e,b,max))continue;const d=distance(e,b)-radius(s,b);if(d<=max&&(d<bestDist||best?.kind==='building'&&b.kind==='unit')){best=b;bestDist=d;}}return best;
+ let best:Entity|undefined,bestDist=Infinity;for(const b of s.entities){if(!alive(b)||!isHostile(s,b.side,e.side)||isCrewless(b)||!canObserveTacticalEntity(s,e.side,b)||onlyInRange&&!near(s,e,b,max))continue;const d=distance(e,b)-radius(s,b);if(d<=max&&(d<bestDist||best?.kind==='building'&&b.kind==='unit')){best=b;bestDist=d;}}return best;
 }
-function fight(s:GameState,e:Entity,b:Entity,dt:number):void{const range=weaponRange(s,e)*((e.kind==='building'||unitDef(s,e).range>2)?projectileEnvironment(s,e,b).rangeFactor:1);if(!sameLevel(e,b))return;if(near(s,e,b,range)&&terrainLineOfSight(s,e,b)){e.facing=facing8(b.x-e.x,b.y-e.y);if(e.cooldown<=0)damage(s,e,b);}else if(e.kind==='unit')move(s,e,b,dt,range+(b.kind==='building'?radius(s,b):0)-.1);}
+function fight(s:GameState,e:Entity,b:Entity,dt:number):void{if(!factionCanFire(s,e))return;const range=weaponRange(s,e)*((e.kind==='building'||unitDef(s,e).range>2)?projectileEnvironment(s,e,b).rangeFactor:1);if(!sameLevel(e,b))return;if(near(s,e,b,range)&&terrainLineOfSight(s,e,b)){if(e.order.type!=='hold'&&e.tactics?.formation?.phase!=='formed')e.facing=facing8(b.x-e.x,b.y-e.y);if(e.cooldown<=0)damage(s,e,b);}else if(e.kind==='unit')move(s,e,b,dt,range+(b.kind==='building'?radius(s,b):0)-.1);}
 function gather(s:GameState,e:Entity,target:number,dt:number):void{
  const node=s.resources.find(n=>n.id===target&&sameLevel(n,e));const rt=runtime(s),finite=rt.queuedGather.has(e.id)||!!e.orderQueue?.length;if(e.carried>=18||node?.amount===0&&e.carried>0||finite&&(!node||node.amount<=0)&&e.carried>0)rt.returning.add(e.id);
  if(rt.returning.has(e.id)){
- const depot=economyGatherDepot(s,e)??s.entities.filter(b=>b.side===e.side&&sameLevel(b,e)&&alive(b)&&b.kind==='building'&&b.progress===1&&(b.role==='hq'||b.role==='depot')).sort((a,b)=>distance(e,a)-distance(e,b))[0];
+ const depot=economyGatherDepot(s,e)??s.entities.filter(b=>b.side===e.side&&sameLevel(b,e)&&alive(b)&&b.kind==='building'&&b.progress===1&&(b.role==='hq'||b.role==='depot'&&b.definitionId!==TROPHY_STANDARD.id)).sort((a,b)=>distance(e,a)-distance(e,b))[0];
  if(!depot){finishOrder(s,e);return;}if(near(s,e,depot,1.1)){const accepted=depositEconomyGather(s,e,depot,e.carried),income=accepted*s.incomeFactors[e.side];if(accepted>0){const deposit=emit(s,'gather',e,depot.id);deposit.amount=income;deposit.resource=e.carriedKind;}e.carried=Math.max(0,e.carried-accepted);if(e.carried===0)rt.returning.delete(e.id);if(e.carried===0&&finite&&(!node||node.amount<=0))finishOrder(s,e);}else move(s,e,depot,dt,radius(s,depot)+1);return;
  }
  if(!node||node.amount<=0){if(finite){finishOrder(s,e);return;}const next=s.resources.filter(n=>n.amount>0&&sameLevel(n,e)&&n.kind===(node?.kind??e.carriedKind)&&isVisible(s,e.side,n.x,n.y,levelOf(n))).sort((a,b)=>distance(e,a)-distance(e,b))[0];assign(s,e,next?{type:'gather',target:next.id}:{type:'idle'});return;}
@@ -391,18 +461,28 @@ function production(s:GameState,e:Entity,dt:number):void{
  const u=spawnEntity(s,e.side,'unit',role,point.x,point.y,1,e.queueDefinitionIds?.[0],levelOf(e));recordEconomyPaid(s,u,e.queuePaidCosts?.[0]??d.cost);if(role!=='worker')runtime(s).producedFighters[e.side]++;e.trainProgress=0;e.queue.shift();e.queueDefinitionIds?.shift();e.queuePaidCosts?.shift();emit(s,'train',u);updatePopulation(s);if(e.rally)issueCommand(s,e.side,{type:'move',ids:[u.id],...e.rally});
 }
 function separateUnits(s:GameState):void{
- const units=s.entities.filter(e=>e.kind==='unit'&&alive(e));for(let i=0;i<units.length;i++)for(let j=i+1;j<units.length;j++){const a=units[i],b=units[j],d=distance(a,b);if(d>=.58)continue;const dx=d>.001?(a.x-b.x)/d:(a.id%2?1:-1),dy=d>.001?(a.y-b.y)/d:.3,push=(.58-d)*.22;const ax=a.x+dx*push,ay=a.y+dy*push,bx=b.x-dx*push,by=b.y-dy*push;if(walkable(s,ax,ay,levelOf(a))){a.x=ax;a.y=ay;}if(walkable(s,bx,by,levelOf(b))){b.x=bx;b.y=by;}}
+ const units=s.entities.filter(e=>e.kind==='unit'&&alive(e));for(let i=0;i<units.length;i++)for(let j=i+1;j<units.length;j++){const a=units[i],b=units[j],d=distance(a,b);if(d>=.58)continue;const dx=d>.001?(a.x-b.x)/d:(a.id%2?1:-1),dy=d>.001?(a.y-b.y)/d:.3,push=(.58-d)*.22;const ax=a.x+dx*push,ay=a.y+dy*push,bx=b.x-dx*push,by=b.y-dy*push;if(!isCrewless(a)&&walkable(s,ax,ay,levelOf(a))){a.x=ax;a.y=ay;}if(!isCrewless(b)&&walkable(s,bx,by,levelOf(b))){b.x=bx;b.y=by;}}
 }
 // Units alive at the beginning of this step finish their attacks together.
 // This prevents entity-array order from cancelling the other side's lethal hit.
 function resolveHits(s:GameState):void{
- const groups=new Map<Entity,Runtime['hits']>();
+ const groups=new Map<CombatTarget,Runtime['hits']>(),livingSources=new Set(s.entities.filter(e=>e.hp>0).map(e=>e.id));
  for(const hit of runtime(s).hits){const group=groups.get(hit.target)??[];group.push(hit);groups.set(hit.target,group);}
- for(const [target,hits] of groups){if(!alive(target))continue;const total=hits.reduce((n,h)=>n+h.amount,0),absorbed=Math.min(target.shield??0,total),actual=Math.min(target.hp,total-absorbed)+absorbed;target.shield=Math.max(0,(target.shield??0)-absorbed);target.hp=Math.max(0,target.hp-(total-absorbed));target.lastDamagedAt=s.time;
-  for(const hit of hits){hit.event.amount=total?actual*hit.amount/total:0;const attacker=s.entities.find(e=>e.id===hit.source.id);if(attacker&&attacker.side===hit.source.side)creditCombat(s,attacker,target,hit.event.amount);}
-  if(actual>0&&hits.some(hit=>{const source=s.entities.find(e=>e.id===hit.source.id);return (hit.event.amount??0)>0&&s.teams[hit.source.side]!==s.teams[target.side]&&(!source||!source.illusion&&!source.raised);}))recordCombatExposure(s,target);
-  target.lastAttacker=hits.reduce((best,h)=>h.amount>best.amount?h:best).source.id;
-  if(target.hp===0){const killer=s.entities.find(e=>e.id===target.lastAttacker);if(killer&&killer.side===hits.reduce((best,h)=>h.amount>best.amount?h:best).source.side)creditCombat(s,killer,target,0,true);die(s,target);}
+ const credit=(source:Pick<Entity,'id'|'side'> & {furyEligible?:boolean},target:CombatTarget,amount:number,killed=false)=>{const actor=s.entities.find(e=>e.id===source.id&&e.side===source.side);if((!isEntityTarget(target)||isHostile(s,source.side,target.side))&&(actor||source.furyEligible))recordFactionDamage(s,actor??{kind:'unit',side:source.side,illusion:false} as Entity,amount);if(actor&&isEntityTarget(target))creditCombat(s,actor,target,amount,killed,livingSources.has(actor.id));};
+ for(const [target,hits] of [...groups].sort((a,b)=>a[0].id-b[0].id)){
+  if(target.hp<=0)continue;
+  if(!isEntityTarget(target)){const total=hits.reduce((n,h)=>n+h.amount,0),actual=Math.min(target.hp,total);target.hp=Math.max(0,target.hp-total);for(const hit of hits){hit.event.amount=total?actual*hit.amount/total:0;credit(hit.source,target,hit.event.amount);}
+   if(target.hp===0){const killer=hits.reduce((best,h)=>h.amount>best.amount?h:best).source;if(isBridgeTarget(target))collapseBridge(s,target,killer.side,{move:(actor,to,dt,reach)=>move(s,actor,to,dt,reach),finish:actor=>finishOrder(s,actor),interrupt:actor=>interruptWorldOrder(s,actor),die:(actor,text)=>die(s,actor,text)});else defeatCreature(s,target,killer.side);}continue;
+  }
+  if(target.kind==='unit')initializeTactics(s,target);const crew=target.tactics?.siegeCrew,crewHits=crew&&!crew.uncrewed?hits.filter(hit=>hit.crew):[],engineHits=hits.filter(hit=>!crewHits.includes(hit));
+  const crewDamage=crewHits.reduce((n,h)=>n+h.amount,0);
+  if(crew&&crewDamage>0){const actual=Math.min(crew.hp,crewDamage);for(const hit of crewHits){hit.event.amount=actual*hit.amount/crewDamage;credit(hit.source,target,hit.event.amount);}crew.hp=Math.max(0,crew.hp-crewDamage);if(crew.hp===0){crew.uncrewed=true;target.order={type:'idle'};target.path=[];delete target.orderQueue;delete target.tactics!.formation;delete target.tactics!.capture;delete target.tactics!.ambush;emit(s,'message',target,undefined,'Siege crew defeated: engine uncrewed');}}
+  for(const hit of engineHits){const protection=hit.ranged?interceptDirectionalShield(s,hit.source,target,hit.amount):{remaining:hit.amount,intercepted:[]};hit.amount=protection.remaining;for(const interception of protection.intercepted){const event=emit(s,'attack',hit.source,interception.bearer.id,'Shield intercepted shot');event.amount=interception.amount;credit(hit.source,interception.bearer,interception.amount);recordCombatExposure(s,interception.bearer);}}
+  const total=engineHits.reduce((n,h)=>n+h.amount,0),networkAbsorbed=absorbFactionShield(s,target,total),ownAbsorbed=Math.min(target.shield??0,total-networkAbsorbed),absorbed=networkAbsorbed+ownAbsorbed,actual=Math.min(target.hp,total-absorbed)+absorbed;
+  target.shield=Math.max(0,(target.shield??0)-ownAbsorbed);target.hp=Math.max(0,target.hp-(total-absorbed));if(total||crewDamage)target.lastDamagedAt=s.time;
+  for(const hit of engineHits){hit.event.amount=total?actual*hit.amount/total:0;credit(hit.source,target,hit.event.amount);}
+  if(actual>0&&engineHits.some(hit=>(hit.event.amount??0)>0&&isHostile(s,hit.source.side,target.side)&&(()=>{const actor=s.entities.find(e=>e.id===hit.source.id&&e.side===hit.source.side);return !actor||!actor.illusion&&!actor.raised;})()))recordCombatExposure(s,target);
+  recordTacticsDamage(s,target,total-absorbed);if(total||crewDamage){const killer=hits.reduce((best,h)=>h.amount>best.amount?h:best).source;target.lastAttacker=killer.id;if(target.hp===0){credit(killer,target,0,true);die(s,target);}}
  }
  if(s.rules.standardDefeat){
  s.eliminated=playerSides(s).map(side=>!s.entities.some(e=>e.side===side&&e.role==='hq'&&alive(e)&&e.progress===1));
@@ -425,13 +505,8 @@ function neutralHooks(s:GameState){return {
  recruitCost:(side:Side,role:UnitRole)=>unitFor(s,side,role).cost,
  move:(actor:Entity|NeutralCreature,to:Vec,dt:number,reach:number)=>moveNeutral(s,actor,to,dt,reach),
  spawn:(side:Side,role:UnitRole,x:number,y:number,level:number)=>{const definition=unitFor(s,side,role);if(!definitionAllowed(s,side,definition.id))return undefined;const point=openDestination(s,{x,y,level},{x,y,level});if(!point)return undefined;return spawnEntity(s,side,'unit',role,point.x,point.y,1,definition.id,level);},
- hit:(source:Entity|NeutralCreature,target:Entity|NeutralCreature,amount:number)=>{
-  if('side' in source){const def=unitDef(s,source);amount*=1+relicBonus(s,source.side,source);if(def.range>2)amount*=projectileEnvironment(s,source,target).damageFactor*highGroundDamageFactor(s,source,target);}
-  if('side' in target){const armor=(target.kind==='unit'?unitDef(s,target).armor:3)+progressionStats(s,target).armor;amount=Math.max(1,amount-armor);}const shield='shield' in target?Math.min(target.shield??0,amount):0,actual=Math.min(target.hp,amount-shield)+shield;
-  if('shield' in target)target.shield=Math.max(0,(target.shield??0)-shield);target.hp=Math.max(0,target.hp-(amount-shield));
-  if('side' in target){target.lastDamagedAt=s.time;target.lastAttacker=source.id;}const side='side' in source?source.side:'side' in target?target.side:0;
-  s.events.push({type:'attack' as const,side,x:source.x,y:source.y,level:levelOf(source),source:source.id,target:target.id,amount:actual});if('side' in target&&target.hp===0)die(s,target);
- },
+ hit:(source:Entity|NeutralCreature,target:Entity|NeutralCreature,_amount:number)=>{if('side' in source){damage(s,source,target);return;}if('side' in target)queueWeaponHit(s,{id:source.id,side:target.side,x:source.x,y:source.y,level:source.level},target,_amount,false);},
+ attack:(source:Entity,target:NeutralCreature)=>damage(s,source,target),
  lineOfSight:(from:Vec,to:Vec)=>terrainLineOfSight(s,from,to),
 };}
 export function stepGame(s:GameState,dt:number):void{
@@ -455,29 +530,32 @@ function applyStep(s:GameState,dt:number):void{
  if(s.rules.mode==='annihilation'&&(due.size||rt.teamAI.coordinator.waves.length))runTeamCoordination(s);
  for(const actor of s.entities)if(alive(actor)&&actor.specialistBuffs?.some(buff=>buff.until>s.time&&buff.fearedFrom)&&economyEntityBusy(s,actor))interruptWorldOrder(s,actor);
  const economicActors=new Set(economicState(s)?.tasks.map(task=>task.entityId));
+ stepFactionSystems(s,dt,factionHooks(s));
  tickEconomy(s,dt,economyHooks);
  for(const e of [...s.entities]){
  e.animTime+=dt;if(!alive(e)){if(e.kind==='building')refundQueue(s,e);continue;}if(e.expires&&s.time>=e.expires){die(s,e);continue;}e.cooldown=Math.max(0,e.cooldown-dt);if(e.animation!=='attack'||e.animTime>.4)e.animation='idle';e.momentum=Math.max(0,e.momentum-dt*.014);
  if(e.kind==='building'){if(e.progress===1&&buildingDef(s,e).ability==='heal')for(const ally of s.entities)if(isAllied(s,ally.side,e.side)&&alive(ally)&&ally.kind==='unit'&&!ally.illusion&&distance(ally,e)<6)ally.hp=Math.min(ally.maxHp,ally.hp+dt*2.5);if(e.research){e.researchProgress+=dt*economyResearchFactor(s,e)/upgradeFor(s,e.side,e.research).researchTime;if(e.researchProgress>=1)finishResearch(s,e);}production(s,e,dt);if(e.role==='tower'&&e.progress===1&&!buildingDef(s,e).tags?.includes('beacon')){const b=enemy(s,e,7);if(b)fight(s,e,b,dt);}continue;}
- const d=unitDef(s,e);
+ const d=unitDef(s,e),before={x:e.x,y:e.y,level:levelOf(e)};if(stepFactionActor(s,e,dt,factionHooks(s)))continue;ageCharge(s,e,dt);
+ const previousSide=e.side,tactics=updateTactics(s,e,dt);if(e.side!==previousSide)dropArtifacts(s,e);if(tactics.retreat){movementOrder(s,e,tactics.retreat,dt,1);updateCharge(s,e,before,dt);continue;}if(tactics.skipCombat)continue;
+ const capture=updateSiegeCapture(s,e,dt);if(capture.complete&&capture.target)dropArtifacts(s,capture.target);if(capture.target&&!capture.complete){if(distance(e,capture.target)>1.3)move(s,e,capture.target,dt,1.2);updateCharge(s,e,before,dt);continue;}
  if(e.maxShield&&s.time-(e.lastDamagedAt??-6)>=6)e.shield=Math.min(e.maxShield,(e.shield??0)+4*dt);
  if(!e.illusion&&(d.ability==='raise'||d.ability==='ward'))useAbility(s,e);
  const feared=e.specialistBuffs?.find(buff=>buff.until>s.time&&buff.fearedFrom)?.fearedFrom;if(feared){const dx=e.x-feared.x,dy=e.y-feared.y,len=length2D(dx,dy)||1;move(s,e,{x:clamp(e.x+dx/len*3,.6,s.width-.6),y:clamp(e.y+dy/len*3,.6,s.height-.6),level:levelOf(e)},dt,.1);continue;}
  if(economicActors.has(e.id))continue;
  if(economyUnitDefinition(s,e)&&e.order.type!=='move'&&e.order.type!=='traverse'){if(e.order.type!=='idle')finishOrder(s,e);continue;}
  const o=e.order;
- if(processWorldAction(s,e,dt,{move:(actor,to,delta,reach)=>move(s,actor,to,delta,reach),finish:actor=>finishOrder(s,actor),interrupt:actor=>interruptWorldOrder(s,actor),die:(actor,text)=>die(s,actor,text)}))continue;
+ if(processWorldAction(s,e,dt,{attack:(actor,target)=>damage(s,actor,target),range:(actor,target)=>weaponRange(s,actor)*projectileEnvironment(s,actor,targetPoint(s,actor,target)).rangeFactor,move:(actor,to,delta,reach)=>move(s,actor,to,delta,reach),finish:actor=>finishOrder(s,actor),interrupt:actor=>interruptWorldOrder(s,actor),die:(actor,text)=>die(s,actor,text)}))continue;
  if(processNeutralOrder(s,e,dt,neutralHooks(s)))continue;
  if(economyUnitDefinition(s,e)&&o.type!=='move')continue;
  // Holding units defend within weapon range without pursuing beyond their position.
  if(o.type==='hold'){const b=enemy(s,e,weaponRange(s,e),true);if(b&&near(s,e,b,weaponRange(s,e))){fight(s,e,b,dt);if(!e.illusion&&(d.ability==='illusion'||d.ability==='heal'||d.ability==='surge'&&s.entities.some(a=>isAllied(s,a.side,e.side)&&alive(a)&&a.kind==='unit'&&a.hp<=a.maxHp-15&&distance(e,a)<5)))useAbility(s,e);}continue;}
- if(o.type==='gather'){gather(s,e,o.target,dt);continue;}if(o.type==='build'){construct(s,e,o.target,dt);continue;}if(o.type==='move'){if(movementOrder(s,e,o,dt,.5))finishOrder(s,e);continue;}
- if(o.type==='attack'){const b=s.entities.find(b=>b.id===o.target&&alive(b)&&isHostile(s,b.side,e.side));if(!b||!sameLevel(e,b)||!isVisible(s,e.side,b.x,b.y,levelOf(b))){finishOrder(s,e);continue;}fight(s,e,b,dt);continue;}
- const b=enemy(s,e,d.role==='worker'?2:Math.min(d.sight,7));if(b){fight(s,e,b,dt);if(!e.illusion&&(d.ability==='illusion'||d.ability==='heal'||d.ability==='surge'&&s.entities.some(a=>isAllied(s,a.side,e.side)&&alive(a)&&a.kind==='unit'&&a.hp<=a.maxHp-15&&distance(e,a)<5)))useAbility(s,e);}else if(o.type==='attackMove'&&movementOrder(s,e,o,dt,.65))finishOrder(s,e);
+ if(o.type==='gather'){gather(s,e,o.target,dt);continue;}if(o.type==='build'){construct(s,e,o.target,dt);continue;}if(o.type==='move'){if(movementOrder(s,e,o,dt,.5)){if(e.tactics?.formation){e.tactics.formation.phase='formed';e.facing=e.tactics.formation.facing;assign(s,e,{type:'hold'});}else finishOrder(s,e);}updateCharge(s,e,before,dt);continue;}
+ if(o.type==='attack'){const b=s.entities.find(b=>b.id===o.target&&alive(b)&&(isHostile(s,b.side,e.side)||isCrewless(b)));if(!b||!sameLevel(e,b)||!canObserveTacticalEntity(s,e.side,b)){finishOrder(s,e);continue;}fight(s,e,b,dt);updateCharge(s,e,before,dt);continue;}
+ const b=enemy(s,e,d.role==='worker'?2:Math.min(d.sight,7));if(b){fight(s,e,b,dt);if(!e.illusion&&(d.ability==='illusion'||d.ability==='heal'||d.ability==='surge'&&s.entities.some(a=>isAllied(s,a.side,e.side)&&alive(a)&&a.kind==='unit'&&a.hp<=a.maxHp-15&&distance(e,a)<5)))useAbility(s,e);}else if(o.type==='attackMove'&&movementOrder(s,e,o,dt,.65))finishOrder(s,e);updateCharge(s,e,before,dt);
  }
  stepWorldActions(s);
  stepNeutralWorld(s,dt,neutralHooks(s));
- resolveHits(s);updateBeacons(s);
+ resolveProjectiles(s);resolveHits(s);updateBeacons(s);refreshFormations(s);
  for(const actor of s.entities)if(!alive(actor))onEconomyDeath(s,actor,economyHooks);
  s.corpses=s.corpses.filter(c=>c.expires>s.time);
  separateUnits(s);s.entities=s.entities.filter(e=>alive(e)||e.animTime<1.2);updatePopulation(s);pruneTeamAssignments(s);evaluateObjectives(s,{spawn:spawnEntity,command:issueCommand});
@@ -672,7 +750,7 @@ export function runAI(s:GameState,side:Side=1):void{
  if(hq.progress===1&&!hq.research&&workers.length>=7&&(config.personality!=='rush'||s.time>100))for(const id of researchPlan){const u=UPGRADES[id];if(u.building==='hq'&&!researchRequirement(s,side,id)&&p.wood>=u.cost.wood+120&&p.ore>=u.cost.ore+80&&p.crystal>=u.cost.crystal){issueCommand(s,side,{type:'research',id:hq.id,upgrade:id});break;}}
  // Claim an observed outer deposit with a new production/drop-off center.
  if(age>=2&&workers.length>=profile.expansionWorkers&&buildings.filter(b=>b.role==='hq').length<2&&!workers.some(w=>w.order.type==='build')&&p.wood>=(config.personality==='expand'?340:400)&&p.ore>=(config.personality==='expand'?160:220)&&(!coordinatedAiTeam(s,side)||rt.teamAI.coordinator.reservations.some(r=>r.side===side&&r.role==='expand'))){
-  const deposit=available.filter(n=>n.amount>300&&distance(n,hq)>14&&!s.entities.some(b=>alive(b)&&isAllied(s,side,b.side)&&(b.side===side||isVisible(s,side,b.x,b.y))&&(b.role==='hq'||b.role==='depot')&&distance(b,n)<8)).sort((a,b)=>distance(a,hq)-distance(b,hq))[0];
+  const deposit=available.filter(n=>n.amount>300&&distance(n,hq)>14&&!s.entities.some(b=>alive(b)&&isAllied(s,side,b.side)&&(b.side===side||isVisible(s,side,b.x,b.y))&&(b.role==='hq'||b.role==='depot'&&b.definitionId!==TROPHY_STANDARD.id)&&distance(b,n)<8)).sort((a,b)=>distance(a,hq)-distance(b,hq))[0];
   if(deposit){const builder=workers.filter(w=>w.order.type==='gather'||w.order.type==='idle').sort((a,b)=>distance(a,deposit)-distance(b,deposit))[0];
    if(builder){let placed=false;for(let r=4;r<=7&&!placed;r++)for(let i=0;i<24&&!placed;i+=2){const [dx,dy]=DIRECTIONS_24[i],x=Math.floor(deposit.x+dx*r)+.5,y=Math.floor(deposit.y+dy*r)+.5;if(canPlace(s,side,'hq',x,y))placed=issueCommand(s,side,{type:'build',ids:[builder.id],role:'hq',x,y});}}
   }
@@ -779,5 +857,5 @@ export function applyScenarioDamage(s:GameState,source:Entity,target:Entity,amou
 /** Constructor for validated deterministic systems; the caller charges costs and checks rules. */
 export function spawnDefinition(s:GameState,side:Side,kind:Entity['kind'],definitionId:string,x:number,y:number,progress=1,level?:number):Entity {const d=kind==='unit'?availableUnits(s,side).find(d=>d.id===definitionId):availableBuildings(s,side).find(d=>d.id===definitionId);if(!d)throw new Error('Definition is absent from player content.');return spawnEntity(s,side,kind,d.role,x,y,progress,definitionId,level??0);}
 
-function specialistHooks(s:GameState):SpecialistHooks {return {interrupt:actor=>interruptWorldOrder(s,actor),recordPaid:(actor,cost)=>recordEconomyPaid(s,actor,cost),die:(actor,text)=>die(s,actor,text),spawn:(...args)=>spawnDefinition(s,...args),setTerrain:(point,kind)=>setWorldTerrain(s,point,kind),damage:(source,target,raw,options)=>{if(target.hp<=0)return;if(options?.ranged)raw*=projectileEnvironment(s,source,target).damageFactor*highGroundDamageFactor(s,source,target);const def=target.kind==='unit'?unitFor(s,target):undefined,armor=options?.armorPiercing?0:(def?.armor??3)+progressionStats(s,target).armor+(emplaced(s,target)?2:0)+s.players[target.side].upgrades.reduce((sum,id)=>{const u=upgradeFor(s,target.side,id);return sum+(def&&upgradeAppliesTo(u,def)?u.effects.armor??0:0);},0),event=emit(s,'attack',source,target.id);runtime(s).hits.push({source,target,amount:Math.max(1,raw-armor),event});}};}
+function specialistHooks(s:GameState):SpecialistHooks {return {interrupt:actor=>interruptWorldOrder(s,actor),recordPaid:(actor,cost)=>recordEconomyPaid(s,actor,cost),die:(actor,text)=>die(s,actor,text),spawn:(...args)=>spawnDefinition(s,...args),setTerrain:(point,kind)=>setWorldTerrain(s,point,kind),impactTargets:()=>combatTargets(s),targetDistance:(at,target)=>targetDistance(s,at,target),ignite:(point,source)=>{igniteWorldAt(s,point,source);},damage:(source,target,raw,options)=>{if(target.hp<=0)return;queueWeaponHit(s,source,target,raw,!!options?.ranged,false,!!options?.armorPiercing,!!options?.ranged);}};}
 const economyHooks:EconomyHooks={visible:(s,side,p)=>isVisible(s,side,p.x,p.y,p.level??0),allied:isAllied,spawn:spawnEntity,die,assign,invalidateNavigation,move,canPlace:(s,side,x,y,level)=>canPlace(s,side,'depot',x,y,'economy:warehouse',level),radius,buildingDef,unitDef};

@@ -158,15 +158,16 @@ function validateShots(s:GameState,state:RecordValue):void {
  const counter=state.nextShotId===undefined?1:number(state.nextShotId,'state.specialists.nextShotId',1,MAX_ID,true),ids=new Set<number>();
  if(state.shots===undefined)return;
  list(state.shots,'state.specialists.shots',MAX_RECORDS).forEach((value,i)=>{
-  const p=`state.specialists.shots[${i}]`,shot=object(value,p,['id','source','target','impactAt','rawDamage','buildingMultiplier','payload']);
+  const p=`state.specialists.shots[${i}]`,shot=object(value,p,['id','source','target','impactAt','rawDamage','buildingMultiplier','payload'],['modification']);
   const id=number(shot.id,`${p}.id`,1,counter-1,true);if(ids.has(id))bad(`${p}.id`,'duplicate siege shot id');ids.add(id);
-  const source=position(shot.source,`${p}.source`,s,['id','side','definitionId','faction']);
+  const source=position(shot.source,`${p}.source`,s,['id','side','definitionId','faction'],['elevation']);
   number(source.id,`${p}.source.id`,1,s.nextId-1,true);number(source.side,`${p}.source.side`,0,s.players.length-1,true);
   choice(source.faction,`${p}.source.faction`,Object.keys(contentFactions(s.content)));
   if(typeof source.definitionId!=='string'||source.definitionId.length>100)bad(`${p}.source.definitionId`,'invalid definition ID');
   let ability:string|undefined;
   try {ability=unitFor(s,{...source,kind:'unit',role:'siege',definitionFaction:source.faction} as unknown as Entity).ability;}
   catch {bad(`${p}.source.definitionId`,'shot source must resolve a siege definition in its original faction');}
+  if(source.elevation!==undefined)number(source.elevation,`${p}.source.elevation`,0,3);if(shot.modification!==undefined)choice(shot.modification,`${p}.modification`,['stone','grapeshot','incendiary','reinforced']);
   const target=position(shot.target,`${p}.target`,s);if((target.level??0)!==(source.level??0))bad(`${p}.target.level`,'siege shots cannot cross world levels');number(shot.impactAt,`${p}.impactAt`,0,s.time+30);
   number(shot.rawDamage,`${p}.rawDamage`,0,1e9);number(shot.buildingMultiplier,`${p}.buildingMultiplier`,.1,10);
   const payload=object(shot.payload,`${p}.payload`,['kind','damageFactor','armorPiercing','radius']),kind=choice(payload.kind,`${p}.payload.kind`,['incendiary','rooting','corpse','flood','beam','cannon']);

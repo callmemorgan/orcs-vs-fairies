@@ -1,6 +1,8 @@
 import { mountEconomyTools } from './ui/EconomyTools';
 import { observeEconomy } from './core/economy';
 import { isVisible } from './core/simulation';
+import { mountTacticsTools } from './ui/TacticsTools';
+import { mountFactionTools } from './ui/FactionTools';
 import Phaser from 'phaser';
 import GameScene, { project, unproject } from './game/GameScene';
 import { createPerformanceGame, countPerformanceUnits, FrameCollector, PERFORMANCE_CENTER } from './qa/performance';
@@ -201,6 +203,7 @@ function launch(state:GameState,history?:ReplayArchive,playback?:ReplayPlayer,re
  if(game||retiring){retireGame(()=>launch(state,history,playback,remote,generation,planningData,inspectionReason));return;}
  if(onlineConnection!==remote?.connection){onlineConnection?.dispose();onlineConnection=remote?.connection;onlineRender=remote?.render;}
  if(remote&&onlineConnecting===remote.connection)onlineConnecting=undefined;
+ tacticTools.close();factionTools.close();
  recorder?.dispose();replay?.dispose();replay=playback;recorder=playback||remote||inspectionReason?undefined:new MatchRecorder(state,history);
  faction=state.players[0].faction;opponent=state.players[1]?.faction??faction;lastAutosaveTime=state.time;autosaveFailure=false;
  replayPlaying=false;replayAccumulated=0;replayClock=performance.now();shell.showGame();
@@ -364,6 +367,10 @@ function alignToolPanels(){root.style.setProperty('--tool-panel-top',`${Math.max
 new ResizeObserver(alignToolPanels).observe(sessionToolbar);
 new MutationObserver(alignToolPanels).observe(sessionToolbar.parentElement!,{attributes:true,attributeFilter:['class']});
 window.addEventListener('resize',alignToolPanels);alignToolPanels();
+const tacticTools=mountTacticsTools(root,{toolbar:sessionToolbar,state:()=>scene?.state??null,selected:()=>scene?.selected??[],side:playerSide,enabled:()=>scene?.canIssueCommands??false,command:c=>scene?.command(c)??false});
+const factionTools=mountFactionTools(root,{toolbar:sessionToolbar,state:()=>scene?.state??null,selected:()=>scene?.selected??[],side:playerSide,enabled:()=>scene?.canIssueCommands??false,command:c=>scene?.command(c)??false,coreCommand:c=>scene?.command(c)??false});
+root.querySelector('[data-tactics-launch]')!.addEventListener('click',()=>factionTools.close());
+root.querySelector('[data-faction-launch]')!.addEventListener('click',()=>tacticTools.close());
 function tournamentBlocked(){return !!scene?.photoMode||Array.from(openModals).some(source=>source!=='tournament');}
 function toolBlocked(source:string){return !!scene?.photoMode||Array.from(openModals).some(other=>other!==source);}
 let checkingAccount=false;async function refreshAccount(){if(checkingAccount)return;checkingAccount=true;const epoch=cosmeticAccountEpoch;try{const account=await onlineApi.session();if(epoch===cosmeticAccountEpoch)accountChanged(account);}catch{}finally{checkingAccount=false;}}
@@ -430,7 +437,7 @@ setInterval(()=>{
  const side=playerSide(),state=scene?.state,view=state?(onlineRender?onlineRender.alliedAi:alliedAiStatus(state,side)):null;
  const destination=state?.entities.find(e=>e.side===side&&e.hp>0&&scene!.selected.includes(e.id))??state?.entities.find(e=>e.side===side&&e.role==='hq'&&e.hp>0);
  teamAiTools.update({side,allies:(view?.allies??[]).map(ally=>({side:ally.side,name:`Player ${ally.side+1} · ${factionFor(state!,ally.side).name}`})),directives:view?.directives??[],width:state?.width??1,height:state?.height??1,levels:state?.world?.levels.map(l=>({id:l.id,name:l.title}))??[{id:0,name:'Surface'}],enabled:!teamAiBlocked(),...(destination?{destination:{x:destination.x,y:destination.y,...(destination.level===undefined?{}:{level:destination.level})}}:{})},{blocked:teamAiBlocked()});
- tools.update(state??null,{side,paused:scene?.paused,replaySpectator:!!replay||!!scene?.readOnly,remoteMatch:!!onlineConnection});objectives.update();planning.update({blocked:planningBlocked()});tournaments.update({blocked:tournamentBlocked()});campaignHost.update({blocked:Array.from(openModals).some(source=>source!=='campaign'),photo:scene?.photoMode});scenarioOverlay?.update(scene?scenarioSessionForState(scene.state):null,!!scene?.photoMode,scene?.viewLevel??0);competitions.update({blocked:toolBlocked('competition')});cosmetics.update({blocked:toolBlocked('cosmetics')});updateCoach();economyTools.update({side:playerSide(),readOnly:!!replay||!!scene?.readOnly,blocked:economyBlocked()});
+ tools.update(state??null,{side,paused:scene?.paused,replaySpectator:!!replay||!!scene?.readOnly,remoteMatch:!!onlineConnection});objectives.update();planning.update({blocked:planningBlocked()});tournaments.update({blocked:tournamentBlocked()});campaignHost.update({blocked:Array.from(openModals).some(source=>source!=='campaign'),photo:scene?.photoMode});scenarioOverlay?.update(scene?scenarioSessionForState(scene.state):null,!!scene?.photoMode,scene?.viewLevel??0);competitions.update({blocked:toolBlocked('competition')});cosmetics.update({blocked:toolBlocked('cosmetics')});tacticTools.update();factionTools.update();updateCoach();economyTools.update({side:playerSide(),readOnly:!!replay||!!scene?.readOnly,blocked:economyBlocked()});
 },100);
 // Read-only diagnostics for repeatable performance and state inspection. Player actions stay in the UI.
 const worldTools=mountWorldTools(root,{phase:()=>onlineRender?.worldPhase,state:()=>scene?.state,side:playerSide,level:()=>scene?.viewLevel??0,selected:()=>scene?.selected??[],canCommand:()=>!!scene&&scene.canIssueCommands,command:c=>scene?.command(c)??false,setLevel:level=>scene?.setViewLevel(level),select:ids=>scene?.selectEntities(ids),center:p=>scene?.centerOn(p.x,p.y),notice:shell.notice});

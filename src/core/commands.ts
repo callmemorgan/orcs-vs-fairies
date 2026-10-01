@@ -42,6 +42,17 @@ export function validateCommand(v:unknown):v is Command {
   if(v.type==='unequipArtifact')return allowed(['type','id','slot'])&&id(v.id)&&['weapon','armor','trinket'].includes(v.slot as string);
   if(v.type==='fieldRepair')return allowed(['type','id','target'])&&id(v.id)&&id(v.target);
   if(!Array.isArray(v.ids)||!v.ids.length||v.ids.length>100||!v.ids.every(id))return false;
+  if(v.type==='warChant')return allowed(['type','ids','chant'])&&['assault','bulwark'].includes(v.chant as string);
+  if(v.type==='trophyStandard')return allowed(['type','ids']);
+  if(['illusionSwap','tunnelTravel','collectCorpses','deliverCorpses'].includes(v.type))return allowed(['type','ids','target'])&&id(v.target);
+  if(v.type==='modifyArtillery')return allowed(['type','ids','modification'])&&['stone','grapeshot','incendiary','reinforced'].includes(v.modification as string);
+  if(v.type==='buildFactionStructure')return allowed(['type','ids','structure','x','y','level'])&&['enchanted-grove','tunnel','necropolis','power-relay'].includes(v.structure as string)&&finite(v.x)&&finite(v.y)&&(v.level===undefined||index(v.level)&&v.level<=1);
+  if(v.type==='shapeWater')return allowed(['type','ids','x','y','level','terrain'])&&['mud','shallows','water'].includes(v.terrain as string)&&finite(v.x)&&finite(v.y)&&(v.level===undefined||index(v.level)&&v.level<=1);
+  if(v.type==='formation')return allowed(['type','ids','formation','spacing','facing'])&&['line','wedge','square','loose'].includes(v.formation as string)&&finite(v.spacing)&&v.spacing>=.65&&v.spacing<=3&&index(v.facing)&&v.facing<=7;
+  if(v.type==='face')return allowed(['type','ids','facing'])&&index(v.facing)&&v.facing<=7;
+  if(v.type==='ambush')return allowed(['type','ids','radius','target'])&&finite(v.radius)&&v.radius>=.75&&v.radius<=10&&['any','unit','building',...roles].includes(v.target as string);
+  if(v.type==='releaseAmbush')return allowed(['type','ids']);
+  if(v.type==='captureSiege')return allowed(['type','ids','target'])&&id(v.target);
   if(['stop','hold','clearRally','toggleGate'].includes(v.type))return allowed(['type','ids']);
   if(['move','attackMove','setRally','ignite','firebreak'].includes(v.type))return allowed(['type','ids','x','y','level'])&&finite(v.x)&&finite(v.y)&&(v.level===undefined||Number.isInteger(v.level)&&(v.level as number)>=0&&(v.level as number)<=1);
   if(v.type==='traverse')return allowed(['type','ids','transition'])&&id(v.transition);

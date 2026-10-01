@@ -1,6 +1,9 @@
 import type { EconomyView } from '../core/economy-types';
+import { markServerObservation } from '../core/presentation-observation';
+import type { FactionUnitState } from '../core/faction-systems';
+import type { TacticsState } from '../core/tactics';
 import type { WorldState } from '../core/world-types';
-import type { Controller, Entity, FactionId, GameEvent, GameState, Player, Side, TerrainKind, Vec } from '../core/types';
+import type { Controller, Corpse, Order, Entity, FactionId, GameEvent, GameState, Player, Side, TerrainKind, Vec } from '../core/types';
 import type { PlayerObservation } from './protocol';
 
 type PublicPlayer={side:Side;teamId:number;faction:FactionId};
@@ -27,6 +30,50 @@ function ownPlayer(player:Player):PlayerObservation['player'] {
 function emptyPlayer(faction:FactionId):Player {
   // These are display placeholders. HUDs must use privateSides before showing banks.
   return {faction,wood:0,ore:0,crystal:0,population:0,cap:0,upgrades:[]};
+}
+
+function copyPoint(point:Vec):Vec {
+  return {x:point.x,y:point.y,...(point.level===undefined?{}:{level:point.level})};
+}
+function copyCorpse(corpse:Corpse):Corpse {
+  return {id:corpse.id,...copyPoint(corpse),expires:corpse.expires};
+}
+function copyOrder(order:Order):Order {
+  if(order.type==='move'||order.type==='attackMove')return {type:order.type,...copyPoint(order)};
+  if(order.type==='traverse')return {type:'traverse',transition:order.transition};
+  if('target' in order)return {type:order.type,target:order.target};
+  return {type:order.type};
+}
+function copyTactics(source:Partial<TacticsState>|undefined,owned:boolean):TacticsState|undefined {
+  if(!source)return undefined;
+  const result:TacticsState={morale:source.morale??100,recentLoss:owned?source.recentLoss??0:0};
+  if(source.siegeCrew)result.siegeCrew={hp:source.siegeCrew.hp,maxHp:source.siegeCrew.maxHp,uncrewed:source.siegeCrew.uncrewed};
+  if(source.guard)result.guard={value:source.guard.value,max:source.guard.max,lastDamagedAt:source.guard.lastDamagedAt};
+  if(!owned)return result;
+  if(source.formation){const f=source.formation;result.formation={kind:f.kind,group:f.group,slot:f.slot,count:f.count,spacing:f.spacing,facing:f.facing,anchor:copyPoint(f.anchor),phase:f.phase};}
+  if(source.retreat)result.retreat={...copyPoint(source.retreat),until:source.retreat.until};
+  if(source.surrenderedTo!==undefined)result.surrenderedTo=source.surrenderedTo;
+  if(source.ambush){const a=source.ambush;result.ambush={radius:a.radius,target:a.target,concealed:a.concealed,armedAt:a.armedAt};}
+  if(source.charge){const c=source.charge;result.charge={distance:c.distance,heading:c.heading,lastMovedAt:c.lastMovedAt};}
+  if(source.capture)result.capture={target:source.capture.target,progress:source.capture.progress};
+  return result;
+}
+function copyFactionState(source:FactionUnitState|undefined,owned:boolean):FactionUnitState|undefined {
+  if(!source)return undefined;
+  const result:FactionUnitState={};
+  if(source.chant)result.chant={kind:source.chant.kind,until:source.chant.until};
+  if(source.artillery!==undefined)result.artillery=source.artillery;
+  if(source.power)result.power={connected:source.power.connected,root:owned?source.power.root:null};
+  if(!owned)return result;
+  if(source.trophyKills!==undefined)result.trophyKills=source.trophyKills;
+  if(source.swapReadyAt!==undefined)result.swapReadyAt=source.swapReadyAt;
+  if(source.tunnel)result.tunnel={target:source.tunnel.target,progress:source.tunnel.progress};
+  if(source.corpseCargo)result.corpseCargo=source.corpseCargo.map(copyCorpse);
+  if(source.deliveredCorpses)result.deliveredCorpses=source.deliveredCorpses.map(copyCorpse);
+  if(source.corpseOrder)result.corpseOrder={type:source.corpseOrder.type,target:source.corpseOrder.target,progress:source.corpseOrder.progress};
+  if(source.nextDecoyAt!==undefined)result.nextDecoyAt=source.nextDecoyAt;
+  if(source.waterReadyAt!==undefined)result.waterReadyAt=source.waterReadyAt;
+  return result;
 }
 
 /** Convert only fields the server disclosed. Never construct a local simulation. */
@@ -60,7 +107,7 @@ export function observationToRenderState(view:PlayerObservation,role:'player'|'s
   const entities:Entity[]=view.entities.map(source=>{
     // Using an allowlist also discards accidental private fields in hostile records.
     const entity:Entity={
-      id:source.id,side:source.side,kind:source.kind,role:source.role,x:source.x,y:source.y,...(source.level===undefined?{}:{level:source.level}),definitionId:source.definitionId,definitionFaction:source.definitionFaction,
+      tactics:copyTactics(source.tactics,false),factionState:copyFactionState(source.factionState,false),id:source.id,side:source.side,kind:source.kind,role:source.role,x:source.x,y:source.y,...(source.level===undefined?{}:{level:source.level}),definitionId:source.definitionId,definitionFaction:source.definitionFaction,
       hp:source.hp,maxHp:source.maxHp,progress:source.progress,gateOpen:source.gateOpen,
       shield:source.shield,maxShield:source.maxShield,raised:source.raised,
       entrenchedAt:source.entrenchedAt,surgeUntil:source.surgeUntil,
@@ -68,8 +115,8 @@ export function observationToRenderState(view:PlayerObservation,role:'player'|'s
       order:{type:'idle'},cooldown:0,queue:[],trainProgress:0,researchProgress:0,
       momentum:0,illusion:false,expires:0,carried:0,carriedKind:'wood',path:[],
     };
-    if(privateSides.has(source.side)&&'order' in source) {
-      entity.order={...source.order};entity.queue=[...source.queue];entity.queueDefinitionIds=source.queueDefinitionIds?[...source.queueDefinitionIds]:undefined;entity.queuePaidCosts=source.queuePaidCosts?.map(cost=>({...cost}));entity.rally=source.rally?{...source.rally}:undefined;
+    if(privateSides.has(source.side)&&source.owner!==null&&'order' in source) {
+      entity.tactics=copyTactics(source.tactics,true);entity.factionState=copyFactionState(source.factionState,true);entity.order=copyOrder(source.order);entity.queue=[...source.queue];entity.queueDefinitionIds=source.queueDefinitionIds?[...source.queueDefinitionIds]:undefined;entity.queuePaidCosts=source.queuePaidCosts?.map(cost=>({...cost}));entity.rally=source.rally?{...source.rally}:undefined;
       entity.trainProgress=source.trainProgress;entity.research=source.research;entity.researchProgress=source.researchProgress;
       entity.carried=source.carried;entity.carriedKind=source.carriedKind;entity.cooldown=source.cooldown;
       entity.veteran=source.veteran?structuredClone(source.veteran):undefined;entity.equipment=source.equipment?{...source.equipment}:undefined;entity.specialistBuffs=source.specialistBuffs?.map(buff=>({...buff,fearedFrom:buff.fearedFrom?{...buff.fearedFrom}:undefined}));entity.beacon=source.beacon?{...source.beacon}:undefined;entity.siegeMode=source.siegeMode?{...source.siegeMode}:undefined;
@@ -99,13 +146,14 @@ export function observationToRenderState(view:PlayerObservation,role:'player'|'s
   const state={
     controllers:Array.from({length:count},():Controller=>'external'),mapSize:view.map.size,mapVersion:view.map.version,
     terrain,starts,...(world?{world}:{}),draw:view.result.draw,tick:view.tick,time:view.time,seed:0,width:view.map.width,height:view.map.height,
-    entities,specialists:{artifacts:(view.artifacts??[]).map(item=>({...item,position:item.position?{...item.position}:undefined})),structures:[],nextArtifactId:1,nextStructureId:1},resources:view.resources.map(resource=>({id:resource.id,x:resource.x,y:resource.y,...(resource.level===undefined?{}:{level:resource.level}),kind:resource.kind,amount:resource.amount,maxAmount:resource.maxAmount})),
+    friendlyFire:view.rules?.friendlyFire??true,projectiles:(view.projectiles??[]).map(shell=>{const origin=shell.from,seen=origin&&visible[localSide].has((origin.level??0)*view.map.width*view.map.height+Math.floor(origin.y)*view.map.width+Math.floor(origin.x));return {id:shell.id,side:shell.side,x:shell.x,y:shell.y,...(shell.level===undefined?{}:{level:shell.level}),from:origin&&(privateSides.has(shell.side)||seen)?copyPoint(origin):undefined,impactAt:shell.impactAt,radius:shell.radius};}),factionSystems:{version:1,fury:Array.from({length:count},(_v,side)=>side===localSide&&typeof view.factionSystems?.fury==='number'?view.factionSystems.fury:0),terrainEffects:[]},entities,specialists:{artifacts:(view.artifacts??[]).map(item=>({...item,position:item.position?{...item.position}:undefined})),structures:[],nextArtifactId:1,nextStructureId:1},resources:view.resources.map(resource=>({id:resource.id,x:resource.x,y:resource.y,...(resource.level===undefined?{}:{level:resource.level}),kind:resource.kind,amount:resource.amount,maxAmount:resource.maxAmount})),
     players,rules:structuredClone(view.rules),draft:structuredClone(view.draft),winner:view.result.winner,events,explored,visible,nextId:1,
     corpses:view.corpses.map(corpse=>({id:corpse.id,x:corpse.x,y:corpse.y,...(corpse.level===undefined?{}:{level:corpse.level}),expires:corpse.expires})),
     teams,sharedVision:observation.sharedVision??false,winningTeam:observation.result.winningTeam??null,
     eliminated:[...(observation.result.eliminated??Array.from({length:count},()=>false))],
     incomeFactors:Array.from({length:count},()=>1),populationLimits:Array.from({length:count},()=>100),
   } as unknown as GameState;
+  markServerObservation(state);
   const objectiveView={side:view.side,teamId:view.teamId,player:{...ownPlayer(view.player)},allies:structuredClone(view.allies),opponents:structuredClone(view.opponents),tick:view.tick,rules:structuredClone(view.rules),draft:structuredClone(view.draft),draftChoices:[...view.draftChoices],draftDefinitions:structuredClone(view.draftDefinitions),objectives:structuredClone(view.objectives),result:{...view.result},entities:entities.map(entity=>({id:entity.id,side:entity.side,kind:entity.kind,role:entity.role,x:entity.x,y:entity.y,...(entity.level===undefined?{}:{level:entity.level}),hp:entity.hp,illusion:entity.illusion}))};
   return {state,localSide,role,privateSides,hiddenStarts,unknownTerrain,objectiveView,economy:view.economy?structuredClone(view.economy):undefined,worldPhase:view.world?.phase?structuredClone(view.world.phase):undefined,
     alliedAi:structuredClone(view.alliedAi),resourceMemory:view.resources.map(resource=>({...resource})),observedEvents:view.events.map(event=>({
@@ -117,5 +165,5 @@ export function observationToRenderState(view:PlayerObservation,role:'player'|'s
 /** Keep Phaser's references stable as authoritative frames arrive. No stepGame call. */
 export function applyOnlineRenderState(target:GameState,source:OnlineRenderState):void {
   for(const key of Object.keys(target))if(!(key in source.state))delete (target as unknown as Record<string,unknown>)[key];
-  Object.assign(target,source.state);
+  Object.assign(target,source.state);markServerObservation(target);
 }

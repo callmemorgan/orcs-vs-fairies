@@ -1,0 +1,567 @@
+{
+  "evidence": {
+    "facingReachesHeldArmy": true,
+    "lineFormationReachesArmy": true,
+    "battlefieldMovePreservesFormation": true,
+    "wedgeFormationReachesArmy": true,
+    "squareFormationReachesArmy": true,
+    "looseFormationReachesArmy": true,
+    "ambushConditionReachesConcealedArmy": true,
+    "ambushReleaseReachesArmy": true,
+    "captureCompletesAndPreservesEngineFaction": true,
+    "capturedCrewAppearsInSelectedUnitStats": true,
+    "readOnlyDisablesCommands": true,
+    "panelReopens": true
+  },
+  "initial": {
+    "ready": true,
+    "tick": 1,
+    "selected": [
+      7,
+      43,
+      44,
+      45
+    ],
+    "readOnly": false,
+    "commands": [],
+    "points": {
+      "formationMove": {
+        "x": 768,
+        "y": 514
+      }
+    },
+    "army": [
+      {
+        "id": 7,
+        "side": 0,
+        "x": 12,
+        "y": 14,
+        "order": {
+          "type": "idle"
+        },
+        "facing": 2,
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "canAmbush": true
+      },
+      {
+        "id": 43,
+        "side": 0,
+        "x": 12.8,
+        "y": 14,
+        "order": {
+          "type": "idle"
+        },
+        "facing": 2,
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "canAmbush": true
+      },
+      {
+        "id": 44,
+        "side": 0,
+        "x": 13.6,
+        "y": 14,
+        "order": {
+          "type": "idle"
+        },
+        "facing": 2,
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "canAmbush": false
+      },
+      {
+        "id": 45,
+        "side": 0,
+        "x": 14.4,
+        "y": 14,
+        "order": {
+          "type": "idle"
+        },
+        "facing": 2,
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "canAmbush": false
+      }
+    ],
+    "worker": {
+      "id": 2,
+      "order": {
+        "type": "idle"
+      },
+      "tactics": {
+        "morale": 100,
+        "recentLoss": 0
+      }
+    },
+    "engine": {
+      "id": 47,
+      "side": 1,
+      "faction": "fairies",
+      "uncrewed": true,
+      "crew": {
+        "hp": 0,
+        "maxHp": 42,
+        "uncrewed": true
+      }
+    }
+  },
+  "captured": {
+    "ready": true,
+    "tick": 96,
+    "selected": [
+      2
+    ],
+    "readOnly": false,
+    "commands": [
+      {
+        "command": {
+          "type": "face",
+          "ids": [
+            7,
+            43,
+            44,
+            45
+          ],
+          "facing": 4
+        },
+        "accepted": true
+      },
+      {
+        "command": {
+          "type": "formation",
+          "ids": [
+            7,
+            43,
+            44,
+            45
+          ],
+          "formation": "line",
+          "spacing": 1.4,
+          "facing": 6
+        },
+        "accepted": true
+      },
+      {
+        "command": {
+          "type": "move",
+          "ids": [
+            7,
+            43,
+            44,
+            45
+          ],
+          "x": 16,
+          "y": 14,
+          "queued": false
+        },
+        "accepted": true
+      },
+      {
+        "command": {
+          "type": "formation",
+          "ids": [
+            7,
+            43,
+            44,
+            45
+          ],
+          "formation": "wedge",
+          "spacing": 1.4,
+          "facing": 6
+        },
+        "accepted": true
+      },
+      {
+        "command": {
+          "type": "formation",
+          "ids": [
+            7,
+            43,
+            44,
+            45
+          ],
+          "formation": "square",
+          "spacing": 1.4,
+          "facing": 6
+        },
+        "accepted": true
+      },
+      {
+        "command": {
+          "type": "formation",
+          "ids": [
+            7,
+            43,
+            44,
+            45
+          ],
+          "formation": "loose",
+          "spacing": 1.4,
+          "facing": 6
+        },
+        "accepted": true
+      },
+      {
+        "command": {
+          "type": "ambush",
+          "ids": [
+            7,
+            43,
+            44,
+            45
+          ],
+          "radius": 2.75,
+          "target": "cavalry"
+        },
+        "accepted": true
+      },
+      {
+        "command": {
+          "type": "releaseAmbush",
+          "ids": [
+            7,
+            43,
+            44,
+            45
+          ]
+        },
+        "accepted": true
+      },
+      {
+        "command": {
+          "type": "captureSiege",
+          "ids": [
+            2
+          ],
+          "target": 47
+        },
+        "accepted": true
+      }
+    ],
+    "points": {
+      "formationMove": {
+        "x": 768,
+        "y": 514
+      }
+    },
+    "army": [
+      {
+        "id": 7,
+        "side": 0,
+        "x": 11.580000306785973,
+        "y": 14.2,
+        "order": {
+          "type": "hold"
+        },
+        "facing": 1,
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "canAmbush": true
+      },
+      {
+        "id": 43,
+        "side": 0,
+        "x": 12.160000092319732,
+        "y": 14.2,
+        "order": {
+          "type": "hold"
+        },
+        "facing": 1,
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "canAmbush": true
+      },
+      {
+        "id": 44,
+        "side": 0,
+        "x": 12.739999860497695,
+        "y": 14.2,
+        "order": {
+          "type": "hold"
+        },
+        "facing": 5,
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "canAmbush": true
+      },
+      {
+        "id": 45,
+        "side": 0,
+        "x": 13.3199997403966,
+        "y": 14.2,
+        "order": {
+          "type": "hold"
+        },
+        "facing": 6,
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "canAmbush": false
+      }
+    ],
+    "worker": {
+      "id": 2,
+      "order": {
+        "type": "hold"
+      },
+      "tactics": {
+        "morale": 100,
+        "recentLoss": 0
+      }
+    },
+    "engine": {
+      "id": 47,
+      "side": 0,
+      "faction": "fairies",
+      "uncrewed": false,
+      "crew": {
+        "hp": 42,
+        "maxHp": 42,
+        "uncrewed": false
+      }
+    }
+  },
+  "final": {
+    "ready": true,
+    "tick": 102,
+    "selected": [
+      7,
+      43,
+      44,
+      45
+    ],
+    "readOnly": true,
+    "commands": [
+      {
+        "command": {
+          "type": "face",
+          "ids": [
+            7,
+            43,
+            44,
+            45
+          ],
+          "facing": 4
+        },
+        "accepted": true
+      },
+      {
+        "command": {
+          "type": "formation",
+          "ids": [
+            7,
+            43,
+            44,
+            45
+          ],
+          "formation": "line",
+          "spacing": 1.4,
+          "facing": 6
+        },
+        "accepted": true
+      },
+      {
+        "command": {
+          "type": "move",
+          "ids": [
+            7,
+            43,
+            44,
+            45
+          ],
+          "x": 16,
+          "y": 14,
+          "queued": false
+        },
+        "accepted": true
+      },
+      {
+        "command": {
+          "type": "formation",
+          "ids": [
+            7,
+            43,
+            44,
+            45
+          ],
+          "formation": "wedge",
+          "spacing": 1.4,
+          "facing": 6
+        },
+        "accepted": true
+      },
+      {
+        "command": {
+          "type": "formation",
+          "ids": [
+            7,
+            43,
+            44,
+            45
+          ],
+          "formation": "square",
+          "spacing": 1.4,
+          "facing": 6
+        },
+        "accepted": true
+      },
+      {
+        "command": {
+          "type": "formation",
+          "ids": [
+            7,
+            43,
+            44,
+            45
+          ],
+          "formation": "loose",
+          "spacing": 1.4,
+          "facing": 6
+        },
+        "accepted": true
+      },
+      {
+        "command": {
+          "type": "ambush",
+          "ids": [
+            7,
+            43,
+            44,
+            45
+          ],
+          "radius": 2.75,
+          "target": "cavalry"
+        },
+        "accepted": true
+      },
+      {
+        "command": {
+          "type": "releaseAmbush",
+          "ids": [
+            7,
+            43,
+            44,
+            45
+          ]
+        },
+        "accepted": true
+      },
+      {
+        "command": {
+          "type": "captureSiege",
+          "ids": [
+            2
+          ],
+          "target": 47
+        },
+        "accepted": true
+      }
+    ],
+    "points": {
+      "formationMove": {
+        "x": 768,
+        "y": 514
+      }
+    },
+    "army": [
+      {
+        "id": 7,
+        "side": 0,
+        "x": 11.580000112637958,
+        "y": 14.2,
+        "order": {
+          "type": "hold"
+        },
+        "facing": 1,
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "canAmbush": true
+      },
+      {
+        "id": 43,
+        "side": 0,
+        "x": 12.160000033895637,
+        "y": 14.2,
+        "order": {
+          "type": "hold"
+        },
+        "facing": 1,
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "canAmbush": true
+      },
+      {
+        "id": 44,
+        "side": 0,
+        "x": 12.739999948781053,
+        "y": 14.2,
+        "order": {
+          "type": "hold"
+        },
+        "facing": 5,
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "canAmbush": true
+      },
+      {
+        "id": 45,
+        "side": 0,
+        "x": 13.319999904685353,
+        "y": 14.2,
+        "order": {
+          "type": "hold"
+        },
+        "facing": 6,
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "canAmbush": false
+      }
+    ],
+    "worker": {
+      "id": 2,
+      "order": {
+        "type": "hold"
+      },
+      "tactics": {
+        "morale": 100,
+        "recentLoss": 0
+      }
+    },
+    "engine": {
+      "id": 47,
+      "side": 0,
+      "faction": "fairies",
+      "uncrewed": false,
+      "crew": {
+        "hp": 42,
+        "maxHp": 42,
+        "uncrewed": false
+      }
+    }
+  },
+  "browserErrors": []
+}

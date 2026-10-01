@@ -1,4 +1,6 @@
 import { observeEconomy } from '../core/economy';
+import { canObserveTacticalEntity, isCrewless } from '../core/tactics';
+import { drawTacticsOverlay } from './TacticsOverlay';
 import Phaser from 'phaser';
 import ArtRuntime from './ArtRuntime';
 import GameAudio from './GameAudio';
@@ -191,7 +193,7 @@ export default class GameScene extends Phaser.Scene {
       let ids:number[]=[];
       if(Math.hypot(p.x-drag.x,p.y-drag.y)>this.dragThreshold){
         const x1=Math.min(drag.wx,world.x),x2=Math.max(drag.wx,world.x),y1=Math.min(drag.wy,world.y),y2=Math.max(drag.wy,world.y);
-        ids=this.state.entities.filter(e=>{const q=project(e.x,e.y);return e.side===this.viewSide&&this.visible(e)&&e.kind==='unit'&&e.hp>0&&q.x>=x1&&q.x<=x2&&q.y>=y1&&q.y<=y2;}).map(e=>e.id);
+        ids=this.state.entities.filter(e=>{const q=project(e.x,e.y);return e.side===this.viewSide&&this.visible(e)&&e.kind==='unit'&&e.hp>0&&!isCrewless(e)&&q.x>=x1&&q.x<=x2&&q.y>=y1&&q.y<=y2;}).map(e=>e.id);
       } else {const hit=this.hit(world.x,world.y);if(hit?.side===this.viewSide)ids=[hit.id];}
       if(this.queueModifier(this.input.activePointer.event))ids=[...new Set([...this.selected,...ids])];
       this.select(ids);
@@ -283,7 +285,7 @@ export default class GameScene extends Phaser.Scene {
       case 'zoomIn':this.zoomBy(.15*this.pixelDensity);return;
       case 'zoomOut':this.zoomBy(-.15*this.pixelDensity);return;
       case 'centerHQ':{const hq=this.state.entities.find(v=>v.side===this.viewSide&&v.role==='hq'&&v.hp>0);if(hq){this.setViewLevel(levelOf(hq));this.centerOn(hq.x,hq.y);}return;}
-      case 'selectArmy':this.select(this.state.entities.filter(unit=>unit.side===this.viewSide&&this.visible(unit)&&unit.kind==='unit'&&unit.role!=='worker'&&unit.hp>0).map(unit=>unit.id));return;
+      case 'selectArmy':this.select(this.state.entities.filter(unit=>unit.side===this.viewSide&&this.visible(unit)&&unit.kind==='unit'&&unit.role!=='worker'&&unit.hp>0&&!isCrewless(unit)).map(unit=>unit.id));return;
       case 'attackMove':this.beginAttackMove();return;
       case 'hold':this.holdPosition();return;
       case 'stop':if(this.command({type:'stop',ids:this.selected}))this.audio?.play('order');return;
@@ -294,7 +296,7 @@ export default class GameScene extends Phaser.Scene {
     else if(action.startsWith('groupRecall'))this.recallGroup(action.slice(-1));
   }
   private zoomBy(delta:number){this.cameras.main.setZoom(Phaser.Math.Clamp(this.cameras.main.zoom+delta,.55*this.pixelDensity,1.8*this.pixelDensity));}
-  private visible(e:Entity){return levelOf(e)===this.viewLevel&&(e.side===this.viewSide||this.state.visible[this.viewSide].has(fogKey(this.state,e)));}
+  private visible(e:Entity){return levelOf(e)===this.viewLevel&&canObserveTacticalEntity(this.state,this.viewSide,e);}
   private hit(x:number,y:number){return [...this.state.entities].sort((a,b)=>(b.x+b.y)-(a.x+a.y)||b.id-a.id).find(e=>{if(e.hp<=0||!this.visible(e))return false;const rendered=this.art.contains(`entity:${e.id}`,x,y);if(rendered!==null)return rendered;const q=project(e.x,e.y);const r=e.kind==='building'?35:14;return Math.abs(x-q.x)<r&&y>q.y-(e.kind==='building'?65:35)&&y<q.y+12;});}
   private order(p:Phaser.Input.Pointer,attack=false){
     this.orderAt(p.x,p.y,attack,this.queueModifier(p.event));
@@ -313,7 +315,7 @@ export default class GameScene extends Phaser.Scene {
       if(ok)this.audio?.play('order');
       return;
     }
-    if(hit&&isHostile(this.state,this.viewSide,hit.side))ok=this.command({type:'attack',ids:this.selected,target:hit.id,queued});
+    if(hit&&(isHostile(this.state,this.viewSide,hit.side)||isCrewless(hit)))ok=this.command({type:'attack',ids:this.selected,target:hit.id,queued});
     else if(hit&&hit.side===this.viewSide&&hit.kind==='building'&&hit.hp<hit.maxHp)ok=this.command({type:'repair',ids:this.selected,target:hit.id,queued});
     else {
       const resource=[...this.state.resources].sort((a,b)=>(b.x+b.y)-(a.x+a.y)).find(r=>{if(r.amount<=0||levelOf(r)!==this.viewLevel||!this.state.visible[this.viewSide].has(fogKey(this.state,r)))return false;const rendered=this.art.contains(`resource:${r.id}`,world.x,world.y);if(rendered!==null)return rendered;const q=project(r.x,r.y);return Math.abs(q.x-world.x)<24&&Math.abs(q.y-15-world.y)<30;});
@@ -399,7 +401,7 @@ export default class GameScene extends Phaser.Scene {
     for(const event of events){
       if(event.type==='attack'&&levelOf(event)===this.viewLevel&&isVisible(state,this.viewSide,event.x,event.y,levelOf(event))){
         const source=state.entities.find(e=>e.id===event.source),target=state.entities.find(e=>e.id===event.target);
-        if(source&&target&&this.visible(target)){
+        if(source&&target&&this.visible(source)&&this.visible(target)){
           const def=source.kind==='unit'?unitFor(state,source):undefined;
           if(source.kind==='building'||(def?.range??0)>3)this.combatEffects.push({from:project(source.x,source.y),to:project(target.x,target.y),born:state.time,color:factionFor(state,source.side).color,heavy:!!def?.buildingDamageMultiplier});
         }
@@ -463,7 +465,7 @@ export default class GameScene extends Phaser.Scene {
         if(r.kind==='wood'){g.fillStyle(0x634d34).fillRect(p.x-3,p.y-25,6,28);g.fillStyle(0x274b3b).fillTriangle(p.x-22,p.y-17,p.x,p.y-67,p.x+22,p.y-17);g.fillStyle(0x3d6950).fillTriangle(p.x-18,p.y-28,p.x-2,p.y-68,p.x+12,p.y-28);g.fillStyle(0x71915b).fillTriangle(p.x-13,p.y-44,p.x-2,p.y-68,p.x+7,p.y-44);}
         else{g.fillStyle(0x53616a).fillTriangle(p.x-19,p.y+1,p.x-9,p.y-22,p.x+13,p.y-2);g.fillStyle(0x92adad).fillTriangle(p.x-9,p.y-22,p.x+3,p.y-25,p.x+13,p.y-2);g.fillStyle(0xb8cfba).fillTriangle(p.x+2,p.y-4,p.x+8,p.y-18,p.x+21,p.y+1);}continue;
       }
-      const e=obj.e,p=project(e.x,e.y);const faction=this.state.players[e.side].faction;const orc=faction==='orcs';const style=ownershipStyle(e.side,this.viewSide,appearance,teams);const color=style.color;const selected=!this.photoMode&&this.selected.includes(e.id);const dead=e.hp<=0;const alpha=dead?.35:e.illusion&&e.side===this.playerView.side?.5:1;
+      const e=obj.e,p=project(e.x,e.y);const faction=this.state.players[e.side].faction;const orc=faction==='orcs';const style=ownershipStyle(e.side,this.viewSide,appearance,teams);const color=isCrewless(e)?0xaab4bd:style.color;const selected=!this.photoMode&&this.selected.includes(e.id);const dead=e.hp<=0;const alpha=dead?.35:e.illusion&&e.side===this.playerView.side?.5:1;
       g.fillStyle(0x14201c,.38).fillEllipse(p.x+4,p.y+4,e.kind==='building'?70:27,e.kind==='building'?30:12);
       if(selected){const w=e.kind==='building'?86:39,h=e.kind==='building'?43:21;g.lineStyle(5,0x111a20,1).strokeEllipse(p.x,p.y+2,w,h);g.lineStyle(2.5,style.outline,1).strokeEllipse(p.x,p.y+2,w,h);}
       if(e.definitionId?.startsWith('economy:')){
@@ -561,7 +563,7 @@ export default class GameScene extends Phaser.Scene {
       const style=ownershipStyle(unit.side,this.viewSide,appearance,teams),building=unit.kind==='building';
       if(appearance.outlines){const w=building?78:32,h=building?36:15;g.lineStyle(4,0x111a20,.95).strokeEllipse(c.x,c.y+2,w,h);g.lineStyle(1.5,style.outline,.95).strokeEllipse(c.x,c.y+2,w,h);}
       const badge=markerPolygon(appearance.patterns?unit.side:1,c.x,c.y+(building?22:12),building?6:4);
-      g.fillStyle(style.color,1).lineStyle(appearance.outlines?1.5:1,appearance.outlines?style.outline:0x111a20,1);g.beginPath();badge.forEach((point,i)=>i?g.lineTo(point.x,point.y):g.moveTo(point.x,point.y));g.closePath();g.fillPath();g.strokePath();
+      g.fillStyle(isCrewless(unit)?0xaab4bd:style.color,1).lineStyle(appearance.outlines?1.5:1,appearance.outlines?style.outline:0x111a20,1);g.beginPath();badge.forEach((point,i)=>i?g.lineTo(point.x,point.y):g.moveTo(point.x,point.y));g.closePath();g.fillPath();g.strokePath();
       if((unit.shield??0)>0){g.lineStyle(1,0xb59af0,.35+.45*(unit.shield!/unit.maxShield!)).strokeEllipse(c.x,c.y-14,35,39);}
       if((unit.surgeUntil??0)>this.state.time){g.lineStyle(2,0x83d5cf,.7).strokeEllipse(c.x,c.y+2,36,16);}
       if(unit.entrenchedAt!==undefined){
@@ -579,6 +581,7 @@ export default class GameScene extends Phaser.Scene {
         if(this.selected.includes(unit.id)&&unit.side===this.viewSide){const start=RANK_THRESHOLDS[rank],end=RANK_THRESHOLDS[rank+1]??300,progress=Math.max(0,Math.min(1,(unit.veteran.experience-start)/(end-start)));g.fillStyle(0x182426,.9).fillRect(c.x-15,c.y+19,30,3);g.fillStyle(color,1).fillRect(c.x-15,c.y+19,30*progress,3);if(unit.veteran.pendingPromotion)g.lineStyle(2,0xf4d77f,.85).strokeCircle(c.x,c.y+22,6);}
       }
     }
+    drawTacticsOverlay(g,this.state,this.viewSide,this.selected,e=>this.visible(e),project,this.hit(world.x,world.y),this.viewLevel);
     this.combatEffects=this.combatEffects.filter(f=>this.state.time-f.born<.5);
     for(const f of this.combatEffects){const t=Math.min(1,(this.state.time-f.born)/.35),x=f.from.x+(f.to.x-f.from.x)*t,y=f.from.y-24+(f.to.y-f.from.y)*t-Math.sin(t*Math.PI)*(f.heavy?25:5);g.fillStyle(f.color,1-t*.6).fillCircle(x,y,f.heavy?4:2);if(t>=1)g.lineStyle(2,f.color,.5).strokeCircle(f.to.x,f.to.y-20,8);}
     for(const e of this.state.entities){

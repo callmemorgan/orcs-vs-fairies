@@ -1,0 +1,26 @@
+.faction-tools { position: absolute; left: 16px; top: var(--tool-panel-top,126px); z-index: 84; color: #efeade; font-family: system-ui, sans-serif; pointer-events: none; }
+.faction-tools button, .faction-tools input, .faction-tools select { font: inherit; }
+.faction-tools button { background: #29362c; color: #efeade; border: 1px solid #879873; border-radius: 4px; padding: 7px 10px; cursor: pointer; }
+.faction-tools button:hover:not(:disabled) { background: #3d5540; border-color: #e4ce91; }
+.faction-tools button:disabled { opacity: .5; cursor: default; }
+.faction-tools :focus-visible { outline: 3px solid #edcd86; outline-offset: 2px; }
+.faction-launch { pointer-events: auto; font-size: 12px !important; }
+.faction-panel { pointer-events: auto; box-sizing: border-box; width: min(370px,calc(100vw - 32px)); max-height: calc(100dvh - 210px); overflow-y: auto; overscroll-behavior: contain; background: #152019f5; border: 1px solid #879873; border-radius: 7px; padding: 13px; margin-top: 5px; box-shadow: 0 8px 32px #0008; }
+.faction-tools [hidden] { display: none !important; }
+.faction-panel header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.faction-panel h2 { font-size: 18px; margin: 0; }
+.faction-panel h3 { font-size: 15px; margin: 14px 0 7px; }
+.faction-panel p, .faction-unit-list { font-size: 12px; line-height: 1.45; }
+.faction-panel section { border-top: 1px solid #4d614c; margin-top: 12px; }
+.faction-panel section > button { margin: 4px 4px 3px 0; }
+.faction-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.faction-field { display: flex; flex-direction: column; gap: 5px; margin: 9px 0; font-size: 12px; }
+.faction-field input, .faction-field select { width: 100%; min-width: 0; box-sizing: border-box; padding: 7px; color: #efeade; background: #09150e; border: 1px solid #78876a; border-radius: 4px; }
+.faction-reason { color: #cad6c3; }
+.faction-notice { border: 1px solid #82a57b; background: #2c412f; padding: 8px; }
+.faction-error { background: #4a2c23; border-color: #d99780; }
+.faction-unit-list { padding-left: 18px; overflow-wrap: anywhere; }
+.faction-unit-list li { margin: 8px 0; }
+@media(max-width:600px) { .faction-tools { top: 190px; left: 8px; } .faction-panel { width: min(350px,calc(100vw - 16px)); max-height: calc(100dvh - 234px); } }
+
+.photo-mode .faction-tools { visibility:hidden; }

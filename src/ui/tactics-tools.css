@@ -1,0 +1,27 @@
+.tactics-tools { position: absolute; left: 16px; top: var(--tool-panel-top,126px); z-index: 82; color: #efeade; font-family: system-ui, sans-serif; pointer-events: none; }
+.tactics-tools button, .tactics-tools input, .tactics-tools select { font: inherit; }
+.tactics-tools button { background: #25352c; color: #efeade; border: 1px solid #8a9676; border-radius: 4px; padding: 7px 10px; cursor: pointer; }
+.tactics-tools button:hover:not(:disabled) { background: #3b523f; border-color: #e2c987; }
+.tactics-tools button:disabled { opacity: .5; cursor: default; }
+.tactics-tools :focus-visible { outline: 3px solid #efce7d; outline-offset: 2px; }
+.tactics-launch { pointer-events: auto; font-size: 12px !important; }
+.tactics-panel { pointer-events: auto; box-sizing: border-box; width: min(360px, calc(100vw - 32px)); max-height: calc(100dvh - 174px); overflow-y: auto; overscroll-behavior: contain; background: #132019f2; border: 1px solid #8a9676; border-radius: 7px; padding: 13px; margin-top: 5px; box-shadow: 0 8px 32px #0008; }
+.tactics-tools [hidden] { display: none !important; }
+.tactics-panel header { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.tactics-panel h2 { font-size: 19px; margin: 0; }
+.tactics-panel h3 { font-size: 15px; margin: 16px 0 7px; }
+.tactics-panel p, .tactics-unit-list { font-size: 12px; line-height: 1.45; }
+.tactics-panel section { border-top: 1px solid #526047; margin-top: 12px; }
+.tactics-summary { color: #e6d3a3; }
+.tactics-permission, .tactics-reason { color: #c7d4c3; }
+.tactics-notice { border: 1px solid #85a57b; background: #2b402d; padding: 8px; }
+.tactics-error { border-color: #d9957e; background: #452c24; }
+.tactics-fields, .tactics-formations { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0; }
+.tactics-field { display: flex; flex-direction: column; gap: 5px; font-size: 12px; margin: 7px 0; }
+.tactics-field input, .tactics-field select { width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #73846b; border-radius: 4px; color: #efeade; background: #09150e; padding: 7px; }
+.tactics-panel section > button { margin: 4px 5px 4px 0; }
+.tactics-unit-list { padding-left: 18px; overflow-wrap: anywhere; }
+.tactics-unit-list li { margin: 8px 0; }
+@media (max-width: 600px) { .tactics-tools { left: 8px; top: 150px; } .tactics-panel { width: min(340px, calc(100vw - 16px)); max-height: calc(100dvh - 194px); } }
+
+.photo-mode .tactics-tools { visibility:hidden; }

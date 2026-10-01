@@ -1,0 +1,42 @@
+
+ RUN  v4.1.11 /home/morgana/.codex/worktrees/combat-tactics/orcs-vs-Fairies
+
+ ✓ tests/combat-tactics.test.ts > combat tactics encounters > line preserves stable slots, routes around a building, and regroups after a casualty 126ms
+ ✓ tests/combat-tactics.test.ts > combat tactics encounters > wedge preserves stable slots, routes around a building, and regroups after a casualty 74ms
+ ✓ tests/combat-tactics.test.ts > combat tactics encounters > square preserves stable slots, routes around a building, and regroups after a casualty 74ms
+ ✓ tests/combat-tactics.test.ts > combat tactics encounters > loose preserves stable slots, routes around a building, and regroups after a casualty 62ms
+ ✓ tests/combat-tactics.test.ts > combat tactics encounters > assigns the same formation destinations for arbitrary entity-array and command-ID order 17ms
+ ✓ tests/combat-tactics.test.ts > combat tactics encounters > retains held facing and resolves front, side and rear damage through real attacks 26ms
+ ✓ tests/combat-tactics.test.ts > combat tactics encounters > an isolated wounded fighter retreats while allied support recovers morale 113ms
+ ✓ tests/combat-tactics.test.ts > combat tactics encounters > surrounded broken troops surrender without healing or changing their original definition 4ms
+ ✓ tests/combat-tactics.test.ts > combat tactics encounters > a frontal shield consumes guard energy; rear and turned shields leave the ally exposed 16ms
+ ✓ tests/combat-tactics.test.ts > combat tactics encounters > shield support also protects an allied player, and depletion restores full damage 21ms
+ ✓ tests/combat-tactics.test.ts > combat tactics encounters > buildings and rocks reduce ranged hits; cover does not reduce melee damage 19ms
+ ✓ tests/combat-tactics.test.ts > combat tactics encounters > destroying a covering structure through combat restores unprotected ranged damage 9ms
+ ✓ tests/combat-tactics.test.ts > combat tactics encounters > siege shell impact obeys friendlyFire=true and survives a mid-flight save 15ms
+ ✓ tests/combat-tactics.test.ts > combat tactics encounters > siege shell impact obeys friendlyFire=false and survives a mid-flight save 19ms
+ × tests/combat-tactics.test.ts > combat tactics encounters > moving cavalry gains impact while stops and sharp turns lose the charge 42ms
+   → expected 29.400000000000006 to be less than 29.400000000000006
+ ✓ tests/combat-tactics.test.ts > combat tactics encounters > frontal braced pikes cancel charge and hurt the rider; a rear charge retains impact 18ms
+ ✓ tests/combat-tactics.test.ts > combat tactics encounters > crew deaths leave neutral equipment which channels capture, retains stats and obeys its new owner 29ms
+ ✓ tests/combat-tactics.test.ts > combat tactics encounters > an enemy guard contests siege capture until it leaves the equipment 28ms
+ ✓ tests/combat-tactics.test.ts > combat tactics encounters > ambush troops remain concealed, withhold fire, and reveal on the selected trigger 14ms
+ ✓ tests/combat-tactics.test.ts > combat tactics encounters > scout detection, manual release and destroyed concealment expose an ambush without leaking its trigger 7ms
+ ✓ tests/combat-tactics.test.ts > combat tactics encounters > formation, ambush and combat history replay to the same saved checksum 55ms
+ ✓ tests/combat-tactics.test.ts > combat tactics encounters > rejects invalid command fields and malformed persistent tactical state 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/combat-tactics.test.ts > combat tactics encounters > moving cavalry gains impact while stops and sharp turns lose the charge
+AssertionError: expected 29.400000000000006 to be less than 29.400000000000006
+ ❯ tests/combat-tactics.test.ts:74:90
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 21 passed (22)
+   Start at  02:41:03
+   Duration  1.16s (transform 218ms, setup 0ms, import 258ms, tests 796ms, environment 0ms)
+

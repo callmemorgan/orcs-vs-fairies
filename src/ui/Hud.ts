@@ -1,3 +1,4 @@
+import { canObserveTacticalEntity, isCrewless } from '../core/tactics';
 import { technologyTree } from './TechnologyTree';
 import { researchRequirement, playerAge, buildingAgeRequired, AGE_NAMES, upgradeAppliesTo } from '../core/progression';
 import { observedHealth, PlayerView } from '../core/observation';
@@ -147,9 +148,9 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
     for(const r of callbacks?.resourceMemory?.()??playerView.resourcesFor(s)){const i=fogKey(s,r);if(levelOf(r)!==level||r.amount<=0||!s.explored[localSide].has(i))continue;ctx.fillStyle=r.kind==='wood'?'#688c53':r.kind==='crystal'?'#b497e7':'#b49c76';ctx.fillRect(r.x*cw-1,r.y*ch-1,2,2);}
     const settings=appearance.value,teams=(s as GameState&{teams?:number[]}).teams;
     for(const e of s.entities){
-      if(levelOf(e)!==level||e.hp<=0||e.side!==localSide&&!s.visible[localSide].has(fogKey(s,e)))continue;
+      if(levelOf(e)!==level||e.hp<=0||!canObserveTacticalEntity(s,localSide,e))continue;
       const style=ownershipStyle(e.side,localSide,settings,teams),size=e.kind==='building'?3.5:2.3,points=markerPolygon(settings.patterns?e.side:1,e.x*cw,e.y*ch,size);
-      ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.fillStyle=style.css;ctx.fill();ctx.lineWidth=settings.outlines?1.1:.7;ctx.strokeStyle=settings.outlines?style.outlineCss:'#101820';ctx.stroke();
+      ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.fillStyle=isCrewless(e)?'#aab4bd':style.css;ctx.fill();ctx.lineWidth=settings.outlines?1.1:.7;ctx.strokeStyle=settings.outlines?style.outlineCss:'#101820';ctx.stroke();
     }
     const alerts=minimapAlerts.update(s,localSide),pulse=.7+.3*Math.sin(s.time*5);
     for(const alert of alerts){if(levelOf(alert)!==level)continue;
@@ -184,7 +185,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
       el('.objective-tag').textContent=`${AGE_NAMES[playerAge(s.players[localSide])]} · ${s.scenario?.definition.title ?? (s.rules?.mode==='hill'?'Capture and defend the hill':s.rules?.mode==='relic'?'Collect and defend the relics':s.rules?.mode==='survival'?'Defeat every survival wave':s.rules?.mode==='scenario'?'Complete the scenario objectives':'Destroy all enemy strongholds')} · ${s.mapSize} · seed ${s.seed}`;
       setText('#clock',`${Math.floor(s.time/60).toString().padStart(2,'0')}:${Math.floor(s.time%60).toString().padStart(2,'0')}`);
       if(performance.now()>noticeUntil)el('.notice').hidden=true;
-      const entities=s.entities.filter(e=>selected.includes(e.id)&&e.hp>0&&(e.side===localSide||s.visible[localSide].has(fogKey(s,e)))).map(e=>e.side===localSide?e:{...e,...observedHealth(s,localSide,e)});const own=entities.filter(e=>e.side===localSide);const first=entities[0];
+      const entities=s.entities.filter(e=>selected.includes(e.id)&&e.hp>0&&canObserveTacticalEntity(s,localSide,e)).map(e=>e.side===localSide?e:{...e,...observedHealth(s,localSide,e)});const own=entities.filter(e=>e.side===localSide&&!isCrewless(e));const first=entities[0];
       const entityDef=first?entityDefinition(s,first):null;
       setText('#selection-count',entities.length?`${entities.length} SELECTED`:'NO UNITS');
       setText('#selection-name',entities.length>1?`${entities.length} selected`:entityDef?.name??'Your command awaits');

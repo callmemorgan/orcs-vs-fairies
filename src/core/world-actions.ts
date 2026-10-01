@@ -5,7 +5,7 @@ import { levelOf, sameLevel, fogKey, setWorldTerrain } from './world-map';
 import type { Command, Entity, GameState, Side, Vec } from './types';
 import type { WorldBridge } from './world-types';
 
-export interface WorldActionHooks { move(actor:Entity,to:Vec,dt:number,reach:number):boolean; finish(actor:Entity):void; interrupt?(actor:Entity):void; die?:(actor:Entity,text:string)=>void }
+export interface WorldActionHooks { attack?:(actor:Entity,target:WorldBridge)=>void;range?:(actor:Entity,target:WorldBridge)=>number; move(actor:Entity,to:Vec,dt:number,reach:number):boolean; finish(actor:Entity):void; interrupt?(actor:Entity):void; die?:(actor:Entity,text:string)=>void }
 const known=(s:GameState,side:Side,point:Vec)=>s.visible[side].has(fogKey(s,point));
 const distance=(a:Vec,b:Vec)=>sameLevel(a,b)?length2D(a.x-b.x,a.y-b.y):Infinity;
 function claimRebuild(s:GameState,bridge:WorldBridge,side:Side):boolean {
@@ -53,6 +53,7 @@ function evacuateBridge(s:GameState,bridge:WorldBridge,hooks:WorldActionHooks):v
   unit.order={type:'idle'};delete unit.orderQueue;unit.path=[];hooks.interrupt?.(unit);
  }
 }
+export function collapseBridge(s:GameState,bridge:WorldBridge,side:Side,hooks:WorldActionHooks):void {for(const tile of bridge.tiles)setWorldTerrain(s,{x:tile%s.width+.5,y:Math.floor(tile/s.width)+.5,level:bridge.level},'water');for(const unit of s.entities)if(levelOf(unit)===bridge.level)unit.path=[];evacuateBridge(s,bridge,hooks);s.events.push({type:'message',side:side,x:bridge.x,y:bridge.y,level:bridge.level,target:bridge.id,text:'Bridge destroyed. Rebuild with workers to restore the crossing.'});}
 export function processWorldAction(s:GameState,e:Entity,dt:number,hooks:WorldActionHooks):boolean {
  const world=s.world,o=e.order;if(!world)return false;
  if(o.type==='traverse'){
@@ -67,14 +68,15 @@ export function processWorldAction(s:GameState,e:Entity,dt:number,hooks:WorldAct
  if(o.type!=='worldAttack'&&o.type!=='repairBridge')return false;
  const bridge=world.bridges.find(b=>b.id===o.target);if(!bridge)return false;
  if(!sameLevel(e,bridge)){hooks.finish(e);return true;}
- const def=unitFor(s,e),edge=bridgeEdge(bridge,s,e),reach=o.type==='worldAttack'?def.range:1.4;
+ const def=unitFor(s,e),edge=bridgeEdge(bridge,s,e),reach=o.type==='worldAttack'?(hooks.range?.(e,bridge)??def.range):1.4;
  if(!hooks.move(e,edge,dt,reach))return true;
  e.animation='attack';
  if(o.type==='worldAttack'){
   if(bridge.hp<=0){hooks.finish(e);return true;}if(e.cooldown>0)return true;
+  if(hooks.attack){hooks.attack(e,bridge);return true;}
   const amount=Math.min(bridge.hp,Math.max(1,def.damage*(def.buildingDamageMultiplier??1)));bridge.hp-=amount;e.cooldown=def.cooldown;
   s.events.push({type:'attack',side:e.side,x:e.x,y:e.y,level:levelOf(e),source:e.id,target:bridge.id,amount});
-  if(bridge.hp===0){for(const tile of bridge.tiles)setWorldTerrain(s,{x:tile%s.width+.5,y:Math.floor(tile/s.width)+.5,level:bridge.level},'water');for(const unit of s.entities)if(levelOf(unit)===bridge.level)unit.path=[];evacuateBridge(s,bridge,hooks);s.events.push({type:'message',side:e.side,x:bridge.x,y:bridge.y,level:bridge.level,target:bridge.id,text:'Bridge destroyed. Rebuild with workers to restore the crossing.'});hooks.finish(e);}
+  if(bridge.hp===0){collapseBridge(s,bridge,e.side,hooks);hooks.finish(e);}
  }else{
   if(e.role!=='worker'||bridge.hp===bridge.maxHp){hooks.finish(e);return true;}
   if(bridge.hp===0){if(!claimRebuild(s,bridge,e.side)){hooks.finish(e);return true;}bridge.rebuilding=Math.min(1,bridge.rebuilding+dt/12);if(bridge.rebuilding===1){bridge.hp=bridge.maxHp;bridge.repairSide=null;for(const tile of bridge.tiles)setWorldTerrain(s,{x:tile%s.width+.5,y:Math.floor(tile/s.width)+.5,level:bridge.level},'bridge');s.events.push({type:'build',side:e.side,x:bridge.x,y:bridge.y,level:bridge.level,target:bridge.id,text:'Bridge rebuilt.'});hooks.finish(e);}}
