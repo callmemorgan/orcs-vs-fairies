@@ -5,7 +5,8 @@ const {chromium}=await import(process.env.OVF_PLAYWRIGHT_MODULE??'playwright');
 const base=process.argv[2]??'http://127.0.0.1:5393',out=process.argv[3]??'docs/evidence/economy-scenario-integration-20261001/modal-browser';
 await mkdir(out,{recursive:true});
 const browser=await chromium.launch({headless:true,args:['--disable-dev-shm-usage']}),page=await browser.newPage({viewport:{width:1280,height:720}});
-const result={base,sourceCommit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),checks:[],errors:[]};
+const sourceCommit=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
+const result={base,sourceCommit,productionSourceCommit:process.env.OVF_PRODUCTION_SOURCE_COMMIT??sourceCommit,checks:[],errors:[]};
 page.on('pageerror',error=>result.errors.push(error.message));
 const record=(name,value=true)=>{result.checks.push({name,value});console.log(`${name}: ${JSON.stringify(value)}`);};
 try{
@@ -27,7 +28,7 @@ try{
   const close=page.getByRole('button',{name:'Close economy and settlements',exact:true});await close.focus();await page.keyboard.press('Shift+Tab');assert(await page.evaluate(()=>document.querySelector('.economy-dialog').contains(document.activeElement)));await page.keyboard.press('Tab');assert(await page.evaluate(()=>document.activeElement.getAttribute('aria-label')==='Close economy and settlements'));
   await page.screenshot({path:`${out}/economy-${viewport.width}.png`});await page.keyboard.press('Escape');await page.waitForSelector('.economy-overlay[hidden]',{state:'attached'});assert.equal(await page.evaluate(()=>window.rts.paused),false);assert(await page.locator('[data-economy-launch]').evaluate(b=>document.activeElement===b));record(`Economy pauses, traps focus, suppresses keyboard and restores input at ${viewport.width}px`);
   await page.locator('[data-objective-tool="progress"]').click();await page.waitForSelector('.objective-overlay:not([hidden])');assert.equal(await page.evaluate(()=>window.rts.paused),false);await page.keyboard.press('Escape');await page.waitForSelector('.objective-overlay[hidden]',{state:'attached'});record(`Objectives launcher opens and Escape closes at ${viewport.width}px`);
-  await page.locator('[data-session-tool="saves"]').click();await page.waitForSelector('.session-overlay:not([hidden])');assert.equal(await page.locator('[data-economy-launch]').isDisabled(),true);await page.getByRole('button',{name:'Close session tools',exact:true}).click();record(`Session modal disables Economy launcher at ${viewport.width}px`);
+  await page.locator('[data-session-tool="saves"]').click();await page.waitForSelector('.session-overlay:not([hidden])');await page.waitForFunction(()=>document.querySelector('[data-economy-launch]')?.disabled===true,null,{timeout:5000});assert.equal(await page.locator('[data-economy-launch]').isDisabled(),true);await page.getByRole('button',{name:'Close session tools',exact:true}).click();record(`Session modal disables Economy launcher at ${viewport.width}px`);
  }
  assert.deepEqual(result.errors,[]);result.passed=true;
 }catch(error){result.passed=false;result.error=String(error);await page.screenshot({path:`${out}/failure.png`}).catch(()=>{});throw error;}finally{await writeFile(`${out}/results.json`,JSON.stringify(result,null,2));await browser.close();}
