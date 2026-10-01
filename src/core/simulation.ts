@@ -166,7 +166,7 @@ function finishOrder(s:GameState,e:Entity):void {
 }
 export function issueCommand(s:GameState,side:Side,c:Command):boolean{
  if(!validateCommand(c))return false;
- const accepted=applyCommand(s,side,c);if(accepted&&!runtime(s).stepping){if(runtime(s).hits.length)resolveHits(s);refreshVisibility(s);}if(accepted&&!runtime(s).stepping)notifyCommand(s,side,c);return accepted;
+ const accepted=applyCommand(s,side,c);if(accepted&&!runtime(s).stepping){if(runtime(s).hits.length)resolveHits(s);if(c.type==='ability'||c.type==='engineerBuild')refreshVisibility(s);}if(accepted&&!runtime(s).stepping)notifyCommand(s,side,c);return accepted;
 }
 function applyCommand(s:GameState,side:Side,c:Command):boolean{
  if(!validateCommand(c)||isGameOver(s)||!s.players[side]||s.eliminated[side])return false;const p=s.players[side],f=factionFor(s,side);
