@@ -1,0 +1,95 @@
+{
+  "status": "passed",
+  "generatedAt": "2026-10-01T16:37:51.075Z",
+  "cwd": "/home/morgana/.codex/worktrees/packaged-cli-parity-save4/orcs-vs-Fairies",
+  "output": "/home/morgana/.codex/worktrees/packaged-cli-parity-save4/orcs-vs-Fairies/work/packaged-cli-parity/final-save4-guard-6a634b2-01",
+  "input": "--fixture",
+  "checks": [
+    {
+      "name": "packaged CLI and direct core agree on every tick and accepted command",
+      "initialTick": 0,
+      "finalTick": 2402,
+      "ticksChecked": 2402,
+      "commandsChecked": 6,
+      "finalChecksum": "bd34d369",
+      "finalSha256": "7987e26a5fdf5c0d119e3f8b1803cd3e078a4b5df2c72855c6284c2ba1f76dad",
+      "nativeSessionFinalEqual": true
+    },
+    {
+      "name": "fresh packaged CLI reload and batched continuation agree with uninterrupted playback",
+      "checkpointTick": 1201,
+      "finalTick": 2402,
+      "batches": [
+        {
+          "from": 1201,
+          "to": 2401,
+          "ticks": 1200
+        },
+        {
+          "from": 2401,
+          "to": 2402,
+          "ticks": 1
+        }
+      ],
+      "maximumRequestTicks": 1200,
+      "finalResult": {
+        "finished": false,
+        "winner": null,
+        "winningTeam": null,
+        "draw": false,
+        "eliminated": [
+          false,
+          false
+        ],
+        "time": 120.09999999999532,
+        "tick": 2402,
+        "side": 0,
+        "teamId": 0,
+        "outcome": null
+      },
+      "rejectedRequestsPreserveState": true
+    },
+    {
+      "name": "all checkout files, HEAD and fresh builds remain unchanged",
+      "files": 5246,
+      "sourceSha256": "87004e6d082b948d9b273ce4653cebd3a4f33d5da94a40d9fb5c67a3cf518957",
+      "head": "6a634b200bbc978e0bd8abe2e9ba55833190d129"
+    }
+  ],
+  "source": {
+    "head": "6a634b200bbc978e0bd8abe2e9ba55833190d129",
+    "sha256": "87004e6d082b948d9b273ce4653cebd3a4f33d5da94a40d9fb5c67a3cf518957",
+    "workingTree": "",
+    "files": 5246
+  },
+  "builds": {
+    "dist-cli/metafile.json": {
+      "sha256": "6f94d427299aeb929e3dcd67ff9231edc9531f3788f9e2bfb9a753d8d2575b2b",
+      "bytes": 32006
+    },
+    "dist-cli/package.json": {
+      "sha256": "3ca9d4afd21425087cf31893b8f9f63c81b0b8408db5e343ca76e5f8aa26ab9a",
+      "bytes": 23
+    },
+    "dist-cli/rts.js": {
+      "sha256": "a6efe2a73e7c1128de9289012103ee7d79b7c19b44ef301e6c70cf5107845ff4",
+      "bytes": 631146
+    },
+    "reference/core.mjs": {
+      "sha256": "2c907521c3294786c9db5e7c2d1d0f37f2b1706155a4f0e6648e85be9563163e",
+      "bytes": 755737
+    },
+    "reference/metafile.json": {
+      "sha256": "dbf3959d719b7456088d565f6fb43461efbe085ec454e454f9aa6634dfd98583",
+      "bytes": 36847
+    }
+  },
+  "cleanupErrors": [],
+  "method": "Build the production CLI using build:cli into a fresh dist-cli/rts.js, spawn it twice, send public JSON load/command/advance/save/result requests over stdin, compare complete native save JSON and checksum with a separately bundled direct-core reference every tick and command, then load a saved midpoint and continue in requests of at most 1200 ticks. Retain raw public stdin/stdout as gzip, CLI hash logs, process exits, native checkpoints and full source/build manifests.",
+  "limits": [
+    "Public CLI load changes human controllers and sets the controlled side to external; this full-save verifier rejects those incompatible archives.",
+    "Only commands for one controlled external side and 0.05-second ticks are supported.",
+    "The generated fixture is a short economy and recruitment run, not a natural victory or a full tournament.",
+    "This verifier executes the packaged CLI. Browser/Node helper parity remains a separate check."
+  ]
+}

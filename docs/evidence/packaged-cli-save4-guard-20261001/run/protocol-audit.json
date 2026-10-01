@@ -1,0 +1,23 @@
+{
+  "status": "passed",
+  "sourcePin": "6a634b200bbc978e0bd8abe2e9ba55833190d129",
+  "method": "Audit retained stdout only: recompute every complete native-save SHA-256 and UTF-16 FNV checksum, compare with direct-core records and public CLI hash log, then compare both complete final saves with the retained native session game. No second simulation or CLI proof run.",
+  "checks": [
+    {
+      "process": "main",
+      "publicRequests": 4819,
+      "nativeSavesMatchedToComparisons": 2410,
+      "cliHashLogEntries": 4819,
+      "protocolErrors": 0,
+      "completeNativeFinalSessionEqual": true
+    },
+    {
+      "process": "continuation",
+      "publicRequests": 13,
+      "nativeSavesMatchedToComparisons": 6,
+      "cliHashLogEntries": 11,
+      "protocolErrors": 2,
+      "completeNativeFinalSessionEqual": true
+    }
+  ]
+}
