@@ -1,5 +1,5 @@
 import { normalizeMatchRules, createDraft, applyDraftChoice, tickDraft, draftPlayers, definitionAllowed, validateDraftState } from './match-rules';
-import { afterScenarioCommand, afterScenarioStep, isScenarioScriptedCommand, scenarioCommandPermitted, scenarioSessionForState } from './scenarios';
+import { afterScenarioCommand, afterScenarioStep, isScenarioScriptedCommand, scenarioCommandPermitted, scenarioSessionForState, scenarioStateRulesCompatible } from './scenarios';
 import { initializeObjectives, emptyObjectives, evaluateObjectives, collectRelic, dropRelic, objectiveAi } from './objectives';
 import { DIRECTIONS_24, DIRECTIONS_32, facing8, length2D } from './geometry';
 import { commanderArtifact, creditCombat, dropArtifact, dropArtifacts, equipArtifact, promote, progressionStats, recordCombatExposure, recoverArtifact, stepVeterans, unequipArtifact } from './unit-progression';
@@ -428,6 +428,7 @@ function neutralHooks(s:GameState){return {
  lineOfSight:(from:Vec,to:Vec)=>terrainLineOfSight(s,from,to),
 };}
 export function stepGame(s:GameState,dt:number):void{
+ if(!scenarioStateRulesCompatible(s))throw new Error('This mission uses historical or unpinned simulation rules. It is available for inspection.');
  const before=s.tick,rt=runtime(s);rt.stepping=true;
  try{applyStep(s,dt);}finally{rt.stepping=false;aiRecoveryScopes.delete(s);}
  if(s.tick!==before){const scenario=scenarioSessionForState(s);if(scenario)afterScenarioStep(scenario,Math.min(dt,.25));}

@@ -1,14 +1,15 @@
-import { captureScenario, createScenario, restoreScenario, validateScenario } from '../core/scenarios';
+import { captureScenario, createScenario, restoreScenario, scenarioRulesCompatibility, validateScenario } from '../core/scenarios';
 import type { CampaignDefinition, ScenarioDefinition, ScenarioSession } from '../core/scenario-types';
 import './scenario-tools.css';
 
 export interface CampaignProgressView { campaignId: string; chapter: number; choiceId?: string; completed: string[]; finished: boolean }
 export interface ScenarioToolsCallbacks {
   session: () => ScenarioSession | null;
-  start: (session: ScenarioSession) => void;
+  start: (session: ScenarioSession, inspectionReason?: string) => void;
   reset: () => void;
   select: (ids: number[]) => void;
   center: (x: number, y: number) => void;
+  readOnlyReason?: () => string | null;
   notice?: (text: string) => void;
   campaign?: {
     progress: () => CampaignProgressView | null;
@@ -28,12 +29,14 @@ export class ScenarioTools {
   private readonly root: HTMLElement;
   private readonly picker: HTMLElement;
   private readonly status: HTMLElement;
+  private readonly readOnlyNotice: HTMLElement;
   private readonly objectives: HTMLElement;
   private readonly mechanics: HTMLElement;
   private readonly messages: HTMLElement;
   private readonly error: HTMLElement;
   private readonly branches: HTMLElement;
   private readonly continueButton: HTMLButtonElement;
+  private readonly resetButton: HTMLButtonElement;
   private readonly controls: HTMLElement;
   private readonly scenarioSelect: HTMLSelectElement;
   private current: ScenarioSession | null = null;
@@ -55,20 +58,21 @@ export class ScenarioTools {
     launch.onclick = () => this.run(() => callbacks.start(createScenario(content.scenarios[select.value])));
     this.picker.append(campaigns, practice, launch);
     this.status = element('p'); this.status.setAttribute('role', 'status'); this.status.setAttribute('aria-live', 'polite');
+    this.readOnlyNotice = element('p'); this.readOnlyNotice.className = 'scenario-compatibility'; this.readOnlyNotice.setAttribute('role', 'note'); this.readOnlyNotice.hidden = true;
     this.objectives = element('ol'); this.objectives.setAttribute('aria-label', 'Mission objectives');
     this.mechanics = element('p'); this.mechanics.className = 'scenario-mechanics';
     this.messages = element('p'); this.messages.className = 'scenario-dialogue';
     this.controls = element('div'); this.controls.className = 'scenario-controls';
     const army = element('button', 'Select mission army'); army.onclick = () => { const session = callbacks.session(); if (session) callbacks.select(session.state.entities.filter(e => e.side === 0 && e.kind === 'unit' && e.role !== 'worker' && e.hp > 0 && !e.illusion).map(e => e.id)); };
-    const reset = element('button', 'Reset mission'); reset.onclick = () => this.run(() => callbacks.reset());
+    const reset = this.resetButton = element('button', 'Reset mission'); reset.onclick = () => this.runDecision(() => callbacks.reset());
     const save = element('button', 'Save mission'); save.onclick = () => this.run(() => { const session = callbacks.session(); if (session) download(`${session.definition.id}-checkpoint.json`, captureScenario(session)); });
     const file = element('input'); file.type = 'file'; file.accept = '.json,application/json'; file.setAttribute('aria-label', 'Import mission checkpoint');
     file.onchange = () => { const selected = file.files?.[0]; if (selected) void this.importFile(selected); file.value = ''; };
     const load = element('label', 'Load mission'); load.className = 'scenario-file'; load.append(file);
-    this.continueButton = element('button', 'Continue campaign'); this.continueButton.onclick = () => this.run(() => callbacks.campaign?.continue());
+    this.continueButton = element('button', 'Continue campaign'); this.continueButton.onclick = () => this.runDecision(() => callbacks.campaign?.continue());
     this.branches = element('div'); this.branches.className = 'scenario-branches';
     this.error = element('p'); this.error.setAttribute('role', 'alert'); this.error.className = 'scenario-error'; this.error.hidden = true;
-    this.controls.append(army, reset, save, load, this.continueButton); this.root.append(heading, this.picker, this.status, this.objectives, this.mechanics, this.messages, this.controls, this.branches, this.error); host.append(this.root);
+    this.controls.append(army, reset, save, load, this.continueButton); this.root.append(heading, this.picker, this.status, this.readOnlyNotice, this.objectives, this.mechanics, this.messages, this.controls, this.branches, this.error); host.append(this.root);
     this.update();
   }
 
@@ -81,22 +85,27 @@ export class ScenarioTools {
   }
 
   private run(action: () => void): void { try { action(); this.error.hidden = true; this.lastKey = ''; this.update(); } catch (error) { this.showError(error); } }
+  private runDecision(action: () => void): void { if ((this.callbacks.readOnlyReason?.() ?? null) !== null) { this.update(); return; } this.run(action); }
   private showError(error: unknown): void { this.error.textContent = error instanceof Error ? error.message : 'The mission could not be opened.'; this.error.hidden = false; this.callbacks.notice?.(this.error.textContent); }
-  private async importFile(file: File): Promise<void> { try { if (file.size > 18 * 1024 * 1024) throw new Error('Mission checkpoint exceeds its size limit.'); const session = restoreScenario(await file.text()); this.callbacks.start(session); this.error.hidden = true; this.lastKey = ''; this.update(); } catch (error) { this.showError(error); } }
+  private async importFile(file: File): Promise<void> { try { if (file.size > 18 * 1024 * 1024) throw new Error('Mission checkpoint exceeds its size limit.'); const session = restoreScenario(await file.text()); this.callbacks.start(session, scenarioRulesCompatibility(session).reason ?? undefined); this.error.hidden = true; this.lastKey = ''; this.update(); } catch (error) { this.showError(error); } }
 
   update(): void {
     const session = this.callbacks.session(); this.current = session;
+    const reason = this.callbacks.readOnlyReason?.() ?? null, readOnly = reason !== null, explanation = reason || 'This profile is read-only.';
+    this.readOnlyNotice.hidden = !readOnly; this.readOnlyNotice.textContent = readOnly ? explanation : '';
+    this.resetButton.disabled = this.continueButton.disabled = readOnly;
+    this.resetButton.title = this.continueButton.title = readOnly ? explanation : '';
     this.controls.hidden = !session;
-    if (!session) { this.continueButton.hidden = true; this.status.textContent = 'Choose a campaign or launch a practice mission.'; this.objectives.replaceChildren(); this.mechanics.textContent = ''; this.messages.textContent = ''; this.branches.replaceChildren(); return; }
+    if (!session) { this.lastKey = ''; this.continueButton.hidden = true; this.status.textContent = 'Choose a campaign or launch a practice mission.'; this.objectives.replaceChildren(); this.mechanics.textContent = ''; this.messages.textContent = ''; this.branches.replaceChildren(); return; }
     const { definition, runtime, state } = session, progress = this.callbacks.campaign?.progress() ?? null;
     const boss = runtime.boss.telegraph;
-    const key = JSON.stringify([definition.id, runtime.outcome, runtime.completed, runtime.reinforcementRemaining, runtime.escort.checkpoint, runtime.stealth.alarms, runtime.boss.phase, boss && [boss.resolveAt, boss.interrupted, Math.ceil((boss.resolveAt - state.time) * 10) / 10], runtime.messages.at(-1), progress]);
+    const key = JSON.stringify([definition.id, runtime.outcome, runtime.completed, runtime.reinforcementRemaining, runtime.escort.checkpoint, runtime.stealth.alarms, runtime.boss.phase, boss && [boss.resolveAt, boss.interrupted, Math.ceil((boss.resolveAt - state.time) * 10) / 10], runtime.messages.at(-1), progress, reason]);
     if (key === this.lastKey) return; this.lastKey = key;
     this.continueButton.hidden = true;
-    this.status.textContent = `${definition.title} · ${runtime.outcome === 'playing' ? 'Mission in progress' : runtime.outcome === 'won' ? 'Mission complete' : `Mission failed: ${runtime.reason}`}`;
+    this.status.textContent = `${definition.title} · ${readOnly ? runtime.outcome === 'playing' ? 'Recorded mission in progress' : runtime.outcome === 'won' ? 'Recorded victory' : `Recorded defeat: ${runtime.reason}` : runtime.outcome === 'playing' ? 'Mission in progress' : runtime.outcome === 'won' ? 'Mission complete' : `Mission failed: ${runtime.reason}`}`;
     this.objectives.replaceChildren();
-    for (const objective of definition.objectives) { const item = element('li', `${runtime.completed.includes(objective.id) ? 'Complete: ' : ''}${objective.text}${objective.optional ? ' (optional)' : ''}`); item.dataset.completed = String(runtime.completed.includes(objective.id)); this.objectives.append(item); }
-    for (const requirement of definition.requiredActions ?? []) { const item = element('li', `${requirement.text} (${runtime.commandCounts[requirement.action] ?? 0}/${requirement.count})`); this.objectives.append(item); }
+    for (const objective of definition.objectives) { const item = element('li', `${runtime.completed.includes(objective.id) ? readOnly ? 'Recorded complete: ' : 'Complete: ' : ''}${objective.text}${objective.optional ? ' (optional)' : ''}`); item.dataset.completed = String(runtime.completed.includes(objective.id)); this.objectives.append(item); }
+    for (const requirement of definition.requiredActions ?? []) { const item = element('li', `${requirement.text} (${runtime.commandCounts[requirement.ability ? `ability.${requirement.ability}` : requirement.action] ?? 0}/${requirement.count})`); this.objectives.append(item); }
     const mechanics = [definition.rules.fixedArmy ? 'Fixed army; recruitment, construction and research are unavailable.' : `${runtime.reinforcementRemaining} reinforcement orders remain. Cancelled orders still use a reinforcement.`];
     if (definition.escort) mechanics.push(`Convoy checkpoint ${runtime.escort.checkpoint}/${definition.escort.route.length}; nearby escorts keep it moving.`);
     if (definition.stealth) mechanics.push(`Alarms ${runtime.stealth.alarms}/${definition.stealth.alarmLimit}. Guard cones detect real infiltrators; illusions can distract patrols.`);
@@ -108,7 +117,7 @@ export class ScenarioTools {
       const campaign = this.content.campaigns[progress.campaignId];
       if (campaign && progress.chapter === 2 && !progress.choiceId) {
         this.branches.append(element('p', campaign.choice.prompt));
-        for (const choice of campaign.choice.options) { const button = element('button', choice.text); button.dataset.choice = choice.id; button.title = choice.consequence; button.onclick = () => this.run(() => this.callbacks.campaign?.choose(choice.id)); this.branches.append(button, element('p', choice.consequence)); }
+        for (const choice of campaign.choice.options) { const button = element('button', choice.text); button.dataset.choice = choice.id; button.disabled = readOnly; button.title = readOnly ? explanation : choice.consequence; button.onclick = () => this.runDecision(() => this.callbacks.campaign?.choose(choice.id)); this.branches.append(button, element('p', choice.consequence)); }
       } else this.continueButton.hidden = false;
     }
   }

@@ -9,6 +9,7 @@ import { loadGame, saveGame } from './saves';
 import { applyScenarioDamage, createMatch, isAllied, isHostile, isVisible, issueCommand, refreshVisibility, spawnDefinition, spawnEntity, stepGame } from './simulation';
 import { scenarioJson, validateScenario } from './scenario-validation';
 import { fogKey } from './world-map';
+import { SIMULATION_REVISION } from './versions';
 import type { Command, Entity, GameState, MatchConfig, Side, UnitRole, Vec } from './types';
 import type { ScenarioAction, ScenarioActor, ScenarioBinding, ScenarioCheckpoint, ScenarioCondition, ScenarioDefinition, ScenarioOrder, ScenarioRuntime, ScenarioSession } from './scenario-types';
 export { validateScenario } from './scenario-validation';
@@ -19,10 +20,17 @@ const commandListeners = new WeakMap<GameState, Set<(side: Side, command: Comman
 const commandGeneration = new WeakMap<GameState, number>();
 const scriptedCommands = new WeakSet<GameState>();
 type BoundState = GameState & { scenario?: ScenarioBinding };
-export function bindScenarioState(session: ScenarioSession): void { (session.state as BoundState).scenario = { definition: session.definition, runtime: session.runtime }; }
+export function bindScenarioState(session: ScenarioSession): void { (session.state as BoundState).scenario = { definition: session.definition, runtime: session.runtime, ...(session.simulationRevision === undefined ? {} : { simulationRevision: session.simulationRevision }) }; }
 export function scenarioSessionForState(state: GameState): ScenarioSession | null {
   const binding = (state as BoundState).scenario; return binding ? { ...binding, state } : null;
 }
+export function scenarioRulesCompatibility(session: Pick<ScenarioSession, 'simulationRevision'>): {compatible:boolean;reason:string|null;revision:string} {
+  const revision = session.simulationRevision ?? 'unknown';
+  const reason = session.simulationRevision === undefined ? 'This mission has no pinned simulation rules. It is available for inspection.' : revision !== SIMULATION_REVISION ? `This mission uses simulation rules ${revision}; this build uses ${SIMULATION_REVISION}. It is available for inspection.` : null;
+  return { compatible: reason === null, reason, revision };
+}
+export function scenarioStateRulesCompatible(state: GameState): boolean { const session = scenarioSessionForState(state); return !session || scenarioRulesCompatibility(session).compatible; }
+function requireScenarioRules(session: ScenarioSession): void { const result = scenarioRulesCompatibility(session); if (!result.compatible) throw new Error(result.reason!); }
 export function isScenarioScriptedCommand(state: GameState): boolean { return scriptedCommands.has(state); }
 function scriptedCommand(state: GameState, side: Side, command: Command): boolean {
   const prior = scriptedCommands.has(state); scriptedCommands.add(state);
@@ -138,7 +146,7 @@ export function createScenario(input: unknown, options: { firstEntityId?: number
     stealth: { alarms: 0, exposure: {}, detected: [], patrol: {}, distractedUntil: {} },
     boss: { phase: -1, nextAttack: 4, telegraph: null, phasesEntered: [], interrupted: 0, hits: 0, dodged: 0 }, commandCounts: {},
   };
-  const session = { definition, state, runtime };
+  const session = { definition, state, runtime, simulationRevision: SIMULATION_REVISION };
   bindScenarioState(session);
   spawnActors(session, definition.army);
   if (definition.boss) { const boss = actor(session, definition.boss.actor)!; boss.hp = definition.boss.health; boss.maxHp = boss.hp; }
@@ -159,6 +167,7 @@ function action(session: ScenarioSession, value: ScenarioAction): void {
 }
 
 export function evaluateScenario(session: ScenarioSession): void {
+  requireScenarioRules(session);
   if (session.runtime.outcome !== 'playing') return;
   const commander = actor(session, 'commander');
   if (commander) session.runtime.variables['equipment.commander'] = Object.values(commander.equipment ?? {}).filter(id => session.state.specialists?.artifacts.some(item => item.id === id && item.owner === commander.side && item.holder === commander.id && !item.position)).length;
@@ -323,11 +332,13 @@ function recordEvents(session: ScenarioSession, start = 0): void {
 
 /** Call after the shared simulation step when a client already owns its fixed tick loop. */
 export function afterScenarioStep(session: ScenarioSession, dt: number): void {
+  requireScenarioRules(session);
   if (session.runtime.outcome !== 'playing' || session.runtime.lastEvaluatedTick >= session.state.tick) return;
   session.runtime.lastEvaluatedTick = session.state.tick;
   recordEvents(session); advanceEscort(session); advanceStealth(session, dt); advanceBoss(session); evaluateScenario(session);
 }
 export function stepScenario(session: ScenarioSession, dt = .05): void {
+  requireScenarioRules(session);
   if (session.runtime.outcome !== 'playing') return;
   if (Math.abs(dt - .05) > 1e-9) throw new Error('Scenarios advance with the shared 0.05-second tick.');
   stepGame(session.state, dt); afterScenarioStep(session, dt);
@@ -344,6 +355,7 @@ export function issueScenarioCommand(session: ScenarioSession, side: Side, comma
 
 export function scenarioCommandPermitted(state: GameState, side: Side, command: Command): boolean {
   const session = scenarioSessionForState(state); if (!session || isScenarioScriptedCommand(state)) return true;
+  if (!scenarioRulesCompatibility(session).compatible) return false;
   if (side !== 0 || session.runtime.outcome !== 'playing') return false;
   if (side === 0 && (command.type === 'build' || command.type === 'research') && session.definition.rules.fixedArmy) return false;
   return !(side === 0 && command.type === 'train' && (session.definition.rules.fixedArmy || session.runtime.reinforcementRemaining <= 0));
@@ -371,27 +383,27 @@ export function captureScenario(session: ScenarioSession): ScenarioCheckpoint {
   delete state.scenario;
   let game: ScenarioCheckpoint['game'];
   try { game = saveGame(state); } finally { if (binding) state.scenario = binding; }
-  return { format: 'orcs-vs-fairies-scenario', version: 1, definition: clone(session.definition), runtime: clone(session.runtime), game };
+  return { format: 'orcs-vs-fairies-scenario', version: 1, definition: clone(session.definition), runtime: clone(session.runtime), game, ...(session.simulationRevision === undefined ? {} : { simulationRevision: session.simulationRevision }) };
 }
-export function resetScenario(session: ScenarioSession): ScenarioSession { return createScenario(session.definition); }
+export function resetScenario(session: ScenarioSession): ScenarioSession { requireScenarioRules(session); return createScenario(session.definition); }
 
 export function restoreScenario(input: unknown): ScenarioSession {
   let raw = input;
   if (typeof raw === 'string') { if (raw.length > 18 * 1024 * 1024) throw new Error('Scenario checkpoint exceeds its size limit.'); raw = JSON.parse(raw); }
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) throw new Error('Invalid scenario checkpoint.');
   const envelope = scenarioJson(raw, { maxBytes: 18 * 1024 * 1024, maxNodes: 1000000, maxArrayLength: 100000 }) as ScenarioCheckpoint;
-  if (Object.keys(envelope).some(key => !['format', 'version', 'definition', 'runtime', 'game'].includes(key)) || envelope.format !== 'orcs-vs-fairies-scenario' || envelope.version !== 1) throw new Error('Unsupported scenario checkpoint.');
+  if (Object.keys(envelope).some(key => !['format', 'version', 'definition', 'runtime', 'game', 'simulationRevision'].includes(key)) || envelope.format !== 'orcs-vs-fairies-scenario' || envelope.version !== 1 || envelope.simulationRevision !== undefined && (typeof envelope.simulationRevision !== 'string' || !/^\d+\.\d+\.\d+$/.test(envelope.simulationRevision) || envelope.simulationRevision.length > 80)) throw new Error('Unsupported scenario checkpoint.');
   const definition = validateScenario(envelope.definition), state = loadGame(envelope.game), runtime = scenarioJson(envelope.runtime) as ScenarioRuntime;
   if (runtime && !Object.hasOwn(runtime, 'lastEvaluatedTick')) runtime.lastEvaluatedTick = state.tick;
   validateRuntime(definition, state, runtime);
-  const session = { definition, state, runtime }; bindScenarioState(session); return session;
+  const session = { definition, state, runtime, ...(envelope.simulationRevision === undefined ? {} : { simulationRevision: envelope.simulationRevision }) }; bindScenarioState(session); return session;
 }
 
 export function validateScenarioBinding(input: unknown, state: GameState): ScenarioBinding {
   const binding = scenarioJson(input) as ScenarioBinding;
-  if (!binding || typeof binding !== 'object' || Array.isArray(binding) || Object.keys(binding).length !== 2 || !Object.hasOwn(binding, 'definition') || !Object.hasOwn(binding, 'runtime')) throw new Error('Invalid saved scenario binding.');
+  if (!binding || typeof binding !== 'object' || Array.isArray(binding) || Object.keys(binding).some(key => !['definition', 'runtime', 'simulationRevision'].includes(key)) || !Object.hasOwn(binding, 'definition') || !Object.hasOwn(binding, 'runtime') || binding.simulationRevision !== undefined && (typeof binding.simulationRevision !== 'string' || !/^\d+\.\d+\.\d+$/.test(binding.simulationRevision) || binding.simulationRevision.length > 80)) throw new Error('Invalid saved scenario binding.');
   const definition = validateScenario(binding.definition); validateRuntime(definition, state, binding.runtime);
-  return { definition, runtime: binding.runtime };
+  return { definition, runtime: binding.runtime, ...(binding.simulationRevision === undefined ? {} : { simulationRevision: binding.simulationRevision }) };
 }
 
 function validateRuntime(definition: ScenarioDefinition, state: GameState, runtime: ScenarioRuntime): void {

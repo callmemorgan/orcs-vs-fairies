@@ -127,9 +127,9 @@ export interface ScenarioRuntime {
   commandCounts: Record<string, number>;
 }
 
-export interface ScenarioSession { definition: ScenarioDefinition; state: GameState; runtime: ScenarioRuntime }
-export interface ScenarioBinding { definition: ScenarioDefinition; runtime: ScenarioRuntime }
-export interface ScenarioCheckpoint { format: 'orcs-vs-fairies-scenario'; version: 1; definition: ScenarioDefinition; runtime: ScenarioRuntime; game: SaveEnvelope }
+export interface ScenarioSession { definition: ScenarioDefinition; state: GameState; runtime: ScenarioRuntime; simulationRevision?: string }
+export interface ScenarioBinding { definition: ScenarioDefinition; runtime: ScenarioRuntime; simulationRevision?: string }
+export interface ScenarioCheckpoint { format: 'orcs-vs-fairies-scenario'; version: 1; definition: ScenarioDefinition; runtime: ScenarioRuntime; game: SaveEnvelope; simulationRevision?: string }
 
 export interface CampaignChoice { id: string; text: string; consequence: string; chapter3: string }
 export interface CampaignDefinition {

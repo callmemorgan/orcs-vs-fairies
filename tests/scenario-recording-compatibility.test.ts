@@ -1,7 +1,9 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { decodeScenarioRecording, ScenarioRecorder, scenarioCheckpointChecksum, scenarioRecordingRulesCompatibility, scenarioRecordingRulesCompatible, verifyScenarioRecording } from '../src/core/scenario-recordings';
-import { captureScenario, createScenario, restoreScenario } from '../src/core/scenarios';
+import { captureScenario, createScenario, evaluateScenario, issueScenarioCommand, resetScenario, restoreScenario, scenarioRulesCompatibility, stepScenario } from '../src/core/scenarios';
+import { issueCommand, stepGame } from '../src/core/simulation';
+import { loadGame, saveGame } from '../src/core/saves';
 import { SAVE_VERSION } from '../src/core/saves';
 import { SIMULATION_REVISION } from '../src/core/versions';
 import { SCENARIOS } from '../src/scenarios/campaigns';
@@ -22,6 +24,17 @@ describe('scenario journal rules compatibility', () => {
   it('keeps an omitted derived evaluation guard omitted in a legacy initial checkpoint', () => {
     const raw = fixture('scenario-recording'); delete raw.initial.runtime.lastEvaluatedTick;
     expect(Object.hasOwn(decodeScenarioRecording(raw).initial.runtime, 'lastEvaluatedTick')).toBe(false);
+  });
+
+  it('admits genuine unpinned checkpoints for inspection and rejects every execution entry', () => {
+    const session = restoreScenario(fixture('scenario-recording').initial), before = captureScenario(session), command = { type: 'hold' as const, ids: [session.runtime.labels.commander] };
+    expect(scenarioRulesCompatibility(session).compatible).toBe(false);
+    expect(issueScenarioCommand(session, 0, command)).toBe(false); expect(issueCommand(session.state, 0, command)).toBe(false);
+    expect(() => stepScenario(session)).toThrow('inspection'); expect(() => stepGame(session.state, .05)).toThrow('inspection');
+    expect(() => evaluateScenario(session)).toThrow('inspection'); expect(() => resetScenario(session)).toThrow('inspection');
+    expect(captureScenario(session)).toEqual(before);
+    const bound = loadGame(fixture('generic-bound-final')); expect(bound.scenario?.simulationRevision).toBeUndefined();
+    expect(() => stepGame(bound, .05)).toThrow('inspection'); expect(saveGame(bound).state.scenario?.simulationRevision).toBeUndefined();
   });
 
   it('pins both versions on new journals and verifies current state', () => {

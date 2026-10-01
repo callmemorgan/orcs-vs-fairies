@@ -1,5 +1,5 @@
 import { validateCommand } from './commands';
-import { captureScenario, issueScenarioCommand, restoreScenario, stepScenario, subscribeScenarioCommands } from './scenarios';
+import { captureScenario, issueScenarioCommand, restoreScenario, scenarioRulesCompatibility, stepScenario, subscribeScenarioCommands } from './scenarios';
 import type { ScenarioCheckpoint, ScenarioSession } from './scenario-types';
 import type { Command, Side } from './types';
 import { scenarioJson } from './scenario-validation';
@@ -23,6 +23,7 @@ export function scenarioRecordingRulesCompatibility(recording: ScenarioRecording
   const revision = recording.version === 2 ? recording.simulationRevision : LEGACY_SIMULATION_REVISIONS[recording.initial.game.version] ?? 'unknown';
   const reason = recording.version === 1 ? 'This mission journal has no pinned simulation rules. It is available for inspection.'
     : revision !== SIMULATION_REVISION ? `This mission journal uses simulation rules ${revision}; this build uses ${SIMULATION_REVISION}. It is available for inspection.`
+    : recording.initial.simulationRevision !== revision ? 'The journal initial mission has historical or unpinned simulation rules. It is available for inspection.'
     : recording.checksumVersion !== SAVE_VERSION || recording.initial.game.version !== SAVE_VERSION ? 'This mission journal uses an older save checksum format. It is available for inspection.' : null;
   return { compatible: reason === null, reason, revision };
 }
@@ -94,6 +95,7 @@ export class ScenarioRecorder {
   private readonly commands: ScenarioRecording['commands'];
   private readonly unsubscribe: () => void;
   constructor(private readonly session: ScenarioSession, previous?: ScenarioRecording) {
+    const compatibility = scenarioRulesCompatibility(session); if (!compatibility.compatible) throw new Error(compatibility.reason!);
     if (previous) {
       const recording = decodeScenarioRecording(previous);
       requireCompatible(recording);
