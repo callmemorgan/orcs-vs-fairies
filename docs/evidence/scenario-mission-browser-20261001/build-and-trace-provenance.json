@@ -1,0 +1,40 @@
+{
+  "baseCommit": "209436535aec29c46888c6aa0ab4e19e03386e9d",
+  "productionArtifacts": [
+    {
+      "path": "scenario-demo.html",
+      "bytes": 1810,
+      "sha256": "3c1065e9d82c88512f80bb2713985a00bdf6ab8ac03649430f8ad77e1a891d76"
+    },
+    {
+      "path": "assets/scenario-demo-B8Wrtrge.js",
+      "bytes": 1690113,
+      "sha256": "2dbe2f0b127b8d65f7dfef99315307bcd36c982d64949876508c9563326f218d"
+    },
+    {
+      "path": "assets/scenario-demo-tUTweOz2.css",
+      "bytes": 28315,
+      "sha256": "b9015b4593a7ec686424f4b9c6b89b0b920ade731d5356e8ee54b53cc3769447"
+    }
+  ],
+  "localPaletteOrigin": "e475008",
+  "localTraces": {
+    "/home/morgana/.codex/worktrees/scenario-browser/orcs-vs-Fairies/work/scenarios/campaign-production-proof/ui-trace.zip": {
+      "bytes": 85574919,
+      "sha256": "950fe83116a7b93f30925c37d21fe64cb5b70d45e840f1d2165d2b89969fc6af"
+    },
+    "/home/morgana/.codex/worktrees/scenario-browser/orcs-vs-Fairies/work/scenarios/campaign-production-proof-fixed/ui-trace.zip": {
+      "bytes": 101809073,
+      "sha256": "74de2965b35fd4494098ed13c18fdf1644093a2db00945e6067d4f4d6b0a921a"
+    },
+    "/home/morgana/.codex/worktrees/scenario-browser/orcs-vs-Fairies/work/scenarios/final-production-proof/ui-trace.zip": {
+      "bytes": 368983719,
+      "sha256": "463460c970d36b0f00890235597e7c3525aad3e4a63ce2960fe9f157f18f0a50"
+    }
+  },
+  "checks": {
+    "typecheck": "npx tsc --noEmit: passed",
+    "build": "npx vite build --config work/scenarios/vite.config.mjs: passed",
+    "tests": "npx vitest run tests/scenarios.test.ts tests/campaign.test.ts: 19 passed"
+  }
+}

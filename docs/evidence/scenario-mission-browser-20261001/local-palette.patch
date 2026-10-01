@@ -1,0 +1,14 @@
+diff --git a/src/game/GameScene.ts b/src/game/GameScene.ts
+index 1d6e12b..4cc7bea 100644
+--- a/src/game/GameScene.ts
++++ b/src/game/GameScene.ts
+@@ -350 +350 @@ export default class GameScene extends Phaser.Scene {
+-      const colors={grass:0x536b48,road:0x85805a,mud:0x74634d,shallows:0x5b9b98,water:0x387986,rock:0x697980,bridge:0x95734e};
++      const colors={grass:0x536b48,road:0x85805a,mud:0x74634d,shallows:0x5b9b98,water:0x387986,rock:0x697980,bridge:0x95734e,sand:0xc3a568,snow:0xc8d9db,forest:0x2e4931,ice:0x94c9d9};
+diff --git a/src/ui/Hud.ts b/src/ui/Hud.ts
+index 0b11da5..523e989 100644
+--- a/src/ui/Hud.ts
++++ b/src/ui/Hud.ts
+@@ -107 +107 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
+-    for(const i of s.explored[localSide]){ctx.fillStyle=s.visible[localSide].has(i)?({grass:'#45654a',road:'#8e8058',mud:'#69593f',water:'#316579',shallows:'#609690',rock:'#7c8386',bridge:'#b49a6b'}[s.terrain[i]]):'#22342d';ctx.fillRect((i%s.width)*cw,Math.floor(i/s.width)*ch,Math.ceil(cw),Math.ceil(ch));}
++    for(const i of s.explored[localSide]){ctx.fillStyle=s.visible[localSide].has(i)?({grass:'#45654a',road:'#8e8058',mud:'#69593f',water:'#316579',shallows:'#609690',rock:'#7c8386',bridge:'#b49a6b',sand:'#c3a568',snow:'#c8d9db',forest:'#2e4931',ice:'#94c9d9'}[s.terrain[i]]):'#22342d';ctx.fillRect((i%s.width)*cw,Math.floor(i/s.width)*ch,Math.ceil(cw),Math.ceil(ch));}

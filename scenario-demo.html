@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Orcs vs Fairies missions</title>
+    <style>
+      #scenario-panel { position: fixed; top: 94px; right: 14px; z-index: 35; width: 390px; }
+      #scenario-panel .scenario-tools { max-height: calc(100vh - 420px); }
+      #mission-panel-toggle { position: fixed; right: 16px; top: 70px; z-index: 36; color: #f3e6cf; background: #30454b; border: 1px solid #7c8e87; border-radius: 4px; padding: 4px 10px; }
+      #mission-introduction { position: fixed; left: 28px; top: 160px; max-width: 480px; color: #f3e6cf; background: #15252bef; border: 1px solid #78877a; border-radius: 8px; padding: 20px; z-index: 20; }
+      #mission-introduction h1 { font-size: 26px; margin: 0 0 12px; }
+      #mission-introduction p { font-size: 16px; line-height: 1.5; }
+      [hidden] { display: none !important; }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <aside id="mission-introduction">
+      <h1>Campaigns and practice missions</h1>
+      <p>Choose one of six campaigns or thirty authored missions. Read the briefing, then press Resume to begin. The mission army, terrain, and budget come from its scenario.</p>
+      <p>Drag to select troops, right-click to move, and use the order buttons or their shown hotkeys. Mission checkpoints preserve the battlefield and objective progress.</p>
+    </aside>
+    <button id="mission-panel-toggle" type="button" aria-expanded="true" aria-controls="scenario-panel">Hide missions</button>
+    <aside id="scenario-panel"></aside>
+    <script type="module" src="/src/scenarios/demo.ts"></script>
+  </body>
+</html>
