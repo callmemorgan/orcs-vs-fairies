@@ -6,6 +6,7 @@ import { mountObjectivePanel } from '../src/ui/ObjectivePanel';
 import { createMatch, issueCommand } from '../src/core/simulation';
 import { mountOnlineLobby } from '../src/ui/OnlineLobby';
 import { OnlineApi } from '../src/online/client';
+import type { MatchRulesInput } from '../src/core/match-rules';
 import type { LobbyObservation } from '../src/online/protocol';
 import { PlayerView } from '../src/core/observation';
 
@@ -59,4 +60,30 @@ it('submits an explicit online resource override even when it equals the legacy 
   node.querySelector('form.online-create')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
   await vi.waitFor(() => expect(create).toHaveBeenCalledOnce()); const settings = create.mock.calls[0][0];
   expect(settings.rules?.startingResources?.wood).toBe(900); expect(settings.players![0].handicap?.startingResources?.wood).toBe(420); expect(settings.players![1].handicap).toBeUndefined();
+});
+
+it('keeps Scenario out of generic setup while preserving received campaign rules', () => {
+  const node = root(), form = new MatchRulesForm(node); disposers.push(() => form.destroy());
+  expect(Array.from(field<HTMLSelectElement>(node, 'Victory mode').options).map(option => option.value)).not.toContain('scenario');
+  form.update({ mode: 'scenario' }); const received = field<HTMLSelectElement>(node, 'Victory mode').querySelector<HTMLOptionElement>('option[value="scenario"]')!;
+  expect(received.hidden).toBe(true); expect(received.disabled).toBe(true); expect(form.value.mode).toBe('scenario');
+  const campaign = new MatchRulesForm(root(), { allowScenario: true }); disposers.push(() => campaign.destroy());
+  expect(campaign.host.querySelector<HTMLOptionElement>('option[value="scenario"]')!.disabled).toBe(false);
+});
+
+it.each([
+  [{ mode: 'hill', hill: { radius: 6, captureTicks: 1001, holdTicks: 80 } }, ['Hill radius: 6 tiles', 'Capture: 50.05 seconds', 'Hold to win: 4 seconds']],
+  [{ mode: 'relic', relic: { count: 4, required: 3, holdTicks: 1001, pickupRadius: 2 } }, ['Relics: 4', 'Required to win: 3', 'Hold to win: 50.05 seconds', 'Pickup radius: 2 tiles']],
+  [{ mode: 'survival', survival: { defenderTeam: 1, waveCount: 7, intervalTicks: 1001, recoveryTicks: 160, unitsPerWave: 6, rewardPerWave: { wood: 0, ore: 90, crystal: 2 } } }, ['Team 2 defends', '7 waves', 'Base units per wave: 6', 'First wave after 50.05 seconds', 'Recovery: 8 seconds', '0 wood, 90 ore, 2 crystal']],
+] as Array<[MatchRulesInput, string[]]>)('shows received %s rules to a lobby guest without configuration controls', async (rules, expected) => {
+  const node = root(), guest = { id: 'guest', username: 'Guest' }, api = new OnlineApi();
+  const current: LobbyObservation = { id: 'received', hostId: 'host', revision: 17, settings: { mapSize: 'large', factions: ['orcs', 'fairies'], sharedVision: false, startingAge: 2, rules: { ...rules, sharedVision: true, startingAge: 1, friendlyFire: false, disabledDefinitionIds: ['worker-speed'], startingResources: { wood: 900, ore: 400, crystal: 30 }, draft: { enabled: true, banRounds: 0, pickRounds: 2, turnTicks: 1001 } }, players: [{ factionId: 'orcs', teamId: 0, controller: 'human', handicap: { startingResources: { wood: 420, ore: 0, crystal: 0 }, incomeFactor: 0, populationCap: 77 } }, { factionId: 'fairies', teamId: 1, controller: 'human' }] }, seats: [{ side: 0, account: { id: 'host', username: 'Host' }, ready: false }, { side: 1, account: guest, ready: false }], matchId: null };
+  vi.spyOn(api, 'session').mockResolvedValue(guest); vi.spyOn(api, 'lobbies').mockResolvedValue([current]); vi.spyOn(api, 'lobby').mockResolvedValue(current);
+  const lobby = mountOnlineLobby(node, { api, onJoinMatch: () => undefined }); disposers.push(() => lobby.dispose()); await lobby.show();
+  node.querySelector<HTMLButtonElement>('[aria-label="View lobby received"]')!.click(); await vi.waitFor(() => expect(lobby.currentLobby?.revision).toBe(17));
+  expect(node.querySelector<HTMLElement>('.online-configure-details')!.hidden).toBe(true);
+  const text = node.querySelector('.online-received-rules')!.textContent!;
+  for (const value of [...expected, 'Server revision 17', 'Starting age: Town Age (2)', 'Shared team vision: Off', 'Friendly fire: Off', 'Courier Training (worker-speed)', '0 ban rounds', '2 pick rounds', 'Turn: 50.05 seconds']) expect(text).toContain(value);
+  expect(node.querySelector('[data-received-player="0"]')!.textContent).toContain('420 wood, 0 ore, 0 crystal'); expect(node.querySelector('[data-received-player="0"]')!.textContent).toContain('Income ×0'); expect(node.querySelector('[data-received-player="0"]')!.textContent).toContain('Population limit 77');
+  expect(node.querySelector('[data-received-player="1"]')!.textContent).toContain('900 wood, 400 ore, 30 crystal');
 });

@@ -1,8 +1,10 @@
+import { normalizeMatchRules } from '../core/match-rules';
+import { AGE_NAMES } from '../core/progression';
 import { FACTIONS } from '../core/content';
-import type { Age,FactionId, MapSize, Side } from '../core/types';
+import type { Age,Cost,FactionId, MapSize, Side } from '../core/types';
 import { OnlineApi, OnlineRequestError } from '../online/client';
 import type { Account, LobbyObservation,LobbyPlayerSettings,LobbySettings } from '../online/protocol';
-import { MatchRulesForm, MATCH_MODE_NAMES } from './MatchRules';
+import { definitionName, MatchRulesForm, MATCH_MODE_NAMES } from './MatchRules';
 import { mountDraftPanel } from './ObjectivePanel';
 import './online-lobby.css';
 
@@ -38,7 +40,7 @@ export function mountOnlineLobby(root:HTMLElement,options:OnlineLobbyOptions) {
           <label class="online-check"><input aria-label="Lobby shared vision" type="checkbox" checked>Share vision with allies</label><div class="online-player-settings"></div>
           <button type="submit">Create lobby</button></form>
         <ul class="online-lobby-list" aria-label="Available online lobbies"></ul>
-        <section class="online-current" aria-label="Current online lobby" hidden><h3>Current lobby</h3><p class="online-lobby-id"></p><ol class="online-seats"></ol>
+        <section class="online-current" aria-label="Current online lobby" hidden><h3>Current lobby</h3><p class="online-lobby-id"></p><ol class="online-seats"></ol><section class="online-received-rules" aria-label="Received lobby rules"><h4>Match rules</h4><div class="online-received-rule-values"></div></section>
           <details class="online-configure-details"><summary>Lobby settings</summary><form class="online-configure" aria-label="Configure online lobby"><label>Map size<select aria-label="Current lobby map size"><option value="small">Small</option><option value="medium">Medium</option><option value="large">Large</option><option value="huge">Huge</option></select></label>
             <label>Players<select aria-label="Current lobby player count">${playerCountOptions}</select></label><label>Starting age<select aria-label="Current lobby starting age"><option value="1">Settlement</option><option value="2">Town</option><option value="3">Citadel</option></select></label>
             <label class="online-check"><input aria-label="Current lobby shared vision" type="checkbox" checked>Share vision with allies</label><div class="online-player-settings"></div><button type="submit">Apply lobby settings</button></form></details>
@@ -83,6 +85,23 @@ export function mountOnlineLobby(root:HTMLElement,options:OnlineLobbyOptions) {
   const configureRules=new MatchRulesForm(configureForm,{labelPrefix:'Current lobby ',includeTeamSettings:false,onChange:()=>{configDirty=true;syncResources(configureForm,configureRules);}});
   function syncResources(form:HTMLFormElement,rules:MatchRulesForm) { try { const resources=rules.value.startingResources; for(const row of Array.from(form.querySelectorAll<HTMLElement>('[data-player]'))) if(row.dataset.resourceOverride!=='true') for(const key of ['wood','ore','crystal'] as const) row.querySelector<HTMLInputElement>(`[data-field="${key}"]`)!.value=String(resources[key]); } catch {} }
   const draft=mountDraftPanel(element('.online-current'),{getDraft:()=>current?.settings.rules?.draft?.enabled?current?.draft:null,canSubmit:()=>!busy&&!disposed&&!!current&&!current.seats.some(seat=>seat.controller!=='ai'&&!seat.account),side:()=>current?ownsSeat(current)?.side:undefined,revision:()=>current?.revision,players:()=>current?defaultPlayers(current.settings).map((player,id)=>({id:id as Side,factionId:player.factionId})):[],submit:async definitionId=>current?await run(async()=>{current=await api.changeLobby(current!,'draft',{definitionId});await refresh();}):false});
+  function receivedRules(lobby:LobbyObservation) {
+    const summary=element('.online-received-rule-values'),key=JSON.stringify({revision:lobby.revision,settings:lobby.settings});
+    if(summary.dataset.key===key)return;summary.dataset.key=key;summary.replaceChildren();
+    const rules=normalizeMatchRules({...lobby.settings.rules,startingAge:lobby.settings.startingAge??lobby.settings.rules?.startingAge??1,sharedVision:lobby.settings.sharedVision??lobby.settings.rules?.sharedVision??true});
+    const seconds=(ticks:number)=>`${ticks/20} seconds`,resources=(cost:Cost)=>`${cost.wood} wood, ${cost.ore} ore, ${cost.crystal} crystal`;
+    const line=(text:string,className?:string)=>{const node=document.createElement('p');node.textContent=text;if(className)node.className=className;summary.append(node);return node;};
+    line(`Server revision ${lobby.revision} · Map ${lobby.settings.mapSize} · ${MATCH_MODE_NAMES[rules.mode]}`);
+    line(`Starting age: ${AGE_NAMES[rules.startingAge]} (${rules.startingAge}) · Shared team vision: ${rules.sharedVision?'On':'Off'} · Friendly fire: ${rules.friendlyFire?'On':'Off'}`);
+    line(`Headquarters defeat: ${rules.standardDefeat?'On':'Off'} · Match starting resources: ${resources(rules.startingResources)}`);
+    line(`Disabled definitions: ${rules.disabledDefinitionIds.length?rules.disabledDefinitionIds.map(id=>`${definitionName(id)} (${id})`).join(', '):'None'}`);
+    if(rules.mode==='hill')line(`Hill radius: ${rules.hill.radius} tiles · Capture: ${seconds(rules.hill.captureTicks)} · Hold to win: ${seconds(rules.hill.holdTicks)}`);
+    if(rules.mode==='relic')line(`Relics: ${rules.relic.count} · Required to win: ${rules.relic.required} · Hold to win: ${seconds(rules.relic.holdTicks)} · Pickup radius: ${rules.relic.pickupRadius} tiles`);
+    if(rules.mode==='survival')line(`Survival: Team ${rules.survival.defenderTeam+1} defends · ${rules.survival.waveCount} waves · Base units per wave: ${rules.survival.unitsPerWave} · First wave after ${seconds(rules.survival.intervalTicks)} · Recovery: ${seconds(rules.survival.recoveryTicks)} · Reward per cleared wave for each defender: ${resources(rules.survival.rewardPerWave)}`);
+    if(rules.mode==='scenario')line('The selected scenario supplies its scripted objectives.');
+    line(rules.draft.enabled?`Army draft: On · ${rules.draft.banRounds} ban rounds · ${rules.draft.pickRounds} pick rounds · Turn: ${seconds(rules.draft.turnTicks)}. Each player starts with one combat soldier, replaced by their first picked combat unit. Every player must pick a combat unit. Recruitment and research are limited to that player’s picks. Workers and age technologies do not require a pick; disabled definitions and bans still apply.`:'Army draft: Off');
+    defaultPlayers(lobby.settings).forEach((player,index)=>{const row=line(`Player ${index+1} · ${FACTIONS[player.factionId].name} · Team ${player.teamId+1} · ${player.controller==='ai'?'Computer':'Human'} · Starting resources: ${resources(player.handicap?.startingResources??rules.startingResources)} · Income ×${player.handicap?.incomeFactor??1} · Population limit ${player.handicap?.populationCap??100}`,'online-received-player');row.dataset.receivedPlayer=String(index);});
+  }
   function render() {
     element('.online-auth').hidden=!!account;element('.online-account').hidden=!account;element('.online-browser').hidden=!account;
     element('.online-username').textContent=account?.username??'';
@@ -111,7 +130,7 @@ export function mountOnlineLobby(root:HTMLElement,options:OnlineLobbyOptions) {
     createForm.hidden=!!current;
     if(!current)return;
     element('.online-lobby-id').textContent=`${current.id} · Server revision ${current.revision} · ${MATCH_MODE_NAMES[current.settings.rules?.mode??'annihilation']}`;
-    draft.update();
+    receivedRules(current);draft.update();
     const seats=element('.online-seats');seats.replaceChildren();
     const factions:readonly FactionId[]=current.settings.factions;
     const settings=current.settings as TeamSettings;

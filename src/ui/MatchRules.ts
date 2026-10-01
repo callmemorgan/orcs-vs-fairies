@@ -20,7 +20,7 @@ export const definitionName = (id: string) => MATCH_DEFINITIONS.find(definition 
 const element = <K extends keyof HTMLElementTagNameMap>(tag: K, text?: string, className?: string) => {
   const node = document.createElement(tag); if (text !== undefined) node.textContent = text; if (className) node.className = className; return node;
 };
-interface RulesFormOptions { labelPrefix?: string; includeTeamSettings?: boolean; onChange?: () => void }
+export interface RulesFormOptions { labelPrefix?: string; includeTeamSettings?: boolean; allowScenario?: boolean; onChange?: () => void }
 
 /** Reusable native controls for both local matches and server lobby settings. */
 export class MatchRulesForm {
@@ -37,7 +37,7 @@ export class MatchRulesForm {
     this.prefix = options.labelPrefix ?? '';
     this.host = element('section', undefined, 'match-rules-form'); this.host.setAttribute('aria-label', `${this.prefix}Custom match rules`);
     const common = element('div', undefined, 'match-rules-fields');
-    this.select(common, 'mode', 'Victory mode', Object.entries(MATCH_MODE_NAMES));
+    this.select(common, 'mode', 'Victory mode', Object.entries(MATCH_MODE_NAMES).filter(([mode]) => mode !== 'scenario' || options.allowScenario));
     this.check(common, 'standardDefeat', 'Eliminate teams with no headquarters');
     this.check(common, 'friendlyFire', 'Allow damage to allied units');
     if (options.includeTeamSettings !== false) {
@@ -59,7 +59,7 @@ export class MatchRulesForm {
     const survival = this.group('survival', 'Survival waves');
     this.select(survival, 'survival.defenderTeam', 'Defending team', Array.from({ length: 8 }, (_, side) => [String(side), `Team ${side + 1}`]));
     this.number(survival, 'survival.waveCount', 'Survival wave count', 1, 20); this.number(survival, 'survival.unitsPerWave', 'Units per wave', 1, 20);
-    this.seconds(survival, 'survival.intervalTicks', 'Seconds before next wave'); this.seconds(survival, 'survival.recoveryTicks', 'Recovery seconds');
+    this.seconds(survival, 'survival.intervalTicks', 'Seconds before first wave'); this.seconds(survival, 'survival.recoveryTicks', 'Recovery seconds');
     for (const key of ['wood', 'ore', 'crystal'] as const) this.number(survival, `survival.rewardPerWave.${key}`, `Wave reward ${key}`, 0, 1e9);
     survival.append(element('p', 'Defenders share victory by clearing every wave. Each cleared wave grants this reward to every defender.'));
     const scenario = this.group('scenario', 'Scenario objectives');
@@ -67,7 +67,7 @@ export class MatchRulesForm {
     const draft = this.group('draft', 'Army draft', false);
     this.check(draft, 'draft.enabled', 'Enable army draft'); this.number(draft, 'draft.banRounds', 'Draft ban rounds', 0, 2);
     this.number(draft, 'draft.pickRounds', 'Draft pick rounds', 1, 6); this.seconds(draft, 'draft.turnTicks', 'Draft turn seconds');
-    draft.append(element('p', 'Players take turns banning and choosing army units and technologies before battle. Choices and bans apply to that match.'));
+    draft.append(element('p', 'Players take turns banning and choosing army units and technologies before battle. Each player starts with one combat soldier, replaced by their first picked combat unit. Every player must pick a combat unit. Recruitment and research are limited to that player’s picks. Workers and age technologies do not require a pick; disabled definitions and bans still apply.'));
     const exclusions = this.group('disabled', 'Disable units or technologies', false);
     const list = element('div', undefined, 'match-rules-definitions');
     for (const definition of MATCH_DEFINITIONS) {
@@ -111,6 +111,11 @@ export class MatchRulesForm {
   update(input: MatchRulesInput = {}) {
     if (this.destroyed) return;
     const rules = normalizeMatchRules(input);
+    const modeControl = this.controls.get('mode') as HTMLSelectElement;
+    if (!this.options.allowScenario) {
+      modeControl.querySelector('[data-received-scenario]')?.remove();
+      if (rules.mode === 'scenario') { const option = element('option', MATCH_MODE_NAMES.scenario); option.value = 'scenario'; option.hidden = true; option.disabled = true; option.dataset.receivedScenario = 'true'; modeControl.append(option); }
+    }
     for (const [key, control] of this.controls) {
       const value = key.split('.').reduce<unknown>((current, part) => (current as Record<string, unknown>)[part], rules);
       if (control instanceof HTMLInputElement && control.type === 'checkbox') control.checked = !!value;
