@@ -17,6 +17,8 @@ export const SAVE_VERSION=3;
 export const MAX_SAVE_BYTES=16*1024*1024;
 type SerializedState=Omit<GameState,'explored'|'visible'> & {explored:number[][];visible:number[][]};
 export interface SaveEnvelope {format:'orcs-vs-fairies-save';version:typeof SAVE_VERSION;state:SerializedState;runtime:RuntimeSnapshot}
+/** The imported representation remains separate from the migrated live state. */
+export interface OriginalSaveEnvelope {format:'orcs-vs-fairies-save';version:1|2|3|4;state:Record<string,unknown>;runtime:Record<string,unknown>}
 const MAX_ID=0x7fffffff,MAX_VALUE=1e12,MAX_PLAYERS=8,MAX_ENTITIES=8192,MAX_RESOURCES=8192;
 const STATE_FIELDS=['controllers','mapSize','mapVersion','terrain','starts','draw','tick','corpses','time','seed','width','height','entities','resources','players','winner','events','explored','visible','nextId'];
 const TEAM_FIELDS=['teams','incomeFactors','populationLimits','sharedVision','eliminated','winningTeam'];
@@ -235,6 +237,8 @@ function copyJson(value:unknown):unknown {
   let result:unknown;
   if(Array.isArray(v)){
    if(v.length>100000)bad(path,'array exceeds size limit');
+   if(Object.getOwnPropertySymbols(v).length)bad(path,'invalid array properties');
+   for(const key of Object.getOwnPropertyNames(v))if(!('value' in Object.getOwnPropertyDescriptor(v,key)!))bad(path,'array accessors are forbidden');
    const array:unknown[]=[];for(let i=0;i<v.length;i++){const descriptor=Object.getOwnPropertyDescriptor(v,String(i));if(!descriptor||!('value' in descriptor))bad(path,'array accessors and gaps are forbidden');array.push(copy(descriptor.value,`${path}[${i}]`,depth+1));}result=array;
   }else{
    const prototype=Object.getPrototypeOf(v);if(prototype!==Object.prototype&&prototype!==null)bad(path,'expected a plain object');
@@ -263,4 +267,17 @@ export function loadGame(input:unknown):GameState {
  const state:GameState={...envelope.state,explored:envelope.state.explored.map(values=>new Set(values)),visible:envelope.state.visible.map(values=>new Set(values))};
  if(state.world)state.world.levels[0].terrain=state.terrain;
  restoreRuntime(state,envelope.runtime);return state;
+}
+/** Validate a disposable copy without normalizing the original checksum source. */
+export function decodeSaveSource(input:unknown):{original:OriginalSaveEnvelope;state:GameState} {
+ let source=input;
+ if(typeof input==='string'){if(input.length>MAX_SAVE_BYTES||new TextEncoder().encode(input).byteLength>MAX_SAVE_BYTES)bad('save','save exceeds size limit');try{source=JSON.parse(input);}catch{bad('save','invalid JSON');}}
+ const original=copyJson(source);checkSize(original);
+ const state=loadGame(original);return {original:original as OriginalSaveEnvelope,state};
+}
+/** Original JSON ordering and UTF-16 code units are part of historical matching. */
+export function checksumSaveEnvelope(input:OriginalSaveEnvelope|SaveEnvelope):string {
+ const {original}=decodeSaveSource(input),text=JSON.stringify(original);let hash=2166136261;
+ for(let i=0;i<text.length;i++){hash^=text.charCodeAt(i);hash=Math.imul(hash,16777619);}
+ return (hash>>>0).toString(16).padStart(8,'0');
 }
