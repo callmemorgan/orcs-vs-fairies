@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { createGame } from '../src/core/simulation';
+import { createGame, issueCommand, stepGame } from '../src/core/simulation';
 import { walkable } from '../src/core/navigation';
-import { ENVIRONMENT_RULES, environmentPhase, environmentalMovementFactor, environmentalSightFactor, issueEnvironmentCommand, projectileEnvironment, stepEnvironment } from '../src/core/environment';
+import { ENVIRONMENT_RULES, environmentPhase, environmentalMovementFactor, environmentalSightFactor, igniteWorldAt, issueEnvironmentCommand, projectileEnvironment, stepEnvironment } from '../src/core/environment';
+import { loadGame, saveGame } from '../src/core/saves';
+import { replayChecksum } from '../src/core/replays';
 import type { Entity, GameState, TerrainKind } from '../src/core/types';
 import type { WorldState } from '../src/core/world-types';
 
@@ -200,6 +202,29 @@ describe('seasonal lake crossings',()=>{
   const s=scenario();terrain(s,3,4,'water');winter(s);terrain(s,3,4,'bridge');s.time=400;stepEnvironment(s,.25);
   expect(s.terrain[4*16+3]).toBe('bridge');expect(s.world.iceTiles).toEqual([]);
  });
+ it('saves a crossing destroyed, rebuilt and destroyed again during the same winter',()=>{
+  const s=createGame('orcs',1977,'undead',{controllers:['human','human'],mapSize:'small'}) as TestState;
+  s.width=16;s.height=16;s.terrain=Array(256).fill('grass');s.resources=[];s.starts=[{x:1.5,y:1.5},{x:14.5,y:14.5}];
+  const actor=s.entities.find(e=>e.side===0&&e.role==='melee')!,other=s.entities.find(e=>e.side===1&&e.role==='worker')!;
+  s.entities=s.entities.filter(e=>e.role==='hq'||e===actor||e===other);
+  for(const e of s.entities){e.x=e.side===0?1.5:14.5;e.y=e.side===0?1.5:14.5;e.path=[];e.order={type:'idle'};}
+  actor.x=2.5;actor.y=4.5;actor.role='siege';other.x=6.5;other.y=4.5;
+  const tiles=[67,68,69];for(const tile of tiles)s.terrain[tile]='bridge';
+  const bridge={id:s.nextId++,x:4.5,y:4.5,level:0,hp:1,maxHp:160,tiles,rebuilding:0,repairSide:null};
+  s.world={version:1,biome:'temperate',levels:[{id:0,title:'Surface',terrain:s.terrain,elevation:Array(256).fill(0)}],transitions:[],bridges:[bridge],fires:[],sites:[],creatures:[],dayLength:240,seasonLength:100,weatherLength:10000,nextEnvironmentAt:0,iceTiles:[],thawWarned:false};
+  s.visible=s.players.map(()=>new Set(Array.from({length:256},(_,i)=>i)));s.explored=s.visible.map(v=>new Set(v));s.players.forEach(p=>{p.wood=10000;p.ore=10000;});s.time=300;
+  expect(issueCommand(s,0,{type:'worldAttack',ids:[actor.id],target:bridge.id})).toBe(true);stepGame(s,.25);stepGame(s,.25);
+  expect(bridge.hp).toBe(0);expect(s.world.iceTiles).toEqual(tiles.map(tile=>({level:0,tile})));
+  actor.role='worker';expect(issueCommand(s,0,{type:'repairBridge',ids:[actor.id],target:bridge.id})).toBe(true);
+  for(let i=0;i<100&&bridge.hp===0;i++)stepGame(s,.25);
+  expect(bridge.hp).toBe(bridge.maxHp);expect(tiles.every(tile=>s.terrain[tile]==='bridge')).toBe(true);
+  actor.role='siege';actor.cooldown=0;expect(issueCommand(s,0,{type:'worldAttack',ids:[actor.id],target:bridge.id})).toBe(true);
+  for(let i=0;i<100&&bridge.hp>0;i++)stepGame(s,.25);stepGame(s,.25);
+  expect(bridge.hp).toBe(0);expect(tiles.every(tile=>s.terrain[tile]==='ice')).toBe(true);
+  expect(s.world.iceTiles).toEqual(tiles.map(tile=>({level:0,tile})));
+  const restored=loadGame(saveGame(s));expect(replayChecksum(restored)).toBe(replayChecksum(s));
+  for(let i=0;i<20;i++){stepGame(s,.05);stepGame(restored,.05);expect(replayChecksum(restored)).toBe(replayChecksum(s));}
+ });
  it('continues an active fire and frozen crossing identically after a serialized world checkpoint',()=>{
   const s=scenario();s.world.weatherLength=10000;s.time=930;tree(s,3.5,4.5,500);expect(ignite(s)).toBe(true);terrain(s,6,4,'water');stepEnvironment(s,.25);
   expect(s.world.fires).toHaveLength(1);expect(s.world.iceTiles).toHaveLength(1);
@@ -207,5 +232,51 @@ describe('seasonal lake crossings',()=>{
   advance(s,8);advance(twin,8);
   expect(twin.world).toEqual(s.world);expect(twin.resources).toEqual(s.resources);expect(twin.entities).toEqual(s.entities);
   expect(s.world.nextEnvironmentAt).toBeGreaterThan(s.time);
+ });
+});
+
+describe('artillery ignition and simulation interruption hooks',()=>{
+ it('ignites a flammable impact once without charging ammunition or requiring fog visibility',()=>{
+  const s=scenario();tree(s,8.5,8.5);s.visible[0].clear();const before={wood:s.players[0].wood,ore:s.players[0].ore};
+  expect(igniteWorldAt(s,{x:8.8,y:8.1},{side:0,id:s.entities[0].id})).toBe(true);
+  expect(s.world.fires).toEqual([{x:8.5,y:8.5,level:0,heat:1,expires:45,nextSpread:2.5}]);
+  expect(s.events.at(-1)).toMatchObject({type:'ability',side:0,source:s.entities[0].id,x:8.5,y:8.5,level:0,text:'Incendiary shell ignited timber.'});
+  expect(igniteWorldAt(s,{x:8.2,y:8.7},{side:0,id:s.entities[0].id})).toBe(false);
+  expect({wood:s.players[0].wood,ore:s.players[0].ore}).toEqual(before);
+ });
+ it('rejects malformed bounds, absent levels, nonfuel impacts and invalid provenance without events',()=>{
+  const s=scenario();tree(s,8.5,8.5);
+  for(const p of [{x:-.1,y:8.5},{x:16,y:8.5},{x:8.5,y:16},{x:NaN,y:8.5},{x:8.5,y:8.5,level:1},{x:8.5,y:8.5,level:.5},{x:9.5,y:9.5}])expect(igniteWorldAt(s,p,{side:0})).toBe(false);
+  for(const id of [0,-1,.5,s.nextId,Infinity,NaN])expect(igniteWorldAt(s,{x:8.5,y:8.5},{side:0,id})).toBe(false);
+  expect(igniteWorldAt(s,{x:8.5,y:8.5},{side:0,id:s.entities[1].id})).toBe(false);
+  expect(igniteWorldAt(s,{x:8.5,y:8.5},{side:7})).toBe(false);
+  expect(s.world.fires).toEqual([]);expect(s.events).toEqual([]);
+ });
+ it('retains an allocated dead or removed launch source, with same-level impacts on both maps',()=>{
+  const s=scenario();cave(s);tree(s,8.5,8.5,60,0);tree(s,8.5,8.5,60,1);const source=s.entities[0];source.hp=0;
+  expect(igniteWorldAt(s,{x:8.5,y:8.5},{side:0,id:source.id})).toBe(true);
+  s.entities=s.entities.filter(e=>e!==source);
+  expect(igniteWorldAt(s,{x:8.5,y:8.5,level:1},{side:0,id:source.id})).toBe(true);
+  expect(s.world.fires.map(f=>f.level)).toEqual([0,1]);expect(s.events.map(e=>e.source)).toEqual([source.id,source.id]);
+ });
+ it('preserves a removed launch source and its fire through the strict save loader',()=>{
+  const s=createGame('orcs',4127,'fairies',{controllers:['human','human'],mapSize:'small',biome:'forest'}),source=s.entities.find(e=>e.side===0&&e.kind==='unit')!,fuel=s.resources.find(r=>r.kind==='wood'&&(r.level??0)===0)!;
+  s.entities=s.entities.filter(e=>e!==source);
+  expect(igniteWorldAt(s,fuel,{side:0,id:source.id})).toBe(true);
+  const restored=loadGame(saveGame(s));expect(restored.world!.fires).toEqual(s.world!.fires);expect(restored.events.at(-1)?.source).toBe(source.id);
+  expect(replayChecksum(restored)).toBe(replayChecksum(s));
+ });
+ it('notifies the simulation after lethal fire clears an interrupted order',()=>{
+  const s=scenario(),victim=s.entities[1];tree(s,3.5,4.5);expect(ignite(s)).toBe(true);victim.hp=1;victim.order={type:'gather',target:s.resources[0].id};victim.orderQueue=[{type:'move',x:8,y:8}];victim.path=[{x:8,y:8}];
+  const seen:number[]=[];s.time=.25;stepEnvironment(s,.25,{interrupt:e=>{expect(e.order).toEqual({type:'idle'});expect(e.orderQueue).toBeUndefined();expect(e.path).toEqual([]);seen.push(e.id);}});
+  expect(victim.hp).toBe(0);expect(seen).toEqual([victim.id]);
+ });
+ it('notifies the simulation after thaw evacuation and drowning clear interrupted orders',()=>{
+  for(const trapped of [false,true]){
+   const s=scenario();if(trapped)s.terrain.fill('water');else terrain(s,3,4,'water');s.world.seasonLength=100;s.time=300;stepEnvironment(s,.25);
+   const e=s.entities[0];e.x=trapped?8.5:3.5;e.y=trapped?8.5:4.5;e.order={type:'gather',target:99};e.orderQueue=[{type:'move',x:8,y:8}];e.path=[{x:8,y:8}];
+   const seen:number[]=[];s.time=400;stepEnvironment(s,.25,{interrupt:actor=>{expect(actor.order).toEqual({type:'idle'});expect(actor.orderQueue).toBeUndefined();expect(actor.path).toEqual([]);seen.push(actor.id);}});
+   expect(seen).toContain(e.id);expect(seen.filter(id=>id===e.id)).toHaveLength(1);expect(e.hp).toBe(trapped?0:75);
+  }
  });
 });

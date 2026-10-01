@@ -5,6 +5,7 @@ import type { WorldCommand, WorldFire, WorldState } from './world-types';
 
 type WorldGame = GameState & { world?:WorldState };
 type Positioned = Vec & { level?:number };
+export interface EnvironmentHooks { interrupt(actor:Entity):void }
 export interface EnvironmentPhase {
  day:'day'|'dusk'|'night'|'dawn'; season:'spring'|'summer'|'autumn'|'winter';
  weather:'clear'|'rain'|'fog'|'wind'; wind:Vec;
@@ -82,13 +83,14 @@ function flammable(s:WorldGame,p:Positioned):boolean {
 function message(s:GameState,side:Side,p:Positioned,text:string,type:'message'|'ability'='message',source?:number):void {
  const event={type,side,x:p.x,y:p.y,level:levelOf(p),text,source};s.events.push(event);
 }
-function hurt(s:GameState,e:Entity,amount:number,text:string,bypassShield=false):void {
+function hurt(s:GameState,e:Entity,amount:number,text:string,bypassShield=false,hooks?:EnvironmentHooks):void {
  const absorbed=bypassShield?0:Math.min(e.shield??0,amount);
  if(absorbed)e.shield=Math.max(0,(e.shield??0)-absorbed);
  const damage=Math.min(e.hp,amount-absorbed);e.hp=Math.max(0,e.hp-damage);e.lastDamagedAt=s.time;
  const event={type:'ability' as const,side:e.side,x:e.x,y:e.y,level:levelOf(e),source:e.id,target:e.id,amount:damage+absorbed,text};s.events.push(event);
  if(e.hp>0)return;
  e.animation='death';e.animTime=0;e.order={type:'idle'};e.path=[];delete e.orderQueue;
+ hooks?.interrupt(e);
  if(e.kind==='unit'&&!e.illusion&&!e.raised){const corpse={id:e.id,x:e.x,y:e.y,level:levelOf(e),expires:s.time+45};s.corpses.push(corpse);}
  s.events.push({type:'death',side:e.side,x:e.x,y:e.y,source:e.id,text,level:levelOf(e)} as GameState['events'][number]);
 }
@@ -96,6 +98,13 @@ function ignition(s:WorldGame,p:Positioned):WorldFire {
  return {x:Math.floor(p.x)+.5,y:Math.floor(p.y)+.5,level:levelOf(p),heat:1,expires:s.time+ENVIRONMENT_RULES.fireLifetime,nextSpread:s.time+2.5};
 }
 
+/** Artillery calls this at its saved impact point after paying ammunition at launch. */
+export function igniteWorldAt(s:GameState,at:Vec,source?:{side:Side;id?:number}):boolean {
+ const state=s as WorldGame,world=state.world,level=levelOf(at);if(!world||!Number.isFinite(at.x)||!Number.isFinite(at.y)||!Number.isInteger(level)||!world.levels.some(l=>l.id===level)||at.x<0||at.y<0||at.x>=s.width||at.y>=s.height||source&&!s.players[source.side])return false;
+ if(source?.id!==undefined&&(!Number.isSafeInteger(source.id)||source.id<1||source.id>=s.nextId||s.entities.some(e=>e.id===source.id&&e.side!==source.side)))return false;
+ const p={x:Math.floor(at.x)+.5,y:Math.floor(at.y)+.5,level};if(!flammable(state,p)||world.fires.some(f=>f.level===level&&tileOf(s,f)===tileOf(s,p)))return false;
+ world.fires.push(ignition(state,p));if(source)message(s,source.side,p,'Incendiary shell ignited timber.','ability',source.id);return true;
+}
 /** Environmental commands perform work only from a legal nearby unit, with no remote clearing. */
 export function issueEnvironmentCommand(s:GameState,side:Side,command:WorldCommand|{type:string}):boolean|undefined {
  if(command.type!=='ignite'&&command.type!=='firebreak')return undefined;
@@ -115,7 +124,7 @@ export function issueEnvironmentCommand(s:GameState,side:Side,command:WorldComma
  const player=s.players[side],wood=c.type==='ignite'?ENVIRONMENT_RULES.igniteWood:ENVIRONMENT_RULES.firebreakWood,ore=c.type==='ignite'?ENVIRONMENT_RULES.igniteOre:0;
  if(!actor||player.wood<wood||player.ore<ore)return false;
  player.wood-=wood;player.ore-=ore;actor.cooldown=actor.role==='siege'?1.5:.8;actor.animation='attack';actor.animTime=0;
- if(c.type==='ignite')world.fires.push(ignition(state,p));
+ if(c.type==='ignite')igniteWorldAt(s,p);
  else {
   for(const node of woodAt(s,p))node.amount=0;
   if(terrain(state,p)==='forest')setTerrain(state,p,'grass');
@@ -131,7 +140,7 @@ function bankClear(s:WorldGame,p:Positioned):boolean {
  if(s.resources.some(n=>n.amount>0&&levelOf(n)===levelOf(p)&&Math.hypot(n.x-p.x,n.y-p.y)<.7))return false;
  return !s.entities.some(e=>e.hp>0&&e.kind==='building'&&!e.gateOpen&&levelOf(e)===levelOf(p)&&Math.abs(e.x-p.x)<FACTIONS[s.players[e.side].faction].buildings[e.role as 'hq'].size/2+.27&&Math.abs(e.y-p.y)<FACTIONS[s.players[e.side].faction].buildings[e.role as 'hq'].size/2+.27);
 }
-function evacuate(s:WorldGame,e:Entity):void {
+function evacuate(s:WorldGame,e:Entity,hooks?:EnvironmentHooks):void {
  let best:Positioned|undefined,bestDistance=Infinity;
  for(let y=Math.max(0,Math.floor(e.y-ENVIRONMENT_RULES.evacuationRadius));y<Math.min(s.height,Math.ceil(e.y+ENVIRONMENT_RULES.evacuationRadius));y++)for(let x=Math.max(0,Math.floor(e.x-ENVIRONMENT_RULES.evacuationRadius));x<Math.min(s.width,Math.ceil(e.x+ENVIRONMENT_RULES.evacuationRadius));x++){
   const p={x:x+.5,y:y+.5,level:levelOf(e)},d=Math.hypot(p.x-e.x,p.y-e.y);
@@ -143,8 +152,9 @@ function evacuate(s:WorldGame,e:Entity):void {
   const p={x:(x+.5)/4,y:(y+.5)/4,level:levelOf(e)},d=Math.hypot(p.x-e.x,p.y-e.y);
   if(d<=ENVIRONMENT_RULES.evacuationRadius&&d<bestDistance&&bankClear(s,p)){best=p;bestDistance=d;}
  }
- if(!best){hurt(s,e,e.hp,'Lake thawed: trapped troop drowned; no bank within 6 tiles',true);return;}
+ if(!best){hurt(s,e,e.hp,'Lake thawed: trapped troop drowned; no bank within 6 tiles',true,hooks);return;}
  e.x=best.x;e.y=best.y;e.path=[];e.order={type:'idle'};delete e.orderQueue;
+ hooks?.interrupt(e);
  hurt(s,e,Math.max(0,Math.min(e.hp-1,e.maxHp*ENVIRONMENT_RULES.evacuationInjury)),'Lake thawed: troop evacuated to bank, injured by up to 25% health',true);
 }
 function touchesIce(s:GameState,e:Entity,tiles:WorldState['iceTiles']):boolean {
@@ -156,14 +166,15 @@ function exposed(s:GameState,e:Entity,fire:WorldFire):boolean {
  const radius=e.kind==='building'?FACTIONS[s.players[e.side].faction].buildings[e.role as 'hq'].size/2:0;
  return Math.hypot(Math.max(0,Math.abs(e.x-fire.x)-radius),Math.max(0,Math.abs(e.y-fire.y)-radius))<.9;
 }
-function seasons(s:WorldGame,phase:EnvironmentPhase):void {
+function seasons(s:WorldGame,phase:EnvironmentPhase,hooks?:EnvironmentHooks):void {
  const world=s.world!;
  if(phase.season==='winter'&&world.biome!=='desert'){
   // Cavern water never freezes. Saved iceTiles distinguish natural water from
   // bridge or engineered terrain so thaw restores only the seasonal crossings.
   const surface=world.levels.find(l=>l.id===0);
+  const frozen=new Set(world.iceTiles.filter(ice=>ice.level===0).map(ice=>ice.tile));
   if(surface)for(let tile=0;tile<surface.terrain.length;tile++)if(surface.terrain[tile]==='water'){
-   const p={x:tile%s.width+.5,y:Math.floor(tile/s.width)+.5,level:0};setTerrain(s,p,'ice');world.iceTiles.push({level:0,tile});
+   const p={x:tile%s.width+.5,y:Math.floor(tile/s.width)+.5,level:0};setTerrain(s,p,'ice');if(!frozen.has(tile)){world.iceTiles.push({level:0,tile});frozen.add(tile);}
   }
   const warning=Math.min(ENVIRONMENT_RULES.thawWarning,length(world.seasonLength,300)*.1);
   if(world.iceTiles.length&&!world.thawWarned&&phase.thawIn!==null&&phase.thawIn<=warning+1e-8){
@@ -178,19 +189,19 @@ function seasons(s:WorldGame,phase:EnvironmentPhase):void {
  if(world.iceTiles.length){
   const melting=world.iceTiles.filter(t=>terrain(s,{x:t.tile%s.width+.5,y:Math.floor(t.tile/s.width)+.5,level:t.level})==='ice');
   for(const ice of melting)setTerrain(s,{x:ice.tile%s.width+.5,y:Math.floor(ice.tile/s.width)+.5,level:ice.level},'water');
-  for(const e of s.entities)if(e.hp>0&&e.kind==='unit'&&touchesIce(s,e,melting))evacuate(s,e);
+  for(const e of s.entities)if(e.hp>0&&e.kind==='unit'&&touchesIce(s,e,melting))evacuate(s,e,hooks);
   world.iceTiles=[];
  }
  world.thawWarned=false;
 }
 
 /** Called once per simulation step after the clock advances, before unit actions. */
-export function stepEnvironment(s:GameState,dt:number):void {
+export function stepEnvironment(s:GameState,dt:number,hooks?:EnvironmentHooks):void {
  const state=s as WorldGame,world=state.world;
  if(!world||!Number.isFinite(dt)||dt<=0)return;
  const phase=environmentPhase(s),previous=environmentPhase({...s,time:Math.max(0,s.time-dt)}),added:WorldFire[]=[];
  if(previous.day!==phase.day||previous.weather!==phase.weather||previous.season!==phase.season)for(let side=0;side<s.players.length;side++)message(s,side as Side,s.starts[side],`${phase.day}; ${phase.weather}; ${phase.season}`);
- seasons(state,phase);
+ seasons(state,phase,hooks);
  for(const fire of [...world.fires]){
   if(fire.expires<=s.time||fire.heat<=0)continue;
   const wet=phase.weather==='rain'&&fire.level===0;
@@ -199,7 +210,7 @@ export function stepEnvironment(s:GameState,dt:number):void {
   for(const node of nodes)node.amount=Math.max(0,node.amount-burn);
   // A bare forest tile contains vegetation even when it has no harvest node.
   if(terrain(state,fire)==='forest'&&(nodes.length?nodes.every(n=>n.amount===0):fire.expires-s.time<ENVIRONMENT_RULES.fireLifetime-5))setTerrain(state,fire,'grass');
-  for(const e of s.entities)if(e.hp>0&&exposed(s,e,fire))hurt(s,e,dt*(e.kind==='building'?ENVIRONMENT_RULES.buildingFireDamage:ENVIRONMENT_RULES.fireDamage)*fire.heat,'Forest fire damage');
+  for(const e of s.entities)if(e.hp>0&&exposed(s,e,fire))hurt(s,e,dt*(e.kind==='building'?ENVIRONMENT_RULES.buildingFireDamage:ENVIRONMENT_RULES.fireDamage)*fire.heat,'Forest fire damage',false,hooks);
   if(wet||fire.heat<.35||s.time+1e-8<fire.nextSpread)continue;
   const spreadAt=fire.nextSpread;fire.nextSpread+=phase.weather==='wind'&&fire.level===0?1.5:2.5;
   for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
