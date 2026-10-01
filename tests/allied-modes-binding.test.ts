@@ -38,4 +38,35 @@ describe('allied AI with the canonical mode admission', () => {
     const player = new ReplayPlayer(recorder.export()); while (!player.finished) player.advance(20);
     expect(saveGame(player.state)).toEqual(saveGame(state)); player.dispose(); recorder.dispose();
   });
+
+  for (const mode of ['hill', 'relic'] as const) {
+    it(`keeps an accepted defense request in ${mode} through save, continuation and replay`, () => {
+      const state = createMatch({ map: { seed: 4127, size: 'small' }, players: [
+        { id: 0, teamId: 0, factionId: 'orcs', controller: 'external' },
+        { id: 1, teamId: 0, factionId: 'fairies', controller: 'ai' },
+        { id: 2, teamId: 1, factionId: 'dwarves', controller: 'external' }], rules: { mode } });
+      const starter = state.entities.find(e => e.side === 1 && e.kind === 'unit' && e.role === 'melee')!;
+      const destination = { x: starter.x, y: starter.y };
+      const recorder = new MatchRecorder(state);
+      expect(issueCommand(state, 0, { type: 'allyDirective', ally: 1, directive: 'defend', ...destination })).toBe(true);
+      stepGame(state, .05);
+      const directive = captureRuntime(state).teamAI!.directives[0];
+      expect(directive.status).toBe('active');
+      expect(directive.assigned).toContain(starter.id);
+      expect(starter.order.type).toBe('hold');
+      const restored = loadGame(saveGame(state));
+      for (let i = 0; i < 430; i++) {
+        stepGame(state, .05); stepGame(restored, .05);
+        expect(saveGame(restored)).toEqual(saveGame(state));
+        const current = captureRuntime(state).teamAI!.directives[0];
+        if (current.status === 'active') for (const id of current.assigned) {
+          expect(state.entities.find(e => e.id === id)!.order.type).toBe('hold');
+        }
+      }
+      expect(captureRuntime(state).teamAI!.directives[0].status).toBe('completed');
+      expect(starter.order.type).toBe('attackMove');
+      const replay = new ReplayPlayer(recorder.export()); while (!replay.finished) replay.advance(50);
+      expect(saveGame(replay.state)).toEqual(saveGame(state)); replay.dispose(); recorder.dispose();
+    });
+  }
 });

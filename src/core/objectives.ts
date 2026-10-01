@@ -87,9 +87,10 @@ export function evaluateObjectives(s:GameState,actions:Actions):void {
   }
  }
 }
-export function objectiveAi(s:GameState,side:Side,command:Actions['command']):void {
+/** Accepted human requests keep their assigned troops until completion or cancellation. */
+export function objectiveAi(s:GameState,side:Side,command:Actions['command'],reservedIds?:ReadonlySet<number>):void {
  if(s.rules.mode==='annihilation'||s.rules.mode==='scenario'||s.rules.mode==='survival')return;
- const units=s.entities.filter(e=>e.side===side&&e.kind==='unit'&&e.role!=='worker'&&alive(e));if(!units.length)return;
+ const units=s.entities.filter(e=>e.side===side&&e.kind==='unit'&&e.role!=='worker'&&alive(e)&&!reservedIds?.has(e.id));if(!units.length)return;
  if(s.rules.mode==='hill')for(const unit of units)objectiveOrder(s,unit,s.objectives.hill,command);
  if(s.rules.mode==='relic')for(const unit of units){const carried=s.objectives.relics.find(r=>r.carrierId===unit.id),hq=s.entities.find(e=>e.side===side&&e.role==='hq'&&alive(e));
   if(carried&&hq){objectiveOrder(s,unit,hq,command,false);continue;}
