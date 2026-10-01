@@ -241,7 +241,10 @@ function copyJson(value:unknown):unknown {
   if(Array.isArray(v)){
    if(v.length>100000)bad(path,'array exceeds size limit');
    if(Object.getOwnPropertySymbols(v).length)bad(path,'invalid array properties');
-   for(const key of Object.getOwnPropertyNames(v))if(!('value' in Object.getOwnPropertyDescriptor(v,key)!))bad(path,'array accessors are forbidden');
+   for(const key of Object.getOwnPropertyNames(v)){
+    if(!('value' in Object.getOwnPropertyDescriptor(v,key)!))bad(path,'array accessors are forbidden');
+    if(key!=='length'&&(!/^(0|[1-9]\d*)$/.test(key)||Number(key)>=v.length))bad(path,'invalid array properties');
+   }
    const array:unknown[]=[];for(let i=0;i<v.length;i++){const descriptor=Object.getOwnPropertyDescriptor(v,String(i));if(!descriptor||!('value' in descriptor))bad(path,'array accessors and gaps are forbidden');array.push(copy(descriptor.value,`${path}[${i}]`,depth+1));}result=array;
   }else{
    const prototype=Object.getPrototypeOf(v);if(prototype!==Object.prototype&&prototype!==null)bad(path,'expected a plain object');

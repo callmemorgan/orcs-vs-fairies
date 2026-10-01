@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { SAVE_VERSION, checksumSaveEnvelope, decodeSaveSource, saveGame } from '../src/core/saves';
+import { SAVE_VERSION, checksumSaveEnvelope, decodeOriginalSaveEnvelope, decodeSaveSource, loadGame, saveGame } from '../src/core/saves';
 
 const fixture=(version:number)=>JSON.parse(readFileSync(new URL(`./fixtures/legacy-replay-v${version}.json`,import.meta.url),'utf8')).initial;
 describe('original serialized save sources',()=>{
@@ -38,5 +38,26 @@ describe('original serialized save sources',()=>{
    if(field==='nonfinite')source.state.time=NaN;
    expect(()=>checksumSaveEnvelope(source),field).toThrow();
   }expect(reads).toBe(0);
+ });
+ it.each(['extra','01','00','-0','+0','0.0','0e0','4294967295'])('rejects array data property %s without changing the source',key=>{
+  for(const enumerable of [true,false]){
+   const source=fixture(1),array=source.state.entities;Object.defineProperty(array,key,{value:{marker:7},enumerable,configurable:true});
+   const before=JSON.stringify(source),descriptors=Object.getOwnPropertyDescriptors(array);
+   for(const decode of [decodeOriginalSaveEnvelope,checksumSaveEnvelope,decodeSaveSource,loadGame])expect(()=>decode(source)).toThrow('invalid array properties');
+   expect(Object.getOwnPropertyDescriptors(array)).toEqual(descriptors);expect(JSON.stringify(source)).toBe(before);
+  }
+ });
+ it('retains canonical nonenumerable array indices in the serialized source',()=>{
+  const source=fixture(1),array=source.state.entities;Object.defineProperty(array,'0',{enumerable:false});
+  const before=JSON.stringify(source),descriptors=Object.getOwnPropertyDescriptors(array),{original}=decodeSaveSource(source);
+  expect(JSON.stringify(original)).toBe(before);expect(checksumSaveEnvelope(original)).toBe('5db9ad74');expect(Object.getOwnPropertyDescriptors(array)).toEqual(descriptors);expect(JSON.stringify(source)).toBe(before);
+ });
+ it('rejects noncanonical array accessors without invoking them or changing their descriptors',()=>{
+  for(const key of ['extra','01','-0']){
+   let reads=0;const source=fixture(1),array=source.state.entities;Object.defineProperty(array,key,{get(){reads++;return 7;},enumerable:false,configurable:true});
+   const descriptors=Object.getOwnPropertyDescriptors(array);
+   for(const decode of [decodeOriginalSaveEnvelope,checksumSaveEnvelope,decodeSaveSource,loadGame])expect(()=>decode(source)).toThrow('array accessors are forbidden');
+   expect(reads).toBe(0);expect(Object.getOwnPropertyDescriptors(array)).toEqual(descriptors);
+  }
  });
 });
