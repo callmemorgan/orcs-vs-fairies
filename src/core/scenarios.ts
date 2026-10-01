@@ -380,12 +380,9 @@ export function afterScenarioCommand(state: GameState, side: Side, command: Comm
 }
 
 export function captureScenario(session: ScenarioSession): ScenarioCheckpoint {
-  // This synchronous envelope already stores the binding beside game state.
-  // Keep normal saveGame snapshots authoritative without duplicating it here.
-  const state = session.state as BoundState, binding = state.scenario;
-  delete state.scenario;
-  let game: ScenarioCheckpoint['game'];
-  try { game = saveGame(state); } finally { if (binding) state.scenario = binding; }
+  // Omit the duplicate binding from the snapshot without changing live key order.
+  // Runtime capture must still use the original state and its registered history.
+  const game = saveGame(session.state, { omitScenarioBinding: true });
   return { format: 'orcs-vs-fairies-scenario', version: 1, definition: clone(session.definition), runtime: clone(session.runtime), game, ...(session.simulationRevision === undefined ? {} : { simulationRevision: session.simulationRevision }) };
 }
 export function resetScenario(session: ScenarioSession): ScenarioSession { requireScenarioRules(session); return createScenario(session.definition); }

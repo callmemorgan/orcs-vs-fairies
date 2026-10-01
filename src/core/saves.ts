@@ -259,8 +259,11 @@ function copyJson(value:unknown):unknown {
  return copy(value,'save',0);
 }
 function checkSize(value:unknown):void {if(new TextEncoder().encode(JSON.stringify(value)).byteLength>MAX_SAVE_BYTES)bad('save','save exceeds size limit');}
-export function saveGame(state:GameState):SaveEnvelope {
- const envelope=copyJson({format:'orcs-vs-fairies-save',version:SAVE_VERSION,state:{...state,explored:state.explored.map(set=>[...set]),visible:state.visible.map(set=>[...set])},runtime:captureRuntime(state)});
+export function saveGame(state:GameState,options:{omitScenarioBinding?:boolean}={}):SaveEnvelope {
+ const fields={...state};
+ // Scenario checkpoints store this binding beside the game envelope.
+ if(options.omitScenarioBinding)delete fields.scenario;
+ const envelope=copyJson({format:'orcs-vs-fairies-save',version:SAVE_VERSION,state:{...fields,explored:state.explored.map(set=>[...set]),visible:state.visible.map(set=>[...set])},runtime:captureRuntime(state)});
  checkSize(envelope);validateCurrent(envelope);completeCurrentState(envelope.state as unknown as GameState);checkSize(envelope);validateCurrent(envelope);return envelope;
 }
 export function loadGame(input:unknown):GameState {
