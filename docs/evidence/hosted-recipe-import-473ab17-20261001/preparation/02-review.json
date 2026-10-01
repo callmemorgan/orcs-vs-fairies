@@ -1,0 +1,88 @@
+{
+  "verdict": "No defects found in the two-file proof extension.",
+  "reviewType": "Independent light read-only source review",
+  "base": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+  "tip": "a0aaa643de509d210b7879e796279a618c2cf290",
+  "tipParentEqualsBase": true,
+  "worktree": "/home/morgana/.codex/worktrees/hosted-zero-delay-proof/orcs-vs-Fairies",
+  "branch": "codex/hosted-zero-delay-proof",
+  "diffSha256": "4a5c389fd75fc568522c398c088cc7aab99678fd38aa792b964feb2c7136544a",
+  "reviewedBlobs": {
+    "scripts/server/verify-hosted-teams-browser.mjs": "d844ab8547cbfc186ab98f62f727f7df46317c8e86a603e70fe11966fe59a30a",
+    "scripts/server/verify-hosted-teams.mjs": "5343f858a62d76811536716e69d84c17f49a6bc8a8f34adccbecfe90e4036d4c"
+  },
+  "commits": [
+    {
+      "sha": "a0aaa643de509d210b7879e796279a618c2cf290",
+      "subject": "Prove live spectators after hosted restart",
+      "files": [
+        {
+          "path": "scripts/server/verify-hosted-teams-browser.mjs",
+          "added": 16,
+          "removed": 2,
+          "hunks": ["+293", "+301", "+483,13", "+498"],
+          "change": "Keep delayed spectator expectations at the default 20 ticks, then add native host-to-side-1 player-perspective spectator capture after durability checks. Assert zero delay, read-only rendering, matching initial views and matching views at a tick at least four ticks later. Save both frame pairs.",
+          "risk": "No defect found in connection selection, old-frame exclusion, role assignment or evidence serialization."
+        },
+        {
+          "path": "scripts/server/verify-hosted-teams.mjs",
+          "added": 4,
+          "removed": 4,
+          "hunks": ["+62", "+66", "+116", "+126"],
+          "change": "Default the first launch to one second, explicitly restart with zero seconds, and describe the additional native proof in the result method.",
+          "risk": "No defect found in generation count, build reuse, package reuse or cleanup."
+        }
+      ]
+    }
+  ],
+  "findings": [],
+  "behavioralInterrogation": [
+    {
+      "area": "spectator helper",
+      "diff": "a0aaa643de509d210b7879e796279a618c2cf290 scripts/server/verify-hosted-teams-browser.mjs +293 and +301",
+      "ordering": "none. Only the delay expectation becomes an argument; the existing native entry and coherent renderer barrier remain serial.",
+      "failurePaths": "none. The existing assertion now compares hello.delayTicks with the default 20 or the new explicit 0; errors still reach the caller's catch/finally.",
+      "observability": "none. No helper log or wire-capture event changes.",
+      "staleWrites": "none. The helper still requires a new connection and hello; profile clears the frame cache on hello and records snapshots only from its current socket (115-118, 209-218).",
+      "testDelta": "The existing native player/team spectator calls at 393 and 399 keep the default 20; the added restart call at 485 requires 0. These proof assertions were inspected but not executed."
+    },
+    {
+      "area": "restart live spectator proof",
+      "diff": "a0aaa643de509d210b7879e796279a618c2cf290 scripts/server/verify-hosted-teams-browser.mjs +483,13 and +498",
+      "ordering": "The native spectator transition runs after the unchanged replay receipt, bank and player-wire checks. Initial equality precedes the future common tick comparison. Only independent frame-file saves run concurrently. No new competing writer exists.",
+      "failurePaths": "Native entry, frame polling, equality and frame-file writes reject through verifyRestart's existing catch and finally (500-505). The inherited screenshot helper records capture errors instead of failing the proof (86-89). No new swallowed rejection was found.",
+      "observability": "A new check result contains the captured hello, read-only renderer state, initial/advancing ticks and four saved public frame descriptors. The existing restart-wire file is serialized before the new phase (480-482), so it remains player-recovery evidence; the new phase has separate actual hello/frame evidence at 490-494. No additional console emission changes causal order.",
+      "staleWrites": "none. Host actor 0 becomes spectator side 1 only after prior checks. A fresh hello clears its old side-0 frames (115-118). Native replacement waits for a snapshot and disposes the old connection (src/main.ts 164-175, 201-216). Server spectator tickets do not replace guest actor 1's player connection (src/server/server.ts 381-388, 420-427).",
+      "testDelta": "The added proof fails if initial views differ at live.frame.tick (486-487), or if views differ at a common tick at least four ticks later (488-489). The reused helper asserts zero-delay hello and read-only renderer state (301-303). Native behavior remains unexecuted in this review."
+    },
+    {
+      "area": "launcher and result method",
+      "diff": "a0aaa643de509d210b7879e796279a618c2cf290 scripts/server/verify-hosted-teams.mjs +62, +66, +116 and +126",
+      "ordering": "none. First launch, browser proof, graceful stop, restart, recovery proof and final source/package checks keep their order. The first launch remains the default one second; the second passes zero.",
+      "failurePaths": "none. The environment value becomes a stringified parameter. Existing launch startup bounds, top-level catch, browser close and server stop remain in place (62-87, 121-127).",
+      "observability": "The result method adds zero-delay native spectator viewing. Existing per-generation server logs, source/package evidence and cleanup reporting remain unchanged.",
+      "staleWrites": "none. There are two launch call sites (108, 116), one Vite build (96), one selected server build (101-103), and the same server/browser package directories and data directory throughout. No additional package or state writer is added.",
+      "testDelta": "The new restart spectator hello assertion detects a restart that did not select zero delay. Existing generation-one spectator calls detect loss of the 20-tick delay. The existing source/package hash assertions at 118-119 retain package identity. Native behavior remains unexecuted in this review."
+    }
+  ],
+  "complianceNotes": {
+    "scope": "Only the two proof scripts changed. No product setting or toggle changed.",
+    "assertions": "All prior assertions remain, including the protocol assertion on the restart line. The existing spectator delay assertion uses a default argument of 20; only the new restart case passes 0.",
+    "publicViewEquality": "At zero delay and player perspective, server deliver selects the same cached frame.views[1] for both sockets (src/server/server.ts 403-409). Frames are produced at four-tick intervals and broadcast from the same cache (483-493), so initial exact-tick matching and later common-tick matching use real public observations.",
+    "sideMutation": "The helper changes only host actor 0's diagnostic side after the existing player checks. The guest performs no entry action and remains side-1 player. The HTTP match lookup through the guest is read-only.",
+    "cleanup": "Existing verifyRestart context cleanup covers the new phase; the runner retains browser/server cleanup. No new process or browser context is added.",
+    "futureFaviconPin": "The logic assessment applies to a later favicon-only pin if these two reviewed script blobs and the relevant native/server code are unchanged. sourceSnapshot includes public assets and index.html; packageSnapshot includes both built packages. This review does not attest to a future pin's bytes or a native run. No additional gate is proposed."
+  },
+  "verification": {
+    "passed": [
+      "Pinned BASE and TIP resolved, TIP parent equals BASE, and the one-commit range was enumerated.",
+      "Actual Git diff and blobs inspected; generated contextual diff matches the supplied SHA-256.",
+      "git diff --check passed.",
+      "node --check passed for both immutable TIP verifier blobs.",
+      "Added-symbol verification passed after a known-negative search returned no match.",
+      "Worktree remained clean at TIP."
+    ],
+    "notRun": ["builds", "tests", "server", "browser", "simulation", "native execution"],
+    "limitation": "This review establishes source consistency and finds no concrete defect. It does not establish runtime success."
+  }
+}

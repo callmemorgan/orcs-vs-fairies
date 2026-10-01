@@ -1,0 +1,1857 @@
+{
+  "formatVersion": 1,
+  "generatedAt": "2026-10-01T21:42:27.252016+00:00",
+  "scope": "Read-only original hosted clause audit. Git objects, admitted JSON and existing historical JSON read; only this /tmp evidence written. No builds, tests, server, browser, simulation or native execution.",
+  "repo": "/home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies",
+  "ownedCheckoutHead": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+  "productFreeze": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "docsAssembly": "8b96f5197adf5b4ddfa160c2fe5a550afdf7e9d8",
+  "actualPassingSuiteHead": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+  "originalRequirements": [
+    {
+      "id": 61,
+      "title": "Online 1v1 matches",
+      "requirement": "play against another human.",
+      "status": "in-progress",
+      "evidence": []
+    },
+    {
+      "id": 62,
+      "title": "Team battles",
+      "requirement": "support 2v2, 3v3 and 4v4.",
+      "status": "in-progress",
+      "evidence": []
+    },
+    {
+      "id": 63,
+      "title": "Cooperative skirmishes",
+      "requirement": "human teammates fight coordinated computer opponents.",
+      "status": "in-progress",
+      "evidence": []
+    },
+    {
+      "id": 64,
+      "title": "Live spectators",
+      "requirement": "watch matches with optional delayed viewing.",
+      "status": "in-progress",
+      "evidence": []
+    }
+  ],
+  "requirementArtifact": {
+    "gitBlob": "b4a257774ef0f7c8ca14784c16b59e42ebaec988",
+    "sha256": "721660671af9d8e6211d07ea101087af5ecb4cf6fa2f98918c79b54a059e25c9",
+    "bytes": 43903
+  },
+  "admittedSuiteArtifacts": {
+    "tests.json": {
+      "gitBlob": "a045886f7445ec868f613c4ff11443783df44923",
+      "sha256": "ced75e92e6e198d8bad063fc0e4b276bfd7ee1936bf1849830cafcd21f7a11a9",
+      "bytes": 1017281
+    },
+    "report.json": {
+      "gitBlob": "cd6f0cdb0242cd18e7d8ac204bfb3a81492a43cd",
+      "sha256": "8711be82822ba830200c91af9936e476c3db3617a6ce6b33089cf329da0590e5",
+      "bytes": 1340
+    },
+    "source-before.json": {
+      "gitBlob": "6147dad0615dfaba0eb7c2e7047570e2773bdb28",
+      "sha256": "53a7006baf049eba955a8cb382ce6355ba3cb6b9e7816848363b386b82df7694",
+      "bytes": 219600
+    },
+    "source-after.json": {
+      "gitBlob": "6147dad0615dfaba0eb7c2e7047570e2773bdb28",
+      "sha256": "53a7006baf049eba955a8cb382ce6355ba3cb6b9e7816848363b386b82df7694",
+      "bytes": 219600
+    }
+  },
+  "suiteReportCopied": {
+    "head": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+    "phase": "tests",
+    "startedAt": "2026-10-01T18:26:25.436501+00:00",
+    "commands": [
+      {
+        "argv": [
+          "npm",
+          "test",
+          "--",
+          "--reporter=default",
+          "--reporter=json",
+          "--outputFile.json=/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/combined-rules401-full-suite-4a71cd0-r2/tests.json"
+        ],
+        "log": "command-1.log",
+        "exitCode": 0
+      }
+    ],
+    "runtime": {
+      "node": "v24.21.0",
+      "npm": "11.19.0",
+      "dependencies": {
+        "vitest": "4.1.11",
+        "typescript": "5.9.3",
+        "vite": "7.3.6",
+        "esbuild": "0.28.2",
+        "phaser": "4.2.1",
+        "ws": "8.22.0"
+      }
+    },
+    "tests": {
+      "numTotalTests": 2920,
+      "numPassedTests": 2920,
+      "numFailedTests": 0
+    },
+    "testFiles": 157,
+    "inputIntegrityPassed": true,
+    "finishedAt": "2026-10-01T18:39:00.175303+00:00",
+    "passed": true,
+    "artifactHashes": {
+      "command-1.log": "07d9194e5cb32f01c112c7847b0b345ee1dcfa4887fcefc6ecf0cc3d2592ea54",
+      "source-after.json": "53a7006baf049eba955a8cb382ce6355ba3cb6b9e7816848363b386b82df7694",
+      "source-before.json": "53a7006baf049eba955a8cb382ce6355ba3cb6b9e7816848363b386b82df7694",
+      "tests.json": "ced75e92e6e198d8bad063fc0e4b276bfd7ee1936bf1849830cafcd21f7a11a9"
+    }
+  },
+  "suiteTopLevelCountsCopied": {
+    "numTotalTests": 2920,
+    "numPassedTests": 2920,
+    "numFailedTests": 0,
+    "numPendingTests": 0,
+    "numTodoTests": 0,
+    "success": true
+  },
+  "admittedSuiteInputManifestVerification": {
+    "selectedFiles": 917,
+    "beforeEqualsAfterBytes": true,
+    "allSelectedBlobsSha256AndBytesMatchSuiteGit": true,
+    "mismatches": [],
+    "testsJsonHashMatchesReport": true
+  },
+  "entireSrcTestsBridge": {
+    "nameStatus": "M\tsrc/main.ts\n",
+    "fullDiff": "diff --git a/src/main.ts b/src/main.ts\nindex 022a7b8..2035c93 100644\n--- a/src/main.ts\n+++ b/src/main.ts\n@@ -148,7 +148,7 @@ const callbacks:HudCallbacks={\n function closeOnline(){onlineConnecting?.dispose();onlineConnecting=undefined;onlineConnection?.dispose();onlineConnection=undefined;onlineRender=undefined;}\n function applyCosmetics(){if(!scene)return;scene.setCosmeticLoadouts(onlineConnection?hostedLoadouts:replay?new Map():new Map([[playerSide(),accountLoadouts.get(scene.state.players[playerSide()].faction)??{}]]));}\n async function refreshHostedCosmetics(){const request=++hostedCosmeticRequest,connection=onlineConnection,generation=replacementGeneration;if(!connection)return;try{const result=await cosmeticApi.matchCosmetics(connection.matchId);if(request!==hostedCosmeticRequest||connection!==onlineConnection||generation!==replacementGeneration||!scene)return;hostedLoadouts=new Map(result.players.filter(player=>scene!.state.players[player.side]?.faction===player.factionId).map(player=>[player.side,resolveCosmeticLoadout(player.factionId,player.loadout)]));applyCosmetics();}catch{if(request===hostedCosmeticRequest&&connection===onlineConnection&&generation===replacementGeneration){hostedLoadouts.clear();applyCosmetics();}}}\n-function accountChanged(account:Account|null){const id=account?.id??null;if(cosmeticAccountId===id)return;cosmeticAccountId=id;cosmeticAccountEpoch++;campaignHost.resetCampaignReward();accountLoadouts.clear();applyCosmetics();cosmetics.reset();void cosmetics.refresh();}\n+function accountChanged(account:Account|null){const id=account?.id??null;if(cosmeticAccountId===id)return;cosmeticAccountId=id;cosmeticAccountEpoch++;campaignHost.resetCampaignReward();accountLoadouts.clear();applyCosmetics();cosmetics.reset();if(id)void cosmetics.refresh();}\n function setModal(source:string,open:boolean){\n  const wasOpen=!!openModals.size;\n  if(open)openModals.add(source);else openModals.delete(source);\n",
+    "trees": {
+      "src": {
+        "suite": "943a95f548afc43443e09f8138d86b40cc64aac0",
+        "freeze": "4ce22bc91758bcf486d226965469a34425c16e33"
+      },
+      "tests": {
+        "suite": "dc095381fd75be2a6b54dc1d6d4bc9dfd733a488",
+        "freeze": "dc095381fd75be2a6b54dc1d6d4bc9dfd733a488"
+      }
+    },
+    "interpretation": "Entire src/tests diff is one src/main.ts anonymous-account cosmetic refresh guard. All tests and hosted/core implementation inputs shown below are unchanged. The historical assertions retain their original run identity; this bridge does not manufacture a current mounted native result."
+  },
+  "publicDifferenceOutsideSrcTests": {
+    "nameStatus": "A\tpublic/favicon.ico\n",
+    "favicon": {
+      "gitBlob": "82fa500660fbf8a022166b806cb5cdb372ad83d5",
+      "sha256": "5e0bf0f72488bc693d779cd7a3ebc7fdfca8db9916a6e3e0811fff59113253c2",
+      "bytes": 32038
+    }
+  },
+  "relevantFileHashes": [
+    {
+      "path": "tests/server.test.ts",
+      "suite": {
+        "gitBlob": "6baec997136969f346f36f22693de455f804ae9d",
+        "sha256": "3175c43745e4695c0400fda293d629b25773d6de45784bc6b860e56a876edd2a",
+        "bytes": 15885
+      },
+      "freeze": {
+        "gitBlob": "6baec997136969f346f36f22693de455f804ae9d",
+        "sha256": "3175c43745e4695c0400fda293d629b25773d6de45784bc6b860e56a876edd2a",
+        "bytes": 15885
+      },
+      "unchanged": true,
+      "suiteInputManifestRecord": {
+        "gitBlob": "6baec997136969f346f36f22693de455f804ae9d",
+        "sha256": "3175c43745e4695c0400fda293d629b25773d6de45784bc6b860e56a876edd2a",
+        "bytes": 15885,
+        "mode": "100644"
+      }
+    },
+    {
+      "path": "tests/server-teams.test.ts",
+      "suite": {
+        "gitBlob": "ec20697c3695d0bbc9504434537f70b9514d7274",
+        "sha256": "348765fc71227acae7e8d9bd979368f800f15ef96176aab8e2048e5eca16c0f8",
+        "bytes": 30807
+      },
+      "freeze": {
+        "gitBlob": "ec20697c3695d0bbc9504434537f70b9514d7274",
+        "sha256": "348765fc71227acae7e8d9bd979368f800f15ef96176aab8e2048e5eca16c0f8",
+        "bytes": 30807
+      },
+      "unchanged": true,
+      "suiteInputManifestRecord": {
+        "gitBlob": "ec20697c3695d0bbc9504434537f70b9514d7274",
+        "sha256": "348765fc71227acae7e8d9bd979368f800f15ef96176aab8e2048e5eca16c0f8",
+        "bytes": 30807,
+        "mode": "100644"
+      }
+    },
+    {
+      "path": "tests/team-match.test.ts",
+      "suite": {
+        "gitBlob": "ffe043bbac31e0435ca7323876af340061988be4",
+        "sha256": "b01ea498540d7a4880fd0ef0da5585787062afb2208d19bf8b492af0726b25c7",
+        "bytes": 32038
+      },
+      "freeze": {
+        "gitBlob": "ffe043bbac31e0435ca7323876af340061988be4",
+        "sha256": "b01ea498540d7a4880fd0ef0da5585787062afb2208d19bf8b492af0726b25c7",
+        "bytes": 32038
+      },
+      "unchanged": true,
+      "suiteInputManifestRecord": {
+        "gitBlob": "ffe043bbac31e0435ca7323876af340061988be4",
+        "sha256": "b01ea498540d7a4880fd0ef0da5585787062afb2208d19bf8b492af0726b25c7",
+        "bytes": 32038,
+        "mode": "100644"
+      }
+    },
+    {
+      "path": "tests/skirmish-roster.test.ts",
+      "suite": {
+        "gitBlob": "4a46f148861413fa186130605fc7ad2ddbd965b3",
+        "sha256": "60af056e741bf34c283ff1f7d53b8b81409bdd75d365048e8ca12146e599acf5",
+        "bytes": 33183
+      },
+      "freeze": {
+        "gitBlob": "4a46f148861413fa186130605fc7ad2ddbd965b3",
+        "sha256": "60af056e741bf34c283ff1f7d53b8b81409bdd75d365048e8ca12146e599acf5",
+        "bytes": 33183
+      },
+      "unchanged": true,
+      "suiteInputManifestRecord": {
+        "gitBlob": "4a46f148861413fa186130605fc7ad2ddbd965b3",
+        "sha256": "60af056e741bf34c283ff1f7d53b8b81409bdd75d365048e8ca12146e599acf5",
+        "bytes": 33183,
+        "mode": "100644"
+      }
+    },
+    {
+      "path": "tests/allied-ai.test.ts",
+      "suite": {
+        "gitBlob": "94a07f50b00584bb3d51fcf7761ecafab6d98447",
+        "sha256": "d8789255e2868c96e5466cf3076c58e5defc7465234839e719c2992e837aeb78",
+        "bytes": 35182
+      },
+      "freeze": {
+        "gitBlob": "94a07f50b00584bb3d51fcf7761ecafab6d98447",
+        "sha256": "d8789255e2868c96e5466cf3076c58e5defc7465234839e719c2992e837aeb78",
+        "bytes": 35182
+      },
+      "unchanged": true,
+      "suiteInputManifestRecord": {
+        "gitBlob": "94a07f50b00584bb3d51fcf7761ecafab6d98447",
+        "sha256": "d8789255e2868c96e5466cf3076c58e5defc7465234839e719c2992e837aeb78",
+        "bytes": 35182,
+        "mode": "100644"
+      }
+    },
+    {
+      "path": "tests/team-ai-policy.test.ts",
+      "suite": {
+        "gitBlob": "c23feaa566fd4438d5f98e360bf4f364e527f0c3",
+        "sha256": "dc65a65ffaadd3fa2ab12d31c9fddb7d94da559c1d78357e7e351eac3459c102",
+        "bytes": 24260
+      },
+      "freeze": {
+        "gitBlob": "c23feaa566fd4438d5f98e360bf4f364e527f0c3",
+        "sha256": "dc65a65ffaadd3fa2ab12d31c9fddb7d94da559c1d78357e7e351eac3459c102",
+        "bytes": 24260
+      },
+      "unchanged": true,
+      "suiteInputManifestRecord": {
+        "gitBlob": "c23feaa566fd4438d5f98e360bf4f364e527f0c3",
+        "sha256": "dc65a65ffaadd3fa2ab12d31c9fddb7d94da559c1d78357e7e351eac3459c102",
+        "bytes": 24260,
+        "mode": "100644"
+      }
+    },
+    {
+      "path": "tests/online-client.test.ts",
+      "suite": {
+        "gitBlob": "145e477ba963676a1499d868ddaf52ee16b1f57e",
+        "sha256": "235fcc5f198fbd859e702ddaeee0f3029a4447830201f86e61a691d4e5f5d76f",
+        "bytes": 8828
+      },
+      "freeze": {
+        "gitBlob": "145e477ba963676a1499d868ddaf52ee16b1f57e",
+        "sha256": "235fcc5f198fbd859e702ddaeee0f3029a4447830201f86e61a691d4e5f5d76f",
+        "bytes": 8828
+      },
+      "unchanged": true,
+      "suiteInputManifestRecord": {
+        "gitBlob": "145e477ba963676a1499d868ddaf52ee16b1f57e",
+        "sha256": "235fcc5f198fbd859e702ddaeee0f3029a4447830201f86e61a691d4e5f5d76f",
+        "bytes": 8828,
+        "mode": "100644"
+      }
+    },
+    {
+      "path": "tests/online-lobby.test.ts",
+      "suite": {
+        "gitBlob": "0969352077742f2425011dae8d31fad46eca05f1",
+        "sha256": "43c0779f54f3dd938bf1d4273bcc76e0b7841656fc4f85f294d6ec40f6ff31cf",
+        "bytes": 8712
+      },
+      "freeze": {
+        "gitBlob": "0969352077742f2425011dae8d31fad46eca05f1",
+        "sha256": "43c0779f54f3dd938bf1d4273bcc76e0b7841656fc4f85f294d6ec40f6ff31cf",
+        "bytes": 8712
+      },
+      "unchanged": true,
+      "suiteInputManifestRecord": {
+        "gitBlob": "0969352077742f2425011dae8d31fad46eca05f1",
+        "sha256": "43c0779f54f3dd938bf1d4273bcc76e0b7841656fc4f85f294d6ec40f6ff31cf",
+        "bytes": 8712,
+        "mode": "100644"
+      }
+    },
+    {
+      "path": "src/core/simulation.ts",
+      "suite": {
+        "gitBlob": "66bd44db02798f07467f888ab1193b06b52f364d",
+        "sha256": "e301c65d0352ffe648a5bc4ee6acbda1f562164deacdfe60f8f3b03e7bdccf35",
+        "bytes": 106228
+      },
+      "freeze": {
+        "gitBlob": "66bd44db02798f07467f888ab1193b06b52f364d",
+        "sha256": "e301c65d0352ffe648a5bc4ee6acbda1f562164deacdfe60f8f3b03e7bdccf35",
+        "bytes": 106228
+      },
+      "unchanged": true,
+      "suiteInputManifestRecord": {
+        "gitBlob": "66bd44db02798f07467f888ab1193b06b52f364d",
+        "sha256": "e301c65d0352ffe648a5bc4ee6acbda1f562164deacdfe60f8f3b03e7bdccf35",
+        "bytes": 106228,
+        "mode": "100644"
+      }
+    },
+    {
+      "path": "src/core/team-ai.ts",
+      "suite": {
+        "gitBlob": "7ccf72ae132da963b0ac4d1845cf6518df7d59a4",
+        "sha256": "246afca59757266635d823fbd943d72ef500db0bab3385107da4f7ca930836b2",
+        "bytes": 25877
+      },
+      "freeze": {
+        "gitBlob": "7ccf72ae132da963b0ac4d1845cf6518df7d59a4",
+        "sha256": "246afca59757266635d823fbd943d72ef500db0bab3385107da4f7ca930836b2",
+        "bytes": 25877
+      },
+      "unchanged": true,
+      "suiteInputManifestRecord": {
+        "gitBlob": "7ccf72ae132da963b0ac4d1845cf6518df7d59a4",
+        "sha256": "246afca59757266635d823fbd943d72ef500db0bab3385107da4f7ca930836b2",
+        "bytes": 25877,
+        "mode": "100644"
+      }
+    },
+    {
+      "path": "src/server/server.ts",
+      "suite": {
+        "gitBlob": "c44e339200e49edfd0862386864d2dc64e63b608",
+        "sha256": "6cee3a6770a2e692ca4ad3ad155c3b06cf6f9116b43460f1eefe7eb7572a1f65",
+        "bytes": 50662
+      },
+      "freeze": {
+        "gitBlob": "c44e339200e49edfd0862386864d2dc64e63b608",
+        "sha256": "6cee3a6770a2e692ca4ad3ad155c3b06cf6f9116b43460f1eefe7eb7572a1f65",
+        "bytes": 50662
+      },
+      "unchanged": true,
+      "suiteInputManifestRecord": {
+        "gitBlob": "c44e339200e49edfd0862386864d2dc64e63b608",
+        "sha256": "6cee3a6770a2e692ca4ad3ad155c3b06cf6f9116b43460f1eefe7eb7572a1f65",
+        "bytes": 50662,
+        "mode": "100644"
+      }
+    },
+    {
+      "path": "src/server/team-view.ts",
+      "suite": {
+        "gitBlob": "b00e45e8d71f4b3419354ed5218c6f33b2c14cbe",
+        "sha256": "ac53d33a6595b1576e1ddbe3b03ade7ba762d3fa53dd90ec76e5f1036da3bee4",
+        "bytes": 5481
+      },
+      "freeze": {
+        "gitBlob": "b00e45e8d71f4b3419354ed5218c6f33b2c14cbe",
+        "sha256": "ac53d33a6595b1576e1ddbe3b03ade7ba762d3fa53dd90ec76e5f1036da3bee4",
+        "bytes": 5481
+      },
+      "unchanged": true,
+      "suiteInputManifestRecord": {
+        "gitBlob": "b00e45e8d71f4b3419354ed5218c6f33b2c14cbe",
+        "sha256": "ac53d33a6595b1576e1ddbe3b03ade7ba762d3fa53dd90ec76e5f1036da3bee4",
+        "bytes": 5481,
+        "mode": "100644"
+      }
+    },
+    {
+      "path": "src/server/views.ts",
+      "suite": {
+        "gitBlob": "fcc5d11d1bb09595d0103cc2ae8e5e3c457c2826",
+        "sha256": "fef071fb8d6f0729914abe1238206ef67179d59246f65e043d38e753f2e29578",
+        "bytes": 2864
+      },
+      "freeze": {
+        "gitBlob": "fcc5d11d1bb09595d0103cc2ae8e5e3c457c2826",
+        "sha256": "fef071fb8d6f0729914abe1238206ef67179d59246f65e043d38e753f2e29578",
+        "bytes": 2864
+      },
+      "unchanged": true,
+      "suiteInputManifestRecord": {
+        "gitBlob": "fcc5d11d1bb09595d0103cc2ae8e5e3c457c2826",
+        "sha256": "fef071fb8d6f0729914abe1238206ef67179d59246f65e043d38e753f2e29578",
+        "bytes": 2864,
+        "mode": "100644"
+      }
+    },
+    {
+      "path": "src/online/protocol.ts",
+      "suite": {
+        "gitBlob": "366eba126e985af87cd95f58ee9d5bcd8cfd8a30",
+        "sha256": "0ad3ac461e5be93e277a468bdd860b4c111282c219b0d1f7b381f22fd494030c",
+        "bytes": 2630
+      },
+      "freeze": {
+        "gitBlob": "366eba126e985af87cd95f58ee9d5bcd8cfd8a30",
+        "sha256": "0ad3ac461e5be93e277a468bdd860b4c111282c219b0d1f7b381f22fd494030c",
+        "bytes": 2630
+      },
+      "unchanged": true,
+      "suiteInputManifestRecord": {
+        "gitBlob": "366eba126e985af87cd95f58ee9d5bcd8cfd8a30",
+        "sha256": "0ad3ac461e5be93e277a468bdd860b4c111282c219b0d1f7b381f22fd494030c",
+        "bytes": 2630,
+        "mode": "100644"
+      }
+    },
+    {
+      "path": "src/online/client.ts",
+      "suite": {
+        "gitBlob": "ff8cc721b57ab6ced15c3b4e9b03aad314f8ea6c",
+        "sha256": "5564377fb45ca04a86bab9ea25025de2194c0dfdd1ca75ca835109711b46a72a",
+        "bytes": 16286
+      },
+      "freeze": {
+        "gitBlob": "ff8cc721b57ab6ced15c3b4e9b03aad314f8ea6c",
+        "sha256": "5564377fb45ca04a86bab9ea25025de2194c0dfdd1ca75ca835109711b46a72a",
+        "bytes": 16286
+      },
+      "unchanged": true,
+      "suiteInputManifestRecord": {
+        "gitBlob": "ff8cc721b57ab6ced15c3b4e9b03aad314f8ea6c",
+        "sha256": "5564377fb45ca04a86bab9ea25025de2194c0dfdd1ca75ca835109711b46a72a",
+        "bytes": 16286,
+        "mode": "100644"
+      }
+    },
+    {
+      "path": "src/main.ts",
+      "suite": {
+        "gitBlob": "022a7b80cff3a185879dd11a0762808c8435d047",
+        "sha256": "82cde4d82ae086d425283265e6906f4fa88b4a3b62d86ad2a988d36c06b8cfe6",
+        "bytes": 47418
+      },
+      "freeze": {
+        "gitBlob": "2035c932e7c2b9fc1bfa00c5881050ac7f036986",
+        "sha256": "4b3de6a2c62517819e56d81e20f96aa10c8bfde8cd58ea70aa516fd84f0abda7",
+        "bytes": 47424
+      },
+      "unchanged": false,
+      "suiteInputManifestRecord": {
+        "gitBlob": "022a7b80cff3a185879dd11a0762808c8435d047",
+        "sha256": "82cde4d82ae086d425283265e6906f4fa88b4a3b62d86ad2a988d36c06b8cfe6",
+        "bytes": 47418,
+        "mode": "100644"
+      }
+    }
+  ],
+  "copiedActualPassedAssertionResults": [
+    {
+      "key": "tests/server.test.ts::runs two independent human sockets, filters fog, enforces ownership and deduplicates paid commands",
+      "repositoryPath": "tests/server.test.ts",
+      "suiteFileName": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/server.test.ts",
+      "suiteFileStatus": "passed",
+      "assertionResult": {
+        "ancestorTitles": [
+          "authoritative HTTP and WebSocket server"
+        ],
+        "fullName": "authoritative HTTP and WebSocket server runs two independent human sockets, filters fog, enforces ownership and deduplicates paid commands",
+        "status": "passed",
+        "title": "runs two independent human sockets, filters fog, enforces ownership and deduplicates paid commands",
+        "duration": 314.78207899999984,
+        "failureMessages": [],
+        "meta": {},
+        "tags": []
+      }
+    },
+    {
+      "key": "tests/server-teams.test.ts::runs eight human seats, preserves private ownership and durable receipts, and resolves team forfeits after restart",
+      "repositoryPath": "tests/server-teams.test.ts",
+      "suiteFileName": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/server-teams.test.ts",
+      "suiteFileStatus": "passed",
+      "assertionResult": {
+        "ancestorTitles": [
+          "hosted team matches"
+        ],
+        "fullName": "hosted team matches runs eight human seats, preserves private ownership and durable receipts, and resolves team forfeits after restart",
+        "status": "passed",
+        "title": "runs eight human seats, preserves private ownership and durable receipts, and resolves team forfeits after restart",
+        "duration": 2793.151163,
+        "failureMessages": [],
+        "meta": {},
+        "tags": []
+      }
+    },
+    {
+      "key": "tests/server-teams.test.ts::starts cooperative human seats without AI readiness and runs both computer opponents through delayed team observations",
+      "repositoryPath": "tests/server-teams.test.ts",
+      "suiteFileName": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/server-teams.test.ts",
+      "suiteFileStatus": "passed",
+      "assertionResult": {
+        "ancestorTitles": [
+          "hosted team matches"
+        ],
+        "fullName": "hosted team matches starts cooperative human seats without AI readiness and runs both computer opponents through delayed team observations",
+        "status": "passed",
+        "title": "starts cooperative human seats without AI readiness and runs both computer opponents through delayed team observations",
+        "duration": 1579.0692790000003,
+        "failureMessages": [],
+        "meta": {},
+        "tags": []
+      }
+    },
+    {
+      "key": "tests/server.test.ts::delays actual spectator frames and rejects spectator commands",
+      "repositoryPath": "tests/server.test.ts",
+      "suiteFileName": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/server.test.ts",
+      "suiteFileStatus": "passed",
+      "assertionResult": {
+        "ancestorTitles": [
+          "authoritative HTTP and WebSocket server"
+        ],
+        "fullName": "authoritative HTTP and WebSocket server delays actual spectator frames and rejects spectator commands",
+        "status": "passed",
+        "title": "delays actual spectator frames and rejects spectator commands",
+        "duration": 475.99637699999994,
+        "failureMessages": [],
+        "meta": {},
+        "tags": []
+      }
+    },
+    {
+      "key": "tests/team-match.test.ts::runs hostile combat for every player in a 4-player match",
+      "repositoryPath": "tests/team-match.test.ts",
+      "suiteFileName": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/team-match.test.ts",
+      "suiteFileStatus": "passed",
+      "assertionResult": {
+        "ancestorTitles": [
+          "playable team rosters"
+        ],
+        "fullName": "playable team rosters runs hostile combat for every player in a 4-player match",
+        "status": "passed",
+        "title": "runs hostile combat for every player in a 4-player match",
+        "duration": 146.799801,
+        "failureMessages": [],
+        "meta": {},
+        "tags": []
+      }
+    },
+    {
+      "key": "tests/team-match.test.ts::runs hostile combat for every player in a 6-player match",
+      "repositoryPath": "tests/team-match.test.ts",
+      "suiteFileName": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/team-match.test.ts",
+      "suiteFileStatus": "passed",
+      "assertionResult": {
+        "ancestorTitles": [
+          "playable team rosters"
+        ],
+        "fullName": "playable team rosters runs hostile combat for every player in a 6-player match",
+        "status": "passed",
+        "title": "runs hostile combat for every player in a 6-player match",
+        "duration": 187.42415500000004,
+        "failureMessages": [],
+        "meta": {},
+        "tags": []
+      }
+    },
+    {
+      "key": "tests/team-match.test.ts::runs hostile combat for every player in a 8-player match",
+      "repositoryPath": "tests/team-match.test.ts",
+      "suiteFileName": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/team-match.test.ts",
+      "suiteFileStatus": "passed",
+      "assertionResult": {
+        "ancestorTitles": [
+          "playable team rosters"
+        ],
+        "fullName": "playable team rosters runs hostile combat for every player in a 8-player match",
+        "status": "passed",
+        "title": "runs hostile combat for every player in a 8-player match",
+        "duration": 171.73391600000002,
+        "failureMessages": [],
+        "meta": {},
+        "tags": []
+      }
+    },
+    {
+      "key": "tests/skirmish-roster.test.ts::turns the 2v2 preset into a complete playable 4-player match",
+      "repositoryPath": "tests/skirmish-roster.test.ts",
+      "suiteFileName": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/skirmish-roster.test.ts",
+      "suiteFileStatus": "passed",
+      "assertionResult": {
+        "ancestorTitles": [
+          "local skirmish roster"
+        ],
+        "fullName": "local skirmish roster turns the 2v2 preset into a complete playable 4-player match",
+        "status": "passed",
+        "title": "turns the 2v2 preset into a complete playable 4-player match",
+        "duration": 76.474786,
+        "failureMessages": [],
+        "meta": {},
+        "tags": []
+      }
+    },
+    {
+      "key": "tests/skirmish-roster.test.ts::turns the 3v3 preset into a complete playable 6-player match",
+      "repositoryPath": "tests/skirmish-roster.test.ts",
+      "suiteFileName": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/skirmish-roster.test.ts",
+      "suiteFileStatus": "passed",
+      "assertionResult": {
+        "ancestorTitles": [
+          "local skirmish roster"
+        ],
+        "fullName": "local skirmish roster turns the 3v3 preset into a complete playable 6-player match",
+        "status": "passed",
+        "title": "turns the 3v3 preset into a complete playable 6-player match",
+        "duration": 106.50109300000008,
+        "failureMessages": [],
+        "meta": {},
+        "tags": []
+      }
+    },
+    {
+      "key": "tests/skirmish-roster.test.ts::turns the 4v4 preset into a complete playable 8-player match",
+      "repositoryPath": "tests/skirmish-roster.test.ts",
+      "suiteFileName": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/skirmish-roster.test.ts",
+      "suiteFileStatus": "passed",
+      "assertionResult": {
+        "ancestorTitles": [
+          "local skirmish roster"
+        ],
+        "fullName": "local skirmish roster turns the 4v4 preset into a complete playable 8-player match",
+        "status": "passed",
+        "title": "turns the 4v4 preset into a complete playable 8-player match",
+        "duration": 86.4769960000001,
+        "failureMessages": [],
+        "meta": {},
+        "tags": []
+      }
+    },
+    {
+      "key": "tests/allied-ai.test.ts::keeps one distinct scout and launches both approved armies in the same tick despite different decision cadences",
+      "repositoryPath": "tests/allied-ai.test.ts",
+      "suiteFileName": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/allied-ai.test.ts",
+      "suiteFileStatus": "passed",
+      "assertionResult": {
+        "ancestorTitles": [
+          "allied armies in the running simulation"
+        ],
+        "fullName": "allied armies in the running simulation keeps one distinct scout and launches both approved armies in the same tick despite different decision cadences",
+        "status": "passed",
+        "title": "keeps one distinct scout and launches both approved armies in the same tick despite different decision cadences",
+        "duration": 858.7594909999998,
+        "failureMessages": [],
+        "meta": {},
+        "tags": []
+      }
+    },
+    {
+      "key": "tests/team-ai-policy.test.ts::uses combined readiness below a solo threshold and launches all owners once in one pass",
+      "repositoryPath": "tests/team-ai-policy.test.ts",
+      "suiteFileName": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/team-ai-policy.test.ts",
+      "suiteFileStatus": "passed",
+      "assertionResult": {
+        "ancestorTitles": [
+          "owned team AI coordination"
+        ],
+        "fullName": "owned team AI coordination uses combined readiness below a solo threshold and launches all owners once in one pass",
+        "status": "passed",
+        "title": "uses combined readiness below a solo threshold and launches all owners once in one pass",
+        "duration": 1.3137429999999881,
+        "failureMessages": [],
+        "meta": {},
+        "tags": []
+      }
+    },
+    {
+      "key": "tests/online-client.test.ts::ignores stale frames and prohibits spectator commands",
+      "repositoryPath": "tests/online-client.test.ts",
+      "suiteFileName": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/online-client.test.ts",
+      "suiteFileStatus": "passed",
+      "assertionResult": {
+        "ancestorTitles": [
+          "authoritative match connection"
+        ],
+        "fullName": "authoritative match connection ignores stale frames and prohibits spectator commands",
+        "status": "passed",
+        "title": "ignores stale frames and prohibits spectator commands",
+        "duration": 1.2948359999999752,
+        "failureMessages": [],
+        "meta": {},
+        "tags": []
+      }
+    },
+    {
+      "key": "tests/online-lobby.test.ts::creates, configures, readies and starts with current server revisions",
+      "repositoryPath": "tests/online-lobby.test.ts",
+      "suiteFileName": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/online-lobby.test.ts",
+      "suiteFileStatus": "passed",
+      "assertionResult": {
+        "ancestorTitles": [
+          "server-backed online lobby UI"
+        ],
+        "fullName": "server-backed online lobby UI creates, configures, readies and starts with current server revisions",
+        "status": "passed",
+        "title": "creates, configures, readies and starts with current server revisions",
+        "duration": 366.10565899999995,
+        "failureMessages": [],
+        "meta": {},
+        "tags": []
+      }
+    }
+  ],
+  "sourceAssertionBlocks": [
+    {
+      "label": "two-account real HTTP/server setup and lobby launch",
+      "path": "tests/server.test.ts",
+      "ref": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "startLine": 53,
+      "endLine": 67,
+      "lines": [
+        "async function setup(delay=0){",
+        "  const directory=await mkdtemp(join(tmpdir(),'ovf-server-'));cleanup.push(()=>rm(directory,{recursive:true,force:true}));",
+        "  const server=await createRtsServer({dataDir:directory,port:0,spectatorDelaySeconds:delay});cleanup.push(()=>server.close());",
+        "  const host=new Client(server.url),guest=new Client(server.url);",
+        "  const first=await host.register('host'),second=await guest.register('guest');",
+        "  return {directory,server,host,guest,first,second};",
+        "}",
+        "async function launch(host:Client,guest:Client){",
+        "  let result=await host.request('/api/lobbies',{settings:{mapSize:'small',factions:['orcs','fairies']},seed:4127});expect(result.status).toBe(201);",
+        "  let lobby=result.data.lobby as LobbyObservation;",
+        "  result=await guest.request(`/api/lobbies/${lobby.id}/join`,{expectedRevision:lobby.revision});expect(result.status).toBe(200);lobby=result.data.lobby;",
+        "  result=await host.request(`/api/lobbies/${lobby.id}/ready`,{expectedRevision:lobby.revision,ready:true});expect(result.status).toBe(200);lobby=result.data.lobby;",
+        "  result=await guest.request(`/api/lobbies/${lobby.id}/ready`,{expectedRevision:lobby.revision,ready:true});expect(result.status).toBe(200);lobby=result.data.lobby;",
+        "  result=await host.request(`/api/lobbies/${lobby.id}/start`,{expectedRevision:lobby.revision});expect(result.status).toBe(200);return result.data.lobby as LobbyObservation;",
+        "}"
+      ]
+    },
+    {
+      "label": "actual 1v1 socket, ownership and paid command assertions",
+      "path": "tests/server.test.ts",
+      "ref": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "startLine": 119,
+      "endLine": 140,
+      "lines": [
+        "  it('runs two independent human sockets, filters fog, enforces ownership and deduplicates paid commands',async()=>{",
+        "    const {host,guest,directory}=await setup();const lobby=await launch(host,guest),matchId=lobby.matchId!;",
+        "    const first=await host.socket(matchId),second=await guest.socket(matchId);cleanup.push(async()=>{first.close();second.close();});",
+        "    const a=await first.snapshot(),b=await second.snapshot();",
+        "    expect(a.view.side).toBe(0);expect(b.view.side).toBe(1);",
+        "    expect(a.view.entities.every(entity=>entity.side===0)).toBe(true);expect(b.view.entities.every(entity=>entity.side===1)).toBe(true);",
+        "    expect(a.view.map).not.toHaveProperty('seed');expect(a.view.map.starts[1]).toBeNull();",
+        "    expect(a.view).not.toHaveProperty('players');expect(a.view).not.toHaveProperty('state');",
+        "    const enemyWorker=b.view.entities.find(entity=>entity.kind==='unit'&&entity.role==='worker')!;",
+        "    expect(await first.command(1,{type:'move',ids:[enemyWorker.id],x:10,y:10})).toMatchObject({accepted:false,reason:'ownership'});",
+        "    const hq=a.view.entities.find(entity=>entity.kind==='building'&&entity.role==='hq')!;",
+        "    const recruit={type:'train',id:hq.id,role:'worker'};",
+        "    const ack=await first.command(2,recruit);expect(ack.accepted).toBe(true);",
+        "    const duplicate=await first.command(2,recruit);expect(duplicate).toEqual(ack);",
+        "    const newer=await first.snapshot(ack.appliedTick);expect(newer.view.player.wood).toBe(a.view.player.wood-50);",
+        "    const producer=newer.view.entities.find(entity=>entity.id===hq.id) as any;expect(producer.queue).toEqual(['worker']);",
+        "    first.send({kind:'command',protocolVersion:1,clientSeq:2,observedTick:0,command:{type:'train',id:hq.id,role:'melee'}});",
+        "    expect(await first.next(message=>message.kind==='error')).toMatchObject({code:'sequence-conflict'});",
+        "    expect(await first.command(3,{...recruit,side:1})).toMatchObject({accepted:false,reason:'invalid-command'});",
+        "    const db=new DatabaseSync(join(directory,'server.sqlite'),{readOnly:true});",
+        "    expect(db.prepare('SELECT COUNT(*) AS n FROM commands WHERE match_id=? AND side=0 AND client_seq=2').get(matchId)?.n).toBe(1);db.close();",
+        "  });"
+      ]
+    },
+    {
+      "label": "actual all-human 4v4 roster, all eight sockets and owned command assertions",
+      "path": "tests/server-teams.test.ts",
+      "ref": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "startLine": 114,
+      "endLine": 149,
+      "lines": [
+        "const factions: FactionId[] = ['orcs', 'fairies', 'dwarves', 'undead', 'tideborn', 'automata', 'orcs', 'fairies'];",
+        "const fourVsFour = (): LobbyPlayerSettings[] => factions.map((factionId, side) => ({ factionId, teamId: side < 4 ? 0 : 1, controller: 'human' }));",
+        "const privateFields = ['order', 'orderQueue', 'queue', 'rally', 'trainProgress', 'research', 'researchProgress', 'carried', 'carriedKind', 'cooldown', 'abilityReadyAt', 'expires', 'lastDamagedAt', 'path'];",
+        "const owned = (frame: SnapshotMessage, role: string) => frame.view.entities.find(entity => entity.side === frame.view.side && entity.role === role)!;",
+        "",
+        "describe('hosted team matches', () => {",
+        "  it('runs eight human seats, preserves private ownership and durable receipts, and resolves team forfeits after restart', async () => {",
+        "    const { directory, server, clients, accounts } = await setup(8);",
+        "    const players = fourVsFour(), lobby = await launch(clients, players), matchId = lobby.matchId!;",
+        "    expect(lobby.settings.players).toEqual(players);",
+        "    expect(lobby.seats.map(seat => seat.side)).toEqual([0, 1, 2, 3, 4, 5, 6, 7]);",
+        "    expect(lobby.seats.map(seat => seat.account?.id)).toEqual(accounts.map(account => account.id));",
+        "    const peers = await Promise.all(clients.map(client => client.connect(matchId)));",
+        "    const initial = await Promise.all(peers.map(peer => peer.frame()));",
+        "    for (let side = 0; side < 8; side++) {",
+        "      expect(peers[side].hello).toMatchObject({ side, role: 'player', lastClientSeq: 0 });",
+        "      expect(initial[side].view).toMatchObject({ side, teamId: side < 4 ? 0 : 1, sharedVision: true });",
+        "      expect(initial[side].view.player.faction).toBe(factions[side]);",
+        "      expect(initial[side].view.allies).toHaveLength(3);",
+        "      expect(initial[side].view.opponents).toHaveLength(4);",
+        "      expect(initial[side].view).not.toHaveProperty('players');",
+        "      expect(initial[side].view).not.toHaveProperty('teamPlayers');",
+        "      expect(initial[side].view.map).not.toHaveProperty('seed');",
+        "      const alliedSides = side < 4 ? [0, 1, 2, 3] : [4, 5, 6, 7];",
+        "      for (const ally of alliedSides) expect(initial[side].view.entities.some(entity => entity.side === ally && entity.role === 'hq')).toBe(true);",
+        "      for (const roster of [...initial[side].view.allies, ...initial[side].view.opponents]) expect(Object.keys(roster).sort()).toEqual(['faction', 'side', 'teamId']);",
+        "      for (const entity of initial[side].view.entities.filter(entity => entity.side !== side)) for (const field of privateFields) expect(entity).not.toHaveProperty(field);",
+        "      expect(await peers[side].command(1, { type: 'hold', ids: [owned(initial[side], 'worker').id] })).toMatchObject({ accepted: true });",
+        "    }",
+        "    const sharedTick = Math.max(...initial.map(frame => frame.tick)) + 4;",
+        "    const zero = await peers[0].frame(sharedTick), sameTeam = await peers[3].frameAt(zero.tick);",
+        "    expect(sameTeam.view.visible).toEqual(zero.view.visible);",
+        "    expect(sameTeam.view.explored).toEqual(zero.view.explored);",
+        "    const allyWorker = owned(initial[1], 'worker'), ownFighter = owned(initial[0], 'melee');",
+        "    expect(await peers[0].command(2, { type: 'attack', ids: [ownFighter.id], target: allyWorker.id })).toMatchObject({ accepted: false, reason: 'unavailable' });",
+        "    expect(await peers[0].command(3, { type: 'move', ids: [allyWorker.id], x: allyWorker.x + 1, y: allyWorker.y + 1 })).toMatchObject({ accepted: false, reason: 'ownership' });"
+      ]
+    },
+    {
+      "label": "actual positive-delay team spectator frames and read-only rejection",
+      "path": "tests/server-teams.test.ts",
+      "ref": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "startLine": 151,
+      "endLine": 182,
+      "lines": [
+        "    const watcher = new NetworkClient(server.url); await watcher.guest();",
+        "    expect((await watcher.request(`/api/matches/${matchId}/ticket`, { role: 'player' })).status).toBe(403);",
+        "    const observer = await watcher.connect(matchId, { role: 'spectator', perspective: 7, view: 'team' });",
+        "    expect(observer.hello).toMatchObject({ side: 7, role: 'spectator', delayTicks: 8, perspective: 'team' });",
+        "    const firstCommonTick = Math.max(...peers.map(peer => Math.min(...peer.history.keys())));",
+        "    const beforeSpend = await observer.frame(firstCommonTick);",
+        "    const hq = owned(initial[7], 'hq'), recruit = { type: 'train', id: hq.id, role: 'worker' };",
+        "    const ack = await peers[7].command(2, recruit);",
+        "    expect(ack.accepted).toBe(true);",
+        "    expect(await peers[7].command(2, recruit, ack.appliedTick)).toEqual(ack);",
+        "    const paid = await peers[7].frame(ack.appliedTick);",
+        "    expect(paid.view.player.wood).toBe(initial[7].view.player.wood - FACTIONS.fairies.units.worker.cost.wood);",
+        "    expect(owned(paid, 'hq')).toHaveProperty('queue', ['worker']);",
+        "    const allyPaid = await peers[4].frameAt(paid.tick);",
+        "    expect(allyPaid.view.player.wood).toBe(initial[4].view.player.wood);",
+        "    expect(allyPaid.view.entities.find(entity => entity.id === hq.id)).not.toHaveProperty('queue');",
+        "    let delayed = await observer.frame(beforeSpend.tick + 1);",
+        "    expect(delayed.tick).toBeLessThan(ack.appliedTick);",
+        "    for (let index = 0; index < 3; index++) {",
+        "      const historical = await Promise.all([4, 5, 6, 7].map(side => peers[side].frameAt(delayed.tick)));",
+        "      expect(delayed.view).toMatchObject({ side: 7, teamId: 1, teamPerspective: true });",
+        "      expect(delayed.view.teamPlayers).toEqual(historical.map((frame, index) => ({ side: index + 4, player: frame.view.player })));",
+        "      expect(delayed.view.player).toEqual(historical[3].view.player);",
+        "      expect(delayed.view.visible).toEqual(historical[3].view.visible);",
+        "      expect(delayed.view.explored).toEqual(historical[3].view.explored);",
+        "      const live = (await clients[0].request('/api/matches')).data.matches.find((match: { id: string }) => match.id === matchId);",
+        "      expect(live.tick - delayed.tick).toBeGreaterThanOrEqual(8);",
+        "      for (const entity of delayed.view.entities.filter(entity => entity.side < 4)) for (const field of privateFields) expect(entity).not.toHaveProperty(field);",
+        "      if (index < 2) delayed = await observer.frame(delayed.tick + 1);",
+        "    }",
+        "    observer.socket.send(JSON.stringify({ kind: 'command', protocolVersion: 1, clientSeq: 1, observedTick: 0, command: { type: 'surrender' } }));",
+        "    expect(await observer.next(message => message.kind === 'error')).toMatchObject({ code: 'spectator' });"
+      ]
+    },
+    {
+      "label": "historical restart and forfeiture assertions; not an original-clause requirement",
+      "path": "tests/server-teams.test.ts",
+      "ref": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "startLine": 184,
+      "endLine": 226,
+      "lines": [
+        "    const beforeRestart = await peers[7].frame(paid.tick + 1);",
+        "    await server.close();",
+        "    const resumed: RunningServer = await createRtsServer({ dataDir: directory, port: 0, spectatorDelaySeconds: .4 });",
+        "    cleanup.push(() => resumed.close());",
+        "    const restoredClients = clients.map(client => { const restored = new NetworkClient(resumed.url); restored.cookie = client.cookie; return restored; });",
+        "    for (let side = 0; side < 8; side++) expect((await restoredClients[side].request('/api/session')).data.account.id).toBe(accounts[side].id);",
+        "    const restoredLobby = (await restoredClients[0].request(`/api/lobbies/${lobby.id}`)).data.lobby as LobbyObservation;",
+        "    expect(restoredLobby).toEqual(lobby);",
+        "    const restoredPeers = await Promise.all(restoredClients.map(client => client.connect(matchId)));",
+        "    const restored = await restoredPeers[7].frame(beforeRestart.tick);",
+        "    expect(restoredPeers[7].hello).toMatchObject({ side: 7, lastClientSeq: 2 });",
+        "    expect(await restoredPeers[7].command(2, recruit, restored.tick)).toEqual(ack);",
+        "    expect(restored.view.player.wood).toBe(paid.view.player.wood);",
+        "    const db = new DatabaseSync(join(directory, 'server.sqlite'), { readOnly: true });",
+        "    try { expect(db.prepare('SELECT COUNT(*) AS n FROM commands WHERE match_id=? AND side=7 AND client_seq=2').get(matchId)?.n).toBe(1); }",
+        "    finally { db.close(); }",
+        "    const gathering = await restoredPeers[4].frame(restored.tick), worker = owned(gathering, 'worker');",
+        "    const resource = gathering.view.resources.filter(node => node.visible && node.kind === 'wood' && node.amount > 0).sort((a, b) => Math.hypot(a.x - worker.x, a.y - worker.y) - Math.hypot(b.x - worker.x, b.y - worker.y))[0];",
+        "    expect(resource).toBeDefined();",
+        "    expect(await restoredPeers[4].command(2, { type: 'gather', ids: [worker.id], target: resource.id, queued: true })).toMatchObject({ accepted: true });",
+        "    const firstForfeit = await restoredPeers[4].command(3, { type: 'surrender' });",
+        "    expect(firstForfeit.accepted).toBe(true);",
+        "    const continuing = await restoredPeers[0].frame(firstForfeit.appliedTick);",
+        "    expect(continuing.view.result).toMatchObject({ finished: false, winningTeam: null, outcome: null });",
+        "    expect(continuing.view.eliminated).toEqual([false, false, false, false, true, false, false, false]);",
+        "    expect(await restoredPeers[5].command(2, { type: 'surrender' })).toMatchObject({ accepted: true });",
+        "    expect(await restoredPeers[6].command(2, { type: 'surrender' })).toMatchObject({ accepted: true });",
+        "    const lastForfeit = await restoredPeers[7].command(3, { type: 'surrender' });",
+        "    expect(lastForfeit.accepted).toBe(true);",
+        "    const winner = await restoredPeers[0].frame(lastForfeit.appliedTick), loser = await restoredPeers[7].frame(lastForfeit.appliedTick);",
+        "    expect(winner.view.result).toMatchObject({ finished: true, winningTeam: 0, outcome: 'win', draw: false });",
+        "    expect(loser.view.result).toMatchObject({ finished: true, winningTeam: 0, outcome: 'loss', draw: false });",
+        "    expect(winner.view.eliminated).toEqual([false, false, false, false, true, true, true, true]);",
+        "    await resumed.close();",
+        "    const finishedServer = await createRtsServer({ dataDir: directory, port: 0, spectatorDelaySeconds: .4 });",
+        "    cleanup.push(() => finishedServer.close());",
+        "    const reconnect = (side: number) => { const client = new NetworkClient(finishedServer.url); client.cookie = clients[side].cookie; return client; };",
+        "    const finishedWinner = await reconnect(0).connect(matchId), finishedLoser = await reconnect(7).connect(matchId);",
+        "    expect((await finishedWinner.frame(winner.tick)).view.result).toEqual(winner.view.result);",
+        "    const recoveredLoss = await finishedLoser.frame(loser.tick);",
+        "    expect(recoveredLoss.view.result).toEqual(loser.view.result);",
+        "    expect(await finishedLoser.command(3, { type: 'surrender' }, recoveredLoss.tick)).toEqual(lastForfeit);",
+        "  }, 20000);"
+      ]
+    },
+    {
+      "label": "hosted human teammates and AI economic activity; no coordinated attack assertion",
+      "path": "tests/server-teams.test.ts",
+      "ref": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "startLine": 228,
+      "endLine": 262,
+      "lines": [
+        "  it('starts cooperative human seats without AI readiness and runs both computer opponents through delayed team observations', async () => {",
+        "    const { server, clients, accounts } = await setup(2);",
+        "    const players: LobbyPlayerSettings[] = [",
+        "      { factionId: 'orcs', teamId: 0, controller: 'human' },",
+        "      { factionId: 'fairies', teamId: 0, controller: 'human' },",
+        "      { factionId: 'dwarves', teamId: 1, controller: 'ai' },",
+        "      { factionId: 'automata', teamId: 1, controller: 'ai' },",
+        "    ];",
+        "    const lobby = await launch(clients, players), matchId = lobby.matchId!;",
+        "    expect(lobby.seats.map(seat => seat.controller)).toEqual(['human', 'human', 'ai', 'ai']);",
+        "    expect(lobby.seats.map(seat => seat.account?.id ?? null)).toEqual([accounts[0].id, accounts[1].id, null, null]);",
+        "    expect(lobby.seats.slice(2).every(seat => !seat.ready)).toBe(true);",
+        "    const claimedAi = await clients[0].request(`/api/matches/${matchId}/ticket`, { role: 'player', perspective: 2 });",
+        "    expect(claimedAi.status).toBe(200); expect(claimedAi.data.side).toBe(0);",
+        "    const human = await clients[0].connect(matchId), humanFrame = await human.frame();",
+        "    expect(humanFrame.view).toMatchObject({ side: 0, teamId: 0, controller: 'external' });",
+        "    expect(humanFrame.view.allies).toEqual([{ side: 1, teamId: 0, faction: 'fairies' }]);",
+        "    const watcher = new NetworkClient(server.url); await watcher.guest();",
+        "    expect((await watcher.request(`/api/matches/${matchId}/ticket`, { role: 'player', perspective: 2 })).status).toBe(403);",
+        "    const observer = await watcher.connect(matchId, { role: 'spectator', perspective: 2, view: 'team' });",
+        "    const frame = await observer.frame(20);",
+        "    expect(frame.view).toMatchObject({ side: 2, teamId: 1, controller: 'ai', teamPerspective: true });",
+        "    expect(frame.view.teamPlayers?.map(player => player.side)).toEqual([2, 3]);",
+        "    for (const side of [2, 3]) {",
+        "      const hq = frame.view.entities.find(entity => entity.side === side && entity.role === 'hq')!;",
+        "      expect(hq).toHaveProperty('queue');",
+        "      expect('queue' in hq && hq.queue).toContain('worker');",
+        "      const workers = frame.view.entities.filter(entity => entity.side === side && entity.role === 'worker');",
+        "      expect(workers.some(entity => 'order' in entity && ['gather', 'build'].includes(entity.order!.type))).toBe(true);",
+        "      expect(frame.view.entities.some(entity => entity.side === side && entity.role === 'barracks' && entity.progress < 1)).toBe(true);",
+        "      expect(frame.view.teamPlayers!.find(player => player.side === side)!.player.wood).toBeLessThan(420);",
+        "    }",
+        "    const live = (await clients[0].request('/api/matches')).data.matches[0];",
+        "    expect(live.tick - frame.tick).toBeGreaterThanOrEqual(8);",
+        "  }, 10000);"
+      ]
+    },
+    {
+      "label": "4/6/8-player external-controller team configuration",
+      "path": "tests/team-match.test.ts",
+      "ref": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "startLine": 12,
+      "endLine": 23,
+      "lines": [
+        "// Alternating membership catches code that confuses player IDs with team IDs.",
+        "function config(count = 4, overrides: Partial<MatchConfig> = {}): MatchConfig {",
+        "  return {",
+        "    map: { seed: 4127, size: 'large' },",
+        "    players: Array.from({ length: count }, (_, id) => ({",
+        "      id: id as Side,",
+        "      teamId: id % 2 === 0 ? 3 : 7,",
+        "      factionId: factions[id % factions.length],",
+        "      controller: 'external' as const,",
+        "    })),",
+        "    ...overrides,",
+        "  };"
+      ]
+    },
+    {
+      "label": "real core hostile combat for every player in 4/6/8-player fixtures",
+      "path": "tests/team-match.test.ts",
+      "ref": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "startLine": 60,
+      "endLine": 92,
+      "lines": [
+        "describe('playable team rosters', () => {",
+        "  it.each([4, 6, 8])('runs hostile combat for every player in a %s-player match', count => {",
+        "    const s = arena(count);",
+        "    const fighters = sides(s).map(side => unit(s, side));",
+        "    for (let pair = 0; pair < count / 2; pair++) {",
+        "      Object.assign(fighters[pair * 2], { x: 20, y: 14 + pair * 5 });",
+        "      Object.assign(fighters[pair * 2 + 1], { x: 21.2, y: 14 + pair * 5 });",
+        "    }",
+        "    refreshVisibility(s);",
+        "    const before = fighters.map(e => e.hp + (e.shield ?? 0));",
+        "    const attacks = Array(count).fill(0);",
+        "    for (const side of sides(s)) {",
+        "      const ally = fighters[(side + 2) % count];",
+        "      const hostile = fighters[side % 2 === 0 ? side + 1 : side - 1];",
+        "      expect(isAllied(s, side, ally.side)).toBe(true);",
+        "      expect(isHostile(s, side, hostile.side)).toBe(true);",
+        "      expect(issueCommand(s, side, { type: 'attack', ids: [fighters[side].id], target: ally.id })).toBe(false);",
+        "      expect(issueCommand(s, side, { type: 'attack', ids: [fighters[side].id], target: hostile.id })).toBe(true);",
+        "    }",
+        "    advance(s, 4, () => {",
+        "      for (const event of s.events.filter(e => e.type === 'attack')) {",
+        "        const target = s.entities.find(e => e.id === event.target)!;",
+        "        expect(isHostile(s, event.side, target.side)).toBe(true);",
+        "        attacks[event.side]++;",
+        "      }",
+        "    });",
+        "    for (const side of sides(s)) {",
+        "      expect(attacks[side], `player ${side} never attacked`).toBeGreaterThan(0);",
+        "      expect(fighters[side].hp + (fighters[side].shield ?? 0)).toBeLessThan(before[side]);",
+        "    }",
+        "    expect(s.winningTeam).toBeNull();",
+        "    expect(isGameOver(s)).toBe(false);",
+        "  });"
+      ]
+    },
+    {
+      "label": "local 2v2/3v3/4v4 presets; one local human and other AI controllers",
+      "path": "tests/skirmish-roster.test.ts",
+      "ref": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "startLine": 119,
+      "endLine": 150,
+      "lines": [
+        "  it.each([",
+        "    ['duel', 2], ['2v2', 4], ['3v3', 6], ['4v4', 8],",
+        "  ] as const)('turns the %s preset into a complete playable %s-player match', (name, count) => {",
+        "    const { root, roster, config } = setup();",
+        "    enable(root);",
+        "    preset(root, name);",
+        "    expect(field<HTMLSelectElement>(root, 'Player count').value).toBe(String(count));",
+        "    expect(root.querySelectorAll('[data-roster-player]')).toHaveLength(count);",
+        "    const match = config();",
+        "    expect(match.players.map(player => player.id)).toEqual(Array.from({ length: count }, (_, id) => id));",
+        "    expect(match.players.filter(player => player.controller === 'human').map(player => player.id)).toEqual([roster.localSide]);",
+        "    expect(match.players.slice(1).every(player => player.controller === 'ai')).toBe(true);",
+        "    expect(new Set(match.players.map(player => player.teamId)).size).toBe(2);",
+        "    for (const team of new Set(match.players.map(player => player.teamId))) {",
+        "      expect(match.players.filter(player => player.teamId === team)).toHaveLength(count / 2);",
+        "    }",
+        "    const state = createMatch(match);",
+        "    expect(state.players).toHaveLength(count);",
+        "    expect(state.teams).toEqual(match.players.map(player => player.teamId));",
+        "    expect(state.controllers).toEqual(match.players.map(player => player.controller));",
+        "    expect(state.sharedVision).toBe(match.rules!.sharedVision);",
+        "    expect(state.starts).toHaveLength(count);",
+        "    for (const player of match.players) {",
+        "      expect(state.entities.filter(entity => entity.side === player.id && entity.role === 'worker')).toHaveLength(5);",
+        "      expect(state.entities.filter(entity => entity.side === player.id && entity.role === 'hq')).toHaveLength(1);",
+        "      expect(state.aiConfigs[player.id]).toEqual(DEFAULT_AI_CONFIG);",
+        "      expect(playerAge(state.players[player.id])).toBe(match.rules!.startingAge);",
+        "    }",
+        "  });",
+        "",
+        "  it('makes co-op a human and AI ally against two AI opponents with shared vision', () => {",
+        "    const { root, config } = setup();"
+      ]
+    },
+    {
+      "label": "constructed core AI coordination fixture; not hosted human-vs-AI runtime",
+      "path": "tests/allied-ai.test.ts",
+      "ref": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "startLine": 21,
+      "endLine": 63,
+      "lines": [
+        "function fixture(controllers:Controller[]=['external','ai','external','external'],rules:{friendlyFire?:boolean}={}):GameState {",
+        " const s=createMatch({map:{seed:4127,size:'medium'},players:controllers.map((controller,id)=>({id:id as Side,teamId:id===3?7:3,factionId:'orcs',controller})),rules:{sharedVision:false,...rules}});",
+        " s.terrain.fill('grass');s.resources=[];s.time=0;",
+        " const starts=[{x:8,y:8},{x:8,y:24},{x:8,y:39},{x:39,y:24}];s.starts=starts;",
+        " s.entities=s.entities.filter(e=>e.role==='hq'||e.side===1&&e.role==='melee');",
+        " for(const e of s.entities){const start=starts[e.side];e.x=start.x+(e.kind==='unit'?3:0);e.y=start.y;e.order={type:'idle'};}",
+        " for(const p of s.players){p.wood=p.ore=p.crystal=0;p.population=0;p.cap=12;}",
+        " s.players[1].population=1;",
+        " refreshVisibility(s);return s;",
+        "}",
+        "",
+        "function troop(s:GameState,side:Side,role:UnitRole,point:Vec):Entity {",
+        " const def=FACTIONS[s.players[side].faction].units[role];",
+        " const e:Entity={id:s.nextId++,side,kind:'unit',role,...point,hp:def.hp,maxHp:def.hp,order:{type:'idle'},cooldown:0,progress:1,queue:[],trainProgress:0,researchProgress:0,facing:2,animation:'idle',animTime:0,momentum:0,illusion:false,expires:0,carried:0,carriedKind:'wood',path:[]};",
+        " if(def.shield){e.shield=def.shield;e.maxShield=def.shield;}",
+        " s.entities.push(e);s.players[side].population++;refreshVisibility(s);return e;",
+        "}",
+        "",
+        "function advanceUntil(s:GameState,predicate:()=>boolean,seconds=60):void {",
+        " for(let tick=0;tick<seconds*20&&!predicate();tick++)stepGame(s,.05);",
+        " expect(predicate()).toBe(true);",
+        "}",
+        "",
+        "function supportFixture(wood:number):GameState {",
+        " const s=fixture();s.players[0].wood=500;s.players[0].ore=100;s.players[0].crystal=30;",
+        " s.players[1].wood=wood;s.players[1].ore=30;s.players[1].crystal=10;",
+        " // An occupied population slot prevents ordinary worker recruitment from spending",
+        " // the resources under test; the request must still keep a worker's cost in reserve.",
+        " s.populationLimits[1]=1;s.players[1].cap=1;return s;",
+        "}",
+        "",
+        "function coordinated():GameState {",
+        " const s=fixture(['external','ai','ai','external']);s.time=70;",
+        " s.aiConfigs[1].difficulty='hard';s.aiConfigs[2].difficulty='normal';",
+        " troop(s,1,'melee',{x:12,y:23});troop(s,1,'melee',{x:12,y:25});",
+        " for(let i=0;i<3;i++)troop(s,2,'melee',{x:11+i,y:38});",
+        " for(const side of [1,2] as Side[]){",
+        "  const hq=s.entities.find(e=>e.side===side&&e.role==='hq')!;",
+        "  troop(s,side,'worker',{x:hq.x+3,y:hq.y+2});",
+        "  s.resources.push({id:s.nextId++,kind:'wood',x:hq.x+5,y:hq.y+2,amount:1000,maxAmount:1000},{id:s.nextId++,kind:'ore',x:hq.x+5,y:hq.y+5,amount:1000,maxAmount:1000});",
+        " }",
+        " refreshVisibility(s);return s;",
+        "}"
+      ]
+    },
+    {
+      "label": "actual core synchronized coordinated AI launch assertion",
+      "path": "tests/allied-ai.test.ts",
+      "ref": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "startLine": 270,
+      "endLine": 286,
+      "lines": [
+        " it('keeps one distinct scout and launches both approved armies in the same tick despite different decision cadences',()=>{",
+        "  const s=coordinated();stepGame(s,.05);const state=teamState(s),wave=state.coordinator.waves[0],scout=state.coordinator.reservations.find(r=>r.role==='scout')!;",
+        "  expect(wave).toBeDefined();expect(wave.launched).toBe(false);expect(wave.participants.map(p=>p.side)).toEqual([1,2]);expect(scout).toBeDefined();",
+        "  const attacking=new Set(wave.participants.flatMap(p=>p.ids));expect(attacking.has(scout.ids[0])).toBe(false);expect(entity(s,scout.ids[0]).order.type).toBe('move');",
+        "  expect(wave.target).toMatchObject({key:'start:3',x:s.starts[3].x,y:s.starts[3].y});",
+        "  for(let tick=0;tick<100&&!teamState(s).coordinator.waves[0]?.launched;tick++){",
+        "   const before=saveGame(s),probe=loadGame(before);",
+        "   for(const p of wave.participants)expect(issueCommand(probe,p.side,{type:'attackMove',ids:p.ids,x:wave.target.x,y:wave.target.y})).toBe(true);",
+        "   stepGame(s,.05);const current=teamState(s).coordinator.waves[0];",
+        "   if(current?.launched){",
+        "    expect(s.time).toBeGreaterThanOrEqual(wave.launchAt);expect(s.time-.05).toBeLessThan(wave.launchAt);",
+        "    for(const p of wave.participants){expect(captureRuntime(s).aiWave[p.side]).toBe(s.time);for(const id of p.ids)expect(entity(s,id).order).toEqual(entity(probe,id).order);}",
+        "    expect(entity(s,scout.ids[0]).order.type).toBe('move');",
+        "   }else for(const id of attacking)expect(entity(s,id).order.type).toBe('idle');",
+        "  }",
+        "  expect(teamState(s).coordinator.waves[0].launched).toBe(true);expect(captureRuntime(s).aiWave[1]).toBe(captureRuntime(s).aiWave[2]);",
+        " });"
+      ]
+    },
+    {
+      "label": "policy fixture synchronized launch; not a hosted session",
+      "path": "tests/team-ai-policy.test.ts",
+      "ref": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "startLine": 32,
+      "endLine": 44,
+      "lines": [
+        " it('uses combined readiness below a solo threshold and launches all owners once in one pass',()=>{",
+        "  const reports=[report(0,{fighters:report(0).fighters.slice(0,2),scoutingNeeded:true}),report(2,{fighters:report(2).fighters.slice(0,2)})];",
+        "  expect(TEAM_ATTACK_MIN_FIGHTERS).toBe(4);expect(TEAM_ATTACK_MIN_PARTICIPANTS).toBe(2);",
+        "  const planned=coordinateTeamAi(empty(),reports,10),wave=planned.coordinator.waves[0];",
+        "  expect(wave.participants).toEqual([{side:0,ids:[1,2]},{side:2,ids:[201,202]}]);expect(planned.launches).toEqual([]);",
+        "  expect(planned.assignments.some(a=>a.role==='scout')).toBe(false);",
+        "  const before=coordinateTeamAi(planned.coordinator,fresh(reports,wave.launchAt-.1),wave.launchAt-.1);expect(before.launches).toEqual([]);",
+        "  const launched=coordinateTeamAi(before.coordinator,fresh(reports,wave.launchAt),wave.launchAt);",
+        "  expect(launched.launches).toEqual([{side:0,ids:[1,2],destination:{x:40,y:40},waveId:wave.id},{side:2,ids:[201,202],destination:{x:40,y:40},waveId:wave.id}]);",
+        "  expect(launched.coordinator.waves[0].launched).toBe(true);",
+        "  expect(coordinateTeamAi(launched.coordinator,fresh(reports,wave.launchAt),wave.launchAt).launches).toEqual([]);",
+        "  expect(coordinateTeamAi(launched.coordinator,fresh(reports,wave.launchAt+1),wave.launchAt+1).launches).toEqual([]);",
+        " });"
+      ]
+    },
+    {
+      "label": "actual positive-delay spectator assertion",
+      "path": "tests/server.test.ts",
+      "ref": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "startLine": 171,
+      "endLine": 181,
+      "lines": [
+        "  it('delays actual spectator frames and rejects spectator commands',async()=>{",
+        "    const {host,guest,server}=await setup(.4);const lobby=await launch(host,guest),spectator=new Client(server.url);await spectator.register('watcher');",
+        "    const observer=await spectator.socket(lobby.matchId!,'spectator',0);cleanup.push(async()=>observer.close());",
+        "    expect(await observer.next(message=>message.kind==='waiting')).toMatchObject({availableAtTick:8});",
+        "    observer.send({kind:'command',protocolVersion:1,clientSeq:1,observedTick:0,command:{type:'hold',ids:[2]}});",
+        "    expect(await observer.next(message=>message.kind==='error')).toMatchObject({code:'spectator'});",
+        "    const frame=await observer.snapshot();const live=(await host.request('/api/matches')).data.matches[0];",
+        "    expect(live.tick-frame.tick).toBeGreaterThanOrEqual(8);",
+        "    expect(frame.view.side).toBe(0);expect(frame.view.entities.every(entity=>entity.side===0)).toBe(true);",
+        "    expect((await spectator.request(`/api/matches/${lobby.matchId}/ticket`,{role:'player'})).status).toBe(403);",
+        "  });"
+      ]
+    },
+    {
+      "label": "mock online connection setup and fake spectator delay",
+      "path": "tests/online-client.test.ts",
+      "ref": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "startLine": 1,
+      "endLine": 25,
+      "lines": [
+        "import { afterEach, describe, expect, it, vi } from 'vitest';",
+        "import { OnlineApi, OnlineMatchConnection, OnlineRequestError } from '../src/online/client';",
+        "import type { PlayerObservation } from '../src/online/protocol';",
+        "",
+        "class Socket extends EventTarget {",
+        "  readyState=1;sent:string[]=[];",
+        "  send(value:string){this.sent.push(value);}",
+        "  close(code=1000){this.readyState=3;this.dispatchEvent(Object.assign(new Event('close'),{code}));}",
+        "  receive(value:unknown){this.dispatchEvent(Object.assign(new Event('message'),{data:JSON.stringify(value)}));}",
+        "}",
+        "const sockets:Socket[]=[],connections:OnlineMatchConnection[]=[];",
+        "afterEach(()=>{for(const connection of connections.splice(0))connection.dispose();sockets.length=0;vi.useRealTimers();vi.restoreAllMocks();});",
+        "function setup(role:'player'|'spectator'='player') {",
+        "  const api=new OnlineApi({baseUrl:'https://battle.example'});",
+        "  vi.spyOn(api,'ticket').mockResolvedValue({ticket:'one-use',protocolVersion:1,role,side:1,delayTicks:role==='spectator'?600:0});",
+        "  const onObservation=vi.fn(),onStatus=vi.fn(),onReceipt=vi.fn();",
+        "  const connection=new OnlineMatchConnection({api,matchId:'m1',role,onObservation,onStatus,onReceipt,reconnectDelayMs:10,createSocket:url=>{",
+        "    expect(url).toBe('wss://battle.example/ws?ticket=one-use');const socket=new Socket();sockets.push(socket);return socket as unknown as WebSocket;",
+        "  }});connections.push(connection);return {api,connection,onObservation,onStatus,onReceipt};",
+        "}",
+        "const hello=(lastClientSeq=0,role:'player'|'spectator'='player')=>({kind:'hello',protocolVersion:1,matchId:'m1',role,side:1,generation:1,lastClientSeq,delayTicks:role==='spectator'?600:0});",
+        "const frame=(tick=4,frameSeq=1)=>({kind:'snapshot',matchId:'m1',frameSeq,tick,view:{side:1,tick} as PlayerObservation});",
+        "",
+        "describe('online HTTP client',()=>{",
+        "  it('uses cookie authentication, encoded lobby paths and the observed revision',async()=>{"
+      ]
+    },
+    {
+      "label": "mock stale-frame and spectator command assertion",
+      "path": "tests/online-client.test.ts",
+      "ref": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "startLine": 65,
+      "endLine": 69,
+      "lines": [
+        "  it('ignores stale frames and prohibits spectator commands',async()=>{",
+        "    const {connection,onObservation}=setup('spectator');await connection.connect();sockets[0].receive(hello(0,'spectator'));",
+        "    sockets[0].receive(frame(20,5));sockets[0].receive(frame(18,6));sockets[0].receive(frame(20,4));",
+        "    expect(onObservation).toHaveBeenCalledTimes(1);expect(connection.latestTick).toBe(20);",
+        "    expect(connection.dispatch({type:'stop',ids:[1]})).toBe(false);await expect(connection.send({type:'stop',ids:[1]})).rejects.toThrow('Spectators');expect(sockets[0].sent).toEqual([]);"
+      ]
+    },
+    {
+      "label": "static accepted delay range and tick conversion",
+      "path": "src/server/server.ts",
+      "ref": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "startLine": 93,
+      "endLine": 97,
+      "lines": [
+        "export async function createRtsServer(options:ServerOptions){",
+        "  const host=options.host??'127.0.0.1',port=options.port??8787;",
+        "  const delaySeconds=options.spectatorDelaySeconds??30;",
+        "  if(!Number.isFinite(delaySeconds)||delaySeconds<0||delaySeconds>120)throw new Error('Spectator delay must be from 0 to 120 seconds.');",
+        "  const delayTicks=Math.ceil(delaySeconds*TICK_RATE);"
+      ]
+    },
+    {
+      "label": "static spectator cutoff implementation",
+      "path": "src/server/server.ts",
+      "ref": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "startLine": 403,
+      "endLine": 410,
+      "lines": [
+        "  function deliver(peer:Peer,match:ActiveMatch){",
+        "    const effectiveTick=match.state.tick+(match.finishedAt===undefined?0:Math.floor((Date.now()-match.finishedAt)/1000*TICK_RATE));",
+        "    const cutoff=peer.role==='spectator'?effectiveTick-delayTicks:match.state.tick;",
+        "    const frame=[...match.frames].reverse().find(frame=>frame.tick<=cutoff);",
+        "    if(!frame){if(peer.lastFrameTick<0){send(peer.socket,{kind:'waiting',availableAtTick:delayTicks,currentTick:effectiveTick});peer.lastFrameTick=-2;}return;}",
+        "    if(frame.tick<=peer.lastFrameTick)return;",
+        "    send(peer.socket,{kind:'snapshot',matchId:match.id,frameSeq:frame.tick,tick:frame.tick,view:peer.perspective==='team'?teamObservation(frame.views,peer.side):frame.views[peer.side]});peer.lastFrameTick=frame.tick;",
+        "  }"
+      ]
+    },
+    {
+      "label": "static AI decisions invoke team coordination during ordinary annihilation stepping",
+      "path": "src/core/simulation.ts",
+      "ref": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "startLine": 527,
+      "endLine": 533,
+      "lines": [
+        " const sides=playerSides(s),due=new Set(sides.filter(side=>s.controllers[side]==='ai'&&!s.eliminated[side]&&s.time+1e-9>=rt.aiDecisionAt[side]));",
+        " if(due.size){const offset=rt.aiBatchTurns++%sides.length;for(let i=0;i<sides.length;i++){const side=sides[(i+offset)%sides.length];if(due.has(side)){",
+        "  if(s.rules.mode!=='survival'||s.teams[side]===s.rules.survival.defenderTeam)runAI(s,side);",
+        "  const requested=new Set(rt.teamAI.directives.filter(d=>d.recipient===side&&(d.status==='accepted'||d.status==='active')).flatMap(d=>d.assigned));",
+        "  objectiveAi(s,side,issueCommand,requested);rt.aiDecisionAt[side]=s.time+aiProfile(s.aiConfigs[side]).decisionInterval;",
+        " }}}",
+        " if(s.rules.mode==='annihilation'&&(due.size||rt.teamAI.coordinator.waves.length))runTeamCoordination(s);"
+      ]
+    },
+    {
+      "label": "static coordinated ordinary owner commands",
+      "path": "src/core/simulation.ts",
+      "ref": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "startLine": 716,
+      "endLine": 729,
+      "lines": [
+        " const plan=coordinateTeamAi(rt.teamAI.coordinator,reports,s.time);rt.teamAI.coordinator=plan.coordinator;",
+        " for(const assignment of plan.assignments){",
+        "  if(assignment.role==='attack'||assignment.role==='expand'||!assignment.ids.length)continue;",
+        "  const units=s.entities.filter(e=>e.side===assignment.side&&alive(e)&&assignment.ids.includes(e.id));",
+        "  const type=assignment.role==='defend'?'attackMove':'move';",
+        "  if(units.some(e=>e.order.type!==type||distance(e.order,assignment.destination)>Math.max(1.5,Math.sqrt(units.length)))){",
+        "   if(issueCommand(s,assignment.side,{type,ids:units.map(e=>e.id),...assignment.destination})&&assignment.role==='scout'){",
+        "    for(const member of reports.filter(r=>r.teamId===s.teams[assignment.side]))rt.initialScoutDispatched[member.side]=true;",
+        "   }",
+        "  }",
+        " }",
+        " // Apply all approved owners in the same step, regardless of their AI cadence.",
+        " for(const launch of plan.launches)if(issueCommand(s,launch.side,{type:'attackMove',ids:launch.ids,...launch.destination})){",
+        "  rt.aiWave[launch.side]=s.time;"
+      ]
+    }
+  ],
+  "clauseCoverage": [
+    {
+      "id": 61,
+      "passingAssertionKeys": [
+        "tests/server.test.ts::runs two independent human sockets, filters fog, enforces ownership and deduplicates paid commands",
+        "tests/online-lobby.test.ts::creates, configures, readies and starts with current server revisions"
+      ],
+      "historicalRuntimeScope": "Real authenticated HTTP and two independent WebSockets at4a71; UI lobby behavior uses a mocked API. No native mounted 1v1 current proof.",
+      "missingCanonicalRuntimeClauseProof": "Successful current canonical mounted runtime showing two separate human accounts in opposing 1v1 seats and human commands applied through that match. The existing admitted server test proves the real two-account transport path at unchanged source; it does not contain a mounted browser run at453."
+    },
+    {
+      "id": 62,
+      "passingAssertionKeys": [
+        "tests/server-teams.test.ts::runs eight human seats, preserves private ownership and durable receipts, and resolves team forfeits after restart",
+        "tests/team-match.test.ts::runs hostile combat for every player in a 4-player match",
+        "tests/team-match.test.ts::runs hostile combat for every player in a 6-player match",
+        "tests/team-match.test.ts::runs hostile combat for every player in a 8-player match",
+        "tests/skirmish-roster.test.ts::turns the 2v2 preset into a complete playable 4-player match",
+        "tests/skirmish-roster.test.ts::turns the 3v3 preset into a complete playable 6-player match",
+        "tests/skirmish-roster.test.ts::turns the 4v4 preset into a complete playable 8-player match"
+      ],
+      "historicalRuntimeScope": "All eight human seats have real server sockets and accepted owned commands; 4/6/8 core fixtures execute hostile attacks; local presets select one human plus AI seats. These categories must not be collapsed into online all-human 2v2/3v3 runtime proof.",
+      "missingCanonicalRuntimeClauseProof": "Successful current canonical mounted runtime for each 2v2, 3v3 and 4v4 layout. The suite covers all three shapes in local preset/core combat fixtures and eight all-human hosted seats; the 2v2/3v3 native online layouts remain historical browser results."
+    },
+    {
+      "id": 63,
+      "passingAssertionKeys": [
+        "tests/server-teams.test.ts::starts cooperative human seats without AI readiness and runs both computer opponents through delayed team observations",
+        "tests/allied-ai.test.ts::keeps one distinct scout and launches both approved armies in the same tick despite different decision cadences",
+        "tests/team-ai-policy.test.ts::uses combined readiness below a solo threshold and launches all owners once in one pass"
+      ],
+      "historicalRuntimeScope": "Hosted cooperative test creates two humans versus two AI and observes each AI training/building/gathering. Its selected spectator frame is tick>=20 and it asserts no common attack. Separate constructed core fixture executes two coordinated owners at one simulation step. Policy report fixtures test plan behavior.",
+      "missingCanonicalRuntimeClauseProof": "Successful current canonical mounted cooperative runtime with two human teammates controlling their own seats while two computer opponents demonstrate a common coordinated attack and movement in their authorized observations. The passing hosted co-op test proves seats and active AI economy, and the separate core test proves simultaneous coordination; neither records that combined mounted runtime at453. A natural victory, exposed coordinator wave ID or exact launch step is not required by the original clause."
+    },
+    {
+      "id": 64,
+      "passingAssertionKeys": [
+        "tests/server.test.ts::delays actual spectator frames and rejects spectator commands",
+        "tests/server-teams.test.ts::runs eight human seats, preserves private ownership and durable receipts, and resolves team forfeits after restart",
+        "tests/server-teams.test.ts::starts cooperative human seats without AI readiness and runs both computer opponents through delayed team observations",
+        "tests/online-client.test.ts::ignores stale frames and prohibits spectator commands"
+      ],
+      "historicalRuntimeScope": "Real delayed player/team spectator frames lag at least8ticks at0.4s; team frame banks equal recorded human frames at that tick and command rejection is enforced. Mock online-client spectator assertions test client restrictions with600 fake delayTicks; they are not zero-delay runtime proof.",
+      "missingCanonicalRuntimeClauseProof": "Successful current canonical mounted spectator viewing with both positive delay and delay0. Positive delay has real passing network assertions; delay0 is accepted by static source and used for player tests, but no admitted test opens a zero-delay spectator and asserts advancing live spectator frames. The root proof extension, absent from frozen product453, prepares that missing zero-delay branch. Preparation child7fe imports its recipe blobs; neither preparation has a native execution result here."
+    }
+  ],
+  "historicalBrowserEvidence": [
+    {
+      "path": "/home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/work/final-freeze-proof-20261001/hosted-af44da4-run1/result.json",
+      "sha256": "730c63739f16f28b6e548c9a23a4d62f895599f292260a82f7a079ab53187dff",
+      "bytes": 185285,
+      "status": "failed",
+      "sourceHead": "af44da406acf7ab44436e978cb1f571b93e28d23",
+      "checksCopied": [
+        {
+          "name": "current production server package and Vite app start",
+          "evidence": {
+            "protocolVersion": 1,
+            "buildId": "8c107a5f0ae792b00d7554879cc62d23fe835eccf415a2642243889331717452",
+            "browserVersion": "151.0.7922.34",
+            "nodeVersion": "v24.21.0"
+          }
+        },
+        {
+          "name": "native 2v2 seats, public receipts, shared vision, separate banks and delayed spectator access",
+          "evidence": {
+            "matchId": "fc683d3a-bc54-4f02-a0b9-d8c77acc4a35",
+            "seats": [
+              {
+                "side": 0,
+                "accountId": "b1cd54e6-6846-4f7a-b967-7d6e97b7c531",
+                "controller": "human"
+              },
+              {
+                "side": 1,
+                "accountId": "4e453319-e5dd-4906-907f-4c6599553735",
+                "controller": "human"
+              },
+              {
+                "side": 2,
+                "accountId": "a7ec7a4c-d18f-400b-8bb6-f311c5208d97",
+                "controller": "human"
+              },
+              {
+                "side": 3,
+                "accountId": "f92c6b3f-7447-4732-ad90-129edf7e51e3",
+                "controller": "human"
+              }
+            ],
+            "initialTick": 316
+          }
+        },
+        {
+          "name": "native 3v3 seats, public receipts, shared vision, separate banks and delayed spectator access",
+          "evidence": {
+            "matchId": "04ecde33-3fd7-402a-b165-13d8cec19bf8",
+            "seats": [
+              {
+                "side": 0,
+                "accountId": "095e08f6-6e86-4b73-9e20-8302d7aec43e",
+                "controller": "human"
+              },
+              {
+                "side": 1,
+                "accountId": "7ec376dc-8263-46a8-a088-5a62a518560c",
+                "controller": "human"
+              },
+              {
+                "side": 2,
+                "accountId": "ada2ab6b-76de-4cf8-b483-c0e5191ca91d",
+                "controller": "human"
+              },
+              {
+                "side": 3,
+                "accountId": "9ed93a42-cee6-4060-bb22-92ef7c0d82d8",
+                "controller": "human"
+              },
+              {
+                "side": 4,
+                "accountId": "1b42f302-ff2f-41ce-b38e-25009b8f5fde",
+                "controller": "human"
+              },
+              {
+                "side": 5,
+                "accountId": "502bd8d3-78c3-4e16-ab23-b58896a59e82",
+                "controller": "human"
+              }
+            ],
+            "initialTick": 796
+          }
+        },
+        {
+          "name": "native 4v4 seats, public receipts, shared vision, separate banks and delayed spectator access",
+          "evidence": {
+            "matchId": "235db495-5a41-4d59-ae7b-263b2b1fe1f7",
+            "seats": [
+              {
+                "side": 0,
+                "accountId": "6d1e3e48-7826-44bc-93a6-74d2a5a49d0e",
+                "controller": "human"
+              },
+              {
+                "side": 1,
+                "accountId": "3d6e952e-9abc-412b-a462-249f710d582e",
+                "controller": "human"
+              },
+              {
+                "side": 2,
+                "accountId": "1ee050c9-772b-4727-90d1-35aa3bca1065",
+                "controller": "human"
+              },
+              {
+                "side": 3,
+                "accountId": "0f0f003b-6dcc-4465-b30b-c2f75365c9b0",
+                "controller": "human"
+              },
+              {
+                "side": 4,
+                "accountId": "120d9641-a9e2-45a7-b337-5f3b4ab8688e",
+                "controller": "human"
+              },
+              {
+                "side": 5,
+                "accountId": "a434dc69-d7c7-42b9-b1c1-5b9096055317",
+                "controller": "human"
+              },
+              {
+                "side": 6,
+                "accountId": "ea983805-89b1-4211-ad13-0a575e6a14ca",
+                "controller": "human"
+              },
+              {
+                "side": 7,
+                "accountId": "ceeab3b8-062e-4c1e-903d-ba84cae339ab",
+                "controller": "human"
+              }
+            ],
+            "initialTick": 1512
+          }
+        }
+      ],
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n'9740' !== '9758'\n\n    at renderer (file:///home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/scripts/server/verify-hosted-teams-browser.mjs:285:56)\n    at async spectator (file:///home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/scripts/server/verify-hosted-teams-browser.mjs:299:20)\n    at async verifyBrowser (file:///home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/scripts/server/verify-hosted-teams-browser.mjs:389:28)\n    at async file:///home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/scripts/server/verify-hosted-teams.mjs:114:40",
+      "cleanupErrors": [],
+      "classification": "Historical browser result ataf44; cannot be counted as passed current453 runtime."
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/work/final-freeze-proof-20261001/canonical-af44da4-run1/result.json",
+      "sha256": "9cacaddc74b2d2b0e1e89c156361673cbadbc6971dc3f774d496084908fcf925",
+      "bytes": 164897,
+      "status": "passed",
+      "sourceHead": "af44da406acf7ab44436e978cb1f571b93e28d23",
+      "checksCopied": [
+        {
+          "name": "actual Vite app and packaged server entry start with the canonical campaign adapter",
+          "evidence": {
+            "protocolVersion": 1,
+            "serverFiles": [
+              "campaign-runtime.mjs",
+              "canonical-campaign.mjs",
+              "rts-server.js"
+            ]
+          }
+        },
+        {
+          "name": "anonymous inventory, equipment, daily-start and campaign mutations require an account"
+        },
+        {
+          "name": "mutations with a disallowed Origin fail before inventory or match writes"
+        },
+        {
+          "name": "account JSON bodies larger than 64 KiB return HTTP 413"
+        },
+        {
+          "name": "campaign JSON bodies larger than 20 MiB return HTTP 413"
+        },
+        {
+          "name": "packaged canonical runtime rejects an empty recording with HTTP 400"
+        },
+        {
+          "name": "one global campaign admission rejects a different account before its partial body completes",
+          "evidence": {
+            "firstAccountBytesBeforeCompletion": 1,
+            "secondAccountBytesBeforeResponse": 1,
+            "status": 503,
+            "firstStatus": 400,
+            "retryStatus": 400
+          }
+        },
+        {
+          "name": "rejected requests and unavailable campaigns leave both account inventories unchanged"
+        },
+        "two accounts register through actual Online UI and all native launchers share the session toolbar",
+        "competition and cosmetics modal focus, Escape, blocked input, both local pause states, shared modal blocking, and photo visibility work in main",
+        "five native same-faction ranked matches finish through accepted guest surrender commands and unlock host cosmetics at 1, 3, and 5 wins; guest earns none",
+        "native equipment changes actual Phaser canvas pixels and persistent HUD portrait while full paused save state and private runtime remain unchanged",
+        "older same-match hosted cosmetics success and transport failure cannot overwrite or clear later server-receipted equipment",
+        "sixth live same-faction ranked match maps host equipment only to owner side 0 on both views and both accounts rejoin the same server match after reload",
+        "native daily entry and reload resume the same authoritative seeded run",
+        "native account logout clears local cosmetic players, building decorations, banner, and HUD portrait",
+        "a real anonymous session response delayed until after native login cannot replace the current identity or local equipment",
+        {
+          "name": "native earned inventory and equipped choices survive a graceful packaged-server restart",
+          "evidence": {
+            "profiles": {
+              "host": {
+                "owned": [
+                  "orcs-commander",
+                  "orcs-honor-seal",
+                  "orcs-victory-banner"
+                ],
+                "wins": {
+                  "orcs": 5
+                },
+                "equipment": {
+                  "orcs": {
+                    "revision": 3,
+                    "loadout": {
+                      "banner": "orcs-victory-banner",
+                      "decoration": "orcs-honor-seal",
+                      "portrait": "orcs-commander"
+                    }
+                  }
+                }
+              },
+              "guest": {
+                "owned": [],
+                "wins": {},
+                "equipment": {}
+              }
+            }
+          }
+        }
+      ],
+      "error": null,
+      "cleanupErrors": [],
+      "classification": "Historical browser result ataf44; cannot be counted as passed current453 runtime."
+    },
+    {
+      "gitPath": "docs/evidence/hosted-teams-20261001/passed/result.json",
+      "artifact": {
+        "gitBlob": "2ed6f9aa14992cf2ccd2b61fe2b2319906db7983",
+        "sha256": "853b16af9e10003fa151e4d9f42d6245ced84c132c965659a633ea25642fcd65",
+        "bytes": 356400
+      },
+      "status": "passed",
+      "sourceHead": "bec34d8575e3d0379222bf0e793a824128224fac",
+      "checksCopied": [
+        {
+          "name": "current production server package and Vite app start",
+          "evidence": {
+            "protocolVersion": 1,
+            "buildId": "b3a600bdedc03c120311151fe35e94cc7782ef74e67c7f2343fea2b455e54784",
+            "browserVersion": "151.0.7922.34",
+            "nodeVersion": "v24.21.0"
+          }
+        },
+        {
+          "name": "native 2v2 seats, public receipts, shared vision, separate banks and delayed spectator access",
+          "evidence": {
+            "matchId": "e3625978-2aba-4092-95b5-4e27966b9d05",
+            "seats": [
+              {
+                "side": 0,
+                "accountId": "e07924e5-8095-41ef-a851-78f1b85ea6fe",
+                "controller": "human"
+              },
+              {
+                "side": 1,
+                "accountId": "2bbf6682-99b2-46c7-a6ce-2de2bb271d8f",
+                "controller": "human"
+              },
+              {
+                "side": 2,
+                "accountId": "8c6f0a03-88f7-424a-ab67-d0f88ee0ac6c",
+                "controller": "human"
+              },
+              {
+                "side": 3,
+                "accountId": "b7c7822d-0aaa-4f21-bb2d-1fcbdf719366",
+                "controller": "human"
+              }
+            ],
+            "initialTick": 268
+          }
+        },
+        {
+          "name": "native 3v3 seats, public receipts, shared vision, separate banks and delayed spectator access",
+          "evidence": {
+            "matchId": "51a58940-42c7-487b-a531-0f41bb7fece7",
+            "seats": [
+              {
+                "side": 0,
+                "accountId": "dd6761cd-4d1f-47bb-b82f-224afd9b5a63",
+                "controller": "human"
+              },
+              {
+                "side": 1,
+                "accountId": "04be5d4b-4c0e-4fce-a746-06dc3912f120",
+                "controller": "human"
+              },
+              {
+                "side": 2,
+                "accountId": "cc6e4d28-5b78-4640-a5ba-a216a1bfe28f",
+                "controller": "human"
+              },
+              {
+                "side": 3,
+                "accountId": "1873fffb-486c-4d65-af30-1fecf07ad0a9",
+                "controller": "human"
+              },
+              {
+                "side": 4,
+                "accountId": "e4cf8700-3f45-4495-868d-565bfe8ef8b7",
+                "controller": "human"
+              },
+              {
+                "side": 5,
+                "accountId": "59626025-4165-4af8-b486-ba23cac1c79c",
+                "controller": "human"
+              }
+            ],
+            "initialTick": 732
+          }
+        },
+        {
+          "name": "native 4v4 seats, public receipts, shared vision, separate banks and delayed spectator access",
+          "evidence": {
+            "matchId": "8777ca72-21f3-4aac-b2ff-ebdb492966c0",
+            "seats": [
+              {
+                "side": 0,
+                "accountId": "7681f88c-e5e4-45dc-b6d7-8306ce46f4f3",
+                "controller": "human"
+              },
+              {
+                "side": 1,
+                "accountId": "3890ff78-1489-409b-8424-f5842e6d3838",
+                "controller": "human"
+              },
+              {
+                "side": 2,
+                "accountId": "4d080181-1640-4256-ab47-746ba8f6d87b",
+                "controller": "human"
+              },
+              {
+                "side": 3,
+                "accountId": "7c8dfc60-e78c-474b-a629-bff365375583",
+                "controller": "human"
+              },
+              {
+                "side": 4,
+                "accountId": "d6ef2ecd-dca5-48e9-a1b4-046fe754774d",
+                "controller": "human"
+              },
+              {
+                "side": 5,
+                "accountId": "7745bae0-5ac3-4fee-943b-f3f87854ea79",
+                "controller": "human"
+              },
+              {
+                "side": 6,
+                "accountId": "523095a4-2e88-4c64-81d9-b10f4564b0ab",
+                "controller": "human"
+              },
+              {
+                "side": 7,
+                "accountId": "c1a4689f-6818-466d-aa45-5b1471b46377",
+                "controller": "human"
+              }
+            ],
+            "initialTick": 1516
+          }
+        },
+        {
+          "name": "native two-human-cooperative-vs-two-ai seats, public receipts, shared vision, separate banks and delayed spectator access",
+          "evidence": {
+            "matchId": "04c65bc5-055a-42ba-ba86-b4758736696a",
+            "seats": [
+              {
+                "side": 0,
+                "accountId": "3407ffca-d5f8-4b59-93b4-c72de7ea62f1",
+                "controller": "human"
+              },
+              {
+                "side": 1,
+                "accountId": "80e01d4a-425a-4c20-9ef3-85d65441a601",
+                "controller": "human"
+              },
+              {
+                "side": 2,
+                "accountId": null,
+                "controller": "ai"
+              },
+              {
+                "side": 3,
+                "accountId": null,
+                "controller": "ai"
+              }
+            ],
+            "initialTick": 44
+          }
+        },
+        {
+          "name": "native cooperative sessions, seats, durable sequences and unchanged transfer receipts survive packaged-server restart without double charge",
+          "evidence": {
+            "seats": [
+              {
+                "side": 0,
+                "priorSequence": 4,
+                "acceptedSequence": 5
+              },
+              {
+                "side": 1,
+                "priorSequence": 1,
+                "acceptedSequence": 2
+              }
+            ],
+            "replayedSequence": 3,
+            "beforeTick": 1688,
+            "afterTick": 1692,
+            "beforeBanks": [
+              {
+                "side": 0,
+                "bank": {
+                  "wood": 990,
+                  "ore": 700,
+                  "crystal": 43
+                }
+              },
+              {
+                "side": 1,
+                "bank": {
+                  "wood": 1147,
+                  "ore": 731,
+                  "crystal": 50
+                }
+              }
+            ],
+            "afterBanks": [
+              {
+                "side": 0,
+                "bank": {
+                  "wood": 990,
+                  "ore": 700,
+                  "crystal": 43
+                }
+              },
+              {
+                "side": 1,
+                "bank": {
+                  "wood": 1147,
+                  "ore": 731,
+                  "crystal": 50
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "source and served package hashes remain unchanged"
+        }
+      ],
+      "classification": "Admitted historical full hosted browser pass atbec34d; not source453."
+    }
+  ],
+  "unimportedZeroDelayExtension": {
+    "commit": "a0aaa643de509d210b7879e796279a618c2cf290",
+    "changedPaths": [
+      "scripts/server/verify-hosted-teams-browser.mjs",
+      "scripts/server/verify-hosted-teams.mjs"
+    ],
+    "isAncestorOfFreeze": false,
+    "importedAtFreeze": false,
+    "paths": [
+      {
+        "path": "scripts/server/verify-hosted-teams-browser.mjs",
+        "freeze": {
+          "gitBlob": "65ae83b150ea1a9686d1a19813f7e7ea25d0eeae",
+          "sha256": "45058fbab4dfbf096ca004574a69d89d8f85bb718b90a9057bab7a3b8b18f48b",
+          "bytes": 46679
+        },
+        "extension": {
+          "gitBlob": "32e5ae7b40631f202d1611dce13f5f38b061456b",
+          "sha256": "d844ab8547cbfc186ab98f62f727f7df46317c8e86a603e70fe11966fe59a30a",
+          "bytes": 48236
+        }
+      },
+      {
+        "path": "scripts/server/verify-hosted-teams.mjs",
+        "freeze": {
+          "gitBlob": "ed378881b555ea7c6a504470845b03ba828068b7",
+          "sha256": "0fc63b979687894a4e576dce034b1706f8a99a49cd254262ea45c347d56a6c0b",
+          "bytes": 11305
+        },
+        "extension": {
+          "gitBlob": "ea318e48d8b811560c52296318981c5a868f5f15",
+          "sha256": "5343f858a62d76811536716e69d84c17f49a6bc8a8f34adccbecfe90e4036d4c",
+          "bytes": 11410
+        }
+      }
+    ],
+    "execution": "No native result inspected or credited. The extension is absent from frozen product453; the separately reviewed preparation child7fe contains equivalent recipe blobs and is not a native result."
+  },
+  "additionalRequirementsNotIntroduced": [
+    "Natural coordinated team victory",
+    "Public remote deployment",
+    "An exposed coordinator wave ID",
+    "Identification of the exact AI launch step"
+  ]
+}

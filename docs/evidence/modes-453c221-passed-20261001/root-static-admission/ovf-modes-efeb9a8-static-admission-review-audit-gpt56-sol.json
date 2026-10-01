@@ -1,0 +1,553 @@
+{
+  "auditKind": "static documentary admission review",
+  "reviewerHarness": "Codex",
+  "reviewerModel": "GPT-5.6 Sol",
+  "reviewedCommit": "efeb9a8e1363e3360774699ba3facc82ccf3f836",
+  "reviewedParent": "1f39b577144331ca42915fb1f828c0becef917ef",
+  "reviewedTree": "a3e6a0d817f2c07ddf1f5514ef9eb1441d39a70a",
+  "productPin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "executionBoundary": "Static Git object, retained file, JSON, and source-directory inspection only. No builds, tests, simulations, browsers, servers, dependency operations, or checkout changes.",
+  "result": "passed",
+  "checks": [
+    {
+      "name": "tip identity",
+      "passed": true,
+      "details": {
+        "tip": "efeb9a8e1363e3360774699ba3facc82ccf3f836",
+        "tree": "a3e6a0d817f2c07ddf1f5514ef9eb1441d39a70a",
+        "parents": [
+          "1f39b577144331ca42915fb1f828c0becef917ef"
+        ]
+      }
+    },
+    {
+      "name": "commit footer",
+      "passed": true,
+      "details": {
+        "expectedFooter": "\ud83e\udd16 Generated with [Codex](https://openai.com/codex/)\n\nCo-Authored-By: GPT-6 <noreply@openai.com>"
+      }
+    },
+    {
+      "name": "changed-path boundary",
+      "passed": true,
+      "details": {
+        "changedPathCount": 210,
+        "classes": {
+          "packet-readme": 1,
+          "index": 17,
+          "raw": 153,
+          "retention-decisions": 6,
+          "retention": 1,
+          "reviews": 30,
+          "decisions": 1,
+          "requirements": 1
+        },
+        "nameStatus": [
+          "A\tdocs/evidence/modes-453c221-passed-20261001/README.md",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/index/README.md",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/index/external-link-metadata.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/index/external-packet-seal.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/index/git-preserved-omissions.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/index/git-preserved-omissions.tsv",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/index/prepare-retention.py",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/index/retain-paths.txt",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/index/retained-packet-files.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/index/retention-index-hashes.tsv",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/index/retention-summary.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/index/retention-verifier-receipt.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/index/retention-verifier.stderr.txt",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/index/retention-verifier.stdout.txt",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/index/sealed-packet-verifier-receipt.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/index/sealed-packet-verifier.stderr.txt",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/index/sealed-packet-verifier.stdout.txt",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/index/verify-retention.py",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/README.md",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/admitted-helpers/original-recipe-README.md",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/admitted-helpers/prepare-after-release.sh",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/admitted-helpers/run-once-after-release.sh",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/admitted-helpers/verify-results.py",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/bound-command-review/facts.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/bound-command-review/review.md",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/bound-recipe-review/directory-facts.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/bound-recipe-review/facts.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/bound-recipe-review/git-453c221-ls-tree.nul",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/bound-recipe-review/git-c074-ls-tree.nul",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/bound-recipe-review/input-facts.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/bound-recipe-review/review.md",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/bound-recipe/README.md",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/bound-recipe/binding-facts.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/bound-recipe/bound-overlay.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/dispatch/cleanup-bind-capture-details.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/dispatch/final-direct-cleanup-observation.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/dispatch/first-cleanup-bind-traceback.txt",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/dispatch/first-cleanup-observer-failure.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/dispatch/preparation-dispatch.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/dispatch/prepared-paths-and-acceptance-dispatch.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/external-assets/favicon-http-receipt.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/external-assets/favicon-response.ico",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/external-postflight/actual-payload-readback.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/external-postflight/postflight.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/external-postflight/visual-inspection.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/historical-c074-plan-review/check-inputs.py",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/historical-c074-plan-review/evidence-facts.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/historical-c074-plan-review/facts.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/historical-c074-plan-review/outside-mode-input-paths.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/historical-c074-plan-review/review.md",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/historical-c074-plan/README.md",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/historical-c074-plan/guard-root.diff",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/historical-c074-plan/plan.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/historical-c86-failure-records/audit.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/historical-c86-failure-records/browser/browser-proof.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/historical-c86-failure-records/browser/manifest.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/historical-c86-failure-records/failure-cleanup.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/historical-c86-failure-records/final-hashes.tsv",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/historical-c86-failure-records/final-manifest.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/historical-c86-failure-records/http-error-capture-limitations.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/historical-c86-failure-records/prepare.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/historical-c86-failure-records/run.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/historical-c86-failure-records/runtime/run.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/historical-c86-failure-records/runtime/runtime-results.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/historical-c86-failure-records/visual-inspection.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/historical-prebind/README.md",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/historical-prebind/baseline-inputs.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/historical-prebind/overlay.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/independent-browser-native-crosscheck/audit.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/independent-payload-audit/audit.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/independent-payload-audit/hashes.tsv",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/independent-payload-audit/read-files.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/independent-payload-audit/readback.py",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/independent-payload-audit/summary.md",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/packet-hashes.tsv",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/packet-manifest.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/packet-summary.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/preparation-launch/execution.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/preparation-launch/npm-ci.log",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/preparation-launch/pin-validation.log",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/preparation-launch/prepare-command.log",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/preparation-launch/worktree.log",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/browser/browser-proof.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/browser/guest-relic-objectives.png",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/browser/hosted-relic-collected.png",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/browser/hosted-relic-lobby.png",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/browser/hosted-relic-marker.png",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/browser/local-build-report.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/browser/local-build-report.session.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/browser/local-custom-draft.png",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/browser/local-custom-hill.replay.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/browser/local-custom-hill.session.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/browser/local-hill-marker.png",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/browser/manifest.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/browser/provenance.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/build-manifest.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/build-server.log",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/build.log",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/dist-server/campaign-runtime.mjs",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/dist-server/canonical-campaign.mjs",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/dist-server/rts-server.js",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/dist/assets/main-BxMb13AF.js",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/dist/assets/main-CxCO6VnC.css",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/dist/editor.html",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/dist/favicon.ico",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/dist/index.html",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/final-hashes.tsv",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/final-manifest.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/logs/main-browser.log",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/logs/native-local-build-report.session.log",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/logs/native-local-custom-hill.session.log",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/logs/natural-matches.log",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/logs/server.log",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/modules/manifest.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/modules/schema.mjs",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/modules/schema.mjs.meta.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/modules/verify-native.mjs",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/modules/verify-native.mjs.meta.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/modules/verify-runtime.mjs",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/modules/verify-runtime.mjs.meta.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/native/local-build-report.session.verification.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/native/local-custom-hill.session.verification.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/prepare.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/run.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/hill-2v2-initial.save.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/hill-2v2-tick-300.save.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/hill-2v2-tick-300.session.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/hill-2v2.replay.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/hill-2v2.save.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/hill-2v2.session.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/hill-duel-initial.save.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/hill-duel-tick-300.save.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/hill-duel-tick-300.session.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/hill-duel.replay.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/hill-duel.save.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/hill-duel.session.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/provenance.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/relic-contested-initial.save.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/relic-contested-tick-300.save.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/relic-contested-tick-300.session.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/relic-contested.replay.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/relic-contested.save.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/relic-contested.session.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/relic-duel-initial.save.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/relic-duel-tick-300.save.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/relic-duel-tick-300.session.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/relic-duel.replay.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/relic-duel.save.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/relic-duel.session.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/run.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/runtime-results.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/source-sha256.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/survival-five-waves-initial.save.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/survival-five-waves-tick-300.save.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/survival-five-waves-tick-300.session.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/survival-five-waves-wave-1-recovery.save.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/survival-five-waves-wave-1-recovery.session.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/survival-five-waves-wave-2-recovery.save.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/survival-five-waves-wave-2-recovery.session.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/survival-five-waves-wave-3-recovery.save.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/survival-five-waves-wave-3-recovery.session.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/survival-five-waves-wave-4-recovery.save.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/survival-five-waves-wave-4-recovery.session.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/survival-five-waves.replay.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/survival-five-waves.save.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/survival-five-waves.session.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/server-data/server.sqlite",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/proof/typecheck.log",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/root-applicability/applicability.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/staging-receipt.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/raw/verify-packet.py",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/retention-decisions/command-transcript-excerpt.jsonl",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/retention-decisions/decisions.tsv",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/retention-decisions/first-transcript-extraction-failure.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/retention-decisions/hashes.tsv",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/retention-decisions/trail-scope.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/retention-decisions/transcript-excerpt-receipt.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/retention.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/packet-admission/admission.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/packet-admission/audit-first-script.py",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/packet-admission/audit-first.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/packet-admission/audit.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/packet-admission/audit.py",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/packet-admission/hashes.tsv",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/packet-admission/input-context.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/packet-admission/native-artifact-review.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/packet-admission/native-audit.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/packet-admission/observer-correction.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/packet-admission/review.md",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/packet-admission/runtime-browser-audit.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/packet-admission/visual-inspection.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/retention-trail/audit.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/retention-trail/followup-audit.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/retention-trail/followup-review.md",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/retention-trail/review.md",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/retention/audit.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/retention/coverage-assertions.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/retention/delegated-coverage-facts.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/retention/delegated-coverage-review.md",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/retention/git-blob-records.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/retention/hashes.tsv",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/retention/original-verifier-receipt.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/retention/original-verifier.stderr.txt",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/retention/original-verifier.stdout.txt",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/retention/pinned-git-tree.nul",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/retention/read-files.json",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/retention/readback.py",
+          "A\tdocs/evidence/modes-453c221-passed-20261001/reviews/retention/review.md",
+          "M\tdocs/features/decisions.tsv",
+          "M\tdocs/features/requirements.json"
+        ]
+      }
+    },
+    {
+      "name": "no product or proof-script changes",
+      "passed": true,
+      "details": {
+        "changedScripts": []
+      }
+    },
+    {
+      "name": "153 retained raw blobs",
+      "passed": true,
+      "details": {
+        "recordCount": 153,
+        "committedCount": 153,
+        "failures": []
+      }
+    },
+    {
+      "name": "retained raw byte total",
+      "passed": true,
+      "details": {
+        "computedBytes": 26216711,
+        "recordedBytes": 26216711
+      }
+    },
+    {
+      "name": "53 auxiliary files match recorded sources",
+      "passed": true,
+      "details": {
+        "fileCount": 53,
+        "failures": []
+      }
+    },
+    {
+      "name": "989 omissions absent and authenticated to immutable Git",
+      "passed": true,
+      "details": {
+        "omissionCount": 989,
+        "uniquePacketPaths": 989,
+        "reasonCounts": {
+          "duplicate-pinned-source-input": 596,
+          "duplicate-pinned-public-dist-asset": 393
+        },
+        "omittedBytes": 139079685,
+        "recordedOmittedBytes": 139079685,
+        "failures": []
+      }
+    },
+    {
+      "name": "568 product paths still match product pin",
+      "passed": true,
+      "details": {
+        "productPathCount": 568,
+        "failures": []
+      }
+    },
+    {
+      "name": "review commit does not touch product manifest paths",
+      "passed": true,
+      "details": {
+        "changedProductPaths": []
+      }
+    },
+    {
+      "name": "only requirement 69 promoted",
+      "passed": true,
+      "details": {
+        "changedFeatures": [
+          {
+            "id": 69,
+            "before": {
+              "id": 69,
+              "title": "Survival mode",
+              "requirement": "defend against increasingly difficult attack waves.",
+              "status": "in-progress",
+              "evidence": [
+                "docs/evidence/modes-root-integration-20261001/browser/results.json",
+                "docs/evidence/modes-root-integration-20261001/runtime/runtime-results.json",
+                "docs/evidence/modes-root-integration-20261001/served-build.json",
+                "docs/evidence/modes-root-integration-20261001/tests.log",
+                "docs/evidence/root-assembly-20261001/survival-af44da4-first-runtime-failure.json"
+              ]
+            },
+            "after": {
+              "id": 69,
+              "title": "Survival mode",
+              "requirement": "defend against increasingly difficult attack waves.",
+              "status": "verified",
+              "evidence": [
+                "docs/evidence/modes-root-integration-20261001/browser/results.json",
+                "docs/evidence/modes-root-integration-20261001/runtime/runtime-results.json",
+                "docs/evidence/modes-root-integration-20261001/served-build.json",
+                "docs/evidence/modes-root-integration-20261001/tests.log",
+                "docs/evidence/root-assembly-20261001/survival-af44da4-first-runtime-failure.json",
+                "docs/evidence/modes-453c221-passed-20261001/retention.json",
+                "docs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/runtime-results.json",
+                "docs/evidence/modes-453c221-passed-20261001/reviews/packet-admission/review.md",
+                "docs/evidence/modes-453c221-passed-20261001/reviews/retention/review.md"
+              ]
+            },
+            "changedFields": [
+              "evidence",
+              "status"
+            ]
+          }
+        ],
+        "addedEvidence": [
+          "docs/evidence/modes-453c221-passed-20261001/retention.json",
+          "docs/evidence/modes-453c221-passed-20261001/raw/proof/runtime/runtime-results.json",
+          "docs/evidence/modes-453c221-passed-20261001/reviews/packet-admission/review.md",
+          "docs/evidence/modes-453c221-passed-20261001/reviews/retention/review.md"
+        ],
+        "beforeStatusCounts": {
+          "in-progress": 37,
+          "verified": 63
+        },
+        "afterStatusCounts": {
+          "in-progress": 36,
+          "verified": 64
+        }
+      }
+    },
+    {
+      "name": "decision ledger append only",
+      "passed": true,
+      "details": {
+        "appendedRows": [
+          "2026-10-01T21:59:27Z\tsurvival-current-original69-admission\tMark original survival requirement69 verified after full current acceptance and bounded archive admission\tFive naturally defended waves grow from one to five attackers and preserve advancing save/replay continuation equality\tdocs/evidence/modes-453c221-passed-20261001/retention.json;docs/evidence/modes-453c221-passed-20261001/reviews/packet-admission/review.md\t64 verified and36 in progress;453 runtime;153 retained raw files; separate failed bind preserved without cause attribution"
+        ]
+      }
+    },
+    {
+      "name": "preceding metadata commit boundary",
+      "passed": true,
+      "details": {
+        "base": "827496b06bb660b6639257e5113ac2f199be29ba",
+        "tip": "1f39b577144331ca42915fb1f828c0becef917ef",
+        "changedPathCount": 32,
+        "changedProductPaths": [],
+        "changedScripts": [],
+        "appendedDecisionRows": [
+          "2026-10-01T21:58:12Z\tnative-faction-proof-import\tImport seven reviewed native faction proof files and the separate one-character replay wait repair\tThe real integrated pin is required before current faction fixtures and browser acceptance can run\t827496b06bb660b6639257e5113ac2f199be29ba;docs/evidence/faction-proof-import-827496b-20261001/root-retention.json\tComplete tree equals reviewed preview;568 product files and approved helpers unchanged;21-30 runtime pending",
+          "2026-10-01T21:58:12Z\tnative-combat-453-preparation-admission\tImport the independently reviewed current-pin combat checker and serial recipe\tThe reviewed favicon requires complete public and dist identity alongside the original native freeze\t87273ff035a7fe7342f37785d5e5274ebd9dde4f;docs/evidence/native-combat-retry-preparation-453c221-20261001/root-import-retention.json\tGPT-5.6 Sol found no flags; exact source docs preserved;39 encounters remain pending at453"
+        ]
+      }
+    },
+    {
+      "name": "retained survival result fields",
+      "passed": true,
+      "details": {
+        "tick": 8190,
+        "winner": 0,
+        "winningTeam": 0,
+        "waveAttackers": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "resumeTicks": [
+          300,
+          6554,
+          6951,
+          7348,
+          7793
+        ],
+        "comparedTicks": 7890,
+        "firstDifference": null,
+        "completeEnvelopeRoundtripPassed": true,
+        "completeReplayEnvelopePassed": true,
+        "continuedRecorderHistoryPassed": true,
+        "replaySeekEnvelopePassed": true
+      }
+    },
+    {
+      "name": "retained browser result fields",
+      "passed": true,
+      "details": {
+        "result": "passed",
+        "checkCount": 13,
+        "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "browserClosed": true,
+        "errorCounts": {
+          "pageErrors": 0,
+          "consoleErrors": 0,
+          "failedRequests": 0,
+          "httpErrors": 0,
+          "errors": 0
+        }
+      }
+    },
+    {
+      "name": "retained native result fields",
+      "passed": true,
+      "details": [
+        {
+          "file": "local-build-report.session.verification.json",
+          "result": "passed",
+          "saveVersion": 4,
+          "replayVersion": 1,
+          "simulationRevision": "4.0.1",
+          "finalTick": 40,
+          "advanced": 40,
+          "acceptedCommandCount": 2,
+          "continuationStartTick": 40,
+          "continuationFinalTick": 140,
+          "continuationAdvancedTicks": 100,
+          "continuationCommandCount": 6,
+          "continuationChecks": {
+            "completeEnvelopeEqualityPassed": true,
+            "recorderEqualityPassed": true,
+            "allAcceptedContinuationCommandsRecorded": true,
+            "extendedReplayEqualityPassed": true
+          }
+        },
+        {
+          "file": "local-custom-hill.session.verification.json",
+          "result": "passed",
+          "saveVersion": 4,
+          "replayVersion": 1,
+          "simulationRevision": "4.0.1",
+          "finalTick": 40,
+          "advanced": 40,
+          "acceptedCommandCount": 2,
+          "continuationStartTick": 40,
+          "continuationFinalTick": 140,
+          "continuationAdvancedTicks": 100,
+          "continuationCommandCount": 6,
+          "continuationChecks": {
+            "completeEnvelopeEqualityPassed": true,
+            "recorderEqualityPassed": true,
+            "allAcceptedContinuationCommandsRecorded": true,
+            "extendedReplayEqualityPassed": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "retained launcher receipts",
+      "passed": true,
+      "details": {
+        "launcherResult": "passed",
+        "stepResults": [
+          {
+            "name": "natural-matches",
+            "result": "passed"
+          },
+          {
+            "name": "main-browser",
+            "result": "passed"
+          },
+          {
+            "name": "native-local-custom-hill.session",
+            "result": "passed"
+          },
+          {
+            "name": "native-local-build-report.session",
+            "result": "passed"
+          }
+        ],
+        "runtimeResult": "passed",
+        "completeEnvelopeContinuationPassed": true
+      }
+    }
+  ],
+  "diffCheck": {
+    "returnCode": 0,
+    "diagnosticLineCount": 0,
+    "diagnosticPaths": [],
+    "documentaryPatchOrDiffPathsOnly": false,
+    "firstDiagnostics": [],
+    "interpretation": "No whitespace diagnostics."
+  },
+  "behavioralInterrogation": {
+    "retainedEvidence": {
+      "ordering": "none",
+      "failurePaths": "none",
+      "observability": "Adds documentary receipts only; no runtime emission changed.",
+      "staleWrites": "none",
+      "testDelta": "No product behavior changed; this audit verifies retained bytes and recorded result fields without executing them."
+    },
+    "requirementsAndLedger": {
+      "ordering": "none",
+      "failurePaths": "none",
+      "observability": "Requirement 69 changes from in-progress to verified and one ledger row records the admission.",
+      "staleWrites": "none",
+      "testDelta": "The static audit checks the one-feature status change, evidence pointers, status totals, and append-only ledger edit."
+    }
+  },
+  "limitations": [
+    "This review authenticates existing evidence and admission metadata. It did not rerun runtime acceptance.",
+    "The retained errno 98 temporary-bind observation remains separate, with its cause unestablished and no retry recorded."
+  ],
+  "failedChecks": []
+}

@@ -1,0 +1,81 @@
+diff --git a/scripts/server/verify-hosted-teams-browser.mjs b/scripts/server/verify-hosted-teams-browser.mjs
+index 65ae83b..32e5ae7 100644
+--- a/scripts/server/verify-hosted-teams-browser.mjs
++++ b/scripts/server/verify-hosted-teams-browser.mjs
+@@ -290,7 +290,7 @@ async function renderer(actor, layout, privateSides = [actor.side]) {
+   for (const entity of value.entities.filter(row => !privateSides.includes(row.side))) { assert.deepEqual(entity.order, { type: 'idle' }); assert.deepEqual(entity.queue, []); assert.equal(entity.research, undefined); assert.equal(entity.carried, 0); }
+   return { tick: value.tick, side: value.side, privateSides: value.privateSides, hud: value.hud, readOnly: value.readOnly, banks: value.players.map(bank) };
+ }
+-async function spectator(actor, layout, matchId, side, mode, base, liveActor) {
++async function spectator(actor, layout, matchId, side, mode, base, liveActor, expectedDelayTicks = 20) {
+   await online(actor); const dialog = await online(actor);
+   await dialog.getByLabel('Spectator match ID', { exact: true }).fill(matchId);
+   await dialog.getByLabel('Spectator perspective', { exact: true }).selectOption(String(side));
+@@ -298,7 +298,7 @@ async function spectator(actor, layout, matchId, side, mode, base, liveActor) {
+   await enabled(dialog.getByRole('button', { name: 'Spectate match', exact: true }));
+   const boundary = await connectionBoundary(actor);
+   await dialog.getByRole('button', { name: 'Spectate match', exact: true }).click();
+-  const hello = await battlefield(actor, matchId, side, 'spectator', { ...boundary, perspective: mode }); assert.equal(hello.delayTicks, 20); assert.equal(hello.perspective, mode);
++  const hello = await battlefield(actor, matchId, side, 'spectator', { ...boundary, perspective: mode }); assert.equal(hello.delayTicks, expectedDelayTicks); assert.equal(hello.perspective, mode);
+   const expectedSides = mode === 'team' ? layout.players.flatMap((player, s) => player.teamId === layout.players[side].teamId ? [s] : []) : [side];
+   const rendered = await renderer(actor, layout, expectedSides); assert.equal(rendered.readOnly, true);
+   const frame = actor.frames.get(rendered.tick);
+@@ -480,8 +480,22 @@ export async function verifyRestart({ browser, base, output, protocolVersion, ch
+     const wire = [];
+     for (const actor of actors) { await Promise.all(actor.assetTasks); const parseErrors = await actor.page.evaluate(() => window.__hostedTeamWire.parseErrors); assert.deepEqual(parseErrors, []); assert.deepEqual(actor.errors, []); wire.push({ name: actor.name, hellos: actor.hellos, commands: actor.sent, receipts: actor.receipts, errors: actor.errors, uiActions: actor.actions, parseErrors }); await screenshot(actor, directory, 'restarted-transfer-receipt-replay', result.screenshots); }
+     result.wire = await saveEvidence(directory, 'restart-wire', wire);
++    // Reuse the restarted host after all player receipt and bank checks. The
++    // other participant stays connected as the live source for this perspective.
++    const live = await spectator(actors[0], restart.layout, restart.matchId, 1, 'player', base, actors[1], 0);
++    const playerFrame = await poll(() => actors[1].frames.get(live.frame.tick), 'live player frame matching native zero-delay spectator capture');
++    assert.deepEqual(live.frame.view, playerFrame.view, 'Zero-delay spectator capture differs from the live player wire view');
++    const advanced = await futureCommon(actors, live.frame.tick + 4);
++    assert.deepEqual(advanced.frames[0].view, advanced.frames[1].view, 'Zero-delay spectator did not follow the advancing live player view');
++    result.liveSpectator = {
++      hello: live.hello, renderer: live.rendered, initialTick: live.frame.tick, advancingTick: advanced.tick,
++      firstFrames: await Promise.all([live.frame, playerFrame].map((frame, i) => saveFrame(directory, `restart-live-first-${i === 0 ? 'spectator' : 'player'}`, frame))),
++      advancingFrames: await Promise.all(advanced.frames.map((frame, i) => saveFrame(directory, `restart-live-advancing-${i === 0 ? 'spectator' : 'player'}`, frame))),
++    };
++    await screenshot(actors[0], directory, 'restarted-zero-delay-live-spectator', result.screenshots);
+     assert.deepEqual(errors, []); result.passed = true;
+     checks.push({ name: 'native cooperative sessions, seats, durable sequences and unchanged transfer receipts survive packaged-server restart without double charge', evidence: { seats: result.seats.map(row => ({ side: row.side, priorSequence: row.hello.lastClientSeq, acceptedSequence: row.stop.ack.clientSeq })), replayedSequence: durableAck.clientSeq, beforeTick: before.tick, afterTick: after.tick, beforeBanks, afterBanks } });
++    checks.push({ name: 'native zero-delay spectator renders the same advancing public wire view as the live player in read-only mode', evidence: result.liveSpectator });
+     console.log('PASS native cooperative sessions, seats, durable sequences and unchanged transfer receipts survive packaged-server restart without double charge'); return result;
+   } catch (error) {
+     result.error = error.stack ?? String(error);
+diff --git a/scripts/server/verify-hosted-teams.mjs b/scripts/server/verify-hosted-teams.mjs
+index ed37888..ea318e4 100644
+--- a/scripts/server/verify-hosted-teams.mjs
++++ b/scripts/server/verify-hosted-teams.mjs
+@@ -59,11 +59,11 @@ async function run(command, args, name) {
+   finally { log.end(); await finished(log); }
+   assert.equal(status.code, 0, `${name} failed (${status.code ?? status.signal}); inspect ${name}.log`);
+ }
+-async function launch(port = 0) {
++async function launch(port = 0, spectatorDelaySeconds = 1) {
+   const log = createWriteStream(join(output, `server-${++generation}.log`));
+   const child = spawn(process.execPath, [join(serverDirectory, 'rts-server.js')], { cwd, stdio: ['ignore', 'pipe', 'pipe'], env: {
+     ...process.env, RTS_HOST: '127.0.0.1', RTS_PORT: String(port), RTS_DATA_DIR: dataDirectory,
+-    RTS_STATIC_DIR: browserDirectory, RTS_ORIGIN: '', RTS_SECURE_COOKIE: '0', RTS_TRUST_PROXY: '0', RTS_SPECTATOR_DELAY_SECONDS: '1',
++    RTS_STATIC_DIR: browserDirectory, RTS_ORIGIN: '', RTS_SECURE_COOKIE: '0', RTS_TRUST_PROXY: '0', RTS_SPECTATOR_DELAY_SECONDS: String(spectatorDelaySeconds),
+   } });
+   let buffer = '', ready, failed;
+   const address = new Promise((resolveAddress, rejectAddress) => { ready = resolveAddress; failed = rejectAddress; });
+@@ -113,7 +113,7 @@ try {
+   pass('current production server package and Vite app start', { protocolVersion: health.protocolVersion, buildId: source.buildId, browserVersion: browser.version(), nodeVersion: process.version });
+   const { restart, ...serializable } = await verifyBrowser({ browser, base, output, protocolVersion: health.protocolVersion, checks, expectedBuildId: source.buildId });
+   assert(restart, 'Browser proof must preserve an in-memory restart descriptor'); result = serializable;
+-  const port = Number(new URL(base).port); await stop(); const recoveredHealth = await launch(port); assert.equal(recoveredHealth.protocolVersion, health.protocolVersion);
++  const port = Number(new URL(base).port); await stop(); const recoveredHealth = await launch(port, 0); assert.equal(recoveredHealth.protocolVersion, health.protocolVersion);
+   result.restart = await verifyRestart({ browser, base, output, protocolVersion: health.protocolVersion, checks, restart });
+   assert.equal((await sourceSnapshot()).sha256, source.sha256, 'Source changed during verification');
+   assert.deepEqual({ server: await packageSnapshot(serverDirectory), browser: await packageSnapshot(browserDirectory) }, packages, 'Served packages changed during verification');
+@@ -123,7 +123,7 @@ finally {
+   await browser?.close().catch(error => cleanupErrors.push(error.message));
+   await stop().catch(error => cleanupErrors.push(error.message));
+   if (!failure && cleanupErrors.length) failure = new Error(`Cleanup failed: ${cleanupErrors.join('; ')}`);
+-  if (created) await writeFile(join(output, 'result.json'), JSON.stringify({ status: failure ? 'failed' : 'passed', generatedAt: new Date().toISOString(), cwd, output, source, packages, checks, browser: result, cleanupErrors, ...(failure ? { error: failure.stack ?? String(failure) } : {}), method: 'Build and serve the production server entry and Vite app. Native browser accounts, lobby controls and mounted authoritative games; public authenticated commands on captured native WebSockets. One-second delayed player/team spectator views. Graceful restart with the same package and durable data. No direct game-state writes, surrender, fabricated winners or natural-victory claim.', limits: ['Loopback production hosting; remote public deployment was not tested.', 'Brief layout, ownership, view and transport runs do not prove natural coordinated team victory.'] }, null, 2));
++  if (created) await writeFile(join(output, 'result.json'), JSON.stringify({ status: failure ? 'failed' : 'passed', generatedAt: new Date().toISOString(), cwd, output, source, packages, checks, browser: result, cleanupErrors, ...(failure ? { error: failure.stack ?? String(failure) } : {}), method: 'Build and serve the production server entry and Vite app. Native browser accounts, lobby controls and mounted authoritative games; public authenticated commands on captured native WebSockets. One-second delayed player/team spectator views. Graceful restart with the same package and durable data, followed by native zero-delay spectator viewing. No direct game-state writes, surrender, fabricated winners or natural-victory claim.', limits: ['Loopback production hosting; remote public deployment was not tested.', 'Brief layout, ownership, view and transport runs do not prove natural coordinated team victory.'] }, null, 2));
+ }
+ if (failure) throw failure;
+ console.log(`Evidence: ${join(output, 'result.json')}`);

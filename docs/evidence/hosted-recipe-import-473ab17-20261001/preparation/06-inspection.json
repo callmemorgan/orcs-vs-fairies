@@ -1,0 +1,766 @@
+{
+  "purpose": "Independent read-only applicability inspection for original daily and cosmetics requirements. No runtime ran.",
+  "productFreeze": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "ownedPreparedProofPin": "7fe049f3ad3c3dd8ab6ae32962e73d000219aab5",
+  "suitePin": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+  "requirementsAtFreeze": [
+    {
+      "id": 98,
+      "title": "Daily seeded challenges",
+      "requirement": "compete on the same map and starting conditions.",
+      "status": "in-progress",
+      "evidence": []
+    },
+    {
+      "id": 99,
+      "title": "Cosmetic unlocks",
+      "requirement": "earn faction banners, building decorations and commander portraits.",
+      "status": "in-progress",
+      "evidence": []
+    }
+  ],
+  "retainedSuite": {
+    "path": "/home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0",
+    "reportSha256": "8711be82822ba830200c91af9936e476c3db3617a6ce6b33089cf329da0590e5",
+    "testsSha256": "ced75e92e6e198d8bad063fc0e4b276bfd7ee1936bf1849830cafcd21f7a11a9",
+    "beforeSha256": "53a7006baf049eba955a8cb382ce6355ba3cb6b9e7816848363b386b82df7694",
+    "afterSha256": "53a7006baf049eba955a8cb382ce6355ba3cb6b9e7816848363b386b82df7694",
+    "inputRecordCount": 917,
+    "beforeAfterEqual": true,
+    "checks": "Retained artifact hashes verified; selected 21 base records/bytes checked where recorded. This audit does not freshly hash all 917 admitted inputs.",
+    "totals": {
+      "numTotalTests": 2920,
+      "numPassedTests": 2920,
+      "numFailedTests": 0
+    },
+    "selectedActualPassedAssertionObjects": [
+      {
+        "testResultsIndex": 106,
+        "assertionResultsIndex": 5,
+        "testFile": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/server-competitions.test.ts",
+        "assertion": {
+          "ancestorTitles": [
+            "durable ranked seasons and hosted daily challenges"
+          ],
+          "fullName": "durable ranked seasons and hosted daily challenges uses server UTC daily conditions, resumes duplicate starts, and refuses forged scores or dates",
+          "status": "passed",
+          "title": "uses server UTC daily conditions, resumes duplicate starts, and refuses forged scores or dates",
+          "duration": 182.35513600000013,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      },
+      {
+        "testResultsIndex": 107,
+        "assertionResultsIndex": 0,
+        "testFile": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/server-cosmetics.test.ts",
+        "assertion": {
+          "ancestorTitles": [
+            "earned account cosmetics"
+          ],
+          "fullName": "earned account cosmetics awards each verified match once, unlocks all three cosmetic types and preserves choices through restart",
+          "status": "passed",
+          "title": "awards each verified match once, unlocks all three cosmetic types and preserves choices through restart",
+          "duration": 918.668214,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      },
+      {
+        "testResultsIndex": 107,
+        "assertionResultsIndex": 1,
+        "testFile": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/server-cosmetics.test.ts",
+        "assertion": {
+          "ancestorTitles": [
+            "earned account cosmetics"
+          ],
+          "fullName": "earned account cosmetics rejects wrong factions, wrong slots, unknown IDs and forged award fields",
+          "status": "passed",
+          "title": "rejects wrong factions, wrong slots, unknown IDs and forged award fields",
+          "duration": 102.15746600000011,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      },
+      {
+        "testResultsIndex": 107,
+        "assertionResultsIndex": 2,
+        "testFile": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/server-cosmetics.test.ts",
+        "assertion": {
+          "ancestorTitles": [
+            "earned account cosmetics"
+          ],
+          "fullName": "earned account cosmetics rolls back result, rating and unlock writes together when a cosmetic award cannot persist",
+          "status": "passed",
+          "title": "rolls back result, rating and unlock writes together when a cosmetic award cannot persist",
+          "duration": 181.55356199999983,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      },
+      {
+        "testResultsIndex": 107,
+        "assertionResultsIndex": 3,
+        "testFile": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/server-cosmetics.test.ts",
+        "assertion": {
+          "ancestorTitles": [
+            "earned account cosmetics"
+          ],
+          "fullName": "earned account cosmetics has faction-specific vector assets and resolves only matching equipment slots",
+          "status": "passed",
+          "title": "has faction-specific vector assets and resolves only matching equipment slots",
+          "duration": 1.3506019999999808,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      },
+      {
+        "testResultsIndex": 107,
+        "assertionResultsIndex": 4,
+        "testFile": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/server-cosmetics.test.ts",
+        "assertion": {
+          "ancestorTitles": [
+            "canonical campaign reward adapter"
+          ],
+          "fullName": "canonical campaign reward adapter requires the trusted verifier and rejects client winner fields before verification",
+          "status": "passed",
+          "title": "requires the trusted verifier and rejects client winner fields before verification",
+          "duration": 183.22561100000007,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      },
+      {
+        "testResultsIndex": 107,
+        "assertionResultsIndex": 5,
+        "testFile": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/server-cosmetics.test.ts",
+        "assertion": {
+          "ancestorTitles": [
+            "canonical campaign reward adapter"
+          ],
+          "fullName": "canonical campaign reward adapter does not award rejected recordings, unavailable verification or invalid host metadata",
+          "status": "passed",
+          "title": "does not award rejected recordings, unavailable verification or invalid host metadata",
+          "duration": 103.57176699999991,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      },
+      {
+        "testResultsIndex": 107,
+        "assertionResultsIndex": 6,
+        "testFile": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/server-cosmetics.test.ts",
+        "assertion": {
+          "ancestorTitles": [
+            "canonical campaign reward adapter"
+          ],
+          "fullName": "canonical campaign reward adapter rolls back a failed campaign reward and permits one durable retry for each account",
+          "status": "passed",
+          "title": "rolls back a failed campaign reward and permits one durable retry for each account",
+          "duration": 172.7649039999999,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      },
+      {
+        "testResultsIndex": 23,
+        "assertionResultsIndex": 0,
+        "testFile": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/competition-tools-integration.test.ts",
+        "assertion": {
+          "ancestorTitles": [],
+          "fullName": "uses the live modal guard and removes moved launchers on disposal",
+          "status": "passed",
+          "title": "uses the live modal guard and removes moved launchers on disposal",
+          "duration": 8.508427000000012,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      },
+      {
+        "testResultsIndex": 23,
+        "assertionResultsIndex": 1,
+        "testFile": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/competition-tools-integration.test.ts",
+        "assertion": {
+          "ancestorTitles": [],
+          "fullName": "discards a delayed old profile and queues the new account refresh",
+          "status": "passed",
+          "title": "discards a delayed old profile and queues the new account refresh",
+          "duration": 4.424501000000021,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      },
+      {
+        "testResultsIndex": 23,
+        "assertionResultsIndex": 2,
+        "testFile": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/competition-tools-integration.test.ts",
+        "assertion": {
+          "ancestorTitles": [],
+          "fullName": "opens cosmetic choices for a mod faction with a valid built-in fallback",
+          "status": "passed",
+          "title": "opens cosmetic choices for a mod faction with a valid built-in fallback",
+          "duration": 3.2094450000000165,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      },
+      {
+        "testResultsIndex": 23,
+        "assertionResultsIndex": 3,
+        "testFile": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/competition-tools-integration.test.ts",
+        "assertion": {
+          "ancestorTitles": [],
+          "fullName": "ignores a stale generic error while the queued new account request is pending",
+          "status": "passed",
+          "title": "ignores a stale generic error while the queued new account request is pending",
+          "duration": 1.537924999999973,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      },
+      {
+        "testResultsIndex": 23,
+        "assertionResultsIndex": 4,
+        "testFile": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/competition-tools-integration.test.ts",
+        "assertion": {
+          "ancestorTitles": [],
+          "fullName": "ignores a stale 401 without clearing equipment while the new account request is pending",
+          "status": "passed",
+          "title": "ignores a stale 401 without clearing equipment while the new account request is pending",
+          "duration": 1.271162000000004,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      },
+      {
+        "testResultsIndex": 23,
+        "assertionResultsIndex": 5,
+        "testFile": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/competition-tools-integration.test.ts",
+        "assertion": {
+          "ancestorTitles": [],
+          "fullName": "does not recover a stale 409 by fetching after disposal",
+          "status": "passed",
+          "title": "does not recover a stale 409 by fetching after disposal",
+          "duration": 0.8059129999999755,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      },
+      {
+        "testResultsIndex": 23,
+        "assertionResultsIndex": 6,
+        "testFile": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/competition-tools-integration.test.ts",
+        "assertion": {
+          "ancestorTitles": [],
+          "fullName": "stops old profile callbacks when reset occurs during awaited equipment application",
+          "status": "passed",
+          "title": "stops old profile callbacks when reset occurs during awaited equipment application",
+          "duration": 1.2570349999999735,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        }
+      }
+    ]
+  },
+  "sourceApplicability": {
+    "records": [
+      {
+        "path": "tests/server-competitions.test.ts",
+        "baseGitBlob": "bfffc577c2716bf1f365bf4db93c5ca9499fdd63",
+        "freezeGitBlob": "bfffc577c2716bf1f365bf4db93c5ca9499fdd63",
+        "baseSha256": "5c3b8263413d2a2cef3006037fd7eaa044ee4e76a5556d8d42399782777ebe18",
+        "freezeSha256": "5c3b8263413d2a2cef3006037fd7eaa044ee4e76a5556d8d42399782777ebe18",
+        "baseBytes": 16272,
+        "freezeBytes": 16272,
+        "equalBaseFreeze": true,
+        "retainedManifestMatchesBase": true,
+        "ownedBytesMatchPreparedAndFreeze": true
+      },
+      {
+        "path": "tests/server-cosmetics.test.ts",
+        "baseGitBlob": "68bd82f4a8a9af166ac057b60705db42dce391f4",
+        "freezeGitBlob": "68bd82f4a8a9af166ac057b60705db42dce391f4",
+        "baseSha256": "bc7461aff6a8f6e47c8a42c9de43024d6fc5dfdac595dc1dcfdcf1aad1477057",
+        "freezeSha256": "bc7461aff6a8f6e47c8a42c9de43024d6fc5dfdac595dc1dcfdcf1aad1477057",
+        "baseBytes": 11613,
+        "freezeBytes": 11613,
+        "equalBaseFreeze": true,
+        "retainedManifestMatchesBase": true,
+        "ownedBytesMatchPreparedAndFreeze": true
+      },
+      {
+        "path": "tests/competition-tools-integration.test.ts",
+        "baseGitBlob": "b70efc5532401e0ef11987d6cdb481de57369ed4",
+        "freezeGitBlob": "b70efc5532401e0ef11987d6cdb481de57369ed4",
+        "baseSha256": "0a0863d968f1c0aca7407c6eb62ce286b7a4dd5d904c7e2126e62aa832a9dcd8",
+        "freezeSha256": "0a0863d968f1c0aca7407c6eb62ce286b7a4dd5d904c7e2126e62aa832a9dcd8",
+        "baseBytes": 7166,
+        "freezeBytes": 7166,
+        "equalBaseFreeze": true,
+        "retainedManifestMatchesBase": true,
+        "ownedBytesMatchPreparedAndFreeze": true
+      },
+      {
+        "path": "src/server/competitions.ts",
+        "baseGitBlob": "09d5acac55d06bcd47b8da7edddfecef54cc43ba",
+        "freezeGitBlob": "09d5acac55d06bcd47b8da7edddfecef54cc43ba",
+        "baseSha256": "9fd84d853f45e132299521341071e8958310e9634fed2d01976bdaf576d222da",
+        "freezeSha256": "9fd84d853f45e132299521341071e8958310e9634fed2d01976bdaf576d222da",
+        "baseBytes": 6390,
+        "freezeBytes": 6390,
+        "equalBaseFreeze": true,
+        "retainedManifestMatchesBase": true,
+        "ownedBytesMatchPreparedAndFreeze": true
+      },
+      {
+        "path": "src/server/cosmetics.ts",
+        "baseGitBlob": "e32bd3b02d5623c762e46935e384ea1fe0399edb",
+        "freezeGitBlob": "e32bd3b02d5623c762e46935e384ea1fe0399edb",
+        "baseSha256": "04ac51920d6a853310d4bf647b14c9901bd453a29e9854da18bc27b1efa74320",
+        "freezeSha256": "04ac51920d6a853310d4bf647b14c9901bd453a29e9854da18bc27b1efa74320",
+        "baseBytes": 5449,
+        "freezeBytes": 5449,
+        "equalBaseFreeze": true,
+        "retainedManifestMatchesBase": true,
+        "ownedBytesMatchPreparedAndFreeze": true
+      },
+      {
+        "path": "src/server/store.ts",
+        "baseGitBlob": "912728e2ecdb80fd4159811b6cf5e3877a659963",
+        "freezeGitBlob": "912728e2ecdb80fd4159811b6cf5e3877a659963",
+        "baseSha256": "94b40c5f2c40f97e12d69bce63110795eed2a44f72e2c05903a8a7e8efe9fa04",
+        "freezeSha256": "94b40c5f2c40f97e12d69bce63110795eed2a44f72e2c05903a8a7e8efe9fa04",
+        "baseBytes": 10118,
+        "freezeBytes": 10118,
+        "equalBaseFreeze": true,
+        "retainedManifestMatchesBase": true,
+        "ownedBytesMatchPreparedAndFreeze": true
+      },
+      {
+        "path": "src/server/server.ts",
+        "baseGitBlob": "c44e339200e49edfd0862386864d2dc64e63b608",
+        "freezeGitBlob": "c44e339200e49edfd0862386864d2dc64e63b608",
+        "baseSha256": "6cee3a6770a2e692ca4ad3ad155c3b06cf6f9116b43460f1eefe7eb7572a1f65",
+        "freezeSha256": "6cee3a6770a2e692ca4ad3ad155c3b06cf6f9116b43460f1eefe7eb7572a1f65",
+        "baseBytes": 50662,
+        "freezeBytes": 50662,
+        "equalBaseFreeze": true,
+        "retainedManifestMatchesBase": true,
+        "ownedBytesMatchPreparedAndFreeze": true
+      },
+      {
+        "path": "src/server/campaign-verification.ts",
+        "baseGitBlob": "e567a6b466cc6d26a0396b954a3c20a93dc3cb6d",
+        "freezeGitBlob": "e567a6b466cc6d26a0396b954a3c20a93dc3cb6d",
+        "baseSha256": "786e60e4db0d65dcaadf7f6d8bb3aa1af9633cc27d5a36374ae70f07f71a6c27",
+        "freezeSha256": "786e60e4db0d65dcaadf7f6d8bb3aa1af9633cc27d5a36374ae70f07f71a6c27",
+        "baseBytes": 3186,
+        "freezeBytes": 3186,
+        "equalBaseFreeze": true,
+        "retainedManifestMatchesBase": true,
+        "ownedBytesMatchPreparedAndFreeze": true
+      },
+      {
+        "path": "src/online/cosmetics.ts",
+        "baseGitBlob": "e00846d012cdb5367f89a7a795a3b592c90ecd85",
+        "freezeGitBlob": "e00846d012cdb5367f89a7a795a3b592c90ecd85",
+        "baseSha256": "411d139e5d90ebf390fc227fce6b0b961b746d1c9ec2782003d006b88ebc5685",
+        "freezeSha256": "411d139e5d90ebf390fc227fce6b0b961b746d1c9ec2782003d006b88ebc5685",
+        "baseBytes": 1388,
+        "freezeBytes": 1388,
+        "equalBaseFreeze": true,
+        "retainedManifestMatchesBase": true,
+        "ownedBytesMatchPreparedAndFreeze": true
+      },
+      {
+        "path": "src/online/competition-client.ts",
+        "baseGitBlob": "5800d4b017039fae4790ddff8a353b4cc6eca0e7",
+        "freezeGitBlob": "5800d4b017039fae4790ddff8a353b4cc6eca0e7",
+        "baseSha256": "75f88a94e281550bfe87e5546dca24efe694c19747841c81648f00d922c6dab6",
+        "freezeSha256": "75f88a94e281550bfe87e5546dca24efe694c19747841c81648f00d922c6dab6",
+        "baseBytes": 1434,
+        "freezeBytes": 1434,
+        "equalBaseFreeze": true,
+        "retainedManifestMatchesBase": true,
+        "ownedBytesMatchPreparedAndFreeze": true
+      },
+      {
+        "path": "src/online/cosmetic-client.ts",
+        "baseGitBlob": "d58b93ec068624965f64cd6c821f988b0273b3c6",
+        "freezeGitBlob": "d58b93ec068624965f64cd6c821f988b0273b3c6",
+        "baseSha256": "77a609233607c3efb6c9986083282f4cbe7ab28e764aecec9f7571cb7c611cb0",
+        "freezeSha256": "77a609233607c3efb6c9986083282f4cbe7ab28e764aecec9f7571cb7c611cb0",
+        "baseBytes": 1076,
+        "freezeBytes": 1076,
+        "equalBaseFreeze": true,
+        "retainedManifestMatchesBase": true,
+        "ownedBytesMatchPreparedAndFreeze": true
+      },
+      {
+        "path": "src/ui/CompetitionTools.ts",
+        "baseGitBlob": "9b8d600b61378a0a49e7bafe1607fd4ff27f8819",
+        "freezeGitBlob": "9b8d600b61378a0a49e7bafe1607fd4ff27f8819",
+        "baseSha256": "f9f0d92164339e27b7fd88b334dfd0e021d1149406f0ca507b23deb73fd23ef6",
+        "freezeSha256": "f9f0d92164339e27b7fd88b334dfd0e021d1149406f0ca507b23deb73fd23ef6",
+        "baseBytes": 12649,
+        "freezeBytes": 12649,
+        "equalBaseFreeze": true,
+        "retainedManifestMatchesBase": true,
+        "ownedBytesMatchPreparedAndFreeze": true
+      },
+      {
+        "path": "src/ui/CosmeticTools.ts",
+        "baseGitBlob": "ca567837b5e8a9eeb2f0263041de915157ce9670",
+        "freezeGitBlob": "ca567837b5e8a9eeb2f0263041de915157ce9670",
+        "baseSha256": "c3650284bf657671bbca92649762a076cf5771130be321452ceb3e436db4ff0b",
+        "freezeSha256": "c3650284bf657671bbca92649762a076cf5771130be321452ceb3e436db4ff0b",
+        "baseBytes": 9273,
+        "freezeBytes": 9273,
+        "equalBaseFreeze": true,
+        "retainedManifestMatchesBase": true,
+        "ownedBytesMatchPreparedAndFreeze": true
+      },
+      {
+        "path": "src/game/Cosmetics.ts",
+        "baseGitBlob": "dfa9a38b0fd4ef0539655ab48a418c61bf4bfd79",
+        "freezeGitBlob": "dfa9a38b0fd4ef0539655ab48a418c61bf4bfd79",
+        "baseSha256": "8fbead76b858138228699e02b07f5322b3d0a5bf9e3e5b287971ec096053ee29",
+        "freezeSha256": "8fbead76b858138228699e02b07f5322b3d0a5bf9e3e5b287971ec096053ee29",
+        "baseBytes": 5323,
+        "freezeBytes": 5323,
+        "equalBaseFreeze": true,
+        "retainedManifestMatchesBase": true,
+        "ownedBytesMatchPreparedAndFreeze": true
+      },
+      {
+        "path": "src/core/versions.ts",
+        "baseGitBlob": "b47ecb908513fa9594b3189296df37b23fad34f2",
+        "freezeGitBlob": "b47ecb908513fa9594b3189296df37b23fad34f2",
+        "baseSha256": "a8b20be0fb9abd0895fed0d4ad1c7612910f2d31bf9c12c85fd8a432c0ba3f24",
+        "freezeSha256": "a8b20be0fb9abd0895fed0d4ad1c7612910f2d31bf9c12c85fd8a432c0ba3f24",
+        "baseBytes": 346,
+        "freezeBytes": 346,
+        "equalBaseFreeze": true,
+        "retainedManifestMatchesBase": true,
+        "ownedBytesMatchPreparedAndFreeze": true
+      },
+      {
+        "path": "src/core/saves.ts",
+        "baseGitBlob": "1bc86d419b56585120d8c68c02a61c1b3a7ef580",
+        "freezeGitBlob": "1bc86d419b56585120d8c68c02a61c1b3a7ef580",
+        "baseSha256": "2059e49775401d44813a02c3628de3055c3d7d944d4f887cf7a3639c145197c7",
+        "freezeSha256": "2059e49775401d44813a02c3628de3055c3d7d944d4f887cf7a3639c145197c7",
+        "baseBytes": 48856,
+        "freezeBytes": 48856,
+        "equalBaseFreeze": true,
+        "retainedManifestMatchesBase": true,
+        "ownedBytesMatchPreparedAndFreeze": true
+      },
+      {
+        "path": "src/core/replays.ts",
+        "baseGitBlob": "7983a32e9bd2b8ad4ce986724bc6304c4b921b9d",
+        "freezeGitBlob": "7983a32e9bd2b8ad4ce986724bc6304c4b921b9d",
+        "baseSha256": "c7d57a1df6536dee13fbbb35c58f4128fac1589e46f7fd62b296ce11804f1c17",
+        "freezeSha256": "c7d57a1df6536dee13fbbb35c58f4128fac1589e46f7fd62b296ce11804f1c17",
+        "baseBytes": 16630,
+        "freezeBytes": 16630,
+        "equalBaseFreeze": true,
+        "retainedManifestMatchesBase": true,
+        "ownedBytesMatchPreparedAndFreeze": true
+      },
+      {
+        "path": "src/main.ts",
+        "baseGitBlob": "022a7b80cff3a185879dd11a0762808c8435d047",
+        "freezeGitBlob": "2035c932e7c2b9fc1bfa00c5881050ac7f036986",
+        "baseSha256": "82cde4d82ae086d425283265e6906f4fa88b4a3b62d86ad2a988d36c06b8cfe6",
+        "freezeSha256": "4b3de6a2c62517819e56d81e20f96aa10c8bfde8cd58ea70aa516fd84f0abda7",
+        "baseBytes": 47418,
+        "freezeBytes": 47424,
+        "equalBaseFreeze": false,
+        "retainedManifestMatchesBase": true,
+        "ownedBytesMatchPreparedAndFreeze": true
+      },
+      {
+        "path": "scripts/competitions/verify-hosted.ts",
+        "baseGitBlob": "20c4473b14b621969bc83158b2d9c89398b32dd0",
+        "freezeGitBlob": "20c4473b14b621969bc83158b2d9c89398b32dd0",
+        "baseSha256": "9c0cbce24c99d09f973870190c45bc85b5f09a29c3872967bd279d734096d972",
+        "freezeSha256": "9c0cbce24c99d09f973870190c45bc85b5f09a29c3872967bd279d734096d972",
+        "baseBytes": 6500,
+        "freezeBytes": 6500,
+        "equalBaseFreeze": true,
+        "retainedManifestMatchesBase": true,
+        "ownedBytesMatchPreparedAndFreeze": true
+      },
+      {
+        "path": "scripts/competitions/verify-canonical-browser.mjs",
+        "baseGitBlob": "ed0ad47895dcd3415fdd65255eaad01d04c5b76c",
+        "freezeGitBlob": "ed0ad47895dcd3415fdd65255eaad01d04c5b76c",
+        "baseSha256": "35ea8b4b309eca2b827ca056cde65318d94fcc0d0b01253c21c8f8c74bd6159e",
+        "freezeSha256": "35ea8b4b309eca2b827ca056cde65318d94fcc0d0b01253c21c8f8c74bd6159e",
+        "baseBytes": 49723,
+        "freezeBytes": 49723,
+        "equalBaseFreeze": true,
+        "retainedManifestMatchesBase": true,
+        "ownedBytesMatchPreparedAndFreeze": true
+      },
+      {
+        "path": "scripts/competitions/verify-canonical-main.mjs",
+        "baseGitBlob": "4c32e12e79b5e70b0680a5d753db73413375997b",
+        "freezeGitBlob": "4c32e12e79b5e70b0680a5d753db73413375997b",
+        "baseSha256": "565c8f9100fc5d3beaefa6a02b9ac6b33866aacec594bdbb7c343136ef9ab32d",
+        "freezeSha256": "565c8f9100fc5d3beaefa6a02b9ac6b33866aacec594bdbb7c343136ef9ab32d",
+        "baseBytes": 17035,
+        "freezeBytes": 17035,
+        "equalBaseFreeze": true,
+        "retainedManifestMatchesBase": true,
+        "ownedBytesMatchPreparedAndFreeze": true
+      }
+    ],
+    "wholeSrcTestsChangedPaths": [
+      "src/main.ts"
+    ],
+    "mainDifference": "diff --git a/src/main.ts b/src/main.ts\nindex 022a7b8..2035c93 100644\n--- a/src/main.ts\n+++ b/src/main.ts\n@@ -148,7 +148,7 @@ const callbacks:HudCallbacks={\n function closeOnline(){onlineConnecting?.dispose();onlineConnecting=undefined;onlineConnection?.dispose();onlineConnection=undefined;onlineRender=undefined;}\n function applyCosmetics(){if(!scene)return;scene.setCosmeticLoadouts(onlineConnection?hostedLoadouts:replay?new Map():new Map([[playerSide(),accountLoadouts.get(scene.state.players[playerSide()].faction)??{}]]));}\n async function refreshHostedCosmetics(){const request=++hostedCosmeticRequest,connection=onlineConnection,generation=replacementGeneration;if(!connection)return;try{const result=await cosmeticApi.matchCosmetics(connection.matchId);if(request!==hostedCosmeticRequest||connection!==onlineConnection||generation!==replacementGeneration||!scene)return;hostedLoadouts=new Map(result.players.filter(player=>scene!.state.players[player.side]?.faction===player.factionId).map(player=>[player.side,resolveCosmeticLoadout(player.factionId,player.loadout)]));applyCosmetics();}catch{if(request===hostedCosmeticRequest&&connection===onlineConnection&&generation===replacementGeneration){hostedLoadouts.clear();applyCosmetics();}}}\n-function accountChanged(account:Account|null){const id=account?.id??null;if(cosmeticAccountId===id)return;cosmeticAccountId=id;cosmeticAccountEpoch++;campaignHost.resetCampaignReward();accountLoadouts.clear();applyCosmetics();cosmetics.reset();void cosmetics.refresh();}\n+function accountChanged(account:Account|null){const id=account?.id??null;if(cosmeticAccountId===id)return;cosmeticAccountId=id;cosmeticAccountEpoch++;campaignHost.resetCampaignReward();accountLoadouts.clear();applyCosmetics();cosmetics.reset();if(id)void cosmetics.refresh();}\n function setModal(source:string,open:boolean){\n  const wasOpen=!!openModals.size;\n  if(open)openModals.add(source);else openModals.delete(source);\n",
+    "caveat": "Current mounted main.ts has an additional anonymous account refresh guard; historical isolated tools assertions do not execute that final integration change."
+  },
+  "admissionLimits": {
+    "dailyPassedTest": "Shared server UTC date/config across two authenticated accounts, duplicate start/resume, rejected forged fields/score endpoint, original-date rollover, losing run yields no score. No victorious current daily run in this selected assertion.",
+    "cosmeticsPassedTest": "Five accepted ranked guest surrenders award host faction wins once, reaching banner/decoration/portrait thresholds 1/3/5. Equipment revision, per-match loadout, unchanged match state hash, restart persistence and clear-choice retained. These are public surrender settlements, not natural combat victories.",
+    "campaignAdapterPassedTests": "Three passed tests inject trusted verifier callbacks/fixtures; they verify rejection/metadata/retry/rollback contract and do not prove genuine canonical campaign replay submission or mounted claim UI.",
+    "toolsPassedTests": "Seven isolated modal/account-epoch UI assertions. Current mounted UI acceptance remains a separate runtime obligation.",
+    "dailyRecipe": "Unchanged source-bound factory/tsx recipe has two current-rules normal commands-only wins planned, fastest/min score, final-command retry and restart. It does not guarantee finish ticks differ, exercise faster-second branch, prove final input was paid, or reread second outcome after restart. It writes result.json relative to cwd, so use a fresh owned run directory.",
+    "futureCanonicalBrowser": "Fresh product-frozen packaged browser should earn public surrender thresholds 1/3/5, equip all slots, prove rendering/identity races/logout and restart. Must bind exported game.version4 and replay.simulationRevision4.0.1.",
+    "scenarioOwner": "Genuine canonical campaign victory and native account claim remains separate scenario-owner work; no acceptance is inferred from fixture-backed tests."
+  },
+  "runtimeExecuted": false,
+  "filesModified": [
+    "this own /tmp inspection artifact only"
+  ],
+  "historicalDaily": {
+    "path": "/home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/docs/evidence/competitions-hosted/result.json",
+    "sha256": "40b037fb03b73f5605b8e66d14a3613ab0f9ca92b2f3ff2d61fc87060b03c2d3",
+    "firstAddedCommit": "067092fa8f639cb0762cf7943e665f8ecb98e3c0",
+    "lastChangedCommit": "afb009772286a74feecd9cfe58930db3b253e469",
+    "bytesEqualAtLastChangedFreezePrepared": true,
+    "commitSourceContexts": [
+      {
+        "commit": "067092fa8f639cb0762cf7943e665f8ecb98e3c0",
+        "saveVersion": "3",
+        "simulationRevision": "3.2.0",
+        "meaning": "Source context at this Git commit; not an embedded execution pin."
+      },
+      {
+        "commit": "afb009772286a74feecd9cfe58930db3b253e469",
+        "saveVersion": "3",
+        "simulationRevision": "3.2.0",
+        "meaning": "Source context at this Git commit; not an embedded execution pin."
+      }
+    ],
+    "embeddedExecutionPinOrRulesRevision": false,
+    "challenge": {
+      "date": "2026-10-01",
+      "seed": 3553659378,
+      "expiresAt": "2026-10-02T00:00:00.000Z",
+      "scoring": "fastest-victory",
+      "tickRate": 20,
+      "config": {
+        "schemaVersion": 1,
+        "map": {
+          "seed": 3553659378,
+          "size": "small"
+        },
+        "players": [
+          {
+            "id": 0,
+            "teamId": 0,
+            "factionId": "orcs",
+            "controller": "external"
+          },
+          {
+            "id": 1,
+            "teamId": 1,
+            "factionId": "fairies",
+            "controller": "ai",
+            "ai": {
+              "difficulty": "normal",
+              "personality": "balanced",
+              "opening": "infantry-rush"
+            }
+          }
+        ],
+        "rules": {
+          "sharedVision": true,
+          "startingAge": 1
+        }
+      }
+    },
+    "firstTick": 2055,
+    "secondTick": 2159,
+    "firstCommands": 15,
+    "secondCommands": 15,
+    "firstReceipts": 15,
+    "secondReceipts": 15,
+    "standings": [
+      {
+        "rank": 1,
+        "account": {
+          "id": "6d190762-505a-49ce-ab1e-fd8a82531fce",
+          "username": "HostedDailyProof"
+        },
+        "matchId": "bac66272-6ed1-472a-8265-9720284a97e2",
+        "tick": 2055,
+        "seconds": 102.75
+      }
+    ],
+    "cosmeticProfile": {
+      "owned": [
+        "orcs-victory-banner"
+      ],
+      "wins": {
+        "orcs": 2
+      },
+      "equipment": {}
+    },
+    "storedMethodText": "The trusted test server advances unchanged 1/20-second simulation steps every 1ms. Both human slots remain external. Only normal authenticated HTTP and WebSocket commands control the matches; no state, winner or score is supplied by the client.",
+    "methodTextCorrection": "Configuration has external side 0 against AI side 1; the sentence saying both human slots remain external is inaccurate.",
+    "applicability": "Historical ordinary-input natural daily wins and banner reward, retained with original source context. Not admitted as current rules 4.0.1 execution."
+  },
+  "historicalCanonical": {
+    "path": "/home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/work/final-freeze-proof-20261001/canonical-af44da4-run1/result.json",
+    "sha256": "9cacaddc74b2d2b0e1e89c156361673cbadbc6971dc3f774d496084908fcf925",
+    "topLevelKeys": [
+      "status",
+      "generatedAt",
+      "cwd",
+      "output",
+      "source",
+      "browserModule",
+      "serverPackage",
+      "browserPackage",
+      "protocolVersion",
+      "campaignRuntimePresent",
+      "checks",
+      "browser",
+      "cleanupErrors",
+      "method"
+    ],
+    "nativeExports": [
+      {
+        "path": "/home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/work/final-freeze-proof-20261001/canonical-af44da4-run1/native-browser/native-local-before-equipment.json",
+        "sha256": "beafd85f31fb4be7b134e6b4f1df63477b02681308319f7b1a95b81a885009ab",
+        "gameVersion": 4,
+        "replayInitialVersion": 4,
+        "replaySimulationRevision": "4.0.0"
+      },
+      {
+        "path": "/home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/work/final-freeze-proof-20261001/canonical-af44da4-run1/native-browser/native-local-after-equipment.json",
+        "sha256": "beafd85f31fb4be7b134e6b4f1df63477b02681308319f7b1a95b81a885009ab",
+        "gameVersion": 4,
+        "replayInitialVersion": 4,
+        "replaySimulationRevision": "4.0.0"
+      }
+    ],
+    "fullGamesEqual": true,
+    "applicability": "Historical accepted native public surrenders earn 1/3/5 cosmetics and equip/render/persist under replay rules 4.0.0 and SAVE4. Daily entry/resume and campaign rejection behavior do not prove a completed daily result or successful genuine campaign claim.",
+    "status": "passed",
+    "sourceHead": "af44da406acf7ab44436e978cb1f571b93e28d23",
+    "checkCount": 18,
+    "checks": [
+      {
+        "name": "actual Vite app and packaged server entry start with the canonical campaign adapter",
+        "evidence": {
+          "protocolVersion": 1,
+          "serverFiles": [
+            "campaign-runtime.mjs",
+            "canonical-campaign.mjs",
+            "rts-server.js"
+          ]
+        }
+      },
+      {
+        "name": "anonymous inventory, equipment, daily-start and campaign mutations require an account"
+      },
+      {
+        "name": "mutations with a disallowed Origin fail before inventory or match writes"
+      },
+      {
+        "name": "account JSON bodies larger than 64 KiB return HTTP 413"
+      },
+      {
+        "name": "campaign JSON bodies larger than 20 MiB return HTTP 413"
+      },
+      {
+        "name": "packaged canonical runtime rejects an empty recording with HTTP 400"
+      },
+      {
+        "name": "one global campaign admission rejects a different account before its partial body completes",
+        "evidence": {
+          "firstAccountBytesBeforeCompletion": 1,
+          "secondAccountBytesBeforeResponse": 1,
+          "status": 503,
+          "firstStatus": 400,
+          "retryStatus": 400
+        }
+      },
+      {
+        "name": "rejected requests and unavailable campaigns leave both account inventories unchanged"
+      },
+      "two accounts register through actual Online UI and all native launchers share the session toolbar",
+      "competition and cosmetics modal focus, Escape, blocked input, both local pause states, shared modal blocking, and photo visibility work in main",
+      "five native same-faction ranked matches finish through accepted guest surrender commands and unlock host cosmetics at 1, 3, and 5 wins; guest earns none",
+      "native equipment changes actual Phaser canvas pixels and persistent HUD portrait while full paused save state and private runtime remain unchanged",
+      "older same-match hosted cosmetics success and transport failure cannot overwrite or clear later server-receipted equipment",
+      "sixth live same-faction ranked match maps host equipment only to owner side 0 on both views and both accounts rejoin the same server match after reload",
+      "native daily entry and reload resume the same authoritative seeded run",
+      "native account logout clears local cosmetic players, building decorations, banner, and HUD portrait",
+      "a real anonymous session response delayed until after native login cannot replace the current identity or local equipment",
+      {
+        "name": "native earned inventory and equipped choices survive a graceful packaged-server restart",
+        "evidence": {
+          "profiles": {
+            "host": {
+              "owned": [
+                "orcs-commander",
+                "orcs-honor-seal",
+                "orcs-victory-banner"
+              ],
+              "wins": {
+                "orcs": 5
+              },
+              "equipment": {
+                "orcs": {
+                  "revision": 3,
+                  "loadout": {
+                    "banner": "orcs-victory-banner",
+                    "decoration": "orcs-honor-seal",
+                    "portrait": "orcs-commander"
+                  }
+                }
+              }
+            },
+            "guest": {
+              "owned": [],
+              "wins": {},
+              "equipment": {}
+            }
+          }
+        }
+      }
+    ]
+  }
+}

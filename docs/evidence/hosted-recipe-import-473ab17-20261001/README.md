@@ -1,0 +1,3 @@
+The two reviewed hosted proof scripts are integrated at `473ab17642211c3610aed648ae5f813b7680edc1`. Their bytes match the independently reviewed recipe. The first server generation retains its one-second spectator delay; the second uses zero delay and compares two advancing public spectator/player frame pairs. Syntax checks passed. Product code and feature statuses are unchanged. Fresh execution must use the integrated pin and bind the installed browser runtime before dispatch.
+
+The retained preparation, supervisors and reviews keep their original bytes and historical identities. The handoff describes a planned runtime; no runtime success is claimed here.

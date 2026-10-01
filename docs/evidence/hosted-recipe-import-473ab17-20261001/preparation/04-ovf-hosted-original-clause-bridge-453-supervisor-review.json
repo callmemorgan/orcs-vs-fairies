@@ -1,0 +1,274 @@
+{
+  "formatVersion": 1,
+  "generatedAt": "2026-10-01T21:45:59.307564+00:00",
+  "scope": "Read-only inspection of ignored wrapper copies and Git recipe objects. Only node --check syntax was executed; no module evaluation, browser, build, test, server or simulation was launched.",
+  "reviewConclusion": "No concrete defect found. Prepared copies preserve the original guards and implement the authorized source/SAVE4/replay/favicon bindings. Source-to-built size is explicit; served SHA equality binds actual content and the served size is recorded. No extra served-size assertion is required by the root contract.",
+  "pairs": [
+    {
+      "original": {
+        "path": "/home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/work/final-freeze-proof-20261001/supervise-proof.mjs",
+        "sha256": "ffd62dd2efb97e3d66068d4d856eaeb32ec5121b1a6a386c5a7b9c61f4652d23",
+        "bytes": 10171
+      },
+      "prepared": {
+        "path": "/home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/work/final-freeze-proof-20261001/supervise-proof-live-rules401.mjs",
+        "sha256": "5883fb1c63a6f2d85bc1947bfb1eec15ada00097d408e7c51d7bc9090a3a6781",
+        "bytes": 10983
+      },
+      "expectedPreparedSha256": "5883fb1c63a6f2d85bc1947bfb1eec15ada00097d408e7c51d7bc9090a3a6781",
+      "expectedHashMatches": true,
+      "allOriginalAssertCallsRetained": true,
+      "missingOriginalAssertCalls": [],
+      "unifiedDiff": "--- supervise-proof.mjs\n+++ supervise-proof-live-rules401.mjs\n@@ -27,7 +27,9 @@\n   assert.deepEqual(paths, [...blobs.keys()].sort(), 'Checkout source paths differ from frozen Git tree');\n   for (const path of paths) { const bytes = await readFile(join(cwd, path)); const blob = createHash('sha1').update(`blob ${bytes.length}\\0`).update(bytes).digest('hex'); assert.equal(blob, blobs.get(path), `${path} differs from frozen Git blob`); files[path] = {sha256: sha(bytes), bytes: bytes.length, gitBlob: blob}; digest.update(path).update('\\0').update(bytes).update('\\0'); }\n   assert.match(await readFile(join(cwd, 'src/core/saves.ts'), 'utf8'), /SAVE_VERSION\\s*=\\s*4\\s*;/);\n-  return {head: frozenHead, tree: git('rev-parse', 'HEAD^{tree}'), saveVersion: 4, sha256: digest.digest('hex'), files};\n+  assert.match(await readFile(join(cwd, 'src/core/versions.ts'), 'utf8'), /SIMULATION_REVISION\\s*=\\s*['\"]4\\.0\\.1['\"]\\s*;/);\n+  assert(files['public/favicon.ico'], 'Frozen source must include the admitted favicon');\n+  return {head: frozenHead, tree: git('rev-parse', 'HEAD^{tree}'), saveVersion: 4, simulationRevision: '4.0.1', sha256: digest.digest('hex'), files};\n }\n async function packagePin(directory) {\n   const files = {};\n@@ -66,8 +68,10 @@\n       // independent observer fetches static bytes. Its package is rehashed below.\n       if (log !== 'server-1.log') continue;\n       packageBefore ??= {server: await packagePin(join(output, 'server')), browser: await packagePin(appDirectory)};\n+      assert.equal(packageBefore.browser['favicon.ico']?.sha256, source.files['public/favicon.ico'].sha256, 'Built favicon differs from frozen public bytes');\n+      assert.equal(packageBefore.browser['favicon.ico']?.bytes, source.files['public/favicon.ico'].bytes);\n       // Observe served static bytes from the same packaged process the browser uses.\n-      const paths = Object.keys(packageBefore.browser).filter(p => p === 'index.html' || /^assets\\/.*\\.(?:js|css)$/.test(p));\n+      const paths = Object.keys(packageBefore.browser).filter(p => p === 'index.html' || p === 'favicon.ico' || /^assets\\/.*\\.(?:js|css)$/.test(p));\n       await Promise.all(paths.map(async path => {\n         const url = `${found[1]}/${path === 'index.html' ? '' : path}`;\n         const response = await fetch(url, {signal: AbortSignal.timeout(10000)});\n@@ -114,14 +118,18 @@\n   }\n   assert.equal(generations.size, 2, 'Both packaged server generations must have launch records');\n   assert.equal(served.filter(row => row.path === 'index.html').length, 1);\n+  assert.equal(served.filter(row => row.path === 'favicon.ico').length, 1);\n   const result = JSON.parse(await readFile(join(output, 'result.json'), 'utf8'));\n   assert.equal(result.status, 'passed'); assert.equal(result.source.head, frozenHead);\n   if (kind === 'competitions') {\n     const files = ['native-local-before-equipment.json', 'native-local-after-equipment.json'];\n     const saves = await Promise.all(files.map(async file => JSON.parse(await readFile(join(output, 'native-browser', file), 'utf8'))));\n-    for (const save of saves) assert.equal(save.game.version, 4, 'Native export must use SAVE_VERSION4');\n+    for (const save of saves) {\n+      assert.equal(save.game.version, 4, 'Native export must use SAVE_VERSION4');\n+      assert.equal(save.replay?.simulationRevision, source.simulationRevision, 'Native replay must record simulation revision4.0.1');\n+    }\n     assert.deepEqual(saves[0].game, saves[1].game, 'Equipment must preserve full native SAVE4 state');\n-    saveEvidence = files.map((file, i) => ({path: `native-browser/${file}`, saveVersion: saves[i].game.version, gameSha256: sha(JSON.stringify(saves[i].game))}));\n+    saveEvidence = files.map((file, i) => ({path: `native-browser/${file}`, saveVersion: saves[i].game.version, simulationRevision: saves[i].replay.simulationRevision, gameSha256: sha(JSON.stringify(saves[i].game))}));\n   }\n } catch (error) {failure ??= error;}\n finally {\n",
+      "originalAssertOccurrences": 22,
+      "preparedAssertOccurrences": 28
+    },
+    {
+      "original": {
+        "path": "/home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/work/final-freeze-proof-20261001/supervise-daily.mjs",
+        "sha256": "2b6ed7097787dbcced7fc0b424412169d7b219367543b456411bd8a69c2afbc7",
+        "bytes": 6123
+      },
+      "prepared": {
+        "path": "/home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/work/final-freeze-proof-20261001/supervise-daily-rules401.mjs",
+        "sha256": "b423d311251dec84f4701698c8ceb3cc91f58ed97a8ae4b27e4a13e7b37553ed",
+        "bytes": 6274
+      },
+      "expectedPreparedSha256": "b423d311251dec84f4701698c8ceb3cc91f58ed97a8ae4b27e4a13e7b37553ed",
+      "expectedHashMatches": true,
+      "allOriginalAssertCallsRetained": true,
+      "missingOriginalAssertCalls": [],
+      "unifiedDiff": "--- supervise-daily.mjs\n+++ supervise-daily-rules401.mjs\n@@ -15,6 +15,7 @@\n assert.equal(git('rev-parse', 'HEAD'), frozenHead);\n assert.equal(git('diff', '--name-only', 'HEAD'), '');\n assert.match(await readFile(join(cwd, 'src/core/saves.ts'), 'utf8'), /SAVE_VERSION\\s*=\\s*4\\s*;/);\n+assert.match(await readFile(join(cwd, 'src/core/versions.ts'), 'utf8'), /SIMULATION_REVISION\\s*=\\s*['\"]4\\.0\\.1['\"]\\s*;/);\n assert.equal(await stat(output).catch(e => e.code === 'ENOENT' ? null : Promise.reject(e)), null, 'Daily output must be new');\n const files = {}, digest = createHash('sha256');\n const selected = p => /^(src\\/|scripts\\/|package(?:-lock)?\\.json$|tsconfig[^/]*\\.json$)/.test(p);\n@@ -24,7 +25,7 @@\n for (const path of paths) {\n   const bytes = await readFile(join(cwd, path)), blob = createHash('sha1').update(`blob ${bytes.length}\\0`).update(bytes).digest('hex'); assert.equal(blob, blobs.get(path), `${path} differs from frozen Git blob`); files[path] = {sha256: hash(bytes), bytes: bytes.length, gitBlob: blob}; digest.update(path).update('\\0').update(bytes).update('\\0');\n }\n-const source = {head: frozenHead, tree: git('rev-parse', 'HEAD^{tree}'), saveVersion: 4, sha256: digest.digest('hex'), files};\n+const source = {head: frozenHead, tree: git('rev-parse', 'HEAD^{tree}'), saveVersion: 4, simulationRevision: '4.0.1', sha256: digest.digest('hex'), files};\n const runtime = {node: process.execPath, nodeVersion: process.version, tsx, tsxVersion: '4.23.15', tsxSha256: hash(await readFile(tsx)), recipe, recipeSha256: hash(await readFile(recipe)), supervisorSha256: hash(await readFile(ownPath))};\n await mkdir(output, {recursive: false});\n const args = [tsx, '--no-cache', '--tsconfig', join(cwd, 'tsconfig.json'), recipe];\n",
+      "originalAssertOccurrences": 20,
+      "preparedAssertOccurrences": 21
+    }
+  ],
+  "syntaxChecks": [
+    {
+      "argv": [
+        "node",
+        "--check",
+        "/home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/work/final-freeze-proof-20261001/supervise-proof-live-rules401.mjs"
+      ],
+      "exitCode": 0
+    },
+    {
+      "argv": [
+        "node",
+        "--check",
+        "/home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/work/final-freeze-proof-20261001/supervise-daily-rules401.mjs"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "requestedBindings": [
+    {
+      "name": "Pinned source SAVE4 and rules marker",
+      "status": "present",
+      "proofLines": {
+        "startLine": 20,
+        "endLine": 32,
+        "lines": [
+          "async function sourcePin() {",
+          "  assert.equal(git('rev-parse', 'HEAD'), frozenHead);",
+          "  assert.equal(git('diff', '--name-only', 'HEAD'), '', 'Tracked source is dirty');",
+          "  const files = {}, digest = createHash('sha256');",
+          "  const selected = p => /^(src\\/|public\\/|scripts\\/|package(?:-lock)?\\.json$|tsconfig[^/]*\\.json$|vite\\.config\\.|(?:index|editor)\\.html$|Dockerfile\\.server$|\\.dockerignore$)/.test(p);",
+          "  const blobs = new Map(git('ls-tree', '-r', '-z', '--full-tree', frozenHead).split('\\0').filter(Boolean).map(row => {const tab = row.indexOf('\\t'); return [row.slice(tab + 1), row.slice(0, tab).split(' ')[2]];}).filter(([p]) => selected(p)));",
+          "  const paths = git('ls-files', '-z', '--cached', '--others', '--exclude-standard').split('\\0').filter(selected).sort();",
+          "  assert.deepEqual(paths, [...blobs.keys()].sort(), 'Checkout source paths differ from frozen Git tree');",
+          "  for (const path of paths) { const bytes = await readFile(join(cwd, path)); const blob = createHash('sha1').update(`blob ${bytes.length}\\0`).update(bytes).digest('hex'); assert.equal(blob, blobs.get(path), `${path} differs from frozen Git blob`); files[path] = {sha256: sha(bytes), bytes: bytes.length, gitBlob: blob}; digest.update(path).update('\\0').update(bytes).update('\\0'); }",
+          "  assert.match(await readFile(join(cwd, 'src/core/saves.ts'), 'utf8'), /SAVE_VERSION\\s*=\\s*4\\s*;/);",
+          "  assert.match(await readFile(join(cwd, 'src/core/versions.ts'), 'utf8'), /SIMULATION_REVISION\\s*=\\s*['\"]4\\.0\\.1['\"]\\s*;/);",
+          "  assert(files['public/favicon.ico'], 'Frozen source must include the admitted favicon');",
+          "  return {head: frozenHead, tree: git('rev-parse', 'HEAD^{tree}'), saveVersion: 4, simulationRevision: '4.0.1', sha256: digest.digest('hex'), files};"
+        ]
+      },
+      "dailyLines": {
+        "startLine": 15,
+        "endLine": 28,
+        "lines": [
+          "assert.equal(git('rev-parse', 'HEAD'), frozenHead);",
+          "assert.equal(git('diff', '--name-only', 'HEAD'), '');",
+          "assert.match(await readFile(join(cwd, 'src/core/saves.ts'), 'utf8'), /SAVE_VERSION\\s*=\\s*4\\s*;/);",
+          "assert.match(await readFile(join(cwd, 'src/core/versions.ts'), 'utf8'), /SIMULATION_REVISION\\s*=\\s*['\"]4\\.0\\.1['\"]\\s*;/);",
+          "assert.equal(await stat(output).catch(e => e.code === 'ENOENT' ? null : Promise.reject(e)), null, 'Daily output must be new');",
+          "const files = {}, digest = createHash('sha256');",
+          "const selected = p => /^(src\\/|scripts\\/|package(?:-lock)?\\.json$|tsconfig[^/]*\\.json$)/.test(p);",
+          "const blobs = new Map(git('ls-tree', '-r', '-z', '--full-tree', frozenHead).split('\\0').filter(Boolean).map(row => {const tab = row.indexOf('\\t'); return [row.slice(tab + 1), row.slice(0, tab).split(' ')[2]];}).filter(([p]) => selected(p)));",
+          "const paths = git('ls-files', '-z', '--cached', '--others', '--exclude-standard').split('\\0').filter(selected).sort();",
+          "assert.deepEqual(paths, [...blobs.keys()].sort(), 'Checkout source paths differ from frozen Git tree');",
+          "for (const path of paths) {",
+          "  const bytes = await readFile(join(cwd, path)), blob = createHash('sha1').update(`blob ${bytes.length}\\0`).update(bytes).digest('hex'); assert.equal(blob, blobs.get(path), `${path} differs from frozen Git blob`); files[path] = {sha256: hash(bytes), bytes: bytes.length, gitBlob: blob}; digest.update(path).update('\\0').update(bytes).update('\\0');",
+          "}",
+          "const source = {head: frozenHead, tree: git('rev-parse', 'HEAD^{tree}'), saveVersion: 4, simulationRevision: '4.0.1', sha256: digest.digest('hex'), files};"
+        ]
+      },
+      "claim": "Both inputs are read from pinned source; the source map verifies selected files against Git blobs."
+    },
+    {
+      "name": "Native export SAVE4 .game and both actual .replay revisions",
+      "status": "present",
+      "proofLines": {
+        "startLine": 124,
+        "endLine": 132,
+        "lines": [
+          "  if (kind === 'competitions') {",
+          "    const files = ['native-local-before-equipment.json', 'native-local-after-equipment.json'];",
+          "    const saves = await Promise.all(files.map(async file => JSON.parse(await readFile(join(output, 'native-browser', file), 'utf8'))));",
+          "    for (const save of saves) {",
+          "      assert.equal(save.game.version, 4, 'Native export must use SAVE_VERSION4');",
+          "      assert.equal(save.replay?.simulationRevision, source.simulationRevision, 'Native replay must record simulation revision4.0.1');",
+          "    }",
+          "    assert.deepEqual(saves[0].game, saves[1].game, 'Equipment must preserve full native SAVE4 state');",
+          "    saveEvidence = files.map((file, i) => ({path: `native-browser/${file}`, saveVersion: saves[i].game.version, simulationRevision: saves[i].replay.simulationRevision, gameSha256: sha(JSON.stringify(saves[i].game))}));"
+        ]
+      },
+      "claim": "The competitions branch reads both native JSON downloads, checks each game.version4 and replay.simulationRevision4.0.1, and deep-compares entire .game objects. No substitution or native state write added."
+    },
+    {
+      "name": "Frozen public favicon equals built and generation1 served bytes",
+      "status": "present",
+      "proofLines": {
+        "startLine": 69,
+        "endLine": 83,
+        "lines": [
+          "      if (log !== 'server-1.log') continue;",
+          "      packageBefore ??= {server: await packagePin(join(output, 'server')), browser: await packagePin(appDirectory)};",
+          "      assert.equal(packageBefore.browser['favicon.ico']?.sha256, source.files['public/favicon.ico'].sha256, 'Built favicon differs from frozen public bytes');",
+          "      assert.equal(packageBefore.browser['favicon.ico']?.bytes, source.files['public/favicon.ico'].bytes);",
+          "      // Observe served static bytes from the same packaged process the browser uses.",
+          "      const paths = Object.keys(packageBefore.browser).filter(p => p === 'index.html' || p === 'favicon.ico' || /^assets\\/.*\\.(?:js|css)$/.test(p));",
+          "      await Promise.all(paths.map(async path => {",
+          "        const url = `${found[1]}/${path === 'index.html' ? '' : path}`;",
+          "        const response = await fetch(url, {signal: AbortSignal.timeout(10000)});",
+          "        assert.equal(response.status, 200, `${log} ${path}`);",
+          "        const bytes = Buffer.from(await response.arrayBuffer());",
+          "        assert.equal(sha(bytes), packageBefore.browser[path].sha256, `Served ${path} differs from built bytes`);",
+          "        served.push({generation: log, path, status: response.status, sha256: sha(bytes), bytes: bytes.length});",
+          "      }));",
+          "      generations.get(log).servedBytesObserved = true;"
+        ]
+      },
+      "claim": "Frozen SHA and byte count equal the built favicon. Actual generation1 HTTP response has status200 and SHA equal to the built bytes; the audit records its byte count. SHA equality binds actual content. All authorized favicon bindings are present."
+    },
+    {
+      "name": "Exactly two server generation launch records",
+      "status": "present and unchanged",
+      "proofLines": {
+        "startLine": 114,
+        "endLine": 123,
+        "lines": [
+          "  for (const log of (await readdir(output)).filter(f => /^server-\\d+\\.log$/.test(f))) {",
+          "    const contents = await readFile(join(output, log), 'utf8');",
+          "    const found = /Orcs vs Fairies authoritative server: (http:\\/\\/127\\.0\\.0\\.1:\\d+)/.exec(contents);",
+          "    if (found && !generations.has(log)) generations.set(log, {base: found[1], servedBytesObserved: false});",
+          "  }",
+          "  assert.equal(generations.size, 2, 'Both packaged server generations must have launch records');",
+          "  assert.equal(served.filter(row => row.path === 'index.html').length, 1);",
+          "  assert.equal(served.filter(row => row.path === 'favicon.ico').length, 1);",
+          "  const result = JSON.parse(await readFile(join(output, 'result.json'), 'utf8'));",
+          "  assert.equal(result.status, 'passed'); assert.equal(result.source.head, frozenHead);"
+        ]
+      },
+      "claim": "generations.size===2 remains. Generation1 is the sole served index/favicon observation; generation2 static bytes are not newly claimed."
+    },
+    {
+      "name": "Existing source/package/browser-runtime/timeout/cleanup/result guards",
+      "status": "retained",
+      "claim": "Every original assert call is preserved. Diff adds source version/favicon/replay assertions and metadata only; process ownership, timer, cancellation, recipe exit, package invariance and runtime integrity behavior remains unchanged."
+    },
+    {
+      "name": "Daily rule marker without invented native replay",
+      "status": "present",
+      "dailyLines": {
+        "startLine": 15,
+        "endLine": 29,
+        "lines": [
+          "assert.equal(git('rev-parse', 'HEAD'), frozenHead);",
+          "assert.equal(git('diff', '--name-only', 'HEAD'), '');",
+          "assert.match(await readFile(join(cwd, 'src/core/saves.ts'), 'utf8'), /SAVE_VERSION\\s*=\\s*4\\s*;/);",
+          "assert.match(await readFile(join(cwd, 'src/core/versions.ts'), 'utf8'), /SIMULATION_REVISION\\s*=\\s*['\"]4\\.0\\.1['\"]\\s*;/);",
+          "assert.equal(await stat(output).catch(e => e.code === 'ENOENT' ? null : Promise.reject(e)), null, 'Daily output must be new');",
+          "const files = {}, digest = createHash('sha256');",
+          "const selected = p => /^(src\\/|scripts\\/|package(?:-lock)?\\.json$|tsconfig[^/]*\\.json$)/.test(p);",
+          "const blobs = new Map(git('ls-tree', '-r', '-z', '--full-tree', frozenHead).split('\\0').filter(Boolean).map(row => {const tab = row.indexOf('\\t'); return [row.slice(tab + 1), row.slice(0, tab).split(' ')[2]];}).filter(([p]) => selected(p)));",
+          "const paths = git('ls-files', '-z', '--cached', '--others', '--exclude-standard').split('\\0').filter(selected).sort();",
+          "assert.deepEqual(paths, [...blobs.keys()].sort(), 'Checkout source paths differ from frozen Git tree');",
+          "for (const path of paths) {",
+          "  const bytes = await readFile(join(cwd, path)), blob = createHash('sha1').update(`blob ${bytes.length}\\0`).update(bytes).digest('hex'); assert.equal(blob, blobs.get(path), `${path} differs from frozen Git blob`); files[path] = {sha256: hash(bytes), bytes: bytes.length, gitBlob: blob}; digest.update(path).update('\\0').update(bytes).update('\\0');",
+          "}",
+          "const source = {head: frozenHead, tree: git('rev-parse', 'HEAD^{tree}'), saveVersion: 4, simulationRevision: '4.0.1', sha256: digest.digest('hex'), files};",
+          "const runtime = {node: process.execPath, nodeVersion: process.version, tsx, tsxVersion: '4.23.15', tsxSha256: hash(await readFile(tsx)), recipe, recipeSha256: hash(await readFile(recipe)), supervisorSha256: hash(await readFile(ownPath))};"
+        ]
+      },
+      "claim": "Daily source metadata gains simulationRevision4.0.1 from the asserted pinned marker. No replay or native-download claim was added."
+    }
+  ],
+  "servedSizeObservation": {
+    "file": "/home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/work/final-freeze-proof-20261001/supervise-proof-live-rules401.mjs",
+    "line": 80,
+    "detail": "The fetched SHA equals built SHA, so it binds the actual served content; the audit also records bytes.length. Source-to-built byte-count equality is explicit. The root confirmed that no extra served-size gate is required.",
+    "finding": false
+  },
+  "recipeImport": {
+    "productParent": "453c2218af9973b9eca8fb78392435bd9d46a740",
+    "preparedChild": "7fe049f3ad3c3dd8ab6ae32962e73d000219aab5",
+    "childParent": "453c2218af9973b9eca8fb78392435bd9d46a740",
+    "directProductChild": true,
+    "changedPaths": [
+      "scripts/server/verify-hosted-teams-browser.mjs",
+      "scripts/server/verify-hosted-teams.mjs"
+    ],
+    "numstat": "16\t2\tscripts/server/verify-hosted-teams-browser.mjs\n4\t4\tscripts/server/verify-hosted-teams.mjs\n",
+    "srcPublicTestsDiff": "",
+    "recipes": [
+      {
+        "path": "scripts/server/verify-hosted-teams-browser.mjs",
+        "preparedChild": {
+          "gitBlob": "32e5ae7b40631f202d1611dce13f5f38b061456b",
+          "sha256": "d844ab8547cbfc186ab98f62f727f7df46317c8e86a603e70fe11966fe59a30a",
+          "bytes": 48236
+        },
+        "independentlyReviewedRoot": {
+          "gitBlob": "32e5ae7b40631f202d1611dce13f5f38b061456b",
+          "sha256": "d844ab8547cbfc186ab98f62f727f7df46317c8e86a603e70fe11966fe59a30a",
+          "bytes": 48236
+        },
+        "blobEqual": true
+      },
+      {
+        "path": "scripts/server/verify-hosted-teams.mjs",
+        "preparedChild": {
+          "gitBlob": "ea318e48d8b811560c52296318981c5a868f5f15",
+          "sha256": "5343f858a62d76811536716e69d84c17f49a6bc8a8f34adccbecfe90e4036d4c",
+          "bytes": 11410
+        },
+        "independentlyReviewedRoot": {
+          "gitBlob": "ea318e48d8b811560c52296318981c5a868f5f15",
+          "sha256": "5343f858a62d76811536716e69d84c17f49a6bc8a8f34adccbecfe90e4036d4c",
+          "bytes": 11410
+        },
+        "blobEqual": true
+      }
+    ]
+  },
+  "frozenFavicon": {
+    "gitBlob": "82fa500660fbf8a022166b806cb5cdb372ad83d5",
+    "sha256": "5e0bf0f72488bc693d779cd7a3ebc7fdfca8db9916a6e3e0811fff59113253c2",
+    "bytes": 32038
+  },
+  "originalWrapperBytesObserved": {
+    "supervise-proof.mjs": {
+      "path": "/home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/work/final-freeze-proof-20261001/supervise-proof.mjs",
+      "sha256": "ffd62dd2efb97e3d66068d4d856eaeb32ec5121b1a6a386c5a7b9c61f4652d23",
+      "bytes": 10171
+    },
+    "supervise-daily.mjs": {
+      "path": "/home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/work/final-freeze-proof-20261001/supervise-daily.mjs",
+      "sha256": "2b6ed7097787dbcced7fc0b424412169d7b219367543b456411bd8a69c2afbc7",
+      "bytes": 6123
+    }
+  },
+  "noRuntimeSuccessClaim": "This review establishes prepared checks and recipe identity only. Future runtime audit must satisfy them."
+}
