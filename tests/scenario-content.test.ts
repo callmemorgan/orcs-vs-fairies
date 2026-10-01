@@ -44,6 +44,18 @@ describe('pinned scenario actor admission', () => {
     expect(createScenario(input).state.entities[0].definitionId).toBe(FACTIONS.orcs.units.melee.id);
   });
 
+  it('saves and replays authored dimensions smaller than the generated map', () => {
+    const input = mission(); delete input.content; input.faction = 'orcs';
+    input.map = { size: 'small', width: 16, height: 16, terrain: Array(256).fill('grass'), starts: [{ x: 3, y: 3 }, { x: 13, y: 13 }], resources: [] };
+    input.army = [{ label: 'duelist', side: 0, kind: 'unit', role: 'melee', x: 8, y: 8 }];
+    input.objectives[0].success = { type: 'at', actor: 'duelist', point: { x: 10, y: 8 }, radius: 1 };
+    const session = createScenario(input), checkpoint = captureScenario(session);
+    expect(session.state.objectives.hill).toMatchObject({ x: 8.5, y: 8.5 });
+    expect(captureScenario(restoreScenario(checkpoint))).toEqual(checkpoint);
+    const recorder = new ScenarioRecorder(session), recording = recorder.archive(); recorder.destroy();
+    expect(captureScenario(verifyScenarioRecording(recording))).toEqual(checkpoint);
+  });
+
   it.each([
     ['unknown', 'lantern:absent', 'melee', 0], ['wrong owner', 'lantern:duelist', 'melee', 1],
     ['wrong role', 'lantern:duelist', 'ranged', 0], ['wrong kind', 'lantern:hall', 'melee', 0],

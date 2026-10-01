@@ -10,6 +10,7 @@ import { applyScenarioDamage, createMatch, isAllied, isHostile, isVisible, issue
 import { scenarioJson, validateScenario } from './scenario-validation';
 import { fogKey } from './world-map';
 import { SIMULATION_REVISION } from './versions';
+import { emptyObjectives } from './objectives';
 import type { Command, Entity, GameState, MatchConfig, Side, UnitRole, Vec } from './types';
 import type { ScenarioAction, ScenarioActor, ScenarioBinding, ScenarioCheckpoint, ScenarioCondition, ScenarioDefinition, ScenarioOrder, ScenarioRuntime, ScenarioSession } from './scenario-types';
 export { validateScenario } from './scenario-validation';
@@ -139,6 +140,7 @@ export function createScenario(input: unknown, options: { firstEntityId?: number
     state.terrain = [...definition.map.terrain]; state.starts = definition.map.starts.map(p => ({ ...p }));
     state.resources = definition.map.resources.map(r => ({ ...r, id: state.nextId++ }));
     if (state.world) state.world.levels[0].terrain = state.terrain;
+    state.objectives = emptyObjectives(state);
   }
   const runtime: ScenarioRuntime = {
     version: 1, lastEvaluatedTick: 0, definitionId: definition.id, outcome: 'playing', reason: '', labels: {}, variables: {}, triggers: {}, completed: [], messages: [],
