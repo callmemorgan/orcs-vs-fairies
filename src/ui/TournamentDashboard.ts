@@ -160,8 +160,9 @@ export function mountTournamentDashboard(root: HTMLElement, options: TournamentD
         const result = await options.source.result(id); if (disposed || activeRun !== id) return;
         if (result.id !== id) throw new Error('The server returned a report for a different tournament.');
         if (result.status === 'running') throw new Error('The final tournament report is not ready yet.');
-        await loadReport(result);
-        if (!disposed && activeRun === id) { activeRun = null; refresh(); }
+        try { await loadReport(result); }
+        catch { /* Verification displays its error and retains the previous verified report. */ }
+        finally { if (!disposed && activeRun === id) activeRun = null; }
       }
     } catch (error) { message(`Could not update tournament: ${errorText(error)}`, true); }
     finally { pollBusy = false; refresh(); schedulePoll(); }

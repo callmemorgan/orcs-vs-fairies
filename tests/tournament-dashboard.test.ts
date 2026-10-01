@@ -122,6 +122,23 @@ describe('server tournament runs', () => {
     expect(root.querySelector('[aria-label="Verified tournament report"]')!.textContent).toContain('canceled'); expect(button(root, 'Start tournament').disabled).toBe(false); expect(source.result).toHaveBeenCalledExactlyOnceWith('run-proof');
   });
 
+  it.each(['replay', 'content'] as const)('releases a finished run when its %s verification fails, keeping the previous report and allowing import or another run', async kind => {
+    const previous = await makeReport('forfeit', 'previous-report'), final = await makeReport();
+    if (kind === 'replay') final.matches[0].replay.finalChecksum = '00000000';
+    else final.provenance.contentSha256 = '0'.repeat(64);
+    vi.useFakeTimers(); const source = makeSource(); source.status.mockResolvedValue(tournamentProgress(final)); source.result.mockResolvedValue(final);
+    const { root, dashboard } = setup(source); open(root); await dashboard.loadReport(previous); await flush(); button(root, 'Start tournament').click();
+    await vi.waitFor(() => expect(notice(root).textContent).toContain(kind === 'replay' ? 'diverged' : 'content version'));
+    expect(notice(root).textContent).toContain('previous verified report has been kept');
+    expect(root.querySelector('[aria-label="Verified tournament report"]')!.textContent).toContain('previous-report');
+    expect(button(root, 'Start tournament').disabled).toBe(false); expect(button(root, 'Import report').disabled).toBe(false); expect(button(root, 'Stop tournament').disabled).toBe(true);
+    await vi.advanceTimersByTimeAsync(5000); expect(source.status).toHaveBeenCalledOnce(); expect(source.result).toHaveBeenCalledOnce();
+    const imported = await makeReport('limit', 'imported-report'); selectFile(root, { size: 2, text: async () => JSON.stringify(imported) }); button(root, 'Import report').click();
+    await vi.waitFor(() => expect(root.querySelector('[aria-label="Verified tournament report"]')!.textContent).toContain('imported-report'));
+    source.start.mockResolvedValue({ id: 'next-run' }); source.status.mockResolvedValue(liveProgress('next-run')); button(root, 'Start tournament').click();
+    await vi.waitFor(() => expect(source.status).toHaveBeenLastCalledWith('next-run')); expect(source.start).toHaveBeenCalledTimes(2); expect(button(root, 'Stop tournament').disabled).toBe(false);
+  });
+
   it('handles choices, start, status, cancel, and final-report errors with retryable controls', async () => {
     vi.useFakeTimers(); const source = makeSource(); source.choices.mockRejectedValueOnce(new Error('Config service unavailable')); const { root } = setup(source); open(root); await flush(); expect(notice(root).textContent).toContain('Config service unavailable');
     button(root, 'Refresh configurations').click(); await flush(); source.start.mockRejectedValueOnce(new Error('Runner unavailable')); button(root, 'Start tournament').click(); await flush(); expect(notice(root).textContent).toContain('Runner unavailable'); expect(button(root, 'Start tournament').disabled).toBe(false);
