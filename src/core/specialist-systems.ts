@@ -6,6 +6,7 @@ import type { ArtilleryModification } from './faction-systems';
 import { DIRECTIONS_32, length2D } from './geometry';
 import { ABILITIES } from './content';
 import { availableUnits, buildingFor, unitFor } from './content-registry';
+import { commanderAdmissionReason } from './commander-rules';
 import { walkable } from './navigation';
 import { terrainAt } from './maps';
 import { promotionChoices as importPromotionChoices, specialistState } from './unit-progression';
@@ -37,10 +38,9 @@ export function abilityNeedsTarget(s:GameState,e:Entity):boolean {return targete
 function buff(s:GameState,e:Entity,value:Omit<SpecialistBuff,'until'>,seconds:number):void {e.specialistBuffs??=[];if(e.specialistBuffs.length>=64)e.specialistBuffs.shift();e.specialistBuffs.push({...value,until:s.time+seconds});}
 export function heroRecruitmentReason(s:GameState,side:Side,definitionId:string):string|undefined {
  const def=s.players[side]&&availableUnits(s,side).find(def=>def.id===definitionId);if(!def?.tags?.includes('hero'))return undefined;
- if(s.entities.some(e=>e.side===side&&active(e)&&unitFor(s,e).tags?.includes('hero'))||s.entities.some(e=>e.side===side&&e.hp>0&&e.queueDefinitionIds?.some(id=>{return availableUnits(s,side).find(def=>def.id===id)?.tags?.includes('hero');})))return 'A commander is already alive or queued';
- const recovery=s.players[side].heroRecovery?.find(r=>r.definitionId===definitionId);if(recovery&&recovery.availableAt>s.time)return `Commander recovery: ${Math.ceil(recovery.availableAt-s.time)}s`;return undefined;
+ return commanderAdmissionReason(s,side);
 }
-export function commanderDied(s:GameState,e:Entity):void {if(e.kind!=='unit'||e.illusion||e.raised||!unitFor(s,e).tags?.includes('hero'))return;const p=s.players[e.side];p.heroRecovery??=[];p.heroRecovery=p.heroRecovery.filter(r=>r.definitionId!==unitFor(s,e).id);p.heroRecovery.push({definitionId:unitFor(s,e).id,availableAt:s.time+30});}
+export function commanderDied(s:GameState,e:Entity):void {if(e.kind!=='unit'||e.illusion||e.raised||!unitFor(s,e).tags?.includes('hero'))return;const id=unitFor(s,e).id;if(!availableUnits(s,e.side).some(def=>def.id===id))return;const p=s.players[e.side];p.heroRecovery??=[];p.heroRecovery=p.heroRecovery.filter(r=>r.definitionId!==id);p.heroRecovery.push({definitionId:id,availableAt:s.time+30});}
 export function specialistAbility(s:GameState,e:Entity,c:Extract<Command,{type:'ability'}>,hooks:SpecialistHooks):boolean|undefined {
  const ability=unitFor(s,e).ability as SpecialistAbility;if(!allAbilities.has(ability))return undefined;
  if(!active(e)||(e.abilityReadyAt??0)>s.time)return false;

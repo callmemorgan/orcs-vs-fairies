@@ -1,0 +1,274 @@
+{
+  "sourceCommit": "af44da406acf7ab44436e978cb1f571b93e28d23",
+  "saveVersion": 4,
+  "simulationRevision": "4.0.0",
+  "captureMethod": "Ordinary createGame followed by stepGame(.05), no injected commands or resources. Retain the complete preceding valid native envelope and raw invalid envelope at the first duplicate commander. loadGame(valid) followed by one public stepGame(.05) reproduces the original save rejection.",
+  "cases": [
+    {
+      "mapSize": "medium",
+      "faction": "tideborn",
+      "opponent": "dwarves",
+      "seed": 4127,
+      "controllers": [
+        "ai",
+        "ai"
+      ],
+      "precedingTick": 8795,
+      "firstInvalidTick": 8796,
+      "firstInvalidTime": 439.8000000000657,
+      "fixture": "commander-surrender-medium-save4.json",
+      "fixtureSha256": "fe1b5bfe8ccc71ef9a1a899c8888884c9050f368f51ec8d133a592babc5a2b5c",
+      "rawInvalidSha256": "055a025e81cc4752817a3bed0e000eb618d54750925b99db117fdc7a3f11f306",
+      "before": [
+        {
+          "side": 0,
+          "living": [
+            {
+              "id": 154,
+              "side": 0,
+              "definitionId": "core:tideborn-commander",
+              "hp": 280,
+              "tactics": {
+                "morale": 100,
+                "recentLoss": 0
+              }
+            }
+          ],
+          "queued": []
+        },
+        {
+          "side": 1,
+          "living": [
+            {
+              "id": 160,
+              "side": 1,
+              "definitionId": "core:dwarves-commander",
+              "hp": 262,
+              "tactics": {
+                "morale": 6.436428571428572,
+                "recentLoss": 59.49999999999999,
+                "retreat": {
+                  "x": 32.042237843369,
+                  "y": 31.07545241515428,
+                  "until": 446.4000000000654
+                }
+              }
+            }
+          ],
+          "queued": []
+        }
+      ],
+      "after": [
+        {
+          "side": 0,
+          "living": [
+            {
+              "id": 154,
+              "side": 0,
+              "definitionId": "core:tideborn-commander",
+              "hp": 280,
+              "tactics": {
+                "morale": 100,
+                "recentLoss": 0
+              }
+            },
+            {
+              "id": 160,
+              "side": 0,
+              "definitionId": "core:dwarves-commander",
+              "definitionFaction": "dwarves",
+              "hp": 262,
+              "tactics": {
+                "morale": 35,
+                "recentLoss": 59.39999999999999,
+                "surrenderedTo": 0
+              }
+            }
+          ],
+          "queued": []
+        },
+        {
+          "side": 1,
+          "living": [],
+          "queued": []
+        }
+      ],
+      "publicReplay": {
+        "loadGame": true,
+        "stepSeconds": 0.05,
+        "commanders": [
+          {
+            "side": 0,
+            "living": [
+              {
+                "id": 154,
+                "side": 0,
+                "definitionId": "core:tideborn-commander",
+                "hp": 280,
+                "tactics": {
+                  "morale": 100,
+                  "recentLoss": 0
+                }
+              },
+              {
+                "id": 160,
+                "side": 0,
+                "definitionId": "core:dwarves-commander",
+                "definitionFaction": "dwarves",
+                "hp": 262,
+                "tactics": {
+                  "morale": 35,
+                  "recentLoss": 59.39999999999999,
+                  "surrenderedTo": 0
+                }
+              }
+            ],
+            "queued": []
+          },
+          {
+            "side": 1,
+            "living": [],
+            "queued": []
+          }
+        ],
+        "saveRejected": true,
+        "error": "Error: Invalid save at state.players[0]: a player cannot have multiple living or queued commanders."
+      },
+      "captureInputSha256": "ae3e4ebfb306c8e2c4f56f61b272654384a9f6b85ea931ebf66d169cafff0422",
+      "sourceBeforeAfterEqual": true
+    },
+    {
+      "mapSize": "large",
+      "faction": "tideborn",
+      "opponent": "dwarves",
+      "seed": 4127,
+      "controllers": [
+        "ai",
+        "ai"
+      ],
+      "precedingTick": 12852,
+      "firstInvalidTick": 12853,
+      "firstInvalidTime": 642.6499999999633,
+      "fixture": "commander-surrender-large-save4.json",
+      "fixtureSha256": "1594b64b169ec15c8c7c704291c205f3e86d8985efa01e957f06aa8c4c453c85",
+      "rawInvalidSha256": "cc5dde9e26d28a04822cfb896ec5b8f7dc7a6b19fcab8ede739d4820fc050668",
+      "before": [
+        {
+          "side": 0,
+          "living": [
+            {
+              "id": 211,
+              "side": 0,
+              "definitionId": "core:tideborn-commander",
+              "hp": 125.08719999999997,
+              "tactics": {
+                "morale": 100,
+                "recentLoss": 5.000000000000025
+              }
+            }
+          ],
+          "queued": []
+        },
+        {
+          "side": 1,
+          "living": [
+            {
+              "id": 258,
+              "side": 1,
+              "definitionId": "core:dwarves-commander",
+              "hp": 139.16951065207937,
+              "tactics": {
+                "morale": 3.800000000000001,
+                "recentLoss": 58.09999999999997,
+                "retreat": {
+                  "x": 50.5,
+                  "y": 53.5,
+                  "until": 648.0999999999656
+                }
+              }
+            }
+          ],
+          "queued": []
+        }
+      ],
+      "after": [
+        {
+          "side": 0,
+          "living": [
+            {
+              "id": 211,
+              "side": 0,
+              "definitionId": "core:tideborn-commander",
+              "hp": 125.08719999999997,
+              "tactics": {
+                "morale": 100,
+                "recentLoss": 4.900000000000025
+              }
+            },
+            {
+              "id": 258,
+              "side": 0,
+              "definitionId": "core:dwarves-commander",
+              "definitionFaction": "dwarves",
+              "hp": 139.16951065207937,
+              "tactics": {
+                "morale": 35,
+                "recentLoss": 57.99999999999997,
+                "surrenderedTo": 0
+              }
+            }
+          ],
+          "queued": []
+        },
+        {
+          "side": 1,
+          "living": [],
+          "queued": []
+        }
+      ],
+      "publicReplay": {
+        "loadGame": true,
+        "stepSeconds": 0.05,
+        "commanders": [
+          {
+            "side": 0,
+            "living": [
+              {
+                "id": 211,
+                "side": 0,
+                "definitionId": "core:tideborn-commander",
+                "hp": 125.08719999999997,
+                "tactics": {
+                  "morale": 100,
+                  "recentLoss": 4.900000000000025
+                }
+              },
+              {
+                "id": 258,
+                "side": 0,
+                "definitionId": "core:dwarves-commander",
+                "definitionFaction": "dwarves",
+                "hp": 139.16951065207937,
+                "tactics": {
+                  "morale": 35,
+                  "recentLoss": 57.99999999999997,
+                  "surrenderedTo": 0
+                }
+              }
+            ],
+            "queued": []
+          },
+          {
+            "side": 1,
+            "living": [],
+            "queued": []
+          }
+        ],
+        "saveRejected": true,
+        "error": "Error: Invalid save at state.players[0]: a player cannot have multiple living or queued commanders."
+      },
+      "captureInputSha256": "d1e33fd4f2aaa7fa9fe8944115e5215ea845014ebe4b58710026575dc2ff2d18",
+      "sourceBeforeAfterEqual": true
+    }
+  ]
+}

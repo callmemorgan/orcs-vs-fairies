@@ -1,6 +1,7 @@
 import { isServerObservation } from './presentation-observation';
 import { factionConcealment } from './faction-systems';
 import { buildingFor, unitFor } from './content-registry';
+import { commanderAdmissionReason } from './commander-rules';
 import type { ArtilleryModification } from './faction-systems';
 import type { UnitDef, BuildingDef } from './types';
 import { FACTIONS } from './content';
@@ -149,7 +150,11 @@ export function updateTactics(s:GameState,e:Entity,dt:number,interruptOrder?:(ac
  const wounded=e.hp/e.maxHp<.65;
  t.morale=clamp(t.morale+dt*(support?Math.min(4,1+support*.65):enemies.length&&wounded?-4:enemies.length?-.4:2.5),0,100);
  if(t.morale<=TACTICS.surrenderMorale){const captors=enemies.filter(a=>a.kind==='unit'&&!a.illusion&&!a.raised&&['worker','melee','spear','special'].includes(a.role)&&distance(a,e)<2.5),sectors=new Set(captors.map(a=>(Math.round(Math.atan2(a.y-e.y,a.x-e.x)/(Math.PI/4))+8)%8)),surrounded=captors.length>=3&&sectors.size>=3&&captors.some(a=>captors.some(b=>(a.x-e.x)*(b.x-e.x)+(a.y-e.y)*(b.y-e.y)<0));
-  if(surrounded){const captor=captors.sort((a,b)=>distance(a,e)-distance(b,e)||a.id-b.id)[0],former=e.side;interruptOrder?.(e);e.definitionFaction??=s.players[former].faction;e.side=captor.side;if(e.factionState){delete e.factionState.chant;delete e.factionState.tunnel;delete e.factionState.corpseOrder;}t.morale=35;t.surrenderedTo=captor.side;delete t.retreat;delete t.formation;delete t.ambush;delete t.capture;e.order={type:'hold'};delete e.orderQueue;e.path=[];s.events.push({type:'message',side:former,x:e.x,y:e.y,source:e.id,text:'A surrounded unit surrendered'}, {type:'message',side:e.side,x:e.x,y:e.y,source:e.id,text:'Captured a surrendered unit'});return {skipCombat:true};}
+  if(surrounded){const captor=captors.sort((a,b)=>distance(a,e)-distance(b,e)||a.id-b.id)[0];
+   if(e.raised||!unitFor(s,e).tags?.includes('hero')||!commanderAdmissionReason(s,captor.side)){
+    const former=e.side;interruptOrder?.(e);e.definitionFaction??=s.players[former].faction;e.side=captor.side;if(e.factionState){delete e.factionState.chant;delete e.factionState.tunnel;delete e.factionState.corpseOrder;}t.morale=35;t.surrenderedTo=captor.side;delete t.retreat;delete t.formation;delete t.ambush;delete t.capture;e.order={type:'hold'};delete e.orderQueue;e.path=[];s.events.push({type:'message',side:former,x:e.x,y:e.y,source:e.id,text:'A surrounded unit surrendered'}, {type:'message',side:e.side,x:e.x,y:e.y,source:e.id,text:'Captured a surrendered unit'});return {skipCombat:true};
+   }
+  }
  }
  if(!t.retreat&&t.morale< TACTICS.retreatMorale&&enemies.length){
   const refuge=s.entities.filter(a=>a.hp>0&&!isCrewless(a)&&sameLevel(a,e)&&allied(s,a.side,e.side)&&a.kind==='building'&&(a.role==='hq'||a.role==='depot')&&(a.side===e.side||visible(s,e.side,a))).sort((a,b)=>distance(a,e)-distance(b,e))[0];
