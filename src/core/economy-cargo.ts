@@ -1,4 +1,4 @@
-import { addCost, costTotal, distance, economyMessage, economyStock, hasCost, payCost, RESOURCE_KINDS, takeCost, zeroCost } from './economy-common';
+import { addCost, costTotal, distance, economyMessage, economyStock, hasCost, payCost, RESOURCE_KINDS, takeCost, zeroCost, levelOf, sameLevel } from './economy-common';
 import { ECONOMY_RULES } from './economy-definitions';
 import type { EconomyCargo, EconomyCommand, EconomyHooks, EconomyMarket, EconomyState, EconomyTask, ResourceContract } from './economy-types';
 import type { Cost, Entity, GameState, ResourceKind, Side } from './types';
@@ -72,7 +72,7 @@ function remainingCapacity(economy:EconomyState,id:number):number {
 }
 
 function nearestStorage(s:GameState,entity:Entity,economy:EconomyState):Entity|undefined {
- return s.entities.filter(storage => storage.hp>0 && storage.side===entity.side && completeBuilding(storage) && remainingCapacity(economy,storage.id)>EPSILON).sort((a,b)=>distance(entity,a)-distance(entity,b)||a.id-b.id)[0];
+ return s.entities.filter(storage => storage.hp>0 && storage.side===entity.side && sameLevel(entity,storage) && completeBuilding(storage) && remainingCapacity(economy,storage.id)>EPSILON).sort((a,b)=>distance(entity,a)-distance(entity,b)||a.id-b.id)[0];
 }
 
 function createCargo(entity:Entity,economy:EconomyState,origin:EconomyCargo['origin']):EconomyCargo {
@@ -92,7 +92,7 @@ function canLoad(entity:Entity,economy:EconomyState):boolean {
 
 function routeCommand(s:GameState,side:Side,entity:Entity,sourceId:number,targetId:number,stock:Cost,repeat:boolean,origin:'trade'|'delivery'|'contract',economy:EconomyState,hooks:EconomyHooks,contract?:ResourceContract):boolean {
  const source=permittedStorage(s,side,sourceId,hooks),target=contract??permittedStorage(s,side,targetId,hooks);
- if(!source||source.side!==side||!target||sourceId===targetId||!validCost(stock)||costTotal(stock)>capacityFor(economy,entity)+EPSILON||!canLoad(entity,economy))return false;
+ if(!source||source.side!==side||!target||!sameLevel(entity,source)||!sameLevel(source,target)||sourceId===targetId||!validCost(stock)||costTotal(stock)>capacityFor(economy,entity)+EPSILON||!canLoad(entity,economy))return false;
  if(origin==='trade'&&distance(source,target)<8)return false;
  const sourceStock=economyStock(s,economy,sourceId);
  if(!sourceStock||!hasCost(sourceStock,stock))return false;
@@ -197,7 +197,7 @@ function depositCargo(s:GameState,entity:Entity,target:Entity,cargo:EconomyCargo
  addCost(stock,deposited);addCost(economy.ledgers[entity.side].delivered,deposited);
  if(cargo.origin==='trade'&&cargo.tradeValue>EPSILON){
   // Public markets fund a finite crystal reward. Travelling does not create resources.
-  const market=economy.markets.filter(item=>item.stock.crystal>EPSILON).sort((a,b)=>distance(target,a)-distance(target,b)||a.id-b.id)[0];
+  const market=economy.markets.filter(item=>sameLevel(target,item)&&item.stock.crystal>EPSILON).sort((a,b)=>distance(target,a)-distance(target,b)||a.id-b.id)[0];
   const earned=cargo.tradeValue*costTotal(deposited)/originalTotal;
   if(market){const reward=Math.min(market.stock.crystal,earned);market.stock.crystal-=reward;s.players[entity.side].crystal+=reward;economy.ledgers[entity.side].traded.crystal+=reward;}
   cargo.tradeValue=Math.max(0,cargo.tradeValue-earned);
@@ -309,11 +309,11 @@ export function economicDeath(s:GameState,entity:Entity,economy:EconomyState,_ho
   if(structure)addCost(dropped,structure.stock);
   if(entity.carried>0&&Number.isFinite(entity.carried)&&RESOURCE_KINDS.includes(entity.carriedKind))dropped[entity.carriedKind]+=Math.min(18,entity.carried);
  }
- if(costTotal(dropped)>EPSILON)economy.salvage.push({id:s.nextId++,x:entity.x,y:entity.y,stock:dropped,expiresAt:s.time+ECONOMY_RULES.salvage.expiresSeconds,owner:entity.side,kind:'cargo'});
+ if(costTotal(dropped)>EPSILON)economy.salvage.push({id:s.nextId++,x:entity.x,y:entity.y,level:levelOf(entity),stock:dropped,expiresAt:s.time+ECONOMY_RULES.salvage.expiresSeconds,owner:entity.side,kind:'cargo'});
  if(paid&&!entity.illusion&&!entity.raised&&(entity.kind==='building'||entity.role==='siege')){
   const eligible=zeroCost(),fraction=.25*Math.max(.1,Math.min(1,entity.progress)),scale=Math.min(1,350/Math.max(EPSILON,costTotal(paid.stock)*fraction));
   for(const kind of RESOURCE_KINDS)eligible[kind]=paid.stock[kind]*fraction*scale;
-  if(costTotal(eligible)>EPSILON)economy.salvage.push({id:s.nextId++,x:entity.x,y:entity.y,stock:eligible,expiresAt:s.time+ECONOMY_RULES.salvage.expiresSeconds,owner:entity.side,kind:'salvage'});
+  if(costTotal(eligible)>EPSILON)economy.salvage.push({id:s.nextId++,x:entity.x,y:entity.y,level:levelOf(entity),stock:eligible,expiresAt:s.time+ECONOMY_RULES.salvage.expiresSeconds,owner:entity.side,kind:'salvage'});
  }
  if(structure)structure.stock=zeroCost();
  economy.structures=economy.structures.filter(item=>item.entityId!==entity.id);
