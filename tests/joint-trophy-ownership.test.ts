@@ -56,3 +56,27 @@ describe('historical lethal-hit ownership', () => {
     expect(saveGame(resumed)).toEqual(saveGame(s));
   });
 });
+
+
+describe('explicit lethal actor-burning credit', () => {
+  it('an original Orc source receives one trophy from its own delayed lethal burn', () => {
+    const map = generateWorldMap(4127, 'large', 2, 'temperate');
+    for (const layer of map.levels) { layer.terrain.fill('grass'); layer.elevation.fill(0); } map.sites = [];
+    const s = createMatch({ map: { seed: map.seed, size: map.size, world: map }, rules: { startingAge: 3 }, players: [
+      { id: 0, teamId: 0, factionId: 'orcs', controller: 'external', handicap: { startingResources: { wood: 10000, ore: 10000, crystal: 10000 } } },
+      { id: 1, teamId: 1, factionId: 'fairies', controller: 'external' },
+    ] }); s.entities = s.entities.filter(e => e.role === 'hq'); s.resources = [];
+    const gun = actor(s, 0, 'siege', 24.5, 32.5), victim = actor(s, 1, 'special', 32.5, 32.5, 'core:fairies-engineer');
+    victim.hp = 32; command(s, 0, { type: 'ability', ids: [gun.id] }); gun.cooldown = 0;
+    command(s, 0, { type: 'attack', ids: [gun.id], target: victim.id }); advance(s, .05);
+    command(s, 0, { type: 'stop', ids: [gun.id] }); gun.cooldown = 100;
+    advance(s, 1);
+    expect(victim.hp).toBe(5); expect(victim.burning?.[0]).toMatchObject({ source: gun.id, side: 0 });
+    const resumed = loadGame(saveGame(s)), events = advance(s, 1.1); advance(resumed, 1.1);
+    expect(victim.hp).toBe(0); expect(gun.factionState?.trophyKills).toBe(1);
+    expect(events.filter(event => event.type === 'death' && event.source === victim.id)).toHaveLength(1);
+    expect(events.filter(event => event.type === 'attack' && event.target === victim.id)).toHaveLength(1);
+    expect(saveGame(resumed)).toEqual(saveGame(s));
+    advance(s, .5); expect(gun.factionState?.trophyKills).toBe(1);
+  });
+});
