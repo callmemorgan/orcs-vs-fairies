@@ -1,9 +1,9 @@
 import { issueScenarioCommand, stepScenario } from '../../src/core/scenarios';
-import { FACTIONS } from '../../src/core/content';
+import { unitFor } from '../../src/core/content-registry';
+import { missionAbilityCommand } from './ability-strategy';
 import { length2D } from '../../src/core/geometry';
 import { isHostile, isVisible } from '../../src/core/simulation';
 import type { ScenarioSession } from '../../src/core/scenario-types';
-import type { UnitRole } from '../../src/core/types';
 
 export function steerConquest(session: ScenarioSession): void {
   if (session.state.tick % 10 || session.runtime.outcome !== 'playing') return;
@@ -14,7 +14,7 @@ export function steerConquest(session: ScenarioSession): void {
   const building = session.state.entities.find(e => e.side === 0 && e.role === 'barracks' && e.hp > 0);
   if (building && session.runtime.reinforcementRemaining > 0 && session.state.tick < 500) { issueScenarioCommand(session, 0, { type: 'setRally', ids: [building.id], x: 12, y: 16 }); issueScenarioCommand(session, 0, { type: 'train', id: building.id, role: 'ranged' }); }
   for (const unit of units) {
-    const d = FACTIONS[session.state.players[0].faction].units[unit.role as UnitRole];
+    const d = unitFor(session.state, unit);
     if (target) {
       if (unit.id === commander?.id && unit.hp < unit.maxHp * .6) {
         if (unit.order.type !== 'move' || unit.order.x !== 13 || unit.order.y !== 16) issueScenarioCommand(session, 0, { type: 'move', ids: [unit.id], x: 13, y: 16 });
@@ -23,7 +23,9 @@ export function steerConquest(session: ScenarioSession): void {
       if (d.ability === 'entrench' && length2D(unit.x - target.x, unit.y - target.y) <= d.range + (unit.entrenchedAt !== undefined && unit.role === 'special' ? 3 : 0)) {
         if (unit.entrenchedAt === undefined) issueScenarioCommand(session, 0, { type: 'ability', ids: [unit.id] });
       } else if (unit.order.type !== 'attack' || unit.order.target !== target.id) issueScenarioCommand(session, 0, { type: 'attack', ids: [unit.id], target: target.id });
-      if (d.ability && d.ability !== 'entrench') issueScenarioCommand(session, 0, { type: 'ability', ids: [unit.id] });
+      if (d.ability && d.ability !== 'entrench') {
+        const command = missionAbilityCommand(session.state, unit); if (command) issueScenarioCommand(session, 0, command);
+      }
     } else if (unit.order.type !== 'attackMove' || unit.order.x !== 29 || unit.order.y !== 16) issueScenarioCommand(session, 0, { type: 'attackMove', ids: [unit.id], x: 29, y: 16 });
   }
 }
