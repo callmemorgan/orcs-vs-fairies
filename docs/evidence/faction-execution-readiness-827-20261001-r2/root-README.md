@@ -1,0 +1,3 @@
+The faction retry at 827496b is prepared with the two historical test inputs restored from exact Git blobs. Independent review authenticates all 21 focused tests and their 95 local dependencies. Product, tests, assertions, phase commands and runtime caps are unchanged.
+
+The initial 94-file dependency record remains preserved. Its omitted CSS side-effect import was already present and authenticated among the product inputs; the corrected record includes it. The first runtime attempt remains an infrastructure failure, and this import executes no retry or feature acceptance. The fresh r2 evidence directory is empty and private dependencies are absent. Runtime remains held until the current serial job releases its slot.
