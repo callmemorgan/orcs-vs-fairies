@@ -39,7 +39,7 @@ export async function prepareEconomyProof(base,out,feature){
  assert.equal(prepared.moduleManifestSha256,sha(moduleBytes),'Module manifest changed after preparation.');assert.equal(prepared.buildManifestSha256,sha(buildBytes),'Build manifest changed after preparation.');
  assert.deepEqual(build.economyScriptFiles,scripts,'Prepared build script association differs.');
  const moduleFiles=await inventory(process.env.OVF_PROOF_MODULES);delete moduleFiles['manifest.json'];assert.deepEqual(moduleFiles,manifest.modules,'A prepared generator, checker or schema bundle changed.');
- context.economyScriptFiles=scripts;context.economyModuleFiles=moduleFiles;context.allServedBefore=await servedInventory(context);context.browserAssetResponses=[];
+ context.economyScriptFiles=scripts;context.economyModuleFiles=moduleFiles;context.allServedBefore=await servedInventory(context);context.browserAssetResponses=[];context.browserApiResponses=[];
  context.preparationSha256=sha(await readFile(join(context.distDir,'..','prepare.json')));
  return context;
 }
@@ -47,9 +47,15 @@ export async function prepareEconomyProof(base,out,feature){
 export function observePage(page,result,context){
  observeSharedPage(page,result,context);
  page.on('response',response=>{
-  const url=new URL(response.url());if(url.origin!==new URL(context.base).origin||response.status()!==200)return;
-  const path=decodeURIComponent(url.pathname==='/'?'index.html':url.pathname.slice(1)),expected=context.compiledFiles[path];
-  if(!expected){if(/\.(?:html|m?js|css)$/.test(path)||/javascript|text\/css|text\/html/.test(response.headers()['content-type']??''))result.pageErrors.push(`Executable response is outside the prepared build: ${url.href}`);return;}
+  const url=new URL(response.url());if(url.origin!==new URL(context.base).origin)return;
+  const path=decodeURIComponent(url.pathname==='/'?'index.html':url.pathname.slice(1)),expected=context.compiledFiles[path],resourceType=response.request().resourceType(),contentType=response.headers()['content-type']??'';
+  if(!expected){
+   if(path.startsWith('api/')&&['fetch','xhr'].includes(resourceType)){
+    const task=(async()=>{const record={url:url.href,status:response.status(),resourceType,contentType};if(record.status>=300&&record.status<400){context.browserApiResponses.push({...record,sha256:null,bytes:null,bodyUnavailable:'Redirect response bodies are unavailable in Playwright.'});return;}const bytes=await response.body();context.browserApiResponses.push({...record,sha256:sha(bytes),bytes:bytes.length});})().catch(error=>result.pageErrors.push(`Economy API response observation: ${error.message}`));context.responseTasks.push(task);
+   }else if(['document','script','stylesheet'].includes(resourceType)||/\.(?:html|m?js|css|wasm)$/.test(path)||/javascript|text\/css|text\/html|application\/wasm/.test(contentType))result.pageErrors.push(`Executable response is outside the prepared build: ${url.href}`);
+   return;
+  }
+  if(response.status()!==200)return;
   const task=(async()=>{const bytes=await response.body(),digest=sha(bytes),record={url:url.href,path,status:response.status(),sha256:digest,bytes:bytes.length};context.browserAssetResponses.push(record);assert.equal(digest,expected.sha256,`Browser response differs from the prepared ${path}`);assert.equal(bytes.length,expected.bytes);context.servedAssets[url.pathname]={path,sha256:digest,bytes:bytes.length,status:response.status()};})().catch(error=>result.pageErrors.push(`Economy asset provenance: ${error.message}`));
   context.responseTasks.push(task);
  });
@@ -65,6 +71,7 @@ export async function finishEconomyProof(context,result,recordName){
  result.economyScriptFiles=context.economyScriptFiles;
  result.allServedBefore=context.allServedBefore;
  result.browserAssetResponses=context.browserAssetResponses;
+ result.browserApiResponses=context.browserApiResponses;
  let failure;
  try{
   assert.deepEqual(await economyScripts(context.sourcePin),context.economyScriptFiles,'Economy scripts changed during the browser proof.');
