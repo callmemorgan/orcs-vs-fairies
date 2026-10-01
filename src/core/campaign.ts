@@ -77,10 +77,10 @@ export function campaignArmy(profile: CampaignProfile): CampaignSoldier[] {
   return [...army.values()].sort((a, b) => a.entity.id - b.entity.id);
 }
 
-export function deployScenarioArmy(session: ScenarioSession, soldiers: CampaignSoldier[]): number[] {
+export function deployScenarioArmy(session: ScenarioSession, soldiers: CampaignSoldier[], options: { omitLabels?: readonly string[] } = {}): number[] {
   const deployed: number[] = [], available = [...soldiers];
   // Chapter-specific detachments preserve the fixed army size; unused survivors remain in reserve.
-  const slots = session.definition.army.filter(a => a.side === 0 && a.kind === 'unit').sort((a, b) => Number(b.label === 'commander') - Number(a.label === 'commander'));
+  const slots = session.definition.army.filter(a => a.side === 0 && a.kind === 'unit' && !options.omitLabels?.includes(a.label)).sort((a, b) => Number(b.label === 'commander') - Number(a.label === 'commander'));
   for (const slot of slots) {
     const placeholder = session.state.entities.find(e => e.id === session.runtime.labels[slot.label])!;
     const exactDefinition = (a: Entity, b: Entity) => (a as Entity & { definitionId?: string }).definitionId === (b as Entity & { definitionId?: string }).definitionId;

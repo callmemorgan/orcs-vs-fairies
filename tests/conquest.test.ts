@@ -3,8 +3,17 @@ import { checkpointConquestBattle, completeConquestBattle, createConquestProfile
 import { captureScenario, issueScenarioCommand, stepScenario } from '../src/core/scenarios';
 import { isHostile } from '../src/core/simulation';
 import { solveConquest } from '../scripts/scenarios/conquest-strategy';
+import { FACTIONS } from '../src/core/content';
 
 describe('connected conquest and negotiated diplomacy', () => {
+  it('rejects decisions before they exceed the reloadable history bound', () => {
+    let profile = createConquestProfile('orcs', 'history-bound');
+    for (let i = 0; i < 256; i++) profile = waitConquestTurn(profile);
+    expect(decodeConquestProfile(JSON.stringify(profile)).turn).toBe(256);
+    expect(() => waitConquestTurn(profile)).toThrow('history is full');
+    expect(() => proposeConquest(profile, { type: 'tribute', faction: 'fairies', amount: 25 })).toThrow('history is full');
+    expect(() => prepareConquestBattle(profile, 'quarry')).toThrow('history is full');
+  });
   it('captures connected regions through ordinary combat and reloads real surviving armies', () => {
     let profile = createConquestProfile('dwarves', 'conquest-proof');
     expect(reachableConquestRegions(profile)).toEqual(['grove', 'quarry']);
@@ -45,16 +54,19 @@ describe('connected conquest and negotiated diplomacy', () => {
     const resumed = prepareConquestBattle(decodeConquestProfile(checkpoint), 'grove', 'passage'); expect(captureScenario(resumed.session)).toEqual(captureScenario(passage.session)); resumed.recorder.destroy();
     for (let tick = 0; tick < 40; tick++) stepScenario(passage.session); expect(isHostile(passage.session.state, 0, 1)).toBe(true);
     for (let tick = 0; tick < 60; tick++) stepScenario(passage.session); expect(commander.hp).toBeLessThan(hp); passage.recorder.destroy();
+    solveConquest(passage.session); expect(passage.session.runtime.outcome).toBe('lost');
     profile = waitConquestTurn(profile); expect(profile.relations.fairies.truceUntil).toBe(profile.turn);
     profile = proposeConquest(profile, { type: 'tribute', faction: 'fairies', amount: 150 }); profile = proposeConquest(profile, { type: 'alliance', faction: 'fairies' });
     const aided = prepareConquestBattle(profile, 'quarry');
     expect(aided.session.runtime.labels['aid-fairies']).toBeGreaterThan(0);
     expect(aided.session.state.entities.some(e => e.id === aided.session.runtime.labels['aid-fairies'] && e.side === 0 && e.kind === 'unit')).toBe(true);
-    expect(aided.session.state.players[0].ore).toBe(profile.treasury.ore + 40);
+    expect(aided.session.state.players[0].ore).toBe(profile.treasury.ore);
+    expect(profile.army.some(s => s.entity.id === aided.session.runtime.labels['aid-fairies'])).toBe(false);
     solveConquest(aided.session); expect(aided.session.runtime.outcome).toBe('won');
     const journal = aided.recorder.archive(); aided.recorder.destroy();
     profile = completeConquestBattle(aided.profile, aided.session, journal);
-    expect(profile.relations.fairies.treasury.ore).toBe(310);
+    expect(profile.relations.fairies.treasury.ore).toBe(350 - FACTIONS.orcs.units.ranged.cost.ore);
+    expect(profile.relations.fairies.treasury.wood).toBe(150 - FACTIONS.orcs.units.ranged.cost.wood);
     expect(profile.army.some(s => s.label === 'aid-fairies')).toBe(true);
     expect(decodeConquestProfile(JSON.stringify(profile)).relations.fairies.alliance).toBe(true);
   }, 30000);

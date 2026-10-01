@@ -25,6 +25,14 @@ describe('shared scenario execution', () => {
     expect(() => validateScenarioBinding({ definition: session.definition, runtime: invalid }, session.state)).toThrow('evaluated tick');
   });
 
+  it('rejects external control of the opposing authored army', () => {
+    const session = createScenario(definition()), recorder = new ScenarioRecorder(session);
+    expect(issueScenarioCommand(session, 1, { type: 'move', ids: [session.runtime.labels.enemy], x: 30, y: 30 })).toBe(false);
+    const recording = recorder.archive(); recorder.destroy();
+    recording.commands.push({ tick: 0, side: 1, command: { type: 'hold', ids: [session.runtime.labels.enemy] } });
+    expect(() => decodeScenarioRecording(recording)).toThrow('Invalid scenario command');
+  });
+
   it('rejects executable recording and checkpoint properties without evaluating them', () => {
     const session = createScenario(definition()), recorder = new ScenarioRecorder(session);
     const recording = recorder.archive(); recorder.destroy(); let evaluations = 0;

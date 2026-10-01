@@ -16,6 +16,11 @@ const total = (a: Cost, b: Cost): Cost => ({ wood: Math.min(1000000, a.wood + b.
 const world = (profile: ConquestProfile) => conquestWorldFor(profile.faction);
 const region = (profile: ConquestProfile, id: string) => { const found = world(profile).regions.find(r => r.id === id); if (!found) throw new Error('Unknown conquest region.'); return found; };
 const protectedFaction = (profile: ConquestProfile, faction: FactionId) => faction === profile.faction || profile.relations[faction].alliance || profile.relations[faction].truceUntil > profile.turn;
+function requireDecisionRoom(profile: ConquestProfile): void { if (profile.history.length >= 256) throw new Error('The conquest decision history is full. Start another realm.'); }
+function conquestAid(profile: ConquestProfile): string[] {
+  const cost = FACTIONS[profile.faction].units.ranged.cost;
+  return Object.entries(profile.relations).filter(([, relation]) => relation.alliance && resources.every(key => relation.treasury[key] >= cost[key])).slice(0, 2).map(([faction]) => faction);
+}
 
 /** Only owned and treaty-protected territory may connect an invasion to Hearth. */
 export function reachableConquestRegions(profile: ConquestProfile): string[] {
@@ -55,14 +60,13 @@ function battleDefinition(profile: ConquestProfile, regionId: string, mode: 'att
     ...Array.from({ length: profile.regions[regionId].garrison }, (_, i) => ({ label: `garrison-${i}`, side: 1 as const, kind: 'unit' as const, role: (i % 3 === 0 ? 'ranged' : 'melee') as 'ranged' | 'melee', x: 24 + i % 2 * 2, y: 13 + Math.floor(i / 2) * 2, order: { type: 'hold' as const } })),
   ];
   if (mode === 'attack' && site.objective === 'siege') army.push({ label: 'region-fort', side: 1, kind: 'building', role: 'tower', x: 29, y: 17 });
-  const allies = Object.entries(profile.relations).filter(([, relation]) => relation.alliance && relation.treasury.ore >= 40);
-  for (const [index, [ally]] of allies.slice(0, 2).entries()) army.push({ label: `aid-${ally}`, side: 0, kind: 'unit', role: 'ranged', x: 11, y: 14 + index * 2 });
-  const treasury = allies.length ? total(profile.treasury, { wood: 60, ore: 40, crystal: 5 }) : profile.treasury;
+  const allies = conquestAid(profile);
+  for (const [index, ally] of allies.entries()) army.push({ label: `aid-${ally}`, side: 0, kind: 'unit', role: 'ranged', x: 11, y: 14 + index * 2 });
   const required = mode === 'passage' || site.objective === 'crossing' ? { type: 'at' as const, actor: 'commander', point: { x: 29, y: 16 }, radius: 1 } : { type: 'cleared' as const, side: 1 as const, buildings: true };
   const events: ScenarioDefinition['events'] = [];
   if (mode === 'passage') {
-    events.push({ id: 'treaty-protection', when: { type: 'time', seconds: 0 }, actions: [{ type: 'alliance', allied: true }, { type: 'message', text: profile.relations[owner].alliance ? 'The alliance grants passage. The garrison will hold its fire.' : `The truce grants passage for ${(profile.relations[owner].truceUntil - profile.turn) * 15} seconds.` }] });
-    if (!profile.relations[owner].alliance) events.push({ id: 'truce-expiry', when: { type: 'time', seconds: (profile.relations[owner].truceUntil - profile.turn) * 15 }, actions: [{ type: 'alliance', allied: false }, { type: 'message', text: 'The truce has expired. The garrison is hostile again.' }] });
+    events.push({ id: 'treaty-protection', when: { type: 'time', seconds: 0 }, actions: [{ type: 'alliance', allied: true }, { type: 'set', key: 'diplomacy.protected', value: 1 }, { type: 'message', text: profile.relations[owner].alliance ? 'The alliance grants passage. The garrison will hold its fire.' : `The truce grants passage for ${(profile.relations[owner].truceUntil - profile.turn) * 15} seconds.` }] });
+    if (!profile.relations[owner].alliance) events.push({ id: 'truce-expiry', when: { type: 'time', seconds: (profile.relations[owner].truceUntil - profile.turn) * 15 }, actions: [{ type: 'alliance', allied: false }, { type: 'set', key: 'diplomacy.protected', value: 0 }, { type: 'message', text: 'The truce has expired. The garrison is hostile again.' }] });
   }
   if (site.objective === 'hold' && mode === 'attack') events.push({ id: 'counterattack', when: { type: 'time', seconds: 15 }, actions: [{ type: 'order', actors: army.filter(a => a.side === 1).map(a => a.label), order: { type: 'attackMove', x: 8, y: 16 } }] });
   return {
@@ -70,8 +74,8 @@ function battleDefinition(profile: ConquestProfile, regionId: string, mode: 'att
     briefing: `${site.briefing} ${mode === 'attack' ? `Defeat its ${profile.regions[regionId].garrison} defenders with the persistent detachment.` : 'Move the commander to the eastern exit while the treaty protects the detachment.'}`,
     successText: mode === 'attack' ? `${site.name} joins your realm.` : 'The detachment completed its passage.', failureText: 'The detachment could not complete its mission.', faction: profile.faction, opponent: owner,
     seed: 73100 + world(profile).regions.findIndex(r => r.id === regionId), map: { size: 'small', width, height, terrain, starts: [{ x: 5, y: 26 }, { x: 28, y: 26 }], resources: [{ x: 10, y: 22, kind: 'wood', amount: site.supply.wood * 4 + 100, maxAmount: site.supply.wood * 4 + 100 }, { x: 13, y: 22, kind: 'ore', amount: site.supply.ore * 4 + 80, maxAmount: site.supply.ore * 4 + 80 }] }, army,
-    objectives: [{ id: 'region', text: mode === 'passage' ? 'Reach the eastern exit under treaty protection.' : site.objective === 'crossing' ? 'Clear the crossing and reach the far bank.' : site.objective === 'hold' ? 'Survive the counterattack and eliminate its garrison.' : 'Eliminate the defending garrison.', success: mode === 'attack' && site.objective === 'crossing' ? { type: 'all', conditions: [required, { type: 'cleared', side: 1 }] } : mode === 'attack' && site.objective === 'hold' ? { type: 'all', conditions: [required, { type: 'time', seconds: 25 }] } : required, failure: { type: 'dead', actor: 'commander' } }], events,
-    rules: { fixedArmy: false, reinforcementBudget: Math.min(6, 2 + Math.floor(conquestSupply(profile).ore / 30)), resources: copy(treasury), timeLimit: 180 },
+    objectives: [{ id: 'region', text: mode === 'passage' ? 'Reach the eastern exit under treaty protection.' : site.objective === 'crossing' ? 'Clear the crossing and reach the far bank.' : site.objective === 'hold' ? 'Survive the counterattack and eliminate its garrison.' : 'Eliminate the defending garrison.', success: mode === 'passage' ? { type: 'all', conditions: [required, { type: 'variable', key: 'diplomacy.protected', op: 'eq', value: 1 }] } : site.objective === 'crossing' ? { type: 'all', conditions: [required, { type: 'cleared', side: 1 }] } : site.objective === 'hold' ? { type: 'all', conditions: [required, { type: 'time', seconds: 25 }] } : required, failure: { type: 'dead', actor: 'commander' } }], events,
+    rules: { fixedArmy: false, reinforcementBudget: Math.min(6, 2 + Math.floor(conquestSupply(profile).ore / 30)), resources: copy(profile.treasury), timeLimit: 180 },
   };
 }
 
@@ -84,6 +88,7 @@ export function createConquestProfile(faction: FactionId, id: string): ConquestP
 
 export function proposeConquest(profile: ConquestProfile, action: Exclude<ConquestAction, { type: 'battle' | 'wait' }>): ConquestProfile {
   if (profile.active) throw new Error('Finish the active battlefield before negotiating.');
+  requireDecisionRoom(profile);
   if (action.faction === profile.faction || !Object.hasOwn(profile.relations, action.faction)) throw new Error('Choose a foreign faction.');
   const next = copy(profile), relation = next.relations[action.faction];
   if (action.type === 'tribute') {
@@ -102,17 +107,19 @@ export function proposeConquest(profile: ConquestProfile, action: Exclude<Conque
 
 export function waitConquestTurn(profile: ConquestProfile): ConquestProfile {
   if (profile.active || profile.turn >= 1000) throw new Error('A conquest turn cannot advance now.');
+  requireDecisionRoom(profile);
   return { ...copy(profile), turn: profile.turn + 1, treasury: total(profile.treasury, conquestSupply(profile)), history: [...profile.history, { type: 'wait' }] };
 }
 
 export function prepareConquestBattle(profile: ConquestProfile, regionId: string, mode: 'attack' | 'passage' = 'attack'): ConquestMission {
   if (profile.active) { if (profile.active.regionId !== regionId || profile.active.mode !== mode) throw new Error('A different conquest battle is active.'); const session = restoreScenario(profile.active.checkpoint); return { profile, session, recorder: new ScenarioRecorder(session, profile.active.recording) }; }
+  requireDecisionRoom(profile);
   if (!reachableConquestRegions(profile).includes(regionId)) throw new Error('This region is unreachable from owned or treaty-protected territory.');
   const owner = profile.regions[regionId].owner;
   if (owner === profile.faction) throw new Error('This region already belongs to your realm.');
   if (mode !== 'attack' && mode !== 'passage' || mode === 'attack' && protectedFaction(profile, owner) || mode === 'passage' && !protectedFaction(profile, owner)) throw new Error('The current agreement does not permit this battlefield action.');
   const largest = Math.max(0, ...profile.army.map(s => s.entity.id), ...profile.history.flatMap(a => a.type === 'battle' ? [a.recording.initial.game.state.nextId + 4096] : []));
-  const session = createScenario(battleDefinition(profile, regionId, mode), { firstEntityId: largest + 1 }), deployedIds = deployScenarioArmy(session, profile.army), recorder = new ScenarioRecorder(session);
+  const session = createScenario(battleDefinition(profile, regionId, mode), { firstEntityId: largest + 1 }), deployedIds = deployScenarioArmy(session, profile.army, { omitLabels: conquestAid(profile).map(faction => `aid-${faction}`) }), recorder = new ScenarioRecorder(session);
   const replacements = session.definition.army.filter(a => a.side === 0 && a.kind === 'unit' && !a.label.startsWith('aid-')).map(a => session.runtime.labels[a.label]).filter(id => !deployedIds.includes(id));
   session.state.entities = session.state.entities.filter(e => !replacements.includes(e.id));
   // Campaign casualties cannot be replaced by authored starting placeholders.
@@ -145,7 +152,7 @@ export function completeConquestBattle(profile: ConquestProfile, session: Scenar
     if (won) next.regions[regionId] = { owner: profile.faction, garrison: Math.max(1, next.army.filter(s => s.entity.role !== 'worker').length) };
   }
   if (won) next.treasury = total({ wood: verified.state.players[0].wood, ore: verified.state.players[0].ore, crystal: verified.state.players[0].crystal }, conquestSupply(next));
-  for (const [faction, relation] of Object.entries(next.relations)) if (relation.alliance && verified.runtime.labels[`aid-${faction}`]) relation.treasury.ore -= 40;
+  for (const [faction, relation] of Object.entries(next.relations)) if (relation.alliance && verified.runtime.labels[`aid-${faction}`]) for (const key of resources) relation.treasury[key] -= FACTIONS[profile.faction].units.ranged.cost[key];
   next.active = null; next.turn++; next.history.push({ type: 'battle', regionId, mode, recording }); return next;
 }
 

@@ -43,7 +43,7 @@ export function decodeScenarioRecording(input: unknown): ScenarioRecording {
   for (let i = 0; i < record.commands.length; i++) {
     if (!Object.hasOwn(record.commands, i)) throw new Error('Scenario commands contain gaps.');
     const action = record.commands[i];
-    if (!action || typeof action !== 'object' || Array.isArray(action) || Object.keys(action).some(key => !['tick', 'side', 'command'].includes(key)) || !Number.isSafeInteger(action.tick) || action.tick < prior || action.tick > record.finalTick || ![0, 1].includes(action.side) || !validateCommand(action.command)) throw new Error('Invalid scenario command.');
+    if (!action || typeof action !== 'object' || Array.isArray(action) || Object.keys(action).some(key => !['tick', 'side', 'command'].includes(key)) || !Number.isSafeInteger(action.tick) || action.tick < prior || action.tick > record.finalTick || action.side !== 0 || !validateCommand(action.command)) throw new Error('Invalid scenario command.');
     prior = action.tick;
   }
   return { format: record.format, version: 1, initial: captureScenario(initial), commands: structuredClone(record.commands), finalTick: record.finalTick, finalChecksum: record.finalChecksum };

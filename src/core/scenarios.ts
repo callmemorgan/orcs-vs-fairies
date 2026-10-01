@@ -338,7 +338,7 @@ export function issueScenarioCommand(session: ScenarioSession, side: Side, comma
 
 export function scenarioCommandPermitted(state: GameState, side: Side, command: Command): boolean {
   const session = scenarioSessionForState(state); if (!session || isScenarioScriptedCommand(state)) return true;
-  if (session.runtime.outcome !== 'playing') return false;
+  if (side !== 0 || session.runtime.outcome !== 'playing') return false;
   if (side === 0 && (command.type === 'build' || command.type === 'research') && session.definition.rules.fixedArmy) return false;
   return !(side === 0 && command.type === 'train' && (session.definition.rules.fixedArmy || session.runtime.reinforcementRemaining <= 0));
 }
