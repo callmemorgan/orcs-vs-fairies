@@ -1,9 +1,14 @@
 import {describe,it,expect} from 'vitest';
-import {CONTROL_ACTIONS,CONTROL_STORAGE_KEY,ControlProfiles,bindingFromKeyboard,displayBinding,inputIsSuppressed,normalizeBinding} from '../src/game/Controls';
+import {CONTROL_ACTIONS,CONTROL_STORAGE_KEY,ControlProfiles,bindingFromKeyboard,displayBinding,parseDisplayedBinding,inputIsSuppressed,normalizeBinding} from '../src/game/Controls';
 const playing={selected:true,playable:true};
 function storage(){const data=new Map<string,string>();return {data,getItem:(key:string)=>data.get(key)??null,setItem:(key:string,value:string)=>{data.set(key,value);}};}
 
 describe('configurable controls',()=>{
+  it('round-trips every displayed default chord and both physical modifier keys',()=>{
+    for(const action of CONTROL_ACTIONS)for(const binding of action.defaultBindings)expect(parseDisplayedBinding(displayBinding(binding))).toBe(binding);
+    for(const code of ['ControlLeft','AltRight','MetaLeft','ShiftRight'])expect(parseDisplayedBinding(displayBinding(code))).toBe(code);
+    expect(parseDisplayedBinding('Ctrl/Cmd+Shift+R')).toBe('Primary+Shift+KeyR');
+  });
   it('keeps every keyboard action in one registry including all action slots and group keys',()=>{
     const controls=new ControlProfiles(null);
     expect(CONTROL_ACTIONS).toHaveLength(42);

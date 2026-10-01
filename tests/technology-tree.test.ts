@@ -4,6 +4,18 @@ import { createGame, issueCommand, stepGame } from '../src/core/simulation';
 import type { UpgradeId } from '../src/core/types';
 import { mountShell, type HudCallbacks } from '../src/ui/Hud';
 afterEach(()=>{vi.restoreAllMocks();document.body.replaceChildren();});
+it('shows the selected replay perspective in the technology tree',()=>{
+ vi.spyOn(HTMLCanvasElement.prototype,'getContext').mockReturnValue({fillRect:()=>{}} as unknown as CanvasRenderingContext2D);
+ const root=document.createElement('div');document.body.append(root);const shell=mountShell(root,()=>{});shell.showGame();
+ const s=createGame('orcs',4127,'fairies',{controllers:['human','human']});s.players[0].upgrades.push('worker-harvest');
+ let side:0|1=1,paused=true;const callbacks={isMuted:()=>false,groups:()=>({}),cameraCorners:()=>[],side:()=>side,isPaused:()=>paused,isReplay:()=>true,research:vi.fn()} as unknown as HudCallbacks;
+ shell.update(s,[],callbacks);
+ expect(root.querySelector<HTMLElement>('.game-overlay')!.hidden).toBe(true);
+ paused=false;shell.update(s,[],callbacks);root.querySelector<HTMLButtonElement>('#technology-button')!.click();
+ const button=()=>root.querySelector<HTMLButtonElement>('[data-technology="worker-harvest"]')!;
+ expect(button().textContent).not.toContain('Already researched');expect(root.querySelector('.technology-tree')!.textContent).toContain('Tender');
+ side=0;shell.update(s,[],callbacks);expect(button().textContent).toContain('Already researched');expect(root.querySelector('.technology-tree')!.textContent).toContain('Scrapper');
+});
 it('researches through the global tree without requiring a selected headquarters',()=>{
  vi.spyOn(HTMLCanvasElement.prototype,'getContext').mockReturnValue({fillRect:()=>{}} as unknown as CanvasRenderingContext2D);
  const root=document.createElement('div');document.body.append(root);const shell=mountShell(root,()=>{});shell.showGame();

@@ -2,15 +2,16 @@ import { technologyTree } from './TechnologyTree';
 import { researchRequirement, playerAge, AGE_NAMES } from '../core/progression';
 import { observedHealth, PlayerView } from '../core/observation';
 import { ABILITIES, FACTIONS, UPGRADES } from '../core/content';
-import type { BuildingRole, Cost, Entity, FactionId, GameState, MapSize, UnitRole, UpgradeId } from '../core/types';
+import type { BuildingRole, Cost, Entity, FactionId, GameState, MapSize, UnitRole, UpgradeId, Side } from '../core/types';
 import './style.css';
 import { createTooltip } from './Tooltip';
 import { abilityTargetReason } from './availability';
 
 export interface HudCallbacks {
+  isReplay?:()=>boolean;
   build:(role:BuildingRole)=>void; train:(role:UnitRole)=>void; cancelTrain:(id:number,index:number,expectedQueue:string)=>void; research:(upgrade:UpgradeId,building?:number)=>void; ability:()=>void; clearRally:()=>void; toggleGate?:()=>void;
   stop:()=>void; hold:()=>void; attackMove:()=>void; select:(ids:number[])=>void; pause:()=>void; restart:()=>void; center:(x:number,y:number)=>void;
-  toggleMuted:()=>void; isMuted:()=>boolean;
+  toggleMuted:()=>void; isMuted:()=>boolean; isPaused?:()=>boolean; side?:()=>Side; bindingLabel?:(action:string)=>string;
   cameraCorners:()=>Array<{x:number;y:number}>; groups:()=>Record<string,number[]>; recallGroup:(group:string)=>void;
 }
 const traits:Record<FactionId,string>={orcs:'Armored troops • Battle momentum',fairies:'Swift archers • Illusions & healing',dwarves:'Engineers • Emplaced firepower',undead:'Expendable ranks • Raise the fallen',tideborn:'Amphibious troops • Healing surge',automata:'Recharging shields • Ward Engines'};
@@ -23,7 +24,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
   let callbacks:HudCallbacks|undefined;
   let paused=false;
   let state:GameState|undefined;
-  const playerView=new PlayerView(0);
+  let localSide:Side=0;let playerView=new PlayerView(localSide);
   let actionsKey='';
   let actionMode:'build'|'recruit'|'orders'='build';
   let noticeUntil=0;
@@ -92,15 +93,14 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
   el('#resume-button').addEventListener('click',togglePause);
   el('#restart-button').addEventListener('click',()=>{reset();callbacks?.restart();});
   el('#overlay-restart').addEventListener('click',()=>{reset();callbacks?.restart();});
-  window.addEventListener('keydown',event=>{if(menu.hidden&&!overlay.hidden)return;if(!menu.hidden||event.repeat||event.ctrlKey||event.metaKey||event.altKey||(event.target as HTMLElement).closest('input,textarea,select'))return;const key=event.key.toUpperCase();if(document.querySelector('dialog[open]'))return;if(!['Z','C','B','V','N','M'].includes(key))return;const action=actions.find(a=>a.hotkey===key);if(action){event.preventDefault();action.button.click();}});
   const map=el<HTMLCanvasElement>('#minimap'),ctx=map.getContext('2d')!;
   map.addEventListener('click',event=>{if(!state)return;const rect=map.getBoundingClientRect();callbacks?.center((event.clientX-rect.left)/rect.width*state.width,(event.clientY-rect.top)/rect.height*state.height);});
   function drawMinimap(s:GameState) {
     const cw=map.width/s.width,ch=map.height/s.height;
     ctx.fillStyle='#070e10';ctx.fillRect(0,0,map.width,map.height);
-    for(const i of s.explored[0]){ctx.fillStyle=s.visible[0].has(i)?({grass:'#45654a',road:'#8e8058',mud:'#69593f',water:'#316579',shallows:'#609690',rock:'#7c8386',bridge:'#b49a6b'}[s.terrain[i]]):'#22342d';ctx.fillRect((i%s.width)*cw,Math.floor(i/s.width)*ch,Math.ceil(cw),Math.ceil(ch));}
-    for(const r of playerView.resourcesFor(s)){const i=Math.floor(r.y)*s.width+Math.floor(r.x);if(r.amount<=0||!s.explored[0].has(i))continue;ctx.fillStyle=r.kind==='wood'?'#688c53':r.kind==='crystal'?'#b497e7':'#b49c76';ctx.fillRect(r.x*cw-1,r.y*ch-1,2,2);}
-    for(const e of s.entities){if(e.hp<=0||e.side===1&&!s.visible[0].has(Math.floor(e.y)*s.width+Math.floor(e.x)))continue;ctx.fillStyle=e.side===0?'#d0eb96':'#ee785a';const size=e.kind==='building'?5:3;ctx.fillRect(e.x*cw-size/2,e.y*ch-size/2,size,size);}
+    for(const i of s.explored[localSide]){ctx.fillStyle=s.visible[localSide].has(i)?({grass:'#45654a',road:'#8e8058',mud:'#69593f',water:'#316579',shallows:'#609690',rock:'#7c8386',bridge:'#b49a6b'}[s.terrain[i]]):'#22342d';ctx.fillRect((i%s.width)*cw,Math.floor(i/s.width)*ch,Math.ceil(cw),Math.ceil(ch));}
+    for(const r of playerView.resourcesFor(s)){const i=Math.floor(r.y)*s.width+Math.floor(r.x);if(r.amount<=0||!s.explored[localSide].has(i))continue;ctx.fillStyle=r.kind==='wood'?'#688c53':r.kind==='crystal'?'#b497e7':'#b49c76';ctx.fillRect(r.x*cw-1,r.y*ch-1,2,2);}
+    for(const e of s.entities){if(e.hp<=0||e.side!==localSide&&!s.visible[localSide].has(Math.floor(e.y)*s.width+Math.floor(e.x)))continue;ctx.fillStyle=e.side===localSide?'#d0eb96':'#ee785a';const size=e.kind==='building'?5:3;ctx.fillRect(e.x*cw-size/2,e.y*ch-size/2,size,size);}
     const corners=callbacks?.cameraCorners()??[];if(corners.length){ctx.strokeStyle='#fff0b6';ctx.lineWidth=1.5;ctx.beginPath();corners.forEach((p,i)=>{if(i===0)ctx.moveTo(p.x*cw,p.y*ch);else ctx.lineTo(p.x*cw,p.y*ch);});ctx.closePath();ctx.stroke();}
   }
   return {
@@ -109,20 +109,21 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
     ready:()=>{el('.loading-battle').hidden=true;},
     battlefieldBounds:()=>({top:el('.resource-bar').getBoundingClientRect().bottom,bottom:el('.tactical-bar').getBoundingClientRect().top}),
     notice,
+    activateActionSlot:(slot:number)=>{const action=actions.find(a=>a.hotkey===['Z','C','B','V','N','M'][slot-1]);if(!action||paused||!menu.hidden||document.querySelector('.session-overlay:not([hidden])'))return false;action.button.click();return true;},
     update:(s:GameState,selected:number[],cb:HudCallbacks)=>{
-      state=s;callbacks=cb;tree.update(s,paused);if(!menu.hidden)return;const player=s.players[0],definition=FACTIONS[player.faction];
+      state=s;callbacks=cb;paused=cb.isPaused?.()??paused;const nextSide=cb.side?.()??0;if(nextSide!==localSide){localSide=nextSide;playerView=new PlayerView(localSide);actionsKey='';}tree.update(s,paused,localSide);if(!menu.hidden)return;const player=s.players[localSide],definition=FACTIONS[player.faction];
       setText('#sound-button',cb.isMuted()?'Enable sound':'Mute sound');el('#sound-button').setAttribute('aria-pressed',String(cb.isMuted()));
       setText('#faction-name',definition.name);el<HTMLImageElement>('#banner-portrait').src=`/assets/portrait-${player.faction}.png`;setText('#wood',Math.floor(player.wood).toString());setText('#ore',Math.floor(player.ore).toString());setText('#crystal',Math.floor(player.crystal).toString());setText('#population',`${player.population} / ${player.cap}`);
-      el('.objective-tag').textContent=`${AGE_NAMES[playerAge(s.players[0])]} · Destroy all enemy strongholds · ${s.mapSize} · seed ${s.seed}`;
+      el('.objective-tag').textContent=`${AGE_NAMES[playerAge(s.players[localSide])]} · Destroy all enemy strongholds · ${s.mapSize} · seed ${s.seed}`;
       setText('#clock',`${Math.floor(s.time/60).toString().padStart(2,'0')}:${Math.floor(s.time%60).toString().padStart(2,'0')}`);
       if(performance.now()>noticeUntil)el('.notice').hidden=true;
-      const entities=s.entities.filter(e=>selected.includes(e.id)&&e.hp>0&&(e.side===0||s.visible[0].has(Math.floor(e.y)*s.width+Math.floor(e.x)))).map(e=>e.side===0?e:{...e,...observedHealth(s,0,e)});const own=entities.filter(e=>e.side===0);const first=entities[0];
+      const entities=s.entities.filter(e=>selected.includes(e.id)&&e.hp>0&&(e.side===localSide||s.visible[localSide].has(Math.floor(e.y)*s.width+Math.floor(e.x)))).map(e=>e.side===localSide?e:{...e,...observedHealth(s,localSide,e)});const own=entities.filter(e=>e.side===localSide);const first=entities[0];
       const entityDef=first?(first.kind==='unit'?FACTIONS[s.players[first.side].faction].units[first.role as UnitRole]:FACTIONS[s.players[first.side].faction].buildings[first.role as BuildingRole]):null;
       setText('#selection-count',entities.length?`${entities.length} SELECTED`:'NO UNITS');
       setText('#selection-name',entities.length>1?`${entities.length} selected`:entityDef?.name??'Your command awaits');
       const portraitId=entityDef?.id??'';if(el('#portrait').dataset.asset!==portraitId){el('#portrait').dataset.asset=portraitId;el('#portrait').innerHTML=portraitId?`<img src="/assets/selection-${portraitId}.png" alt="${escape(entityDef!.name)}" />`:'⚑';}
       el('.health-track').hidden=!first;
-      if(first){el('#health-fill').style.width=`${Math.max(0,first.hp/first.maxHp)*100}%`;setText('#selection-status',`${Math.ceil(first.hp)} / ${first.maxHp} health${first.progress<1?` · Building ${Math.floor(first.progress*100)}%`:first.kind==='unit'?` · ${first.order.type==='idle'?'Ready':first.order.type==='hold'?'Holding position':first.order.type}`:''}${first.entrenchedAt!==undefined?(s.time-first.entrenchedAt>=3?' · Emplaced':' · Preparing emplacement'):''}${first.maxShield?` · Shield ${Math.ceil(first.shield??0)}/${first.maxShield}`:''}${(first.surgeUntil??0)>s.time?' · Surging':''}${first.raised?' · Raised · '+Math.ceil(first.expires-s.time)+'s remaining':''}${first.rally?' · Rally set':''}${first.role==='gate'?(first.gateOpen?' · Gate open':' · Gate closed'):''}${first.research?` · Researching ${UPGRADES[first.research].name} ${Math.floor(first.researchProgress*100)}%`:''}${first.side===1?' · Enemy':''}`);}
+      if(first){el('#health-fill').style.width=`${Math.max(0,first.hp/first.maxHp)*100}%`;setText('#selection-status',`${Math.ceil(first.hp)} / ${first.maxHp} health${first.progress<1?` · Building ${Math.floor(first.progress*100)}%`:first.kind==='unit'?` · ${first.order.type==='idle'?'Ready':first.order.type==='hold'?'Holding position':first.order.type}`:''}${first.entrenchedAt!==undefined?(s.time-first.entrenchedAt>=3?' · Emplaced':' · Preparing emplacement'):''}${first.maxShield?` · Shield ${Math.ceil(first.shield??0)}/${first.maxShield}`:''}${(first.surgeUntil??0)>s.time?' · Surging':''}${first.raised?' · Raised · '+Math.ceil(first.expires-s.time)+'s remaining':''}${first.rally?' · Rally set':''}${first.role==='gate'?(first.gateOpen?' · Gate open':' · Gate closed'):''}${first.research?` · Researching ${UPGRADES[first.research].name} ${Math.floor(first.researchProgress*100)}%`:''}${first.side!==localSide?' · Enemy':''}`);}
       else setText('#selection-status','Select a worker to gather resources or raise your first buildings.');
       const construction=el('.construction-track');construction.hidden=!first||(first.progress>=1&&!first.research);if(first)construction.querySelector<HTMLElement>('i')!.style.width=`${(first.progress<1?first.progress:first.researchProgress)*100}%`;
       if(entities.length>1){const hp=entities.reduce((total,e)=>total+e.hp,0),maxHp=entities.reduce((total,e)=>total+e.maxHp,0);el('#health-fill').style.width=`${hp/maxHp*100}%`;setText('#selection-status',`${Math.ceil(hp)} / ${maxHp} group health`);construction.hidden=true;}
@@ -135,10 +136,10 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
       el('#portrait').dataset.tooltip=entityDef?`<h3>${escape(entityDef.name)}</h3><p>${escape(entityDef.description)}</p>${first?.kind==='building'&&(first.role==='hq'||first.role==='barracks')?'<p>Right-click open ground to set a rally point for new units.</p>':''}`:'<h3>Select a unit</h3><p>Click a unit or drag across your army. Shift adds to your selection. F2 selects combat units.</p>';
       el('#portrait').tabIndex=0;
       const stats=el('#selection-stats');
-      const militaryTech=first?.side===0?player.upgrades.map(id=>UPGRADES[id]).filter(u=>u.appliesTo===first.role):[];
+      const militaryTech=first?.side===localSide?player.upgrades.map(id=>UPGRADES[id]).filter(u=>u.appliesTo===first.role):[];
       const damageFactor=militaryTech.reduce((factor,u)=>factor*(u.effects.damage??1),1),armorBonus=militaryTech.reduce((sum,u)=>sum+(u.effects.armor??0),0);
       const statNumber=(value:number)=>Number(value.toFixed(1));
-      stats.innerHTML=first?.kind==='unit'&&entityDef&&'damage' in entityDef?`<span title="${first.side===0?'Attack damage with researched upgrades; combat bonuses apply separately':'Base attack damage; enemy research is private'}">ATK <b>${statNumber(entityDef.damage*damageFactor)}</b></span><span title="${first.side===0?'Armor with researched upgrades':'Base armor; enemy research is private'}">ARM <b>${entityDef.armor+armorBonus}</b></span><span title="Weapon range">RNG <b>${entityDef.range}</b></span>${first.carried?`<span>Carrying <b>${Math.floor(first.carried)} ${first.carriedKind}</b></span>`:''}`:'';
+      stats.innerHTML=first?.kind==='unit'&&entityDef&&'damage' in entityDef?`<span title="${first.side===localSide?'Attack damage with researched upgrades; combat bonuses apply separately':'Base attack damage; enemy research is private'}">ATK <b>${statNumber(entityDef.damage*damageFactor)}</b></span><span title="${first.side===localSide?'Armor with researched upgrades':'Base armor; enemy research is private'}">ARM <b>${entityDef.armor+armorBonus}</b></span><span title="Weapon range">RNG <b>${entityDef.range}</b></span>${first.carried?`<span>Carrying <b>${Math.floor(first.carried)} ${first.carriedKind}</b></span>`:''}`:'';
       const roster=el('#selection-roster');
       const rosterKey=entities.length>1?entities.map(e=>e.id).join(','):'';
       if(roster.dataset.ids!==rosterKey){roster.dataset.ids=rosterKey;roster.replaceChildren();if(entities.length>1)for(const e of entities){const d=e.kind==='unit'?FACTIONS[s.players[e.side].faction].units[e.role as UnitRole]:FACTIONS[s.players[e.side].faction].buildings[e.role as BuildingRole];const button=document.createElement('button');button.className='roster-unit';button.dataset.id=String(e.id);button.setAttribute('aria-label',`Select ${d.name} ${e.id}`);button.innerHTML=`<img src="${art(d.id)}" alt=""/><span class="mini-health"><i></i></span>`;button.addEventListener('click',event=>callbacks?.select(event.shiftKey?entities.filter(x=>x.id!==e.id).map(x=>x.id):[e.id]));roster.append(button);}}
@@ -168,7 +169,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
         setText('#command-hint',hasWorkers&&selectedProducer?'':own.length?'YOUR ORDERS':'SELECT A UNIT');
       }
       el('#order-hint').textContent=selectedProducer?'Right-click ground to set rally':'Right-click to give orders';
-      const reserved=s.entities.filter(e=>e.side===0&&e.hp>0).reduce((sum,e)=>sum+e.queue.length,0);
+      const reserved=s.entities.filter(e=>e.side===localSide&&e.hp>0).reduce((sum,e)=>sum+e.queue.length,0);
       setText('#supply-label',reserved?`SUPPLY · +${reserved}`:'SUPPLY');el('#population').classList.toggle('supply-full',player.population+reserved>=player.cap);el('#population').parentElement!.parentElement!.dataset.tooltip=`<h3>Army supply</h3><p>${player.population} in the field • ${reserved} places reserved by recruitment • ${player.cap} capacity</p><p>Build a depot to increase capacity.</p>`;
       for(const action of actions){
         const missing=action.cost?(['wood','ore','crystal'] as const).filter(kind=>player[kind]<action.cost![kind]).map(kind=>`${Math.ceil(action.cost![kind]-player[kind])} ${kind}`):[];
@@ -176,7 +177,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
         if(action.train){if(action.entity!.progress<1)reason='Under construction';else if(action.entity!.queue.length>=5)reason='Queue full';else if(player.population+reserved>=player.cap)reason='Build a depot for supply';}
         if(action.unitRole&&playerAge(player)<(definition.units[action.unitRole].age??1))reason=`Requires ${AGE_NAMES[definition.units[action.unitRole].age!]}`;
         if(action.buildRole&&playerAge(player)<(action.buildRole==='hq'?2:definition.buildings[action.buildRole].age??1))reason='Requires Town Age';
-        if(action.upgrade){if(action.entity!.progress<1)reason='Under construction';else if(action.entity!.research)reason=`Researching ${UPGRADES[action.entity!.research].name}`;else reason=researchRequirement(s,0,action.upgrade)??reason;}
+        if(action.upgrade){if(action.entity!.progress<1)reason='Under construction';else if(action.entity!.research)reason=`Researching ${UPGRADES[action.entity!.research].name}`;else reason=researchRequirement(s,localSide,action.upgrade)??reason;}
         if(action.ability){const remaining=Math.max(0,Math.ceil(Math.min(...casters.map(e=>(e.abilityReadyAt??0)-s.time))));if(remaining>0)reason=`${remaining}s cooldown`;else reason=abilityTargetReason(s,casters);action.button.style.setProperty('--cooldown',`${remaining?Math.min(100,remaining/Math.max(...abilityIds.map(id=>ABILITIES[id].cooldown))*100):0}%`);}
         if(paused)reason='Battle paused';if(s.winner!==null||s.draw)reason='Match ended';
         action.button.setAttribute('aria-disabled',String(!!reason));action.button.classList.toggle('unavailable',!!reason);
@@ -188,9 +189,10 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
       if(queue.dataset.key!==queueKey){queue.dataset.key=queueKey;queue.innerHTML=producers.map(producer=>`<div class="queue-row" data-producer="${producer.id}"><span class="queue-label">RECRUITING</span>${producer.queue.map((role,i)=>`<button type="button" class="queue-item" data-index="${i}" aria-label="Cancel ${escape(definition.units[role].name)} in queue slot ${i+1}" data-tooltip="${escape(`<h3>${definition.units[role].name}</h3><p>${i===0?'In production':'Queued'} • ${definition.units[role].trainTime}s recruitment</p><p>Click to cancel. Full refund: ${costText(definition.units[role].cost)}.</p>`)}"><img src="${art(definition.units[role].id)}" alt="${escape(definition.units[role].name)}"/>${i===0?'<b></b><span class="queue-progress"><i></i></span>':`<em>${i+1}</em>`}</button>`).join('')}</div>`).join('');}
       for(const producer of producers){const row=queue.querySelector<HTMLElement>(`[data-producer="${producer.id}"]`)!;for(const button of Array.from(row.querySelectorAll<HTMLButtonElement>('.queue-item'))){button.disabled=paused||s.winner!==null||s.draw;const expected=JSON.stringify(producer.queue);button.onclick=()=>callbacks?.cancelTrain(producer.id,Number(button.dataset.index),expected);}}
       for(const producer of producers){const row=queue.querySelector<HTMLElement>(`[data-producer="${producer.id}"]`)!;row.querySelector('b')!.textContent=`${Math.max(0,Math.ceil((1-producer.trainProgress)*definition.units[producer.queue[0]].trainTime))}s`;row.querySelector<HTMLElement>('.queue-progress i')!.style.width=`${producer.trainProgress*100}%`;}
+      for(const action of actions){const slot=['Z','C','B','V','N','M'].indexOf(action.hotkey??'');const id=slot>=0?`action${slot+1}`:({A:'attackMove',X:'stop',H:'hold',Q:'ability'} as Record<string,string>)[action.hotkey??''];const label=id?cb.bindingLabel?.(id):undefined;if(label!==undefined){const key=action.button.querySelector('kbd');if(key)key.textContent=label;}}
       tooltip.refresh();
-      overlay.hidden=!paused&&s.winner===null&&!s.draw;
-      if(!overlay.hidden){const ended=s.winner!==null||s.draw;setText('#overlay-title',ended?s.draw?'Draw':s.winner===0?'Victory':'Defeat':'Battle paused');setText('#overlay-eyebrow',ended?'THE BATTLE IS OVER':'SKIRMISH');setText('#overlay-description',ended?s.draw?'Both sides lost their last stronghold in the same exchange.':s.winner===0?'The last enemy stronghold has fallen. The Elderwood is yours.':'Your last stronghold has fallen. Raise your banner and try again.':'Take a moment to plan your next move.');el('#resume-button').hidden=ended;}
+      overlay.hidden=!!cb.isReplay?.()||!paused&&s.winner===null&&!s.draw;
+      if(!overlay.hidden){const ended=s.winner!==null||s.draw;setText('#overlay-title',ended?s.draw?'Draw':s.winner===localSide?'Victory':'Defeat':'Battle paused');setText('#overlay-eyebrow',ended?'THE BATTLE IS OVER':'SKIRMISH');setText('#overlay-description',ended?s.draw?'Both sides lost their last stronghold in the same exchange.':s.winner===localSide?'The last enemy stronghold has fallen. The Elderwood is yours.':'Your last stronghold has fallen. Raise your banner and try again.':'Take a moment to plan your next move.');el('#resume-button').hidden=ended;}
       setText('#pause-button',paused?'Resume':'Pause');drawMinimap(s);
     }
   };

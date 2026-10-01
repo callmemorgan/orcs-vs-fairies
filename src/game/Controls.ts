@@ -51,6 +51,17 @@ export function bindingFromKeyboard(event:KeyboardSample):string|null {
 export function displayBinding(binding:string):string {
   return binding.replace(/Primary/g,'Ctrl/Cmd').replace(/Key([A-Z])/g,'$1').replace(/Digit([0-9])/g,'$1').replace(/Arrow(Left|Right|Up|Down)/g,'$1').replace(/(Shift|Control|Meta|Alt)(Left|Right)/g,(_,modifier,side)=>`${side} ${modifier}`).replace('Space','Spacebar');
 }
+/** Parse the same labels the controls editor displays, including bare left/right modifiers. */
+export function parseDisplayedBinding(value:string):string|null {
+  const parts=value.replace(/Ctrl\/Cmd/g,'Primary').split('+').map(part=>part.trim());let key=parts.pop()??'';
+  const modifier=/^(Left|Right) (Shift|Control|Meta|Alt)$/.exec(key);
+  if(modifier)key=modifier[2]+modifier[1];
+  else if(/^[a-z]$/i.test(key))key=`Key${key.toUpperCase()}`;
+  else if(/^[0-9]$/.test(key))key=`Digit${key}`;
+  else if(['Left','Right','Up','Down'].includes(key))key=`Arrow${key}`;
+  else if(key==='Spacebar')key='Space';
+  return normalizeBinding([...parts,key].join('+'));
+}
 export function inputIsSuppressed(target:EventTarget|null|undefined,dialogOpen=false):boolean {
   if(dialogOpen)return true;
   const element=target as {closest?:(selector:string)=>unknown}|null|undefined;

@@ -49,6 +49,10 @@ Open Technologies to see the three-age technology tree and research at an availa
 
 The resource bar shows wood, ore, crystal, population and places reserved by recruitment. Depots increase capacity. The sound toggle controls synthesized interface and combat cues and persists across reloads. The desktop UI supports 1280 × 720 and larger screens. See the [UI overhaul report and before/after screenshots](docs/UI_OVERHAUL.md).
 
+Session tools provide named local saves, three rotating autosaves, save import/export, global recruitment and reorderable waiting queues. Hold the configured queue modifier while ordering movement, attacks, gathering or repairs to append an order. Controls has saved keyboard profiles and controller help. Photo mode hides the interface and downloads a battlefield PNG.
+
+Replay imports verify the match before playback. The viewer can seek, change speed and inspect either player's perspective. Analysis shows resource deposits, stockpiles, army size/value, unit/building losses and technology completion ticks; chart points and technology entries open their replay ticks. Report a bug previews and downloads the matching save, replay and build diagnostics. See [session verification](docs/features/SESSION_VERIFICATION.md) for reproducible checks and remaining integration work.
+
 ## Terminal agents
 
 The persistent CLI accepts newline-delimited JSON for starting, observing, commanding, advancing and obtaining results. It defaults to controlling side 1, the computer's usual side, against the built-in AI. Its observations omit hidden enemies and enemy economy or production details. Commands use the ordinary ownership, visibility, cost and population checks.
@@ -96,4 +100,4 @@ Use `--pack-only` to reuse complete rendered frames. The serial generator covers
 
 Faction data defines rosters, costs, stats, abilities, shields, terrain speed and AI composition. Core simulation positions use world coordinates; the isometric projection belongs to the renderer. Browser players, built-in AI and terminal agents share command validation. Only the two factions in a match load their animation atlases, reducing texture use compared with loading all six.
 
-Multiplayer, campaign, heroes, save/load, mobile controls and public deployment are outside this build. Replay verifies a command history against the same simulation version; it is not a cross-version save format.
+Multiplayer, campaigns, heroes, mobile controls and public deployment remain unfinished. The [100-feature ledger](docs/features/requirements.json) tracks the expansion. Local saves preserve behavioral runtime, and replay verification requires a compatible simulation build.
