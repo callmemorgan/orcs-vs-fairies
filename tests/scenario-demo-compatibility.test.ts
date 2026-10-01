@@ -308,6 +308,25 @@ describe('historical demo profile inspection', () => {
     expectNoMutations(harness.mutations);
   });
 
+  it.each(['campaign', 'conquest'] as const)('preserves an explicitly old rules pin in the %s import controls', async kind => {
+    // Modified copies isolate explicit old-pin UI behavior. The original genuine
+    // fixture files remain unchanged, and these inputs are not new captures.
+    const raw = fixture<Profile>(`${kind}-active`); raw.simulationRevision = '3.2.0';
+    const before = JSON.stringify(raw), harness = await boot();
+    await upload(kind, raw); expectHistoricalProfile(kind, raw);
+    expect(diagnostic().readOnlyReason).toContain('3.2.0');
+    const scene = renderer.scenes.at(-1)!;
+    expect(scene.options).toMatchObject({ readOnly: true, simulationEnabled: false });
+    const owned = scene.state.entities.find(entity => entity.side === 0 && entity.kind === 'unit')!;
+    expect(scene.options.onCommand?.(0, { type: 'hold', ids: [owned.id] })).toBe(false);
+    scene.options.onStep?.(scene.state);
+    await vi.advanceTimersByTimeAsync(4100); window.dispatchEvent(new Event('pagehide'));
+    button(kind === 'campaign' ? 'Save campaign profile' : 'Export realm profile').click();
+    expect(JSON.stringify(JSON.parse(await harness.blobs[0].text()))).toBe(before);
+    expect(JSON.stringify(raw)).toBe(before); expect(harness.writes).not.toHaveBeenCalled();
+    expectNoMutations(harness.mutations);
+  });
+
   it('does not complete an imported legacy victory that was saved as the active campaign battle', async () => {
     const raw = fixture<CampaignProfile>('campaign-active');
     const { resultId: _resultId, ...battle } = fixture<CampaignProfile>('campaign-completed').history[0];
