@@ -270,10 +270,14 @@ function checkPlayerFrame(frame, layout, side) {
   return { side, tick: frame.tick, bank: bank(view.player), controller: view.controller, allies: view.allies, visibleTiles: view.visible.length, exploredTiles: view.explored.length };
 }
 async function renderer(actor, layout, privateSides = [actor.side]) {
-  await actor.page.waitForFunction(() => window.rts?.state?.players[window.rts.viewSide] && ['wood', 'ore', 'crystal'].every(key => document.querySelector(`#${key}`)?.textContent === String(Math.floor(window.rts.state.players[window.rts.viewSide][key]))));
-  const value = await actor.page.evaluate(() => {
-    const r = window.rts; return { tick: r.state.tick, time: r.state.time, side: r.viewSide, mode: r.mode, simulationEnabled: r.simulationEnabled, readOnly: r.readOnly, privateSides: r.online.privateSides, seed: r.state.seed, teams: r.state.teams, players: r.state.players, entities: r.state.entities, hud: Object.fromEntries(['wood', 'ore', 'crystal'].map(key => [key, document.querySelector(`#${key}`).textContent])), diagnosticSetter: typeof Object.getOwnPropertyDescriptor(window, 'rts')?.set };
-  });
+  // A snapshot can arrive between separate wait and capture calls while the HUD
+  // still shows the prior bank. Check coherence and capture in one JS turn.
+  const value = await poll(() => actor.page.evaluate(() => {
+    const r = window.rts, player = r?.state?.players[r.viewSide]; if (!player) return null;
+    const hud = Object.fromEntries(['wood', 'ore', 'crystal'].map(key => [key, document.querySelector(`#${key}`)?.textContent]));
+    if (!['wood', 'ore', 'crystal'].every(key => hud[key] === String(Math.floor(player[key])))) return null;
+    return { tick: r.state.tick, time: r.state.time, side: r.viewSide, mode: r.mode, simulationEnabled: r.simulationEnabled, readOnly: r.readOnly, privateSides: r.online.privateSides, seed: r.state.seed, teams: r.state.teams, players: r.state.players, entities: r.state.entities, hud, diagnosticSetter: typeof Object.getOwnPropertyDescriptor(window, 'rts')?.set };
+  }), 'coherent HUD and native renderer state');
   const frame = await poll(() => actor.frames.get(value.tick), 'render tick captured from native wire');
   assert.equal(value.mode, 'online'); assert.equal(value.simulationEnabled, false); assert.equal(value.diagnosticSetter, 'undefined'); assert.equal(value.seed, 0);
   assert.deepEqual(value.teams, layout.players.map(p => p.teamId)); assert.deepEqual(sorted(value.privateSides), sorted(privateSides));
