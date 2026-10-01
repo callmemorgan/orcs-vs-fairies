@@ -1,0 +1,41 @@
+.tournament-dashboard { position: absolute; inset: 0; z-index: 92; pointer-events: none; color: #e9e8df; font-family: system-ui, sans-serif; }
+.tournament-toolbar { position: absolute; top: 120px; right: 16px; pointer-events: auto; }
+.tournament-dashboard button, .tournament-dashboard input, .tournament-dashboard select { font: inherit; }
+.tournament-dashboard button { padding: 7px 11px; background: #24302b; color: #f2ecdb; border: 1px solid #6d775b; border-radius: 4px; cursor: pointer; margin: 4px 6px 4px 0; }
+.tournament-toolbar button { font-size: 12px; background: #142018ed; }
+.tournament-dashboard button:hover:not(:disabled) { background: #354a38; border-color: #d6bc7b; }
+.tournament-dashboard button:disabled { opacity: .5; cursor: default; }
+.tournament-dashboard :focus-visible { outline: 3px solid #e8c476; outline-offset: 3px; }
+.tournament-dashboard [hidden] { display: none !important; }
+.tournament-overlay { position: fixed; inset: 0; display: grid; place-items: center; padding: 16px; background: #08100ddd; pointer-events: auto; }
+.tournament-dialog { display: flex; flex-direction: column; width: min(1080px, 100%); max-height: 94dvh; box-sizing: border-box; padding: 20px; background: #17211c; border: 1px solid #b3a277; border-radius: 8px; box-shadow: 0 18px 80px #000b; }
+.tournament-dialog > header { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.tournament-dialog h2 { margin: 0; font-size: 24px; }
+.tournament-dialog h3 { margin: 18px 0 8px; font-size: 18px; }
+.tournament-dialog h4 { margin: 12px 0 8px; font-size: 15px; }
+.tournament-page { overflow: auto; overscroll-behavior: contain; padding: 0 3px 16px; }
+.tournament-page p { line-height: 1.5; color: #c7d0c5; }
+.tournament-page > section + section { border-top: 1px solid #465146; margin-top: 16px; padding-top: 2px; }
+.tournament-field { display: flex; flex-direction: column; gap: 6px; margin: 12px 0; font-size: 14px; }
+.tournament-dashboard input, .tournament-dashboard select { padding: 9px; max-width: 100%; box-sizing: border-box; background: #0f1813; color: #f2ecdb; border: 1px solid #667662; border-radius: 4px; }
+.tournament-notice { margin: 12px 0 0; padding: 10px; border: 1px solid #7eab77; background: #263e2a; line-height: 1.5; overflow-wrap: anywhere; }
+.tournament-notice.tournament-error { border-color: #df8c79; background: #482720; }
+.tournament-summary { display: grid; grid-template-columns: minmax(130px, 1fr) 3fr; gap: 9px 18px; font-size: 14px; line-height: 1.5; }
+.tournament-summary dt { color: #efd6a5; }
+.tournament-summary dd { margin: 0; overflow-wrap: anywhere; }
+.tournament-table-scroll { overflow-x: auto; margin: 12px 0; }
+.tournament-dashboard table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
+.tournament-dashboard caption { text-align: left; margin: 8px 0; font-size: 16px; }
+.tournament-dashboard th, .tournament-dashboard td { padding: 9px 10px; border-bottom: 1px solid #465146; }
+.tournament-dashboard thead { color: #efd6a5; }
+.tournament-dashboard tbody th { overflow-wrap: anywhere; }
+.tournament-matches { list-style: none; padding: 0; }
+.tournament-matches > li { border: 1px solid #4b5e48; border-radius: 5px; margin: 12px 0; padding: 12px; }
+.tournament-matches h4 { margin-top: 0; }
+.tournament-matches p { margin: 7px 0; overflow-wrap: anywhere; }
+.tournament-matches .tournament-outcome { color: #efd6a5; }
+.tournament-matches .tournament-fault, .tournament-fault { color: #ffc3b3; }
+.tournament-dashboard summary { padding: 10px 0; cursor: pointer; color: #efd6a5; }
+.tournament-dashboard li { overflow-wrap: anywhere; }
+.tournament-dashboard pre { white-space: pre-wrap; overflow-wrap: anywhere; padding: 10px; background: #0f1813; max-height: 240px; overflow: auto; }
+@media (max-width: 600px) { .tournament-overlay { padding: 6px; } .tournament-dialog { padding: 12px; max-height: 96dvh; } .tournament-toolbar { right: 8px; top: 145px; } .tournament-toolbar button { padding: 5px 7px; } .tournament-summary { grid-template-columns: 1fr 2fr; gap: 8px; } .tournament-dashboard th, .tournament-dashboard td { padding: 8px; } }
