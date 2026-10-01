@@ -1,0 +1,288 @@
+{
+  "allDecisionEvidenceResolves": true,
+  "bridgeCountsMatch": true,
+  "bridgeFreezeMatchesParent": true,
+  "bridgeReleaseFields": {
+    "cpuReleased": false,
+    "notes": "Inputs are authenticated; suite and builds keep their actual pins. Economy receives the only heavy execution slot.",
+    "releasedRecipe": "economy-only"
+  },
+  "changed": [
+    {
+      "paths": [
+        "docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/README.md"
+      ],
+      "status": "A"
+    },
+    {
+      "paths": [
+        "docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/command-1.log"
+      ],
+      "status": "A"
+    },
+    {
+      "paths": [
+        "docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/report.json"
+      ],
+      "status": "A"
+    },
+    {
+      "paths": [
+        "docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/source-after.json"
+      ],
+      "status": "A"
+    },
+    {
+      "paths": [
+        "docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/source-before.json"
+      ],
+      "status": "A"
+    },
+    {
+      "paths": [
+        "docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json"
+      ],
+      "status": "A"
+    },
+    {
+      "paths": [
+        "docs/evidence/root-assembly-20261001/combined-rules401-runtime-dispatch-bridge.json"
+      ],
+      "status": "A"
+    },
+    {
+      "paths": [
+        "docs/evidence/root-assembly-20261001/ovf-root-archives-c86e273-audit.json"
+      ],
+      "status": "A"
+    },
+    {
+      "paths": [
+        "docs/evidence/root-assembly-20261001/ovf-root-combined-admissions-c86e273-review-gpt56-sol.md"
+      ],
+      "status": "A"
+    },
+    {
+      "paths": [
+        "docs/evidence/root-assembly-20261001/ovf-root-import-equivalence-c86e273.json"
+      ],
+      "status": "A"
+    },
+    {
+      "paths": [
+        "docs/evidence/root-assembly-20261001/ovf-root-trail-c86e273-audit.json"
+      ],
+      "status": "A"
+    },
+    {
+      "paths": [
+        "docs/evidence/root-assembly-20261001/ovf-team-replay-complete-suite-4a71cd0-independent-audit.json"
+      ],
+      "status": "A"
+    },
+    {
+      "paths": [
+        "docs/evidence/root-assembly-20261001/ovf-team-replay-complete-suite-4a71cd0-review-gpt56-sol.md"
+      ],
+      "status": "A"
+    },
+    {
+      "paths": [
+        "docs/features/decisions.tsv"
+      ],
+      "status": "M"
+    }
+  ],
+  "commit": "01b5ae61a365a45447df7aa548f7bfde9ed6cc22",
+  "decisionPrefixPreserved": true,
+  "decisionRows": [
+    {
+      "evidence": [
+        {
+          "resolves": true,
+          "token": "c86e273"
+        },
+        {
+          "resolves": true,
+          "token": "docs/evidence/root-assembly-20261001/ovf-native-download-auth-probe-v2.mjs"
+        },
+        {
+          "resolves": true,
+          "token": "docs/evidence/root-assembly-20261001/ovf-native-download-auth-probe-v2-output.json"
+        },
+        {
+          "resolves": true,
+          "token": "docs/evidence/root-assembly-20261001/ovf-native-review-probe-v2-receipt.json"
+        },
+        {
+          "resolves": true,
+          "token": "docs/evidence/root-assembly-20261001/ovf-native-combat-acceptance-preparation-review-gpt56-sol-v2.md"
+        }
+      ],
+      "phase": "native-reader-probe-retention"
+    },
+    {
+      "evidence": [
+        {
+          "resolves": true,
+          "token": "4a71cd0"
+        },
+        {
+          "resolves": true,
+          "token": "docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/report.json"
+        },
+        {
+          "resolves": true,
+          "token": "docs/evidence/root-assembly-20261001/ovf-team-replay-complete-suite-4a71cd0-independent-audit.json"
+        }
+      ],
+      "phase": "combined-rules401-full-suite-green"
+    },
+    {
+      "evidence": [
+        {
+          "resolves": true,
+          "token": "c86e273"
+        },
+        {
+          "resolves": true,
+          "token": "docs/evidence/root-assembly-20261001/combined-rules401-runtime-dispatch-bridge.json"
+        }
+      ],
+      "phase": "combined-runtime-freeze"
+    }
+  ],
+  "decisionRowsAppended": 3,
+  "existingSuiteInputFailures": [],
+  "existingSuiteInputsCheckedAtFreeze": 917,
+  "newProofFilesFromGit": [
+    "scripts/acceptance/audit-direction-defense.ts",
+    "scripts/acceptance/build-native-helpers.mjs",
+    "scripts/acceptance/capture-ambush-fixtures.ts",
+    "scripts/acceptance/capture-ambush-native-checks.ts",
+    "scripts/acceptance/capture-ambush.mjs",
+    "scripts/acceptance/direction-defense-fixtures.ts",
+    "scripts/acceptance/direction-defense.mjs",
+    "scripts/acceptance/generate-native-fixtures.mjs",
+    "scripts/acceptance/helper-provenance.mjs",
+    "scripts/acceptance/native-audit.ts",
+    "scripts/acceptance/native-context.mjs",
+    "scripts/acceptance/native-contract.mjs",
+    "scripts/acceptance/native-downloads.ts",
+    "scripts/acceptance/native-fixtures.ts",
+    "scripts/acceptance/native-freeze.mjs",
+    "scripts/acceptance/specialist-lifecycle-fixtures.ts",
+    "scripts/acceptance/specialist-lifecycle.mjs",
+    "scripts/acceptance/verify-native-acceptance.mjs",
+    "scripts/acceptance/verify-native-history.mjs"
+  ],
+  "newProofListMatchesBridge": true,
+  "parent": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+  "productInputFailures": [],
+  "productInputsCheckedAtFreeze": 567,
+  "reportArtifactHashes": [
+    {
+      "actual": "07d9194e5cb32f01c112c7847b0b345ee1dcfa4887fcefc6ecf0cc3d2592ea54",
+      "expected": "07d9194e5cb32f01c112c7847b0b345ee1dcfa4887fcefc6ecf0cc3d2592ea54",
+      "file": "command-1.log",
+      "match": true
+    },
+    {
+      "actual": "53a7006baf049eba955a8cb382ce6355ba3cb6b9e7816848363b386b82df7694",
+      "expected": "53a7006baf049eba955a8cb382ce6355ba3cb6b9e7816848363b386b82df7694",
+      "file": "source-after.json",
+      "match": true
+    },
+    {
+      "actual": "53a7006baf049eba955a8cb382ce6355ba3cb6b9e7816848363b386b82df7694",
+      "expected": "53a7006baf049eba955a8cb382ce6355ba3cb6b9e7816848363b386b82df7694",
+      "file": "source-before.json",
+      "match": true
+    },
+    {
+      "actual": "ced75e92e6e198d8bad063fc0e4b276bfd7ee1936bf1849830cafcd21f7a11a9",
+      "expected": "ced75e92e6e198d8bad063fc0e4b276bfd7ee1936bf1849830cafcd21f7a11a9",
+      "file": "tests.json",
+      "match": true
+    }
+  ],
+  "reportArtifactHashesMatch": true,
+  "retentionChecksPass": true,
+  "reviewArtifacts": [
+    {
+      "archiveSha256": "4f587d3e6674384a57aa983a914118c473c5076160c34f1f4124f14b0fba3bcb",
+      "equal": true,
+      "file": "ovf-root-import-equivalence-c86e273.json",
+      "tmpSha256": "4f587d3e6674384a57aa983a914118c473c5076160c34f1f4124f14b0fba3bcb"
+    },
+    {
+      "archiveSha256": "9401e38ebce98130b81ffa0d63f3a307bd6fce25e54a1583281d695f699b364a",
+      "equal": true,
+      "file": "ovf-root-archives-c86e273-audit.json",
+      "tmpSha256": "9401e38ebce98130b81ffa0d63f3a307bd6fce25e54a1583281d695f699b364a"
+    },
+    {
+      "archiveSha256": "0fcc4212c31ac6fd8210e80c9d6adf0115cd7457bce16b15f373561085f98c82",
+      "equal": true,
+      "file": "ovf-root-trail-c86e273-audit.json",
+      "tmpSha256": "0fcc4212c31ac6fd8210e80c9d6adf0115cd7457bce16b15f373561085f98c82"
+    },
+    {
+      "archiveSha256": "c23be3754bd4bcc05d1f80552f072297d15b8bb438513fd68303a785b96b72fb",
+      "equal": true,
+      "file": "ovf-team-replay-complete-suite-4a71cd0-independent-audit.json",
+      "tmpSha256": "c23be3754bd4bcc05d1f80552f072297d15b8bb438513fd68303a785b96b72fb"
+    },
+    {
+      "archiveSha256": "77cae4da46a0020cec341fbc03dac93542262be984d71529c55c224cb2cdb666",
+      "equal": true,
+      "file": "ovf-team-replay-complete-suite-4a71cd0-review-gpt56-sol.md",
+      "tmpSha256": "77cae4da46a0020cec341fbc03dac93542262be984d71529c55c224cb2cdb666"
+    }
+  ],
+  "reviewArtifactsMatchTmp": true,
+  "sourceBeforeAfterEqual": true,
+  "suiteArchive": [
+    {
+      "archiveSha256": "07d9194e5cb32f01c112c7847b0b345ee1dcfa4887fcefc6ecf0cc3d2592ea54",
+      "equal": true,
+      "file": "command-1.log",
+      "originalSha256": "07d9194e5cb32f01c112c7847b0b345ee1dcfa4887fcefc6ecf0cc3d2592ea54"
+    },
+    {
+      "archiveSha256": "8711be82822ba830200c91af9936e476c3db3617a6ce6b33089cf329da0590e5",
+      "equal": true,
+      "file": "report.json",
+      "originalSha256": "8711be82822ba830200c91af9936e476c3db3617a6ce6b33089cf329da0590e5"
+    },
+    {
+      "archiveSha256": "53a7006baf049eba955a8cb382ce6355ba3cb6b9e7816848363b386b82df7694",
+      "equal": true,
+      "file": "source-after.json",
+      "originalSha256": "53a7006baf049eba955a8cb382ce6355ba3cb6b9e7816848363b386b82df7694"
+    },
+    {
+      "archiveSha256": "53a7006baf049eba955a8cb382ce6355ba3cb6b9e7816848363b386b82df7694",
+      "equal": true,
+      "file": "source-before.json",
+      "originalSha256": "53a7006baf049eba955a8cb382ce6355ba3cb6b9e7816848363b386b82df7694"
+    },
+    {
+      "archiveSha256": "ced75e92e6e198d8bad063fc0e4b276bfd7ee1936bf1849830cafcd21f7a11a9",
+      "equal": true,
+      "file": "tests.json",
+      "originalSha256": "ced75e92e6e198d8bad063fc0e4b276bfd7ee1936bf1849830cafcd21f7a11a9"
+    }
+  ],
+  "suiteArchiveMatchesOriginal": true,
+  "suiteReportHashMatchesBridge": true,
+  "suiteTests": {
+    "numFailedTests": 0,
+    "numPassedTests": 2920,
+    "numPendingTests": 0,
+    "numTodoTests": 0,
+    "numTotalTests": 2920,
+    "success": true
+  },
+  "worktreeClean": true
+}
