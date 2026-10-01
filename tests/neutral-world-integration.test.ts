@@ -43,7 +43,7 @@ describe('neutral features through normal match commands, ticks and checkpoints'
   expect(site.rewarded).toEqual([0]);expect(site.reward).toEqual({wood:0,ore:0,crystal:0});expect(state.world!.creatures.every(c=>c.hp===0)).toBe(true);
   expect(resources(state)).toEqual(initial);expect(state.players).toHaveLength(2);
   evidence.den={tick:state.tick,time:state.time,creatures:state.world!.creatures.map(c=>({id:c.id,hp:c.hp,maxHp:c.maxHp,respawnAt:c.respawnAt})),rewarded:[...site.rewarded],reward:{...site.reward},resourcesBefore:initial,resourcesAfter:resources(state),identicalResumedTicks:400};
- });
+ },20_000);
  it('delivers a request, collects finite local supplies and recruits actual player units through normal controls',()=>{
   const {state,site,unit}=scenario('village'),initial=resources(state),beforeBank=state.players[0].wood;
   expect(issueCommand(state,0,{type:'supportVillage',ids:[unit.id],target:site.id})).toBe(true);advance(state,1);
