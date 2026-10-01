@@ -1,6 +1,6 @@
 import { FACTIONS } from './content';
 import { deployScenarioArmy, survivingScenarioArmy, type CampaignSoldier } from './campaign';
-import { captureScenario, createScenario, restoreScenario } from './scenarios';
+import { captureScenario, createScenario, restoreScenario, scenarioRulesCompatibility } from './scenarios';
 import { decodeScenarioRecording, ScenarioRecorder, scenarioCheckpointChecksum, scenarioRecordingRulesCompatibility, scenarioStateEquals, verifyScenarioRecording } from './scenario-recordings';
 import { SIMULATION_REVISION } from './versions';
 import { scenarioJson } from './scenario-validation';
@@ -29,6 +29,10 @@ export function conquestRulesCompatibility(profile: ConquestProfile): { compatib
   const revision = profile.simulationRevision ?? 'unknown';
   let reason = profile.simulationRevision === undefined ? 'This conquest has no pinned simulation rules. It is available for inspection.'
     : revision !== SIMULATION_REVISION ? `This conquest uses simulation rules ${revision}; this build uses ${SIMULATION_REVISION}. It is available for inspection.` : null;
+  if (reason === null && profile.active) {
+    const checkpoint = scenarioRulesCompatibility(profile.active.checkpoint);
+    if (!checkpoint.compatible) reason = checkpoint.reason;
+  }
   if (reason === null) for (const recording of [...profile.history.flatMap(action => action.type === 'battle' ? [action.recording] : []), ...(profile.active ? [profile.active.recording] : [])]) {
     const journal = scenarioRecordingRulesCompatibility(recording);
     if (!journal.compatible) { reason = journal.reason; break; }

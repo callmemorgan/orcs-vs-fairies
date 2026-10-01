@@ -1,0 +1,64 @@
+
+> orcs-vs-fairies@0.1.0 test
+> vitest run tests/profile-checkpoint-rules-compatibility.test.ts --reporter=verbose
+
+
+ RUN  v4.1.11 /home/morgana/Projects/orcs-vs-Fairies
+
+ × tests/profile-checkpoint-rules-compatibility.test.ts > current outer profiles cannot authorize historical checkpoint pins > keeps a campaign checkpoint with rules undefined inspection-only before writers or replay 29ms
+   → expected true to be false // Object.is equality
+ × tests/profile-checkpoint-rules-compatibility.test.ts > current outer profiles cannot authorize historical checkpoint pins > keeps a campaign checkpoint with rules 3.2.0 inspection-only before writers or replay 14ms
+   → expected true to be false // Object.is equality
+ × tests/profile-checkpoint-rules-compatibility.test.ts > current outer profiles cannot authorize historical checkpoint pins > keeps a conquest checkpoint with rules undefined inspection-only before writers or replay 18ms
+   → expected true to be false // Object.is equality
+ × tests/profile-checkpoint-rules-compatibility.test.ts > current outer profiles cannot authorize historical checkpoint pins > keeps a conquest checkpoint with rules 3.2.0 inspection-only before writers or replay 15ms
+   → expected true to be false // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/profile-checkpoint-rules-compatibility.test.ts > current outer profiles cannot authorize historical checkpoint pins > keeps a campaign checkpoint with rules undefined inspection-only before writers or replay
+ FAIL  tests/profile-checkpoint-rules-compatibility.test.ts > current outer profiles cannot authorize historical checkpoint pins > keeps a campaign checkpoint with rules 3.2.0 inspection-only before writers or replay
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/profile-checkpoint-rules-compatibility.test.ts:16:40
+     14|       profile.active!.recording.finalChecksum = scenarioCheckpointChec…
+     15|       const before = JSON.stringify(profile), compatibility = campaign…
+     16|       expect(compatibility.compatible).toBe(false); expect(compatibili…
+       |                                        ^
+     17|       expect(JSON.stringify(decodeCampaignProfile(profile))).toBe(befo…
+     18|       for (const action of [
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/profile-checkpoint-rules-compatibility.test.ts > current outer profiles cannot authorize historical checkpoint pins > keeps a conquest checkpoint with rules undefined inspection-only before writers or replay
+ FAIL  tests/profile-checkpoint-rules-compatibility.test.ts > current outer profiles cannot authorize historical checkpoint pins > keeps a conquest checkpoint with rules 3.2.0 inspection-only before writers or replay
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/profile-checkpoint-rules-compatibility.test.ts:34:40
+     32|       profile.active!.recording.finalChecksum = scenarioCheckpointChec…
+     33|       const before = JSON.stringify(profile), compatibility = conquest…
+     34|       expect(compatibility.compatible).toBe(false); expect(compatibili…
+       |                                        ^
+     35|       expect(JSON.stringify(decodeConquestProfile(profile))).toBe(befo…
+     36|       for (const action of [
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed (4)
+   Start at  09:20:59
+   Duration  443ms (transform 242ms, setup 0ms, import 303ms, tests 77ms, environment 0ms)
+

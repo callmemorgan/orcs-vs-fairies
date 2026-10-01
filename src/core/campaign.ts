@@ -1,5 +1,5 @@
 import { CAMPAIGNS, SCENARIOS } from '../scenarios/campaigns';
-import { captureScenario, createScenario, restoreScenario } from './scenarios';
+import { captureScenario, createScenario, restoreScenario, scenarioRulesCompatibility } from './scenarios';
 import { scenarioJson } from './scenario-validation';
 import { decodeScenarioRecording, ScenarioRecorder, scenarioCheckpointChecksum, scenarioRecordingRulesCompatibility, scenarioStateEquals, verifyScenarioRecording } from './scenario-recordings';
 import { SIMULATION_REVISION } from './versions';
@@ -48,6 +48,8 @@ export function campaignRulesCompatibility(profile: CampaignProfile): { compatib
   let reason = profile.simulationRevision === undefined ? 'This campaign has no pinned simulation rules. It is available for inspection.'
     : revision !== SIMULATION_REVISION ? `This campaign uses simulation rules ${revision}; this build uses ${SIMULATION_REVISION}. It is available for inspection.` : null;
   if (reason === null) for (const battle of [...profile.history, ...(profile.active ? [profile.active] : [])]) {
+    const checkpoint = scenarioRulesCompatibility(battle.checkpoint);
+    if (!checkpoint.compatible) { reason = checkpoint.reason; break; }
     const journal = scenarioRecordingRulesCompatibility(battle.recording);
     if (!journal.compatible) { reason = journal.reason; break; }
   }
