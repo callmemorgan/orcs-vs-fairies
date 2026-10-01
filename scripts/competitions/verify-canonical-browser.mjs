@@ -37,10 +37,39 @@ export async function verifyBrowser({ browser, base, output, protocolVersion, ch
     await poll(async () => !(await locator.isDisabled()), 'native UI control to be enabled');
   }
   async function uiResponse(page, method, route, action) {
-    const pending = page.waitForResponse(response => new URL(response.url()).pathname === route && response.request().method() === method);
-    await action();
-    const response = await pending;
-    return { status: response.status(), data: await response.json() };
+    const preparation = method === 'POST' && /^\/api\/lobbies\/[^/]+\/join$/.test(route) ? route.slice(0, -5) : undefined;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      let captured, preparing, mutations = 0;
+      const capture = request => {
+        const pathname = new URL(request.url()).pathname;
+        if (pathname === route && request.method() === method) { captured ??= request; mutations++; }
+        if (preparation && pathname === preparation && request.method() === 'GET') preparing ??= request;
+      };
+      page.on('request', capture);
+      try {
+        await action();
+        // A periodic native refresh can disable a button between pointer-down
+        // and pointer-up. Retry only when the click issued no matching request.
+        const until = Date.now() + 1500;
+        while (!captured && !preparing && Date.now() < until) await sleep(20);
+        const evidence = { method, route, attempt, requested: !!captured, preparatoryRequested: !!preparing };
+        summary.uiActions ??= []; summary.uiActions.push(evidence);
+        if (!captured && !preparing) continue;
+        // Joining first fetches its lobby revision. An issued preparatory GET
+        // starts the action even if it is slow or fails, so never click again.
+        if (preparing) {
+          const response = await bounded(preparing.response(), 30000, `GET ${preparation} preparation`);
+          assert(response); evidence.preparationStatus = response.status(); assert.equal(response.status(), 200);
+        }
+        if (!captured) await poll(() => captured, `${method} ${route} after preparation`, 30000);
+        evidence.requested = true;
+        const response = await bounded(captured.response(), 30000, `${method} ${route} response`);
+        assert(response); evidence.status = response.status();
+        const data = await response.json(); evidence.mutations = mutations; assert.equal(mutations, 1);
+        return { status: response.status(), data };
+      } finally { page.off('request', capture); }
+    }
+    throw new Error(`${method} ${route} issued no native request after three clicks.`);
   }
   async function get(context, route) {
     const result = await request(context, route);
@@ -80,6 +109,12 @@ export async function verifyBrowser({ browser, base, output, protocolVersion, ch
     const page = await context.newPage(); pages.push({ label, page });
     page.setDefaultTimeout(20000); page.setDefaultNavigationTimeout(30000);
     page.on('pageerror', error => errors.push(`${label}: ${error.message}`));
+    page.on('response', response => {
+      const pathname = new URL(response.url()).pathname;
+      if (/^\/api\/matches\/[^/]+\/ticket$/.test(pathname)) {
+        summary.ticketResponses ??= []; summary.ticketResponses.push({ label, path: pathname, status: response.status(), at: Date.now() });
+      }
+    });
     await page.goto(base, { waitUntil: 'networkidle' });
     await page.locator('.begin-match').waitFor({ state: 'visible' });
     return { context, page };
@@ -133,13 +168,15 @@ export async function verifyBrowser({ browser, base, output, protocolVersion, ch
       const r = window.rts, wire = window.__nativeCompetitionWire;
       return r?.mode === 'online' && r.online?.status === 'connected' && r.online.side === expected.side &&
         r.viewSide === expected.side && !r.simulationEnabled && r.art.loaded && r.fps > 0 &&
+        document.querySelector('.competition-overlay')?.hidden &&
         wire.connections.some(entry => entry.socket.readyState === WebSocket.OPEN && entry.hello?.matchId === expected.matchId && entry.hello.side === expected.side);
     }, { matchId, side }, { timeout: 60000 });
     await page.locator('.competition-overlay').waitFor({ state: 'hidden' });
     assert.equal(await page.locator('#game-canvas > canvas').count(), 1);
     return page.evaluate(matchId => {
+      const r = window.rts; if (!r) throw new Error('The active rendered match was replaced during entry verification.');
       const row = [...window.__nativeCompetitionWire.connections].reverse().find(entry => entry.hello?.matchId === matchId && entry.socket.readyState === WebSocket.OPEN);
-      return { hello: row.hello, mode: window.rts.mode, side: window.rts.viewSide, factions: window.rts.state.players.map(player => player.faction) };
+      return { hello: row.hello, mode: r.mode, side: r.viewSide, factions: r.state.players.map(player => player.faction) };
     }, matchId);
   }
   async function createRanked(hostPage, guestPage) {
@@ -157,10 +194,17 @@ export async function verifyBrowser({ browser, base, output, protocolVersion, ch
     const started = await lobbyMutation(hostPage, lobby.id, 'start'); assert(started.matchId);
     const hostRuntime = await waitMatch(hostPage, started.matchId, 0);
     await refreshCompetition(guestPage);
-    const enter = guestDialog.locator('[data-current="play"]'); await enabled(enter); await enter.click();
+    const enter = guestDialog.locator('[data-current="play"]');
+    await clickForTicket(guestPage, enter, started.matchId);
     const guestRuntime = await waitMatch(guestPage, started.matchId, 1);
     assert.deepEqual(hostRuntime.factions, ['orcs', 'orcs']); assert.deepEqual(guestRuntime.factions, ['orcs', 'orcs']);
     return { lobbyId: lobby.id, matchId: started.matchId, host: hostRuntime, guest: guestRuntime };
+  }
+  async function clickForTicket(page, button, matchId) {
+    const route = `/api/matches/${matchId}/ticket`;
+    await enabled(button);
+    const response = await uiResponse(page, 'POST', route, () => button.click());
+    assert.equal(response.status, 200);
   }
   async function surrender(page, matchId) {
     const envelope = await page.evaluate(({ matchId, protocolVersion }) => {
@@ -503,7 +547,7 @@ export async function verifyBrowser({ browser, base, output, protocolVersion, ch
     await host.page.screenshot({ path: path.join(directory, 'native-ranked-host-side-0.png') }); await guest.page.screenshot({ path: path.join(directory, 'native-ranked-guest-side-1.png') });
     for (const [actor, side] of [[host, 0], [guest, 1]]) {
       await actor.page.reload({ waitUntil: 'networkidle' }); await actor.page.locator('.begin-match').waitFor({ state: 'visible' });
-      const dialog = await openCompetition(actor.page), rejoin = dialog.locator(`[data-rejoin="${sixth.matchId}"]`); await enabled(rejoin); await rejoin.click();
+      const dialog = await openCompetition(actor.page), rejoin = dialog.locator(`[data-rejoin="${sixth.matchId}"]`); await clickForTicket(actor.page, rejoin, sixth.matchId);
       await waitMatch(actor.page, sixth.matchId, side);
       await actor.page.waitForFunction(id => window.rts?.cosmetics.players.find(row => row.side === 0)?.portrait === id, equipment.portrait);
       checkOwnedSide(await diagnostics(actor.page), 0, side === 0);
@@ -548,6 +592,16 @@ export async function verifyBrowser({ browser, base, output, protocolVersion, ch
     return { ...summary, restartCookies: retainedCookies };
   } catch (error) {
     summary.passed = false; summary.errors = [...errors, error.stack ?? String(error)];
+    summary.failureRuntime = {};
+    for (const { label, page } of pages) if (!page.isClosed()) {
+      summary.failureRuntime[label] = await page.evaluate(() => ({
+        rts: window.rts ? { mode: window.rts.mode, tick: window.rts.state.tick, side: window.rts.viewSide, art: window.rts.art, fps: window.rts.fps, online: window.rts.online } : null,
+        canvases: document.querySelectorAll('#game-canvas > canvas').length,
+        competitionMessage: document.querySelector('.competition-message')?.textContent,
+        competitionVisible: !document.querySelector('.competition-overlay')?.hidden,
+        connections: window.__nativeCompetitionWire.connections.map(entry => ({ hello: entry.hello, state: entry.socket.readyState, acks: entry.acks, errors: entry.errors }))
+      })).catch(diagnosticError => ({ error: diagnosticError.message }));
+    }
     for (const { label, page } of pages) if (!page.isClosed()) await page.screenshot({ path: path.join(directory, `failure-${label}.png`), fullPage: true }).catch(() => {});
     await writeFile(path.join(directory, 'summary.json'), JSON.stringify(summary, null, 2) + '\n');
     throw error;

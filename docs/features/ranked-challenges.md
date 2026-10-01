@@ -26,7 +26,7 @@ The separate hosted proof uses an external human controller, normal HTTP and Web
 
 The canonical native proof builds the Vite app and production server, then uses two independent browser accounts and the main toolbar. Five real ranked matches finish through accepted guest surrender commands on the captured game WebSocket. The browser creates, joins, readies and enters those matches through the native UI. It checks unlock thresholds, same-faction equipment by side, reload/rejoin, daily entry/resume, local logout and a graceful packaged-server restart. Daily victory scoring remains covered by the separate hosted proof above.
 
-The native driver delays real responses from the same server to check that an older hosted success or transport failure cannot replace newer equipment, and that an anonymous session poll cannot clear a later native login. It records source and built-package hashes and rejects source changes during verification. An output directory must be new.
+The native driver delays real responses from the same server to check that an older hosted success or transport failure cannot replace newer equipment, and that an anonymous session poll cannot clear a later native login. It records each mutation request. If a periodic UI refresh prevents a click from issuing any request, the driver retries the native click; dispatched mutations are not retried except for the documented readiness 409 path. It records source and built-package hashes and rejects source changes during verification. An output directory must be new.
 
 Run from the repository root:
 
