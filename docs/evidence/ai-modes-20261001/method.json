@@ -1,0 +1,138 @@
+{
+  "sourceCommit": "dc536a8eca3b12d9115ef90c314a16cd5424f7e4",
+  "sourceSha256": {
+    "src/core/types.ts": "0a1ac2e525dbb3126d545398c53bd4471036221b567e3e4d26c6d2213c6954de",
+    "src/core/content.ts": "b1a17ec7839e458ce6bf8cba63fe19ba3a27de0ed2e2ed9c7a08226f406da4f2",
+    "src/core/ai-policy.ts": "5b306994d60509e2774ba73217918eb3ba3400a18d542023d8bcca974f5cb0f9",
+    "src/core/simulation.ts": "6dff725b09d615ad470b8852afb232de1e487c5e2cd48368eac51dc89b83b31b",
+    "src/core/maps.ts": "e0d2f499bc8c49a071a750a3541d635fa66c9ad6ebe8329f91828749390bab55",
+    "src/core/navigation.ts": "d0b2f4b1557cd0ed66b0887d6ef5b9a34ebc825bdea104bc79554f7475257ac0",
+    "src/core/progression.ts": "8539ffc473d5587d4ef9e0181accb216fe20ffbaee82f7a64e96ff9215004c95",
+    "src/core/history-hooks.ts": "56a53b84aa389f3ccf189f72df2ecf2d632677f8a664b49fc16865e46bdf6f82",
+    "src/core/saves.ts": "c8fc07a0612b33d6bba2ecd56e5f53ab6c6a8f7a323c5482a1c376a5b62c6346",
+    "scripts/ai/ladder.test.ts": "6794d667827e4794a380febb0cc4aba5fc30757075348ef3a651db748992cde8"
+  },
+  "nodeVersion": "v24.21.0",
+  "command": "AI_LADDER_OUTPUT=work/ai-modes/ladder-final npx vitest run --config vitest.ai.config.ts",
+  "seed": 4127,
+  "mapSize": "small",
+  "stepSeconds": 0.05,
+  "maxMinutes": 45,
+  "games": 8,
+  "profiles": "Hard rush, fortify, expand and raid versus normal balanced; each pair uses both starting-slot arrangements. This is completion and invariant coverage, not balance or difficulty win-rate evidence.",
+  "allGamesCompleted": true,
+  "reports": [
+    {
+      "file": "dwarves-fortify-original.json",
+      "seconds": 614.2499999999891,
+      "winner": 0,
+      "timeout": false,
+      "retreats": [
+        16,
+        27
+      ],
+      "producedFighters": [
+        34,
+        24
+      ]
+    },
+    {
+      "file": "dwarves-fortify-swap.json",
+      "seconds": 596.750000000005,
+      "winner": 1,
+      "timeout": false,
+      "retreats": [
+        14,
+        76
+      ],
+      "producedFighters": [
+        20,
+        44
+      ]
+    },
+    {
+      "file": "fairies-raid-original.json",
+      "seconds": 741.1499999998737,
+      "winner": 0,
+      "timeout": false,
+      "retreats": [
+        41,
+        14
+      ],
+      "producedFighters": [
+        15,
+        28
+      ]
+    },
+    {
+      "file": "fairies-raid-swap.json",
+      "seconds": 447.3000000000674,
+      "winner": 0,
+      "timeout": false,
+      "retreats": [
+        35,
+        12
+      ],
+      "producedFighters": [
+        19,
+        15
+      ]
+    },
+    {
+      "file": "orcs-rush-original.json",
+      "seconds": 455.8500000000694,
+      "winner": 1,
+      "timeout": false,
+      "retreats": [
+        17,
+        16
+      ],
+      "producedFighters": [
+        15,
+        16
+      ]
+    },
+    {
+      "file": "orcs-rush-swap.json",
+      "seconds": 416.20000000006036,
+      "winner": 1,
+      "timeout": false,
+      "retreats": [
+        6,
+        11
+      ],
+      "producedFighters": [
+        12,
+        14
+      ]
+    },
+    {
+      "file": "tideborn-expand-original.json",
+      "seconds": 711.8499999999003,
+      "winner": 0,
+      "timeout": false,
+      "retreats": [
+        63,
+        60
+      ],
+      "producedFighters": [
+        28,
+        39
+      ]
+    },
+    {
+      "file": "tideborn-expand-swap.json",
+      "seconds": 634.149999999971,
+      "winner": 0,
+      "timeout": false,
+      "retreats": [
+        63,
+        36
+      ],
+      "producedFighters": [
+        22,
+        21
+      ]
+    }
+  ]
+}
