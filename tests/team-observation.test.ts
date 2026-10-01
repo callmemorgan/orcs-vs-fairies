@@ -14,7 +14,7 @@ function config(sharedVision=true):MatchConfig {
  ],rules:{sharedVision}};
 }
 const unit=(s:ReturnType<typeof createMatch>,side:Side)=>s.entities.find(e=>e.side===side&&e.role==='melee')!;
-const privateFields=['order','orderQueue','queue','rally','trainProgress','research','researchProgress','carried','carriedKind','cooldown','abilityReadyAt','expires','path'];
+const privateFields=['order','orderQueue','queue','rally','trainProgress','research','researchProgress','carried','carriedKind','cooldown','abilityReadyAt','expires','lastDamagedAt','path'];
 const observe=(session:TerminalSession)=>(session.handle({op:'observe'}) as {result:ReturnType<PlayerView['observe']>}).result;
 function movementSession(blocker:{x:number;y:number},scout={x:16.5,y:10.5}){
  const session=new TerminalSession();session.handle({op:'startMatch',config:config(false),side:0});
@@ -168,6 +168,25 @@ describe('team observations',()=>{
   const events=new PlayerView(0).events(s);expect(events).toHaveLength(2);
   expect(events[0]).toEqual({type:'attack',side:1,x:20,y:20,target:ally.id,amount:15});
   expect(events[1]).toEqual({type:'death',side:1,x:20,y:20,source:999});
+ });
+
+ it('retains owned damage timing after an event expires without disclosing other players damage history',()=>{
+  const s=createMatch(config(false)),own=unit(s,0),ally=unit(s,2),foe=unit(s,1),view=new PlayerView(0);
+  s.terrain.fill('grass');s.resources=[];
+  Object.assign(own,{x:20.5,y:20.5,cooldown:100});
+  Object.assign(ally,{x:20.5,y:24.5,cooldown:100,lastDamagedAt:7});
+  Object.assign(foe,{x:21.5,y:20.5,order:{type:'attack',target:own.id},lastDamagedAt:8});
+  refreshVisibility(s);stepGame(s,.05);
+  expect(own.hp).toBeLessThan(own.maxHp);expect(own.lastDamagedAt).toBe(s.time);
+  const damagedAt=own.lastDamagedAt;
+  stepGame(s,.05);expect(s.events.some(event=>event.type==='attack'&&event.target===own.id)).toBe(false);
+  s.visible[0]=new Set([20*s.width+20,24*s.width+20]);
+  const observation=view.observe(s),seenOwn=observation.entities.find(entity=>entity.id===own.id)!;
+  expect(seenOwn).toHaveProperty('lastDamagedAt',damagedAt);
+  expect(observation.entities.some(entity=>entity.id===foe.id)).toBe(false);
+  expect(observation.entities.find(entity=>entity.id===ally.id)).not.toHaveProperty('lastDamagedAt');
+  s.visible[0].add(20*s.width+21);
+  expect(view.observe(s).entities.find(entity=>entity.id===foe.id)).not.toHaveProperty('lastDamagedAt');
  });
 
  it('reports eliminated teammates as winners when their team wins',()=>{
