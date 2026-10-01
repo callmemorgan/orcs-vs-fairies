@@ -1,0 +1,26 @@
+diff --git a/src/game/GameScene.ts b/src/game/GameScene.ts
+index 1d6e12b..4cc7bea 100644
+--- a/src/game/GameScene.ts
++++ b/src/game/GameScene.ts
+@@ -347,7 +347,7 @@ export default class GameScene extends Phaser.Scene {
+     for(let y=0;y<this.state.height;y++)for(let x=0;x<this.state.width;x++){
+       const p=project(x+.5,y+.5);const n=((x*73856093)^(y*19349663)^(this.state.seed||7))>>>0;
+       const terrain=this.state.terrain[y*this.state.width+x];
+-      const colors={grass:0x536b48,road:0x85805a,mud:0x74634d,shallows:0x5b9b98,water:0x387986,rock:0x697980,bridge:0x95734e};
++      const colors={grass:0x536b48,road:0x85805a,mud:0x74634d,shallows:0x5b9b98,water:0x387986,rock:0x697980,bridge:0x95734e,sand:0xc3a568,snow:0xc8d9db,forest:0x2e4931,ice:0x94c9d9};
+       this.diamond(g,p.x,p.y,65,33,colors[terrain]);
+       if(terrain==='grass'&&n%4===0){g.lineStyle(1,0x91a262,.35);g.lineBetween(p.x-8,p.y+3,p.x-6,p.y-1);}
+ 
+diff --git a/src/ui/Hud.ts b/src/ui/Hud.ts
+index 0b11da5..523e989 100644
+--- a/src/ui/Hud.ts
++++ b/src/ui/Hud.ts
+@@ -104,7 +104,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
+   function drawMinimap(s:GameState) {
+     const cw=map.width/s.width,ch=map.height/s.height;
+     ctx.fillStyle='#070e10';ctx.fillRect(0,0,map.width,map.height);
+-    for(const i of s.explored[localSide]){ctx.fillStyle=s.visible[localSide].has(i)?({grass:'#45654a',road:'#8e8058',mud:'#69593f',water:'#316579',shallows:'#609690',rock:'#7c8386',bridge:'#b49a6b'}[s.terrain[i]]):'#22342d';ctx.fillRect((i%s.width)*cw,Math.floor(i/s.width)*ch,Math.ceil(cw),Math.ceil(ch));}
++    for(const i of s.explored[localSide]){ctx.fillStyle=s.visible[localSide].has(i)?({grass:'#45654a',road:'#8e8058',mud:'#69593f',water:'#316579',shallows:'#609690',rock:'#7c8386',bridge:'#b49a6b',sand:'#c3a568',snow:'#c8d9db',forest:'#2e4931',ice:'#94c9d9'}[s.terrain[i]]):'#22342d';ctx.fillRect((i%s.width)*cw,Math.floor(i/s.width)*ch,Math.ceil(cw),Math.ceil(ch));}
+     for(const r of playerView.resourcesFor(s)){const i=Math.floor(r.y)*s.width+Math.floor(r.x);if(r.amount<=0||!s.explored[localSide].has(i))continue;ctx.fillStyle=r.kind==='wood'?'#688c53':r.kind==='crystal'?'#b497e7':'#b49c76';ctx.fillRect(r.x*cw-1,r.y*ch-1,2,2);}
+     const settings=appearance.value,teams=(s as GameState&{teams?:number[]}).teams;
+     for(const e of s.entities){

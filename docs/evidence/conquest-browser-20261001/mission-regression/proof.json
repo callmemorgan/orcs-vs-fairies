@@ -1,0 +1,781 @@
+{
+  "at": "2026-10-01T11:06:40.570Z",
+  "origin": "http://127.0.0.1:5276",
+  "commit": "3ab78201626a22249d6edd4ce98c2ecb051d312f",
+  "sources": {
+    "src/scenarios/demo.ts": "82fd68c8f411fea2476a7dee729be125da30ae28b1c1866f4073f8b7b75fd281",
+    "src/scenarios/campaigns.ts": "f61da50b23bd565403df85c1e6fc971d60c3d2e79ee6405887edc8f45261e95b",
+    "src/core/campaign.ts": "b2debe4f202689501c7652c4f1bc95a24e8eae8cfca0f15a3277fcffd997d26c",
+    "src/core/scenario-recordings.ts": "921bc157529159e7f8bc18400e5e62921aa26ad89994caff2a02f7360d0062ef",
+    "src/core/scenarios.ts": "69868cbb47bfafd8dcbad7173ae31ef8cbd40c1bd4f0e8811ba71fe976914ff7",
+    "src/ui/ScenarioTools.ts": "4b7f8dc2eb8edc6d00957f0398ff48e493fe4199cd369b481894210b258aff80",
+    "src/game/ScenarioOverlay.ts": "7841298b571e88c76405a2075e55ec548a0d989fa3da49305e8ebc594ffd585f",
+    "src/game/GameScene.ts": "840703674cd775eb56e94983629f7a0bc07f9706a1af60ddc049c96d8a8efa69",
+    "src/ui/Hud.ts": "bd638f6621b96fd63e2d557fec2524929b191c7870bd3401c4a79a853a069d54",
+    "scripts/verify_scenarios.mjs": "ae5e9724e70ff28b7155dc3ed2393a0126991d1dcdc1182ffd564db82db01293"
+  },
+  "viewport": {
+    "width": 1600,
+    "height": 1100
+  },
+  "renderer": "Phaser canvas",
+  "inputPolicy": "Only visible buttons, file input, keyboard and native canvas pointer input. scenarioDiagnostics is read as copied evidence.",
+  "actions": [
+    {
+      "at": "2026-10-01T11:03:30.814Z",
+      "description": "Launch the authored fixed-army dwarf puzzle through the practice picker."
+    },
+    {
+      "at": "2026-10-01T11:03:31.455Z",
+      "description": "Select the supplied army through Mission controls."
+    },
+    {
+      "at": "2026-10-01T11:03:31.578Z",
+      "description": "Resume the shared simulation and activate emplacement through the ordinary HUD button."
+    },
+    {
+      "at": "2026-10-01T11:03:31.763Z",
+      "description": "Assign and recall a real control group with keyboard input."
+    },
+    {
+      "at": "2026-10-01T11:03:31.892Z",
+      "description": "Select the cannon through its HUD roster button, then right-click the firing shelf on the native canvas."
+    },
+    {
+      "at": "2026-10-01T11:03:40.288Z",
+      "description": "Emplace the cannon at the firing shelf and wait for damage from its real weapon."
+    },
+    {
+      "at": "2026-10-01T11:03:51.413Z",
+      "description": "Pause with the HUD, open Mission controls, and download a mission checkpoint."
+    },
+    {
+      "at": "2026-10-01T11:03:51.632Z",
+      "description": "Reset the puzzle and compare the complete new checkpoint with the original launch."
+    },
+    {
+      "at": "2026-10-01T11:03:52.097Z",
+      "description": "Load the downloaded checkpoint through the normal file input."
+    },
+    {
+      "at": "2026-10-01T11:03:52.503Z",
+      "description": "Resume the restored cannon order until the authored objective completes."
+    },
+    {
+      "at": "2026-10-01T11:04:21.798Z",
+      "description": "Choose the authored dwarf finale and move the supplied army into the boss sight."
+    },
+    {
+      "at": "2026-10-01T11:04:29.730Z",
+      "description": "Center the army using its visible selection control so the active warning can be inspected."
+    },
+    {
+      "at": "2026-10-01T11:04:30.883Z",
+      "description": "Start the dwarf campaign through its campaign card."
+    },
+    {
+      "at": "2026-10-01T11:04:31.941Z",
+      "description": "Solve the campaign first chapter with the same visible army, roster, ability and pointer controls."
+    },
+    {
+      "at": "2026-10-01T11:05:21.013Z",
+      "description": "Export the verified campaign profile, reload the page, and resume its stored completed chapter."
+    },
+    {
+      "at": "2026-10-01T11:05:22.007Z",
+      "description": "Continue to the second chapter and prepare the inherited detachment with the normal ability button."
+    },
+    {
+      "at": "2026-10-01T11:05:22.601Z",
+      "description": "Focus visible waves through roster selection and native attack clicks; move the wounded commander behind the fortress."
+    },
+    {
+      "at": "2026-10-01T11:06:37.881Z",
+      "description": "Read both campaign route choices and choose the northern works through its button."
+    },
+    {
+      "at": "2026-10-01T11:06:38.527Z",
+      "description": "Import the exported profile through the native file input and continue into its chosen route."
+    }
+  ],
+  "checks": {
+    "authoredContent": {
+      "practiceMissions": 30,
+      "factions": 6,
+      "campaignCards": 6,
+      "ids": [
+        "orcs-1",
+        "orcs-2",
+        "orcs-3",
+        "orcs-3-alt",
+        "orcs-4",
+        "fairies-1",
+        "fairies-2",
+        "fairies-3",
+        "fairies-3-alt",
+        "fairies-4",
+        "dwarves-1",
+        "dwarves-2",
+        "dwarves-3",
+        "dwarves-3-alt",
+        "dwarves-4",
+        "undead-1",
+        "undead-2",
+        "undead-3",
+        "undead-3-alt",
+        "undead-4",
+        "tideborn-1",
+        "tideborn-2",
+        "tideborn-3",
+        "tideborn-3-alt",
+        "tideborn-4",
+        "automata-1",
+        "automata-2",
+        "automata-3",
+        "automata-3-alt",
+        "automata-4"
+      ]
+    },
+    "fixedPuzzleStart": {
+      "id": "dwarves-1",
+      "seed": 7301,
+      "tick": 0,
+      "resources": {
+        "wood": 0,
+        "ore": 0,
+        "crystal": 0
+      },
+      "army": {
+        "commander": 1,
+        "cannon": 2,
+        "shield": 3,
+        "gun-a": 4,
+        "gun-b": 5,
+        "target-tower": 6,
+        "raider": 7
+      }
+    },
+    "armyAbilityAndControls": true,
+    "physicalMovementAndWeaponDamage": {
+      "initialCannon": {
+        "id": 2,
+        "side": 0,
+        "kind": "unit",
+        "role": "special",
+        "x": 6,
+        "y": 20,
+        "hp": 145,
+        "maxHp": 145,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 0,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": []
+      },
+      "savedCannon": {
+        "id": 2,
+        "side": 0,
+        "kind": "unit",
+        "role": "special",
+        "x": 19.014623991201162,
+        "y": 18.583035983841,
+        "hp": 145,
+        "maxHp": 145,
+        "order": {
+          "type": "hold"
+        },
+        "cooldown": 2.400000000000001,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 0,
+        "animation": "attack",
+        "animTime": 0.2,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "entrenchedAt": 8.649999999999988,
+        "abilityReadyAt": 8.649999999999988
+      },
+      "savedTowerHp": 686.76,
+      "time": 19.800000000000146
+    },
+    "exactReset": true,
+    "exactCheckpointRestore": {
+      "tick": 396,
+      "time": 19.800000000000146,
+      "variables": {
+        "action.ability": 6,
+        "action.move": 1,
+        "deaths.1": 1
+      },
+      "commandCounts": {
+        "ability": 6,
+        "move": 1
+      }
+    },
+    "restoredObjectiveCompletion": {
+      "outcome": "won",
+      "tick": 975,
+      "time": 48.74999999999937,
+      "completed": [
+        "solution",
+        "commander"
+      ]
+    },
+    "activeBossWarningPixels": {
+      "warning": {
+        "x": 21.68778567366372,
+        "y": 18.27549960492289,
+        "radius": 3,
+        "resolveAt": 10.999999999999982,
+        "source": 6,
+        "phase": 0,
+        "hpAtStart": 1580,
+        "interrupted": false
+      },
+      "time": 7.94999999999998,
+      "screen": {
+        "x": 943.8012474614252,
+        "y": 488.0126926312139,
+        "width": 271.53000000000003,
+        "height": 135.76500000000001
+      },
+      "counts": {
+        "left": 45,
+        "right": 47,
+        "top": 34,
+        "bottom": 44
+      }
+    },
+    "verifiedCampaignChapterAndBrowserResume": {
+      "profileId": "0b9970b3-02cc-454d-82ad-ac16e3d058aa",
+      "missionId": "dwarves-1",
+      "commandCount": 3,
+      "survived": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    "realCampaignDefenseAndBranch": {
+      "completed": [
+        "dwarves-1",
+        "dwarves-2"
+      ],
+      "defenseTime": 74.99999999999788,
+      "fortressHp": 1800,
+      "commanderHp": 9.5092,
+      "choice": "works",
+      "nextMission": "dwarves-3-alt",
+      "inheritedCommanderId": 1,
+      "inheritedDetachment": [
+        1,
+        3,
+        2,
+        4,
+        5
+      ],
+      "commands": [
+        {
+          "tick": 1,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              1,
+              3,
+              2,
+              4,
+              5
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 270,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              1
+            ],
+            "target": 18,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 274,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              3
+            ],
+            "target": 18,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 277,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              2
+            ],
+            "target": 18,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 281,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              4
+            ],
+            "target": 18,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 284,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              5
+            ],
+            "target": 18,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 313,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              1
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 317,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              3
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 322,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              4
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 326,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              5
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 371,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              3
+            ],
+            "x": 16.77778434753418,
+            "y": 16.756526947021484,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 375,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              2
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 379,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              5
+            ],
+            "x": 16.75939178466797,
+            "y": 16.74060821533203,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 605,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              1
+            ],
+            "target": 19,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 609,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              3
+            ],
+            "target": 19,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 613,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              2
+            ],
+            "target": 19,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 617,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              4
+            ],
+            "target": 19,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 621,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              5
+            ],
+            "target": 19,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 636,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              1
+            ],
+            "target": 20,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 639,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              3
+            ],
+            "target": 20,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 644,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              2
+            ],
+            "target": 20,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 647,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              4
+            ],
+            "target": 20,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 651,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              5
+            ],
+            "target": 20,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 664,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              1
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 667,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              3
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 671,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              5
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 687,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              4
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 704,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              2
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 720,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              1
+            ],
+            "target": 19,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 724,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              3
+            ],
+            "target": 19,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 729,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              4
+            ],
+            "target": 19,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 1068,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              1
+            ],
+            "x": 15.800027251243591,
+            "y": 8.89065682888031,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 1073,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              3
+            ],
+            "x": 15.793552160263062,
+            "y": 8.884687185287476,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 1081,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              4
+            ],
+            "x": 15.726468086242676,
+            "y": 8.837525367736816,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 1092,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              5
+            ],
+            "x": 15.325695276260376,
+            "y": 8.789058923721313,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 1119,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              3
+            ],
+            "x": 17.04837328195572,
+            "y": 8.989060461521149,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 1127,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              4
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 1136,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              5
+            ]
+          },
+          "accepted": true
+        }
+      ]
+    }
+  },
+  "errors": []
+}

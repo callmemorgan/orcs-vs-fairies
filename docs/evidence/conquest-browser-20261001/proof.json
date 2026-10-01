@@ -1,0 +1,1349 @@
+{
+  "at": "2026-10-01T11:04:18.114Z",
+  "origin": "http://127.0.0.1:5276",
+  "commit": "3ab78201626a22249d6edd4ce98c2ecb051d312f",
+  "sourceBefore": {
+    "package-lock.json": "057f94325ad52a6e3f75d5decdb513baa4b9a0af2350651bb8886a61749a8c3d",
+    "package.json": "92f97aac6e085187b5294a587198c9a45da0dc82b51315777ecd22f516a97c72",
+    "scenario-demo.html": "d36adf2d226ea541677843f098b5dc748d4001983502983e594a87c55e9b9671",
+    "scripts/verify_conquest.mjs": "d08e2d64dc3c280030c32fcef068f7bd180e8b541e582fd4676c185113152a2d",
+    "src/cli/main.ts": "08758af144ae1285bf62cd7fc7f935f901649414709acd80172f2037b327c418",
+    "src/cli/session.ts": "838b35ecf6db2c13f7fdab7d592b4bd91fb5bb549e86f7cf79432744e42d9b78",
+    "src/core/ai-policy.ts": "5b306994d60509e2774ba73217918eb3ba3400a18d542023d8bcca974f5cb0f9",
+    "src/core/campaign.ts": "b2debe4f202689501c7652c4f1bc95a24e8eae8cfca0f15a3277fcffd997d26c",
+    "src/core/commands.ts": "2f9e805a69bbc7f70ba3da0cbb078fac8515e2f76a46c7ccb646a496d51cc90d",
+    "src/core/conquest-types.ts": "13a911953b250a4bf7d6ff4628dec8d95e1c78a9e39ced5c8eb2e84455e112a8",
+    "src/core/conquest.ts": "26e889aae3665389213e29b95c9a97368f93e7d52373442adc891e716a3f3125",
+    "src/core/content.ts": "b1a17ec7839e458ce6bf8cba63fe19ba3a27de0ed2e2ed9c7a08226f406da4f2",
+    "src/core/geometry.ts": "d01cb8c5003443415cd43bef63dd087dad7238b1e82732222a1f6bb0bbccd283",
+    "src/core/history-hooks.ts": "56a53b84aa389f3ccf189f72df2ecf2d632677f8a664b49fc16865e46bdf6f82",
+    "src/core/maps.ts": "8b510f5255eece1eee15d45ef8982fe903a5161547b8eb4a6d2515ddb7703246",
+    "src/core/match-rules.ts": "34b5944436f93e17e6fb27dce580b133c0839331ece041538069a3aed33fad69",
+    "src/core/navigation.ts": "6239be4e3588ab10a7d75ef6f3272ad52783be6ac3006a1f04b7790abe190d02",
+    "src/core/objectives.ts": "fe5c5c0e78f789bb35a43e75cf67b59cd67268a896df652efa130f8d7766c65b",
+    "src/core/observation.ts": "bb5a9fe1688a4e3e9d9767091feaaa09a526910b0b23efa8e1241911b11b1f1e",
+    "src/core/planning.ts": "c1db332af55b3c66c8d39a9836315b9937b144c0baa833ae53c507cc5c09c01d",
+    "src/core/progression.ts": "8539ffc473d5587d4ef9e0181accb216fe20ffbaee82f7a64e96ff9215004c95",
+    "src/core/replays.ts": "422feddf8ddb368a9865cfb0d1fc82b2ff0d6d200db37cb1ee4170a9d12d5756",
+    "src/core/saves.ts": "01e5ab00fb66fafa98411335647ad828163fc9d65b68d575cda20f131cde8381",
+    "src/core/scenario-geometry.ts": "3f3213e385346a6977354896273edf80242823b6dfbfaf44bed04bc77e617645",
+    "src/core/scenario-recordings.ts": "921bc157529159e7f8bc18400e5e62921aa26ad89994caff2a02f7360d0062ef",
+    "src/core/scenario-types.ts": "7db3abc53f9ff69bc13bc6d894a71ff5e6b80f1820c7abb38116b7945bf5bc37",
+    "src/core/scenario-validation.ts": "9c00a9f6772d5dab7847a35e3fa996a2392ee27f7587eed65a1291f3907d0fe8",
+    "src/core/scenarios.ts": "69868cbb47bfafd8dcbad7173ae31ef8cbd40c1bd4f0e8811ba71fe976914ff7",
+    "src/core/session-storage.ts": "0dc9082bc2bdf4f3b698957e8f35f0d7c0f61e38d5062a42c91ae75eb2ce2960",
+    "src/core/simulation.ts": "ddaebcebd457112ad4b0ca11b4be0c00719a6251d5cf0b309eafbd8d7d06619a",
+    "src/core/types.ts": "fc5395fb1c824dab04952375a7230f6e48f6362c724f3fdf0c8bdffbaace096f",
+    "src/core/world-map.ts": "c63c6cb1bbe617a7f4ead1afc1bd0b7fca08790caae9c747756cce7125812116",
+    "src/core/world-types.ts": "ddf9decfc5bc0bcc92154215573ea99dc3c63adca2aa7a9e1110d42ce8e09717",
+    "src/game/Appearance.ts": "56ef6e567518f90e9bbf403c41e74838741248c04a9e6f1919e154d0bb17558d",
+    "src/game/ArtRuntime.ts": "3cbed628d545c4b7668471dd91150e337102ff400e24f43a810c1fd8e28b26b6",
+    "src/game/Controls.ts": "1efe5f374a6a662ea24fb26b91dec35acabcd7b958b791d859628b6a25df9c03",
+    "src/game/GameAudio.ts": "2f9d8e5325829a84931cde0cf7f904a1f9b720213f48e9352a56cfc31080f6d9",
+    "src/game/GameScene.ts": "840703674cd775eb56e94983629f7a0bc07f9706a1af60ddc049c96d8a8efa69",
+    "src/game/Gamepad.ts": "d78b066da6ed1183b40d6ca50e9e1b91528b2481a8e3d6f6a0daef57f6ba35ee",
+    "src/game/PlanningSession.ts": "849722f26d132546886fec2dff7078359129366064fc92d2a7cf8e133f623b01",
+    "src/game/ScenarioOverlay.ts": "7841298b571e88c76405a2075e55ec548a0d989fa3da49305e8ebc594ffd585f",
+    "src/main.ts": "52e6916c6c928b29eb996feff58d3984d37d3883f71129cf4e87c4699487a272",
+    "src/online/client.ts": "3a3932452cc505a78e29afc4910de324d93d8890847e18663b4d732a41043193",
+    "src/online/protocol.ts": "42a753a67d99f134e558a68c321efc09668309492386a0f7d9a8786097908b8e",
+    "src/online/render-state.ts": "c28b619c5dabcda00068acfce6d08b4699e800d8c30c70d3cb42a79a1734bfe3",
+    "src/qa/performance.ts": "5f6b929e1761f903b5770d902482b3cc946fcd05af698e8a8fd3ccb0135aadb3",
+    "src/scenarios/campaigns.ts": "f61da50b23bd565403df85c1e6fc971d60c3d2e79ee6405887edc8f45261e95b",
+    "src/scenarios/conquest-world.ts": "b5a64d47ba13d5ed2b523a0ec781ac07f45bafbc1569d0bd3aed3d12cf74271c",
+    "src/scenarios/demo.ts": "82fd68c8f411fea2476a7dee729be125da30ae28b1c1866f4073f8b7b75fd281",
+    "src/server/main.ts": "dd3c784ae41e8a7031b8c22ddc40681165f0a075f69b29118dfadd5d02989a73",
+    "src/server/server.ts": "224b3f54e43ff99cc6390a272a422644f6d364d217b2703d676c4d4388587fb8",
+    "src/server/store.ts": "d44ef847c814fba78c778e1bebaccc27a180bfb4bddf61c4278dae7d98a42c00",
+    "src/server/team-view.ts": "aa095351eae03a680eb215663d2b368e3f1df35c76860f2fece4be39f8eff6c1",
+    "src/server/views.ts": "c3ccd9d06382c03fd13fe1fbf544215bc5420761deb097d44ded00c27a1e2fdd",
+    "src/ui/ConquestTools.ts": "d01a473782d225574f4faaa058892e2a622f79de761e4333f8d3f84fdb2642c4",
+    "src/ui/DisplaySettings.ts": "57c3ded44211c36aca439212464366643fa53a403d266c629d5a3db16e48b30d",
+    "src/ui/Hud.ts": "bd638f6621b96fd63e2d557fec2524929b191c7870bd3401c4a79a853a069d54",
+    "src/ui/MinimapAlerts.ts": "756edc703190df9353a8ba50f9be0b0501031212b9acbb19ba0360523877de70",
+    "src/ui/OnlineLobby.ts": "b4e896c1f1b9eab9373f9869250b14f4fcad7672491ab303fe88a4ba55456cc7",
+    "src/ui/PlanningTools.ts": "aed15e7a02d1f271d2271aefa2de92776346990276d1b30346e5b89b03fc8fec",
+    "src/ui/ScenarioTools.ts": "4b7f8dc2eb8edc6d00957f0398ff48e493fe4199cd369b481894210b258aff80",
+    "src/ui/SessionTools.ts": "f715c4be8c576669acae5f7d7be86cbfa28b63ea7729ef35ddb9ee34ce118da5",
+    "src/ui/SkirmishOptions.ts": "e8c9ea0133a4913dc3cc77e0b9c2d0c33fa8d8373882d5656627cc78e20ba58a",
+    "src/ui/SkirmishRoster.ts": "4131d10277ad3cdcd9ff31c0b9d6d61bff4bd569cd2df9a3e0471f3b4423bc18",
+    "src/ui/TechnologyTree.ts": "19ffbb30e47f1bb6a14eb9a8917a60dc89730ad08fba1a8ce7bf4ab0c2a2afd3",
+    "src/ui/Tooltip.ts": "7e4304346dd61c3e1024358e6081bf6b8298ff0758ea9776c8d48111fc8c236d",
+    "src/ui/availability.ts": "285a1ac76efa6d7f0f5bcfcfd54e4305c9be3dce9a3482bcdfd45d1afaa92b2e",
+    "src/ui/conquest-tools.css": "e1163a46326d5d151d0d475643a32f6f0b2c049d7bbbc348262671718612028d",
+    "src/ui/display-settings.css": "1dfd7358288814861ad67e2350fdf8d74310932f286634cb8e9eb68ac392f65d",
+    "src/ui/minimap-alerts.css": "a25d3669677c186276c4bb10b13d1bb0b0c6c2b4d979df8a326ac498f2e2a512",
+    "src/ui/online-lobby.css": "4a8cb73b17aac956a34cff99c67334bda821c16d09026ddfdc778a48a2372157",
+    "src/ui/scenario-tools.css": "31742caf61a193e43ae7a6cd3ad3e6b8969f61968077eb7caed0add0e6573403",
+    "src/ui/session-tools.css": "3ffabda15f8f82c7b9f94540e9a69b968baf400ed5a55c95617562c351642cff",
+    "src/ui/skirmish-roster.css": "1a81c18ded6ff3c0071db1410d1e716cb5e35e579ed7ef8adaba541080028387",
+    "src/ui/style.css": "5c6d9138708da47b4bbce56e3200355c39b8e210cec2e2c2c4338c4232a6e1ee",
+    "src/vite-env.d.ts": "65996936fbb042915f7b74a200fcdde7e410f32a669b1ab9597cfaa4b0faddb5",
+    "work/scenarios/vite.config.mjs": "8b4aa6dee09a3eb10e9d5500fc24ac1ed31b909751c7c64168cb85ff1a0a560b"
+  },
+  "sourceAfter": {
+    "package-lock.json": "057f94325ad52a6e3f75d5decdb513baa4b9a0af2350651bb8886a61749a8c3d",
+    "package.json": "92f97aac6e085187b5294a587198c9a45da0dc82b51315777ecd22f516a97c72",
+    "scenario-demo.html": "d36adf2d226ea541677843f098b5dc748d4001983502983e594a87c55e9b9671",
+    "scripts/verify_conquest.mjs": "d08e2d64dc3c280030c32fcef068f7bd180e8b541e582fd4676c185113152a2d",
+    "src/cli/main.ts": "08758af144ae1285bf62cd7fc7f935f901649414709acd80172f2037b327c418",
+    "src/cli/session.ts": "838b35ecf6db2c13f7fdab7d592b4bd91fb5bb549e86f7cf79432744e42d9b78",
+    "src/core/ai-policy.ts": "5b306994d60509e2774ba73217918eb3ba3400a18d542023d8bcca974f5cb0f9",
+    "src/core/campaign.ts": "b2debe4f202689501c7652c4f1bc95a24e8eae8cfca0f15a3277fcffd997d26c",
+    "src/core/commands.ts": "2f9e805a69bbc7f70ba3da0cbb078fac8515e2f76a46c7ccb646a496d51cc90d",
+    "src/core/conquest-types.ts": "13a911953b250a4bf7d6ff4628dec8d95e1c78a9e39ced5c8eb2e84455e112a8",
+    "src/core/conquest.ts": "26e889aae3665389213e29b95c9a97368f93e7d52373442adc891e716a3f3125",
+    "src/core/content.ts": "b1a17ec7839e458ce6bf8cba63fe19ba3a27de0ed2e2ed9c7a08226f406da4f2",
+    "src/core/geometry.ts": "d01cb8c5003443415cd43bef63dd087dad7238b1e82732222a1f6bb0bbccd283",
+    "src/core/history-hooks.ts": "56a53b84aa389f3ccf189f72df2ecf2d632677f8a664b49fc16865e46bdf6f82",
+    "src/core/maps.ts": "8b510f5255eece1eee15d45ef8982fe903a5161547b8eb4a6d2515ddb7703246",
+    "src/core/match-rules.ts": "34b5944436f93e17e6fb27dce580b133c0839331ece041538069a3aed33fad69",
+    "src/core/navigation.ts": "6239be4e3588ab10a7d75ef6f3272ad52783be6ac3006a1f04b7790abe190d02",
+    "src/core/objectives.ts": "fe5c5c0e78f789bb35a43e75cf67b59cd67268a896df652efa130f8d7766c65b",
+    "src/core/observation.ts": "bb5a9fe1688a4e3e9d9767091feaaa09a526910b0b23efa8e1241911b11b1f1e",
+    "src/core/planning.ts": "c1db332af55b3c66c8d39a9836315b9937b144c0baa833ae53c507cc5c09c01d",
+    "src/core/progression.ts": "8539ffc473d5587d4ef9e0181accb216fe20ffbaee82f7a64e96ff9215004c95",
+    "src/core/replays.ts": "422feddf8ddb368a9865cfb0d1fc82b2ff0d6d200db37cb1ee4170a9d12d5756",
+    "src/core/saves.ts": "01e5ab00fb66fafa98411335647ad828163fc9d65b68d575cda20f131cde8381",
+    "src/core/scenario-geometry.ts": "3f3213e385346a6977354896273edf80242823b6dfbfaf44bed04bc77e617645",
+    "src/core/scenario-recordings.ts": "921bc157529159e7f8bc18400e5e62921aa26ad89994caff2a02f7360d0062ef",
+    "src/core/scenario-types.ts": "7db3abc53f9ff69bc13bc6d894a71ff5e6b80f1820c7abb38116b7945bf5bc37",
+    "src/core/scenario-validation.ts": "9c00a9f6772d5dab7847a35e3fa996a2392ee27f7587eed65a1291f3907d0fe8",
+    "src/core/scenarios.ts": "69868cbb47bfafd8dcbad7173ae31ef8cbd40c1bd4f0e8811ba71fe976914ff7",
+    "src/core/session-storage.ts": "0dc9082bc2bdf4f3b698957e8f35f0d7c0f61e38d5062a42c91ae75eb2ce2960",
+    "src/core/simulation.ts": "ddaebcebd457112ad4b0ca11b4be0c00719a6251d5cf0b309eafbd8d7d06619a",
+    "src/core/types.ts": "fc5395fb1c824dab04952375a7230f6e48f6362c724f3fdf0c8bdffbaace096f",
+    "src/core/world-map.ts": "c63c6cb1bbe617a7f4ead1afc1bd0b7fca08790caae9c747756cce7125812116",
+    "src/core/world-types.ts": "ddf9decfc5bc0bcc92154215573ea99dc3c63adca2aa7a9e1110d42ce8e09717",
+    "src/game/Appearance.ts": "56ef6e567518f90e9bbf403c41e74838741248c04a9e6f1919e154d0bb17558d",
+    "src/game/ArtRuntime.ts": "3cbed628d545c4b7668471dd91150e337102ff400e24f43a810c1fd8e28b26b6",
+    "src/game/Controls.ts": "1efe5f374a6a662ea24fb26b91dec35acabcd7b958b791d859628b6a25df9c03",
+    "src/game/GameAudio.ts": "2f9d8e5325829a84931cde0cf7f904a1f9b720213f48e9352a56cfc31080f6d9",
+    "src/game/GameScene.ts": "840703674cd775eb56e94983629f7a0bc07f9706a1af60ddc049c96d8a8efa69",
+    "src/game/Gamepad.ts": "d78b066da6ed1183b40d6ca50e9e1b91528b2481a8e3d6f6a0daef57f6ba35ee",
+    "src/game/PlanningSession.ts": "849722f26d132546886fec2dff7078359129366064fc92d2a7cf8e133f623b01",
+    "src/game/ScenarioOverlay.ts": "7841298b571e88c76405a2075e55ec548a0d989fa3da49305e8ebc594ffd585f",
+    "src/main.ts": "52e6916c6c928b29eb996feff58d3984d37d3883f71129cf4e87c4699487a272",
+    "src/online/client.ts": "3a3932452cc505a78e29afc4910de324d93d8890847e18663b4d732a41043193",
+    "src/online/protocol.ts": "42a753a67d99f134e558a68c321efc09668309492386a0f7d9a8786097908b8e",
+    "src/online/render-state.ts": "c28b619c5dabcda00068acfce6d08b4699e800d8c30c70d3cb42a79a1734bfe3",
+    "src/qa/performance.ts": "5f6b929e1761f903b5770d902482b3cc946fcd05af698e8a8fd3ccb0135aadb3",
+    "src/scenarios/campaigns.ts": "f61da50b23bd565403df85c1e6fc971d60c3d2e79ee6405887edc8f45261e95b",
+    "src/scenarios/conquest-world.ts": "b5a64d47ba13d5ed2b523a0ec781ac07f45bafbc1569d0bd3aed3d12cf74271c",
+    "src/scenarios/demo.ts": "82fd68c8f411fea2476a7dee729be125da30ae28b1c1866f4073f8b7b75fd281",
+    "src/server/main.ts": "dd3c784ae41e8a7031b8c22ddc40681165f0a075f69b29118dfadd5d02989a73",
+    "src/server/server.ts": "224b3f54e43ff99cc6390a272a422644f6d364d217b2703d676c4d4388587fb8",
+    "src/server/store.ts": "d44ef847c814fba78c778e1bebaccc27a180bfb4bddf61c4278dae7d98a42c00",
+    "src/server/team-view.ts": "aa095351eae03a680eb215663d2b368e3f1df35c76860f2fece4be39f8eff6c1",
+    "src/server/views.ts": "c3ccd9d06382c03fd13fe1fbf544215bc5420761deb097d44ded00c27a1e2fdd",
+    "src/ui/ConquestTools.ts": "d01a473782d225574f4faaa058892e2a622f79de761e4333f8d3f84fdb2642c4",
+    "src/ui/DisplaySettings.ts": "57c3ded44211c36aca439212464366643fa53a403d266c629d5a3db16e48b30d",
+    "src/ui/Hud.ts": "bd638f6621b96fd63e2d557fec2524929b191c7870bd3401c4a79a853a069d54",
+    "src/ui/MinimapAlerts.ts": "756edc703190df9353a8ba50f9be0b0501031212b9acbb19ba0360523877de70",
+    "src/ui/OnlineLobby.ts": "b4e896c1f1b9eab9373f9869250b14f4fcad7672491ab303fe88a4ba55456cc7",
+    "src/ui/PlanningTools.ts": "aed15e7a02d1f271d2271aefa2de92776346990276d1b30346e5b89b03fc8fec",
+    "src/ui/ScenarioTools.ts": "4b7f8dc2eb8edc6d00957f0398ff48e493fe4199cd369b481894210b258aff80",
+    "src/ui/SessionTools.ts": "f715c4be8c576669acae5f7d7be86cbfa28b63ea7729ef35ddb9ee34ce118da5",
+    "src/ui/SkirmishOptions.ts": "e8c9ea0133a4913dc3cc77e0b9c2d0c33fa8d8373882d5656627cc78e20ba58a",
+    "src/ui/SkirmishRoster.ts": "4131d10277ad3cdcd9ff31c0b9d6d61bff4bd569cd2df9a3e0471f3b4423bc18",
+    "src/ui/TechnologyTree.ts": "19ffbb30e47f1bb6a14eb9a8917a60dc89730ad08fba1a8ce7bf4ab0c2a2afd3",
+    "src/ui/Tooltip.ts": "7e4304346dd61c3e1024358e6081bf6b8298ff0758ea9776c8d48111fc8c236d",
+    "src/ui/availability.ts": "285a1ac76efa6d7f0f5bcfcfd54e4305c9be3dce9a3482bcdfd45d1afaa92b2e",
+    "src/ui/conquest-tools.css": "e1163a46326d5d151d0d475643a32f6f0b2c049d7bbbc348262671718612028d",
+    "src/ui/display-settings.css": "1dfd7358288814861ad67e2350fdf8d74310932f286634cb8e9eb68ac392f65d",
+    "src/ui/minimap-alerts.css": "a25d3669677c186276c4bb10b13d1bb0b0c6c2b4d979df8a326ac498f2e2a512",
+    "src/ui/online-lobby.css": "4a8cb73b17aac956a34cff99c67334bda821c16d09026ddfdc778a48a2372157",
+    "src/ui/scenario-tools.css": "31742caf61a193e43ae7a6cd3ad3e6b8969f61968077eb7caed0add0e6573403",
+    "src/ui/session-tools.css": "3ffabda15f8f82c7b9f94540e9a69b968baf400ed5a55c95617562c351642cff",
+    "src/ui/skirmish-roster.css": "1a81c18ded6ff3c0071db1410d1e716cb5e35e579ed7ef8adaba541080028387",
+    "src/ui/style.css": "5c6d9138708da47b4bbce56e3200355c39b8e210cec2e2c2c4338c4232a6e1ee",
+    "src/vite-env.d.ts": "65996936fbb042915f7b74a200fcdde7e410f32a669b1ab9597cfaa4b0faddb5",
+    "work/scenarios/vite.config.mjs": "8b4aa6dee09a3eb10e9d5500fc24ac1ed31b909751c7c64168cb85ff1a0a560b"
+  },
+  "viewport": {
+    "width": 1600,
+    "height": 1100
+  },
+  "renderer": "Phaser canvas",
+  "inputPolicy": "Visible buttons, file inputs, keyboard and native canvas pointer input. scenarioDiagnostics supplies copied observations only.",
+  "actions": [
+    {
+      "at": "2026-10-01T11:03:30.855Z",
+      "description": "Create a Deepforge realm using the faction picker."
+    },
+    {
+      "at": "2026-10-01T11:03:30.971Z",
+      "description": "Transfer 100 ore to the fairies and request a two-turn truce."
+    },
+    {
+      "at": "2026-10-01T11:03:31.163Z",
+      "description": "Launch the protected passage and move the commander into garrison range."
+    },
+    {
+      "at": "2026-10-01T11:03:43.795Z",
+      "description": "Reload the production page and resume the saved active passage."
+    },
+    {
+      "at": "2026-10-01T11:03:44.563Z",
+      "description": "Import the exported active profile through its file input."
+    },
+    {
+      "at": "2026-10-01T11:03:45.097Z",
+      "description": "Finish the passage by moving the commander to the eastern exit."
+    },
+    {
+      "at": "2026-10-01T11:03:49.096Z",
+      "description": "Wait for the treaty to expire, then fund an undead alliance."
+    },
+    {
+      "at": "2026-10-01T11:03:49.627Z",
+      "description": "Launch the hostile grove battle with the funded allied reinforcement."
+    },
+    {
+      "at": "2026-10-01T11:03:53.810Z",
+      "description": "Command the persistent detachment through the ordinary roster, attacks, movement and emplacement controls."
+    },
+    {
+      "at": "2026-10-01T11:04:16.767Z",
+      "description": "Reload, resume and import the completed realm with its verified battle history."
+    }
+  ],
+  "checks": {
+    "connectedRealm": {
+      "faction": "dwarves",
+      "owners": {
+        "hearth": {
+          "owner": "dwarves",
+          "garrison": 3
+        },
+        "grove": {
+          "owner": "fairies",
+          "garrison": 3
+        },
+        "quarry": {
+          "owner": "undead",
+          "garrison": 4
+        },
+        "crossroads": {
+          "owner": "automata",
+          "garrison": 4
+        },
+        "crypt": {
+          "owner": "undead",
+          "garrison": 3
+        },
+        "coast": {
+          "owner": "tideborn",
+          "garrison": 4
+        },
+        "keep": {
+          "owner": "automata",
+          "garrison": 6
+        }
+      },
+      "treasury": {
+        "wood": 500,
+        "ore": 350,
+        "crystal": 100
+      },
+      "initiallyReachable": [
+        "grove",
+        "quarry"
+      ],
+      "inaccessibleKeepDisabled": true
+    },
+    "conservedTributeAndTruce": {
+      "realmOre": 250,
+      "foreignOre": 200,
+      "score": 20,
+      "truceUntil": 2,
+      "newConnectedRoute": "crossroads"
+    },
+    "protectedPhysicalMovement": {
+      "commanderId": 3,
+      "from": {
+        "x": 8,
+        "y": 15
+      },
+      "to": {
+        "x": 22.531329597409222,
+        "y": 15.8085476516986
+      },
+      "hp": 145,
+      "garrisonDistance": 3.1693741753393327,
+      "gameTime": 11.60000000000003,
+      "noGarrisonDamage": true
+    },
+    "activeLocalRestore": {
+      "tick": 232,
+      "commanderId": 3,
+      "fullCheckpointAndProfileEqual": true
+    },
+    "activeFileRestore": {
+      "fullCheckpointEqual": true
+    },
+    "realPassageResult": {
+      "outcome": "won",
+      "commander": {
+        "id": 3,
+        "x": 28.02619544805292,
+        "y": 15.816597689539979,
+        "hp": 145
+      },
+      "time": 15.15000000000008,
+      "turn": 1,
+      "owner": "fairies"
+    },
+    "treatyExpiryAndAlliance": {
+      "turn": 2,
+      "expiredFairyTruce": 2,
+      "hostileAttackEnabled": true,
+      "realmOre": 80,
+      "undeadOre": 350,
+      "allianceScore": 50
+    },
+    "actualAlliedAidAndHostility": {
+      "aidId": 4132,
+      "firstShot": {
+        "type": "attack",
+        "x": 17.615630317331952,
+        "y": 13.291665349676068,
+        "side": 0,
+        "target": 4129,
+        "source": 4132,
+        "amount": 20,
+        "tick": 67
+      },
+      "hostileAttacks": [
+        {
+          "type": "attack",
+          "x": 24,
+          "y": 13,
+          "side": 1,
+          "target": 4132,
+          "source": 4129,
+          "amount": 17,
+          "tick": 60
+        }
+      ],
+      "aidHp": 78,
+      "aidUsesPlayerFactionStats": true,
+      "initialBattleTreasury": {
+        "wood": 740,
+        "ore": 80,
+        "crystal": 112
+      },
+      "noPlayerResourceBonus": true,
+      "allInitialFriendlyShotsFromAid": true
+    },
+    "realCaptureAndPersistentArmy": {
+      "outcome": "won",
+      "gameTime": 25.00000000000022,
+      "turn": 3,
+      "owner": "dwarves",
+      "garrison": 5,
+      "survivors": [
+        {
+          "id": 3,
+          "label": "commander",
+          "hp": 145
+        },
+        {
+          "id": 4,
+          "label": "detachment-0",
+          "hp": 95
+        },
+        {
+          "id": 5,
+          "label": "detachment-1",
+          "hp": 95
+        },
+        {
+          "id": 6,
+          "label": "detachment-2",
+          "hp": 142
+        },
+        {
+          "id": 7,
+          "label": "detachment-3",
+          "hp": 76
+        },
+        {
+          "id": 8,
+          "label": "detachment-4",
+          "hp": 80
+        }
+      ],
+      "alliedTreasuryAfterAid": {
+        "wood": 65,
+        "ore": 310,
+        "crystal": 20
+      },
+      "aidCost": {
+        "wood": 85,
+        "ore": 40,
+        "crystal": 0
+      },
+      "fairyRelations": {
+        "score": 5,
+        "warPressure": 1,
+        "alliance": false,
+        "truceUntil": 2,
+        "treasury": {
+          "wood": 150,
+          "ore": 200,
+          "crystal": 20
+        }
+      },
+      "commands": [
+        {
+          "tick": 4,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              4132
+            ],
+            "x": 17.984375,
+            "y": 12.984375,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 74,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              4132
+            ],
+            "x": 21.984375,
+            "y": 14.984375,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 82,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              3
+            ],
+            "x": 23.500943183898926,
+            "y": 14.530306816101074,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 88,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              4
+            ],
+            "target": 4131,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 94,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              5
+            ],
+            "x": 23.500075340270996,
+            "y": 14.531174659729004,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 100,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              6
+            ],
+            "x": 23.522227235138416,
+            "y": 14.538554139435291,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 107,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              7
+            ],
+            "x": 23.513490974903107,
+            "y": 14.522785484790802,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 112,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              4132
+            ],
+            "x": 29.865630388259888,
+            "y": 13.072915315628052,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 128,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              3
+            ],
+            "x": 23.50544011592865,
+            "y": 14.534082770347595,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 137,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              5
+            ],
+            "x": 23.505308032035828,
+            "y": 14.530950427055359,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 144,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              6
+            ],
+            "x": 23.528067350387573,
+            "y": 14.530821561813354,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 150,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              7
+            ],
+            "x": 26.263967514038086,
+            "y": 14.031242370605469,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 153,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              4132
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 171,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              3
+            ],
+            "x": 23.50369691848755,
+            "y": 14.51576280593872,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 177,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              5
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 184,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              6
+            ],
+            "target": 4131,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 191,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              7
+            ],
+            "x": 23.510494232177734,
+            "y": 14.527923583984375,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 208,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              3
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 212,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              4
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 239,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              4
+            ],
+            "target": 4129,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 265,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              4
+            ],
+            "x": 25.49914312362671,
+            "y": 12.513225078582764,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 271,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              5
+            ],
+            "x": 25.512807846069336,
+            "y": 12.53125,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 274,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              6
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 280,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              7
+            ],
+            "x": 25.52216625213623,
+            "y": 12.534724235534668,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 298,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              4
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 302,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              5
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 310,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              7
+            ]
+          },
+          "accepted": false
+        },
+        {
+          "tick": 326,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "x": 22.974675178527832,
+            "y": 14.991951942443848,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 341,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "x": 22.974675178527832,
+            "y": 14.991951942443848,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 356,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "x": 22.974675178527832,
+            "y": 14.991951942443848,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 370,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "x": 22.974675178527832,
+            "y": 14.991951942443848,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 383,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "x": 22.974675178527832,
+            "y": 14.991951942443848,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 397,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "x": 22.974675178527832,
+            "y": 14.991951942443848,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 413,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "x": 22.974675178527832,
+            "y": 14.991951942443848,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 427,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "x": 22.974675178527832,
+            "y": 14.991951942443848,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 440,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "x": 22.974675178527832,
+            "y": 14.991951942443848,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 453,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "x": 22.974675178527832,
+            "y": 14.991951942443848,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 472,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "x": 22.974675178527832,
+            "y": 14.991951942443848,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 499,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "x": 22.974675178527832,
+            "y": 14.991951942443848,
+            "queued": false
+          },
+          "accepted": true
+        }
+      ],
+      "combatEvents": [
+        {
+          "type": "attack",
+          "x": 24,
+          "y": 13,
+          "side": 1,
+          "target": 4132,
+          "source": 4129,
+          "amount": 17,
+          "tick": 60
+        },
+        {
+          "type": "attack",
+          "x": 17.615630317331952,
+          "y": 13.291665349676068,
+          "side": 0,
+          "target": 4129,
+          "source": 4132,
+          "amount": 20,
+          "tick": 67
+        },
+        {
+          "type": "attack",
+          "x": 24,
+          "y": 13,
+          "side": 1,
+          "target": 4132,
+          "source": 4129,
+          "amount": 17,
+          "tick": 88
+        },
+        {
+          "type": "attack",
+          "x": 17.615630317331952,
+          "y": 13.291665349676068,
+          "side": 0,
+          "target": 4129,
+          "source": 4132,
+          "amount": 20,
+          "tick": 101
+        },
+        {
+          "type": "attack",
+          "x": 24,
+          "y": 13,
+          "side": 1,
+          "target": 4132,
+          "source": 4129,
+          "amount": 17,
+          "tick": 116
+        },
+        {
+          "type": "attack",
+          "x": 24,
+          "y": 13,
+          "side": 1,
+          "target": 4132,
+          "source": 4129,
+          "amount": 17,
+          "tick": 144
+        },
+        {
+          "type": "attack",
+          "x": 21.877438576137283,
+          "y": 14.24667848487213,
+          "side": 0,
+          "target": 4131,
+          "source": 4132,
+          "amount": 18,
+          "tick": 154
+        },
+        {
+          "type": "attack",
+          "x": 24,
+          "y": 13,
+          "side": 1,
+          "target": 4132,
+          "source": 4129,
+          "amount": 17,
+          "tick": 172
+        },
+        {
+          "type": "attack",
+          "x": 17.62095174006073,
+          "y": 14.333633751445,
+          "side": 0,
+          "target": 4131,
+          "source": 4,
+          "amount": 18,
+          "tick": 173
+        },
+        {
+          "type": "attack",
+          "x": 19.20030829706024,
+          "y": 14.24999954524084,
+          "side": 0,
+          "target": 4131,
+          "source": 5,
+          "amount": 18,
+          "tick": 178
+        },
+        {
+          "type": "attack",
+          "x": 21.877438576137283,
+          "y": 14.24667848487213,
+          "side": 0,
+          "target": 4131,
+          "source": 4132,
+          "amount": 18,
+          "tick": 188
+        },
+        {
+          "type": "attack",
+          "x": 24,
+          "y": 13,
+          "side": 1,
+          "target": 4132,
+          "source": 4129,
+          "amount": 10,
+          "tick": 200
+        },
+        {
+          "type": "death",
+          "x": 22.37402788987985,
+          "y": 14.014436842454783,
+          "side": 0,
+          "source": 4132,
+          "tick": 200
+        },
+        {
+          "type": "attack",
+          "x": 24,
+          "y": 15,
+          "side": 1,
+          "target": 7,
+          "source": 4131,
+          "amount": 16,
+          "tick": 203
+        },
+        {
+          "type": "attack",
+          "x": 17.62095174006073,
+          "y": 14.333633751445,
+          "side": 0,
+          "target": 4131,
+          "source": 4,
+          "amount": 18,
+          "tick": 207
+        },
+        {
+          "type": "attack",
+          "x": 23.033840123225225,
+          "y": 14.471347436901985,
+          "side": 0,
+          "target": 4131,
+          "source": 7,
+          "amount": 9,
+          "tick": 208
+        },
+        {
+          "type": "attack",
+          "x": 20.840571762096907,
+          "y": 15.250008104567746,
+          "side": 0,
+          "target": 4131,
+          "source": 3,
+          "amount": 30,
+          "tick": 209
+        },
+        {
+          "type": "attack",
+          "x": 19.20030829706024,
+          "y": 14.24999954524084,
+          "side": 0,
+          "target": 4131,
+          "source": 5,
+          "amount": 11,
+          "tick": 212
+        },
+        {
+          "type": "death",
+          "x": 24,
+          "y": 15,
+          "side": 1,
+          "source": 4131,
+          "tick": 212
+        },
+        {
+          "type": "attack",
+          "x": 24,
+          "y": 13,
+          "side": 1,
+          "target": 7,
+          "source": 4129,
+          "amount": 17,
+          "tick": 228
+        },
+        {
+          "type": "attack",
+          "x": 23.033840123225225,
+          "y": 14.471347436901985,
+          "side": 0,
+          "target": 4129,
+          "source": 7,
+          "amount": 11,
+          "tick": 233
+        },
+        {
+          "type": "attack",
+          "x": 17.73351802284244,
+          "y": 14.310100116351633,
+          "side": 0,
+          "target": 4129,
+          "source": 4,
+          "amount": 19.428571428571427,
+          "tick": 241
+        },
+        {
+          "type": "attack",
+          "x": 22.857314632529828,
+          "y": 13.705596112157567,
+          "side": 0,
+          "target": 4129,
+          "source": 6,
+          "amount": 14.571428571428571,
+          "tick": 241
+        },
+        {
+          "type": "death",
+          "x": 24,
+          "y": 13,
+          "side": 1,
+          "source": 4129,
+          "tick": 241
+        },
+        {
+          "type": "attack",
+          "x": 24.453191235655837,
+          "y": 13.980593126420633,
+          "side": 0,
+          "target": 4130,
+          "source": 7,
+          "amount": 9,
+          "tick": 258
+        },
+        {
+          "type": "attack",
+          "x": 21.173851627653992,
+          "y": 15.326016061334109,
+          "side": 0,
+          "target": 4130,
+          "source": 3,
+          "amount": 30,
+          "tick": 262
+        },
+        {
+          "type": "attack",
+          "x": 26,
+          "y": 13,
+          "side": 1,
+          "target": 6,
+          "source": 4130,
+          "amount": 14,
+          "tick": 262
+        },
+        {
+          "type": "attack",
+          "x": 24.731194124711884,
+          "y": 13.349664869431084,
+          "side": 0,
+          "target": 4130,
+          "source": 6,
+          "amount": 13,
+          "tick": 264
+        },
+        {
+          "type": "attack",
+          "x": 26,
+          "y": 13,
+          "side": 1,
+          "target": 6,
+          "source": 4130,
+          "amount": 14,
+          "tick": 282
+        },
+        {
+          "type": "attack",
+          "x": 24.714240729383523,
+          "y": 13.217481553585886,
+          "side": 0,
+          "target": 4130,
+          "source": 6,
+          "amount": 13,
+          "tick": 287
+        },
+        {
+          "type": "attack",
+          "x": 25.334050732869276,
+          "y": 12.976326490296715,
+          "side": 0,
+          "target": 4130,
+          "source": 7,
+          "amount": 9,
+          "tick": 295
+        },
+        {
+          "type": "attack",
+          "x": 21.527385209320027,
+          "y": 14.250447104741992,
+          "side": 0,
+          "target": 4130,
+          "source": 4,
+          "amount": 18,
+          "tick": 299
+        },
+        {
+          "type": "attack",
+          "x": 26,
+          "y": 13,
+          "side": 1,
+          "target": 7,
+          "source": 4130,
+          "amount": 16,
+          "tick": 302
+        },
+        {
+          "type": "attack",
+          "x": 22.765308297060148,
+          "y": 14.249999995088844,
+          "side": 0,
+          "target": 4130,
+          "source": 5,
+          "amount": 18,
+          "tick": 303
+        },
+        {
+          "type": "attack",
+          "x": 24.649796786884373,
+          "y": 13.163123859871945,
+          "side": 0,
+          "target": 4130,
+          "source": 6,
+          "amount": 13,
+          "tick": 310
+        },
+        {
+          "type": "attack",
+          "x": 21.173851627653992,
+          "y": 15.326016061334109,
+          "side": 0,
+          "target": 4130,
+          "source": 3,
+          "amount": 17,
+          "tick": 315
+        },
+        {
+          "type": "death",
+          "x": 26,
+          "y": 13,
+          "side": 1,
+          "source": 4130,
+          "tick": 315
+        }
+      ]
+    },
+    "completedLocalAndFileRestore": {
+      "fullProfileEqual": true,
+      "capturedRegion": "grove",
+      "persistentCommanderId": 3,
+      "connectedSupply": {
+        "wood": 310,
+        "ore": 60,
+        "crystal": 24
+      }
+    }
+  },
+  "errors": []
+}

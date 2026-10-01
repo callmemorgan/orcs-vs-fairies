@@ -1,0 +1,1335 @@
+{
+  "at": "2026-10-01T10:50:59.939Z",
+  "origin": "http://127.0.0.1:5276",
+  "commit": "2ecf9f330d52611525e4079681062097e97e90b1",
+  "sourceBefore": {
+    "scenario-demo.html": "d36adf2d226ea541677843f098b5dc748d4001983502983e594a87c55e9b9671",
+    "src/scenarios/demo.ts": "2fa0c96b66d2e23ef5a2291dcdb4d6da9e19ecd7e726a55dc427ea473cf756e9",
+    "src/scenarios/conquest-world.ts": "b5a64d47ba13d5ed2b523a0ec781ac07f45bafbc1569d0bd3aed3d12cf74271c",
+    "src/core/conquest.ts": "01b985c8dc9d2871767599095f20f7bd16ba0c30236c74bdc400b5a97d3eee2a",
+    "src/core/conquest-types.ts": "13a911953b250a4bf7d6ff4628dec8d95e1c78a9e39ced5c8eb2e84455e112a8",
+    "src/core/campaign.ts": "92c13e913ddf5ae62d02fe55d248f5829e1fb86fd9258ffe532b32c4241c3722",
+    "src/core/scenarios.ts": "b51f43cef1fef714cdb4fe442e93cd73eb3918e55133fbe1595805e0b8939c0f",
+    "src/core/scenario-types.ts": "7db3abc53f9ff69bc13bc6d894a71ff5e6b80f1820c7abb38116b7945bf5bc37",
+    "src/core/scenario-validation.ts": "9c00a9f6772d5dab7847a35e3fa996a2392ee27f7587eed65a1291f3907d0fe8",
+    "src/core/scenario-recordings.ts": "fcf09269836754f97b49e6f06affc0018beb16ff3888f08e107169384ed26e02",
+    "src/core/geometry.ts": "d01cb8c5003443415cd43bef63dd087dad7238b1e82732222a1f6bb0bbccd283",
+    "src/core/simulation.ts": "ddaebcebd457112ad4b0ca11b4be0c00719a6251d5cf0b309eafbd8d7d06619a",
+    "src/core/saves.ts": "01e5ab00fb66fafa98411335647ad828163fc9d65b68d575cda20f131cde8381",
+    "src/ui/ConquestTools.ts": "9e9ee3843c662222a208bba6979007b7074231430dd61d0dbf3768b5b208a3fe",
+    "src/ui/conquest-tools.css": "e1163a46326d5d151d0d475643a32f6f0b2c049d7bbbc348262671718612028d",
+    "src/ui/ScenarioTools.ts": "4b7f8dc2eb8edc6d00957f0398ff48e493fe4199cd369b481894210b258aff80",
+    "src/ui/Hud.ts": "bd638f6621b96fd63e2d557fec2524929b191c7870bd3401c4a79a853a069d54",
+    "src/game/GameScene.ts": "840703674cd775eb56e94983629f7a0bc07f9706a1af60ddc049c96d8a8efa69",
+    "scripts/verify_conquest.mjs": "2a45aeacdec1e870b99faf6e34d195e109380ecb5423454a3a01835a05d0c68b"
+  },
+  "sourceAfter": {
+    "scenario-demo.html": "d36adf2d226ea541677843f098b5dc748d4001983502983e594a87c55e9b9671",
+    "src/scenarios/demo.ts": "2fa0c96b66d2e23ef5a2291dcdb4d6da9e19ecd7e726a55dc427ea473cf756e9",
+    "src/scenarios/conquest-world.ts": "b5a64d47ba13d5ed2b523a0ec781ac07f45bafbc1569d0bd3aed3d12cf74271c",
+    "src/core/conquest.ts": "01b985c8dc9d2871767599095f20f7bd16ba0c30236c74bdc400b5a97d3eee2a",
+    "src/core/conquest-types.ts": "13a911953b250a4bf7d6ff4628dec8d95e1c78a9e39ced5c8eb2e84455e112a8",
+    "src/core/campaign.ts": "92c13e913ddf5ae62d02fe55d248f5829e1fb86fd9258ffe532b32c4241c3722",
+    "src/core/scenarios.ts": "b51f43cef1fef714cdb4fe442e93cd73eb3918e55133fbe1595805e0b8939c0f",
+    "src/core/scenario-types.ts": "7db3abc53f9ff69bc13bc6d894a71ff5e6b80f1820c7abb38116b7945bf5bc37",
+    "src/core/scenario-validation.ts": "9c00a9f6772d5dab7847a35e3fa996a2392ee27f7587eed65a1291f3907d0fe8",
+    "src/core/scenario-recordings.ts": "fcf09269836754f97b49e6f06affc0018beb16ff3888f08e107169384ed26e02",
+    "src/core/geometry.ts": "d01cb8c5003443415cd43bef63dd087dad7238b1e82732222a1f6bb0bbccd283",
+    "src/core/simulation.ts": "ddaebcebd457112ad4b0ca11b4be0c00719a6251d5cf0b309eafbd8d7d06619a",
+    "src/core/saves.ts": "01e5ab00fb66fafa98411335647ad828163fc9d65b68d575cda20f131cde8381",
+    "src/ui/ConquestTools.ts": "9e9ee3843c662222a208bba6979007b7074231430dd61d0dbf3768b5b208a3fe",
+    "src/ui/conquest-tools.css": "e1163a46326d5d151d0d475643a32f6f0b2c049d7bbbc348262671718612028d",
+    "src/ui/ScenarioTools.ts": "4b7f8dc2eb8edc6d00957f0398ff48e493fe4199cd369b481894210b258aff80",
+    "src/ui/Hud.ts": "bd638f6621b96fd63e2d557fec2524929b191c7870bd3401c4a79a853a069d54",
+    "src/game/GameScene.ts": "840703674cd775eb56e94983629f7a0bc07f9706a1af60ddc049c96d8a8efa69",
+    "scripts/verify_conquest.mjs": "2a45aeacdec1e870b99faf6e34d195e109380ecb5423454a3a01835a05d0c68b"
+  },
+  "viewport": {
+    "width": 1600,
+    "height": 1100
+  },
+  "renderer": "Phaser canvas",
+  "inputPolicy": "Visible buttons, file inputs, keyboard and native canvas pointer input. scenarioDiagnostics supplies copied observations only.",
+  "actions": [
+    {
+      "at": "2026-10-01T10:50:13.223Z",
+      "description": "Create a Deepforge realm using the faction picker."
+    },
+    {
+      "at": "2026-10-01T10:50:13.349Z",
+      "description": "Transfer 100 ore to the fairies and request a two-turn truce."
+    },
+    {
+      "at": "2026-10-01T10:50:13.509Z",
+      "description": "Launch the protected passage and move the commander into garrison range."
+    },
+    {
+      "at": "2026-10-01T10:50:26.361Z",
+      "description": "Reload the production page and resume the saved active passage."
+    },
+    {
+      "at": "2026-10-01T10:50:27.241Z",
+      "description": "Import the exported active profile through its file input."
+    },
+    {
+      "at": "2026-10-01T10:50:27.874Z",
+      "description": "Finish the passage by moving the commander to the eastern exit."
+    },
+    {
+      "at": "2026-10-01T10:50:31.957Z",
+      "description": "Wait for the treaty to expire, then fund an undead alliance."
+    },
+    {
+      "at": "2026-10-01T10:50:32.627Z",
+      "description": "Launch the hostile grove battle with the funded allied reinforcement."
+    },
+    {
+      "at": "2026-10-01T10:50:37.149Z",
+      "description": "Command the persistent detachment through the ordinary roster, attacks, movement and emplacement controls."
+    },
+    {
+      "at": "2026-10-01T10:50:59.210Z",
+      "description": "Reload, resume and import the completed realm with its verified battle history."
+    }
+  ],
+  "checks": {
+    "connectedRealm": {
+      "faction": "dwarves",
+      "owners": {
+        "hearth": {
+          "owner": "dwarves",
+          "garrison": 3
+        },
+        "grove": {
+          "owner": "fairies",
+          "garrison": 3
+        },
+        "quarry": {
+          "owner": "undead",
+          "garrison": 4
+        },
+        "crossroads": {
+          "owner": "automata",
+          "garrison": 4
+        },
+        "crypt": {
+          "owner": "undead",
+          "garrison": 3
+        },
+        "coast": {
+          "owner": "tideborn",
+          "garrison": 4
+        },
+        "keep": {
+          "owner": "automata",
+          "garrison": 6
+        }
+      },
+      "treasury": {
+        "wood": 500,
+        "ore": 350,
+        "crystal": 100
+      },
+      "initiallyReachable": [
+        "grove",
+        "quarry"
+      ],
+      "inaccessibleKeepDisabled": true
+    },
+    "conservedTributeAndTruce": {
+      "realmOre": 250,
+      "foreignOre": 200,
+      "score": 20,
+      "truceUntil": 2,
+      "newConnectedRoute": "crossroads"
+    },
+    "protectedPhysicalMovement": {
+      "commanderId": 3,
+      "from": {
+        "x": 8,
+        "y": 15
+      },
+      "to": {
+        "x": 22.530671838513694,
+        "y": 15.810237018076165
+      },
+      "hp": 145,
+      "garrisonDistance": 3.171176019066483,
+      "gameTime": 11.450000000000028,
+      "noGarrisonDamage": true
+    },
+    "activeLocalRestore": {
+      "tick": 229,
+      "commanderId": 3,
+      "fullCheckpointAndProfileEqual": true
+    },
+    "activeFileRestore": {
+      "fullCheckpointEqual": true
+    },
+    "realPassageResult": {
+      "outcome": "won",
+      "commander": {
+        "id": 3,
+        "x": 28.025386490774533,
+        "y": 15.817008720930433,
+        "hp": 145
+      },
+      "time": 15.000000000000078,
+      "turn": 1,
+      "owner": "fairies"
+    },
+    "treatyExpiryAndAlliance": {
+      "turn": 2,
+      "expiredFairyTruce": 2,
+      "hostileAttackEnabled": true,
+      "realmOre": 80,
+      "undeadOre": 350,
+      "allianceScore": 50
+    },
+    "actualAlliedAidAndHostility": {
+      "aidId": 4132,
+      "firstShot": {
+        "type": "attack",
+        "x": 17.615630317331952,
+        "y": 13.291665349676068,
+        "side": 0,
+        "target": 4129,
+        "source": 4132,
+        "amount": 20,
+        "tick": 68
+      },
+      "hostileAttacks": [
+        {
+          "type": "attack",
+          "x": 24,
+          "y": 13,
+          "side": 1,
+          "target": 4132,
+          "source": 4129,
+          "amount": 17,
+          "tick": 61
+        }
+      ],
+      "aidHp": 78,
+      "aidUsesPlayerFactionStats": true,
+      "initialBattleOre": 120,
+      "allInitialFriendlyShotsFromAid": true
+    },
+    "realCaptureAndPersistentArmy": {
+      "outcome": "won",
+      "gameTime": 25.00000000000022,
+      "turn": 3,
+      "owner": "dwarves",
+      "garrison": 6,
+      "survivors": [
+        {
+          "id": 3,
+          "label": "commander",
+          "hp": 145
+        },
+        {
+          "id": 4,
+          "label": "detachment-0",
+          "hp": 95
+        },
+        {
+          "id": 5,
+          "label": "detachment-1",
+          "hp": 95
+        },
+        {
+          "id": 6,
+          "label": "detachment-2",
+          "hp": 127
+        },
+        {
+          "id": 7,
+          "label": "detachment-3",
+          "hp": 60
+        },
+        {
+          "id": 8,
+          "label": "detachment-4",
+          "hp": 80
+        },
+        {
+          "id": 4132,
+          "label": "aid-undead",
+          "hp": 10
+        }
+      ],
+      "alliedOreAfterAid": 310,
+      "fairyRelations": {
+        "score": 5,
+        "warPressure": 1,
+        "alliance": false,
+        "truceUntil": 2,
+        "treasury": {
+          "wood": 150,
+          "ore": 200,
+          "crystal": 20
+        }
+      },
+      "commands": [
+        {
+          "tick": 5,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              4132
+            ],
+            "x": 17.984375,
+            "y": 12.984375,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 75,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              4132
+            ],
+            "x": 21.984375,
+            "y": 14.984375,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 82,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              3
+            ],
+            "x": 23.50926971435547,
+            "y": 14.521980285644531,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 88,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              4
+            ],
+            "target": 4131,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 93,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              5
+            ],
+            "x": 24.11695957183838,
+            "y": 13.914290428161621,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 98,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              6
+            ],
+            "x": 23.507003724575043,
+            "y": 14.534357011318207,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 103,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              7
+            ],
+            "x": 25.014939457178116,
+            "y": 14.030007511377335,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 108,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              4132
+            ],
+            "x": 30.350005388259888,
+            "y": 13.088540315628052,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 124,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              3
+            ],
+            "x": 23.523872137069702,
+            "y": 14.535217046737671,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 132,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              5
+            ],
+            "x": 23.50843381881714,
+            "y": 14.514976024627686,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 137,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              6
+            ],
+            "x": 23.494507431983948,
+            "y": 14.514952301979065,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 143,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              7
+            ],
+            "x": 23.501092433929443,
+            "y": 14.515597820281982,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 147,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              4132
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 163,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              3
+            ],
+            "x": 23.511883974075317,
+            "y": 14.515883684158325,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 169,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              5
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 174,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              6
+            ],
+            "x": 23.51789951324463,
+            "y": 14.52519702911377,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 179,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              7
+            ],
+            "x": 26.754342555999756,
+            "y": 14.296874523162842,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 195,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              3
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 198,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              4
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 206,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              6
+            ],
+            "x": 23.517158031463623,
+            "y": 14.539700984954834,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 209,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              7
+            ]
+          },
+          "accepted": false
+        },
+        {
+          "tick": 229,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              4
+            ],
+            "target": 4129,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 236,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              6
+            ],
+            "target": 4129,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 242,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              7
+            ],
+            "x": 23.5046968460083,
+            "y": 12.534371376037598,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 263,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              4
+            ],
+            "target": 4130,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 268,
+          "side": 0,
+          "command": {
+            "type": "move",
+            "ids": [
+              5
+            ],
+            "x": 26.195305109024048,
+            "y": 12.458437204360962,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 272,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              6
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 277,
+          "side": 0,
+          "command": {
+            "type": "attack",
+            "ids": [
+              7
+            ],
+            "target": 4130,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 294,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              4
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 298,
+          "side": 0,
+          "command": {
+            "type": "ability",
+            "ids": [
+              5
+            ]
+          },
+          "accepted": true
+        },
+        {
+          "tick": 317,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              4132
+            ],
+            "x": 22.989686965942383,
+            "y": 15.006261825561523,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 330,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              4132
+            ],
+            "x": 22.989686965942383,
+            "y": 15.006261825561523,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 342,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              4132
+            ],
+            "x": 22.989686965942383,
+            "y": 15.006261825561523,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 355,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              4132
+            ],
+            "x": 22.989686965942383,
+            "y": 15.006261825561523,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 367,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              4132
+            ],
+            "x": 22.989686965942383,
+            "y": 15.006261825561523,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 380,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              4132
+            ],
+            "x": 22.989686965942383,
+            "y": 15.006261825561523,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 393,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              4132
+            ],
+            "x": 22.989686965942383,
+            "y": 15.006261825561523,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 405,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              4132
+            ],
+            "x": 22.989686965942383,
+            "y": 15.006261825561523,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 418,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              4132
+            ],
+            "x": 22.989686965942383,
+            "y": 15.006261825561523,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 431,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              4132
+            ],
+            "x": 22.989686965942383,
+            "y": 15.006261825561523,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 443,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              4132
+            ],
+            "x": 22.989686965942383,
+            "y": 15.006261825561523,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 456,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              4132
+            ],
+            "x": 22.989686965942383,
+            "y": 15.006261825561523,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 469,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              4132
+            ],
+            "x": 22.989686965942383,
+            "y": 15.006261825561523,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 483,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              4132
+            ],
+            "x": 22.989686965942383,
+            "y": 15.006261825561523,
+            "queued": false
+          },
+          "accepted": true
+        },
+        {
+          "tick": 495,
+          "side": 0,
+          "command": {
+            "type": "attackMove",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              4132
+            ],
+            "x": 22.989686965942383,
+            "y": 15.006261825561523,
+            "queued": false
+          },
+          "accepted": true
+        }
+      ],
+      "combatEvents": [
+        {
+          "type": "attack",
+          "x": 24,
+          "y": 13,
+          "side": 1,
+          "target": 4132,
+          "source": 4129,
+          "amount": 17,
+          "tick": 61
+        },
+        {
+          "type": "attack",
+          "x": 17.615630317331952,
+          "y": 13.291665349676068,
+          "side": 0,
+          "target": 4129,
+          "source": 4132,
+          "amount": 20,
+          "tick": 68
+        },
+        {
+          "type": "attack",
+          "x": 24,
+          "y": 13,
+          "side": 1,
+          "target": 4132,
+          "source": 4129,
+          "amount": 17,
+          "tick": 89
+        },
+        {
+          "type": "attack",
+          "x": 17.615630317331952,
+          "y": 13.291665349676068,
+          "side": 0,
+          "target": 4129,
+          "source": 4132,
+          "amount": 20,
+          "tick": 102
+        },
+        {
+          "type": "attack",
+          "x": 24,
+          "y": 13,
+          "side": 1,
+          "target": 4132,
+          "source": 4129,
+          "amount": 17,
+          "tick": 117
+        },
+        {
+          "type": "attack",
+          "x": 24,
+          "y": 13,
+          "side": 1,
+          "target": 4132,
+          "source": 4129,
+          "amount": 17,
+          "tick": 145
+        },
+        {
+          "type": "attack",
+          "x": 21.647442827540353,
+          "y": 14.24535405951011,
+          "side": 0,
+          "target": 4131,
+          "source": 4132,
+          "amount": 18,
+          "tick": 148
+        },
+        {
+          "type": "attack",
+          "x": 18.165308297061173,
+          "y": 14.249998222335444,
+          "side": 0,
+          "target": 4131,
+          "source": 5,
+          "amount": 18,
+          "tick": 170
+        },
+        {
+          "type": "attack",
+          "x": 24,
+          "y": 13,
+          "side": 1,
+          "target": 4132,
+          "source": 4129,
+          "amount": 17,
+          "tick": 173
+        },
+        {
+          "type": "attack",
+          "x": 17.61459006943844,
+          "y": 14.334611165387523,
+          "side": 0,
+          "target": 4131,
+          "source": 4,
+          "amount": 18,
+          "tick": 174
+        },
+        {
+          "type": "attack",
+          "x": 21.647442827540353,
+          "y": 14.24535405951011,
+          "side": 0,
+          "target": 4131,
+          "source": 4132,
+          "amount": 18,
+          "tick": 182
+        },
+        {
+          "type": "attack",
+          "x": 19.200203633829585,
+          "y": 15.296954089738072,
+          "side": 0,
+          "target": 4131,
+          "source": 3,
+          "amount": 30,
+          "tick": 196
+        },
+        {
+          "type": "attack",
+          "x": 24,
+          "y": 15,
+          "side": 1,
+          "target": 7,
+          "source": 4131,
+          "amount": 16,
+          "tick": 199
+        },
+        {
+          "type": "attack",
+          "x": 24,
+          "y": 13,
+          "side": 1,
+          "target": 7,
+          "source": 4129,
+          "amount": 17,
+          "tick": 201
+        },
+        {
+          "type": "attack",
+          "x": 18.18458927116501,
+          "y": 14.226477004302852,
+          "side": 0,
+          "target": 4131,
+          "source": 5,
+          "amount": 18,
+          "tick": 204
+        },
+        {
+          "type": "attack",
+          "x": 17.605729150045445,
+          "y": 14.285605877404018,
+          "side": 0,
+          "target": 4131,
+          "source": 4,
+          "amount": 18,
+          "tick": 208
+        },
+        {
+          "type": "attack",
+          "x": 21.65145057604483,
+          "y": 14.215169745975402,
+          "side": 0,
+          "target": 4131,
+          "source": 4132,
+          "amount": 2,
+          "tick": 216
+        },
+        {
+          "type": "death",
+          "x": 24.091562695913478,
+          "y": 15.170724985586219,
+          "side": 1,
+          "source": 4131,
+          "tick": 216
+        },
+        {
+          "type": "attack",
+          "x": 24,
+          "y": 13,
+          "side": 1,
+          "target": 6,
+          "source": 4129,
+          "amount": 15,
+          "tick": 229
+        },
+        {
+          "type": "attack",
+          "x": 26,
+          "y": 13,
+          "side": 1,
+          "target": 7,
+          "source": 4130,
+          "amount": 16,
+          "tick": 231
+        },
+        {
+          "type": "attack",
+          "x": 26.301572455413197,
+          "y": 14.456245900815281,
+          "side": 0,
+          "target": 4130,
+          "source": 7,
+          "amount": 9,
+          "tick": 232
+        },
+        {
+          "type": "attack",
+          "x": 23.321552352430626,
+          "y": 14.148450080568855,
+          "side": 0,
+          "target": 4129,
+          "source": 6,
+          "amount": 15,
+          "tick": 237
+        },
+        {
+          "type": "attack",
+          "x": 18.240105756522514,
+          "y": 14.222134332696578,
+          "side": 0,
+          "target": 4129,
+          "source": 5,
+          "amount": 23,
+          "tick": 238
+        },
+        {
+          "type": "attack",
+          "x": 17.66246762752378,
+          "y": 14.267318978038404,
+          "side": 0,
+          "target": 4129,
+          "source": 4,
+          "amount": 7,
+          "tick": 242
+        },
+        {
+          "type": "death",
+          "x": 24,
+          "y": 13,
+          "side": 1,
+          "source": 4129,
+          "tick": 242
+        },
+        {
+          "type": "attack",
+          "x": 21.653171057211356,
+          "y": 14.198561984200254,
+          "side": 0,
+          "target": 4130,
+          "source": 4132,
+          "amount": 21,
+          "tick": 250
+        },
+        {
+          "type": "attack",
+          "x": 26,
+          "y": 13,
+          "side": 1,
+          "target": 7,
+          "source": 4130,
+          "amount": 16,
+          "tick": 251
+        },
+        {
+          "type": "attack",
+          "x": 19.199862376575307,
+          "y": 15.29979656034909,
+          "side": 0,
+          "target": 4130,
+          "source": 3,
+          "amount": 34.8,
+          "tick": 255
+        },
+        {
+          "type": "attack",
+          "x": 24.82543702527045,
+          "y": 13.721455240568273,
+          "side": 0,
+          "target": 4130,
+          "source": 6,
+          "amount": 13,
+          "tick": 263
+        },
+        {
+          "type": "attack",
+          "x": 26,
+          "y": 13,
+          "side": 1,
+          "target": 6,
+          "source": 4130,
+          "amount": 14,
+          "tick": 271
+        },
+        {
+          "type": "attack",
+          "x": 24.116584756259005,
+          "y": 12.815745505027325,
+          "side": 0,
+          "target": 4130,
+          "source": 7,
+          "amount": 9,
+          "tick": 273
+        },
+        {
+          "type": "attack",
+          "x": 19.661821090851205,
+          "y": 14.125015328527478,
+          "side": 0,
+          "target": 4130,
+          "source": 4,
+          "amount": 18,
+          "tick": 284
+        },
+        {
+          "type": "attack",
+          "x": 21.653171057211356,
+          "y": 14.198561984200254,
+          "side": 0,
+          "target": 4130,
+          "source": 4132,
+          "amount": 21,
+          "tick": 284
+        },
+        {
+          "type": "attack",
+          "x": 24.82543702527045,
+          "y": 13.721455240568273,
+          "side": 0,
+          "target": 4130,
+          "source": 6,
+          "amount": 13,
+          "tick": 286
+        },
+        {
+          "type": "attack",
+          "x": 26,
+          "y": 13,
+          "side": 1,
+          "target": 6,
+          "source": 4130,
+          "amount": 14,
+          "tick": 291
+        },
+        {
+          "type": "attack",
+          "x": 24.116584756259005,
+          "y": 12.815745505027325,
+          "side": 0,
+          "target": 4130,
+          "source": 7,
+          "amount": 1.2000000000000028,
+          "tick": 298
+        },
+        {
+          "type": "death",
+          "x": 26,
+          "y": 13,
+          "side": 1,
+          "source": 4130,
+          "tick": 298
+        }
+      ]
+    },
+    "completedLocalAndFileRestore": {
+      "fullProfileEqual": true,
+      "capturedRegion": "grove",
+      "persistentCommanderId": 3,
+      "connectedSupply": {
+        "wood": 310,
+        "ore": 60,
+        "crystal": 24
+      }
+    }
+  },
+  "errors": []
+}
