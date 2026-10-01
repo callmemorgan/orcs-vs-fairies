@@ -33,7 +33,7 @@ function fixture(faction: BuiltinFactionId = 'orcs', layered = false): GameState
 function hooks(state: GameState): SpecialistHooks {
   return {
     spawn: (...args) => spawnDefinition(state, ...args),
-    damage: (source, target, amount, options) => { expect(applyScenarioDamage(state, source as Entity, target, amount, options)).toBe(true); },
+    damage: (source, target, amount, options) => { if (!('side' in target)) throw new Error('This economy fixture expects an entity damage target.'); expect(applyScenarioDamage(state, source as Entity, target, amount, options)).toBe(true); },
     die: (actor, text) => { expect(applyScenarioDamage(state, state.entities.find(e => e.side === 1 && e.role === 'hq')!, actor, 1e6, { armorPiercing: true, text })).toBe(true); },
     // Stop uses the same authoritative assignment cleanup as the integration's interrupt hook.
     interrupt: vi.fn(actor => { expect(issueCommand(state, actor.side, { type: 'stop', ids: [actor.id] })).toBe(true); }),
