@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {readFile,writeFile} from 'node:fs/promises';
-import {prepareEconomyProof,observePage,nativeSessionEquality,finishEconomyProof,freshFixture} from './economy/browser-proof.mjs';
+import {prepareEconomyProof,observePage,stopEconomyObservation,nativeSessionEquality,finishEconomyProof,freshFixture} from './economy/browser-proof.mjs';
 
 const base=process.argv[2],fixturePath=process.argv[3],out=process.argv[4];
 assert(base&&fixturePath&&out,'Pass the frozen preview URL, fresh mixed fixture and a new evidence directory.');
@@ -38,4 +38,4 @@ try{
  await page.locator('[data-session-tool="report"]').click();await page.getByLabel('Bug description',{exact:true}).fill('Final native settlement research runtime proof');const download=page.waitForEvent('download');await page.getByRole('button',{name:'Download bug report',exact:true}).click();await(await download).saveAs(`${out}/report.json`);const report=JSON.parse(await readFile(`${out}/report.json`,'utf8'));
  assert.equal(report.versions.buildId,buildId);assert.equal(report.versions.save,expectedSaveVersion);assert.equal(report.versions.simulationRevision,expectedSimulationRevision);assert.equal(report.session.game.version,expectedSaveVersion);assert.equal(report.session.replay.initial.version,expectedSaveVersion);assert.equal(report.session.replay.simulationRevision,expectedSimulationRevision);record('Native report binds final source and versions',report.versions);
  await page.locator('[data-session-tab="saves"]').click();const exportPending=page.waitForEvent('download');await page.getByRole('button',{name:'Export save',exact:true}).click();await(await exportPending).saveAs(`${out}/commanded-session.json`);const saved=JSON.parse(await readFile(`${out}/commanded-session.json`,'utf8'));result.sessionEquality=await nativeSessionEquality(page,context,{saved,report});assert.equal(result.checks.length,8);assert(result.checks.every(check=>check.value!==false));assert.deepEqual(result.errors,[]);result.passed=true;
-}catch(error){result.passed=false;result.error=String(error);await page.screenshot({path:`${out}/failure.png`}).catch(()=>{});throw error;}finally{await browser.close();result.browserClosed=true;await finishEconomyProof(context,result,'results.json');}
+}catch(error){result.passed=false;result.error=String(error);await page.screenshot({path:`${out}/failure.png`}).catch(()=>{});throw error;}finally{try{await stopEconomyObservation(context);}finally{await browser.close();result.browserClosed=true;await finishEconomyProof(context,result,'results.json');}}

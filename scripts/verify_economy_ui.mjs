@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {readFile,writeFile} from 'node:fs/promises';
-import {prepareEconomyProof,observePage,nativeSessionEquality,finishEconomyProof,freshFixture} from './economy/browser-proof.mjs';
+import {prepareEconomyProof,observePage,stopEconomyObservation,nativeSessionEquality,finishEconomyProof,freshFixture} from './economy/browser-proof.mjs';
 const {chromium}=await import(process.env.OVF_PLAYWRIGHT_MODULE??'playwright');
 const base=process.argv[2]??'http://127.0.0.1:4173',fixturePath=process.argv[3];
 assert(fixturePath,'Pass a saved economy scenario as argument 3. The scenario needs five workers, one military unit, three empty caravans, an owned stocked warehouse, an expansion HQ, a completed extractor, an unclaimed visible crystal node, unused depleted ore, a visible hostile warehouse, salvage, and a nearby market/open contract.');
@@ -66,4 +66,4 @@ try{
   result.sessionEquality=await nativeSessionEquality(page,context,{saved,report});evidence.completedSaveAndReplayReloaded=true;
   assert.equal(Object.keys(evidence).length,25,'Final mixed fixture must execute all 25 intended economy checks.');assert(Object.values(evidence).every(value=>value===true));result.passed=true;
   assert.deepEqual(errors,[]);result.scope='Real browser controls, construction, growth and harvested income, completed routes, finite market rewards, raids, salvage, contracts and full native save/report/reload/replay equality.';console.log(JSON.stringify(evidence));
-}catch(error){result.passed=false;result.error=String(error);if(page)await page.screenshot({path:`${out}/failure.png`}).catch(()=>{});await writeFile(`${out}/failure.json`,JSON.stringify(result,null,2));throw error;}finally{await browser.close();result.browserClosed=true;await finishEconomyProof(context,result,'proof.json');}
+}catch(error){result.passed=false;result.error=String(error);if(page)await page.screenshot({path:`${out}/failure.png`}).catch(()=>{});await writeFile(`${out}/failure.json`,JSON.stringify(result,null,2));throw error;}finally{try{await stopEconomyObservation(context);}finally{await browser.close();result.browserClosed=true;await finishEconomyProof(context,result,'proof.json');}}

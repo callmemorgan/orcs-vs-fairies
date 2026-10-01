@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {prepareEconomyProof,observePage,nativeSessionEquality,finishEconomyProof} from './economy/browser-proof.mjs';
+import {prepareEconomyProof,observePage,stopEconomyObservation,nativeSessionEquality,finishEconomyProof} from './economy/browser-proof.mjs';
 const {chromium}=await import(process.env.OVF_PLAYWRIGHT_MODULE??'playwright');
 const base=process.argv[2],out=process.argv[3];assert(base&&out,'Pass the frozen preview and a new modal evidence directory.');
 const context=await prepareEconomyProof(base,out,'economy-modal');
@@ -29,4 +29,4 @@ try{
   await page.locator('[data-session-tool="saves"]').click();await page.waitForSelector('.session-overlay:not([hidden])');await page.waitForFunction(()=>document.querySelector('[data-economy-launch]')?.disabled===true,null,{timeout:5000});assert.equal(await page.locator('[data-economy-launch]').isDisabled(),true);await page.getByRole('button',{name:'Close session tools',exact:true}).click();record(`Session modal disables Economy launcher at ${viewport.width}px`);
  }
  assert.equal(result.checks.length,12);assert(result.checks.every(check=>check.value!==false));result.sessionEquality=await nativeSessionEquality(page,context);assert.deepEqual(result.errors,[]);result.passed=true;
-}catch(error){result.passed=false;result.error=String(error);await page.screenshot({path:`${out}/failure.png`}).catch(()=>{});throw error;}finally{await browser.close();result.browserClosed=true;await finishEconomyProof(context,result,'results.json');}
+}catch(error){result.passed=false;result.error=String(error);await page.screenshot({path:`${out}/failure.png`}).catch(()=>{});throw error;}finally{try{await stopEconomyObservation(context);}finally{await browser.close();result.browserClosed=true;await finishEconomyProof(context,result,'results.json');}}

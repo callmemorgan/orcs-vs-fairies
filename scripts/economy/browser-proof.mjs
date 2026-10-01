@@ -45,6 +45,7 @@ export async function prepareEconomyProof(base,out,feature){
 }
 
 export function observePage(page,result,context){
+ const priorResponseListeners=new Set(page.listeners('response'));
  observeSharedPage(page,result,context);
  page.on('response',response=>{
   const url=new URL(response.url());if(url.origin!==new URL(context.base).origin)return;
@@ -59,6 +60,20 @@ export function observePage(page,result,context){
   const task=(async()=>{const bytes=await response.body(),digest=sha(bytes),record={url:url.href,path,status:response.status(),sha256:digest,bytes:bytes.length};context.browserAssetResponses.push(record);assert.equal(digest,expected.sha256,`Browser response differs from the prepared ${path}`);assert.equal(bytes.length,expected.bytes);context.servedAssets[url.pathname]={path,sha256:digest,bytes:bytes.length,status:response.status()};})().catch(error=>result.pageErrors.push(`Economy asset provenance: ${error.message}`));
   context.responseTasks.push(task);
  });
+ context.responseObservers??=[];context.responseObservation??={startedAt:new Date().toISOString()};
+ context.responseObservers.push({page,listeners:page.listeners('response').filter(listener=>!priorResponseListeners.has(listener))});
+}
+export async function stopEconomyObservation(context,{timeoutMs=30000}={}){
+ if(context.responseObservation?.drained)return;
+ const observers=context.responseObservers??[];
+ for(const {page,listeners} of observers)for(const listener of listeners)page.off('response',listener);
+ for(const page of new Set(observers.map(observer=>observer.page)))page.on('response',response=>{if(response.status()>=400)for(const report of context.observedReports)report.httpErrors.push({url:response.url(),status:response.status()});});
+ const observedTaskCount=context.responseTasks.length;
+ context.responseObservation={...context.responseObservation,endedAt:new Date().toISOString(),listenerCount:observers.reduce((count,observer)=>count+observer.listeners.length,0),observedTaskCount,timeoutMs,httpStatusesObservedThroughClose:true,drained:false};
+ let timer;
+ try{await Promise.race([Promise.all(context.responseTasks),new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('Timed out draining observed response bodies.')),timeoutMs);})]);assert.equal(context.responseTasks.length,observedTaskCount,'Response tasks changed after observation ended.');context.responseObservation.drained=true;}
+ catch(error){context.responseObservation.error=String(error);for(const report of context.observedReports)report.pageErrors.push(`Economy response drain: ${error.message}`);}
+ finally{clearTimeout(timer);context.responseObservation.finishedAt=new Date().toISOString();}
 }
 export async function freshFixture(context,path){
  const prepared=JSON.parse(await readFile(join(context.distDir,'..','prepare.json'),'utf8')),bytes=await readFile(path);
@@ -68,11 +83,13 @@ export async function freshFixture(context,path){
 export async function finishEconomyProof(context,result,recordName){
  result.result=result.passed===true?'passed':'failed';
  assert.equal(result.browserClosed,true,'Close the browser before finalizing economy evidence.');
+ result.responseObservation=context.responseObservation;
  result.economyScriptFiles=context.economyScriptFiles;
  result.allServedBefore=context.allServedBefore;
  result.browserAssetResponses=context.browserAssetResponses;
  result.browserApiResponses=context.browserApiResponses;
  let failure;
+ if(context.responseObservation?.drained!==true){failure=new Error('Response observation did not drain before browser close.');result.passed=false;result.result='failed';result.economyObservationError=context.responseObservation?.error??failure.message;}
  try{
   assert.deepEqual(await economyScripts(context.sourcePin),context.economyScriptFiles,'Economy scripts changed during the browser proof.');
   const modules=await inventory(process.env.OVF_PROOF_MODULES);delete modules['manifest.json'];assert.deepEqual(modules,context.economyModuleFiles,'Prepared proof modules changed during the browser proof.');
