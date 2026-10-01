@@ -1,0 +1,3 @@
+All four ordinary production builds pass at `8a7c4030b17e742a1aabc8c17d50bcd79473bdeb`: browser, CLI, server and tournament. The report retains 404 actual output hashes and all four command logs. The 903 selected Git-authenticated inputs and clean HEAD remained unchanged while building.
+
+The production input bridge compares every selected source/public/top-level configuration byte with the passing full-suite pin `6a634b200bbc978e0bd8abe2e9ba55833190d129`. All match. The later changes are proof scripts and an additional historical-content regression; the three-file focused run passes 21 checks. The existing complete suite is retained at its actual pin rather than labeled with this later commit.
