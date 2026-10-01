@@ -115,7 +115,7 @@ export function mountObjectivePanel(root: HTMLElement, options: ObjectivePanelOp
   function update() {
     if (disposed) return;
     const current = view(), rules = current?.rules; host.hidden = !current || !rules;
-    if(launch){launch.hidden=!current||!rules;const state=options.getState();if(state!==lastState||!observed&&current){lastState=state;observed=!!current;show(!!rules?.draft.enabled&&current?.draft?.status==='drafting');}if(!current){observed=false;show(false);}}
+    if(launch){launch.hidden=!current||!rules;const state=options.getState();if(state!==lastState||!observed&&current){lastState=state;observed=!!current;show(!!rules?.draft.enabled&&current?.draft?.status==='drafting'&&(options.canSubmit?.()??true));}if(!current){observed=false;show(false);}}
     if (!current || !rules) return;
     const objectives = current.objectives, mode = rules.mode, team = current.teamId ?? current.teams?.[side()] ?? side();
     heading.textContent = MATCH_MODE_NAMES[mode]; progress.hidden = true; details.replaceChildren(); relics.hidden = mode !== 'relic';

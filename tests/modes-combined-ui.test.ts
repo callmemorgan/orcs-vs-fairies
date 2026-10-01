@@ -174,6 +174,22 @@ describe('toolbar objective controls', () => {
     expect(choices[0].textContent).toBe('Lantern Duelist');
   });
 
+  it('keeps an active replay draft closed until opened for inspection and disables its choices', () => {
+    const node = root(), toolbar = root(), state = match('annihilation', true);
+    const received = new PlayerView(0).observe(state), submit = vi.fn();
+    const panel = mountObjectivePanel(node, { toolbar, getState: () => state, getObservation: () => received, side: 0, submit, canSubmit: () => false }); disposers.push(() => panel.dispose());
+    const overlay = node.querySelector<HTMLElement>('.objective-overlay')!;
+    const launch = toolbar.querySelector<HTMLButtonElement>('[data-objective-tool="progress"]')!;
+    expect(received.draft.status).toBe('drafting'); expect(overlay.hidden).toBe(true);
+    expect(launch.hidden).toBe(false); expect(launch.getAttribute('aria-expanded')).toBe('false');
+    launch.click(); expect(overlay.hidden).toBe(false); expect(launch.getAttribute('aria-expanded')).toBe('true');
+    expect(node.querySelector('.match-draft-status')!.textContent).toContain('Player 1 picks');
+    const choices = Array.from(node.querySelectorAll<HTMLButtonElement>('[data-draft-choice]'));
+    expect(choices.length).toBeGreaterThan(0); expect(choices.every(button => button.disabled)).toBe(true);
+    choices[0].dispatchEvent(new MouseEvent('click', { bubbles: true })); expect(submit).not.toHaveBeenCalled();
+    panel.update(); expect(overlay.hidden).toBe(false);
+  });
+
   it('rejects a stale relic button after the latest observation moves its chosen unit out of range', async () => {
     const node = root(), { state, observer, unit, relic } = relicFixture();
     const worker = state.entities.find(entity => entity.side === 0 && entity.role === 'worker')!;
