@@ -22,6 +22,9 @@ COPY --from=build --chown=node:node /app/dist ./dist
 COPY --from=build --chown=node:node /app/dist-server ./dist-server
 COPY --from=build --chown=node:node /app/scripts/tournaments/smoke.json ./scripts/tournaments/smoke.json
 COPY --from=build --chown=node:node /app/scripts/agents/tournament-agent.mjs ./scripts/agents/tournament-agent.mjs
+COPY --from=build --chown=node:node /app/src/core ./src/core
+COPY --from=build --chown=node:node /app/src/tournament ./src/tournament
+COPY --from=build --chown=node:node /app/src/cli ./src/cli
 
 USER node
 EXPOSE 8787

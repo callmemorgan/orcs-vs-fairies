@@ -53,6 +53,8 @@ export function mountOnlineLobby(root:HTMLElement,options:OnlineLobbyOptions) {
   root.append(host);
   const element=<T extends HTMLElement=HTMLElement>(selector:string)=>host.querySelector<T>(selector)!;
   const overlay=element('.online-overlay'),dialog=element('.online-dialog');
+  let reportedAccountId:string|null|undefined;
+  const setAccount=(next:Account|null)=>{account=next;const id=next?.id??null;if(reportedAccountId!==id){reportedAccountId=id;options.onAccount?.(next);}};
   let account:Account|null=null,lobbies:LobbyObservation[]=[],current:LobbyObservation|null=null,busy=false,disposed=false;
   let polling:ReturnType<typeof setTimeout>|undefined,previousFocus:HTMLElement|null=null,configDirty=false,requestEpoch=0;
   const message=(text:string)=>{element('.online-message').textContent=text;};
@@ -104,7 +106,7 @@ export function mountOnlineLobby(root:HTMLElement,options:OnlineLobbyOptions) {
     defaultPlayers(lobby.settings).forEach((player,index)=>{const row=line(`Player ${index+1} · ${FACTIONS[player.factionId].name} · Team ${player.teamId+1} · ${player.controller==='ai'?'Computer':'Human'} · Starting resources: ${resources(player.handicap?.startingResources??rules.startingResources)} · Income ×${player.handicap?.incomeFactor??1} · Population limit ${player.handicap?.populationCap??100}`,'online-received-player');row.dataset.receivedPlayer=String(index);});
   }
   function render() {
-    options.onAccount?.(account);element('.online-auth').hidden=!!account;element('.online-account').hidden=!account;element('.online-browser').hidden=!account;
+    element('.online-auth').hidden=!!account;element('.online-account').hidden=!account;element('.online-browser').hidden=!account;
     element('.online-username').textContent=account?.username??'';
     for(const node of Array.from(host.querySelectorAll<HTMLButtonElement>('button')))node.disabled=busy;
     const list=element('.online-lobby-list'),listKey=JSON.stringify({accountId:account?.id,busy,lobbies});
@@ -161,7 +163,7 @@ export function mountOnlineLobby(root:HTMLElement,options:OnlineLobbyOptions) {
       lobbies=nextLobbies;current=nextCurrent;render();
     }catch(error) {
       if(disposed||epoch!==requestEpoch||account?.id!==accountId)return;
-      if(error instanceof OnlineRequestError&&error.status===401){account=null;current=null;lobbies=[];render();}
+      if(error instanceof OnlineRequestError&&error.status===401){setAccount(null);current=null;lobbies=[];render();}
       throw error;
     }
   }
@@ -169,7 +171,7 @@ export function mountOnlineLobby(root:HTMLElement,options:OnlineLobbyOptions) {
     if(busy||disposed)return false;requestEpoch++;busy=true;render();
     try {await action();return true;}
     catch(error) {
-      if(error instanceof OnlineRequestError&&error.status===401){account=null;current=null;lobbies=[];}
+      if(error instanceof OnlineRequestError&&error.status===401){setAccount(null);current=null;lobbies=[];}
       message(error instanceof Error?error.message:'Online request failed.');
       if(error instanceof OnlineRequestError&&error.status===409)try{await refresh();}catch{}
       return false;
@@ -189,7 +191,7 @@ export function mountOnlineLobby(root:HTMLElement,options:OnlineLobbyOptions) {
   }
   async function show() {
     if(disposed)return;previousFocus=document.activeElement as HTMLElement|null;overlay.hidden=false;options.onVisibility?.(true);dialog.focus();
-    await run(async()=>{account=await api.session();message(account?'Choose a lobby or create one.':'Sign in, create an account or play as a guest.');await refresh();});
+    await run(async()=>{setAccount(await api.session());message(account?'Choose a lobby or create one.':'Sign in, create an account or play as a guest.');await refresh();});
     if(polling)clearTimeout(polling);pollLater();
   }
   function hide() {
@@ -198,14 +200,14 @@ export function mountOnlineLobby(root:HTMLElement,options:OnlineLobbyOptions) {
   const credentials=()=>({username:element<HTMLInputElement>('[aria-label="Online username"]').value.trim(),password:element<HTMLInputElement>('[aria-label="Online password"]').value});
   async function authenticate(mode:'login'|'register'|'guest') {
     if(mode!=='guest'&&!element<HTMLFormElement>('.online-auth').reportValidity())return;
-    await run(async()=>{const value=credentials();account=mode==='guest'?await api.guest():await api[mode](value.username,value.password);
-      element<HTMLInputElement>('[aria-label="Online password"]').value='';message(`Signed in as ${account.username}.`);await refresh();});
+    await run(async()=>{const value=credentials(),signedIn=mode==='guest'?await api.guest():await api[mode](value.username,value.password);setAccount(signedIn);
+      element<HTMLInputElement>('[aria-label="Online password"]').value='';message(`Signed in as ${signedIn.username}.`);await refresh();});
     if(polling)clearTimeout(polling);pollLater();
   }
   const launch=element<HTMLButtonElement>('.online-open');launch.onclick=()=>void show();element<HTMLButtonElement>('.online-close').onclick=hide;
   element<HTMLFormElement>('.online-auth').onsubmit=event=>{event.preventDefault();void authenticate('login');};
   element<HTMLButtonElement>('[data-online="register"]').onclick=()=>void authenticate('register');element<HTMLButtonElement>('[data-online="guest"]').onclick=()=>void authenticate('guest');
-  element<HTMLButtonElement>('[data-online="logout"]').onclick=()=>void run(async()=>{await api.logout();account=null;current=null;lobbies=[];message('Signed out.');});
+  element<HTMLButtonElement>('[data-online="logout"]').onclick=()=>void run(async()=>{await api.logout();setAccount(null);current=null;lobbies=[];message('Signed out.');});
   element<HTMLButtonElement>('[data-online="refresh"]').onclick=()=>void run(refresh);
   const readPlayers=(form:HTMLFormElement):LobbyPlayer[]=>Array.from(form.querySelectorAll<HTMLFieldSetElement>('[data-player]')).map(row=>{
     const value=(field:string)=>(row.querySelector<HTMLInputElement|HTMLSelectElement>(`[data-field="${field}"]`)!).value;

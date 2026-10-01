@@ -22,6 +22,7 @@ export function mountCosmeticTools(root:HTMLElement,options:CosmeticToolsOptions
   const overlay=element('.cosmetic-overlay'),dialog=element('.cosmetic-dialog'),faction=element<HTMLSelectElement>('[aria-label="Cosmetic faction"]');
   const launch=element<HTMLButtonElement>('.cosmetic-open');if(options.toolbar)options.toolbar.append(launch);launch.setAttribute('aria-expanded','false');
   let visible=false,busy=false,disposed=false,blocked=false,queuedRefresh=false,requestEpoch=0,profile:CosmeticProfile|undefined,catalog:Cosmetic[]=[],previousFocus:HTMLElement|null=null;
+  const currentRequest=(epoch:number)=>!disposed&&epoch===requestEpoch;
   const message=(text:string)=>{element('.cosmetic-message').textContent=text;};
   const controls=()=>{for(const node of Array.from(host.querySelectorAll<HTMLButtonElement|HTMLSelectElement>('button,select')))if(!node.classList.contains('cosmetic-close')&&!node.classList.contains('cosmetic-open')&&node.dataset.cosmetic!=='refresh')node.disabled=busy||!profile;element<HTMLButtonElement>('[data-cosmetic="refresh"]').disabled=busy;};
   const readFaction=()=>faction.value as FactionId;
@@ -32,18 +33,19 @@ export function mountCosmeticTools(root:HTMLElement,options:CosmeticToolsOptions
     element('.cosmetic-slots').innerHTML=slots.map(slot=>`<label>${slot==='decoration'?'Building decoration':slot==='portrait'?'Commander portrait':'Faction banner'}<select aria-label="Cosmetic ${slot}"><option value="">Default</option>${catalog.filter(item=>item.factionId===current&&item.slot===slot).map(item=>`<option value="${item.id}"${profile?.owned.includes(item.id)?'':' disabled'}${loadout[slot]===item.id?' selected':''}>${escape(item.name)}${profile?.owned.includes(item.id)?'':' (locked)'}</option>`).join('')}</select></label>`).join('');
     controls();
   }
-  async function applyProfile(next:CosmeticProfile|undefined,account?:Account){if(disposed)return;profile=next;for(const id of Object.keys(FACTIONS) as FactionId[]){if(disposed)return;await options.onEquipment(id,resolveCosmeticLoadout(id,next?.equipment[id]?.loadout??EMPTY_COSMETIC_EQUIPMENT),account?.id);}await options.onProfile?.(next,account);}
-  async function refresh(){const epoch=requestEpoch,response=await api.cosmetics();if(disposed||epoch!==requestEpoch)return;catalog=response.catalog;element('.cosmetic-rules').textContent=response.rules;await applyProfile(response.profile,response.account);render();}
-  async function run(action:()=>Promise<void>){if(busy||disposed)return;busy=true;controls();try{await action();}catch(error){
-    if(error instanceof OnlineRequestError&&error.status===401){await applyProfile(undefined);catalog=[];render();message('Sign in through Online play to view and equip earned cosmetics.');}
-    else if(error instanceof OnlineRequestError&&error.status===409){try{await refresh();}catch{}message('Choices changed in another browser. Review the refreshed choices before applying.');}
+  async function applyProfile(next:CosmeticProfile|undefined,account:Account|undefined,epoch:number){if(!currentRequest(epoch))return;profile=next;for(const id of Object.keys(FACTIONS) as FactionId[]){if(!currentRequest(epoch))return;await options.onEquipment(id,resolveCosmeticLoadout(id,next?.equipment[id]?.loadout??EMPTY_COSMETIC_EQUIPMENT),account?.id);}if(currentRequest(epoch))await options.onProfile?.(next,account);}
+  async function refresh(){const epoch=requestEpoch,response=await api.cosmetics();if(!currentRequest(epoch))return;catalog=response.catalog;message('');element('.cosmetic-rules').textContent=response.rules;await applyProfile(response.profile,response.account,epoch);if(currentRequest(epoch))render();}
+  async function run(action:()=>Promise<void>){if(busy||disposed)return;const epoch=requestEpoch;busy=true;controls();try{await action();}catch(error){
+    if(!currentRequest(epoch))return;
+    if(error instanceof OnlineRequestError&&error.status===401){await applyProfile(undefined,undefined,epoch);if(!currentRequest(epoch))return;catalog=[];render();message('Sign in through Online play to view and equip earned cosmetics.');}
+    else if(error instanceof OnlineRequestError&&error.status===409){try{await refresh();}catch{}if(currentRequest(epoch))message('Choices changed in another browser. Review the refreshed choices before applying.');}
     else message(error instanceof Error?error.message:'Cosmetic request failed.');
   }finally{busy=false;if(!disposed){controls();if(queuedRefresh){queuedRefresh=false;void run(refresh);}}}}
   function setVisible(next:boolean){if(disposed||visible===next||next&&(blocked||options.isBlocked?.()))return;visible=next;overlay.hidden=!next;launch.setAttribute('aria-expanded',String(next));options.onVisibility?.(next);if(next){previousFocus=document.activeElement instanceof HTMLElement?document.activeElement:null;const requested=options.getFaction?.();faction.value=requested&&Object.hasOwn(FACTIONS,requested)?requested:'orcs';dialog.focus();void run(refresh);}else previousFocus?.focus();}
   launch.onclick=()=>setVisible(true);element<HTMLButtonElement>('.cosmetic-close').onclick=()=>setVisible(false);element<HTMLButtonElement>('[data-cosmetic="refresh"]').onclick=()=>void run(refresh);faction.onchange=render;
   element<HTMLFormElement>('.cosmetic-form').onsubmit=event=>{event.preventDefault();void run(async()=>{if(!profile)throw new Error('Sign in first.');const current=readFaction(),revision=profile.equipment[current]?.revision??0;
     const loadout=Object.fromEntries(slots.map(slot=>[slot,element<HTMLSelectElement>(`[aria-label="Cosmetic ${slot}"]`).value||null])) as unknown as CosmeticEquipment;
-    const epoch=requestEpoch,response=await api.equip(current,revision,loadout);if(disposed||epoch!==requestEpoch)return;await applyProfile(response.profile,response.account);render();message('Cosmetic choices saved and applied.');
+    const epoch=requestEpoch,response=await api.equip(current,revision,loadout);if(!currentRequest(epoch))return;await applyProfile(response.profile,response.account,epoch);if(currentRequest(epoch)){render();message('Cosmetic choices saved and applied.');}
   });};
   const key=(event:KeyboardEvent)=>{if(!visible)return;if(event.key==='Escape'){event.preventDefault();event.stopPropagation();setVisible(false);}else if(event.key==='Tab'){const nodes=Array.from(dialog.querySelectorAll<HTMLElement>('button:not(:disabled),select:not(:disabled)'));const first=nodes[0],last=nodes.at(-1);if(event.shiftKey&&(document.activeElement===first||document.activeElement===dialog)){event.preventDefault();last?.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus();}}};
   document.addEventListener('keydown',key,true);

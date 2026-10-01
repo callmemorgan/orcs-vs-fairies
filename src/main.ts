@@ -96,7 +96,9 @@ const onlineApi=new OnlineApi();
 const cosmeticApi=new CosmeticApi();
 const accountLoadouts=new Map<FactionId,CosmeticLoadout>();
 let cosmeticAccountId:string|null|undefined;
+let cosmeticAccountEpoch=0;
 let hostedLoadouts=new Map<Side,CosmeticLoadout>();
+let hostedCosmeticRequest=0;
 let lastAutosaveTime=0,autosaveFailure=false,replacementGeneration=0;
 const playerSide=():Side=>scene?.viewSide??0;
 const callbacks:HudCallbacks={
@@ -143,8 +145,8 @@ const callbacks:HudCallbacks={
 };
 function closeOnline(){onlineConnecting?.dispose();onlineConnecting=undefined;onlineConnection?.dispose();onlineConnection=undefined;onlineRender=undefined;}
 function applyCosmetics(){if(!scene)return;scene.setCosmeticLoadouts(onlineConnection?hostedLoadouts:replay?new Map():new Map([[playerSide(),accountLoadouts.get(scene.state.players[playerSide()].faction)??{}]]));}
-async function refreshHostedCosmetics(){const connection=onlineConnection,generation=replacementGeneration;if(!connection)return;try{const result=await cosmeticApi.matchCosmetics(connection.matchId);if(connection!==onlineConnection||generation!==replacementGeneration||!scene)return;hostedLoadouts=new Map(result.players.filter(player=>scene!.state.players[player.side]?.faction===player.factionId).map(player=>[player.side,resolveCosmeticLoadout(player.factionId,player.loadout)]));applyCosmetics();}catch{if(connection===onlineConnection&&generation===replacementGeneration){hostedLoadouts.clear();applyCosmetics();}}}
-function accountChanged(account:Account|null){const id=account?.id??null;if(cosmeticAccountId===id)return;cosmeticAccountId=id;accountLoadouts.clear();applyCosmetics();cosmetics.reset();void cosmetics.refresh();}
+async function refreshHostedCosmetics(){const request=++hostedCosmeticRequest,connection=onlineConnection,generation=replacementGeneration;if(!connection)return;try{const result=await cosmeticApi.matchCosmetics(connection.matchId);if(request!==hostedCosmeticRequest||connection!==onlineConnection||generation!==replacementGeneration||!scene)return;hostedLoadouts=new Map(result.players.filter(player=>scene!.state.players[player.side]?.faction===player.factionId).map(player=>[player.side,resolveCosmeticLoadout(player.factionId,player.loadout)]));applyCosmetics();}catch{if(request===hostedCosmeticRequest&&connection===onlineConnection&&generation===replacementGeneration){hostedLoadouts.clear();applyCosmetics();}}}
+function accountChanged(account:Account|null){const id=account?.id??null;if(cosmeticAccountId===id)return;cosmeticAccountId=id;cosmeticAccountEpoch++;accountLoadouts.clear();applyCosmetics();cosmetics.reset();void cosmetics.refresh();}
 function setModal(source:string,open:boolean){
  const wasOpen=!!openModals.size;
  if(open)openModals.add(source);else openModals.delete(source);
@@ -364,7 +366,7 @@ new MutationObserver(alignToolPanels).observe(sessionToolbar.parentElement!,{att
 window.addEventListener('resize',alignToolPanels);alignToolPanels();
 function tournamentBlocked(){return !!scene?.photoMode||Array.from(openModals).some(source=>source!=='tournament');}
 function toolBlocked(source:string){return !!scene?.photoMode||Array.from(openModals).some(other=>other!==source);}
-let checkingAccount=false;async function refreshAccount(){if(checkingAccount)return;checkingAccount=true;try{accountChanged(await onlineApi.session());}catch{}finally{checkingAccount=false;}}
+let checkingAccount=false;async function refreshAccount(){if(checkingAccount)return;checkingAccount=true;const epoch=cosmeticAccountEpoch;try{const account=await onlineApi.session();if(epoch===cosmeticAccountEpoch)accountChanged(account);}catch{}finally{checkingAccount=false;}}
 void refreshAccount();setInterval(()=>void refreshAccount(),2000);
 function planningBlocked(){return !!scene?.photoMode||Array.from(openModals).some(source=>source!=='planning');}
 function canEditPlanning(side:Side,context:PlanningEditContext){

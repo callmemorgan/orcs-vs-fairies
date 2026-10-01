@@ -31,10 +31,17 @@ The main game mounts cosmetic choices in the shared session toolbar. The modal u
 
 Campaign uploads reserve one shared admission slot before reading or parsing the body. Ordinary JSON remains limited to 64 KiB; campaign recording JSON is limited to 20 MiB with a ten-second upload deadline. The slot stays held through worker termination and the reward transaction, and releases on every failure. The existing worker retains its 45-second verification deadline and 256 MiB old-generation limit.
 
+The canonical native proof uses the main Phaser game and packaged server. It earns the Ironclad set through five server-finished ranked matches and uses native keyboard selection to confirm that locked options cannot be chosen. Playwright's `isDisabled()` follows a wrapped option to its enabled label control, and `selectOption()` can programmatically choose a disabled option, so neither is used to prove locking.
+
+The browser applies all three choices through the equipment form, downloads raw renderer PNGs through Photo mode, and requires decoded pixels to change. Full exported paused game state, including private simulation runtime, must remain equal before and after equipping. It also checks the HUD across its normal refresh, same-faction owner-side mapping on both clients, reload/rejoin, logout clearing, older hosted response ordering and a delayed anonymous session poll after login. Inventory and equipment must survive a graceful packaged-server restart.
+
+The packaged proof checks authentication, origin rejection, both body limits and admission while two native HTTP uploads are still partial. If the checkout lacks the canonical scenario runtime, it requires HTTP 503 without a reward. That branch does not prove a campaign victory. Native daily entry/resume is covered; daily victory scoring remains the separate hosted proof above.
+
 Run the repeatable proofs:
 
 ```sh
 npx vitest run tests/campaign-verification.test.ts tests/server-cosmetics.test.ts tests/server-competitions.test.ts tests/server.test.ts tests/server-teams.test.ts
+OVF_PLAYWRIGHT_MODULE=/path/to/playwright/index.mjs node scripts/competitions/verify-canonical-main.mjs work/competitions/native-new-run
 OVF_PLAYWRIGHT_MODULE=/path/to/playwright/index.mjs node scripts/verify_competitions.mjs
 npx esbuild scripts/competitions/verify-hosted.ts --bundle --platform=node --format=esm --packages=external --outfile=work/competitions/verify-hosted.mjs
 node work/competitions/verify-hosted.mjs

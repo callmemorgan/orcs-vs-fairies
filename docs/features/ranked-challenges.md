@@ -20,14 +20,19 @@ The main game mounts `mountCompetitionTools` in the shared session toolbar and c
 
 The server tests cover exact-once awards, duplicate and post-game receipts, two restarts, UTC season rollover, full rating resets, eligibility rejection, spectator authorization, immutable daily configuration, forged date/seed/winner rejection, loss scoring, award rollback, and overlapping partial-body start requests. The existing human and team server tests also pass.
 
-The standalone browser proof uses normal account, lobby and competition screens with real authoritative callback connections. It verifies a ranked result through rollover and restart, rejoin after reload, matching daily configurations, duplicate daily resume and a recorded daily loss. Screenshots and the result report are in `docs/evidence/competitions-browser`. This proof does not establish mounting in the shipped Phaser entry or public hosting; those remain assembled integration work.
+The standalone browser proof uses normal account, lobby and competition screens with real authoritative callback connections. It verifies a ranked result through rollover and restart, rejoin after reload, matching daily configurations, duplicate daily resume and a recorded daily loss. Screenshots and the result report are in `docs/evidence/competitions-browser`. This older proof exercises standalone mounts. The canonical native proof below exercises the main Phaser entry and packaged server; public hosting remains separate.
 
 The separate hosted proof uses an external human controller, normal HTTP and WebSocket commands, and the unchanged 20Hz simulation step. A trusted test timer runs those steps every 1ms. It recorded victories at tick 2,055 (102.75 seconds) and tick 2,159, retained the faster score, retried a paid command without another award, and preserved both outcomes and the score through a real server restart. Its captured inputs, receipts and results are in `docs/evidence/competitions-hosted/result.json`.
+
+The canonical native proof builds the Vite app and production server, then uses two independent browser accounts and the main toolbar. Five real ranked matches finish through accepted guest surrender commands on the captured game WebSocket. The browser creates, joins, readies and enters those matches through the native UI. It checks unlock thresholds, same-faction equipment by side, reload/rejoin, daily entry/resume, local logout and a graceful packaged-server restart. Daily victory scoring remains covered by the separate hosted proof above.
+
+The native driver delays real responses from the same server to check that an older hosted success or transport failure cannot replace newer equipment, and that an anonymous session poll cannot clear a later native login. It records source and built-package hashes and rejects source changes during verification. An output directory must be new.
 
 Run from the repository root:
 
 ```sh
 npx vitest run tests/server-competitions.test.ts tests/server.test.ts tests/server-teams.test.ts
+OVF_PLAYWRIGHT_MODULE=/path/to/playwright/index.mjs node scripts/competitions/verify-canonical-main.mjs work/competitions/native-new-run
 OVF_PLAYWRIGHT_MODULE=/path/to/playwright/index.mjs node scripts/verify_competitions.mjs
 npx esbuild scripts/competitions/verify-hosted.ts --bundle --platform=node --format=esm --packages=external --outfile=work/competitions/verify-hosted.mjs
 node work/competitions/verify-hosted.mjs
