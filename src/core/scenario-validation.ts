@@ -40,10 +40,10 @@ function list(value: unknown, path: string, max: number, min = 0): unknown[] {
   return value;
 }
 /** Reject executable properties before walking a package supplied by an editor or importer. */
-export function scenarioJson(input: unknown): unknown {
+export function scenarioJson(input: unknown, limits: { maxBytes?: number; maxNodes?: number; maxArrayLength?: number } = {}): unknown {
   let nodes = 0; const ancestors = new Set<object>();
   const copy = (value: unknown, depth: number): unknown => {
-    if (++nodes > 100000 || depth > 24) bad('package', 'package is too large or deeply nested');
+    if (++nodes > (limits.maxNodes ?? 100000) || depth > 24) bad('package', 'package is too large or deeply nested');
     if (value === null || typeof value === 'boolean' || typeof value === 'string') return value;
     if (typeof value === 'number' && Number.isFinite(value)) return value;
     if (!value || typeof value !== 'object') bad('package', 'expected bounded JSON data');
@@ -51,7 +51,7 @@ export function scenarioJson(input: unknown): unknown {
     ancestors.add(value);
     let result: unknown;
     if (Array.isArray(value)) {
-      if (value.length > 65536) bad('package', 'array is too large');
+      if (value.length > (limits.maxArrayLength ?? 65536) || Object.getOwnPropertySymbols(value).length) bad('package', 'array is too large or contains symbols');
       result = Array.from({ length: value.length }, (_, index) => {
         const property = Object.getOwnPropertyDescriptor(value, String(index));
         if (!property || !('value' in property)) bad('package', 'accessors and gaps are forbidden');
@@ -71,7 +71,7 @@ export function scenarioJson(input: unknown): unknown {
     ancestors.delete(value); return result;
   };
   const value = copy(input, 0);
-  if (new TextEncoder().encode(JSON.stringify(value)).byteLength > 2 * 1024 * 1024) bad('package', 'package exceeds 2 MiB');
+  if (new TextEncoder().encode(JSON.stringify(value)).byteLength > (limits.maxBytes ?? 2 * 1024 * 1024)) bad('package', 'package exceeds its size limit');
   return value;
 }
 

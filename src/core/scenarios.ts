@@ -1,5 +1,7 @@
 import { FACTIONS } from './content';
 import { validateCommand } from './commands';
+import { DIRECTIONS_32, length2D } from './geometry';
+import { coneCosine } from './scenario-geometry';
 import { MAP_VERSION, TERRAIN, terrainAt } from './maps';
 import { openDestination, walkable } from './navigation';
 import { loadGame, saveGame } from './saves';
@@ -7,17 +9,29 @@ import { createMatch, isAllied, isHostile, isVisible, issueCommand, refreshVisib
 import { scenarioJson, validateScenario } from './scenario-validation';
 import { fogKey } from './world-map';
 import type { Command, Entity, GameState, MatchConfig, Side, UnitRole, Vec } from './types';
-import type { ScenarioAction, ScenarioActor, ScenarioCheckpoint, ScenarioCondition, ScenarioDefinition, ScenarioOrder, ScenarioRuntime, ScenarioSession } from './scenario-types';
+import type { ScenarioAction, ScenarioActor, ScenarioBinding, ScenarioCheckpoint, ScenarioCondition, ScenarioDefinition, ScenarioOrder, ScenarioRuntime, ScenarioSession } from './scenario-types';
 export { validateScenario } from './scenario-validation';
 export type * from './scenario-types';
 
 export const MAX_SCENARIO_ACTIONS_PER_TICK = 128;
-const commandListeners = new WeakMap<ScenarioSession, Set<(side: Side, command: Command) => void>>();
-export function subscribeScenarioCommands(session: ScenarioSession, listener: (side: Side, command: Command) => void): () => void {
-  let listeners = commandListeners.get(session); if (!listeners) { listeners = new Set(); commandListeners.set(session, listeners); }
-  listeners.add(listener); return () => { listeners!.delete(listener); if (!listeners!.size) commandListeners.delete(session); };
+const commandListeners = new WeakMap<GameState, Set<(side: Side, command: Command) => void>>();
+const commandGeneration = new WeakMap<GameState, number>();
+const scriptedCommands = new WeakSet<GameState>();
+type BoundState = GameState & { scenario?: ScenarioBinding };
+export function bindScenarioState(session: ScenarioSession): void { (session.state as BoundState).scenario = { definition: session.definition, runtime: session.runtime }; }
+export function scenarioSessionForState(state: GameState): ScenarioSession | null {
+  const binding = (state as BoundState).scenario; return binding ? { ...binding, state } : null;
 }
-const distance = (a: Vec, b: Vec) => (a.level ?? 0) === (b.level ?? 0) ? Math.hypot(a.x - b.x, a.y - b.y) : Infinity;
+export function isScenarioScriptedCommand(state: GameState): boolean { return scriptedCommands.has(state); }
+function scriptedCommand(state: GameState, side: Side, command: Command): boolean {
+  const prior = scriptedCommands.has(state); scriptedCommands.add(state);
+  try { return issueCommand(state, side, command); } finally { if (!prior) scriptedCommands.delete(state); }
+}
+export function subscribeScenarioCommands(session: ScenarioSession, listener: (side: Side, command: Command) => void): () => void {
+  let listeners = commandListeners.get(session.state); if (!listeners) { listeners = new Set(); commandListeners.set(session.state, listeners); }
+  listeners.add(listener); return () => { listeners!.delete(listener); if (!listeners!.size) commandListeners.delete(session.state); };
+}
+const distance = (a: Vec, b: Vec) => (a.level ?? 0) === (b.level ?? 0) ? length2D(a.x - b.x, a.y - b.y) : Infinity;
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
 const actor = (session: ScenarioSession, label: string) => session.state.entities.find(e => e.id === session.runtime.labels[label] && e.hp > 0);
 const visible = (state: GameState, side: Side, point: Vec) => !!state.visible[side]?.has(fogKey(state, point));
@@ -85,8 +99,8 @@ function orderActors(session: ScenarioSession, labels: string[], order: Scenario
     const ids = entities.map(e => e.id);
     const before = session.state.events.length;
     if (order.type === 'attack') {
-      const target = actor(session, order.actor); if (target) issueCommand(session.state, side, { type: 'attack', ids, target: target.id });
-    } else issueCommand(session.state, side, { ...order, ids });
+      const target = actor(session, order.actor); if (target) scriptedCommand(session.state, side, { type: 'attack', ids, target: target.id });
+    } else scriptedCommand(session.state, side, { ...order, ids });
     if (side === 0) recordEvents(session, before);
   }
 }
@@ -116,12 +130,13 @@ export function createScenario(input: unknown, options: { firstEntityId?: number
     if (state.world) state.world.levels[0].terrain = state.terrain;
   }
   const runtime: ScenarioRuntime = {
-    version: 1, definitionId: definition.id, outcome: 'playing', reason: '', labels: {}, variables: {}, triggers: {}, completed: [], messages: [],
+    version: 1, lastEvaluatedTick: 0, definitionId: definition.id, outcome: 'playing', reason: '', labels: {}, variables: {}, triggers: {}, completed: [], messages: [],
     reinforcementRemaining: definition.rules.reinforcementBudget, escort: { checkpoint: 0, moving: false },
     stealth: { alarms: 0, exposure: {}, detected: [], patrol: {}, distractedUntil: {} },
     boss: { phase: -1, nextAttack: 4, telegraph: null, phasesEntered: [], interrupted: 0, hits: 0, dodged: 0 }, commandCounts: {},
   };
   const session = { definition, state, runtime };
+  bindScenarioState(session);
   spawnActors(session, definition.army);
   if (definition.boss) { const boss = actor(session, definition.boss.actor)!; boss.hp = definition.boss.health; boss.maxHp = boss.hp; }
   message(session, definition.briefing); advanceStealth(session, 0); evaluateScenario(session); return session;
@@ -173,13 +188,13 @@ function advanceEscort(session: ScenarioSession): void {
     if (progress.checkpoint >= definition.route.length) return;
   }
   const guarded = session.state.entities.some(e => e.hp > 0 && e.id !== convoy.id && e.kind === 'unit' && e.role !== 'worker' && !e.illusion && isAllied(session.state, e.side, convoy.side) && distance(e, convoy) <= definition.escortRadius);
-  if (!guarded && progress.moving) { issueCommand(session.state, convoy.side, { type: 'stop', ids: [convoy.id] }); progress.moving = false; }
+  if (!guarded && progress.moving) { scriptedCommand(session.state, convoy.side, { type: 'stop', ids: [convoy.id] }); progress.moving = false; }
   if (guarded && !progress.moving) {
     const next = definition.route[progress.checkpoint];
     if ((next.level ?? 0) !== (convoy.level ?? 0)) {
       const transition = session.state.world?.transitions.find(t => (t.from.level === (convoy.level ?? 0) && t.to.level === (next.level ?? 0)) || (t.to.level === (convoy.level ?? 0) && t.from.level === (next.level ?? 0)));
-      if (transition) progress.moving = issueCommand(session.state, convoy.side, { type: 'traverse', ids: [convoy.id], transition: transition.id });
-    } else progress.moving = issueCommand(session.state, convoy.side, { type: 'move', ids: [convoy.id], ...next });
+      if (transition) progress.moving = scriptedCommand(session.state, convoy.side, { type: 'traverse', ids: [convoy.id], transition: transition.id });
+    } else progress.moving = scriptedCommand(session.state, convoy.side, { type: 'move', ids: [convoy.id], ...next });
   }
   if (progress.moving && convoy.order.type === 'idle') progress.moving = false;
 }
@@ -192,9 +207,9 @@ function detectionLine(state: GameState, from: Vec, to: Vec): boolean {
 export function guardDetects(session: ScenarioSession, guard: Entity, target: Entity): boolean {
   const stealth = session.definition.stealth;
   if (!stealth || !isHostile(session.state, guard.side, target.side) || !visible(session.state, guard.side, target) || distance(guard, target) > stealth.radius || !detectionLine(session.state, guard, target)) return false;
-  const angle = Math.atan2(target.y - guard.y, target.x - guard.x), facing = guard.facing * Math.PI / 4;
-  const delta = Math.abs(Math.atan2(Math.sin(angle - facing), Math.cos(angle - facing)));
-  return delta <= stealth.coneDegrees * Math.PI / 360;
+  const dx = target.x - guard.x, dy = target.y - guard.y, length = length2D(dx, dy);
+  const facing = DIRECTIONS_32[guard.facing * 4];
+  return length === 0 || dx * facing[0] + dy * facing[1] >= length * coneCosine(stealth.coneDegrees);
 }
 
 function advanceStealth(session: ScenarioSession, dt: number): void {
@@ -205,7 +220,7 @@ function advanceStealth(session: ScenarioSession, dt: number): void {
     const illusion = session.state.entities.filter(e => e.hp > 0 && e.illusion && guardDetects(session, guard, e)).sort((a, b) => distance(a, guard) - distance(b, guard) || a.id - b.id)[0];
     if (illusion) {
       if (guard.order.type !== 'attack' || guard.order.target !== illusion.id) {
-        issueCommand(session.state, guard.side, { type: 'attack', ids: [guard.id], target: illusion.id });
+        scriptedCommand(session.state, guard.side, { type: 'attack', ids: [guard.id], target: illusion.id });
         message(session, 'A patrol turned toward an illusion.'); addVariable(session, 'stealth.diversions', 1);
       }
       progress.distractedUntil[label] = session.state.time + 1;
@@ -216,7 +231,7 @@ function advanceStealth(session: ScenarioSession, dt: number): void {
       let index = progress.patrol[label] ?? 0;
       if (distance(guard, patrol.route[index]) <= .65) { index = (index + 1) % patrol.route.length; progress.patrol[label] = index; }
       const next = patrol.route[index];
-      if (guard.order.type !== 'move' || guard.order.x !== next.x || guard.order.y !== next.y) issueCommand(session.state, guard.side, { type: 'move', ids: [guard.id], ...next });
+      if (guard.order.type !== 'move' || guard.order.x !== next.x || guard.order.y !== next.y) scriptedCommand(session.state, guard.side, { type: 'move', ids: [guard.id], ...next });
     }
   }
   for (const label of definition.infiltrators) {
@@ -233,7 +248,7 @@ function advanceStealth(session: ScenarioSession, dt: number): void {
     if (progress.exposure[label] + 1e-9 < definition.detectionSeconds) continue;
     progress.detected.push(label); progress.alarms++; session.runtime.variables['stealth.alarms'] = progress.alarms;
     message(session, `Alarm ${progress.alarms}: ${label} was detected.`);
-    for (const guardLabel of definition.guards) { const guard = actor(session, guardLabel); if (guard) issueCommand(session.state, guard.side, { type: 'attackMove', ids: [guard.id], x: infiltrator.x, y: infiltrator.y }); }
+    for (const guardLabel of definition.guards) { const guard = actor(session, guardLabel); if (guard) scriptedCommand(session.state, guard.side, { type: 'attackMove', ids: [guard.id], x: infiltrator.x, y: infiltrator.y }); }
     if (progress.alarms >= definition.alarmLimit) { finish(session, 'lost', 'The infiltrators raised the alarm.'); return; }
   }
 }
@@ -301,7 +316,8 @@ function recordEvents(session: ScenarioSession, start = 0): void {
 
 /** Call after the shared simulation step when a client already owns its fixed tick loop. */
 export function afterScenarioStep(session: ScenarioSession, dt: number): void {
-  if (session.runtime.outcome !== 'playing') return;
+  if (session.runtime.outcome !== 'playing' || session.runtime.lastEvaluatedTick >= session.state.tick) return;
+  session.runtime.lastEvaluatedTick = session.state.tick;
   recordEvents(session); advanceEscort(session); advanceStealth(session, dt); advanceBoss(session); evaluateScenario(session);
 }
 export function stepScenario(session: ScenarioSession, dt = .05): void {
@@ -311,22 +327,41 @@ export function stepScenario(session: ScenarioSession, dt = .05): void {
 }
 
 export function issueScenarioCommand(session: ScenarioSession, side: Side, command: Command): boolean {
-  if (session.runtime.outcome !== 'playing' || !validateCommand(command)) return false;
-  if (side === 0 && (command.type === 'build' || command.type === 'research') && session.definition.rules.fixedArmy) return false;
-  if (side === 0 && command.type === 'train' && (session.definition.rules.fixedArmy || session.runtime.reinforcementRemaining <= 0)) return false;
+  if (!validateCommand(command) || !scenarioCommandPermitted(session.state, side, command)) return false;
   const eventStart = session.state.events.length;
+  const before = commandGeneration.get(session.state) ?? 0;
   if (!issueCommand(session.state, side, command)) return false;
-  for (const listener of commandListeners.get(session) ?? []) listener(side, clone(command));
+  if (before === (commandGeneration.get(session.state) ?? 0)) afterScenarioCommand(session.state, side, command, eventStart);
+  return true;
+}
+
+export function scenarioCommandPermitted(state: GameState, side: Side, command: Command): boolean {
+  const session = scenarioSessionForState(state); if (!session || isScenarioScriptedCommand(state)) return true;
+  if (session.runtime.outcome !== 'playing') return false;
+  if (side === 0 && (command.type === 'build' || command.type === 'research') && session.definition.rules.fixedArmy) return false;
+  return !(side === 0 && command.type === 'train' && (session.definition.rules.fixedArmy || session.runtime.reinforcementRemaining <= 0));
+}
+
+/** Core calls this only for accepted external input, before history notification. */
+export function afterScenarioCommand(state: GameState, side: Side, command: Command, eventStart: number): void {
+  const session = scenarioSessionForState(state); if (!session || isScenarioScriptedCommand(state)) return;
+  commandGeneration.set(state, (commandGeneration.get(state) ?? 0) + 1);
   if (side === 0) {
     if (command.type === 'train') session.runtime.reinforcementRemaining--;
     if (command.type !== 'ability') { session.runtime.commandCounts[command.type] = (session.runtime.commandCounts[command.type] ?? 0) + 1; addVariable(session, `action.${command.type}`, 1); }
     recordEvents(session, eventStart);
   }
-  return true;
+  for (const listener of commandListeners.get(state) ?? []) listener(side, clone(command));
 }
 
 export function captureScenario(session: ScenarioSession): ScenarioCheckpoint {
-  return { format: 'orcs-vs-fairies-scenario', version: 1, definition: clone(session.definition), runtime: clone(session.runtime), game: saveGame(session.state) };
+  // This synchronous envelope already stores the binding beside game state.
+  // Keep normal saveGame snapshots authoritative without duplicating it here.
+  const state = session.state as BoundState, binding = state.scenario;
+  delete state.scenario;
+  let game: ScenarioCheckpoint['game'];
+  try { game = saveGame(state); } finally { if (binding) state.scenario = binding; }
+  return { format: 'orcs-vs-fairies-scenario', version: 1, definition: clone(session.definition), runtime: clone(session.runtime), game };
 }
 export function resetScenario(session: ScenarioSession): ScenarioSession { return createScenario(session.definition); }
 
@@ -334,21 +369,30 @@ export function restoreScenario(input: unknown): ScenarioSession {
   let raw = input;
   if (typeof raw === 'string') { if (raw.length > 18 * 1024 * 1024) throw new Error('Scenario checkpoint exceeds its size limit.'); raw = JSON.parse(raw); }
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) throw new Error('Invalid scenario checkpoint.');
-  const envelope = raw as ScenarioCheckpoint;
+  const envelope = scenarioJson(raw, { maxBytes: 18 * 1024 * 1024, maxNodes: 1000000, maxArrayLength: 100000 }) as ScenarioCheckpoint;
   if (Object.keys(envelope).some(key => !['format', 'version', 'definition', 'runtime', 'game'].includes(key)) || envelope.format !== 'orcs-vs-fairies-scenario' || envelope.version !== 1) throw new Error('Unsupported scenario checkpoint.');
   const definition = validateScenario(envelope.definition), state = loadGame(envelope.game), runtime = scenarioJson(envelope.runtime) as ScenarioRuntime;
+  if (runtime && !Object.hasOwn(runtime, 'lastEvaluatedTick')) runtime.lastEvaluatedTick = state.tick;
   validateRuntime(definition, state, runtime);
-  return { definition, state, runtime };
+  const session = { definition, state, runtime }; bindScenarioState(session); return session;
+}
+
+export function validateScenarioBinding(input: unknown, state: GameState): ScenarioBinding {
+  const binding = scenarioJson(input) as ScenarioBinding;
+  if (!binding || typeof binding !== 'object' || Array.isArray(binding) || Object.keys(binding).length !== 2 || !Object.hasOwn(binding, 'definition') || !Object.hasOwn(binding, 'runtime')) throw new Error('Invalid saved scenario binding.');
+  const definition = validateScenario(binding.definition); validateRuntime(definition, state, binding.runtime);
+  return { definition, runtime: binding.runtime };
 }
 
 function validateRuntime(definition: ScenarioDefinition, state: GameState, runtime: ScenarioRuntime): void {
   const fail = (reason: string): never => { throw new Error(`Invalid scenario runtime: ${reason}.`); };
-  const fields = ['version', 'definitionId', 'outcome', 'reason', 'labels', 'variables', 'triggers', 'completed', 'messages', 'reinforcementRemaining', 'escort', 'stealth', 'boss', 'commandCounts'];
+  const fields = ['version', 'lastEvaluatedTick', 'definitionId', 'outcome', 'reason', 'labels', 'variables', 'triggers', 'completed', 'messages', 'reinforcementRemaining', 'escort', 'stealth', 'boss', 'commandCounts'];
   if (!runtime || typeof runtime !== 'object' || Array.isArray(runtime) || fields.some(key => !Object.hasOwn(runtime, key)) || Object.keys(runtime).some(key => !fields.includes(key))) fail('unknown or missing field');
   if (runtime.version !== 1 || runtime.definitionId !== definition.id || !['playing', 'won', 'lost'].includes(runtime.outcome) || typeof runtime.reason !== 'string' || runtime.reason.length > 4096) fail('identity or outcome');
   if (state.players.length !== 2 || state.players[0].faction !== definition.faction || state.players[1].faction !== definition.opponent || state.seed !== definition.seed || state.rules.mode !== 'scenario' || state.rules.standardDefeat) fail('match identity');
   if (runtime.outcome === 'playing' && (state.winner !== null || state.draw) || runtime.outcome === 'won' && state.winner !== 0 || runtime.outcome === 'lost' && state.winner !== 1) fail('result disagrees with simulation');
   const finite = (n: unknown, min = 0, max = 1e9, integer = false): n is number => typeof n === 'number' && Number.isFinite(n) && n >= min && n <= max && (!integer || Number.isSafeInteger(n));
+  if (!finite(runtime.lastEvaluatedTick, 0, state.tick, true)) fail('evaluated tick');
   const record = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value);
   const exact = (value: unknown, keys: string[]) => record(value) && keys.every(key => Object.hasOwn(value, key)) && Object.keys(value).every(key => keys.includes(key));
   const counters = (value: unknown, max = 1e9, negative = false) => record(value) && Object.keys(value).length <= 2048 && Object.entries(value).every(([key, n]) => /^[a-zA-Z][a-zA-Z0-9_.-]*$/.test(key) && finite(n, negative ? -1e9 : 0, max));

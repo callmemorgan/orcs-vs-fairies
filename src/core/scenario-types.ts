@@ -107,6 +107,8 @@ export interface ScenarioTelegraph extends Vec {
 
 export interface ScenarioRuntime {
   version: 1;
+  /** A simulation tick may be forwarded by both core and a client callback. */
+  lastEvaluatedTick: number;
   definitionId: string;
   outcome: 'playing' | 'won' | 'lost';
   reason: string;
@@ -123,6 +125,7 @@ export interface ScenarioRuntime {
 }
 
 export interface ScenarioSession { definition: ScenarioDefinition; state: GameState; runtime: ScenarioRuntime }
+export interface ScenarioBinding { definition: ScenarioDefinition; runtime: ScenarioRuntime }
 export interface ScenarioCheckpoint { format: 'orcs-vs-fairies-scenario'; version: 1; definition: ScenarioDefinition; runtime: ScenarioRuntime; game: SaveEnvelope }
 
 export interface CampaignChoice { id: string; text: string; consequence: string; chapter3: string }

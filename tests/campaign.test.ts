@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { CAMPAIGNS } from '../src/scenarios/campaigns';
-import { campaignArmy, checkpointCampaignMission, chooseCampaignBranch, completeCampaignMission, createCampaignProfile, decodeCampaignProfile, nextCampaignMission, prepareCampaignMission, resetCampaignMission } from '../src/core/campaign';
+import { campaignArmy, checkpointCampaignMission, chooseCampaignBranch, completeCampaignMission, createCampaignProfile, decodeCampaignProfile, nextCampaignMission, prepareCampaignMission, resetCampaignMission, verifyCanonicalCampaignVictory } from '../src/core/campaign';
 import { captureScenario, issueScenarioCommand, stepScenario } from '../src/core/scenarios';
-import { ScenarioRecorder, verifyScenarioRecording } from '../src/core/scenario-recordings';
+import { scenarioChecksum, verifyScenarioRecording } from '../src/core/scenario-recordings';
 import { solveMission } from '../scripts/scenarios/mission-strategy';
 
 describe('verified connected campaign progression', () => {
@@ -26,6 +26,8 @@ describe('verified connected campaign progression', () => {
     expect(completed).toEqual(campaign.chapters); expect(nextCampaignMission(profile)).toBeNull();
     expect(profile.choiceId).toBe(campaign.choice.options[0].id);
     expect(campaignArmy(profile).some(soldier => soldier.label === 'commander')).toBe(true);
+    expect(verifyCanonicalCampaignVictory(profile, campaign.chapters[3])).toEqual({ campaignId: campaign.id, missionId: campaign.chapters[3], factionId: campaign.faction });
+    expect(() => verifyCanonicalCampaignVictory(profile, campaign.chapters[0])).toThrow();
   }, 30000);
 
   it('saves a live detachment and resets to its identical initial state', () => {
@@ -46,5 +48,16 @@ describe('verified connected campaign progression', () => {
     const forged = structuredClone(archive); forged.finalChecksum = '00000000'; expect(() => verifyScenarioRecording(forged)).toThrow('checksum diverged');
     expect(() => chooseCampaignBranch(run.profile, 'main')).toThrow('chapter two');
     const invalid = structuredClone(run.profile); invalid.active!.missionId = 'orcs-4'; expect(() => decodeCampaignProfile(invalid)).toThrow('Invalid campaign battle');
+  });
+
+  it('rejects a checkpoint and journal that agree on an altered initial detachment', () => {
+    const run = prepareCampaignMission(createCampaignProfile('campaign-dwarves', 'altered-army')); run.recorder.destroy();
+    const commander = run.session.state.entities.find(e => e.id === run.session.runtime.labels.commander)!; commander.hp--;
+    const altered = structuredClone(run.profile);
+    altered.active!.checkpoint = captureScenario(run.session);
+    altered.active!.recording.initial = captureScenario(run.session);
+    altered.active!.recording.finalChecksum = scenarioChecksum(run.session);
+    expect(() => decodeCampaignProfile(altered)).toThrow('altered detachment');
+    expect(() => verifyCanonicalCampaignVictory(run.profile, 'dwarves-4')).toThrow();
   });
 });

@@ -133,7 +133,7 @@ export function resetCampaignMission(profile: CampaignProfile): CampaignMission 
 export function decodeCampaignProfile(input: unknown): CampaignProfile {
   let raw = input;
   if (typeof raw === 'string') { if (raw.length > 20 * 1024 * 1024) throw new Error('Campaign profile is too large.'); raw = JSON.parse(raw); }
-  const profile = scenarioJson(raw) as CampaignProfile;
+  const profile = scenarioJson(raw, { maxBytes: 20 * 1024 * 1024, maxNodes: 1000000, maxArrayLength: 100000 }) as CampaignProfile;
   if (!profile || typeof profile !== 'object' || Array.isArray(profile) || Object.keys(profile).some(k => !['format', 'version', 'id', 'campaignId', 'choiceId', 'revision', 'history', 'active'].includes(k)) || profile.format !== 'orcs-vs-fairies-campaign' || profile.version !== 1 || !/^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,95}$/.test(profile.id) || !Number.isSafeInteger(profile.revision) || profile.revision < 0 || !Array.isArray(profile.history) || profile.history.length > 4) throw new Error('Invalid campaign profile.');
   const definition = campaign(profile);
   if (profile.choiceId !== null && !definition.choice.options.some(c => c.id === profile.choiceId) || profile.history.length < 2 && profile.choiceId !== null || profile.history.length > 2 && profile.choiceId === null) throw new Error('Invalid saved campaign branch.');

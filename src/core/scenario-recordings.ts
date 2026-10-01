@@ -2,6 +2,7 @@ import { validateCommand } from './commands';
 import { captureScenario, issueScenarioCommand, restoreScenario, stepScenario, subscribeScenarioCommands } from './scenarios';
 import type { ScenarioCheckpoint, ScenarioSession } from './scenario-types';
 import type { Command, Side } from './types';
+import { scenarioJson } from './scenario-validation';
 
 export interface ScenarioRecording {
   format: 'orcs-vs-fairies-scenario-recording'; version: 1;
@@ -11,7 +12,11 @@ export interface ScenarioRecording {
   finalChecksum: string;
 }
 export function scenarioChecksum(session: ScenarioSession): string {
-  const text = JSON.stringify(captureScenario(session)); let hash = 2166136261;
+  const checkpoint = captureScenario(session);
+  // The forwarding guard is derived from the authoritative tick. Exclude it
+  // so existing mission journals retain their checksum after this migration.
+  delete (checkpoint.runtime as Partial<typeof checkpoint.runtime>).lastEvaluatedTick;
+  const text = JSON.stringify(checkpoint); let hash = 2166136261;
   for (let i = 0; i < text.length; i++) { hash ^= text.charCodeAt(i); hash = Math.imul(hash, 16777619); }
   return (hash >>> 0).toString(16).padStart(8, '0');
 }
@@ -19,7 +24,7 @@ export function decodeScenarioRecording(input: unknown): ScenarioRecording {
   let raw = input;
   if (typeof raw === 'string') { if (raw.length > 20 * 1024 * 1024) throw new Error('Scenario recording is too large.'); raw = JSON.parse(raw); }
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) throw new Error('Invalid scenario recording.');
-  const record = raw as ScenarioRecording;
+  const record = scenarioJson(raw, { maxBytes: 20 * 1024 * 1024, maxNodes: 1000000, maxArrayLength: 100000 }) as ScenarioRecording;
   if (Object.keys(record).some(key => !['format', 'version', 'initial', 'commands', 'finalTick', 'finalChecksum'].includes(key)) || record.format !== 'orcs-vs-fairies-scenario-recording' || record.version !== 1) throw new Error('Unsupported scenario recording.');
   const initial = restoreScenario(record.initial);
   if (!Number.isSafeInteger(record.finalTick) || record.finalTick < initial.state.tick || record.finalTick - initial.state.tick > 144000 || typeof record.finalChecksum !== 'string' || !/^[a-f0-9]{8}$/.test(record.finalChecksum)) throw new Error('Invalid scenario recording duration or checksum.');
@@ -50,6 +55,7 @@ export function verifyScenarioRecording(input: unknown): ScenarioSession {
 }
 
 export class ScenarioRecorder {
+  private failure: string | null = null;
   private readonly initial: ScenarioCheckpoint;
   private readonly commands: ScenarioRecording['commands'];
   private readonly unsubscribe: () => void;
@@ -60,10 +66,10 @@ export class ScenarioRecorder {
       this.initial = recording.initial; this.commands = recording.commands;
     } else { this.initial = captureScenario(session); this.commands = []; }
     this.unsubscribe = subscribeScenarioCommands(session, (side, command) => {
-      if (this.commands.length >= 100000) throw new Error('Scenario recording command limit reached.');
+      if (this.commands.length >= 100000) { this.failure = 'Scenario recording command limit reached.'; return; }
       this.commands.push({ tick: session.state.tick, side, command });
     });
   }
-  archive(): ScenarioRecording { return { format: 'orcs-vs-fairies-scenario-recording', version: 1, initial: structuredClone(this.initial), commands: structuredClone(this.commands), finalTick: this.session.state.tick, finalChecksum: scenarioChecksum(this.session) }; }
+  archive(): ScenarioRecording { if (this.failure) throw new Error(this.failure); return { format: 'orcs-vs-fairies-scenario-recording', version: 1, initial: structuredClone(this.initial), commands: structuredClone(this.commands), finalTick: this.session.state.tick, finalChecksum: scenarioChecksum(this.session) }; }
   destroy(): void { this.unsubscribe(); }
 }

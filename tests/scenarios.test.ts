@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { captureScenario, createScenario, guardDetects, issueScenarioCommand, resetScenario, restoreScenario, scenarioCondition, stepScenario, validateScenario } from '../src/core/scenarios';
+import { afterScenarioStep, captureScenario, createScenario, guardDetects, issueScenarioCommand, resetScenario, restoreScenario, scenarioCondition, stepScenario, validateScenario, validateScenarioBinding } from '../src/core/scenarios';
+import { decodeScenarioRecording, ScenarioRecorder } from '../src/core/scenario-recordings';
 import type { ScenarioActor, ScenarioDefinition, ScenarioSession } from '../src/core/scenario-types';
 
 const troop = (label: string, side: 0 | 1, role: ScenarioActor['role'], x: number, y: number, extra: Partial<ScenarioActor> = {}): ScenarioActor => ({ label, side, kind: 'unit', role, x, y, ...extra });
@@ -15,6 +16,24 @@ const advance = (session: ScenarioSession, seconds: number) => { for (let i = 0;
 const owned = (session: ScenarioSession) => session.state.entities.filter(e => e.side === 0 && e.hp > 0 && e.kind === 'unit' && !e.illusion).map(e => e.id);
 
 describe('shared scenario execution', () => {
+  it('forwards a core tick once when the client also evaluates the scenario', () => {
+    const session = createScenario(definition());
+    stepScenario(session); const once = captureScenario(session);
+    afterScenarioStep(session, .05); expect(captureScenario(session)).toEqual(once);
+    expect(validateScenarioBinding({ definition: session.definition, runtime: session.runtime }, session.state).runtime.lastEvaluatedTick).toBe(1);
+    const invalid = structuredClone(session.runtime); invalid.lastEvaluatedTick = 2;
+    expect(() => validateScenarioBinding({ definition: session.definition, runtime: invalid }, session.state)).toThrow('evaluated tick');
+  });
+
+  it('rejects executable recording and checkpoint properties without evaluating them', () => {
+    const session = createScenario(definition()), recorder = new ScenarioRecorder(session);
+    const recording = recorder.archive(); recorder.destroy(); let evaluations = 0;
+    Object.defineProperty(recording, 'finalTick', { enumerable: true, get() { evaluations++; return 0; } });
+    expect(() => decodeScenarioRecording(recording)).toThrow('accessors');
+    const checkpoint = captureScenario(session);
+    Object.defineProperty(checkpoint, 'game', { enumerable: true, get() { evaluations++; return {}; } });
+    expect(() => restoreScenario(checkpoint)).toThrow('accessors'); expect(evaluations).toBe(0);
+  });
   it('moves ordinary troops through commands, ends without HQ destruction and resets the identical army', () => {
     const session = createScenario(definition()), initial = captureScenario(session);
     expect(session.state.entities.some(e => e.role === 'hq')).toBe(false);
