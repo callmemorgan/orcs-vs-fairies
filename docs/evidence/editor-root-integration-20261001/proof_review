@@ -1,0 +1,9 @@
+# Static review of native community proofs
+
+Reviewer: `/root/editor_integration/proof_review`, GPT-6. Read-only review at editor checkpoint `7397bb8`; no builds, servers, or browser runs were performed by this reviewer.
+
+The reviewer found that an old running map or mod could satisfy a repeated revision launch check. Commit `7397bb8` plays and checks the revised map/mod before switching to the original revision, so both transitions require different live hashes. The reviewer also found that a generic Installed status could satisfy a reinstall check before the operation finished. The map proof now waits for the exact content response, checks its package bytes, waits for the exact revision status, and checks that Play is enabled.
+
+The reviewer rechecked all three corrections and reported no further main-mount issue. Root faction selection, packagesFor(record.hash), state-associated metadata, native replay save equality, and caught playback error checks were substantive. A remaining substring check could let ARM 10 satisfy ARM 1; commit `2915e37` compares each displayed stat value as a complete value.
+
+Evidence: `7397bb8`, `2915e37`, `scripts/verify_community_browser.mjs`, `scripts/verify_community_mod.mjs`, `community-map-current/result.json`, and `community-mod-final/result.json`. The earlier decision-log token `proof_review` refers to this file in the same evidence directory.

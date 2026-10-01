@@ -1,0 +1,60 @@
+{
+  "base": "http://127.0.0.1:40015",
+  "staticDir": "/home/morgana/.codex/worktrees/assembled-editors/orcs-vs-Fairies/dist",
+  "fixturePath": "/home/morgana/.codex/worktrees/assembled-editors/orcs-vs-Fairies/public/mods/lantern/manifest.json",
+  "results": [
+    {
+      "name": "real temporary server serves production output to two independent authenticated profiles"
+    },
+    {
+      "name": "publisher uploads the exact validated mod and its pinned dependencies",
+      "manifestHash": "0ccc591334dd5556febfd69aaab1046bc502ab5bc10063809a1e3797ce0e845a",
+      "downloadHash": "d98d9a088b8a2fd2e58775962ba3b72f220f8fd4dd2e9f1c76db0bf6f8542cdc"
+    },
+    {
+      "name": "native installation preserves the recursive dependency graph",
+      "packages": [
+        {
+          "id": "aaa-lantern-proof-leaf",
+          "version": "1.0.0",
+          "dependencies": []
+        },
+        {
+          "id": "aaa-lantern-proof-support",
+          "version": "1.0.0",
+          "dependencies": [
+            "fc367d5e63bde84d1fe12c60077075ba388f9e61037a7d14def408a002ddcfd0"
+          ]
+        },
+        {
+          "id": "lantern",
+          "version": "1.0.0",
+          "dependencies": [
+            "0b2eccf9d96dd7378405d811e146c52a147fad5dac99990cafa5ed10a1303124"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "receiver finds, recursively downloads, verifies and installs the exact root closure"
+    },
+    {
+      "name": "ordinary installed-revision launch passes the custom faction, pinned bundle and art into the actual match",
+      "tick": 1,
+      "contentHash": "7f398fd01e3835649b9a65633a558538cd9076b79910e2a5f4dbbfb169ad62b7"
+    },
+    {
+      "name": "ordinary custom producer trains two same-role definitions with authored costs, names, health, combat stats and SVG art"
+    },
+    {
+      "name": "the revised mod launches its changed definitions and exact dependency closure"
+    },
+    {
+      "name": "installing a changed revision preserves the old installed package and its exact launch closure"
+    }
+  ],
+  "errors": [],
+  "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'Take a moment to plan your next move.'\n- 'All required objectives completed.'\n",
+  "checkedAt": "2026-10-01T12:17:32.443Z",
+  "scope": "Temporary local real server and production browsers; community publication, immutable installation, normal mod play/build/train and exact pinned root closure."
+}
