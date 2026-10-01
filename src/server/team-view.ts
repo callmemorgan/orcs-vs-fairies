@@ -28,7 +28,11 @@ export function teamObservation(views:PlayerObservation[],perspective:Side):Play
       terrain:level.terrain.map((tile,index)=>tile??worlds.map(world=>world.levels[level.id]?.terrain[index]).find(tile=>tile!==null&&tile!==undefined)??null),
       elevation:level.elevation.map((height,index)=>height??worlds.map(world=>world.levels[level.id]?.elevation[index]).find(height=>height!==null&&height!==undefined)??null)})),
     transitions:unionById(worlds.map(world=>world.transitions)),bridges:unionById(worlds.map(world=>world.bridges)),
-    sites:unionById(worlds.map(world=>world.sites)).map(site=>({...site,loyalty:base.world?.sites.find(own=>own.id===site.id)?.loyalty??0})),
+    sites:unionById(worlds.map(world=>world.sites)).map(site=>{
+      const own=base.world?.sites.find(record=>record.id===site.id);
+      // Village claims are private to the selected seat; den rewards are global.
+      return {...site,loyalty:own?.loyalty??0,rewardClaimed:site.kind==='monster'?site.rewardClaimed:own?.rewardClaimed??false};
+    }),
     creatures:unionById(worlds.map(world=>world.creatures)),
     fires:[...new Map(worlds.flatMap(world=>world.fires).map(fire=>[`${fire.level},${fire.x},${fire.y}`,fire])).values()],
   }:undefined;
