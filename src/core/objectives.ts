@@ -46,10 +46,10 @@ export function evaluateObjectives(s:GameState,actions:Actions):void {
  if(s.rules.mode==='relic'){
   for(const relic of s.objectives.relics){
    if(relic.carrierId!==null){const carrier=s.entities.find(e=>e.id===relic.carrierId&&alive(e));if(!carrier){const fallen=s.entities.find(e=>e.id===relic.carrierId)||s.corpses.find(e=>e.id===relic.carrierId);if(fallen){relic.x=fallen.x;relic.y=fallen.y;}relic.carrierId=null;relic.heldTeam=null;continue;}relic.x=carrier.x;relic.y=carrier.y;
-    const shrine=s.entities.find(e=>alive(e)&&e.kind==='building'&&e.role==='hq'&&e.progress===1&&s.teams[e.side]===s.teams[carrier.side]&&Math.hypot(e.x-carrier.x,e.y-carrier.y)<=3);
-    if(shrine){relic.carrierId=null;relic.heldTeam=s.teams[carrier.side];relic.x=shrine.x;relic.y=shrine.y;}
+    const shrine=s.entities.find(e=>alive(e)&&e.kind==='building'&&e.role==='hq'&&e.progress===1&&s.teams[e.side]===s.teams[carrier.side]&&Math.hypot(e.x-carrier.x,e.y-carrier.y)<=FACTIONS[s.players[e.side].faction].buildings.hq.size/2+2.5);
+    if(shrine){relic.carrierId=null;relic.heldTeam=s.teams[carrier.side];relic.x=carrier.x;relic.y=carrier.y;}
    }
-   if(relic.heldTeam!==null&&!s.entities.some(e=>alive(e)&&e.kind==='building'&&e.role==='hq'&&e.progress===1&&s.teams[e.side]===relic.heldTeam&&Math.hypot(e.x-relic.x,e.y-relic.y)<.1))relic.heldTeam=null;
+   if(relic.heldTeam!==null&&!s.entities.some(e=>alive(e)&&e.kind==='building'&&e.role==='hq'&&e.progress===1&&s.teams[e.side]===relic.heldTeam&&Math.hypot(e.x-relic.x,e.y-relic.y)<=FACTIONS[s.players[e.side].faction].buildings.hq.size/2+2.5))relic.heldTeam=null;
   }
   for(const team of [...new Set(s.teams)]){const held=s.objectives.relics.filter(r=>r.heldTeam===team).length;if(held>=s.rules.relic.required)s.objectives.relicHoldTicks[team]++;else s.objectives.relicHoldTicks[team]=0;if(s.objectives.relicHoldTicks[team]>=s.rules.relic.holdTicks)finish(s,team,'The required relics have been defended.');}
  }
@@ -82,6 +82,6 @@ export function objectiveAi(s:GameState,side:Side,command:Actions['command']):vo
 }
 /** Landmarks and counters are public; an unseen enemy carrier's position is not. */
 export function publicObjectives(s:GameState,side:Side){return {...structuredClone(s.objectives),relics:s.objectives.relics.map(r=>{
- const carrier=r.carrierId===null?null:s.entities.find(e=>e.id===r.carrierId),seen=!carrier||s.teams[carrier.side]===s.teams[side]||s.visible[side].has(Math.floor(r.y)*s.width+Math.floor(r.x));
+ const carrier=r.carrierId===null?null:s.entities.find(e=>e.id===r.carrierId),seen=!carrier||carrier.side===side||s.visible[side].has(Math.floor(r.y)*s.width+Math.floor(r.x));
  return seen?{...r}:{...r,x:null,y:null,carrierId:null,hidden:true};
  })};}

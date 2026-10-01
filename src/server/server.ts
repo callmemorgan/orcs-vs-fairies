@@ -187,7 +187,7 @@ export async function createRtsServer(options:ServerOptions){
     if(value.sharedVision!==undefined&&typeof value.sharedVision!=='boolean')throw new HttpError(400,'Shared vision must be boolean.');
     if(value.startingAge!==undefined&&!integer(value.startingAge,1,3))throw new HttpError(400,'Starting age must be 1–3.');
     if(value.rules!==undefined&&!record(value.rules))throw new HttpError(400,'Match rules must be an object.');
-    let rules;try{rules=normalizeMatchRules({...((value.rules??{}) as object),...(value.startingAge===undefined?{}:{startingAge:value.startingAge}),...(value.sharedVision===undefined?{}:{sharedVision:value.sharedVision})});createDraft(players.map((p,id)=>({...p,id:id as Side})),rules);}catch(error){throw new HttpError(400,error instanceof Error?error.message:'Invalid match rules.');}
+    let rules:ReturnType<typeof normalizeMatchRules>;try{rules=normalizeMatchRules({...((value.rules??{}) as object),...(value.startingAge===undefined?{}:{startingAge:value.startingAge}),...(value.sharedVision===undefined?{}:{sharedVision:value.sharedVision})});if(rules.mode==='scenario')throw new Error('Launch authored scenarios from the scenario menu.');if(rules.mode==='survival'&&(!players.some(p=>p.teamId===rules.survival.defenderTeam)||new Set(players.map(p=>p.teamId)).size!==2))throw new Error('Survival requires a defender team and one opposing wave team.');createDraft(players.map((p,id)=>({...p,id:id as Side})),rules);}catch(error){throw new HttpError(400,error instanceof Error?error.message:'Invalid match rules.');}
     return {rules,mapSize:value.mapSize as LobbySettings['mapSize'],factions:players.map(player=>player.factionId),players,sharedVision:rules.sharedVision,startingAge:rules.startingAge};
   }
   function roster(config:LobbySettings,previous:LobbySeat[]=[],creator?:Account,resetReadiness=true):LobbySeat[]{
@@ -275,6 +275,7 @@ export async function createRtsServer(options:ServerOptions){
         }else if(action==='draft'){
           if(!own)throw new HttpError(403,'Join a seat first.');
           if(!keys(value,['expectedRevision','definitionId'])||typeof value.definitionId!=='string')throw new HttpError(400,'Expected a definition ID.');
+          if(lobby.seats.some(seat=>seat.controller==='human'&&!seat.account))throw new HttpError(409,'All human players must be present before the draft.');
           if(!lobby.draft||!applyDraftChoice(lobby.draft,normalizeMatchRules(lobby.settings.rules),lobby.settings.players!.map((p,id)=>({...p,id:id as Side})),own.side,value.definitionId))throw new HttpError(409,'Illegal choice, duplicate definition, or another player owns this draft turn.');
           lobby.draftDeadlineAt=lobby.draft.status==='drafting'?Date.now()+lobby.draft.remainingTicks*1000/TICK_RATE:undefined;lobby.seats.forEach(seat=>{seat.ready=false;});changed(lobby);
         }else if(action==='start'){

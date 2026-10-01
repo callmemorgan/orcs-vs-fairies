@@ -15,7 +15,7 @@ function config(count:number,ai=false):MatchConfig {
 }
 function good(count=8) {return saveGame(createMatch(config(count)));}
 function legacy(state:GameState):any {
- const save:any=saveGame(state);save.version=1;
+ const save:any=saveGame(state);save.version=1;for(const key of ['rules','objectives','draft'])delete save.state[key];
  for(const key of teamFields)delete save.state[key];
  delete save.state.aiConfigs;delete save.runtime.aiBatchTurns;for(const key of aiFields)delete save.runtime[key];
  delete save.runtime.clearedEnemyStarts;

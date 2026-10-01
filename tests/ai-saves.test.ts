@@ -6,13 +6,13 @@ const aiFields=['aiDecisionAt','aiDecisionTurns','knownEnemyUnits','retreating',
 function match(){return createGame('orcs',4127,'fairies',{controllers:['external','external']});}
 describe('AI save version 3',()=>{
  it('migrates a complete version 2 snapshot after validating the original schema',()=>{
-  const state=match();for(let tick=0;tick<100;tick++)stepGame(state,.05);const save:any=saveGame(state);save.version=2;delete save.state.aiConfigs;delete save.runtime.aiBatchTurns;for(const key of aiFields)delete save.runtime[key];
+  const state=match();for(let tick=0;tick<100;tick++)stepGame(state,.05);const save:any=saveGame(state);save.version=2;for(const key of ['rules','objectives','draft'])delete save.state[key];delete save.state.aiConfigs;delete save.runtime.aiBatchTurns;for(const key of aiFields)delete save.runtime[key];
   const before=structuredClone(save),loaded=loadGame(save);expect(save).toEqual(before);expect(saveGame(loaded).version).toBe(SAVE_VERSION);expect(loaded.aiConfigs).toEqual([{difficulty:'normal',personality:'balanced',opening:'infantry-rush'},{difficulty:'normal',personality:'balanced',opening:'infantry-rush'}]);
   expect(captureRuntime(loaded).aiDecisionAt).toEqual([state.time,state.time]);expect(captureRuntime(loaded).knownEnemyUnits).toEqual([[],[]]);expect(loaded.entities).toEqual(state.entities);
   const corrupted=structuredClone(save);delete corrupted.runtime.knownEnemyBuildings;expect(()=>loadGame(corrupted)).toThrow(/missing field/);
  });
  it('checks the byte limit again after a valid legacy migration adds AI fields',()=>{
-  const save:any=saveGame(match());save.version=2;delete save.state.aiConfigs;delete save.runtime.aiBatchTurns;for(const key of aiFields)delete save.runtime[key];
+  const save:any=saveGame(match());save.version=2;for(const key of ['rules','objectives','draft'])delete save.state[key];delete save.state.aiConfigs;delete save.runtime.aiBatchTurns;for(const key of aiFields)delete save.runtime[key];
   const event={type:'message',x:0,y:0,side:0,text:''},full={...event,text:'一'.repeat(4000)};
   const bytes=(value:unknown)=>new TextEncoder().encode(JSON.stringify(value)).byteLength,target=MAX_SAVE_BYTES-64;
   const count=Math.floor((target-bytes(save))/(bytes(full)+1));save.state.events=Array.from({length:count},()=>({...full}));
@@ -20,7 +20,7 @@ describe('AI save version 3',()=>{
   const textBytes=remaining-bytes(event)-1;save.state.events.push({...event,text:'一'.repeat(Math.floor(textBytes/3))+'x'.repeat(textBytes%3)});
   expect(bytes(save)).toBe(target);expect(()=>loadGame(save)).toThrow(/size limit/);
   // The original schema is valid; leaving room for the added fields permits loading and saving.
-  save.state.events.at(-1).text=save.state.events.at(-1).text.slice(0,-500);const loaded=loadGame(save);expect(()=>saveGame(loaded)).not.toThrow();
+  save.state.events.at(-1).text=save.state.events.at(-1).text.slice(0,-1500);const loaded=loadGame(save);expect(()=>saveGame(loaded)).not.toThrow();
  },10000);
  it('validates per-player configuration on construction and saving',()=>{
   expect(()=>createMatch({map:{seed:1},players:[{id:0,teamId:0,factionId:'orcs',controller:'ai',ai:{difficulty:'impossible' as 'hard'}}]})).toThrow(/difficulty/);

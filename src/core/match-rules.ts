@@ -49,10 +49,19 @@ export function createDraft(players:Pick<MatchPlayerConfig,'id'|'factionId'>[],r
  const pool=[...new Set(players.flatMap(p=>draftOptions(p.factionId)))].filter(id=>!rules.disabledDefinitionIds.includes(id)),order:DraftState['order']=[];
  if(rules.draft.enabled){for(let round=0;round<rules.draft.banRounds;round++)for(const p of round%2?[...players].reverse():players)order.push({side:p.id,action:'ban'});for(let round=0;round<rules.draft.pickRounds;round++)for(const p of round%2?[...players].reverse():players)order.push({side:p.id,action:'pick'});}
  // All turns must retain enough legal choices, even for eight mirror-faction slots.
- if(rules.draft.enabled&&players.some(p=>draftOptions(p.factionId).filter(id=>pool.includes(id)).length<rules.draft.pickRounds+rules.draft.banRounds*players.length))throw new Error('Draft has too many bans/picks for the available faction definitions. Reduce bans or picks.');
+ if(rules.draft.enabled&&players.some(p=>draftOptions(p.factionId).filter(id=>pool.includes(id)).length<rules.draft.pickRounds+rules.draft.banRounds*players.length||!Object.values(FACTIONS[p.factionId].units).some(u=>u.role!=='worker'&&pool.includes(u.id))))throw new Error('Draft has too many bans/picks for the available faction definitions. Reduce bans or picks.');
  return {status:order.length?'drafting':'complete',turn:0,remainingTicks:order.length?rules.draft.turnTicks:0,order,banned:[],picks:players.map(()=>[]),pool};
 }
-export function legalDraftChoices(draft:DraftState,players:Pick<MatchPlayerConfig,'id'|'factionId'>[],side:Side):string[]{return draft.pool.filter(id=>!draft.banned.includes(id)&&!draft.picks[side]?.includes(id)&&(draft.order[draft.turn]?.action==='ban'||draftOptions(players[side].factionId).includes(id)));}
+export function legalDraftChoices(draft:DraftState,players:Pick<MatchPlayerConfig,'id'|'factionId'>[],side:Side):string[]{
+ const turn=draft.order[draft.turn];if(draft.status!=='drafting'||turn?.side!==side)return [];
+ const pickGoal=(id:Side)=>draft.order.filter(t=>t.side===id&&t.action==='pick').length;
+ return draft.pool.filter(id=>{
+  if(draft.banned.includes(id)||draft.picks[side]?.includes(id))return false;
+  if(turn.action==='ban')return players.every(p=>draftOptions(p.factionId).filter(option=>draft.pool.includes(option)&&option!==id&&!draft.banned.includes(option)).length>=pickGoal(p.id)&&combatIds(p.factionId).some(option=>draft.pool.includes(option)&&option!==id&&!draft.banned.includes(option)));
+  if(!draftOptions(players[side].factionId).includes(id))return false;
+  return draft.picks[side].length!==pickGoal(side)-1||draft.picks[side].some(option=>combatIds(players[side].factionId).includes(option))||combatIds(players[side].factionId).includes(id);
+ });
+}
 const combatIds=(factionId:MatchPlayerConfig['factionId'])=>Object.values(FACTIONS[factionId].units).filter(u=>u.role!=='worker').map(u=>u.id);
 export function applyDraftChoice(draft:DraftState,rules:MatchRules,players:Pick<MatchPlayerConfig,'id'|'factionId'>[],side:Side,definitionId:string):boolean {
  const turn=draft.order[draft.turn];if(draft.status!=='drafting'||!turn||turn.side!==side||!legalDraftChoices(draft,players,side).includes(definitionId))return false;
@@ -86,6 +95,11 @@ export function validateDraftState(value:unknown,players:Pick<MatchPlayerConfig,
  for(let i=0;i<turn;i++){const action=expected.order[i],id=action.action==='ban'?d.banned[banned++]:choices[action.side][picked[action.side]++];if(typeof id!=='string'||!applyDraftChoice(expected,rules,players,action.side,id))throw new Error('Saved draft contains an illegal choice.');}
  if(banned!==d.banned.length||picked.some((count,side)=>count!==choices[side].length)||d.status!==expected.status)throw new Error('Saved draft choices do not match its turn.');
  expected.remainingTicks=num(d.remainingTicks,expected.status==='drafting'?1:0,expected.status==='drafting'?rules.draft.turnTicks:0,'remaining draft ticks',true);return expected;
+}
+export function validateSavedRules(value:unknown):MatchRules {
+ const required=['mode','standardDefeat','startingAge','sharedVision','friendlyFire','startingResources','disabledDefinitionIds','hill','relic','survival','draft'];const r=fields(value,required,'saved rules');if(required.some(key=>!Object.hasOwn(r,key)))throw new Error('Saved match rules are incomplete.');
+ for(const [key,names] of [['hill',['radius','captureTicks','holdTicks']],['relic',['count','required','holdTicks','pickupRadius']],['survival',['defenderTeam','waveCount','intervalTicks','recoveryTicks','unitsPerWave','rewardPerWave']],['draft',['enabled','banRounds','pickRounds','turnTicks']]] as const){const nested=fields(r[key],[...names],`saved ${key} rules`);if(names.some(name=>!Object.hasOwn(nested,name)))throw new Error(`Saved ${key} rules are incomplete.`);}
+ return normalizeMatchRules(r);
 }
 export function validateObjectiveState(value:unknown,state:GameState):ObjectiveState {
  const o=fields(value,['hill','relics','relicHoldTicks','survival'],'objective state'),h=fields(o.hill,['x','y','ownerTeam','captureTeam','captureTicks','holdTicks','contested'],'hill state'),wave=fields(o.survival,['wave','nextWaveTick','spawnedIds','phase'],'survival state');

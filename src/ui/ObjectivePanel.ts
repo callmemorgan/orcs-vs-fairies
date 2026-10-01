@@ -16,7 +16,7 @@ interface ObjectiveView {
     survival: { wave: number; nextWaveTick: number; spawnedIds: number[]; phase: 'waiting' | 'fighting' | 'recovery' | 'complete' };
   };
   entities: Array<{ id: number; side: Side; kind: string; role: string; x: number; y: number; hp: number; illusion?: boolean }>;
-  result?: { finished: boolean }; winner?: Side | null; draw?: boolean; teams?: Side[];
+  result?: { finished: boolean; outcome?: string|null }; winner?: Side | null; draw?: boolean; teams?: Side[];
 }
 interface DraftPanelOptions {
   getDraft: () => DraftView | null | undefined; side: () => Side | undefined;
@@ -105,7 +105,7 @@ export function mountObjectivePanel(root: HTMLElement, options: ObjectivePanelOp
       details.append(element('p', `Hold: ${seconds(hill.holdTicks)} / ${seconds(rules.hill.holdTicks)} · Capture: ${seconds(hill.captureTicks)} / ${seconds(rules.hill.captureTicks)}`), element('p', `Hill at ${hill.x.toFixed(1)}, ${hill.y.toFixed(1)} · Radius ${rules.hill.radius}`));
     }
     if (mode === 'survival' && objectives) {
-      const wave = objectives.survival; status.textContent = `Wave ${wave.wave} / ${rules.survival.waveCount} · ${wave.phase === 'complete' ? 'All waves cleared' : wave.phase === 'fighting' ? 'Defeat the wave' : wave.phase === 'recovery' ? 'Recover and prepare' : 'Preparing first wave'}`;
+      const wave = objectives.survival; status.textContent = `Wave ${wave.wave} / ${rules.survival.waveCount} · ${wave.phase === 'complete' ? (current.result?.outcome === 'win' ? 'All waves cleared' : 'Survival ended') : wave.phase === 'fighting' ? 'Defeat the wave' : wave.phase === 'recovery' ? 'Recover and prepare' : 'Preparing first wave'}`;
       progress.hidden = false; progress.max = rules.survival.waveCount; progress.value = Math.max(0, wave.wave - (wave.phase === 'fighting' ? 1 : 0)); progress.setAttribute('aria-label', 'Survival waves cleared');
       details.append(element('p', `${teamName(rules.survival.defenderTeam)} defending${wave.phase === 'waiting' || wave.phase === 'recovery' ? ` · Next wave in ${seconds(wave.nextWaveTick - current.tick)}` : ''}`));
       const reward = rules.survival.rewardPerWave; details.append(element('p', `Each cleared wave: ${reward.wood} wood, ${reward.ore} ore, ${reward.crystal} crystal per defender`));
