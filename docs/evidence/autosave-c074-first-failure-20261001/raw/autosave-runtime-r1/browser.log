@@ -1,0 +1,34 @@
+{"id":"natural-current-rules-autosave-preserves-manual-slot","baseline":{"tick":11,"time":0.5499999999999999,"paused":true,"mode":"local","readOnly":false,"winner":null,"draw":false,"controller":"human","bank":{"wood":420,"ore":220,"crystal":0},"workers":[2,3,4,5,6],"hq":{"id":1,"queue":[],"trainProgress":0}},"tick":611,"time":30.5500000000003,"wallSeconds":30.710971369000003,"gameHash":"61aaeea7059213788eb9e9478b1c3a6a319bf90bb163b6c43117865ab8e6eb4d"}
+{"id":"native-recruitment-is-paid-recorded-and-still-in-progress","tick":616,"hq":{"id":1,"queue":["worker"],"trainProgress":0},"bank":{"wood":370,"ore":220,"crystal":0},"command":{"type":"command","side":0,"command":{"type":"train","id":1,"role":"worker"}}}
+{"id":"real-pagehide-and-ui-load-restore-complete-in-flight-game","tick":616,"gameHash":"57e97645a8f37b7b4012735cb3d4331a96e049d02533e0aea55fea94a0433cb0","preservedManualSlot":"slot-1"}
+{"id":"recovered-queue-completes-through-natural-simulation","before":{"tick":616,"time":30.800000000000303,"paused":true,"mode":"local","readOnly":false,"winner":null,"draw":false,"controller":"human","bank":{"wood":370,"ore":220,"crystal":0},"workers":[2,3,4,5,6],"hq":{"id":1,"queue":["worker"],"trainProgress":0}},"after":{"tick":861,"time":43.04999999999969,"paused":true,"mode":"local","readOnly":false,"winner":null,"draw":false,"controller":"human","bank":{"wood":370,"ore":220,"crystal":0},"workers":[2,3,4,5,6,58],"hq":{"id":1,"queue":[],"trainProgress":0}},"gameHash":"0090b27a9200c8b38da3ed64bd2a45ce8b2121ca20214156478f5af222a6d77a"}
+{"id":"authenticated-native-import-restores-complete-envelope-in-fresh-context","originalFingerprint":{"bytes":188675,"sha256":"3ac0a8996416f71daafa678278d7156256f971d5a64d2beb4eb33ffbcedfd92b","suggestedFilename":"orcs-vs-fairies-save.json"},"gameHash":"57e97645a8f37b7b4012735cb3d4331a96e049d02533e0aea55fea94a0433cb0","localSlots":0}
+{"id":"native-report-binds-recovery-to-frozen-product-build","buildId":"5e49e689af13d4eef08c0760f904ad0bce2c2eebaa1144dea5d89cadecf310c0","simulationRevision":"4.0.1","tick":861}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: consoleErrors must be empty
++ actual - expected
+
++ [
++   'Failed to load resource: the server responded with a status of 404 (Not Found)',
++   'Failed to load resource: the server responded with a status of 404 (Not Found)'
++ ]
+- []
+
+    at finishProof (file:///home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/scripts/controls-proof/browser-common.mjs:182:92)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async file:///home/morgana/Projects/orcs-vs-fairies-autosave-proof/scripts/session-recovery/verify-autosave.mjs:246:3 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [
+    'Failed to load resource: the server responded with a status of 404 (Not Found)',
+    'Failed to load resource: the server responded with a status of 404 (Not Found)'
+  ],
+  expected: [],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.21.0

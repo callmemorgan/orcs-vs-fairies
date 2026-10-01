@@ -1,0 +1,64 @@
+{
+  "productPin": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+  "proofPin": "9e5fd2340b9a0823d1ab9f566c52b947a094278e",
+  "port": 5299,
+  "base": "http://127.0.0.1:5299/",
+  "preparation": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-c074cc5-20261001/prepared",
+  "evidence": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-c074cc5-20261001/autosave-browser-r1",
+  "startedAt": "2026-10-01T20:20:40Z",
+  "steps": [
+    {
+      "name": "browser",
+      "args": [
+        "/home/morgana/.local/bin/node",
+        "/home/morgana/Projects/orcs-vs-fairies-autosave-proof/scripts/session-recovery/verify-autosave.mjs",
+        "http://127.0.0.1:5299/",
+        "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies",
+        "c074cc5e610fc128d7b6ac894a61258d418463d4",
+        "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-c074cc5-20261001/autosave-browser-r1",
+        "9e5fd2340b9a0823d1ab9f566c52b947a094278e"
+      ],
+      "startedAt": "2026-10-01T20:20:40Z",
+      "pid": 414815,
+      "exitCode": 1,
+      "finishedAt": "2026-10-01T20:21:34Z"
+    }
+  ],
+  "result": "failed",
+  "node": {
+    "path": "/home/morgana/.local/bin/node",
+    "version": "v24.21.0"
+  },
+  "environment": {
+    "OVF_PROOF_DIST": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-c074cc5-20261001/prepared/dist",
+    "OVF_PROOF_MODULES": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-c074cc5-20261001/prepared/modules",
+    "OVF_PROOF_SCHEMA_MODULE": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-c074cc5-20261001/prepared/modules/schema.mjs",
+    "OVF_PLAYWRIGHT_MODULE": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs",
+    "OVF_CHROMIUM_EXECUTABLE": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome"
+  },
+  "listenersBefore": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\n",
+  "preview": {
+    "pid": 414796,
+    "args": [
+      "/home/morgana/.local/bin/node",
+      "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/node_modules/vite/bin/vite.js",
+      "preview",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "5299",
+      "--strictPort",
+      "--outDir",
+      "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-c074cc5-20261001/prepared/dist"
+    ],
+    "exitCode": 143,
+    "closed": true,
+    "pidAbsent": true
+  },
+  "listenersRunning": "State  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\nLISTEN 0      511        127.0.0.1:5299      0.0.0.0:*    users:((\"MainThread\",pid=414796,fd=22))\n",
+  "failure": "browser failed; first output preserved",
+  "listenersAfter": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\n",
+  "portClosed": true,
+  "frozenBytesUnchanged": true,
+  "finishedAt": "2026-10-01T20:21:35Z"
+}

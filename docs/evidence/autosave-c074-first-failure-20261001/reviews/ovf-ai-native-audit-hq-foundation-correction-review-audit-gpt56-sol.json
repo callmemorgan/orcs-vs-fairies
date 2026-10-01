@@ -1,0 +1,82 @@
+{
+  "kind": "native-audit-losing-hq-foundation-correction-review",
+  "checkedAt": "2026-10-01T20:18:25.519264+00:00",
+  "reviewer": "GPT-5.6 Sol",
+  "result": "accepted-audit-only-correction",
+  "runtimeExecuted": false,
+  "buildExecuted": false,
+  "auditRerun": false,
+  "inputs": {
+    "diagnosis": {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-c86e273-r1/native-audit-diagnosis-r1/diagnosis.json",
+      "sha256": "1509b55bfe5e5a6fd2e2546464c2e36e1225ddcd71f4895bdf5bc0ea933485bb"
+    },
+    "patch": {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-c86e273-r1/native-audit-diagnosis-r1/proposed-audit-r3.patch",
+      "sha256": "fa93f48e044326b190ff281be44255f063da0ef5e47c808f1ce5b608e3fbfb0a"
+    },
+    "auditR2": {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/final-ai-prep/audit-ladder401-r2.ts",
+      "sha256": "59a080b7ea7c5372fbdf4068a246e67b6dc9ea075d07db509390f4b0a71b7361"
+    },
+    "simulation": {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/src/core/simulation.ts",
+      "sha256": "e301c65d0352ffe648a5bc4ee6acbda1f562164deacdfe60f8f3b03e7bdccf35"
+    },
+    "affectedNative": {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/docs/evidence/six-factions-save401-ladder-c86e273-r1/saves/medium-4127-automata-fairies.save.json",
+      "sha256": "57dfb3e4a6fabe3c3c32e12a022b6b8f3507c1e6d1e551bfaf92d082482a03d9"
+    },
+    "failedEnvelopeRun": {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-c86e273-r1/envelopes/native-audit/run.json",
+      "sha256": "a414c79c08cf73cfc4588604e56956e2c94647ea3a427634fe12723169932216"
+    }
+  },
+  "proposedAuditSha256": "5d1b9ff25dcae322675e68078ed95a714a206b4425b9c62504f6b30d2982cb54",
+  "matrixScan": {
+    "reports": 108,
+    "oldPredicateFailures": [
+      {
+        "report": "medium-4127-automata-fairies.json",
+        "hqs": [
+          {
+            "id": 136,
+            "side": 0,
+            "hp": 454.84443181817494,
+            "progress": 0.9490909090908873
+          }
+        ]
+      }
+    ],
+    "correctedPredicateFailures": []
+  },
+  "predicateAlignment": {
+    "simulation": "role==='hq' && hp>0 && progress===1",
+    "correctedAudit": "role==='hq' && losing side && hp>0 && progress===1"
+  },
+  "checks": {
+    "diagnosisHashMatches": true,
+    "patchHashMatches": true,
+    "auditR2HashMatches": true,
+    "simulationLiveMatchesPinnedGit": true,
+    "gameAlivePredicateIsHpPositive": true,
+    "gameDefeatPredicateRequiresCompletedHq": true,
+    "patchContainsExactSingleReplacement": true,
+    "patchLeavesAllOtherAuditLinesUnchanged": true,
+    "nativeHashMatchesDiagnosis": true,
+    "nativeOutcomeMatchesDiagnosis": true,
+    "affectedHqMatchesDiagnosis": true,
+    "all108ReportsScanned": true,
+    "oldPredicateFailsExactlyOne": true,
+    "correctedPredicateFailsNone": true,
+    "failedEnvelopeRecordsNonzeroExit": true,
+    "failedStderrNamesOldAssertion": true,
+    "diagnosisRecordsNoPatchOrRerun": true
+  },
+  "allChecksPassed": true,
+  "findings": [],
+  "limits": [
+    "Read-only source and evidence inspection only; the audit, simulation, builds, and tests were not executed.",
+    "This admits the predicate correction, not a successful corrected audit envelope."
+  ]
+}
