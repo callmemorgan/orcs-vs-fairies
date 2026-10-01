@@ -70,7 +70,7 @@ function battleDefinition(profile: ConquestProfile, regionId: string, mode: 'att
     return y >= 14 && y <= 18 ? 'road' : site.terrain;
   });
   const army: ScenarioActor[] = [
-    { label: 'commander', side: 0, kind: 'unit', role: 'special', x: 8, y: 15 },
+    { label: 'commander', side: 0, kind: 'unit', role: 'special', definitionId: `core:${profile.faction}-commander`, x: 8, y: 15 },
     ...(['ranged', 'ranged', 'melee', 'spear', 'worker'] as const).map((role, i) => ({ label: `detachment-${i}`, side: 0 as const, kind: 'unit' as const, role, x: 7 + i % 2, y: 13 + Math.floor(i / 2) * 2 })),
     { label: 'home-fort', side: 0, kind: 'building', role: 'hq', x: 5, y: 26 },
     { label: 'barracks', side: 0, kind: 'building', role: 'barracks', x: 10, y: 26 },
