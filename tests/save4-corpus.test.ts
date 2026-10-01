@@ -7,6 +7,9 @@ import { decodeScenarioRecording, scenarioCheckpointChecksum } from '../src/core
 import { restoreScenario, scenarioRulesCompatibility } from '../src/core/scenarios';
 import { SIMULATION_REVISION } from '../src/core/versions';
 import { stepGame } from '../src/core/simulation';
+import { decodeHistoricalContentBundle } from '../src/core/content-registry';
+import { applyDraftChoice, createDraft, draftPlayers, legalDraftChoices, normalizeMatchRules } from '../src/core/match-rules';
+import { emptyObjectives } from '../src/core/objectives';
 
 const json=(path:string)=>JSON.parse(readFileSync(new URL(path,import.meta.url),'utf8'));
 const sessions=[
@@ -55,6 +58,22 @@ describe('SAVE4 genuine historical corpus',()=>{
   const player=new ReplayPlayer(fresh.replay!);expect(player.advance(10)).toBe(10);expect(player.finished).toBe(true);expect(saveGame(player.state)).toEqual(fresh.game);player.dispose();
   const resumed=decodeSessionFile(fresh),continued=new MatchRecorder(resumed.state,resumed.file.replay);stepGame(resumed.state,.05);
   const next=createSessionFile(resumed.state,continued.export());continued.dispose();const replay=new ReplayPlayer(next.replay!);replay.advance(11);expect(saveGame(replay.state)).toEqual(next.game);replay.dispose();
+ });
+ it.each(['off','active','complete'] as const)('migrates the old %s draft pool while preserving choices and mode progress',phase=>{
+  // Synthetic valid mode triple using the genuine envelope's historical registry.
+  const source=json(sessions[1][1]).game,s=source.state,content=decodeHistoricalContentBundle(s.content),players=draftPlayers(s);
+  s.rules=normalizeMatchRules({mode:'hill',disabledDefinitionIds:['orc-ranged'],draft:{enabled:phase!=='off',banRounds:1,pickRounds:2}},content);
+  s.draft=createDraft(players,s.rules,content);s.objectives=emptyObjectives(s);Object.assign(s.objectives.hill,{ownerTeam:0,holdTicks:17});
+  while(s.draft.status==='drafting'){
+   const side=s.draft.order[s.draft.turn].side,id=legalDraftChoices(s.draft,players,side,content)[0];expect(applyDraftChoice(s.draft,s.rules,players,side,id,content)).toBe(true);
+   if(phase==='active'){s.draft.remainingTicks=37;break;}
+  }
+  const before=JSON.stringify(source),original=decodeOriginalSaveEnvelope(source),checksum=checksumSaveEnvelope(original),{state}=decodeSaveSource(original);
+  expect(JSON.stringify(original)).toBe(before);expect(JSON.stringify(source)).toBe(before);expect(checksumSaveEnvelope(original)).toBe(checksum);
+  expect(state.rules).toEqual(s.rules);expect(state.objectives).toEqual(s.objectives);
+  const {pool:oldPool,...oldDraft}=s.draft,{pool:newPool,...newDraft}=state.draft;expect(newDraft).toEqual(oldDraft);expect(newPool).toEqual(createDraft(players,state.rules,state.content).pool);expect(newPool.length).toBeGreaterThan(oldPool.length);
+  expect(saveGame(loadGame(saveGame(state)))).toEqual(saveGame(state));
+  const invalid=structuredClone(source);invalid.state.draft.pool.push('core:orcs-commander');expect(()=>decodeSaveSource(invalid)).toThrow('Draft order or pool differs');
  });
  it('rejects mixed versions, altered checksums, altered ticks and reordered original game fields',()=>{
   for(const mutate of [(s:any)=>s.game.version=4,(s:any)=>s.replay.checksumVersion=4,(s:any)=>s.replay.finalChecksum='00000000',(s:any)=>s.game.state.tick++,(s:any)=>s.game.state=Object.fromEntries(Object.entries(s.game.state).reverse())]){const source=json(sessions[0][1]);mutate(source);expect(()=>decodeSessionFile(source)).toThrow();}

@@ -307,5 +307,6 @@ function migrateV3(envelope:RecordValue):void {
  if(state.rules&&state.draft)for(const entity of state.entities)if((entity.raised||entity.illusion)&&!definitionAllowed(state,entity.side,entityDefinition(state,entity).id))throw new Error('Legacy summoned definition is prohibited by the current owner match rules. This saved match is available for inspection but cannot resume under current rules.');
  if(state.content)state.content=migrateHistoricalContentBundle(state.content);
  if(state.scenario?.definition.content)state.scenario.definition.content=migrateHistoricalContentBundle(state.scenario.definition.content);
+ if(state.rules&&state.draft)state.draft.pool=createDraft(draftPlayers(state),state.rules,state.content).pool;
  completeCurrentState(state);envelope.version=SAVE_VERSION;
 }
