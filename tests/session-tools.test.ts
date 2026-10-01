@@ -509,6 +509,17 @@ describe('bindings, reports, and modal lifecycle', () => {
     expect(callbacks.getBindings()[0].key).toBe('A');
   });
 
+  it('captures shifted physical keys and limits control profile names to the supported length', async () => {
+    const { root, callbacks } = setup();
+    const page = open(root, 'controls');
+    const input = field(page, 'Attack move shortcut');
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: '!', code: 'Digit1', shiftKey: true, bubbles: true, cancelable: true }));
+    expect(input.value).toBe('Shift+1');
+    button(page, 'Apply Attack move shortcut').click();
+    await vi.waitFor(() => expect(callbacks.setBinding).toHaveBeenCalledWith('attackMove', 'Shift+1'));
+    expect(field(page, 'Control profile name').maxLength).toBe(40);
+  });
+
   it('saves, loads, and restores control profiles through the callbacks', async () => {
     const { root, callbacks } = setup();
     const page = open(root, 'controls');

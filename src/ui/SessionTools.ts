@@ -227,7 +227,7 @@ export function mountSessionTools(root:HTMLElement,callbacks:SessionToolsCallbac
   }
   function productionDisabled():string {return !state?'No active match':state.winner!==null||state.draw?'Match ended':status.replaySpectator||callbacks.getReplay()?'Replay playback is read only':'';}
 
-  const controlsPanel=panels.get('controls')!,bindingsList=create('div',undefined,'session-binding-list'),profileName=create('input');profileName.maxLength=80;profileName.setAttribute('aria-label','Control profile name');
+  const controlsPanel=panels.get('controls')!,bindingsList=create('div',undefined,'session-binding-list'),profileName=create('input');profileName.maxLength=40;profileName.setAttribute('aria-label','Control profile name');
   const profiles=create('select');profiles.setAttribute('aria-label','Saved control profiles');
   const saveProfile=button('Save control profile',()=>{const name=profileName.value.trim();if(!name){showError(new Error('Enter a control profile name.'));profileName.focus();return;}void run(()=>callbacks.saveBindingProfile(name),'Control profile saved.',saveProfile);});
   const loadProfile=button('Load control profile',()=>{if(!profiles.value){showError(new Error('Choose a saved control profile.'));return;}void run(async()=>{if(await callbacks.loadBindingProfile(profiles.value)===false)throw new Error('The control profile could not be loaded.');bindingsKey='';},'Control profile loaded.',loadProfile);});
@@ -238,7 +238,7 @@ export function mountSessionTools(root:HTMLElement,callbacks:SessionToolsCallbac
     photoHelp.textContent=`Photo mode hides the HUD so you can compose a screenshot. ${callbacks.photoExitHint?.()??'Press Escape or Select / View to leave photo mode.'}`;
     const help=callbacks.getGamepadHelp?.()??defaultGamepadHelp,helpKey=JSON.stringify(help);
     if(gamepadHelp.dataset.key!==helpKey){gamepadHelp.dataset.key=helpKey;gamepadHelp.replaceChildren();for(const item of help)gamepadHelp.append(create('dt',item.control),create('dd',item.action));}
-    const bindings=callbacks.getBindings(),key=JSON.stringify(bindings);if(key!==bindingsKey&&!(document.activeElement instanceof HTMLInputElement&&bindingsList.contains(document.activeElement))){bindingsKey=key;bindingsList.replaceChildren();for(const binding of bindings){const input=create('input');input.value=binding.key;input.maxLength=60;input.setAttribute('aria-label',`${binding.label} shortcut`);input.dataset.bindingAction=binding.action;input.addEventListener('keydown',event=>{if(event.key==='Tab')return;if(event.key==='Escape'){event.stopPropagation();input.blur();return;}event.preventDefault();event.stopPropagation();if(['Shift','Control','Alt','Meta'].includes(event.key))return;input.value=[event.ctrlKey?'Ctrl':'',event.altKey?'Alt':'',event.shiftKey?'Shift':'',event.metaKey?'Meta':'',event.key===' '?'Space':event.key.length===1?event.key.toUpperCase():event.key].filter(Boolean).join('+');});const apply=button('Apply',()=>{const value=input.value.trim();if(!value){showError(new Error('Choose a shortcut before applying it.'));return;}void run(()=>callbacks.setBinding(binding.action,value),`Updated ${binding.label}.`,apply);});apply.setAttribute('aria-label',`Apply ${binding.label} shortcut`);const row=create('div',undefined,'session-binding-row');row.append(field(binding.label,input),apply);bindingsList.append(row);}}
+    const bindings=callbacks.getBindings(),key=JSON.stringify(bindings);if(key!==bindingsKey&&!(document.activeElement instanceof HTMLInputElement&&bindingsList.contains(document.activeElement))){bindingsKey=key;bindingsList.replaceChildren();for(const binding of bindings){const input=create('input');input.value=binding.key;input.maxLength=60;input.setAttribute('aria-label',`${binding.label} shortcut`);input.dataset.bindingAction=binding.action;input.addEventListener('keydown',event=>{if(event.key==='Tab')return;if(event.key==='Escape'){event.stopPropagation();input.blur();return;}event.preventDefault();event.stopPropagation();if(['Shift','Control','Alt','Meta'].includes(event.key))return;input.value=[event.ctrlKey?'Ctrl':'',event.altKey?'Alt':'',event.shiftKey?'Shift':'',event.metaKey?'Meta':'',shortcutKey(event)].filter(Boolean).join('+');});const apply=button('Apply',()=>{const value=input.value.trim();if(!value){showError(new Error('Choose a shortcut before applying it.'));return;}void run(()=>callbacks.setBinding(binding.action,value),`Updated ${binding.label}.`,apply);});apply.setAttribute('aria-label',`Apply ${binding.label} shortcut`);const row=create('div',undefined,'session-binding-row');row.append(field(binding.label,input),apply);bindingsList.append(row);}}
     const names=callbacks.getBindingProfiles(),profileKey=JSON.stringify(names);if(profiles.dataset.key!==profileKey){const selected=profiles.value;profiles.dataset.key=profileKey;profiles.replaceChildren();if(!names.length){const empty=create('option','No saved profiles');empty.value='';profiles.append(empty);}for(const name of names){const option=create('option',name);option.value=name;profiles.append(option);}if(names.includes(selected))profiles.value=selected;}loadProfile.disabled=!names.length||loadProfile.dataset.busy==='true';
   }
 
@@ -268,6 +268,16 @@ function trainReason(state:GameState,side:Side,building:Entity,role:UnitRole):st
   if(player.population+reservedPlaces(state,side)>=player.cap)return 'Build a depot for supply';
   const missing=(['wood','ore','crystal'] as const).filter(kind=>player[kind]<unit.cost[kind]).map(kind=>`${Math.ceil(unit.cost[kind]-player[kind])} ${kind}`);
   return missing.length?`Need ${missing.join(', ')}`:'';
+}
+function shortcutKey(event:KeyboardEvent):string {
+  // Physical keys keep Shift+1 and punctuation compatible with stored KeyboardEvent.code bindings.
+  if(event.code&&event.code!=='Unidentified'){
+    if(/^Key[A-Z]$/.test(event.code))return event.code.slice(3);
+    if(/^Digit[0-9]$/.test(event.code))return event.code.slice(5);
+    if(/^Arrow(Left|Right|Up|Down)$/.test(event.code))return event.code.slice(5);
+    return event.code;
+  }
+  return event.key===' '?'Space':event.key.length===1?event.key.toUpperCase():event.key;
 }
 function formatTime(time:number):string{return `${Math.floor(time/60)}:${Math.floor(time%60).toString().padStart(2,'0')}`;}
 function svg<K extends keyof SVGElementTagNameMap>(tag:K):SVGElementTagNameMap[K]{return document.createElementNS('http://www.w3.org/2000/svg',tag);}
