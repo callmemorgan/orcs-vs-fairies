@@ -1,10 +1,12 @@
 import { FACTIONS } from './content';
+import { validateCommand } from './commands';
 import { MAP_VERSION, TERRAIN, terrainAt } from './maps';
 import { openDestination, walkable } from './navigation';
 import { loadGame, saveGame } from './saves';
 import { createMatch, isAllied, isHostile, isVisible, issueCommand, refreshVisibility, spawnEntity, stepGame } from './simulation';
 import { scenarioJson, validateScenario } from './scenario-validation';
-import type { Command, Entity, GameState, Side, UnitRole, Vec } from './types';
+import { fogKey } from './world-map';
+import type { Command, Entity, GameState, MatchConfig, Side, UnitRole, Vec } from './types';
 import type { ScenarioAction, ScenarioActor, ScenarioCheckpoint, ScenarioCondition, ScenarioDefinition, ScenarioOrder, ScenarioRuntime, ScenarioSession } from './scenario-types';
 export { validateScenario } from './scenario-validation';
 export type * from './scenario-types';
@@ -18,6 +20,7 @@ export function subscribeScenarioCommands(session: ScenarioSession, listener: (s
 const distance = (a: Vec, b: Vec) => (a.level ?? 0) === (b.level ?? 0) ? Math.hypot(a.x - b.x, a.y - b.y) : Infinity;
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
 const actor = (session: ScenarioSession, label: string) => session.state.entities.find(e => e.id === session.runtime.labels[label] && e.hp > 0);
+const visible = (state: GameState, side: Side, point: Vec) => !!state.visible[side]?.has(fogKey(state, point));
 const variable = (session: ScenarioSession, key: string) => session.runtime.variables[key] ?? 0;
 function addVariable(session: ScenarioSession, key: string, value: number): void { session.runtime.variables[key] = Math.max(-1e9, Math.min(1e9, variable(session, key) + value)); }
 
@@ -63,7 +66,7 @@ function spawnActors(session: ScenarioSession, actors: ScenarioActor[]): void {
     if (Object.hasOwn(session.runtime.labels, definition.label)) throw new Error(`Scenario actor ${definition.label} was spawned twice.`);
     if (session.state.entities.length >= 4096) { finish(session, 'lost', 'The scenario exceeded its actor limit.'); return; }
     const desired = { x: definition.x, y: definition.y, ...(definition.level === undefined ? {} : { level: definition.level }) };
-    const destination = definition.kind === 'unit' ? (walkable(session.state, desired.x, desired.y) ? desired : openDestination(session.state, desired, desired)) : desired;
+    const destination = definition.kind === 'unit' ? (walkable(session.state, desired.x, desired.y, desired.level ?? 0) ? desired : openDestination(session.state, desired, desired)) : desired;
     if (!destination) { finish(session, 'lost', `The spawn point for ${definition.label} became blocked.`); return; }
     const entity = spawnEntity(session.state, definition.side, definition.kind, definition.role, destination.x, destination.y);
     if (definition.level !== undefined) entity.level = definition.level;
@@ -92,10 +95,11 @@ export function createScenario(input: unknown, options: { firstEntityId?: number
   const definition = validateScenario(input);
   const firstId = options.firstEntityId ?? 1;
   if (!Number.isSafeInteger(firstId) || firstId < 1 || firstId > 0x7fffffff - 8192) throw new Error('Scenario starting entity ID is outside its range.');
-  const state = createMatch({ map: { seed: definition.seed, size: definition.map?.size ?? 'small', ...(definition.map?.world ? { world: definition.map.world } : {}) }, players: [
+  const construct = createMatch as (config: MatchConfig, policy?: { scenario: boolean }) => GameState;
+  const state = construct({ map: { seed: definition.seed, size: definition.map?.size ?? 'small', ...(definition.map?.world ? { world: definition.map.world } : {}) }, players: [
     { id: 0, teamId: 0, factionId: definition.faction, controller: 'human' },
     { id: 1, teamId: 1, factionId: definition.opponent, controller: 'external' },
-  ], rules: { mode: 'scenario', standardDefeat: false, startingAge: 3, startingResources: definition.rules.resources } });
+  ], rules: { mode: 'scenario', standardDefeat: false, startingAge: 3, startingResources: definition.rules.resources } }, { scenario: true });
   state.entities = []; state.resources = []; state.events = []; state.corpses = [];
   if (state.world) {
     const offset = firstId - 1;
@@ -172,18 +176,22 @@ function advanceEscort(session: ScenarioSession): void {
   if (!guarded && progress.moving) { issueCommand(session.state, convoy.side, { type: 'stop', ids: [convoy.id] }); progress.moving = false; }
   if (guarded && !progress.moving) {
     const next = definition.route[progress.checkpoint];
-    progress.moving = issueCommand(session.state, convoy.side, { type: 'move', ids: [convoy.id], ...next });
+    if ((next.level ?? 0) !== (convoy.level ?? 0)) {
+      const transition = session.state.world?.transitions.find(t => (t.from.level === (convoy.level ?? 0) && t.to.level === (next.level ?? 0)) || (t.to.level === (convoy.level ?? 0) && t.from.level === (next.level ?? 0)));
+      if (transition) progress.moving = issueCommand(session.state, convoy.side, { type: 'traverse', ids: [convoy.id], transition: transition.id });
+    } else progress.moving = issueCommand(session.state, convoy.side, { type: 'move', ids: [convoy.id], ...next });
   }
+  if (progress.moving && convoy.order.type === 'idle') progress.moving = false;
 }
 
 function detectionLine(state: GameState, from: Vec, to: Vec): boolean {
   const length = distance(from, to), steps = Math.ceil(length * 3);
-  for (let step = 1; step < steps; step++) { const t = step / steps; if (terrainAt(state, from.x + (to.x - from.x) * t, from.y + (to.y - from.y) * t) === 'rock') return false; }
+  for (let step = 1; step < steps; step++) { const t = step / steps; if (terrainAt(state, from.x + (to.x - from.x) * t, from.y + (to.y - from.y) * t, from.level ?? 0) === 'rock') return false; }
   return true;
 }
 export function guardDetects(session: ScenarioSession, guard: Entity, target: Entity): boolean {
   const stealth = session.definition.stealth;
-  if (!stealth || !isHostile(session.state, guard.side, target.side) || !isVisible(session.state, guard.side, target.x, target.y) || distance(guard, target) > stealth.radius || !detectionLine(session.state, guard, target)) return false;
+  if (!stealth || !isHostile(session.state, guard.side, target.side) || !visible(session.state, guard.side, target) || distance(guard, target) > stealth.radius || !detectionLine(session.state, guard, target)) return false;
   const angle = Math.atan2(target.y - guard.y, target.x - guard.x), facing = guard.facing * Math.PI / 4;
   const delta = Math.abs(Math.atan2(Math.sin(angle - facing), Math.cos(angle - facing)));
   return delta <= stealth.coneDegrees * Math.PI / 360;
@@ -277,10 +285,10 @@ function advanceBoss(session: ScenarioSession): void {
     progress.telegraph = null; progress.nextAttack = session.state.time + mechanics.cooldown; return;
   }
   if (session.state.time + 1e-9 < progress.nextAttack) return;
-  const targets = session.state.entities.filter(e => e.hp > 0 && e.side === 0 && e.kind === 'unit' && !e.illusion && isVisible(session.state, boss.side, e.x, e.y)).sort((a, b) => distance(a, boss) - distance(b, boss) || a.id - b.id);
+  const targets = session.state.entities.filter(e => e.hp > 0 && e.side === 0 && e.kind === 'unit' && !e.illusion && visible(session.state, boss.side, e)).sort((a, b) => distance(a, boss) - distance(b, boss) || a.id - b.id);
   if (!targets.length) { progress.nextAttack = session.state.time + 1; return; }
   const target = targets[0];
-  progress.telegraph = { x: target.x, y: target.y, radius: mechanics.radius, resolveAt: session.state.time + mechanics.warningSeconds, source: boss.id, phase: progress.phase, hpAtStart: boss.hp, interrupted: false };
+  progress.telegraph = { x: target.x, y: target.y, ...(target.level === undefined ? {} : { level: target.level }), radius: mechanics.radius, resolveAt: session.state.time + mechanics.warningSeconds, source: boss.id, phase: progress.phase, hpAtStart: boss.hp, interrupted: false };
   message(session, `${definition.name} marks (${target.x.toFixed(1)}, ${target.y.toFixed(1)}). Move outside ${mechanics.radius} tiles before ${mechanics.warningSeconds} seconds, or interrupt with ${mechanics.interruptDamage} damage.`);
 }
 
@@ -303,7 +311,7 @@ export function stepScenario(session: ScenarioSession, dt = .05): void {
 }
 
 export function issueScenarioCommand(session: ScenarioSession, side: Side, command: Command): boolean {
-  if (session.runtime.outcome !== 'playing') return false;
+  if (session.runtime.outcome !== 'playing' || !validateCommand(command)) return false;
   if (side === 0 && (command.type === 'build' || command.type === 'research') && session.definition.rules.fixedArmy) return false;
   if (side === 0 && command.type === 'train' && (session.definition.rules.fixedArmy || session.runtime.reinforcementRemaining <= 0)) return false;
   const eventStart = session.state.events.length;
@@ -361,6 +369,7 @@ function validateRuntime(definition: ScenarioDefinition, state: GameState, runti
   if (!exact(boss, ['phase', 'nextAttack', 'telegraph', 'phasesEntered', 'interrupted', 'hits', 'dodged']) || !finite(boss.phase, -1, (definition.boss?.phases.length ?? 0) - 1, true) || !finite(boss.nextAttack) || !Array.isArray(boss.phasesEntered) || boss.phasesEntered.some((n, i) => n !== i || n > boss.phase) || !finite(boss.interrupted, 0, 1e6, true) || !finite(boss.hits, 0, 1e6, true) || !finite(boss.dodged, 0, 1e6, true)) fail('boss progress');
   if (boss.telegraph !== null) {
     const t = boss.telegraph;
-    if (!definition.boss || !exact(t, ['x', 'y', 'radius', 'resolveAt', 'source', 'phase', 'hpAtStart', 'interrupted']) || !finite(t.x, 0, state.width) || !finite(t.y, 0, state.height) || !finite(t.radius, 1, 16) || !finite(t.resolveAt, 0, state.time + 10) || t.source !== runtime.labels[definition.boss.actor] || !finite(t.phase, 0, boss.phase, true) || !finite(t.hpAtStart, 0, definition.boss.health) || typeof t.interrupted !== 'boolean') fail('boss telegraph');
+    const keys = ['x', 'y', 'radius', 'resolveAt', 'source', 'phase', 'hpAtStart', 'interrupted', ...(t.level === undefined ? [] : ['level'])];
+    if (!definition.boss || !exact(t, keys) || !finite(t.x, 0, state.width) || !finite(t.y, 0, state.height) || t.level !== undefined && !finite(t.level, 0, (state.world?.levels.length ?? 1) - 1, true) || !finite(t.radius, 1, 16) || !finite(t.resolveAt, 0, state.time + 10) || t.source !== runtime.labels[definition.boss.actor] || !finite(t.phase, 0, boss.phase, true) || !finite(t.hpAtStart, 0, definition.boss.health) || typeof t.interrupted !== 'boolean') fail('boss telegraph');
   }
 }

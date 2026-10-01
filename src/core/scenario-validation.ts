@@ -2,6 +2,7 @@ import { FACTIONS } from './content';
 import { MAP_SIZES, TERRAIN, generateMap } from './maps';
 import { generatedMapFromWorld, validateWorldMap } from './world-map';
 import type { BuildingRole, FactionId, UnitRole } from './types';
+import type { WorldMapData } from './world-types';
 import type { ScenarioActor, ScenarioCondition, ScenarioDefinition, ScenarioMap, ScenarioOrder } from './scenario-types';
 
 const unitRoles = ['worker', 'melee', 'ranged', 'special', 'cavalry', 'spear', 'siege'];
@@ -94,7 +95,7 @@ export function validateScenario(input: unknown): ScenarioDefinition {
     const width = number(m.width, 'map.width', 8, 128, true), height = number(m.height, 'map.height', 8, 128, true);
     list(m.terrain, 'map.terrain', width * height, width * height).forEach((tile, i) => choice(tile, `map.terrain[${i}]`, Object.keys(TERRAIN)));
     map = m as unknown as ScenarioMap;
-    if (m.world !== undefined) { const validation = validateWorldMap(m.world); if (!validation.valid) bad('map.world', validation.issues.join('; ')); }
+    if (m.world !== undefined) { const validator = validateWorldMap as (input: unknown, policy?: { scenario: boolean }) => { valid: boolean; issues: string[] }; const validation = validator(m.world, { scenario: true }); if (!validation.valid) bad('map.world', validation.issues.join('; ')); }
     list(m.starts, 'map.starts', 2, 2).forEach((p, i) => point(p, `map.starts[${i}]`));
     list(m.resources, 'map.resources', 1024).forEach((resource, i) => {
       const path = `map.resources[${i}]`, r = object(resource, path, ['x', 'y', 'kind', 'amount', 'maxAmount'], ['level']);
@@ -102,7 +103,8 @@ export function validateScenario(input: unknown): ScenarioDefinition {
       const max = number(r.maxAmount, `${path}.maxAmount`, 1, 1e7); number(r.amount, `${path}.amount`, 0, max);
     });
     if (m.world !== undefined) {
-      const flattened = generatedMapFromWorld(map.world!, 2);
+      const generate = generatedMapFromWorld as (input: WorldMapData, count: number, policy?: { scenario: boolean }) => ReturnType<typeof generatedMapFromWorld>;
+      const flattened = generate(map.world!, 2, { scenario: true });
       if (map.world!.seed !== seed || flattened.width !== map.width || flattened.height !== map.height || flattened.size !== map.size || JSON.stringify(flattened.terrain) !== JSON.stringify(map.terrain)) bad('map.world', 'layered map disagrees with the scenario ground map');
       if (JSON.stringify(flattened.starts.map(p => [p.x, p.y, p.level ?? 0])) !== JSON.stringify(map.starts.map(p => [p.x, p.y, p.level ?? 0])) || JSON.stringify(flattened.resources.map(r => [r.x, r.y, r.level ?? 0, r.kind, r.amount, r.maxAmount])) !== JSON.stringify(map.resources.map(r => [r.x, r.y, r.level ?? 0, r.kind, r.amount, r.maxAmount]))) bad('map.world', 'layered starts or resources disagree with the scenario map');
     }

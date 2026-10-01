@@ -86,12 +86,13 @@ export class ScenarioTools {
 
   update(): void {
     const session = this.callbacks.session(); this.current = session;
-    this.controls.hidden = !session; this.continueButton.hidden = true;
-    if (!session) { this.status.textContent = 'Choose a campaign or launch a practice mission.'; this.objectives.replaceChildren(); this.mechanics.textContent = ''; this.messages.textContent = ''; this.branches.replaceChildren(); return; }
+    this.controls.hidden = !session;
+    if (!session) { this.continueButton.hidden = true; this.status.textContent = 'Choose a campaign or launch a practice mission.'; this.objectives.replaceChildren(); this.mechanics.textContent = ''; this.messages.textContent = ''; this.branches.replaceChildren(); return; }
     const { definition, runtime, state } = session, progress = this.callbacks.campaign?.progress() ?? null;
     const boss = runtime.boss.telegraph;
     const key = JSON.stringify([definition.id, runtime.outcome, runtime.completed, runtime.reinforcementRemaining, runtime.escort.checkpoint, runtime.stealth.alarms, runtime.boss.phase, boss && [boss.resolveAt, boss.interrupted, Math.ceil((boss.resolveAt - state.time) * 10) / 10], runtime.messages.at(-1), progress]);
     if (key === this.lastKey) return; this.lastKey = key;
+    this.continueButton.hidden = true;
     this.status.textContent = `${definition.title} · ${runtime.outcome === 'playing' ? 'Mission in progress' : runtime.outcome === 'won' ? 'Mission complete' : `Mission failed: ${runtime.reason}`}`;
     this.objectives.replaceChildren();
     for (const objective of definition.objectives) { const item = element('li', `${runtime.completed.includes(objective.id) ? 'Complete: ' : ''}${objective.text}${objective.optional ? ' (optional)' : ''}`); item.dataset.completed = String(runtime.completed.includes(objective.id)); this.objectives.append(item); }

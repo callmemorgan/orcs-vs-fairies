@@ -138,6 +138,7 @@ export function decodeCampaignProfile(input: unknown): CampaignProfile {
   const definition = campaign(profile);
   if (profile.choiceId !== null && !definition.choice.options.some(c => c.id === profile.choiceId) || profile.history.length < 2 && profile.choiceId !== null || profile.history.length > 2 && profile.choiceId === null) throw new Error('Invalid saved campaign branch.');
   const seen = new Set<string>();
+  let canonical = createCampaignProfile(profile.campaignId, profile.id);
   const validateBattle = (value: CampaignBattle, expected: string): void => {
     if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).some(k => !['missionId', 'checkpoint', 'recording', 'deployedIds', 'resultId'].includes(k)) || value.missionId !== expected || !Array.isArray(value.deployedIds) || value.deployedIds.some(id => !Number.isSafeInteger(id) || id < 1) || new Set(value.deployedIds).size !== value.deployedIds.length) throw new Error('Invalid campaign battle.');
     const checkpoint = restoreScenario(value.checkpoint), recording = decodeScenarioRecording(value.recording);
@@ -145,11 +146,29 @@ export function decodeCampaignProfile(input: unknown): CampaignProfile {
     if (value.deployedIds.some(id => !recording.initial.game.state.entities.some(e => e.id === id && e.side === 0 && e.kind === 'unit'))) throw new Error('Invalid campaign deployed army.');
   };
   profile.history.forEach((result, index) => {
+    if (index === 2) canonical = chooseCampaignBranch(canonical, profile.choiceId!);
     const expected = index === 2 ? definition.choice.options.find(c => c.id === profile.choiceId)!.chapter3 : definition.chapters[index];
     validateBattle(result, expected);
     if (result.resultId !== `${profile.id}/${expected}` || seen.has(result.resultId)) throw new Error('Duplicate or invalid campaign result.'); seen.add(result.resultId);
+    const prepared = prepareCampaignMission(canonical); prepared.recorder.destroy();
+    if (scenarioChecksum(prepared.session) !== scenarioChecksum(restoreScenario(result.recording.initial)) || JSON.stringify(prepared.profile.active!.deployedIds) !== JSON.stringify(result.deployedIds)) throw new Error('Campaign history starts from an altered detachment.');
     if (verifyScenarioRecording(result.recording).runtime.outcome !== 'won') throw new Error('Campaign history contains an unverified victory.');
+    canonical = { ...prepared.profile, history: [...canonical.history, result], active: null };
   });
-  if (profile.active !== null) { const expected = nextCampaignMission({ ...profile, active: null }); if (!expected) throw new Error('A campaign cannot have an active battle before its branch choice or after its finale.'); validateBattle(profile.active, expected); verifyScenarioRecording(profile.active.recording); }
+  if (profile.history.length === 2 && profile.choiceId) canonical = chooseCampaignBranch(canonical, profile.choiceId);
+  if (profile.active !== null) {
+    const expected = nextCampaignMission({ ...profile, active: null }); if (!expected) throw new Error('A campaign cannot have an active battle before its branch choice or after its finale.');
+    validateBattle(profile.active, expected);
+    const prepared = prepareCampaignMission(canonical); prepared.recorder.destroy();
+    if (scenarioChecksum(prepared.session) !== scenarioChecksum(restoreScenario(profile.active.recording.initial)) || JSON.stringify(prepared.profile.active!.deployedIds) !== JSON.stringify(profile.active.deployedIds)) throw new Error('Campaign battle starts from an altered detachment.');
+    verifyScenarioRecording(profile.active.recording);
+  }
   return profile;
+}
+
+/** Server achievements require all four canonical chapters and their real replayed outcomes. */
+export function verifyCanonicalCampaignVictory(input: unknown, missionId: string) {
+  const profile = decodeCampaignProfile(input), definition = campaign(profile), finale = profile.history.at(-1);
+  if (profile.history.length !== 4 || profile.active || !finale || finale.missionId !== missionId || missionId !== definition.chapters[3]) throw new Error('Complete the canonical campaign finale before claiming this achievement.');
+  return { campaignId: definition.id, missionId, factionId: definition.faction };
 }
