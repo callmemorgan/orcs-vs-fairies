@@ -1,0 +1,61 @@
+import assert from 'node:assert/strict';
+import { mkdir, writeFile, rm } from 'node:fs/promises';
+import { join, resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { build } from 'esbuild';
+
+const directory = resolve('work/modes-ui-proof');
+await rm(directory, { recursive: true, force: true }); await mkdir(directory, { recursive: true });
+await build({ entryPoints: [resolve('scripts/modes/browser-entry.ts')], bundle: true, format: 'esm', platform: 'browser', outfile: join(directory, 'fixture.js') });
+await writeFile(join(directory, 'index.html'), '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="fixture.css"></head><body style="background:#112326;color:#eee;font:14px system-ui"><div id="app" style="max-width:900px"></div><script type="module" src="fixture.js"></script></body></html>');
+await build({ entryPoints: [resolve('src/server/server.ts')], bundle: true, format: 'esm', platform: 'node', packages: 'external', outfile: join(directory, 'server.mjs') });
+const { createRtsServer } = await import(pathToFileURL(join(directory, 'server.mjs')).href);
+const server = await createRtsServer({ host: '127.0.0.1', port: 0, dataDir: join(directory, 'data'), staticDir: directory });
+const playwright = await import(process.env.OVF_PLAYWRIGHT_MODULE ?? 'playwright');
+const browser = await playwright.chromium.launch({ headless: true });
+const contexts = [], errors = [], checks = [];
+async function profile() { const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } }); contexts.push(context); const page = await context.newPage(); page.on('pageerror', error => errors.push(error.message)); await page.goto(server.url); return page; }
+async function enable(page) { await page.getByLabel('Enable team match setup', { exact: true }).check(); }
+async function mode(page, value) { await page.getByLabel('Victory mode', { exact: true }).selectOption(value); }
+async function details(page, text) { await page.locator('.skirmish-roster').getByText(text, { exact: true }).click(); }
+async function online(page) { await page.getByRole('button', { name: 'Online', exact: true }).click(); await page.getByRole('button', { name: 'Play as guest' }).click(); await page.waitForFunction(() => window.modesFixture.lobby.account); }
+try {
+  const local = await profile(); await enable(local); await mode(local, 'hill');
+  await local.getByLabel('Hill capture seconds', { exact: true }).fill('0.1'); await local.getByLabel('Hill hold seconds', { exact: true }).fill('1.25');
+  await local.getByLabel('Starting age', { exact: true }).selectOption('3'); await local.getByLabel('Shared team vision', { exact: true }).uncheck();
+  await local.getByLabel('Allow damage to allied units', { exact: true }).uncheck(); await details(local, 'Match starting resources'); await local.getByLabel('Match starting wood', { exact: true }).fill('900');
+  await details(local, 'Disable units or technologies'); await local.getByLabel('Disable All factions Forged Weapons', { exact: true }).check();
+  await local.getByRole('button', { name: 'Start configured match', exact: true }).click();
+  const configured = await local.evaluate(() => window.modesFixture.state); assert.equal(configured.rules.mode, 'hill'); assert.equal(configured.rules.hill.holdTicks, 25); assert.equal(configured.rules.hill.captureTicks, 2); assert.equal(configured.rules.startingAge, 3); assert.equal(configured.rules.sharedVision, false); assert.equal(configured.rules.friendlyFire, false); assert.equal(configured.players[0].wood, 900); assert.ok(configured.rules.disabledDefinitionIds.includes('forged-weapons')); await local.getByRole('progressbar', { name: 'Hill victory progress' }).waitFor(); checks.push('Local controls create saved rules and inherited resources');
+  await mode(local, 'relic'); await local.getByRole('button', { name: 'Start configured match', exact: true }).click();
+  const relicId = await local.evaluate(() => { const s=window.modesFixture.state,u=s.entities.find(e=>e.side===0&&e.kind==='unit'&&e.role!=='worker');return [...s.objectives.relics].sort((a,b)=>Math.hypot(a.x-u.x,a.y-u.y)-Math.hypot(b.x-u.x,b.y-u.y))[0].id; });
+  const collect = local.getByRole('button', { name: `Collect relic ${relicId}`, exact: true }); assert.equal(await collect.isDisabled(), true);
+  await local.getByRole('button', { name: 'Move a unit to the closest relic', exact: true }).click(); await collect.waitFor(); await local.waitForFunction(id => !document.querySelector(`[aria-label="Collect relic ${id}"]`).disabled, relicId);
+  await collect.click(); await local.getByRole('button', { name: `Drop relic ${relicId}`, exact: true }).waitFor(); assert.ok(await local.evaluate(id => window.modesFixture.state.objectives.relics.find(r=>r.id===id).carrierId !== null, relicId));
+  await local.getByRole('button', { name: `Drop relic ${relicId}`, exact: true }).click(); await collect.waitFor(); assert.equal(await local.evaluate(id => window.modesFixture.state.objectives.relics.find(r=>r.id===id).carrierId, relicId), null); checks.push('Relic collection and drop buttons issue real simulation commands');
+  await local.screenshot({ path: join(directory, 'relic-desktop.png') });
+  await mode(local, 'survival'); await local.getByRole('button', { name: 'Start configured match', exact: true }).click(); await local.getByRole('progressbar', { name: 'Survival waves cleared' }).waitFor(); assert.equal(await local.evaluate(() => window.modesFixture.state.rules.standardDefeat), false); checks.push('Survival uses its mode defaults and shows wave progress');
+  await local.setViewportSize({ width: 390, height: 844 }); await local.screenshot({ path: join(directory, 'rules-mobile.png') });
+  assert.equal(await local.evaluate(() => document.documentElement.scrollWidth > innerWidth), false); checks.push('Rules form fits a narrow viewport');
+  const first = await profile(), second = await profile(); await online(first); await online(second);
+  await first.getByLabel('Lobby Victory mode', { exact: true }).selectOption('hill'); await first.getByLabel('Lobby Hill hold seconds', { exact: true }).fill('5');
+  await first.locator('.online-create').getByText('Army draft', { exact: true }).click(); await first.getByLabel('Lobby Enable army draft', { exact: true }).check(); await first.getByLabel('Lobby Draft ban rounds', { exact: true }).fill('0'); await first.getByLabel('Lobby Draft pick rounds', { exact: true }).fill('1');
+  await first.getByRole('button', { name: 'Create lobby', exact: true }).click(); await first.waitForFunction(() => window.modesFixture.lobby.currentLobby);
+  const lobbyId = await first.evaluate(() => window.modesFixture.lobby.currentLobby.id); await second.getByRole('button', { name: 'Refresh lobbies', exact: true }).click(); await second.getByRole('button', { name: `Join lobby ${lobbyId}`, exact: true }).click(); await second.waitForFunction(() => window.modesFixture.lobby.currentLobby);
+  await first.getByRole('button', { name: 'Refresh lobbies', exact: true }).click();
+  await first.waitForFunction(() => window.modesFixture.lobby.currentLobby.draft?.status === 'drafting'); await second.waitForFunction(() => window.modesFixture.lobby.currentLobby.draft?.status === 'drafting');
+  await first.getByRole('button', { name: 'Start match', exact: true }).waitFor(); assert.equal(await first.getByRole('button', { name: 'Start match', exact: true }).isDisabled(), true);
+  const firstChoice = first.locator('[data-draft-choice]').first(), secondChoice = second.locator('[data-draft-choice]').first(); await first.waitForFunction(()=>document.querySelector('[data-draft-choice]')&&!document.querySelector('[data-draft-choice]').disabled); assert.equal(await firstChoice.isEnabled(), true); assert.equal(await secondChoice.isDisabled(), true);
+  const turnState=await first.evaluate(()=>window.modesFixture.lobby.currentLobby);
+  const wrongTurn=await second.request.post(`${server.url}/api/lobbies/${lobbyId}/draft`,{data:{expectedRevision:turnState.revision,definitionId:turnState.draft.pool[0]}});assert.equal(wrongTurn.status(),409);
+  const prematureReady=await first.request.post(`${server.url}/api/lobbies/${lobbyId}/ready`,{data:{expectedRevision:turnState.revision,ready:true}});assert.equal(prematureReady.status(),409);
+  const staleReady=await first.request.post(`${server.url}/api/lobbies/${lobbyId}/ready`,{data:{expectedRevision:turnState.revision-1,ready:true}});assert.equal(staleReady.status(),409);checks.push('Server rejects wrong-turn choices, premature readiness, and stale revisions');
+  await firstChoice.click(); await second.waitForFunction(() => window.modesFixture.lobby.currentLobby.draft.turn === 1);
+  await second.reload();await second.getByRole('button',{name:'Online',exact:true}).click();await second.getByRole('button',{name:`View lobby ${lobbyId}`,exact:true}).click();await second.waitForFunction(()=>window.modesFixture.lobby.currentLobby?.draft.turn===1);checks.push('A reloaded player resumes the server draft turn');
+  await second.locator('[data-draft-choice]').first().click(); await first.waitForFunction(() => window.modesFixture.lobby.currentLobby.draft.status === 'complete');
+  const current = await first.evaluate(() => window.modesFixture.lobby.currentLobby); assert.equal(current.settings.rules.hill.holdTicks, 100); assert.equal(current.draft.picks[0].length, 1); assert.equal(current.draft.picks[1].length, 1); assert.ok(current.revision > 3); await first.screenshot({ path: join(directory, 'online-draft.png') }); checks.push('Two server accounts draft in order with server revisions');
+  await first.getByRole('button', { name: 'Ready', exact: true }).click(); await second.getByRole('button', { name: 'Ready', exact: true }).click();
+  await first.getByText('Lobby settings', { exact: true }).click(); const hold = first.getByLabel('Current lobby Hill hold seconds', { exact: true }); await hold.fill('7'); await hold.focus(); await second.getByRole('button', { name: 'Not ready', exact: true }).click(); await first.waitForTimeout(180); assert.equal(await hold.inputValue(), '7'); assert.equal(await hold.evaluate(node => node === document.activeElement), true); checks.push('Polling preserves focused unsaved settings');
+  await first.getByRole('button', { name: 'Apply lobby settings', exact: true }).click(); await first.waitForFunction(() => window.modesFixture.lobby.currentLobby.settings.rules.hill.holdTicks === 140); checks.push('Applying settings sends visible rules and clears readiness');
+  assert.deepEqual(errors, []); const result = { checks, errors, lobbyId }; await writeFile(join(directory, 'results.json'), JSON.stringify(result, null, 2)); console.log(JSON.stringify(result, null, 2));
+} finally { for (const context of contexts) await context.close(); await browser.close(); await server.close(); }

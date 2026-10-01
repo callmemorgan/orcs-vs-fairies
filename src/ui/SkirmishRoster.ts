@@ -1,12 +1,13 @@
 import { normalizeAiConfig, type AiConfig } from '../core/ai-policy';
 import { FACTIONS } from '../core/content';
 import { AGE_NAMES } from '../core/progression';
-import type { Age, Cost, FactionId, MatchConfig, MatchPlayerConfig, Side } from '../core/types';
+import type { Age, Cost, FactionId, MatchConfig, MatchRules, MatchPlayerConfig, Side } from '../core/types';
+import { MATCH_RULE_DEFAULTS, MatchRulesForm } from './MatchRules';
 import { SkirmishOptions } from './SkirmishOptions';
 import './skirmish-roster.css';
 
 type Preset = 'duel' | '2v2' | '3v3' | '4v4' | 'co-op' | 'custom';
-type Rules = {sharedVision:boolean;startingAge:Age};
+type Rules = MatchRules;
 type HandicapKey = keyof Cost | 'income' | 'population';
 interface PlayerRow {
   id: Side;
@@ -18,6 +19,7 @@ interface PlayerRow {
   summary: HTMLElement;
   ai?: SkirmishOptions;
   aiEdited: boolean;
+  resourceEdited: boolean;
   removeListeners: Array<() => void>;
 }
 const colors = ['#efb86b', '#8fbded', '#f08c7c', '#b9a0ef', '#9dcc82', '#e99cc4', '#82d7d3', '#e0d78a'];
@@ -49,6 +51,7 @@ export class SkirmishRoster {
   private readonly host: HTMLElement;
   private readonly enable: HTMLInputElement;
   private readonly body: HTMLElement;
+  private readonly customRules: MatchRulesForm;
   private readonly preset: HTMLSelectElement;
   private readonly count: HTMLSelectElement;
   private readonly sharedVision: HTMLInputElement;
@@ -78,7 +81,8 @@ export class SkirmishRoster {
     this.summary = element('p', undefined, 'skirmish-roster-summary'); this.summary.setAttribute('aria-live', 'polite');
     this.error = element('p', undefined, 'skirmish-roster-error'); this.error.setAttribute('role', 'alert'); this.error.hidden = true;
     this.playersHost = element('div', undefined, 'skirmish-roster-players');
-    this.body.append(controls, this.summary, this.error, this.playersHost); this.host.append(header, this.body); root.append(this.host);
+    this.customRules = new MatchRulesForm(this.body, { includeTeamSettings: false, onChange: () => { try { const resources = this.customRules.value.startingResources; for (const row of this.rows) if (!row.resourceEdited) for (const key of ['wood', 'ore', 'crystal'] as const) row.inputs[key].value = String(resources[key]); } catch {} this.refresh(); this.emit(); } });
+    this.body.prepend(controls, this.summary, this.error); this.body.append(this.playersHost); this.host.append(header, this.body); root.append(this.host);
     this.resize(2); this.applyPreset('duel');
     this.listen(this.enable, 'change', () => { this.body.hidden = !this.enabled; this.refresh(); this.emit(); });
     this.listen(this.preset, 'change', () => {
@@ -122,15 +126,16 @@ export class SkirmishRoster {
 
   getRules(): Rules {
     if (this.destroyed) throw new Error('Match setup has been closed.');
-    if (!this.enabled) return { sharedVision: true, startingAge: 1 };
+    if (!this.enabled) return structuredClone(MATCH_RULE_DEFAULTS);
     const age = Number(this.startingAge.value);
     if (!Number.isInteger(age) || age < 1 || age > 3) { this.showError('Choose a starting age.'); throw new Error('Choose a starting age.'); }
-    return { sharedVision: this.sharedVision.checked, startingAge: age as Age };
+    return { ...this.customRules.value, sharedVision: this.sharedVision.checked, startingAge: age as Age };
   }
 
   destroy(): void {
     if (this.destroyed) return; this.destroyed = true;
     for (const remove of this.removeListeners.splice(0)) remove();
+    this.customRules.destroy();
     for (const row of this.rows.splice(0)) this.destroyRow(row);
     this.host.remove();
   }
@@ -165,11 +170,11 @@ export class SkirmishRoster {
     const handicap = element('details', undefined, 'skirmish-roster-handicap'); handicap.append(element('summary', 'Edit starting resources and handicap'));
     const handicapFields = element('div', undefined, 'skirmish-roster-handicap-fields'), inputs = {} as Record<HandicapKey, HTMLInputElement>;
     for (const [key, text] of [['wood', 'starting wood'], ['ore', 'starting ore'], ['crystal', 'starting crystal'], ['income', 'income factor'], ['population', 'population cap']] as [HandicapKey, string][]) {
-      const input = element('input'); input.type = 'number'; input.min = key === 'population' ? '1' : '0'; input.max = key === 'income' ? '10' : key === 'population' ? '500' : '1000000000'; input.step = key === 'income' ? '0.05' : '1'; input.value = String(defaults[key]); input.setAttribute('aria-label', `Player ${number} ${text}`); inputs[key] = input; label(handicapFields, `Player ${number} ${text}`, input);
+      const input = element('input'); input.type = 'number'; input.min = key === 'population' ? '1' : '0'; input.max = key === 'income' ? '10' : key === 'population' ? '500' : '1000000000'; input.step = key === 'income' ? '0.05' : '1'; input.value = String(['wood', 'ore', 'crystal'].includes(key) ? this.customRules.value.startingResources[key as keyof Cost] : defaults[key]); input.setAttribute('aria-label', `Player ${number} ${text}`); inputs[key] = input; label(handicapFields, `Player ${number} ${text}`, input);
     }
     handicap.append(handicapFields, element('p', 'Income scales deposited resources. Population limit is the maximum supply; buildings still provide supply.'));
     card.append(fields, summary, handicap);
-    const row: PlayerRow = { id, card, faction: factionSelect, team, controller, inputs, summary, aiEdited: false, removeListeners: [] };
+    const row: PlayerRow = { id, card, faction: factionSelect, team, controller, inputs, summary, aiEdited: false, resourceEdited: false, removeListeners: [] };
     if (id !== 0) {
       const ai = element('details', undefined, 'skirmish-roster-ai'); ai.open = true; ai.append(element('summary', `Player ${number} computer strategy`)); card.append(ai);
       row.ai = new SkirmishOptions(ai, this.defaultAi, () => { row.aiEdited = true; this.refresh(); this.emit(); });
@@ -181,7 +186,7 @@ export class SkirmishRoster {
     }
     this.listen(factionSelect, 'change', () => { this.refresh(); this.emit(); }, row.removeListeners);
     this.listen(team, 'change', () => { this.preset.value = 'custom'; this.refresh(); this.emit(); }, row.removeListeners);
-    for (const input of Object.values(inputs)) this.listen(input, 'input', () => { this.refresh(); this.emit(); }, row.removeListeners);
+    for (const [key, input] of Object.entries(inputs)) this.listen(input, 'input', () => { if (['wood', 'ore', 'crystal'].includes(key)) row.resourceEdited = true; this.refresh(); this.emit(); }, row.removeListeners);
     return row;
   }
   private number(row: PlayerRow, key: HandicapKey): number {
@@ -190,12 +195,15 @@ export class SkirmishRoster {
     return value;
   }
   private readPlayers(): MatchPlayerConfig[] {
+    const matchResources = this.customRules.value.startingResources;
     const players = this.rows.map(row => {
       const team = Number(row.team.value);
       if (!row.team.value || !Number.isInteger(team) || team < 0 || team > 7) throw new Error(`Player ${row.id + 1}: choose a team.`);
       if (row.controller.value !== (row.id === 0 ? 'human' : 'ai')) throw new Error('Player 1 must be the only local human; all other players must be computers.');
       const ownFaction = row.id === 0 ? this.defaultFaction : this.rows.length === 2 || !row.faction.value ? this.defaultOpponent : faction(row.faction.value as FactionId);
-      const player: MatchPlayerConfig = { id: row.id, teamId: team as Side, factionId: ownFaction, controller: row.id === 0 ? 'human' : 'ai', handicap: { startingResources: { wood: this.number(row, 'wood'), ore: this.number(row, 'ore'), crystal: this.number(row, 'crystal') }, incomeFactor: this.number(row, 'income'), populationCap: this.number(row, 'population') } };
+      const resources = { wood: this.number(row, 'wood'), ore: this.number(row, 'ore'), crystal: this.number(row, 'crystal') };
+      const inherited = !row.resourceEdited;
+      const player: MatchPlayerConfig = { id: row.id, teamId: team as Side, factionId: ownFaction, controller: row.id === 0 ? 'human' : 'ai', handicap: { startingResources: inherited ? { ...matchResources } : resources, incomeFactor: this.number(row, 'income'), populationCap: this.number(row, 'population') } };
       if (row.ai) player.ai = normalizeAiConfig(row.ai.value);
       return player;
     });

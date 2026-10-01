@@ -2,6 +2,8 @@ import { FACTIONS } from '../core/content';
 import type { Age,FactionId, MapSize, Side } from '../core/types';
 import { OnlineApi, OnlineRequestError } from '../online/client';
 import type { Account, LobbyObservation,LobbyPlayerSettings,LobbySettings } from '../online/protocol';
+import { MatchRulesForm, MATCH_MODE_NAMES } from './MatchRules';
+import { mountDraftPanel } from './ObjectivePanel';
 import './online-lobby.css';
 
 export interface OnlineMatchRequest { matchId:string;role:'player'|'spectator';perspective?:Side;view?:'player'|'team' }
@@ -59,7 +61,7 @@ export function mountOnlineLobby(root:HTMLElement,options:OnlineLobbyOptions) {
   function playerFields(form:HTMLFormElement,prefix:''|'Current ',players:LobbyPlayer[]) {
     const container=form.querySelector<HTMLElement>('.online-player-settings')!;container.replaceChildren();
     players.forEach((player,index)=>{
-      const row=document.createElement('fieldset');row.dataset.player=String(index);
+      const row=document.createElement('fieldset');row.dataset.player=String(index);row.dataset.resourceOverride=String(!!player.handicap?.startingResources);
       const scope=prefix?'Current':'Lobby';
       const factionLabel=prefix?(index===0?'Current first faction':index===1?'Current second faction':`Current player ${index+1} faction`):(index===0?'First lobby faction':index===1?'Second lobby faction':`Lobby player ${index+1} faction`);
       const resources=player.handicap?.startingResources??{wood:420,ore:220,crystal:0};
@@ -71,11 +73,16 @@ export function mountOnlineLobby(root:HTMLElement,options:OnlineLobbyOptions) {
           <label>Starting crystal<input data-field="crystal" type="number" min="0" max="1000000" step="1" required aria-label="${scope} player ${index+1} starting crystal" value="${resources.crystal}"></label>
           <label>Income multiplier<input data-field="income" type="number" min="0" max="10" step="any" required aria-label="${scope} player ${index+1} income multiplier" value="${player.handicap?.incomeFactor??1}"></label>
           <label>Population limit<input data-field="population" type="number" min="1" max="500" step="1" required aria-label="${scope} player ${index+1} population limit" value="${player.handicap?.populationCap??100}"></label></details>`;
+      row.addEventListener('input',event=>{const field=(event.target as HTMLElement).dataset.field;if(field&&['wood','ore','crystal'].includes(field))row.dataset.resourceOverride='true';});
       container.append(row);
     });
   }
   const createForm=element<HTMLFormElement>('.online-create'),configureForm=element<HTMLFormElement>('.online-configure');
   playerFields(createForm,'',defaultPlayers());playerFields(configureForm,'Current ',defaultPlayers());
+  const createRules=new MatchRulesForm(createForm,{labelPrefix:'Lobby ',includeTeamSettings:false,onChange:()=>syncResources(createForm,createRules)});
+  const configureRules=new MatchRulesForm(configureForm,{labelPrefix:'Current lobby ',includeTeamSettings:false,onChange:()=>{configDirty=true;syncResources(configureForm,configureRules);}});
+  function syncResources(form:HTMLFormElement,rules:MatchRulesForm) { try { const resources=rules.value.startingResources; for(const row of Array.from(form.querySelectorAll<HTMLElement>('[data-player]'))) if(row.dataset.resourceOverride!=='true') for(const key of ['wood','ore','crystal'] as const) row.querySelector<HTMLInputElement>(`[data-field="${key}"]`)!.value=String(resources[key]); } catch {} }
+  const draft=mountDraftPanel(element('.online-current'),{getDraft:()=>current?.settings.rules?.draft?.enabled?current?.draft:null,canSubmit:()=>!busy&&!disposed,side:()=>current?ownsSeat(current)?.side:undefined,revision:()=>current?.revision,players:()=>current?defaultPlayers(current.settings).map((player,id)=>({id:id as Side,factionId:player.factionId})):[],submit:async definitionId=>current?await run(async()=>{current=await api.changeLobby(current!,'draft',{definitionId});await refresh();}):false});
   function render() {
     element('.online-auth').hidden=!!account;element('.online-account').hidden=!account;element('.online-browser').hidden=!account;
     element('.online-username').textContent=account?.username??'';
@@ -85,7 +92,7 @@ export function mountOnlineLobby(root:HTMLElement,options:OnlineLobbyOptions) {
     for(const lobby of lobbies) {
       const row=document.createElement('li'),description=document.createElement('span');
       const occupied=lobby.seats.filter(seat=>seat.account||seat.controller==='ai'||lobby.settings.players?.[seat.side]?.controller==='ai').length;
-      description.textContent=`${lobby.id.slice(0,8)} · ${lobby.settings.mapSize} · ${occupied}/${lobby.seats.length} players${lobby.matchId?' · Match started':''}`;
+      description.textContent=`${lobby.id.slice(0,8)} · ${lobby.settings.mapSize} · ${MATCH_MODE_NAMES[lobby.settings.rules?.mode??'annihilation']} · ${occupied}/${lobby.seats.length} players${lobby.matchId?' · Match started':''}`;
       row.append(description);
       const button=document.createElement('button');button.type='button';
       button.textContent=ownsSeat(lobby)?(lobby.matchId?'Rejoin match':'View lobby'):'Join lobby';
@@ -103,7 +110,8 @@ export function mountOnlineLobby(root:HTMLElement,options:OnlineLobbyOptions) {
     element('.online-current').hidden=!current;
     createForm.hidden=!!current;
     if(!current)return;
-    element('.online-lobby-id').textContent=current.id;
+    element('.online-lobby-id').textContent=`${current.id} · Server revision ${current.revision} · ${MATCH_MODE_NAMES[current.settings.rules?.mode??'annihilation']}`;
+    draft.update();
     const seats=element('.online-seats');seats.replaceChildren();
     const factions:readonly FactionId[]=current.settings.factions;
     const settings=current.settings as TeamSettings;
@@ -115,10 +123,10 @@ export function mountOnlineLobby(root:HTMLElement,options:OnlineLobbyOptions) {
       configureForm.dataset.settings=JSON.stringify(settings);element<HTMLSelectElement>('[aria-label="Current lobby map size"]').value=settings.mapSize;
       element<HTMLSelectElement>('[aria-label="Current lobby player count"]').value=String(settings.factions.length);
       element<HTMLSelectElement>('[aria-label="Current lobby starting age"]').value=String(settings.startingAge??1);element<HTMLInputElement>('[aria-label="Current lobby shared vision"]').checked=settings.sharedVision??true;
-      playerFields(configureForm,'Current ',defaultPlayers(settings));
+      playerFields(configureForm,'Current ',defaultPlayers(settings));configureRules.update(settings.rules);syncResources(configureForm,configureRules);
     }
-    const ready=element<HTMLButtonElement>('[data-online="ready"]');ready.hidden=started;ready.disabled=busy||!own;ready.textContent=own?.ready?'Not ready':'Ready';ready.setAttribute('aria-pressed',String(!!own?.ready));
-    const start=element<HTMLButtonElement>('[data-online="start"]');start.hidden=!hosted||started;start.disabled=busy||current.seats.some(seat=>settings.players?.[seat.side]?.controller!=='ai'&&(!seat.account||!seat.ready));
+    const ready=element<HTMLButtonElement>('[data-online="ready"]');ready.hidden=started;ready.disabled=busy||!own||current.draft?.status==='drafting';ready.textContent=own?.ready?'Not ready':'Ready';ready.setAttribute('aria-pressed',String(!!own?.ready));
+    const start=element<HTMLButtonElement>('[data-online="start"]');start.hidden=!hosted||started;start.disabled=busy||current.draft?.status==='drafting'||current.seats.some(seat=>settings.players?.[seat.side]?.controller!=='ai'&&(!seat.account||!seat.ready));
     element<HTMLButtonElement>('[data-online="leave"]').hidden=started;
     element<HTMLButtonElement>('[data-online="rejoin"]').hidden=!started||!own;
   }
@@ -138,12 +146,13 @@ export function mountOnlineLobby(root:HTMLElement,options:OnlineLobbyOptions) {
     }
   }
   async function run(action:()=>Promise<unknown>) {
-    if(busy||disposed)return;requestEpoch++;busy=true;render();
-    try {await action();}
+    if(busy||disposed)return false;requestEpoch++;busy=true;render();
+    try {await action();return true;}
     catch(error) {
       if(error instanceof OnlineRequestError&&error.status===401){account=null;current=null;lobbies=[];}
       message(error instanceof Error?error.message:'Online request failed.');
       if(error instanceof OnlineRequestError&&error.status===409)try{await refresh();}catch{}
+      return false;
     }finally {busy=false;if(!disposed)render();}
   }
   async function enterMatch(request:OnlineMatchRequest) {
@@ -181,18 +190,19 @@ export function mountOnlineLobby(root:HTMLElement,options:OnlineLobbyOptions) {
   const readPlayers=(form:HTMLFormElement):LobbyPlayer[]=>Array.from(form.querySelectorAll<HTMLFieldSetElement>('[data-player]')).map(row=>{
     const value=(field:string)=>(row.querySelector<HTMLInputElement|HTMLSelectElement>(`[data-field="${field}"]`)!).value;
     const startingResources={wood:Number(value('wood')),ore:Number(value('ore')),crystal:Number(value('crystal'))},incomeFactor=Number(value('income')),populationCap=Number(value('population'));
-    const handicap={...(startingResources.wood!==420||startingResources.ore!==220||startingResources.crystal!==0?{startingResources}:{}),...(incomeFactor!==1?{incomeFactor}:{}),...(populationCap!==100?{populationCap}:{})};
+    const matchResources=(form===configureForm?configureRules:createRules).value.startingResources;
+    const handicap={...(row.dataset.resourceOverride==='true'||startingResources.wood!==matchResources.wood||startingResources.ore!==matchResources.ore||startingResources.crystal!==matchResources.crystal?{startingResources}:{}),...(incomeFactor!==1?{incomeFactor}:{}),...(populationCap!==100?{populationCap}:{})};
     return {factionId:value('faction') as FactionId,teamId:Number(value('team')) as Side,controller:value('controller') as 'human'|'ai',...(Object.keys(handicap).length?{handicap}:{})};
   });
   const readSettings=(prefix:''|'Current '):LobbySettings=>{
     const players=readPlayers(prefix?configureForm:createForm),scope=prefix?'Current lobby':'Lobby';
     return {mapSize:element<HTMLSelectElement>(`[aria-label="${scope} map size"]`).value as MapSize,factions:players.map(player=>player.factionId),players,
-      sharedVision:element<HTMLInputElement>(`[aria-label="${scope} shared vision"]`).checked,startingAge:Number(element<HTMLSelectElement>(`[aria-label="${scope} starting age"]`).value) as Age} as TeamSettings;
+      sharedVision:element<HTMLInputElement>(`[aria-label="${scope} shared vision"]`).checked,startingAge:Number(element<HTMLSelectElement>(`[aria-label="${scope} starting age"]`).value) as Age,...((prefix?configureRules:createRules).isDefault?{}:{rules:{...(prefix?configureRules:createRules).value,sharedVision:element<HTMLInputElement>(`[aria-label="${scope} shared vision"]`).checked,startingAge:Number(element<HTMLSelectElement>(`[aria-label="${scope} starting age"]`).value) as Age}})} as TeamSettings;
   };
   const resizePlayers=(form:HTMLFormElement,prefix:''|'Current ')=>{
     const players=readPlayers(form),scope=prefix?'Current lobby':'Lobby',count=Number(element<HTMLSelectElement>(`[aria-label="${scope} player count"]`).value);
     playerFields(form,prefix,Array.from({length:count},(_,index)=>players[index]??{factionId:index%2?'fairies':'orcs',teamId:index as Side,controller:'human'}));
-    if(prefix)configDirty=true;
+    syncResources(form,prefix?configureRules:createRules);if(prefix)configDirty=true;
   };
   element<HTMLSelectElement>('[aria-label="Lobby player count"]').onchange=()=>resizePlayers(createForm,'');element<HTMLSelectElement>('[aria-label="Current lobby player count"]').onchange=()=>resizePlayers(configureForm,'Current ');
   createForm.onsubmit=event=>{event.preventDefault();if(!createForm.reportValidity())return;void run(async()=>{current=await api.createLobby(readSettings(''));configDirty=false;message('Lobby created. Other players can join from the lobby list.');await refresh();});};
@@ -217,5 +227,5 @@ export function mountOnlineLobby(root:HTMLElement,options:OnlineLobbyOptions) {
   });
   if(options.toolbar)options.toolbar.append(launch);
   return {show,hide,get visible(){return !overlay.hidden;},get account(){return account;},get currentLobby(){return current;},refresh,
-    dispose(){if(disposed)return;hide();disposed=true;requestEpoch++;if(polling)clearTimeout(polling);launch.remove();host.remove();}};
+    dispose(){if(disposed)return;hide();disposed=true;requestEpoch++;if(polling)clearTimeout(polling);createRules.destroy();configureRules.destroy();draft.dispose();launch.remove();host.remove();}};
 }
