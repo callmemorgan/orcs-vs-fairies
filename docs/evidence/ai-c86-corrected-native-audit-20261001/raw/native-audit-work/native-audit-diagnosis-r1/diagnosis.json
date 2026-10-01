@@ -1,0 +1,69 @@
+{
+  "sourcePin": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+  "canonicalMatrixResult": "passed",
+  "nativeAuditResult": "failed",
+  "executionStopped": true,
+  "source": {
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/src/core/simulation.ts",
+    "bytes": 106228,
+    "sha256": "e301c65d0352ffe648a5bc4ee6acbda1f562164deacdfe60f8f3b03e7bdccf35"
+  },
+  "auditSource": {
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/final-ai-prep/audit-ladder401-r2.ts",
+    "bytes": 5174,
+    "sha256": "59a080b7ea7c5372fbdf4068a246e67b6dc9ea075d07db509390f4b0a71b7361"
+  },
+  "affectedReport": {
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/docs/evidence/six-factions-save401-ladder-c86e273-r1/medium-4127-automata-fairies.json",
+    "bytes": 24952,
+    "sha256": "f1f00445764160b541e7a19e24fc16adf7f620db7713892888494fa7d340e976"
+  },
+  "affectedNative": {
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/docs/evidence/six-factions-save401-ladder-c86e273-r1/saves/medium-4127-automata-fairies.save.json",
+    "bytes": 201160,
+    "sha256": "57dfb3e4a6fabe3c3c32e12a022b6b8f3507c1e6d1e551bfaf92d082482a03d9"
+  },
+  "winner": 1,
+  "tick": 7962,
+  "eliminated": [
+    true,
+    false
+  ],
+  "remainingLosingHqs": [
+    {
+      "id": 136,
+      "side": 0,
+      "hp": 454.84443181817494,
+      "progress": 0.9490909090908873
+    }
+  ],
+  "remainingCompletedLosingHqs": 0,
+  "actualDefeatCriterion": {
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/src/core/simulation.ts",
+    "line": 491,
+    "text": " s.eliminated=playerSides(s).map(side=>!s.entities.some(e=>e.side===side&&e.role==='hq'&&alive(e)&&e.progress===1));"
+  },
+  "failedAuditAssertion": {
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/final-ai-prep/audit-ladder401-r2.ts",
+    "line": 43,
+    "text": " if(report.winner!==null)assert(!native.state.entities.some(entity=>entity.role==='hq'&&entity.side!==report.winner&&entity.hp>0),'Losing HQ must be absent/dead in the native save');"
+  },
+  "failedEnvelopeManifest": {
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-c86e273-r1/envelopes/native-audit/manifest.json",
+    "bytes": 1401,
+    "sha256": "f6c8d69a9829b931fc7bf40c3ceb505823a0396d30907a6a0267f37fb48f982e"
+  },
+  "failedRun": {
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-c86e273-r1/envelopes/native-audit/run.json",
+    "bytes": 1452,
+    "sha256": "a414c79c08cf73cfc4588604e56956e2c94647ea3a427634fe12723169932216"
+  },
+  "proposedPatch": {
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-c86e273-r1/native-audit-diagnosis-r1/proposed-audit-r3.patch",
+    "bytes": 1140,
+    "sha256": "fa93f48e044326b190ff281be44255f063da0ef5e47c808f1ce5b608e3fbfb0a"
+  },
+  "patchApplied": false,
+  "auditRerun": false,
+  "explanation": "The audit assertion includes unfinished HQ foundations; the actual standard-defeat criterion only counts living completed HQs. Exactly one final native save violates the broader audit assertion while matching the game defeat criterion. Canonical ladder assertions and simulation/product files remain unchanged. All failed envelope/raw artifact bytes and path sets were reauthenticated without modification."
+}

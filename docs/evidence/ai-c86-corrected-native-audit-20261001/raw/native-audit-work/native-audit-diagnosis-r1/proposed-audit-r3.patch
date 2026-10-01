@@ -1,0 +1,11 @@
+--- work/final-ai-prep/audit-ladder401-r2.ts
++++ proposed-audit-ladder401-r3.ts
+@@ -40,7 +40,7 @@
+  resaved.state.visible=resaved.state.visible.map(cells=>cells.slice().sort((a,b)=>a-b));
+  resaved.state.explored=resaved.state.explored.map(cells=>cells.slice().sort((a,b)=>a-b));
+  assert.equal(sha(JSON.stringify(resaved)),report.finalStateSha256);
+- if(report.winner!==null)assert(!native.state.entities.some(entity=>entity.role==='hq'&&entity.side!==report.winner&&entity.hp>0),'Losing HQ must be absent/dead in the native save');
++ if(report.winner!==null)assert(!native.state.entities.some(entity=>entity.role==='hq'&&entity.side!==report.winner&&entity.hp>0&&entity.progress===1),'Losing completed HQ must be absent/dead in the native save');
+  const key=`${report.seed}/${report.mapSize}/${report.faction}/${report.opponent}`;assert(!pairs.has(key));pairs.add(key);
+  records.push({report:name,save:report.finalSaveFile,sha256:sha(bytes),version:native.version,tick:native.state.tick,seconds:native.state.time,winner:native.state.winner,timeout:report.timeout,proofMode:report.saveProof.mode,exactNativeEnvelopeLoadResave:true});
+ }

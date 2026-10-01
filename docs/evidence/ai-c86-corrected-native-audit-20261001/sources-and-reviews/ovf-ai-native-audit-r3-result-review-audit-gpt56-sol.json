@@ -1,0 +1,63 @@
+{
+  "kind": "ai-native-audit-r3-result-independent-admission",
+  "checkedAt": "2026-10-01T20:40:18.954971+00:00",
+  "reviewer": "GPT-5.6 Sol",
+  "result": "accepted",
+  "sourcePin": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+  "counts": {
+    "compilerInputs": 42,
+    "sourceEnvelopeInputs": 597,
+    "executables": 11,
+    "packageInventories": 15,
+    "reports": 108,
+    "nativeSaves": 108,
+    "resultRecords": 108,
+    "terminalEqualityRows": 2160,
+    "advancedTerminalTicks": 0,
+    "matrixPairs": 108
+  },
+  "mismatches": {
+    "envelopeArtifacts": [],
+    "innerArtifacts": [],
+    "compilerInputs": [],
+    "sourceInputs": [],
+    "executables": [],
+    "records": [],
+    "failedAuditArtifacts": [],
+    "ownedProcesses": []
+  },
+  "checks": {
+    "receiptHashMatches": true,
+    "resultHashMatches": true,
+    "envelopeManifestHashMatches": true,
+    "admittedSourceAndDriverHashesMatch": true,
+    "executedBundleAuthenticates": true,
+    "compilerInputGraphHas42AuthenticatedInputs": true,
+    "metafileOutputBindsExecutedBundle": true,
+    "envelopePassedWithZeroExit": true,
+    "envelopeArtifactsAllAuthenticate": true,
+    "sourcePrePostEqualAndAuthenticate": true,
+    "buildPrePostEqual": true,
+    "executablePrePostAndLadderEqual": true,
+    "executableInventoryHas11Executables15Packages": true,
+    "actual108ReportsAnd108SavesMatchRecords": true,
+    "orderedMatrixDimensionsMatch": true,
+    "all2160TerminalRowsEqualWithZeroAdvancedTicks": true,
+    "all108ResultRecordsAssertExactEnvelopeEquality": true,
+    "methodAndSummaryHashesMatch": true,
+    "auditScopeIsLoadResaveWithoutFullReplay": true,
+    "failedR2AuditRemainsFailedAndPreserved": true,
+    "diagnosisAndCorrectionProposalRemainExact": true,
+    "cleanupAndTrackedStateClean": true,
+    "receiptLimitsRemainExplicit": true
+  },
+  "allChecksPassed": true,
+  "runtimeExecutedByReview": false,
+  "findings": [],
+  "limits": [
+    "Admission is based on authenticated executed source, bundle, result and retained artifacts; this review did not execute TypeScript, JavaScript modules, builds, tests or gameplay.",
+    "Exact envelope equality means parsed SAVE4 load/resave structural equality plus replay checksum and normalized state digest checks. It is not raw-byte equality of a newly serialized file.",
+    "The 2,160 rows are terminal equality attempts with zero advanced ticks. No post-load continuation and no full replay history was executed.",
+    "Executable provenance covers the recorded 11 executables and 15 package inventories, not the complete host or every transitive dependency."
+  ]
+}

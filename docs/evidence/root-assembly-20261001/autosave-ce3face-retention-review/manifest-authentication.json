@@ -1,0 +1,5464 @@
+{
+  "summary": {
+    "generatedAt": "2026-10-01T20:39:13.515164+00:00",
+    "sourceRoot": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-c074cc5-20261001",
+    "productPin": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+    "proofPin": "9e5fd2340b9a0823d1ab9f566c52b947a094278e",
+    "buildId": "5e49e689af13d4eef08c0760f904ad0bce2c2eebaa1144dea5d89cadecf310c0",
+    "saveVersion": 4,
+    "simulationRevision": "4.0.1",
+    "authenticationResult": "passed",
+    "comparisonCount": 1237,
+    "failedComparisonCount": 0,
+    "rawFileCount": 50,
+    "directoryFileCounts": {
+      "autosave-browser-r1": 15,
+      "autosave-runtime-r1": 8,
+      "autosave-offline-r1": 13,
+      "autosave-diagnostic-r1": 8,
+      "autosave-inspection-r1": 2,
+      "autosave-independent-r1": 4
+    },
+    "browserResult": "failed",
+    "browserFinalizationFailure": "consoleErrors must be empty\n+ actual - expected\n\n+ [\n+   'Failed to load resource: the server responded with a status of 404 (Not Found)',\n+   'Failed to load resource: the server responded with a status of 404 (Not Found)'\n+ ]\n- []\n",
+    "gameplayChecks": [
+      {
+        "id": "natural-current-rules-autosave-preserves-manual-slot",
+        "baseline": {
+          "tick": 11,
+          "time": 0.5499999999999999,
+          "paused": true,
+          "mode": "local",
+          "readOnly": false,
+          "winner": null,
+          "draw": false,
+          "controller": "human",
+          "bank": {
+            "wood": 420,
+            "ore": 220,
+            "crystal": 0
+          },
+          "workers": [
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "hq": {
+            "id": 1,
+            "queue": [],
+            "trainProgress": 0
+          }
+        },
+        "tick": 611,
+        "time": 30.5500000000003,
+        "wallSeconds": 30.710971369000003,
+        "gameHash": "61aaeea7059213788eb9e9478b1c3a6a319bf90bb163b6c43117865ab8e6eb4d"
+      },
+      {
+        "id": "native-recruitment-is-paid-recorded-and-still-in-progress",
+        "tick": 616,
+        "hq": {
+          "id": 1,
+          "queue": [
+            "worker"
+          ],
+          "trainProgress": 0
+        },
+        "bank": {
+          "wood": 370,
+          "ore": 220,
+          "crystal": 0
+        },
+        "command": {
+          "type": "command",
+          "side": 0,
+          "command": {
+            "type": "train",
+            "id": 1,
+            "role": "worker"
+          }
+        }
+      },
+      {
+        "id": "real-pagehide-and-ui-load-restore-complete-in-flight-game",
+        "tick": 616,
+        "gameHash": "57e97645a8f37b7b4012735cb3d4331a96e049d02533e0aea55fea94a0433cb0",
+        "preservedManualSlot": "slot-1"
+      },
+      {
+        "id": "recovered-queue-completes-through-natural-simulation",
+        "before": {
+          "tick": 616,
+          "time": 30.800000000000303,
+          "paused": true,
+          "mode": "local",
+          "readOnly": false,
+          "winner": null,
+          "draw": false,
+          "controller": "human",
+          "bank": {
+            "wood": 370,
+            "ore": 220,
+            "crystal": 0
+          },
+          "workers": [
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "hq": {
+            "id": 1,
+            "queue": [
+              "worker"
+            ],
+            "trainProgress": 0
+          }
+        },
+        "after": {
+          "tick": 861,
+          "time": 43.04999999999969,
+          "paused": true,
+          "mode": "local",
+          "readOnly": false,
+          "winner": null,
+          "draw": false,
+          "controller": "human",
+          "bank": {
+            "wood": 370,
+            "ore": 220,
+            "crystal": 0
+          },
+          "workers": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            58
+          ],
+          "hq": {
+            "id": 1,
+            "queue": [],
+            "trainProgress": 0
+          }
+        },
+        "gameHash": "0090b27a9200c8b38da3ed64bd2a45ce8b2121ca20214156478f5af222a6d77a"
+      },
+      {
+        "id": "authenticated-native-import-restores-complete-envelope-in-fresh-context",
+        "originalFingerprint": {
+          "bytes": 188675,
+          "sha256": "3ac0a8996416f71daafa678278d7156256f971d5a64d2beb4eb33ffbcedfd92b",
+          "suggestedFilename": "orcs-vs-fairies-save.json"
+        },
+        "gameHash": "57e97645a8f37b7b4012735cb3d4331a96e049d02533e0aea55fea94a0433cb0",
+        "localSlots": 0
+      },
+      {
+        "id": "native-report-binds-recovery-to-frozen-product-build",
+        "buildId": "5e49e689af13d4eef08c0760f904ad0bce2c2eebaa1144dea5d89cadecf310c0",
+        "simulationRevision": "4.0.1",
+        "tick": 861
+      }
+    ],
+    "validators": [
+      {
+        "file": "autosave-offline-r1/recovered-verification.json",
+        "bytes": 49888,
+        "sha256": "a6debf13767cb53cede2e3957ef6c337c754cd59eb9b646155544ebbaa33ac40",
+        "recordedResult": "passed",
+        "inputSha256": "3ac0a8996416f71daafa678278d7156256f971d5a64d2beb4eb33ffbcedfd92b",
+        "finalTick": 616,
+        "continuedToTick": 716,
+        "continuationTicks": 100
+      },
+      {
+        "file": "autosave-offline-r1/continued-verification.json",
+        "bytes": 49888,
+        "sha256": "3353c254cb42bd74eeca78ff3f9d008d7f28e32c1cd30e8cc49f6b73d72e568a",
+        "recordedResult": "passed",
+        "inputSha256": "d0ce70e80fbcdd1d3400dde1d68b4c18e799756f951ef45174205a625856c1ee",
+        "finalTick": 861,
+        "continuedToTick": 961,
+        "continuationTicks": 100
+      },
+      {
+        "file": "autosave-offline-r1/imported-verification.json",
+        "bytes": 49887,
+        "sha256": "fb050e8026e47827c62566eb320ae57f41e67c3a3d2cfd8780f62cbf9df42cae",
+        "recordedResult": "passed",
+        "inputSha256": "3ac0a8996416f71daafa678278d7156256f971d5a64d2beb4eb33ffbcedfd92b",
+        "finalTick": 616,
+        "continuedToTick": 716,
+        "continuationTicks": 100
+      }
+    ],
+    "sourceCoverage": [
+      {
+        "category": "sourceFiles",
+        "trackedScope": "src/",
+        "missingFromManifest": [],
+        "outsideScope": []
+      },
+      {
+        "category": "assetFiles",
+        "trackedScope": "public/",
+        "missingFromManifest": [],
+        "outsideScope": []
+      },
+      {
+        "category": "scriptFiles",
+        "trackedScope": "scripts/controls-proof/",
+        "missingFromManifest": [],
+        "outsideScope": [
+          "scripts/minimap-alerts/level-scenario.ts",
+          "scripts/minimap-alerts/verify-native-export.ts",
+          "scripts/verify_minimap_levels.mjs"
+        ]
+      },
+      {
+        "category": "proofFiles",
+        "trackedScope": "scripts/session-recovery/",
+        "missingFromManifest": []
+      }
+    ],
+    "manifestCoverage": [
+      {
+        "manifest": "autosave-runtime-r1/full-manifest.json:browser",
+        "directory": "autosave-browser-r1",
+        "listedFiles": 15,
+        "actualFiles": 15,
+        "explicitSelfExclusion": [],
+        "missingFiles": [],
+        "unlistedFiles": [],
+        "fingerprintMismatches": []
+      },
+      {
+        "manifest": "autosave-runtime-r1/full-manifest.json:runtime",
+        "directory": "autosave-runtime-r1",
+        "listedFiles": 7,
+        "actualFiles": 8,
+        "explicitSelfExclusion": [
+          "full-manifest.json"
+        ],
+        "missingFiles": [],
+        "unlistedFiles": [],
+        "fingerprintMismatches": []
+      },
+      {
+        "manifest": "autosave-runtime-r1/browser-output-manifest.json",
+        "directory": "autosave-browser-r1",
+        "listedFiles": 15,
+        "actualFiles": 15,
+        "explicitSelfExclusion": [],
+        "missingFiles": [],
+        "unlistedFiles": [],
+        "fingerprintMismatches": []
+      },
+      {
+        "manifest": "autosave-browser-r1/manifest.json:artifacts",
+        "directory": "autosave-browser-r1",
+        "listedFiles": 14,
+        "actualFiles": 15,
+        "explicitSelfExclusion": [
+          "manifest.json"
+        ],
+        "missingFiles": [],
+        "unlistedFiles": [],
+        "fingerprintMismatches": []
+      },
+      {
+        "manifest": "autosave-offline-r1/full-manifest.json",
+        "directory": "autosave-offline-r1",
+        "listedFiles": 12,
+        "actualFiles": 13,
+        "explicitSelfExclusion": [
+          "full-manifest.json"
+        ],
+        "missingFiles": [],
+        "unlistedFiles": [],
+        "fingerprintMismatches": []
+      },
+      {
+        "manifest": "autosave-diagnostic-r1/full-manifest.json",
+        "directory": "autosave-diagnostic-r1",
+        "listedFiles": 7,
+        "actualFiles": 8,
+        "explicitSelfExclusion": [
+          "full-manifest.json"
+        ],
+        "missingFiles": [],
+        "unlistedFiles": [],
+        "fingerprintMismatches": []
+      },
+      {
+        "manifest": "autosave-inspection-r1/full-manifest.json:autosave-browser-r1",
+        "directory": "autosave-browser-r1",
+        "listedFiles": 15,
+        "actualFiles": 15,
+        "explicitSelfExclusion": [],
+        "missingFiles": [],
+        "unlistedFiles": [],
+        "fingerprintMismatches": []
+      },
+      {
+        "manifest": "autosave-inspection-r1/full-manifest.json:autosave-runtime-r1",
+        "directory": "autosave-runtime-r1",
+        "listedFiles": 8,
+        "actualFiles": 8,
+        "explicitSelfExclusion": [],
+        "missingFiles": [],
+        "unlistedFiles": [],
+        "fingerprintMismatches": []
+      },
+      {
+        "manifest": "autosave-inspection-r1/full-manifest.json:autosave-offline-r1",
+        "directory": "autosave-offline-r1",
+        "listedFiles": 13,
+        "actualFiles": 13,
+        "explicitSelfExclusion": [],
+        "missingFiles": [],
+        "unlistedFiles": [],
+        "fingerprintMismatches": []
+      },
+      {
+        "manifest": "autosave-inspection-r1/full-manifest.json:autosave-inspection-r1",
+        "directory": "autosave-inspection-r1",
+        "listedFiles": 1,
+        "actualFiles": 2,
+        "explicitSelfExclusion": [
+          "full-manifest.json"
+        ],
+        "missingFiles": [],
+        "unlistedFiles": [],
+        "fingerprintMismatches": []
+      },
+      {
+        "manifest": "autosave-independent-r1/full-manifest.json:files",
+        "directory": "autosave-independent-r1",
+        "listedFiles": 3,
+        "actualFiles": 4,
+        "explicitSelfExclusion": [
+          "full-manifest.json"
+        ],
+        "missingFiles": [],
+        "unlistedFiles": [],
+        "fingerprintMismatches": []
+      }
+    ],
+    "coverageLimits": [
+      "Owner full manifests omit their own recursive self-hash. This independent inventory includes all six raw owner full manifests.",
+      "Browser provenance source categories contain 585 product inputs. The separately pinned session-recovery proof has four files in runtime inputs and two executed sources in browser-proof.json.",
+      "Inspection full manifest covers browser, runtime, offline and inspection only; diagnostic and independent directories are covered by their own manifests and this 50-file inventory.",
+      "No saved owner script, validator, build, browser or product module was executed. Native validator pass status is authenticated from retained outputs, not rerun.",
+      "The separate diagnostic attributes one error in its own first context to favicon.ico. It does not attribute either of the two original r1 console errors.",
+      "Screenshots are hashed here; this review makes no new visual-inspection claim."
+    ]
+  },
+  "checks": [
+    {
+      "check": "manifest autosave-runtime-r1/full-manifest.json:browser -> autosave-browser-r1",
+      "passed": true,
+      "detail": {
+        "manifest": "autosave-runtime-r1/full-manifest.json:browser",
+        "directory": "autosave-browser-r1",
+        "listedFiles": 15,
+        "actualFiles": 15,
+        "explicitSelfExclusion": [],
+        "missingFiles": [],
+        "unlistedFiles": [],
+        "fingerprintMismatches": []
+      }
+    },
+    {
+      "check": "manifest autosave-runtime-r1/full-manifest.json:runtime -> autosave-runtime-r1",
+      "passed": true,
+      "detail": {
+        "manifest": "autosave-runtime-r1/full-manifest.json:runtime",
+        "directory": "autosave-runtime-r1",
+        "listedFiles": 7,
+        "actualFiles": 8,
+        "explicitSelfExclusion": [
+          "full-manifest.json"
+        ],
+        "missingFiles": [],
+        "unlistedFiles": [],
+        "fingerprintMismatches": []
+      }
+    },
+    {
+      "check": "manifest autosave-runtime-r1/browser-output-manifest.json -> autosave-browser-r1",
+      "passed": true,
+      "detail": {
+        "manifest": "autosave-runtime-r1/browser-output-manifest.json",
+        "directory": "autosave-browser-r1",
+        "listedFiles": 15,
+        "actualFiles": 15,
+        "explicitSelfExclusion": [],
+        "missingFiles": [],
+        "unlistedFiles": [],
+        "fingerprintMismatches": []
+      }
+    },
+    {
+      "check": "manifest autosave-browser-r1/manifest.json:artifacts -> autosave-browser-r1",
+      "passed": true,
+      "detail": {
+        "manifest": "autosave-browser-r1/manifest.json:artifacts",
+        "directory": "autosave-browser-r1",
+        "listedFiles": 14,
+        "actualFiles": 15,
+        "explicitSelfExclusion": [
+          "manifest.json"
+        ],
+        "missingFiles": [],
+        "unlistedFiles": [],
+        "fingerprintMismatches": []
+      }
+    },
+    {
+      "check": "manifest autosave-offline-r1/full-manifest.json -> autosave-offline-r1",
+      "passed": true,
+      "detail": {
+        "manifest": "autosave-offline-r1/full-manifest.json",
+        "directory": "autosave-offline-r1",
+        "listedFiles": 12,
+        "actualFiles": 13,
+        "explicitSelfExclusion": [
+          "full-manifest.json"
+        ],
+        "missingFiles": [],
+        "unlistedFiles": [],
+        "fingerprintMismatches": []
+      }
+    },
+    {
+      "check": "manifest autosave-diagnostic-r1/full-manifest.json -> autosave-diagnostic-r1",
+      "passed": true,
+      "detail": {
+        "manifest": "autosave-diagnostic-r1/full-manifest.json",
+        "directory": "autosave-diagnostic-r1",
+        "listedFiles": 7,
+        "actualFiles": 8,
+        "explicitSelfExclusion": [
+          "full-manifest.json"
+        ],
+        "missingFiles": [],
+        "unlistedFiles": [],
+        "fingerprintMismatches": []
+      }
+    },
+    {
+      "check": "manifest autosave-inspection-r1/full-manifest.json:autosave-browser-r1 -> autosave-browser-r1",
+      "passed": true,
+      "detail": {
+        "manifest": "autosave-inspection-r1/full-manifest.json:autosave-browser-r1",
+        "directory": "autosave-browser-r1",
+        "listedFiles": 15,
+        "actualFiles": 15,
+        "explicitSelfExclusion": [],
+        "missingFiles": [],
+        "unlistedFiles": [],
+        "fingerprintMismatches": []
+      }
+    },
+    {
+      "check": "manifest autosave-inspection-r1/full-manifest.json:autosave-runtime-r1 -> autosave-runtime-r1",
+      "passed": true,
+      "detail": {
+        "manifest": "autosave-inspection-r1/full-manifest.json:autosave-runtime-r1",
+        "directory": "autosave-runtime-r1",
+        "listedFiles": 8,
+        "actualFiles": 8,
+        "explicitSelfExclusion": [],
+        "missingFiles": [],
+        "unlistedFiles": [],
+        "fingerprintMismatches": []
+      }
+    },
+    {
+      "check": "manifest autosave-inspection-r1/full-manifest.json:autosave-offline-r1 -> autosave-offline-r1",
+      "passed": true,
+      "detail": {
+        "manifest": "autosave-inspection-r1/full-manifest.json:autosave-offline-r1",
+        "directory": "autosave-offline-r1",
+        "listedFiles": 13,
+        "actualFiles": 13,
+        "explicitSelfExclusion": [],
+        "missingFiles": [],
+        "unlistedFiles": [],
+        "fingerprintMismatches": []
+      }
+    },
+    {
+      "check": "manifest autosave-inspection-r1/full-manifest.json:autosave-inspection-r1 -> autosave-inspection-r1",
+      "passed": true,
+      "detail": {
+        "manifest": "autosave-inspection-r1/full-manifest.json:autosave-inspection-r1",
+        "directory": "autosave-inspection-r1",
+        "listedFiles": 1,
+        "actualFiles": 2,
+        "explicitSelfExclusion": [
+          "full-manifest.json"
+        ],
+        "missingFiles": [],
+        "unlistedFiles": [],
+        "fingerprintMismatches": []
+      }
+    },
+    {
+      "check": "manifest autosave-independent-r1/full-manifest.json:files -> autosave-independent-r1",
+      "passed": true,
+      "detail": {
+        "manifest": "autosave-independent-r1/full-manifest.json:files",
+        "directory": "autosave-independent-r1",
+        "listedFiles": 3,
+        "actualFiles": 4,
+        "explicitSelfExclusion": [
+          "full-manifest.json"
+        ],
+        "missingFiles": [],
+        "unlistedFiles": [],
+        "fingerprintMismatches": []
+      }
+    },
+    {
+      "check": "offline original snapshot matches current complete browser/runtime raw files: original-manifests-before.json",
+      "passed": true
+    },
+    {
+      "check": "offline original snapshot matches current complete browser/runtime raw files: original-manifests-after.json",
+      "passed": true
+    },
+    {
+      "check": "diagnostic original snapshot matches current raw files: first-failure-before.json",
+      "passed": true
+    },
+    {
+      "check": "diagnostic original snapshot matches current raw files: first-failure-after.json",
+      "passed": true
+    },
+    {
+      "check": "independent baseline seals original browser/runtime and runtime full manifest",
+      "passed": true
+    },
+    {
+      "check": "original input manifests are byte-identical",
+      "passed": true
+    },
+    {
+      "check": "original input manifests are structurally identical",
+      "passed": true
+    },
+    {
+      "check": "browser source categories cover all 585 recorded product inputs",
+      "passed": true
+    },
+    {
+      "check": "product checkout current HEAD equals recorded pin",
+      "passed": true,
+      "detail": "c074cc5e610fc128d7b6ac894a61258d418463d4"
+    },
+    {
+      "check": "product raw fingerprint: src/cli/main.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/cli/main.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/cli/session.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/cli/session.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/content-art/lantern/banner.svg",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/content-art/lantern/banner.svg",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/content-art/lantern/duelist.svg",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/content-art/lantern/duelist.svg",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/content-art/lantern/sentinel.svg",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/content-art/lantern/sentinel.svg",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/ai-policy.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/ai-policy.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/ally-directives.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/ally-directives.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/campaign.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/campaign.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/coach.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/coach.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/combat-targets.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/combat-targets.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/commander-rules.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/commander-rules.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/commands.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/commands.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/conquest-types.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/conquest-types.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/conquest.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/conquest.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/content-registry.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/content-registry.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/content.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/content.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/economy-cargo.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/economy-cargo.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/economy-common.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/economy-common.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/economy-definitions.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/economy-definitions.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/economy-types.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/economy-types.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/economy-validation.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/economy-validation.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/economy.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/economy.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/environment.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/environment.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/example-mod.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/example-mod.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/faction-systems-content.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/faction-systems-content.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/faction-systems.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/faction-systems.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/geometry.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/geometry.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/history-hooks.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/history-hooks.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/legacy-content-v3.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/legacy-content-v3.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/maps.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/maps.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/match-rules.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/match-rules.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/navigation.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/navigation.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/neutral-world.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/neutral-world.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/objectives.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/objectives.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/observation.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/observation.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/planning.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/planning.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/presentation-observation.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/presentation-observation.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/progression.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/progression.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/replays.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/replays.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/saves.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/saves.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/scenario-geometry.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/scenario-geometry.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/scenario-recordings.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/scenario-recordings.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/scenario-types.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/scenario-types.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/scenario-validation.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/scenario-validation.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/scenarios.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/scenarios.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/session-storage.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/session-storage.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/simulation.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/simulation.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/specialist-content.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/specialist-content.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/specialist-systems.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/specialist-systems.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/specialist-types.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/specialist-types.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/specialist-validation.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/specialist-validation.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/tactics.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/tactics.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/team-ai.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/team-ai.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/types.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/types.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/unit-progression.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/unit-progression.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/versions.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/versions.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/world-actions.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/world-actions.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/world-map.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/world-map.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/world-types.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/world-types.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/core/world-validation.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/core/world-validation.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/editor/document.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/editor/document.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/editor/editor-app.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/editor/editor-app.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/editor/launch.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/editor/launch.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/editor/map-package.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/editor/map-package.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/editor/package-validation.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/editor/package-validation.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/editor/scenario-package.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/editor/scenario-package.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/game/Appearance.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/game/Appearance.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/game/ArtRuntime.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/game/ArtRuntime.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/game/Controls.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/game/Controls.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/game/Cosmetics.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/game/Cosmetics.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/game/FactionOverlay.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/game/FactionOverlay.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/game/GameAudio.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/game/GameAudio.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/game/GameScene.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/game/GameScene.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/game/Gamepad.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/game/Gamepad.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/game/ObjectiveMarkers.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/game/ObjectiveMarkers.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/game/PlanningSession.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/game/PlanningSession.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/game/ScenarioOverlay.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/game/ScenarioOverlay.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/game/TacticsOverlay.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/game/TacticsOverlay.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/main.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/main.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/online/client.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/online/client.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/online/community-client.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/online/community-client.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/online/competition-client.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/online/competition-client.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/online/competitions.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/online/competitions.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/online/cosmetic-client.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/online/cosmetic-client.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/online/cosmetics.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/online/cosmetics.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/online/protocol.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/online/protocol.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/online/render-state.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/online/render-state.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/qa/performance.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/qa/performance.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/scenarios/campaigns.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/scenarios/campaigns.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/scenarios/conquest-world.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/scenarios/conquest-world.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/scenarios/demo.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/scenarios/demo.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/server/campaign-verification.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/server/campaign-verification.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/server/canonical-campaign.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/server/canonical-campaign.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/server/community-http.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/server/community-http.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/server/community-packages.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/server/community-packages.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/server/competitions.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/server/competitions.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/server/cosmetics.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/server/cosmetics.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/server/main.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/server/main.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/server/server.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/server/server.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/server/store.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/server/store.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/server/team-view.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/server/team-view.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/server/views.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/server/views.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/tournament/client.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/tournament/client.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/tournament/main.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/tournament/main.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/tournament/report.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/tournament/report.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/tournament/runner.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/tournament/runner.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/tournament/service.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/tournament/service.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/tournament/types.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/tournament/types.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/AllyDirectives.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/AllyDirectives.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/CommunityBrowser.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/CommunityBrowser.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/CompetitionTools.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/CompetitionTools.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/ConquestTools.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/ConquestTools.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/CosmeticTools.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/CosmeticTools.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/DisplaySettings.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/DisplaySettings.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/EconomyTools.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/EconomyTools.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/EditorTools.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/EditorTools.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/FactionTools.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/FactionTools.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/Hud.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/Hud.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/MatchRules.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/MatchRules.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/MinimapAlerts.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/MinimapAlerts.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/ModLibrary.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/ModLibrary.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/ObjectivePanel.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/ObjectivePanel.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/OnlineLobby.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/OnlineLobby.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/PlanningTools.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/PlanningTools.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/PracticeCoach.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/PracticeCoach.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/ScenarioAuthoring.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/ScenarioAuthoring.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/ScenarioCampaignHost.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/ScenarioCampaignHost.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/ScenarioTools.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/ScenarioTools.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/SessionTools.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/SessionTools.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/SkirmishOptions.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/SkirmishOptions.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/SkirmishRoster.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/SkirmishRoster.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/TacticsTools.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/TacticsTools.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/TeamAITools.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/TeamAITools.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/TechnologyTree.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/TechnologyTree.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/Tooltip.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/Tooltip.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/TournamentDashboard.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/TournamentDashboard.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/WorldTools.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/WorldTools.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/availability.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/availability.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/community-browser.css",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/community-browser.css",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/competition-tools.css",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/competition-tools.css",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/conquest-tools.css",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/conquest-tools.css",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/cosmetic-tools.css",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/cosmetic-tools.css",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/display-settings.css",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/display-settings.css",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/economy-tools.css",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/economy-tools.css",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/editor-tools.css",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/editor-tools.css",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/faction-tools.css",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/faction-tools.css",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/match-rules.css",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/match-rules.css",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/minimap-alerts.css",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/minimap-alerts.css",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/mod-library.css",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/mod-library.css",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/objective-panel.css",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/objective-panel.css",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/online-lobby.css",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/online-lobby.css",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/practice-coach.css",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/practice-coach.css",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/scenario-authoring.css",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/scenario-authoring.css",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/scenario-host.css",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/scenario-host.css",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/scenario-tools.css",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/scenario-tools.css",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/session-tools.css",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/session-tools.css",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/skirmish-roster.css",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/skirmish-roster.css",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/specialist-ui.css",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/specialist-ui.css",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/style.css",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/style.css",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/tactics-tools.css",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/tactics-tools.css",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/tournament-dashboard.css",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/tournament-dashboard.css",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/ui/world-tools.css",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/ui/world-tools.css",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: src/vite-env.d.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: src/vite-env.d.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-barracks-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-barracks-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-barracks-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-barracks-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-cavalry-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-cavalry-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-cavalry-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-cavalry-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-cavalry-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-cavalry-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-cavalry-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-cavalry-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-cavalry-2.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-cavalry-2.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-cavalry-2.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-cavalry-2.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-depot-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-depot-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-depot-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-depot-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-gate-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-gate-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-gate-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-gate-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-hq-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-hq-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-hq-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-hq-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-melee-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-melee-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-melee-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-melee-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-melee-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-melee-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-melee-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-melee-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-ranged-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-ranged-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-ranged-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-ranged-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-ranged-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-ranged-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-ranged-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-ranged-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-siege-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-siege-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-siege-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-siege-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-siege-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-siege-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-siege-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-siege-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-siege-2.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-siege-2.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-siege-2.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-siege-2.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-spear-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-spear-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-spear-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-spear-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-spear-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-spear-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-spear-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-spear-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-spear-2.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-spear-2.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-spear-2.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-spear-2.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-special-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-special-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-special-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-special-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-special-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-special-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-special-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-special-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-tower-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-tower-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-tower-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-tower-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-wall-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-wall-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-wall-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-wall-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-worker-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-worker-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-worker-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-worker-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-worker-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-worker-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/automata-worker-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/automata-worker-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/crystal.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/crystal.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-barracks-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-barracks-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-barracks-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-barracks-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-cavalry-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-cavalry-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-cavalry-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-cavalry-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-cavalry-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-cavalry-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-cavalry-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-cavalry-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-cavalry-2.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-cavalry-2.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-cavalry-2.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-cavalry-2.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-depot-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-depot-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-depot-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-depot-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-gate-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-gate-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-gate-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-gate-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-hq-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-hq-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-hq-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-hq-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-melee-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-melee-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-melee-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-melee-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-melee-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-melee-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-melee-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-melee-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-ranged-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-ranged-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-ranged-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-ranged-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-ranged-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-ranged-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-ranged-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-ranged-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-siege-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-siege-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-siege-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-siege-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-siege-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-siege-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-siege-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-siege-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-siege-2.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-siege-2.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-siege-2.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-siege-2.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-spear-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-spear-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-spear-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-spear-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-spear-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-spear-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-spear-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-spear-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-spear-2.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-spear-2.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-spear-2.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-spear-2.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-special-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-special-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-special-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-special-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-special-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-special-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-special-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-special-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-tower-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-tower-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-tower-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-tower-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-wall-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-wall-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-wall-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-wall-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-worker-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-worker-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-worker-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-worker-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-worker-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-worker-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/dwarf-worker-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/dwarf-worker-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-barracks-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-barracks-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-barracks-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-barracks-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-cavalry-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-cavalry-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-cavalry-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-cavalry-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-cavalry-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-cavalry-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-cavalry-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-cavalry-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-cavalry-2.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-cavalry-2.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-cavalry-2.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-cavalry-2.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-depot-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-depot-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-depot-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-depot-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-gate-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-gate-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-gate-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-gate-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-hq-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-hq-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-hq-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-hq-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-melee-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-melee-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-melee-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-melee-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-melee-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-melee-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-melee-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-melee-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-ranged-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-ranged-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-ranged-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-ranged-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-ranged-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-ranged-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-ranged-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-ranged-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-siege-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-siege-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-siege-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-siege-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-siege-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-siege-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-siege-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-siege-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-siege-2.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-siege-2.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-siege-2.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-siege-2.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-spear-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-spear-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-spear-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-spear-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-spear-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-spear-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-spear-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-spear-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-spear-2.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-spear-2.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-spear-2.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-spear-2.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-special-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-special-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-special-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-special-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-special-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-special-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-special-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-special-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-tower-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-tower-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-tower-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-tower-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-wall-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-wall-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-wall-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-wall-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-worker-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-worker-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-worker-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-worker-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-worker-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-worker-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/fairy-worker-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/fairy-worker-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/flowers.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/flowers.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/manifest.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/manifest.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-barracks-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-barracks-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-barracks-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-barracks-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-cavalry-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-cavalry-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-cavalry-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-cavalry-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-cavalry-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-cavalry-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-cavalry-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-cavalry-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-cavalry-2.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-cavalry-2.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-cavalry-2.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-cavalry-2.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-depot-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-depot-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-depot-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-depot-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-gate-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-gate-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-gate-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-gate-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-hq-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-hq-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-hq-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-hq-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-melee-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-melee-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-melee-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-melee-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-melee-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-melee-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-melee-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-melee-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-ranged-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-ranged-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-ranged-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-ranged-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-ranged-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-ranged-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-ranged-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-ranged-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-siege-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-siege-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-siege-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-siege-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-siege-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-siege-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-siege-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-siege-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-siege-2.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-siege-2.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-siege-2.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-siege-2.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-spear-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-spear-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-spear-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-spear-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-spear-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-spear-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-spear-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-spear-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-spear-2.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-spear-2.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-spear-2.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-spear-2.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-special-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-special-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-special-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-special-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-special-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-special-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-special-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-special-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-tower-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-tower-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-tower-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-tower-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-wall-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-wall-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-wall-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-wall-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-worker-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-worker-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-worker-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-worker-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-worker-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-worker-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/orc-worker-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/orc-worker-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/ore.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/ore.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/portrait-automata.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/portrait-automata.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/portrait-dwarves.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/portrait-dwarves.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/portrait-fairies.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/portrait-fairies.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/portrait-orcs.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/portrait-orcs.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/portrait-tideborn.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/portrait-tideborn.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/portrait-undead.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/portrait-undead.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/reeds.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/reeds.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/ruin-pillar.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/ruin-pillar.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/ruin-ring.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/ruin-ring.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-automata-barracks.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-automata-barracks.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-automata-cavalry.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-automata-cavalry.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-automata-depot.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-automata-depot.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-automata-gate.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-automata-gate.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-automata-hq.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-automata-hq.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-automata-melee.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-automata-melee.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-automata-ranged.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-automata-ranged.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-automata-siege.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-automata-siege.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-automata-spear.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-automata-spear.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-automata-special.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-automata-special.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-automata-tower.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-automata-tower.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-automata-wall.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-automata-wall.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-automata-worker.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-automata-worker.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-dwarf-barracks.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-dwarf-barracks.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-dwarf-cavalry.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-dwarf-cavalry.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-dwarf-depot.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-dwarf-depot.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-dwarf-gate.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-dwarf-gate.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-dwarf-hq.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-dwarf-hq.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-dwarf-melee.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-dwarf-melee.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-dwarf-ranged.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-dwarf-ranged.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-dwarf-siege.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-dwarf-siege.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-dwarf-spear.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-dwarf-spear.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-dwarf-special.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-dwarf-special.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-dwarf-tower.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-dwarf-tower.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-dwarf-wall.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-dwarf-wall.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-dwarf-worker.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-dwarf-worker.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-economy-caravan.svg",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-economy-caravan.svg",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-economy-deep-mine.svg",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-economy-deep-mine.svg",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-economy-extractor.svg",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-economy-extractor.svg",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-economy-warehouse.svg",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-economy-warehouse.svg",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-fairy-barracks.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-fairy-barracks.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-fairy-cavalry.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-fairy-cavalry.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-fairy-depot.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-fairy-depot.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-fairy-gate.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-fairy-gate.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-fairy-hq.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-fairy-hq.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-fairy-melee.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-fairy-melee.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-fairy-ranged.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-fairy-ranged.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-fairy-siege.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-fairy-siege.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-fairy-spear.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-fairy-spear.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-fairy-special.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-fairy-special.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-fairy-tower.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-fairy-tower.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-fairy-wall.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-fairy-wall.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-fairy-worker.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-fairy-worker.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-orc-barracks.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-orc-barracks.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-orc-cavalry.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-orc-cavalry.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-orc-depot.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-orc-depot.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-orc-gate.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-orc-gate.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-orc-hq.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-orc-hq.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-orc-melee.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-orc-melee.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-orc-ranged.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-orc-ranged.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-orc-siege.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-orc-siege.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-orc-spear.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-orc-spear.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-orc-special.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-orc-special.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-orc-tower.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-orc-tower.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-orc-wall.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-orc-wall.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-orc-worker.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-orc-worker.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-tideborn-barracks.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-tideborn-barracks.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-tideborn-cavalry.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-tideborn-cavalry.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-tideborn-depot.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-tideborn-depot.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-tideborn-gate.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-tideborn-gate.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-tideborn-hq.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-tideborn-hq.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-tideborn-melee.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-tideborn-melee.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-tideborn-ranged.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-tideborn-ranged.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-tideborn-siege.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-tideborn-siege.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-tideborn-spear.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-tideborn-spear.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-tideborn-special.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-tideborn-special.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-tideborn-tower.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-tideborn-tower.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-tideborn-wall.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-tideborn-wall.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-tideborn-worker.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-tideborn-worker.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-undead-barracks.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-undead-barracks.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-undead-cavalry.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-undead-cavalry.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-undead-depot.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-undead-depot.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-undead-gate.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-undead-gate.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-undead-hq.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-undead-hq.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-undead-melee.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-undead-melee.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-undead-ranged.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-undead-ranged.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-undead-siege.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-undead-siege.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-undead-spear.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-undead-spear.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-undead-special.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-undead-special.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-undead-tower.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-undead-tower.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-undead-wall.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-undead-wall.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/selection-undead-worker.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/selection-undead-worker.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/stump.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/stump.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-barracks-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-barracks-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-barracks-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-barracks-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-cavalry-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-cavalry-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-cavalry-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-cavalry-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-cavalry-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-cavalry-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-cavalry-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-cavalry-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-cavalry-2.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-cavalry-2.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-cavalry-2.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-cavalry-2.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-depot-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-depot-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-depot-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-depot-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-gate-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-gate-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-gate-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-gate-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-hq-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-hq-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-hq-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-hq-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-melee-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-melee-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-melee-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-melee-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-melee-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-melee-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-melee-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-melee-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-ranged-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-ranged-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-ranged-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-ranged-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-ranged-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-ranged-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-ranged-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-ranged-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-siege-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-siege-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-siege-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-siege-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-siege-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-siege-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-siege-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-siege-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-siege-2.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-siege-2.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-siege-2.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-siege-2.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-spear-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-spear-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-spear-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-spear-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-spear-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-spear-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-spear-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-spear-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-spear-2.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-spear-2.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-spear-2.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-spear-2.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-special-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-special-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-special-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-special-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-special-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-special-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-special-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-special-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-tower-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-tower-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-tower-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-tower-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-wall-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-wall-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-wall-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-wall-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-worker-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-worker-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-worker-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-worker-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-worker-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-worker-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tideborn-worker-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tideborn-worker-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tile-bridge.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tile-bridge.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tile-dirt-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tile-dirt-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tile-dirt-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tile-dirt-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tile-dirt-2.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tile-dirt-2.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tile-grass-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tile-grass-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tile-grass-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tile-grass-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tile-grass-2.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tile-grass-2.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tile-grass-3.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tile-grass-3.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tile-mud.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tile-mud.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tile-rock.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tile-rock.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tile-shallows.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tile-shallows.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tile-stone.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tile-stone.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tile-water.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tile-water.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tree-oak.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tree-oak.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/tree-pine.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/tree-pine.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/ui-halt.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/ui-halt.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/ui-hold.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/ui-hold.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-barracks-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-barracks-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-barracks-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-barracks-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-cavalry-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-cavalry-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-cavalry-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-cavalry-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-cavalry-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-cavalry-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-cavalry-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-cavalry-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-cavalry-2.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-cavalry-2.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-cavalry-2.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-cavalry-2.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-depot-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-depot-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-depot-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-depot-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-gate-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-gate-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-gate-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-gate-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-hq-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-hq-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-hq-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-hq-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-melee-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-melee-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-melee-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-melee-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-melee-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-melee-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-melee-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-melee-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-ranged-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-ranged-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-ranged-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-ranged-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-ranged-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-ranged-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-ranged-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-ranged-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-siege-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-siege-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-siege-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-siege-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-siege-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-siege-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-siege-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-siege-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-siege-2.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-siege-2.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-siege-2.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-siege-2.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-spear-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-spear-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-spear-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-spear-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-spear-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-spear-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-spear-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-spear-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-spear-2.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-spear-2.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-spear-2.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-spear-2.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-special-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-special-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-special-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-special-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-special-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-special-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-special-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-special-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-tower-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-tower-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-tower-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-tower-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-wall-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-wall-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-wall-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-wall-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-worker-0.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-worker-0.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-worker-0.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-worker-0.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-worker-1.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-worker-1.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/assets/undead-worker-1.png",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/assets/undead-worker-1.png",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/mods/lantern/banner.svg",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/mods/lantern/banner.svg",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/mods/lantern/duelist.svg",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/mods/lantern/duelist.svg",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/mods/lantern/manifest.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/mods/lantern/manifest.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: public/mods/lantern/sentinel.svg",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: public/mods/lantern/sentinel.svg",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: editor.html",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: editor.html",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: index.html",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: index.html",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: package-lock.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: package-lock.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: package.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: package.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: tsconfig.json",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: tsconfig.json",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: vite.config.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: vite.config.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: vitest.config.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: vitest.config.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: scripts/controls-proof/README.md",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: scripts/controls-proof/README.md",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: scripts/controls-proof/browser-common.mjs",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: scripts/controls-proof/browser-common.mjs",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: scripts/controls-proof/canonical.vitest.config.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: scripts/controls-proof/canonical.vitest.config.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: scripts/controls-proof/display.mjs",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: scripts/controls-proof/display.mjs",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: scripts/controls-proof/gamepad.mjs",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: scripts/controls-proof/gamepad.mjs",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: scripts/controls-proof/mounted.test.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: scripts/controls-proof/mounted.test.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: scripts/controls-proof/mounted.vitest.config.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: scripts/controls-proof/mounted.vitest.config.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: scripts/controls-proof/prepare.mjs",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: scripts/controls-proof/prepare.mjs",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: scripts/controls-proof/run.mjs",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: scripts/controls-proof/run.mjs",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: scripts/controls-proof/saves.mjs",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: scripts/controls-proof/saves.mjs",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: scripts/controls-proof/schema.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: scripts/controls-proof/schema.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: scripts/controls-proof/verify-native.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: scripts/controls-proof/verify-native.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: scripts/minimap-alerts/level-scenario.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: scripts/minimap-alerts/level-scenario.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: scripts/minimap-alerts/verify-native-export.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: scripts/minimap-alerts/verify-native-export.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: scripts/verify_minimap_levels.mjs",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: scripts/verify_minimap_levels.mjs",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: tests/appearance.test.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: tests/appearance.test.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: tests/display-settings.test.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: tests/display-settings.test.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: tests/gamepad.test.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: tests/gamepad.test.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: tests/minimap-alerts.test.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: tests/minimap-alerts.test.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: tests/minimap-level-focus.test.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: tests/minimap-level-focus.test.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: tests/session-storage.test.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: tests/session-storage.test.ts",
+      "passed": true
+    },
+    {
+      "check": "product raw fingerprint: tests/session-tools.test.ts",
+      "passed": true
+    },
+    {
+      "check": "product pinned Git bytes: tests/session-tools.test.ts",
+      "passed": true
+    },
+    {
+      "check": "proof checkout current HEAD equals recorded pin",
+      "passed": true,
+      "detail": "9e5fd2340b9a0823d1ab9f566c52b947a094278e"
+    },
+    {
+      "check": "proof raw fingerprint: scripts/session-recovery/README.md",
+      "passed": true
+    },
+    {
+      "check": "proof pinned Git bytes: scripts/session-recovery/README.md",
+      "passed": true
+    },
+    {
+      "check": "proof raw fingerprint: scripts/session-recovery/native-downloads.mjs",
+      "passed": true
+    },
+    {
+      "check": "proof pinned Git bytes: scripts/session-recovery/native-downloads.mjs",
+      "passed": true
+    },
+    {
+      "check": "proof raw fingerprint: scripts/session-recovery/native-downloads.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "proof pinned Git bytes: scripts/session-recovery/native-downloads.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "proof raw fingerprint: scripts/session-recovery/verify-autosave.mjs",
+      "passed": true
+    },
+    {
+      "check": "proof pinned Git bytes: scripts/session-recovery/verify-autosave.mjs",
+      "passed": true
+    },
+    {
+      "check": "declared source scope complete: sourceFiles",
+      "passed": true,
+      "detail": {
+        "category": "sourceFiles",
+        "trackedScope": "src/",
+        "missingFromManifest": [],
+        "outsideScope": []
+      }
+    },
+    {
+      "check": "declared source scope complete: assetFiles",
+      "passed": true,
+      "detail": {
+        "category": "assetFiles",
+        "trackedScope": "public/",
+        "missingFromManifest": [],
+        "outsideScope": []
+      }
+    },
+    {
+      "check": "declared source scope complete: scriptFiles",
+      "passed": true,
+      "detail": {
+        "category": "scriptFiles",
+        "trackedScope": "scripts/controls-proof/",
+        "missingFromManifest": [],
+        "outsideScope": [
+          "scripts/minimap-alerts/level-scenario.ts",
+          "scripts/minimap-alerts/verify-native-export.ts",
+          "scripts/verify_minimap_levels.mjs"
+        ]
+      }
+    },
+    {
+      "check": "declared source scope complete: proofFiles",
+      "passed": true,
+      "detail": {
+        "category": "proofFiles",
+        "trackedScope": "scripts/session-recovery/",
+        "missingFromManifest": []
+      }
+    },
+    {
+      "check": "all 411 prepared files match recorded raw inventory",
+      "passed": true
+    },
+    {
+      "check": "compiled file manifest matches complete prepared/dist inventory",
+      "passed": true
+    },
+    {
+      "check": "browser and runtime retain failed result",
+      "passed": true
+    },
+    {
+      "check": "runtime browser step retains exit code 1",
+      "passed": true
+    },
+    {
+      "check": "six original gameplay checks retained",
+      "passed": true
+    },
+    {
+      "check": "two original console errors remain unattributed",
+      "passed": true
+    },
+    {
+      "check": "diagnostic separately attributes one error to favicon.ico",
+      "passed": true
+    },
+    {
+      "check": "original browser download raw hash: native-manual.json",
+      "passed": true
+    },
+    {
+      "check": "original browser download raw hash: native-before-reload.json",
+      "passed": true
+    },
+    {
+      "check": "original browser download raw hash: native-recovered.json",
+      "passed": true
+    },
+    {
+      "check": "original browser download raw hash: native-continued.json",
+      "passed": true
+    },
+    {
+      "check": "original browser download raw hash: native-imported.json",
+      "passed": true
+    },
+    {
+      "check": "original browser download raw hash: native-build-report.json",
+      "passed": true
+    },
+    {
+      "check": "executed browser proof source fingerprint: scripts/session-recovery/verify-autosave.mjs",
+      "passed": true
+    },
+    {
+      "check": "executed browser proof source fingerprint: scripts/session-recovery/native-downloads.mjs",
+      "passed": true
+    },
+    {
+      "check": "before-reload, recovered and imported complete JSON are identical",
+      "passed": true
+    },
+    {
+      "check": "queued recruitment is retained at tick 616",
+      "passed": true
+    },
+    {
+      "check": "continued raw save completes queue at tick 861",
+      "passed": true
+    },
+    {
+      "check": "paid bank preserved across recovered continuation",
+      "passed": true
+    },
+    {
+      "check": "manual slot complete data is preserved across timed/pagehide snapshots",
+      "passed": true
+    },
+    {
+      "check": "native bug report binds actual continued envelope and build",
+      "passed": true
+    },
+    {
+      "check": "validator recovered input authenticates raw native download",
+      "passed": true
+    },
+    {
+      "check": "validator recovered binds actual retained executable",
+      "passed": true
+    },
+    {
+      "check": "validator recovered binds actual retained checker source",
+      "passed": true
+    },
+    {
+      "check": "validator recovered records complete native and continuation pass",
+      "passed": true
+    },
+    {
+      "check": "validator continued input authenticates raw native download",
+      "passed": true
+    },
+    {
+      "check": "validator continued binds actual retained executable",
+      "passed": true
+    },
+    {
+      "check": "validator continued binds actual retained checker source",
+      "passed": true
+    },
+    {
+      "check": "validator continued records complete native and continuation pass",
+      "passed": true
+    },
+    {
+      "check": "validator imported input authenticates raw native download",
+      "passed": true
+    },
+    {
+      "check": "validator imported binds actual retained executable",
+      "passed": true
+    },
+    {
+      "check": "validator imported binds actual retained checker source",
+      "passed": true
+    },
+    {
+      "check": "validator imported records complete native and continuation pass",
+      "passed": true
+    },
+    {
+      "check": "all original raw file inventories unchanged during this review",
+      "passed": true
+    }
+  ],
+  "failedChecks": []
+}

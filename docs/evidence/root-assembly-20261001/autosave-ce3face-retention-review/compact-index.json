@@ -1,0 +1,360 @@
+{
+  "generatedAt": "2026-10-01T20:39:13.515164+00:00",
+  "sourceRoot": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/work/verification/ui-c074cc5-20261001",
+  "productPin": "c074cc5e610fc128d7b6ac894a61258d418463d4",
+  "proofPin": "9e5fd2340b9a0823d1ab9f566c52b947a094278e",
+  "buildId": "5e49e689af13d4eef08c0760f904ad0bce2c2eebaa1144dea5d89cadecf310c0",
+  "saveVersion": 4,
+  "simulationRevision": "4.0.1",
+  "authenticationResult": "passed",
+  "comparisonCount": 1237,
+  "failedComparisonCount": 0,
+  "rawFileCount": 50,
+  "directoryFileCounts": {
+    "autosave-browser-r1": 15,
+    "autosave-runtime-r1": 8,
+    "autosave-offline-r1": 13,
+    "autosave-diagnostic-r1": 8,
+    "autosave-inspection-r1": 2,
+    "autosave-independent-r1": 4
+  },
+  "browserResult": "failed",
+  "browserFinalizationFailure": "consoleErrors must be empty\n+ actual - expected\n\n+ [\n+   'Failed to load resource: the server responded with a status of 404 (Not Found)',\n+   'Failed to load resource: the server responded with a status of 404 (Not Found)'\n+ ]\n- []\n",
+  "gameplayChecks": [
+    {
+      "id": "natural-current-rules-autosave-preserves-manual-slot",
+      "baseline": {
+        "tick": 11,
+        "time": 0.5499999999999999,
+        "paused": true,
+        "mode": "local",
+        "readOnly": false,
+        "winner": null,
+        "draw": false,
+        "controller": "human",
+        "bank": {
+          "wood": 420,
+          "ore": 220,
+          "crystal": 0
+        },
+        "workers": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "hq": {
+          "id": 1,
+          "queue": [],
+          "trainProgress": 0
+        }
+      },
+      "tick": 611,
+      "time": 30.5500000000003,
+      "wallSeconds": 30.710971369000003,
+      "gameHash": "61aaeea7059213788eb9e9478b1c3a6a319bf90bb163b6c43117865ab8e6eb4d"
+    },
+    {
+      "id": "native-recruitment-is-paid-recorded-and-still-in-progress",
+      "tick": 616,
+      "hq": {
+        "id": 1,
+        "queue": [
+          "worker"
+        ],
+        "trainProgress": 0
+      },
+      "bank": {
+        "wood": 370,
+        "ore": 220,
+        "crystal": 0
+      },
+      "command": {
+        "type": "command",
+        "side": 0,
+        "command": {
+          "type": "train",
+          "id": 1,
+          "role": "worker"
+        }
+      }
+    },
+    {
+      "id": "real-pagehide-and-ui-load-restore-complete-in-flight-game",
+      "tick": 616,
+      "gameHash": "57e97645a8f37b7b4012735cb3d4331a96e049d02533e0aea55fea94a0433cb0",
+      "preservedManualSlot": "slot-1"
+    },
+    {
+      "id": "recovered-queue-completes-through-natural-simulation",
+      "before": {
+        "tick": 616,
+        "time": 30.800000000000303,
+        "paused": true,
+        "mode": "local",
+        "readOnly": false,
+        "winner": null,
+        "draw": false,
+        "controller": "human",
+        "bank": {
+          "wood": 370,
+          "ore": 220,
+          "crystal": 0
+        },
+        "workers": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "hq": {
+          "id": 1,
+          "queue": [
+            "worker"
+          ],
+          "trainProgress": 0
+        }
+      },
+      "after": {
+        "tick": 861,
+        "time": 43.04999999999969,
+        "paused": true,
+        "mode": "local",
+        "readOnly": false,
+        "winner": null,
+        "draw": false,
+        "controller": "human",
+        "bank": {
+          "wood": 370,
+          "ore": 220,
+          "crystal": 0
+        },
+        "workers": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          58
+        ],
+        "hq": {
+          "id": 1,
+          "queue": [],
+          "trainProgress": 0
+        }
+      },
+      "gameHash": "0090b27a9200c8b38da3ed64bd2a45ce8b2121ca20214156478f5af222a6d77a"
+    },
+    {
+      "id": "authenticated-native-import-restores-complete-envelope-in-fresh-context",
+      "originalFingerprint": {
+        "bytes": 188675,
+        "sha256": "3ac0a8996416f71daafa678278d7156256f971d5a64d2beb4eb33ffbcedfd92b",
+        "suggestedFilename": "orcs-vs-fairies-save.json"
+      },
+      "gameHash": "57e97645a8f37b7b4012735cb3d4331a96e049d02533e0aea55fea94a0433cb0",
+      "localSlots": 0
+    },
+    {
+      "id": "native-report-binds-recovery-to-frozen-product-build",
+      "buildId": "5e49e689af13d4eef08c0760f904ad0bce2c2eebaa1144dea5d89cadecf310c0",
+      "simulationRevision": "4.0.1",
+      "tick": 861
+    }
+  ],
+  "validators": [
+    {
+      "file": "autosave-offline-r1/recovered-verification.json",
+      "bytes": 49888,
+      "sha256": "a6debf13767cb53cede2e3957ef6c337c754cd59eb9b646155544ebbaa33ac40",
+      "recordedResult": "passed",
+      "inputSha256": "3ac0a8996416f71daafa678278d7156256f971d5a64d2beb4eb33ffbcedfd92b",
+      "finalTick": 616,
+      "continuedToTick": 716,
+      "continuationTicks": 100
+    },
+    {
+      "file": "autosave-offline-r1/continued-verification.json",
+      "bytes": 49888,
+      "sha256": "3353c254cb42bd74eeca78ff3f9d008d7f28e32c1cd30e8cc49f6b73d72e568a",
+      "recordedResult": "passed",
+      "inputSha256": "d0ce70e80fbcdd1d3400dde1d68b4c18e799756f951ef45174205a625856c1ee",
+      "finalTick": 861,
+      "continuedToTick": 961,
+      "continuationTicks": 100
+    },
+    {
+      "file": "autosave-offline-r1/imported-verification.json",
+      "bytes": 49887,
+      "sha256": "fb050e8026e47827c62566eb320ae57f41e67c3a3d2cfd8780f62cbf9df42cae",
+      "recordedResult": "passed",
+      "inputSha256": "3ac0a8996416f71daafa678278d7156256f971d5a64d2beb4eb33ffbcedfd92b",
+      "finalTick": 616,
+      "continuedToTick": 716,
+      "continuationTicks": 100
+    }
+  ],
+  "sourceCoverage": [
+    {
+      "category": "sourceFiles",
+      "trackedScope": "src/",
+      "missingFromManifest": [],
+      "outsideScope": []
+    },
+    {
+      "category": "assetFiles",
+      "trackedScope": "public/",
+      "missingFromManifest": [],
+      "outsideScope": []
+    },
+    {
+      "category": "scriptFiles",
+      "trackedScope": "scripts/controls-proof/",
+      "missingFromManifest": [],
+      "outsideScope": [
+        "scripts/minimap-alerts/level-scenario.ts",
+        "scripts/minimap-alerts/verify-native-export.ts",
+        "scripts/verify_minimap_levels.mjs"
+      ]
+    },
+    {
+      "category": "proofFiles",
+      "trackedScope": "scripts/session-recovery/",
+      "missingFromManifest": []
+    }
+  ],
+  "manifestCoverage": [
+    {
+      "manifest": "autosave-runtime-r1/full-manifest.json:browser",
+      "directory": "autosave-browser-r1",
+      "listedFiles": 15,
+      "actualFiles": 15,
+      "explicitSelfExclusion": [],
+      "missingFiles": [],
+      "unlistedFiles": [],
+      "fingerprintMismatches": []
+    },
+    {
+      "manifest": "autosave-runtime-r1/full-manifest.json:runtime",
+      "directory": "autosave-runtime-r1",
+      "listedFiles": 7,
+      "actualFiles": 8,
+      "explicitSelfExclusion": [
+        "full-manifest.json"
+      ],
+      "missingFiles": [],
+      "unlistedFiles": [],
+      "fingerprintMismatches": []
+    },
+    {
+      "manifest": "autosave-runtime-r1/browser-output-manifest.json",
+      "directory": "autosave-browser-r1",
+      "listedFiles": 15,
+      "actualFiles": 15,
+      "explicitSelfExclusion": [],
+      "missingFiles": [],
+      "unlistedFiles": [],
+      "fingerprintMismatches": []
+    },
+    {
+      "manifest": "autosave-browser-r1/manifest.json:artifacts",
+      "directory": "autosave-browser-r1",
+      "listedFiles": 14,
+      "actualFiles": 15,
+      "explicitSelfExclusion": [
+        "manifest.json"
+      ],
+      "missingFiles": [],
+      "unlistedFiles": [],
+      "fingerprintMismatches": []
+    },
+    {
+      "manifest": "autosave-offline-r1/full-manifest.json",
+      "directory": "autosave-offline-r1",
+      "listedFiles": 12,
+      "actualFiles": 13,
+      "explicitSelfExclusion": [
+        "full-manifest.json"
+      ],
+      "missingFiles": [],
+      "unlistedFiles": [],
+      "fingerprintMismatches": []
+    },
+    {
+      "manifest": "autosave-diagnostic-r1/full-manifest.json",
+      "directory": "autosave-diagnostic-r1",
+      "listedFiles": 7,
+      "actualFiles": 8,
+      "explicitSelfExclusion": [
+        "full-manifest.json"
+      ],
+      "missingFiles": [],
+      "unlistedFiles": [],
+      "fingerprintMismatches": []
+    },
+    {
+      "manifest": "autosave-inspection-r1/full-manifest.json:autosave-browser-r1",
+      "directory": "autosave-browser-r1",
+      "listedFiles": 15,
+      "actualFiles": 15,
+      "explicitSelfExclusion": [],
+      "missingFiles": [],
+      "unlistedFiles": [],
+      "fingerprintMismatches": []
+    },
+    {
+      "manifest": "autosave-inspection-r1/full-manifest.json:autosave-runtime-r1",
+      "directory": "autosave-runtime-r1",
+      "listedFiles": 8,
+      "actualFiles": 8,
+      "explicitSelfExclusion": [],
+      "missingFiles": [],
+      "unlistedFiles": [],
+      "fingerprintMismatches": []
+    },
+    {
+      "manifest": "autosave-inspection-r1/full-manifest.json:autosave-offline-r1",
+      "directory": "autosave-offline-r1",
+      "listedFiles": 13,
+      "actualFiles": 13,
+      "explicitSelfExclusion": [],
+      "missingFiles": [],
+      "unlistedFiles": [],
+      "fingerprintMismatches": []
+    },
+    {
+      "manifest": "autosave-inspection-r1/full-manifest.json:autosave-inspection-r1",
+      "directory": "autosave-inspection-r1",
+      "listedFiles": 1,
+      "actualFiles": 2,
+      "explicitSelfExclusion": [
+        "full-manifest.json"
+      ],
+      "missingFiles": [],
+      "unlistedFiles": [],
+      "fingerprintMismatches": []
+    },
+    {
+      "manifest": "autosave-independent-r1/full-manifest.json:files",
+      "directory": "autosave-independent-r1",
+      "listedFiles": 3,
+      "actualFiles": 4,
+      "explicitSelfExclusion": [
+        "full-manifest.json"
+      ],
+      "missingFiles": [],
+      "unlistedFiles": [],
+      "fingerprintMismatches": []
+    }
+  ],
+  "coverageLimits": [
+    "Owner full manifests omit their own recursive self-hash. This independent inventory includes all six raw owner full manifests.",
+    "Browser provenance source categories contain 585 product inputs. The separately pinned session-recovery proof has four files in runtime inputs and two executed sources in browser-proof.json.",
+    "Inspection full manifest covers browser, runtime, offline and inspection only; diagnostic and independent directories are covered by their own manifests and this 50-file inventory.",
+    "No saved owner script, validator, build, browser or product module was executed. Native validator pass status is authenticated from retained outputs, not rerun.",
+    "The separate diagnostic attributes one error in its own first context to favicon.ico. It does not attribute either of the two original r1 console errors.",
+    "Screenshots are hashed here; this review makes no new visual-inspection claim."
+  ]
+}

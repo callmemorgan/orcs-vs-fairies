@@ -1,0 +1,31 @@
+{
+  "sourcePin": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+  "command": [
+    "bash",
+    "work/final-ai-prep/run-native-audit401-r2.sh"
+  ],
+  "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+  "runtime": {
+    "node": "v24.21.0",
+    "executable": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+    "platform": "linux",
+    "arch": "x64"
+  },
+  "environment": {
+    "OVF_AI_PROOF_ARTIFACTS": "[\"work/ai-save401-final-c86e273-r1/native-audit\"]"
+  },
+  "strictAlliedAssertions": true,
+  "startedAt": "2026-10-01T20:11:03.620Z",
+  "result": "failed",
+  "assertionScope": "A passed envelope requires unchanged pinned inputs/builds and zero command exit. Read the canonical reports and native artifacts to establish gameplay assertions.",
+  "limits": "Pins committed source/configuration/test/proof inputs and an external wrapper by exact bytes. Installed dependencies and the complete host environment are not pinned.",
+  "exit": {
+    "code": 1,
+    "signal": null
+  },
+  "failure": {
+    "message": "Canonical command failed: bash work/final-ai-prep/run-native-audit401-r2.sh\n\n1 !== 0\n",
+    "stack": "AssertionError [ERR_ASSERTION]: Canonical command failed: bash work/final-ai-prep/run-native-audit401-r2.sh\n\n1 !== 0\n\n    at file:///home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/final-ai-prep/proof-envelope.mjs:108:28"
+  },
+  "completedAt": "2026-10-01T20:11:05.978Z"
+}

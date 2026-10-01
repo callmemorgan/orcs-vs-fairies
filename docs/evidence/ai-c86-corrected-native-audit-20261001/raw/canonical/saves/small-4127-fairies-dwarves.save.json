@@ -1,0 +1,9960 @@
+{
+  "format": "orcs-vs-fairies-save",
+  "version": 4,
+  "state": {
+    "rules": {
+      "mode": "annihilation",
+      "standardDefeat": true,
+      "startingAge": 1,
+      "sharedVision": true,
+      "friendlyFire": true,
+      "startingResources": {
+        "wood": 420,
+        "ore": 220,
+        "crystal": 0
+      },
+      "disabledDefinitionIds": [],
+      "hill": {
+        "radius": 5,
+        "captureTicks": 100,
+        "holdTicks": 2400
+      },
+      "relic": {
+        "count": 3,
+        "required": 2,
+        "holdTicks": 2400,
+        "pickupRadius": 1.5
+      },
+      "survival": {
+        "defenderTeam": 0,
+        "waveCount": 5,
+        "intervalTicks": 1200,
+        "recoveryTicks": 400,
+        "unitsPerWave": 2,
+        "rewardPerWave": {
+          "wood": 60,
+          "ore": 30,
+          "crystal": 0
+        }
+      },
+      "draft": {
+        "enabled": false,
+        "banRounds": 1,
+        "pickRounds": 3,
+        "turnTicks": 600
+      }
+    },
+    "draft": {
+      "status": "complete",
+      "turn": 0,
+      "remainingTicks": 0,
+      "order": [],
+      "banned": [],
+      "picks": [
+        [],
+        []
+      ],
+      "pool": [
+        "fairy-melee",
+        "fairy-ranged",
+        "fairy-special",
+        "fairy-cavalry",
+        "fairy-spear",
+        "fairy-siege",
+        "core:fairies-commander",
+        "core:fairies-engineer",
+        "forged-weapons",
+        "tempered-armor",
+        "veteran-arms",
+        "core:ranged-arms",
+        "core:cavalry-barding",
+        "core:siege-gears",
+        "core:ranged-focus",
+        "core:ranged-mobility",
+        "worker-harvest",
+        "worker-speed",
+        "dwarf-melee",
+        "dwarf-ranged",
+        "dwarf-special",
+        "dwarf-cavalry",
+        "dwarf-spear",
+        "dwarf-siege",
+        "core:dwarves-commander",
+        "core:dwarves-engineer"
+      ]
+    },
+    "objectives": {
+      "hill": {
+        "x": 18.5,
+        "y": 18.5,
+        "ownerTeam": null,
+        "captureTeam": null,
+        "captureTicks": 0,
+        "holdTicks": 0,
+        "contested": false
+      },
+      "relics": [],
+      "relicHoldTicks": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "survival": {
+        "wave": 0,
+        "nextWaveTick": 0,
+        "spawnedIds": [],
+        "phase": "waiting"
+      }
+    },
+    "controllers": [
+      "ai",
+      "ai"
+    ],
+    "aiConfigs": [
+      {
+        "difficulty": "normal",
+        "personality": "balanced",
+        "opening": "infantry-rush"
+      },
+      {
+        "difficulty": "normal",
+        "personality": "balanced",
+        "opening": "infantry-rush"
+      }
+    ],
+    "teams": [
+      0,
+      1
+    ],
+    "incomeFactors": [
+      1,
+      1
+    ],
+    "populationLimits": [
+      100,
+      100
+    ],
+    "sharedVision": true,
+    "eliminated": [
+      false,
+      true
+    ],
+    "winningTeam": 0,
+    "mapSize": "small",
+    "mapVersion": 2,
+    "terrain": [
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "shallows",
+      "shallows",
+      "shallows",
+      "shallows",
+      "shallows",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "shallows",
+      "water",
+      "water",
+      "water",
+      "water",
+      "shallows",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "shallows",
+      "water",
+      "water",
+      "water",
+      "water",
+      "water",
+      "water",
+      "shallows",
+      "road",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "road",
+      "grass",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "shallows",
+      "water",
+      "water",
+      "water",
+      "water",
+      "water",
+      "bridge",
+      "bridge",
+      "road",
+      "road",
+      "mud",
+      "mud",
+      "mud",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "mud",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "bridge",
+      "road",
+      "road",
+      "rock",
+      "rock",
+      "mud",
+      "mud",
+      "mud",
+      "shallows",
+      "water",
+      "water",
+      "bridge",
+      "bridge",
+      "bridge",
+      "road",
+      "road",
+      "road",
+      "mud",
+      "mud",
+      "mud",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "mud",
+      "mud",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "road",
+      "grass",
+      "grass",
+      "bridge",
+      "bridge",
+      "road",
+      "road",
+      "road",
+      "rock",
+      "mud",
+      "mud",
+      "mud",
+      "bridge",
+      "road",
+      "road",
+      "grass",
+      "bridge",
+      "road",
+      "bridge",
+      "bridge",
+      "bridge",
+      "mud",
+      "mud",
+      "mud",
+      "shallows",
+      "grass",
+      "rock",
+      "rock",
+      "mud",
+      "mud",
+      "mud",
+      "mud",
+      "mud",
+      "grass",
+      "road",
+      "road",
+      "road",
+      "road",
+      "water",
+      "water",
+      "bridge",
+      "road",
+      "road",
+      "road",
+      "road",
+      "rock",
+      "rock",
+      "road",
+      "road",
+      "road",
+      "road",
+      "road",
+      "shallows",
+      "grass",
+      "bridge",
+      "bridge",
+      "road",
+      "mud",
+      "mud",
+      "mud",
+      "shallows",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "road",
+      "road",
+      "road",
+      "road",
+      "grass",
+      "water",
+      "water",
+      "bridge",
+      "bridge",
+      "road",
+      "road",
+      "road",
+      "road",
+      "road",
+      "grass",
+      "road",
+      "grass",
+      "road",
+      "grass",
+      "road",
+      "road",
+      "road",
+      "bridge",
+      "bridge",
+      "mud",
+      "mud",
+      "mud",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "mud",
+      "mud",
+      "mud",
+      "road",
+      "road",
+      "road",
+      "road",
+      "road",
+      "grass",
+      "water",
+      "road",
+      "road",
+      "road",
+      "road",
+      "road",
+      "road",
+      "road",
+      "road",
+      "road",
+      "road",
+      "water",
+      "road",
+      "road",
+      "road",
+      "road",
+      "road",
+      "road",
+      "mud",
+      "mud",
+      "mud",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "mud",
+      "mud",
+      "mud",
+      "road",
+      "road",
+      "road",
+      "road",
+      "road",
+      "road",
+      "water",
+      "road",
+      "road",
+      "road",
+      "road",
+      "road",
+      "road",
+      "road",
+      "road",
+      "road",
+      "road",
+      "water",
+      "grass",
+      "road",
+      "road",
+      "road",
+      "road",
+      "road",
+      "mud",
+      "mud",
+      "mud",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "mud",
+      "mud",
+      "mud",
+      "bridge",
+      "bridge",
+      "road",
+      "road",
+      "road",
+      "grass",
+      "road",
+      "grass",
+      "road",
+      "grass",
+      "road",
+      "road",
+      "road",
+      "road",
+      "road",
+      "bridge",
+      "bridge",
+      "water",
+      "water",
+      "grass",
+      "road",
+      "road",
+      "road",
+      "road",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "shallows",
+      "mud",
+      "mud",
+      "mud",
+      "road",
+      "bridge",
+      "bridge",
+      "grass",
+      "shallows",
+      "road",
+      "road",
+      "road",
+      "road",
+      "road",
+      "rock",
+      "rock",
+      "road",
+      "road",
+      "road",
+      "road",
+      "bridge",
+      "water",
+      "water",
+      "road",
+      "road",
+      "road",
+      "road",
+      "grass",
+      "mud",
+      "mud",
+      "mud",
+      "mud",
+      "mud",
+      "rock",
+      "rock",
+      "grass",
+      "shallows",
+      "mud",
+      "mud",
+      "mud",
+      "bridge",
+      "bridge",
+      "bridge",
+      "road",
+      "bridge",
+      "grass",
+      "road",
+      "road",
+      "bridge",
+      "mud",
+      "mud",
+      "mud",
+      "rock",
+      "road",
+      "road",
+      "road",
+      "bridge",
+      "bridge",
+      "grass",
+      "grass",
+      "road",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "mud",
+      "mud",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "mud",
+      "mud",
+      "mud",
+      "road",
+      "road",
+      "road",
+      "bridge",
+      "bridge",
+      "bridge",
+      "water",
+      "water",
+      "shallows",
+      "mud",
+      "mud",
+      "mud",
+      "rock",
+      "rock",
+      "road",
+      "road",
+      "bridge",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "mud",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "mud",
+      "mud",
+      "mud",
+      "road",
+      "road",
+      "bridge",
+      "bridge",
+      "water",
+      "water",
+      "water",
+      "water",
+      "water",
+      "shallows",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "grass",
+      "road",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "road",
+      "shallows",
+      "water",
+      "water",
+      "water",
+      "water",
+      "water",
+      "water",
+      "shallows",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "shallows",
+      "water",
+      "water",
+      "water",
+      "water",
+      "shallows",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "shallows",
+      "shallows",
+      "shallows",
+      "shallows",
+      "shallows",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock",
+      "rock"
+    ],
+    "starts": [
+      {
+        "x": 7.5,
+        "y": 7.5
+      },
+      {
+        "x": 28.5,
+        "y": 28.5
+      }
+    ],
+    "draw": false,
+    "tick": 12742,
+    "corpses": [
+      {
+        "id": 204,
+        "x": 20.42117689474861,
+        "y": 17.94655927209189,
+        "expires": 638.400000000008
+      },
+      {
+        "id": 247,
+        "x": 25.65178386736947,
+        "y": 18.60493323552904,
+        "expires": 642.2000000000046
+      },
+      {
+        "id": 256,
+        "x": 21.806351739508255,
+        "y": 19.637365438125542,
+        "expires": 654.7499999999932
+      },
+      {
+        "id": 10,
+        "x": 25.738964946097408,
+        "y": 18.92574497488212,
+        "expires": 662.3499999999863
+      },
+      {
+        "id": 243,
+        "x": 19.346243157299213,
+        "y": 26.150108695214982,
+        "expires": 662.8999999999858
+      },
+      {
+        "id": 244,
+        "x": 25.666026041553916,
+        "y": 24.310171661366503,
+        "expires": 664.3999999999844
+      },
+      {
+        "id": 246,
+        "x": 27.10187734037574,
+        "y": 21.758400146307643,
+        "expires": 664.4499999999844
+      },
+      {
+        "id": 264,
+        "x": 26.249842101660487,
+        "y": 23.230391855047102,
+        "expires": 664.6999999999841
+      },
+      {
+        "id": 271,
+        "x": 18.79720890965807,
+        "y": 26.191134398937084,
+        "expires": 670.0999999999792
+      },
+      {
+        "id": 272,
+        "x": 23.151471862576145,
+        "y": 32.651471862576145,
+        "expires": 672.2499999999773
+      },
+      {
+        "id": 273,
+        "x": 27.01200359378977,
+        "y": 24.836374969189382,
+        "expires": 673.7499999999759
+      },
+      {
+        "id": 274,
+        "x": 25.564477452713106,
+        "y": 27.971981727871917,
+        "expires": 675.0499999999747
+      }
+    ],
+    "time": 637.0999999999683,
+    "seed": 4127,
+    "width": 36,
+    "height": 36,
+    "entities": [
+      {
+        "id": 1,
+        "side": 0,
+        "kind": "building",
+        "role": "hq",
+        "x": 7.5,
+        "y": 7.5,
+        "hp": 1650,
+        "maxHp": 1650,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [
+          "worker",
+          "worker"
+        ],
+        "trainProgress": 0.6916666666666654,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 637.0999999999683,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": []
+      },
+      {
+        "id": 8,
+        "side": 1,
+        "kind": "building",
+        "role": "hq",
+        "x": 28.5,
+        "y": 28.5,
+        "hp": 0,
+        "maxHp": 1800,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "death",
+        "animTime": 0,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "shield": 0,
+        "lastDamagedAt": 637.0999999999683,
+        "lastAttacker": 183
+      },
+      {
+        "id": 47,
+        "side": 0,
+        "kind": "building",
+        "role": "barracks",
+        "x": 9.5,
+        "y": 12.5,
+        "hp": 167.91199999999998,
+        "maxHp": 800,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [
+          "cavalry",
+          "ranged"
+        ],
+        "trainProgress": 0.43690476190476063,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 637.0999999999683,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "rally": {
+          "x": 10.02,
+          "y": 10.02
+        },
+        "shield": 0,
+        "lastDamagedAt": 432.80000000006413,
+        "lastAttacker": 133
+      },
+      {
+        "id": 53,
+        "side": 0,
+        "kind": "building",
+        "role": "depot",
+        "x": 12.5,
+        "y": 9.5,
+        "hp": 456.833125,
+        "maxHp": 520,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 601.100000000001,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "shield": 0,
+        "lastDamagedAt": 92.49999999999689,
+        "lastAttacker": 14
+      },
+      {
+        "id": 69,
+        "side": 0,
+        "kind": "building",
+        "role": "tower",
+        "x": 2.5,
+        "y": 5.5,
+        "hp": 650,
+        "maxHp": 650,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 537.1000000000593,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": []
+      },
+      {
+        "id": 70,
+        "side": 1,
+        "kind": "building",
+        "role": "tower",
+        "x": 33.5,
+        "y": 30.5,
+        "hp": 800,
+        "maxHp": 800,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 537.1000000000593,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": []
+      },
+      {
+        "id": 74,
+        "side": 1,
+        "kind": "building",
+        "role": "depot",
+        "x": 30.5,
+        "y": 33.5,
+        "hp": 620,
+        "maxHp": 620,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 503.1000000000801,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": []
+      },
+      {
+        "id": 75,
+        "side": 0,
+        "kind": "unit",
+        "role": "ranged",
+        "x": 27.38723938257613,
+        "y": 20.199177559859447,
+        "hp": 85,
+        "maxHp": 85,
+        "order": {
+          "type": "attackMove",
+          "x": 28.35417325974198,
+          "y": 23.70520569824254
+        },
+        "cooldown": 0.9999999999999996,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "attack",
+        "animTime": 0.39999999999999997,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 27.75,
+            "y": 20.75
+          },
+          {
+            "x": 27.75,
+            "y": 21.25
+          },
+          {
+            "x": 27.75,
+            "y": 21.75
+          },
+          {
+            "x": 27.75,
+            "y": 22.25
+          },
+          {
+            "x": 27.75,
+            "y": 22.75
+          },
+          {
+            "x": 27.75,
+            "y": 23.25
+          }
+        ],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "veteran": {
+          "experience": 300,
+          "rank": 3,
+          "nextSurvivalAt": 660.9999999999739,
+          "lastCombatAt": 636.6999999999687,
+          "promotions": [
+            {
+              "rank": 1,
+              "id": "sharpshooter"
+            },
+            {
+              "rank": 2,
+              "id": "sharpshooter"
+            },
+            {
+              "rank": 3,
+              "id": "sharpshooter"
+            }
+          ]
+        },
+        "shield": 0,
+        "lastDamagedAt": 492.70000000007775,
+        "lastAttacker": 117
+      },
+      {
+        "id": 76,
+        "side": 0,
+        "kind": "building",
+        "role": "depot",
+        "x": 5.5,
+        "y": 2.5,
+        "hp": 520,
+        "maxHp": 520,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 495.1000000000783,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": []
+      },
+      {
+        "id": 79,
+        "side": 0,
+        "kind": "building",
+        "role": "barracks",
+        "x": 9.5,
+        "y": 2.5,
+        "hp": 800,
+        "maxHp": 800,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [
+          "melee",
+          "siege"
+        ],
+        "trainProgress": 0.10441176470588226,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 457.10000000006966,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "rally": {
+          "x": 10.02,
+          "y": 10.02
+        },
+        "queueDefinitionIds": [
+          "fairy-melee",
+          "fairy-siege"
+        ],
+        "queuePaidCosts": [
+          {
+            "wood": 65,
+            "ore": 25,
+            "crystal": 0
+          },
+          {
+            "wood": 180,
+            "ore": 140,
+            "crystal": 25
+          }
+        ]
+      },
+      {
+        "id": 80,
+        "side": 1,
+        "kind": "building",
+        "role": "barracks",
+        "x": 26.5,
+        "y": 33.5,
+        "hp": 950,
+        "maxHp": 950,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [
+          "cavalry",
+          "spear"
+        ],
+        "trainProgress": 0.3023809523809516,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 457.10000000006966,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "rally": {
+          "x": 25.98,
+          "y": 25.98
+        },
+        "queueDefinitionIds": [
+          "dwarf-cavalry",
+          "dwarf-spear"
+        ],
+        "queuePaidCosts": [
+          {
+            "wood": 100,
+            "ore": 65,
+            "crystal": 0
+          },
+          {
+            "wood": 55,
+            "ore": 25,
+            "crystal": 0
+          }
+        ]
+      },
+      {
+        "id": 83,
+        "side": 0,
+        "kind": "building",
+        "role": "wall",
+        "x": 4,
+        "y": 9,
+        "hp": 1100,
+        "maxHp": 1100,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 419.100000000061,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": []
+      },
+      {
+        "id": 84,
+        "side": 1,
+        "kind": "building",
+        "role": "wall",
+        "x": 32,
+        "y": 27,
+        "hp": 1100,
+        "maxHp": 1100,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 412.1000000000594,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": []
+      },
+      {
+        "id": 87,
+        "side": 0,
+        "kind": "building",
+        "role": "wall",
+        "x": 5,
+        "y": 9,
+        "hp": 1100,
+        "maxHp": 1100,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 401.1000000000569,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": []
+      },
+      {
+        "id": 90,
+        "side": 1,
+        "kind": "building",
+        "role": "wall",
+        "x": 31,
+        "y": 27,
+        "hp": 1100,
+        "maxHp": 1100,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 393.1000000000551,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": []
+      },
+      {
+        "id": 95,
+        "side": 0,
+        "kind": "unit",
+        "role": "ranged",
+        "x": 25.729812115083195,
+        "y": 20.479448566061844,
+        "hp": 48,
+        "maxHp": 85,
+        "order": {
+          "type": "attackMove",
+          "x": 28.274294395797114,
+          "y": 23.703214751879006
+        },
+        "cooldown": 0.6499999999999992,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 0.7500000000000001,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 25.75,
+            "y": 21.25
+          },
+          {
+            "x": 26.25,
+            "y": 21.75
+          },
+          {
+            "x": 26.75,
+            "y": 22.25
+          },
+          {
+            "x": 27.25,
+            "y": 22.75
+          },
+          {
+            "x": 27.75,
+            "y": 23.25
+          }
+        ],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "veteran": {
+          "experience": 300,
+          "rank": 3,
+          "nextSurvivalAt": 661.1999999999737,
+          "lastCombatAt": 636.349999999969,
+          "promotions": [
+            {
+              "rank": 1,
+              "id": "sharpshooter"
+            },
+            {
+              "rank": 2,
+              "id": "sharpshooter"
+            },
+            {
+              "rank": 3,
+              "id": "sharpshooter"
+            }
+          ]
+        },
+        "shield": 0,
+        "lastDamagedAt": 615.5999999999879,
+        "lastAttacker": 246
+      },
+      {
+        "id": 96,
+        "side": 0,
+        "kind": "building",
+        "role": "depot",
+        "x": 5.5,
+        "y": 12.5,
+        "hp": 520,
+        "maxHp": 520,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 382.1000000000526,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": []
+      },
+      {
+        "id": 97,
+        "side": 1,
+        "kind": "building",
+        "role": "depot",
+        "x": 33.5,
+        "y": 33.5,
+        "hp": 620,
+        "maxHp": 620,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 377.10000000005147,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": []
+      },
+      {
+        "id": 105,
+        "side": 0,
+        "kind": "building",
+        "role": "barracks",
+        "x": 2.5,
+        "y": 2.5,
+        "hp": 800,
+        "maxHp": 800,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [
+          "ranged",
+          "ranged"
+        ],
+        "trainProgress": 0.11875000000000008,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 357.1000000000469,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "rally": {
+          "x": 10.02,
+          "y": 10.02
+        }
+      },
+      {
+        "id": 112,
+        "side": 0,
+        "kind": "unit",
+        "role": "special",
+        "x": 22.021625833781467,
+        "y": 15.511116025331555,
+        "hp": 246.52694616541663,
+        "maxHp": 280,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 1,
+        "animation": "idle",
+        "animTime": 64.2499999999985,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 22.75,
+            "y": 16.25
+          }
+        ],
+        "definitionId": "core:fairies-commander",
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "abilityReadyAt": 647.0499999999865,
+        "veteran": {
+          "experience": 300,
+          "rank": 3,
+          "nextSurvivalAt": 647.7999999999859,
+          "lastCombatAt": 587.7500000000132,
+          "promotions": [
+            {
+              "rank": 1,
+              "id": "bulwark"
+            },
+            {
+              "rank": 2,
+              "id": "bulwark"
+            },
+            {
+              "rank": 3,
+              "id": "bulwark"
+            }
+          ]
+        },
+        "shield": 0,
+        "lastDamagedAt": 576.5500000000234,
+        "lastAttacker": 235,
+        "specialistBuffs": []
+      },
+      {
+        "id": 113,
+        "side": 0,
+        "kind": "unit",
+        "role": "worker",
+        "x": 9.171719913033916,
+        "y": 17.16491672016461,
+        "hp": 65,
+        "maxHp": 65,
+        "order": {
+          "type": "gather",
+          "target": 35
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 1,
+        "animation": "walk",
+        "animTime": 331.050000000041,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 3.6317200000344894,
+        "carriedKind": "crystal",
+        "path": [
+          {
+            "x": 9.75,
+            "y": 17.75
+          },
+          {
+            "x": 9.75,
+            "y": 18.25
+          },
+          {
+            "x": 9.75,
+            "y": 18.75
+          },
+          {
+            "x": 9.75,
+            "y": 19.25
+          },
+          {
+            "x": 10.25,
+            "y": 19.25
+          },
+          {
+            "x": 10.75,
+            "y": 19.75
+          },
+          {
+            "x": 11.25,
+            "y": 19.75
+          },
+          {
+            "x": 11.75,
+            "y": 19.75
+          },
+          {
+            "x": 12.25,
+            "y": 19.75
+          },
+          {
+            "x": 12.75,
+            "y": 19.75
+          },
+          {
+            "x": 13.25,
+            "y": 19.75
+          },
+          {
+            "x": 13.75,
+            "y": 19.75
+          },
+          {
+            "x": 14.25,
+            "y": 19.75
+          }
+        ],
+        "tactics": {
+          "morale": 0,
+          "recentLoss": 0
+        },
+        "shield": 0,
+        "lastDamagedAt": 471.50000000007293,
+        "veteran": {
+          "experience": 5,
+          "rank": 0,
+          "nextSurvivalAt": 666.3999999999689,
+          "lastCombatAt": 486.2000000000763,
+          "promotions": []
+        },
+        "lastAttacker": 117
+      },
+      {
+        "id": 137,
+        "side": 0,
+        "kind": "unit",
+        "role": "ranged",
+        "x": 27.95885022211591,
+        "y": 20.1008869289701,
+        "hp": 85,
+        "maxHp": 85,
+        "order": {
+          "type": "attackMove",
+          "x": 28.687866548205932,
+          "y": 23.622379146462514
+        },
+        "cooldown": 0.9499999999999995,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 0.44999999999999996,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 28.25,
+            "y": 20.75
+          },
+          {
+            "x": 28.25,
+            "y": 21.25
+          },
+          {
+            "x": 28.25,
+            "y": 21.75
+          },
+          {
+            "x": 28.25,
+            "y": 22.25
+          },
+          {
+            "x": 28.25,
+            "y": 22.75
+          },
+          {
+            "x": 28.25,
+            "y": 23.25
+          }
+        ],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "veteran": {
+          "experience": 300,
+          "rank": 3,
+          "nextSurvivalAt": 663.1499999999719,
+          "lastCombatAt": 636.6499999999687,
+          "promotions": [
+            {
+              "rank": 1,
+              "id": "sharpshooter"
+            },
+            {
+              "rank": 2,
+              "id": "sharpshooter"
+            },
+            {
+              "rank": 3,
+              "id": "sharpshooter"
+            }
+          ]
+        },
+        "shield": 0,
+        "lastDamagedAt": 516.550000000078,
+        "lastAttacker": 117
+      },
+      {
+        "id": 140,
+        "side": 0,
+        "kind": "building",
+        "role": "depot",
+        "x": 12.5,
+        "y": 2.5,
+        "hp": 520,
+        "maxHp": 520,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 230.10000000001807,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": []
+      },
+      {
+        "id": 144,
+        "side": 0,
+        "kind": "unit",
+        "role": "worker",
+        "x": 6.991377741939644,
+        "y": 16.78047369812634,
+        "hp": 65,
+        "maxHp": 65,
+        "order": {
+          "type": "gather",
+          "target": 27
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "attack",
+        "animTime": 217.0500000000151,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 9.040199999999999,
+        "carriedKind": "ore",
+        "path": [
+          {
+            "x": 7.25,
+            "y": 16.25
+          }
+        ],
+        "tactics": {
+          "morale": 0,
+          "recentLoss": 0
+        },
+        "shield": 0,
+        "lastDamagedAt": 520.5500000000743,
+        "veteran": {
+          "experience": 5,
+          "rank": 0,
+          "nextSurvivalAt": 655.7499999999786,
+          "lastCombatAt": 535.6000000000606,
+          "promotions": []
+        },
+        "lastAttacker": 190
+      },
+      {
+        "id": 146,
+        "side": 0,
+        "kind": "building",
+        "role": "barracks",
+        "x": 16.5,
+        "y": 7.5,
+        "hp": 800,
+        "maxHp": 800,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [
+          "spear",
+          "special"
+        ],
+        "trainProgress": 0.6767857142857122,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 203.10000000001193,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "rally": {
+          "x": 10.02,
+          "y": 10.02
+        }
+      },
+      {
+        "id": 163,
+        "side": 0,
+        "kind": "unit",
+        "role": "siege",
+        "x": 22.743737180680434,
+        "y": 22.444039111416856,
+        "hp": 151.36,
+        "maxHp": 185,
+        "order": {
+          "type": "attackMove",
+          "x": 26.856933742939248,
+          "y": 25.289880373896388
+        },
+        "cooldown": 2.000000000000006,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 1,
+        "animation": "idle",
+        "animTime": 1.800000000000001,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 23.25,
+            "y": 22.75
+          },
+          {
+            "x": 23.75,
+            "y": 23.25
+          },
+          {
+            "x": 24.25,
+            "y": 23.75
+          },
+          {
+            "x": 24.75,
+            "y": 24.25
+          },
+          {
+            "x": 25.25,
+            "y": 24.25
+          },
+          {
+            "x": 25.75,
+            "y": 24.75
+          },
+          {
+            "x": 26.25,
+            "y": 24.75
+          }
+        ],
+        "tactics": {
+          "morale": 0,
+          "recentLoss": 0,
+          "siegeCrew": {
+            "hp": 42,
+            "maxHp": 42,
+            "uncrewed": false
+          }
+        },
+        "siegeMode": {
+          "ammo": 0,
+          "deployed": false,
+          "prepared": "rooting"
+        },
+        "abilityReadyAt": 636.0499999999693,
+        "veteran": {
+          "experience": 300,
+          "rank": 3,
+          "nextSurvivalAt": 665.4999999999698,
+          "lastCombatAt": 636.2499999999691,
+          "promotions": [
+            {
+              "rank": 1,
+              "id": "siege-master"
+            },
+            {
+              "rank": 2,
+              "id": "siege-master"
+            },
+            {
+              "rank": 3,
+              "id": "siege-master"
+            }
+          ]
+        },
+        "shield": 0,
+        "lastDamagedAt": 614.0999999999892,
+        "lastAttacker": 243
+      },
+      {
+        "id": 178,
+        "side": 0,
+        "kind": "building",
+        "role": "gate",
+        "x": 2.5,
+        "y": 9,
+        "hp": 1400,
+        "maxHp": 1400,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 166.10000000000352,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "gateOpen": true
+      },
+      {
+        "id": 183,
+        "side": 0,
+        "kind": "unit",
+        "role": "melee",
+        "x": 26.450844412464306,
+        "y": 26.43185529628018,
+        "hp": 98.50138400915,
+        "maxHp": 140,
+        "order": {
+          "type": "attackMove",
+          "x": 28.29322364793935,
+          "y": 24.518680556636824
+        },
+        "cooldown": 1,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 1,
+        "animation": "attack",
+        "animTime": 0,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 26.25,
+            "y": 26.75
+          }
+        ],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "veteran": {
+          "experience": 286.19003935788425,
+          "rank": 3,
+          "nextSurvivalAt": 661.3499999999735,
+          "lastCombatAt": 637.0999999999683,
+          "promotions": [
+            {
+              "rank": 1,
+              "id": "vanguard"
+            },
+            {
+              "rank": 2,
+              "id": "vanguard"
+            },
+            {
+              "rank": 3,
+              "id": "vanguard"
+            }
+          ]
+        },
+        "shield": 0,
+        "lastDamagedAt": 619.1499999999846,
+        "lastAttacker": 212,
+        "specialistBuffs": []
+      },
+      {
+        "id": 194,
+        "side": 0,
+        "kind": "unit",
+        "role": "cavalry",
+        "x": 26.03493737294658,
+        "y": 26.8358927133245,
+        "hp": 138.45959236624302,
+        "maxHp": 210,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0.7499999999999996,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 1,
+        "animation": "idle",
+        "animTime": 0.5499999999999999,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 26.25,
+            "y": 26.75
+          },
+          {
+            "x": 26.25,
+            "y": 27.25
+          }
+        ],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0,
+          "charge": {
+            "distance": 0,
+            "heading": 3,
+            "lastMovedAt": 629.8999999999749
+          }
+        },
+        "abilityReadyAt": 642.0499999999865,
+        "shield": 0,
+        "lastDamagedAt": 619.1499999999846,
+        "veteran": {
+          "experience": 101.48691452674882,
+          "rank": 2,
+          "nextSurvivalAt": 656.8999999999776,
+          "lastCombatAt": 636.5499999999688,
+          "promotions": [
+            {
+              "rank": 1,
+              "id": "bulwark"
+            },
+            {
+              "rank": 2,
+              "id": "bulwark"
+            }
+          ]
+        },
+        "lastAttacker": 212,
+        "specialistBuffs": []
+      },
+      {
+        "id": 199,
+        "side": 0,
+        "kind": "unit",
+        "role": "melee",
+        "x": 25.52922440140425,
+        "y": 28.328038559468624,
+        "hp": 127,
+        "maxHp": 140,
+        "order": {
+          "type": "attackMove",
+          "x": 29.26737627302208,
+          "y": 25.29793482963437
+        },
+        "cooldown": 0.29999999999999966,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 0,
+        "animation": "idle",
+        "animTime": 0.7000000000000001,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 25.75,
+            "y": 28.25
+          }
+        ],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "shield": 0,
+        "lastDamagedAt": 625.0499999999793,
+        "veteran": {
+          "experience": 300,
+          "rank": 3,
+          "nextSurvivalAt": 662.6999999999723,
+          "lastCombatAt": 636.3999999999689,
+          "promotions": [
+            {
+              "rank": 1,
+              "id": "vanguard"
+            },
+            {
+              "rank": 2,
+              "id": "vanguard"
+            },
+            {
+              "rank": 3,
+              "id": "vanguard"
+            }
+          ]
+        },
+        "lastAttacker": 271
+      },
+      {
+        "id": 200,
+        "side": 0,
+        "kind": "unit",
+        "role": "worker",
+        "x": 6.643932172877879,
+        "y": 14.622149558691827,
+        "hp": 65,
+        "maxHp": 65,
+        "order": {
+          "type": "gather",
+          "target": 27
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 1,
+        "animation": "walk",
+        "animTime": 116.74999999999551,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "ore",
+        "path": [
+          {
+            "x": 7.25,
+            "y": 15.25
+          },
+          {
+            "x": 7.25,
+            "y": 15.75
+          },
+          {
+            "x": 7.25,
+            "y": 16.25
+          }
+        ],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        }
+      },
+      {
+        "id": 207,
+        "side": 0,
+        "kind": "unit",
+        "role": "worker",
+        "x": 9.039752443305272,
+        "y": 16.563008309817583,
+        "hp": 65,
+        "maxHp": 65,
+        "order": {
+          "type": "gather",
+          "target": 35
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 1,
+        "animation": "walk",
+        "animTime": 104.6999999999962,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "crystal",
+        "path": [
+          {
+            "x": 9.75,
+            "y": 17.25
+          },
+          {
+            "x": 9.75,
+            "y": 17.75
+          },
+          {
+            "x": 9.75,
+            "y": 18.25
+          },
+          {
+            "x": 9.75,
+            "y": 18.75
+          },
+          {
+            "x": 9.75,
+            "y": 19.25
+          },
+          {
+            "x": 10.25,
+            "y": 19.25
+          },
+          {
+            "x": 10.75,
+            "y": 19.75
+          },
+          {
+            "x": 11.25,
+            "y": 19.75
+          },
+          {
+            "x": 11.75,
+            "y": 19.75
+          },
+          {
+            "x": 12.25,
+            "y": 19.75
+          },
+          {
+            "x": 12.75,
+            "y": 19.75
+          },
+          {
+            "x": 13.25,
+            "y": 19.75
+          },
+          {
+            "x": 13.75,
+            "y": 19.75
+          },
+          {
+            "x": 14.25,
+            "y": 19.75
+          }
+        ],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        }
+      },
+      {
+        "id": 212,
+        "side": 0,
+        "kind": "unit",
+        "role": "siege",
+        "x": 23.071263907662708,
+        "y": 21.965367780543403,
+        "hp": 185,
+        "maxHp": 185,
+        "order": {
+          "type": "attackMove",
+          "x": 27.167501409922277,
+          "y": 25.698028712901156
+        },
+        "cooldown": 1.0500000000000054,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 1,
+        "animation": "idle",
+        "animTime": 2.7499999999999982,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 23.25,
+            "y": 22.75
+          },
+          {
+            "x": 23.75,
+            "y": 23.25
+          },
+          {
+            "x": 24.25,
+            "y": 23.75
+          },
+          {
+            "x": 24.75,
+            "y": 24.25
+          },
+          {
+            "x": 25.25,
+            "y": 24.75
+          },
+          {
+            "x": 25.75,
+            "y": 24.75
+          },
+          {
+            "x": 26.25,
+            "y": 25.25
+          },
+          {
+            "x": 26.75,
+            "y": 25.25
+          }
+        ],
+        "tactics": {
+          "morale": 88,
+          "recentLoss": 0,
+          "siegeCrew": {
+            "hp": 42,
+            "maxHp": 42,
+            "uncrewed": false
+          }
+        },
+        "siegeMode": {
+          "ammo": 0,
+          "deployed": false
+        },
+        "abilityReadyAt": 631.0499999999738,
+        "veteran": {
+          "experience": 300,
+          "rank": 3,
+          "nextSurvivalAt": 647.1499999999864,
+          "lastCombatAt": 635.3499999999699,
+          "promotions": [
+            {
+              "rank": 1,
+              "id": "siege-master"
+            },
+            {
+              "rank": 2,
+              "id": "siege-master"
+            },
+            {
+              "rank": 3,
+              "id": "siege-master"
+            }
+          ]
+        }
+      },
+      {
+        "id": 214,
+        "side": 0,
+        "kind": "unit",
+        "role": "cavalry",
+        "x": 26.08236154485415,
+        "y": 28.50251121326697,
+        "hp": 168.4,
+        "maxHp": 210,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0.3999999999999994,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 0,
+        "animation": "idle",
+        "animTime": 0.9000000000000002,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 25.75,
+            "y": 28.75
+          }
+        ],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0,
+          "charge": {
+            "distance": 0,
+            "heading": 0,
+            "lastMovedAt": 634.8499999999704
+          }
+        },
+        "veteran": {
+          "experience": 94.86465866550495,
+          "rank": 1,
+          "nextSurvivalAt": 663.049999999972,
+          "lastCombatAt": 636.1999999999691,
+          "promotions": [
+            {
+              "rank": 1,
+              "id": "bulwark"
+            }
+          ]
+        },
+        "abilityReadyAt": 643.0499999999856,
+        "shield": 0,
+        "lastDamagedAt": 626.7499999999777,
+        "lastAttacker": 272
+      },
+      {
+        "id": 219,
+        "side": 0,
+        "kind": "unit",
+        "role": "worker",
+        "x": 9.493771146367123,
+        "y": 17.95685854277388,
+        "hp": 65,
+        "maxHp": 65,
+        "order": {
+          "type": "gather",
+          "target": 31
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 1,
+        "animation": "attack",
+        "animTime": 92.64999999999688,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 6.817200000000004,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 9.75,
+            "y": 17.75
+          }
+        ],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        }
+      },
+      {
+        "id": 225,
+        "side": 0,
+        "kind": "unit",
+        "role": "melee",
+        "x": 25.818056284108618,
+        "y": 27.373586157506434,
+        "hp": 101.5,
+        "maxHp": 140,
+        "order": {
+          "type": "attackMove",
+          "x": 28.767501409922275,
+          "y": 25.698028712901156
+        },
+        "cooldown": 0.6499999999999997,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 1,
+        "animation": "attack",
+        "animTime": 0.35,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 25.75,
+            "y": 27.25
+          }
+        ],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "shield": 0,
+        "lastDamagedAt": 629.6499999999751,
+        "veteran": {
+          "experience": 203.14802910706743,
+          "rank": 3,
+          "nextSurvivalAt": 661.8499999999731,
+          "lastCombatAt": 636.7499999999686,
+          "promotions": [
+            {
+              "rank": 1,
+              "id": "vanguard"
+            },
+            {
+              "rank": 2,
+              "id": "vanguard"
+            },
+            {
+              "rank": 3,
+              "id": "vanguard"
+            }
+          ]
+        },
+        "lastAttacker": 274
+      },
+      {
+        "id": 229,
+        "side": 0,
+        "kind": "unit",
+        "role": "worker",
+        "x": 9.878808902299582,
+        "y": 17.4912563638652,
+        "hp": 65,
+        "maxHp": 65,
+        "order": {
+          "type": "gather",
+          "target": 31
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 1,
+        "animation": "attack",
+        "animTime": 80.59999999999756,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 1.6302000000000003,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 9.75,
+            "y": 17.75
+          }
+        ],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        }
+      },
+      {
+        "id": 233,
+        "side": 0,
+        "kind": "unit",
+        "role": "melee",
+        "x": 26.416716432966528,
+        "y": 28.976210471829656,
+        "hp": 140,
+        "maxHp": 140,
+        "order": {
+          "type": "attackMove",
+          "x": 29.567501409922276,
+          "y": 25.698028712901156
+        },
+        "cooldown": 0.19999999999999968,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 0,
+        "animation": "idle",
+        "animTime": 0.8000000000000002,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 25.75,
+            "y": 28.75
+          }
+        ],
+        "definitionId": "fairy-melee",
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "veteran": {
+          "experience": 178.58812126246931,
+          "rank": 2,
+          "nextSurvivalAt": 664.7499999999704,
+          "lastCombatAt": 636.299999999969,
+          "promotions": [
+            {
+              "rank": 1,
+              "id": "vanguard"
+            },
+            {
+              "rank": 2,
+              "id": "vanguard"
+            }
+          ]
+        }
+      },
+      {
+        "id": 234,
+        "side": 1,
+        "kind": "building",
+        "role": "gate",
+        "x": 33.5,
+        "y": 27,
+        "hp": 1400,
+        "maxHp": 1400,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 73.09999999999799,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "gateOpen": false
+      },
+      {
+        "id": 237,
+        "side": 0,
+        "kind": "unit",
+        "role": "worker",
+        "x": 7.632276732423792,
+        "y": 14.995623421272763,
+        "hp": 65,
+        "maxHp": 65,
+        "order": {
+          "type": "gather",
+          "target": 31
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 5,
+        "animation": "walk",
+        "animTime": 68.54999999999825,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 18,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 7.25,
+            "y": 14.75
+          },
+          {
+            "x": 6.75,
+            "y": 14.25
+          }
+        ],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        }
+      },
+      {
+        "id": 239,
+        "side": 0,
+        "kind": "unit",
+        "role": "cavalry",
+        "x": 25.957512492780744,
+        "y": 27.936377780526755,
+        "hp": 131.62019163955603,
+        "maxHp": 210,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 1.0499999999999998,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 0,
+        "animation": "attack",
+        "animTime": 0.25,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 25.75,
+            "y": 28.25
+          }
+        ],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0,
+          "charge": {
+            "distance": 0,
+            "heading": 0,
+            "lastMovedAt": 634.7499999999704
+          }
+        },
+        "abilityReadyAt": 641.0499999999874,
+        "veteran": {
+          "experience": 59.4367182014128,
+          "rank": 1,
+          "nextSurvivalAt": 661.0999999999738,
+          "lastCombatAt": 636.8499999999685,
+          "promotions": [
+            {
+              "rank": 1,
+              "id": "bulwark"
+            }
+          ]
+        },
+        "shield": 0,
+        "lastDamagedAt": 620.8499999999831,
+        "lastAttacker": 163,
+        "specialistBuffs": []
+      },
+      {
+        "id": 241,
+        "side": 0,
+        "kind": "unit",
+        "role": "worker",
+        "x": 10.10712801663347,
+        "y": 17.919838729475348,
+        "hp": 65,
+        "maxHp": 65,
+        "order": {
+          "type": "gather",
+          "target": 31
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 1,
+        "animation": "attack",
+        "animTime": 56.49999999999893,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 14.819999999999968,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 9.75,
+            "y": 17.75
+          }
+        ],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        }
+      },
+      {
+        "id": 245,
+        "side": 0,
+        "kind": "unit",
+        "role": "ranged",
+        "x": 22.32121072863886,
+        "y": 22.841369449111387,
+        "hp": 85,
+        "maxHp": 85,
+        "order": {
+          "type": "attackMove",
+          "x": 27.967501409922278,
+          "y": 26.498028712901156
+        },
+        "cooldown": 1.2999999999999998,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 1,
+        "animation": "attack",
+        "animTime": 0.1,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 23.25,
+            "y": 23.25
+          },
+          {
+            "x": 23.75,
+            "y": 23.75
+          },
+          {
+            "x": 24.25,
+            "y": 24.25
+          },
+          {
+            "x": 24.75,
+            "y": 24.75
+          },
+          {
+            "x": 25.25,
+            "y": 25.25
+          },
+          {
+            "x": 25.75,
+            "y": 25.25
+          },
+          {
+            "x": 26.25,
+            "y": 25.75
+          },
+          {
+            "x": 26.75,
+            "y": 25.75
+          },
+          {
+            "x": 27.25,
+            "y": 26.25
+          }
+        ],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "veteran": {
+          "experience": 72.28646871866559,
+          "rank": 1,
+          "nextSurvivalAt": 661.0499999999738,
+          "lastCombatAt": 636.9999999999684,
+          "promotions": [
+            {
+              "rank": 1,
+              "id": "sharpshooter"
+            }
+          ]
+        }
+      },
+      {
+        "id": 248,
+        "side": 0,
+        "kind": "unit",
+        "role": "worker",
+        "x": 7.352974504827454,
+        "y": 16.326991688971614,
+        "hp": 65,
+        "maxHp": 65,
+        "order": {
+          "type": "gather",
+          "target": 27
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "attack",
+        "animTime": 44.44999999999961,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 3.2604000000000015,
+        "carriedKind": "ore",
+        "path": [
+          {
+            "x": 7.25,
+            "y": 16.25
+          }
+        ],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        }
+      },
+      {
+        "id": 251,
+        "side": 0,
+        "kind": "unit",
+        "role": "special",
+        "x": 23.02317374778999,
+        "y": 25.371754974684464,
+        "hp": 105,
+        "maxHp": 105,
+        "order": {
+          "type": "attackMove",
+          "x": 28.767501409922275,
+          "y": 26.498028712901156
+        },
+        "cooldown": 0.04999999999999924,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 1,
+        "animation": "idle",
+        "animTime": 1.4500000000000006,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 22.75,
+            "y": 24.25
+          }
+        ],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "abilityReadyAt": 651.599999999987,
+        "veteran": {
+          "experience": 53.395,
+          "rank": 1,
+          "nextSurvivalAt": 662.3999999999726,
+          "lastCombatAt": 635.6499999999696,
+          "promotions": [
+            {
+              "rank": 1,
+              "id": "bulwark"
+            }
+          ]
+        }
+      },
+      {
+        "id": 257,
+        "side": 0,
+        "kind": "unit",
+        "role": "worker",
+        "x": 8.052290287106793,
+        "y": 16.033603028904377,
+        "hp": 65,
+        "maxHp": 65,
+        "order": {
+          "type": "gather",
+          "target": 31
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 1,
+        "animation": "walk",
+        "animTime": 32.4000000000003,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 8.75,
+            "y": 16.75
+          },
+          {
+            "x": 9.25,
+            "y": 17.25
+          },
+          {
+            "x": 9.75,
+            "y": 17.75
+          }
+        ],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        }
+      },
+      {
+        "id": 258,
+        "side": 0,
+        "kind": "unit",
+        "role": "cavalry",
+        "x": 25.610687176396127,
+        "y": 28.9063678399329,
+        "hp": 168.00110300797147,
+        "maxHp": 210,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 1.0499999999999998,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 0,
+        "animation": "attack",
+        "animTime": 0.25,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 25.25,
+            "y": 28.75
+          },
+          {
+            "x": 25.75,
+            "y": 28.75
+          }
+        ],
+        "definitionId": "fairy-cavalry",
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0,
+          "charge": {
+            "distance": 0,
+            "heading": 0,
+            "lastMovedAt": 635.4499999999698
+          }
+        },
+        "abilityReadyAt": 640.0499999999884,
+        "veteran": {
+          "experience": 142.96300203815576,
+          "rank": 2,
+          "nextSurvivalAt": 660.2999999999745,
+          "lastCombatAt": 636.8499999999685,
+          "promotions": [
+            {
+              "rank": 1,
+              "id": "bulwark"
+            },
+            {
+              "rank": 2,
+              "id": "bulwark"
+            }
+          ]
+        },
+        "specialistBuffs": [],
+        "shield": 0,
+        "lastDamagedAt": 620.8499999999831,
+        "lastAttacker": 163
+      },
+      {
+        "id": 267,
+        "side": 0,
+        "kind": "unit",
+        "role": "worker",
+        "x": 9.358497007977117,
+        "y": 18.52027432239805,
+        "hp": 65,
+        "maxHp": 65,
+        "order": {
+          "type": "gather",
+          "target": 31
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 0,
+        "animation": "attack",
+        "animTime": 20.350000000000154,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 16.30199999999996,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 9.75,
+            "y": 17.75
+          }
+        ],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        }
+      },
+      {
+        "id": 268,
+        "side": 0,
+        "kind": "unit",
+        "role": "ranged",
+        "x": 10.016243714839248,
+        "y": 10.094584520399474,
+        "hp": 85,
+        "maxHp": 85,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 3,
+        "animation": "idle",
+        "animTime": 18.950000000000134,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        }
+      },
+      {
+        "id": 269,
+        "side": 0,
+        "kind": "unit",
+        "role": "spear",
+        "x": 10.65548934754067,
+        "y": 9.733737446504527,
+        "hp": 125,
+        "maxHp": 125,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 3,
+        "animation": "idle",
+        "animTime": 18.350000000000126,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        }
+      },
+      {
+        "id": 276,
+        "side": 0,
+        "kind": "unit",
+        "role": "worker",
+        "x": 7.830819789273992,
+        "y": 16.655720347932643,
+        "hp": 65,
+        "maxHp": 65,
+        "order": {
+          "type": "gather",
+          "target": 27
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "attack",
+        "animTime": 8.299999999999983,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 12.44879999999998,
+        "carriedKind": "ore",
+        "path": [
+          {
+            "x": 7.25,
+            "y": 16.25
+          }
+        ],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        }
+      },
+      {
+        "id": 279,
+        "side": 0,
+        "kind": "unit",
+        "role": "melee",
+        "x": 9.57308890435864,
+        "y": 9.629226136232969,
+        "hp": 140,
+        "maxHp": 140,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 4.749999999999991,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        }
+      },
+      {
+        "id": 281,
+        "side": 0,
+        "kind": "unit",
+        "role": "spear",
+        "x": 10.133691586688341,
+        "y": 9.48065763255124,
+        "hp": 125,
+        "maxHp": 125,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 3.5499999999999954,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "definitionId": "fairy-spear",
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        }
+      }
+    ],
+    "resources": [
+      {
+        "x": 3.5,
+        "y": 11.5,
+        "kind": "wood",
+        "amount": 0,
+        "maxAmount": 2600,
+        "id": 15
+      },
+      {
+        "x": 32.5,
+        "y": 24.5,
+        "kind": "wood",
+        "amount": 0,
+        "maxAmount": 2600,
+        "id": 16
+      },
+      {
+        "x": 5.5,
+        "y": 13.5,
+        "kind": "wood",
+        "amount": 0,
+        "maxAmount": 2600,
+        "id": 17
+      },
+      {
+        "x": 30.5,
+        "y": 22.5,
+        "kind": "wood",
+        "amount": 0,
+        "maxAmount": 2600,
+        "id": 18
+      },
+      {
+        "x": 2.5,
+        "y": 8.5,
+        "kind": "wood",
+        "amount": 0,
+        "maxAmount": 2600,
+        "id": 19
+      },
+      {
+        "x": 33.5,
+        "y": 27.5,
+        "kind": "wood",
+        "amount": 0,
+        "maxAmount": 2600,
+        "id": 20
+      },
+      {
+        "x": 12.5,
+        "y": 4.5,
+        "kind": "ore",
+        "amount": 0,
+        "maxAmount": 2800,
+        "id": 21
+      },
+      {
+        "x": 23.5,
+        "y": 31.5,
+        "kind": "ore",
+        "amount": 0,
+        "maxAmount": 2800,
+        "id": 22
+      },
+      {
+        "x": 13.5,
+        "y": 7.5,
+        "kind": "ore",
+        "amount": 0,
+        "maxAmount": 2800,
+        "id": 23
+      },
+      {
+        "x": 22.5,
+        "y": 28.5,
+        "kind": "ore",
+        "amount": 0,
+        "maxAmount": 2800,
+        "id": 24
+      },
+      {
+        "x": 12.5,
+        "y": 11.5,
+        "kind": "crystal",
+        "amount": 0,
+        "maxAmount": 180,
+        "id": 25
+      },
+      {
+        "x": 23.5,
+        "y": 24.5,
+        "kind": "crystal",
+        "amount": 0,
+        "maxAmount": 180,
+        "id": 26
+      },
+      {
+        "x": 7.5,
+        "y": 17.5,
+        "kind": "ore",
+        "amount": 1451.0205999995535,
+        "maxAmount": 2200,
+        "id": 27
+      },
+      {
+        "x": 28.5,
+        "y": 18.5,
+        "kind": "ore",
+        "amount": 1572.8863999986886,
+        "maxAmount": 2200,
+        "id": 28
+      },
+      {
+        "x": 9.5,
+        "y": 15.5,
+        "kind": "crystal",
+        "amount": 0,
+        "maxAmount": 400,
+        "id": 29
+      },
+      {
+        "x": 26.5,
+        "y": 20.5,
+        "kind": "crystal",
+        "amount": 292.0000000000324,
+        "maxAmount": 400,
+        "id": 30
+      },
+      {
+        "x": 10.5,
+        "y": 18.5,
+        "kind": "wood",
+        "amount": 1590.508799999154,
+        "maxAmount": 3000,
+        "id": 31
+      },
+      {
+        "x": 25.5,
+        "y": 17.5,
+        "kind": "wood",
+        "amount": 1350.3401999970292,
+        "maxAmount": 3000,
+        "id": 32
+      },
+      {
+        "x": 12.5,
+        "y": 20.5,
+        "kind": "ore",
+        "amount": 2200,
+        "maxAmount": 2200,
+        "id": 33
+      },
+      {
+        "x": 23.5,
+        "y": 15.5,
+        "kind": "ore",
+        "amount": 2200,
+        "maxAmount": 2200,
+        "id": 34
+      },
+      {
+        "x": 14.5,
+        "y": 18.5,
+        "kind": "crystal",
+        "amount": 400,
+        "maxAmount": 400,
+        "id": 35
+      },
+      {
+        "x": 21.5,
+        "y": 17.5,
+        "kind": "crystal",
+        "amount": 369.55120000000915,
+        "maxAmount": 400,
+        "id": 36
+      }
+    ],
+    "players": [
+      {
+        "faction": "fairies",
+        "wood": 579.7319999980539,
+        "ore": 2724.229999998419,
+        "crystal": 3.551400000003511,
+        "population": 32,
+        "cap": 52,
+        "upgrades": [
+          "worker-speed",
+          "worker-harvest",
+          "town-age",
+          "tempered-armor",
+          "forged-weapons",
+          "citadel-age",
+          "veteran-arms"
+        ]
+      },
+      {
+        "faction": "dwarves",
+        "wood": 708.4103999999895,
+        "ore": 2254.113599999374,
+        "crystal": 70.33380000000422,
+        "population": 0,
+        "cap": 20,
+        "upgrades": [
+          "worker-speed",
+          "worker-harvest",
+          "town-age",
+          "tempered-armor",
+          "forged-weapons",
+          "citadel-age",
+          "veteran-arms"
+        ],
+        "heroRecovery": [
+          {
+            "definitionId": "core:dwarves-commander",
+            "availableAt": 649.4499999999844
+          }
+        ]
+      }
+    ],
+    "winner": 0,
+    "events": [
+      {
+        "type": "attack",
+        "x": 26.45081750711913,
+        "y": 26.431881435984202,
+        "side": 0,
+        "target": 8,
+        "source": 183,
+        "amount": 23.894776740794914
+      },
+      {
+        "type": "death",
+        "x": 28.5,
+        "y": 28.5,
+        "side": 1,
+        "source": 8
+      }
+    ],
+    "explored": [
+      [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150,
+        151,
+        152,
+        153,
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188,
+        189,
+        190,
+        191,
+        192,
+        193,
+        194,
+        195,
+        216,
+        217,
+        218,
+        219,
+        220,
+        221,
+        222,
+        223,
+        224,
+        225,
+        226,
+        227,
+        228,
+        229,
+        230,
+        231,
+        252,
+        253,
+        254,
+        255,
+        256,
+        257,
+        258,
+        259,
+        260,
+        261,
+        262,
+        263,
+        264,
+        265,
+        266,
+        267,
+        268,
+        288,
+        289,
+        290,
+        291,
+        292,
+        293,
+        294,
+        295,
+        296,
+        297,
+        298,
+        299,
+        300,
+        301,
+        302,
+        303,
+        324,
+        325,
+        326,
+        327,
+        328,
+        329,
+        330,
+        331,
+        332,
+        333,
+        334,
+        335,
+        336,
+        337,
+        338,
+        339,
+        360,
+        361,
+        362,
+        363,
+        364,
+        365,
+        366,
+        367,
+        368,
+        369,
+        370,
+        371,
+        372,
+        373,
+        374,
+        375,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409,
+        410,
+        411,
+        432,
+        433,
+        434,
+        435,
+        436,
+        437,
+        438,
+        439,
+        440,
+        441,
+        442,
+        443,
+        444,
+        445,
+        446,
+        469,
+        470,
+        471,
+        472,
+        473,
+        474,
+        475,
+        476,
+        477,
+        478,
+        479,
+        480,
+        481,
+        506,
+        507,
+        508,
+        509,
+        510,
+        511,
+        512,
+        513,
+        514,
+        515,
+        516,
+        543,
+        544,
+        545,
+        546,
+        547,
+        548,
+        549,
+        550,
+        551,
+        583,
+        468,
+        504,
+        505,
+        541,
+        542,
+        578,
+        579,
+        580,
+        581,
+        582,
+        584,
+        617,
+        585,
+        586,
+        517,
+        552,
+        587,
+        447,
+        482,
+        518,
+        553,
+        588,
+        196,
+        232,
+        304,
+        305,
+        340,
+        376,
+        412,
+        616,
+        618,
+        619,
+        620,
+        341,
+        377,
+        413,
+        448,
+        449,
+        450,
+        483,
+        484,
+        485,
+        519,
+        520,
+        521,
+        554,
+        555,
+        556,
+        557,
+        577,
+        589,
+        590,
+        591,
+        592,
+        593,
+        614,
+        615,
+        621,
+        622,
+        623,
+        624,
+        625,
+        626,
+        627,
+        628,
+        651,
+        652,
+        653,
+        654,
+        655,
+        656,
+        657,
+        658,
+        659,
+        660,
+        661,
+        662,
+        663,
+        688,
+        689,
+        690,
+        691,
+        692,
+        693,
+        694,
+        695,
+        696,
+        697,
+        698,
+        725,
+        726,
+        727,
+        728,
+        729,
+        730,
+        731,
+        732,
+        733,
+        765,
+        540,
+        576,
+        269,
+        160,
+        197,
+        233,
+        613,
+        650,
+        87,
+        124,
+        161,
+        234,
+        270,
+        306,
+        342,
+        50,
+        88,
+        125,
+        198,
+        378,
+        414,
+        51,
+        162,
+        235,
+        271,
+        307,
+        89,
+        343,
+        13,
+        52,
+        14,
+        199,
+        272,
+        308,
+        344,
+        379,
+        380,
+        415,
+        416,
+        451,
+        452,
+        486,
+        487,
+        522,
+        523,
+        558,
+        126,
+        163,
+        200,
+        236,
+        345,
+        488,
+        612,
+        649,
+        687,
+        53,
+        90,
+        127,
+        164,
+        15,
+        16,
+        524,
+        559,
+        594,
+        629,
+        417,
+        453,
+        560,
+        595,
+        630,
+        664,
+        381,
+        489,
+        525,
+        596,
+        631,
+        665,
+        666,
+        699,
+        700,
+        561,
+        632,
+        667,
+        701,
+        702,
+        735,
+        597,
+        668,
+        703,
+        734,
+        736,
+        737,
+        526,
+        562,
+        633,
+        669,
+        704,
+        738,
+        739,
+        769,
+        770,
+        771,
+        772,
+        773,
+        490,
+        598,
+        634,
+        705,
+        740,
+        768,
+        774,
+        775,
+        807,
+        808,
+        454,
+        563,
+        599,
+        635,
+        670,
+        706,
+        741,
+        776,
+        806,
+        809,
+        810,
+        811,
+        527,
+        671,
+        707,
+        742,
+        777,
+        805,
+        812,
+        843,
+        844,
+        845,
+        846,
+        491,
+        564,
+        600,
+        636,
+        672,
+        743,
+        778,
+        813,
+        847,
+        848,
+        708,
+        744,
+        779,
+        814,
+        842,
+        849,
+        880,
+        881,
+        882,
+        883,
+        884,
+        637,
+        673,
+        709,
+        780,
+        815,
+        850,
+        851,
+        879,
+        885,
+        528,
+        601,
+        745,
+        781,
+        816,
+        852,
+        886,
+        887,
+        916,
+        917,
+        918,
+        919,
+        920,
+        921,
+        674,
+        710,
+        746,
+        817,
+        888,
+        922,
+        954,
+        955,
+        956,
+        17,
+        54,
+        91,
+        128,
+        18,
+        55,
+        19,
+        92,
+        56,
+        20,
+        724,
+        686,
+        723,
+        762,
+        763,
+        764,
+        761,
+        766,
+        0,
+        1,
+        36,
+        273,
+        309,
+        382,
+        418,
+        237,
+        310,
+        346,
+        201,
+        274,
+        238,
+        165,
+        129,
+        202,
+        166,
+        93,
+        648,
+        684,
+        685,
+        721,
+        722,
+        383,
+        419,
+        347,
+        455,
+        311,
+        767,
+        803,
+        804,
+        802,
+        840,
+        841,
+        801,
+        838,
+        839,
+        877,
+        878,
+        876,
+        130,
+        167,
+        203,
+        204,
+        239,
+        240,
+        241,
+        275,
+        276,
+        277,
+        278,
+        312,
+        313,
+        314,
+        348,
+        349,
+        350,
+        384,
+        385,
+        386,
+        420,
+        421,
+        422,
+        423,
+        456,
+        457,
+        458,
+        492,
+        493,
+        494,
+        529,
+        530,
+        565,
+        566,
+        800,
+        837,
+        875,
+        874,
+        913,
+        912,
+        914,
+        915,
+        760,
+        759,
+        758,
+        796,
+        797,
+        798,
+        799,
+        795,
+        720,
+        835,
+        836,
+        21,
+        57,
+        58,
+        94,
+        95,
+        131,
+        132,
+        168,
+        834,
+        872,
+        873,
+        833,
+        871,
+        870,
+        832,
+        869,
+        908,
+        909,
+        910,
+        907,
+        911,
+        906,
+        945,
+        946,
+        949,
+        950,
+        951,
+        952,
+        953,
+        757,
+        756,
+        794,
+        793,
+        792,
+        830,
+        831,
+        829,
+        828,
+        866,
+        867,
+        868,
+        865,
+        864,
+        904,
+        903,
+        905,
+        602,
+        902,
+        942,
+        943,
+        941,
+        944,
+        940,
+        947,
+        939,
+        948,
+        978,
+        979,
+        980,
+        981,
+        977,
+        982,
+        983,
+        984,
+        985,
+        976,
+        1016,
+        1017,
+        1018,
+        1015,
+        986,
+        987,
+        988,
+        989,
+        1019,
+        1020,
+        1021,
+        1022,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        59,
+        60,
+        61,
+        62,
+        63,
+        96,
+        97,
+        98,
+        99,
+        100,
+        133,
+        134,
+        135,
+        136,
+        169,
+        170,
+        171,
+        172,
+        173,
+        205,
+        206,
+        207,
+        208,
+        209,
+        242,
+        243,
+        244,
+        245,
+        279,
+        280,
+        281,
+        315,
+        316,
+        317,
+        351,
+        352,
+        353,
+        387,
+        388,
+        424,
+        459,
+        460,
+        495,
+        638,
+        782,
+        64,
+        853,
+        531,
+        389,
+        496,
+        675,
+        711,
+        818,
+        567,
+        603,
+        639,
+        747,
+        783,
+        425,
+        532,
+        923,
+        461,
+        568,
+        819,
+        854,
+        889,
+        924,
+        957,
+        855,
+        890,
+        925,
+        958,
+        959,
+        748,
+        784,
+        926,
+        960,
+        961,
+        992,
+        993,
+        994,
+        991,
+        820,
+        891,
+        990,
+        995,
+        996,
+        497,
+        533,
+        604,
+        569,
+        640,
+        605,
+        676,
+        462,
+        426,
+        498,
+        641,
+        534,
+        712,
+        390,
+        570,
+        606,
+        677,
+        713,
+        642,
+        354,
+        678,
+        714,
+        749,
+        785,
+        499,
+        535,
+        571,
+        607,
+        643,
+        463,
+        427,
+        679,
+        750,
+        821,
+        856,
+        715,
+        786,
+        572,
+        608,
+        751,
+        536,
+        644,
+        822,
+        857,
+        892,
+        500,
+        680,
+        787,
+        927,
+        716,
+        962,
+        858,
+        893,
+        928,
+        823,
+        963,
+        752,
+        997,
+        894,
+        929,
+        1027,
+        1028,
+        1029,
+        1026,
+        1030,
+        1025,
+        964,
+        998,
+        1024,
+        1031,
+        788,
+        859,
+        1032,
+        464,
+        999,
+        391,
+        501,
+        537,
+        573,
+        609,
+        645,
+        681,
+        717,
+        1063,
+        1064,
+        1065,
+        1033,
+        428,
+        610,
+        753,
+        1023,
+        1062,
+        1066,
+        1067,
+        930,
+        965,
+        1000,
+        1034,
+        1061,
+        824,
+        895,
+        1057,
+        1058,
+        1059,
+        1060,
+        1095,
+        1096,
+        1097,
+        1098,
+        1099,
+        1100,
+        1101,
+        1133,
+        1134,
+        1135,
+        1094,
+        1102,
+        1132,
+        1136,
+        1137,
+        465,
+        574,
+        646,
+        682,
+        1068,
+        1131,
+        538,
+        1103,
+        1069,
+        1138,
+        789,
+        860,
+        1035,
+        1070,
+        1104,
+        718,
+        825,
+        896,
+        931,
+        966,
+        1001,
+        1036,
+        1071,
+        1002,
+        1037,
+        1072,
+        1105,
+        1139,
+        1169,
+        1170,
+        1171,
+        1172,
+        1173,
+        1106,
+        861,
+        1140,
+        1107,
+        967,
+        1038,
+        1073,
+        1108,
+        1141,
+        1142,
+        1003,
+        1143,
+        1074,
+        1109,
+        932,
+        968,
+        1039,
+        1144,
+        1004,
+        1075,
+        1110,
+        1145,
+        1176,
+        1177,
+        1178,
+        1179,
+        1040,
+        1111,
+        1146,
+        1175,
+        1180,
+        897,
+        933,
+        969,
+        1005,
+        1076,
+        1181,
+        1174,
+        1213,
+        1214,
+        1147,
+        1212,
+        1215,
+        1041,
+        1182,
+        1216,
+        754,
+        790,
+        826,
+        862,
+        898,
+        755,
+        791,
+        1168,
+        827,
+        1093,
+        1130,
+        1167,
+        1211,
+        1210,
+        1217,
+        1248,
+        1249,
+        1250,
+        1251,
+        1208,
+        1209,
+        1246,
+        1247,
+        1207,
+        1245,
+        1206,
+        1243,
+        1244,
+        1282,
+        1283,
+        1284,
+        1205,
+        1242,
+        1281,
+        1204,
+        1241,
+        1278,
+        1279,
+        1280,
+        1240,
+        1277,
+        1285,
+        1203,
+        1276,
+        1286,
+        1252,
+        1287,
+        934,
+        1239,
+        611,
+        647,
+        683,
+        719,
+        575,
+        863,
+        899,
+        1183,
+        1218,
+        1253,
+        1112,
+        1148,
+        1219,
+        1254,
+        1288
+      ],
+      [
+        712,
+        744,
+        745,
+        746,
+        747,
+        748,
+        749,
+        750,
+        751,
+        752,
+        779,
+        780,
+        781,
+        782,
+        783,
+        784,
+        785,
+        786,
+        787,
+        788,
+        789,
+        814,
+        815,
+        816,
+        817,
+        818,
+        819,
+        820,
+        821,
+        822,
+        823,
+        824,
+        825,
+        826,
+        849,
+        850,
+        851,
+        852,
+        853,
+        854,
+        855,
+        856,
+        857,
+        858,
+        859,
+        860,
+        861,
+        862,
+        863,
+        884,
+        885,
+        886,
+        887,
+        888,
+        889,
+        890,
+        891,
+        892,
+        893,
+        894,
+        895,
+        896,
+        897,
+        898,
+        899,
+        920,
+        921,
+        922,
+        923,
+        924,
+        925,
+        926,
+        927,
+        928,
+        929,
+        930,
+        931,
+        932,
+        933,
+        934,
+        935,
+        956,
+        957,
+        958,
+        959,
+        960,
+        961,
+        962,
+        963,
+        964,
+        965,
+        966,
+        967,
+        968,
+        969,
+        970,
+        971,
+        992,
+        993,
+        994,
+        995,
+        996,
+        997,
+        998,
+        999,
+        1000,
+        1001,
+        1002,
+        1003,
+        1004,
+        1005,
+        1006,
+        1007,
+        1027,
+        1028,
+        1029,
+        1030,
+        1031,
+        1032,
+        1033,
+        1034,
+        1035,
+        1036,
+        1037,
+        1038,
+        1039,
+        1040,
+        1041,
+        1042,
+        1043,
+        1064,
+        1065,
+        1066,
+        1067,
+        1068,
+        1069,
+        1070,
+        1071,
+        1072,
+        1073,
+        1074,
+        1075,
+        1076,
+        1077,
+        1078,
+        1079,
+        1100,
+        1101,
+        1102,
+        1103,
+        1104,
+        1105,
+        1106,
+        1107,
+        1108,
+        1109,
+        1110,
+        1111,
+        1112,
+        1113,
+        1114,
+        1115,
+        1136,
+        1137,
+        1138,
+        1139,
+        1140,
+        1141,
+        1142,
+        1143,
+        1144,
+        1145,
+        1146,
+        1147,
+        1148,
+        1149,
+        1150,
+        1151,
+        1172,
+        1173,
+        1174,
+        1175,
+        1176,
+        1177,
+        1178,
+        1179,
+        1180,
+        1181,
+        1182,
+        1183,
+        1184,
+        1185,
+        1186,
+        1187,
+        1209,
+        1210,
+        1211,
+        1212,
+        1213,
+        1214,
+        1215,
+        1216,
+        1217,
+        1218,
+        1219,
+        1220,
+        1221,
+        1222,
+        1223,
+        1246,
+        1247,
+        1248,
+        1249,
+        1250,
+        1251,
+        1252,
+        1253,
+        1254,
+        1255,
+        1256,
+        1257,
+        1258,
+        1283,
+        1284,
+        1285,
+        1286,
+        1287,
+        1288,
+        1289,
+        1290,
+        1291,
+        1292,
+        1293,
+        678,
+        711,
+        713,
+        714,
+        715,
+        716,
+        717,
+        753,
+        754,
+        790,
+        791,
+        827,
+        710,
+        709,
+        708,
+        743,
+        778,
+        707,
+        742,
+        777,
+        813,
+        848,
+        883,
+        919,
+        955,
+        990,
+        991,
+        1063,
+        1099,
+        676,
+        677,
+        679,
+        530,
+        562,
+        563,
+        564,
+        565,
+        566,
+        567,
+        568,
+        569,
+        570,
+        597,
+        598,
+        599,
+        600,
+        601,
+        602,
+        603,
+        604,
+        605,
+        606,
+        607,
+        632,
+        633,
+        634,
+        635,
+        636,
+        637,
+        638,
+        639,
+        640,
+        641,
+        642,
+        643,
+        644,
+        667,
+        668,
+        669,
+        670,
+        671,
+        672,
+        673,
+        674,
+        675,
+        680,
+        681,
+        702,
+        703,
+        704,
+        705,
+        706,
+        718,
+        738,
+        739,
+        740,
+        741,
+        774,
+        775,
+        776,
+        810,
+        811,
+        812,
+        845,
+        846,
+        847,
+        882,
+        918,
+        954,
+        755,
+        719,
+        1026,
+        1062,
+        1098,
+        1135,
+        645,
+        682,
+        953,
+        989,
+        1025,
+        1134,
+        1171,
+        1208,
+        917,
+        1061,
+        1097,
+        1245,
+        1133,
+        1170,
+        1207,
+        881,
+        1244,
+        1282,
+        1206,
+        1243,
+        1281,
+        737,
+        772,
+        773,
+        807,
+        808,
+        809,
+        843,
+        844,
+        879,
+        880,
+        915,
+        916,
+        950,
+        951,
+        952,
+        987,
+        988,
+        1023,
+        1024,
+        1059,
+        1060,
+        1095,
+        1096,
+        1132,
+        1169,
+        1280,
+        1168,
+        1205,
+        1242,
+        1279,
+        1131,
+        683,
+        646,
+        608,
+        701,
+        736,
+        666,
+        771,
+        631,
+        665,
+        700,
+        735,
+        842,
+        878,
+        596,
+        630,
+        664,
+        806,
+        594,
+        595,
+        629,
+        699,
+        770,
+        560,
+        561,
+        593,
+        628,
+        663,
+        734,
+        558,
+        559,
+        592,
+        627,
+        698,
+        523,
+        524,
+        525,
+        557,
+        662,
+        521,
+        522,
+        526,
+        556,
+        591,
+        626,
+        697,
+        733,
+        769,
+        914,
+        986,
+        805,
+        841,
+        877,
+        913,
+        1022,
+        487,
+        488,
+        520,
+        527,
+        555,
+        590,
+        661,
+        485,
+        486,
+        489,
+        519,
+        554,
+        589,
+        625,
+        484,
+        490,
+        518,
+        624,
+        660,
+        696,
+        732,
+        768,
+        449,
+        450,
+        451,
+        452,
+        483,
+        553,
+        588,
+        447,
+        448,
+        453,
+        482,
+        517,
+        552,
+        659,
+        413,
+        414,
+        446,
+        481,
+        516,
+        587,
+        623,
+        695,
+        731,
+        804,
+        411,
+        412,
+        415,
+        445,
+        480,
+        551,
+        410,
+        416,
+        515,
+        586,
+        622,
+        658,
+        375,
+        376,
+        377,
+        378,
+        409,
+        444,
+        479,
+        550,
+        694,
+        374,
+        379,
+        408,
+        443,
+        514,
+        339,
+        340,
+        341,
+        373,
+        407,
+        417,
+        478,
+        585,
+        337,
+        338,
+        342,
+        372,
+        380,
+        442,
+        513,
+        549,
+        621,
+        303,
+        304,
+        336,
+        343,
+        371,
+        406,
+        477,
+        301,
+        302,
+        305,
+        335,
+        370,
+        405,
+        441,
+        657,
+        300,
+        334,
+        369,
+        440,
+        476,
+        512,
+        548,
+        584,
+        265,
+        266,
+        267,
+        268,
+        299,
+        306,
+        404,
+        263,
+        264,
+        269,
+        298,
+        333,
+        368,
+        475,
+        228,
+        229,
+        230,
+        231,
+        262,
+        297,
+        307,
+        332,
+        439,
+        511,
+        227,
+        232,
+        270,
+        403,
+        192,
+        193,
+        194,
+        195,
+        226,
+        233,
+        261,
+        296,
+        367,
+        191,
+        196,
+        234,
+        271,
+        344,
+        157,
+        158,
+        159,
+        190,
+        197,
+        225,
+        260,
+        308,
+        331,
+        155,
+        156,
+        160,
+        198,
+        235,
+        121,
+        122,
+        123,
+        154,
+        161,
+        189,
+        224,
+        272,
+        295,
+        647,
+        381,
+        454,
+        491,
+        528,
+        1259,
+        1294,
+        1295,
+        492,
+        529,
+        493,
+        455,
+        456,
+        494,
+        531,
+        418,
+        419,
+        457,
+        420,
+        421,
+        458,
+        495,
+        382,
+        383,
+        384,
+        459,
+        532,
+        385,
+        422,
+        496,
+        609,
+        346,
+        347,
+        386,
+        423,
+        460,
+        533,
+        348,
+        424,
+        497,
+        387,
+        461,
+        534,
+        498,
+        345,
+        349,
+        949,
+        985,
+        1058,
+        1021,
+        1094,
+        1057,
+        1130,
+        1167,
+        1204,
+        1093,
+        1241,
+        1166,
+        1203,
+        1240,
+        1278,
+        1129,
+        1277,
+        1202,
+        1239,
+        1276,
+        571,
+        572,
+        840,
+        876,
+        767,
+        803,
+        839,
+        912,
+        730,
+        766,
+        802,
+        875,
+        693,
+        729,
+        765,
+        838,
+        911,
+        1165,
+        656,
+        692,
+        801,
+        874,
+        948,
+        1275,
+        984,
+        1020,
+        1056,
+        1238,
+        620,
+        728,
+        764,
+        800,
+        837,
+        910,
+        1092,
+        619,
+        655,
+        691,
+        727,
+        836,
+        873,
+        947,
+        1201,
+        1128,
+        583,
+        763,
+        799,
+        872,
+        909,
+        946,
+        983,
+        1019,
+        1055,
+        547,
+        618,
+        654,
+        690,
+        726,
+        835,
+        1091,
+        582,
+        762,
+        798,
+        871,
+        908,
+        945,
+        1164,
+        546,
+        617,
+        653,
+        689,
+        725,
+        761,
+        834,
+        907,
+        944,
+        982,
+        1018,
+        510,
+        581,
+        797,
+        870,
+        1054,
+        1127,
+        545,
+        981,
+        1017,
+        1090,
+        980,
+        1053,
+        943,
+        474,
+        616,
+        652,
+        688,
+        724,
+        580,
+        760,
+        833,
+        509,
+        544,
+        615,
+        651,
+        687,
+        723,
+        796,
+        473,
+        508,
+        579,
+        759,
+        438,
+        543,
+        437,
+        472,
+        507,
+        402,
+        578,
+        614,
+        650,
+        686,
+        401,
+        436,
+        471,
+        542,
+        366,
+        400,
+        435,
+        506,
+        365,
+        470,
+        832,
+        869,
+        535,
+        536,
+        573,
+        610,
+        499,
+        537,
+        1237,
+        1274,
+        1200,
+        425,
+        462,
+        388,
+        1126,
+        1163,
+        463,
+        1016,
+        1089,
+        350,
+        1052,
+        1162,
+        979,
+        1125,
+        1015,
+        309,
+        310,
+        311,
+        1236,
+        906,
+        312,
+        942,
+        273,
+        274,
+        1088,
+        1273,
+        1199,
+        978,
+        275,
+        426,
+        236,
+        905,
+        1051,
+        237,
+        238,
+        199,
+        200,
+        162,
+        163,
+        201,
+        574,
+        611,
+        500,
+        941,
+        868,
+        575,
+        538,
+        795,
+        722,
+        831,
+        904,
+        758,
+        794,
+        867,
+        389,
+        649,
+        685,
+        721,
+        830,
+        903,
+        940,
+        977,
+        1014,
+        577,
+        613,
+        757,
+        793,
+        829,
+        866,
+        902,
+        939,
+        976,
+        1013,
+        541,
+        648,
+        684,
+        720,
+        330,
+        364,
+        399,
+        434,
+        505,
+        576,
+        612,
+        756,
+        351,
+        501,
+        539,
+        464,
+        427,
+        313,
+        465,
+        1272,
+        1235,
+        502,
+        1050,
+        1086,
+        1087,
+        1123,
+        1124,
+        1159,
+        1160,
+        1161,
+        1195,
+        1196,
+        1197,
+        1198,
+        1232,
+        1233,
+        1234,
+        1269,
+        1270,
+        1271
+      ]
+    ],
+    "visible": [
+      [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150,
+        151,
+        152,
+        153,
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188,
+        189,
+        190,
+        191,
+        192,
+        193,
+        194,
+        195,
+        216,
+        217,
+        218,
+        219,
+        220,
+        221,
+        222,
+        223,
+        224,
+        225,
+        226,
+        227,
+        228,
+        229,
+        230,
+        231,
+        252,
+        253,
+        254,
+        255,
+        256,
+        257,
+        258,
+        259,
+        260,
+        261,
+        262,
+        263,
+        264,
+        265,
+        266,
+        267,
+        268,
+        288,
+        289,
+        290,
+        291,
+        292,
+        293,
+        294,
+        295,
+        296,
+        297,
+        298,
+        299,
+        300,
+        301,
+        302,
+        303,
+        324,
+        325,
+        326,
+        327,
+        328,
+        329,
+        330,
+        331,
+        332,
+        333,
+        334,
+        335,
+        336,
+        337,
+        338,
+        339,
+        360,
+        361,
+        362,
+        363,
+        364,
+        365,
+        366,
+        367,
+        368,
+        369,
+        370,
+        371,
+        372,
+        373,
+        374,
+        375,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409,
+        410,
+        411,
+        432,
+        433,
+        434,
+        435,
+        436,
+        437,
+        438,
+        439,
+        440,
+        441,
+        442,
+        443,
+        444,
+        445,
+        446,
+        469,
+        470,
+        471,
+        472,
+        473,
+        474,
+        475,
+        476,
+        477,
+        478,
+        479,
+        480,
+        481,
+        506,
+        507,
+        508,
+        509,
+        510,
+        511,
+        512,
+        513,
+        514,
+        515,
+        516,
+        543,
+        544,
+        545,
+        546,
+        547,
+        548,
+        549,
+        550,
+        551,
+        583,
+        304,
+        305,
+        340,
+        341,
+        376,
+        377,
+        412,
+        413,
+        447,
+        448,
+        449,
+        450,
+        482,
+        483,
+        484,
+        485,
+        505,
+        517,
+        518,
+        519,
+        520,
+        521,
+        541,
+        542,
+        552,
+        553,
+        554,
+        555,
+        556,
+        557,
+        577,
+        578,
+        579,
+        580,
+        581,
+        582,
+        584,
+        585,
+        586,
+        587,
+        588,
+        589,
+        590,
+        591,
+        592,
+        593,
+        614,
+        615,
+        616,
+        617,
+        618,
+        619,
+        620,
+        621,
+        622,
+        623,
+        624,
+        625,
+        626,
+        627,
+        628,
+        651,
+        652,
+        653,
+        654,
+        655,
+        656,
+        657,
+        658,
+        659,
+        660,
+        661,
+        662,
+        663,
+        688,
+        689,
+        690,
+        691,
+        692,
+        693,
+        694,
+        695,
+        696,
+        697,
+        698,
+        725,
+        726,
+        727,
+        728,
+        729,
+        730,
+        731,
+        732,
+        733,
+        765,
+        50,
+        51,
+        52,
+        87,
+        88,
+        89,
+        124,
+        125,
+        126,
+        160,
+        161,
+        162,
+        163,
+        196,
+        197,
+        198,
+        199,
+        200,
+        232,
+        233,
+        234,
+        235,
+        236,
+        269,
+        270,
+        271,
+        272,
+        306,
+        307,
+        308,
+        342,
+        343,
+        344,
+        345,
+        378,
+        379,
+        380,
+        414,
+        415,
+        416,
+        451,
+        452,
+        486,
+        487,
+        488,
+        522,
+        523,
+        558,
+        0,
+        1,
+        36,
+        468,
+        504,
+        540,
+        421,
+        422,
+        423,
+        424,
+        425,
+        455,
+        456,
+        457,
+        458,
+        459,
+        460,
+        461,
+        462,
+        463,
+        489,
+        490,
+        491,
+        492,
+        493,
+        494,
+        495,
+        496,
+        497,
+        498,
+        499,
+        500,
+        524,
+        525,
+        526,
+        527,
+        528,
+        529,
+        530,
+        531,
+        532,
+        533,
+        534,
+        535,
+        536,
+        537,
+        560,
+        561,
+        562,
+        563,
+        564,
+        565,
+        566,
+        567,
+        568,
+        569,
+        570,
+        571,
+        572,
+        573,
+        574,
+        595,
+        596,
+        597,
+        598,
+        599,
+        600,
+        601,
+        602,
+        603,
+        604,
+        605,
+        606,
+        607,
+        608,
+        609,
+        610,
+        611,
+        631,
+        632,
+        633,
+        634,
+        635,
+        636,
+        637,
+        638,
+        639,
+        640,
+        641,
+        642,
+        643,
+        644,
+        645,
+        646,
+        647,
+        667,
+        668,
+        669,
+        670,
+        671,
+        672,
+        673,
+        674,
+        675,
+        676,
+        677,
+        678,
+        679,
+        680,
+        681,
+        682,
+        683,
+        702,
+        703,
+        704,
+        705,
+        706,
+        707,
+        708,
+        709,
+        710,
+        711,
+        712,
+        713,
+        714,
+        715,
+        716,
+        717,
+        718,
+        719,
+        738,
+        739,
+        740,
+        741,
+        742,
+        743,
+        744,
+        745,
+        746,
+        747,
+        748,
+        749,
+        750,
+        751,
+        752,
+        753,
+        754,
+        755,
+        774,
+        775,
+        776,
+        777,
+        778,
+        779,
+        780,
+        781,
+        782,
+        783,
+        784,
+        785,
+        786,
+        787,
+        788,
+        789,
+        790,
+        791,
+        811,
+        812,
+        813,
+        814,
+        815,
+        816,
+        817,
+        818,
+        819,
+        820,
+        821,
+        822,
+        823,
+        824,
+        825,
+        826,
+        827,
+        847,
+        848,
+        849,
+        850,
+        851,
+        852,
+        853,
+        854,
+        855,
+        856,
+        857,
+        858,
+        859,
+        860,
+        861,
+        862,
+        863,
+        883,
+        884,
+        885,
+        886,
+        887,
+        888,
+        889,
+        890,
+        891,
+        892,
+        893,
+        894,
+        895,
+        896,
+        897,
+        898,
+        920,
+        921,
+        922,
+        923,
+        924,
+        925,
+        926,
+        927,
+        928,
+        929,
+        930,
+        931,
+        932,
+        933,
+        934,
+        957,
+        958,
+        959,
+        960,
+        961,
+        962,
+        963,
+        964,
+        965,
+        966,
+        967,
+        968,
+        969,
+        994,
+        995,
+        996,
+        997,
+        998,
+        999,
+        1000,
+        1001,
+        1002,
+        1003,
+        1004,
+        1032,
+        1033,
+        1034,
+        1035,
+        1036,
+        1037,
+        1038,
+        13,
+        14,
+        15,
+        16,
+        17,
+        53,
+        90,
+        576,
+        613,
+        454,
+        559,
+        594,
+        629,
+        630,
+        665,
+        666,
+        701,
+        737,
+        773,
+        809,
+        810,
+        845,
+        846,
+        882,
+        918,
+        919,
+        955,
+        956,
+        992,
+        993,
+        1030,
+        1031,
+        612,
+        648,
+        649,
+        650,
+        684,
+        685,
+        686,
+        687,
+        721,
+        722,
+        723,
+        724,
+        761,
+        346,
+        347,
+        348,
+        349,
+        381,
+        382,
+        383,
+        384,
+        385,
+        386,
+        417,
+        418,
+        419,
+        420,
+        453,
+        664,
+        700,
+        734,
+        760,
+        762,
+        763,
+        764,
+        766,
+        767,
+        768,
+        769,
+        797,
+        798,
+        799,
+        800,
+        801,
+        802,
+        803,
+        804,
+        835,
+        836,
+        837,
+        838,
+        426,
+        464,
+        501,
+        538,
+        575,
+        899,
+        18,
+        19,
+        20,
+        54,
+        55,
+        56,
+        91,
+        92,
+        93,
+        127,
+        128,
+        164,
+        758,
+        759,
+        795,
+        796,
+        833,
+        834,
+        21,
+        57,
+        58,
+        94,
+        95,
+        129,
+        130,
+        131,
+        132,
+        165,
+        166,
+        167,
+        168,
+        201,
+        202,
+        203,
+        204,
+        237,
+        238,
+        239,
+        240,
+        273,
+        274,
+        275,
+        276,
+        277,
+        309,
+        310,
+        311,
+        312,
+        699,
+        735,
+        736,
+        770,
+        771,
+        772,
+        805,
+        806,
+        807,
+        808,
+        840,
+        841,
+        842,
+        843,
+        844,
+        876,
+        877,
+        878,
+        879,
+        880,
+        881,
+        912,
+        913,
+        914,
+        915,
+        916,
+        917,
+        949,
+        950,
+        951,
+        952,
+        953,
+        954,
+        985,
+        986,
+        987,
+        988,
+        989,
+        990,
+        991,
+        1022,
+        1023,
+        1024,
+        1025,
+        1026,
+        1027,
+        1028,
+        1029,
+        1039,
+        1058,
+        1059,
+        1060,
+        1061,
+        1062,
+        1063,
+        1064,
+        1065,
+        1066,
+        1067,
+        1068,
+        1069,
+        1070,
+        1071,
+        1072,
+        1073,
+        1074,
+        1095,
+        1096,
+        1097,
+        1098,
+        1099,
+        1100,
+        1101,
+        1102,
+        1103,
+        1104,
+        1105,
+        1106,
+        1107,
+        1108,
+        1109,
+        1132,
+        1133,
+        1134,
+        1135,
+        1136,
+        1137,
+        1138,
+        1139,
+        1140,
+        1141,
+        1142,
+        1143,
+        1144,
+        1170,
+        1171,
+        1172,
+        1173,
+        1174,
+        1175,
+        1176,
+        1177,
+        1178,
+        1040,
+        1075,
+        1076,
+        1110,
+        1111,
+        1145,
+        1146,
+        1179,
+        1180,
+        1181,
+        1212,
+        1213,
+        1214,
+        1215,
+        1147,
+        1182,
+        1209,
+        1210,
+        1211,
+        1216,
+        1217,
+        1246,
+        1247,
+        1248,
+        1249,
+        1250,
+        1251,
+        1252,
+        1112,
+        1183,
+        1218,
+        1253,
+        839,
+        871,
+        872,
+        873,
+        874,
+        875,
+        1148,
+        1219,
+        1254,
+        1284,
+        1285,
+        1286,
+        1287,
+        1288,
+        1208,
+        1245,
+        1283,
+        832,
+        870,
+        909
+      ],
+      [
+        712,
+        744,
+        745,
+        746,
+        747,
+        748,
+        749,
+        750,
+        751,
+        752,
+        779,
+        780,
+        781,
+        782,
+        783,
+        784,
+        785,
+        786,
+        787,
+        788,
+        789,
+        814,
+        815,
+        816,
+        817,
+        818,
+        819,
+        820,
+        821,
+        822,
+        823,
+        824,
+        825,
+        826,
+        849,
+        850,
+        851,
+        852,
+        853,
+        854,
+        855,
+        856,
+        857,
+        858,
+        859,
+        860,
+        861,
+        862,
+        863,
+        884,
+        885,
+        886,
+        887,
+        888,
+        889,
+        890,
+        891,
+        892,
+        893,
+        894,
+        895,
+        896,
+        897,
+        898,
+        899,
+        920,
+        921,
+        922,
+        923,
+        924,
+        925,
+        926,
+        927,
+        928,
+        929,
+        930,
+        931,
+        932,
+        933,
+        934,
+        935,
+        956,
+        957,
+        958,
+        959,
+        960,
+        961,
+        962,
+        963,
+        964,
+        965,
+        966,
+        967,
+        968,
+        969,
+        970,
+        971,
+        992,
+        993,
+        994,
+        995,
+        996,
+        997,
+        998,
+        999,
+        1000,
+        1001,
+        1002,
+        1003,
+        1004,
+        1005,
+        1006,
+        1007,
+        1027,
+        1028,
+        1029,
+        1030,
+        1031,
+        1032,
+        1033,
+        1034,
+        1035,
+        1036,
+        1037,
+        1038,
+        1039,
+        1040,
+        1041,
+        1042,
+        1043,
+        1064,
+        1065,
+        1066,
+        1067,
+        1068,
+        1069,
+        1070,
+        1071,
+        1072,
+        1073,
+        1074,
+        1075,
+        1076,
+        1077,
+        1078,
+        1079,
+        1100,
+        1101,
+        1102,
+        1103,
+        1104,
+        1105,
+        1106,
+        1107,
+        1108,
+        1109,
+        1110,
+        1111,
+        1112,
+        1113,
+        1114,
+        1115,
+        1136,
+        1137,
+        1138,
+        1139,
+        1140,
+        1141,
+        1142,
+        1143,
+        1144,
+        1145,
+        1146,
+        1147,
+        1148,
+        1149,
+        1150,
+        1151,
+        1172,
+        1173,
+        1174,
+        1175,
+        1176,
+        1177,
+        1178,
+        1179,
+        1180,
+        1181,
+        1182,
+        1183,
+        1184,
+        1185,
+        1186,
+        1187,
+        1209,
+        1210,
+        1211,
+        1212,
+        1213,
+        1214,
+        1215,
+        1216,
+        1217,
+        1218,
+        1219,
+        1220,
+        1221,
+        1222,
+        1223,
+        1246,
+        1247,
+        1248,
+        1249,
+        1250,
+        1251,
+        1252,
+        1253,
+        1254,
+        1255,
+        1256,
+        1257,
+        1258,
+        1283,
+        1284,
+        1285,
+        1286,
+        1287,
+        1288,
+        1289,
+        1290,
+        1291,
+        1292,
+        1293,
+        717,
+        753,
+        754,
+        755,
+        790,
+        791,
+        827,
+        1259,
+        1294,
+        1295,
+        1282,
+        1062,
+        1063,
+        1098,
+        1099,
+        1134,
+        1135,
+        1170,
+        1171,
+        1205,
+        1206,
+        1207,
+        1208,
+        1242,
+        1243,
+        1244,
+        1245,
+        1278,
+        1279,
+        1280,
+        1281,
+        677,
+        678,
+        679,
+        680,
+        681,
+        682,
+        711,
+        713,
+        714,
+        715,
+        716,
+        718,
+        719,
+        676,
+        710,
+        683
+      ]
+    ],
+    "nextId": 283,
+    "friendlyFire": true,
+    "projectiles": [],
+    "factionSystems": {
+      "version": 1,
+      "fury": [
+        0,
+        0
+      ],
+      "terrainEffects": []
+    },
+    "economy": {
+      "version": 1,
+      "groves": [],
+      "structures": [],
+      "caravans": [],
+      "cargo": [],
+      "tasks": [],
+      "salvage": [
+        {
+          "id": 205,
+          "x": 18.5,
+          "y": 18.5,
+          "level": 0,
+          "stock": {
+            "wood": 6,
+            "ore": 3,
+            "crystal": 0
+          },
+          "expiresAt": 650.7000000000651,
+          "owner": 1,
+          "kind": "salvage"
+        },
+        {
+          "id": 208,
+          "x": 18.5,
+          "y": 18.5,
+          "level": 0,
+          "stock": {
+            "wood": 6,
+            "ore": 3,
+            "crystal": 0
+          },
+          "expiresAt": 653.8000000000623,
+          "owner": 1,
+          "kind": "salvage"
+        },
+        {
+          "id": 210,
+          "x": 18.5,
+          "y": 18.5,
+          "level": 0,
+          "stock": {
+            "wood": 6,
+            "ore": 3,
+            "crystal": 0
+          },
+          "expiresAt": 655.0500000000611,
+          "owner": 1,
+          "kind": "salvage"
+        },
+        {
+          "id": 213,
+          "x": 21.480618406782206,
+          "y": 18.27049976349332,
+          "level": 0,
+          "stock": {
+            "wood": 0,
+            "ore": 0,
+            "crystal": 11.114999999999988
+          },
+          "expiresAt": 659.1500000000574,
+          "owner": 1,
+          "kind": "cargo"
+        },
+        {
+          "id": 215,
+          "x": 21.7550508229364,
+          "y": 22.734343377638222,
+          "level": 0,
+          "stock": {
+            "wood": 18,
+            "ore": 0,
+            "crystal": 0
+          },
+          "expiresAt": 662.7500000000541,
+          "owner": 1,
+          "kind": "cargo"
+        },
+        {
+          "id": 216,
+          "x": 22.5625518186265,
+          "y": 17.004892622471562,
+          "level": 0,
+          "stock": {
+            "wood": 18,
+            "ore": 0,
+            "crystal": 0
+          },
+          "expiresAt": 663.4500000000535,
+          "owner": 1,
+          "kind": "cargo"
+        },
+        {
+          "id": 220,
+          "x": 23.478457631080875,
+          "y": 16.31559455114094,
+          "level": 0,
+          "stock": {
+            "wood": 18,
+            "ore": 0,
+            "crystal": 0
+          },
+          "expiresAt": 665.8000000000513,
+          "owner": 1,
+          "kind": "cargo"
+        },
+        {
+          "id": 221,
+          "x": 22.862681408579864,
+          "y": 15.789549389109496,
+          "level": 0,
+          "stock": {
+            "wood": 18,
+            "ore": 0,
+            "crystal": 0
+          },
+          "expiresAt": 665.8000000000513,
+          "owner": 1,
+          "kind": "cargo"
+        },
+        {
+          "id": 222,
+          "x": 22.395208970920383,
+          "y": 17.248751520932302,
+          "level": 0,
+          "stock": {
+            "wood": 18,
+            "ore": 0,
+            "crystal": 0
+          },
+          "expiresAt": 666.4500000000507,
+          "owner": 1,
+          "kind": "cargo"
+        },
+        {
+          "id": 223,
+          "x": 21.925240492722104,
+          "y": 20.108294687837297,
+          "level": 0,
+          "stock": {
+            "wood": 18,
+            "ore": 0,
+            "crystal": 0
+          },
+          "expiresAt": 666.8500000000504,
+          "owner": 1,
+          "kind": "cargo"
+        },
+        {
+          "id": 224,
+          "x": 22.365562708023564,
+          "y": 16.747259344730995,
+          "level": 0,
+          "stock": {
+            "wood": 18,
+            "ore": 0,
+            "crystal": 0
+          },
+          "expiresAt": 667.9500000000494,
+          "owner": 1,
+          "kind": "cargo"
+        },
+        {
+          "id": 227,
+          "x": 20.91040895158059,
+          "y": 18.376618456282376,
+          "level": 0,
+          "stock": {
+            "wood": 45,
+            "ore": 35,
+            "crystal": 6.25
+          },
+          "expiresAt": 674.0500000000438,
+          "owner": 1,
+          "kind": "salvage"
+        },
+        {
+          "id": 230,
+          "x": 24.73167104865538,
+          "y": 16.591461931169736,
+          "level": 0,
+          "stock": {
+            "wood": 2.0748000000000006,
+            "ore": 0,
+            "crystal": 0
+          },
+          "expiresAt": 676.5000000000416,
+          "owner": 1,
+          "kind": "cargo"
+        },
+        {
+          "id": 231,
+          "x": 23.879450603108445,
+          "y": 16.399854315090433,
+          "level": 0,
+          "stock": {
+            "wood": 18,
+            "ore": 0,
+            "crystal": 0
+          },
+          "expiresAt": 678.9000000000394,
+          "owner": 1,
+          "kind": "cargo"
+        },
+        {
+          "id": 232,
+          "x": 21.25767170360136,
+          "y": 23.297933837838006,
+          "level": 0,
+          "stock": {
+            "wood": 45,
+            "ore": 35,
+            "crystal": 6.25
+          },
+          "expiresAt": 682.9500000000357,
+          "owner": 1,
+          "kind": "salvage"
+        },
+        {
+          "id": 238,
+          "x": 24.848908889909424,
+          "y": 16.328628929898258,
+          "level": 0,
+          "stock": {
+            "wood": 0,
+            "ore": 18,
+            "crystal": 0
+          },
+          "expiresAt": 694.9500000000248,
+          "owner": 1,
+          "kind": "cargo"
+        },
+        {
+          "id": 242,
+          "x": 26.5,
+          "y": 23.5,
+          "level": 0,
+          "stock": {
+            "wood": 40,
+            "ore": 12.5,
+            "crystal": 0
+          },
+          "expiresAt": 701.6000000000188,
+          "owner": 1,
+          "kind": "salvage"
+        },
+        {
+          "id": 250,
+          "x": 25.65178386736947,
+          "y": 18.60493323552904,
+          "level": 0,
+          "stock": {
+            "wood": 0.4446,
+            "ore": 0,
+            "crystal": 0
+          },
+          "expiresAt": 717.2000000000046,
+          "owner": 1,
+          "kind": "cargo"
+        },
+        {
+          "id": 252,
+          "x": 26.5,
+          "y": 23.5,
+          "level": 0,
+          "stock": {
+            "wood": 4,
+            "ore": 1.25,
+            "crystal": 0
+          },
+          "expiresAt": 720.050000000002,
+          "owner": 1,
+          "kind": "salvage"
+        },
+        {
+          "id": 254,
+          "x": 26.5,
+          "y": 23.5,
+          "level": 0,
+          "stock": {
+            "wood": 4,
+            "ore": 1.25,
+            "crystal": 0
+          },
+          "expiresAt": 723.8999999999985,
+          "owner": 1,
+          "kind": "salvage"
+        },
+        {
+          "id": 259,
+          "x": 26.5,
+          "y": 23.5,
+          "level": 0,
+          "stock": {
+            "wood": 4.285714285714293,
+            "ore": 1.3392857142857164,
+            "crystal": 0
+          },
+          "expiresAt": 727.749999999995,
+          "owner": 1,
+          "kind": "salvage"
+        },
+        {
+          "id": 261,
+          "x": 26.5,
+          "y": 23.5,
+          "level": 0,
+          "stock": {
+            "wood": 4.114285714285721,
+            "ore": 1.2857142857142878,
+            "crystal": 0
+          },
+          "expiresAt": 731.5999999999915,
+          "owner": 1,
+          "kind": "salvage"
+        },
+        {
+          "id": 263,
+          "x": 26.5,
+          "y": 23.5,
+          "level": 0,
+          "stock": {
+            "wood": 4,
+            "ore": 1.25,
+            "crystal": 0
+          },
+          "expiresAt": 733.1499999999901,
+          "owner": 1,
+          "kind": "salvage"
+        },
+        {
+          "id": 270,
+          "x": 23.5,
+          "y": 26.5,
+          "level": 0,
+          "stock": {
+            "wood": 25,
+            "ore": 0,
+            "crystal": 0
+          },
+          "expiresAt": 741.0499999999829,
+          "owner": 1,
+          "kind": "salvage"
+        },
+        {
+          "id": 275,
+          "x": 19.5,
+          "y": 28.5,
+          "level": 0,
+          "stock": {
+            "wood": 40,
+            "ore": 12.5,
+            "crystal": 0
+          },
+          "expiresAt": 748.599999999976,
+          "owner": 1,
+          "kind": "salvage"
+        },
+        {
+          "id": 278,
+          "x": 19.5,
+          "y": 28.5,
+          "level": 0,
+          "stock": {
+            "wood": 4,
+            "ore": 1.25,
+            "crystal": 0
+          },
+          "expiresAt": 749.2999999999754,
+          "owner": 1,
+          "kind": "salvage"
+        },
+        {
+          "id": 280,
+          "x": 30.5,
+          "y": 23.5,
+          "level": 0,
+          "stock": {
+            "wood": 40,
+            "ore": 12.5,
+            "crystal": 0
+          },
+          "expiresAt": 752.4499999999725,
+          "owner": 1,
+          "kind": "salvage"
+        },
+        {
+          "id": 282,
+          "x": 23.5,
+          "y": 30.5,
+          "level": 0,
+          "stock": {
+            "wood": 25,
+            "ore": 0,
+            "crystal": 0
+          },
+          "expiresAt": 754.2999999999709,
+          "owner": 1,
+          "kind": "salvage"
+        }
+      ],
+      "markets": [
+        {
+          "id": 38,
+          "x": 11.7222148834902,
+          "y": 18.415734806151274,
+          "stock": {
+            "wood": 1500,
+            "ore": 1500,
+            "crystal": 1500
+          },
+          "demand": {
+            "wood": 0,
+            "ore": 0,
+            "crystal": 0
+          },
+          "recoverAt": 637.0999999999683
+        },
+        {
+          "id": 43,
+          "x": 24.5,
+          "y": 18,
+          "stock": {
+            "wood": 1500,
+            "ore": 1500,
+            "crystal": 1500
+          },
+          "demand": {
+            "wood": 0,
+            "ore": 0,
+            "crystal": 0
+          },
+          "recoverAt": 637.0999999999683
+        }
+      ],
+      "villages": [
+        {
+          "id": 37,
+          "x": 11.7222148834902,
+          "y": 18.415734806151274,
+          "rewardPool": {
+            "wood": 210,
+            "ore": 150,
+            "crystal": 60
+          }
+        },
+        {
+          "id": 42,
+          "x": 24.5,
+          "y": 18,
+          "rewardPool": {
+            "wood": 210,
+            "ore": 150,
+            "crystal": 60
+          }
+        }
+      ],
+      "contracts": [
+        {
+          "id": 39,
+          "villageId": 37,
+          "x": 11.7222148834902,
+          "y": 18.415734806151274,
+          "side": null,
+          "kind": "wood",
+          "amount": 60,
+          "delivered": 0,
+          "deadline": 180,
+          "reward": {
+            "wood": 35,
+            "ore": 25,
+            "crystal": 10
+          },
+          "status": "expired"
+        },
+        {
+          "id": 40,
+          "villageId": 37,
+          "x": 11.7222148834902,
+          "y": 18.415734806151274,
+          "side": null,
+          "kind": "ore",
+          "amount": 60,
+          "delivered": 0,
+          "deadline": 180,
+          "reward": {
+            "wood": 35,
+            "ore": 25,
+            "crystal": 10
+          },
+          "status": "expired"
+        },
+        {
+          "id": 41,
+          "villageId": 37,
+          "x": 11.7222148834902,
+          "y": 18.415734806151274,
+          "side": null,
+          "kind": "crystal",
+          "amount": 60,
+          "delivered": 0,
+          "deadline": 180,
+          "reward": {
+            "wood": 35,
+            "ore": 25,
+            "crystal": 10
+          },
+          "status": "expired"
+        },
+        {
+          "id": 44,
+          "villageId": 42,
+          "x": 24.5,
+          "y": 18,
+          "side": null,
+          "kind": "wood",
+          "amount": 60,
+          "delivered": 0,
+          "deadline": 180,
+          "reward": {
+            "wood": 35,
+            "ore": 25,
+            "crystal": 10
+          },
+          "status": "expired"
+        },
+        {
+          "id": 45,
+          "villageId": 42,
+          "x": 24.5,
+          "y": 18,
+          "side": null,
+          "kind": "ore",
+          "amount": 60,
+          "delivered": 0,
+          "deadline": 180,
+          "reward": {
+            "wood": 35,
+            "ore": 25,
+            "crystal": 10
+          },
+          "status": "expired"
+        },
+        {
+          "id": 46,
+          "villageId": 42,
+          "x": 24.5,
+          "y": 18,
+          "side": null,
+          "kind": "crystal",
+          "amount": 60,
+          "delivered": 0,
+          "deadline": 180,
+          "reward": {
+            "wood": 35,
+            "ore": 25,
+            "crystal": 10
+          },
+          "status": "expired"
+        }
+      ],
+      "specializations": [],
+      "workerWarehouses": [],
+      "deepSites": [],
+      "deathClaims": [
+        8
+      ],
+      "paidCosts": [
+        {
+          "entityId": 47,
+          "stock": {
+            "wood": 160,
+            "ore": 50,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 53,
+          "stock": {
+            "wood": 100,
+            "ore": 0,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 69,
+          "stock": {
+            "wood": 120,
+            "ore": 80,
+            "crystal": 6
+          }
+        },
+        {
+          "entityId": 70,
+          "stock": {
+            "wood": 120,
+            "ore": 80,
+            "crystal": 6
+          }
+        },
+        {
+          "entityId": 74,
+          "stock": {
+            "wood": 100,
+            "ore": 0,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 75,
+          "stock": {
+            "wood": 80,
+            "ore": 40,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 76,
+          "stock": {
+            "wood": 100,
+            "ore": 0,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 79,
+          "stock": {
+            "wood": 160,
+            "ore": 50,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 80,
+          "stock": {
+            "wood": 160,
+            "ore": 50,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 83,
+          "stock": {
+            "wood": 30,
+            "ore": 25,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 84,
+          "stock": {
+            "wood": 30,
+            "ore": 25,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 87,
+          "stock": {
+            "wood": 30,
+            "ore": 25,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 90,
+          "stock": {
+            "wood": 30,
+            "ore": 25,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 95,
+          "stock": {
+            "wood": 80,
+            "ore": 40,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 96,
+          "stock": {
+            "wood": 100,
+            "ore": 0,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 97,
+          "stock": {
+            "wood": 100,
+            "ore": 0,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 105,
+          "stock": {
+            "wood": 160,
+            "ore": 50,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 112,
+          "stock": {
+            "wood": 150,
+            "ore": 110,
+            "crystal": 25
+          }
+        },
+        {
+          "entityId": 113,
+          "stock": {
+            "wood": 50,
+            "ore": 0,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 137,
+          "stock": {
+            "wood": 80,
+            "ore": 40,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 140,
+          "stock": {
+            "wood": 100,
+            "ore": 0,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 144,
+          "stock": {
+            "wood": 50,
+            "ore": 0,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 146,
+          "stock": {
+            "wood": 160,
+            "ore": 50,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 163,
+          "stock": {
+            "wood": 180,
+            "ore": 140,
+            "crystal": 25
+          }
+        },
+        {
+          "entityId": 178,
+          "stock": {
+            "wood": 90,
+            "ore": 65,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 183,
+          "stock": {
+            "wood": 65,
+            "ore": 25,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 194,
+          "stock": {
+            "wood": 100,
+            "ore": 65,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 199,
+          "stock": {
+            "wood": 65,
+            "ore": 25,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 200,
+          "stock": {
+            "wood": 50,
+            "ore": 0,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 207,
+          "stock": {
+            "wood": 50,
+            "ore": 0,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 212,
+          "stock": {
+            "wood": 180,
+            "ore": 140,
+            "crystal": 25
+          }
+        },
+        {
+          "entityId": 214,
+          "stock": {
+            "wood": 100,
+            "ore": 65,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 219,
+          "stock": {
+            "wood": 50,
+            "ore": 0,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 225,
+          "stock": {
+            "wood": 65,
+            "ore": 25,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 229,
+          "stock": {
+            "wood": 50,
+            "ore": 0,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 233,
+          "stock": {
+            "wood": 65,
+            "ore": 25,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 234,
+          "stock": {
+            "wood": 90,
+            "ore": 65,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 237,
+          "stock": {
+            "wood": 50,
+            "ore": 0,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 239,
+          "stock": {
+            "wood": 100,
+            "ore": 65,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 241,
+          "stock": {
+            "wood": 50,
+            "ore": 0,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 245,
+          "stock": {
+            "wood": 80,
+            "ore": 40,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 248,
+          "stock": {
+            "wood": 50,
+            "ore": 0,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 251,
+          "stock": {
+            "wood": 110,
+            "ore": 75,
+            "crystal": 12
+          }
+        },
+        {
+          "entityId": 257,
+          "stock": {
+            "wood": 50,
+            "ore": 0,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 258,
+          "stock": {
+            "wood": 100,
+            "ore": 65,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 267,
+          "stock": {
+            "wood": 50,
+            "ore": 0,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 268,
+          "stock": {
+            "wood": 80,
+            "ore": 40,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 269,
+          "stock": {
+            "wood": 55,
+            "ore": 25,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 276,
+          "stock": {
+            "wood": 50,
+            "ore": 0,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 279,
+          "stock": {
+            "wood": 65,
+            "ore": 25,
+            "crystal": 0
+          }
+        },
+        {
+          "entityId": 281,
+          "stock": {
+            "wood": 55,
+            "ore": 25,
+            "crystal": 0
+          }
+        }
+      ],
+      "recruits": [],
+      "ledgers": [
+        {
+          "gathered": {
+            "wood": 8901.611999998004,
+            "ore": 6324.229999998418,
+            "crystal": 552.5514000000035
+          },
+          "delivered": {
+            "wood": 0,
+            "ore": 0,
+            "crystal": 0
+          },
+          "traded": {
+            "wood": 0,
+            "ore": 0,
+            "crystal": 0
+          },
+          "raided": {
+            "wood": 0,
+            "ore": 0,
+            "crystal": 0
+          },
+          "salvaged": {
+            "wood": 0,
+            "ore": 0,
+            "crystal": 0
+          },
+          "contractRewards": {
+            "wood": 0,
+            "ore": 0,
+            "crystal": 0
+          }
+        },
+        {
+          "gathered": {
+            "wood": 9303.1404,
+            "ore": 6209.113599999375,
+            "crystal": 307.3338000000042
+          },
+          "delivered": {
+            "wood": 0,
+            "ore": 0,
+            "crystal": 0
+          },
+          "traded": {
+            "wood": 0,
+            "ore": 0,
+            "crystal": 0
+          },
+          "raided": {
+            "wood": 0,
+            "ore": 0,
+            "crystal": 0
+          },
+          "salvaged": {
+            "wood": 0,
+            "ore": 0,
+            "crystal": 0
+          },
+          "contractRewards": {
+            "wood": 0,
+            "ore": 0,
+            "crystal": 0
+          }
+        }
+      ]
+    },
+    "specialists": {
+      "artifacts": [
+        {
+          "id": 1,
+          "definitionId": "core:iron-aegis",
+          "position": {
+            "x": 11.111647519139709,
+            "y": 19.06198939455894
+          }
+        },
+        {
+          "id": 2,
+          "definitionId": "core:ember-blade",
+          "position": {
+            "x": 27.10187734037574,
+            "y": 21.758400146307643
+          }
+        }
+      ],
+      "structures": [],
+      "nextArtifactId": 3,
+      "nextStructureId": 1,
+      "nextShotId": 61,
+      "shots": []
+    }
+  },
+  "runtime": {
+    "aiBatchTurns": 638,
+    "aiDecisionAt": [
+      638.0499999999683,
+      638.0499999999683
+    ],
+    "aiDecisionTurns": [
+      638,
+      638
+    ],
+    "knownEnemyUnits": [
+      [
+        [
+          116,
+          {
+            "role": "cavalry",
+            "x": 21.786157487643287,
+            "y": 26.56843118783428,
+            "seenAt": 569.0500000000302,
+            "hpFraction": 0.20040476190476125
+          }
+        ],
+        [
+          14,
+          {
+            "role": "melee",
+            "x": 21.752151287940936,
+            "y": 24.058488737450308,
+            "seenAt": 572.0500000000275,
+            "hpFraction": 0.0561764705882353
+          }
+        ],
+        [
+          155,
+          {
+            "role": "siege",
+            "x": 20.91040895158059,
+            "y": 18.376618456282376,
+            "seenAt": 554.0500000000438,
+            "hpFraction": 0.0662599907149659
+          }
+        ],
+        [
+          151,
+          {
+            "role": "spear",
+            "x": 21.754730013316557,
+            "y": 26.078778445880587,
+            "seenAt": 569.0500000000302,
+            "hpFraction": 0.1896
+          }
+        ],
+        [
+          190,
+          {
+            "role": "cavalry",
+            "x": 19.497620918660566,
+            "y": 17.95063456825752,
+            "seenAt": 552.0500000000457,
+            "hpFraction": 0.06837575819328848
+          }
+        ],
+        [
+          182,
+          {
+            "role": "melee",
+            "x": 19.69990065473356,
+            "y": 19.95117680671005,
+            "seenAt": 554.0500000000438,
+            "hpFraction": 0.008637200154620321
+          }
+        ],
+        [
+          201,
+          {
+            "role": "melee",
+            "x": 19.976791567556297,
+            "y": 19.44153828540678,
+            "seenAt": 554.0500000000438,
+            "hpFraction": 0.3195458653888275
+          }
+        ],
+        [
+          203,
+          {
+            "role": "cavalry",
+            "x": 19.101477672915394,
+            "y": 18.374274189670107,
+            "seenAt": 553.0500000000447,
+            "hpFraction": 0.3826145333764704
+          }
+        ],
+        [
+          218,
+          {
+            "role": "siege",
+            "x": 21.25767170360136,
+            "y": 23.297933837838006,
+            "seenAt": 562.0500000000366,
+            "hpFraction": 0.22700968605036803
+          }
+        ],
+        [
+          226,
+          {
+            "role": "spear",
+            "x": 21.755743837428085,
+            "y": 23.245947148089233,
+            "seenAt": 569.0500000000302,
+            "hpFraction": 0.3307999999999999
+          }
+        ],
+        [
+          235,
+          {
+            "role": "ranged",
+            "x": 28.06639454732354,
+            "y": 20.421246249574484,
+            "seenAt": 577.0500000000229,
+            "hpFraction": 0.005263157894736767
+          }
+        ],
+        [
+          243,
+          {
+            "role": "special",
+            "x": 19.346243157299213,
+            "y": 26.150108695214982,
+            "seenAt": 617.0499999999865,
+            "hpFraction": 0.3944519705718097
+          }
+        ],
+        [
+          244,
+          {
+            "role": "ranged",
+            "x": 25.666026041553916,
+            "y": 24.310171661366503,
+            "seenAt": 619.0499999999847,
+            "hpFraction": 0.4070526315789474
+          }
+        ],
+        [
+          246,
+          {
+            "role": "special",
+            "x": 27.10187734037574,
+            "y": 21.758400146307643,
+            "seenAt": 619.0499999999847,
+            "hpFraction": 0.318428705614772
+          }
+        ],
+        [
+          271,
+          {
+            "role": "ranged",
+            "x": 18.817833499106257,
+            "y": 26.205511436850927,
+            "seenAt": 625.0499999999793,
+            "hpFraction": 0.23010884868421067
+          }
+        ],
+        [
+          272,
+          {
+            "role": "ranged",
+            "x": 23.151471862576145,
+            "y": 32.651471862576145,
+            "seenAt": 627.0499999999774,
+            "hpFraction": 0.4017473684210526
+          }
+        ],
+        [
+          273,
+          {
+            "role": "melee",
+            "x": 27.024427828883457,
+            "y": 24.854035204538068,
+            "seenAt": 628.0499999999765,
+            "hpFraction": 0.5847468202777549
+          }
+        ]
+      ],
+      [
+        [
+          75,
+          {
+            "role": "ranged",
+            "x": 27.38723938257613,
+            "y": 20.199177559859447,
+            "seenAt": 637.0499999999683,
+            "hpFraction": 1
+          }
+        ],
+        [
+          95,
+          {
+            "role": "ranged",
+            "x": 25.729812115083195,
+            "y": 20.479448566061844,
+            "seenAt": 637.0499999999683,
+            "hpFraction": 0.5647058823529412
+          }
+        ],
+        [
+          112,
+          {
+            "role": "special",
+            "x": 22.021625833781467,
+            "y": 15.511116025331555,
+            "seenAt": 619.0499999999847,
+            "hpFraction": 0.8804533791622022
+          }
+        ],
+        [
+          137,
+          {
+            "role": "ranged",
+            "x": 27.95885022211591,
+            "y": 20.1008869289701,
+            "seenAt": 637.0499999999683,
+            "hpFraction": 1
+          }
+        ],
+        [
+          167,
+          {
+            "role": "spear",
+            "x": 19.04702785036548,
+            "y": 18.533419372850563,
+            "seenAt": 549.0500000000484,
+            "hpFraction": 0.10687999999999999
+          }
+        ],
+        [
+          163,
+          {
+            "role": "siege",
+            "x": 22.74373718067614,
+            "y": 22.444039111401246,
+            "seenAt": 637.0499999999683,
+            "hpFraction": 0.8181621621621622
+          }
+        ],
+        [
+          183,
+          {
+            "role": "melee",
+            "x": 26.450787100020094,
+            "y": 26.431910980616248,
+            "seenAt": 637.0499999999683,
+            "hpFraction": 0.7035813143510714
+          }
+        ],
+        [
+          194,
+          {
+            "role": "cavalry",
+            "x": 26.034946400175265,
+            "y": 26.83595677437502,
+            "seenAt": 637.0499999999683,
+            "hpFraction": 0.6593313922202049
+          }
+        ],
+        [
+          199,
+          {
+            "role": "melee",
+            "x": 25.52922440140425,
+            "y": 28.328038559468624,
+            "seenAt": 637.0499999999683,
+            "hpFraction": 0.9071428571428571
+          }
+        ],
+        [
+          212,
+          {
+            "role": "siege",
+            "x": 23.071263907625,
+            "y": 21.965367780598513,
+            "seenAt": 637.0499999999683,
+            "hpFraction": 1
+          }
+        ],
+        [
+          204,
+          {
+            "role": "ranged",
+            "x": 20.42117689474861,
+            "y": 17.94655927209189,
+            "seenAt": 593.0500000000084,
+            "hpFraction": 0.18117647058823536
+          }
+        ],
+        [
+          225,
+          {
+            "role": "melee",
+            "x": 25.818142247287042,
+            "y": 27.373618488193298,
+            "seenAt": 637.0499999999683,
+            "hpFraction": 0.725
+          }
+        ],
+        [
+          239,
+          {
+            "role": "cavalry",
+            "x": 25.957508957457573,
+            "y": 27.936380509884042,
+            "seenAt": 637.0499999999683,
+            "hpFraction": 0.6267628173312192
+          }
+        ],
+        [
+          258,
+          {
+            "role": "cavalry",
+            "x": 25.610687176396127,
+            "y": 28.9063678399329,
+            "seenAt": 637.0499999999683,
+            "hpFraction": 0.8000052524189117
+          }
+        ],
+        [
+          214,
+          {
+            "role": "cavalry",
+            "x": 26.08238389289896,
+            "y": 28.502436454850496,
+            "seenAt": 637.0499999999683,
+            "hpFraction": 0.8019047619047619
+          }
+        ],
+        [
+          245,
+          {
+            "role": "ranged",
+            "x": 22.321210728680864,
+            "y": 22.841369449071887,
+            "seenAt": 637.0499999999683,
+            "hpFraction": 1
+          }
+        ],
+        [
+          251,
+          {
+            "role": "special",
+            "x": 23.02317374778999,
+            "y": 25.371754974684464,
+            "seenAt": 637.0499999999683,
+            "hpFraction": 1
+          }
+        ],
+        [
+          233,
+          {
+            "role": "melee",
+            "x": 26.416659942281992,
+            "y": 28.97613042481539,
+            "seenAt": 637.0499999999683,
+            "hpFraction": 1
+          }
+        ]
+      ]
+    ],
+    "retreating": [
+      [],
+      []
+    ],
+    "producedFighters": [
+      37,
+      29
+    ],
+    "fog": 0.15000000000000002,
+    "ai": 0.8999999999997877,
+    "aiTurns": 638,
+    "hits": [],
+    "routes": [
+      [
+        4,
+        {
+          "key": "0,0,25,23,1.1",
+          "at": 50.749999999999254
+        }
+      ],
+      [
+        3,
+        {
+          "key": "0,0,19,31,1.1",
+          "at": 291.600000000032
+        }
+      ],
+      [
+        91,
+        {
+          "key": "0,0,29,26,1.8",
+          "at": 290.7000000000318
+        }
+      ],
+      [
+        7,
+        {
+          "key": "0,0,20,20,0.5",
+          "at": 290.0500000000317
+        }
+      ],
+      [
+        78,
+        {
+          "key": "0,0,37,37,2.9",
+          "at": 296.05000000003304
+        }
+      ],
+      [
+        107,
+        {
+          "key": "0,0,20,20,0.5",
+          "at": 298.0500000000335
+        }
+      ],
+      [
+        102,
+        {
+          "key": "0,0,26,21,1.0",
+          "at": 301.5500000000343
+        }
+      ],
+      [
+        104,
+        {
+          "key": "0,0,51,51,0.5",
+          "at": 303.05000000003463
+        }
+      ],
+      [
+        119,
+        {
+          "key": "0,0,20,20,0.5",
+          "at": 334.0500000000417
+        }
+      ],
+      [
+        2,
+        {
+          "key": "0,0,19,31,1.1",
+          "at": 363.40000000004835
+        }
+      ],
+      [
+        6,
+        {
+          "key": "0,0,29,37,1.1",
+          "at": 407.0500000000583
+        }
+      ],
+      [
+        138,
+        {
+          "key": "0,0,37,37,2.9",
+          "at": 412.25000000005946
+        }
+      ],
+      [
+        122,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 442.50000000006634
+        }
+      ],
+      [
+        125,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 453.10000000006875
+        }
+      ],
+      [
+        108,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 431.4500000000638
+        }
+      ],
+      [
+        103,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 464.6500000000714
+        }
+      ],
+      [
+        55,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 431.8500000000639
+        }
+      ],
+      [
+        89,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 431.95000000006394
+        }
+      ],
+      [
+        57,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 432.00000000006395
+        }
+      ],
+      [
+        64,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 463.3500000000711
+        }
+      ],
+      [
+        49,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 440.40000000006586
+        }
+      ],
+      [
+        59,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 432.05000000006396
+        }
+      ],
+      [
+        67,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 458.75000000007003
+        }
+      ],
+      [
+        94,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 457.7500000000698
+        }
+      ],
+      [
+        120,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 462.1000000000708
+        }
+      ],
+      [
+        129,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 451.45000000006837
+        }
+      ],
+      [
+        51,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 441.5500000000661
+        }
+      ],
+      [
+        61,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 457.55000000006976
+        }
+      ],
+      [
+        72,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 452.15000000006853
+        }
+      ],
+      [
+        157,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 461.6500000000707
+        }
+      ],
+      [
+        159,
+        {
+          "key": "0,0,23,37,4.9",
+          "at": 457.6500000000698
+        }
+      ],
+      [
+        160,
+        {
+          "key": "0,0,37,37,6.4",
+          "at": 449.95000000006803
+        }
+      ],
+      [
+        85,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 464.15000000007126
+        }
+      ],
+      [
+        100,
+        {
+          "key": "0,0,51,51,0.5",
+          "at": 461.05000000007055
+        }
+      ],
+      [
+        166,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 461.05000000007055
+        }
+      ],
+      [
+        68,
+        {
+          "key": "0,0,47,53,2.0",
+          "at": 544.7000000000523
+        }
+      ],
+      [
+        58,
+        {
+          "key": "0,0,47,53,2.0",
+          "at": 540.1000000000565
+        }
+      ],
+      [
+        65,
+        {
+          "key": "0,0,51,35,1.1",
+          "at": 553.4000000000444
+        }
+      ],
+      [
+        88,
+        {
+          "key": "0,0,51,35,1.1",
+          "at": 554.5000000000434
+        }
+      ],
+      [
+        106,
+        {
+          "key": "0,0,51,35,1.1",
+          "at": 542.9500000000539
+        }
+      ],
+      [
+        111,
+        {
+          "key": "0,0,51,35,1.1",
+          "at": 541.9500000000548
+        }
+      ],
+      [
+        123,
+        {
+          "key": "0,0,47,53,2.0",
+          "at": 544.4000000000526
+        }
+      ],
+      [
+        128,
+        {
+          "key": "0,0,51,35,1.1",
+          "at": 552.7000000000451
+        }
+      ],
+      [
+        101,
+        {
+          "key": "0,0,47,53,2.0",
+          "at": 545.4500000000517
+        }
+      ],
+      [
+        99,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 464.50000000007134
+        }
+      ],
+      [
+        144,
+        {
+          "key": "0,0,15,35,1.1",
+          "at": 633.1499999999719
+        }
+      ],
+      [
+        115,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 472.05000000007306
+        }
+      ],
+      [
+        158,
+        {
+          "key": "0,0,22,38,1.4",
+          "at": 476.7500000000741
+        }
+      ],
+      [
+        132,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 470.0500000000726
+        }
+      ],
+      [
+        124,
+        {
+          "key": "0,0,22,38,1.4",
+          "at": 476.7500000000741
+        }
+      ],
+      [
+        127,
+        {
+          "key": "0,0,51,51,0.5",
+          "at": 471.0500000000728
+        }
+      ],
+      [
+        179,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 473.0500000000733
+        }
+      ],
+      [
+        143,
+        {
+          "key": "0,0,51,51,0.5",
+          "at": 475.05000000007374
+        }
+      ],
+      [
+        142,
+        {
+          "key": "0,0,12,27,1.0",
+          "at": 483.05000000007556
+        }
+      ],
+      [
+        185,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 485.050000000076
+        }
+      ],
+      [
+        145,
+        {
+          "key": "0,0,18,36,0.7",
+          "at": 496.4000000000786
+        }
+      ],
+      [
+        126,
+        {
+          "key": "0,0,48,32,4.9",
+          "at": 490.3500000000772
+        }
+      ],
+      [
+        136,
+        {
+          "key": "0,0,44,51,1.0",
+          "at": 495.0500000000783
+        }
+      ],
+      [
+        193,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 497.05000000007874
+        }
+      ],
+      [
+        60,
+        {
+          "key": "0,0,57,37,1.1",
+          "at": 543.4000000000535
+        }
+      ],
+      [
+        62,
+        {
+          "key": "0,0,57,37,1.1",
+          "at": 539.0000000000575
+        }
+      ],
+      [
+        98,
+        {
+          "key": "0,0,57,37,1.1",
+          "at": 538.0500000000584
+        }
+      ],
+      [
+        118,
+        {
+          "key": "0,0,47,53,2.0",
+          "at": 573.1000000000265
+        }
+      ],
+      [
+        131,
+        {
+          "key": "0,0,57,37,1.1",
+          "at": 554.1500000000437
+        }
+      ],
+      [
+        5,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 503.4000000000802
+        }
+      ],
+      [
+        196,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 509.05000000008147
+        }
+      ],
+      [
+        86,
+        {
+          "key": "0,0,51,51,0.5",
+          "at": 525.0500000000702
+        }
+      ],
+      [
+        11,
+        {
+          "key": "0,0,43,35,1.1",
+          "at": 530.4500000000653
+        }
+      ],
+      [
+        9,
+        {
+          "key": "0,0,37,37,2.6",
+          "at": 531.0500000000648
+        }
+      ],
+      [
+        121,
+        {
+          "key": "0,0,47,53,2.0",
+          "at": 545.3000000000518
+        }
+      ],
+      [
+        81,
+        {
+          "key": "0,0,37,37,1.0",
+          "at": 535.1000000000611
+        }
+      ],
+      [
+        92,
+        {
+          "key": "0,0,47,53,2.0",
+          "at": 545.0000000000521
+        }
+      ],
+      [
+        189,
+        {
+          "key": "0,0,41,36,1.8",
+          "at": 537.0500000000593
+        }
+      ],
+      [
+        12,
+        {
+          "key": "0,0,47,53,2.0",
+          "at": 540.0500000000566
+        }
+      ],
+      [
+        56,
+        {
+          "key": "0,0,47,31,1.1",
+          "at": 552.3000000000454
+        }
+      ],
+      [
+        217,
+        {
+          "key": "0,0,51,35,1.1",
+          "at": 555.1500000000428
+        }
+      ],
+      [
+        219,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 632.999999999972
+        }
+      ],
+      [
+        13,
+        {
+          "key": "0,0,51,35,1.1",
+          "at": 555.3500000000427
+        }
+      ],
+      [
+        50,
+        {
+          "key": "0,0,47,53,2.0",
+          "at": 557.3500000000408
+        }
+      ],
+      [
+        218,
+        {
+          "key": "0,0,41,38,0.7",
+          "at": 553.1000000000447
+        }
+      ],
+      [
+        167,
+        {
+          "key": "0,0,26,21,1.0",
+          "at": 549.0500000000484
+        }
+      ],
+      [
+        203,
+        {
+          "key": "0,0,51,51,0.5",
+          "at": 550.0500000000475
+        }
+      ],
+      [
+        190,
+        {
+          "key": "0,0,45,50,1.0",
+          "at": 552.3500000000454
+        }
+      ],
+      [
+        182,
+        {
+          "key": "0,0,45,50,1.0",
+          "at": 553.7500000000441
+        }
+      ],
+      [
+        201,
+        {
+          "key": "0,0,45,50,1.0",
+          "at": 554.0000000000439
+        }
+      ],
+      [
+        52,
+        {
+          "key": "0,0,51,35,1.1",
+          "at": 556.050000000042
+        }
+      ],
+      [
+        228,
+        {
+          "key": "0,0,51,35,1.1",
+          "at": 557.0500000000411
+        }
+      ],
+      [
+        229,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 634.9499999999703
+        }
+      ],
+      [
+        116,
+        {
+          "key": "0,0,43,42,1.4",
+          "at": 569.0500000000302
+        }
+      ],
+      [
+        151,
+        {
+          "key": "0,0,43,42,1.8",
+          "at": 569.0500000000302
+        }
+      ],
+      [
+        236,
+        {
+          "key": "0,0,51,35,1.1",
+          "at": 569.0500000000302
+        }
+      ],
+      [
+        237,
+        {
+          "key": "0,0,11,25,2.0",
+          "at": 636.0999999999692
+        }
+      ],
+      [
+        14,
+        {
+          "key": "0,0,43,42,1.3",
+          "at": 572.0500000000275
+        }
+      ],
+      [
+        240,
+        {
+          "key": "0,0,51,35,1.1",
+          "at": 581.0500000000193
+        }
+      ],
+      [
+        241,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 630.5999999999742
+        }
+      ],
+      [
+        247,
+        {
+          "key": "0,0,51,35,1.1",
+          "at": 593.0500000000084
+        }
+      ],
+      [
+        248,
+        {
+          "key": "0,0,15,35,1.1",
+          "at": 635.19999999997
+        }
+      ],
+      [
+        256,
+        {
+          "key": "0,0,51,35,1.1",
+          "at": 605.0499999999975
+        }
+      ],
+      [
+        257,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 636.3999999999689
+        }
+      ],
+      [
+        75,
+        {
+          "key": "0,0,56,47,0.7",
+          "at": 632.4999999999725
+        }
+      ],
+      [
+        95,
+        {
+          "key": "0,0,56,47,0.7",
+          "at": 632.4999999999725
+        }
+      ],
+      [
+        163,
+        {
+          "key": "0,0,53,50,0.7",
+          "at": 628.7999999999759
+        }
+      ],
+      [
+        183,
+        {
+          "key": "0,0,51,56,1.4",
+          "at": 629.6499999999751
+        }
+      ],
+      [
+        199,
+        {
+          "key": "0,0,57,57,2.9",
+          "at": 634.3499999999708
+        }
+      ],
+      [
+        225,
+        {
+          "key": "0,0,50,57,1.4",
+          "at": 629.2999999999754
+        }
+      ],
+      [
+        233,
+        {
+          "key": "0,0,57,57,2.9",
+          "at": 634.3499999999708
+        }
+      ],
+      [
+        245,
+        {
+          "key": "0,0,55,52,0.7",
+          "at": 628.649999999976
+        }
+      ],
+      [
+        251,
+        {
+          "key": "0,0,55,48,4.9",
+          "at": 627.4499999999771
+        }
+      ],
+      [
+        137,
+        {
+          "key": "0,0,57,47,0.7",
+          "at": 632.4999999999725
+        }
+      ],
+      [
+        212,
+        {
+          "key": "0,0,54,51,0.7",
+          "at": 628.7999999999759
+        }
+      ],
+      [
+        10,
+        {
+          "key": "0,0,51,35,1.1",
+          "at": 614.349999999989
+        }
+      ],
+      [
+        265,
+        {
+          "key": "0,0,52,57,4.9",
+          "at": 628.7999999999759
+        }
+      ],
+      [
+        266,
+        {
+          "key": "0,0,52,57,4.9",
+          "at": 628.7999999999759
+        }
+      ],
+      [
+        112,
+        {
+          "key": "0,0,51,38,4.4",
+          "at": 617.0999999999865
+        }
+      ],
+      [
+        264,
+        {
+          "key": "0,0,57,37,1.1",
+          "at": 617.0499999999865
+        }
+      ],
+      [
+        267,
+        {
+          "key": "0,0,21,37,1.1",
+          "at": 629.3499999999754
+        }
+      ],
+      [
+        194,
+        {
+          "key": "0,0,50,56,1.4",
+          "at": 629.4999999999752
+        }
+      ],
+      [
+        239,
+        {
+          "key": "0,0,57,57,2.9",
+          "at": 634.3499999999708
+        }
+      ],
+      [
+        258,
+        {
+          "key": "0,0,57,57,2.9",
+          "at": 634.3499999999708
+        }
+      ],
+      [
+        200,
+        {
+          "key": "0,0,15,35,1.1",
+          "at": 636.9999999999684
+        }
+      ],
+      [
+        246,
+        {
+          "key": "0,0,48,50,1.0",
+          "at": 619.4499999999844
+        }
+      ],
+      [
+        214,
+        {
+          "key": "0,0,57,57,2.9",
+          "at": 634.3499999999708
+        }
+      ],
+      [
+        276,
+        {
+          "key": "0,0,15,35,1.1",
+          "at": 629.0499999999756
+        }
+      ],
+      [
+        274,
+        {
+          "key": "0,0,51,35,1.1",
+          "at": 630.0499999999747
+        }
+      ],
+      [
+        113,
+        {
+          "key": "0,0,29,37,1.1",
+          "at": 636.0499999999693
+        }
+      ],
+      [
+        207,
+        {
+          "key": "0,0,29,37,1.1",
+          "at": 636.0499999999693
+        }
+      ]
+    ],
+    "abilities": [
+      [
+        126,
+        519.6000000000759
+      ],
+      [
+        251,
+        651.599999999987
+      ]
+    ],
+    "returning": [
+      12,
+      58,
+      121,
+      101,
+      123,
+      68,
+      92,
+      50,
+      118,
+      237
+    ],
+    "queuedGather": [],
+    "aiWave": [
+      610.0499999999929,
+      513.0500000000811
+    ],
+    "initialScoutDispatched": [
+      true,
+      true
+    ],
+    "expansionScout": [
+      null,
+      null
+    ],
+    "expansionScoutDispatched": [
+      false,
+      false
+    ],
+    "knownEnemyBuildings": [
+      [
+        [
+          8,
+          {
+            "x": 28.5,
+            "y": 28.5,
+            "role": "hq"
+          }
+        ],
+        [
+          90,
+          {
+            "x": 31,
+            "y": 27,
+            "role": "wall"
+          }
+        ],
+        [
+          80,
+          {
+            "x": 26.5,
+            "y": 33.5,
+            "role": "barracks"
+          }
+        ],
+        [
+          84,
+          {
+            "x": 32,
+            "y": 27,
+            "role": "wall"
+          }
+        ],
+        [
+          234,
+          {
+            "x": 33.5,
+            "y": 27,
+            "role": "gate"
+          }
+        ],
+        [
+          74,
+          {
+            "x": 30.5,
+            "y": 33.5,
+            "role": "depot"
+          }
+        ]
+      ],
+      [
+        [
+          47,
+          {
+            "x": 9.5,
+            "y": 12.5,
+            "role": "barracks"
+          }
+        ],
+        [
+          53,
+          {
+            "x": 12.5,
+            "y": 9.5,
+            "role": "depot"
+          }
+        ],
+        [
+          96,
+          {
+            "x": 5.5,
+            "y": 12.5,
+            "role": "depot"
+          }
+        ],
+        [
+          146,
+          {
+            "x": 16.5,
+            "y": 7.5,
+            "role": "barracks"
+          }
+        ]
+      ]
+    ],
+    "enemyStartCleared": [
+      false,
+      false
+    ],
+    "clearedEnemyStarts": [
+      [],
+      []
+    ],
+    "searched": [
+      [],
+      []
+    ]
+  }
+}
