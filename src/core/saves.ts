@@ -1,5 +1,6 @@
 import { normalizeMatchRules, createDraft, draftPlayers, validateDraftState, validateObjectiveState, validateSavedRules, validateModeRoster } from './match-rules';
 import { emptyObjectives } from './objectives';
+import { validateEconomyState } from './economy-validation';
 import { normalizeAiConfig } from './ai-policy';
 import { validateScenarioBinding } from './scenarios';
 import { validateSpecialists } from './specialist-validation';
@@ -115,7 +116,7 @@ function validateRuntime(value:unknown,c:Context,version:1|2|3,teams?:TeamId[]):
 }
 function validate(envelope:unknown,version:1|2|3):void {
  const save=object(envelope,'save',['format','version','state','runtime']);if(save.format!=='orcs-vs-fairies-save')bad('format','unknown save format');if(save.version!==version)bad('version',`unsupported version ${String(save.version)}`);
- const s=object(save.state,'state',version===1?STATE_FIELDS:version===2?[...STATE_FIELDS,...TEAM_FIELDS]:[...STATE_FIELDS,...TEAM_FIELDS,'aiConfigs'],version===3?['content','world','specialists','rules','objectives','draft','scenario']:[]);
+ const s=object(save.state,'state',version===1?STATE_FIELDS:version===2?[...STATE_FIELDS,...TEAM_FIELDS]:[...STATE_FIELDS,...TEAM_FIELDS,'aiConfigs'],version===3?['content','world','specialists','rules','objectives','draft','scenario','economy']:[]);
  if(s.content!==undefined)s.content=decodeContentBundle(s.content);
  const playerCount=list(s.players,'state.players',version===1?2:MAX_PLAYERS,version===1?2:undefined).length;
  if(playerCount===0)bad('state.players','expected between 1 and 8 players');
@@ -148,63 +149,4 @@ function validate(envelope:unknown,version:1|2|3):void {
  events.forEach((v,i)=>{const p=`state.events[${i}]`,event=object(v,p,['type','x','y','side'],['text','target','source','amount','resource','level']);choice(event.type,`${p}.type`,['attack','death','build','train','gather','message','ability','research']);coordinates(event,p,c);number(event.side,`${p}.side`,0,playerCount-1,true);for(const key of ['source','target'])if(event[key]!==undefined)id(event[key],`${p}.${key}`,c);optionalNumber(event,'amount',p);if(event.resource!==undefined)choice(event.resource,`${p}.resource`,RESOURCE_KINDS);if(event.text!==undefined&&(typeof event.text!=='string'||event.text.length>4096))bad(`${p}.text`,'invalid message text');});
  const explored=fog(s.explored,'state.explored',c),visible=fog(s.visible,'state.visible',c);visible.forEach((tiles,side)=>{for(const tile of tiles)if(!explored[side].has(tile))bad(`state.visible[${side}]`,'visible tiles must be explored');});
  if(s.world!==undefined){validateWorldState(s.world,width,height,nextId,playerCount);const world=s.world;for(const allocated of [...world.bridges,...world.sites,...world.creatures])if(c.entityIds.has(allocated.id)||c.resourceIds.has(allocated.id))bad('world.id','collision with entity or resource');if(world.levels[0].terrain.some((t,i)=>t!==(s.terrain as unknown[])[i]))bad('world.levels[0].terrain','must match surface terrain');}
- validateRuntime(save.runtime,c,version,s.teams as TeamId[]|undefined);
- validateSpecialists(c.state);
- if(version===3){const count=['rules','objectives','draft'].filter(k=>Object.hasOwn(s,k)).length;if(count!==0&&count!==3)bad('state.rules','rules, objectives and draft must be stored together');if(count===3){const state=s as unknown as GameState;state.rules=validateSavedRules(s.rules,state.content);validateDraftState(s.draft,draftPlayers(state),state.rules,state.content);validateObjectiveState(s.objectives,state);validateModeRoster(state);}}
- if(s.scenario!==undefined)s.scenario=validateScenarioBinding(s.scenario,c.state);
-}
-function validateCurrent(envelope:unknown):asserts envelope is SaveEnvelope {validate(envelope,SAVE_VERSION);}
-/** Add team rules only after the complete two-player v1 schema has passed validation. */
-function migrateLegacy(envelope:RecordValue):void {
- validate(envelope,1);const state=envelope.state as RecordValue,entities=state.entities as RecordValue[];
- Object.assign(state,{teams:[0,1],incomeFactors:[1,1],populationLimits:[100,100],sharedVision:true,eliminated:[0,1].map(side=>!entities.some(e=>e.side===side&&e.kind==='building'&&e.role==='hq'&&(e.hp as number)>0&&e.progress===1)),winningTeam:state.winner});
- const runtime=envelope.runtime as RecordValue,cleared=runtime.enemyStartCleared as boolean[];runtime.clearedEnemyStarts=cleared.map((value,side)=>value?[1-side]:[]);
- envelope.version=2;
-}
-function migrateAi(envelope:RecordValue):void {
- validate(envelope,2);const state=envelope.state as RecordValue,runtime=envelope.runtime as RecordValue,count=(state.players as unknown[]).length;
- state.aiConfigs=Array.from({length:count},()=>normalizeAiConfig());
- Object.assign(runtime,{aiBatchTurns:0,aiDecisionAt:Array(count).fill(state.time as number),aiDecisionTurns:Array(count).fill(0),knownEnemyUnits:Array.from({length:count},()=>[]),retreating:Array.from({length:count},()=>[]),producedFighters:Array(count).fill(0)});envelope.version=SAVE_VERSION;
-}
-/** Copy only bounded JSON data. Accessors, class instances and cycles are rejected. */
-function copyJson(value:unknown):unknown {
- let nodes=0,bytes=0;const parents=new Set<object>();
- function copy(v:unknown,path:string,depth:number):unknown {
-  if(++nodes>2000000||depth>32)bad(path,'save is too large or deeply nested');
-  if(v===null||typeof v==='boolean')return v;
-  if(typeof v==='number'){if(!Number.isFinite(v))bad(path,'numbers must be finite');return v;}
-  if(typeof v==='string'){bytes+=v.length*2;if(bytes>MAX_SAVE_BYTES)bad(path,'save exceeds size limit');return v;}
-  if(!v||typeof v!=='object')bad(path,'expected JSON data');
-  if(parents.has(v))bad(path,'cyclic reference');parents.add(v);
-  let result:unknown;
-  if(Array.isArray(v)){
-   if(v.length>100000)bad(path,'array exceeds size limit');
-   const array:unknown[]=[];for(let i=0;i<v.length;i++){const descriptor=Object.getOwnPropertyDescriptor(v,String(i));if(!descriptor||!('value' in descriptor))bad(path,'array accessors and gaps are forbidden');array.push(copy(descriptor.value,`${path}[${i}]`,depth+1));}result=array;
-  }else{
-   const prototype=Object.getPrototypeOf(v);if(prototype!==Object.prototype&&prototype!==null)bad(path,'expected a plain object');
-   // Authored actor labels and runtime counters can exceed fixed-schema key counts.
-   // Their own validators retain semantic bounds; this copy shares the array budget.
-   const keys=Object.keys(v);if(keys.length>100000||Object.getOwnPropertySymbols(v).length)bad(path,'invalid object properties');
-   const record:RecordValue={};for(const key of keys){if(key==='__proto__'||key==='constructor'||key==='prototype')bad(path,'unsafe property name');const descriptor=Object.getOwnPropertyDescriptor(v,key)!;if(!('value' in descriptor))bad(path,'accessors are forbidden');if(descriptor.value!==undefined)record[key]=copy(descriptor.value,`${path}.${key}`,depth+1);}
-   result=record;
-  }
-  parents.delete(v);return result;
- }
- return copy(value,'save',0);
-}
-function checkSize(value:unknown):void {if(new TextEncoder().encode(JSON.stringify(value)).byteLength>MAX_SAVE_BYTES)bad('save','save exceeds size limit');}
-export function saveGame(state:GameState):SaveEnvelope {
- const envelope=copyJson({format:'orcs-vs-fairies-save',version:SAVE_VERSION,state:{...state,explored:state.explored.map(set=>[...set]),visible:state.visible.map(set=>[...set])},runtime:captureRuntime(state)});
- checkSize(envelope);validateCurrent(envelope);return envelope;
-}
-export function loadGame(input:unknown):GameState {
- let source=input;
- if(typeof input==='string'){if(input.length>MAX_SAVE_BYTES||new TextEncoder().encode(input).byteLength>MAX_SAVE_BYTES)bad('save','save exceeds size limit');try{source=JSON.parse(input);}catch{bad('save','invalid JSON');}}
- const envelope=copyJson(source);checkSize(envelope);const record=object(envelope,'save',['format','version','state','runtime']);
- if(record.version===1)migrateLegacy(record);if(record.version===2)migrateAi(record);
- validateCurrent(envelope);if(!envelope.state.rules){const state=envelope.state as unknown as GameState;state.rules=normalizeMatchRules({sharedVision:state.sharedVision},state.content);state.draft=createDraft(draftPlayers(state),state.rules,state.content);state.objectives=emptyObjectives(state);}
- checkSize(envelope);validateCurrent(envelope);
- const state:GameState={...envelope.state,explored:envelope.state.explored.map(values=>new Set(values)),visible:envelope.state.visible.map(values=>new Set(values))};
- if(state.world)state.world.levels[0].terrain=state.terrain;
- restoreRuntime(state,envelope.runtime);return state;
-}
+ if(s.economy!==undefined)validateEconomyState(s.economy,{width,height,time:c.time,nextId,playerCount,entities:s.entities as GameState['entities'],resources:s.resources as GameState['resources'],levels:c.levels,world:c.state.world});

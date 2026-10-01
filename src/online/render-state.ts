@@ -1,3 +1,4 @@
+import type { EconomyView } from '../core/economy-types';
 import type { WorldState } from '../core/world-types';
 import type { Controller, Entity, FactionId, GameEvent, GameState, Player, Side, TerrainKind, Vec } from '../core/types';
 import type { PlayerObservation } from './protocol';
@@ -12,6 +13,7 @@ export interface OnlineRenderState {
   state:GameState;localSide:Side;role:'player'|'spectator';privateSides:ReadonlySet<Side>;
   hiddenStarts:ReadonlySet<Side>;unknownTerrain:ReadonlySet<number>;
   worldPhase?:NonNullable<PlayerObservation['world']>['phase'];
+  economy?:EconomyView;
   resourceMemory:PlayerObservation['resources'];
   observedEvents:PlayerObservation['events'];
   objectiveView:Pick<PlayerObservation,'side'|'teamId'|'player'|'allies'|'opponents'|'tick'|'rules'|'draft'|'draftChoices'|'draftDefinitions'|'objectives'|'result'> & {entities:Array<Pick<Entity,'id'|'side'|'kind'|'role'|'x'|'y'|'level'|'hp'|'illusion'>>};
@@ -105,15 +107,3 @@ export function observationToRenderState(view:PlayerObservation,role:'player'|'s
     incomeFactors:Array.from({length:count},()=>1),populationLimits:Array.from({length:count},()=>100),
   } as unknown as GameState;
   const objectiveView={side:view.side,teamId:view.teamId,player:{...ownPlayer(view.player)},allies:structuredClone(view.allies),opponents:structuredClone(view.opponents),tick:view.tick,rules:structuredClone(view.rules),draft:structuredClone(view.draft),draftChoices:[...view.draftChoices],draftDefinitions:structuredClone(view.draftDefinitions),objectives:structuredClone(view.objectives),result:{...view.result},entities:entities.map(entity=>({id:entity.id,side:entity.side,kind:entity.kind,role:entity.role,x:entity.x,y:entity.y,...(entity.level===undefined?{}:{level:entity.level}),hp:entity.hp,illusion:entity.illusion}))};
-  return {state,localSide,role,privateSides,hiddenStarts,unknownTerrain,objectiveView,worldPhase:view.world?.phase?structuredClone(view.world.phase):undefined,
-    alliedAi:structuredClone(view.alliedAi),resourceMemory:view.resources.map(resource=>({...resource})),observedEvents:view.events.map(event=>({
-      type:event.type,tick:event.tick,x:event.x,y:event.y,...(event.level===undefined?{}:{level:event.level}),side:event.side,text:event.text,
-      target:event.target,source:event.source,amount:event.amount,resource:event.resource,
-    }))};
-}
-
-/** Keep Phaser's references stable as authoritative frames arrive. No stepGame call. */
-export function applyOnlineRenderState(target:GameState,source:OnlineRenderState):void {
-  for(const key of Object.keys(target))if(!(key in source.state))delete (target as unknown as Record<string,unknown>)[key];
-  Object.assign(target,source.state);
-}

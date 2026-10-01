@@ -1,3 +1,4 @@
+import { length2D } from './geometry';
 import type { Cost, Entity, GameState, ResourceKind } from './types';
 import type { EconomyState } from './economy-types';
 export const RESOURCE_KINDS:ResourceKind[]=['wood','ore','crystal'];
@@ -20,5 +21,5 @@ export function ensureEconomy(s:GameState):EconomyState {
 export function economyStock(s:GameState,economy:EconomyState,id:number):Cost|undefined{const entity=s.entities.find(e=>e.id===id&&e.hp>0&&e.kind==='building'&&e.progress===1&&(e.role==='hq'||e.role==='depot'));if(!entity)return undefined;return economy.structures.find(item=>item.entityId===id&&item.kind==='warehouse')?.stock??s.players[entity.side];}
 export const levelOf=(p:{level?:number})=>p.level??0;
 export const sameLevel=(a:{level?:number},b:{level?:number})=>levelOf(a)===levelOf(b);
-export const distance=(a:{x:number;y:number;level?:number},b:{x:number;y:number;level?:number})=>sameLevel(a,b)?Math.hypot(a.x-b.x,a.y-b.y):Infinity;
-export function economyMessage(s:GameState,e:Entity,text:string,target?:number):void{s.events.push({type:'message',x:e.x,y:e.y,side:e.side,source:e.id,text,...(target===undefined?{}:{target})});}
+export const distance=(a:{x:number;y:number;level?:number},b:{x:number;y:number;level?:number})=>sameLevel(a,b)?length2D(a.x-b.x,a.y-b.y):Infinity;
+export function economyMessage(s:GameState,e:Entity,text:string,target?:number):void{s.events.push({type:'message',x:e.x,y:e.y,level:levelOf(e),side:e.side,source:e.id,text,...(target===undefined?{}:{target})});}

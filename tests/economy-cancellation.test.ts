@@ -4,8 +4,9 @@ import { economicState } from '../src/core/economy';
 import { cancelCargoTask } from '../src/core/economy-cargo';
 import { loadGame, saveGame } from '../src/core/saves';
 
-function fixture() {
- const s=createMatch({map:{seed:4127,size:'small'},players:[{id:0,teamId:0,factionId:'orcs',controller:'external',handicap:{startingResources:{wood:5000,ore:5000,crystal:500}}},{id:1,teamId:1,factionId:'fairies',controller:'external'}]});
+function fixture(withWorld=false) {
+ const s=createMatch({map:{seed:4127,size:'small',...(withWorld?{biome:'forest' as const}:{})},players:[{id:0,teamId:0,factionId:'orcs',controller:'external',handicap:{startingResources:{wood:5000,ore:5000,crystal:500}}},{id:1,teamId:1,factionId:'fairies',controller:'external'}]});
+ if(s.world){for(const level of s.world.levels){level.terrain.fill('grass');level.elevation.fill(0);}Object.assign(s.world,{sites:[],creatures:[],bridges:[],fires:[],iceTiles:[],dayLength:10000,seasonLength:10000,weatherLength:10000});}
  s.terrain.fill('grass');s.resources=[];refreshVisibility(s);
  const worker=s.entities.find(entity=>entity.side===0&&entity.role==='worker')!,hq=s.entities.find(entity=>entity.side===0&&entity.role==='hq')!,economy=economicState(s)!;
  return {s,worker,hq,economy,point:{x:hq.x+5,y:hq.y+2}};
@@ -65,7 +66,7 @@ describe('cargo jobs when actors change map levels',()=>{
   expect(economy.tasks).toHaveLength(0);expect(pile.stock.wood).toBe(5);expect(economy.cargo).toHaveLength(0);
  });
  function routeFixture(){
-  const data=fixture(),{s,hq,economy}=data,target={...structuredClone(hq),id:s.nextId++,x:hq.x+12};s.entities.push(target);
+  const data=fixture(true),{s,hq,economy}=data,target={...structuredClone(hq),id:s.nextId++,x:hq.x+12};s.entities.push(target);
   expect(issueCommand(s,0,{type:'trainCaravan',id:hq.id})).toBe(true);run(s,20);
   const cart=s.entities.find(entity=>entity.id===economy.caravans[0])!;return {...data,target,cart};
  }

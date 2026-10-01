@@ -1,10 +1,11 @@
+import { DIRECTIONS_32 } from './geometry';
 import { ECONOMY_BUILDINGS, ECONOMY_CARAVAN, ECONOMY_RULES } from './economy-definitions';
 import { createEconomyState, distance, economicState, economyMessage, ensureEconomy, payCost, RESOURCE_KINDS, zeroCost, levelOf, sameLevel } from './economy-common';
 import { walkable, openDestination } from './navigation';
 import { TERRAIN } from './maps';
 import type { Cost, Entity, GameState, ResourceNode, Side, Vec } from './types';
 import type { EconomyCommand, EconomyHooks, EconomyState, EconomyView, SettlementSpecialization } from './economy-types';
-import { applyCargoCommand, economicDeath, marketPrices, tickCargo } from './economy-cargo';
+import { applyCargoCommand, cancelCargoTask, economicDeath, marketPrices, tickCargo } from './economy-cargo';
 export { ECONOMY_BUILDINGS, ECONOMY_CARAVAN, ECONOMY_RULES } from './economy-definitions';
 export { economicState, ensureEconomy } from './economy-common';
 const own=(s:GameState,side:Side,id:number)=>s.entities.find(e=>e.id===id&&e.side===side&&e.hp>0&&!e.illusion);
@@ -22,7 +23,7 @@ export function initializeEconomySites(s:GameState,sites?:Array<Vec & {id?:numbe
  const economy=ensureEconomy(s);if(economy.markets.length)return;
  const locations=sites?.length?sites:[{x:s.width/2-6,y:s.height/2},{x:s.width/2+6,y:s.height/2}];
  for(const site of locations.slice(0,16)){
-  const point=openDestination(s,site,site);if(point&&site.level!==undefined)point.level=site.level;if(!point)continue;
+  const position={x:site.x,y:site.y,level:levelOf(site)},point=openDestination(s,position,position);if(!point)continue;
   const villageId=site.id??s.nextId++;economy.villages.push({id:villageId,...point,rewardPool:{...ECONOMY_RULES.contract.villagePool}});
   economy.markets.push({id:s.nextId++,...point,stock:{wood:ECONOMY_RULES.market.stock,ore:ECONOMY_RULES.market.stock,crystal:ECONOMY_RULES.market.stock},demand:zeroCost(),recoverAt:s.time});
   for(const kind of RESOURCE_KINDS)economy.contracts.push({id:s.nextId++,villageId,...point,side:null,kind,amount:ECONOMY_RULES.contract.amount,delivered:0,deadline:s.time+ECONOMY_RULES.contract.deadlineSeconds,reward:{...ECONOMY_RULES.contract.reward},status:'open'});
@@ -42,14 +43,14 @@ function buildEconomic(s:GameState,side:Side,c:Extract<EconomyCommand,{type:'bui
  else {
   resource=s.resources.find(r=>r.id===c.target&&r.kind===(c.kind==='extractor'?'crystal':'ore')&&hooks.visible(s,side,r));
   if(!resource||c.kind==='deep-mine'&&(resource.amount>1e-8||resource.maxAmount<=0||economy.deepSites.includes(resource.id))||economy.structures.some(item=>item.kind===c.kind&&item.resourceId===resource!.id))return false;
-  const candidates:Vec[]=[];for(const r of [3.2,4,5])for(let i=0;i<16;i++){const angle=i*Math.PI/8,candidate={x:Math.floor(resource.x+Math.cos(angle)*r)+.5,y:Math.floor(resource.y+Math.sin(angle)*r)+.5,level};if(hooks.canPlace(s,side,candidate.x,candidate.y,level))candidates.push(candidate);}
+  const candidates:Vec[]=[];for(const r of [3.2,4,5])for(let i=0;i<16;i++){const [dx,dy]=DIRECTIONS_32[i*2],candidate={x:Math.floor(resource.x+dx*r)+.5,y:Math.floor(resource.y+dy*r)+.5,level};if(hooks.canPlace(s,side,candidate.x,candidate.y,level))candidates.push(candidate);}
   const candidate=candidates.sort((a,b)=>distance(workers[0],a)-distance(workers[0],b))[0];if(!candidate)return false;p=candidate;
  }
  if(!hooks.canPlace(s,side,p.x,p.y,level))return false;
  const def=ECONOMY_BUILDINGS[c.kind],shoves:{entity:Entity;point:Vec}[]=[];
  for(const unit of s.entities.filter(e=>e.hp>0&&e.kind==='unit'&&sameLevel(e,p)&&Math.abs(e.x-p.x)<def.size/2+.35&&Math.abs(e.y-p.y)<def.size/2+.35)){
   let destination:Vec|undefined;
-  for(let ring=def.size/2+1;ring<=def.size/2+5&&!destination;ring+=.5)for(let i=0;i<32;i++){const angle=i*Math.PI/16,point={x:p.x+Math.cos(angle)*ring,y:p.y+Math.sin(angle)*ring,level};if((Math.abs(point.x-p.x)>=def.size/2+.3||Math.abs(point.y-p.y)>=def.size/2+.3)&&canWalk(s,point)){destination=point;break;}}
+  for(let ring=def.size/2+1;ring<=def.size/2+5&&!destination;ring+=.5)for(let i=0;i<32;i++){const [dx,dy]=DIRECTIONS_32[i],point={x:p.x+dx*ring,y:p.y+dy*ring,level};if((Math.abs(point.x-p.x)>=def.size/2+.3||Math.abs(point.y-p.y)>=def.size/2+.3)&&canWalk(s,point)){destination=point;break;}}
   if(!destination)return false;shoves.push({entity:unit,point:destination});
  }
  if(!payCost(s.players[side],def.cost))return false;
@@ -87,7 +88,12 @@ export function applyEconomyCommand(s:GameState,side:Side,c:EconomyCommand,hooks
  return applyCargoCommand(s,side,c,economy,hooks)??false;
 }
 /** A new ordinary order cancels the route/channel while keeping any physical cargo. */
-export function cancelEconomyTask(s:GameState,id:number):void{const economy=economicState(s);if(!economy)return;for(const task of economy.tasks)if(task.entityId===id&&task.kind==='plant'){const grove=economy.groves.find(g=>g.id===task.targetId&&g.plantedAt<0);if(grove)grove.burned=true;}economy.tasks=economy.tasks.filter(task=>task.entityId!==id);}
+export function cancelEconomyTask(s:GameState,id:number):void{
+ const economy=economicState(s);if(!economy)return;const actor=s.entities.find(e=>e.id===id);
+ if(actor&&economy.tasks.some(task=>task.entityId===id))cancelCargoTask(actor,economy);
+ else {for(const task of economy.tasks)if(task.entityId===id&&task.kind==='plant'){const grove=economy.groves.find(g=>g.id===task.targetId&&g.plantedAt<0);if(grove)grove.burned=true;}economy.tasks=economy.tasks.filter(task=>task.entityId!==id);}
+ economy.workerWarehouses=economy.workerWarehouses.filter(item=>item.entityId!==id||!!actor&&s.entities.some(w=>w.id===item.warehouseId&&sameLevel(actor,w)));
+}
 export function economyEntityBusy(s:GameState,e:Entity):boolean{return !!economicState(s)?.tasks.some(task=>task.entityId===e.id);}
 export function tickEconomy(s:GameState,dt:number,hooks:EconomyHooks):void {
  const economy=economicState(s);if(!economy)return;
@@ -99,7 +105,7 @@ export function tickEconomy(s:GameState,dt:number,hooks:EconomyHooks):void {
  }
  for(const grove of economy.groves)if(!grove.burned&&!grove.resourceId&&grove.plantedAt>=0&&s.time>=grove.maturesAt){
   if(!terrainFor(s,grove).buildable||s.entities.some(e=>e.hp>0&&e.kind==='building'&&distance(e,grove)<hooks.radius(s,e)+1))continue;
-  const resource={id:s.nextId++,x:grove.x,y:grove.y,level:levelOf(grove),kind:'wood' as const,amount:ECONOMY_RULES.grove.wood,maxAmount:ECONOMY_RULES.grove.wood};s.resources.push(resource);grove.resourceId=resource.id;s.events.push({type:'build',x:grove.x,y:grove.y,side:grove.side,text:'A cultivated grove is ready to harvest.'});
+  const resource={id:s.nextId++,x:grove.x,y:grove.y,level:levelOf(grove),kind:'wood' as const,amount:ECONOMY_RULES.grove.wood,maxAmount:ECONOMY_RULES.grove.wood};s.resources.push(resource);grove.resourceId=resource.id;s.events.push({type:'build',x:grove.x,y:grove.y,level:levelOf(grove),side:grove.side,text:'A cultivated grove is ready to harvest.'});
  }
  for(const structure of economy.structures){
   const entity=s.entities.find(e=>e.id===structure.entityId&&e.hp>0);if(!entity)continue;
@@ -108,7 +114,7 @@ export function tickEconomy(s:GameState,dt:number,hooks:EconomyHooks):void {
   if(structure.kind==='extractor'&&s.time+1e-9>=structure.nextIncident){
    const cycle=Math.floor(structure.nextIncident/ECONOMY_RULES.extractor.incidentSeconds);let hash=(s.seed^Math.imul(entity.id,2654435761)^Math.imul(cycle,2246822519))>>>0;hash^=hash>>>16;hash=Math.imul(hash,2246822519)>>>0;const roll=(hash>>>0)/4294967296;
    structure.nextIncident+=ECONOMY_RULES.extractor.incidentSeconds;
-   if(structure.overcharge&&roll<ECONOMY_RULES.extractor.incidentChance){const amount=Math.min(entity.hp,ECONOMY_RULES.extractor.incidentDamage);entity.hp-=amount;entity.lastDamagedAt=s.time;s.events.push({type:'attack',x:entity.x,y:entity.y,side:entity.side,source:entity.id,target:entity.id,amount,text:'Extractor overcharge incident'});if(entity.hp<=0){entity.animation='death';entity.animTime=0;economicDeath(s,entity,economy,hooks);s.events.push({type:'death',x:entity.x,y:entity.y,side:entity.side,source:entity.id,text:'Extractor destroyed by overcharge.'});}else economyMessage(s,entity,`Overcharge incident caused ${amount} damage. Workers can repair the extractor.`);}
+   if(structure.overcharge&&roll<ECONOMY_RULES.extractor.incidentChance){const amount=Math.min(entity.hp,ECONOMY_RULES.extractor.incidentDamage);entity.hp-=amount;entity.lastDamagedAt=s.time;s.events.push({type:'attack',x:entity.x,y:entity.y,level:levelOf(entity),side:entity.side,source:entity.id,target:entity.id,amount,text:'Extractor overcharge incident'});if(entity.hp<=0){entity.animation='death';entity.animTime=0;economicDeath(s,entity,economy,hooks);s.events.push({type:'death',x:entity.x,y:entity.y,level:levelOf(entity),side:entity.side,source:entity.id,text:'Extractor destroyed by overcharge.'});}else economyMessage(s,entity,`Overcharge incident caused ${amount} damage. Workers can repair the extractor.`);}
   }
  }
  for(const recruit of [...economy.recruits]){
@@ -116,10 +122,10 @@ export function tickEconomy(s:GameState,dt:number,hooks:EconomyHooks):void {
   if(!producer){for(const kind of RESOURCE_KINDS)s.players[recruit.side][kind]+=ECONOMY_RULES.caravan.cost[kind];economy.recruits=economy.recruits.filter(item=>item!==recruit);continue;}
   if(s.time<recruit.readyAt||s.players[recruit.side].population>=s.players[recruit.side].cap)continue;
   const point=openDestination(s,{x:producer.x+hooks.radius(s,producer)+1,y:producer.y,level:levelOf(producer)},producer);if(!point)continue;
-  const caravan=hooks.spawn(s,recruit.side,'unit','worker',point.x,point.y);caravan.level=levelOf(producer);markDefinition(caravan,ECONOMY_CARAVAN.id);caravan.hp=caravan.maxHp=ECONOMY_CARAVAN.hp;caravan.shield=undefined;caravan.maxShield=undefined;s.players[recruit.side].population++;economy.caravans.push(caravan.id);economy.cargo.push({entityId:caravan.id,stock:zeroCost(),capacity:ECONOMY_RULES.caravan.capacity,origin:'delivery',tradeValue:0});recordEconomyPaid(s,caravan,ECONOMY_RULES.caravan.cost);economy.recruits=economy.recruits.filter(item=>item!==recruit);s.events.push({type:'train',x:caravan.x,y:caravan.y,side:caravan.side,source:caravan.id,text:'Trade caravan recruited.'});
+  const caravan=hooks.spawn(s,recruit.side,'unit','worker',point.x,point.y);caravan.level=levelOf(producer);markDefinition(caravan,ECONOMY_CARAVAN.id);caravan.hp=caravan.maxHp=ECONOMY_CARAVAN.hp;caravan.shield=undefined;caravan.maxShield=undefined;s.players[recruit.side].population++;economy.caravans.push(caravan.id);economy.cargo.push({entityId:caravan.id,stock:zeroCost(),capacity:ECONOMY_RULES.caravan.capacity,origin:'delivery',tradeValue:0});recordEconomyPaid(s,caravan,ECONOMY_RULES.caravan.cost);economy.recruits=economy.recruits.filter(item=>item!==recruit);s.events.push({type:'train',x:caravan.x,y:caravan.y,level:levelOf(caravan),side:caravan.side,source:caravan.id,text:'Trade caravan recruited.'});
  }
  tickCargo(s,dt,economy,hooks);
- const aliveIds=new Set(s.entities.filter(e=>e.hp>0).map(e=>e.id));economy.workerWarehouses=economy.workerWarehouses.filter(item=>aliveIds.has(item.entityId)&&aliveIds.has(item.warehouseId));economy.specializations=economy.specializations.filter(item=>aliveIds.has(item.entityId));
+ const aliveIds=new Set(s.entities.filter(e=>e.hp>0).map(e=>e.id));economy.workerWarehouses=economy.workerWarehouses.filter(item=>aliveIds.has(item.entityId)&&aliveIds.has(item.warehouseId)&&sameLevel(s.entities.find(e=>e.id===item.entityId)!,s.entities.find(e=>e.id===item.warehouseId)!));economy.specializations=economy.specializations.filter(item=>aliveIds.has(item.entityId));
 }
 export function onEconomyDeath(s:GameState,e:Entity,hooks:EconomyHooks):void{const economy=ensureEconomy(s);economicDeath(s,e,economy,hooks);}
 export function burnEconomyAt(s:GameState,x:number,y:number,radius:number,level=0):void{const economy=economicState(s);if(!economy)return;for(const grove of economy.groves)if(distance(grove,{x,y,level})<=radius){grove.burned=true;if(grove.resourceId){const resource=s.resources.find(r=>r.id===grove.resourceId);if(resource)resource.amount=0;}}}

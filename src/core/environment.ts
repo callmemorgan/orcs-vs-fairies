@@ -1,3 +1,4 @@
+import { burnEconomyAt } from './economy';
 import { length2D, DIRECTIONS_32 } from './geometry';
 import { buildingFor, unitFor } from './content-registry';
 import { setWorldTerrain } from './world-map';
@@ -80,7 +81,7 @@ function woodAt(s:GameState,p:Positioned) {
  return s.resources.filter(n=>n.kind==='wood'&&n.amount>0&&levelOf(n)===levelOf(p)&&tileOf(s,n)===tileOf(s,p));
 }
 function flammable(s:WorldGame,p:Positioned):boolean {
- return p.x>=0&&p.y>=0&&p.x<s.width&&p.y<s.height&&(terrain(s,p)==='forest'||woodAt(s,p).length>0);
+ return p.x>=0&&p.y>=0&&p.x<s.width&&p.y<s.height&&(terrain(s,p)==='forest'||woodAt(s,p).length>0||s.economy?.groves.some(g=>!g.burned&&levelOf(g)===levelOf(p)&&tileOf(s,g)===tileOf(s,p))===true);
 }
 function message(s:GameState,side:Side,p:Positioned,text:string,type:'message'|'ability'='message',source?:number):void {
  const event={type,side,x:p.x,y:p.y,level:levelOf(p),text,source};s.events.push(event);
@@ -129,7 +130,7 @@ export function issueEnvironmentCommand(s:GameState,side:Side,command:WorldComma
  player.wood-=wood;player.ore-=ore;actor.cooldown=actor.role==='siege'?1.5:.8;actor.animation='attack';actor.animTime=0;
  if(c.type==='ignite')igniteWorldAt(s,p);
  else {
-  for(const node of woodAt(s,p))node.amount=0;
+  for(const node of woodAt(s,p))node.amount=0;burnEconomyAt(s,p.x,p.y,.8,levelOf(p));
   if(terrain(state,p)==='forest')setTerrain(state,p,'grass');
   world.fires=world.fires.filter(f=>f!==fire);
  }
@@ -210,7 +211,7 @@ export function stepEnvironment(s:GameState,dt:number,hooks?:EnvironmentHooks):v
   const wet=phase.weather==='rain'&&fire.level===0;
   fire.heat=Math.max(0,fire.heat-dt*(wet?.22:.004));
   const nodes=woodAt(s,fire),burn=dt*ENVIRONMENT_RULES.woodBurnRate*fire.heat*(wet?.35:1);
-  for(const node of nodes)node.amount=Math.max(0,node.amount-burn);
+  for(const node of nodes)node.amount=Math.max(0,node.amount-burn);burnEconomyAt(s,fire.x,fire.y,.8,fire.level);
   // A bare forest tile contains vegetation even when it has no harvest node.
   if(terrain(state,fire)==='forest'&&(nodes.length?nodes.every(n=>n.amount===0):fire.expires-s.time<ENVIRONMENT_RULES.fireLifetime-5))setTerrain(state,fire,'grass');
   for(const e of s.entities)if(e.hp>0&&exposed(s,e,fire))hurt(s,e,dt*(e.kind==='building'?ENVIRONMENT_RULES.buildingFireDamage:ENVIRONMENT_RULES.fireDamage)*fire.heat,'Forest fire damage',false,hooks);

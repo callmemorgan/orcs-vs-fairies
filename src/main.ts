@@ -1,3 +1,6 @@
+import { mountEconomyTools } from './ui/EconomyTools';
+import { observeEconomy } from './core/economy';
+import { isVisible } from './core/simulation';
 import Phaser from 'phaser';
 import GameScene, { project, unproject } from './game/GameScene';
 import { createPerformanceGame, countPerformanceUnits, FrameCollector, PERFORMANCE_CENTER } from './qa/performance';
@@ -371,6 +374,16 @@ function updateCoach(){
  if(state.time-coachObservedAt<1)return;
  coachObservedAt=state.time;coach.update(coachView.observe(state));
 }
+function economyBlocked(){return !!scene?.photoMode||Array.from(openModals).some(source=>source!=='economy');}
+let economyResourceView=new PlayerView(0);
+const economyTools=mountEconomyTools(root,{
+ getGame:()=>scene?.state??null,
+ getView:()=>scene?onlineRender?.economy??observeEconomy(scene.state,playerSide(),{visible:(state,side,p)=>isVisible(state,side,p.x,p.y,p.level??0)}):null,
+ knownResources:()=>{if(!scene)return [];if(onlineRender)return onlineRender.resourceMemory;if(economyResourceView.side!==playerSide())economyResourceView=new PlayerView(playerSide());return economyResourceView.resourcesFor(scene.state);},
+ selectedIds:()=>scene?.selected??[],
+ submit:command=>!economyBlocked()&&dispatchCommand(playerSide(),command),
+ onModal:open=>setModal('economy',open)
+});
 const photoControls=document.createElement('section');photoControls.className='photo-controls';photoControls.hidden=true;
 const photoHint=document.createElement('span');photoHint.textContent='Photo mode · Pan and zoom to compose your image';
 const photoCapture=document.createElement('button');photoCapture.textContent='Download photo';photoCapture.onclick=()=>{
@@ -388,30 +401,3 @@ setInterval(()=>{
 },16);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)maybeAutosave(true);});
 window.addEventListener('pagehide',()=>maybeAutosave(true));
-setInterval(()=>{
- if(scene)shell.update(scene.state,scene.selected,callbacks);
- const side=playerSide(),state=scene?.state,view=state?(onlineRender?onlineRender.alliedAi:alliedAiStatus(state,side)):null;
- const destination=state?.entities.find(e=>e.side===side&&e.hp>0&&scene!.selected.includes(e.id))??state?.entities.find(e=>e.side===side&&e.role==='hq'&&e.hp>0);
- teamAiTools.update({side,allies:(view?.allies??[]).map(ally=>({side:ally.side,name:`Player ${ally.side+1} · ${factionFor(state!,ally.side).name}`})),directives:view?.directives??[],width:state?.width??1,height:state?.height??1,levels:state?.world?.levels.map(l=>({id:l.id,name:l.title}))??[{id:0,name:'Surface'}],enabled:!teamAiBlocked(),...(destination?{destination:{x:destination.x,y:destination.y,...(destination.level===undefined?{}:{level:destination.level})}}:{})},{blocked:teamAiBlocked()});
- tools.update(state??null,{side,paused:scene?.paused,replaySpectator:!!replay||!!scene?.readOnly,remoteMatch:!!onlineConnection});objectives.update();planning.update({blocked:planningBlocked()});tournaments.update({blocked:tournamentBlocked()});campaignHost.update({blocked:Array.from(openModals).some(source=>source!=='campaign'),photo:scene?.photoMode});scenarioOverlay?.update(scene?scenarioSessionForState(scene.state):null,!!scene?.photoMode,scene?.viewLevel??0);updateCoach();
-},100);
-// Read-only diagnostics for repeatable performance and state inspection. Player actions stay in the UI.
-const worldTools=mountWorldTools(root,{phase:()=>onlineRender?.worldPhase,state:()=>scene?.state,side:playerSide,level:()=>scene?.viewLevel??0,selected:()=>scene?.selected??[],canCommand:()=>!!scene&&scene.canIssueCommands,command:c=>scene?.command(c)??false,setLevel:level=>scene?.setViewLevel(level),select:ids=>scene?.selectEntities(ids),center:p=>scene?.centerOn(p.x,p.y),notice:shell.notice});
-setInterval(()=>worldTools.update(),100);
-Object.defineProperty(window,'rts',{get:()=>scene?.cameras?.main?{state:scene.state,get activeScenario(){const session=scenarioSessionForState(scene!.state);return session?structuredClone({definition:session.definition,runtime:session.runtime,simulationRevision:session.simulationRevision}):null;},viewLevel:scene.viewLevel,viewSide:scene.viewSide,readOnly:scene.readOnly,selected:[...scene.selected],art:scene.artStatus,fps:game?.loop.actualFps,paused:scene.paused,mode:onlineConnection?'online':replay?'replay':'local',simulationEnabled:scene.simulationEnabled,online:onlineConnection?{status:onlineConnection.status,role:onlineRender?.role,side:playerSide(),delayTicks:onlineConnection.connectionInfo?.delayTicks,pendingCommands:onlineConnection.pendingCommands,privateSides:[...(onlineRender?.privateSides??[])]}:null,camera:{x:scene.cameras.main.scrollX,y:scene.cameras.main.scrollY,zoom:scene.cameras.main.zoom,width:scene.cameras.main.width,height:scene.cameras.main.height}}:null});
-Object.defineProperty(window,'editorDiagnostics',{value:()=>{
- if(!scene?.cameras?.main)return null;
- const state=scene.state,metadata=editedPackages.get(state),scenario=state.scenario;
- return {packageHash:metadata?.packageHash??'',worldHash:metadata?.worldHash??'',tick:state.tick,starts:structuredClone(state.starts),width:state.width,height:state.height,terrain:[...state.terrain],resources:structuredClone(state.resources),players:structuredClone(state.players),world:structuredClone(state.world),selected:[...scene.selected],viewLevel:scene.viewLevel,entities:structuredClone(state.entities),content:state.content?structuredClone(state.content):null,art:structuredClone(scene.artStatus),camera:{x:scene.cameras.main.scrollX,y:scene.cameras.main.scrollY,zoom:scene.cameras.main.zoom,width:scene.cameras.main.width,height:scene.cameras.main.height},scenario:scenario?{runtime:structuredClone(scenario.runtime),definition:structuredClone(scenario.definition),entities:structuredClone(state.entities)}:null};
-},writable:false});
-if(location.pathname.endsWith('/editor.html'))editor.open();
-if(location.hostname==='127.0.0.1'&&new URLSearchParams(location.search).has('qa'))setInterval(()=>{
- if(!scene||!game)return;
- const s=scene.state;
- void fetch('/__qa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({at:new Date().toISOString(),time:s.time,fps:game.loop.actualFps,viewport:{width:innerWidth,height:innerHeight},drawingBuffer:{width:game.canvas.width,height:game.canvas.height},renderDensity,art:scene.artStatus,audio:scene.audioStatus,camera:{x:scene.cameras.main.scrollX,y:scene.cameras.main.scrollY,zoom:scene.cameras.main.zoom},benchmark:benchmark?collector.summary():undefined,paused:scene.paused,mapSize:s.mapSize,seed:s.seed,draw:s.draw,winner:s.winner,selected:scene.selected,players:s.players,entities:s.entities.map(({path,...e})=>e),resources:s.resources,visible:s.visible.map(x=>x.size)})}).catch(()=>{});
-},5000);
-if(benchmark){
- const status=document.createElement('div');status.id='benchmark-status';status.style.cssText='position:fixed;top:90px;left:50%;transform:translateX(-50%);z-index:9999;background:#101c18;color:#eee;padding:12px;pointer-events:none';document.body.append(status);
- setInterval(()=>{const r=collector.summary();status.textContent=`SYNTHETIC BENCHMARK · 100 units · ${r.phase} · ${r.averageFps?.toFixed(1)??'—'} FPS${r.phase==='complete'?(r.valid?' · valid sample':' · INVALID: '+r.invalidReasons.join('; ')):''}`;},1000);
- start('orcs');
-}

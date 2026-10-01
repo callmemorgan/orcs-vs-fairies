@@ -17,7 +17,7 @@ function good(count=8) {return saveGame(createMatch(config(count)));}
 function legacy(state:GameState):any {
  const save:any=saveGame(state);save.version=1;for(const key of ['rules','objectives','draft'])delete save.state[key];
  for(const key of teamFields)delete save.state[key];
- delete save.state.aiConfigs;delete save.runtime.aiBatchTurns;for(const key of aiFields)delete save.runtime[key];
+ delete save.state.economy;delete save.state.aiConfigs;delete save.runtime.aiBatchTurns;for(const key of aiFields)delete save.runtime[key];
  delete save.runtime.clearedEnemyStarts;
  return save;
 }
@@ -162,7 +162,7 @@ describe('legacy version 1 migration',()=>{
   const state=createGame('orcs',4127,'fairies',{controllers:['ai','ai'],mapSize:'small'});advance(state,160);
   const snapshot=legacy(state),before=structuredClone(snapshot),runtime={...structuredClone(snapshot.runtime),clearedEnemyStarts:snapshot.runtime.enemyStartCleared.map((value:boolean,side:number)=>value?[1-side]:[])},loaded=loadGame(snapshot);
   expect(snapshot).toEqual(before);expect(loaded.teams).toEqual([0,1]);expect(loaded.incomeFactors).toEqual([1,1]);expect(loaded.populationLimits).toEqual([100,100]);expect(loaded.sharedVision).toBe(true);expect(loaded.eliminated).toEqual([false,false]);expect(loaded.winningTeam).toBeNull();
-  expect(captureRuntime(loaded)).toMatchObject(runtime);expect(saveGame(loaded).version).toBe(SAVE_VERSION);const migrated=captureRuntime(loaded),original=captureRuntime(state);original.aiBatchTurns=migrated.aiBatchTurns;for(const key of aiFields)(original[key] as unknown)=structuredClone(migrated[key]);restoreRuntime(state,original);expect(saveGame(loaded)).toEqual(saveGame(state));
+  expect(captureRuntime(loaded)).toMatchObject(runtime);expect(saveGame(loaded).version).toBe(SAVE_VERSION);const migrated=captureRuntime(loaded),original=captureRuntime(state);original.aiBatchTurns=migrated.aiBatchTurns;for(const key of aiFields)(original[key] as unknown)=structuredClone(migrated[key]);restoreRuntime(state,original);delete state.economy;expect(saveGame(loaded)).toEqual(saveGame(state));
   for(let i=0;i<500;i++){stepGame(state,.125);stepGame(loaded,.125);expect(saveGame(loaded)).toEqual(saveGame(state));}
  },90000);
 
@@ -191,7 +191,7 @@ describe('legacy version 1 migration',()=>{
   const state=createGame('fairies',4127,'orcs',{controllers:['external','external']}),worker=state.entities.find(e=>e.side===0&&e.role==='worker')!,node=state.resources.find(n=>n.kind==='wood')!;
   worker.x=node.x+1.1;worker.y=node.y;node.amount=1;refreshVisibility(state);
   expect(issueCommand(state,0,{type:'gather',ids:[worker.id],target:node.id,queued:true})).toBe(true);const caster=special(state,0);expect(issueCommand(state,0,{type:'ability',ids:[caster.id]})).toBe(true);
-  const loaded=loadGame(legacy(state));expect(captureRuntime(loaded).queuedGather).toContain(worker.id);expect(saveGame(loaded)).toEqual(saveGame(state));
+  const loaded=loadGame(legacy(state));delete state.economy;expect(captureRuntime(loaded).queuedGather).toContain(worker.id);expect(saveGame(loaded)).toEqual(saveGame(state));
   for(let i=0;i<200;i++){stepGame(state,.125);stepGame(loaded,.125);expect(saveGame(loaded)).toEqual(saveGame(state));}
  });
 

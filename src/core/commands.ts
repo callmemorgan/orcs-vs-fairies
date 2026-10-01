@@ -1,4 +1,5 @@
 import { PROMOTIONS } from './unit-progression';
+import { isEconomyCommand, validateEconomyCommand } from './economy-validation';
 import { UPGRADES } from './content';
 import type { AlliedCommand, Command } from './types';
 
@@ -17,6 +18,7 @@ export function isPlayerCommand(command:Command):command is AlliedCommand{return
 /** One strict command boundary for terminal, replay, and future remote inputs. */
 export function validateCommand(v:unknown):v is Command {
   if(!record(v)||typeof v.type!=='string')return false;
+  if(isEconomyCommand(v as {type:string}))return validateEconomyCommand(v);
   const queued=['move','attackMove','attack','gather','repair'].includes(v.type);
   if('queued' in v&&(!queued||typeof v.queued!=='boolean'))return false;
   if(v.type==='draftChoice')return keys(v,['type','definitionId'])&&typeof v.definitionId==='string'&&v.definitionId.length>0&&v.definitionId.length<=128;

@@ -1,3 +1,4 @@
+import { observeEconomy } from '../core/economy';
 import Phaser from 'phaser';
 import ArtRuntime from './ArtRuntime';
 import GameAudio from './GameAudio';
@@ -455,6 +456,19 @@ export default class GameScene extends Phaser.Scene {
       const e=obj.e,p=project(e.x,e.y);const faction=this.state.players[e.side].faction;const orc=faction==='orcs';const style=ownershipStyle(e.side,this.viewSide,appearance,teams);const color=style.color;const selected=!this.photoMode&&this.selected.includes(e.id);const dead=e.hp<=0;const alpha=dead?.35:e.illusion&&e.side===this.playerView.side?.5:1;
       g.fillStyle(0x14201c,.38).fillEllipse(p.x+4,p.y+4,e.kind==='building'?70:27,e.kind==='building'?30:12);
       if(selected){const w=e.kind==='building'?86:39,h=e.kind==='building'?43:21;g.lineStyle(5,0x111a20,1).strokeEllipse(p.x,p.y+2,w,h);g.lineStyle(2.5,style.outline,1).strokeEllipse(p.x,p.y+2,w,h);}
+      if(e.definitionId?.startsWith('economy:')){
+        if(e.kind==='building'){
+          this.diamond(g,p.x,p.y,76,38,0x4e5042,alpha);g.fillStyle(0x7c7157,alpha).fillRect(p.x-25,p.y-38,50,36);
+          if(e.definitionId==='economy:warehouse'){g.fillStyle(0x443923,alpha).fillTriangle(p.x-32,p.y-35,p.x,p.y-59,p.x+32,p.y-35);g.fillStyle(0xbf9660,alpha).fillRect(p.x-20,p.y-19,17,16).fillRect(p.x+1,p.y-23,18,20);g.lineStyle(2,0x533f2b,alpha).strokeRect(p.x-20,p.y-19,17,16).strokeRect(p.x+1,p.y-23,18,20);}
+          else if(e.definitionId==='economy:extractor'){g.fillStyle(0x92d7df,alpha).fillTriangle(p.x-12,p.y-29,p.x,p.y-68,p.x+12,p.y-29);g.lineStyle(3,0xd8e8cd,alpha).lineBetween(p.x-23,p.y-5,p.x-15,p.y-42).lineBetween(p.x+23,p.y-5,p.x+15,p.y-42);const over=(this.remoteFrame?.economy??this.state.economy)?.structures.some(item=>item.entityId===e.id&&item.overcharge);if(over)g.lineStyle(3,0xffb75e,.8).strokeCircle(p.x,p.y-36,23);}
+          else{g.fillStyle(0x171d1c,alpha).fillEllipse(p.x,p.y-14,37,18);g.lineStyle(4,0xb19c65,alpha).lineBetween(p.x-23,p.y-4,p.x-15,p.y-49).lineBetween(p.x+23,p.y-4,p.x+15,p.y-49).lineBetween(p.x-15,p.y-49,p.x+15,p.y-49);}
+          g.fillStyle(color,alpha).fillRect(p.x+22,p.y-48,12,10);
+        }else{
+          g.fillStyle(0x40352d,alpha).fillCircle(p.x-13,p.y-2,6).fillCircle(p.x+13,p.y-2,6);g.fillStyle(0xb29258,alpha).fillRect(p.x-20,p.y-24,40,21);g.lineStyle(2,0x54422a,alpha).strokeRect(p.x-20,p.y-24,40,21);g.fillStyle(color,alpha).fillRect(p.x-5,p.y-29,11,5);g.fillStyle(0xe0bd7e,alpha).fillRect(p.x-15,p.y-35,13,11).fillRect(p.x+3,p.y-34,13,10);
+        }
+        if(!this.photoMode&&(selected||e.hp<e.maxHp)){const width=e.kind==='building'?54:36,y=p.y-(e.kind==='building'?78:48);g.fillStyle(0x182426,.9).fillRect(p.x-width/2-1,y-1,width+2,5);g.fillStyle(style.color).fillRect(p.x-width/2,y,width*Math.max(0,e.hp/e.maxHp),3);}
+        if(!this.photoMode&&e.progress<1){g.fillStyle(0x182b2a,.6).fillRect(p.x-34,p.y-12,68,6);g.fillStyle(0xe4c578).fillRect(p.x-34,p.y-12,68*e.progress,6);}continue;
+      }
       if(this.art.entity(e,this.state,p.x,p.y,this.playerView.side))continue;
       if(e.kind==='building'){
         const size=e.role==='hq'?1.25:e.role==='tower'?.75:1;const w=48*size,h=(e.role==='tower'?78:43)*size;const y=p.y;
@@ -487,6 +501,10 @@ export default class GameScene extends Phaser.Scene {
     }
     for(let i=0;i<this.state.terrain.length;i++)if(terrainAt(this.state,i%this.state.width+.5,Math.floor(i/this.state.width)+.5,this.viewLevel)==='shallows'&&i%7===0&&this.state.explored[this.viewSide].has(this.viewLevel*this.state.width*this.state.height+i)){const p=project(i%this.state.width+.5,Math.floor(i/this.state.width)+.5);this.art.environment(`reeds:${i}`,'reeds',p.x,p.y);}
     for(const r of remembered)if(levelOf(r)===this.viewLevel&&r.kind==='wood'&&r.amount<=0&&this.state.explored[this.viewSide].has(fogKey(this.state,r))){const p=project(r.x,r.y);this.art.environment(`resource:${r.id}`,'stump',p.x,p.y);}
+    const economy=this.remoteFrame?.economy??observeEconomy(this.state,this.viewSide,{visible:(state,side,point)=>isVisible(state,side,point.x,point.y,point.level??0)});
+    for(const grove of economy.groves){if(levelOf(grove)!==this.viewLevel||grove.burned||grove.resourceId||grove.plantedAt<0)continue;const p=project(grove.x,grove.y);g.lineStyle(3,0x987141).lineBetween(p.x,p.y,p.x,p.y-15);g.fillStyle(0x92bf65).fillEllipse(p.x-5,p.y-14,13,7).fillEllipse(p.x+5,p.y-20,13,7);}
+    for(const market of economy.markets.filter(m=>levelOf(m)===this.viewLevel)){const p=project(market.x,market.y);g.fillStyle(0x5e466f,.8).fillRect(p.x-20,p.y-22,40,18);g.fillStyle(0xd8be83).fillTriangle(p.x-25,p.y-21,p.x,p.y-37,p.x+25,p.y-21);g.lineStyle(2,0xb29562).strokeEllipse(p.x,p.y,42,20);}
+    for(const salvage of economy.salvage.filter(item=>levelOf(item)===this.viewLevel)){const p=project(salvage.x,salvage.y);g.fillStyle(salvage.kind==='cargo'?0xc4a469:0x8e9995).fillRect(p.x-9,p.y-12,18,12);g.lineStyle(2,0x392d22).strokeRect(p.x-9,p.y-12,18,12).lineBetween(p.x-9,p.y-12,p.x+9,p.y);}
     this.drawWorldObjects(g);
     this.art.end();
   }

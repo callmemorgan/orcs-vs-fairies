@@ -1,6 +1,7 @@
 import { observedArtifacts } from './unit-progression';
 import { draftDefinitions, draftPlayers, legalDraftChoices } from './match-rules';
 import { publicObjectives } from './objectives';
+import { observeEconomy } from './economy';
 import { ABILITIES } from './content';
 import { factionFor, unitFor, upgradesFor } from './content-registry';
 import { alliedAiStatus, isAllied, isGameOver, isHostile, isVisible } from './simulation';
@@ -73,7 +74,7 @@ export class PlayerView {
     return e.side===side?{...publicFields,veteran:e.veteran?structuredClone(e.veteran):undefined,equipment:e.equipment?{...e.equipment}:undefined,specialistBuffs:e.specialistBuffs?.map(buff=>({...buff,fearedFrom:buff.fearedFrom?{...buff.fearedFrom}:undefined})),beacon:e.beacon?{...e.beacon}:undefined,siegeMode:e.siegeMode?{...e.siegeMode}:undefined,illusion:e.illusion,order:{...e.order},orderQueue:e.orderQueue?.map(order=>({...order})),queue:[...e.queue],queueDefinitionIds:e.queueDefinitionIds?[...e.queueDefinitionIds]:undefined,queuePaidCosts:e.queuePaidCosts?.map(cost=>({...cost})),rally:e.rally?{...e.rally}:undefined,trainProgress:e.trainProgress,research:e.research,researchProgress:e.researchProgress,carried:e.carried,carriedKind:e.carriedKind,cooldown:e.cooldown,abilityReadyAt:e.abilityReadyAt,expires:e.expires,lastDamagedAt:e.lastDamagedAt}:isAllied(s,side,e.side)?{...publicFields,illusion:e.illusion}:publicFields;
    }),
    world:s.world?{version:s.world.version,revision:s.world.revision,biome:s.world.biome,phase:environmentPhase(s),levels:s.world.levels.map(l=>({id:l.id,title:l.title,terrain:l.terrain.map((t,i)=>s.explored[side].has(l.id*s.width*s.height+i)?t:null),elevation:l.elevation.map((e,i)=>s.explored[side].has(l.id*s.width*s.height+i)?e:null)})),transitions:s.world.transitions.filter(t=>s.explored[side].has(fogKey(s,t.from))||s.explored[side].has(fogKey(s,t.to))).map(t=>({id:t.id,from:{...t.from},to:{...t.to}})),bridges:s.world.bridges.filter(b=>isVisible(s,side,b.x,b.y,b.level)).map(b=>({id:b.id,x:b.x,y:b.y,level:b.level,hp:b.hp,maxHp:b.maxHp,rebuilding:b.rebuilding})),fires:s.world.fires.filter(f=>isVisible(s,side,f.x,f.y,f.level)).map(f=>({...f})),...observeNeutralWorld(s,side)}:undefined,
-   resources:this.resourcesFor(s),artifacts:observedArtifacts(s,side),
+   resources:this.resourcesFor(s),economy:observeEconomy(s,side,{visible:(state,observer,p)=>isVisible(state,observer,p.x,p.y,levelOf(p))}),artifacts:observedArtifacts(s,side),
    corpses:s.corpses.filter(c=>isVisible(s,side,c.x,c.y,levelOf(c))).map(c=>({...c})),
    visible:[...s.visible[side]].sort((a,b)=>a-b),explored:[...s.explored[side]].sort((a,b)=>a-b),
    content:{faction:factionFor(s,side),abilities:ABILITIES,upgrades:upgradesFor(s,side),hash:s.content?.hash},
