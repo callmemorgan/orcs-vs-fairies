@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import { resolve } from 'node:path';
+import { writeFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import { fingerprints,regularFiles } from './native-contract.mjs';
+import { loadPinnedHelper } from './helper-provenance.mjs';
+const [, , rootArg, bundleArg, outputArg, pin] = process.argv;
+assert(rootArg && bundleArg && outputArg && pin, 'Use ROOT FIXTURE_BUNDLE NEW_FIXTURES FULL_SOURCE_COMMIT');
+assert.equal(fileURLToPath(import.meta.url),resolve(rootArg,'scripts/acceptance/generate-native-fixtures.mjs'),'Run generator wrapper from pinned checkout');
+const { module,provenance } = await loadPinnedHelper(resolve(rootArg), pin, bundleArg, 'scripts/acceptance/native-fixtures.ts');
+const manifest = module.buildNativeAcceptanceFixtures(resolve(outputArg), pin);
+await writeFile(resolve(outputArg,'generation-receipt.json'),`${JSON.stringify({schema:1,sourceCommit:pin,helper:provenance,fixtures:await fingerprints(resolve(outputArg),await regularFiles(resolve(outputArg)))},null,2)}\n`,{flag:'wx'});
+console.log(`Authored ${Object.keys(manifest.scenarios).length} SAVE${manifest.saveVersion} native encounters at rules ${manifest.simulationRevision}`);
