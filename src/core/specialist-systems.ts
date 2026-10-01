@@ -9,6 +9,7 @@ import type { SiegePayload, SpecialistAbility, SpecialistBuff, SpecialistSource 
 export type { SiegePayload } from './specialist-types';
 export interface SpecialistHooks {
  damage:(source:Entity|SpecialistSource,target:Entity,amount:number,options?:{armorPiercing?:boolean;ranged?:boolean})=>void;
+ die:(actor:Entity,text:string)=>void;
  spawn:(side:Side,kind:Entity['kind'],definitionId:string,x:number,y:number,progress?:number,level?:number)=>Entity;
  setTerrain?:(point:Vec,kind:TerrainKind)=>boolean;
  terrainRevision?:(point:Vec)=>number;
@@ -125,9 +126,10 @@ export function stepSpecialists(s:GameState,hooks:SpecialistHooks):void {
   if(entity){entity.expires=s.time;}
   const restored:Vec[]=[];
   for(const tile of item.tiles??[])if(fieldTerrainAt(s,tile)===tile.placed&&(tile.stamp===undefined||!hooks.terrainRevision||hooks.terrainRevision(tile)===tile.stamp)&&fieldSetTerrain(s,tile,tile.previous as TerrainKind,hooks))restored.push(tile);
-  for(const actor of s.entities)if(active(actor)&&restored.some(tile=>sameLevel(actor,tile)&&Math.abs(actor.x-tile.x)<.77&&Math.abs(actor.y-tile.y)<.77)&&!fieldWalkable(s,actor)){
+  for(const actor of s.entities)if(actor.hp>0&&actor.kind==='unit'&&restored.some(tile=>sameLevel(actor,tile)&&Math.abs(actor.x-tile.x)<.77&&Math.abs(actor.y-tile.y)<.77)&&!fieldWalkable(s,actor)){
    let shore:Vec|undefined;for(let ring=.5;ring<=8&&!shore;ring+=.5)for(const [dx,dy] of DIRECTIONS_32){const candidate={x:actor.x+dx*ring,y:actor.y+dy*ring,level:actor.level};if(fieldWalkable(s,candidate)){shore=candidate;break;}}
    if(shore){actor.x=shore.x;actor.y=shore.y;actor.path=[];actor.order={type:'idle'};delete actor.orderQueue;s.events.push({type:'message',side:actor.side,x:actor.x,y:actor.y,...(actor.level===undefined?{}:{level:actor.level}),source:actor.id,text:'Temporary bridge expired; moved to nearby shore.'});}
+   else hooks.die(actor,'A unit drowned when the temporary bridge expired.');
   }
   state.structures=state.structures.filter(current=>current.id!==item.id);
  }
