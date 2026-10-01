@@ -196,12 +196,16 @@ function advanceStealth(session: ScenarioSession, dt: number): void {
     }
   }
   for (const label of definition.infiltrators) {
-    const infiltrator = actor(session, label); if (!infiltrator || progress.detected.includes(label)) continue;
+    const infiltrator = actor(session, label); if (!infiltrator) continue;
     const seen = definition.guards.some(guardLabel => {
       const guard = actor(session, guardLabel);
       return !!guard && (progress.distractedUntil[guardLabel] ?? 0) <= session.state.time && guardDetects(session, guard, infiltrator);
     });
-    progress.exposure[label] = seen ? (progress.exposure[label] ?? 0) + dt : Math.max(0, (progress.exposure[label] ?? 0) - dt * 2);
+    progress.exposure[label] = seen ? Math.min(definition.detectionSeconds, (progress.exposure[label] ?? 0) + dt) : Math.max(0, (progress.exposure[label] ?? 0) - dt * 2);
+    if (progress.detected.includes(label)) {
+      if (!seen && progress.exposure[label] === 0) { progress.detected = progress.detected.filter(id => id !== label); message(session, 'The patrol lost the infiltrator and resumed its route.'); }
+      continue;
+    }
     if (progress.exposure[label] + 1e-9 < definition.detectionSeconds) continue;
     progress.detected.push(label); progress.alarms++; session.runtime.variables['stealth.alarms'] = progress.alarms;
     message(session, `Alarm ${progress.alarms}: ${label} was detected.`);
