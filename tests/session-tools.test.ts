@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createGame } from '../src/core/simulation';
-import type { Entity, GameState } from '../src/core/types';
+import type { Entity, GameState, Side } from '../src/core/types';
 import { mountSessionTools, SESSION_IMPORT_MAX_BYTES, type SessionAnalysis, type SessionBinding, type SessionReplayStatus, type SessionSave } from '../src/ui/SessionTools';
 
 type Tools = ReturnType<typeof mountSessionTools>;
@@ -61,7 +61,7 @@ function makeCallbacks() {
     seekReplay: vi.fn((_tick: number) => true),
     setReplayPlaying: vi.fn((_playing: boolean) => true),
     setReplaySpeed: vi.fn((_speed: .25 | .5 | 1 | 2 | 4) => true),
-    setReplayPerspective: vi.fn((_side: 0 | 1) => true),
+    setReplayPerspective: vi.fn((_side: Side) => true),
     getAnalysis: vi.fn((): SessionAnalysis | null => null),
     train: vi.fn((_id: number, _role: Parameters<Callbacks['train']>[1]) => true),
     cancelTrain: vi.fn((_id: number, _index: number, _expectedQueue: string) => true),

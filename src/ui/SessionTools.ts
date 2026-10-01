@@ -8,11 +8,12 @@ type ActionResult = MaybePromise<void | boolean>;
 export interface SessionSave { id:string; name:string; savedAt:string | number; tick?:number; autosave?:boolean }
 export interface SessionAutosave { enabled:boolean; intervalSeconds:number }
 export type ReplaySpeed = .25 | .5 | 1 | 2 | 4;
-export interface SessionReplayStatus { tick:number; initialTick:number; totalTicks:number; playing:boolean; speed:ReplaySpeed; perspective:Side }
+export interface SessionReplayPlayer { id:Side; name?:string }
+export interface SessionReplayStatus { tick:number; initialTick:number; totalTicks:number; playing:boolean; speed:ReplaySpeed; perspective:Side; roster?:ReadonlyArray<SessionReplayPlayer>; playerNames?:string[] }
 export interface SessionAnalysisPlayer { wood:number; ore:number; crystal:number; army:number; losses:number; gathered?:number; buildings?:number; armyValue?:number; buildingLosses?:number; lostValue?:number }
-export interface SessionAnalysisSample { tick:number; time:number; players:[SessionAnalysisPlayer, SessionAnalysisPlayer] }
+export interface SessionAnalysisSample { tick:number; time:number; players:SessionAnalysisPlayer[] }
 export interface SessionTechnologyTiming { side:Side; tick:number; time:number; name:string }
-export interface SessionAnalysis { complete:boolean; samples:SessionAnalysisSample[]; technologies:SessionTechnologyTiming[]; playerNames?:[string,string] }
+export interface SessionAnalysis { complete:boolean; samples:SessionAnalysisSample[]; technologies:SessionTechnologyTiming[]; playerNames?:string[] }
 export interface SessionBinding { action:string; label:string; key:string }
 export interface SessionToolsStatus { side?:Side; paused?:boolean; replaySpectator?:boolean; notice?:string }
 /** All mutation callbacks must reject or return false on failure. Imports must validate their full schemas before replacing a match. */
@@ -61,6 +62,17 @@ const defaultGamepadHelp = [
   ['Right stick click (hold) + A/B/X/Y/LB/RB','Action slots 1–6'],['Start / Menu','Pause'],['Select / View','Photo mode'],
 ].map(([control,action])=>({control,action}));
 const labels:Record<Tab,string> = {saves:'Saves',replay:'Replay',analysis:'Analysis',production:'Production',controls:'Controls',report:'Report a bug'};
+const playerStyles = [
+  {color:'#efb86b',dash:'',description:'gold solid line'},
+  {color:'#8fbded',dash:'7 4',description:'blue long dashes'},
+  {color:'#f08c7c',dash:'2 3',description:'coral short dashes'},
+  {color:'#b9a0ef',dash:'10 3 2 3',description:'purple long and short dashes'},
+  {color:'#9dcc82',dash:'1 4',description:'green dotted line'},
+  {color:'#e99cc4',dash:'12 4',description:'pink wide dashes'},
+  {color:'#82d7d3',dash:'6 3 1 3',description:'teal dashes and dots'},
+  {color:'#e0d78a',dash:'4 2',description:'yellow close dashes'},
+];
+function playerLabel(side:number,name?:string):string {const label=`Player ${side+1}`,text=name?.trim();return text&&text!==label?`${label} · ${text}`:label;}
 const create = <K extends keyof HTMLElementTagNameMap>(tag:K,text?:string,className?:string):HTMLElementTagNameMap[K]=>{
   const element=document.createElement(tag);if(text!==undefined)element.textContent=text;if(className)element.className=className;return element;
 };
@@ -156,13 +168,25 @@ export function mountSessionTools(root:HTMLElement,callbacks:SessionToolsCallbac
   const seek=create('input');seek.type='range';seek.min='0';seek.step='1';seek.setAttribute('aria-label','Replay tick');
   seek.addEventListener('change',()=>{const current=callbacks.getReplay();if(current){const target=Number(seek.value);if(Number.isInteger(target)&&target>=current.initialTick&&target<=current.totalTicks)void run(()=>callbacks.seekReplay(target));}});
   const speed=create('select');speed.setAttribute('aria-label','Replay speed');for(const n of [.25,.5,1,2,4]){const option=create('option',`${n}×`);option.value=String(n);speed.append(option);}speed.addEventListener('change',()=>{if(callbacks.getReplay())void run(()=>callbacks.setReplaySpeed(Number(speed.value) as ReplaySpeed));});
-  const perspective=create('select');perspective.setAttribute('aria-label','Replay perspective');for(const side of [0,1]){const option=create('option',`Player ${side+1}`);option.value=String(side);perspective.append(option);}perspective.addEventListener('change',()=>{if(callbacks.getReplay())void run(()=>callbacks.setReplayPerspective(Number(perspective.value) as Side));});
+  const perspective=create('select');perspective.setAttribute('aria-label','Replay perspective');
+  let perspectiveKey='',replayBoundsKey='';
+  function replayRoster(replay:SessionReplayStatus):SessionReplayPlayer[] {
+    if(replay.roster!==undefined)return [...replay.roster].sort((a,b)=>a.id-b.id).filter((player,index)=>player.id===index&&index<playerStyles.length).map(player=>({...player,name:player.name??replay.playerNames?.[player.id]}));
+    const count=Math.min(playerStyles.length,replay.playerNames?.length??state?.players.length??2);
+    return Array.from({length:count},(_,side)=>({id:side as Side,name:replay.playerNames?.[side]}));
+  }
+  perspective.addEventListener('change',()=>{const current=callbacks.getReplay();if(!current||!perspective.value)return;const chosen=replayRoster(current).find(player=>String(player.id)===perspective.value);if(chosen)void run(()=>callbacks.setReplayPerspective(chosen.id));});
   const replayExport=button('Export replay',()=>{void run(async()=>download('orcs-vs-fairies-replay.json',await callbacks.exportReplay()),'Replay downloaded.',replayExport);});
-  replayPanel.append(create('p','Load a replay to seek through the match and view either player’s fog of war.'),importControl('replay',value=>callbacks.importReplay(value)),replayExport,replayDetails,play,field('Replay tick',seek),field('Replay speed',speed),field('Replay perspective',perspective));
+  replayPanel.append(create('p','Load a replay to seek through the match and view each player’s fog of war.'),importControl('replay',value=>callbacks.importReplay(value)),replayExport,replayDetails,play,field('Replay tick',seek),field('Replay speed',speed),field('Replay perspective',perspective));
   function refreshReplay(){
     const replay=callbacks.getReplay();replayDetails.textContent=replay?`Tick ${replay.tick} of ${replay.totalTicks}`:'Import a replay to enable playback controls.';
     play.disabled=!replay||play.dataset.busy==='true';play.textContent=replay?.playing?'Pause replay':'Play replay';seek.disabled=speed.disabled=perspective.disabled=!replay;
-    if(replay){seek.min=String(replay.initialTick);seek.max=String(Math.max(replay.initialTick,replay.totalTicks));if(document.activeElement!==seek)seek.value=String(replay.tick);if(document.activeElement!==speed)speed.value=String(replay.speed);if(document.activeElement!==perspective)perspective.value=String(replay.perspective);seek.setAttribute('aria-valuetext',`Tick ${replay.tick} of ${replay.totalTicks}, starting at ${replay.initialTick}`);}
+    const roster=replay?replayRoster(replay):[],rosterKey=JSON.stringify(roster),rosterChanged=rosterKey!==perspectiveKey;
+    if(rosterChanged){perspectiveKey=rosterKey;perspective.replaceChildren();for(const player of roster){const option=create('option',playerLabel(player.id,player.name));option.value=String(player.id);perspective.append(option);}}
+    perspective.disabled=!replay||!roster.length;
+    const boundsKey=replay?`${replay.initialTick}:${replay.totalTicks}`:'none',boundsChanged=boundsKey!==replayBoundsKey;replayBoundsKey=boundsKey;
+    if(replay){seek.max=String(Math.max(replay.initialTick,replay.totalTicks));seek.min=String(replay.initialTick);if(boundsChanged||document.activeElement!==seek)seek.value=String(replay.tick);if(document.activeElement!==speed)speed.value=String(replay.speed);if(rosterChanged||document.activeElement!==perspective)perspective.value=roster.some(player=>player.id===replay.perspective)?String(replay.perspective):String(roster[0]?.id??'');seek.setAttribute('aria-valuetext',`Tick ${replay.tick} of ${replay.totalTicks}, starting at ${replay.initialTick}`);}
+    else {seek.min='0';seek.max='0';seek.value='0';seek.removeAttribute('aria-valuetext');}
   }
 
   const analysisPanel=panels.get('analysis')!;
@@ -172,9 +196,10 @@ export function mountSessionTools(root:HTMLElement,callbacks:SessionToolsCallbac
     if(!permitted){if(analysisKey!=='private'){analysisKey='private';analysisPanel.replaceChildren(create('p','Full match analysis is available when the match ends or while spectating a replay. Enemy economy and technology remain private during play.'));}return;}
     if(!analysis||!analysis.samples.length){if(analysisKey!=='empty'){analysisKey='empty';analysisPanel.replaceChildren(create('p','No recorded analysis samples are available for this match.'));}return;}
     const replay=callbacks.getReplay(),key=JSON.stringify([analysis,replay?{initialTick:replay.initialTick,totalTicks:replay.totalTicks}:null]);if(key===analysisKey)return;analysisKey=key;analysisPanel.replaceChildren();
-    const samples=analysis.samples.filter(sample=>Number.isFinite(sample.time)&&Number.isFinite(sample.tick)&&sample.players.length===2).sort((a,b)=>a.time-b.time);
+    const candidates=analysis.samples.filter(sample=>Number.isFinite(sample.time)&&Number.isFinite(sample.tick)&&sample.players.length>0&&sample.players.length<=playerStyles.length).sort((a,b)=>a.time-b.time);
+    const playerCount=candidates[0]?.players.length??0,samples=candidates.filter(sample=>sample.players.length===playerCount);
     if(!samples.length){analysisPanel.append(create('p','No valid analysis samples are available.'));return;}
-    const names=analysis.playerNames??['Player 1','Player 2'];
+    const names=Array.from({length:playerCount},(_,side)=>playerLabel(side,analysis.playerNames?.[side]));
     analysisPanel.append(create('p',`${samples.length} recorded samples, ${formatTime(samples[0].time)} to ${formatTime(samples.at(-1)!.time)}. Lines show recorded values; gaps between samples are connected.`));
     chart('Resources held',samples,sample=>sample.wood+sample.ore+sample.crystal,names);
     if(hasAnalysisField(samples,'gathered'))chart('Resources gathered',samples,sample=>sample.gathered??NaN,names);
@@ -185,26 +210,26 @@ export function mountSessionTools(root:HTMLElement,callbacks:SessionToolsCallbac
     if(hasAnalysisField(samples,'buildingLosses'))chart('Cumulative building losses',samples,sample=>sample.buildingLosses??NaN,names);
     if(hasAnalysisField(samples,'lostValue'))chart('Cumulative loss value',samples,sample=>sample.lostValue??NaN,names);
     const technology=create('section',undefined,'session-chart');technology.append(create('h3','Technology timing'));
-    const tech=analysis.technologies.filter(item=>Number.isFinite(item.time)&&(item.side===0||item.side===1)).sort((a,b)=>a.time-b.time);
+    const tech=analysis.technologies.filter(item=>Number.isFinite(item.time)&&Number.isInteger(item.side)&&item.side>=0&&item.side<playerCount).sort((a,b)=>a.time-b.time);
     if(!tech.length)technology.append(create('p','No completed technologies were recorded.'));
     else{
-      const timeline=svg('svg');timeline.setAttribute('viewBox','0 0 640 130');timeline.setAttribute('role','img');timeline.setAttribute('aria-label','Completed technologies by match time');
+      const timeline=svg('svg');timeline.setAttribute('viewBox',`0 0 640 ${20+playerCount*55}`);timeline.setAttribute('role','img');timeline.setAttribute('aria-label','Completed technologies by match time');
       const end=Math.max(1,samples.at(-1)!.time,...tech.map(item=>item.time));
-      for(const side of [0,1] as Side[]){const y=35+side*55,line=svg('line');setSvg(line,{x1:80,y1:y,x2:620,y2:y,stroke:'#8994a4'});timeline.append(line);const label=svg('text');setSvg(label,{x:2,y:y+4,fill:'#eee'});label.textContent=names[side];timeline.append(label);}
-      const list=create('ul');for(const item of tech){const marker=svg('circle');setSvg(marker,{cx:80+540*item.time/end,cy:35+item.side*55,r:5,fill:item.side===0?'#efb86b':'#8fbded'});const title=svg('title');title.textContent=`${names[item.side]}: ${item.name} at ${formatTime(item.time)}`;marker.append(title);timeline.append(marker);const row=create('li'),label=`${names[item.side]} · ${item.name} · ${formatTime(item.time)} (tick ${item.tick})`;if(replay){const jump=button(label,()=>seekAnalysisTick(item.tick));jump.dataset.analysisTechnologyTick=String(item.tick);jump.disabled=!canSeekAnalysisTick(item.tick);row.append(jump);}else row.textContent=label;list.append(row);}technology.append(timeline,list);
+      for(let side=0;side<playerCount;side++){const style=playerStyles[side],y=35+side*55,line=svg('line');line.dataset.analysisSide=String(side);setSvg(line,{x1:80,y1:y,x2:620,y2:y,stroke:style.color,...(style.dash?{'stroke-dasharray':style.dash}:{})});timeline.append(line);const label=svg('text');setSvg(label,{x:2,y:y+4,fill:'#eee'});label.textContent=`Player ${side+1}`;const title=svg('title');title.textContent=names[side];label.append(title);timeline.append(label);}
+      const list=create('ul');for(const item of tech){const marker=svg('circle');marker.dataset.analysisSide=String(item.side);setSvg(marker,{cx:80+540*item.time/end,cy:35+item.side*55,r:5,fill:playerStyles[item.side].color});const title=svg('title');title.textContent=`${names[item.side]}: ${item.name} at ${formatTime(item.time)}`;marker.append(title);timeline.append(marker);const row=create('li'),label=`${names[item.side]} · ${item.name} · ${formatTime(item.time)} (tick ${item.tick})`;row.dataset.analysisSide=String(item.side);if(replay){const jump=button(label,()=>seekAnalysisTick(item.tick));jump.dataset.analysisTechnologyTick=String(item.tick);jump.disabled=!canSeekAnalysisTick(item.tick);row.append(jump);}else row.textContent=label;list.append(row);}technology.append(timeline,list);
     }
     analysisPanel.append(technology);
   }
-  function chart(title:string,samples:SessionAnalysisSample[],value:(p:SessionAnalysisPlayer)=>number,names:[string,string]){
+  function chart(title:string,samples:SessionAnalysisSample[],value:(p:SessionAnalysisPlayer)=>number,names:string[]){
     const section=create('section',undefined,'session-chart');section.append(create('h3',title));const plot=svg('svg');plot.setAttribute('viewBox','0 0 640 200');plot.setAttribute('role',callbacks.getReplay()?'group':'img');plot.setAttribute('aria-label',`${title} over match time`);
-    const series=([0,1] as Side[]).map(side=>samples.map(sample=>({tick:sample.tick,time:sample.time,value:value(sample.players[side])})).filter(point=>Number.isFinite(point.value))),start=samples[0].time,end=samples.at(-1)!.time;
+    const series=names.map((_,side)=>samples.map(sample=>({tick:sample.tick,time:sample.time,value:value(sample.players[side])})).filter(point=>Number.isFinite(point.value))),start=samples[0].time,end=samples.at(-1)!.time;
     const maximum=Math.max(1,...series.flat().map(point=>point.value));
     const axis=svg('path');setSvg(axis,{d:'M 55 15 V 170 H 620',fill:'none',stroke:'#8994a4'});plot.append(axis);
     for(const [x,y,text] of [[5,20,String(Math.ceil(maximum))],[20,173,'0'],[55,194,formatTime(start)],[570,194,formatTime(end)]] as [number,number,string][]){const label=svg('text');setSvg(label,{x,y,fill:'#d7dee8'});label.textContent=text;plot.append(label);}
-    for(const side of [0,1] as Side[]){const path=svg('path'),points=series[side];setSvg(path,{d:points.map((point,index)=>`${index?'L':'M'} ${(55+565*(point.time-start)/Math.max(1,end-start)).toFixed(2)} ${(170-155*point.value/maximum).toFixed(2)}`).join(' '),fill:'none',stroke:side===0?'#efb86b':'#8fbded','stroke-width':2,...(side===1?{'stroke-dasharray':'7 4'}:{})});const description=svg('title');description.textContent=`${names[side]}: ${points.map(point=>`${formatTime(point.time)} ${point.value}`).join('; ')}`;path.append(description);plot.append(path);
-      for(const point of points){const marker=svg('circle'),label=`${names[side]} ${title}: ${point.value} at ${formatTime(point.time)} (tick ${point.tick})`;setSvg(marker,{cx:55+565*(point.time-start)/Math.max(1,end-start),cy:170-155*point.value/maximum,r:5,fill:side===0?'#efb86b':'#8fbded'});const pointTitle=svg('title');pointTitle.textContent=label;marker.append(pointTitle);if(canSeekAnalysisTick(point.tick)){marker.dataset.analysisTick=String(point.tick);marker.setAttribute('role','button');marker.setAttribute('tabindex','0');marker.setAttribute('aria-label',`View replay: ${label}`);marker.style.cursor='pointer';marker.addEventListener('click',()=>seekAnalysisTick(point.tick));marker.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();seekAnalysisTick(point.tick);}});}plot.append(marker);}
+    for(let side=0;side<names.length;side++){const style=playerStyles[side],path=svg('path'),points=series[side];path.dataset.analysisSide=String(side);setSvg(path,{d:points.map((point,index)=>`${index?'L':'M'} ${(55+565*(point.time-start)/Math.max(1,end-start)).toFixed(2)} ${(170-155*point.value/maximum).toFixed(2)}`).join(' '),fill:'none',stroke:style.color,'stroke-width':2,...(style.dash?{'stroke-dasharray':style.dash}:{})});const description=svg('title');description.textContent=`${names[side]}: ${points.map(point=>`${formatTime(point.time)} ${point.value}`).join('; ')}`;path.append(description);plot.append(path);
+      for(const point of points){const marker=svg('circle'),label=`${names[side]} ${title}: ${point.value} at ${formatTime(point.time)} (tick ${point.tick})`;marker.dataset.analysisSide=String(side);setSvg(marker,{cx:55+565*(point.time-start)/Math.max(1,end-start),cy:170-155*point.value/maximum,r:5,fill:style.color});const pointTitle=svg('title');pointTitle.textContent=label;marker.append(pointTitle);if(canSeekAnalysisTick(point.tick)){marker.dataset.analysisTick=String(point.tick);marker.setAttribute('role','button');marker.setAttribute('tabindex','0');marker.setAttribute('aria-label',`View replay: ${label}`);marker.style.cursor='pointer';marker.addEventListener('click',()=>seekAnalysisTick(point.tick));marker.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();seekAnalysisTick(point.tick);}});}plot.append(marker);}
     }
-    section.append(plot,create('p',`${names[0]}: gold solid line · ${names[1]}: blue dashed line`));analysisPanel.append(section);
+    section.append(plot,create('p',names.map((name,side)=>`${name}: ${playerStyles[side].description}`).join(' · ')));analysisPanel.append(section);
   }
   function hasAnalysisField(samples:SessionAnalysisSample[],field:keyof SessionAnalysisPlayer){return samples.some(sample=>sample.players.some(player=>Number.isFinite(player[field])));}
   function canSeekAnalysisTick(tick:number){const replay=callbacks.getReplay();return !!replay&&Number.isInteger(tick)&&tick>=replay.initialTick&&tick<=replay.totalTicks;}
