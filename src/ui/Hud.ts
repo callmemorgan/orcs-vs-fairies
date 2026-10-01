@@ -4,7 +4,7 @@ import { observedHealth, PlayerView } from '../core/observation';
 import { isAllied } from '../core/simulation';
 import { ABILITIES, FACTIONS } from '../core/content';
 import { availableBuildings, availableUnits, buildingFor, contentAssetUrl, contentArt, entityDefinition, factionFor, productionQueueKey, queuedUnitFor, unitFor, upgradeFor } from '../core/content-registry';
-import type { BuildingRole, Cost, Entity, FactionId, GameState, MapSize, UnitRole, UpgradeId, Side } from '../core/types';
+import type { BuildingRole, Cost, Entity, FactionId, GameState, MapSize, UnitRole, UpgradeId, Side, Vec } from '../core/types';
 import './style.css';
 import { createTooltip } from './Tooltip';
 import { abilityTargetReason } from './availability';
@@ -38,16 +38,17 @@ const rankName=(rank:number)=>['Recruit','Veteran','Elite','Champion'][rank]??'R
 function specialistControls(host:HTMLElement,s:GameState,own:Entity[],side:Side,paused:boolean,cb:HudCallbacks){
   const panel=host.parentElement!.getBoundingClientRect();host.style.left=`${panel.left}px`;host.style.bottom=`${innerHeight-panel.top+8}px`;host.style.width=`${panel.width}px`;
   const specialists=own.filter(e=>e.kind==='unit'&&equipmentEligible(s,e));
+  const artifactVisible=(p:Vec)=>s.visible[side].has((p.level??0)*s.width*s.height+Math.floor(p.y)*s.width+Math.floor(p.x)),artifactDistance=(e:Entity,p:Vec)=>(e.level??0)===(p.level??0)?Math.hypot(e.x-p.x,e.y-p.y):Infinity;
   const artifacts=observedArtifacts(s,side),eligible=own.filter(e=>e.kind==='unit'&&!e.illusion&&!e.raised);
-  const key=JSON.stringify([eligible.map(e=>[e.id,unitFor(s,e).id,e.veteran?.pendingPromotion,e.equipment]),specialists.map(e=>e.id),artifacts.map(item=>[item.id,item.holder,item.owner,item.position,item.position&&s.visible[side].has(Math.floor(item.position.y)*s.width+Math.floor(item.position.x)),specialists.map(e=>item.position&&Math.hypot(e.x-item.position.x,e.y-item.position.y)<=2)]),s.players[side].faction,s.content?.hash,paused,!!cb.isReplay?.(),s.winner,s.draw,!!cb.command]);
+  const key=JSON.stringify([eligible.map(e=>[e.id,unitFor(s,e).id,e.veteran?.pendingPromotion,e.equipment]),specialists.map(e=>[e.id,e.level]),artifacts.map(item=>[item.id,item.holder,item.owner,item.position,item.position&&artifactVisible(item.position),specialists.map(e=>item.position&&artifactDistance(e,item.position)<=2)]),s.players[side].faction,s.content?.hash,paused,!!cb.isReplay?.(),s.winner,s.draw,!!cb.command]);
   if(host.dataset.key===key)return;host.dataset.key=key;
   const focused=(document.activeElement as HTMLElement)?.dataset.specialistAction;host.replaceChildren();
   const blocked=paused||!!cb.isReplay?.()||s.winner!==null||s.draw||!cb.command;
   const add=(label:string,key:string,command:Command,reason='',description='')=>{const button=document.createElement('button');button.type='button';button.className='small-button';button.textContent=label;button.dataset.specialistAction=key;button.disabled=blocked||!!reason;button.title=reason||description;button.onclick=()=>cb.command?.(command);host.append(button);};
   for(const e of eligible)for(const promotion of promotionChoices(s,e)){const def=PROMOTIONS[promotion];add(`Promote ${unitFor(s,e).name}: ${def.name}`,`promote:${e.id}:${promotion}`,{type:'promote',id:e.id,promotion},'',def.description);}
   for(const e of specialists){
-    const held=artifacts.filter(item=>item.owner===side&&item.holder===e.id),ground=artifacts.filter(item=>item.position&&s.visible[side].has(Math.floor(item.position.y)*s.width+Math.floor(item.position.x)));
-    for(const item of ground){const def=ARTIFACTS[item.definitionId];const reason=item.owner!==undefined&&item.owner!==side?'Claimed by another player':held.length>=12?'Inventory full (12 artifacts)':Math.hypot(e.x-item.position!.x,e.y-item.position!.y)>2?'Move within 2 tiles to recover':'';add(`Recover ${def.name}`,`recover:${e.id}:${item.id}`,{type:'recoverArtifact',id:e.id,artifact:item.id},reason,`Recover for ${unitFor(s,e).name}.`);}
+    const held=artifacts.filter(item=>item.owner===side&&item.holder===e.id),ground=artifacts.filter(item=>item.position&&artifactVisible(item.position));
+    for(const item of ground){const def=ARTIFACTS[item.definitionId];const reason=item.owner!==undefined&&item.owner!==side?'Claimed by another player':held.length>=12?'Inventory full (12 artifacts)':artifactDistance(e,item.position!)>2?'Move within 2 tiles to recover':'';add(`Recover ${def.name}`,`recover:${e.id}:${item.id}`,{type:'recoverArtifact',id:e.id,artifact:item.id},reason,`Recover for ${unitFor(s,e).name}.`);}
     for(const item of held){const def=ARTIFACTS[item.definitionId],equipped=e.equipment?.[def.slot]===item.id;const name=unitFor(s,e).name;
       if(equipped)add(`Unequip ${def.name}`,`unequip:${e.id}:${def.slot}`,{type:'unequipArtifact',id:e.id,slot:def.slot},'',`${name}'s ${def.slot} slot.`);
       else add(`Equip ${def.name}`,`equip:${e.id}:${item.id}`,{type:'equipArtifact',id:e.id,artifact:item.id},def.roles.includes(unitFor(s,e).role)?'':'This unit cannot equip this artifact',`${name}'s ${def.slot} slot.`);

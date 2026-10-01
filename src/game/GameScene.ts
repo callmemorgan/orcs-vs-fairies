@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import ArtRuntime from './ArtRuntime';
 import GameAudio from './GameAudio';
-import type { Side, GameState, BuildingRole, Command, Entity, UnitRole } from '../core/types';
+import type { Side, GameState, BuildingRole, Command, Entity, UnitRole, Vec } from '../core/types';
 import { canPlace, isHostile, isVisible, issueCommand, stepGame } from '../core/simulation';
 import { PlayerView } from '../core/observation';
 import { buildingFor, entityDefinition, factionFor, unitFor } from '../core/content-registry';
@@ -227,21 +227,22 @@ export default class GameScene extends Phaser.Scene {
   private selectedEngineers(){return this.state.entities.filter(e=>this.selected.includes(e.id)&&e.side===this.viewSide&&e.hp>0&&e.kind==='unit'&&!e.illusion&&unitFor(this.state,e).tags?.includes('engineer')).map(e=>e.id);}
   private completeTargetAt(x:number,y:number):boolean {
     const mode=this.targetMode;if(!mode)return false;if(!this.canCommand)return true;
-    const pos=unproject(x,y),target=this.hit(x,y);let ok=false;
-    if(mode.kind==='ability')ok=this.command({type:'ability',ids:mode.ids,...(target?{target:target.id}:{x:pos.x,y:pos.y})});
+    const pos=unproject(x,y),target=this.hit(x,y),level=(this as GameScene & {viewLevel?:number}).viewLevel,layer=level===undefined?{}:{level};let ok=false;
+    if(mode.kind==='ability')ok=this.command({type:'ability',ids:mode.ids,...(target?{target:target.id}:{x:pos.x,y:pos.y,...layer})});
     else if(mode.kind==='fieldRepair'){
       const engineers=this.state.entities.filter(e=>mode.ids.includes(e.id)&&e.hp>0).sort((a,b)=>target?Math.hypot(a.x-target.x,a.y-target.y)-Math.hypot(b.x-target.x,b.y-target.y):a.id-b.id);
       if(target&&engineers.length)ok=this.command({type:'fieldRepair',id:engineers[0].id,target:target.id});
-    }else ok=this.command({type:'engineerBuild',ids:mode.ids,kind:mode.kind,x:Math.floor(pos.x)+.5,y:Math.floor(pos.y)+.5});
+    }else ok=this.command({type:'engineerBuild',ids:mode.ids,kind:mode.kind,x:Math.floor(pos.x)+.5,y:Math.floor(pos.y)+.5,...layer});
     if(ok){this.targetMode=null;this.audio?.play('order');this.options.onNotice(mode.kind==='ability'?'Ability used.':mode.kind==='fieldRepair'?'Field repair ordered.':`Temporary ${mode.kind} ordered.`);}
     else this.options.onNotice(mode.kind==='ability'?'No selected ability can use this target. Choose another target or press Esc.':mode.kind==='fieldRepair'?'Choose a damaged allied building or siege engine within 4 tiles.':'Cannot build here. Check range, resources, visibility and terrain.');
     return true;
   }
+  private visibleArtifact(p:Vec):boolean {const level=(this as GameScene & {viewLevel?:number}).viewLevel??0;return (p.level??0)===level&&this.state.visible[this.viewSide].has((p.level??0)*this.state.width*this.state.height+Math.floor(p.y)*this.state.width+Math.floor(p.x));}
   private recoverArtifactAt(x:number,y:number):boolean {
     if(!this.canCommand)return false;
-    const item=observedArtifacts(this.state,this.viewSide).find(item=>item.position&&isVisible(this.state,this.viewSide,item.position.x,item.position.y)&&Math.abs(project(item.position.x,item.position.y).x-x)<15&&Math.abs(project(item.position.x,item.position.y).y-12-y)<15);
+    const item=observedArtifacts(this.state,this.viewSide).find(item=>item.position&&this.visibleArtifact(item.position)&&Math.abs(project(item.position.x,item.position.y).x-x)<15&&Math.abs(project(item.position.x,item.position.y).y-12-y)<15);
     if(!item)return false;
-    const specialist=this.state.entities.filter(e=>this.selected.includes(e.id)&&e.side===this.viewSide&&e.hp>0&&e.kind==='unit'&&equipmentEligible(this.state,e)).sort((a,b)=>Math.hypot(a.x-item.position!.x,a.y-item.position!.y)-Math.hypot(b.x-item.position!.x,b.y-item.position!.y))[0];
+    const specialist=this.state.entities.filter(e=>this.selected.includes(e.id)&&e.side===this.viewSide&&e.hp>0&&e.kind==='unit'&&equipmentEligible(this.state,e)&&(e.level??0)===(item.position!.level??0)).sort((a,b)=>Math.hypot(a.x-item.position!.x,a.y-item.position!.y)-Math.hypot(b.x-item.position!.x,b.y-item.position!.y))[0];
     if(!specialist)return false;const ok=this.command({type:'recoverArtifact',id:specialist.id,artifact:item.id});this.options.onNotice(ok?`${ARTIFACTS[item.definitionId].name} recovered.`:'Move a selected specialist within 2 tiles to recover this artifact.');if(ok)this.audio?.play('order');return true;
   }
   public centerOn(x:number,y:number){const q=project(x,y),camera=this.cameras.main;camera.centerOn(q.x,q.y);const bounds=this.photoMode?undefined:this.options.viewBounds?.();if(bounds)camera.scrollY+=(camera.height/2-(bounds.top+bounds.bottom)/2)/camera.zoom;}
@@ -514,7 +515,7 @@ export default class GameScene extends Phaser.Scene {
     }
     if(this.blueprintPlacement){const pos=unproject(world.x,world.y),role=this.blueprintPlacement.role,x=role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y=role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5,q=project(x,y),size=buildingFor(this.state,this.viewSide,role).size;this.diamond(g,q.x,q.y,size*64,size*32,0xa6d9d4,.4);}
     for(const item of observedArtifacts(this.state,this.viewSide)){
-      if(!item.position||!isVisible(this.state,this.viewSide,item.position.x,item.position.y))continue;
+      if(!item.position||!this.visibleArtifact(item.position))continue;
       const c=project(item.position.x,item.position.y),color=({weapon:0xf6a55b,armor:0xbdcddd,trinket:0x83e2bc})[ARTIFACTS[item.definitionId].slot];
       this.diamond(g,c.x,c.y-12,22,22,color,.85);g.lineStyle(2,0xfff1ba,.95).strokeCircle(c.x,c.y-12,14);g.fillStyle(0x172720,1).fillCircle(c.x,c.y-12,3);
     }
