@@ -83,6 +83,8 @@ export function spawnFactionDefinition(s:GameState,side:Side,definitionId:string
  return spawnEntity(s,side,'trainTime' in definition?'unit':'building',definition.role,point.x,point.y,progress,definitionId,levelOf(point));
 }
 function factionHooks(s:GameState):FactionSystemHooks{return {
+ assignOrder:(e,order)=>interruptWorldOrder(s,e,order),
+ recordPaid:(e,cost)=>recordEconomyPaid(s,e,cost),
  canPlace:(side,p,id)=>{const d=factionSystemDefinition(id);return !!d&&!('trainTime' in d)&&canPlace(s,side,d.role,p.x,p.y,id,levelOf(p))&&s.entities.filter(e=>alive(e)&&e.kind==='unit'&&sameLevel(e,p)&&isAllied(s,e.side,side)&&footprintOverlap(e,p.x,p.y,d.size)).every(()=>!!shovePoint(s,p.x,p.y,d.size,levelOf(p)));},
  spawnDefinition:(side,id,p,progress)=>{const d=factionSystemDefinition(id) as BuildingDef;if(progress===0)for(const e of s.entities.filter(e=>alive(e)&&e.kind==='unit'&&sameLevel(e,p)&&isAllied(s,e.side,side)&&footprintOverlap(e,p.x,p.y,d.size))){const point=shovePoint(s,p.x,p.y,d.size,levelOf(p))!;e.x=point.x;e.y=point.y;e.path=[];e.entrenchedAt=undefined;runtime(s).routes.delete(e.id);}return spawnFactionDefinition(s,side,id,p,progress);},
  move:(e,to,dt,reach)=>move(s,e,to,dt,reach),openDestination:(to,from)=>openDestination(s,to,from),
@@ -189,7 +191,7 @@ export function canPlace(s:GameState,side:Side,role:BuildingRole,x:number,y:numb
 }
 function invalidateNavigation(s:GameState,e:Entity):void{e.path=[];e.entrenchedAt=undefined;runtime(s).routes.delete(e.id);}
 function assign(s:GameState,e:Entity,order:Entity['order']):void{cancelEconomyTask(s,e.id);if(e.factionState){delete e.factionState.tunnel;delete e.factionState.corpseOrder;}if(e.siegeMode?.deployed&&(order.type==='move'||order.type==='attackMove'))e.siegeMode.deployed=false;if(order.type!=='hold')e.entrenchedAt=undefined;e.order=order;e.path=[];runtime(s).routes.delete(e.id);runtime(s).returning.delete(e.id);runtime(s).queuedGather.delete(e.id);}
-function interruptWorldOrder(s:GameState,e:Entity):void {if(e.hp<=0)onEconomyDeath(s,e,economyHooks);delete e.orderQueue;assign(s,e,{type:'idle'});}
+function interruptWorldOrder(s:GameState,e:Entity,order:Entity['order']={type:'idle'}):void {if(e.hp<=0)onEconomyDeath(s,e,economyHooks);delete e.orderQueue;e.entrenchedAt=undefined;if(e.tactics){delete e.tactics.formation;delete e.tactics.ambush;delete e.tactics.capture;delete e.tactics.retreat;}assign(s,e,order);}
 function commandOrder(s:GameState,e:Entity,order:Entity['order'],queued=false):boolean {
  if(queued&&e.order.type!=='idle'&&e.order.type!=='hold'){
   if((e.orderQueue?.length??0)>=MAX_ORDER_QUEUE)return false;
@@ -537,8 +539,8 @@ function applyStep(s:GameState,dt:number):void{
  e.animTime+=dt;if(!alive(e)){if(e.kind==='building')refundQueue(s,e);continue;}if(e.expires&&s.time>=e.expires){die(s,e);continue;}e.cooldown=Math.max(0,e.cooldown-dt);if(e.animation!=='attack'||e.animTime>.4)e.animation='idle';e.momentum=Math.max(0,e.momentum-dt*.014);
  if(e.kind==='building'){if(e.progress===1&&buildingDef(s,e).ability==='heal')for(const ally of s.entities)if(isAllied(s,ally.side,e.side)&&alive(ally)&&ally.kind==='unit'&&!ally.illusion&&distance(ally,e)<6)ally.hp=Math.min(ally.maxHp,ally.hp+dt*2.5);if(e.research){e.researchProgress+=dt*economyResearchFactor(s,e)/upgradeFor(s,e.side,e.research).researchTime;if(e.researchProgress>=1)finishResearch(s,e);}production(s,e,dt);if(e.role==='tower'&&e.progress===1&&!buildingDef(s,e).tags?.includes('beacon')){const b=enemy(s,e,7);if(b)fight(s,e,b,dt);}continue;}
  const d=unitDef(s,e),before={x:e.x,y:e.y,level:levelOf(e)};if(stepFactionActor(s,e,dt,factionHooks(s)))continue;ageCharge(s,e,dt);
- const previousSide=e.side,tactics=updateTactics(s,e,dt);if(e.side!==previousSide)dropArtifacts(s,e);if(tactics.retreat){movementOrder(s,e,tactics.retreat,dt,1);updateCharge(s,e,before,dt);continue;}if(tactics.skipCombat)continue;
- const capture=updateSiegeCapture(s,e,dt);if(capture.complete&&capture.target)dropArtifacts(s,capture.target);if(capture.target&&!capture.complete){if(distance(e,capture.target)>1.3)move(s,e,capture.target,dt,1.2);updateCharge(s,e,before,dt);continue;}
+ const previousSide=e.side,tactics=updateTactics(s,e,dt,actor=>interruptWorldOrder(s,actor));if(e.side!==previousSide)dropArtifacts(s,e);if(tactics.retreat){movementOrder(s,e,tactics.retreat,dt,1);updateCharge(s,e,before,dt);continue;}if(tactics.skipCombat)continue;
+ const capture=updateSiegeCapture(s,e,dt,actor=>interruptWorldOrder(s,actor));if(capture.complete&&capture.target)dropArtifacts(s,capture.target);if(capture.target&&!capture.complete){if(distance(e,capture.target)>1.3)move(s,e,capture.target,dt,1.2);updateCharge(s,e,before,dt);continue;}
  if(e.maxShield&&s.time-(e.lastDamagedAt??-6)>=6)e.shield=Math.min(e.maxShield,(e.shield??0)+4*dt);
  if(!e.illusion&&(d.ability==='raise'||d.ability==='ward'))useAbility(s,e);
  const feared=e.specialistBuffs?.find(buff=>buff.until>s.time&&buff.fearedFrom)?.fearedFrom;if(feared){const dx=e.x-feared.x,dy=e.y-feared.y,len=length2D(dx,dy)||1;move(s,e,{x:clamp(e.x+dx/len*3,.6,s.width-.6),y:clamp(e.y+dy/len*3,.6,s.height-.6),level:levelOf(e)},dt,.1);continue;}
@@ -859,4 +861,4 @@ export function applyScenarioDamage(s:GameState,source:Entity,target:Entity,amou
 export function spawnDefinition(s:GameState,side:Side,kind:Entity['kind'],definitionId:string,x:number,y:number,progress=1,level?:number):Entity {const d=kind==='unit'?availableUnits(s,side).find(d=>d.id===definitionId):availableBuildings(s,side).find(d=>d.id===definitionId);if(!d)throw new Error('Definition is absent from player content.');return spawnEntity(s,side,kind,d.role,x,y,progress,definitionId,level??0);}
 
 function specialistHooks(s:GameState):SpecialistHooks {return {interrupt:actor=>interruptWorldOrder(s,actor),recordPaid:(actor,cost)=>recordEconomyPaid(s,actor,cost),die:(actor,text)=>die(s,actor,text),spawn:(...args)=>spawnDefinition(s,...args),setTerrain:(point,kind)=>setWorldTerrain(s,point,kind),impactTargets:()=>combatTargets(s),targetDistance:(at,target)=>targetDistance(s,at,target),ignite:(point,source)=>{igniteWorldAt(s,point,source);},damage:(source,target,raw,options)=>{if(target.hp<=0)return;queueWeaponHit(s,source,target,raw,!!options?.ranged,false,!!options?.armorPiercing,!!options?.ranged);}};}
-const economyHooks:EconomyHooks={visible:(s,side,p)=>isVisible(s,side,p.x,p.y,p.level??0),allied:isAllied,spawn:spawnEntity,die,assign,invalidateNavigation,move,canPlace:(s,side,x,y,level)=>canPlace(s,side,'depot',x,y,'economy:warehouse',level),radius,buildingDef,unitDef};
+const economyHooks:EconomyHooks={visible:(s,side,p)=>isVisible(s,side,p.x,p.y,p.level??0),allied:isAllied,spawn:spawnEntity,die,assign:interruptWorldOrder,invalidateNavigation,move,canPlace:(s,side,x,y,level)=>canPlace(s,side,'depot',x,y,'economy:warehouse',level),radius,buildingDef,unitDef};

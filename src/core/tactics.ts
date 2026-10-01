@@ -139,7 +139,7 @@ export function recordTacticsDeath(s:GameState,target:Entity):void {
  if(target.kind!=='unit'||target.illusion||isCrewless(target))return;
  for(const ally of s.entities)if(ally!==target&&ally.hp>0&&ally.kind==='unit'&&!ally.illusion&&!isCrewless(ally)&&sameLevel(ally,target)&&allied(s,ally.side,target.side)&&distance(ally,target)<6){const t=initializeTactics(s,ally);t.recentLoss=Math.min(60,t.recentLoss+12);t.morale=Math.max(0,t.morale-12);}
 }
-export function updateTactics(s:GameState,e:Entity,dt:number):{skipCombat:boolean;retreat?:Vec} {
+export function updateTactics(s:GameState,e:Entity,dt:number,interruptOrder?:(actor:Entity)=>void):{skipCombat:boolean;retreat?:Vec} {
  const t=initializeTactics(s,e);if(isCrewless(e))return {skipCombat:true};
  if(t.guard&&s.time-t.guard.lastDamagedAt>=8)t.guard.value=Math.min(t.guard.max,t.guard.value+dt*2);
  t.recentLoss=Math.max(0,t.recentLoss-dt*2);
@@ -149,18 +149,18 @@ export function updateTactics(s:GameState,e:Entity,dt:number):{skipCombat:boolea
  const wounded=e.hp/e.maxHp<.65;
  t.morale=clamp(t.morale+dt*(support?Math.min(4,1+support*.65):enemies.length&&wounded?-4:enemies.length?-.4:2.5),0,100);
  if(t.morale<=TACTICS.surrenderMorale){const captors=enemies.filter(a=>a.kind==='unit'&&!a.illusion&&!a.raised&&['worker','melee','spear','special'].includes(a.role)&&distance(a,e)<2.5),sectors=new Set(captors.map(a=>(Math.round(Math.atan2(a.y-e.y,a.x-e.x)/(Math.PI/4))+8)%8)),surrounded=captors.length>=3&&sectors.size>=3&&captors.some(a=>captors.some(b=>(a.x-e.x)*(b.x-e.x)+(a.y-e.y)*(b.y-e.y)<0));
-  if(surrounded){const captor=captors.sort((a,b)=>distance(a,e)-distance(b,e)||a.id-b.id)[0],former=e.side;e.definitionFaction??=s.players[former].faction;e.side=captor.side;if(e.factionState){delete e.factionState.chant;delete e.factionState.tunnel;delete e.factionState.corpseOrder;}t.morale=35;t.surrenderedTo=captor.side;delete t.retreat;delete t.formation;delete t.ambush;delete t.capture;e.order={type:'hold'};delete e.orderQueue;e.path=[];s.events.push({type:'message',side:former,x:e.x,y:e.y,source:e.id,text:'A surrounded unit surrendered'}, {type:'message',side:e.side,x:e.x,y:e.y,source:e.id,text:'Captured a surrendered unit'});return {skipCombat:true};}
+  if(surrounded){const captor=captors.sort((a,b)=>distance(a,e)-distance(b,e)||a.id-b.id)[0],former=e.side;interruptOrder?.(e);e.definitionFaction??=s.players[former].faction;e.side=captor.side;if(e.factionState){delete e.factionState.chant;delete e.factionState.tunnel;delete e.factionState.corpseOrder;}t.morale=35;t.surrenderedTo=captor.side;delete t.retreat;delete t.formation;delete t.ambush;delete t.capture;e.order={type:'hold'};delete e.orderQueue;e.path=[];s.events.push({type:'message',side:former,x:e.x,y:e.y,source:e.id,text:'A surrounded unit surrendered'}, {type:'message',side:e.side,x:e.x,y:e.y,source:e.id,text:'Captured a surrendered unit'});return {skipCombat:true};}
  }
  if(!t.retreat&&t.morale< TACTICS.retreatMorale&&enemies.length){
   const refuge=s.entities.filter(a=>a.hp>0&&!isCrewless(a)&&sameLevel(a,e)&&allied(s,a.side,e.side)&&a.kind==='building'&&(a.role==='hq'||a.role==='depot')&&(a.side===e.side||visible(s,e.side,a))).sort((a,b)=>distance(a,e)-distance(b,e))[0];
   let destination:Vec;if(refuge&&distance(refuge,e)>3)destination={x:refuge.x,y:refuge.y,...('level' in refuge?{level:refuge.level}:{})};else {const threats=enemies.reduce((p,a)=>({x:p.x+a.x,y:p.y+a.y}),{x:0,y:0}),dx=e.x-threats.x/enemies.length,dy=e.y-threats.y/enemies.length,d=Math.hypot(dx,dy)||1;destination={x:clamp(e.x+dx/d*6,.6,s.width-.6),y:clamp(e.y+dy/d*6,.6,s.height-.6),...('level' in e?{level:e.level}:{})};}
-  t.retreat={...destination,until:s.time+8};delete t.formation;delete t.ambush;delete t.capture;delete e.orderQueue;e.order={type:'move',...destination};e.path=[];s.events.push({type:'message',side:e.side,x:e.x,y:e.y,source:e.id,text:'Low morale: retreating to support'});
+  interruptOrder?.(e);t.retreat={...destination,until:s.time+8};delete t.formation;delete t.ambush;delete t.capture;delete e.orderQueue;e.order={type:'move',...destination};e.path=[];s.events.push({type:'message',side:e.side,x:e.x,y:e.y,source:e.id,text:'Low morale: retreating to support'});
  }
- if(t.retreat){if(s.time>=t.retreat.until&&t.morale>=30){delete t.retreat;e.order={type:'hold'};return {skipCombat:false};}return {skipCombat:true,retreat:t.retreat};}
+ if(t.retreat){if(s.time>=t.retreat.until&&t.morale>=30){interruptOrder?.(e);delete t.retreat;e.order={type:'hold'};return {skipCombat:false};}return {skipCombat:true,retreat:t.retreat};}
  if(t.ambush?.concealed){if(!canAmbush(s,e)){t.ambush.concealed=false;s.events.push({type:'message',side:e.side,x:e.x,y:e.y,source:e.id,text:'Ambush lost concealment'});}else {const a=t.ambush,target=enemies.filter(b=>distance(e,b)<=a.radius&&(a.target==='any'||a.target===b.kind||a.target===b.role)).sort((x,y)=>distance(e,x)-distance(e,y)||x.id-y.id)[0];if(!target)return {skipCombat:true};a.concealed=false;e.order={type:'attack',target:target.id};s.events.push({type:'message',side:e.side,x:e.x,y:e.y,source:e.id,text:'Ambush triggered'});}}
  return {skipCombat:false};
 }
-export function updateSiegeCapture(s:GameState,e:Entity,dt:number):{target?:Entity;complete:boolean} {
+export function updateSiegeCapture(s:GameState,e:Entity,dt:number,beforeOwnershipTransfer?:(actor:Entity)=>void):{target?:Entity;complete:boolean} {
  const capture=e.tactics?.capture;if(!capture)return {complete:false};const target=s.entities.find(a=>a.id===capture.target);
  if(!target||!canCaptureSiege(s,e,target)){delete e.tactics!.capture;return {complete:false};}
  if(distance(e,target)>1.3)return {target,complete:false};
@@ -168,5 +168,5 @@ export function updateSiegeCapture(s:GameState,e:Entity,dt:number):{target?:Enti
  if(contested){capture.progress=0;return {target,complete:false};}
  capture.progress=Math.min(1,capture.progress+dt/TACTICS.captureSeconds);
  if(capture.progress<1)return {target,complete:false};
- target.definitionFaction??=s.players[target.side].faction;target.side=e.side;if(target.factionState){delete target.factionState.chant;delete target.factionState.tunnel;delete target.factionState.corpseOrder;}const crew=target.tactics!.siegeCrew!;crew.uncrewed=false;crew.hp=crew.maxHp;target.order={type:'hold'};target.cooldown=1;delete target.tactics!.retreat;target.tactics!.morale=60;delete e.tactics!.capture;e.order={type:'hold'};s.events.push({type:'message',side:e.side,x:target.x,y:target.y,source:e.id,target:target.id,text:'Siege crew replaced: engine captured'});return {target,complete:true};
+ beforeOwnershipTransfer?.(target);target.definitionFaction??=s.players[target.side].faction;target.side=e.side;if(target.factionState){delete target.factionState.chant;delete target.factionState.tunnel;delete target.factionState.corpseOrder;}const crew=target.tactics!.siegeCrew!;crew.uncrewed=false;crew.hp=crew.maxHp;target.order={type:'hold'};target.cooldown=1;delete target.tactics!.retreat;target.tactics!.morale=60;delete e.tactics!.capture;e.order={type:'hold'};s.events.push({type:'message',side:e.side,x:target.x,y:target.y,source:e.id,target:target.id,text:'Siege crew replaced: engine captured'});return {target,complete:true};
 }
