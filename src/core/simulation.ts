@@ -204,7 +204,7 @@ function applyCommand(s:GameState,side:Side,c:Command):boolean{
  }
  if(c.type==='train'){
  const e=s.entities.find(e=>e.id===c.id&&e.side===side&&alive(e)&&e.kind==='building'&&e.progress===1);const d=c.definitionId?availableUnits(s,side).find(d=>d.id===c.definitionId&&d.role===c.role):f.units[c.role];if(!e||!d||d.tags?.includes('hero')&&heroRecruitmentReason(s,side,d.id)||playerAge(p)<(d.age??1)||(c.role==='worker'?e.role!=='hq':e.role!=='barracks')||e.queue.length>=5||p.wood<d.cost.wood||p.ore<d.cost.ore||p.crystal<d.cost.crystal||p.population+reserved(s,side)>=p.cap)return false;
- p.wood-=d.cost.wood;p.ore-=d.cost.ore;p.crystal-=d.cost.crystal;if(s.content||c.definitionId){e.queueDefinitionIds??=e.queue.map(role=>f.units[role].id);e.queueDefinitionIds.push(d.id);e.queuePaidCosts??=e.queue.map(role=>({...f.units[role].cost}));e.queuePaidCosts.push({...d.cost});}e.queue.push(c.role);return true;
+ p.wood-=d.cost.wood;p.ore-=d.cost.ore;p.crystal-=d.cost.crystal;if(s.content||c.definitionId||e.queueDefinitionIds!==undefined||e.queuePaidCosts!==undefined){e.queueDefinitionIds??=e.queue.map(role=>f.units[role].id);e.queueDefinitionIds.push(d.id);e.queuePaidCosts??=e.queue.map(role=>({...f.units[role].cost}));e.queuePaidCosts.push({...d.cost});}e.queue.push(c.role);return true;
  }
  if(c.type==='research'){
  const e=s.entities.find(e=>e.id===c.id&&e.side===side&&alive(e)&&e.kind==='building'&&e.progress===1);const d=(()=>{try{return upgradeFor(s,side,c.upgrade);}catch{return undefined;}})();
@@ -359,7 +359,7 @@ function resolveHits(s:GameState):void{
  for(const hit of runtime(s).hits){const group=groups.get(hit.target)??[];group.push(hit);groups.set(hit.target,group);}
  for(const [target,hits] of groups){if(!alive(target))continue;const total=hits.reduce((n,h)=>n+h.amount,0),absorbed=Math.min(target.shield??0,total),actual=Math.min(target.hp,total-absorbed)+absorbed;target.shield=Math.max(0,(target.shield??0)-absorbed);target.hp=Math.max(0,target.hp-(total-absorbed));target.lastDamagedAt=s.time;
   for(const hit of hits){hit.event.amount=total?actual*hit.amount/total:0;const attacker=s.entities.find(e=>e.id===hit.source.id);if(attacker&&attacker.side===hit.source.side)creditCombat(s,attacker,target,hit.event.amount);}
-  if(actual>0&&hits.some(hit=>(hit.event.amount??0)>0&&s.teams[hit.source.side]!==s.teams[target.side]))recordCombatExposure(s,target);
+  if(actual>0&&hits.some(hit=>{const source=s.entities.find(e=>e.id===hit.source.id);return (hit.event.amount??0)>0&&s.teams[hit.source.side]!==s.teams[target.side]&&(!source||!source.illusion&&!source.raised);}))recordCombatExposure(s,target);
   target.lastAttacker=hits.reduce((best,h)=>h.amount>best.amount?h:best).source.id;
   if(target.hp===0){const killer=s.entities.find(e=>e.id===target.lastAttacker);if(killer&&killer.side===hits.reduce((best,h)=>h.amount>best.amount?h:best).source.side)creditCombat(s,killer,target,0,true);die(s,target);}
  }
