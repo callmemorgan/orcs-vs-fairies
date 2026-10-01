@@ -30,7 +30,7 @@ export interface HudCallbacks {
   command?:(command:Command)=>boolean|void; engineerBuild?:(kind:'bridge'|'barricade')=>void; fieldRepair?:()=>void;
   cosmetics?:()=>CosmeticLoadout;
   build:(role:BuildingRole,definitionId?:string)=>void; train:(role:UnitRole,definitionId?:string)=>void; cancelTrain:(id:number,index:number,expectedQueue:string)=>void; research:(upgrade:UpgradeId,building?:number)=>void; ability:()=>void; clearRally:()=>void; toggleGate?:()=>void;
-  stop:()=>void; hold:()=>void; attackMove:()=>void; select:(ids:number[])=>void; pause:()=>void; restart:()=>void; center:(x:number,y:number)=>void;
+  stop:()=>void; hold:()=>void; attackMove:()=>void; select:(ids:number[])=>void; pause:()=>void; restart:()=>void; center:(x:number,y:number,level?:number)=>void;
   toggleMuted:()=>void; isMuted:()=>boolean; isPaused?:()=>boolean; side?:()=>Side;level?:()=>number; bindingLabel?:(action:string)=>string;
   cameraCorners:()=>Array<{x:number;y:number}>; groups:()=>Record<string,number[]>; recallGroup:(group:string)=>void;
 }
@@ -160,11 +160,23 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
       else{ctx.arc(x,y,7,0,Math.PI*2);ctx.moveTo(x,y-3);ctx.lineTo(x,y+1);ctx.moveTo(x,y+3);ctx.lineTo(x,y+3.5);}
       ctx.stroke();ctx.globalAlpha=1;
     }
-    const list=el('.minimap-alert-list'),labels:Record<MinimapAlertKind,string>={raid:'Raid',expansion:'Expansion',idle:'Idle'},key=alerts.map(a=>a.id).join(',');
+    const list=el('.minimap-alert-list'),labels:Record<MinimapAlertKind,string>={raid:'Raid',expansion:'Expansion',idle:'Idle'},key=JSON.stringify([s.world?.levels.map(level=>level.title),alerts.map(a=>[a.id,levelOf(a)])]);
     if(list.dataset.alerts!==key){
       list.dataset.alerts=key;list.replaceChildren();list.hidden=!alerts.length;
-      for(const kind of ['raid','expansion','idle'] as const){const group=alerts.filter(a=>a.kind===kind);if(!group.length)continue;let index=0;const button=document.createElement('button');button.type='button';button.dataset.kind=kind;button.textContent=`${labels[kind]} ${group.length}`;button.title=kind==='raid'?'Under attack or a visible raid':kind==='expansion'?'An expansion is threatened':'Recruitment idle for 12 seconds';button.setAttribute('aria-label',`${button.title}. Center camera; ${group.length} ${group.length===1?'location':'locations'}.`);button.onclick=()=>{const current=minimapAlerts.current.filter(a=>a.kind===kind);if(!current.length)return;const alert=current[index++%current.length];callbacks?.center(alert.x,alert.y);};list.append(button);}
-      el('.minimap-alert-status').textContent=alerts.length?(['raid','expansion','idle'] as const).map(kind=>{const count=alerts.filter(a=>a.kind===kind).length;return count?`${labels[kind]}: ${count}`:'';}).filter(Boolean).join('. '):'';
+      const announcements:string[]=[];
+      for(const kind of ['raid','expansion','idle'] as const){
+        const group=alerts.filter(a=>a.kind===kind);
+        for(const alertLevel of [...new Set(group.map(levelOf))].sort((a,b)=>a-b)){
+          const locations=group.filter(a=>levelOf(a)===alertLevel),levelTitle=s.world?(s.world.levels[alertLevel]?.title??(alertLevel===0?'Surface':`Level ${alertLevel+1}`)):'';
+          let index=0;const button=document.createElement('button');button.type='button';button.dataset.kind=kind;button.dataset.level=String(alertLevel);
+          button.textContent=`${labels[kind]} ${locations.length}${levelTitle?` · ${levelTitle}`:''}`;
+          const reason=kind==='raid'?'Under attack or a visible raid':kind==='expansion'?'An expansion is threatened':'Recruitment idle for 12 seconds';
+          button.title=`${reason}${levelTitle?` on ${levelTitle}`:''}`;button.setAttribute('aria-label',`${button.title}. Center camera; ${locations.length} ${locations.length===1?'location':'locations'}.`);
+          button.onclick=()=>{const current=minimapAlerts.current.filter(a=>a.kind===kind&&levelOf(a)===alertLevel);if(!current.length)return;const alert=current[index++%current.length];callbacks?.center(alert.x,alert.y,levelOf(alert));};list.append(button);
+          announcements.push(`${labels[kind]}${levelTitle?` on ${levelTitle}`:''}: ${locations.length}`);
+        }
+      }
+      el('.minimap-alert-status').textContent=announcements.join('. ');
     }
     const corners=callbacks?.cameraCorners()??[];if(corners.length){ctx.strokeStyle='#fff0b6';ctx.lineWidth=1.5;ctx.beginPath();corners.forEach((p,i)=>{if(i===0)ctx.moveTo(p.x*cw,p.y*ch);else ctx.lineTo(p.x*cw,p.y*ch);});ctx.closePath();ctx.stroke();}
   }

@@ -139,7 +139,7 @@ const callbacks:HudCallbacks={
  side:playerSide,
  level:()=>scene?.viewLevel??0,
  bindingLabel:action=>controls.bindingsFor(action as ControlAction).map(displayBinding).join(' / '),
- center:(x,y)=>scene?.centerOn(x,y),
+ center:(x,y,level)=>{if(level!==undefined)scene?.setViewLevel(level);scene?.centerOn(x,y);},
  groups:()=>scene?.controlGroups()??{},
  recallGroup:group=>scene?.recallGroup(group),
  cameraCorners:()=>{if(!scene?.cameras?.main)return [];const c=scene.cameras.main;const {top,bottom}=shell.battlefieldBounds();return [[0,top],[innerWidth,top],[innerWidth,bottom],[0,bottom]].map(([x,y])=>{const p=c.getWorldPoint(x*renderDensity,y*renderDensity);return unproject(p.x,p.y);});}
