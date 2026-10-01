@@ -1,0 +1,3 @@
+The complete suite passes at 4a71cd07bacc12d214acaf5a0f95a7d9b486f52c: 2920 tests in 157 files, including 36 natural AI skirmishes. All 917 selected inputs match pinned Git blobs before and after the run. The first failed suite and unchanged isolated replay pass are retained in separate directories.
+
+Runtime dispatch uses immutable freeze c86e273c70738f144a00fe75f5ecf39e7fa324d8. Its existing suite inputs and product inputs match the actual passing suite and four-build pins; the 19 added combat proof modules have separate independent admission. The feature ledger remains 41 verified and 59 in progress until the remaining gameplay evidence is admitted.
