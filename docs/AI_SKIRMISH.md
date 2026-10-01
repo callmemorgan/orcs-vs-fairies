@@ -24,7 +24,7 @@ The commander reads its own troops and resources, visible deposits and visible h
 
 A wounded or outnumbered fighter away from its headquarters retreats toward an owned rally point. It waits for its regroup deadline and for a living fighter recruited after the retreat began to reach that rally point. A recruit that dies before arriving does not satisfy the requirement. Other healthy fighters continue fighting. Production buildings send new troops to the same rally point using public rally commands.
 
-Version 3 saves preserve each player's decision deadline, decision count, observed unit memory, retreat records and recruited fighter count. Version 1 and 2 saves pass their original strict validators before migration. Importing an older state does not promise the old AI's future behavior or historical replay playback.
+Version 3 saves preserve the actual AI decision batch count and each player's decision deadline, decision count, observed unit memory, retreat records and recruited fighter count. Version 1 and 2 saves pass their original strict validators before migration. Importing an older state does not promise the old AI's future behavior or historical replay playback.
 
 ## Repeating the checks
 

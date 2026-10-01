@@ -76,7 +76,7 @@ function entries(value:unknown,path:string,max:number,c:Context,check:(v:unknown
 }
 function validateRuntime(value:unknown,c:Context,version:1|2|3):void {
  const fields=['fog','ai','aiTurns','hits','routes','abilities','returning','queuedGather','aiWave','initialScoutDispatched','expansionScout','expansionScoutDispatched','knownEnemyBuildings','enemyStartCleared','searched'];
- const path='runtime',r=object(value,path,version===1?fields:version===2?[...fields,'clearedEnemyStarts']:[...fields,'clearedEnemyStarts','aiDecisionAt','aiDecisionTurns','knownEnemyUnits','retreating','producedFighters']);
+ const path='runtime',r=object(value,path,version===1?fields:version===2?[...fields,'clearedEnemyStarts']:[...fields,'clearedEnemyStarts','aiBatchTurns','aiDecisionAt','aiDecisionTurns','knownEnemyUnits','retreating','producedFighters']);
  number(r.fog,'runtime.fog',-.25,.2);number(r.ai,'runtime.ai',-.25,1);number(r.aiTurns,'runtime.aiTurns',0,MAX_VALUE,true);
  list(r.hits,'runtime.hits',c.maxEntities).forEach((v,i)=>{const p=`runtime.hits[${i}]`,h=object(v,p,['source','target','amount','event']);for(const key of ['source','target'])if(!c.entityIds.has(id(h[key],`${p}.${key}`,c)))bad(`${p}.${key}`,'missing hit entity');number(h.amount,`${p}.amount`,0,1e9);number(h.event,`${p}.event`,0,c.eventCount-1,true);});
  entries(r.routes,'runtime.routes',MAX_ID,c,(v,p)=>{const route=object(v,p,['key','at']);if(typeof route.key!=='string'||route.key.length>128)bad(`${p}.key`,'invalid route key');number(route.at,`${p}.at`,0,c.time);});
@@ -90,6 +90,7 @@ function validateRuntime(value:unknown,c:Context,version:1|2|3):void {
  playersArray(r.searched,'runtime.searched',c,(v,p)=>uniqueIds(list(v,p,c.cells),p,c.cells-1));
  if(version>=2)playersArray(r.clearedEnemyStarts,'runtime.clearedEnemyStarts',c,(v,p)=>uniqueIds(list(v,p,c.playerCount),p,c.playerCount-1));
  if(version===3){
+  number(r.aiBatchTurns,'runtime.aiBatchTurns',0,MAX_VALUE,true);
   playersArray(r.aiDecisionAt,'runtime.aiDecisionAt',c,(v,p)=>number(v,p,0,c.time+3));
   for(const key of ['aiDecisionTurns','producedFighters'])playersArray(r[key],`runtime.${key}`,c,(v,p)=>number(v,p,0,MAX_VALUE,true));
   playersArray(r.knownEnemyUnits,'runtime.knownEnemyUnits',c,(v,p)=>entries(v,p,c.maxEntities,c,(value,q)=>{const observation=object(value,q,['x','y','role','seenAt','hpFraction']);coordinates(observation,q,c);choice(observation.role,`${q}.role`,UNIT_ROLES.filter(role=>role!=='worker'));number(observation.seenAt,`${q}.seenAt`,0,c.time);number(observation.hpFraction,`${q}.hpFraction`,0,1);}));
@@ -141,7 +142,7 @@ function migrateLegacy(envelope:RecordValue):void {
 function migrateAi(envelope:RecordValue):void {
  validate(envelope,2);const state=envelope.state as RecordValue,runtime=envelope.runtime as RecordValue,count=(state.players as unknown[]).length;
  state.aiConfigs=Array.from({length:count},()=>normalizeAiConfig());
- Object.assign(runtime,{aiDecisionAt:Array(count).fill(state.time as number),aiDecisionTurns:Array(count).fill(0),knownEnemyUnits:Array.from({length:count},()=>[]),retreating:Array.from({length:count},()=>[]),producedFighters:Array(count).fill(0)});envelope.version=SAVE_VERSION;
+ Object.assign(runtime,{aiBatchTurns:0,aiDecisionAt:Array(count).fill(state.time as number),aiDecisionTurns:Array(count).fill(0),knownEnemyUnits:Array.from({length:count},()=>[]),retreating:Array.from({length:count},()=>[]),producedFighters:Array(count).fill(0)});envelope.version=SAVE_VERSION;
 }
 /** Copy only bounded JSON data. Accessors, class instances and cycles are rejected. */
 function copyJson(value:unknown):unknown {
@@ -176,7 +177,7 @@ export function loadGame(input:unknown):GameState {
  let source=input;
  if(typeof input==='string'){if(input.length>MAX_SAVE_BYTES||new TextEncoder().encode(input).byteLength>MAX_SAVE_BYTES)bad('save','save exceeds size limit');try{source=JSON.parse(input);}catch{bad('save','invalid JSON');}}
  const envelope=copyJson(source);checkSize(envelope);const record=object(envelope,'save',['format','version','state','runtime']);
- if(record.version===1)migrateLegacy(record);if(record.version===2)migrateAi(record);validateCurrent(envelope);
+ if(record.version===1)migrateLegacy(record);if(record.version===2)migrateAi(record);checkSize(envelope);validateCurrent(envelope);
  const state:GameState={...envelope.state,explored:envelope.state.explored.map(values=>new Set(values)),visible:envelope.state.visible.map(values=>new Set(values))};
  restoreRuntime(state,envelope.runtime);return state;
 }
