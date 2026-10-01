@@ -54,6 +54,7 @@ export default class GameScene extends Phaser.Scene {
   public get audioStatus(){return this.audio?.status??{state:'locked',muted:false};}
   public get artStatus(){return {enabled:this.art?.enabled??false,loaded:this.art?.loaded??false,assets:this.art?.assetCount??0,loadedAtlasPages:this.art?.loadedAtlasPages??0,decodedAtlasMiB:this.art?.decodedAtlasMiB??0,renderedUnits:this.art?.renderedUnits??0};}
   private ground!:Phaser.GameObjects.Graphics;
+  private terrainDetails!:Phaser.GameObjects.Graphics;
   private actors!:Phaser.GameObjects.Graphics;
   private fog!:Phaser.GameObjects.Graphics;
   private overlay!:Phaser.GameObjects.Graphics;
@@ -131,7 +132,7 @@ export default class GameScene extends Phaser.Scene {
     this.art.ready();
     if(this.art.enabled&&!this.art.loaded)this.options.onNotice('Artwork could not load. Check that the local server is running, then restart the match.');
     this.cameras.main.setBackgroundColor('#131f22');
-    this.ground=this.add.graphics().setDepth(-101);this.actors=this.add.graphics().setDepth(0);this.fog=this.add.graphics().setDepth(100000);this.overlay=this.add.graphics().setDepth(100001);
+    this.ground=this.add.graphics().setDepth(-101);this.terrainDetails=this.add.graphics().setDepth(-99);this.actors=this.add.graphics().setDepth(0);this.fog=this.add.graphics().setDepth(100000);this.overlay=this.add.graphics().setDepth(100001);
     this.drawGround();
     this.cameras.main.setBounds(OX-this.state.height*32-64,-80,(this.state.width+this.state.height)*32+128,(this.state.width+this.state.height)*16+320).setZoom(this.pixelDensity);
     this.centerOn(this.state.starts[this.viewSide].x,this.state.starts[this.viewSide].y);
@@ -445,6 +446,10 @@ export default class GameScene extends Phaser.Scene {
     this.drawWorldObjects(g);
     this.art.end();
   }
+  private drawElevation(){
+    const g=this.terrainDetails;if(!g)return;g.clear();const heights=this.state.world?.levels[this.viewLevel]?.elevation;if(!heights)return;
+    for(let tile=0;tile<heights.length;tile++){const height=heights[tile],key=this.viewLevel*this.state.width*this.state.height+tile;if(!height||!this.state.explored[this.viewSide].has(key))continue;const p=project(tile%this.state.width+.5,Math.floor(tile/this.state.width)+.5);g.lineStyle(1.5,0xe7d29c,.75);for(let tier=0;tier<height;tier++){g.lineBetween(p.x-18,p.y+6-tier*3,p.x,p.y+14-tier*3);g.lineBetween(p.x,p.y+14-tier*3,p.x+18,p.y+6-tier*3);}}
+  }
   private drawWorldObjects(g:Phaser.GameObjects.Graphics){
     const world=this.state.world;if(!world)return;const visible=(p:{x:number;y:number;level:number})=>p.level===this.viewLevel&&this.state.visible[this.viewSide].has(fogKey(this.state,p));
     for(const transition of world.transitions)for(const entrance of [transition.from,transition.to])if(visible(entrance)){const p=project(entrance.x,entrance.y);g.fillStyle(0x2a2233,.9).fillEllipse(p.x,p.y-4,36,22);g.lineStyle(3,0xb8d7e0).strokeEllipse(p.x,p.y-4,36,22);g.lineBetween(p.x-12,p.y-5,p.x+12,p.y-5);}
@@ -452,7 +457,7 @@ export default class GameScene extends Phaser.Scene {
     for(const creature of world.creatures)if(creature.hp>0&&visible(creature)){const p=project(creature.x,creature.y);g.fillStyle(0x914e42).fillEllipse(p.x,p.y-13,25,24);g.fillStyle(0xd0b78d).fillTriangle(p.x-12,p.y-18,p.x-9,p.y-34,p.x-4,p.y-19);g.fillTriangle(p.x+4,p.y-19,p.x+9,p.y-34,p.x+12,p.y-18);if(!this.photoMode){g.fillStyle(0x182b2a).fillRect(p.x-16,p.y-40,32,4);g.fillStyle(0xd47760).fillRect(p.x-16,p.y-40,32*creature.hp/creature.maxHp,4);}}
     for(const fire of world.fires)if(visible(fire)){const p=project(fire.x,fire.y),sway=Math.sin(this.state.time*9+fire.x)*3;g.fillStyle(0xd45327,.8).fillTriangle(p.x-14,p.y+5,p.x+sway,p.y-34,p.x+14,p.y+5);g.fillStyle(0xf4cf65).fillTriangle(p.x-7,p.y+4,p.x-sway,p.y-22,p.x+7,p.y+4);}
   }
-  private drawFog(){const g=this.fog;g.clear();for(let y=0;y<this.state.height;y++)for(let x=0;x<this.state.width;x++){const i=fogKey(this.state,{x,y,level:this.viewLevel});if(this.state.visible[this.viewSide].has(i))continue;const p=project(x+.5,y+.5);this.diamond(g,p.x,p.y,65,33,0x102022,this.state.explored[this.viewSide].has(i)?.48:.98);}}
+  private drawFog(){this.drawElevation();const g=this.fog;g.clear();for(let y=0;y<this.state.height;y++)for(let x=0;x<this.state.width;x++){const i=fogKey(this.state,{x,y,level:this.viewLevel});if(this.state.visible[this.viewSide].has(i))continue;const p=project(x+.5,y+.5);this.diamond(g,p.x,p.y,65,33,0x102022,this.state.explored[this.viewSide].has(i)?.48:.98);}}
   private drawOverlay(){
     const g=this.overlay;g.clear();if(this.photoMode){this.game.canvas.style.cursor='default';return;}const p=this.controllerActive&&this.controllerCursor?this.controllerCursor:this.input.activePointer;const world=this.cameras.main.getWorldPoint(p.x,p.y);
     for(const corpse of this.state.corpses){

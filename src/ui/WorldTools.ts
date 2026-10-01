@@ -1,6 +1,6 @@
 import { environmentPhase, ENVIRONMENT_RULES } from '../core/environment';
 import { observeNeutralWorld } from '../core/neutral-world';
-import { fogKey, levelOf } from '../core/world-map';
+import { elevationAt, fogKey, levelOf } from '../core/world-map';
 import type { Command, GameState, Side, Vec } from '../core/types';
 import type { Biome } from '../core/world-types';
 import './world-tools.css';
@@ -35,7 +35,7 @@ export function mountWorldTools(root:HTMLElement,c:WorldToolsCallbacks){
    const army=element('details'),title=element('summary','Owned troops by level');army.append(title);for(const troop of troops){const button=element('button',`${troop.role} #${troop.id} · ${world.levels[levelOf(troop)].title}`);button.addEventListener('click',()=>{c.select([troop.id]);c.center(troop);});army.append(button);}rows.append(army);
   }
   for(const button of Array.from(rows.querySelectorAll<HTMLButtonElement>('button[data-command]')))button.disabled=!c.canCommand()||!c.selected().length;
-  const actor=s.entities.find(e=>c.selected().includes(e.id)&&e.side===side),fuels=new Map<string,Vec>();for(const resource of s.resources)if(resource.kind==='wood'&&resource.amount>0&&known(resource))fuels.set(`${Math.floor(resource.x)+.5},${Math.floor(resource.y)+.5}`,resource);
+  const actor=s.entities.find(e=>c.selected().includes(e.id)&&e.side===side);if(actor)description.textContent+=` Selected height: ${elevationAt(s,actor)}. Each height tier adds 0.75 sight and 0.5 ranged reach; ranged troops gain 12% damage per tier above their target.`;const fuels=new Map<string,Vec>();for(const resource of s.resources)if(resource.kind==='wood'&&resource.amount>0&&known(resource))fuels.set(`${Math.floor(resource.x)+.5},${Math.floor(resource.y)+.5}`,resource);
   for(const flame of world.fires)if(known(flame))fuels.set(`${flame.x},${flame.y}`,flame);
   if(actor)for(let y=Math.max(0,Math.floor(actor.y-2));y<Math.min(s.height,Math.ceil(actor.y+2));y++)for(let x=Math.max(0,Math.floor(actor.x-2));x<Math.min(s.width,Math.ceil(actor.x+2));x++){const p={x:x+.5,y:y+.5,level};if(known(p)&&world.levels[level].terrain[y*s.width+x]==='forest')fuels.set(`${p.x},${p.y}`,p);}
   const options=[...fuels].sort(([,a],[,b])=>actor?Math.hypot(actor.x-a.x,actor.y-a.y)-Math.hypot(actor.x-b.x,actor.y-b.y):a.y-b.y),previous=fuel.value,fuelSignature=options.map(([key])=>key).join(';');if(fuel.dataset.values!==fuelSignature){fuel.dataset.values=fuelSignature;fuel.replaceChildren(...options.map(([key])=>{const o=element('option',`${key} · level ${level}`);o.value=key;return o;}));if(fuels.has(previous))fuel.value=previous;}

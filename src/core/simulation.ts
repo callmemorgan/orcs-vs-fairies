@@ -8,7 +8,7 @@ import { walkable, segmentWalkable, openDestination, route } from './navigation'
 import { generateMatchMap, terrainAt, TERRAIN } from './maps';
 import { notifyCommand, notifyStep } from './history-hooks';
 import { validateCommand } from './commands';
-import { BIOMES, fogKey, generatedMapFromWorld, generateWorldMap, initializeWorld, levelOf, sameLevel, terrainLineOfSight } from './world-map';
+import { BIOMES, fogKey, generatedMapFromWorld, generateWorldMap, highGroundDamageFactor, highGroundRangeBonus, highGroundSightBonus, initializeWorld, levelOf, sameLevel, terrainLineOfSight } from './world-map';
 import { issueWorldAction, processWorldAction } from './world-actions';
 import { environmentalMovementFactor, environmentalSightFactor, issueEnvironmentCommand, projectileEnvironment, stepEnvironment } from './environment';
 import { initializeWorldSites, issueNeutralWorldCommand, processNeutralOrder, relicBonus, stepNeutralWorld } from './neutral-world';
@@ -62,7 +62,7 @@ function matchObject(value:unknown,allowed:string[],name:string):Record<string,u
  if(!value||typeof value!=='object'||Array.isArray(value)||Object.getPrototypeOf(value)!==Object.prototype||Object.keys(value).some(k=>!allowed.includes(k)))throw new Error(`Invalid ${name}.`);return value as Record<string,unknown>;
 }
 function matchNumber(value:unknown,min:number,max:number,name:string,integer=false):number{if(typeof value!=='number'||!Number.isFinite(value)||value<min||value>max||(integer&&!Number.isSafeInteger(value)))throw new Error(`Invalid ${name}.`);return value;}
-export function createMatch(config:MatchConfig):GameState{
+export function createMatch(config:MatchConfig,options:{scenario?:boolean}={}):GameState{
  const c=matchObject(config,['schemaVersion','map','players','rules','content'],'match configuration');if(c.schemaVersion!==undefined&&c.schemaVersion!==1)throw new Error('Unsupported match configuration version.');
  const content=c.content===undefined?undefined:decodeContentBundle(c.content),factions=contentFactions(content);
  const m=matchObject(c.map,['seed','size','biome','world'],'match map');const seed=matchNumber(m.seed,0,0xffffffff,'map seed',true),size=m.size===undefined?'medium':m.size;if(!['small','medium','large','huge'].includes(size as string))throw new Error('Invalid map size.');
@@ -82,12 +82,12 @@ export function createMatch(config:MatchConfig):GameState{
  const rules=c.rules===undefined?{}:matchObject(c.rules,['sharedVision','startingAge'],'match rules');if(rules.sharedVision!==undefined&&typeof rules.sharedVision!=='boolean')throw new Error('Invalid shared vision.');const age=matchNumber(rules.startingAge===undefined?1:rules.startingAge,1,3,'starting age',true);
  if(m.biome!==undefined&&!BIOMES.includes(m.biome as typeof BIOMES[number]))throw new Error('Unknown biome.');
  const packageMap=m.world as import('./world-types').WorldMapData|undefined??(m.biome===undefined?undefined:generateWorldMap(seed,size as GameState['mapSize'],definitions.length,m.biome as typeof BIOMES[number]));
- const map=packageMap?generatedMapFromWorld(packageMap,definitions.length):generateMatchMap(seed,size as GameState['mapSize'],definitions.length);
+ const map=packageMap?generatedMapFromWorld(packageMap,definitions.length,options):generateMatchMap(seed,size as GameState['mapSize'],definitions.length);
  if(packageMap&&packageMap.seed!==seed)throw new Error('Map package seed must match the match configuration.');
  const s:GameState={controllers:definitions.map(p=>p.controller),aiConfigs:definitions.map(p=>p.ai),teams,incomeFactors,populationLimits,sharedVision:rules.sharedVision!==false,eliminated:definitions.map(()=>false),winningTeam:null,mapSize:map.size,mapVersion:map.version,terrain:map.terrain,starts:definitions.map(p=>({...map.starts[p.slot]})),draw:false,tick:0,corpses:[],time:0,seed,width:map.width,height:map.height,entities:[],resources:[],players:definitions.map(p=>({faction:p.faction,wood:p.wood,ore:p.ore,crystal:p.crystal,population:0,cap:12,upgrades:age===3?['town-age','citadel-age']:age===2?['town-age']:[]})),winner:null,events:[],explored:definitions.map(()=>new Set()),visible:definitions.map(()=>new Set()),nextId:1};
  if(content)s.content=content;
  if(packageMap)initializeWorld(s,packageMap,m.biome as typeof BIOMES[number]??'temperate');
- for(const side of playerSides(s)){const {x,y}=s.starts[side],level=levelOf(s.starts[side]),dir=y<s.height/2?1:-1;spawn(s,side,'building','hq',x,y,1,undefined,level);for(let i=0;i<5;i++)spawn(s,side,'unit','worker',x+(-2+i*.85)*dir,y+3*dir,1,undefined,level);spawn(s,side,'unit','melee',x+3*dir,y+dir,1,undefined,level);}
+ if(!options.scenario)for(const side of playerSides(s)){const {x,y}=s.starts[side],level=levelOf(s.starts[side]),dir=y<s.height/2?1:-1;spawn(s,side,'building','hq',x,y,1,undefined,level);for(let i=0;i<5;i++)spawn(s,side,'unit','worker',x+(-2+i*.85)*dir,y+3*dir,1,undefined,level);spawn(s,side,'unit','melee',x+3*dir,y+dir,1,undefined,level);}
  for(const resource of map.resources)s.resources.push({...resource,id:s.nextId++});initializeWorldSites(s);refreshVisibility(s);updatePopulation(s);return s;
 }
 export function createGame(faction:FactionId,seed=1977,opponent:FactionId=faction==='orcs'?'fairies':'orcs',options:GameOptions={}):GameState{
@@ -97,7 +97,7 @@ export function isGameOver(s:GameState):boolean{return s.winner!==null||s.draw;}
 export function isVisible(s:GameState,side:Side,x:number,y:number,level=0):boolean{return x>=0&&y>=0&&x<s.width&&y<s.height&&!!s.visible[side]?.has(fogKey(s,{x,y,level}));}
 export function refreshVisibility(s:GameState):void{
  for(const visible of s.visible)visible.clear();
- for(const e of s.entities){if(!alive(e))continue;const sight=(e.kind==='unit'?unitDef(s,e).sight:buildingDef(s,e).sight)*environmentalSightFactor(s,e),side=e.side;
+ for(const e of s.entities){if(!alive(e))continue;const sight=((e.kind==='unit'?unitDef(s,e).sight:buildingDef(s,e).sight)+highGroundSightBonus(s,e))*environmentalSightFactor(s,e),side=e.side;
   for(let y=Math.max(0,Math.floor(e.y-sight));y<=Math.min(s.height-1,Math.ceil(e.y+sight));y++)for(let x=Math.max(0,Math.floor(e.x-sight));x<=Math.min(s.width-1,Math.ceil(e.x+sight));x++)if(length2D(x+.5-e.x,y+.5-e.y)<=sight&&terrainLineOfSight(s,e,{x:x+.5,y:y+.5,level:levelOf(e)})){const key=fogKey(s,{x,y,level:levelOf(e)});s.visible[side].add(key);s.explored[side].add(key);}
  }
  if(s.sharedVision)for(const team of new Set(s.teams)){
@@ -296,10 +296,10 @@ function move(s:GameState,e:Entity,to:Vec,dt:number,reach=.45):boolean{
  if(d<=amount+.06)e.path.shift();return distance(e,to)<=reach;
 }
 function emplaced(s:GameState,e:Entity):boolean{return e.entrenchedAt!==undefined&&s.time-e.entrenchedAt>=3;}
-function weaponRange(s:GameState,e:Entity):number{return e.kind==='building'?7:unitDef(s,e).range+(emplaced(s,e)&&e.role==='special'?3:0);}
+function weaponRange(s:GameState,e:Entity):number{const range=e.kind==='building'?7:unitDef(s,e).range+(emplaced(s,e)&&e.role==='special'?3:0);return range+(range>2?highGroundRangeBonus(s,e):0);}
 function damage(s:GameState,a:Entity,b:Entity):void{
  const d=a.kind==='unit'?unitDef(s,a):null;const armor=(b.kind==='unit'?unitDef(s,b).armor:3)+(emplaced(s,b)?2:0)+s.players[b.side].upgrades.reduce((sum,id)=>{const upgrade=upgradeFor(s,b.side,id);return sum+(b.kind==='unit'&&upgradeAppliesTo(upgrade,unitDef(s,b))?(upgrade.effects.armor??0):0);},0);
- const environment=projectileEnvironment(s,a,b),base=(d?d.damage*upgradeFactor(s,a,'damage'):19)*(1+relicBonus(s,a.side,a))*((d?.range??7)>2?environment.damageFactor:1);const bonus=d?.ability==='momentum'?1+a.momentum*.40:emplaced(s,a)?1.15:1;const hit=Math.max(1,base*bonus*(b.kind==='building'?(d?.buildingDamageMultiplier??1):(d?.bonusAgainst?.[b.role as UnitRole]??1))-armor)*(a.illusion?.25:1);
+ const environment=projectileEnvironment(s,a,b),base=(d?d.damage*upgradeFactor(s,a,'damage'):19)*(1+relicBonus(s,a.side,a))*((d?.range??7)>2?environment.damageFactor*highGroundDamageFactor(s,a,b):1);const bonus=d?.ability==='momentum'?1+a.momentum*.40:emplaced(s,a)?1.15:1;const hit=Math.max(1,base*bonus*(b.kind==='building'?(d?.buildingDamageMultiplier??1):(d?.bonusAgainst?.[b.role as UnitRole]??1))-armor)*(a.illusion?.25:1);
  a.cooldown=(d?.cooldown??1.4)/(d?.ability==='momentum'?1+a.momentum*.15:1);if(d?.ability==='momentum')a.momentum=Math.min(1,a.momentum+.15);a.animation='attack';a.animTime=0;const event=emit(s,'attack',a,b.id);runtime(s).hits.push({source:a,target:b,amount:hit,event});
 }
 function die(s:GameState,e:Entity):void{if(e.kind==='building')refundQueue(s,e);if(e.kind==='unit'&&!e.illusion&&!e.raised)s.corpses.push({id:e.id,x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level}),expires:s.time+45});e.hp=0;e.animation='death';e.animTime=0;e.order={type:'idle'};delete e.orderQueue;runtime(s).queuedGather.delete(e.id);e.path=[];emit(s,'death',e);}
