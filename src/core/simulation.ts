@@ -409,7 +409,7 @@ function applyStep(s:GameState,dt:number):void{
  if(!e.illusion&&(d.ability==='raise'||d.ability==='ward'))useAbility(s,e);
  const feared=e.specialistBuffs?.find(buff=>buff.until>s.time&&buff.fearedFrom)?.fearedFrom;if(feared){const dx=e.x-feared.x,dy=e.y-feared.y,len=length2D(dx,dy)||1;move(s,e,{x:clamp(e.x+dx/len*3,.6,s.width-.6),y:clamp(e.y+dy/len*3,.6,s.height-.6),level:levelOf(e)},dt,.1);continue;}
  const o=e.order;
- if(processWorldAction(s,e,dt,{move:(actor,to,delta,reach)=>move(s,actor,to,delta,reach),finish:actor=>finishOrder(s,actor),interrupt:actor=>interruptWorldOrder(s,actor)}))continue;
+ if(processWorldAction(s,e,dt,{move:(actor,to,delta,reach)=>move(s,actor,to,delta,reach),finish:actor=>finishOrder(s,actor),interrupt:actor=>interruptWorldOrder(s,actor),die:(actor,text)=>die(s,actor,text)}))continue;
  if(processNeutralOrder(s,e,dt,neutralHooks(s)))continue;
  // Holding units defend within weapon range without pursuing beyond their position.
  if(o.type==='hold'){const b=enemy(s,e,weaponRange(s,e),true);if(b&&near(s,e,b,weaponRange(s,e))){fight(s,e,b,dt);if(!e.illusion&&(d.ability==='illusion'||d.ability==='heal'||d.ability==='surge'&&s.entities.some(a=>isAllied(s,a.side,e.side)&&alive(a)&&a.kind==='unit'&&a.hp<=a.maxHp-15&&distance(e,a)<5)))useAbility(s,e);}continue;}

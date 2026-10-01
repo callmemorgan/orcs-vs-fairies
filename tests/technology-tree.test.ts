@@ -41,7 +41,7 @@ it('keeps mixed selection commands within two rows and exposes age unlock reason
  const worker=s.entities.find(e=>e.side===0&&e.role==='worker')!;
  const cb={isMuted:()=>false,groups:()=>({}),cameraCorners:()=>[]} as unknown as HudCallbacks;
  const selected=[barracks.id,worker.id],buttons=()=>root.querySelectorAll('#action-buttons button');
- shell.update(s,selected,cb);expect(buttons()).toHaveLength(8);
+ shell.update(s,selected,cb);expect(buttons()).toHaveLength(7);expect(root.querySelector('[aria-label="Trophy Standard"]')).toBeNull();
  root.querySelector<HTMLButtonElement>('[data-mode="recruit"]')!.click();shell.update(s,selected,cb);
  expect(buttons()).toHaveLength(8);
  const cavalry=root.querySelector<HTMLButtonElement>('[aria-label="Boar Rider"]')!;

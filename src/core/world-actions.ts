@@ -5,7 +5,7 @@ import { levelOf, sameLevel, fogKey, setWorldTerrain } from './world-map';
 import type { Command, Entity, GameState, Side, Vec } from './types';
 import type { WorldBridge } from './world-types';
 
-export interface WorldActionHooks { move(actor:Entity,to:Vec,dt:number,reach:number):boolean; finish(actor:Entity):void; interrupt?(actor:Entity):void }
+export interface WorldActionHooks { move(actor:Entity,to:Vec,dt:number,reach:number):boolean; finish(actor:Entity):void; interrupt?(actor:Entity):void; die?:(actor:Entity,text:string)=>void }
 const known=(s:GameState,side:Side,point:Vec)=>s.visible[side].has(fogKey(s,point));
 const distance=(a:Vec,b:Vec)=>sameLevel(a,b)?length2D(a.x-b.x,a.y-b.y):Infinity;
 function claimRebuild(s:GameState,bridge:WorldBridge,side:Side):boolean {
@@ -49,6 +49,7 @@ function evacuateBridge(s:GameState,bridge:WorldBridge,hooks:WorldActionHooks):v
    escape=points.sort((a,b)=>distance(unit,a)-distance(unit,b))[0];
   }
   if(escape){unit.x=escape.x;unit.y=escape.y;unit.hp=Math.max(1,unit.hp-unit.maxHp*.25);s.events.push({type:'message',side:unit.side,x:unit.x,y:unit.y,level:levelOf(unit),source:unit.id,text:'Bridge destroyed: survivors reached the bank with injuries.'});}
+  else if(hooks.die){hooks.die(unit,'A unit drowned when the bridge collapsed.');}
   else{unit.hp=0;unit.animation='death';unit.animTime=0;s.events.push({type:'death',side:unit.side,x:unit.x,y:unit.y,level:levelOf(unit),source:unit.id,text:'A unit drowned when the bridge collapsed.'});if(!unit.illusion&&!unit.raised)s.corpses.push({id:unit.id,x:unit.x,y:unit.y,level:levelOf(unit),expires:s.time+45});}
   unit.order={type:'idle'};delete unit.orderQueue;unit.path=[];hooks.interrupt?.(unit);
  }

@@ -180,7 +180,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
       el('.objective-tag').textContent=`${AGE_NAMES[playerAge(s.players[localSide])]} · Destroy all enemy strongholds · ${s.mapSize} · seed ${s.seed}`;
       setText('#clock',`${Math.floor(s.time/60).toString().padStart(2,'0')}:${Math.floor(s.time%60).toString().padStart(2,'0')}`);
       if(performance.now()>noticeUntil)el('.notice').hidden=true;
-      const entities=s.entities.filter(e=>selected.includes(e.id)&&e.hp>0&&(e.side===localSide||s.visible[localSide].has(Math.floor(e.y)*s.width+Math.floor(e.x)))).map(e=>e.side===localSide?e:{...e,...observedHealth(s,localSide,e)});const own=entities.filter(e=>e.side===localSide);const first=entities[0];
+      const entities=s.entities.filter(e=>selected.includes(e.id)&&e.hp>0&&(e.side===localSide||s.visible[localSide].has(fogKey(s,e)))).map(e=>e.side===localSide?e:{...e,...observedHealth(s,localSide,e)});const own=entities.filter(e=>e.side===localSide);const first=entities[0];
       const entityDef=first?entityDefinition(s,first):null;
       setText('#selection-count',entities.length?`${entities.length} SELECTED`:'NO UNITS');
       setText('#selection-name',entities.length>1?`${entities.length} selected`:entityDef?.name??'Your command awaits');
