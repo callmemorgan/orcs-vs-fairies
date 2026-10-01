@@ -4,9 +4,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ScenarioCampaignHost } from '../src/ui/ScenarioCampaignHost';
 import { createSessionFile, decodeSessionFile } from '../src/core/session-storage';
 import { issueCommand, stepGame } from '../src/core/simulation';
-import { loadGame } from '../src/core/saves';
+import { loadGame, saveGame } from '../src/core/saves';
 import type { GameState } from '../src/core/types';
 import { createCampaignProfile } from '../src/core/campaign';
+import { verifyScenarioRecording } from '../src/core/scenario-recordings';
 
 const fixture = (name: string) => readFileSync(`${process.cwd()}/tests/fixtures/scenario-save3-3.2/${name}.json`, 'utf8');
 afterEach(() => { document.body.replaceChildren(); localStorage.clear(); });
@@ -18,7 +19,11 @@ function setup() {
     select: vi.fn(), center: vi.fn(), notice, visibility, inspection: () => null,
   });
   const button = (text: string) => Array.from(root.querySelectorAll('button')).find(item => item.textContent === text)!;
-  return { root, host, visibility, launch, notice, button, getState: () => state! };
+  const installFile = (input: unknown) => {
+    const restored = decodeSessionFile(input); state = restored.state;
+    return { ...restored, reason: host.install(restored.file.scenarioProfile, restored.state) };
+  };
+  return { root, host, visibility, launch, notice, button, installFile, getState: () => state! };
 }
 
 describe('campaign controls in the canonical app host', () => {
@@ -66,6 +71,45 @@ describe('campaign controls in the canonical app host', () => {
     const owner = ui.host.snapshot()!; expect(owner.kind).toBe('campaign'); expect(owner.profile.active!.recording.commands).toHaveLength(1);
     const restored = decodeSessionFile(createSessionFile(state, undefined, undefined, owner));
     expect(ui.host.install(restored.file.scenarioProfile, restored.state)).toBeNull();
+  });
+
+  it('continues an equipped SAVE4 campaign after ordinary save installation without replacing or duplicating its journal', () => {
+    const ui = setup();
+    try {
+      ui.root.querySelector<HTMLButtonElement>('[data-campaign="campaign-dwarves"]')!.click();
+      const state = ui.getState(), commander = state.scenario!.runtime.labels.commander, raider = state.scenario!.runtime.labels.raider;
+      expect(issueCommand(state, 0, { type: 'attackMove', ids: [commander], x: 25, y: 24 })).toBe(true);
+      for (let tick = 0; tick < 600 && state.entities.find(entity => entity.id === raider)!.hp > 0; tick++) { stepGame(state, .05); ui.host.step(); }
+      expect(state.entities.find(entity => entity.id === raider)!.hp).toBe(0);
+      const artifact = state.specialists!.artifacts.find(item => item.definitionId === 'core:iron-aegis')!;
+      expect(artifact).toBeDefined();
+      expect(issueCommand(state, 0, { type: 'move', ids: [commander], x: artifact.position!.x, y: artifact.position!.y })).toBe(true);
+      const hero = state.entities.find(entity => entity.id === commander)!;
+      for (let tick = 0; tick < 200 && Math.hypot(hero.x - artifact.position!.x, hero.y - artifact.position!.y) > 2; tick++) { stepGame(state, .05); ui.host.step(); }
+      expect(issueCommand(state, 0, { type: 'recoverArtifact', id: commander, artifact: artifact.id })).toBe(true);
+      expect(issueCommand(state, 0, { type: 'equipArtifact', id: commander, artifact: artifact.id })).toBe(true);
+      stepGame(state, .05); ui.host.step();
+      const owner = ui.host.snapshot()!, original = structuredClone(owner.profile.active!.recording);
+      const file = createSessionFile(state, undefined, undefined, owner);
+      expect(file.game.version).toBe(4); expect(original.initial.game.version).toBe(4);
+      expect(state.entities.find(entity => entity.id === commander)!.equipment).toEqual({ armor: artifact.id });
+
+      const restored = ui.installFile(JSON.stringify(file)), tick = restored.state.tick;
+      expect(restored.reason).toBeNull(); expect(saveGame(restored.state)).toEqual(file.game);
+      expect(restored.state.entities.find(entity => entity.id === commander)!.equipment).toEqual({ armor: artifact.id });
+      expect(restored.state.specialists!.artifacts.find(item => item.id === artifact.id)).toEqual({ id: artifact.id, definitionId: 'core:iron-aegis', owner: 0, holder: commander });
+      const accepted = { type: 'hold' as const, ids: [commander] }, holds = restored.state.scenario!.runtime.commandCounts.hold ?? 0;
+      expect(issueCommand(restored.state, 0, accepted)).toBe(true);
+      expect(restored.state.scenario!.runtime.commandCounts.hold).toBe(holds + 1);
+      stepGame(restored.state, .05); ui.host.step();
+      const continued = ui.host.snapshot()!.profile.active!.recording;
+      expect(continued.initial).toEqual(original.initial);
+      expect(continued.commands).toEqual([...original.commands, { tick, side: 0, command: accepted }]);
+      expect(continued.finalTick).toBe(tick + 1);
+      expect(saveGame(verifyScenarioRecording(continued).state)).toEqual(saveGame(restored.state));
+      expect(ui.host.snapshot()!.profile.active!.recording).toEqual(continued);
+      expect(owner.profile.active!.recording).toEqual(original);
+    } finally { ui.host.clear(); }
   });
 
   it('opens an old saved campaign as an inspected checkpoint without starting or changing it', () => {
