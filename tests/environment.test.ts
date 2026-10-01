@@ -4,6 +4,7 @@ import { walkable } from '../src/core/navigation';
 import { ENVIRONMENT_RULES, environmentPhase, environmentalMovementFactor, environmentalSightFactor, igniteWorldAt, issueEnvironmentCommand, projectileEnvironment, stepEnvironment } from '../src/core/environment';
 import { loadGame, saveGame } from '../src/core/saves';
 import { replayChecksum } from '../src/core/replays';
+import { emptyObjectives } from '../src/core/objectives';
 import type { Entity, GameState, TerrainKind } from '../src/core/types';
 import type { WorldState } from '../src/core/world-types';
 
@@ -16,6 +17,7 @@ function scenario():TestState {
  s.entities.forEach((e,i)=>{e.side=i as 0|1;e.x=2.5+i;e.y=4.5;e.hp=100;e.maxHp=100;e.order={type:'idle'};});
  s.starts=[{x:1.5,y:1.5},{x:14.5,y:14.5}];
  s.world={version:1,biome:'temperate',levels:[{id:0,title:'Surface',terrain:s.terrain,elevation:Array(256).fill(0)}],transitions:[],bridges:[],fires:[],sites:[],creatures:[],dayLength:240,seasonLength:300,weatherLength:70,nextEnvironmentAt:0,iceTiles:[],thawWarned:false};
+ s.objectives=emptyObjectives(s);
  s.visible=s.players.map(()=>new Set(Array.from({length:256},(_,i)=>i)));s.explored=s.visible.map(v=>new Set(v));
  weather(s,'clear');return s;
 }
@@ -212,6 +214,7 @@ describe('seasonal lake crossings',()=>{
   const tiles=[67,68,69];for(const tile of tiles)s.terrain[tile]='bridge';
   const bridge={id:s.nextId++,x:4.5,y:4.5,level:0,hp:1,maxHp:160,tiles,rebuilding:0,repairSide:null};
   s.world={version:1,biome:'temperate',levels:[{id:0,title:'Surface',terrain:s.terrain,elevation:Array(256).fill(0)}],transitions:[],bridges:[bridge],fires:[],sites:[],creatures:[],dayLength:240,seasonLength:100,weatherLength:10000,nextEnvironmentAt:0,iceTiles:[],thawWarned:false};
+  s.objectives=emptyObjectives(s);
   s.visible=s.players.map(()=>new Set(Array.from({length:256},(_,i)=>i)));s.explored=s.visible.map(v=>new Set(v));s.players.forEach(p=>{p.wood=10000;p.ore=10000;});s.time=300;
   expect(issueCommand(s,0,{type:'worldAttack',ids:[actor.id],target:bridge.id})).toBe(true);stepGame(s,.25);stepGame(s,.25);
   expect(bridge.hp).toBe(0);expect(s.world.iceTiles).toEqual(tiles.map(tile=>({level:0,tile})));

@@ -16,7 +16,7 @@ function compareContinuation(original:GameState,ticks:number) {
 }
 function addSpecial(s:GameState,x:number,y:number):Entity {
  const template=s.entities.find(e=>e.side===0&&e.role==='melee')!,def=FACTIONS[s.players[0].faction].units.special;
- const special:Entity={...structuredClone(template),id:s.nextId++,role:'special',x,y,hp:def.hp,maxHp:def.hp,queue:[],path:[],order:{type:'idle'}};
+ const special:Entity={...structuredClone(template),id:s.nextId++,role:'special',definitionId:def.id,x,y,hp:def.hp,maxHp:def.hp,queue:[],path:[],order:{type:'idle'}};
  if(def.shield){special.shield=def.shield;special.maxShield=def.shield;}
  s.entities.push(special);refreshVisibility(s);return special;
 }

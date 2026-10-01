@@ -1,4 +1,5 @@
-import { FACTIONS, UPGRADES } from '../core/content';
+import { availableUnits, contentFactions, upgradesFor, type ContentBundle } from '../core/content-registry';
+import type { FactionId } from '../core/types';
 import { normalizeMatchRules, type MatchRules, type MatchRulesInput as CoreMatchRulesInput } from '../core/match-rules';
 import './match-rules.css';
 
@@ -9,18 +10,18 @@ export const MATCH_MODE_NAMES: Record<MatchMode, string> = {
   annihilation: 'Annihilation', hill: 'King of the hill', relic: 'Relic control', survival: 'Co-op survival', scenario: 'Scenario objectives',
 };
 export const MATCH_RULE_DEFAULTS = normalizeMatchRules();
-export const MATCH_DEFINITIONS = [
-  ...Object.values(FACTIONS).flatMap(faction => [
-    ...Object.values(faction.units).map(definition => ({ ...definition, faction: faction.name, kind: 'Unit' })),
-  ]),
-  ...Object.values(UPGRADES).map(definition => ({ ...definition, faction: 'All factions', kind: 'Technology' })),
-].map(({ id, name, faction, kind }) => ({ id, name, faction, kind }));
-export const definitionName = (id: string) => MATCH_DEFINITIONS.find(definition => definition.id === id)?.name ?? id;
+export function matchDefinitions(content?:ContentBundle){
+ const factions=contentFactions(content),technologies=new Map<string,{id:string;name:string;faction:string;kind:string}>();
+ const units=Object.values(factions).flatMap(faction=>{const context={content,players:[{faction:faction.id}]};for(const definition of Object.values(upgradesFor(context,0)))if(!technologies.has(definition.id))technologies.set(definition.id,{id:definition.id,name:definition.name,faction:definition.id.includes(':')?faction.name:'All factions',kind:'Technology'});return availableUnits(context,0).map(definition=>({id:definition.id,name:definition.name,faction:faction.name,kind:'Unit'}));});
+ return [...new Map([...units,...technologies.values()].map(definition=>[definition.id,definition])).values()];
+}
+export const MATCH_DEFINITIONS=matchDefinitions();
+export const definitionName=(id:string,content?:ContentBundle)=>matchDefinitions(content).find(definition=>definition.id===id)?.name??id;
 
 const element = <K extends keyof HTMLElementTagNameMap>(tag: K, text?: string, className?: string) => {
   const node = document.createElement(tag); if (text !== undefined) node.textContent = text; if (className) node.className = className; return node;
 };
-export interface RulesFormOptions { labelPrefix?: string; includeTeamSettings?: boolean; allowScenario?: boolean; onChange?: () => void }
+export interface RulesFormOptions { labelPrefix?: string; includeTeamSettings?: boolean; allowScenario?: boolean; content?:ContentBundle; onChange?: () => void }
 
 /** Reusable native controls for both local matches and server lobby settings. */
 export class MatchRulesForm {
@@ -33,8 +34,11 @@ export class MatchRulesForm {
   private destroyed = false;
   private readonly removeListeners: Array<() => void> = [];
   private readonly prefix: string;
+  private content:ContentBundle|undefined;
+  private definitionsList!:HTMLElement;
+  private readonly removeDefinitionListeners:Array<()=>void>=[];
   constructor(root: HTMLElement, private readonly options: RulesFormOptions = {}) {
-    this.prefix = options.labelPrefix ?? '';
+    this.prefix = options.labelPrefix ?? '';this.content=options.content;
     this.host = element('section', undefined, 'match-rules-form'); this.host.setAttribute('aria-label', `${this.prefix}Custom match rules`);
     const common = element('div', undefined, 'match-rules-fields');
     this.select(common, 'mode', 'Victory mode', Object.entries(MATCH_MODE_NAMES).filter(([mode]) => mode !== 'scenario' || options.allowScenario));
@@ -69,15 +73,18 @@ export class MatchRulesForm {
     this.number(draft, 'draft.pickRounds', 'Draft pick rounds', 1, 6); this.seconds(draft, 'draft.turnTicks', 'Draft turn seconds');
     draft.append(element('p', 'Players take turns banning and choosing army units and technologies before battle. Each player starts with one combat soldier, replaced by their first picked combat unit. Every player must pick a combat unit. Recruitment and research are limited to that player’s picks. Workers and age technologies do not require a pick; disabled definitions and bans still apply.'));
     const exclusions = this.group('disabled', 'Disable units or technologies', false);
-    const list = element('div', undefined, 'match-rules-definitions');
-    for (const definition of MATCH_DEFINITIONS) {
-      const label = element('label', undefined, 'match-rules-check'); const input = element('input'); input.type = 'checkbox'; input.dataset.disabledDefinition = definition.id;
-      input.setAttribute('aria-label', `${this.prefix}Disable ${definition.faction} ${definition.name}`);
-      label.append(input, document.createTextNode(`${definition.name} · ${definition.faction} · ${definition.kind}`)); list.append(label);
-      this.listen(input, 'change', () => { if (input.checked) this.disabledIds.add(definition.id); else this.disabledIds.delete(definition.id); this.changed(); });
-    }
+    const list=this.definitionsList=element('div',undefined,'match-rules-definitions');this.renderDefinitions();
     exclusions.append(list); root.append(this.host); this.update();
   }
+  private renderDefinitions(){
+    for(const remove of this.removeDefinitionListeners.splice(0))remove();this.definitionsList.replaceChildren();
+    for(const definition of matchDefinitions(this.content)){
+      const label=element('label',undefined,'match-rules-check'),input=element('input');input.type='checkbox';input.dataset.disabledDefinition=definition.id;input.checked=this.disabledIds.has(definition.id);
+      input.setAttribute('aria-label',`${this.prefix}Disable ${definition.faction} ${definition.name}`);label.append(input,document.createTextNode(`${definition.name} · ${definition.faction} · ${definition.kind}`));this.definitionsList.append(label);
+      const change=()=>{if(input.checked)this.disabledIds.add(definition.id);else this.disabledIds.delete(definition.id);this.changed();};input.addEventListener('change',change);this.removeDefinitionListeners.push(()=>input.removeEventListener('change',change));
+    }
+  }
+  setContent(content?:ContentBundle){if(this.destroyed)return;const current=this.value;this.content=content;this.renderDefinitions();this.update(current);}
   private label(parent: HTMLElement, name: string, control: HTMLElement) {
     const label = element('label', name); control.setAttribute('aria-label', `${this.prefix}${name}`); label.append(control); parent.append(label); return label;
   }
@@ -110,7 +117,7 @@ export class MatchRulesForm {
   }
   update(input: MatchRulesInput = {}) {
     if (this.destroyed) return;
-    const rules = normalizeMatchRules(input);
+    const rules = normalizeMatchRules(input,this.content);
     const modeControl = this.controls.get('mode') as HTMLSelectElement;
     if (!this.options.allowScenario) {
       modeControl.querySelector('[data-received-scenario]')?.remove();
@@ -141,9 +148,9 @@ export class MatchRulesForm {
         const target = parts.reduce<Record<string, unknown>>((current, part) => current[part] as Record<string, unknown>, rules as unknown as Record<string, unknown>); target[field] = value;
       }
       if (rules.relic.required > rules.relic.count) throw new Error('Relics needed to win cannot exceed the relic count.');
-      rules.disabledDefinitionIds = [...this.disabledIds].sort(); this.error.hidden = true; return normalizeMatchRules(rules);
+      rules.disabledDefinitionIds = [...this.disabledIds].sort(); this.error.hidden = true; return normalizeMatchRules(rules,this.content);
     } catch (error) { this.error.textContent = error instanceof Error ? error.message : 'Check the match rules.'; this.error.hidden = false; throw error; }
   }
   get isDefault() { return JSON.stringify(this.value) === JSON.stringify(MATCH_RULE_DEFAULTS); }
-  destroy() { if (this.destroyed) return; this.destroyed = true; for (const remove of this.removeListeners.splice(0)) remove(); this.host.remove(); }
+  destroy() { if (this.destroyed) return; this.destroyed = true; for (const remove of [...this.removeListeners.splice(0),...this.removeDefinitionListeners.splice(0)]) remove(); this.host.remove(); }
 }

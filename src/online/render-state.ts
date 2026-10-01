@@ -14,6 +14,7 @@ export interface OnlineRenderState {
   worldPhase?:NonNullable<PlayerObservation['world']>['phase'];
   resourceMemory:PlayerObservation['resources'];
   observedEvents:PlayerObservation['events'];
+  objectiveView:Pick<PlayerObservation,'side'|'teamId'|'player'|'allies'|'opponents'|'tick'|'rules'|'draft'|'draftChoices'|'draftDefinitions'|'objectives'|'result'> & {entities:Array<Pick<Entity,'id'|'side'|'kind'|'role'|'x'|'y'|'level'|'hp'|'illusion'>>};
 }
 
 function ownPlayer(player:Player):Player {
@@ -96,13 +97,14 @@ export function observationToRenderState(view:PlayerObservation,role:'player'|'s
     controllers:Array.from({length:count},():Controller=>'external'),mapSize:view.map.size,mapVersion:view.map.version,
     terrain,starts,...(world?{world}:{}),draw:view.result.draw,tick:view.tick,time:view.time,seed:0,width:view.map.width,height:view.map.height,
     entities,specialists:{artifacts:(view.artifacts??[]).map(item=>({...item,position:item.position?{...item.position}:undefined})),structures:[],nextArtifactId:1,nextStructureId:1},resources:view.resources.map(resource=>({id:resource.id,x:resource.x,y:resource.y,...(resource.level===undefined?{}:{level:resource.level}),kind:resource.kind,amount:resource.amount,maxAmount:resource.maxAmount})),
-    players,winner:view.result.winner,events,explored,visible,nextId:1,
+    players,rules:structuredClone(view.rules),draft:structuredClone(view.draft),winner:view.result.winner,events,explored,visible,nextId:1,
     corpses:view.corpses.map(corpse=>({id:corpse.id,x:corpse.x,y:corpse.y,...(corpse.level===undefined?{}:{level:corpse.level}),expires:corpse.expires})),
     teams,sharedVision:observation.sharedVision??false,winningTeam:observation.result.winningTeam??null,
     eliminated:[...(observation.result.eliminated??Array.from({length:count},()=>false))],
     incomeFactors:Array.from({length:count},()=>1),populationLimits:Array.from({length:count},()=>100),
   } as unknown as GameState;
-  return {state,localSide,role,privateSides,hiddenStarts,unknownTerrain,worldPhase:view.world?.phase?structuredClone(view.world.phase):undefined,
+  const objectiveView={side:view.side,teamId:view.teamId,player:{...ownPlayer(view.player)},allies:structuredClone(view.allies),opponents:structuredClone(view.opponents),tick:view.tick,rules:structuredClone(view.rules),draft:structuredClone(view.draft),draftChoices:[...view.draftChoices],draftDefinitions:structuredClone(view.draftDefinitions),objectives:structuredClone(view.objectives),result:{...view.result},entities:entities.map(entity=>({id:entity.id,side:entity.side,kind:entity.kind,role:entity.role,x:entity.x,y:entity.y,...(entity.level===undefined?{}:{level:entity.level}),hp:entity.hp,illusion:entity.illusion}))};
+  return {state,localSide,role,privateSides,hiddenStarts,unknownTerrain,objectiveView,worldPhase:view.world?.phase?structuredClone(view.world.phase):undefined,
     resourceMemory:view.resources.map(resource=>({...resource})),observedEvents:view.events.map(event=>({
       type:event.type,tick:event.tick,x:event.x,y:event.y,...(event.level===undefined?{}:{level:event.level}),side:event.side,text:event.text,
       target:event.target,source:event.source,amount:event.amount,resource:event.resource,

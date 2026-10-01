@@ -1,7 +1,7 @@
 import { BUILTIN_EXTRA_ART, BUILTIN_EXTRA_DEFINITIONS } from './specialist-content';
 import { factionStructureKind } from './faction-systems-content';
 import { ABILITIES, ECONOMY, FACTIONS, UPGRADES } from './content';
-import type { BuildingDef, BuildingRole, BuiltinFactionId, Entity, FactionDef, FactionId, GameState, Side, UnitDef, UnitRole, UpgradeDef, UpgradeId } from './types';
+import type { BuildingDef, BuildingRole, BuiltinFactionId, Entity, FactionDef, FactionId, GameState, Side, UnitDef, UnitRole, UpgradeDef, UpgradeId, Player } from './types';
 
 export const CONTENT_SCHEMA_VERSION = 1;
 export const CONTENT_ENGINE_VERSION = 3;
@@ -137,8 +137,9 @@ export function decodeContentBundle(input:unknown):ContentBundle {
 function registry(state:Pick<GameState,'content'>):Registry {if(!state.content)return {factions:FACTIONS,art:BUILTIN_EXTRA_ART};let value=caches.get(state.content);if(!value){const admitted=decodeContentBundle(state.content);value=caches.get(admitted)!;caches.set(state.content,value);}return value;}
 export function contentFactions(content?:ContentBundle):Record<string,FactionDef>{return content?registry({content}).factions:PINNED_BASE_FACTIONS;}
 export function contentArt(content?:ContentBundle):Record<string,ContentArt>{return registry({content}).art;}
-export function factionFor(state:GameState,side:Side):FactionDef{const faction=registry(state).factions[state.players[side]?.faction];if(!faction)throw new Error('Faction is absent from pinned match content.');return faction;}
-export function availableUnits(state:GameState,side:Side):UnitDef[]{const f=factionFor(state,side);return [...(f.unitDefinitions??[...Object.values(f.units),...(BUILTIN_EXTRA_DEFINITIONS[f.id as BuiltinFactionId]?.units??[])])];}
+export interface FactionContentContext { content?:ContentBundle; players:readonly Pick<Player,'faction'>[] }
+export function factionFor(state:FactionContentContext,side:Side):FactionDef{const faction=registry(state).factions[state.players[side]?.faction];if(!faction)throw new Error('Faction is absent from pinned match content.');return faction;}
+export function availableUnits(state:FactionContentContext,side:Side):UnitDef[]{const f=factionFor(state,side);return [...(f.unitDefinitions??[...Object.values(f.units),...(BUILTIN_EXTRA_DEFINITIONS[f.id as BuiltinFactionId]?.units??[])])];}
 /** Ordinary workers and construction plans share this placement authority. */
 export function isNormalBuildingDefinition(def:BuildingDef):boolean {return !def.tags?.includes('barricade')&&def.id!=='core:orcs-trophy-standard'&&!factionStructureKind(def.id);}
 export function availableBuildings(state:GameState,side:Side):BuildingDef[]{const f=factionFor(state,side);return [...(f.buildingDefinitions??[...Object.values(f.buildings),...(BUILTIN_EXTRA_DEFINITIONS[f.id as BuiltinFactionId]?.buildings??[])])];}
@@ -149,7 +150,7 @@ export function buildingFor(state:GameState,entity:Entity):BuildingDef;
 export function buildingFor(state:GameState,side:Side,role:BuildingRole,definitionId?:string):BuildingDef;
 export function buildingFor(state:GameState,subject:Entity|Side,role?:BuildingRole,id?:string):BuildingDef {const side=typeof subject==='number'?subject:subject.side,kind=typeof subject==='number'?role:subject.role,definition=typeof subject==='number'?id:subject.definitionId;const f=typeof subject!=='number'&&subject.definitionFaction?registry(state).factions[subject.definitionFaction]:factionFor(state,side);if(!f)throw new Error('Original building faction is absent from pinned content.');const value=definition?(f.buildingDefinitions??[...Object.values(f.buildings),...(BUILTIN_EXTRA_DEFINITIONS[f.id as BuiltinFactionId]?.buildings??[])]).find(d=>d.id===definition):f.buildings[kind as BuildingRole];if(!value||value.role!==kind)throw new Error(`Building definition ${definition??kind} is absent from faction ${f.id}.`);return value;}
 export function entityDefinition(state:GameState,entity:Entity):UnitDef|BuildingDef{return entity.kind==='unit'?unitFor(state,entity):buildingFor(state,entity);}
-export function upgradesFor(state:GameState,side:Side):Record<UpgradeId,UpgradeDef>{return {...(state.content?PINNED_BASE_RESEARCH:UPGRADES),...Object.fromEntries((factionFor(state,side).research??[]).map(d=>[d.id,d]))};}
+export function upgradesFor(state:FactionContentContext,side:Side):Record<UpgradeId,UpgradeDef>{return {...(state.content?PINNED_BASE_RESEARCH:UPGRADES),...Object.fromEntries((factionFor(state,side).research??[]).map(d=>[d.id,d]))};}
 export function upgradeFor(state:GameState,side:Side,id:UpgradeId):UpgradeDef{const d=upgradesFor(state,side)[id];if(!d)throw new Error(`Research ${id} is absent from faction content.`);return d;}
 export function queuedUnitFor(state:GameState,producer:Entity,index:number):UnitDef{return unitFor(state,producer.side,producer.queue[index],producer.queueDefinitionIds?.[index]);}
 export function svgDataUrl(svg:string):string {const bytes=new TextEncoder().encode(svg),alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';let encoded='';for(let i=0;i<bytes.length;i+=3){const value=(bytes[i]<<16)|((bytes[i+1]??0)<<8)|(bytes[i+2]??0);encoded+=alphabet[(value>>>18)&63]+alphabet[(value>>>12)&63]+(i+1<bytes.length?alphabet[(value>>>6)&63]:'=')+(i+2<bytes.length?alphabet[value&63]:'=');}return `data:image/svg+xml;base64,${encoded}`;}

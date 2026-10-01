@@ -74,7 +74,7 @@ export function createMatch(config:MatchConfig,options:{scenario?:boolean}={}):G
  const m=matchObject(c.map,['seed','size','biome','world'],'match map');const seed=matchNumber(m.seed,0,0xffffffff,'map seed',true),size=m.size===undefined?'medium':m.size;if(!['small','medium','large','huge'].includes(size as string))throw new Error('Invalid map size.');
  if(!Array.isArray(c.players)||c.players.length<1||c.players.length>8)throw new Error('A match requires 1 to 8 players.');
  for(let i=0;i<c.players.length;i++)if(!Object.hasOwn(c.players,i))throw new Error('Player slots cannot contain gaps.');
- const rules=normalizeMatchRules(c.rules??{});
+ const rules=normalizeMatchRules(c.rules===undefined?{}:c.rules,content);
  const slots=new Set<number>(),teams:Side[]=[],incomeFactors:number[]=[],populationLimits:number[]=[];
  const definitions=c.players.map((value,i)=>{
   const p=matchObject(value,['id','teamId','factionId','controller','startingSlot','handicap','ai'],'player');if(p.id!==i)throw new Error('Player IDs must be ordered contiguous slots starting at zero.');
@@ -91,19 +91,19 @@ export function createMatch(config:MatchConfig,options:{scenario?:boolean}={}):G
  const packageMap=m.world as import('./world-types').WorldMapData|undefined??(m.biome===undefined?undefined:generateWorldMap(seed,size as GameState['mapSize'],definitions.length,m.biome as typeof BIOMES[number]));
  const map=packageMap?generatedMapFromWorld(packageMap,definitions.length,options):generateMatchMap(seed,size as GameState['mapSize'],definitions.length);
  if(packageMap&&packageMap.seed!==seed)throw new Error('Map package seed must match the match configuration.');
- const s:GameState={rules,draft:c.draft===undefined?createDraft(config.players,rules):validateDraftState(c.draft,config.players,rules),objectives:emptyObjectives(map),controllers:definitions.map(p=>p.controller),aiConfigs:definitions.map(p=>p.ai),teams,incomeFactors,populationLimits,sharedVision:rules.sharedVision!==false,eliminated:definitions.map(()=>false),winningTeam:null,mapSize:map.size,mapVersion:map.version,terrain:map.terrain,starts:definitions.map(p=>({...map.starts[p.slot]})),draw:false,tick:0,corpses:[],time:0,seed,width:map.width,height:map.height,entities:[],resources:[],players:definitions.map(p=>({faction:p.faction,wood:p.wood,ore:p.ore,crystal:p.crystal,population:0,cap:12,upgrades:age===3?['town-age','citadel-age']:age===2?['town-age']:[]})),winner:null,events:[],explored:definitions.map(()=>new Set()),visible:definitions.map(()=>new Set()),nextId:1};
+ const s:GameState={rules,draft:c.draft===undefined?createDraft(config.players,rules,content):validateDraftState(c.draft,config.players,rules,content),objectives:emptyObjectives(map),controllers:definitions.map(p=>p.controller),aiConfigs:definitions.map(p=>p.ai),teams,incomeFactors,populationLimits,sharedVision:rules.sharedVision!==false,eliminated:definitions.map(()=>false),winningTeam:null,mapSize:map.size,mapVersion:map.version,terrain:map.terrain,starts:definitions.map(p=>({...map.starts[p.slot]})),draw:false,tick:0,corpses:[],time:0,seed,width:map.width,height:map.height,entities:[],resources:[],players:definitions.map(p=>({faction:p.faction,wood:p.wood,ore:p.ore,crystal:p.crystal,population:0,cap:12,upgrades:age===3?['town-age','citadel-age']:age===2?['town-age']:[]})),winner:null,events:[],explored:definitions.map(()=>new Set()),visible:definitions.map(()=>new Set()),nextId:1};
  if(content)s.content=content;
  if(packageMap)initializeWorld(s,packageMap,m.biome as typeof BIOMES[number]??'temperate');
- if(!options.scenario)for(const side of playerSides(s)){const {x,y}=s.starts[side],level=levelOf(s.starts[side]),dir=y<s.height/2?1:-1;spawnEntity(s,side,'building','hq',x,y,1,undefined,level);for(let i=0;i<5;i++)spawnEntity(s,side,'unit','worker',x+(-2+i*.85)*dir,y+3*dir,1,undefined,level);const starter=availableUnits(s,side).find(unit=>unit.role!=='worker'&&!rules.disabledDefinitionIds.includes(unit.id));if(starter)spawnEntity(s,side,'unit',starter.role,x+3*dir,y+dir,1,starter.id,level);}
+ if(!options.scenario)for(const side of playerSides(s)){const {x,y}=s.starts[side],level=levelOf(s.starts[side]),dir=y<s.height/2?1:-1;spawnEntity(s,side,'building','hq',x,y,1,undefined,level);for(let i=0;i<5;i++)spawnEntity(s,side,'unit','worker',x+(-2+i*.85)*dir,y+3*dir,1,undefined,level);const starter=availableUnits(s,side).find(unit=>unit.role!=='worker'&&!rules.disabledDefinitionIds.includes(unit.id));if(starter)spawnEntity(s,side,'unit',starter.role,x+3*dir,y+dir,1,starter.id.includes(':')?starter.id:undefined,level);}
  for(const resource of map.resources)s.resources.push({...resource,id:s.nextId++});initializeWorldSites(s);initializeObjectives(s);if(s.rules.draft.enabled&&s.draft.status==='complete')finalizeDraft(s);refreshVisibility(s);updatePopulation(s);return s;
 }
 function finalizeDraft(s:GameState):void {
  // The standard one-soldier starting army uses the first drafted combat unit.
  for(const side of playerSides(s)){
-  const faction=FACTIONS[s.players[side].faction],picked=s.draft.picks[side].map(id=>Object.values(faction.units).find(u=>u.id===id)).find(u=>u&&u.role!=='worker');
+  const available=availableUnits(s,side),picked=s.draft.picks[side].map(id=>available.find(u=>u.id===id)).find(u=>u&&u.role!=='worker');
   if(!picked)throw new Error('Completed draft requires a combat unit for every player.');
   const starters=s.entities.filter(e=>e.side===side&&e.kind==='unit'&&e.role!=='worker'&&e.hp>0);
-  for(const unit of starters){s.entities=s.entities.filter(e=>e!==unit);spawnEntity(s,side,'unit',picked.role,unit.x,unit.y);}
+  for(const unit of starters){s.entities=s.entities.filter(e=>e!==unit);spawnEntity(s,side,'unit',picked.role,unit.x,unit.y,1,picked.id,levelOf(unit));}
  }
  if(s.rules.mode==='survival')s.objectives.survival.nextWaveTick=s.tick+s.rules.survival.intervalTicks;
  updatePopulation(s);
@@ -184,13 +184,14 @@ export function issueCommand(s:GameState,side:Side,c:Command):boolean{
 }
 function applyCommand(s:GameState,side:Side,c:Command):boolean{
  if(!validateCommand(c)||isGameOver(s)||!s.players[side]||s.eliminated[side])return false;
- if(c.type==='draftChoice'){const accepted=applyDraftChoice(s.draft,s.rules,draftPlayers(s),side,c.definitionId);if(accepted&&s.draft.status==='complete')finalizeDraft(s);return accepted;}
+ if(c.type==='draftChoice'){const accepted=applyDraftChoice(s.draft,s.rules,draftPlayers(s),side,c.definitionId,s.content);if(accepted&&s.draft.status==='complete')finalizeDraft(s);return accepted;}
  if(s.draft.status!=='complete')return false;
  if(c.type==='collectRelic')return collectRelic(s,side,c.id,c.relicId);
  if(c.type==='dropRelic')return dropRelic(s,side,c.id);
  const p=s.players[side],f=factionFor(s,side);
  const environmentAction=issueEnvironmentCommand(s,side,c);if(environmentAction!==undefined)return environmentAction;
  const worldAction=issueWorldAction(s,side,c,(e,o)=>{commandOrder(s,e,o);});if(worldAction!==undefined)return worldAction;
+ if(c.type==='recruitVillage'&&!definitionAllowed(s,side,unitFor(s,side,'melee').id))return false;
  const neutralAction=issueNeutralWorldCommand(s,side,c as WorldCommand);if(neutralAction!==undefined){if(neutralAction&&'ids' in c)for(const actor of s.entities)if(c.ids.includes(actor.id)&&actor.side===side&&['worldAttack','captureSite','supportVillage','recruitVillage'].includes(actor.order.type))assign(s,actor,{...actor.order});return neutralAction;}
  if(c.type==='toggleGate'){
   let changed=false;
@@ -268,11 +269,12 @@ function useAbility(s:GameState,e:Entity):boolean{
  if(ability==='entrench'){
  if(e.entrenchedAt!==undefined){e.entrenchedAt=undefined;commandOrder(s,e,{type:'idle'});}else{commandOrder(s,e,{type:'hold'});e.entrenchedAt=s.time;}
  }else if(ability==='raise'){
+ const raisedDefinition=availableUnits(s,e.side).find(unit=>unit.role==='melee'&&definitionAllowed(s,e.side,unit.id));if(!raisedDefinition)return false;
  updatePopulation(s);let count=0;
  for(const corpse of [...s.corpses].sort((a,b)=>distance(e,a)-distance(e,b))){
  if(count>=2||s.players[e.side].population+reserved(s,e.side)>=s.players[e.side].cap)break;
  if(corpse.expires<=s.time||distance(e,corpse)>6||!isVisible(s,e.side,corpse.x,corpse.y,levelOf(corpse))||!walkable(s,corpse.x,corpse.y,levelOf(corpse)))continue;
- const raised=spawnEntity(s,e.side,'unit','melee',corpse.x,corpse.y,1,undefined,levelOf(corpse));raised.hp=raised.maxHp*.5;raised.raised=true;raised.expires=s.time+35;raised.order={type:'attackMove',x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level})};s.corpses=s.corpses.filter(c=>c.id!==corpse.id);count++;updatePopulation(s);
+ const raised=spawnEntity(s,e.side,'unit','melee',corpse.x,corpse.y,1,raisedDefinition.id,levelOf(corpse));raised.hp=raised.maxHp*.5;raised.raised=true;raised.expires=s.time+35;raised.order={type:'attackMove',x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level})};s.corpses=s.corpses.filter(c=>c.id!==corpse.id);count++;updatePopulation(s);
  }
  if(!count)return false;runtime(s).abilities.set(e.id,s.time+22);
  }else if(ability==='illusion'){
@@ -402,7 +404,7 @@ function neutralHooks(s:GameState){return {
  attackStats:(e:Entity)=>{const def=unitDef(s,e);return {damage:def.damage*upgradeFactor(s,e,'damage')*progressionStats(s,e).damageFactor,range:weaponRange(s,e),cooldown:def.cooldown};},
  recruitCost:(side:Side,role:UnitRole)=>unitFor(s,side,role).cost,
  move:(actor:Entity|NeutralCreature,to:Vec,dt:number,reach:number)=>moveNeutral(s,actor,to,dt,reach),
- spawn:(side:Side,role:UnitRole,x:number,y:number,level:number)=>{const point=openDestination(s,{x,y,level},{x,y,level});if(!point)return undefined;return spawnEntity(s,side,'unit',role,point.x,point.y,1,undefined,level);},
+ spawn:(side:Side,role:UnitRole,x:number,y:number,level:number)=>{const definition=unitFor(s,side,role);if(!definitionAllowed(s,side,definition.id))return undefined;const point=openDestination(s,{x,y,level},{x,y,level});if(!point)return undefined;return spawnEntity(s,side,'unit',role,point.x,point.y,1,definition.id,level);},
  hit:(source:Entity|NeutralCreature,target:Entity|NeutralCreature,amount:number)=>{
   if('side' in source){const def=unitDef(s,source);amount*=1+relicBonus(s,source.side,source);if(def.range>2)amount*=projectileEnvironment(s,source,target).damageFactor*highGroundDamageFactor(s,source,target);}
   if('side' in target){const armor=(target.kind==='unit'?unitDef(s,target).armor:3)+progressionStats(s,target).armor;amount=Math.max(1,amount-armor);}const shield='shield' in target?Math.min(target.shield??0,amount):0,actual=Math.min(target.hp,amount-shield)+shield;
@@ -419,7 +421,7 @@ export function stepGame(s:GameState,dt:number):void{
 }
 function applyStep(s:GameState,dt:number):void{
  if(isGameOver(s)||!Number.isFinite(dt)||dt<=0)return;s.events=[];
- if(s.draft.status==='drafting'){tickDraft(s.draft,s.rules,draftPlayers(s));for(const side of playerSides(s))if(s.controllers[side]==='ai'&&s.draft.order[s.draft.turn]?.side===side){for(const id of s.draft.pool)if(applyDraftChoice(s.draft,s.rules,draftPlayers(s),side,id))break;}s.tick++;if(s.draft.turn===s.draft.order.length)finalizeDraft(s);return;}
+ if(s.draft.status==='drafting'){tickDraft(s.draft,s.rules,draftPlayers(s),s.content);for(const side of playerSides(s))if(s.controllers[side]==='ai'&&s.draft.order[s.draft.turn]?.side===side){for(const id of s.draft.pool)if(applyDraftChoice(s.draft,s.rules,draftPlayers(s),side,id,s.content))break;}s.tick++;if(s.draft.turn===s.draft.order.length)finalizeDraft(s);return;}
  dt=Math.min(dt,.25);s.time+=dt;s.tick++;stepEnvironment(s,dt,{interrupt:actor=>interruptWorldOrder(s,actor),die:(actor,text)=>die(s,actor,text)});const rt=runtime(s);rt.hits=[];stepSpecialists(s,specialistHooks(s));resolveSpecialistShots(s,specialistHooks(s));stepVeterans(s);rt.fog-=dt;if(rt.fog<=0){refreshVisibility(s);rt.fog=.2;}rt.ai-=dt;if(rt.ai<=0){rt.aiTurns++;rt.ai+=1;}
  const sides=playerSides(s),due=new Set(sides.filter(side=>s.controllers[side]==='ai'&&!s.eliminated[side]&&s.time+1e-9>=rt.aiDecisionAt[side]));
  if(due.size){const offset=rt.aiBatchTurns++%sides.length;for(let i=0;i<sides.length;i++){const side=sides[(i+offset)%sides.length];if(due.has(side)){if(s.rules.mode!=='survival'||s.teams[side]===s.rules.survival.defenderTeam)runAI(s,side);objectiveAi(s,side,issueCommand);rt.aiDecisionAt[side]=s.time+aiProfile(s.aiConfigs[side]).decisionInterval;}}}

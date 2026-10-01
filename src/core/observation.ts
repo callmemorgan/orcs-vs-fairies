@@ -1,4 +1,5 @@
 import { observedArtifacts } from './unit-progression';
+import { draftDefinitions, draftPlayers, legalDraftChoices } from './match-rules';
 import { publicObjectives } from './objectives';
 import { ABILITIES } from './content';
 import { factionFor, unitFor, upgradesFor } from './content-registry';
@@ -63,7 +64,7 @@ export class PlayerView {
   const opponent=opponents[0];
   const finished=isGameOver(s),outcome=finished?s.draw?'draw':s.winningTeam===teamId?'win':'loss':null;
   return {
-   version:1,tick:s.tick,time:s.time,side,teamId,rules:structuredClone(s.rules),objectives:publicObjectives(s,side),draft:structuredClone(s.draft),controller:s.controllers[side],sharedVision:s.sharedVision,winningTeam:s.winningTeam,eliminated:[...s.eliminated],
+   version:1,tick:s.tick,time:s.time,side,teamId,rules:structuredClone(s.rules),objectives:publicObjectives(s,side),draft:structuredClone(s.draft),draftDefinitions:draftDefinitions(s),draftChoices:legalDraftChoices(s.draft,draftPlayers(s),side,s.content),controller:s.controllers[side],sharedVision:s.sharedVision,winningTeam:s.winningTeam,eliminated:[...s.eliminated],
    map:{size:s.mapSize,width:s.width,height:s.height,version:s.mapVersion,seed:s.seed,starts:s.starts.map(p=>({...p})),terrain:s.terrain.map((t,i)=>s.explored[side].has(i)?t:null)},
    player:{...s.players[side],heroRecovery:s.players[side].heroRecovery?.map(r=>({...r})),upgrades:[...s.players[side].upgrades]},opponent:opponent?{side:opponent.side,faction:opponent.faction}:null,opponents,allies,
    entities:s.entities.filter(e=>e.hp>0&&(e.side===side||isVisible(s,side,e.x,e.y,levelOf(e)))).map(e=>{

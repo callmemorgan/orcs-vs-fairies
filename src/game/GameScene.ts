@@ -4,6 +4,7 @@ import GameAudio from './GameAudio';
 import type { Side, GameState, BuildingRole, Command, Entity, UnitRole, Vec } from '../core/types';
 import { canPlace, isHostile, isVisible, issueCommand, stepGame } from '../core/simulation';
 import { PlayerView } from '../core/observation';
+import { publicObjectives } from '../core/objectives';
 import { buildingFor, entityDefinition, factionFor, unitFor } from '../core/content-registry';
 import { elevationAt, fogKey, levelOf } from '../core/world-map';
 import { terrainAt } from '../core/maps';
@@ -86,6 +87,7 @@ export default class GameScene extends Phaser.Scene {
   private blueprintPlacement:{role:BuildingRole;point:(point:Vec)=>void;cancel:()=>void}|undefined;
   constructor(options:GameSceneOptions) {super({key:'world'});this.options=options;this.state=options.state;this.viewLevel=levelOf(options.state.starts[options.viewSide??0]);this.controls=options.controls??new ControlProfiles();this.appearance=options.appearance??appearancePreferences;this._viewSide=options.viewSide??0;this.playerView=new PlayerView(this._viewSide);this.readOnly=options.readOnly??false;this.simulationEnabled=options.simulationEnabled??true;this.remoteFrame=options.remoteFrame;if(this.remoteFrame)this.remoteEventTick=this.state.tick;}
   public get remote(){return !!this.remoteFrame;}
+  public get objectiveObservation(){return this.remoteFrame?.objectiveView??this.playerView.observe(this.state);}
   public get canIssueCommands(){return this.canCommand;}
   public applyRemoteFrame(frame:OnlineRenderState){
     if(!this.remote||frame.localSide!==this.viewSide)throw new Error('Online frame has a different match perspective.');
@@ -502,6 +504,9 @@ export default class GameScene extends Phaser.Scene {
   private drawFog(){this.drawElevation();const g=this.fog;g.clear();for(let y=0;y<this.state.height;y++)for(let x=0;x<this.state.width;x++){const i=fogKey(this.state,{x,y,level:this.viewLevel});if(this.state.visible[this.viewSide].has(i))continue;const p=project(x+.5,y+.5);this.diamond(g,p.x,p.y,65,33,0x102022,this.state.explored[this.viewSide].has(i)?.48:.98);}}
   private drawOverlay(){
     const g=this.overlay;g.clear();if(this.photoMode){this.game.canvas.style.cursor='default';return;}const p=this.controllerActive&&this.controllerCursor?this.controllerCursor:this.input.activePointer;const world=this.cameras.main.getWorldPoint(p.x,p.y);
+    const objectives=this.remoteFrame?.objectiveView??{rules:this.state.rules,objectives:publicObjectives(this.state,this.viewSide)},mode=objectives.rules?.mode;
+    if(mode==='hill'&&objectives.objectives&&levelOf(objectives.objectives.hill)===this.viewLevel){const hill=objectives.objectives.hill,q=project(hill.x,hill.y),color=hill.contested?0xe68c72:hill.ownerTeam===null?0xe2c987:ownershipStyle(hill.ownerTeam,this.viewSide,this.appearance.value,this.state.teams).color;g.lineStyle(3,color,.9).strokeEllipse(q.x,q.y,objectives.rules.hill.radius*64,objectives.rules.hill.radius*32);g.lineBetween(q.x,q.y,q.x,q.y-50);g.fillStyle(color,.9).fillTriangle(q.x,q.y-50,q.x+27,q.y-43,q.x,q.y-34);}
+    if(mode==='relic')for(const relic of objectives.objectives?.relics??[]){if(relic.x===null||relic.y===null||levelOf(relic)!==this.viewLevel)continue;const q=project(relic.x,relic.y),color=relic.heldTeam===null?0xe2c987:ownershipStyle(relic.heldTeam,this.viewSide,this.appearance.value,this.state.teams).color;g.lineStyle(2,color,.95).strokeEllipse(q.x,q.y,26,13);g.fillStyle(color,.95).fillTriangle(q.x,q.y-32,q.x-8,q.y-19,q.x+8,q.y-19);g.fillTriangle(q.x,q.y-6,q.x-8,q.y-19,q.x+8,q.y-19);}
     for(const corpse of this.state.corpses){
       if(levelOf(corpse)!==this.viewLevel||!isVisible(this.state,this.viewSide,corpse.x,corpse.y,levelOf(corpse)))continue;
       const c=project(corpse.x,corpse.y);g.lineStyle(2,0xbbb79f,.6).lineBetween(c.x-5,c.y-2,c.x+5,c.y+2);g.lineBetween(c.x-5,c.y+2,c.x+5,c.y-2);

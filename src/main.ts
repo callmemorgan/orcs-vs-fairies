@@ -6,6 +6,7 @@ import { ContentLibrary, productionQueueKey, upgradeFor, factionFor } from './co
 import { mountModLibrary } from './ui/ModLibrary';
 import { mountShell } from './ui/Hud';
 import { mountWorldBiome, mountWorldTools } from './ui/WorldTools';
+import { mountObjectivePanel } from './ui/ObjectivePanel';
 import type { HudCallbacks } from './ui/Hud';
 import type { FactionId, MapSize, GameState, Side, UpgradeId } from './core/types';
 import { mountSessionTools } from './ui/SessionTools';
@@ -55,7 +56,8 @@ for(const button of Array.from(root.querySelectorAll<HTMLElement>('[data-faction
 root.querySelector('#opponent')!.addEventListener('change',()=>roster.updateDefaults(menuFaction(),menuOpponent(),aiOptions.value));
 const modLibrary=new ContentLibrary();
 try{const installed=localStorage.getItem('ovf-mod-library-v1');if(installed)modLibrary.restore(JSON.parse(installed));}catch(error){console.error('Installed mods could not be restored',error);}
-mountModLibrary(root.querySelector<HTMLElement>('.menu-content')!,{installed:()=>modLibrary.list(),install:input=>{const admitted=modLibrary.install(input);localStorage.setItem('ovf-mod-library-v1',JSON.stringify(modLibrary.list()));return admitted;},launch:id=>{const size=root.querySelector<HTMLSelectElement>('#map-size')!.value as MapSize,seed=Number(root.querySelector<HTMLInputElement>('#map-seed')!.value);start(id as FactionId,root.querySelector<HTMLSelectElement>('#opponent')!.value as FactionId,size,seed);}});
+roster.setContent(modLibrary.bundle());
+mountModLibrary(root.querySelector<HTMLElement>('.menu-content')!,{installed:()=>modLibrary.list(),install:input=>{const admitted=modLibrary.install(input);localStorage.setItem('ovf-mod-library-v1',JSON.stringify(modLibrary.list()));roster.setContent(modLibrary.bundle());return admitted;},launch:id=>{const size=root.querySelector<HTMLSelectElement>('#map-size')!.value as MapSize,seed=Number(root.querySelector<HTMLInputElement>('#map-seed')!.value);start(id as FactionId,root.querySelector<HTMLSelectElement>('#opponent')!.value as FactionId,size,seed);}});
 const selectedBiome=mountWorldBiome(root.querySelector<HTMLElement>('.map-settings')??root.querySelector<HTMLElement>('#map-size')!.parentElement!);
 const controls=new ControlProfiles();
 const saves=new SaveRepository(localStorage);
@@ -138,6 +140,7 @@ async function joinOnline(request:OnlineMatchRequest){
 }
 function retireGame(onDestroyed?:()=>void){
  resetCoach();
+ objectives.close();
  if(retiring){retiring.events.once(Phaser.Core.Events.DESTROY,()=>onDestroyed?.());return;}
  if(!game){onDestroyed?.();return;}
  if(scene){scene.paused=true;scene.input.keyboard?.removeAllListeners('keydown');}
@@ -148,7 +151,8 @@ function retireGame(onDestroyed?:()=>void){
 function start(next:FactionId,nextOpponent:FactionId=opponent,mapSize:MapSize="medium",seed=4127){
  try {
   const custom=next.includes(':')||nextOpponent.includes(':');
-  const state=benchmark?createPerformanceGame():custom?createMatch({content:modLibrary.bundle(),map:{seed,size:mapSize,biome:selectedBiome()},players:[{id:0,teamId:0,factionId:next,controller:'human'},{id:1,teamId:1,factionId:nextOpponent,controller:'ai',ai:aiOptions.value}]}):roster.enabled?createMatch({map:{seed,size:mapSize,biome:selectedBiome()},players:roster.getPlayers(next,nextOpponent,aiOptions.value),rules:roster.getRules()}):createGame(next,seed,nextOpponent,{mapSize,biome:selectedBiome(),ai:[{},aiOptions.value]});
+  roster.setContent(modLibrary.bundle());
+  const state=benchmark?createPerformanceGame():custom||roster.enabled?createMatch({...(custom||modLibrary.list().length?{content:modLibrary.bundle()}:{}),map:{seed,size:mapSize,biome:selectedBiome()},players:roster.getPlayers(next,nextOpponent,aiOptions.value),rules:roster.getRules()}):createGame(next,seed,nextOpponent,{mapSize,biome:selectedBiome(),ai:[{},aiOptions.value]});
   replacementGeneration++;launch(state);
  }catch(error){shell.notice(error instanceof Error?error.message:'Cannot start this skirmish.');}
 }
@@ -278,6 +282,7 @@ const tools=mountSessionTools(root,{
  onModal:open=>setModal('session',open)
 });
 const sessionToolbar=root.querySelector<HTMLElement>('.session-toolbar')!;
+const objectives=mountObjectivePanel(root,{toolbar:sessionToolbar,getState:()=>scene?.state,getObservation:()=>scene?.objectiveObservation,getContent:()=>scene?.state.content,side:playerSide,canSubmit:()=>!!scene&&scene.canIssueCommands,submit:command=>scene?.command(command)??false});
 mountOnlineLobby(root,{api:onlineApi,toolbar:sessionToolbar,onJoinMatch:joinOnline,onVisibility:open=>setModal('online',open)});
 const tournaments=mountTournamentDashboard(root,{source:createTournamentDashboardSource(),toolbar:sessionToolbar,onReplay:importReplay,onVisibility:open=>setModal('tournament',open)});
 function alignToolPanels(){root.style.setProperty('--tool-panel-top',`${Math.max(126,Math.ceil(sessionToolbar.getBoundingClientRect().bottom)+8)}px`);}
@@ -330,7 +335,7 @@ setInterval(()=>{
 },16);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)maybeAutosave(true);});
 window.addEventListener('pagehide',()=>maybeAutosave(true));
-setInterval(()=>{if(scene)shell.update(scene.state,scene.selected,callbacks);tools.update(scene?.state??null,{side:playerSide(),paused:scene?.paused,replaySpectator:!!replay||!!scene?.readOnly,remoteMatch:!!onlineConnection});planning.update({blocked:planningBlocked()});tournaments.update({blocked:tournamentBlocked()});updateCoach();},100);
+setInterval(()=>{if(scene)shell.update(scene.state,scene.selected,callbacks);tools.update(scene?.state??null,{side:playerSide(),paused:scene?.paused,replaySpectator:!!replay||!!scene?.readOnly,remoteMatch:!!onlineConnection});objectives.update();planning.update({blocked:planningBlocked()});tournaments.update({blocked:tournamentBlocked()});updateCoach();},100);
 // Read-only diagnostics for repeatable performance and state inspection. Player actions stay in the UI.
 const worldTools=mountWorldTools(root,{phase:()=>onlineRender?.worldPhase,state:()=>scene?.state,side:playerSide,level:()=>scene?.viewLevel??0,selected:()=>scene?.selected??[],canCommand:()=>!!scene&&scene.canIssueCommands,command:c=>scene?.command(c)??false,setLevel:level=>scene?.setViewLevel(level),select:ids=>scene?.selectEntities(ids),center:p=>scene?.centerOn(p.x,p.y),notice:shell.notice});
 setInterval(()=>worldTools.update(),100);

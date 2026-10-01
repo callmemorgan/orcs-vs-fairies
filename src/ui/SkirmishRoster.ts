@@ -1,5 +1,5 @@
 import { normalizeAiConfig, type AiConfig } from '../core/ai-policy';
-import { FACTIONS } from '../core/content';
+import { contentFactions, type ContentBundle } from '../core/content-registry';
 import { AGE_NAMES } from '../core/progression';
 import type { Age, Cost, FactionId, MatchConfig, MatchRules, MatchPlayerConfig, Side } from '../core/types';
 import { MATCH_RULE_DEFAULTS, MatchRulesForm } from './MatchRules';
@@ -41,8 +41,8 @@ function select(parent: HTMLElement, name: string, choices: ReadonlyArray<readon
   for (const [value, text] of choices) { const option = element('option', text); option.value = value; control.append(option); }
   label(parent, name, control); return control;
 }
-function faction(value: FactionId): FactionId {
-  if (!Object.hasOwn(FACTIONS, value)) throw new Error('Choose a known faction.'); return value;
+function faction(value: FactionId,content?:ContentBundle): FactionId {
+  if (!Object.hasOwn(contentFactions(content), value)) throw new Error('Choose a known faction.'); return value;
 }
 
 /** Player 1 is the local human. Other slots are computer allies or opponents. */
@@ -65,6 +65,8 @@ export class SkirmishRoster {
   private defaultOpponent: FactionId = 'fairies';
   private defaultAi = normalizeAiConfig();
   private destroyed = false;
+  private content:ContentBundle|undefined;
+  setContent(content?:ContentBundle){if(this.destroyed)return;this.content=content;this.customRules.setContent(content);for(const row of this.rows){const current=row.faction.value;row.faction.replaceChildren();for(const [value,text] of [['',`${row.id===0?'Selected faction':'Selected opponent'}: ${contentFactions(content)[row.id===0?this.defaultFaction:this.defaultOpponent].name}`],...Object.values(contentFactions(content)).map(f=>[f.id,f.name])]){const option=element('option',text);option.value=value;row.faction.append(option);}row.faction.value=current;}this.refresh();}
 
   constructor(root: HTMLElement, private readonly onChange?: () => void) {
     this.host = element('section', undefined, 'skirmish-roster'); this.host.setAttribute('aria-label', 'Local team match setup');
@@ -103,10 +105,10 @@ export class SkirmishRoster {
 
   updateDefaults(defaultFaction: FactionId, defaultOpponent: FactionId, aiConfig?: Partial<AiConfig>): void {
     if (this.destroyed) return;
-    const ownFaction = faction(defaultFaction), ownOpponent = faction(defaultOpponent), ai = aiConfig === undefined ? this.defaultAi : normalizeAiConfig(aiConfig);
+    const ownFaction = faction(defaultFaction,this.content), ownOpponent = faction(defaultOpponent,this.content), ai = aiConfig === undefined ? this.defaultAi : normalizeAiConfig(aiConfig);
     this.defaultFaction = ownFaction; this.defaultOpponent = ownOpponent; this.defaultAi = ai;
     for (const row of this.rows) {
-      row.faction.options[0].textContent = `${row.id === 0 ? 'Selected faction' : 'Selected opponent'}: ${FACTIONS[row.id === 0 ? this.defaultFaction : this.defaultOpponent].name}`;
+      row.faction.options[0].textContent = `${row.id === 0 ? 'Selected faction' : 'Selected opponent'}: ${contentFactions(this.content)[row.id === 0 ? this.defaultFaction : this.defaultOpponent].name}`;
       if (row.ai && !row.aiEdited) row.ai.update(this.defaultAi);
     }
     this.refresh();
@@ -163,7 +165,7 @@ export class SkirmishRoster {
     const number = id + 1, card = element('section', undefined, 'skirmish-roster-player'); card.dataset.rosterPlayer = String(id); card.style.setProperty('--player-color', colors[id]); card.setAttribute('aria-label', `Player ${number} setup`);
     const heading = element('h3', undefined, 'skirmish-roster-player-heading'), swatch = element('span', String(number), 'skirmish-roster-player-number'); swatch.setAttribute('aria-hidden', 'true'); heading.append(swatch, document.createTextNode(`Player ${number}${id === 0 ? ' · You' : ' · Computer'}`)); card.append(heading);
     const fields = element('div', undefined, 'skirmish-roster-fields');
-    const factionSelect = select(fields, `Player ${number} faction`, [['', `${id === 0 ? 'Selected faction' : 'Selected opponent'}: ${FACTIONS[id === 0 ? this.defaultFaction : this.defaultOpponent].name}`], ...Object.values(FACTIONS).map(f => [f.id, f.name] as const)]);
+    const factionSelect = select(fields, `Player ${number} faction`, [['', `${id === 0 ? 'Selected faction' : 'Selected opponent'}: ${contentFactions(this.content)[id === 0 ? this.defaultFaction : this.defaultOpponent].name}`], ...Object.values(contentFactions(this.content)).map(f => [f.id, f.name] as const)]);
     const team = select(fields, `Player ${number} team`, Array.from({ length: 8 }, (_, team) => [String(team), `Team ${team + 1}`] as const)); team.value = String(id === 0 ? 0 : 1);
     const controller = select(fields, `Player ${number} controller`, [[id === 0 ? 'human' : 'ai', id === 0 ? 'You (local player)' : 'Computer (AI)']]); controller.disabled = true;
     const summary = element('p', undefined, 'skirmish-roster-handicap-summary'); summary.setAttribute('aria-live', 'polite');
@@ -200,7 +202,7 @@ export class SkirmishRoster {
       const team = Number(row.team.value);
       if (!row.team.value || !Number.isInteger(team) || team < 0 || team > 7) throw new Error(`Player ${row.id + 1}: choose a team.`);
       if (row.controller.value !== (row.id === 0 ? 'human' : 'ai')) throw new Error('Player 1 must be the only local human; all other players must be computers.');
-      const ownFaction = row.id === 0 ? this.defaultFaction : this.rows.length === 2 || !row.faction.value ? this.defaultOpponent : faction(row.faction.value as FactionId);
+      const ownFaction = row.id === 0 ? this.defaultFaction : this.rows.length === 2 || !row.faction.value ? this.defaultOpponent : faction(row.faction.value as FactionId,this.content);
       const resources = { wood: this.number(row, 'wood'), ore: this.number(row, 'ore'), crystal: this.number(row, 'crystal') };
       const inherited = !row.resourceEdited;
       const player: MatchPlayerConfig = { id: row.id, teamId: team as Side, factionId: ownFaction, controller: row.id === 0 ? 'human' : 'ai', handicap: { startingResources: inherited ? { ...matchResources } : resources, incomeFactor: this.number(row, 'income'), populationCap: this.number(row, 'population') } };
