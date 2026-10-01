@@ -1,0 +1,47 @@
+{
+  "base": "http://127.0.0.1:5371",
+  "startedAt": "2026-10-01T21:50:23.610Z",
+  "buildLabel": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "pageBuilds": [
+    {
+      "profile": "human-one",
+      "url": "http://127.0.0.1:5371/",
+      "moduleScripts": [
+        "http://127.0.0.1:5371/assets/main-BxMb13AF.js"
+      ],
+      "stylesheets": [
+        "http://127.0.0.1:5371/assets/main-CxCO6VnC.css"
+      ]
+    },
+    {
+      "profile": "human-two",
+      "url": "http://127.0.0.1:5371/",
+      "moduleScripts": [
+        "http://127.0.0.1:5371/assets/main-BxMb13AF.js"
+      ],
+      "stylesheets": [
+        "http://127.0.0.1:5371/assets/main-CxCO6VnC.css"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "Two isolated browser profiles receive different real guest accounts",
+      "details": {
+        "guests": [
+          "Guest-761629",
+          "Guest-83780b"
+        ]
+      }
+    }
+  ],
+  "limits": [],
+  "lobbyId": "9ba577e1-bf62-41c4-954c-f4ac1a16c172 · Server revision 1 · Annihilation",
+  "completed": false,
+  "failure": {
+    "phase": "creating two-human versus two-AI cooperative lobby",
+    "message": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Join lobby 9ba577e1-bf62-41c4-954c-f4ac1a16c172 · Server revision 1 · Annihilation', exact: true })\u001b[22m\n"
+  },
+  "pageErrors": [],
+  "captureErrors": []
+}

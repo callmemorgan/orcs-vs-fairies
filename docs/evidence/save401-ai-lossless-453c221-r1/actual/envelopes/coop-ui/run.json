@@ -1,0 +1,48 @@
+{
+  "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "command": [
+    "node",
+    "scripts/verify_assembled_coop.mjs",
+    "http://127.0.0.1:5371"
+  ],
+  "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+  "runtime": {
+    "node": "v24.21.0",
+    "executable": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+    "platform": "linux",
+    "arch": "x64"
+  },
+  "environment": {
+    "OVF_PLAYWRIGHT_MODULE": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/launcher/playwright-chromium-1243.mjs",
+    "OVF_AI_PROOF_PLAYWRIGHT_ADAPTER_SHA256": "7fe266503ffb4a65da331e6ae3fa7ffa248f805595dcb5e417a7669fc73bbd6d",
+    "OVF_AI_PROOF_PLAYWRIGHT_INDEX": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs",
+    "OVF_AI_PROOF_PLAYWRIGHT_INDEX_SHA256": "a0f5715ea22354f922791a9c53dc012d5d5c067ff9cc4cd35ffb7cd272071a9f",
+    "OVF_AI_PROOF_PLAYWRIGHT_PACKAGE": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/package.json",
+    "OVF_AI_PROOF_PLAYWRIGHT_PACKAGE_SHA256": "ca170ec143a88ed3043ac953eb3b2377b2b97304104f4e1e23316684ce2c35af",
+    "OVF_AI_PROOF_PLAYWRIGHT_VERSION": "1.62.1",
+    "OVF_AI_PROOF_CHROMIUM_EXECUTABLE": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+    "OVF_AI_PROOF_CHROMIUM_EXECUTABLE_SHA256": "8c599d43aec53f2460a31ae2f4af6bd863f8258b34ff519564bc5d4726bfaa1e",
+    "OVF_AI_PROOF_DIST": "work/ai-save401-final-453c221-r1/dist",
+    "OVF_AI_PROOF_SERVER_DIST": "work/ai-save401-final-453c221-r1/server",
+    "OVF_AI_PROOF_BUILD_ENVELOPE": "work/ai-save401-final-453c221-r1/envelopes/build-web",
+    "OVF_AI_PROOF_SERVER_BUILD_ENVELOPE": "work/ai-save401-final-453c221-r1/envelopes/build-server",
+    "OVF_AI_PROOF_BASE": "http://127.0.0.1:5371",
+    "OVF_ONLINE_BUILD_LABEL": "453c2218af9973b9eca8fb78392435bd9d46a740",
+    "OVF_AI_PROOF_ARTIFACTS": "[\"work/ai-save401-final-453c221-r1/coop-ui\"]",
+    "OVF_COOP_PROOF_DIR": "work/ai-save401-final-453c221-r1/coop-ui"
+  },
+  "strictAlliedAssertions": true,
+  "startedAt": "2026-10-01T21:50:23.394Z",
+  "result": "failed",
+  "assertionScope": "A passed envelope requires unchanged pinned inputs/builds and zero command exit. Read the canonical reports and native artifacts to establish gameplay assertions.",
+  "limits": "Pins committed source/configuration/test/proof inputs and an external wrapper by exact bytes. Installed dependencies and the complete host environment are not pinned.",
+  "exit": {
+    "code": 1,
+    "signal": null
+  },
+  "failure": {
+    "message": "Canonical command failed: node scripts/verify_assembled_coop.mjs http://127.0.0.1:5371\n\n1 !== 0\n",
+    "stack": "AssertionError [ERR_ASSERTION]: Canonical command failed: node scripts/verify_assembled_coop.mjs http://127.0.0.1:5371\n\n1 !== 0\n\n    at file:///home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/final-ai-prep/proof-envelope.mjs:108:28"
+  },
+  "completedAt": "2026-10-01T21:50:56.539Z"
+}

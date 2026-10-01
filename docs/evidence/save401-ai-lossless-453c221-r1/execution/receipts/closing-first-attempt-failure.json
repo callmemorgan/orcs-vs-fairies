@@ -1,0 +1,12 @@
+{
+  "state": "preserved_observer_failure",
+  "operation": "Inline closing-state observer before check-closing-state.py was saved",
+  "failed_assertion": "assert len(ends) == 7",
+  "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 17, in <module>\nAssertionError\n",
+  "expected_child_end_receipts_in_failed_observer": 7,
+  "actual_child_end_receipts": 8,
+  "closing_state_receipt_written": false,
+  "next_tool_call_error": "An unguarded log command appended a closing row claiming success despite the observer failure.",
+  "correction": "Preserve the failed count check and append-only trail row. Run the saved observer with an expected count of eight. Append a superseding closing row only after its receipt exists and passes.",
+  "payload_checks_failed": false
+}

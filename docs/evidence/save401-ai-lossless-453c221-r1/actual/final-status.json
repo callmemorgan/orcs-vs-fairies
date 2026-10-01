@@ -1,0 +1,303 @@
+{
+  "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "productFreezeAccepted": false,
+  "reason": "First failed browser phase preserved; co-op acceptance failed and subsequent online acceptance was not run.",
+  "phases": {
+    "natural-allied": {
+      "result": "passed",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "command": [
+        "npx",
+        "--no-install",
+        "vitest",
+        "run",
+        "--config",
+        "vitest.ai-team.config.ts",
+        "--reporter=verbose"
+      ],
+      "manifest": "work/ai-save401-final-453c221-r1/envelopes/natural-allied/manifest.json",
+      "manifestSha256": "90a56079f01c5d4def54bf6efc92e3aa51b679ea05a2d29ba411f3e6b084375c",
+      "artifacts": {
+        "work/ai-save401-final-453c221-r1/natural-allied": 7
+      },
+      "executablePackageRecordSha256": "c7c65f9f3537f28a9227ddd391a8b5eac47be5fe9125c9ce702c01bc7ae32638"
+    },
+    "build-web": {
+      "result": "passed",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "command": [
+        "npx",
+        "--no-install",
+        "vite",
+        "build",
+        "--outDir",
+        "work/ai-save401-final-453c221-r1/dist"
+      ],
+      "manifest": "work/ai-save401-final-453c221-r1/envelopes/build-web/manifest.json",
+      "manifestSha256": "5c22b5a89d856e1b9920b76e4206776fcbf93b39b29350f8cb8dac3cc093c94d",
+      "artifacts": {
+        "work/ai-save401-final-453c221-r1/dist": 398
+      },
+      "executablePackageRecordSha256": "c7c65f9f3537f28a9227ddd391a8b5eac47be5fe9125c9ce702c01bc7ae32638"
+    },
+    "build-server": {
+      "result": "passed",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "command": [
+        "node",
+        "scripts/build-server.mjs",
+        "work/ai-save401-final-453c221-r1/server"
+      ],
+      "manifest": "work/ai-save401-final-453c221-r1/envelopes/build-server/manifest.json",
+      "manifestSha256": "37105b1380f5ee6b740f97b699958d393fb36a2f224a3142cd23abe05e1283f3",
+      "artifacts": {
+        "work/ai-save401-final-453c221-r1/server": 3
+      },
+      "executablePackageRecordSha256": "c7c65f9f3537f28a9227ddd391a8b5eac47be5fe9125c9ce702c01bc7ae32638"
+    },
+    "allied-ui": {
+      "result": "passed",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "command": [
+        "node",
+        "scripts/verify_assembled_allied.mjs",
+        "http://127.0.0.1:5371",
+        "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies"
+      ],
+      "manifest": "work/ai-save401-final-453c221-r1/envelopes/allied-ui/manifest.json",
+      "manifestSha256": "f6e52eeacd2596c1aead0c7c6ae54fe730b9e305b3dcfa0463d2832808be6354",
+      "artifacts": {
+        "work/ai-save401-final-453c221-r1/allied-ui": 23
+      },
+      "executablePackageRecordSha256": "c7c65f9f3537f28a9227ddd391a8b5eac47be5fe9125c9ce702c01bc7ae32638",
+      "checksReached": 18,
+      "checkNames": [
+        "Ordinary local controls launch human 0 with allied AI 1 against enemy AI 2/3",
+        "Ally modal pauses local time, traps focus and blocks battlefield selection/orders/keyboard/camera",
+        "Selected-unit destination helper reads the owned worker selected through battlefield controls",
+        "Local form accepts a scout while paused and its own Cancel control cancels it",
+        "Closing restores running simulation and the ally activates the request with owned troops",
+        "Local ally scout reaches its destination and displays Completed; replacement cancels the prior defend",
+        "Manual pause disables requests; closing a competing session modal preserves the prior pause",
+        "Photo mode disables ally requests and gameplay, then restores the running match",
+        "Production build matches source; its unchanged exported replay imports with ally requests disabled",
+        "Real guest creates and starts an authoritative 2v2 with one human and three AI seats",
+        "Online modal blocks gameplay commands and selections while server snapshots keep advancing",
+        "Online form and cancellation use public commands with authenticated accepted acknowledgements and authoritative receipts",
+        "Server activates defend and completes scout through real AI simulation; the mounted list applies snapshot transitions",
+        "Online Attack request activates and completes an observed clear area through authenticated public commands",
+        "Own team receives public directive and transfer metadata without assigned troop IDs or foreign banks",
+        "Online photo mode disables requests and commands while server time advances",
+        "Separate authenticated enemy-perspective spectator cannot issue requests or commands and receives no requester-team receipts",
+        "Browsers report no page errors or WebSocket capture errors"
+      ],
+      "browserIdentitySha256": "4467a65fc79c27bf988e0cf5142f6295ac3b9fa5ea25552d81fbf7ec56d577e9",
+      "launchTrace": "work/ai-save401-final-453c221-r1/browser-runtime/allied-ui/actual-launch-trace.json"
+    },
+    "roster-ui": {
+      "result": "passed",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "command": [
+        "node",
+        "scripts/verify_assembled_roster.mjs",
+        "http://127.0.0.1:5371",
+        "docs/evidence/roster-coop-integration-20261001/roster/historical-source-session-v1.json"
+      ],
+      "manifest": "work/ai-save401-final-453c221-r1/envelopes/roster-ui/manifest.json",
+      "manifestSha256": "f25ddd264e958744a6ede5986c110b89ad1d599c5813ea51a19e46567dd56874",
+      "artifacts": {
+        "work/ai-save401-final-453c221-r1/roster-ui": 20
+      },
+      "executablePackageRecordSha256": "c7c65f9f3537f28a9227ddd391a8b5eac47be5fe9125c9ce702c01bc7ae32638",
+      "checksReached": 13,
+      "checkNames": [
+        "Normal 2v2 preset launches 4 players with its chosen factions, controllers and teams",
+        "Normal 3v3 preset launches 6 players with its chosen factions, controllers and teams",
+        "Normal 4v4 preset launches 8 players with its chosen factions, controllers and teams",
+        "Visible handicap controls reach exact initial banks and live income/population limits",
+        "appearance-deuteranopia changes real battlefield and minimap pixels while replay time and camera stay fixed",
+        "appearance-tritanopia changes real battlefield and minimap pixels while replay time and camera stay fixed",
+        "appearance-no-patterns changes real battlefield and minimap pixels while replay time and camera stay fixed",
+        "appearance-no-outlines changes real battlefield and minimap pixels while replay time and camera stay fixed",
+        "Palette, patterns and outlines persist through a real page reload and new match",
+        "Unchanged historical version 1 session imports as version 4 with original state/runtime fields, team defaults and unit tactics defaults",
+        "Historical save replacing a paused replay resumes its new local simulation",
+        "Migrated historical match accepts normal HUD recruitment",
+        "No browser page errors"
+      ],
+      "browserIdentitySha256": "4467a65fc79c27bf988e0cf5142f6295ac3b9fa5ea25552d81fbf7ec56d577e9",
+      "launchTrace": "work/ai-save401-final-453c221-r1/browser-runtime/roster-ui/actual-launch-trace.json"
+    },
+    "coop-ui": {
+      "result": "failed",
+      "exit": {
+        "code": 1,
+        "signal": null
+      },
+      "command": [
+        "node",
+        "scripts/verify_assembled_coop.mjs",
+        "http://127.0.0.1:5371"
+      ],
+      "manifest": "work/ai-save401-final-453c221-r1/envelopes/coop-ui/manifest.json",
+      "manifestSha256": "4f2960f292df8cb98d9615d4c811b79ca2260a136a7b3974e746df581bccb9cb",
+      "artifacts": {
+        "work/ai-save401-final-453c221-r1/coop-ui": 3
+      },
+      "executablePackageRecordSha256": "c7c65f9f3537f28a9227ddd391a8b5eac47be5fe9125c9ce702c01bc7ae32638",
+      "checksReached": 1,
+      "checkNames": [
+        "Two isolated browser profiles receive different real guest accounts"
+      ],
+      "browserIdentitySha256": "4467a65fc79c27bf988e0cf5142f6295ac3b9fa5ea25552d81fbf7ec56d577e9",
+      "launchTrace": "work/ai-save401-final-453c221-r1/browser-runtime/coop-ui/actual-launch-trace.json",
+      "failure": {
+        "phase": "creating two-human versus two-AI cooperative lobby",
+        "message": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Join lobby 9ba577e1-bf62-41c4-954c-f4ac1a16c172 \u00b7 Server revision 1 \u00b7 Annihilation', exact: true })\u001b[22m\n"
+      }
+    }
+  },
+  "serve": "Stopped after first failure; before/after executable packages equal",
+  "online-ui": "Not run",
+  "cleanup": "work/ai-save401-final-453c221-r1/cleanup/after.json",
+  "historicalEntriesUnchanged": 838,
+  "historicalBytesUnchanged": 68452550,
+  "trackedCheckoutClean": true,
+  "nativeArtifacts": [
+    {
+      "path": "work/ai-save401-final-453c221-r1/natural-allied/medium-dwarves-undead-orcs-fairies-save.json",
+      "bytes": 257179,
+      "sha256": "eee09b32d3726c7abedb2fb061e951452a64a89f196718384f20c14663107172",
+      "format": "orcs-vs-fairies-save",
+      "version": 4,
+      "gameFormat": "orcs-vs-fairies-save",
+      "gameVersion": 4,
+      "replayRules": null,
+      "replayFinalTick": null
+    },
+    {
+      "path": "work/ai-save401-final-453c221-r1/natural-allied/small-orcs-fairies-dwarves-undead-save.json",
+      "bytes": 267855,
+      "sha256": "a1d80ade1337b574034a5a4ad75968f906c216210b85873f64c99e98c835a260",
+      "format": "orcs-vs-fairies-save",
+      "version": 4,
+      "gameFormat": "orcs-vs-fairies-save",
+      "gameVersion": 4,
+      "replayRules": null,
+      "replayFinalTick": null
+    },
+    {
+      "path": "work/ai-save401-final-453c221-r1/allied-ui/local-active-save.json",
+      "bytes": 414917,
+      "sha256": "47e873a4e8ef68e7f5ed63fa1b3dadc0e06df22371e23fbc0d81d6cf5d916007",
+      "format": "orcs-vs-fairies/session",
+      "version": 1,
+      "gameFormat": "orcs-vs-fairies-save",
+      "gameVersion": 4,
+      "replayRules": "4.0.1",
+      "replayFinalTick": 38
+    },
+    {
+      "path": "work/ai-save401-final-453c221-r1/allied-ui/local-completed-save.json",
+      "bytes": 416544,
+      "sha256": "747345ad9c7da156e98dc41c99dff769cb832541e4a9ac3bff722a21a55eb759",
+      "format": "orcs-vs-fairies/session",
+      "version": 1,
+      "gameFormat": "orcs-vs-fairies-save",
+      "gameVersion": 4,
+      "replayRules": "4.0.1",
+      "replayFinalTick": 75
+    },
+    {
+      "path": "work/ai-save401-final-453c221-r1/allied-ui/local-replay.json",
+      "bytes": 184448,
+      "sha256": "dc9356b1d4965f34d30022c21c599d17e100dca692d8c75ec356e38fa4296bdf",
+      "format": "orcs-vs-fairies/replay",
+      "version": 1,
+      "gameFormat": null,
+      "gameVersion": null,
+      "replayRules": "4.0.1",
+      "replayFinalTick": 96
+    },
+    {
+      "path": "work/ai-save401-final-453c221-r1/allied-ui/local-production-report.json",
+      "bytes": 463076,
+      "sha256": "6f6391bd847030a66b7a5e70d96575a9550ca5a9d47fd00b8453790f65b0dae5",
+      "format": "orcs-vs-fairies/bug-report",
+      "version": 1,
+      "gameFormat": "orcs-vs-fairies-save",
+      "gameVersion": 4,
+      "replayRules": "4.0.1",
+      "replayFinalTick": 96
+    },
+    {
+      "path": "work/ai-save401-final-453c221-r1/roster-ui/2v2-replay.json",
+      "bytes": 184766,
+      "sha256": "381ca1185a6774cc3b6580c3d06d5c5696aa0f6ae814ae37d47c66a7164abb45",
+      "format": "orcs-vs-fairies/replay",
+      "version": 1,
+      "gameFormat": null,
+      "gameVersion": null,
+      "replayRules": "4.0.1",
+      "replayFinalTick": 10
+    },
+    {
+      "path": "work/ai-save401-final-453c221-r1/roster-ui/3v3-replay.json",
+      "bytes": 245960,
+      "sha256": "091a382a700febe5fa5eef7d3ea829ed7c954efcac0b61b802387f9e4ba5ca6e",
+      "format": "orcs-vs-fairies/replay",
+      "version": 1,
+      "gameFormat": null,
+      "gameVersion": null,
+      "replayRules": "4.0.1",
+      "replayFinalTick": 10
+    },
+    {
+      "path": "work/ai-save401-final-453c221-r1/roster-ui/4v4-replay.json",
+      "bytes": 501371,
+      "sha256": "b4973a182353d6525fab2977e8adaaf32a6db1c9f2c46fa4f9575c3f177115fe",
+      "format": "orcs-vs-fairies/replay",
+      "version": 1,
+      "gameFormat": null,
+      "gameVersion": null,
+      "replayRules": "4.0.1",
+      "replayFinalTick": 10
+    },
+    {
+      "path": "work/ai-save401-final-453c221-r1/roster-ui/migrated-historical-save.json",
+      "bytes": 137099,
+      "sha256": "01bb163680c9643cc711ac0945f07ec49dfcbce05d84000b7cbab927feff34f9",
+      "format": "orcs-vs-fairies/session",
+      "version": 1,
+      "gameFormat": "orcs-vs-fairies-save",
+      "gameVersion": 4,
+      "replayRules": "4.0.1",
+      "replayFinalTick": 8
+    }
+  ],
+  "independentReview": "work/ai-save401-final-453c221-r1/audits/independent-final-review.md",
+  "correctedAttribution": "work/ai-save401-final-453c221-r1/audits/coop-lobby-attribution.json",
+  "decisionRows": 19,
+  "limits": [
+    "Natural match artifacts are raw SAVE4 envelopes without replay history or an explicit rules revision.",
+    "Named executable and complete selected installed package inventories are authenticated; full host/shared-library/transitive provenance is not established.",
+    "The frozen verifiers do not expose browser.version(); the pinned executable CLI identifies Chrome 153.0.8010.12.",
+    "Allied actual launch uses authenticated DEBUG trace; its original auxiliary live observer did not retain raw fields. Roster and co-op retain successful independent live process observations.",
+    "No co-op gameplay, later online phase, acceptance correction/rerun, ID53 probe, public hosting or deployment was performed."
+  ]
+}

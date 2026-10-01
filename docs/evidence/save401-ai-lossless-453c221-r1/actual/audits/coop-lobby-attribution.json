@@ -1,0 +1,80 @@
+{
+  "kind": "sanitized-read-only-coop-lobby-attribution",
+  "reviewer": {
+    "harness": "Codex",
+    "actualModel": "GPT-5.6 Sol"
+  },
+  "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "database": {
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/server-data/server.sqlite",
+    "access": "sqlite3 -readonly after owned-server cleanup",
+    "sqliteVersion": "3.53.4 2026-07-24",
+    "bytes": 222466048,
+    "sha256": "68634fdb8c709812659afbd36558b97ff98eb3874df918ef631355b106f346d5",
+    "wal": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "shm": {
+      "bytes": 32768,
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb"
+    }
+  },
+  "schemaAttribution": {
+    "command": "sqlite3 -readonly work/ai-save401-final-453c221-r1/server-data/server.sqlite '.schema users' followed by '.schema lobbies'",
+    "users": "CREATE TABLE users(id TEXT PRIMARY KEY,username TEXT NOT NULL UNIQUE COLLATE NOCASE,password TEXT NOT NULL);",
+    "lobbies": "CREATE TABLE lobbies(id TEXT PRIMARY KEY,data TEXT NOT NULL);"
+  },
+  "queries": [
+    {
+      "sql": "SELECT id,username FROM users WHERE username IN ('Guest-761629','Guest-83780b') ORDER BY username;",
+      "rows": [
+        {
+          "id": "07d0dbcc-26ad-4c4b-8ac7-e701c7d9f0d0",
+          "username": "Guest-761629"
+        },
+        {
+          "id": "42e19938-da2e-40a5-8b00-34b7e9d0fd66",
+          "username": "Guest-83780b"
+        }
+      ]
+    },
+    {
+      "sql": "SELECT id, json_extract(data,'$.hostId') AS hostId, json_extract(data,'$.revision') AS revision, json_extract(data,'$.matchId') AS matchId, json_extract(data,'$.seats[0].side') AS seat0Side, json_extract(data,'$.seats[0].account.id') AS seat0AccountId, json_extract(data,'$.seats[0].account.username') AS seat0Username, json_extract(data,'$.seats[1].side') AS seat1Side, json_extract(data,'$.seats[1].account.id') AS seat1AccountId, json_extract(data,'$.seats[1].account.username') AS seat1Username, json_extract(data,'$.seats[2].controller') AS seat2Controller, json_extract(data,'$.seats[3].controller') AS seat3Controller FROM lobbies WHERE id='9ba577e1-bf62-41c4-954c-f4ac1a16c172';",
+      "rows": [
+        {
+          "id": "9ba577e1-bf62-41c4-954c-f4ac1a16c172",
+          "hostId": "07d0dbcc-26ad-4c4b-8ac7-e701c7d9f0d0",
+          "revision": 1,
+          "matchId": null,
+          "seat0Side": 0,
+          "seat0AccountId": "07d0dbcc-26ad-4c4b-8ac7-e701c7d9f0d0",
+          "seat0Username": "Guest-761629",
+          "seat1Side": 1,
+          "seat1AccountId": null,
+          "seat1Username": null,
+          "seat2Controller": "ai",
+          "seat3Controller": "ai"
+        }
+      ]
+    }
+  ],
+  "screenshotAttribution": [
+    {
+      "path": "work/ai-save401-final-453c221-r1/coop-ui/human-one-failure.png",
+      "sha256": "2b896a8265e5772e3616d410bd2e12f27c9ec4ca6ec846e12df93f721436a4e7",
+      "dimensions": "1440x1000",
+      "visibleTextLocation": "The host lobby list is in the upper half of the Online play dialog. The 9ba577e1 row spans about x=316..1124, y=419..480; its View lobby button is about x=1003..1112, y=428..470.",
+      "observation": "Guest-761629 is the signed-in host. View lobby is expected because the host owns seat 0."
+    },
+    {
+      "path": "work/ai-save401-final-453c221-r1/coop-ui/human-two-failure.png",
+      "sha256": "91d2f2c9564c7d78664772119056dc4720ecbe1314e6e2e1a73b07598e4893e2",
+      "dimensions": "1440x1000",
+      "visibleTextLocation": "Guest-83780b is shown near x=316..1124, y=190..210. The visible dialog then shows the create form from about y=348 through the bottom edge; no lobby-list row or lobby action button is visible in this frame.",
+      "observation": "This image supplies no visible Join lobby or View lobby label for the second guest."
+    }
+  ],
+  "attributionConclusion": "The users have distinct IDs. Guest-761629 owns seat 0, seat 1 remains empty, and the other two seats are AI. The visible View lobby label belongs to the host image. No second-guest UI/server mismatch is established.",
+  "sanitization": "Contains only account UUIDs, generated guest usernames, lobby UUID, revision, match presence, and seat mapping. No password, session row, cookie, token, or credential value was queried or retained."
+}

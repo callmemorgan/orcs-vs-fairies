@@ -1,0 +1,10 @@
+{
+  "phase": "allied-ui",
+  "observer": "work/ai-save401-final-453c221-r1/preparation/capture-browser-process.py",
+  "invocation": ["python3", "work/ai-save401-final-453c221-r1/preparation/capture-browser-process.py", "1040020", "allied-ui"],
+  "reportedError": "RuntimeError: Not the selected owned browser launch",
+  "evidenceSource": "Preserved prior-turn tool result described in the continuation summary; the observer wrote no actual-process.json before its guard failed.",
+  "effect": "Auxiliary observation failed. Allied acceptance independently completed with exit code 0 and all 18 checks.",
+  "cause": "Unknown. The original observer did not preserve raw /proc fields before failing, and the browser had exited before diagnosis.",
+  "followup": "Preserve this failure and authenticate the original phase DEBUG launch/exit trace. Use a new observer which preserves raw fields before asserting for later phases. No acceptance rerun or frozen driver modification."
+}

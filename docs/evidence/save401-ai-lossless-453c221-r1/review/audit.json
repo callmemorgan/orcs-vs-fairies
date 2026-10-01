@@ -1,0 +1,306 @@
+{
+  "reviewer": "GPT-5.6 Sol in Codex",
+  "review_type": "file-only independent closing admission",
+  "created_at": "2026-10-01T23:02:33.718321+00:00",
+  "result": "pass",
+  "findings": [],
+  "checks_passed": 34,
+  "checks": [
+    {
+      "name": "sealed manifest identity",
+      "result": "pass",
+      "evidence": "source pin 453c221; 590 listed files"
+    },
+    {
+      "name": "retention index matches seal",
+      "result": "pass",
+      "evidence": "590 unique indexed paths equal the sealed manifest path set"
+    },
+    {
+      "name": "metadata path safety",
+      "result": "pass",
+      "evidence": "all 590 indexed original paths are relative and contain no parent traversal"
+    },
+    {
+      "name": "index metadata agrees with seal",
+      "result": "pass",
+      "evidence": "all indexed byte counts and SHA-256 values equal the sealed manifest"
+    },
+    {
+      "name": "partition is complete and disjoint",
+      "result": "pass",
+      "evidence": "394 public plus 196 actual paths partition all 590 entries"
+    },
+    {
+      "name": "partition byte totals",
+      "result": "pass",
+      "evidence": "68,373,454 public plus 304,640,876 actual equals 373,014,330 bytes"
+    },
+    {
+      "name": "raw SQLite partition",
+      "result": "pass",
+      "evidence": "196 actual entries consist of the raw SQLite and 195 native retained entries"
+    },
+    {
+      "name": "native retained receipt coverage",
+      "result": "pass",
+      "evidence": "195 non-SQLite entries; 82,174,828 bytes; raw SQLite excluded"
+    },
+    {
+      "name": "native retained metadata equality",
+      "result": "pass",
+      "evidence": "all 195 records match indexed size and SHA-256 values"
+    },
+    {
+      "name": "public restore receipt coverage",
+      "result": "pass",
+      "evidence": "394 entries; 68,373,454 bytes"
+    },
+    {
+      "name": "public restore metadata equality",
+      "result": "pass",
+      "evidence": "all records match indexed source paths, shared pinned blob IDs, sizes, and SHA-256 values"
+    },
+    {
+      "name": "codec receipt scope and success",
+      "result": "pass",
+      "evidence": "executed codec receipt is bound to source pin 453c221 and manifest seal bf8ed244"
+    },
+    {
+      "name": "codec recorded equality and retention",
+      "result": "pass",
+      "evidence": "raw and decoded records match at 222,466,048 bytes and SHA-256 68634fdb; raw removal is forbidden"
+    },
+    {
+      "name": "codec encoded bounds and savings",
+      "result": "pass",
+      "evidence": "single-member gzip is 39,472,569 bytes, SHA-256 ec1ced7f, within the encoded input cap"
+    },
+    {
+      "name": "full derivative receipt coverage",
+      "result": "pass",
+      "evidence": "590 unique records cover 373,014,330 original bytes"
+    },
+    {
+      "name": "full derivative metadata equality",
+      "result": "pass",
+      "evidence": "all derivative records repeat sealed sizes and SHA-256 values and report full-byte equality"
+    },
+    {
+      "name": "full derivative representation partition",
+      "result": "pass",
+      "evidence": "394 restored public, 195 retained native, and one decoded SQLite"
+    },
+    {
+      "name": "full derivative aggregate flags",
+      "result": "pass",
+      "evidence": "raw and decoded proofs remain; zero disk bytes reclaimed"
+    },
+    {
+      "name": "eight child receipt pairs",
+      "result": "pass",
+      "evidence": "all eight start/end pairs share child identity and report exit 0, absent PID path, and no same process live"
+    },
+    {
+      "name": "original packet before/after",
+      "result": "pass",
+      "evidence": "verifier receipts are identical and passed for 590 files and seal bf8ed244"
+    },
+    {
+      "name": "historical evidence before/after",
+      "result": "pass",
+      "evidence": "snapshots and logs match at 838 entries and 68,452,550 bytes"
+    },
+    {
+      "name": "closing failure preserved",
+      "result": "pass",
+      "evidence": "seven-job assertion and premature success log remain recorded as failed evidence"
+    },
+    {
+      "name": "append-only closing correction",
+      "result": "pass",
+      "evidence": "invalid row remains; later correction and eight-job closing rows supersede it"
+    },
+    {
+      "name": "corrected closing receipt",
+      "result": "pass",
+      "evidence": "eight absent child PID paths, 590 originals, 838 historical entries, 45 static files, and no browser/server/839 runtime"
+    },
+    {
+      "name": "heavy slot release",
+      "result": "pass",
+      "evidence": "release is bound to the corrected closing receipt and leaves only file-only review and allowlist work"
+    },
+    {
+      "name": "pre-review allowlist bounds",
+      "result": "pass",
+      "evidence": "241 unique destinations under the proposed root; 123,680,921 bytes"
+    },
+    {
+      "name": "pre-review allowlist payload binding",
+      "result": "pass",
+      "evidence": "195 retained payloads and gzip match execution-recorded size/SHA-256 values"
+    },
+    {
+      "name": "pre-review allowlist exclusions",
+      "result": "pass",
+      "evidence": "raw SQLite, decoded proof, restored public tree, and this review are excluded"
+    },
+    {
+      "name": "codec source guards",
+      "result": "pass",
+      "evidence": "slot-release gate, exclusive no-follow sidecars, encoded/decoded bounds, strict gzip termination checks, stable identities, and raw retention"
+    },
+    {
+      "name": "public restore source guards",
+      "result": "pass",
+      "evidence": "both Git trees and blobs are pinned; traversal is rejected; bytes and SHA-256 are verified into a fresh directory"
+    },
+    {
+      "name": "retention and runner source guards",
+      "result": "pass",
+      "evidence": "copy/readback pins identities and complete partition; runner records and waits for each child"
+    },
+    {
+      "name": "closing source guards",
+      "result": "pass",
+      "evidence": "requires eight end receipts, directly checks eight PID paths, scans owned commands, and records held 839 execution"
+    },
+    {
+      "name": "final allowlist source provenance",
+      "result": "pass",
+      "evidence": "reuse is limited to prior-plan records for preserved large payloads with current regular-file/path/category/size checks; provenance is recorded and import-time size/SHA-256 verification is required"
+    },
+    {
+      "name": "named Git reachability receipt",
+      "result": "pass",
+      "evidence": "both 453 and 839 pins are ancestors of refs/heads/codex/100-features at 37bf0e7; 453 also has a second named retaining branch"
+    }
+  ],
+  "reviewed_small_metadata_and_source_files": [
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-453-lossless-retention-r1/README.md",
+      "bytes": 3534,
+      "sha256": "5eef295b5b29cea7f626fade9db272dff3dfafd22e1f49d45454e1d4f2274b6b"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-453-lossless-retention-r1/decisions.tsv",
+      "bytes": 3778,
+      "sha256": "8aa4a3ddc5aa92833dd2b6c96b2384300551621fbd0a02420207027dd3bec1e3"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-453-lossless-retention-r1/run-receipted.py",
+      "bytes": 2566,
+      "sha256": "82b8eb7048e50b017bf308ae7e2efe57b67c89c40b84bb16912d6684b52cfc46"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-453-lossless-retention-r1/retain-and-verify.py",
+      "bytes": 9149,
+      "sha256": "9a084de9564618a219e235d55b06d51467e924f4c7b17cb58c3c0e58f661d1ec"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-453-lossless-retention-r1/check-closing-state.py",
+      "bytes": 4093,
+      "sha256": "382d9711dd0817ecd1625251a2db9c9ff669b77fa0bf531421dea1c85c8542ca"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-453-lossless-retention-r1/make-import-plan.py",
+      "bytes": 5682,
+      "sha256": "c23dd5eb5badf6b99e0309ff801ed5e3c779c5ea59f97f5f9ba696645561169c"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-453-lossless-retention-r1/pre-review-import-plan.json",
+      "bytes": 106541,
+      "sha256": "9e26e079653666c20a998e3768cd1eb80d174f313e2dd3945b4bfdb70549440d"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-453-lossless-retention-r1/receipts/full-derivative-equality.json",
+      "bytes": 252445,
+      "sha256": "9f33269de27edcf7a50a2ee5b324aa798c77dea8be88aa7c523f8a4d8e7a56b8"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-453-lossless-retention-r1/receipts/closing-first-attempt-failure.json",
+      "bytes": 787,
+      "sha256": "bc4d1121466807cd6fe40375fb31f1f4ccf1d6fe07b15e69431b857af85cc78d"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-453-lossless-retention-r1/receipts/closing-state.json",
+      "bytes": 4557,
+      "sha256": "28adc94a800cab160d4bd55204d47e2640a121e19b4577ebb35306fe032f99ea"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-453-lossless-retention-r1/receipts/heavy-slot-release.json",
+      "bytes": 387,
+      "sha256": "583447a7ce2b6865aba2c49b09a85f4726c595063f060d6846252e8466497872"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-83941bc-retry-prep-r1/retention/README.md",
+      "bytes": 6050,
+      "sha256": "19b5dafbb8b9a641036c3ba65be3e7692dc57649af51fb8e524da966e07694e3"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-83941bc-retry-prep-r1/retention/held-sqlite-lossless.py",
+      "bytes": 11864,
+      "sha256": "49753ee6e103e256a5e261079d2eab6882a9e92f3cb531ee8c823bda8f35f6a9"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-83941bc-retry-prep-r1/retention/restore-public-duplicates.py",
+      "bytes": 5371,
+      "sha256": "fd0b06c246b97d81670fa58e749ed05a12fcc565456a5106f0a809cabaef894c"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-83941bc-retry-prep-r1/retention/sealed-final-manifest.json",
+      "bytes": 91644,
+      "sha256": "bf8ed2449d14c0f3bcf00d32af4ca831885c08212be96fecc96ebd8d581ee681"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-83941bc-retry-prep-r1/retention/retention-index.tsv",
+      "bytes": 442671,
+      "sha256": "446a4df17f6921fbe6ec35bc222855e73454c5930c83c528ede9eecd1ae5bcf4"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-83941bc-retry-prep-r1/retention/retain-actual-bytes.tsv",
+      "bytes": 98231,
+      "sha256": "4aaab1cbe18c6211c8f5cd6637dfb6e1c474d7a1e6cc87959572d1fcac6da2e9"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-83941bc-retry-prep-r1/retention/source-backed-public-duplicates.tsv",
+      "bytes": 344776,
+      "sha256": "c999cbe8fe3d5cb0b5e81f0b14f9f99fba975cbd8309b4c914a66b3f2a740959"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-83941bc-retry-prep-r1/retention/sqlite-codec-r1/result.json",
+      "bytes": 1417,
+      "sha256": "05c729b3babc38cdb53f531b1a6a20fcb107d746ebe1e139c133ece7a6f95f77"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-83941bc-retry-prep-r1/retention/restore-public-r1/restore-result.json",
+      "bytes": 114015,
+      "sha256": "9f4875c98502eb910b309528fbd78eed10927c882b8dafdab91d02a1005fe0df"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-83941bc-retry-prep-r1/retention/retained-actual-r1/retained-result.json",
+      "bytes": 40307,
+      "sha256": "e307b2cc94977dd6ed35e4be56371d8b70272ae6a0d221e3d77a7eb3bd2be864"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-453-lossless-retention-r1/receipts/git-reachability.json",
+      "bytes": 1496,
+      "sha256": "eec052909619acbca3e3f905845a5282c5234a21688aa7ba0c5db9c603b989a5"
+    }
+  ],
+  "large_payload_policy": {
+    "large_payloads_reread_or_rehashed_by_this_review": false,
+    "admitted_evidence": "Execution receipts, sealed metadata path sets, and guarded execution source.",
+    "pre_review_plan_sha256": "9e26e079653666c20a998e3768cd1eb80d174f313e2dd3945b4bfdb70549440d",
+    "final_plan_policy": "Bind preserved large payload records to the prior full-read plan; hash metadata and this review; verify every copied output against its listed size and SHA-256."
+  },
+  "attention_flags": [
+    "Public reconstruction depends on reachable Git objects for both pinned commits.",
+    "The raw SQLite and decoded equality proof remain local and are excluded from the bounded repository import.",
+    "No local disk bytes were reclaimed.",
+    "Hosted failed SQLite and any 839 runtime acceptance remain outside this review.",
+    "The preserved pre-review plan excludes this independent review and predates the heavy-slot release; root must generate a new reviewed allowlist."
+  ],
+  "unexpected_review_failures": "first-failures.json"
+}

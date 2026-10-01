@@ -1,0 +1,26 @@
+{
+  "reviewer": "GPT-5.6 Sol in Codex",
+  "scope": "Closing file-only review of the executed 453 lossless-retention run",
+  "failures": [
+    {
+      "sequence": 1,
+      "operation": "Inventory retention and execution directories from the execution worktree root",
+      "result": "The command failed because those directories do not exist under the execution worktree; the generated outputs are under the 839 retry-preparation worktree's retention directory.",
+      "preservation": "The failure was not rerun. Review paths were corrected in a separate call."
+    },
+    {
+      "sequence": 2,
+      "operation": "Batched JavaScript review helper",
+      "result": "ReferenceError: prep is not defined",
+      "preservation": "The failed script was not rerun. A separate corrected call completed."
+    },
+    {
+      "sequence": 3,
+      "operation": "First audit-artifact generator",
+      "result": "The source-provenance field changed concurrently from large_payload_hashes_bound_to_prior_full_reads to preserved_payload_hashes_bound_to_prior_full_reads, so the generator's stale text assertion failed.",
+      "preservation": "The failed generator wrote no audit artifact. Its assertion failure is preserved here; the later audit reads the final field name and is a separate corrected call."
+    }
+  ],
+  "payload_checks_failed": false,
+  "review_result_affected": false
+}

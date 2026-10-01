@@ -1,0 +1,77 @@
+{
+  "capturedAt": "2026-10-01T21:30:17.691232+00:00",
+  "phase": "natural-allied",
+  "ownedCwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+  "processes": [
+    {
+      "pid": 885504,
+      "executable": "/usr/bin/bash",
+      "argv": [
+        "bash",
+        "work/final-ai-prep/followup-453c221-r4.sh",
+        "natural-allied"
+      ]
+    },
+    {
+      "pid": 885582,
+      "executable": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+      "argv": [
+        "node",
+        "work/final-ai-prep/proof-envelope.mjs",
+        "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "work/ai-save401-final-453c221-r1/envelopes/natural-allied",
+        "--",
+        "npx",
+        "--no-install",
+        "vitest",
+        "run",
+        "--config",
+        "vitest.ai-team.config.ts",
+        "--reporter=verbose"
+      ]
+    },
+    {
+      "pid": 906016,
+      "executable": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+      "argv": [
+        "npm exec vitest run --config vitest.ai-team.config.ts --reporter=verbose"
+      ]
+    },
+    {
+      "pid": 906053,
+      "executable": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+      "argv": [
+        "node",
+        "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/node_modules/.bin/vitest",
+        "run",
+        "--config",
+        "vitest.ai-team.config.ts",
+        "--reporter=verbose"
+      ]
+    },
+    {
+      "pid": 906077,
+      "executable": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+      "argv": [
+        "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+        "--experimental-import-meta-resolve",
+        "--require",
+        "/home/morgana/Projects/orcs-vs-Fairies/node_modules/vitest/suppress-warnings.cjs",
+        "--conditions",
+        "node",
+        "--conditions",
+        "development",
+        "/home/morgana/Projects/orcs-vs-Fairies/node_modules/vitest/dist/workers/forks.js"
+      ]
+    },
+    {
+      "pid": 906184,
+      "executable": "/usr/bin/bash",
+      "argv": [
+        "/usr/bin/bash",
+        "-lc",
+        "python3 - <<'PY'\nimport datetime,json,os,pathlib\ncwd='/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies';rows=[]\nfor p in pathlib.Path('/proc').iterdir():\n if not p.name.isdigit():continue\n try:\n  if os.readlink(p/'cwd')!=cwd:continue\n  executable=os.readlink(p/'exe')\n  if pathlib.Path(executable).name not in ['node','bash','sh']:continue\n  argv=(p/'cmdline').read_bytes().split(b'\\0');argv=[a.decode(errors='replace') for a in argv if a]\n  rows.append({'pid':int(p.name),'executable':executable,'argv':argv})\n except (FileNotFoundError,PermissionError,ProcessLookupError):pass\nout=pathlib.Path('work/ai-save401-final-453c221-r1/processes');out.mkdir(exist_ok=True)\nrecord={'capturedAt':datetime.datetime.now(datetime.timezone.utc).isoformat(),'phase':'natural-allied','ownedCwd':cwd,'processes':sorted(rows,key=lambda r:r['pid'])}\n(out/'natural-allied-live.json').write_text(json.dumps(record,indent=2)+'\\n')\nprint(json.dumps(record,indent=2))\nPY"
+      ]
+    }
+  ]
+}

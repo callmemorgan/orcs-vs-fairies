@@ -1,0 +1,44 @@
+{
+  "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "result": "failed-preserved",
+  "failurePhase": "creating two-human versus two-AI cooperative lobby",
+  "failureTimeoutMs": 30000,
+  "supportedCause": "The frozen verifier obtains UUID plus revision and mode display text, then uses that complete string for an exact Join lobby accessible-name lookup. The UI constructs the accessible name with only the UUID, so those strings cannot match.",
+  "scope": "Source inspection explains the failed selector. The acceptance phase was not corrected or rerun, and this does not establish that joining or later co-op gameplay would otherwise pass.",
+  "additionalReviewerFlag": "Guest failure screenshot labels the listed lobby View lobby even though the guests have distinct identities and the preserved server row leaves the second human seat open. This UI/server mismatch has no verified cause in this run.",
+  "laterOnlinePhase": "Not run. Its frozen verifier has the same text-derived exact-name construction.",
+  "references": [
+    {
+      "path": "scripts/verify_assembled_coop.mjs",
+      "sha256": "66e5437480bd3cecb7bbd51915db1b323a51b8677afd308d1aef44bbbe8e0b9a",
+      "lines": {
+        "152": "  const lobbyId=(await first.page.locator('.online-lobby-id').textContent()).trim();evidence.lobbyId=lobbyId;",
+        "153": "  await refresh(second);await second.page.getByRole('button',{name:`Join lobby ${lobbyId}`,exact:true}).click();await second.page.waitForSelector('.online-current:not([hidden])');"
+      }
+    },
+    {
+      "path": "src/ui/OnlineLobby.ts",
+      "sha256": "91b8e98d7a3ec977186da829e7ba8aca7b3ddfead1fcf603e58a66bc672d597b",
+      "lines": {
+        "120": "      button.textContent=ownsSeat(lobby)?(lobby.matchId?'Rejoin match':'View lobby'):'Join lobby';",
+        "121": "      button.setAttribute('aria-label',`${button.textContent} ${lobby.id}`);button.disabled=busy||!!lobby.matchId&&!ownsSeat(lobby);",
+        "135": "    element('.online-lobby-id').textContent=`${current.id} \u00b7 Server revision ${current.revision} \u00b7 ${MATCH_MODE_NAMES[current.settings.rules?.mode??'annihilation']}`;"
+      }
+    },
+    {
+      "path": "scripts/verify_assembled_online.mjs",
+      "sha256": "e544fbecf060f0fcfeb156287396d68efa91a68976d8d8eaf98fec2f22d73d1e",
+      "lines": {
+        "164": "  const lobbyId=(await first.page.locator('.online-lobby-id').textContent()).trim();",
+        "165": "  await refresh(second);await second.page.getByRole('button',{name:`Join lobby ${lobbyId}`,exact:true}).click();await second.page.waitForSelector('.online-current:not([hidden])');"
+      }
+    },
+    {
+      "path": "scripts/verify_assembled_modes.mjs",
+      "sha256": "ad1f74fca75fc88ce25f6d68dd207080e2632767d9872bd2f9db46aea88af872",
+      "lines": {
+        "50": " await host.page.getByLabel('Lobby map size',{exact:true}).selectOption('small');await host.page.getByLabel('Lobby Victory mode',{exact:true}).selectOption('relic');await host.page.getByLabel('Lobby Relic count',{exact:true}).fill('1');await host.page.getByLabel('Lobby Relics needed to win',{exact:true}).fill('1');await host.page.getByLabel('Lobby Relic hold seconds',{exact:true}).fill('120');await host.page.locator('.online-create [data-rule-group=\"draft\"] > summary').click();await host.page.getByLabel('Lobby Enable army draft',{exact:true}).check();await host.page.getByLabel('Lobby Draft ban rounds',{exact:true}).fill('0');await host.page.getByLabel('Lobby Draft pick rounds',{exact:true}).fill('1');await host.page.getByRole('button',{name:'Create lobby',exact:true}).click();await host.page.waitForSelector('.online-current:not([hidden])');const id=(await host.page.locator('.online-lobby-id').textContent()).split(' \u00b7 ')[0].trim();await refresh(other);await other.page.getByRole('button',{name:`Join lobby ${id}`,exact:true}).click();await other.page.waitForSelector('.online-current:not([hidden])');await refresh(host);"
+      }
+    }
+  ]
+}

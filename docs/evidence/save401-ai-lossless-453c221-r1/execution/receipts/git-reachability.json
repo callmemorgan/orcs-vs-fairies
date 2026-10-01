@@ -1,0 +1,48 @@
+{
+  "state": "both_pinned_commits_reachable_from_named_refs",
+  "checked_at": "2026-10-01T23:02:11.914232+00:00",
+  "repository": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+  "records": [
+    {
+      "pin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "command": [
+        "git",
+        "for-each-ref",
+        "--contains=453c2218af9973b9eca8fb78392435bd9d46a740",
+        "--format=%(refname) %(objectname)",
+        "refs/heads",
+        "refs/tags",
+        "refs/remotes"
+      ],
+      "named_containing_refs": [
+        {
+          "ref": "refs/heads/codex/100-features",
+          "tip": "37bf0e794e7f62cf33347d2e92c739d593bf1cc4"
+        },
+        {
+          "ref": "refs/heads/codex/hosted-zero-delay-favicon-proof",
+          "tip": "7fe049f3ad3c3dd8ab6ae32962e73d000219aab5"
+        }
+      ]
+    },
+    {
+      "pin": "83941bc80ce9ec08840b0645d9b33e8018d5309a",
+      "command": [
+        "git",
+        "for-each-ref",
+        "--contains=83941bc80ce9ec08840b0645d9b33e8018d5309a",
+        "--format=%(refname) %(objectname)",
+        "refs/heads",
+        "refs/tags",
+        "refs/remotes"
+      ],
+      "named_containing_refs": [
+        {
+          "ref": "refs/heads/codex/100-features",
+          "tip": "37bf0e794e7f62cf33347d2e92c739d593bf1cc4"
+        }
+      ]
+    }
+  ],
+  "future_requirement": "The importer must preserve named commit reachability and their public blobs; this receipt describes the checked refs at its timestamp."
+}
