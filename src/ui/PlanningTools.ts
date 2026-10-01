@@ -10,6 +10,7 @@ export interface BlueprintPlacement extends Vec { role:BuildingRole }
 export interface PlanningToolsStatus { side?:Side; readOnly?:boolean; blocked?:boolean }
 /** Host callbacks own the serialized plan and gate commands for replay, network and photo modes. */
 export interface PlanningToolsCallbacks {
+  toolbar?:HTMLElement;
   getPlan:()=>ConstructionPlan | null;
   getTargets:()=>WorkerTargets;
   setTargets:(targets:WorkerTargets)=>ActionResult;
@@ -81,7 +82,7 @@ export function mountPlanningTools(root:HTMLElement,callbacks:PlanningToolsCallb
   const list=el('ol');list.setAttribute('aria-label','Construction plans');list.style.padding='0';list.style.listStyle='none';
   const execute=makeButton('Construct assigned plans',()=>{void run(async()=>{const result=await callbacks.executeBlueprints();message(`Started ${result.started.length} plan${result.started.length===1?'':'s'}. ${result.pending.length?`${result.pending.length} pending: ${result.pending.map(item=>item.reason).join(' ')}`:'No pending construction plans.'}`);},undefined,execute);});
   content.append(el('h3','Construction workers'),el('p','Choose one or more workers below, then assign them to a plan. Each worker can construct one new site at a time; other assigned plans remain pending until workers are free.'),workerSummary,useSelection,workerPicker,el('h3','Your plans'),list,execute);
-  dialog.append(heading,notice,content);overlay.append(dialog);host.append(toolbar,overlay);root.append(host);
+  dialog.append(heading,notice,content);overlay.append(dialog);host.append(overlay);if(callbacks.toolbar)callbacks.toolbar.append(launch);else host.prepend(toolbar);root.append(host);
 
   function side():Side{return status.side??0;}
   function contextValid():boolean{return !!state&&validPlanningSide(state,side());}
@@ -155,6 +156,6 @@ export function mountPlanningTools(root:HTMLElement,callbacks:PlanningToolsCallb
   document.addEventListener('keydown',keyboard,true);const stop=(event:Event)=>event.stopPropagation();for(const type of ['pointerdown','pointerup','mousedown','mouseup','click','dblclick','contextmenu','wheel','keydown'])host.addEventListener(type,stop);
   return {
     update(nextState:GameState|null,nextStatus:PlanningToolsStatus={}){if(disposed)return;state=nextState;status=nextStatus;host.classList.toggle('session-in-match',!!state);refresh();},
-    dispose(){if(disposed)return;close();disposed=true;++placementGeneration;document.removeEventListener('keydown',keyboard,true);try{callbacks.onPreview?.([]);}finally{host.remove();}}
+    dispose(){if(disposed)return;close();disposed=true;++placementGeneration;document.removeEventListener('keydown',keyboard,true);try{callbacks.onPreview?.([]);}finally{launch.remove();host.remove();}}
   };
 }

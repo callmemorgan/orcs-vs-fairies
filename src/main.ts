@@ -353,6 +353,7 @@ function canEditPlanning(side:Side,context:PlanningEditContext){
  return context==='dialog'||!scene.paused&&!sessionModal;
 }
 const planning=mountPlanningSession(root,{
+ toolbar:sessionToolbar,
  getState:()=>scene?.state??null,getSide:playerSide,canEdit:canEditPlanning,
  dispatch:(side,command)=>!!scene&&!onlineConnection&&!replay&&issueCommand(scene.state,side,command),
  selectedWorkerIds:()=>scene?.selected??[],onVisibility:open=>setModal('planning',open),

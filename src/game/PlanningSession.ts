@@ -16,6 +16,7 @@ export interface PlanningSessionSnapshot {
   automaticSides: Side[];
 }
 export interface PlanningSessionHost {
+  toolbar?: HTMLElement;
   getState: () => GameState | null;
   getSide: () => Side;
   /** A true result must synchronously apply the command to getState(). */
@@ -82,6 +83,7 @@ export function mountPlanningSession(root: HTMLElement, host: PlanningSessionHos
   }
   function mount() {
     tools = mountPlanningTools(root, {
+      toolbar: host.toolbar,
       getPlan: () => state && validPlanningSide(state, currentSide()) ? runtimes[currentSide()].construction : null,
       getTargets: () => state && validPlanningSide(state, currentSide()) ? { ...runtimes[currentSide()].targets } : emptyTargets(),
       setTargets: targets => {

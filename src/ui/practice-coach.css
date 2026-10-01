@@ -19,4 +19,4 @@
 .practice-coach button:disabled { opacity:.6; cursor:default; }
 .practice-coach :is(button,input,select,summary):focus-visible { outline:2px solid #ffe2a1; outline-offset:3px; }
 .practice-coach-notice { color:#f3d3a9; }
-@media(max-width:600px) { .practice-coach { top:145px; left:8px; width:min(300px,calc(100vw - 16px)); max-height:calc(100dvh - 335px); } }
+@media(max-width:600px) { .practice-coach { top:var(--tool-panel-top,145px); left:8px; width:min(300px,calc(100vw - 16px)); max-height:calc(100dvh - var(--tool-panel-top,145px) - 215px); } }

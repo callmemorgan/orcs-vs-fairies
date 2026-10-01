@@ -61,7 +61,7 @@ function fixture() {
   return { state, workers, hq, points };
 }
 
-function setup(status: Status = {}) {
+function setup(status: Status = {}, toolbar?:HTMLElement) {
   const fixtureData = fixture();
   const { state, workers } = fixtureData;
   const plan = createConstructionPlan(0);
@@ -84,7 +84,7 @@ function setup(status: Status = {}) {
   } satisfies Callbacks;
   const root = document.createElement('div');
   document.body.append(root);
-  const tools = mountPlanningTools(root, callbacks);
+  const tools = mountPlanningTools(root, { ...callbacks, toolbar });
   mounted.push(tools);
   tools.update(state, status);
   return { ...fixtureData, root, tools, callbacks, plan, select: (ids: number[]) => { selected = ids; } };
@@ -495,4 +495,11 @@ describe('planning panel lifecycle and failures', () => {
     await Promise.resolve();
     expect(root.childElementCount).toBe(0);
   });
+});
+
+
+it('uses and cleans up the host toolbar for the planning launcher',()=>{
+ const toolbar=document.createElement('nav');document.body.append(toolbar);const f=setup({},toolbar),launch=toolbar.querySelector<HTMLButtonElement>('[data-planning-launch]')!;
+ expect(launch).toBeDefined();expect(f.root.querySelector('.session-toolbar')).toBeNull();launch.click();expect(f.root.querySelector<HTMLElement>('.session-overlay')!.hidden).toBe(false);
+ f.tools.dispose();expect(toolbar.children).toHaveLength(0);expect(f.callbacks.onModal).toHaveBeenLastCalledWith(false);
 });
