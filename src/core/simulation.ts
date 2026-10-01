@@ -74,9 +74,9 @@ function buildingDef(s:GameState,e:Entity):BuildingDef{return buildingFor(s,e);}
 function radius(s:GameState,e:Entity):number{return e.kind==='building'?buildingDef(s,e).size/2:0.3;}
 function near(s:GameState,a:Entity,b:Entity|ResourceNode,range:number):boolean{return distance(a,b)<=range+('kind' in b&&b.kind==='building'?radius(s,b):0);}
 function emit(s:GameState,type:GameState['events'][number]['type'],e:Vec & {side:Side;id?:number},target?:number,text?:string){const event:GameState['events'][number]={type,x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level}),side:e.side,target,text,source:e.id};s.events.push(event);return event;}
-export function spawnEntity(s:GameState,side:Side,kind:Entity['kind'],role:UnitRole|BuildingRole,x:number,y:number,progress=1,definitionId?:string,level=0):Entity{
- const def=kind==='unit'?unitFor(s,side,role as UnitRole,definitionId):buildingFor(s,side,role as BuildingRole,definitionId);
- const e:Entity={id:s.nextId++,side,kind,role,x,y,...(s.world||level?{level}:{}),hp:progress===1?def.hp:Math.max(1,def.hp*.1),maxHp:def.hp,order:{type:'idle'},cooldown:0,progress,queue:[],trainProgress:0,researchProgress:0,facing:2,animation:'idle',animTime:0,momentum:0,illusion:false,expires:0,carried:0,carriedKind:'wood',path:[]};if(s.content||definitionId)e.definitionId=def.id;if(kind==='unit'&&(def as UnitDef).shield){e.maxShield=(def as UnitDef).shield;e.shield=e.maxShield;}if(kind==='unit')initializeTactics(s,e);s.entities.push(e);return e;
+export function spawnEntity(s:GameState,side:Side,kind:Entity['kind'],role:UnitRole|BuildingRole,x:number,y:number,progress=1,definitionId?:string,level=0,definitionFaction?:FactionId):Entity{
+ const subject={side,kind,role,definitionId,definitionFaction} as Entity,def=kind==='unit'?unitFor(s,subject):buildingFor(s,subject);
+ const e:Entity={id:s.nextId++,side,kind,role,x,y,...(s.world||level?{level}:{}),hp:progress===1?def.hp:Math.max(1,def.hp*.1),maxHp:def.hp,order:{type:'idle'},cooldown:0,progress,queue:[],trainProgress:0,researchProgress:0,facing:2,animation:'idle',animTime:0,momentum:0,illusion:false,expires:0,carried:0,carriedKind:'wood',path:[]};if(s.content||definitionId)e.definitionId=def.id;if(definitionFaction)e.definitionFaction=definitionFaction;if(kind==='unit'&&(def as UnitDef).shield){e.maxShield=(def as UnitDef).shield;e.shield=e.maxShield;}if(kind==='unit')initializeTactics(s,e);s.entities.push(e);return e;
 }
 export function spawnFactionDefinition(s:GameState,side:Side,definitionId:string,point:Vec,progress=1):Entity {
  const definition=factionSystemDefinition(definitionId);if(!definition)throw new Error('Unknown faction definition.');
@@ -339,7 +339,7 @@ function useAbility(s:GameState,e:Entity):boolean{
  for(const offset of [-.6,.6]){
   const desired={x:clamp(e.x+offset,.5,s.width-.5),y:clamp(e.y-offset,.5,s.height-.5),...(e.level===undefined?{}:{level:e.level})};
   const point=walkable(s,desired.x,desired.y,levelOf(e))?desired:openDestination(s,desired,e);if(!point)continue;
-  const clone=spawnEntity(s,e.side,'unit',e.role,point.x,point.y,1,e.definitionId,levelOf(e));clone.illusion=true;clone.hp=clone.maxHp*.4;clone.maxHp=clone.hp;clone.expires=s.time+18;clone.order={...e.order};placed++;
+  const clone=spawnEntity(s,e.side,'unit',e.role,point.x,point.y,1,e.definitionId,levelOf(e),e.definitionFaction);clone.illusion=true;clone.hp=clone.maxHp*.4;clone.maxHp=clone.hp;clone.expires=s.time+18;clone.order={...e.order};placed++;
  }
  if(!placed)return false;runtime(s).abilities.set(e.id,s.time+35);
  }else if(ability==='surge'){
