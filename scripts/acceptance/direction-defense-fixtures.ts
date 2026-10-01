@@ -137,7 +137,7 @@ for (const friendlyFire of [false, true]) {
 
 for (const motion of ['stationary', 'charge', 'stop', 'turn', 'pike-front', 'pike-rear'] as const) {
   const { state, undergroundWorker } = base('fairies');
-  const source = unit(state, 0, 'cavalry', motion === 'stationary' ? 24.7 : 18.5, 24.5, motion === 'stationary' ? 3 : 0);
+  const source = unit(state, 0, 'cavalry', motion === 'stationary' ? 24.7 : motion === 'stop' || motion === 'turn' ? 18.5 : 19.5, 24.5, motion === 'stationary' ? 3 : 0);
   const target = unit(state, 1, motion.startsWith('pike') ? 'spear' : 'melee', 26, 24.5);
   source.facing = 0; target.facing = motion === 'pike-rear' ? 0 : 4;
   write(`charge-${motion}`, state, { source: source.id, target: target.id, undergroundWorker, motion, stopPoint: { x: 23.6, y: 24.5 }, turnPoint: { x: 23.6, y: 22.5 } }, { targetFacing: target.facing, targetOrder: 'hold', targetCooldown: 1000, description: 'Native Stag Rider commands measure movement charge, hold interruption, sharp-turn interruption, or held Pikejaw counter. No specialist ability is activated. Pike rear differs only in held facing.' });
