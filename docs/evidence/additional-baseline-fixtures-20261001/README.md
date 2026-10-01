@@ -6,7 +6,7 @@ The allied timer tests still pause for 25 seconds, destroy the hostile barracks 
 
 The roster still runs 400 quarter-second ticks, or 100 simulated seconds, with all economy assertions intact. The original 4v4 run needed 40.37 seconds of wall time and failed its 30-second allowance. Its test allowance is now 90 seconds. The markup fixture now supplies a hashed imported faction through `setContent`; the immutable registry does not read later mutations of exported base definitions. It asserts the literal name, selects that faction, and confirms that no image or script elements were created.
 
-`source-sha256.txt` identifies 168 committed production, affected test and build-configuration files at the fixture commit. The eight-case diagnostic is retained as text because it is a scratch attribution probe, separate from the 120 affected tests. Its reproducer reads the original source directly from Git into a temporary directory, adds the unchanged diagnostic and uses the installed dependencies. It does not change the checkout. Console logs retain their recorded bytes.
+`source-sha256.txt` identifies 168 committed production, affected test and build-configuration files at the fixture commit. The eight-case diagnostic is retained as text because it is a scratch attribution probe, separate from the 120 affected tests. Its reproducer reads the original source directly from Git into a temporary directory, adds the unchanged diagnostic and uses the installed dependencies. It does not change the checkout. Console logs retain their recorded output, with trailing blank lines removed.
 
 From the repository root:
 
@@ -18,3 +18,5 @@ sha256sum -c docs/evidence/additional-baseline-fixtures-20261001/source-sha256.t
 ```
 
 The hashes and retained runs describe the pre-SAVE4 source. Final assembled validation, browser proof and CLI proof belong to the parent. The parent owns the canonical decision log and feature ledger; this workstream sends facts without editing either file.
+
+GPT-5.6 Sol independently admitted both commits with no findings. Its report is `independent-review.md`; retained runs reproduce the same five failures with 115/120 passing on the detached baseline, then pass 120/120 on the evidence tip and all eight attribution variants. Source and evidence hash checks also pass. `committed-verification.json` checks the original 19 evidence blobs at `ae4f612`; the final evidence hash file covers the retained review records and normalized log endings. The final assembled SAVE4 source still needs the parent's validation.

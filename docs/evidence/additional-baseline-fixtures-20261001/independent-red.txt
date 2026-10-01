@@ -1,13 +1,13 @@
 
- RUN  v4.1.11 /home/morgana/.codex/worktrees/baseline-fixes-100features/orcs-vs-Fairies
+ RUN  v4.1.11 /tmp/ovf-additional-baseline-red-proof
 
- ❯ tests/allied-ai.test.ts (43 tests | 2 failed) 4177ms
+ ❯ tests/allied-ai.test.ts (43 tests | 2 failed) 4253ms
      × restarts the defend arrival timer after an emergency pause 53ms
-     × restarts the attack arrival timer after an emergency pause 43ms
+     × restarts the attack arrival timer after an emergency pause 44ms
  ❯ tests/hud-health.test.ts (3 tests | 1 failed) 60ms
-   × disguises enemy doubles in selection health, group totals and roster tooltips without changing simulation health 37ms
- ❯ tests/skirmish-roster.test.ts (74 tests | 2 failed) 51159ms
-     × runs every local CPU economy from the 4v4 UI config 40372ms
+   × disguises enemy doubles in selection health, group totals and roster tooltips without changing simulation health 36ms
+ ❯ tests/skirmish-roster.test.ts (74 tests | 2 failed) 50428ms
+     × runs every local CPU economy from the 4v4 UI config 39754ms
      × renders faction names as text without creating markup 8ms
 
 ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
@@ -75,5 +75,5 @@ Received: "Automata"
 
  Test Files  3 failed (3)
       Tests  5 failed | 115 passed (120)
-   Start at  07:46:29
-   Duration  51.62s (transform 581ms, setup 0ms, import 740ms, tests 55.40s, environment 179ms)
+   Start at  08:10:02
+   Duration  50.89s (transform 560ms, setup 0ms, import 726ms, tests 54.74s, environment 169ms)
