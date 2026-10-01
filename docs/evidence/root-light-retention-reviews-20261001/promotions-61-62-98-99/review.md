@@ -1,0 +1,13 @@
+# Promotion review for original 61, 62, 98, and 99
+
+Both promotions are internally consistent and preserve the limits of their evidence. Commit `d85523d0c58bbb83cb7e94587c1283c6ed0cf400` changes only requirements 98 and 99, moving the ledger from 64/36 to 66/34. Commit `438c161db1db8d53fd03ee9154916e0e9e457432` changes only requirements 61 and 62, moving the ledger from 67/33 to 69/31. Neither promotion changes product or test files. Each adds one decision-trail row naming the promoted IDs, retained evidence, resulting counts, and scope limits.
+
+The 98/99 retention is exact. The retained GPT-5.6 Sol review and audit match their recorded source sizes and hashes. The daily bridge contains 352 source/test paths with equal Git blobs across the passing suite pin, natural-run pin, and promotion base, excluding only the separately reviewed `src/main.ts` anonymous-cosmetics guard. It names the two-account daily test at `tests/server-competitions.test.ts:84-94` and copies its passed assertion from the 4a71 suite, which reports 2,920 of 2,920 tests passed. The later corrected readback at `37bf0e794e7f62cf33347d2e92c739d593bf1cc4` verifies that every new evidence path is a real Git path and records the first false audit separately. The old file:function selector error is historical and does not indicate a missing 98/99 artifact.
+
+The 61/62 retention is also exact. The admission map, map verification, review, and audit at `438c161` match the sizes and hashes recorded in `retention.json`. Every evidence path newly attached to 61 and 62 resolves as a Git object. The source/test bridge binds the named passed 1v1 and eight-human team assertions to their actual test blobs at the 4a71 suite. Its retained 4v4 replay hash matches the durable file imported at `e665ab5bc9150a67147455a537ee470d8c0016f9`. That earlier import records 249 files and 123,954,185 bytes, fully rehashed with no feature promotion or runtime retry.
+
+The promotion text keeps the important distinctions. Feature 61 uses five authenticated guest-WebSocket surrender completions plus a sixth two-human match with zero stored commands and the real paid-command server test. Feature 62 combines completed all-human browser 2v2/3v3, a one-human/seven-AI 4v4 native roster export, and the real eight-human HTTP/WebSocket server test. The failed eight-browser 4v4 remains failed. Feature 98 combines one-account natural daily wins with a distinct two-account equality test. Feature 99 keeps the surrender-settlement and no-natural-five-win qualifications.
+
+I found no remaining admission or retention flag in these two commits. Co-op 63 and spectator 64 remain pending as the 61/62 decision row states.
+
+Reviewed by gpt-5.6-sol.

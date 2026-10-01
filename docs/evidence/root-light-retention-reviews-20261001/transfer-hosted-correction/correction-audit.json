@@ -1,0 +1,31 @@
+{
+  "reviewerModel": "gpt-5.6-sol",
+  "supersedesAttentionIn": [
+    "review.md",
+    "audit.json"
+  ],
+  "correction": "The earlier review incorrectly said no retained raw receipt contained the port-5371 closure observation.",
+  "verifiedEvidence": {
+    "cleanupAfter": {
+      "commitPath": "docs/evidence/serial-ai839-to-combatf18-transfer-20261001/ai839-cleanup-after.json",
+      "sha256": "45bed522ef580d56bd803abccbc5fc43e9c96e55df53741c24ec9e6c81396088",
+      "capturedAt": "2026-10-01T23:23:15.117752+00:00",
+      "server": null,
+      "port5371Listeners": [],
+      "port5371ConnectResult": 111,
+      "passed": true
+    },
+    "closingState": {
+      "commitPath": "docs/evidence/serial-ai839-to-combatf18-transfer-20261001/ai839-closing-state.json",
+      "sha256": "5e327132f25d434df417a1b5317f825270f3f339ae0c6cf3c772b0ac2908b6cc",
+      "ownedServerPidAbsent": true,
+      "port5371Closed": true
+    }
+  },
+  "provenanceDistinction": "The later fresh root confirmation is summarized in root-retention.json and preserved in transcript stdout, while the earlier original cleanup closure is directly retained in two raw receipts.",
+  "finalVerdict": "passed bounded retention and trail review",
+  "attention": [],
+  "attentionText": "No flags",
+  "runtimeExecuted": false,
+  "rootMutation": false
+}

@@ -1,0 +1,57 @@
+{
+  "reviewerModel": "gpt-5.6-sol",
+  "verdict": "passed bounded retention and trail review with one minor evidence-pointer gap",
+  "commits": {
+    "serialTransfer": {
+      "commit": "1c064c46f8f775b508f03e3434e6263183db441f",
+      "indexedOriginals": 8,
+      "indexedBytes": 150097,
+      "committedCopiesMatchIndex": true,
+      "externalOriginalsStillMatch": 8,
+      "featureChanges": [],
+      "sourceOrTestChanges": [],
+      "ledgerCounts": {"verified": 69, "inProgress": 31},
+      "claims": {
+        "coopChecksCompleted": 14,
+        "onlinePartialChecks": 6,
+        "onlineCompleted": false,
+        "combatNativeStagesClaimed": false,
+        "combatAuthorizationAndStartOnly": true
+      },
+      "externalPreservation": {
+        "aiPacketFiles": 493,
+        "aiSqliteBytes": 309325824
+      }
+    },
+    "hostedPreparation": {
+      "commit": "9a4921fbcb16e59d89d409f1806fb7317285648d",
+      "indexedOriginals": 24,
+      "indexedBytes": 477088,
+      "committedCopiesMatchIndex": true,
+      "externalOriginalsStillMatch": 24,
+      "allModesRegular0644": true,
+      "featureChanges": [],
+      "sourceOrTestChanges": [],
+      "ledgerCounts": {"verified": 69, "inProgress": 31},
+      "runtimeHeld": true,
+      "featureAdmission": false,
+      "supplemental4v4Optional": true,
+      "externalHostedSqliteBytes": 378163200,
+      "largeExternalRehashPerformedByRootImport": false
+    }
+  },
+  "decisionRows": {
+    "serialTransfer": "accurate",
+    "hostedPreparation": "accurate"
+  },
+  "attention": [
+    {
+      "severity": "minor",
+      "kind": "missing-raw-port-observation",
+      "detail": "root-retention.json records port 5371 closed, but the copied protected-root receipt contains PID 1063/start tick 874 and port 4173 only; no raw command receipt or transcript excerpt for 5371 is retained in this packet."
+    }
+  ],
+  "runtimeExecutedByReviewer": false,
+  "largeDatabaseRehashedByReviewer": false,
+  "rootMutation": false
+}

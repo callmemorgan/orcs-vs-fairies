@@ -1,0 +1,61 @@
+{
+  "reviewerModel": "gpt-5.6-sol",
+  "verdict": "passed file-only review; no remaining flags",
+  "promotions": {
+    "98_99": {
+      "commit": "d85523d0c58bbb83cb7e94587c1283c6ed0cf400",
+      "changedRequirementIds": [98, 99],
+      "countsBefore": {"verified": 64, "inProgress": 36},
+      "countsAfter": {"verified": 66, "inProgress": 34},
+      "productOrTestFilesChanged": false,
+      "decisionRowAdded": true,
+      "retainedReviewSha256": "6c440b24b1fb3adbff7c97ae514113b50f12330e5fe5fef5c9c473e74f370d4b",
+      "retainedAuditSha256": "070597193b5b8158484a396344663e145a34e4d3b7e30d5c96f0fcd4d154d68a",
+      "dailyBridge": {
+        "sourceTestsCompared": 352,
+        "equalSourceAndTests": 352,
+        "excludedPath": "src/main.ts",
+        "suitePin": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+        "suitePassed": 2920,
+        "suiteTotal": 2920,
+        "twoAccountTestStatus": "passed"
+      },
+      "correctedReadbackCommit": "37bf0e794e7f62cf33347d2e92c739d593bf1cc4",
+      "historicalFirstAuditPreserved": true
+    },
+    "61_62": {
+      "commit": "438c161db1db8d53fd03ee9154916e0e9e457432",
+      "changedRequirementIds": [61, 62],
+      "countsBefore": {"verified": 67, "inProgress": 33},
+      "countsAfter": {"verified": 69, "inProgress": 31},
+      "productOrTestFilesChanged": false,
+      "decisionRowAdded": true,
+      "retainedAdmissionMapSha256": "333b3919162048a8d2042fe49c1e4cf59a2d15558a2b7f9d0bee683ad11a5b2c",
+      "retainedMapVerificationSha256": "85571f73c24e856e050bc6768005f5c3ef16d41f9fb9806454e6f75590aca4e5",
+      "retainedReviewSha256": "731fd3b616af32da783f20e91bdba15c979f6f856efb3b659ca2ec91e55a0bdb",
+      "retainedAuditSha256": "0a5a2b6f4d707efc4d51f5030ed4c156168eafacd4503105cf6859124c69a49a",
+      "allNewEvidencePathsResolve": true,
+      "passedTestsBound": ["real two-human 1v1 ownership and paid-command deduplication", "real eight-human team HTTP/WebSocket coverage"],
+      "retained4v4ReplaySha256": "b4973a182353d6525fab2977e8adaaf32a6db1c9f2c46fa4f9575c3f177115fe"
+    }
+  },
+  "old453Retention": {
+    "commit": "e665ab5bc9150a67147455a537ee470d8c0016f9",
+    "files": 249,
+    "bytes": 123954185,
+    "fullyRehashed": true,
+    "sourcePacketPreserved": true,
+    "featurePromotions": [],
+    "runtimeRetryExecuted": false
+  },
+  "qualificationsPreserved": {
+    "61": "five authenticated guest WebSocket surrenders; sixth match has zero stored commands",
+    "62": "browser 4v4 failed; local 4v4 is one human and seven AI; eight-human coverage comes from server test",
+    "98": "natural daily wins use one account twice; two-account equality comes from passed test",
+    "99": "five reward settlements use surrender; no natural five-win or campaign-victory claim"
+  },
+  "attention": [],
+  "pendingUnaffected": [63, 64],
+  "runtimeExecuted": false,
+  "rootMutation": false
+}
