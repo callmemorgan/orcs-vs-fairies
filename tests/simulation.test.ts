@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { FACTIONS } from '../src/core/content';
 import { walkable } from '../src/core/navigation';
+import { saveGame } from '../src/core/saves';
 import { canPlace, createGame, isVisible, issueCommand, refreshVisibility, runAI, stepGame } from '../src/core/simulation';
 import type { BuildingRole, Entity, FactionId, GameState, Side, UnitRole } from '../src/core/types';
 
@@ -324,7 +325,12 @@ describe('vision, movement and combat', () => {
     advance(s, 2); expect(s.entities.some(e => e.id === defender.id)).toBe(false);
     const enemyHQ = hq(s, 1); enemyHQ.x = 23; enemyHQ.y = 20; enemyHQ.hp = 1; refreshVisibility(s);
     expect(issueCommand(s, 0, { type: 'attack', ids: [attacker.id], target: enemyHQ.id })).toBe(true);
-    advance(s, 5); expect(s.winner).toBe(0); expect(enemyHQ.hp).toBe(0);
+    for(let i=0;i<100&&s.winner===null;i++)stepGame(s,.05);
+    expect(s.winner).toBe(0); expect(enemyHQ.hp).toBe(0);
+    expect(s.events.some(event=>event.type==='death')).toBe(true);
+    const final=saveGame(s);
+    for(const dt of [.05,.05,.25,0,-1,NaN,Infinity])stepGame(s,dt);
+    expect(saveGame(s)).toEqual(final);
     expect(issueCommand(s, 0, { type: 'move', ids: [attacker.id], x: 2, y: 2 })).toBe(false);
   });
   it('does not treat an unfinished HQ as a surviving stronghold', () => {

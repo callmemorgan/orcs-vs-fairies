@@ -323,7 +323,7 @@ export default class GameScene extends Phaser.Scene {
     if(!this.actors)return;
     if(this.simulationEnabled&&!this.paused&&(this.state.winner===null&&!this.state.draw)){
       this.accumulated+=Math.min(delta/1000,.15);
-      while(this.accumulated>=.05){stepGame(this.state,.05);this.accumulated-=.05;this.processEvents();this.options.onStep?.(this.state);}
+      while(this.accumulated>=.05&&this.state.winner===null&&!this.state.draw){stepGame(this.state,.05);this.accumulated-=.05;this.processEvents();this.options.onStep?.(this.state);}
     }
     const living=this.selected.filter(id=>this.state.entities.some(e=>e.id===id&&e.hp>0&&this.visible(e)));if(living.length!==this.selected.length)this.select(living,false);
     const suppressed=this.inputSuppressed();if(suppressed)this.heldKeys.clear();
