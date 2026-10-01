@@ -5,7 +5,7 @@ import { coneCosine } from './scenario-geometry';
 import { MAP_VERSION, TERRAIN, terrainAt } from './maps';
 import { openDestination, walkable } from './navigation';
 import { loadGame, saveGame } from './saves';
-import { applyScenarioDamage, createMatch, isAllied, isHostile, isVisible, issueCommand, refreshVisibility, spawnEntity, stepGame } from './simulation';
+import { applyScenarioDamage, createMatch, isAllied, isHostile, isVisible, issueCommand, refreshVisibility, spawnDefinition, spawnEntity, stepGame } from './simulation';
 import { scenarioJson, validateScenario } from './scenario-validation';
 import { fogKey } from './world-map';
 import type { Command, Entity, GameState, MatchConfig, Side, UnitRole, Vec } from './types';
@@ -82,7 +82,9 @@ function spawnActors(session: ScenarioSession, actors: ScenarioActor[]): void {
     const desired = { x: definition.x, y: definition.y, ...(definition.level === undefined ? {} : { level: definition.level }) };
     const destination = definition.kind === 'unit' ? (walkable(session.state, desired.x, desired.y, desired.level ?? 0) ? desired : openDestination(session.state, desired, desired)) : desired;
     if (!destination) { finish(session, 'lost', `The spawn point for ${definition.label} became blocked.`); return; }
-    const entity = spawnEntity(session.state, definition.side, definition.kind, definition.role, destination.x, destination.y);
+    const entity = definition.definitionId === undefined
+      ? spawnEntity(session.state, definition.side, definition.kind, definition.role, destination.x, destination.y, 1, undefined, destination.level ?? 0)
+      : spawnDefinition(session.state, definition.side, definition.kind, definition.definitionId, destination.x, destination.y, 1, destination.level ?? 0);
     if (definition.level !== undefined) entity.level = definition.level;
     if (definition.hp !== undefined) entity.hp = definition.hp;
     session.runtime.labels[definition.label] = entity.id; spawned.push(definition);
@@ -113,7 +115,7 @@ export function createScenario(input: unknown, options: { firstEntityId?: number
   const state = construct({ map: { seed: definition.seed, size: definition.map?.size ?? 'small', ...(definition.map?.world ? { world: definition.map.world } : {}) }, players: [
     { id: 0, teamId: 0, factionId: definition.faction, controller: 'human' },
     { id: 1, teamId: 1, factionId: definition.opponent, controller: 'external' },
-  ], rules: { mode: 'scenario', standardDefeat: false, startingAge: 3, startingResources: definition.rules.resources } }, { scenario: true });
+  ], ...(definition.content ? { content: definition.content } : {}), rules: { mode: 'scenario', standardDefeat: false, startingAge: 3, startingResources: definition.rules.resources } }, { scenario: true });
   state.entities = []; state.resources = []; state.events = []; state.corpses = [];
   if (state.world) {
     const offset = firstId - 1;
@@ -386,7 +388,7 @@ function validateRuntime(definition: ScenarioDefinition, state: GameState, runti
   const fields = ['version', 'lastEvaluatedTick', 'definitionId', 'outcome', 'reason', 'labels', 'variables', 'triggers', 'completed', 'messages', 'reinforcementRemaining', 'escort', 'stealth', 'boss', 'commandCounts'];
   if (!runtime || typeof runtime !== 'object' || Array.isArray(runtime) || fields.some(key => !Object.hasOwn(runtime, key)) || Object.keys(runtime).some(key => !fields.includes(key))) fail('unknown or missing field');
   if (runtime.version !== 1 || runtime.definitionId !== definition.id || !['playing', 'won', 'lost'].includes(runtime.outcome) || typeof runtime.reason !== 'string' || runtime.reason.length > 4096) fail('identity or outcome');
-  if (state.players.length !== 2 || state.players[0].faction !== definition.faction || state.players[1].faction !== definition.opponent || state.seed !== definition.seed || state.rules.mode !== 'scenario' || state.rules.standardDefeat) fail('match identity');
+  if (state.players.length !== 2 || state.players[0].faction !== definition.faction || state.players[1].faction !== definition.opponent || state.seed !== definition.seed || state.rules.mode !== 'scenario' || state.rules.standardDefeat || definition.content?.hash !== state.content?.hash) fail('match identity');
   if (runtime.outcome === 'playing' && (state.winner !== null || state.draw) || runtime.outcome === 'won' && state.winner !== 0 || runtime.outcome === 'lost' && state.winner !== 1) fail('result disagrees with simulation');
   const finite = (n: unknown, min = 0, max = 1e9, integer = false): n is number => typeof n === 'number' && Number.isFinite(n) && n >= min && n <= max && (!integer || Number.isSafeInteger(n));
   if (!finite(runtime.lastEvaluatedTick, 0, state.tick, true)) fail('evaluated tick');
@@ -396,7 +398,7 @@ function validateRuntime(definition: ScenarioDefinition, state: GameState, runti
   const actors = [...definition.army, ...definition.events.flatMap(e => e.actions.flatMap(a => a.type === 'spawn' ? a.actors : [])), ...(definition.boss?.phases.flatMap(p => p.adds) ?? [])];
   const labels = new Set(actors.map(a => a.label));
   if (!record(runtime.labels) || Object.entries(runtime.labels).some(([label, id]) => !labels.has(label) || !finite(id, 1, state.nextId - 1, true)) || new Set(Object.values(runtime.labels)).size !== Object.values(runtime.labels).length || definition.army.some(a => !Object.hasOwn(runtime.labels, a.label))) fail('actor references');
-  for (const [label, id] of Object.entries(runtime.labels)) { const e = state.entities.find(e => e.id === id), a = actors.find(a => a.label === label)!; if (e && (e.side !== a.side || e.kind !== a.kind || e.role !== a.role)) fail('actor ownership or definition changed'); }
+  for (const [label, id] of Object.entries(runtime.labels)) { const e = state.entities.find(e => e.id === id), a = actors.find(a => a.label === label)!; if (e && (e.side !== a.side || e.kind !== a.kind || e.role !== a.role || a.definitionId !== undefined && e.definitionId !== a.definitionId)) fail('actor ownership or definition changed'); }
   if (!counters(runtime.variables, 1e9, true) || !counters(runtime.commandCounts) || !finite(runtime.reinforcementRemaining, 0, definition.rules.reinforcementBudget, true)) fail('variables or reinforcement budget');
   if (!record(runtime.triggers)) fail('trigger record');
   for (const [id, entry] of Object.entries(runtime.triggers)) { const e = definition.events.find(e => e.id === id); if (!e || !exact(entry, ['count', 'lastTime']) || !finite(entry.count, 1, e.repeat?.count ?? 1, true) || !finite(entry.lastTime, 0, state.time)) fail('trigger schedule'); }

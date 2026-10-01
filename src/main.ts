@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import GameScene, { project, unproject } from './game/GameScene';
 import { createPerformanceGame, countPerformanceUnits, FrameCollector, PERFORMANCE_CENTER } from './qa/performance';
 import { alliedAiStatus, createGame, createMatch, issueCommand, isGameOver } from './core/simulation';
+import { createScenario, scenarioSessionForState } from './core/scenarios';
 import { ContentLibrary, productionQueueKey, upgradeFor, factionFor } from './core/content-registry';
 import { mountModLibrary } from './ui/ModLibrary';
 import { mountShell } from './ui/Hud';
@@ -157,6 +158,11 @@ function start(next:FactionId,nextOpponent:FactionId=opponent,mapSize:MapSize="m
   const state=benchmark?createPerformanceGame():custom||roster.enabled?createMatch({...(custom||modLibrary.list().length?{content:modLibrary.bundle()}:{}),map:{seed,size:mapSize,biome:selectedBiome()},players:roster.getPlayers(next,nextOpponent,aiOptions.value),rules:roster.getRules()}):createGame(next,seed,nextOpponent,{mapSize,biome:selectedBiome(),ai:[{},aiOptions.value]});
   replacementGeneration++;launch(state);
  }catch(error){shell.notice(error instanceof Error?error.message:'Cannot start this skirmish.');}
+}
+/** Launch an admitted editor mission through the normal application host. */
+export function launchAuthoredScenario(definition:unknown,label?:string):GameState {
+ const session=createScenario(definition);replacementGeneration++;launch(session.state);
+ shell.notice(label??session.definition.title);return session.state;
 }
 function launch(state:GameState,history?:ReplayArchive,playback?:ReplayPlayer,remote?:{connection:OnlineMatchConnection;render:OnlineRenderState},generation=replacementGeneration,planningData?:SessionPlanning){
  if(generation!==replacementGeneration){remote?.connection.dispose();playback?.dispose();return;}
@@ -350,7 +356,7 @@ setInterval(()=>{
 // Read-only diagnostics for repeatable performance and state inspection. Player actions stay in the UI.
 const worldTools=mountWorldTools(root,{phase:()=>onlineRender?.worldPhase,state:()=>scene?.state,side:playerSide,level:()=>scene?.viewLevel??0,selected:()=>scene?.selected??[],canCommand:()=>!!scene&&scene.canIssueCommands,command:c=>scene?.command(c)??false,setLevel:level=>scene?.setViewLevel(level),select:ids=>scene?.selectEntities(ids),center:p=>scene?.centerOn(p.x,p.y),notice:shell.notice});
 setInterval(()=>worldTools.update(),100);
-Object.defineProperty(window,'rts',{get:()=>scene?.cameras?.main?{state:scene.state,viewLevel:scene.viewLevel,viewSide:scene.viewSide,readOnly:scene.readOnly,selected:[...scene.selected],art:scene.artStatus,fps:game?.loop.actualFps,paused:scene.paused,mode:onlineConnection?'online':replay?'replay':'local',simulationEnabled:scene.simulationEnabled,online:onlineConnection?{status:onlineConnection.status,role:onlineRender?.role,side:playerSide(),delayTicks:onlineConnection.connectionInfo?.delayTicks,pendingCommands:onlineConnection.pendingCommands,privateSides:[...(onlineRender?.privateSides??[])]}:null,camera:{x:scene.cameras.main.scrollX,y:scene.cameras.main.scrollY,zoom:scene.cameras.main.zoom,width:scene.cameras.main.width,height:scene.cameras.main.height}}:null});
+Object.defineProperty(window,'rts',{get:()=>scene?.cameras?.main?{state:scene.state,get activeScenario(){const session=scenarioSessionForState(scene!.state);return session?structuredClone({definition:session.definition,runtime:session.runtime}):null;},viewLevel:scene.viewLevel,viewSide:scene.viewSide,readOnly:scene.readOnly,selected:[...scene.selected],art:scene.artStatus,fps:game?.loop.actualFps,paused:scene.paused,mode:onlineConnection?'online':replay?'replay':'local',simulationEnabled:scene.simulationEnabled,online:onlineConnection?{status:onlineConnection.status,role:onlineRender?.role,side:playerSide(),delayTicks:onlineConnection.connectionInfo?.delayTicks,pendingCommands:onlineConnection.pendingCommands,privateSides:[...(onlineRender?.privateSides??[])]}:null,camera:{x:scene.cameras.main.scrollX,y:scene.cameras.main.scrollY,zoom:scene.cameras.main.zoom,width:scene.cameras.main.width,height:scene.cameras.main.height}}:null});
 if(location.hostname==='127.0.0.1'&&new URLSearchParams(location.search).has('qa'))setInterval(()=>{
  if(!scene||!game)return;
  const s=scene.state;

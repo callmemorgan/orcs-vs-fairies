@@ -1,6 +1,7 @@
 import type { BuildingRole, Cost, Entity, FactionId, GameState, MapSize, ResourceKind, Side, TerrainKind, UnitRole, Vec } from './types';
 import type { SaveEnvelope } from './saves';
 import type { WorldMapData } from './world-types';
+import type { ContentBundle } from './content-registry';
 
 export type ScenarioCondition =
   | { type: 'alive' | 'dead'; actor: string }
@@ -21,7 +22,7 @@ export interface ScenarioActor extends Vec {
   side: Side;
   kind: Entity['kind'];
   role: UnitRole | BuildingRole;
-  /** A creature definition can replace the existing role after registry installation. */
+  /** An admitted same-role definition from the actor's faction. */
   definitionId?: string;
   hp?: number;
   order?: ScenarioOrder;
@@ -72,6 +73,7 @@ export interface ScenarioDefinition {
   faction: FactionId;
   opponent: FactionId;
   seed: number;
+  content?: ContentBundle;
   map?: ScenarioMap;
   army: ScenarioActor[];
   objectives: ScenarioObjective[];

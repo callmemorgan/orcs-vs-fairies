@@ -1,4 +1,4 @@
-import { FACTIONS } from './content';
+import { contentFactions, decodeContentBundle } from './content-registry';
 import { MAP_SIZES, TERRAIN, generateMap } from './maps';
 import { generatedMapFromWorld, validateWorldMap } from './world-map';
 import type { BuildingRole, FactionId, UnitRole } from './types';
@@ -82,11 +82,14 @@ export function validateScenario(input: unknown): ScenarioDefinition {
     try { raw = JSON.parse(raw); } catch { bad('package', 'invalid JSON'); }
   }
   const value = scenarioJson(raw);
-  const s = object(value, 'definition', ['schemaVersion', 'id', 'title', 'briefing', 'successText', 'failureText', 'faction', 'opponent', 'seed', 'army', 'objectives', 'events', 'rules'], ['map', 'escort', 'stealth', 'boss', 'requiredActions']);
+  const s = object(value, 'definition', ['schemaVersion', 'id', 'title', 'briefing', 'successText', 'failureText', 'faction', 'opponent', 'seed', 'army', 'objectives', 'events', 'rules'], ['content', 'map', 'escort', 'stealth', 'boss', 'requiredActions']);
   if (s.schemaVersion !== 1) bad('schemaVersion', 'unsupported version');
   identifier(s.id, 'id'); for (const key of ['title', 'briefing', 'successText', 'failureText']) text(s[key], key);
-  const faction = choice(s.faction, 'faction', Object.keys(FACTIONS)) as FactionId;
-  const opponent = choice(s.opponent, 'opponent', Object.keys(FACTIONS)) as FactionId;
+  const content = s.content === undefined ? undefined : decodeContentBundle(s.content);
+  const factions = contentFactions(content);
+  if (content) s.content = content;
+  const faction = choice(s.faction, 'faction', Object.keys(factions)) as FactionId;
+  const opponent = choice(s.opponent, 'opponent', Object.keys(factions)) as FactionId;
   const seed = number(s.seed, 'seed', 0, 0xffffffff, true);
   let map: ScenarioMap;
   if (s.map !== undefined) {
@@ -126,11 +129,14 @@ export function validateScenario(input: unknown): ScenarioDefinition {
     number(a.side, `${path}.side`, 0, 1, true); const kind = choice(a.kind, `${path}.kind`, ['unit', 'building']);
     const role = choice(a.role, `${path}.role`, kind === 'unit' ? unitRoles : buildingRoles);
     coordinates(a, path);
-    const def = FACTIONS[a.side === 0 ? faction : opponent];
-    const definition = kind === 'unit' ? def.units[role as UnitRole] : def.buildings[role as BuildingRole];
+    const def = factions[a.side === 0 ? faction : opponent];
+    const id = a.definitionId;
+    if (id !== undefined && (typeof id !== 'string' || !/^[a-z][a-z0-9-]{0,39}:[a-z][a-z0-9-]{0,58}$/.test(id))) bad(`${path}.definitionId`, 'expected a namespaced definition ID');
+    const roster = kind === 'unit' ? def.unitDefinitions ?? Object.values(def.units) : def.buildingDefinitions ?? Object.values(def.buildings);
+    const definition = id === undefined ? kind === 'unit' ? def.units[role as UnitRole] : def.buildings[role as BuildingRole] : roster.find(d => d.id === id);
+    if (!definition || definition.role !== role) bad(`${path}.definitionId`, 'definition is absent from the actor faction or has another kind or role');
     if (a.hp !== undefined) number(a.hp, `${path}.hp`, 1, definition.hp);
-    if (a.definitionId !== undefined) identifier(a.definitionId, `${path}.definitionId`);
-    const radius = kind === 'building' ? def.buildings[role as BuildingRole].size / 2 : .27;
+    const radius = kind === 'building' ? (definition as typeof def.buildings[BuildingRole]).size / 2 : .27;
     for (let y = Math.floor((a.y as number) - radius); y <= Math.floor((a.y as number) + radius); y++) for (let x = Math.floor((a.x as number) - radius); x <= Math.floor((a.x as number) + radius); x++) {
       const terrain = map.world?.levels[(a.level as number | undefined) ?? 0].terrain ?? map.terrain;
       if (x < 0 || y < 0 || x >= map.width || y >= map.height || !TERRAIN[terrain[y * map.width + x]].walkable) bad(path, 'actor is on impassable terrain');
