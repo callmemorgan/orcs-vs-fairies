@@ -1,0 +1,494 @@
+{
+  "sourcePin": "af44da406acf7ab44436e978cb1f571b93e28d23",
+  "receipts": [
+    {
+      "label": "checkout-final",
+      "command": [
+        "git",
+        "switch",
+        "--detach",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T16:57:40.581058+00:00",
+      "finishedAt": "2026-10-01T16:57:40.587482+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "production-build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T16:57:40.590027+00:00",
+      "finishedAt": "2026-10-01T16:57:49.362540+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "fixture-generator-build",
+      "command": [
+        "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/node_modules/.bin/esbuild",
+        "scripts/combined_combat_scenarios.ts",
+        "--bundle",
+        "--platform=node",
+        "--format=esm",
+        "--outfile=/tmp/ovf-final-native-combat-20261001/fixture-generator.mjs",
+        "--metafile=/tmp/ovf-final-native-combat-20261001/fixture-generator.mjs.metafile.json"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T16:57:49.362658+00:00",
+      "finishedAt": "2026-10-01T16:57:49.378072+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "fixture-generation",
+      "command": [
+        "node",
+        "/tmp/ovf-final-native-combat-20261001/fixture-generator.mjs",
+        "/tmp/ovf-final-native-combat-20261001/fixtures"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T16:57:49.417921+00:00",
+      "finishedAt": "2026-10-01T16:57:49.582936+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "freeze",
+      "command": [
+        "node",
+        "scripts/verify_combined_combat.mjs",
+        "--freeze",
+        "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+        "/tmp/ovf-final-native-combat-20261001/fixtures",
+        "/tmp/ovf-final-native-combat-20261001/frozen-inputs.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T16:57:49.584344+00:00",
+      "finishedAt": "2026-10-01T16:57:49.919506+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "native-browser",
+      "command": [
+        "node",
+        "scripts/verify_combined_combat.mjs",
+        "http://127.0.0.1:5397",
+        "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:05:52.601120+00:00",
+      "finishedAt": "2026-10-01T17:07:07.292890+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {
+        "OVF_PLAYWRIGHT_MODULE": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/index.mjs",
+        "OVF_COMBAT_EVIDENCE": "/tmp/ovf-final-native-combat-20261001",
+        "OVF_COMBAT_FIXTURES": "/tmp/ovf-final-native-combat-20261001/fixtures",
+        "OVF_COMBAT_FREEZE": "/tmp/ovf-final-native-combat-20261001/frozen-inputs.json"
+      }
+    },
+    {
+      "label": "native-checker-build",
+      "command": [
+        "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/node_modules/.bin/esbuild",
+        "scripts/minimap-alerts/verify-native-export.ts",
+        "--bundle",
+        "--platform=node",
+        "--format=esm",
+        "--outfile=/tmp/ovf-final-native-combat-20261001/native-checker.mjs",
+        "--metafile=/tmp/ovf-final-native-combat-20261001/native-checker.mjs.metafile.json"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:06.414246+00:00",
+      "finishedAt": "2026-10-01T17:08:06.425838+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "native-check-automata-relay-replay-endpoint-save",
+      "command": [
+        "node",
+        "/tmp/ovf-final-native-combat-20261001/native-checker.mjs",
+        "/tmp/ovf-final-native-combat-20261001/automata-relay-replay-endpoint-save.json",
+        "/tmp/ovf-final-native-combat-20261001/automata-relay-replay-endpoint-save.native-parity.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:06.426172+00:00",
+      "finishedAt": "2026-10-01T17:08:06.653031+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "native-check-automata-relay-save",
+      "command": [
+        "node",
+        "/tmp/ovf-final-native-combat-20261001/native-checker.mjs",
+        "/tmp/ovf-final-native-combat-20261001/automata-relay-save.json",
+        "/tmp/ovf-final-native-combat-20261001/automata-relay-save.native-parity.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:06.653140+00:00",
+      "finishedAt": "2026-10-01T17:08:06.881982+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "native-check-dwarves-impact-replay-endpoint-save",
+      "command": [
+        "node",
+        "/tmp/ovf-final-native-combat-20261001/native-checker.mjs",
+        "/tmp/ovf-final-native-combat-20261001/dwarves-impact-replay-endpoint-save.json",
+        "/tmp/ovf-final-native-combat-20261001/dwarves-impact-replay-endpoint-save.native-parity.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:06.882092+00:00",
+      "finishedAt": "2026-10-01T17:08:07.025551+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "native-check-dwarves-impact-save",
+      "command": [
+        "node",
+        "/tmp/ovf-final-native-combat-20261001/native-checker.mjs",
+        "/tmp/ovf-final-native-combat-20261001/dwarves-impact-save.json",
+        "/tmp/ovf-final-native-combat-20261001/dwarves-impact-save.native-parity.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:07.025660+00:00",
+      "finishedAt": "2026-10-01T17:08:07.169225+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "native-check-dwarves-in-flight-replay-endpoint-save",
+      "command": [
+        "node",
+        "/tmp/ovf-final-native-combat-20261001/native-checker.mjs",
+        "/tmp/ovf-final-native-combat-20261001/dwarves-in-flight-replay-endpoint-save.json",
+        "/tmp/ovf-final-native-combat-20261001/dwarves-in-flight-replay-endpoint-save.native-parity.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:07.169337+00:00",
+      "finishedAt": "2026-10-01T17:08:07.297547+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "native-check-dwarves-in-flight-save",
+      "command": [
+        "node",
+        "/tmp/ovf-final-native-combat-20261001/native-checker.mjs",
+        "/tmp/ovf-final-native-combat-20261001/dwarves-in-flight-save.json",
+        "/tmp/ovf-final-native-combat-20261001/dwarves-in-flight-save.native-parity.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:07.297660+00:00",
+      "finishedAt": "2026-10-01T17:08:07.424220+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "native-check-native-import-1-save",
+      "command": [
+        "node",
+        "/tmp/ovf-final-native-combat-20261001/native-checker.mjs",
+        "/tmp/ovf-final-native-combat-20261001/native-import-1-save.json",
+        "/tmp/ovf-final-native-combat-20261001/native-import-1-save.native-parity.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:07.424340+00:00",
+      "finishedAt": "2026-10-01T17:08:07.517612+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "native-check-native-import-10-save",
+      "command": [
+        "node",
+        "/tmp/ovf-final-native-combat-20261001/native-checker.mjs",
+        "/tmp/ovf-final-native-combat-20261001/native-import-10-save.json",
+        "/tmp/ovf-final-native-combat-20261001/native-import-10-save.native-parity.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:07.517735+00:00",
+      "finishedAt": "2026-10-01T17:08:07.743077+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "native-check-native-import-11-save",
+      "command": [
+        "node",
+        "/tmp/ovf-final-native-combat-20261001/native-checker.mjs",
+        "/tmp/ovf-final-native-combat-20261001/native-import-11-save.json",
+        "/tmp/ovf-final-native-combat-20261001/native-import-11-save.native-parity.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:07.743198+00:00",
+      "finishedAt": "2026-10-01T17:08:07.965735+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "native-check-native-import-2-save",
+      "command": [
+        "node",
+        "/tmp/ovf-final-native-combat-20261001/native-checker.mjs",
+        "/tmp/ovf-final-native-combat-20261001/native-import-2-save.json",
+        "/tmp/ovf-final-native-combat-20261001/native-import-2-save.native-parity.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:07.965856+00:00",
+      "finishedAt": "2026-10-01T17:08:08.100607+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "native-check-native-import-3-save",
+      "command": [
+        "node",
+        "/tmp/ovf-final-native-combat-20261001/native-checker.mjs",
+        "/tmp/ovf-final-native-combat-20261001/native-import-3-save.json",
+        "/tmp/ovf-final-native-combat-20261001/native-import-3-save.native-parity.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:08.100834+00:00",
+      "finishedAt": "2026-10-01T17:08:08.197556+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "native-check-native-import-4-save",
+      "command": [
+        "node",
+        "/tmp/ovf-final-native-combat-20261001/native-checker.mjs",
+        "/tmp/ovf-final-native-combat-20261001/native-import-4-save.json",
+        "/tmp/ovf-final-native-combat-20261001/native-import-4-save.native-parity.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:08.197681+00:00",
+      "finishedAt": "2026-10-01T17:08:08.408206+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "native-check-native-import-5-save",
+      "command": [
+        "node",
+        "/tmp/ovf-final-native-combat-20261001/native-checker.mjs",
+        "/tmp/ovf-final-native-combat-20261001/native-import-5-save.json",
+        "/tmp/ovf-final-native-combat-20261001/native-import-5-save.native-parity.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:08.408348+00:00",
+      "finishedAt": "2026-10-01T17:08:08.508911+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "native-check-native-import-6-save",
+      "command": [
+        "node",
+        "/tmp/ovf-final-native-combat-20261001/native-checker.mjs",
+        "/tmp/ovf-final-native-combat-20261001/native-import-6-save.json",
+        "/tmp/ovf-final-native-combat-20261001/native-import-6-save.native-parity.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:08.509031+00:00",
+      "finishedAt": "2026-10-01T17:08:08.632098+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "native-check-native-import-7-save",
+      "command": [
+        "node",
+        "/tmp/ovf-final-native-combat-20261001/native-checker.mjs",
+        "/tmp/ovf-final-native-combat-20261001/native-import-7-save.json",
+        "/tmp/ovf-final-native-combat-20261001/native-import-7-save.native-parity.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:08.632223+00:00",
+      "finishedAt": "2026-10-01T17:08:08.758998+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "native-check-native-import-8-save",
+      "command": [
+        "node",
+        "/tmp/ovf-final-native-combat-20261001/native-checker.mjs",
+        "/tmp/ovf-final-native-combat-20261001/native-import-8-save.json",
+        "/tmp/ovf-final-native-combat-20261001/native-import-8-save.native-parity.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:08.759110+00:00",
+      "finishedAt": "2026-10-01T17:08:08.899672+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "native-check-native-import-9-save",
+      "command": [
+        "node",
+        "/tmp/ovf-final-native-combat-20261001/native-checker.mjs",
+        "/tmp/ovf-final-native-combat-20261001/native-import-9-save.json",
+        "/tmp/ovf-final-native-combat-20261001/native-import-9-save.native-parity.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:08.899787+00:00",
+      "finishedAt": "2026-10-01T17:08:08.995639+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "native-check-orcs-formation-replay-endpoint-save",
+      "command": [
+        "node",
+        "/tmp/ovf-final-native-combat-20261001/native-checker.mjs",
+        "/tmp/ovf-final-native-combat-20261001/orcs-formation-replay-endpoint-save.json",
+        "/tmp/ovf-final-native-combat-20261001/orcs-formation-replay-endpoint-save.native-parity.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:08.995778+00:00",
+      "finishedAt": "2026-10-01T17:08:09.126066+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "native-check-orcs-formation-save",
+      "command": [
+        "node",
+        "/tmp/ovf-final-native-combat-20261001/native-checker.mjs",
+        "/tmp/ovf-final-native-combat-20261001/orcs-formation-save.json",
+        "/tmp/ovf-final-native-combat-20261001/orcs-formation-save.native-parity.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:09.126204+00:00",
+      "finishedAt": "2026-10-01T17:08:09.259280+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "native-check-orcs-rally-replay-endpoint-save",
+      "command": [
+        "node",
+        "/tmp/ovf-final-native-combat-20261001/native-checker.mjs",
+        "/tmp/ovf-final-native-combat-20261001/orcs-rally-replay-endpoint-save.json",
+        "/tmp/ovf-final-native-combat-20261001/orcs-rally-replay-endpoint-save.native-parity.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:09.259414+00:00",
+      "finishedAt": "2026-10-01T17:08:09.473818+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "native-check-orcs-rally-save",
+      "command": [
+        "node",
+        "/tmp/ovf-final-native-combat-20261001/native-checker.mjs",
+        "/tmp/ovf-final-native-combat-20261001/orcs-rally-save.json",
+        "/tmp/ovf-final-native-combat-20261001/orcs-rally-save.native-parity.json",
+        "af44da406acf7ab44436e978cb1f571b93e28d23"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:09.474016+00:00",
+      "finishedAt": "2026-10-01T17:08:09.684440+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "projection-build",
+      "command": [
+        "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/node_modules/.bin/esbuild",
+        "scripts/prepare_combat_cli_projection.ts",
+        "--bundle",
+        "--platform=node",
+        "--format=esm",
+        "--outfile=/tmp/ovf-final-native-combat-20261001/prepare-cli-projection.mjs",
+        "--metafile=/tmp/ovf-final-native-combat-20261001/prepare-cli-projection.mjs.metafile.json"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:09.684612+00:00",
+      "finishedAt": "2026-10-01T17:08:09.696230+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "dwarf-projection",
+      "command": [
+        "node",
+        "/tmp/ovf-final-native-combat-20261001/prepare-cli-projection.mjs",
+        "/tmp/ovf-final-native-combat-20261001/dwarves-impact-save.json",
+        "/tmp/ovf-final-native-combat-20261001/dwarf-cli-projection",
+        "af44da406acf7ab44436e978cb1f571b93e28d23",
+        "--checkpoint",
+        "/tmp/ovf-final-native-combat-20261001/dwarves-in-flight-save.json",
+        "--root",
+        "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:09.696353+00:00",
+      "finishedAt": "2026-10-01T17:08:10.166819+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "packaged-cli-full",
+      "command": [
+        "node",
+        "scripts/tournaments/verify-packaged-cli-parity.mjs",
+        "/tmp/ovf-final-native-combat-20261001/dwarf-cli-projection/projected-full.session.json",
+        "/tmp/ovf-final-native-combat-20261001/dwarf-packaged-full"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:10.166943+00:00",
+      "finishedAt": "2026-10-01T17:08:13.759181+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    },
+    {
+      "label": "packaged-cli-pending",
+      "command": [
+        "node",
+        "scripts/tournaments/verify-packaged-cli-parity.mjs",
+        "/tmp/ovf-final-native-combat-20261001/dwarf-cli-projection/projected-pending.session.json",
+        "/tmp/ovf-final-native-combat-20261001/dwarf-packaged-pending"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+      "startedAt": "2026-10-01T17:08:13.759361+00:00",
+      "finishedAt": "2026-10-01T17:08:16.708076+00:00",
+      "exitCode": 0,
+      "environmentOverrides": {}
+    }
+  ]
+}

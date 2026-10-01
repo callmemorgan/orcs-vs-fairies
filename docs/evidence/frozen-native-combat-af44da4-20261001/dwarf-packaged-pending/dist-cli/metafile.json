@@ -1,0 +1,1218 @@
+{
+  "inputs": {
+    "src/core/content.ts": {
+      "bytes": 19805,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/core/faction-systems-content.ts": {
+      "bytes": 3429,
+      "imports": [
+        {
+          "path": "src/core/content.ts",
+          "kind": "import-statement",
+          "original": "./content"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/specialist-content.ts": {
+      "bytes": 6564,
+      "imports": [
+        {
+          "path": "src/core/faction-systems-content.ts",
+          "kind": "import-statement",
+          "original": "./faction-systems-content"
+        },
+        {
+          "path": "src/core/content.ts",
+          "kind": "import-statement",
+          "original": "./content"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/economy-definitions.ts": {
+      "bytes": 2157,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/core/legacy-content-v3.ts": {
+      "bytes": 15430,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/core/content-registry.ts": {
+      "bytes": 30993,
+      "imports": [
+        {
+          "path": "src/core/specialist-content.ts",
+          "kind": "import-statement",
+          "original": "./specialist-content"
+        },
+        {
+          "path": "src/core/faction-systems-content.ts",
+          "kind": "import-statement",
+          "original": "./faction-systems-content"
+        },
+        {
+          "path": "src/core/economy-definitions.ts",
+          "kind": "import-statement",
+          "original": "./economy-definitions"
+        },
+        {
+          "path": "src/core/content.ts",
+          "kind": "import-statement",
+          "original": "./content"
+        },
+        {
+          "path": "src/core/legacy-content-v3.ts",
+          "kind": "import-statement",
+          "original": "./legacy-content-v3"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/geometry.ts": {
+      "bytes": 4909,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/core/maps.ts": {
+      "bytes": 13683,
+      "imports": [
+        {
+          "path": "src/core/geometry.ts",
+          "kind": "import-statement",
+          "original": "./geometry"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/world-map.ts": {
+      "bytes": 14404,
+      "imports": [
+        {
+          "path": "src/core/geometry.ts",
+          "kind": "import-statement",
+          "original": "./geometry"
+        },
+        {
+          "path": "src/core/maps.ts",
+          "kind": "import-statement",
+          "original": "./maps"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/match-rules.ts": {
+      "bytes": 18173,
+      "imports": [
+        {
+          "path": "src/core/content-registry.ts",
+          "kind": "import-statement",
+          "original": "./content-registry"
+        },
+        {
+          "path": "src/core/world-map.ts",
+          "kind": "import-statement",
+          "original": "./world-map"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/navigation.ts": {
+      "bytes": 9590,
+      "imports": [
+        {
+          "path": "src/core/content-registry.ts",
+          "kind": "import-statement",
+          "original": "./content-registry"
+        },
+        {
+          "path": "src/core/geometry.ts",
+          "kind": "import-statement",
+          "original": "./geometry"
+        },
+        {
+          "path": "src/core/maps.ts",
+          "kind": "import-statement",
+          "original": "./maps"
+        },
+        {
+          "path": "src/core/world-map.ts",
+          "kind": "import-statement",
+          "original": "./world-map"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/objectives.ts": {
+      "bytes": 11173,
+      "imports": [
+        {
+          "path": "src/core/content-registry.ts",
+          "kind": "import-statement",
+          "original": "./content-registry"
+        },
+        {
+          "path": "src/core/geometry.ts",
+          "kind": "import-statement",
+          "original": "./geometry"
+        },
+        {
+          "path": "src/core/world-map.ts",
+          "kind": "import-statement",
+          "original": "./world-map"
+        },
+        {
+          "path": "src/core/navigation.ts",
+          "kind": "import-statement",
+          "original": "./navigation"
+        },
+        {
+          "path": "./maps",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "src/core/match-rules.ts",
+          "kind": "import-statement",
+          "original": "./match-rules"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/economy-common.ts": {
+      "bytes": 2811,
+      "imports": [
+        {
+          "path": "src/core/geometry.ts",
+          "kind": "import-statement",
+          "original": "./geometry"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/economy-validation.ts": {
+      "bytes": 13682,
+      "imports": [
+        {
+          "path": "src/core/economy-common.ts",
+          "kind": "import-statement",
+          "original": "./economy-common"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/presentation-observation.ts": {
+      "bytes": 432,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/core/progression.ts": {
+      "bytes": 2307,
+      "imports": [
+        {
+          "path": "src/core/content-registry.ts",
+          "kind": "import-statement",
+          "original": "./content-registry"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/faction-systems.ts": {
+      "bytes": 23438,
+      "imports": [
+        {
+          "path": "src/core/progression.ts",
+          "kind": "import-statement",
+          "original": "./progression"
+        },
+        {
+          "path": "src/core/match-rules.ts",
+          "kind": "import-statement",
+          "original": "./match-rules"
+        },
+        {
+          "path": "src/core/faction-systems-content.ts",
+          "kind": "import-statement",
+          "original": "./faction-systems-content"
+        },
+        {
+          "path": "src/core/tactics.ts",
+          "kind": "import-statement",
+          "original": "./tactics"
+        },
+        {
+          "path": "src/core/faction-systems-content.ts",
+          "kind": "import-statement",
+          "original": "./faction-systems-content"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/tactics.ts": {
+      "bytes": 18204,
+      "imports": [
+        {
+          "path": "src/core/presentation-observation.ts",
+          "kind": "import-statement",
+          "original": "./presentation-observation"
+        },
+        {
+          "path": "src/core/faction-systems.ts",
+          "kind": "import-statement",
+          "original": "./faction-systems"
+        },
+        {
+          "path": "src/core/content-registry.ts",
+          "kind": "import-statement",
+          "original": "./content-registry"
+        },
+        {
+          "path": "./content",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "src/core/maps.ts",
+          "kind": "import-statement",
+          "original": "./maps"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/ai-policy.ts": {
+      "bytes": 7629,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/core/unit-progression.ts": {
+      "bytes": 8821,
+      "imports": [
+        {
+          "path": "src/core/geometry.ts",
+          "kind": "import-statement",
+          "original": "./geometry"
+        },
+        {
+          "path": "src/core/content-registry.ts",
+          "kind": "import-statement",
+          "original": "./content-registry"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/commands.ts": {
+      "bytes": 7202,
+      "imports": [
+        {
+          "path": "src/core/unit-progression.ts",
+          "kind": "import-statement",
+          "original": "./unit-progression"
+        },
+        {
+          "path": "src/core/economy-validation.ts",
+          "kind": "import-statement",
+          "original": "./economy-validation"
+        },
+        {
+          "path": "src/core/content.ts",
+          "kind": "import-statement",
+          "original": "./content"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/scenario-geometry.ts": {
+      "bytes": 4266,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/core/economy-cargo.ts": {
+      "bytes": 23563,
+      "imports": [
+        {
+          "path": "src/core/economy-common.ts",
+          "kind": "import-statement",
+          "original": "./economy-common"
+        },
+        {
+          "path": "src/core/economy-definitions.ts",
+          "kind": "import-statement",
+          "original": "./economy-definitions"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/economy.ts": {
+      "bytes": 20782,
+      "imports": [
+        {
+          "path": "src/core/geometry.ts",
+          "kind": "import-statement",
+          "original": "./geometry"
+        },
+        {
+          "path": "src/core/economy-definitions.ts",
+          "kind": "import-statement",
+          "original": "./economy-definitions"
+        },
+        {
+          "path": "src/core/economy-common.ts",
+          "kind": "import-statement",
+          "original": "./economy-common"
+        },
+        {
+          "path": "src/core/navigation.ts",
+          "kind": "import-statement",
+          "original": "./navigation"
+        },
+        {
+          "path": "src/core/maps.ts",
+          "kind": "import-statement",
+          "original": "./maps"
+        },
+        {
+          "path": "src/core/economy-cargo.ts",
+          "kind": "import-statement",
+          "original": "./economy-cargo"
+        },
+        {
+          "path": "src/core/economy-definitions.ts",
+          "kind": "import-statement",
+          "original": "./economy-definitions"
+        },
+        {
+          "path": "src/core/economy-common.ts",
+          "kind": "import-statement",
+          "original": "./economy-common"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/combat-targets.ts": {
+      "bytes": 480,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/core/specialist-systems.ts": {
+      "bytes": 22586,
+      "imports": [
+        {
+          "path": "src/core/combat-targets.ts",
+          "kind": "import-statement",
+          "original": "./combat-targets"
+        },
+        {
+          "path": "src/core/world-map.ts",
+          "kind": "import-statement",
+          "original": "./world-map"
+        },
+        {
+          "path": "src/core/tactics.ts",
+          "kind": "import-statement",
+          "original": "./tactics"
+        },
+        {
+          "path": "src/core/geometry.ts",
+          "kind": "import-statement",
+          "original": "./geometry"
+        },
+        {
+          "path": "src/core/content.ts",
+          "kind": "import-statement",
+          "original": "./content"
+        },
+        {
+          "path": "src/core/content-registry.ts",
+          "kind": "import-statement",
+          "original": "./content-registry"
+        },
+        {
+          "path": "src/core/navigation.ts",
+          "kind": "import-statement",
+          "original": "./navigation"
+        },
+        {
+          "path": "src/core/maps.ts",
+          "kind": "import-statement",
+          "original": "./maps"
+        },
+        {
+          "path": "src/core/unit-progression.ts",
+          "kind": "import-statement",
+          "original": "./unit-progression"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/team-ai.ts": {
+      "bytes": 25877,
+      "imports": [
+        {
+          "path": "src/core/geometry.ts",
+          "kind": "import-statement",
+          "original": "./geometry"
+        },
+        {
+          "path": "src/core/world-map.ts",
+          "kind": "import-statement",
+          "original": "./world-map"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/ally-directives.ts": {
+      "bytes": 8140,
+      "imports": [
+        {
+          "path": "src/core/commands.ts",
+          "kind": "import-statement",
+          "original": "./commands"
+        },
+        {
+          "path": "src/core/content-registry.ts",
+          "kind": "import-statement",
+          "original": "./content-registry"
+        },
+        {
+          "path": "src/core/world-map.ts",
+          "kind": "import-statement",
+          "original": "./world-map"
+        },
+        {
+          "path": "src/core/geometry.ts",
+          "kind": "import-statement",
+          "original": "./geometry"
+        },
+        {
+          "path": "src/core/team-ai.ts",
+          "kind": "import-statement",
+          "original": "./team-ai"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/history-hooks.ts": {
+      "bytes": 1158,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/core/world-actions.ts": {
+      "bytes": 7889,
+      "imports": [
+        {
+          "path": "src/core/geometry.ts",
+          "kind": "import-statement",
+          "original": "./geometry"
+        },
+        {
+          "path": "src/core/content-registry.ts",
+          "kind": "import-statement",
+          "original": "./content-registry"
+        },
+        {
+          "path": "src/core/navigation.ts",
+          "kind": "import-statement",
+          "original": "./navigation"
+        },
+        {
+          "path": "src/core/world-map.ts",
+          "kind": "import-statement",
+          "original": "./world-map"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/environment.ts": {
+      "bytes": 17025,
+      "imports": [
+        {
+          "path": "src/core/economy.ts",
+          "kind": "import-statement",
+          "original": "./economy"
+        },
+        {
+          "path": "src/core/geometry.ts",
+          "kind": "import-statement",
+          "original": "./geometry"
+        },
+        {
+          "path": "src/core/content-registry.ts",
+          "kind": "import-statement",
+          "original": "./content-registry"
+        },
+        {
+          "path": "src/core/world-map.ts",
+          "kind": "import-statement",
+          "original": "./world-map"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/neutral-world.ts": {
+      "bytes": 16579,
+      "imports": [
+        {
+          "path": "src/core/geometry.ts",
+          "kind": "import-statement",
+          "original": "./geometry"
+        },
+        {
+          "path": "src/core/content-registry.ts",
+          "kind": "import-statement",
+          "original": "./content-registry"
+        },
+        {
+          "path": "src/core/progression.ts",
+          "kind": "import-statement",
+          "original": "./progression"
+        },
+        {
+          "path": "src/core/world-map.ts",
+          "kind": "import-statement",
+          "original": "./world-map"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/simulation.ts": {
+      "bytes": 106228,
+      "imports": [
+        {
+          "path": "src/core/match-rules.ts",
+          "kind": "import-statement",
+          "original": "./match-rules"
+        },
+        {
+          "path": "src/core/scenarios.ts",
+          "kind": "import-statement",
+          "original": "./scenarios"
+        },
+        {
+          "path": "src/core/objectives.ts",
+          "kind": "import-statement",
+          "original": "./objectives"
+        },
+        {
+          "path": "src/core/economy.ts",
+          "kind": "import-statement",
+          "original": "./economy"
+        },
+        {
+          "path": "src/core/economy-validation.ts",
+          "kind": "import-statement",
+          "original": "./economy-validation"
+        },
+        {
+          "path": "src/core/combat-targets.ts",
+          "kind": "import-statement",
+          "original": "./combat-targets"
+        },
+        {
+          "path": "src/core/tactics.ts",
+          "kind": "import-statement",
+          "original": "./tactics"
+        },
+        {
+          "path": "src/core/faction-systems.ts",
+          "kind": "import-statement",
+          "original": "./faction-systems"
+        },
+        {
+          "path": "src/core/faction-systems-content.ts",
+          "kind": "import-statement",
+          "original": "./faction-systems-content"
+        },
+        {
+          "path": "src/core/geometry.ts",
+          "kind": "import-statement",
+          "original": "./geometry"
+        },
+        {
+          "path": "src/core/unit-progression.ts",
+          "kind": "import-statement",
+          "original": "./unit-progression"
+        },
+        {
+          "path": "src/core/specialist-systems.ts",
+          "kind": "import-statement",
+          "original": "./specialist-systems"
+        },
+        {
+          "path": "src/core/ai-policy.ts",
+          "kind": "import-statement",
+          "original": "./ai-policy"
+        },
+        {
+          "path": "src/core/progression.ts",
+          "kind": "import-statement",
+          "original": "./progression"
+        },
+        {
+          "path": "src/core/commands.ts",
+          "kind": "import-statement",
+          "original": "./commands"
+        },
+        {
+          "path": "src/core/team-ai.ts",
+          "kind": "import-statement",
+          "original": "./team-ai"
+        },
+        {
+          "path": "src/core/ally-directives.ts",
+          "kind": "import-statement",
+          "original": "./ally-directives"
+        },
+        {
+          "path": "src/core/content.ts",
+          "kind": "import-statement",
+          "original": "./content"
+        },
+        {
+          "path": "src/core/content-registry.ts",
+          "kind": "import-statement",
+          "original": "./content-registry"
+        },
+        {
+          "path": "src/core/navigation.ts",
+          "kind": "import-statement",
+          "original": "./navigation"
+        },
+        {
+          "path": "src/core/maps.ts",
+          "kind": "import-statement",
+          "original": "./maps"
+        },
+        {
+          "path": "src/core/history-hooks.ts",
+          "kind": "import-statement",
+          "original": "./history-hooks"
+        },
+        {
+          "path": "src/core/commands.ts",
+          "kind": "import-statement",
+          "original": "./commands"
+        },
+        {
+          "path": "src/core/world-map.ts",
+          "kind": "import-statement",
+          "original": "./world-map"
+        },
+        {
+          "path": "src/core/world-actions.ts",
+          "kind": "import-statement",
+          "original": "./world-actions"
+        },
+        {
+          "path": "src/core/environment.ts",
+          "kind": "import-statement",
+          "original": "./environment"
+        },
+        {
+          "path": "src/core/neutral-world.ts",
+          "kind": "import-statement",
+          "original": "./neutral-world"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/scenario-validation.ts": {
+      "bytes": 21406,
+      "imports": [
+        {
+          "path": "src/core/content-registry.ts",
+          "kind": "import-statement",
+          "original": "./content-registry"
+        },
+        {
+          "path": "src/core/content.ts",
+          "kind": "import-statement",
+          "original": "./content"
+        },
+        {
+          "path": "src/core/maps.ts",
+          "kind": "import-statement",
+          "original": "./maps"
+        },
+        {
+          "path": "src/core/world-map.ts",
+          "kind": "import-statement",
+          "original": "./world-map"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/versions.ts": {
+      "bytes": 346,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/core/scenarios.ts": {
+      "bytes": 39183,
+      "imports": [
+        {
+          "path": "src/core/content-registry.ts",
+          "kind": "import-statement",
+          "original": "./content-registry"
+        },
+        {
+          "path": "src/core/content.ts",
+          "kind": "import-statement",
+          "original": "./content"
+        },
+        {
+          "path": "src/core/content-registry.ts",
+          "kind": "import-statement",
+          "original": "./content-registry"
+        },
+        {
+          "path": "src/core/commands.ts",
+          "kind": "import-statement",
+          "original": "./commands"
+        },
+        {
+          "path": "src/core/geometry.ts",
+          "kind": "import-statement",
+          "original": "./geometry"
+        },
+        {
+          "path": "src/core/scenario-geometry.ts",
+          "kind": "import-statement",
+          "original": "./scenario-geometry"
+        },
+        {
+          "path": "src/core/maps.ts",
+          "kind": "import-statement",
+          "original": "./maps"
+        },
+        {
+          "path": "src/core/navigation.ts",
+          "kind": "import-statement",
+          "original": "./navigation"
+        },
+        {
+          "path": "src/core/saves.ts",
+          "kind": "import-statement",
+          "original": "./saves"
+        },
+        {
+          "path": "src/core/simulation.ts",
+          "kind": "import-statement",
+          "original": "./simulation"
+        },
+        {
+          "path": "src/core/scenario-validation.ts",
+          "kind": "import-statement",
+          "original": "./scenario-validation"
+        },
+        {
+          "path": "src/core/world-map.ts",
+          "kind": "import-statement",
+          "original": "./world-map"
+        },
+        {
+          "path": "src/core/versions.ts",
+          "kind": "import-statement",
+          "original": "./versions"
+        },
+        {
+          "path": "src/core/objectives.ts",
+          "kind": "import-statement",
+          "original": "./objectives"
+        },
+        {
+          "path": "src/core/scenario-validation.ts",
+          "kind": "import-statement",
+          "original": "./scenario-validation"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/specialist-validation.ts": {
+      "bytes": 17272,
+      "imports": [
+        {
+          "path": "src/core/content-registry.ts",
+          "kind": "import-statement",
+          "original": "./content-registry"
+        },
+        {
+          "path": "src/core/unit-progression.ts",
+          "kind": "import-statement",
+          "original": "./unit-progression"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/world-validation.ts": {
+      "bytes": 7607,
+      "imports": [
+        {
+          "path": "src/core/maps.ts",
+          "kind": "import-statement",
+          "original": "./maps"
+        },
+        {
+          "path": "src/core/world-map.ts",
+          "kind": "import-statement",
+          "original": "./world-map"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/saves.ts": {
+      "bytes": 48856,
+      "imports": [
+        {
+          "path": "src/core/match-rules.ts",
+          "kind": "import-statement",
+          "original": "./match-rules"
+        },
+        {
+          "path": "src/core/objectives.ts",
+          "kind": "import-statement",
+          "original": "./objectives"
+        },
+        {
+          "path": "src/core/economy-validation.ts",
+          "kind": "import-statement",
+          "original": "./economy-validation"
+        },
+        {
+          "path": "src/core/economy-common.ts",
+          "kind": "import-statement",
+          "original": "./economy-common"
+        },
+        {
+          "path": "src/core/tactics.ts",
+          "kind": "import-statement",
+          "original": "./tactics"
+        },
+        {
+          "path": "src/core/faction-systems.ts",
+          "kind": "import-statement",
+          "original": "./faction-systems"
+        },
+        {
+          "path": "src/core/ai-policy.ts",
+          "kind": "import-statement",
+          "original": "./ai-policy"
+        },
+        {
+          "path": "src/core/scenarios.ts",
+          "kind": "import-statement",
+          "original": "./scenarios"
+        },
+        {
+          "path": "src/core/specialist-validation.ts",
+          "kind": "import-statement",
+          "original": "./specialist-validation"
+        },
+        {
+          "path": "src/core/content-registry.ts",
+          "kind": "import-statement",
+          "original": "./content-registry"
+        },
+        {
+          "path": "src/core/maps.ts",
+          "kind": "import-statement",
+          "original": "./maps"
+        },
+        {
+          "path": "src/core/world-validation.ts",
+          "kind": "import-statement",
+          "original": "./world-validation"
+        },
+        {
+          "path": "src/core/team-ai.ts",
+          "kind": "import-statement",
+          "original": "./team-ai"
+        },
+        {
+          "path": "src/core/simulation.ts",
+          "kind": "import-statement",
+          "original": "./simulation"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/core/observation.ts": {
+      "bytes": 8808,
+      "imports": [
+        {
+          "path": "src/core/tactics.ts",
+          "kind": "import-statement",
+          "original": "./tactics"
+        },
+        {
+          "path": "src/core/unit-progression.ts",
+          "kind": "import-statement",
+          "original": "./unit-progression"
+        },
+        {
+          "path": "src/core/match-rules.ts",
+          "kind": "import-statement",
+          "original": "./match-rules"
+        },
+        {
+          "path": "src/core/objectives.ts",
+          "kind": "import-statement",
+          "original": "./objectives"
+        },
+        {
+          "path": "src/core/economy.ts",
+          "kind": "import-statement",
+          "original": "./economy"
+        },
+        {
+          "path": "src/core/content.ts",
+          "kind": "import-statement",
+          "original": "./content"
+        },
+        {
+          "path": "src/core/content-registry.ts",
+          "kind": "import-statement",
+          "original": "./content-registry"
+        },
+        {
+          "path": "src/core/simulation.ts",
+          "kind": "import-statement",
+          "original": "./simulation"
+        },
+        {
+          "path": "src/core/environment.ts",
+          "kind": "import-statement",
+          "original": "./environment"
+        },
+        {
+          "path": "src/core/neutral-world.ts",
+          "kind": "import-statement",
+          "original": "./neutral-world"
+        },
+        {
+          "path": "src/core/world-map.ts",
+          "kind": "import-statement",
+          "original": "./world-map"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/cli/session.ts": {
+      "bytes": 5521,
+      "imports": [
+        {
+          "path": "node:crypto",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "src/core/content.ts",
+          "kind": "import-statement",
+          "original": "../core/content"
+        },
+        {
+          "path": "src/core/commands.ts",
+          "kind": "import-statement",
+          "original": "../core/commands"
+        },
+        {
+          "path": "src/core/observation.ts",
+          "kind": "import-statement",
+          "original": "../core/observation"
+        },
+        {
+          "path": "src/core/saves.ts",
+          "kind": "import-statement",
+          "original": "../core/saves"
+        },
+        {
+          "path": "src/core/simulation.ts",
+          "kind": "import-statement",
+          "original": "../core/simulation"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/cli/main.ts": {
+      "bytes": 1956,
+      "imports": [
+        {
+          "path": "node:readline",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "node:fs",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "src/core/saves.ts",
+          "kind": "import-statement",
+          "original": "../core/saves"
+        },
+        {
+          "path": "src/cli/session.ts",
+          "kind": "import-statement",
+          "original": "./session"
+        }
+      ],
+      "format": "esm"
+    }
+  },
+  "outputs": {
+    "../../../../../../tmp/ovf-final-native-combat-20261001/dwarf-packaged-pending/dist-cli/rts.js": {
+      "imports": [
+        {
+          "path": "node:readline",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "node:fs",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "node:crypto",
+          "kind": "import-statement",
+          "external": true
+        }
+      ],
+      "exports": [],
+      "entryPoint": "src/cli/main.ts",
+      "inputs": {
+        "src/cli/main.ts": {
+          "bytesInOutput": 2025
+        },
+        "src/core/content.ts": {
+          "bytesInOutput": 20688
+        },
+        "src/core/faction-systems-content.ts": {
+          "bytesInOutput": 3031
+        },
+        "src/core/specialist-content.ts": {
+          "bytesInOutput": 6166
+        },
+        "src/core/economy-definitions.ts": {
+          "bytesInOutput": 2173
+        },
+        "src/core/legacy-content-v3.ts": {
+          "bytesInOutput": 15976
+        },
+        "src/core/content-registry.ts": {
+          "bytesInOutput": 27460
+        },
+        "src/core/geometry.ts": {
+          "bytesInOutput": 4377
+        },
+        "src/core/maps.ts": {
+          "bytesInOutput": 13752
+        },
+        "src/core/world-map.ts": {
+          "bytesInOutput": 15111
+        },
+        "src/core/match-rules.ts": {
+          "bytesInOutput": 16636
+        },
+        "src/core/navigation.ts": {
+          "bytesInOutput": 10482
+        },
+        "src/core/objectives.ts": {
+          "bytesInOutput": 11659
+        },
+        "src/core/economy-common.ts": {
+          "bytesInOutput": 2394
+        },
+        "src/core/economy-validation.ts": {
+          "bytesInOutput": 14601
+        },
+        "src/core/presentation-observation.ts": {
+          "bytesInOutput": 118
+        },
+        "src/core/progression.ts": {
+          "bytesInOutput": 1755
+        },
+        "src/core/faction-systems.ts": {
+          "bytesInOutput": 22495
+        },
+        "src/core/tactics.ts": {
+          "bytesInOutput": 17778
+        },
+        "src/core/ai-policy.ts": {
+          "bytesInOutput": 6361
+        },
+        "src/core/unit-progression.ts": {
+          "bytesInOutput": 8497
+        },
+        "src/core/commands.ts": {
+          "bytesInOutput": 7031
+        },
+        "src/core/scenario-geometry.ts": {
+          "bytesInOutput": 4322
+        },
+        "src/core/economy-cargo.ts": {
+          "bytesInOutput": 24001
+        },
+        "src/core/economy.ts": {
+          "bytesInOutput": 21687
+        },
+        "src/core/combat-targets.ts": {
+          "bytesInOutput": 203
+        },
+        "src/core/specialist-systems.ts": {
+          "bytesInOutput": 23417
+        },
+        "src/core/team-ai.ts": {
+          "bytesInOutput": 25196
+        },
+        "src/core/ally-directives.ts": {
+          "bytesInOutput": 8390
+        },
+        "src/core/history-hooks.ts": {
+          "bytesInOutput": 541
+        },
+        "src/core/world-actions.ts": {
+          "bytesInOutput": 8317
+        },
+        "src/core/environment.ts": {
+          "bytesInOutput": 16518
+        },
+        "src/core/neutral-world.ts": {
+          "bytesInOutput": 16610
+        },
+        "src/core/simulation.ts": {
+          "bytesInOutput": 111866
+        },
+        "src/core/scenario-validation.ts": {
+          "bytesInOutput": 20400
+        },
+        "src/core/versions.ts": {
+          "bytesInOutput": 35
+        },
+        "src/core/scenarios.ts": {
+          "bytesInOutput": 29823
+        },
+        "src/core/specialist-validation.ts": {
+          "bytesInOutput": 17961
+        },
+        "src/core/world-validation.ts": {
+          "bytesInOutput": 8160
+        },
+        "src/core/saves.ts": {
+          "bytesInOutput": 47593
+        },
+        "src/cli/session.ts": {
+          "bytesInOutput": 5513
+        },
+        "src/core/observation.ts": {
+          "bytesInOutput": 8727
+        }
+      },
+      "bytes": 631146
+    }
+  }
+}
