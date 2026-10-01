@@ -17,7 +17,7 @@ export interface WorldFire extends WorldPoint { heat:number; expires:number; nex
 export interface NeutralCreature extends WorldPoint {id:number;site:number;hp:number;maxHp:number;cooldown:number;target:number|null;path:Vec[];patrol:number;respawnAt:number}
 export interface WorldSite extends WorldPoint {id:number;kind:'relic'|'village'|'monster';owner:Side|null;loyalty:number[];progress:number;capturing:Side|null;reward:Cost;rewarded:Side[];request:Cost;supplied:boolean;creatureIds:number[];respawnAt:number}
 export interface WorldState {
- version:1; biome:Biome; levels:WorldLevel[]; transitions:WorldTransition[];
+ version:1; revision?:number; biome:Biome; levels:WorldLevel[]; transitions:WorldTransition[];
  bridges:WorldBridge[]; fires:WorldFire[]; sites:WorldSite[]; creatures:NeutralCreature[];
  dayLength:number; seasonLength:number; weatherLength:number; nextEnvironmentAt:number;
  iceTiles:{level:number;tile:number}[]; thawWarned:boolean;

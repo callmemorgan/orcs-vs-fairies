@@ -22,7 +22,9 @@ export function validateCommand(v:unknown):v is Command {
   if(v.type==='research')return allowed(['type','id','upgrade'])&&id(v.id)&&typeof v.upgrade==='string'&&(Object.hasOwn(UPGRADES,v.upgrade)||/^[a-z][a-z0-9-]{0,39}:[a-z][a-z0-9-]{0,58}$/.test(v.upgrade));
   if(!Array.isArray(v.ids)||!v.ids.length||v.ids.length>100||!v.ids.every(id))return false;
   if(['stop','hold','ability','clearRally','toggleGate'].includes(v.type))return allowed(['type','ids']);
-  if(['move','attackMove','setRally'].includes(v.type))return allowed(['type','ids','x','y'])&&finite(v.x)&&finite(v.y);
+  if(['move','attackMove','setRally','ignite','firebreak'].includes(v.type))return allowed(['type','ids','x','y','level'])&&finite(v.x)&&finite(v.y)&&(v.level===undefined||Number.isInteger(v.level)&&(v.level as number)>=0&&(v.level as number)<=1);
+  if(v.type==='traverse')return allowed(['type','ids','transition'])&&id(v.transition);
+  if(['worldAttack','repairBridge','captureSite','supportVillage','recruitVillage'].includes(v.type))return allowed(['type','ids','target'])&&id(v.target);
   if(['attack','gather','repair'].includes(v.type))return allowed(['type','ids','target'])&&id(v.target);
-  return v.type==='build'&&allowed(['type','ids','role','x','y','definitionId'])&&definition(v.definitionId)&&buildings.includes(v.role as string)&&finite(v.x)&&finite(v.y);
+  return v.type==='build'&&allowed(['type','ids','role','x','y','definitionId','level'])&&definition(v.definitionId)&&(v.level===undefined||Number.isInteger(v.level)&&(v.level as number)>=0&&(v.level as number)<=1)&&buildings.includes(v.role as string)&&finite(v.x)&&finite(v.y);
 }

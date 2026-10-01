@@ -1,6 +1,9 @@
 import { ABILITIES } from './content';
 import { factionFor, unitFor, upgradesFor } from './content-registry';
 import { isAllied, isGameOver, isHostile, isVisible } from './simulation';
+import { environmentPhase } from './environment';
+import { observeNeutralWorld } from './neutral-world';
+import { fogKey, levelOf } from './world-map';
 import type { Entity, GameEvent, GameState, ResourceNode, Side, UnitRole } from './types';
 
 /** Health shown to a player, including enemy illusion disguises. */
@@ -19,23 +22,23 @@ export class PlayerView {
  update(s:GameState){
   if(!s.players[this.side])throw new Error('Observation side is not a player in this match.');
   if(this.state!==s){this.resources.clear();this.state=s;}
-  for(const r of s.resources)if(isVisible(s,this.side,r.x,r.y))this.resources.set(r.id,{...r,lastSeen:s.time});
+  for(const r of s.resources)if(isVisible(s,this.side,r.x,r.y,levelOf(r)))this.resources.set(r.id,{...r,lastSeen:s.time});
  }
- resourcesFor(s:GameState){this.update(s);return [...this.resources.values()].map(r=>({...r,visible:isVisible(s,this.side,r.x,r.y)}));}
+ resourcesFor(s:GameState){this.update(s);return [...this.resources.values()].map(r=>({...r,visible:isVisible(s,this.side,r.x,r.y,levelOf(r))}));}
  events(s:GameState,identify?:(event:GameEvent)=>string):Array<GameEvent & {eventId?:string}>{
   this.update(s);
   const side=this.side,entities=new Map(s.entities.map(e=>[e.id,e])),resources=new Map(s.resources.map(r=>[r.id,r]));
   const known=(id:number|undefined)=>{
    if(id===undefined)return false;
-   const entity=entities.get(id);if(entity)return entity.side===side||isVisible(s,side,entity.x,entity.y);
-   const resource=resources.get(id);return !!resource&&isVisible(s,side,resource.x,resource.y);
+   const entity=entities.get(id);if(entity)return entity.side===side||isVisible(s,side,entity.x,entity.y,levelOf(entity));
+   const resource=resources.get(id);return !!resource&&isVisible(s,side,resource.x,resource.y,levelOf(resource));
   };
   return s.events.flatMap(event=>{
    const own=event.side===side;
    if(!own&&['gather','research','message'].includes(event.type))return [];
    const target=event.target===undefined?undefined:entities.get(event.target);
-   const affected=target&&isAllied(s,side,target.side)&&(target.side===side||isVisible(s,side,target.x,target.y));
-   const visible=isVisible(s,side,event.x,event.y);
+   const affected=target&&isAllied(s,side,target.side)&&(target.side===side||isVisible(s,side,target.x,target.y,levelOf(target)));
+   const visible=isVisible(s,side,event.x,event.y,levelOf(event));
    if(!own&&!visible&&!affected)return [];
    const result:GameEvent & {eventId?:string}={...event};
    if(identify)result.eventId=identify(event);
@@ -61,13 +64,14 @@ export class PlayerView {
    version:1,tick:s.tick,time:s.time,side,teamId,controller:s.controllers[side],sharedVision:s.sharedVision,winningTeam:s.winningTeam,eliminated:[...s.eliminated],
    map:{size:s.mapSize,width:s.width,height:s.height,version:s.mapVersion,seed:s.seed,starts:s.starts.map(p=>({...p})),terrain:s.terrain.map((t,i)=>s.explored[side].has(i)?t:null)},
    player:{...s.players[side],upgrades:[...s.players[side].upgrades]},opponent:opponent?{side:opponent.side,faction:opponent.faction}:null,opponents,allies,
-   entities:s.entities.filter(e=>e.hp>0&&(e.side===side||isVisible(s,side,e.x,e.y))).map(e=>{
+   entities:s.entities.filter(e=>e.hp>0&&(e.side===side||isVisible(s,side,e.x,e.y,levelOf(e)))).map(e=>{
     const {hp,maxHp}=observedHealth(s,side,e);
-    const publicFields={id:e.id,side:e.side,kind:e.kind,role:e.role,definitionId:e.definitionId,definitionFaction:e.definitionFaction,x:e.x,y:e.y,hp,maxHp,progress:e.progress,gateOpen:e.gateOpen,shield:e.shield,maxShield:e.maxShield,raised:e.raised,entrenchedAt:e.entrenchedAt,surgeUntil:e.surgeUntil};
+    const publicFields={id:e.id,side:e.side,kind:e.kind,role:e.role,definitionId:e.definitionId,definitionFaction:e.definitionFaction,x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level}),hp,maxHp,progress:e.progress,gateOpen:e.gateOpen,shield:e.shield,maxShield:e.maxShield,raised:e.raised,entrenchedAt:e.entrenchedAt,surgeUntil:e.surgeUntil};
     return e.side===side?{...publicFields,illusion:e.illusion,order:{...e.order},orderQueue:e.orderQueue?.map(order=>({...order})),queue:[...e.queue],queueDefinitionIds:e.queueDefinitionIds?[...e.queueDefinitionIds]:undefined,queuePaidCosts:e.queuePaidCosts?.map(cost=>({...cost})),rally:e.rally?{...e.rally}:undefined,trainProgress:e.trainProgress,research:e.research,researchProgress:e.researchProgress,carried:e.carried,carriedKind:e.carriedKind,cooldown:e.cooldown,abilityReadyAt:e.abilityReadyAt,expires:e.expires,lastDamagedAt:e.lastDamagedAt}:isAllied(s,side,e.side)?{...publicFields,illusion:e.illusion}:publicFields;
    }),
+   world:s.world?{version:s.world.version,revision:s.world.revision,biome:s.world.biome,phase:environmentPhase(s),levels:s.world.levels.map(l=>({id:l.id,title:l.title,terrain:l.terrain.map((t,i)=>s.explored[side].has(l.id*s.width*s.height+i)?t:null),elevation:l.elevation.map((e,i)=>s.explored[side].has(l.id*s.width*s.height+i)?e:null)})),transitions:s.world.transitions.filter(t=>s.explored[side].has(fogKey(s,t.from))||s.explored[side].has(fogKey(s,t.to))).map(t=>({id:t.id,from:{...t.from},to:{...t.to}})),bridges:s.world.bridges.filter(b=>isVisible(s,side,b.x,b.y,b.level)).map(b=>({id:b.id,x:b.x,y:b.y,level:b.level,hp:b.hp,maxHp:b.maxHp,rebuilding:b.rebuilding})),fires:s.world.fires.filter(f=>isVisible(s,side,f.x,f.y,f.level)).map(f=>({...f})),...observeNeutralWorld(s,side)}:undefined,
    resources:this.resourcesFor(s),
-   corpses:s.corpses.filter(c=>isVisible(s,side,c.x,c.y)).map(c=>({...c})),
+   corpses:s.corpses.filter(c=>isVisible(s,side,c.x,c.y,levelOf(c))).map(c=>({...c})),
    visible:[...s.visible[side]].sort((a,b)=>a-b),explored:[...s.explored[side]].sort((a,b)=>a-b),
    content:{faction:factionFor(s,side),abilities:ABILITIES,upgrades:upgradesFor(s,side),hash:s.content?.hash},
    result:{finished,winner:s.winner,winningTeam:s.winningTeam,draw:s.draw,eliminated:[...s.eliminated],outcome}

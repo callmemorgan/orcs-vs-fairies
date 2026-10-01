@@ -1,4 +1,5 @@
 import { FACTIONS } from './content';
+import { setWorldTerrain } from './world-map';
 import type { Entity, GameState, Side, TerrainKind, Vec } from './types';
 import type { WorldCommand, WorldFire, WorldState } from './world-types';
 
@@ -71,11 +72,7 @@ function terrain(s:WorldGame,p:Positioned):string {
  const layer=s.world?.levels.find(l=>l.id===levelOf(p));
  return (layer?.terrain??(levelOf(p)===0?s.terrain:[]))[tileOf(s,p)]??'rock';
 }
-function setTerrain(s:WorldGame,p:Positioned,kind:string):void {
- const tile=tileOf(s,p),layer=s.world?.levels.find(l=>l.id===levelOf(p));
- if(layer)layer.terrain[tile]=kind as TerrainKind;
- if(levelOf(p)===0)s.terrain[tile]=kind as TerrainKind;
-}
+function setTerrain(s:WorldGame,p:Positioned,kind:string):void {setWorldTerrain(s,p,kind as TerrainKind);}
 function woodAt(s:GameState,p:Positioned) {
  return s.resources.filter(n=>n.kind==='wood'&&n.amount>0&&levelOf(n)===levelOf(p)&&tileOf(s,n)===tileOf(s,p));
 }

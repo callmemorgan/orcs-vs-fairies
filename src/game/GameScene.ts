@@ -5,6 +5,8 @@ import type { Side, GameState, BuildingRole, Command, Entity, UnitRole } from '.
 import { canPlace, isHostile, isVisible, issueCommand, stepGame } from '../core/simulation';
 import { PlayerView } from '../core/observation';
 import { buildingFor, entityDefinition, factionFor, unitFor } from '../core/content-registry';
+import { elevationAt, fogKey, levelOf } from '../core/world-map';
+import { terrainAt } from '../core/maps';
 import { ControlProfiles, inputIsSuppressed } from './Controls';
 import type { ControlAction, KeyboardState } from './Controls';
 import { GamepadController } from './Gamepad';
@@ -38,6 +40,9 @@ export default class GameScene extends Phaser.Scene {
   public simulationEnabled=true;
   public inputBlocked=false;
   private _viewSide:Side=0;
+  public viewLevel=0;
+  private groundSignature='';
+  public setViewLevel(level:number){if(!Number.isInteger(level)||level<0||level>=(this.state.world?.levels.length??1))throw new Error('Unknown map level.');if(this.viewLevel===level)return;this.viewLevel=level;this.select([]);if(this.ground){this.drawGround();this.drawActors();this.drawFog();}this.events.emit('viewlevel',level);}
   private _photoMode=false;
   private photoPreviousPause=false;
   private art!:ArtRuntime;
@@ -75,7 +80,7 @@ export default class GameScene extends Phaser.Scene {
   private blueprints:readonly ConstructionBlueprint[]=[];
   private blueprintSide:Side=0;
   private blueprintPlacement:{role:BuildingRole;point:(point:Vec)=>void;cancel:()=>void}|undefined;
-  constructor(options:GameSceneOptions) {super({key:'world'});this.options=options;this.state=options.state;this.controls=options.controls??new ControlProfiles();this.appearance=options.appearance??appearancePreferences;this._viewSide=options.viewSide??0;this.playerView=new PlayerView(this._viewSide);this.readOnly=options.readOnly??false;this.simulationEnabled=options.simulationEnabled??true;this.remoteFrame=options.remoteFrame;if(this.remoteFrame)this.remoteEventTick=this.state.tick;}
+  constructor(options:GameSceneOptions) {super({key:'world'});this.options=options;this.state=options.state;this.viewLevel=levelOf(options.state.starts[options.viewSide??0]);this.controls=options.controls??new ControlProfiles();this.appearance=options.appearance??appearancePreferences;this._viewSide=options.viewSide??0;this.playerView=new PlayerView(this._viewSide);this.readOnly=options.readOnly??false;this.simulationEnabled=options.simulationEnabled??true;this.remoteFrame=options.remoteFrame;if(this.remoteFrame)this.remoteEventTick=this.state.tick;}
   public get remote(){return !!this.remoteFrame;}
   public get canIssueCommands(){return this.canCommand;}
   public applyRemoteFrame(frame:OnlineRenderState){
@@ -160,7 +165,7 @@ export default class GameScene extends Phaser.Scene {
       if(this.placeBlueprint(pos))return;
       if(this.buildRole){
         const role=this.buildRole;
-        if(this.command({type:'build',ids:this.selected,role,definitionId:this.buildDefinitionId,x:role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y:role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5})) {this.setBuildRole(null);this.options.onNotice('Construction ordered.');this.audio?.play('order');}
+        if(this.command({type:'build',ids:this.selected,role,definitionId:this.buildDefinitionId,x:role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y:role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5,level:this.viewLevel})) {this.setBuildRole(null);this.options.onNotice('Construction ordered.');this.audio?.play('order');}
         else this.options.onNotice('Cannot build here. Select a worker and check resources and space.');
         return;
       }
@@ -168,7 +173,7 @@ export default class GameScene extends Phaser.Scene {
       let ids:number[]=[];
       if(Math.hypot(p.x-drag.x,p.y-drag.y)>this.dragThreshold){
         const x1=Math.min(drag.wx,world.x),x2=Math.max(drag.wx,world.x),y1=Math.min(drag.wy,world.y),y2=Math.max(drag.wy,world.y);
-        ids=this.state.entities.filter(e=>{const q=project(e.x,e.y);return e.side===this.viewSide&&e.kind==='unit'&&e.hp>0&&q.x>=x1&&q.x<=x2&&q.y>=y1&&q.y<=y2;}).map(e=>e.id);
+        ids=this.state.entities.filter(e=>{const q=project(e.x,e.y);return e.side===this.viewSide&&this.visible(e)&&e.kind==='unit'&&e.hp>0&&q.x>=x1&&q.x<=x2&&q.y>=y1&&q.y<=y2;}).map(e=>e.id);
       } else {const hit=this.hit(world.x,world.y);if(hit?.side===this.viewSide)ids=[hit.id];}
       if(this.queueModifier(this.input.activePointer.event))ids=[...new Set([...this.selected,...ids])];
       this.select(ids);
@@ -196,7 +201,7 @@ export default class GameScene extends Phaser.Scene {
   }
   public controlGroups(){return Object.fromEntries(Object.entries(this.groups).map(([key,ids])=>[key,ids.filter(id=>this.state.entities.some(e=>e.id===id&&e.hp>0&&this.visible(e)))]));}
   public recallGroup(key:string){const ids=this.controlGroups()[key];if(ids?.length)this.select(ids);}
-  public selectEntities(ids:number[]){this.select(ids.filter(id=>this.state.entities.some(e=>e.id===id&&e.hp>0&&this.visible(e))));}
+  public selectEntities(ids:number[]){const first=this.state.entities.find(e=>ids.includes(e.id)&&e.side===this.viewSide&&e.hp>0);if(first&&levelOf(first)!==this.viewLevel)this.setViewLevel(levelOf(first));this.select(ids.filter(id=>this.state.entities.some(e=>e.id===id&&e.hp>0&&this.visible(e))));}
   public beginAttackMove(){if(!this.canCommand||!this.selected.length)return;this.attackMode=true;this.buildRole=null;this.options.onNotice('Attack move: click a destination.');}
   public setBuildRole(role:BuildingRole|null,definitionId?:string){this.buildRole=role&&this.canCommand?role:null;this.buildDefinitionId=this.buildRole?definitionId:undefined;this.attackMode=false;}
   public centerOn(x:number,y:number){const q=project(x,y),camera=this.cameras.main;camera.centerOn(q.x,q.y);const bounds=this.photoMode?undefined:this.options.viewBounds?.();if(bounds)camera.scrollY+=(camera.height/2-(bounds.top+bounds.bottom)/2)/camera.zoom;}
@@ -226,7 +231,7 @@ export default class GameScene extends Phaser.Scene {
       case 'zoomIn':this.zoomBy(.15*this.pixelDensity);return;
       case 'zoomOut':this.zoomBy(-.15*this.pixelDensity);return;
       case 'centerHQ':{const hq=this.state.entities.find(v=>v.side===this.viewSide&&v.role==='hq'&&v.hp>0);if(hq)this.centerOn(hq.x,hq.y);return;}
-      case 'selectArmy':this.select(this.state.entities.filter(unit=>unit.side===this.viewSide&&unit.kind==='unit'&&unit.role!=='worker'&&unit.hp>0).map(unit=>unit.id));return;
+      case 'selectArmy':this.select(this.state.entities.filter(unit=>unit.side===this.viewSide&&this.visible(unit)&&unit.kind==='unit'&&unit.role!=='worker'&&unit.hp>0).map(unit=>unit.id));return;
       case 'attackMove':this.beginAttackMove();return;
       case 'hold':this.holdPosition();return;
       case 'stop':if(this.command({type:'stop',ids:this.selected}))this.audio?.play('order');return;
@@ -237,7 +242,7 @@ export default class GameScene extends Phaser.Scene {
     else if(action.startsWith('groupRecall'))this.recallGroup(action.slice(-1));
   }
   private zoomBy(delta:number){this.cameras.main.setZoom(Phaser.Math.Clamp(this.cameras.main.zoom+delta,.55*this.pixelDensity,1.8*this.pixelDensity));}
-  private visible(e:Entity){return e.side===this.viewSide||this.state.visible[this.viewSide].has(Math.floor(e.y)*this.state.width+Math.floor(e.x));}
+  private visible(e:Entity){return levelOf(e)===this.viewLevel&&(e.side===this.viewSide||this.state.visible[this.viewSide].has(fogKey(this.state,e)));}
   private hit(x:number,y:number){return [...this.state.entities].sort((a,b)=>(b.x+b.y)-(a.x+a.y)||b.id-a.id).find(e=>{if(e.hp<=0||!this.visible(e))return false;const rendered=this.art.contains(`entity:${e.id}`,x,y);if(rendered!==null)return rendered;const q=project(e.x,e.y);const r=e.kind==='building'?35:14;return Math.abs(x-q.x)<r&&y>q.y-(e.kind==='building'?65:35)&&y<q.y+12;});}
   private order(p:Phaser.Input.Pointer,attack=false){
     this.orderAt(p.x,p.y,attack,this.queueModifier(p.event));
@@ -251,7 +256,7 @@ export default class GameScene extends Phaser.Scene {
     const own=this.state.entities.filter(e=>this.selected.includes(e.id)&&e.side===this.viewSide&&e.hp>0);
     const producers=own.filter(e=>e.kind==='building'&&(e.role==='hq'||e.role==='barracks'));
     if(producers.length&&!attack&&!own.some(e=>e.kind==='unit')){
-      ok=this.command({type:'setRally',ids:producers.map(e=>e.id),x:pos.x,y:pos.y});
+      ok=this.command({type:'setRally',ids:producers.map(e=>e.id),x:pos.x,y:pos.y,level:this.viewLevel});
       this.options.onNotice(ok?'Rally point set. New units will move here.':'Choose open ground for the rally point.');
       if(ok)this.audio?.play('order');
       return;
@@ -259,9 +264,9 @@ export default class GameScene extends Phaser.Scene {
     if(hit&&isHostile(this.state,this.viewSide,hit.side))ok=this.command({type:'attack',ids:this.selected,target:hit.id,queued});
     else if(hit&&hit.side===this.viewSide&&hit.kind==='building'&&hit.hp<hit.maxHp)ok=this.command({type:'repair',ids:this.selected,target:hit.id,queued});
     else {
-      const resource=[...this.state.resources].sort((a,b)=>(b.x+b.y)-(a.x+a.y)).find(r=>{if(r.amount<=0||!this.state.visible[this.viewSide].has(Math.floor(r.y)*this.state.width+Math.floor(r.x)))return false;const rendered=this.art.contains(`resource:${r.id}`,world.x,world.y);if(rendered!==null)return rendered;const q=project(r.x,r.y);return Math.abs(q.x-world.x)<24&&Math.abs(q.y-15-world.y)<30;});
+      const resource=[...this.state.resources].sort((a,b)=>(b.x+b.y)-(a.x+a.y)).find(r=>{if(r.amount<=0||levelOf(r)!==this.viewLevel||!this.state.visible[this.viewSide].has(fogKey(this.state,r)))return false;const rendered=this.art.contains(`resource:${r.id}`,world.x,world.y);if(rendered!==null)return rendered;const q=project(r.x,r.y);return Math.abs(q.x-world.x)<24&&Math.abs(q.y-15-world.y)<30;});
       if(resource&&!attack)ok=this.command({type:'gather',ids:this.selected,target:resource.id,queued});
-      else ok=this.command({type:attack?'attackMove':'move',ids:this.selected,x:Phaser.Math.Clamp(pos.x,.5,this.state.width-.5),y:Phaser.Math.Clamp(pos.y,.5,this.state.height-.5),queued});
+      else ok=this.command({type:attack?'attackMove':'move',ids:this.selected,x:Phaser.Math.Clamp(pos.x,.5,this.state.width-.5),y:Phaser.Math.Clamp(pos.y,.5,this.state.height-.5),level:this.viewLevel,queued});
     }
     if(ok){this.markers.push({...project(pos.x,pos.y),born:this.time.now,attack});this.audio?.play('order');}
   }
@@ -271,7 +276,7 @@ export default class GameScene extends Phaser.Scene {
     if(this.blueprintPlacement){const world=this.cameras.main.getWorldPoint(x,y);this.placeBlueprint(unproject(world.x,world.y));return;}
     if(this.buildRole){
       const world=this.cameras.main.getWorldPoint(x,y),pos=unproject(world.x,world.y),role=this.buildRole;
-      if(this.command({type:'build',ids:this.selected,role,definitionId:this.buildDefinitionId,x:role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y:role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5})){this.setBuildRole(null);this.options.onNotice('Construction ordered.');this.audio?.play('order');}
+      if(this.command({type:'build',ids:this.selected,role,definitionId:this.buildDefinitionId,x:role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y:role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5,level:this.viewLevel})){this.setBuildRole(null);this.options.onNotice('Construction ordered.');this.audio?.play('order');}
       else this.options.onNotice('Cannot build here. Select a worker and check resources and space.');
       return;
     }
@@ -330,6 +335,7 @@ export default class GameScene extends Phaser.Scene {
     const c=this.cameras.main,s=(suppressed?0:Math.min(delta,40))*.75*this.pixelDensity/c.zoom;
     for(const [action,direction] of Object.entries(CAMERA_TAP))if(this.controls.isHeld(action as ControlAction,this.keyboardState,this.controlContext)){c.scrollX+=direction![0]*s;c.scrollY+=direction![1]*s;}
     this.updateController(delta,suppressed);
+    const groundSignature=`${this.viewLevel}|${(this.viewLevel===0?this.state.terrain:this.state.world?.levels[this.viewLevel].terrain??[]).join(',')}`;if(groundSignature!==this.groundSignature){this.groundSignature=groundSignature;this.drawGround();}
     this.drawActors();this.drawOverlay();
     this.fogClock+=delta;if(this.fogClock>150){this.fogClock=0;this.drawFog();}
   }
@@ -344,7 +350,7 @@ export default class GameScene extends Phaser.Scene {
           if(source.kind==='building'||(def?.range??0)>3)this.combatEffects.push({from:project(source.x,source.y),to:project(target.x,target.y),born:state.time,color:factionFor(state,source.side).color,heavy:!!def?.buildingDamageMultiplier});
         }
       }
-      if(event.type==='attack'&&state.visible[this.viewSide].has(Math.floor(event.y)*state.width+Math.floor(event.x)))this.audio?.play('attack');
+      if(event.type==='attack'&&levelOf(event)===this.viewLevel&&state.visible[this.viewSide].has(fogKey(state,event)))this.audio?.play('attack');
       if(event.type==='attack'){
         const target=state.entities.find(e=>e.id===event.target);
         // An own target is known even if its attacker is outside vision. Never reveal the attacker.
@@ -376,13 +382,14 @@ export default class GameScene extends Phaser.Scene {
   }
   private diamond(g:Phaser.GameObjects.Graphics,x:number,y:number,w:number,h:number,color:number,alpha=1){g.fillStyle(color,alpha);g.beginPath();g.moveTo(x,y-h/2);g.lineTo(x+w/2,y);g.lineTo(x,y+h/2);g.lineTo(x-w/2,y);g.closePath();g.fillPath();}
   private drawGround(){
-    this.art.ground(this.state,project);
+    this.art.ground(this.state,project,this.viewLevel);
     const g=this.ground;g.clear();
     for(let y=0;y<this.state.height;y++)for(let x=0;x<this.state.width;x++){
       const p=project(x+.5,y+.5);const n=((x*73856093)^(y*19349663)^(this.state.seed||7))>>>0;
-      const terrain=this.state.terrain[y*this.state.width+x];
-      const colors={grass:0x536b48,road:0x85805a,mud:0x74634d,shallows:0x5b9b98,water:0x387986,rock:0x697980,bridge:0x95734e};
+      const terrain=terrainAt(this.state,x+.5,y+.5,this.viewLevel);
+      const colors={grass:0x536b48,road:0x85805a,mud:0x74634d,shallows:0x5b9b98,water:0x387986,rock:0x697980,bridge:0x95734e,sand:0xc3a568,snow:0xc8d9db,forest:0x2e4931,ice:0x94c9d9};
       this.diamond(g,p.x,p.y,65,33,colors[terrain]);
+      const elevation=elevationAt(this.state,{x:x+.5,y:y+.5,level:this.viewLevel});if(elevation){g.lineStyle(1+elevation,0xe5d6a3,.5).lineBetween(p.x-18,p.y+8,p.x,p.y+16);g.lineBetween(p.x,p.y+16,p.x+18,p.y+8);}
       if(terrain==='grass'&&n%4===0){g.lineStyle(1,0x91a262,.35);g.lineBetween(p.x-8,p.y+3,p.x-6,p.y-1);}
 
     }
@@ -391,9 +398,9 @@ export default class GameScene extends Phaser.Scene {
     const g=this.actors;g.clear();this.art.begin();
     const appearance=this.appearance.value,teams=(this.state as GameState&{teams?:number[]}).teams;
     const remembered=this.remoteFrame?.resourceMemory??this.playerView.resourcesFor(this.state);
-    const objects=[...remembered.filter(r=>r.amount>0).map(r=>({sort:r.x+r.y,r})),...this.state.entities.filter(e=>this.visible(e)).map(e=>({sort:e.x+e.y,e}))].sort((a,b)=>a.sort-b.sort);
+    const objects=[...remembered.filter(r=>r.amount>0&&levelOf(r)===this.viewLevel).map(r=>({sort:r.x+r.y,r})),...this.state.entities.filter(e=>this.visible(e)).map(e=>({sort:e.x+e.y,e}))].sort((a,b)=>a.sort-b.sort);
     for(const obj of objects){
-      if('r' in obj){const r=obj.r,p=project(r.x,r.y);if(!this.state.explored[this.viewSide].has(Math.floor(r.y)*this.state.width+Math.floor(r.x)))continue;
+      if('r' in obj){const r=obj.r,p=project(r.x,r.y);if(!this.state.explored[this.viewSide].has(fogKey(this.state,r)))continue;
         const environment=r.kind==='crystal'?'crystal':r.kind==='ore'?'ore':r.id%3===0?'tree-oak':'tree-pine';
         if(this.art.environment(`resource:${r.id}`,environment,p.x,p.y))continue;
         g.fillStyle(0x142a22,.3).fillEllipse(p.x+4,p.y+4,41,17);
@@ -433,15 +440,23 @@ export default class GameScene extends Phaser.Scene {
         const w=e.kind==='building'?54:30,y=p.y-(e.kind==='building'?95:46);g.fillStyle(0x182426,.9).fillRect(p.x-w/2-1,y-1,w+2,5);g.fillStyle(style.color).fillRect(p.x-w/2,y,w*Math.max(0,e.hp/e.maxHp),3);
       }
     }
-    for(let i=0;i<this.state.terrain.length;i++)if(this.state.terrain[i]==='shallows'&&i%7===0&&this.state.explored[this.viewSide].has(i)){const p=project(i%this.state.width+.5,Math.floor(i/this.state.width)+.5);this.art.environment(`reeds:${i}`,'reeds',p.x,p.y);}
-    for(const r of remembered)if(r.kind==='wood'&&r.amount<=0&&this.state.explored[this.viewSide].has(Math.floor(r.y)*this.state.width+Math.floor(r.x))){const p=project(r.x,r.y);this.art.environment(`resource:${r.id}`,'stump',p.x,p.y);}
+    for(let i=0;i<this.state.terrain.length;i++)if(terrainAt(this.state,i%this.state.width+.5,Math.floor(i/this.state.width)+.5,this.viewLevel)==='shallows'&&i%7===0&&this.state.explored[this.viewSide].has(this.viewLevel*this.state.width*this.state.height+i)){const p=project(i%this.state.width+.5,Math.floor(i/this.state.width)+.5);this.art.environment(`reeds:${i}`,'reeds',p.x,p.y);}
+    for(const r of remembered)if(levelOf(r)===this.viewLevel&&r.kind==='wood'&&r.amount<=0&&this.state.explored[this.viewSide].has(fogKey(this.state,r))){const p=project(r.x,r.y);this.art.environment(`resource:${r.id}`,'stump',p.x,p.y);}
+    this.drawWorldObjects(g);
     this.art.end();
   }
-  private drawFog(){const g=this.fog;g.clear();for(let y=0;y<this.state.height;y++)for(let x=0;x<this.state.width;x++){const i=y*this.state.width+x;if(this.state.visible[this.viewSide].has(i))continue;const p=project(x+.5,y+.5);this.diamond(g,p.x,p.y,65,33,0x102022,this.state.explored[this.viewSide].has(i)?.48:.98);}}
+  private drawWorldObjects(g:Phaser.GameObjects.Graphics){
+    const world=this.state.world;if(!world)return;const visible=(p:{x:number;y:number;level:number})=>p.level===this.viewLevel&&this.state.visible[this.viewSide].has(fogKey(this.state,p));
+    for(const transition of world.transitions)for(const entrance of [transition.from,transition.to])if(visible(entrance)){const p=project(entrance.x,entrance.y);g.fillStyle(0x2a2233,.9).fillEllipse(p.x,p.y-4,36,22);g.lineStyle(3,0xb8d7e0).strokeEllipse(p.x,p.y-4,36,22);g.lineBetween(p.x-12,p.y-5,p.x+12,p.y-5);}
+    for(const site of world.sites)if(visible(site)){const p=project(site.x,site.y),color=site.owner===null?0xe6d38a:ownershipStyle(site.owner,this.viewSide,this.appearance.value,this.state.teams).color;if(site.kind==='relic'){g.fillStyle(color).fillTriangle(p.x-12,p.y,p.x,p.y-43,p.x+12,p.y);g.lineStyle(2,0xf1efd8).strokeCircle(p.x,p.y-28,10);}else if(site.kind==='village'){g.fillStyle(0x7b6550).fillRect(p.x-22,p.y-28,44,27);g.fillStyle(color).fillTriangle(p.x-30,p.y-28,p.x,p.y-49,p.x+30,p.y-28);}else{g.fillStyle(0x3a2b26).fillEllipse(p.x,p.y-8,50,34);g.lineStyle(3,0xa99576).strokeEllipse(p.x,p.y-8,50,34);}if(site.progress>0){g.fillStyle(0x182b2a).fillRect(p.x-24,p.y+4,48,5);g.fillStyle(color).fillRect(p.x-24,p.y+4,48*site.progress,5);}}
+    for(const creature of world.creatures)if(creature.hp>0&&visible(creature)){const p=project(creature.x,creature.y);g.fillStyle(0x914e42).fillEllipse(p.x,p.y-13,25,24);g.fillStyle(0xd0b78d).fillTriangle(p.x-12,p.y-18,p.x-9,p.y-34,p.x-4,p.y-19);g.fillTriangle(p.x+4,p.y-19,p.x+9,p.y-34,p.x+12,p.y-18);if(!this.photoMode){g.fillStyle(0x182b2a).fillRect(p.x-16,p.y-40,32,4);g.fillStyle(0xd47760).fillRect(p.x-16,p.y-40,32*creature.hp/creature.maxHp,4);}}
+    for(const fire of world.fires)if(visible(fire)){const p=project(fire.x,fire.y),sway=Math.sin(this.state.time*9+fire.x)*3;g.fillStyle(0xd45327,.8).fillTriangle(p.x-14,p.y+5,p.x+sway,p.y-34,p.x+14,p.y+5);g.fillStyle(0xf4cf65).fillTriangle(p.x-7,p.y+4,p.x-sway,p.y-22,p.x+7,p.y+4);}
+  }
+  private drawFog(){const g=this.fog;g.clear();for(let y=0;y<this.state.height;y++)for(let x=0;x<this.state.width;x++){const i=fogKey(this.state,{x,y,level:this.viewLevel});if(this.state.visible[this.viewSide].has(i))continue;const p=project(x+.5,y+.5);this.diamond(g,p.x,p.y,65,33,0x102022,this.state.explored[this.viewSide].has(i)?.48:.98);}}
   private drawOverlay(){
     const g=this.overlay;g.clear();if(this.photoMode){this.game.canvas.style.cursor='default';return;}const p=this.controllerActive&&this.controllerCursor?this.controllerCursor:this.input.activePointer;const world=this.cameras.main.getWorldPoint(p.x,p.y);
     for(const corpse of this.state.corpses){
-      if(!isVisible(this.state,this.viewSide,corpse.x,corpse.y))continue;
+      if(levelOf(corpse)!==this.viewLevel||!isVisible(this.state,this.viewSide,corpse.x,corpse.y,levelOf(corpse)))continue;
       const c=project(corpse.x,corpse.y);g.lineStyle(2,0xbbb79f,.6).lineBetween(c.x-5,c.y-2,c.x+5,c.y+2);g.lineBetween(c.x-5,c.y+2,c.x+5,c.y-2);
     }
     if(this.blueprintSide===this.viewSide)for(const blueprint of this.blueprints){
@@ -480,7 +495,7 @@ export default class GameScene extends Phaser.Scene {
       if(e.kind==='building'&&e.progress<1){g.fillStyle(0x182b2a,.8).fillRect(q.x-27,y+7,54,4);g.fillStyle(0xe4c578).fillRect(q.x-27,y+7,54*e.progress,4);}
     }
     if(this.drag&&Math.hypot(p.x-this.drag.x,p.y-this.drag.y)>this.dragThreshold&&!this.buildRole){g.lineStyle(1,0xe5dca6).strokeRect(this.drag.wx,this.drag.wy,world.x-this.drag.wx,world.y-this.drag.wy);g.fillStyle(0xd6e9a5,.12).fillRect(this.drag.wx,this.drag.wy,world.x-this.drag.wx,world.y-this.drag.wy);}
-    if(this.buildRole){const pos=unproject(world.x,world.y);const x=this.buildRole==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y=this.buildRole==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5,q=project(x,y);const valid=canPlace(this.state,this.viewSide,this.buildRole,x,y,this.buildDefinitionId);const size=buildingFor(this.state,this.viewSide,this.buildRole,this.buildDefinitionId).size;this.diamond(g,q.x,q.y,size*64,size*32,valid?0xa6d99a:0xe27964,.5);}
+    if(this.buildRole){const pos=unproject(world.x,world.y);const x=this.buildRole==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y=this.buildRole==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5,q=project(x,y);const valid=canPlace(this.state,this.viewSide,this.buildRole,x,y,this.buildDefinitionId,this.viewLevel);const size=buildingFor(this.state,this.viewSide,this.buildRole,this.buildDefinitionId).size;this.diamond(g,q.x,q.y,size*64,size*32,valid?0xa6d99a:0xe27964,.5);}
     for(const building of this.state.entities){
       if(building.side!==this.viewSide||building.hp<=0||!building.rally||!this.selected.includes(building.id))continue;
       const from=project(building.x,building.y),to=project(building.rally.x,building.rally.y);

@@ -5,6 +5,7 @@ import { createGame, createMatch, issueCommand, isGameOver } from './core/simula
 import { ContentLibrary, productionQueueKey, upgradeFor, factionFor } from './core/content-registry';
 import { mountModLibrary } from './ui/ModLibrary';
 import { mountShell } from './ui/Hud';
+import { mountWorldBiome, mountWorldTools } from './ui/WorldTools';
 import type { HudCallbacks } from './ui/Hud';
 import type { FactionId, MapSize, GameState, Side, UpgradeId } from './core/types';
 import { mountSessionTools } from './ui/SessionTools';
@@ -55,6 +56,7 @@ root.querySelector('#opponent')!.addEventListener('change',()=>roster.updateDefa
 const modLibrary=new ContentLibrary();
 try{const installed=localStorage.getItem('ovf-mod-library-v1');if(installed)modLibrary.restore(JSON.parse(installed));}catch(error){console.error('Installed mods could not be restored',error);}
 mountModLibrary(root.querySelector<HTMLElement>('.menu-content')!,{installed:()=>modLibrary.list(),install:input=>{const admitted=modLibrary.install(input);localStorage.setItem('ovf-mod-library-v1',JSON.stringify(modLibrary.list()));return admitted;},launch:id=>{const size=root.querySelector<HTMLSelectElement>('#map-size')!.value as MapSize,seed=Number(root.querySelector<HTMLInputElement>('#map-seed')!.value);start(id as FactionId,root.querySelector<HTMLSelectElement>('#opponent')!.value as FactionId,size,seed);}});
+const selectedBiome=mountWorldBiome(root.querySelector<HTMLElement>('.map-settings')??root.querySelector<HTMLElement>('#map-size')!.parentElement!);
 const controls=new ControlProfiles();
 const saves=new SaveRepository(localStorage);
 let recorder:MatchRecorder|undefined,replay:ReplayPlayer|undefined;
@@ -97,6 +99,7 @@ const callbacks:HudCallbacks={
  isInspection:()=>!!replay||!!scene?.readOnly,
  resourceMemory:()=>onlineRender?.resourceMemory,
  side:playerSide,
+ level:()=>scene?.viewLevel??0,
  bindingLabel:action=>controls.bindingsFor(action as ControlAction).map(displayBinding).join(' / '),
  center:(x,y)=>scene?.centerOn(x,y),
  groups:()=>scene?.controlGroups()??{},
@@ -142,7 +145,7 @@ function retireGame(onDestroyed?:()=>void){
 function start(next:FactionId,nextOpponent:FactionId=opponent,mapSize:MapSize="medium",seed=4127){
  try {
   const custom=next.includes(':')||nextOpponent.includes(':');
-  const state=benchmark?createPerformanceGame():custom?createMatch({content:modLibrary.bundle(),map:{seed,size:mapSize},players:[{id:0,teamId:0,factionId:next,controller:'human'},{id:1,teamId:1,factionId:nextOpponent,controller:'ai',ai:aiOptions.value}]}):roster.enabled?createMatch({map:{seed,size:mapSize},players:roster.getPlayers(next,nextOpponent,aiOptions.value),rules:roster.getRules()}):createGame(next,seed,nextOpponent,{mapSize,ai:[{},aiOptions.value]});
+  const state=benchmark?createPerformanceGame():custom?createMatch({content:modLibrary.bundle(),map:{seed,size:mapSize,biome:selectedBiome()},players:[{id:0,teamId:0,factionId:next,controller:'human'},{id:1,teamId:1,factionId:nextOpponent,controller:'ai',ai:aiOptions.value}]}):roster.enabled?createMatch({map:{seed,size:mapSize,biome:selectedBiome()},players:roster.getPlayers(next,nextOpponent,aiOptions.value),rules:roster.getRules()}):createGame(next,seed,nextOpponent,{mapSize,biome:selectedBiome(),ai:[{},aiOptions.value]});
   replacementGeneration++;launch(state);
  }catch(error){shell.notice(error instanceof Error?error.message:'Cannot start this skirmish.');}
 }
@@ -321,7 +324,9 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)maybeAutosa
 window.addEventListener('pagehide',()=>maybeAutosave(true));
 setInterval(()=>{if(scene)shell.update(scene.state,scene.selected,callbacks);tools.update(scene?.state??null,{side:playerSide(),paused:scene?.paused,replaySpectator:!!replay||!!scene?.readOnly,remoteMatch:!!onlineConnection});planning.update({blocked:planningBlocked()});tournaments.update({blocked:tournamentBlocked()});updateCoach();},100);
 // Read-only diagnostics for repeatable performance and state inspection. Player actions stay in the UI.
-Object.defineProperty(window,'rts',{get:()=>scene?.cameras?.main?{state:scene.state,viewSide:scene.viewSide,readOnly:scene.readOnly,selected:[...scene.selected],art:scene.artStatus,fps:game?.loop.actualFps,paused:scene.paused,mode:onlineConnection?'online':replay?'replay':'local',simulationEnabled:scene.simulationEnabled,online:onlineConnection?{status:onlineConnection.status,role:onlineRender?.role,side:playerSide(),delayTicks:onlineConnection.connectionInfo?.delayTicks,pendingCommands:onlineConnection.pendingCommands,privateSides:[...(onlineRender?.privateSides??[])]}:null,camera:{x:scene.cameras.main.scrollX,y:scene.cameras.main.scrollY,zoom:scene.cameras.main.zoom,width:scene.cameras.main.width,height:scene.cameras.main.height}}:null});
+const worldTools=mountWorldTools(root,{state:()=>scene?.state,side:playerSide,level:()=>scene?.viewLevel??0,selected:()=>scene?.selected??[],canCommand:()=>!!scene&&scene.canIssueCommands,command:c=>scene?.command(c)??false,setLevel:level=>scene?.setViewLevel(level),select:ids=>scene?.selectEntities(ids),center:p=>scene?.centerOn(p.x,p.y),notice:shell.notice});
+setInterval(()=>worldTools.update(),100);
+Object.defineProperty(window,'rts',{get:()=>scene?.cameras?.main?{state:scene.state,viewLevel:scene.viewLevel,viewSide:scene.viewSide,readOnly:scene.readOnly,selected:[...scene.selected],art:scene.artStatus,fps:game?.loop.actualFps,paused:scene.paused,mode:onlineConnection?'online':replay?'replay':'local',simulationEnabled:scene.simulationEnabled,online:onlineConnection?{status:onlineConnection.status,role:onlineRender?.role,side:playerSide(),delayTicks:onlineConnection.connectionInfo?.delayTicks,pendingCommands:onlineConnection.pendingCommands,privateSides:[...(onlineRender?.privateSides??[])]}:null,camera:{x:scene.cameras.main.scrollX,y:scene.cameras.main.scrollY,zoom:scene.cameras.main.zoom,width:scene.cameras.main.width,height:scene.cameras.main.height}}:null});
 if(location.hostname==='127.0.0.1'&&new URLSearchParams(location.search).has('qa'))setInterval(()=>{
  if(!scene||!game)return;
  const s=scene.state;

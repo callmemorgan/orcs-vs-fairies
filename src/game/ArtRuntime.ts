@@ -93,7 +93,7 @@ export default class ArtRuntime {
     if(e.kind==='unit'&&e.hp>0)this.renderedUnits++;
     return this.place(`entity:${e.id}`,asset,texture,frame,x,y,y,e.illusion&&e.side===viewSide?.55:1);
   }
-  ground(state:GameState,project:(x:number,y:number)=>{x:number;y:number}){
+  ground(state:GameState,project:(x:number,y:number)=>{x:number;y:number},level=0){
     this.terrain?.destroy();this.terrain=null;
     if(!this.hasEnvironment('tile-grass-0'))return;
     const left=project(0,state.height).x-64,top=-80;
@@ -101,7 +101,8 @@ export default class ArtRuntime {
 
     for(let y=0;y<state.height;y++)for(let x=0;x<state.width;x++){
       const n=((x*73856093)^(y*19349663)^(state.seed||7))>>>0;
-      const terrain=state.terrain[y*state.width+x];
+      const terrain=(level===0?state.terrain:state.world?.levels[level]?.terrain)?.[y*state.width+x];
+      if(!terrain||['sand','snow','forest','ice'].includes(terrain))continue;
       let id=terrain==='grass'?`tile-grass-${n%4}`:terrain==='road'?`tile-dirt-${n%3}`:`tile-${terrain}`;
       if(!this.hasEnvironment(id))id='tile-grass-0';
       const asset=this.manifest!.assets[id],p=project(x+.5,y+.5);

@@ -11,6 +11,13 @@ export function elevationAt(s:Pick<GameState,'width'|'height'|'world'>,point:Vec
  if(point.x<0||point.y<0||point.x>=s.width||point.y>=s.height)return 0;
  return s.world?.levels[levelOf(point)]?.elevation[Math.floor(point.y)*s.width+Math.floor(point.x)]??0;
 }
+/** Every terrain edit clears same-level routes; derived navigation grids check revisions and tiles. */
+export function setWorldTerrain(s:GameState,point:Vec,kind:GameState['terrain'][number]):boolean {
+ const level=levelOf(point),tile=Math.floor(point.y)*s.width+Math.floor(point.x),terrain=level===0?s.terrain:s.world?.levels[level]?.terrain;
+ if(!Object.hasOwn(TERRAIN,kind)||!terrain||point.x<0||point.y<0||point.x>=s.width||point.y>=s.height)return false;if(terrain[tile]===kind)return true;
+ terrain[tile]=kind;if(s.world){s.world.levels[level].terrain[tile]=kind;s.world.revision=(s.world.revision??0)+1;for(const creature of s.world.creatures)if(levelOf(creature)===level)creature.path=[];}
+ for(const entity of s.entities)if(levelOf(entity)===level)entity.path=[];return true;
+}
 /** A ridge more than one tile above an observer blocks the line behind it. */
 export function terrainLineOfSight(s:GameState,from:Vec,to:Vec):boolean {
  if(!sameLevel(from,to))return false;if(!s.world)return true;
@@ -108,7 +115,7 @@ export function generatedMapFromWorld(input:WorldMapData,playerCount:number):Gen
  return {size:input.size,seed:input.seed,width:input.width,height:input.height,terrain:[...input.levels[0].terrain],starts:input.starts.map(p=>({x:p.x,y:p.y,level:p.level})),resources:input.resources.map(r=>({...r})),version:MAP_VERSION};
 }
 export function initializeWorld(s:GameState,input:WorldMapData,biome:Biome='temperate'):WorldState {
- const world:WorldState={version:1,biome,levels:input.levels.map(l=>({...l,terrain:[...l.terrain],elevation:[...l.elevation]})),transitions:input.transitions.map(t=>({id:t.id,from:{...t.from},to:{...t.to}})),bridges:[],fires:[],sites:input.sites.map(site=>({...site,id:s.nextId++,owner:null,loyalty:s.players.map(()=>0),progress:0,capturing:null,reward:{wood:180,ore:100,crystal:40},rewarded:[],request:{wood:80,ore:20,crystal:0},supplied:false,creatureIds:[],respawnAt:0})),creatures:[],dayLength:180,seasonLength:240,weatherLength:45,nextEnvironmentAt:0,iceTiles:[],thawWarned:false};
+ const world:WorldState={version:1,revision:0,biome,levels:input.levels.map(l=>({...l,terrain:[...l.terrain],elevation:[...l.elevation]})),transitions:input.transitions.map(t=>({id:t.id,from:{...t.from},to:{...t.to}})),bridges:[],fires:[],sites:input.sites.map(site=>({...site,id:s.nextId++,owner:null,loyalty:s.players.map(()=>0),progress:0,capturing:null,reward:{wood:180,ore:100,crystal:40},rewarded:[],request:{wood:80,ore:20,crystal:0},supplied:false,creatureIds:[],respawnAt:0})),creatures:[],dayLength:180,seasonLength:240,weatherLength:45,nextEnvironmentAt:0,iceTiles:[],thawWarned:false};
  world.levels[0].terrain=s.terrain;s.world=world;
  for(const level of world.levels){
   const visited=new Set<number>();for(let tile=0;tile<level.terrain.length;tile++){

@@ -10,6 +10,8 @@ import { createTooltip } from './Tooltip';
 import { abilityTargetReason } from './availability';
 import { AppearancePreferences, appearancePreferences, markerPolygon, ownershipStyle } from '../game/Appearance';
 import { displaySettings } from './DisplaySettings';
+import { fogKey, levelOf } from '../core/world-map';
+import { terrainAt } from '../core/maps';
 import { MinimapAlerts, type MinimapAlertKind } from './MinimapAlerts';
 import './minimap-alerts.css';
 
@@ -19,7 +21,7 @@ export interface HudCallbacks {
   resourceMemory?:()=>ReturnType<PlayerView['resourcesFor']>|undefined;
   build:(role:BuildingRole,definitionId?:string)=>void; train:(role:UnitRole,definitionId?:string)=>void; cancelTrain:(id:number,index:number,expectedQueue:string)=>void; research:(upgrade:UpgradeId,building?:number)=>void; ability:()=>void; clearRally:()=>void; toggleGate?:()=>void;
   stop:()=>void; hold:()=>void; attackMove:()=>void; select:(ids:number[])=>void; pause:()=>void; restart:()=>void; center:(x:number,y:number)=>void;
-  toggleMuted:()=>void; isMuted:()=>boolean; isPaused?:()=>boolean; side?:()=>Side; bindingLabel?:(action:string)=>string;
+  toggleMuted:()=>void; isMuted:()=>boolean; isPaused?:()=>boolean; side?:()=>Side;level?:()=>number; bindingLabel?:(action:string)=>string;
   cameraCorners:()=>Array<{x:number;y:number}>; groups:()=>Record<string,number[]>; recallGroup:(group:string)=>void;
 }
 const traits:Record<FactionId,string>={orcs:'Armored troops • Battle momentum',fairies:'Swift archers • Illusions & healing',dwarves:'Engineers • Emplaced firepower',undead:'Expendable ranks • Raise the fallen',tideborn:'Amphibious troops • Healing surge',automata:'Recharging shields • Ward Engines'};
@@ -108,16 +110,17 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
   function drawMinimap(s:GameState) {
     const cw=map.width/s.width,ch=map.height/s.height;
     ctx.fillStyle='#070e10';ctx.fillRect(0,0,map.width,map.height);
-    for(const i of s.explored[localSide]){ctx.fillStyle=s.visible[localSide].has(i)?({grass:'#45654a',road:'#8e8058',mud:'#69593f',water:'#316579',shallows:'#609690',rock:'#7c8386',bridge:'#b49a6b'}[s.terrain[i]]):'#22342d';ctx.fillRect((i%s.width)*cw,Math.floor(i/s.width)*ch,Math.ceil(cw),Math.ceil(ch));}
-    for(const r of callbacks?.resourceMemory?.()??playerView.resourcesFor(s)){const i=Math.floor(r.y)*s.width+Math.floor(r.x);if(r.amount<=0||!s.explored[localSide].has(i))continue;ctx.fillStyle=r.kind==='wood'?'#688c53':r.kind==='crystal'?'#b497e7':'#b49c76';ctx.fillRect(r.x*cw-1,r.y*ch-1,2,2);}
+    const level=callbacks?.level?.()??0,area=s.width*s.height;
+    for(const i of s.explored[localSide]){if(Math.floor(i/area)!==level)continue;const tile=i%area;ctx.fillStyle=s.visible[localSide].has(i)?({grass:'#45654a',road:'#8e8058',mud:'#69593f',water:'#316579',shallows:'#609690',rock:'#7c8386',bridge:'#b49a6b',sand:'#c3a568',snow:'#c8d9db',forest:'#2e4931',ice:'#94c9d9'}[terrainAt(s,tile%s.width+.5,Math.floor(tile/s.width)+.5,level)]):'#22342d';ctx.fillRect((tile%s.width)*cw,Math.floor(tile/s.width)*ch,Math.ceil(cw),Math.ceil(ch));}
+    for(const r of callbacks?.resourceMemory?.()??playerView.resourcesFor(s)){const i=fogKey(s,r);if(levelOf(r)!==level||r.amount<=0||!s.explored[localSide].has(i))continue;ctx.fillStyle=r.kind==='wood'?'#688c53':r.kind==='crystal'?'#b497e7':'#b49c76';ctx.fillRect(r.x*cw-1,r.y*ch-1,2,2);}
     const settings=appearance.value,teams=(s as GameState&{teams?:number[]}).teams;
     for(const e of s.entities){
-      if(e.hp<=0||e.side!==localSide&&!s.visible[localSide].has(Math.floor(e.y)*s.width+Math.floor(e.x)))continue;
+      if(levelOf(e)!==level||e.hp<=0||e.side!==localSide&&!s.visible[localSide].has(fogKey(s,e)))continue;
       const style=ownershipStyle(e.side,localSide,settings,teams),size=e.kind==='building'?3.5:2.3,points=markerPolygon(settings.patterns?e.side:1,e.x*cw,e.y*ch,size);
       ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.fillStyle=style.css;ctx.fill();ctx.lineWidth=settings.outlines?1.1:.7;ctx.strokeStyle=settings.outlines?style.outlineCss:'#101820';ctx.stroke();
     }
     const alerts=minimapAlerts.update(s,localSide),pulse=.7+.3*Math.sin(s.time*5);
-    for(const alert of alerts){
+    for(const alert of alerts){if(levelOf(alert)!==level)continue;
       const x=alert.x*cw,y=alert.y*ch;ctx.strokeStyle=alert.kind==='idle'?'#f5de8c':alert.kind==='expansion'?'#78dfff':'#ffffff';ctx.lineWidth=2;ctx.globalAlpha=alert.kind==='idle'?1:pulse;ctx.beginPath();
       if(alert.kind==='idle'){ctx.rect(x-5,y-5,10,10);ctx.moveTo(x-1.5,y-2.5);ctx.lineTo(x-1.5,y+2.5);ctx.moveTo(x+1.5,y-2.5);ctx.lineTo(x+1.5,y+2.5);}
       else if(alert.kind==='expansion'){ctx.moveTo(x,y-8);ctx.lineTo(x+8,y);ctx.lineTo(x,y+8);ctx.lineTo(x-8,y);ctx.closePath();}
