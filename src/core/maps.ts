@@ -11,6 +11,10 @@ export const TERRAIN:Record<TerrainKind,{name:string;walkable:boolean;buildable:
  water:{name:'Deep water',walkable:false,buildable:false,speed:0},
  rock:{name:'Cliffs',walkable:false,buildable:false,speed:0},
  bridge:{name:'Bridge',walkable:true,buildable:false,speed:1},
+ sand:{name:'Desert sand',walkable:true,buildable:true,speed:.84},
+ snow:{name:'Snow valley',walkable:true,buildable:true,speed:.8},
+ forest:{name:'Dense forest',walkable:false,buildable:false,speed:0},
+ ice:{name:'Frozen lake',walkable:true,buildable:false,speed:1.05},
 };
 export interface GeneratedMap {size:MapSize;seed:number;width:number;height:number;terrain:TerrainKind[];starts:Vec[];resources:Omit<ResourceNode,'id'>[];version:number}
 export interface MapValidation {valid:boolean;issues:string[];reachableResources:number;totalResources:number;reachableTiles:number;startsConnected:boolean}
@@ -18,9 +22,9 @@ export function seededRandom(seed:number):()=>number{
  let value=seed>>>0;
  return ()=>{value=(value+0x6d2b79f5)>>>0;let t=value;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};
 }
-export function terrainAt(map:Pick<GeneratedMap,'width'|'height'|'terrain'>,x:number,y:number):TerrainKind{
+export function terrainAt(map:Pick<GeneratedMap,'width'|'height'|'terrain'> & {world?:{levels:{terrain:TerrainKind[]}[]}},x:number,y:number,level=0):TerrainKind{
  if(x<0||y<0||x>=map.width||y>=map.height)return 'rock';
- return map.terrain[Math.floor(y)*map.width+Math.floor(x)]??'grass';
+ return (level===0?map.terrain:map.world?.levels[level]?.terrain)?.[Math.floor(y)*map.width+Math.floor(x)]??'rock';
 }
 
 export function generateMap(seed:number,size:MapSize='medium'):GeneratedMap{

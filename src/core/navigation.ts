@@ -1,31 +1,33 @@
 import { buildingFor, factionFor } from './content-registry';
 import { DIRECTIONS_32, NEAREST_DIRECTION_INDICES_32, length2D } from './geometry';
 import { terrainAt, TERRAIN } from './maps';
+import { elevationAt, levelOf, sameLevel } from './world-map';
 import type { GameState, Side, Vec } from './types';
 
 const distance=(a:Vec,b:Vec)=>length2D(a.x-b.x,a.y-b.y);
 const clamp=(v:number,a:number,b:number)=>Math.max(a,Math.min(b,v));
 const buildingRadius=(s:GameState,e:GameState['entities'][number])=>buildingFor(s,e).size/2+.27;
 
-export function walkable(s:GameState,x:number,y:number):boolean{
+export function walkable(s:GameState,x:number,y:number,level=0):boolean{
  if(x<.35||y<.35||x>s.width-.35||y>s.height-.35)return false;
- for(let ty=Math.floor(y-.27);ty<=Math.floor(y+.27);ty++)for(let tx=Math.floor(x-.27);tx<=Math.floor(x+.27);tx++)if(!TERRAIN[terrainAt(s,tx+.5,ty+.5)].walkable)return false;
- for(const b of s.entities)if(b.hp>0&&b.kind==='building'&&!b.gateOpen){const r=buildingRadius(s,b);if(Math.abs(b.x-x)<r&&Math.abs(b.y-y)<r)return false;}
- for(const r of s.resources)if(r.amount>0&&length2D(r.x-x,r.y-y)<.7)return false;
+ for(let ty=Math.floor(y-.27);ty<=Math.floor(y+.27);ty++)for(let tx=Math.floor(x-.27);tx<=Math.floor(x+.27);tx++)if(!TERRAIN[terrainAt(s,tx+.5,ty+.5,level)].walkable)return false;
+ for(const b of s.entities)if(b.hp>0&&b.kind==='building'&&!b.gateOpen&&levelOf(b)===level){const r=buildingRadius(s,b);if(Math.abs(b.x-x)<r&&Math.abs(b.y-y)<r)return false;}
+ for(const r of s.resources)if(r.amount>0&&levelOf(r)===level&&length2D(r.x-x,r.y-y)<.7)return false;
  return true;
 }
 
 export function segmentWalkable(s:GameState,a:Vec,b:Vec):boolean{
- if(!walkable(s,a.x,a.y)||!walkable(s,b.x,b.y))return false;
+ const level=levelOf(a);if(!sameLevel(a,b)||!walkable(s,a.x,a.y,level)||!walkable(s,b.x,b.y,level))return false;
+ const steps=Math.max(1,Math.ceil(distance(a,b)*5));let previous=elevationAt(s,a);for(let i=1;i<=steps;i++){const t=i/steps,p={x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,level},height=elevationAt(s,p);if(Math.abs(height-previous)>1)return false;previous=height;}
  const dx=b.x-a.x,dy=b.y-a.y,lengthSquared=dx*dx+dy*dy;
  for(let y=Math.floor(Math.min(a.y,b.y)-.27);y<=Math.floor(Math.max(a.y,b.y)+.27);y++)for(let x=Math.floor(Math.min(a.x,b.x)-.27);x<=Math.floor(Math.max(a.x,b.x)+.27);x++){
-  if(TERRAIN[terrainAt(s,x+.5,y+.5)].walkable)continue;let enter=0,leave=1;
+  if(TERRAIN[terrainAt(s,x+.5,y+.5,level)].walkable)continue;let enter=0,leave=1;
   for(const [origin,delta,center] of [[a.x,dx,x+.5],[a.y,dy,y+.5]]){if(delta===0){if(Math.abs(origin-center)>=.77){enter=1;leave=0;break;}}else{const t1=(center-.77-origin)/delta,t2=(center+.77-origin)/delta;enter=Math.max(enter,Math.min(t1,t2));leave=Math.min(leave,Math.max(t1,t2));}}
   if(enter<leave)return false;
  }
 
- for(const r of s.resources){if(r.amount<=0)continue;const t=lengthSquared?clamp(((r.x-a.x)*dx+(r.y-a.y)*dy)/lengthSquared,0,1):0;if(length2D(a.x+t*dx-r.x,a.y+t*dy-r.y)<.7)return false;}
- for(const obstacle of s.entities){if(obstacle.hp<=0||obstacle.kind!=='building'||obstacle.gateOpen)continue;const r=buildingRadius(s,obstacle);let enter=0,leave=1;
+ for(const r of s.resources){if(r.amount<=0||levelOf(r)!==level)continue;const t=lengthSquared?clamp(((r.x-a.x)*dx+(r.y-a.y)*dy)/lengthSquared,0,1):0;if(length2D(a.x+t*dx-r.x,a.y+t*dy-r.y)<.7)return false;}
+ for(const obstacle of s.entities){if(obstacle.hp<=0||obstacle.kind!=='building'||obstacle.gateOpen||levelOf(obstacle)!==level)continue;const r=buildingRadius(s,obstacle);let enter=0,leave=1;
   for(const [origin,delta,center] of [[a.x,dx,obstacle.x],[a.y,dy,obstacle.y]]){if(delta===0){if(Math.abs(origin-center)>=r){enter=1;leave=0;break;}}else{const t1=(center-r-origin)/delta,t2=(center+r-origin)/delta;enter=Math.max(enter,Math.min(t1,t2));leave=Math.min(leave,Math.max(t1,t2));}}
   if(enter<leave)return false;
  }
@@ -33,30 +35,31 @@ export function segmentWalkable(s:GameState,a:Vec,b:Vec):boolean{
 }
 
 export function openDestination(s:GameState,to:Vec,from:Vec):Vec|undefined{
- if(walkable(s,to.x,to.y))return to;
+ const level=to.level??levelOf(from);to={...to,...(level?{level}: {})};if(level!==levelOf(from))return undefined;
+ if(walkable(s,to.x,to.y,level))return to;
  const dx=from.x-to.x,dy=from.y-to.y,length=length2D(dx,dy),ux=length?dx/length:1,uy=length?dy/length:0;
- // For a fixed ring, distance from `from` increases with angular deviation.
- // Visit mirror pairs in index order instead of sorting rounded near-ties.
- for(let r=.25;r<=6;r+=.25)for(const i of NEAREST_DIRECTION_INDICES_32){const [x,y]=DIRECTIONS_32[i],p={x:to.x+(ux*x-uy*y)*r,y:to.y+(uy*x+ux*y)*r};if(walkable(s,p.x,p.y))return p;}
+ // Visit mirror pairs in stable index order instead of sorting rounded near-ties.
+ for(let r=.25;r<=6;r+=.25)for(const i of NEAREST_DIRECTION_INDICES_32){const [x,y]=DIRECTIONS_32[i],p={x:to.x+(ux*x-uy*y)*r,y:to.y+(uy*x+ux*y)*r,...(level?{level}: {})};if(walkable(s,p.x,p.y,level))return p;}
  return undefined;
 }
 
 interface Grid {terrain:GameState['terrain'];terrainSignature:string;signature:string;width:number;height:number;blocked:Uint8Array;edges:Map<number,boolean>}
 const grids=new WeakMap<GameState,Map<number,Grid>>();
-function gridFor(s:GameState,CELL:number):Grid{
- const buildings=s.entities.filter(e=>e.hp>0&&e.kind==='building'&&!e.gateOpen);
- const resources=s.resources.filter(r=>r.amount>0);
+function gridFor(s:GameState,CELL:number,level:number):Grid{
+ const terrain=level===0?s.terrain:s.world?.levels[level]?.terrain??[],cacheKey=CELL+level*100;
+ const buildings=s.entities.filter(e=>e.hp>0&&e.kind==='building'&&!e.gateOpen&&levelOf(e)===level);
+ const resources=s.resources.filter(r=>r.amount>0&&levelOf(r)===level);
  const signature=`${s.width},${s.height};${buildings.map(b=>`${b.id},${b.x},${b.y},${buildingRadius(s,b)}`).join(';')}|${resources.map(r=>`${r.id},${r.x},${r.y}`).join(';')}`;
  // Terrain edits can keep the same array. Compare exact walkability so bridges, floods
  // and editor changes cannot reuse stale blocked cells or cached segment results.
- const terrainSignature=s.terrain.map(kind=>TERRAIN[kind].walkable?'1':'0').join('');
+ const terrainSignature=terrain.map(kind=>TERRAIN[kind].walkable?'1':'0').join('')+'|'+(s.world?.levels[level]?.elevation.join(',')??'');
  let caches=grids.get(s);if(!caches){caches=new Map();grids.set(s,caches);}
- const old=caches.get(CELL);if(old?.signature===signature&&old.terrain===s.terrain&&old.terrainSignature===terrainSignature)return old;
+ const old=caches.get(cacheKey);if(old?.signature===signature&&old.terrain===terrain&&old.terrainSignature===terrainSignature)return old;
  const width=Math.round(s.width/CELL),height=Math.round(s.height/CELL),blocked=new Uint8Array(width*height);
  for(let y=0;y<height;y++)for(let x=0;x<width;x++)if((x+.5)*CELL<.35||(y+.5)*CELL<.35||(x+.5)*CELL>s.width-.35||(y+.5)*CELL>s.height-.35)blocked[y*width+x]=1;
  for(let y=0;y<height;y++)for(let x=0;x<width;x++){
   const px=(x+.5)*CELL,py=(y+.5)*CELL;
-  for(let ty=Math.floor(py-.27);ty<=Math.floor(py+.27);ty++)for(let tx=Math.floor(px-.27);tx<=Math.floor(px+.27);tx++)if(!TERRAIN[terrainAt(s,tx+.5,ty+.5)].walkable)blocked[y*width+x]=1;
+  for(let ty=Math.floor(py-.27);ty<=Math.floor(py+.27);ty++)for(let tx=Math.floor(px-.27);tx<=Math.floor(px+.27);tx++)if(!TERRAIN[terrainAt(s,tx+.5,ty+.5,level)].walkable)blocked[y*width+x]=1;
  }
  // Stamp obstacle bounds instead of testing every cell against every obstacle.
  for(const b of [...buildings,...resources]){
@@ -66,19 +69,20 @@ function gridFor(s:GameState,CELL:number):Grid{
    if('role' in b?dx<r&&dy<r:length2D(dx,dy)<r)blocked[y*width+x]=1;
   }
  }
- const grid={terrain:s.terrain,terrainSignature,signature,width,height,blocked,edges:new Map<number,boolean>()};caches.set(CELL,grid);return grid;
+ const grid={terrain,terrainSignature,signature,width,height,blocked,edges:new Map<number,boolean>()};caches.set(cacheKey,grid);return grid;
 }
 
 // Half-tile A* retains passages wide enough for a unit but missed by tile centers.
 // Continuous connectors and edges prevent cutting through corners and deposits.
 export function route(s:GameState,from:Vec,to:Vec,reach:number,side?:Side):Vec[]{
+ if(!sameLevel(from,to))return [];
  const coarse=routeOnGrid(s,from,to,reach,.5,side);
  return coarse.length?coarse:routeOnGrid(s,from,to,reach,.25,side);
 }
 // Refine only failed searches: legal one-tile building gaps can fall between coarse centers.
 function routeOnGrid(s:GameState,from:Vec,to:Vec,reach:number,CELL:number,side?:Side):Vec[]{
- const grid=gridFor(s,CELL),{width,height,blocked}=grid;
- const point=(k:number):Vec=>({x:(k%width+.5)*CELL,y:(Math.floor(k/width)+.5)*CELL});
+ const level=levelOf(from),grid=gridFor(s,CELL,level),{width,height,blocked}=grid;
+ const point=(k:number):Vec=>({x:(k%width+.5)*CELL,y:(Math.floor(k/width)+.5)*CELL,...(level?{level}: {})});
  const sx=Math.floor(from.x/CELL),sy=Math.floor(from.y/CELL),start=sy*width+sx;
  const starts:number[]=[];
  if(!blocked[start]&&segmentWalkable(s,from,point(start)))starts.push(start);
@@ -98,7 +102,7 @@ function routeOnGrid(s:GameState,from:Vec,to:Vec,reach:number,CELL:number,side?:
    const nx=x+dx,ny=y+dy;if(nx<0||ny<0||nx>=width||ny>=height)continue;const n=ny*width+nx;
    if(blocked[n]||closed[n]||(dx&&dy&&(blocked[y*width+nx]||blocked[ny*width+x])))continue;
    const edge=Math.min(k,n)*width*height+Math.max(k,n);let clear=grid.edges.get(edge);if(clear===undefined){clear=segmentWalkable(s,point(k),point(n));grid.edges.set(edge,clear);}if(!clear)continue;
-   const p=point(n),terrain=terrainAt(s,p.x,p.y),speed=(side!==undefined?factionFor(s,side).terrainSpeeds?.[terrain]:undefined)??TERRAIN[terrain].speed;const value=score[k]+(dx&&dy?Math.SQRT2:1)*CELL/Math.max(.1,speed);if(value<score[n]){score[n]=value;parent[n]=k;push(n,value+heuristic(n));}
+   const p=point(n),terrain=terrainAt(s,p.x,p.y,level),speed=(side!==undefined?factionFor(s,side).terrainSpeeds?.[terrain]:undefined)??TERRAIN[terrain].speed;const value=score[k]+(dx&&dy?Math.SQRT2:1)*CELL/Math.max(.1,speed);if(value<score[n]){score[n]=value;parent[n]=k;push(n,value+heuristic(n));}
   }
  }
  if(end===-1)return [];
