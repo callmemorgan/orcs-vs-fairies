@@ -9,20 +9,23 @@ import { scenarioChecksum, verifyScenarioRecording } from '../../src/core/scenar
 import { solveMission } from './mission-strategy';
 
 const output=resolve(process.argv[2]??`docs/evidence/campaigns/author-alternate-profiles-${new Date().toISOString().replace(/[:.]/g,'-')}.json`);
+const route=process.argv[3]??'alternate';
+if(route!=='primary'&&route!=='alternate') throw new Error('Choose the primary or alternate campaign route.');
 if(existsSync(output)) throw new Error('Proof outputs are append-only. Choose a new path.');
 const archiveDirectory=resolve('work/campaign-content/profiles',new Date().toISOString().replace(/[:.]/g,'-'));
 mkdirSync(archiveDirectory,{recursive:true});
 const hash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const results=[];
 for(const campaign of Object.values(CAMPAIGNS)) {
-  let profile=createCampaignProfile(campaign.id,`author-alt-${campaign.faction}`);
+  const choice=campaign.choice.options[route==='primary'?0:1];
+  let profile=createCampaignProfile(campaign.id,`author-${route}-${campaign.faction}`);
   const chapters=[];
   try {
     for(let chapter=0;chapter<4;chapter++) {
       if(chapter===2) {
-        profile=chooseCampaignBranch(profile,campaign.choice.options[1].id);
+        profile=chooseCampaignBranch(profile,choice.id);
         const decoded=decodeCampaignProfile(JSON.stringify(profile));
-        if(decoded.choiceId!==campaign.choice.options[1].id||nextCampaignMission(decoded)!==campaign.choice.options[1].chapter3) throw new Error('Branch choice did not persist.');
+        if(decoded.choiceId!==choice.id||nextCampaignMission(decoded)!==choice.chapter3) throw new Error('Branch choice did not persist.');
         profile=decoded;
       }
       const previousArmy=campaignArmy(profile), prepared=prepareCampaignMission(profile);
@@ -55,8 +58,8 @@ for(const campaign of Object.values(CAMPAIGNS)) {
       chapters.push({missionId:prepared.session.definition.id,time:prepared.session.state.time,outcome:prepared.session.runtime.outcome,initialIds,deployedIds:deployed,reserveIds:reserves,carry,survivorIds:survivors,casualtyIds:casualties,rosterIds:roster,assertions:{journalRecomputed:won,carriedIdentityAndStats:carry.every(soldier=>soldier.role===soldier.oldRole&&soldier.oldMaxHp===soldier.newMaxHp&&soldier.oldMaxShield===soldier.newMaxShield&&soldier.healed),casualtiesRemoved:casualties.every(id=>!roster.includes(id)),reservesRetained:reserves.every(id=>roster.includes(id)),idempotentResult:appliedOnce,profileRoundtrip:decodedSame},journal:{archivePath,sha256:hash(recording),finalChecksum,commandCount:recording.commands.length},finalCheckpointSha256:hash(captureScenario(prepared.session))});
       profile=decoded;
     }
-    const progress=campaignProgress(profile), expected=[campaign.chapters[0],campaign.chapters[1],campaign.choice.options[1].chapter3,campaign.chapters[3]];
-    const assertions={fourVerifiedChapters:profile.history.length===4,alternateChapterUsed:JSON.stringify(progress.completed)===JSON.stringify(expected),choicePersisted:profile.choiceId===campaign.choice.options[1].id,finished:progress.finished&&nextCampaignMission(profile)===null,chapterAssertions:chapters.every(chapter=>Object.values(chapter.assertions).every(Boolean))};
+    const progress=campaignProgress(profile), expected=[campaign.chapters[0],campaign.chapters[1],choice.chapter3,campaign.chapters[3]];
+    const assertions={fourVerifiedChapters:profile.history.length===4,selectedChapterUsed:JSON.stringify(progress.completed)===JSON.stringify(expected),choicePersisted:profile.choiceId===choice.id,finished:progress.finished&&nextCampaignMission(profile)===null,chapterAssertions:chapters.every(chapter=>Object.values(chapter.assertions).every(Boolean))};
     const profilePath=resolve(archiveDirectory,`${campaign.faction}-profile.json`);
     writeFileSync(profilePath,JSON.stringify(profile)+'\n');
     results.push({campaignId:campaign.id,profileId:profile.id,choiceId:profile.choiceId,assertions,progress,chapters,profilePath,profileSha256:hash(profile)});
@@ -65,6 +68,6 @@ for(const campaign of Object.values(CAMPAIGNS)) {
 }
 const sourceFiles=['src/core/campaign.ts','src/core/scenarios.ts','src/core/scenario-recordings.ts','src/scenarios/campaigns.ts','scripts/scenarios/mission-strategy.ts','scripts/scenarios/puzzle-stealth-strategy.ts','scripts/scenarios/route-strategy.ts','scripts/scenarios/finale-strategy.ts','scripts/scenarios/prove-alternate-profiles.ts'];
 mkdirSync(resolve(output,'..'),{recursive:true});
-writeFileSync(output,JSON.stringify({format:'orcs-vs-fairies-campaign-progression-proof',version:1,generatedAt:new Date().toISOString(),sourceCommit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),sourceFiles:Object.fromEntries(sourceFiles.map(path=>[path,createHash('sha256').update(readFileSync(path)).digest('hex')])),profiles:results},null,2)+'\n');
+writeFileSync(output,JSON.stringify({format:'orcs-vs-fairies-campaign-progression-proof',version:2,route,generatedAt:new Date().toISOString(),sourceCommit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),sourceFiles:Object.fromEntries(sourceFiles.map(path=>[path,createHash('sha256').update(readFileSync(path)).digest('hex')])),profiles:results},null,2)+'\n');
 console.log(output);
 if(results.some(result=>'error' in result||!Object.values(result.assertions??{}).every(Boolean))) process.exitCode=1;
