@@ -63,7 +63,7 @@ function finishTask(s:GameState,entity:Entity,economy:EconomyState,hooks:Economy
 
 function permittedStorage(s:GameState,side:Side,id:number,hooks:EconomyHooks):Entity|undefined {
  const entity=entityFor(s,id);
- return entity && completeBuilding(entity) && hooks.allied(s,side,entity.side) ? entity : undefined;
+ return entity && completeBuilding(entity) && hooks.allied(s,side,entity.side) && (entity.side===side||hooks.visible(s,side,entity)) ? entity : undefined;
 }
 
 function remainingCapacity(economy:EconomyState,id:number):number {
@@ -92,7 +92,7 @@ function canLoad(entity:Entity,economy:EconomyState):boolean {
 
 function routeCommand(s:GameState,side:Side,entity:Entity,sourceId:number,targetId:number,stock:Cost,repeat:boolean,origin:'trade'|'delivery'|'contract',economy:EconomyState,hooks:EconomyHooks,contract?:ResourceContract):boolean {
  const source=permittedStorage(s,side,sourceId,hooks),target=contract??permittedStorage(s,side,targetId,hooks);
- if(!source||!target||sourceId===targetId||!validCost(stock)||costTotal(stock)>capacityFor(economy,entity)+EPSILON||!canLoad(entity,economy))return false;
+ if(!source||source.side!==side||!target||sourceId===targetId||!validCost(stock)||costTotal(stock)>capacityFor(economy,entity)+EPSILON||!canLoad(entity,economy))return false;
  if(origin==='trade'&&distance(source,target)<8)return false;
  const sourceStock=economyStock(s,economy,sourceId);
  if(!sourceStock||!hasCost(sourceStock,stock))return false;
@@ -215,7 +215,7 @@ function tickRoute(s:GameState,dt:number,entity:Entity,task:Extract<EconomyTask,
  }
  if(task.phase==='loading'){
   const source=permittedStorage(s,entity.side,task.sourceId,hooks),target=contract??permittedStorage(s,entity.side,task.targetId,hooks);
-  if(!source||!target){finishTask(s,entity,economy,hooks);return;}
+  if(!source||source.side!==entity.side||!target){finishTask(s,entity,economy,hooks);return;}
   if(!hooks.move(s,entity,source,dt,hooks.radius(s,source)+1))return;
   const sourceStock=economyStock(s,economy,source.id);
   if(!sourceStock||!payCost(sourceStock,task.amount))return;
@@ -254,8 +254,8 @@ function tickCollection(s:GameState,dt:number,entity:Entity,task:Extract<Economy
  if(!target||!hooks.visible(s,entity.side,target)||enemy&&hooks.allied(s,entity.side,enemy.side)||!collecting&&!structure&&!hostileCargo){finishTask(s,entity,economy,hooks);return;}
  const reach=enemy?hooks.radius(s,enemy)+.8:1;
  if(distance(entity,target)>reach){task.progress=0;hooks.move(s,entity,target,dt,reach);return;}
- entity.animation='attack';task.progress+=dt;
- if(task.progress<(collecting?ECONOMY_RULES.salvage.channelSeconds:ECONOMY_RULES.raid.channelSeconds))return;
+ entity.animation='attack';task.progress+=dt/(collecting?ECONOMY_RULES.salvage.channelSeconds:ECONOMY_RULES.raid.channelSeconds);
+ if(task.progress<1)return;
  const stock=salvage?.stock??structure?.stock??hostileCargo?.stock;
  if(!stock||costTotal(stock)<=EPSILON){finishTask(s,entity,economy,hooks);return;}
  const before=costTotal(stock),cargo=createCargo(entity,economy,collecting?'salvage':'raid');
@@ -269,6 +269,9 @@ function tickCollection(s:GameState,dt:number,entity:Entity,task:Extract<Economy
 
 export function tickCargo(s:GameState,dt:number,economy:EconomyState,hooks:EconomyHooks):void {
  if(!Number.isFinite(dt)||dt<=0)return;
+ const retainedIds=new Set(s.entities.map(entity=>entity.id));
+ economy.deathClaims=economy.deathClaims.filter(id=>retainedIds.has(id));
+ economy.paidCosts=economy.paidCosts.filter(item=>retainedIds.has(item.entityId));
  economy.salvage=economy.salvage.filter(item=>item.expiresAt>s.time&&costTotal(item.stock)>EPSILON);
  for(const contract of economy.contracts)if((contract.status==='open'||contract.status==='accepted')&&contract.deadline<=s.time)contract.status='expired';
  for(const market of economy.markets){
@@ -287,6 +290,11 @@ export function tickCargo(s:GameState,dt:number,economy:EconomyState,hooks:Econo
   cargo.origin='delivery';cargo.tradeValue=0;delete cargo.contractId;
   const target=nearestStorage(s,entity,economy);
   if(target&&distance(entity,target)<=hooks.radius(s,target)+1)depositCargo(s,entity,target,cargo,economy);
+ }
+ economy.salvage=economy.salvage.filter(item=>item.expiresAt>s.time&&costTotal(item.stock)>EPSILON);
+ for(const task of [...economy.tasks])if(task.kind==='collect'&&!economy.salvage.some(item=>item.id===task.targetId)){
+  const entity=entityFor(s,task.entityId);
+  if(entity)finishTask(s,entity,economy,hooks);else economy.tasks=economy.tasks.filter(item=>item!==task);
  }
 }
 
@@ -308,6 +316,8 @@ export function economicDeath(s:GameState,entity:Entity,economy:EconomyState,_ho
   if(costTotal(eligible)>EPSILON)economy.salvage.push({id:s.nextId++,x:entity.x,y:entity.y,stock:eligible,expiresAt:s.time+ECONOMY_RULES.salvage.expiresSeconds,owner:entity.side,kind:'salvage'});
  }
  if(structure)structure.stock=zeroCost();
+ economy.structures=economy.structures.filter(item=>item.entityId!==entity.id);
+ economy.specializations=economy.specializations.filter(item=>item.entityId!==entity.id);
  entity.carried=0;
  economy.cargo=economy.cargo.filter(item=>item.entityId!==entity.id);
  economy.tasks=economy.tasks.filter(item=>item.entityId!==entity.id);

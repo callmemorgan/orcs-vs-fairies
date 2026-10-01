@@ -10,6 +10,7 @@ import type { Entity, GameState, Side, UnitRole } from '../src/core/types';
 function fixture() {
  const s=createGame('orcs',1337,'fairies',{controllers:['human','human']});
  const economy=ensureEconomy(s),hq=s.entities.find(entity=>entity.side===0&&entity.role==='hq')!;
+ economy.markets=[];economy.villages=[];economy.contracts=[];
  const destination={...structuredClone(hq),id:s.nextId++,x:hq.x+12,y:hq.y};s.entities.push(destination);
  const caravan=s.entities.find(entity=>entity.side===0&&entity.role==='worker')!;caravan.x=hq.x;caravan.y=hq.y;economy.caravans.push(caravan.id);
  const market:EconomyMarket={id:s.nextId++,x:hq.x,y:hq.y,stock:{wood:1500,ore:1500,crystal:1500},demand:zeroCost(),recoverAt:0};economy.markets.push(market);
@@ -66,6 +67,13 @@ describe('physical deliveries and trade',()=>{
   s.players[0].wood=10;expect(applyCargoCommand(s,0,{type:'deliverStock',id:caravan.id,source:hq.id,target:destination.id,stock:{wood:30,ore:0,crystal:0}},economy,hooks)).toBe(false);
   s.players[0].wood=100;expect(applyCargoCommand(s,0,{type:'tradeRoute',id:caravan.id,source:hq.id,target:destination.id,kind:'wood',amount:30,repeat:false},economy,hooks)).toBe(true);
   run(s,economy,hooks,.1);expect(applyCargoCommand(s,0,{type:'tradeRoute',id:caravan.id,source:hq.id,target:destination.id,kind:'ore',amount:20,repeat:false},economy,hooks)).toBe(false);
+ });
+ it('allows visible allied deliveries but cannot withdraw from an allied wallet',()=>{
+  const {s,economy,hq,caravan,hooks}=fixture(),ally=s.entities.find(entity=>entity.side===1&&entity.role==='hq')!;s.teams[1]=s.teams[0];
+  const base={type:'deliverStock' as const,id:caravan.id,stock:{wood:20,ore:0,crystal:0}};
+  expect(applyCargoCommand(s,0,{...base,source:ally.id,target:hq.id},economy,hooks)).toBe(false);
+  expect(applyCargoCommand(s,0,{...base,source:hq.id,target:ally.id},economy,{...hooks,visible:()=>false})).toBe(false);
+  expect(applyCargoCommand(s,0,{...base,source:hq.id,target:ally.id},economy,hooks)).toBe(true);
  });
  it('returns paid cargo after destination loss, without a trade reward',()=>{
   const {s,economy,hq,destination,caravan,hooks}=fixture();const wood=s.players[0].wood;
