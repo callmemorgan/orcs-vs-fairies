@@ -1,26 +1,15 @@
 import assert from 'node:assert/strict';
-import {mkdir,readFile,readdir,writeFile} from 'node:fs/promises';
-import {createHash} from 'node:crypto';
-import {execFileSync} from 'node:child_process';
+import {readFile,writeFile} from 'node:fs/promises';
+import {prepareEconomyProof,observePage,nativeSessionEquality,finishEconomyProof,freshFixture} from './economy/browser-proof.mjs';
 
 const base=process.argv[2],fixturePath=process.argv[3],out=process.argv[4];
-const productionSourceCommit=process.env.OVF_PRODUCTION_SOURCE_COMMIT;
-const expectedSaveVersion=Number(process.env.OVF_EXPECT_SAVE_VERSION??4);
-const expectedSimulationRevision=process.env.OVF_EXPECT_SIMULATION_REVISION;
-assert(base&&fixturePath&&out,'Pass the frozen preview URL, a fresh mixed fixture, and a new evidence directory.');
-assert(productionSourceCommit&&/^[0-9a-f]{40}$/.test(productionSourceCommit),'Pass the full final source SHA as OVF_PRODUCTION_SOURCE_COMMIT.');
-assert(Number.isSafeInteger(expectedSaveVersion)&&expectedSaveVersion>=4,'This driver requires final SAVE4 or later.');
-assert(expectedSimulationRevision,'Pass the approved final rules revision as OVF_EXPECT_SIMULATION_REVISION.');
-execFileSync('git',['diff','--quiet',productionSourceCommit,'--','src']);
-assert.equal(execFileSync('git',['status','--porcelain','--untracked-files=all','--','src'],{encoding:'utf8'}).trim(),'','The frozen source must be clean, including untracked source files.');
-const hash=createHash('sha256');for(const path of (await readdir('src',{recursive:true})).filter(path=>/\.(ts|css)$/.test(path)).sort()){hash.update(path);hash.update(await readFile(`src/${path}`));}const buildId=hash.digest('hex');
-const fixture=await readFile(fixturePath),decoded=JSON.parse(fixture);
-assert.equal(decoded.game.version,expectedSaveVersion,'Regenerate the fixture from the final save schema.');
-await mkdir(out,{recursive:true});
+assert(base&&fixturePath&&out,'Pass the frozen preview URL, fresh mixed fixture and a new evidence directory.');
+const context=await prepareEconomyProof(base,out,'settlement-runtime'),productionSourceCommit=context.sourcePin,buildId=context.buildId,expectedSaveVersion=context.schema.saveVersion,expectedSimulationRevision=context.schema.simulationRevision;
+const fixture=await freshFixture(context,fixturePath),decoded=JSON.parse(fixture);
 const {chromium}=await import(process.env.OVF_PLAYWRIGHT_MODULE??'playwright');
 const browser=await chromium.launch({headless:true,args:['--disable-dev-shm-usage']}),page=await browser.newPage({viewport:{width:1440,height:1000},acceptDownloads:true});
-const result={base,fixturePath,sourceCommit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),productionSourceCommit,buildId,expectedSaveVersion,expectedSimulationRevision,checks:[],errors:[]};
-page.on('pageerror',error=>result.errors.push(error.message));
+const result={base,fixturePath,sourceCommit:context.sourcePin,productionSourceCommit,buildId,expectedSaveVersion,expectedSimulationRevision,checks:[],errors:[]};
+page.on('pageerror',error=>result.errors.push(error.message));observePage(page,result,context);
 const record=(name,value)=>{result.checks.push({name,value});console.log(`${name}: ${JSON.stringify(value)}`);};
 const read=()=>page.evaluate(()=>({tick:window.rts.state.tick,time:window.rts.state.time,players:window.rts.state.players,starts:window.rts.state.starts,entities:window.rts.state.entities,economy:window.rts.state.economy,contentHash:window.rts.state.content?.hash,art:window.rts.art}));
 try{
@@ -48,5 +37,5 @@ try{
  record('Native research advances with local specialization rate',{beforeTick:before.tick,afterTick:after.tick,elapsed,ordinaryRate,expansionRate,durations});await writeFile(`${out}/research-state.json`,JSON.stringify({before,after},null,2));await page.screenshot({path:`${out}/research-progress.png`});await page.getByRole('button',{name:'Close technology tree',exact:true}).click();
  await page.locator('[data-session-tool="report"]').click();await page.getByLabel('Bug description',{exact:true}).fill('Final native settlement research runtime proof');const download=page.waitForEvent('download');await page.getByRole('button',{name:'Download bug report',exact:true}).click();await(await download).saveAs(`${out}/report.json`);const report=JSON.parse(await readFile(`${out}/report.json`,'utf8'));
  assert.equal(report.versions.buildId,buildId);assert.equal(report.versions.save,expectedSaveVersion);assert.equal(report.versions.simulationRevision,expectedSimulationRevision);assert.equal(report.session.game.version,expectedSaveVersion);assert.equal(report.session.replay.initial.version,expectedSaveVersion);assert.equal(report.session.replay.simulationRevision,expectedSimulationRevision);record('Native report binds final source and versions',report.versions);
- assert.deepEqual(result.errors,[]);result.passed=true;
-}catch(error){result.passed=false;result.error=String(error);await page.screenshot({path:`${out}/failure.png`}).catch(()=>{});throw error;}finally{await writeFile(`${out}/results.json`,JSON.stringify(result,null,2));await browser.close();}
+ await page.locator('[data-session-tab="saves"]').click();const exportPending=page.waitForEvent('download');await page.getByRole('button',{name:'Export save',exact:true}).click();await(await exportPending).saveAs(`${out}/commanded-session.json`);const saved=JSON.parse(await readFile(`${out}/commanded-session.json`,'utf8'));result.sessionEquality=await nativeSessionEquality(page,context,{saved,report});assert.equal(result.checks.length,8);assert(result.checks.every(check=>check.value!==false));assert.deepEqual(result.errors,[]);result.passed=true;
+}catch(error){result.passed=false;result.error=String(error);await page.screenshot({path:`${out}/failure.png`}).catch(()=>{});throw error;}finally{await browser.close();result.browserClosed=true;await finishEconomyProof(context,result,'results.json');}

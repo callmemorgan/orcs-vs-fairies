@@ -1,15 +1,16 @@
 import assert from 'node:assert/strict';
-import {mkdir,readFile,readdir,writeFile} from 'node:fs/promises';
-import {createHash} from 'node:crypto';
+import {readFile,writeFile} from 'node:fs/promises';
+import {prepareEconomyProof,observePage,nativeSessionEquality,finishEconomyProof,freshFixture} from './economy/browser-proof.mjs';
 const {chromium}=await import(process.env.OVF_PLAYWRIGHT_MODULE??'playwright');
 const base=process.argv[2]??'http://127.0.0.1:4173',fixturePath=process.argv[3];
 assert(fixturePath,'Pass a saved economy scenario as argument 3. The scenario needs five workers, one military unit, three empty caravans, an owned stocked warehouse, an expansion HQ, a completed extractor, an unclaimed visible crystal node, unused depleted ore, a visible hostile warehouse, salvage, and a nearby market/open contract.');
-const fixture=await readFile(fixturePath),out=process.argv[4]??'work/hundred-features/economy-ui';await mkdir(out,{recursive:true});
-const hash=createHash('sha256');for(const path of (await readdir('src',{recursive:true})).filter(path=>/\.(ts|css)$/.test(path)).sort()){hash.update(path);hash.update(await readFile(`src/${path}`));}const buildId=hash.digest('hex');
-const browser=await chromium.launch({headless:true,args:['--disable-dev-shm-usage']}),errors=[],evidence={};
+const out=process.argv[4];assert(out,'Pass a new final economy evidence directory.');
+const context=await prepareEconomyProof(base,out,'economy'),fixture=await freshFixture(context,fixturePath),buildId=context.buildId;
+const result={base,fixturePath,productionSourceCommit:context.sourcePin,buildId,evidence:{},errors:[],passed:false};
+const browser=await chromium.launch({headless:true,args:['--disable-dev-shm-usage']}),errors=result.errors,evidence=result.evidence;
 let page;
 try{
-  page=await browser.newPage({viewport:{width:1440,height:1000},acceptDownloads:true});page.on('pageerror',error=>errors.push(error.message));
+  page=await browser.newPage({viewport:{width:1440,height:1000},acceptDownloads:true});page.on('pageerror',error=>errors.push(error.message));observePage(page,result,context);
   await page.goto(base);await page.locator('#map-size').selectOption('small');await page.locator('.begin-match').click();await page.waitForSelector('.loading-battle[hidden]',{state:'attached',timeout:60000});
   await page.locator('[data-session-tool="saves"]').click();await page.getByLabel('Import save JSON',{exact:true}).setInputFiles({name:'economy-scenario.json',mimeType:'application/json',buffer:fixture});await page.getByRole('button',{name:'Import save',exact:true}).click();await page.waitForFunction(()=>Array.from(document.querySelectorAll('.session-notice')).some(item=>item.textContent?.includes('Save loaded.')),null,{timeout:60000});await page.getByRole('button',{name:'Close session tools',exact:true}).click();
   await page.locator('[data-economy-launch]').click();await page.getByRole('dialog',{name:'Economy and settlements',exact:true}).waitFor();
@@ -62,6 +63,7 @@ try{
   await page.screenshot({path:`${out}/completed-battlefield.png`});await writeFile(`${out}/completed-state.json`,JSON.stringify(await read(),null,2));
   await page.locator('[data-session-tool="saves"]').click();const downloadPromise=page.waitForEvent('download');await page.getByRole('button',{name:'Export save',exact:true}).click();await (await downloadPromise).saveAs(`${out}/commanded-session.json`);const saved=JSON.parse(await readFile(`${out}/commanded-session.json`,'utf8'));assert(saved.game.state.economy);assert.equal(saved.game.state.economy.specializations.some(item=>item.entityId===expansion.id),true);evidence.economySaveExport=true;
   await page.locator('[data-session-tab="report"]').click();await page.getByLabel('Bug description',{exact:true}).fill('Economy UI browser proof');const reportPromise=page.waitForEvent('download');await page.getByRole('button',{name:'Download bug report',exact:true}).click();await (await reportPromise).saveAs(`${out}/report.json`);const report=JSON.parse(await readFile(`${out}/report.json`,'utf8'));assert.equal(report.versions.buildId,buildId,'Served application is stale. Rebuild before this proof.');assert(report.session.game.state.economy);evidence.economyReportExport=true;
-  await page.locator('[data-session-tab="saves"]').click();await page.getByLabel('Import save JSON',{exact:true}).setInputFiles(`${out}/commanded-session.json`);await page.getByRole('button',{name:'Import save',exact:true}).click();await page.waitForFunction(()=>{const button=Array.from(document.querySelectorAll('button')).find(item=>item.textContent==='Import save');return !button?.dataset.busy&&document.querySelector('.session-notice')?.textContent==='Save loaded.';},null,{timeout:60000});const reloaded=await read();assert.equal(reloaded.tick,saved.game.state.tick);assert.deepEqual(reloaded.economy,saved.game.state.economy);evidence.completedSaveAndReplayReloaded=true;
-  assert.deepEqual(errors,[]);await writeFile(`${out}/proof.json`,JSON.stringify({base,fixturePath,buildId,scope:'Real browser controls, construction, growth and harvested income, completed physical routes, finite market rewards, raids, salvage, contracts and save/report export.',evidence,errors},null,2));console.log(JSON.stringify(evidence));
-}catch(error){if(page)await page.screenshot({path:`${out}/failure.png`}).catch(()=>{});await writeFile(`${out}/failure.json`,JSON.stringify({base,fixturePath,buildId,evidence,errors,error:String(error)},null,2));throw error;}finally{await browser.close();}
+  result.sessionEquality=await nativeSessionEquality(page,context,{saved,report});evidence.completedSaveAndReplayReloaded=true;
+  assert.equal(Object.keys(evidence).length,25,'Final mixed fixture must execute all 25 intended economy checks.');assert(Object.values(evidence).every(value=>value===true));result.passed=true;
+  assert.deepEqual(errors,[]);result.scope='Real browser controls, construction, growth and harvested income, completed routes, finite market rewards, raids, salvage, contracts and full native save/report/reload/replay equality.';console.log(JSON.stringify(evidence));
+}catch(error){result.passed=false;result.error=String(error);if(page)await page.screenshot({path:`${out}/failure.png`}).catch(()=>{});await writeFile(`${out}/failure.json`,JSON.stringify(result,null,2));throw error;}finally{await browser.close();result.browserClosed=true;await finishEconomyProof(context,result,'proof.json');}

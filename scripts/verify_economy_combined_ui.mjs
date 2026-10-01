@@ -1,12 +1,10 @@
 import assert from 'node:assert/strict';
-import {mkdir,writeFile} from 'node:fs/promises';
-import {execFileSync} from 'node:child_process';
+import {prepareEconomyProof,observePage,nativeSessionEquality,finishEconomyProof} from './economy/browser-proof.mjs';
 const {chromium}=await import(process.env.OVF_PLAYWRIGHT_MODULE??'playwright');
-const base=process.argv[2]??'http://127.0.0.1:5393',out=process.argv[3]??'docs/evidence/economy-scenario-integration-20261001/modal-browser';
-await mkdir(out,{recursive:true});
-const browser=await chromium.launch({headless:true,args:['--disable-dev-shm-usage']}),page=await browser.newPage({viewport:{width:1280,height:720}});
-const sourceCommit=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
-const result={base,sourceCommit,productionSourceCommit:process.env.OVF_PRODUCTION_SOURCE_COMMIT??sourceCommit,checks:[],errors:[]};
+const base=process.argv[2],out=process.argv[3];assert(base&&out,'Pass the frozen preview and a new modal evidence directory.');
+const context=await prepareEconomyProof(base,out,'economy-modal');
+const browser=await chromium.launch({headless:true,args:['--disable-dev-shm-usage']}),page=await browser.newPage({viewport:{width:1280,height:720},acceptDownloads:true});
+const result={base,sourceCommit:context.sourcePin,productionSourceCommit:context.sourcePin,buildId:context.buildId,checks:[],errors:[]};observePage(page,result,context);
 page.on('pageerror',error=>result.errors.push(error.message));
 const record=(name,value=true)=>{result.checks.push({name,value});console.log(`${name}: ${JSON.stringify(value)}`);};
 try{
@@ -30,5 +28,5 @@ try{
   await page.locator('[data-objective-tool="progress"]').click();await page.waitForSelector('.objective-overlay:not([hidden])');assert.equal(await page.evaluate(()=>window.rts.paused),false);await page.keyboard.press('Escape');await page.waitForSelector('.objective-overlay[hidden]',{state:'attached'});record(`Objectives launcher opens and Escape closes at ${viewport.width}px`);
   await page.locator('[data-session-tool="saves"]').click();await page.waitForSelector('.session-overlay:not([hidden])');await page.waitForFunction(()=>document.querySelector('[data-economy-launch]')?.disabled===true,null,{timeout:5000});assert.equal(await page.locator('[data-economy-launch]').isDisabled(),true);await page.getByRole('button',{name:'Close session tools',exact:true}).click();record(`Session modal disables Economy launcher at ${viewport.width}px`);
  }
- assert.deepEqual(result.errors,[]);result.passed=true;
-}catch(error){result.passed=false;result.error=String(error);await page.screenshot({path:`${out}/failure.png`}).catch(()=>{});throw error;}finally{await writeFile(`${out}/results.json`,JSON.stringify(result,null,2));await browser.close();}
+ assert.equal(result.checks.length,12);assert(result.checks.every(check=>check.value!==false));result.sessionEquality=await nativeSessionEquality(page,context);assert.deepEqual(result.errors,[]);result.passed=true;
+}catch(error){result.passed=false;result.error=String(error);await page.screenshot({path:`${out}/failure.png`}).catch(()=>{});throw error;}finally{await browser.close();result.browserClosed=true;await finishEconomyProof(context,result,'results.json');}
