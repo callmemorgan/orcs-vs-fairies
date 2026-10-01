@@ -1,4 +1,5 @@
-import { FACTIONS } from './content';
+import { ABILITIES, FACTIONS } from './content';
+import { unitFor } from './content-registry';
 import { validateCommand } from './commands';
 import { DIRECTIONS_32, length2D } from './geometry';
 import { coneCosine } from './scenario-geometry';
@@ -159,6 +160,8 @@ function action(session: ScenarioSession, value: ScenarioAction): void {
 
 export function evaluateScenario(session: ScenarioSession): void {
   if (session.runtime.outcome !== 'playing') return;
+  const commander = actor(session, 'commander');
+  if (commander) session.runtime.variables['equipment.commander'] = Object.values(commander.equipment ?? {}).filter(id => session.state.specialists?.artifacts.some(item => item.id === id && item.owner === commander.side && item.holder === commander.id && !item.position)).length;
   let budget = MAX_SCENARIO_ACTIONS_PER_TICK;
   for (const trigger of session.definition.events) {
     const prior = session.runtime.triggers[trigger.id], max = trigger.repeat?.count ?? 1;
@@ -175,7 +178,7 @@ export function evaluateScenario(session: ScenarioSession): void {
   for (const objective of session.definition.objectives) if (!session.runtime.completed.includes(objective.id) && scenarioCondition(session, objective.success)) {
     session.runtime.completed.push(objective.id); message(session, `Objective completed: ${objective.text}`);
   }
-  const actionsDone = (session.definition.requiredActions ?? []).every(required => (session.runtime.commandCounts[required.action] ?? 0) >= required.count);
+  const actionsDone = (session.definition.requiredActions ?? []).every(required => (session.runtime.commandCounts[required.ability ? `ability.${required.ability}` : required.action] ?? 0) >= required.count);
   if (session.definition.objectives.filter(o => !o.optional).every(o => session.runtime.completed.includes(o.id)) && actionsDone) finish(session, 'won', 'All required objectives completed.');
   else if (session.state.time + 1e-9 >= session.definition.rules.timeLimit) finish(session, 'lost', 'The mission time limit expired.');
 }
@@ -305,7 +308,15 @@ function advanceBoss(session: ScenarioSession): void {
 
 function recordEvents(session: ScenarioSession, start = 0): void {
   for (const event of session.state.events.slice(start)) {
-    if (event.type === 'ability' && event.side === 0) { session.runtime.commandCounts.ability = (session.runtime.commandCounts.ability ?? 0) + 1; addVariable(session, 'action.ability', 1); }
+    if (event.type === 'ability' && event.side === 0 && event.source !== undefined) {
+      const source = session.state.entities.find(entity => entity.id === event.source), ability = source?.kind === 'unit' ? unitFor(session.state, source).ability : undefined;
+      // Siege launch/impact and engineer repair also use the ability event channel.
+      if (ability && (event.text === undefined || event.text === ABILITIES[ability].name)) {
+        session.runtime.commandCounts.ability = (session.runtime.commandCounts.ability ?? 0) + 1;
+        const key = `ability.${ability}`; session.runtime.commandCounts[key] = (session.runtime.commandCounts[key] ?? 0) + 1;
+        addVariable(session, 'action.ability', 1); addVariable(session, `action.${key}`, 1);
+      }
+    }
     if (event.type === 'death') { const dead = session.state.entities.find(e => e.id === event.source); if (dead?.kind === 'unit' && !dead.illusion && !dead.raised) addVariable(session, `deaths.${dead.side}`, 1); }
   }
 }

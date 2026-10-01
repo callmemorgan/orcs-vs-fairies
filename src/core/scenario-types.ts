@@ -1,4 +1,4 @@
-import type { BuildingRole, Cost, Entity, FactionId, GameState, MapSize, ResourceKind, Side, TerrainKind, UnitRole, Vec } from './types';
+import type { BuildingRole, Cost, Entity, FactionId, GameState, MapSize, ResourceKind, Side, TerrainKind, UnitDef, UnitRole, Vec } from './types';
 import type { SaveEnvelope } from './saves';
 import type { WorldMapData } from './world-types';
 import type { ContentBundle } from './content-registry';
@@ -96,7 +96,7 @@ export interface ScenarioDefinition {
     phases: Array<{ below: number; name: string; radius: number; damage: number; warningSeconds: number; cooldown: number; interruptDamage: number; adds: ScenarioActor[] }>;
   };
   /** Completed player actions are counted by the shared command path. */
-  requiredActions?: Array<{ action: 'ability' | 'hold' | 'repair' | 'gather'; count: number; text: string }>;
+  requiredActions?: Array<{ action: 'ability' | 'hold' | 'repair' | 'gather'; ability?: NonNullable<UnitDef['ability']>; count: number; text: string }>;
 }
 
 export interface ScenarioTelegraph extends Vec {

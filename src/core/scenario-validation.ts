@@ -1,4 +1,5 @@
 import { contentFactions, decodeContentBundle } from './content-registry';
+import { ABILITIES } from './content';
 import { MAP_SIZES, TERRAIN, generateMap } from './maps';
 import { generatedMapFromWorld, validateWorldMap } from './world-map';
 import type { BuildingRole, FactionId, UnitRole } from './types';
@@ -240,7 +241,7 @@ export function validateScenario(input: unknown): ScenarioDefinition {
       number(phase.warningSeconds, `${p}.warningSeconds`, .5, 10); number(phase.cooldown, `${p}.cooldown`, 2, 60); number(phase.interruptDamage, `${p}.interruptDamage`, 1, 10000);
     });
   }
-  if (s.requiredActions !== undefined) list(s.requiredActions, 'requiredActions', 8).forEach((v, i) => { const p = `requiredActions[${i}]`, a = object(v, p, ['action', 'count', 'text']); choice(a.action, `${p}.action`, ['ability', 'hold', 'repair', 'gather']); number(a.count, `${p}.count`, 1, 256, true); text(a.text, `${p}.text`); });
+  if (s.requiredActions !== undefined) list(s.requiredActions, 'requiredActions', 8).forEach((v, i) => { const p = `requiredActions[${i}]`, a = object(v, p, ['action', 'count', 'text'], ['ability']); choice(a.action, `${p}.action`, ['ability', 'hold', 'repair', 'gather']); if (a.ability !== undefined) { if (a.action !== 'ability') bad(`${p}.ability`, 'only ability actions can declare an ability'); choice(a.ability, `${p}.ability`, Object.keys(ABILITIES)); } number(a.count, `${p}.count`, 1, 256, true); text(a.text, `${p}.text`); });
   return value as ScenarioDefinition;
 }
 
