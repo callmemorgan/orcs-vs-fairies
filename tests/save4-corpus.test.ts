@@ -78,6 +78,33 @@ describe('SAVE4 genuine historical corpus',()=>{
  it('rejects mixed versions, altered checksums, altered ticks and reordered original game fields',()=>{
   for(const mutate of [(s:any)=>s.game.version=4,(s:any)=>s.replay.checksumVersion=4,(s:any)=>s.replay.finalChecksum='00000000',(s:any)=>s.game.state.tick++,(s:any)=>s.game.state=Object.fromEntries(Object.entries(s.game.state).reverse())]){const source=json(sessions[0][1]);mutate(source);expect(()=>decodeSessionFile(source)).toThrow();}
  });
+ it.each(['extra','01','-0','1\n'])('rejects raw session array property %s before copying the original pair',key=>{
+  for(const enumerable of [true,false])for(const location of ['game','initial'] as const){
+   const source=json(sessions[0][1]),array=(location==='game'?source.game:source.replay.initial).state.entities,before=JSON.stringify(source);
+   Object.defineProperty(array,key,{value:{marker:7},enumerable,configurable:true});const descriptors=Object.getOwnPropertyDescriptors(array);
+   expect(()=>decodeSessionFile(source)).toThrow('invalid array properties');expect(Object.getOwnPropertyDescriptors(array)).toEqual(descriptors);expect(JSON.stringify(source)).toBe(before);
+   delete array[key];const {file}=decodeSessionFile(source);expect(JSON.stringify(file.game)).toBe(JSON.stringify(source.game));expect(JSON.stringify(file.replay!.initial)).toBe(JSON.stringify(source.replay.initial));expect(checksumSaveEnvelope(file.game)).toBe('2556964e');
+  }
+ });
+ it.each(['0','01','extra'])('rejects raw session array accessor %s without invoking it or changing descriptors',key=>{
+  for(const location of ['game','initial'] as const){
+   let reads=0;const source=json(sessions[0][1]),array=(location==='game'?source.game:source.replay.initial).state.entities;
+   Object.defineProperty(array,key,{get(){reads++;return 7;},enumerable:false,configurable:true});const descriptors=Object.getOwnPropertyDescriptors(array);
+   expect(()=>decodeSessionFile(source)).toThrow('accessors are forbidden');expect(reads).toBe(0);expect(Object.getOwnPropertyDescriptors(array)).toEqual(descriptors);
+  }
+ });
+ it('rejects raw session array symbols without changing the imported source',()=>{
+  const source=json(sessions[0][1]),array=source.game.state.entities,key=Symbol('extra');array[key]=7;const descriptors=Object.getOwnPropertyDescriptors(array);
+  expect(()=>decodeSessionFile(source)).toThrow('contains symbols');expect(Object.getOwnPropertyDescriptors(array)).toEqual(descriptors);
+ });
+ it('preserves canonical nonenumerable indices through historical and current wrapper round-trips',()=>{
+  const historical=json(sessions[0][1]);for(const game of [historical.game,historical.replay.initial])Object.defineProperty(game.state.entities,'0',{enumerable:false});
+  const before=JSON.stringify(historical),descriptors=Object.getOwnPropertyDescriptors(historical.game.state.entities),{file,state}=decodeSessionFile(historical);
+  expect(JSON.stringify(file.game)).toBe(JSON.stringify(historical.game));expect(JSON.stringify(file.replay!.initial)).toBe(JSON.stringify(historical.replay.initial));expect(file.game.version).toBe(1);expect(file.replay!.initial.version).toBe(1);expect(file.replay!.checksumVersion).toBe(1);expect(file.replay!.simulationRevision).toBe('1.0.0');expect(historical.replay.checksumVersion).toBeUndefined();expect(historical.replay.simulationRevision).toBeUndefined();expect(checksumSaveEnvelope(file.game)).toBe('2556964e');expect(Object.getOwnPropertyDescriptors(historical.game.state.entities)).toEqual(descriptors);expect(JSON.stringify(historical)).toBe(before);
+  const recorder=new MatchRecorder(state),current=createSessionFile(state,recorder.export());recorder.dispose();for(const game of [current.game,current.replay!.initial])Object.defineProperty(game.state.entities,'0',{enumerable:false});
+  const currentBefore=JSON.stringify(current),currentDescriptors=Object.getOwnPropertyDescriptors(current.game.state.entities),decoded=decodeSessionFile(current);
+  expect(JSON.stringify(decoded.file)).toBe(currentBefore);expect(decoded.file.game.version).toBe(4);expect(decoded.file.replay!.simulationRevision).toBe('4.0.0');expect(saveGame(decoded.state)).toEqual(decoded.file.game);expect(Object.getOwnPropertyDescriptors(current.game.state.entities)).toEqual(currentDescriptors);expect(JSON.stringify(current)).toBe(currentBefore);
+ });
  it('keeps the scenario wrapper checksum separate from the nested core forwarding guard',()=>{
   const final=json('./fixtures/scenario-save3-3.2/scenario-final.json'),recording=json('./fixtures/scenario-save3-3.2/scenario-recording.json'),before=JSON.stringify(recording.initial);
   expect(scenarioCheckpointChecksum(final)).toBe('74458e1b');expect(JSON.stringify(decodeScenarioRecording(recording).initial)).toBe(before);expect(scenarioRulesCompatibility(restoreScenario(final)).compatible).toBe(false);

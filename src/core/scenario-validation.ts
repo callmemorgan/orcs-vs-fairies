@@ -53,6 +53,10 @@ export function scenarioJson(input: unknown, limits: { maxBytes?: number; maxNod
     let result: unknown;
     if (Array.isArray(value)) {
       if (value.length > (limits.maxArrayLength ?? 65536) || Object.getOwnPropertySymbols(value).length) bad('package', 'array is too large or contains symbols');
+      for (const key of Object.getOwnPropertyNames(value)) {
+        if (!('value' in Object.getOwnPropertyDescriptor(value, key)!)) bad('package', 'accessors are forbidden');
+        if (key !== 'length') { const index = Number(key); if (!Number.isSafeInteger(index) || index < 0 || index >= value.length || String(index) !== key) bad('package', 'invalid array properties'); }
+      }
       result = Array.from({ length: value.length }, (_, index) => {
         const property = Object.getOwnPropertyDescriptor(value, String(index));
         if (!property || !('value' in property)) bad('package', 'accessors and gaps are forbidden');
