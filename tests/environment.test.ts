@@ -261,6 +261,7 @@ describe('artillery ignition and simulation interruption hooks',()=>{
   // This unit fixture supplies historical provenance directly; public ownership transfers have integration coverage.
   const before=s.players.map(p=>({wood:p.wood,ore:p.ore}));
   expect(igniteWorldAt(s,{x:8.5,y:8.5},launch)).toBe(true);
+  expect(s.world.fires).toHaveLength(1);expect(s.world.fires[0]).toMatchObject({x:8.5,y:8.5,level:0});
   expect(s.events.at(-1)).toMatchObject({type:'ability',side:0,source:source.id,text:'Incendiary shell ignited timber.'});
   expect(s.players.map(p=>({wood:p.wood,ore:p.ore}))).toEqual(before);
  });
