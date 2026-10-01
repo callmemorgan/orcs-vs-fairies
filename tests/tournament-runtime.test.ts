@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { createServer, request as nodeRequest, type IncomingMessage } from 'node:http';
 import { tmpdir } from 'node:os';
@@ -342,6 +343,45 @@ describe('tournament runner with real terminal agents', () => {
     const saved = await verifyTournamentReport(await readFile(join(directory, 'canceled', 'tournament.json'), 'utf8'));
     expect(saved.status).toBe('canceled');
     expectChildrenExited(report);
+  }, 30000);
+
+  it('stops both live agents when a progress observer throws after the first simulation step', async () => {
+    const directory = await temporaryDirectory(), pidFiles = [join(directory, 'alpha.pid'), join(directory, 'beta.pid')];
+    const agents = await Promise.all(['alpha', 'beta'].map(async (id, side) => {
+      const agent = await fixture(directory, id, `
+        import { writeFileSync } from 'node:fs';
+        import { createInterface } from 'node:readline';
+        writeFileSync(${JSON.stringify(pidFiles[side])}, String(process.pid));
+        for await (const line of createInterface({ input: process.stdin, crlfDelay: Infinity })) {
+          const turn = JSON.parse(line);
+          process.stdout.write(JSON.stringify({ requestId: turn.requestId, commands: [] }) + '\\n');
+        }
+      `);
+      agent.faction = side === 0 ? 'orcs' : 'fairies';
+      return agent;
+    }));
+    let initialProgress = false, failedTick: number | null = null;
+    let pids: number[] = [];
+    const report = await runTournament(config({ agents }), {
+      cwd, outputDirectory: join(directory, 'observer-failure'),
+      onProgress: progress => {
+        if (progress.current?.tick === 0) initialProgress = true;
+        if (progress.current && progress.current.tick > 0 && failedTick === null) {
+          failedTick = progress.current.tick;
+          pids = pidFiles.map(file => Number(readFileSync(file, 'utf8')));
+          expect(pids.every(pid => pid > 0 && alive(pid))).toBe(true);
+          throw new Error('Intentional progress observer failure.');
+        }
+      },
+    });
+    expect(initialProgress).toBe(true);
+    expect(failedTick).toBe(10);
+    expect(pids).toHaveLength(2);
+    expect(new Set(pids).size).toBe(2);
+    expect(report).toMatchObject({ status: 'failed', error: 'Intentional progress observer failure.', matches: [] });
+    for (const pid of pids) expect(alive(pid)).toBe(false);
+    const saved = await verifyTournamentReport(await readFile(join(directory, 'observer-failure', 'tournament.json'), 'utf8'));
+    expect(saved).toMatchObject({ status: 'failed', error: report.error, matches: [] });
   }, 30000);
 
   it('refuses an existing output directory without overwriting evidence', async () => {
