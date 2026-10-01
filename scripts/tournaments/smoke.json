@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "id": "builtin-smoke",
+  "name": "Observation-only push versus idle",
+  "agents": [
+    { "id": "push", "name": "Push", "faction": "orcs", "command": ["node", "scripts/agents/tournament-agent.mjs", "--style", "push"] },
+    { "id": "idle", "name": "Idle", "faction": "fairies", "command": ["node", "scripts/agents/tournament-agent.mjs", "--style", "idle"] }
+  ],
+  "seeds": [4127],
+  "mapSize": "small",
+  "bothSeats": true,
+  "maxSeconds": 1200,
+  "decisionTicks": 100,
+  "responseTimeoutMs": 2000,
+  "maxCommandsPerTurn": 64
+}

@@ -13,6 +13,8 @@
     "cli": "node dist-cli/rts.js",
     "build:server": "esbuild src/server/main.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-server/rts-server.js",
     "server": "node dist-server/rts-server.js",
+    "build:tournament": "esbuild src/tournament/main.ts --bundle --platform=node --format=esm --outfile=dist-tournament/run.js",
+    "tournament": "node dist-tournament/run.js",
     "test:server": "vitest run tests/server"
   },
   "dependencies": {

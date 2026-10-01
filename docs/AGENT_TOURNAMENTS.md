@@ -6,13 +6,13 @@ The modules provide a CLI, an HTTP handler, and a browser dashboard. The host ap
 
 ## Build and run
 
-Run these commands from the repository root. There is no tournament npm script, so build its entry point with esbuild:
+Run these commands from the repository root:
 
 ```sh
 npm ci
-npx esbuild src/tournament/main.ts --bundle --platform=node --format=esm --outfile=dist-tournament/run.js
-node dist-tournament/run.js --config scripts/tournaments/smoke.json --output work/tournaments/smoke-001
-node dist-tournament/run.js --verify work/tournaments/smoke-001/tournament.json
+npm run build:tournament
+npm run tournament -- --config scripts/tournaments/smoke.json --output work/tournaments/smoke-001
+npm run tournament -- --verify work/tournaments/smoke-001/tournament.json
 ```
 
 The output directory must be new. The runner creates its parents but refuses to overwrite an existing directory. Each recorded match produces `match-NNN.replay.json` and `match-NNN.evidence.json`; the latter contains the result, decisions, checkpoints, and process statistics without duplicating the replay. `tournament.json` contains the complete report and embedded replays.
