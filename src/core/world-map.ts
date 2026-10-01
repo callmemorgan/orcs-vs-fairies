@@ -1,3 +1,4 @@
+import { length2D } from './geometry';
 import { generateMatchMap, MAP_VERSION, TERRAIN } from './maps';
 import type { GeneratedMap } from './maps';
 import type { GameState, MapSize, Vec } from './types';
@@ -24,7 +25,7 @@ export function setWorldTerrain(s:GameState,point:Vec,kind:GameState['terrain'][
 /** A ridge more than one tile above an observer blocks the line behind it. */
 export function terrainLineOfSight(s:GameState,from:Vec,to:Vec):boolean {
  if(!sameLevel(from,to))return false;if(!s.world)return true;
- const source=elevationAt(s,from),target=elevationAt(s,to),length=Math.hypot(to.x-from.x,to.y-from.y),steps=Math.ceil(length*3);
+ const source=elevationAt(s,from),target=elevationAt(s,to),length=length2D(to.x-from.x,to.y-from.y),steps=Math.ceil(length*3);
  for(let i=1;i<steps;i++){
   const t=i/steps,p={x:from.x+(to.x-from.x)*t,y:from.y+(to.y-from.y)*t,level:levelOf(from)};
   const terrain=s.world.levels[p.level].terrain[Math.floor(p.y)*s.width+Math.floor(p.x)];
@@ -73,7 +74,7 @@ export function validateWorldMap(value:unknown,options:{scenario?:boolean}={}):{
   const reachable=[[0,0],[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy])=>seen.has(key({...r,x:Math.floor(r.x)+.5+dx,y:Math.floor(r.y)+.5+dy})));
   if(!reachable)issues.push(`Unreachable${r.kind} on level${r.level} at${r.x},${r.y}.`);
  }
- if(!options.scenario)for(const start of map.starts)for(const kind of ['wood','ore','crystal'])if(!map.resources.some(r=>r.kind===kind&&r.level===start.level&&Math.hypot(r.x-start.x,r.y-start.y)<9))issues.push(`Start${start.slot} lacks nearby${kind}.`);
+ if(!options.scenario)for(const start of map.starts)for(const kind of ['wood','ore','crystal'])if(!map.resources.some(r=>r.kind===kind&&r.level===start.level&&length2D(r.x-start.x,r.y-start.y)<9))issues.push(`Start${start.slot} lacks nearby${kind}.`);
  if(map.levels.length>1&&!map.transitions.length)issues.push('The cavern has no entrance.');
  for(const site of map.sites)if(!seen.has(key(site)))issues.push(`Site${site.id} is unreachable.`);
  return {valid:issues.length===0,issues:[...new Set(issues)]};
@@ -83,15 +84,15 @@ export function generateWorldMap(seed:number,size:MapSize='medium',playerCount=2
  if(!BIOMES.includes(biome))throw new Error('Unknown biome.');
  const base=generateMatchMap(seed,size,playerCount),{width,height}=base,area=width*height,terrain=[...base.terrain],elevation=Array(area).fill(0);
  const starts=base.starts.map((p,slot)=>({...p,level:0,slot})),resources=base.resources.map(r=>({...r,level:0}));
- const basePad=(x:number,y:number)=>starts.some(p=>Math.hypot(p.x-x,p.y-y)<8.4);
+ const basePad=(x:number,y:number)=>starts.some(p=>length2D(p.x-x,p.y-y)<8.4);
  const kind=biome==='desert'?'sand':biome==='snow'?'snow':biome==='marsh'?'mud':'grass';
  for(let y=1;y<height-1;y++)for(let x=1;x<width-1;x++){
   const i=y*width+x;if(terrain[i]!=='grass'||basePad(x+.5,y+.5))continue;
   terrain[i]=kind;
   const canonical=Math.min(i,area-1-i),noise=(Math.imul(seed^canonical^0x913dba12,0x85ebca6b)>>>0)%100;
-  if(biome==='forest'&&noise<24&&!resources.some(r=>Math.hypot(r.x-x-.5,r.y-y-.5)<2))terrain[i]='forest';
+  if(biome==='forest'&&noise<24&&!resources.some(r=>length2D(r.x-x-.5,r.y-y-.5)<2))terrain[i]='forest';
   // Wide graded hills leave roads at ground level and expose an attackable plateau.
-  if(terrain[i]!=='forest')elevation[i]=Math.max(0,Math.min(2,Math.floor(2.3-Math.min(Math.hypot(x+.5-width*.35,y+.5-height*.65),Math.hypot(x+.5-width*.65,y+.5-height*.35))/5)));
+  if(terrain[i]!=='forest')elevation[i]=Math.max(0,Math.min(2,Math.floor(2.3-Math.min(length2D(x+.5-width*.35,y+.5-height*.65),length2D(x+.5-width*.65,y+.5-height*.35))/5)));
  }
  // Never turn an approach into a cliff: grading follows all traversable road edges.
  for(let pass=0;pass<3;pass++){const previous=[...elevation];for(let y=1;y<height-1;y++)for(let x=1;x<width-1;x++){
@@ -99,8 +100,8 @@ export function generateWorldMap(seed:number,size:MapSize='medium',playerCount=2
   for(const j of [i-1,i+1,i-width,i+width])if(TERRAIN[terrain[j]].walkable)elevation[i]=Math.min(elevation[i],previous[j]+1);
  }}
  const underground=Array<typeof terrain[number]>(area).fill('rock'),caveElevation=Array(area).fill(0);
- const caveDisk=(p:Vec,r=3)=>{for(let y=Math.max(1,Math.floor(p.y-r));y<Math.min(height-1,Math.ceil(p.y+r));y++)for(let x=Math.max(1,Math.floor(p.x-r));x<Math.min(width-1,Math.ceil(p.x+r));x++)if(Math.hypot(x+.5-p.x,y+.5-p.y)<=r)underground[y*width+x]='road';};
- const carve=(a:Vec,b:Vec)=>{const steps=Math.ceil(Math.hypot(b.x-a.x,b.y-a.y)*2);for(let i=0;i<=steps;i++){const t=i/steps;caveDisk({x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t},1.8);}};
+ const caveDisk=(p:Vec,r=3)=>{for(let y=Math.max(1,Math.floor(p.y-r));y<Math.min(height-1,Math.ceil(p.y+r));y++)for(let x=Math.max(1,Math.floor(p.x-r));x<Math.min(width-1,Math.ceil(p.x+r));x++)if(length2D(x+.5-p.x,y+.5-p.y)<=r)underground[y*width+x]='road';};
+ const carve=(a:Vec,b:Vec)=>{const steps=Math.ceil(length2D(b.x-a.x,b.y-a.y)*2);for(let i=0;i<=steps;i++){const t=i/steps;caveDisk({x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t},1.8);}};
  const center={x:width/2+.5,y:height/2+.5};caveDisk(center,8);
  const transitions=starts.map((start,index)=>{
   const entrance={x:Math.floor(start.x)+.5,y:Math.floor(start.y+(start.y<height/2?5:-5))+.5,level:0};

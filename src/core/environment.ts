@@ -1,3 +1,4 @@
+import { length2D, DIRECTIONS_32 } from './geometry';
 import { FACTIONS } from './content';
 import { setWorldTerrain } from './world-map';
 import type { Entity, GameState, Side, TerrainKind, Vec } from './types';
@@ -36,8 +37,9 @@ export function environmentPhase(s:GameState):EnvironmentPhase {
  const season=(['spring','summer','autumn','winter'] as const)[seasonIndex],seasonProgress=(time%seasonLength)/seasonLength;
  const weatherIndex=Math.floor(time/weatherLength),roll=hash(s.seed,weatherIndex,21);
  const weather=roll<.4?'clear':roll<.62?'rain':roll<.8?'fog':'wind';
- const angle=hash(s.seed,weatherIndex,22)*Math.PI*2,strength=weather==='wind'?1:0;
- return {day,season,weather,wind:{x:Math.cos(angle)*strength,y:Math.sin(angle)*strength},dayProgress,seasonProgress,weatherEndsAt:(weatherIndex+1)*weatherLength,thawIn:season==='winter'?(1-seasonProgress)*seasonLength:null};
+ // Saved seed and weather index select one fixed direction for the whole weather interval.
+ const [windX,windY]=DIRECTIONS_32[Math.floor(hash(s.seed,weatherIndex,22)*DIRECTIONS_32.length)],strength=weather==='wind'?1:0;
+ return {day,season,weather,wind:{x:windX*strength,y:windY*strength},dayProgress,seasonProgress,weatherEndsAt:(weatherIndex+1)*weatherLength,thawIn:season==='winter'?(1-seasonProgress)*seasonLength:null};
 }
 
 export function environmentalSightFactor(s:GameState,entity?:Entity):number {
@@ -62,7 +64,7 @@ export function environmentalMovementFactor(s:GameState,entity?:Entity):number {
 
 export function projectileEnvironment(s:GameState,from:Positioned,to:Positioned):{damageFactor:number;rangeFactor:number;drift:Vec} {
  if(!(s as WorldGame).world||levelOf(from)>0||levelOf(to)>0)return {damageFactor:1,rangeFactor:1,drift:{x:0,y:0}};
- const {weather,wind}=environmentPhase(s),dx=to.x-from.x,dy=to.y-from.y,d=Math.hypot(dx,dy);
+ const {weather,wind}=environmentPhase(s),dx=to.x-from.x,dy=to.y-from.y,d=length2D(dx,dy);
  if(weather==='rain')return {damageFactor:.9,rangeFactor:.9,drift:{x:0,y:0}};
  if(weather!=='wind'||d===0)return {damageFactor:1,rangeFactor:1,drift:{x:0,y:0}};
  const along=(wind.x*dx+wind.y*dy)/d,cross=Math.abs(wind.x*dy-wind.y*dx)/d;
@@ -120,7 +122,7 @@ export function issueEnvironmentCommand(s:GameState,side:Side,command:WorldComma
  const fire=world.fires.find(f=>f.level===p.level&&tileOf(s,f)===tileOf(s,p));
  if(c.type==='ignite'&&(!flammable(state,p)||fire)||c.type==='firebreak'&&!flammable(state,p)&&!fire)return false;
  const actors=s.entities.filter(e=>c.ids.includes(e.id)&&e.side===side&&e.hp>0&&e.kind==='unit'&&!e.illusion&&levelOf(e)===p.level&&e.cooldown<=0&&(e.role==='worker'||c.type==='ignite'&&e.role==='siege'));
- const actor=actors.sort((a,b)=>a.id-b.id).find(e=>Math.hypot(e.x-p.x,e.y-p.y)<=(e.role==='siege'?FACTIONS[s.players[side].faction].units.siege.range:ENVIRONMENT_RULES.workerReach));
+ const actor=actors.sort((a,b)=>a.id-b.id).find(e=>length2D(e.x-p.x,e.y-p.y)<=(e.role==='siege'?FACTIONS[s.players[side].faction].units.siege.range:ENVIRONMENT_RULES.workerReach));
  const player=s.players[side],wood=c.type==='ignite'?ENVIRONMENT_RULES.igniteWood:ENVIRONMENT_RULES.firebreakWood,ore=c.type==='ignite'?ENVIRONMENT_RULES.igniteOre:0;
  if(!actor||player.wood<wood||player.ore<ore)return false;
  player.wood-=wood;player.ore-=ore;actor.cooldown=actor.role==='siege'?1.5:.8;actor.animation='attack';actor.animTime=0;
@@ -137,19 +139,19 @@ export function issueEnvironmentCommand(s:GameState,side:Side,command:WorldComma
 function bankClear(s:WorldGame,p:Positioned):boolean {
  if(p.x<.35||p.y<.35||p.x>s.width-.35||p.y>s.height-.35)return false;
  for(let y=Math.floor(p.y-.27);y<=Math.floor(p.y+.27);y++)for(let x=Math.floor(p.x-.27);x<=Math.floor(p.x+.27);x++)if(['water','rock','forest','ice'].includes(terrain(s,{x:x+.5,y:y+.5,level:p.level})))return false;
- if(s.resources.some(n=>n.amount>0&&levelOf(n)===levelOf(p)&&Math.hypot(n.x-p.x,n.y-p.y)<.7))return false;
+ if(s.resources.some(n=>n.amount>0&&levelOf(n)===levelOf(p)&&length2D(n.x-p.x,n.y-p.y)<.7))return false;
  return !s.entities.some(e=>e.hp>0&&e.kind==='building'&&!e.gateOpen&&levelOf(e)===levelOf(p)&&Math.abs(e.x-p.x)<FACTIONS[s.players[e.side].faction].buildings[e.role as 'hq'].size/2+.27&&Math.abs(e.y-p.y)<FACTIONS[s.players[e.side].faction].buildings[e.role as 'hq'].size/2+.27);
 }
 function evacuate(s:WorldGame,e:Entity,hooks?:EnvironmentHooks):void {
  let best:Positioned|undefined,bestDistance=Infinity;
  for(let y=Math.max(0,Math.floor(e.y-ENVIRONMENT_RULES.evacuationRadius));y<Math.min(s.height,Math.ceil(e.y+ENVIRONMENT_RULES.evacuationRadius));y++)for(let x=Math.max(0,Math.floor(e.x-ENVIRONMENT_RULES.evacuationRadius));x<Math.min(s.width,Math.ceil(e.x+ENVIRONMENT_RULES.evacuationRadius));x++){
-  const p={x:x+.5,y:y+.5,level:levelOf(e)},d=Math.hypot(p.x-e.x,p.y-e.y);
+  const p={x:x+.5,y:y+.5,level:levelOf(e)},d=length2D(p.x-e.x,p.y-e.y);
   if(d<=ENVIRONMENT_RULES.evacuationRadius&&d<bestDistance&&bankClear(s,p)){best=p;bestDistance=d;}
  }
  // As with navigation's refined grid, a narrow legal bank can fall between
  // tile centers. Exhaust those rescue positions before declaring drowning.
  if(!best)for(let y=Math.max(0,Math.floor((e.y-ENVIRONMENT_RULES.evacuationRadius)*4));y<Math.min(s.height*4,Math.ceil((e.y+ENVIRONMENT_RULES.evacuationRadius)*4));y++)for(let x=Math.max(0,Math.floor((e.x-ENVIRONMENT_RULES.evacuationRadius)*4));x<Math.min(s.width*4,Math.ceil((e.x+ENVIRONMENT_RULES.evacuationRadius)*4));x++){
-  const p={x:(x+.5)/4,y:(y+.5)/4,level:levelOf(e)},d=Math.hypot(p.x-e.x,p.y-e.y);
+  const p={x:(x+.5)/4,y:(y+.5)/4,level:levelOf(e)},d=length2D(p.x-e.x,p.y-e.y);
   if(d<=ENVIRONMENT_RULES.evacuationRadius&&d<bestDistance&&bankClear(s,p)){best=p;bestDistance=d;}
  }
  if(!best){hurt(s,e,e.hp,'Lake thawed: trapped troop drowned; no bank within 6 tiles',true,hooks);return;}
@@ -164,7 +166,7 @@ function touchesIce(s:GameState,e:Entity,tiles:WorldState['iceTiles']):boolean {
 function exposed(s:GameState,e:Entity,fire:WorldFire):boolean {
  if(levelOf(e)!==fire.level)return false;
  const radius=e.kind==='building'?FACTIONS[s.players[e.side].faction].buildings[e.role as 'hq'].size/2:0;
- return Math.hypot(Math.max(0,Math.abs(e.x-fire.x)-radius),Math.max(0,Math.abs(e.y-fire.y)-radius))<.9;
+ return length2D(Math.max(0,Math.abs(e.x-fire.x)-radius),Math.max(0,Math.abs(e.y-fire.y)-radius))<.9;
 }
 function seasons(s:WorldGame,phase:EnvironmentPhase,hooks?:EnvironmentHooks):void {
  const world=s.world!;

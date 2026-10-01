@@ -1,3 +1,4 @@
+import { length2D, DIRECTIONS_32 } from './geometry';
 import { FACTIONS, UPGRADES } from './content';
 import { fogKey, sameLevel, terrainLineOfSight } from './world-map';
 import type { Cost, Entity, GameState, Side, UnitRole, Vec } from './types';
@@ -23,7 +24,7 @@ export const NEUTRAL_RULES = {
 const resources = ['wood','ore','crystal'] as const;
 const orderKinds = ['worldAttack','captureSite','supportVillage','recruitVillage'];
 const point = (p:Vec & {level?:number}):WorldPoint => ({x:p.x,y:p.y,level:p.level??0});
-const distance = (a:Vec,b:Vec) => Math.hypot(a.x-b.x,a.y-b.y);
+const distance = (a:Vec,b:Vec) => length2D(a.x-b.x,a.y-b.y);
 const allied = (s:GameState,a:Side,b:Side) => !!s.players[a]&&!!s.players[b]&&s.teams[a]===s.teams[b];
 const eligible = (e:Entity) => e.hp>0&&e.kind==='unit'&&!e.illusion;
 const worldOrder = (e:Entity) => e.order as unknown as NeutralOrder;
@@ -225,7 +226,7 @@ export function stepNeutralWorld(s:WorldGame,dt:number,hooks:NeutralWorldHooks):
    if(distance(creature,target)<=stats.range){if(creature.cooldown===0){hooks.hit(creature,target,stats.damage);creature.cooldown=stats.cooldown;}}
    else hooks.move(creature,point(target),dt,stats.range);
   }else{
-   const angle=(creature.patrol%8)*Math.PI/4,to={x:site.x+Math.cos(angle)*1.6,y:site.y+Math.sin(angle)*1.6,level:site.level};
+   const [dx,dy]=DIRECTIONS_32[(creature.patrol%8)*4],to={x:site.x+dx*1.6,y:site.y+dy*1.6,level:site.level};
    if(hooks.move(creature,to,dt,.25))creature.patrol=(creature.patrol+1)%8;
   }
  }

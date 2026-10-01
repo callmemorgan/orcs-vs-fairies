@@ -1,3 +1,4 @@
+import { length2D } from './geometry';
 import { FACTIONS } from './content';
 import { openDestination, walkable } from './navigation';
 import { levelOf, sameLevel, fogKey, setWorldTerrain } from './world-map';
@@ -6,7 +7,7 @@ import type { WorldBridge } from './world-types';
 
 export interface WorldActionHooks { move(actor:Entity,to:Vec,dt:number,reach:number):boolean; finish(actor:Entity):void; interrupt?(actor:Entity):void }
 const known=(s:GameState,side:Side,point:Vec)=>s.visible[side].has(fogKey(s,point));
-const distance=(a:Vec,b:Vec)=>sameLevel(a,b)?Math.hypot(a.x-b.x,a.y-b.y):Infinity;
+const distance=(a:Vec,b:Vec)=>sameLevel(a,b)?length2D(a.x-b.x,a.y-b.y):Infinity;
 function claimRebuild(s:GameState,bridge:WorldBridge,side:Side):boolean {
  if(bridge.repairSide!==null)return s.teams[bridge.repairSide]===s.teams[side];
  const player=s.players[side],wood=60+bridge.tiles.length*2,ore=20;if(player.wood<wood||player.ore<ore)return false;
