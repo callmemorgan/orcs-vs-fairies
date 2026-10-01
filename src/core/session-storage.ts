@@ -17,7 +17,7 @@ const record=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&
 
 export function createSessionFile(state:GameState,replay?:ReplayArchive):SessionFile {
   const game=saveGame(state);
-  if(replay){const archive=decodeReplay(replay);if(archive.finalTick!==state.tick||archive.finalChecksum!==replayChecksum(state))throw new Error('Replay does not match this game.');return {format:'orcs-vs-fairies/session',version:1,game,replay:archive};}
+  if(replay){const archive=decodeReplay(replay);if(archive.finalTick!==state.tick||archive.finalChecksum!==replayChecksum(state,archive.checksumVersion??archive.initial.version))throw new Error('Replay does not match this game.');return {format:'orcs-vs-fairies/session',version:1,game,replay:archive};}
   return {format:'orcs-vs-fairies/session',version:1,game};
 }
 
@@ -41,7 +41,7 @@ export class SaveRepository {
       if(!record(slot)||typeof slot.id!=='string'||!/^slot-[0-9]+$|^autosave(?:-[12])?$/.test(slot.id)||typeof slot.name!=='string'||slot.name.length>80||typeof slot.updatedAt!=='string'||!Number.isFinite(Date.parse(slot.updatedAt))||typeof slot.autosave!=='boolean'||slot.autosave!==slot.id.startsWith('autosave'))throw new Error('Damaged local save slot.');
       const {file,state}=decodeSessionFile(slot.file);
       if(slots.some(x=>x.id===slot.id))throw new Error('Duplicate local save slot.');
-      slots.push({id:slot.id,name:slot.name,updatedAt:slot.updatedAt,autosave:slot.autosave,time:state.time,faction:state.players[0].faction,opponent:state.players[1].faction,file});
+      slots.push({id:slot.id,name:slot.name,updatedAt:slot.updatedAt,autosave:slot.autosave,time:state.time,faction:state.players[0].faction,opponent:state.players[1]?.faction??state.players[0].faction,file});
     }
     if(slots.filter(slot=>!slot.autosave).length>MAX_MANUAL_SLOTS)throw new Error('Too many manual saves.');
     return slots;
@@ -65,7 +65,7 @@ export class SaveRepository {
     let next=Math.max(0,...slots.filter(s=>!s.autosave).map(s=>Number(s.id.slice(5))))+1;
     if(!Number.isSafeInteger(next))next=1;
     const id=autosave?'autosave':`slot-${next}`;
-    const slot:SaveSlot={id,name:clean,autosave,updatedAt:this.now().toISOString(),time:state.time,faction:state.players[0].faction,opponent:state.players[1].faction,file:validated};
+    const slot:SaveSlot={id,name:clean,autosave,updatedAt:this.now().toISOString(),time:state.time,faction:state.players[0].faction,opponent:state.players[1]?.faction??state.players[0].faction,file:validated};
     slots.push(slot);
     this.write(slots);return id;
   }
@@ -87,7 +87,7 @@ export class SaveRepository {
 export function createBugReport(description:string,state:GameState,replay:ReplayArchive,diagnostics:Record<string,unknown>={},buildId='development') {
   if(!description.trim()||description.length>4000)throw new Error('Describe the problem in 1 to 4000 characters.');
   const archive=decodeReplay(replay);
-  if(archive.finalChecksum!==replayChecksum(state))throw new Error('Report replay does not match the current match.');
+  if(archive.finalChecksum!==replayChecksum(state,archive.checksumVersion??archive.initial.version))throw new Error('Report replay does not match the current match.');
   let contentHash=2166136261;for(const char of JSON.stringify({FACTIONS,UPGRADES,ECONOMY})){contentHash^=char.charCodeAt(0);contentHash=Math.imul(contentHash,16777619);}
   return {format:'orcs-vs-fairies/bug-report',version:1,id:`local-${crypto.randomUUID()}`,createdAt:new Date().toISOString(),description:description.trim(),versions:{buildId,save:archive.initial.version,replay:archive.version,contentHash:(contentHash>>>0).toString(16).padStart(8,'0')},session:createSessionFile(state,archive),diagnostics:structuredClone(diagnostics)};
 }

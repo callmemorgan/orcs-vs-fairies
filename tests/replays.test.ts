@@ -45,7 +45,7 @@ describe('browser replay simulation',()=>{
   });
   it('does not record invalid or postgame timesteps',()=>{
     const state=createGame('orcs',1,'fairies',{mapSize:'small'}),recorder=new MatchRecorder(state);
-    stepGame(state,NaN);stepGame(state,0);state.winner=0;stepGame(state,.05);
+    stepGame(state,NaN);stepGame(state,0);state.winner=0;state.winningTeam=state.teams[0];stepGame(state,.05);
     expect(recorder.export().actions).toEqual([]);recorder.dispose();
   });
   it('records research completion on its real tick rather than a chart sample interval',()=>{

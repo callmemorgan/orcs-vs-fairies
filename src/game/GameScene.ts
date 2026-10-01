@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import ArtRuntime from './ArtRuntime';
 import GameAudio from './GameAudio';
-import type { GameState, BuildingRole, Command, Entity, UnitRole } from '../core/types';
+import type { Side, GameState, BuildingRole, Command, Entity, UnitRole } from '../core/types';
 import { canPlace, isVisible, issueCommand, stepGame } from '../core/simulation';
 import { PlayerView } from '../core/observation';
 import { FACTIONS } from '../core/content';
@@ -17,8 +17,8 @@ export function project(x:number,y:number) { return {x:OX+(x-y)*TILE_W/2,y:OY+(x
 export function unproject(x:number,y:number) { return {x:((x-OX)/32+(y-OY)/16)/2,y:((y-OY)/16-(x-OX)/32)/2}; }
 export interface GameSceneOptions {
   pixelDensity?:number;state:GameState;onSelection:(ids:number[])=>void;onNotice:(text:string)=>void;onReady?:()=>void;viewBounds?:()=>{top:number;bottom:number};
-  controls?:ControlProfiles;viewSide?:0|1;readOnly?:boolean;simulationEnabled?:boolean;
-  onCommand?:(side:0|1,command:Command)=>boolean;onStep?:(state:GameState)=>void;onPhotoMode?:(enabled:boolean)=>void;onPause?:(paused:boolean)=>void;onActionSlot?:(slot:number)=>void;
+  controls?:ControlProfiles;viewSide?:Side;readOnly?:boolean;simulationEnabled?:boolean;
+  onCommand?:(side:Side,command:Command)=>boolean;onStep?:(state:GameState)=>void;onPhotoMode?:(enabled:boolean)=>void;onPause?:(paused:boolean)=>void;onActionSlot?:(slot:number)=>void;
 }
 export default class GameScene extends Phaser.Scene {
   public state:GameState;
@@ -30,7 +30,7 @@ export default class GameScene extends Phaser.Scene {
   public readOnly=false;
   public simulationEnabled=true;
   public inputBlocked=false;
-  private _viewSide:0|1=0;
+  private _viewSide:Side=0;
   private _photoMode=false;
   private photoPreviousPause=false;
   private art!:ArtRuntime;
@@ -65,7 +65,7 @@ export default class GameScene extends Phaser.Scene {
   private markers:{x:number;y:number;born:number;attack:boolean}[]=[];
   constructor(options:GameSceneOptions) {super({key:'world'});this.options=options;this.state=options.state;this.controls=options.controls??new ControlProfiles();this._viewSide=options.viewSide??0;this.playerView=new PlayerView(this._viewSide);this.readOnly=options.readOnly??false;this.simulationEnabled=options.simulationEnabled??true;}
   public get viewSide(){return this._viewSide;}
-  public set viewSide(side:0|1){if(side!==0&&side!==1)throw new Error('Perspective must be side 0 or 1.');if(this._viewSide===side)return;this._viewSide=side;this.playerView=new PlayerView(side);this.groups={};this.select([]);if(this.fog)this.drawFog();}
+  public set viewSide(side:Side){if(!Number.isInteger(side)||!this.state.players[side])throw new Error('Perspective must identify a player in this match.');if(this._viewSide===side)return;this._viewSide=side;this.playerView=new PlayerView(side);this.groups={};this.select([]);if(this.fog)this.drawFog();}
   public get photoMode(){return this._photoMode;}
   public setPhotoMode(enabled:boolean){
     if(this._photoMode===enabled)return;

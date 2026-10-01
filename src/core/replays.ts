@@ -1,19 +1,19 @@
 import { validateCommand } from './commands';
 import { subscribeSimulation } from './history-hooks';
 import { FACTIONS } from './content';
-import { saveGame, loadGame } from './saves';
+import { saveGame, loadGame, SAVE_VERSION } from './saves';
 import { issueCommand, stepGame, isGameOver } from './simulation';
 import type { BuildingRole, Command, Entity, GameState, Side, UnitRole } from './types';
 
 export type ReplayAction = {type:'command';side:Side;command:Command} | {type:'advance';dt:number;ticks:number};
 export interface ArmySample {wood:number;ore:number;crystal:number;units:number;buildings:number;losses:number;gathered:number;upgrades:string[];armyValue?:number;buildingLosses?:number;lostValue?:number}
-export interface AnalysisSample {tick:number;time:number;players:[ArmySample,ArmySample]}
+export interface AnalysisSample {tick:number;time:number;players:ArmySample[]}
 export interface TechnologyTiming {side:Side;upgrade:string;tick:number;time:number}
 export interface ReplayArchive {
   format:'orcs-vs-fairies/replay';version:1;
   initial:ReturnType<typeof saveGame>;
   actions:ReplayAction[];
-  finalTick:number;finalChecksum:string;
+  finalTick:number;finalChecksum:string;checksumVersion?:number;
   analysis:AnalysisSample[];
   technologies:TechnologyTiming[];
 }
@@ -25,8 +25,15 @@ const integer=(v:unknown):v is number=>typeof v==='number'&&Number.isSafeInteger
 const exactKeys=(v:Record<string,unknown>,keys:string[])=>Object.keys(v).every(k=>keys.includes(k));
 
 /** A divergence check, not a signature or a claim of trusted authorship. */
-export function replayChecksum(state:GameState):string {
-  const text=JSON.stringify(saveGame(state));let hash=2166136261;
+export function replayChecksum(state:GameState,version=SAVE_VERSION):string {
+  const saved=saveGame(state);
+  if(version===1){
+    // The two-player envelope remains readable; its checksum excludes fields added in v2.
+    const legacy=saved as unknown as {version:number;state:Record<string,unknown>;runtime:Record<string,unknown>};legacy.version=1;
+    for(const key of ['teams','incomeFactors','populationLimits','sharedVision','eliminated','winningTeam'])delete legacy.state[key];
+    delete legacy.runtime.clearedEnemyStarts;
+  }else if(version!==SAVE_VERSION)throw new Error('Replay checksum version is unsupported by this build.');
+  const text=JSON.stringify(saved);let hash=2166136261;
   for(let i=0;i<text.length;i++){hash^=text.charCodeAt(i);hash=Math.imul(hash,16777619);}
   return (hash>>>0).toString(16).padStart(8,'0');
 }
@@ -45,24 +52,24 @@ export class MatchRecorder {
   private initial:ReturnType<typeof saveGame>;
   private actions:ReplayAction[]=[];
   private samples:AnalysisSample[]=[];
-  private losses:[number,number]=[0,0];
-  private gathered:[number,number]=[0,0];
-  private buildingLosses:[number,number]=[0,0];
-  private lostValue:[number,number]=[0,0];
+  private losses:number[];
+  private gathered:number[];
+  private buildingLosses:number[];
+  private lostValue:number[];
   private technologies:TechnologyTiming[]=[];
-  private knownUpgrades:[Set<string>,Set<string>];
+  private knownUpgrades:Set<string>[];
   private sampledAt=-Infinity;
   private unsubscribe:()=>void;
   private error:string|null=null;
   constructor(private state:GameState,previous?:ReplayArchive) {
-    this.knownUpgrades=[new Set(state.players[0].upgrades),new Set(state.players[1].upgrades)];
+    this.knownUpgrades=state.players.map(p=>new Set(p.upgrades));
+    this.losses=state.players.map(()=>0);this.gathered=state.players.map(()=>0);this.buildingLosses=state.players.map(()=>0);this.lostValue=state.players.map(()=>0);
     if(previous){
       const archive=decodeReplay(previous);
-      if(archive.finalTick!==state.tick||archive.finalChecksum!==replayChecksum(state))throw new Error('Saved replay does not match the saved game.');
-      this.initial=archive.initial;this.actions=structuredClone(archive.actions);this.samples=structuredClone(archive.analysis);
+      if(archive.finalTick!==state.tick||archive.finalChecksum!==replayChecksum(state,archive.checksumVersion??archive.initial.version))throw new Error('Saved replay does not match the saved game.');
+      this.initial=saveGame(loadGame(archive.initial));this.actions=structuredClone(archive.actions);this.samples=structuredClone(archive.analysis);
       this.technologies=structuredClone(archive.technologies);
-      const last=this.samples.at(-1);this.losses=last?[last.players[0].losses,last.players[1].losses]:[0,0];this.gathered=last?[last.players[0].gathered,last.players[1].gathered]:[0,0];
-      this.buildingLosses=last?[last.players[0].buildingLosses??0,last.players[1].buildingLosses??0]:[0,0];this.lostValue=last?[last.players[0].lostValue??0,last.players[1].lostValue??0]:[0,0];
+      const last=this.samples.at(-1);if(last){this.losses=last.players.map(p=>p.losses);this.gathered=last.players.map(p=>p.gathered);this.buildingLosses=last.players.map(p=>p.buildingLosses??0);this.lostValue=last.players.map(p=>p.lostValue??0);}
     }else this.initial=saveGame(state);
     this.sample(true);
     this.unsubscribe=subscribeSimulation(state,{
@@ -83,7 +90,7 @@ export class MatchRecorder {
           }
           if(e.type==='gather')this.gathered[e.side]+=e.amount??0;
         }
-        for(const side of [0,1] as Side[])for(const upgrade of state.players[side].upgrades){
+        for(const side of state.players.map((_,i)=>i as Side))for(const upgrade of state.players[side].upgrades){
           if(this.knownUpgrades[side].has(upgrade))continue;
           this.knownUpgrades[side].add(upgrade);this.technologies.push({side,upgrade,tick:state.tick,time:state.time});
         }
@@ -94,7 +101,7 @@ export class MatchRecorder {
   private fail(message:string){this.error=message;this.unsubscribe?.();}
   private sample(force=false){
     if(!force&&this.state.time-this.sampledAt<5)return;
-    const sample:AnalysisSample={tick:this.state.tick,time:this.state.time,players:[armySample(this.state,0,this.losses[0],this.gathered[0],this.buildingLosses[0],this.lostValue[0]),armySample(this.state,1,this.losses[1],this.gathered[1],this.buildingLosses[1],this.lostValue[1])]};
+    const sample:AnalysisSample={tick:this.state.tick,time:this.state.time,players:this.state.players.map((_,side)=>armySample(this.state,side as Side,this.losses[side],this.gathered[side],this.buildingLosses[side],this.lostValue[side]))};
     if(this.samples.at(-1)?.tick===sample.tick)this.samples[this.samples.length-1]=sample;else this.samples.push(sample);
     this.sampledAt=this.state.time;
   }
@@ -111,14 +118,16 @@ export class MatchRecorder {
 
 export function decodeReplay(input:unknown):ReplayArchive {
   if(typeof input==='string'){if(input.length>20*1024*1024)throw new Error('Replay exceeds 20 MiB.');try{input=JSON.parse(input);}catch{throw new Error('Invalid replay JSON.');}}
-  if(!record(input)||!exactKeys(input,['format','version','initial','actions','finalTick','finalChecksum','analysis','technologies'])||input.format!==FORMAT||input.version!==1)throw new Error('Unsupported replay format or version.');
+  if(!record(input)||!exactKeys(input,['format','version','initial','actions','finalTick','finalChecksum','analysis','technologies','checksumVersion'])||input.format!==FORMAT||input.version!==1)throw new Error('Unsupported replay format or version.');
   const initial=loadGame(input.initial);
+  if(input.checksumVersion!==undefined&&(!integer(input.checksumVersion)||input.checksumVersion<1||input.checksumVersion>SAVE_VERSION))throw new Error('Unsupported replay checksum version.');
+  const validSide=(side:unknown)=>integer(side)&&side<initial.players.length;
   if(!Array.isArray(input.actions)||input.actions.length>MAX_ACTIONS)throw new Error('Invalid replay actions.');
   let ticks=0;
   for(const action of input.actions){
     if(!record(action))throw new Error('Malformed replay action.');
     if(action.type==='command'){
-      if(!exactKeys(action,['type','side','command'])||(action.side!==0&&action.side!==1)||!validateCommand(action.command))throw new Error('Malformed replay command.');
+      if(!exactKeys(action,['type','side','command'])||!validSide(action.side)||!validateCommand(action.command))throw new Error('Malformed replay command.');
     }else if(action.type==='advance'){
       if(!exactKeys(action,['type','dt','ticks'])||typeof action.dt!=='number'||!Number.isFinite(action.dt)||action.dt<=0||action.dt>.25||!integer(action.ticks)||action.ticks<1)throw new Error('Invalid replay timestep.');
       ticks+=action.ticks;if(ticks>MAX_TICKS)throw new Error('Replay exceeds six hours at 20 ticks per second.');
@@ -128,7 +137,7 @@ export function decodeReplay(input:unknown):ReplayArchive {
   if(!Array.isArray(input.analysis)||input.analysis.length>MAX_TICKS+1)throw new Error('Invalid replay analysis.');
   let lastTick=initial.tick-1;
   for(const sample of input.analysis){
-    if(!record(sample)||!exactKeys(sample,['tick','time','players'])||!integer(sample.tick)||sample.tick<=lastTick||sample.tick>input.finalTick||typeof sample.time!=='number'||!Number.isFinite(sample.time)||sample.time<initial.time||!Array.isArray(sample.players)||sample.players.length!==2)throw new Error('Malformed replay sample.');
+    if(!record(sample)||!exactKeys(sample,['tick','time','players'])||!integer(sample.tick)||sample.tick<=lastTick||sample.tick>input.finalTick||typeof sample.time!=='number'||!Number.isFinite(sample.time)||sample.time<initial.time||!Array.isArray(sample.players)||sample.players.length!==initial.players.length)throw new Error('Malformed replay sample.');
     lastTick=sample.tick;
     for(const player of sample.players){
       if(!record(player)||!exactKeys(player,['wood','ore','crystal','units','buildings','losses','gathered','upgrades','armyValue','buildingLosses','lostValue'])||!['wood','ore','crystal','units','buildings','losses','gathered'].every(k=>typeof player[k]==='number'&&Number.isFinite(player[k])&&(player[k] as number)>=0)||!['armyValue','buildingLosses','lostValue'].every(k=>player[k]===undefined||typeof player[k]==='number'&&Number.isFinite(player[k])&&(player[k] as number)>=0)||!Array.isArray(player.upgrades)||!player.upgrades.every(x=>typeof x==='string'&&x.length<80))throw new Error('Malformed replay army sample.');
@@ -136,9 +145,11 @@ export function decodeReplay(input:unknown):ReplayArchive {
   }
   if(!Array.isArray(input.technologies)||input.technologies.length>200)throw new Error('Invalid technology history.');
   for(const tech of input.technologies){
-    if(!record(tech)||!exactKeys(tech,['side','upgrade','tick','time'])||(tech.side!==0&&tech.side!==1)||typeof tech.upgrade!=='string'||tech.upgrade.length>80||!integer(tech.tick)||tech.tick<initial.tick||tech.tick>input.finalTick||typeof tech.time!=='number'||!Number.isFinite(tech.time)||tech.time<initial.time)throw new Error('Invalid technology timing.');
+    if(!record(tech)||!exactKeys(tech,['side','upgrade','tick','time'])||!validSide(tech.side)||typeof tech.upgrade!=='string'||tech.upgrade.length>80||!integer(tech.tick)||tech.tick<initial.tick||tech.tick>input.finalTick||typeof tech.time!=='number'||!Number.isFinite(tech.time)||tech.time<initial.time)throw new Error('Invalid technology timing.');
   }
-  return structuredClone(input) as unknown as ReplayArchive;
+  const decoded=structuredClone(input) as unknown as ReplayArchive;
+  if(record(input.initial)&&input.initial.version===1){decoded.initial=saveGame(initial);decoded.checksumVersion=1;}
+  return decoded;
 }
 
 export class ReplayPlayer {
@@ -160,7 +171,7 @@ export class ReplayPlayer {
       if(!issueCommand(this.state,action.side,action.command))throw new Error(`Replay command rejected at tick ${this.state.tick}.`);
       this.cursor++;
     }
-    if(this.finished&&replayChecksum(this.state)!==this.archive.finalChecksum)throw new Error('Replay final state diverged.');
+    if(this.finished&&replayChecksum(this.state,this.archive.checksumVersion??this.archive.initial.version)!==this.archive.finalChecksum)throw new Error('Replay final state diverged.');
   }
   /** Advance bounded work; callers can yield between batches to keep the UI responsive. */
   advance(ticks:number):number {
