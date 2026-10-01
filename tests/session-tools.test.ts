@@ -278,7 +278,7 @@ describe('replay and analysis', () => {
 
   it('seeks, changes speed and perspective, and toggles replay playback', async () => {
     const callbacks = makeCallbacks();
-    const replay: SessionReplayStatus = { tick: 20, totalTicks: 200, playing: false, speed: 1, perspective: 0 };
+    const replay: SessionReplayStatus = { tick: 20, initialTick: 0, totalTicks: 200, playing: false, speed: 1, perspective: 0 };
     callbacks.getReplay.mockReturnValue(replay);
     const { root, tools, state } = setup(callbacks);
     const page = open(root, 'replay');
@@ -305,7 +305,7 @@ describe('replay and analysis', () => {
 
   it('keeps a focused seek draft stable during playback updates and exports replay data', async () => {
     const callbacks = makeCallbacks();
-    const replay: SessionReplayStatus = { tick: 20, totalTicks: 200, playing: true, speed: 1, perspective: 0 };
+    const replay: SessionReplayStatus = { tick: 20, initialTick: 0, totalTicks: 200, playing: true, speed: 1, perspective: 0 };
     callbacks.getReplay.mockReturnValue(replay);
     const { root, tools, state } = setup(callbacks);
     const page = open(root, 'replay');
@@ -320,6 +320,17 @@ describe('replay and analysis', () => {
     expect(seek.value).toBe('21');
     button(page, 'Export replay').click();
     await vi.waitFor(() => expect(callbacks.download).toHaveBeenCalledWith('orcs-vs-fairies-replay.json', { format: 'replay', commands: [] }));
+  });
+  it('starts saved-state replays at their initial tick and rejects stale seeks before that tick', async () => {
+    const callbacks=makeCallbacks();
+    const replay:SessionReplayStatus={tick:800,initialTick:600,totalTicks:1200,playing:false,speed:1,perspective:0};
+    callbacks.getReplay.mockReturnValue(replay);
+    const {root}=setup(callbacks),page=open(root,'replay'),seek=field(page,'Replay tick');
+    expect(seek.min).toBe('600');expect(seek.max).toBe('1200');expect(seek.value).toBe('800');
+    setInput(seek,'600');await vi.waitFor(()=>expect(callbacks.seekReplay).toHaveBeenCalledWith(600));
+    callbacks.seekReplay.mockClear();seek.value='700';replay.initialTick=750;
+    seek.dispatchEvent(new Event('change',{bubbles:true}));await Promise.resolve();
+    expect(callbacks.seekReplay).not.toHaveBeenCalled();
   });
 
   it('validates replay JSON before importing it', async () => {
@@ -361,6 +372,48 @@ describe('replay and analysis', () => {
     expect(page.textContent).toContain('SECRET TECHNOLOGY');
     expect(page.textContent).toContain('0:40 (tick 400)');
     expect(page.querySelector('svg[aria-label="Resources held over match time"] title')!.textContent).toContain('Orcs:');
+  });
+  it('shows gathered economy, army and building values, and separate unit and building losses',()=>{
+    const callbacks=makeCallbacks(),analysis=recordedAnalysis();
+    for(const [index,sample] of analysis.samples.entries())for(const player of sample.players)Object.assign(player,{gathered:100+index*500,buildings:2+index,armyValue:200+index*300,buildingLosses:index,lostValue:index*75});
+    callbacks.getAnalysis.mockReturnValue(analysis);
+    const {root}=setup(callbacks,{replaySpectator:true}),page=open(root,'analysis');
+    for(const title of ['Resources held','Resources gathered','Army strength','Army value','Buildings','Cumulative losses','Cumulative building losses','Cumulative loss value'])expect(page.querySelector(`svg[aria-label="${title} over match time"]`)).not.toBeNull();
+    expect(page.querySelector('svg[aria-label="Resources gathered over match time"] title')!.textContent).toContain('2:00 600');
+    expect(page.querySelector('svg[aria-label="Cumulative building losses over match time"] title')!.textContent).toContain('2:00 1');
+    expect(page.querySelector('svg[aria-label="Cumulative loss value over match time"] title')!.textContent).toContain('2:00 75');
+  });
+  it.each(['Resources held','Army strength','Cumulative losses'])('opens the replay from clickable and keyboard-accessible %s timestamps',async chart=>{
+    const callbacks=makeCallbacks();callbacks.getAnalysis.mockReturnValue(recordedAnalysis());callbacks.getReplay.mockReturnValue({tick:0,initialTick:0,totalTicks:1200,playing:false,speed:1,perspective:0});
+    const {root}=setup(callbacks,{replaySpectator:true}),page=open(root,'analysis');
+    const plot=page.querySelector(`svg[aria-label="${chart} over match time"]`)!;
+    expect(plot.getAttribute('role')).toBe('group');
+    const point=plot.querySelector<SVGCircleElement>('[data-analysis-tick="1200"]')!;
+    expect(point.getAttribute('tabindex')).toBe('0');expect(point.getAttribute('role')).toBe('button');
+    expect(point.getAttribute('aria-label')).toContain('2:00');
+    point.dispatchEvent(new MouseEvent('click',{bubbles:true}));
+    await vi.waitFor(()=>expect(callbacks.seekReplay).toHaveBeenLastCalledWith(1200));
+    await vi.waitFor(()=>expect(panel(root,'replay').hidden).toBe(false));
+    open(root,'analysis');const key=new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true});point.dispatchEvent(key);
+    expect(key.defaultPrevented).toBe(true);await vi.waitFor(()=>expect(callbacks.seekReplay).toHaveBeenCalledTimes(2));
+    await vi.waitFor(()=>expect(panel(root,'replay').hidden).toBe(false));
+  });
+  it('links technology completion ticks to replay and keeps failed seeks on analysis',async()=>{
+    const callbacks=makeCallbacks();callbacks.getAnalysis.mockReturnValue(recordedAnalysis());callbacks.getReplay.mockReturnValue({tick:0,initialTick:0,totalTicks:1200,playing:false,speed:1,perspective:0});
+    const {root}=setup(callbacks,{replaySpectator:true}),page=open(root,'analysis');
+    page.querySelector<HTMLButtonElement>('[data-analysis-technology-tick="400"]')!.click();
+    await vi.waitFor(()=>expect(callbacks.seekReplay).toHaveBeenLastCalledWith(400));await vi.waitFor(()=>expect(panel(root,'replay').hidden).toBe(false));
+    open(root,'analysis');callbacks.seekReplay.mockReturnValue(false);page.querySelector<HTMLButtonElement>('[data-analysis-technology-tick="200"]')!.click();
+    await vi.waitFor(()=>expect(root.querySelector('[role="status"]')!.textContent).toContain('could not be opened'));
+    expect(page.hidden).toBe(false);expect(panel(root,'replay').hidden).toBe(true);
+  });
+  it('does not offer analysis seeks outside a saved replay interval',()=>{
+    const callbacks=makeCallbacks();callbacks.getAnalysis.mockReturnValue(recordedAnalysis());callbacks.getReplay.mockReturnValue({tick:600,initialTick:600,totalTicks:1200,playing:false,speed:1,perspective:0});
+    const {root}=setup(callbacks,{replaySpectator:true}),page=open(root,'analysis');
+    expect(page.querySelector('[data-analysis-tick="0"]')).toBeNull();
+    expect(page.querySelector('[data-analysis-tick="1200"]')).not.toBeNull();
+    const oldTechnology=page.querySelector<HTMLButtonElement>('[data-analysis-technology-tick="400"]')!;
+    expect(oldTechnology.disabled).toBe(true);oldTechnology.click();expect(callbacks.seekReplay).not.toHaveBeenCalled();
   });
 });
 
@@ -519,6 +572,16 @@ describe('bindings, reports, and modal lifecycle', () => {
     await vi.waitFor(() => expect(callbacks.setBinding).toHaveBeenCalledWith('attackMove', 'Shift+1'));
     expect(field(page, 'Control profile name').maxLength).toBe(40);
   });
+  it.each([
+    ['Control','ControlLeft',{ctrlKey:true}],['Alt','AltRight',{altKey:true}],['Shift','ShiftRight',{shiftKey:true}],['Meta','MetaLeft',{metaKey:true}],
+  ] as const)('captures a bare %s key only for the queue modifier',async(key,code,modifiers)=>{
+    const callbacks=makeCallbacks();callbacks.getBindings.mockReturnValue([...callbacks.getBindings(),{action:'queueModifier',label:'Queue orders / add selection',key:'Left Shift'}]);
+    const {root}=setup(callbacks),page=open(root,'controls'),queue=field(page,'Queue orders / add selection shortcut'),normal=field(page,'Attack move shortcut');
+    const press=()=>new KeyboardEvent('keydown',{key,code,...modifiers,bubbles:true,cancelable:true});
+    normal.dispatchEvent(press());expect(normal.value).toBe('A');
+    queue.dispatchEvent(press());expect(queue.value).toBe(code);button(page,'Apply Queue orders / add selection shortcut').click();
+    await vi.waitFor(()=>expect(callbacks.setBinding).toHaveBeenCalledWith('queueModifier',code));
+  });
 
   it('saves, loads, and restores control profiles through the callbacks', async () => {
     const { root, callbacks } = setup();
@@ -571,6 +634,21 @@ describe('bindings, reports, and modal lifecycle', () => {
     expect(callbacks.onModal).toHaveBeenLastCalledWith(false);
     expect(root.querySelector<HTMLElement>('.session-overlay')!.hidden).toBe(true);
     expect(document.activeElement).toBe(launch);
+  });
+  it('passes camera and photo shortcuts from the restored toolbar focus while isolating modal input',()=>{
+    const {root}=setup(),launch=root.querySelector<HTMLButtonElement>('[data-session-tool="controls"]')!,battlefield=vi.fn();
+    window.addEventListener('keydown',battlefield);
+    try{
+      launch.focus();open(root,'controls');
+      button(root,'Close session tools').dispatchEvent(new KeyboardEvent('keydown',{key:'r',code:'KeyR',bubbles:true}));
+      document.body.dispatchEvent(new KeyboardEvent('keydown',{key:'F9',code:'F9',bubbles:true}));
+      expect(battlefield).not.toHaveBeenCalled();
+      button(root,'Close session tools').click();expect(document.activeElement).toBe(launch);
+      for(const [key,code] of [['r','KeyR'],['F9','F9']])launch.dispatchEvent(new KeyboardEvent('keydown',{key,code,bubbles:true}));
+      expect(battlefield).toHaveBeenCalledTimes(2);
+      for(const key of ['Enter',' ']){const activation=new KeyboardEvent('keydown',{key,bubbles:true,cancelable:true});launch.dispatchEvent(activation);expect(activation.defaultPrevented).toBe(false);}
+      expect(battlefield).toHaveBeenCalledTimes(2);
+    }finally{window.removeEventListener('keydown',battlefield);}
   });
 
   it('closes the modal for photo mode and removes controls and keyboard interception on disposal', () => {

@@ -35,5 +35,27 @@ await page.evaluate(()=>{scene.readOnly=false;scene.simulationEnabled=true;scene
 await page.evaluate(()=>{padSample.buttons=Array(17).fill(0);});await page.waitForTimeout(30);await page.evaluate(()=>{padSample.buttons[11]=1;padSample.buttons[0]=1;});await page.waitForTimeout(50);assert.deepEqual((await snap()).slots,[1,1]);evidence.gamepadActionSlot=true;
 // Modal suppression blocks both analog camera movement and pause shortcut.
 await page.evaluate(()=>{scene.inputBlocked=true;padSample.axes=[1,0,0,0];});const blocked=await snap();await page.waitForTimeout(80);await key('KeyP');assert.equal((await snap()).camera.x,blocked.camera.x);assert.equal((await snap()).paused,blocked.paused);evidence.modalSuppression=true;
-assert.deepEqual(errors,[]);await writeFile('work/controls-proof.json',JSON.stringify({evidence,errors,final:await snap()},null,2));console.log(JSON.stringify(evidence));
+const final=await snap();
+// Real Phaser stop/restart/destroy must remove scene, audio and detached-canvas listeners.
+await page.evaluate(()=>{scene.inputBlocked=false;window.padSample=null;});
+const cdp=await page.context().newCDPSession(page);
+const nativeCounts=async()=>{
+  const response=await cdp.send('Runtime.evaluate',{expression:`JSON.stringify({down:(getEventListeners(window).keydown??[]).length,up:(getEventListeners(window).keyup??[]).length,blur:(getEventListeners(window).blur??[]).length,audioKey:(getEventListeners(document).keydown??[]).length,audioPointer:(getEventListeners(document).pointerdown??[]).length,canvasCapture:['mousedown','mouseup','touchstart','touchend'].reduce((sum,type)=>sum+(getEventListeners(window.retiredCanvas??game.canvas)[type]??[]).filter(listener=>listener.useCapture).length,0)})`,includeCommandLineAPI:true,returnByValue:true});
+  return JSON.parse(response.result.value);
+};
+const running=await nativeCounts();assert.equal(running.canvasCapture,4);
+await page.evaluate(()=>{window.retiredCanvas=game.canvas;scene.scene.stop();});await page.waitForFunction(()=>scene.sys.settings.status===8);
+const stopped=await nativeCounts();assert.equal(stopped.down,running.down-1);assert.equal(stopped.up,running.up-1);assert.equal(stopped.blur,running.blur-1);assert.equal(stopped.audioKey,running.audioKey-1);assert.equal(stopped.audioPointer,running.audioPointer-1);assert.equal(stopped.canvasCapture,0);
+const stoppedSlots=await page.evaluate(()=>checks.slots.length);await key('KeyZ');assert.equal(await page.evaluate(()=>checks.slots.length),stoppedSlots);
+await page.evaluate(()=>scene.scene.start());await page.waitForFunction(()=>checks.readyCount===2);assert.deepEqual(await nativeCounts(),running);await key('KeyZ');assert.equal(await page.evaluate(()=>checks.slots.length),stoppedSlots+1);evidence.sceneShutdownRestartCleanup=true;
+for(let cycle=0;cycle<3;cycle++){
+  const photoEvents=await page.evaluate(()=>checks.photo.length),slotsBefore=await page.evaluate(()=>checks.slots.length);
+  await page.evaluate(()=>{scene.setPhotoMode(true);window.retiredCanvas=game.canvas;game.destroy(true);});await page.waitForFunction(()=>scene.sys.settings.status===9);
+  assert.deepEqual(await page.evaluate(count=>checks.photo.slice(count),photoEvents),[true,false]);
+  const destroyed=await nativeCounts();assert.equal(destroyed.down,0);assert.equal(destroyed.up,0);assert.equal(destroyed.blur,stopped.blur);assert.equal(destroyed.audioKey,0);assert.equal(destroyed.audioPointer,0);assert.equal(destroyed.canvasCapture,0);
+  await key('KeyZ');await key('KeyR');assert.equal(await page.evaluate(()=>checks.slots.length),slotsBefore);
+  if(cycle<2){await page.evaluate(()=>{delete window.retiredCanvas;window.createProofGame();});await page.waitForFunction(count=>checks.readyCount===count,cycle+3);assert.deepEqual(await nativeCounts(),running);}
+}
+evidence.fullGameDestroyCleanup=true;
+assert.deepEqual(errors,[]);await writeFile('work/controls-proof.json',JSON.stringify({evidence,errors,final},null,2));console.log(JSON.stringify(evidence));
 } finally {await browser.close();}

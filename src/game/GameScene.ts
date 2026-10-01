@@ -90,8 +90,7 @@ export default class GameScene extends Phaser.Scene {
   private get dragThreshold(){return 6*this.pixelDensity;}
   preload(){this.art=new ArtRuntime(this,new URLSearchParams(location.search).get('art')!=='placeholder');this.art.preload(this.state.players.map(p=>p.faction));}
   create() {
-    this.audio=new GameAudio();
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN,()=>this.audio?.dispose());
+    const audio=this.audio=new GameAudio(),canvas=this.game.canvas,lifecycle=this.events;
     this.art.ready();
     if(this.art.enabled&&!this.art.loaded)this.options.onNotice('Artwork could not load. Check that the local server is running, then restart the match.');
     this.cameras.main.setBackgroundColor('#131f22');
@@ -144,12 +143,20 @@ export default class GameScene extends Phaser.Scene {
     const clearPointerDrag=()=>{this.pan=null;this.drag=null;this.heldKeys.clear();this.keyboardState={codes:this.heldKeys,ctrl:false,meta:false,alt:false,shift:false};this.controller.reset();this.controllerActive=false;};
     this.input.on('pointerupoutside',clearPointerDrag);
     window.addEventListener('blur',clearPointerDrag);
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN,()=>window.removeEventListener('blur',clearPointerDrag));
     this.input.on('wheel',(_p:Phaser.Input.Pointer,_o:unknown,_dx:number,dy:number)=>{
       if(this.inputSuppressed())return;
       this.cameras.main.setZoom(Phaser.Math.Clamp(this.cameras.main.zoom-dy*.001*this.pixelDensity,0.55*this.pixelDensity,1.8*this.pixelDensity));
     });
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN,()=>{window.removeEventListener('keydown',keydown);window.removeEventListener('keyup',keyup);for(const type of ['mousedown','mouseup','touchstart','touchend'])this.game.canvas.removeEventListener(type,captureQueue,true);this.controller.reset();if(this.photoMode)this.options.onPhotoMode?.(false);});
+    let cleaned=false;
+    const cleanup=()=>{
+      if(cleaned)return;cleaned=true;
+      lifecycle.off(Phaser.Scenes.Events.SHUTDOWN,cleanup);lifecycle.off(Phaser.Scenes.Events.DESTROY,cleanup);
+      window.removeEventListener('keydown',keydown);window.removeEventListener('keyup',keyup);window.removeEventListener('blur',clearPointerDrag);
+      for(const type of ['mousedown','mouseup','touchstart','touchend'])canvas.removeEventListener(type,captureQueue,true);
+      clearPointerDrag();this.controllerCursor=null;this.gamepadConnected=false;audio.dispose();
+      if(this.photoMode){this._photoMode=false;this.paused=this.photoPreviousPause;this.options.onPhotoMode?.(false);this.options.onPause?.(this.paused);}
+    };
+    lifecycle.once(Phaser.Scenes.Events.SHUTDOWN,cleanup);lifecycle.once(Phaser.Scenes.Events.DESTROY,cleanup);
     this.drawFog();
     this.options.onReady?.();
   }
