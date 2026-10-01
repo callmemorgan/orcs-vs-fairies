@@ -12,7 +12,7 @@ let phase='opening normal application';
 const record=(name,details=true)=>{evidence.checks.push({name,details});console.log(`${name}: ${JSON.stringify(details)}`);};
 const byId=values=>[...values].sort((a,b)=>a.id-b.id);
 
-async function profile(name) {
+async function profile(name,source='menu') {
   const context=await browser.newContext({viewport:{width:1440,height:1000},acceptDownloads:true});
   const page=await context.newPage(),profile={name,context,page,snapshots:[],sent:[],receipts:[],hellos:[],downloads:[]};profiles.push(profile);
   page.on('pageerror',error=>errors.push({profile:name,message:error.message}));
@@ -31,10 +31,36 @@ async function profile(name) {
     moduleScripts:Array.from(document.querySelectorAll('script[type="module"][src]'),node=>node.src),
     stylesheets:Array.from(document.querySelectorAll('link[rel="stylesheet"][href]'),node=>node.href),
   }))});
+  if(source!=='menu')await preparePausedSource(profile,source);
   await page.getByRole('button',{name:'Online',exact:true}).click();
   await page.getByRole('button',{name:'Play as guest',exact:true}).click();
   await page.waitForFunction(()=>!document.querySelector('.online-account')?.hidden&&document.querySelector('.online-username')?.textContent?.startsWith('Guest'),{},{timeout:15000});
   return profile;
+}
+async function preparePausedSource(profile,source) {
+  const {page,name}=profile;
+  phase=`preparing ${name} paused ${source}`;
+  await page.locator('#map-size').selectOption('small');await page.locator('.begin-match').click();
+  await page.waitForSelector('.loading-battle[hidden]',{state:'attached',timeout:60000});
+  await page.waitForFunction(()=>window.rts?.mode==='local'&&window.rts.state.tick>=12,{},{timeout:60000});
+  if(source==='local') {
+    await page.locator('#pause-button').click();await page.waitForFunction(()=>window.rts.paused===true);
+    assert.equal(await page.locator('.game-overlay').isVisible(),true);
+  }else if(source==='replay') {
+    await openTool(profile,'replay');
+    const downloadPromise=page.waitForEvent('download');await page.getByRole('button',{name:'Export replay',exact:true}).click();
+    const path=join(out,`${name}-paused-source-replay.json`);await (await downloadPromise).saveAs(path);
+    await page.getByLabel('Import replay JSON',{exact:true}).setInputFiles(path);
+    await page.getByRole('button',{name:'Import replay',exact:true}).click();
+    await page.waitForFunction(()=>{try{return window.rts?.mode==='replay'&&window.rts.paused&&window.rts.readOnly;}catch{return false;}},{},{timeout:60000});
+    await page.waitForSelector('.loading-battle[hidden]',{state:'attached',timeout:60000});
+    await closeTool(profile);
+  }else throw new Error(`Unknown paused source ${source}`);
+  const before=await page.evaluate(()=>({mode:window.rts.mode,paused:window.rts.paused,tick:window.rts.state.tick}));
+  assert.equal(before.mode,source);assert.equal(before.paused,true);
+  await page.waitForTimeout(150);assert.equal(await page.evaluate(()=>window.rts.state.tick),before.tick);
+  await page.screenshot({path:join(out,`${name}-paused-${source}.png`)});
+  record(`${name} starts from a paused ${source} through normal controls`,before);
 }
 async function refresh(profile){await profile.page.getByRole('button',{name:'Refresh lobbies',exact:true}).click();}
 async function waitBattlefield(profile,side) {
@@ -128,7 +154,7 @@ async function gatedAction(profile,button) {
 }
 
 try {
-  const first=await profile('player-one'),second=await profile('player-two');
+  const first=await profile('player-one','local'),second=await profile('player-two','replay');
   const firstName=await first.page.locator('.online-username').textContent(),secondName=await second.page.locator('.online-username').textContent();assert.notEqual(firstName,secondName);
   record('Separate browser profiles receive separate server guest accounts');
   phase='creating eight-slot lobby';
@@ -144,6 +170,10 @@ try {
   await refresh(second);await second.page.locator('.online-current [data-online="rejoin"]').click();await waitBattlefield(second,1);
   const matchId=first.hellos.at(-1).matchId;assert.equal(second.hellos.at(-1).matchId,matchId);evidence.matchId=matchId;evidence.lobbyId=lobbyId;
   record('Normal lobby starts eight-slot server match and both Phaser clients join',{matchId,teams:[0,1,0,1,0,1,0,1]});
+  for(const [profile,source] of [[first,'local'],[second,'replay']]) {
+    assert.equal((await inspect(profile)).paused,false);assert.equal(await profile.page.locator('.game-overlay').isVisible(),false);
+    record(`${profile.name} joins online from paused ${source} with input unpaused`);
+  }
   record('Player one renderer contains only authorized observations',await assertFilteredRenderer(first,0));record('Player two renderer contains only authorized observations',await assertFilteredRenderer(second,1));
   assert.equal(await first.page.locator('#pause-button').isDisabled(),true);assert.equal(await second.page.locator('#pause-button').isDisabled(),true);
   record('Online pause controls are disabled');
@@ -157,6 +187,15 @@ try {
   const beforeHud=first.receipts.length;await hudRecruit.click();const hudReceipt=await waitReceipt(first,beforeHud);assert.equal(hudReceipt.accepted,true);
   await first.page.waitForFunction(id=>window.rts.state.entities.find(entity=>entity.id===id)?.queue.length>=2,producerId);
   record('HUD recruitment uses an authoritative receipt and observed queue',{clientSeq:hudReceipt.clientSeq,appliedTick:hudReceipt.appliedTick});
+  await openTool(second,'production');const secondProducer=second.page.locator('[data-production-building]').first();
+  const secondProducerId=Number(await secondProducer.getAttribute('data-production-building'));
+  await secondProducer.getByRole('button',{name:'Select building',exact:true}).click();
+  await second.page.waitForSelector('.session-tools:not(.planning-tools) .session-overlay[hidden]',{state:'attached'});
+  await second.page.waitForFunction(id=>window.rts.selected.includes(id),secondProducerId);
+  const secondHud=second.page.locator('#action-buttons .action-button').first();assert.equal(await secondHud.getAttribute('aria-disabled'),'false');
+  const beforeSecond=second.receipts.length;await secondHud.click();const secondReceipt=await waitReceipt(second,beforeSecond);assert.equal(secondReceipt.accepted,true);
+  await second.page.waitForFunction(id=>window.rts.state.entities.find(entity=>entity.id===id)?.queue.includes('worker'),secondProducerId);
+  record('Player two accepts normal HUD recruitment after paused replay transition',{clientSeq:secondReceipt.clientSeq,appliedTick:secondReceipt.appliedTick,producerId:secondProducerId});
   const badTickSamples=[];
   for(let sample=0;sample<25;sample++) {
     const value=await first.page.evaluate(()=>({tick:window.rts.state.tick,time:window.rts.state.time}));const frame=await matchingSnapshot(first,value);
