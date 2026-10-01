@@ -138,6 +138,8 @@ export function contentFactions(content?:ContentBundle):Record<string,FactionDef
 export function contentArt(content?:ContentBundle):Record<string,ContentArt>{return registry({content}).art;}
 export function factionFor(state:GameState,side:Side):FactionDef{const faction=registry(state).factions[state.players[side]?.faction];if(!faction)throw new Error('Faction is absent from pinned match content.');return faction;}
 export function availableUnits(state:GameState,side:Side):UnitDef[]{const f=factionFor(state,side);return [...(f.unitDefinitions??[...Object.values(f.units),...(BUILTIN_EXTRA_DEFINITIONS[f.id as BuiltinFactionId]?.units??[])])];}
+/** Ordinary workers and construction plans share this placement authority. */
+export function isNormalBuildingDefinition(def:BuildingDef):boolean {return !def.tags?.includes('barricade')&&def.id!=='core:orcs-trophy-standard';}
 export function availableBuildings(state:GameState,side:Side):BuildingDef[]{const f=factionFor(state,side);return [...(f.buildingDefinitions??[...Object.values(f.buildings),...(BUILTIN_EXTRA_DEFINITIONS[f.id as BuiltinFactionId]?.buildings??[])])];}
 export function unitFor(state:GameState,entity:Entity):UnitDef;
 export function unitFor(state:GameState,side:Side,role:UnitRole,definitionId?:string):UnitDef;

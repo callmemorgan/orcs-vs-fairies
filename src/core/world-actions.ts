@@ -41,8 +41,7 @@ function bridgeEdge(bridge:WorldBridge,s:GameState,e:Entity):Vec {
  return candidates.sort((a,b)=>distance(e,a)-distance(e,b))[0];
 }
 function evacuateBridge(s:GameState,bridge:WorldBridge,hooks:WorldActionHooks):void {
- const tiles=new Set(bridge.tiles);
- for(const unit of s.entities.filter(e=>e.hp>0&&e.kind==='unit'&&sameLevel(e,bridge)&&tiles.has(Math.floor(e.y)*s.width+Math.floor(e.x)))){
+ for(const unit of s.entities.filter(e=>e.hp>0&&e.kind==='unit'&&sameLevel(e,bridge)&&bridge.tiles.some(tile=>Math.abs(e.x-(tile%s.width+.5))<.77&&Math.abs(e.y-(Math.floor(tile/s.width)+.5))<.77)&&!walkable(s,e.x,e.y,bridge.level))){
   let escape:Vec|undefined;
   for(let ring=1;ring<=8&&!escape;ring++){
    const points:Vec[]=[];for(let y=Math.floor(unit.y)-ring;y<=Math.floor(unit.y)+ring;y++)for(let x=Math.floor(unit.x)-ring;x<=Math.floor(unit.x)+ring;x++)if(walkable(s,x+.5,y+.5,bridge.level))points.push({x:x+.5,y:y+.5,level:bridge.level});

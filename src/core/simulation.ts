@@ -7,7 +7,7 @@ import { aiProfile, chooseAiRecruit, counterWeights, normalizeAiConfig, openingB
 import type { EnemyMemory, EnemyObservation } from './ai-policy';
 import { buildingAgeRequired, canCompleteResearch, playerAge, researchRequirement, upgradeAppliesTo } from './progression';
 import { ECONOMY, FACTIONS, UPGRADES } from './content';
-import { availableBuildings, availableUnits, buildingFor, contentFactions, decodeContentBundle, factionFor, queuedUnitFor, unitFor, upgradeFor } from './content-registry';
+import { availableBuildings, availableUnits, buildingFor, contentFactions, decodeContentBundle, factionFor, isNormalBuildingDefinition, queuedUnitFor, unitFor, upgradeFor } from './content-registry';
 import { walkable, segmentWalkable, openDestination, route } from './navigation';
 import { generateMatchMap, terrainAt, TERRAIN } from './maps';
 import { notifyCommand, notifyStep } from './history-hooks';
@@ -137,7 +137,7 @@ function movementOrder(s:GameState,e:Entity,order:Vec,dt:number,reach:number):bo
 function refundCost(s:GameState,side:Side,role:UnitRole,id?:string,paid?:Cost):void{const cost=paid??unitFor(s,side,role,id).cost,p=s.players[side];p.wood+=cost.wood;p.ore+=cost.ore;p.crystal+=cost.crystal;}
 function refundQueue(s:GameState,e:Entity):void{if(!e.queue.length)return;for(const [index,role] of e.queue.entries())refundCost(s,e.side,role,e.queueDefinitionIds?.[index],e.queuePaidCosts?.[index]);e.queue=[];delete e.queueDefinitionIds;delete e.queuePaidCosts;e.trainProgress=0;}
 export function canPlace(s:GameState,side:Side,role:BuildingRole,x:number,y:number,definitionId?:string,level=0):boolean{
- if(!s.players[side]||(level!==0&&!s.world?.levels[level]))return false;const def=definitionId?availableBuildings(s,side).find(d=>d.id===definitionId&&d.role===role):factionFor(s,side).buildings[role];if(!def||def.tags?.includes('barricade')||playerAge(s.players[side])<buildingAgeRequired(def)||!Number.isFinite(x)||!Number.isFinite(y))return false;const r=def.size/2;if(x-r<.5||y-r<.5||x+r>s.width-.5||y+r>s.height-.5)return false;
+ if(!s.players[side]||(level!==0&&!s.world?.levels[level]))return false;const def=definitionId?availableBuildings(s,side).find(d=>d.id===definitionId&&d.role===role):factionFor(s,side).buildings[role];if(!def||playerAge(s.players[side])<buildingAgeRequired(def)||!Number.isFinite(x)||!Number.isFinite(y))return false;const r=def.size/2;if(x-r<.5||y-r<.5||x+r>s.width-.5||y+r>s.height-.5)return false;
  for(const dx of [-r,0,r])for(const dy of [-r,0,r])if(!isVisible(s,side,x+dx,y+dy,level))return false;
  for(let ty=Math.floor(y-r);ty<Math.ceil(y+r);ty++)for(let tx=Math.floor(x-r);tx<Math.ceil(x+r);tx++)if(!TERRAIN[terrainAt(s,tx+.5,ty+.5,level)].buildable)return false;
  if(s.entities.some(e=>alive(e)&&levelOf(e)===level&&e.kind==='building'&&Math.abs(e.x-x)<radius(s,e)+r+(['wall','gate'].includes(role)&&['wall','gate'].includes(e.role)?0:.4)&&Math.abs(e.y-y)<radius(s,e)+r+(['wall','gate'].includes(role)&&['wall','gate'].includes(e.role)?0:.4)))return false;
@@ -222,8 +222,7 @@ function applyCommand(s:GameState,side:Side,c:Command):boolean{
  const units=s.entities.filter(e=>c.ids.includes(e.id)&&e.side===side&&alive(e)&&e.kind==='unit'&&!e.illusion);
  if(!units.length)return false;
  if(c.type==='build'){
- if(c.definitionId==='core:orcs-trophy-standard')return false;
- const level=c.level??0,workers=units.filter(e=>e.role==='worker'&&levelOf(e)===level);const d=c.definitionId?availableBuildings(s,side).find(d=>d.id===c.definitionId&&d.role===c.role):f.buildings[c.role];if(!workers.length||!d||playerAge(p)<buildingAgeRequired(d)||p.wood<d.cost.wood||p.ore<d.cost.ore||p.crystal<d.cost.crystal||!canPlace(s,side,c.role,c.x,c.y,c.definitionId,level))return false;
+ const level=c.level??0,workers=units.filter(e=>e.role==='worker'&&levelOf(e)===level);const d=c.definitionId?availableBuildings(s,side).find(d=>d.id===c.definitionId&&d.role===c.role):f.buildings[c.role];if(!workers.length||!d||!isNormalBuildingDefinition(d)||playerAge(p)<buildingAgeRequired(d)||p.wood<d.cost.wood||p.ore<d.cost.ore||p.crystal<d.cost.crystal||!canPlace(s,side,c.role,c.x,c.y,c.definitionId,level))return false;
  const overlapping=s.entities.filter(e=>e.kind==='unit'&&alive(e)&&levelOf(e)===level&&isAllied(s,e.side,side)&&footprintOverlap(e,c.x,c.y,d.size));
  const shoves:{e:Entity;x:number;y:number}[]=[];
  for(const u of overlapping){const dest=shovePoint(s,c.x,c.y,d.size,level);if(!dest)return false;shoves.push({e:u,...dest});}

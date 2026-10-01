@@ -1,4 +1,4 @@
-import { buildingFor, factionFor } from './content-registry';
+import { buildingFor, factionFor, isNormalBuildingDefinition } from './content-registry';
 import { levelOf,sameLevel } from './world-map';
 import { length2D } from './geometry';
 import { FACTIONS } from './content';
@@ -251,6 +251,7 @@ function requirePlan(state: GameState, side: Side, plan: ConstructionPlan): void
 export function addBlueprint(state: GameState, side: Side, plan: ConstructionPlan, input: { role: BuildingRole } & Vec): ConstructionBlueprint {
   requirePlan(state, side, plan);
   if (!roles.has(input.role) || !validPosition(input, state)) throw new RangeError('Blueprint must have a building role and a position inside the map.');
+  if (!isNormalBuildingDefinition(factionFor(state,side).buildings[input.role])) throw new RangeError('This building requires its specialized placement command.');
   if (plan.blueprints.length >= MAX_BLUEPRINTS) throw new RangeError('A construction plan can contain at most 100 blueprints.');
   const item: ConstructionBlueprint = { id: `blueprint-${plan.nextId++}`, role: input.role, x: input.x, y: input.y,...(input.level===undefined?{}:{level:input.level}), workerIds: [], status: 'planned' };
   plan.blueprints.push(item);
@@ -283,6 +284,7 @@ export function blueprintReason(state: GameState, side: Side, item: Construction
   if (isGameOver(state)) return 'The match is finished.';
   if (item.status === 'complete') return 'Construction is complete.';
   const def = factionFor(state,side).buildings[item.role];
+  if (!isNormalBuildingDefinition(def)) return 'This building requires its specialized placement command.';
   const queued = protectedWorkerOrders(state, side);
   const eligible = freeAssignedWorkers(state, side, item, queued);
   if (item.status === 'building') {
@@ -371,6 +373,7 @@ export function decodeConstructionPlan(input: unknown, state?: GameState, side?:
     if (value.reason !== undefined && (typeof value.reason !== 'string' || value.reason.length > 500)) return undefined;
     const item: ConstructionBlueprint = { id: value.id, role: value.role as BuildingRole, x: value.x, y: value.y,...(value.level===undefined?{}:{level:value.level as number}), workerIds: [...value.workerIds] as number[], status: value.status, ...(value.buildingId === undefined ? {} : { buildingId: value.buildingId as number }), ...(value.reason === undefined ? {} : { reason: value.reason as string }) };
     if (state) {
+      if (!isNormalBuildingDefinition(factionFor(state,planSide).buildings[item.role])) return undefined;
       const owned = new Set(workers(state, planSide).map(worker => worker.id));
       if (item.workerIds.some(id => !owned.has(id))) return undefined;
       if (item.buildingId !== undefined) {

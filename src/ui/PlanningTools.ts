@@ -1,4 +1,4 @@
-import { buildingFor, factionFor } from '../core/content-registry';
+import { buildingFor, factionFor, isNormalBuildingDefinition } from '../core/content-registry';
 import { blueprintReason, validPlanningSide, validateWorkerTargets, workerAllocation } from '../core/planning';
 import type { ConstructionBlueprint, ConstructionPlan, WorkerTargets, applyWorkerTargets, executeBlueprints } from '../core/planning';
 import type { BuildingRole, GameState, ResourceKind, Side, Vec } from '../core/types';
@@ -107,7 +107,7 @@ export function mountPlanningTools(root:HTMLElement,callbacks:PlanningToolsCallb
   function fillContext(){
     if(!contextValid())return;
     const faction=state!.players[side()].faction;
-    if(faction!==factionKey){factionKey=faction;const current=building.value;building.replaceChildren();for(const def of Object.values(factionFor(state!,side()).buildings)){const option=el('option',`${def.name} · ${def.cost.wood} wood, ${def.cost.ore} ore${def.cost.crystal?`, ${def.cost.crystal} crystal`:''}`);option.value=def.role;building.append(option);}building.value=Array.from(building.options).some(option=>option.value===current)?current:'depot';}
+    if(faction!==factionKey){factionKey=faction;const current=building.value;building.replaceChildren();for(const def of Object.values(factionFor(state!,side()).buildings).filter(isNormalBuildingDefinition)){const option=el('option',`${def.name} · ${def.cost.wood} wood, ${def.cost.ore} ore${def.cost.crystal?`, ${def.cost.crystal} crystal`:''}`);option.value=def.role;building.append(option);}building.value=Array.from(building.options).some(option=>option.value===current)?current:'depot';}
     x.max=String(state!.width-.5);y.max=String(state!.height-.5);
     if(state!==lastState||side()!==lastSide){lastState=state;lastSide=side();const saved=callbacks.getTargets();if(validateWorkerTargets(saved))for(const kind of kinds)targets.get(kind)!.value=String(saved[kind]);chosenWorkers.clear();for(const id of ownSelected())chosenWorkers.add(id);allocationResult.textContent='';const home=state!.starts[side()];if(home){x.value=String(Math.min(state!.width-.5,home.x+5));y.value=String(home.y);}plansKey='';workersKey='';}
   }
