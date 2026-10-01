@@ -304,6 +304,7 @@ function migrateV3(envelope:RecordValue):void {
   const faction=contentFactions(state.content)[state.players[entity.side].faction];
   if(!(faction.unitDefinitions??Object.values(faction.units)).some(unit=>unit.ability==='raise'))throw new Error('Legacy captured summon origin is absent. This saved match is available for inspection but cannot resume under current rules.');
  }
+ if(state.rules&&state.draft)for(const entity of state.entities)if((entity.raised||entity.illusion)&&!definitionAllowed(state,entity.side,entityDefinition(state,entity).id))throw new Error('Legacy summoned definition is prohibited by the current owner match rules. This saved match is available for inspection but cannot resume under current rules.');
  if(state.content)state.content=migrateHistoricalContentBundle(state.content);
  if(state.scenario?.definition.content)state.scenario.definition.content=migrateHistoricalContentBundle(state.scenario.definition.content);
  completeCurrentState(state);envelope.version=SAVE_VERSION;

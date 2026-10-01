@@ -5,7 +5,8 @@ import type { ContentBundle } from '../src/core/content-registry';
 import { exampleMod } from '../src/core/example-mod';
 import { FACTION_STRUCTURE_INFO } from '../src/core/faction-systems-content';
 import { definitionAllowed } from '../src/core/match-rules';
-import { loadGame, saveGame } from '../src/core/saves';
+import { checksumSaveEnvelope, decodeOriginalSaveEnvelope, decodeSaveSource, loadGame, saveGame } from '../src/core/saves';
+import type { SaveEnvelope } from '../src/core/saves';
 import { captureRuntime, createMatch, issueCommand, refreshVisibility, spawnDefinition, stepGame } from '../src/core/simulation';
 import { generateWorldMap } from '../src/core/world-map';
 import type { Entity, FactionId, GameState, MatchRulesInput } from '../src/core/types';
@@ -82,6 +83,17 @@ function expectRoundTrip(s: GameState) {
   return restored;
 }
 
+function expectHistoricalInspectionOnly(saved: SaveEnvelope) {
+  // Synthetic SAVE3 admission case; the genuine old producer is covered by save4-corpus.
+  const historical = { ...structuredClone(saved), version: 3 as const }, before = JSON.stringify(historical);
+  const original = decodeOriginalSaveEnvelope(historical);
+  expect(JSON.stringify(original)).toBe(before);
+  expect(checksumSaveEnvelope(original)).toBe(checksumSaveEnvelope(historical));
+  expect(() => loadGame(original)).toThrow('Legacy summoned definition is prohibited');
+  expect(() => decodeSaveSource(original)).toThrow('available for inspection but cannot resume');
+  expect(JSON.stringify(historical)).toBe(before);
+}
+
 function expectAbilityBlocked(s: GameState, caster: Entity) {
   const saved = saveGame(s), abilities = captureRuntime(s).abilities;
   expect(issueCommand(s, 1, { type: 'ability', ids: [caster.id] })).toBe(false);
@@ -153,6 +165,7 @@ describe('captured summons obey the current owner rules for their original defin
     const policy = restrictedRules('undead', FACTIONS.undead.units.melee.id, restriction);
     const restricted = encounter({ origin: 'undead', casterId: FACTIONS.undead.units.special.id, corpse: true, ...policy }).s;
     saved.state.rules = structuredClone(restricted.rules); saved.state.draft = structuredClone(restricted.draft);
+    expectHistoricalInspectionOnly(saved);
     expect(() => loadGame(saved)).toThrow(/raised|definition|allowed|disabled|draft|banned/i);
     s.rules = structuredClone(restricted.rules); s.draft = structuredClone(restricted.draft);
     expect(() => saveGame(s)).toThrow(/raised|definition|allowed|disabled|draft|banned/i);
@@ -210,6 +223,7 @@ describe('captured summons obey the current owner rules for their original defin
     expect(issueCommand(s, 1, { type: 'ability', ids: [caster.id] })).toBe(true);
     const saved = saveGame(s), restricted = encounter({ origin: 'fairies', casterId: FACTIONS.fairies.units.special.id, ...restrictedRules('fairies', FACTIONS.fairies.units.special.id, restriction) }).s;
     saved.state.rules = structuredClone(restricted.rules); saved.state.draft = structuredClone(restricted.draft);
+    expectHistoricalInspectionOnly(saved);
     expect(() => loadGame(saved)).toThrow(/illusion|definition|allowed|disabled|draft|banned/i);
     s.rules = structuredClone(restricted.rules); s.draft = structuredClone(restricted.draft);
     expect(() => saveGame(s)).toThrow(/illusion|definition|allowed|disabled|draft|banned/i);

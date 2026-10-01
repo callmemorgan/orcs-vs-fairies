@@ -6,6 +6,7 @@ import { SaveRepository, createSessionFile, decodeSessionFile } from '../src/cor
 import { decodeScenarioRecording, scenarioCheckpointChecksum } from '../src/core/scenario-recordings';
 import { restoreScenario, scenarioRulesCompatibility } from '../src/core/scenarios';
 import { SIMULATION_REVISION } from '../src/core/versions';
+import { stepGame } from '../src/core/simulation';
 
 const json=(path:string)=>JSON.parse(readFileSync(new URL(path,import.meta.url),'utf8'));
 const sessions=[
@@ -35,6 +36,25 @@ describe('SAVE4 genuine historical corpus',()=>{
   expect(()=>decodeSaveSource(source.game)).toThrow('definition is absent');expect(()=>checksumSaveEnvelope(source.game)).toThrow('definition is absent');
   const queued=json(sessions[1][1]),hq=queued.game.state.entities.find((e:any)=>e.side===1&&e.role==='hq');hq.queue=['worker'];hq.queueDefinitionIds=['economy:caravan'];hq.queuePaidCosts=[{wood:80,ore:30,crystal:0}];
   expect(()=>decodeSaveSource(queued.game)).toThrow('definition is absent');
+ });
+ it('repins admitted old production without changing the queue, charged costs or resource balances',()=>{
+  // Synthetic pending work inside a genuine old Lantern envelope.
+  const source=json(sessions[1][1]).game,hq=source.state.entities.find((e:any)=>e.side===1&&e.role==='hq');
+  Object.assign(hq,{queue:['worker'],queueDefinitionIds:['orc-worker'],queuePaidCosts:[{wood:50,ore:0,crystal:0}],trainProgress:.25,research:'worker-speed',researchPaidCost:{wood:75,ore:50,crystal:0},researchProgress:.4});
+  Object.assign(source.state.players[1],{wood:295,ore:170});
+  const before=JSON.stringify(source),{original,state}=decodeSaveSource(source),resumed=state.entities.find(e=>e.id===hq.id)!;
+  expect(JSON.stringify(original)).toBe(before);expect(JSON.stringify(source)).toBe(before);
+  for(const key of ['queue','queueDefinitionIds','queuePaidCosts','trainProgress','research','researchPaidCost','researchProgress'] as const)expect(resumed[key]).toEqual(hq[key]);
+  expect(state.players[1]).toEqual(source.state.players[1]);expect(state.content!.packages).toEqual(source.state.content.packages);expect(state.content!.hash).not.toBe(source.state.content.hash);
+  expect(loadGame(saveGame(state)).entities.find(e=>e.id===hq.id)!.queuePaidCosts).toEqual(hq.queuePaidCosts);
+ });
+ it('records and plays advanced SAVE4 history from a migrated old match',()=>{
+  const {state}=decodeSessionFile(json(sessions[1][1])),start=state.tick,recorder=new MatchRecorder(state);
+  for(let i=0;i<10;i++)stepGame(state,.05);
+  const fresh=createSessionFile(state,recorder.export());recorder.dispose();expect(fresh.replay!.finalTick).toBe(start+10);
+  const player=new ReplayPlayer(fresh.replay!);expect(player.advance(10)).toBe(10);expect(player.finished).toBe(true);expect(saveGame(player.state)).toEqual(fresh.game);player.dispose();
+  const resumed=decodeSessionFile(fresh),continued=new MatchRecorder(resumed.state,resumed.file.replay);stepGame(resumed.state,.05);
+  const next=createSessionFile(resumed.state,continued.export());continued.dispose();const replay=new ReplayPlayer(next.replay!);replay.advance(11);expect(saveGame(replay.state)).toEqual(next.game);replay.dispose();
  });
  it('rejects mixed versions, altered checksums, altered ticks and reordered original game fields',()=>{
   for(const mutate of [(s:any)=>s.game.version=4,(s:any)=>s.replay.checksumVersion=4,(s:any)=>s.replay.finalChecksum='00000000',(s:any)=>s.game.state.tick++,(s:any)=>s.game.state=Object.fromEntries(Object.entries(s.game.state).reverse())]){const source=json(sessions[0][1]);mutate(source);expect(()=>decodeSessionFile(source)).toThrow();}
