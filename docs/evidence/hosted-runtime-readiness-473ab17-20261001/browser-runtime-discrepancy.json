@@ -1,0 +1,204 @@
+{
+  "observedAt": "2026-10-01T22:13:37.791675+00:00",
+  "method": "Read package JSON, registry/source selection and actual files; hash current bytes. No package import, browser launch, executable version call, build or feature execution.",
+  "retainedHistoricalManifest": {
+    "path": "/home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/work/final-freeze-proof-20261001/browser-runtime-readiness.json",
+    "sha256": "5f1194afb30b6dcc5a5cbf2c765baaf7eb7c78323a86f2bc48653f66c3c2fdbb",
+    "bytes": 2989
+  },
+  "historicalLaunchClaimPreserved": {
+    "status": "passed-readiness-only",
+    "method": "Parent-authorized default headless launch/version/close. No page, app UI or proof loaded. Full Chromium executablePath does not describe default headless-shell selection.",
+    "observedBrowserVersion": "151.0.7922.34"
+  },
+  "selectedPackage": {
+    "module": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs",
+    "playwrightVersion": "1.62.1",
+    "playwrightCoreVersion": "1.62.1"
+  },
+  "selectedRegistryEntry": {
+    "name": "chromium-headless-shell",
+    "revision": "1234",
+    "installByDefault": true,
+    "browserVersion": "151.0.7922.34",
+    "title": "Chrome Headless Shell"
+  },
+  "registryArtifact": {
+    "path": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/browsers.json",
+    "sha256": "f306eed529599b1eaf2f8a85db9de2b23e1a3fe36c2b66434b7c9434fb627a99",
+    "bytes": 1780
+  },
+  "defaultHeadlessSelection": {
+    "file": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/lib/coreBundle.js",
+    "startLine": 43100,
+    "endLine": 43107,
+    "lines": [
+      "        if (options.channel && registry.isChromiumAlias(options.channel))",
+      "          return \"chromium\";",
+      "        if (options.channel === \"chromium-tip-of-tree\")",
+      "          return options.headless ? \"chromium-tip-of-tree-headless-shell\" : \"chromium-tip-of-tree\";",
+      "        if (options.channel)",
+      "          return options.channel;",
+      "        return options.headless ? \"chromium-headless-shell\" : \"chromium\";",
+      "      }"
+    ]
+  },
+  "linuxX64PathMapping": {
+    "file": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/lib/coreBundle.js",
+    "startLine": 32403,
+    "lines": [
+      "      \"chromium-headless-shell\": {",
+      "        \"<unknown>\": void 0,",
+      "        \"linux-x64\": [\"chrome-headless-shell-linux64\", \"chrome-headless-shell\"],",
+      "        \"linux-arm64\": [\"chrome-linux\", \"headless_shell\"],",
+      "        // non-cft build"
+    ]
+  },
+  "currentFiles": [
+    {
+      "path": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs",
+      "exists": true,
+      "resolved": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs",
+      "bytes": 704,
+      "mode": "0o644",
+      "regularFile": true,
+      "executableAccess": false,
+      "sha256": "a0f5715ea22354f922791a9c53dc012d5d5c067ff9cc4cd35ffb7cd272071a9f",
+      "matchesManifest": true
+    },
+    {
+      "path": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.js",
+      "exists": true,
+      "resolved": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.js",
+      "bytes": 648,
+      "mode": "0o644",
+      "regularFile": true,
+      "executableAccess": false,
+      "sha256": "4e98f65f0a9d9bcab8cffc0c5cfdd87fd3f5b0be74fc494ff166a466b204cd44",
+      "matchesManifest": true
+    },
+    {
+      "path": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/package.json",
+      "exists": true,
+      "resolved": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/package.json",
+      "bytes": 1416,
+      "mode": "0o644",
+      "regularFile": true,
+      "executableAccess": false,
+      "sha256": "ca170ec143a88ed3043ac953eb3b2377b2b97304104f4e1e23316684ce2c35af",
+      "matchesManifest": true
+    },
+    {
+      "path": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/index.mjs",
+      "exists": true,
+      "resolved": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/index.mjs",
+      "bytes": 1063,
+      "mode": "0o644",
+      "regularFile": true,
+      "executableAccess": false,
+      "sha256": "3d36e2132d3c8b62397d23f0bb4177336aaee503203ae2a2c90fbeb5bf3317dd",
+      "matchesManifest": true
+    },
+    {
+      "path": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/index.js",
+      "exists": true,
+      "resolved": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/index.js",
+      "bytes": 697,
+      "mode": "0o644",
+      "regularFile": true,
+      "executableAccess": false,
+      "sha256": "a58fb2cec4293e7dcf73c58a179898a4f3986666451a19da4e731fa3af63265b",
+      "matchesManifest": true
+    },
+    {
+      "path": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/package.json",
+      "exists": true,
+      "resolved": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/package.json",
+      "bytes": 876,
+      "mode": "0o644",
+      "regularFile": true,
+      "executableAccess": false,
+      "sha256": "07c47543631fef9508760365dee9fbe958c562093ec8d122543949ed231f233f",
+      "matchesManifest": true
+    },
+    {
+      "path": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/browsers.json",
+      "exists": true,
+      "resolved": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/browsers.json",
+      "bytes": 1780,
+      "mode": "0o644",
+      "regularFile": true,
+      "executableAccess": false,
+      "sha256": "f306eed529599b1eaf2f8a85db9de2b23e1a3fe36c2b66434b7c9434fb627a99",
+      "matchesManifest": true
+    },
+    {
+      "path": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/lib/coreBundle.js",
+      "exists": true,
+      "resolved": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/lib/coreBundle.js",
+      "bytes": 3425603,
+      "mode": "0o644",
+      "regularFile": true,
+      "executableAccess": false,
+      "sha256": "9393fa79e1c67c74edc26b610d65a4f7ed73d345a762465cc88340a33a2454ac",
+      "matchesManifest": true
+    },
+    {
+      "path": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/lib/serverRegistry.js",
+      "exists": true,
+      "resolved": "/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/lib/serverRegistry.js",
+      "bytes": 247102,
+      "mode": "0o644",
+      "regularFile": true,
+      "executableAccess": false,
+      "sha256": "e9db9d4eaa8c3690f700ea3047af7b0b6e0b16937a969589678c51db92272ae9",
+      "matchesManifest": true
+    },
+    {
+      "path": "/home/morgana/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell",
+      "exists": true,
+      "resolved": "/home/morgana/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell",
+      "bytes": 196975952,
+      "mode": "0o755",
+      "regularFile": true,
+      "executableAccess": true,
+      "sha256": "e11fc9ce65c96313476f7ee9844b6fb6a9220fb048693cfe9eee00acf4170a9f",
+      "matchesManifest": true
+    }
+  ],
+  "headlessExecutable": {
+    "path": "/home/morgana/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell",
+    "exists": true,
+    "resolved": "/home/morgana/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell",
+    "bytes": 196975952,
+    "mode": "0o755",
+    "regularFile": true,
+    "executableAccess": true,
+    "sha256": "e11fc9ce65c96313476f7ee9844b6fb6a9220fb048693cfe9eee00acf4170a9f",
+    "matchesManifest": true
+  },
+  "fullChromiumExecutable": {
+    "path": "/home/morgana/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome",
+    "exists": false,
+    "selection": "Chosen by full Chromium, explicit chromium channel or headed launch; not chosen by the hosted default headless recipes."
+  },
+  "currentOverrides": {
+    "OVF_PLAYWRIGHT_MODULE": null,
+    "PLAYWRIGHT_BROWSERS_PATH": null,
+    "XDG_CACHE_HOME": null,
+    "PWDEBUG": null
+  },
+  "localProjectPackageAvailability": [
+    {
+      "path": "/home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/node_modules/playwright/package.json",
+      "exists": false
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/node_modules/playwright/package.json",
+      "exists": false
+    }
+  ],
+  "narrowCorrection": "The selected cached default headless runtime is installed and byte-equal to the historical readiness manifest. A missing full Chromium executable does not establish that this selected headless runtime is unavailable. Plain project-local playwright resolution is also unavailable in both inspected checkout paths, so dispatch must preserve OVF_PLAYWRIGHT_MODULE pointing to the manifest module. No historical launch is relabeled as a fresh launch.",
+  "remainingUnknown": "No current executable launch, browser.version or feature behavior was observed; launch-time dependencies remain subject to the held execution phase. The AI report package/channel was not identified in this read-only audit.",
+  "launches": 0
+}
