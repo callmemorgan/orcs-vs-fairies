@@ -9,6 +9,7 @@ import './economy-tools.css';
 type MaybePromise<T> = T | Promise<T>;
 export interface EconomyToolsStatus { side?:Side; readOnly?:boolean; blocked?:boolean }
 export interface EconomyToolsCallbacks {
+  toolbar?:HTMLElement;
   getGame:()=>GameState|null;
   getView:()=>EconomyView|null;
   /** Use PlayerView memory or the authoritative client view, never the live hidden resource list. */
@@ -110,7 +111,7 @@ export function mountEconomyTools(root:HTMLElement,callbacks:EconomyToolsCallbac
   commandButton(contractCard,'Accept contract',()=>({type:'acceptContract',id:numericId(contract,'an open contract')}),()=>noChoice(contract,'No visible available contract.')||contractReason(false)||contractNearbyReason(),'Resource contract acceptance command issued.');
   commandButton(contractCard,'Deliver contract',()=>({type:'deliverContract',id:numericId(contractCaravan,'a caravan'),contract:numericId(contract,'an accepted contract'),source:numericId(contractSource,'a stock source')}),()=>noChoice(contractCaravan,'No owned caravan.')||noChoice(contractSource,'No stock source.')||contractReason(true)||deliveryLayerReason(contractCaravan,contractSource,view?.contracts.find(c=>String(c.id)===contract.value)),'Contract delivery order issued.');contract.addEventListener('change',refresh);
   const contractList=el('ul',undefined,'economy-list');contractList.setAttribute('aria-label','Resource contracts');contractCard.append(contractList);
-  dialog.append(header,notice,summary,gate,tabs,content);overlay.append(dialog);host.append(toolbar,overlay);root.append(host);
+  dialog.append(header,notice,summary,gate,tabs,content);overlay.append(dialog);host.append(overlay);if(callbacks.toolbar)callbacks.toolbar.append(launch);else host.prepend(toolbar);root.append(host);
 
   function busy():boolean{return pending?.generation===contextGeneration;}
   function side():Side{return status.side??0;}
@@ -197,5 +198,5 @@ export function mountEconomyTools(root:HTMLElement,callbacks:EconomyToolsCallbac
   warehouseRules.textContent=`Cost ${stock(ECONOMY_RULES.warehouse.cost)} · ${ECONOMY_BUILDINGS.warehouse.buildTime} seconds to construct · local capacity ${ECONOMY_RULES.warehouse.capacity}.`;
   specializationRules.textContent=`Cost ${stock(ECONOMY_RULES.specialization.cost)} · applies within ${ECONOMY_RULES.specialization.radius} tiles. Mining: ore harvest ×${ECONOMY_RULES.specialization.mining}. Military: training ×${ECONOMY_RULES.specialization.military}. Research: research speed ×${ECONOMY_RULES.specialization.research}.`;
   for(const input of Array.from(host.querySelectorAll('select')))input.addEventListener('change',refresh);marketAmount.addEventListener('input',refresh);
-  refresh();return {update(nextStatus:EconomyToolsStatus={}){status=nextStatus;refresh();},close,dispose(){if(disposed)return;close();disposed=true;contextGeneration++;document.removeEventListener('keydown',keydown,true);host.remove();}};
+  refresh();return {update(nextStatus:EconomyToolsStatus={}){status=nextStatus;refresh();},close,dispose(){if(disposed)return;close();disposed=true;contextGeneration++;document.removeEventListener('keydown',keydown,true);launch.remove();host.remove();}};
 }

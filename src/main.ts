@@ -288,7 +288,7 @@ const tools=mountSessionTools(root,{
   try {while(candidate.state.tick<tick){candidate.advance(Math.min(100,tick-candidate.state.tick));await new Promise<void>(resolve=>setTimeout(resolve,0));if(request!==replacementGeneration)throw new Error('Replay seek was replaced by another request.');}}
   catch(error){candidate.dispose();throw error;}
   if(!scene||replay!==target){candidate.dispose();throw new Error('Replay is no longer active.');}
-  target.dispose();replay=candidate;scene.restart(candidate.state);scene.paused=true;scene.inputBlocked=sessionModal;replayAccumulated=0;
+  target.dispose();replay=candidate;scene.restart(candidate.state);scene.paused=true;scene.inputBlocked=sessionModal||objectiveOpen;replayAccumulated=0;
  },
  setReplayPlaying:playing=>{if(!replay||!scene)throw new Error('Import a replay first.');if(playing&&replay.finished)throw new Error('Seek to an earlier tick before playing.');replayPlaying=playing;scene.paused=sessionModal||!playing;replayClock=performance.now();},
  setReplaySpeed:speed=>{if(![.25,.5,1,2,4].includes(speed))throw new Error('Unsupported playback speed.');replaySpeed=speed;},
@@ -378,6 +378,7 @@ function updateCoach(){
 function economyBlocked(){return !!scene?.photoMode||Array.from(openModals).some(source=>source!=='economy');}
 let economyResourceView=new PlayerView(0);
 const economyTools=mountEconomyTools(root,{
+ toolbar:sessionToolbar,
  getGame:()=>scene?.state??null,
  getView:()=>scene?onlineRender?.economy??observeEconomy(scene.state,playerSide(),{visible:(state,side,p)=>isVisible(state,side,p.x,p.y,p.level??0)}):null,
  knownResources:()=>{if(!scene)return [];if(onlineRender)return onlineRender.resourceMemory;if(economyResourceView.side!==playerSide())economyResourceView=new PlayerView(playerSide());return economyResourceView.resourcesFor(scene.state);},

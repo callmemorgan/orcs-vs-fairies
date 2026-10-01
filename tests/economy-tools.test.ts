@@ -138,3 +138,12 @@ describe('economy panel layer compatibility',()=>{
   const f=setup(),warehouse=addWarehouse(f),cart=addCaravan(f);cart.level=1;f.view.caravans[0].level=1;f.view.contracts.push({id:600,villageId:601,x:20,y:20,level:0,side:0,kind:'wood',amount:60,delivered:0,deadline:180,reward:zero(),status:'accepted'});f.tools.update();control(f.root,'Settlements and contracts').click();set(f.root,'Delivery stock destination',String(warehouse.id));expect(control(f.root,'Deliver stock').disabled).toBe(true);expect(control(f.root,'Deliver stock').title).toContain('same map level');expect(control(f.root,'Deliver contract').disabled).toBe(true);expect(control(f.root,'Deliver contract').title).toContain('same map level');
  });
 });
+
+
+it('mounts the economy launcher in the shared toolbar and removes it on disposal',()=>{
+ const root=document.createElement('div'),toolbar=document.createElement('nav');document.body.append(root);root.append(toolbar);
+ const game=createGame('orcs',4127,'fairies',{controllers:['human','human']}),onModal=vi.fn();
+ const tools=mountEconomyTools(root,{toolbar,getGame:()=>game,getView:()=>viewFixture(),knownResources:()=>[],selectedIds:()=>[],submit:()=>true,onModal});mounted.push(tools);tools.update();
+ const launcher=toolbar.querySelector<HTMLButtonElement>('[data-economy-launch]')!;expect(launcher).toBeDefined();expect(root.querySelector('.economy-toolbar')).toBeNull();launcher.click();
+ expect(root.querySelector<HTMLElement>('.economy-overlay')!.hidden).toBe(false);expect(onModal).toHaveBeenLastCalledWith(true);tools.dispose();expect(toolbar.children).toHaveLength(0);expect(onModal).toHaveBeenLastCalledWith(false);
+});
