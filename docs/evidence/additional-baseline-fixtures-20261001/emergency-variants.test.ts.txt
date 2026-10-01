@@ -1,0 +1,74 @@
+import { describe, expect, it } from 'vitest';
+import { FACTIONS } from '../src/core/content';
+import { subscribeSimulation } from '../src/core/history-hooks';
+import { PlayerView } from '../src/core/observation';
+import { loadGame, saveGame } from '../src/core/saves';
+import {
+ alliedAiStatus, captureRuntime, createMatch, isVisible, issueCommand,
+ refreshVisibility, restoreRuntime, runAI, spawnDefinition, stepGame,
+} from '../src/core/simulation';
+import type { AllyDirective, TeamAiState } from '../src/core/team-ai';
+import type { Command, Controller, Cost, Entity, GameState, Side, UnitRole, Vec } from '../src/core/types';
+
+const banks=(s:GameState)=>s.players.map(({wood,ore,crystal})=>({wood,ore,crystal}));
+const total=(s:GameState):Cost=>s.players.reduce((sum,p)=>({wood:sum.wood+p.wood,ore:sum.ore+p.ore,crystal:sum.crystal+p.crystal}),{wood:0,ore:0,crystal:0});
+const teamState=(s:GameState):TeamAiState=>captureRuntime(s).teamAI!;
+const request=(s:GameState,id=1):AllyDirective=>teamState(s).directives.find(d=>d.id===id)!;
+const position=(e:Vec):Vec=>({x:e.x,y:e.y});
+const distance=(a:Vec,b:Vec)=>Math.hypot(a.x-b.x,a.y-b.y);
+const entity=(s:GameState,id:number)=>s.entities.find(e=>e.id===id)!;
+
+function fixture(controllers:Controller[]=['external','ai','external','external'],rules:{friendlyFire?:boolean}={}):GameState {
+ const s=createMatch({map:{seed:4127,size:'medium'},players:controllers.map((controller,id)=>({id:id as Side,teamId:id===3?7:3,factionId:'orcs',controller})),rules:{sharedVision:false,...rules}});
+ s.terrain.fill('grass');s.resources=[];s.time=0;
+ const starts=[{x:8,y:8},{x:8,y:24},{x:8,y:39},{x:39,y:24}];s.starts=starts;
+ s.entities=s.entities.filter(e=>e.role==='hq'||e.side===1&&e.role==='melee');
+ for(const e of s.entities){const start=starts[e.side];e.x=start.x+(e.kind==='unit'?3:0);e.y=start.y;e.order={type:'idle'};}
+ for(const p of s.players){p.wood=p.ore=p.crystal=0;p.population=0;p.cap=12;}
+ s.players[1].population=1;
+ refreshVisibility(s);return s;
+}
+
+function troop(s:GameState,side:Side,role:UnitRole,point:Vec):Entity {
+ const def=FACTIONS[s.players[side].faction].units[role];
+ const e:Entity={id:s.nextId++,side,kind:'unit',role,...point,hp:def.hp,maxHp:def.hp,order:{type:'idle'},cooldown:0,progress:1,queue:[],trainProgress:0,researchProgress:0,facing:2,animation:'idle',animTime:0,momentum:0,illusion:false,expires:0,carried:0,carriedKind:'wood',path:[]};
+ if(def.shield){e.shield=def.shield;e.maxShield=def.shield;}
+ s.entities.push(e);s.players[side].population++;refreshVisibility(s);return e;
+}
+
+function advanceUntil(s:GameState,predicate:()=>boolean,seconds=60):void {
+ for(let tick=0;tick<seconds*20&&!predicate();tick++)stepGame(s,.05);
+ expect(predicate()).toBe(true);
+}
+
+describe('emergency fixture attribution',()=>{
+ for(const native of [false,true])for(const friendlyFire of [true,false])it.each(['defend','attack'] as const)(`${native?'native':'original'} building friendlyFire=${friendlyFire} %s`,kind=>{
+  const s=fixture(undefined,{friendlyFire}),fighter=s.entities.find(e=>e.side===1&&e.role==='melee')!,destination={x:20,y:24};fighter.x=20;fighter.y=24;refreshVisibility(s);
+  expect(issueCommand(s,0,{type:'allyDirective',ally:1,directive:kind,...destination})).toBe(true);runAI(s,1);expect(request(s).arrivedAt).toBe(0);
+  const def=FACTIONS.orcs.buildings.barracks,template=s.entities.find(e=>e.side===3&&e.role==='hq')!;
+  expect(template.definitionId).toBeUndefined();
+  let threat:Entity;
+  if(native)threat=spawnDefinition(s,3,'building',def.id,18,24);
+  else {threat={...structuredClone(template),id:s.nextId++,role:'barracks',x:18,y:24,hp:def.hp,maxHp:def.hp};s.entities.push(threat);}
+  refreshVisibility(s);stepGame(s,.05);expect(request(s).arrivedAt).toBeUndefined();expect(request(s).reason).toBe('Defending the stronghold before continuing the request.');
+  for(let tick=0;tick<500;tick++)stepGame(s,.05);
+  expect(threat.hp).toBeGreaterThan(0);expect(request(s).status).toBe('active');expect(distance(fighter,destination)).toBeLessThan(3);
+  const siege=Array.from({length:12},(_,i)=>troop(s,0,'siege',{x:23+i%3,y:23+Math.floor(i/3)*.8}));
+  expect(issueCommand(s,0,{type:'attack',ids:siege.map(e=>e.id),target:threat.id})).toBe(true);
+  const allyDamage:number[]=[];
+  const advance=()=>{stepGame(s,.05);for(const event of s.events)if(event.type==='attack'&&event.side===0&&event.target===fighter.id)allyDamage.push(event.amount??0);};
+  for(let tick=0;tick<100&&threat.hp>0;tick++)advance();expect(threat.hp).toBe(0);
+  const cleared={time:s.time,hp:fighter.hp,order:fighter.order,request:structuredClone(request(s)),pending:(s.projectiles?.length??0)};
+  for(let tick=0;tick<60&&request(s).arrivedAt===undefined;tick++)advance();
+  let complete:{time:number;hp:number;status:string;elapsed:number}|undefined;
+  if(friendlyFire){expect(fighter.hp).toBe(0);expect(request(s).arrivedAt).toBeUndefined();expect(request(s)).toMatchObject({status:'active',assigned:[],reason:'Waiting for available troops.'});expect(allyDamage.length).toBeGreaterThan(0);}
+  else {
+   const resumed=request(s).arrivedAt!;expect(resumed).toBeGreaterThan(25);expect(request(s).status).toBe('active');expect(fighter.hp).toBe(fighter.maxHp);expect(allyDamage).toEqual([]);
+   const required=kind==='defend'?20:3;
+   for(let tick=0;tick<(required+5)*20&&request(s).status!=='completed';tick++)advance();
+   expect(request(s).status).toBe('completed');expect(s.time-resumed).toBeGreaterThanOrEqual(required);expect(fighter.hp).toBe(fighter.maxHp);
+   complete={time:s.time,hp:fighter.hp,status:request(s).status,elapsed:s.time-resumed};
+  }
+  console.log('ATTRIBUTION',JSON.stringify({native,friendlyFire,kind,cleared,final:{time:s.time,hp:fighter.hp,order:fighter.order,request:request(s),pending:(s.projectiles?.length??0)},allyDamage,complete}));
+ });
+});

@@ -1,0 +1,37 @@
+
+ RUN  v4.1.11 /tmp/allied-ai-fixtures-5c6a022-WvmG2i
+
+stdout | tests/allied-ai.test.ts > allied requests executed by real units > restarts the defend arrival timer after an emergency pause
+FAILED_WAIT {"time":28.800000000000274,"recipient":[{"id":8,"side":1,"kind":"building","role":"hq","x":8,"y":24,"hp":1800,"maxHp":1800,"order":{"type":"idle"},"cooldown":0,"progress":1,"queue":[],"trainProgress":0,"researchProgress":0,"facing":2,"animation":"idle","animTime":28.800000000000274,"momentum":0,"illusion":false,"expires":0,"carried":0,"carriedKind":"wood","path":[]}],"directive":[{"id":1,"issuer":0,"recipient":1,"kind":"defend","destination":{"x":20,"y":24},"createdAt":0,"expiresAt":90,"status":"active","assigned":[],"reason":"Waiting for available troops."}],"projectiles":[],"events":[]}
+
+stdout | tests/allied-ai.test.ts > allied requests executed by real units > restarts the attack arrival timer after an emergency pause
+FAILED_WAIT {"time":28.800000000000274,"recipient":[{"id":8,"side":1,"kind":"building","role":"hq","x":8,"y":24,"hp":1800,"maxHp":1800,"order":{"type":"idle"},"cooldown":0,"progress":1,"queue":[],"trainProgress":0,"researchProgress":0,"facing":2,"animation":"idle","animTime":28.800000000000274,"momentum":0,"illusion":false,"expires":0,"carried":0,"carriedKind":"wood","path":[]}],"directive":[{"id":1,"issuer":0,"recipient":1,"kind":"attack","destination":{"x":20,"y":24},"createdAt":0,"expiresAt":180,"status":"active","assigned":[],"reason":"Waiting for available troops."}],"projectiles":[],"events":[]}
+
+ ❯ tests/allied-ai.test.ts (43 tests | 2 failed | 41 skipped) 142ms
+     × restarts the defend arrival timer after an emergency pause 91ms
+     × restarts the attack arrival timer after an emergency pause 50ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/allied-ai.test.ts > allied requests executed by real units > restarts the defend arrival timer after an emergency pause
+ FAIL  tests/allied-ai.test.ts > allied requests executed by real units > restarts the attack arrival timer after an emergency pause
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ advanceUntil tests/allied-ai.test.ts:42:22
+
+ ❯ tests/allied-ai.test.ts:237:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 41 skipped (43)
+   Start at  07:51:56
+   Duration  483ms (transform 229ms, setup 0ms, import 279ms, tests 142ms, environment 0ms)
+

@@ -1,0 +1,24 @@
+
+ RUN  v4.1.11 /tmp/hud-health-native-illusion-proof/red
+
+ ❯ tests/hud-health.test.ts (3 tests | 1 failed) 56ms
+   × disguises enemy doubles in selection health, group totals and roster tooltips without changing simulation health 35ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/hud-health.test.ts > disguises enemy doubles in selection health, group totals and roster tooltips without changing simulation health
+Error: Unit definition fairy-special is absent from faction orcs.
+ ❯ unitFor src/core/content-registry.ts:149:755
+
+ ❯ entityDefinition src/core/content-registry.ts:153:113
+ ❯ Object.update src/ui/Hud.ts:201:29
+ ❯ tests/hud-health.test.ts:34:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  07:50:14
+   Duration  508ms (transform 248ms, setup 0ms, import 300ms, tests 56ms, environment 93ms)
+

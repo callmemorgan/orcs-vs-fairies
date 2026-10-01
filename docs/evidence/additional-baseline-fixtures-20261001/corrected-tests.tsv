@@ -1,0 +1,6 @@
+file	test	cause	correction
+tests/hud-health.test.ts	disguises enemy doubles in selection health, group totals and roster tooltips without changing simulation health	Fixture changed clone ownership without definition faction	Native Veilweaver ability and owner HUD viewer; health assertions unchanged
+tests/allied-ai.test.ts	restarts the defend arrival timer after an emergency pause	Allied cleanup shells killed assigned defender	Public friendlyFire=false only for timer fixtures; full fresh 20s guard retained
+tests/allied-ai.test.ts	restarts the attack arrival timer after an emergency pause	Allied cleanup shells killed assigned defender	Public friendlyFire=false only for timer fixtures; full fresh 3s clear period retained
+tests/skirmish-roster.test.ts	runs every local CPU economy from the 4v4 UI config	100 simulated seconds needed40.37s wall time against30s test limit	90s wall timeout; same 400 quarter-second ticks and assertions
+tests/skirmish-roster.test.ts	renders faction names as text without creating markup	Global mutation did not affect pinned registry definitions	Hashed imported content with literal markup name; selection and no-element assertions

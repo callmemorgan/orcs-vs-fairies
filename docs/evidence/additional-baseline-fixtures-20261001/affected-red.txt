@@ -1,0 +1,80 @@
+
+ RUN  v4.1.11 /home/morgana/.codex/worktrees/baseline-fixes-100features/orcs-vs-Fairies
+
+ ❯ tests/allied-ai.test.ts (43 tests | 2 failed) 4177ms
+     × restarts the defend arrival timer after an emergency pause 53ms
+     × restarts the attack arrival timer after an emergency pause 43ms
+ ❯ tests/hud-health.test.ts (3 tests | 1 failed) 60ms
+   × disguises enemy doubles in selection health, group totals and roster tooltips without changing simulation health 37ms
+ ❯ tests/skirmish-roster.test.ts (74 tests | 2 failed) 51159ms
+     × runs every local CPU economy from the 4v4 UI config 40372ms
+     × renders faction names as text without creating markup 8ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/allied-ai.test.ts > allied requests executed by real units > restarts the defend arrival timer after an emergency pause
+ FAIL  tests/allied-ai.test.ts > allied requests executed by real units > restarts the attack arrival timer after an emergency pause
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ advanceUntil tests/allied-ai.test.ts:41:22
+     39| function advanceUntil(s:GameState,predicate:()=>boolean,seconds=60):vo…
+     40|  for(let tick=0;tick<seconds*20&&!predicate();tick++)stepGame(s,.05);
+     41|  expect(predicate()).toBe(true);
+       |                      ^
+     42| }
+     43|
+ ❯ tests/allied-ai.test.ts:236:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/hud-health.test.ts > disguises enemy doubles in selection health, group totals and roster tooltips without changing simulation health
+Error: Unit definition fairy-special is absent from faction orcs.
+ ❯ unitFor src/core/content-registry.ts:149:755
+
+ ❯ entityDefinition src/core/content-registry.ts:153:113
+ ❯ Object.update src/ui/Hud.ts:201:29
+ ❯ tests/hud-health.test.ts:34:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/skirmish-roster.test.ts > local skirmish roster > runs every local CPU economy from the 4v4 UI config
+Error: Test timed out in 30000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/skirmish-roster.test.ts:337:25
+    335|   });
+    336|
+    337|   it.each(['2v2', '4v4'])('runs every local CPU economy from the %s UI…
+       |                         ^
+    338|     const { root, config } = setup();
+    339|     enable(root);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/skirmish-roster.test.ts > roster configuration validation > renders faction names as text without creating markup
+AssertionError: expected 'Automata' to contain '<img src=x onerror=alert(1)>'
+
+Expected: "<img src=x onerror=alert(1)>"
+Received: "Automata"
+
+ ❯ tests/skirmish-roster.test.ts:653:92
+    651|       preset(root, '2v2');
+    652|       const options = field<HTMLSelectElement>(row(root, 2), 'Player 3…
+    653|       expect(Array.from(options).find(option => option.value === 'auto…
+       |                                                                                            ^
+    654|       expect(root.querySelectorAll('img,script')).toHaveLength(0);
+    655|     } finally {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  5 failed | 115 passed (120)
+   Start at  07:46:29
+   Duration  51.62s (transform 581ms, setup 0ms, import 740ms, tests 55.40s, environment 179ms)
+

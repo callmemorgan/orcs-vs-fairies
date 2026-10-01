@@ -1,0 +1,42 @@
+
+ RUN  v4.1.11 /tmp/allied-ai-fixtures-5c6a022-WvmG2i
+
+stdout | tests/allied-ai.test.ts > allied requests executed by real units > restarts the defend arrival timer after an emergency pause
+EMERGENCY_AFTER_CLEAR {"kind":"defend","time":25.80000000000023,"fighter":{"id":14,"side":1,"kind":"unit","role":"melee","x":20,"y":24,"hp":100.92,"maxHp":175,"order":{"type":"attackMove","x":20,"y":24},"cooldown":0.8519210747563806,"progress":1,"queue":[],"trainProgress":0,"researchProgress":0,"facing":4,"animation":"attack","animTime":0.15000000000000002,"momentum":0.9978999999999999,"illusion":false,"expires":0,"carried":0,"carriedKind":"wood","path":[],"tactics":{"morale":65.46457142857346,"recentLoss":0},"veteran":{"experience":163.60120215500007,"rank":2,"nextSurvivalAt":45.05000000000008,"lastCombatAt":25.65000000000023,"promotions":[{"rank":1,"id":"vanguard"},{"rank":2,"id":"vanguard"}]},"shield":0,"lastDamagedAt":25.80000000000023,"lastAttacker":76},"request":{"id":1,"issuer":0,"recipient":1,"kind":"defend","destination":{"x":20,"y":24},"createdAt":0,"expiresAt":90,"status":"active","assigned":[14],"reason":"Defending the stronghold before continuing the request."},"liveRecipientUnits":[{"id":14,"side":1,"kind":"unit","role":"melee","x":20,"y":24,"hp":100.92,"maxHp":175,"order":{"type":"attackMove","x":20,"y":24},"cooldown":0.8519210747563806,"progress":1,"queue":[],"trainProgress":0,"researchProgress":0,"facing":4,"animation":"attack","animTime":0.15000000000000002,"momentum":0.9978999999999999,"illusion":false,"expires":0,"carried":0,"carriedKind":"wood","path":[],"tactics":{"morale":65.46457142857346,"recentLoss":0},"veteran":{"experience":163.60120215500007,"rank":2,"nextSurvivalAt":45.05000000000008,"lastCombatAt":25.65000000000023,"promotions":[{"rank":1,"id":"vanguard"},{"rank":2,"id":"vanguard"}]},"shield":0,"lastDamagedAt":25.80000000000023,"lastAttacker":76}],"events":[{"type":"attack","x":23,"y":23,"level":0,"side":0,"target":14,"source":76,"amount":18.52},{"type":"attack","x":23,"y":23,"level":0,"side":0,"target":75,"source":76,"amount":105.33233153749991},{"type":"ability","x":18,"y":24,"level":0,"side":0,"text":"Siege impact","source":76},{"type":"attack","x":23,"y":23.8,"level":0,"side":0,"target":14,"source":79,"amount":18.52},{"type":"attack","x":23,"y":23.8,"level":0,"side":0,"target":75,"source":79,"amount":105.33233153749991},{"type":"ability","x":18,"y":24,"level":0,"side":0,"text":"Siege impact","source":79},{"type":"attack","x":23,"y":24.6,"level":0,"side":0,"target":14,"source":82,"amount":18.52},{"type":"attack","x":23,"y":24.6,"level":0,"side":0,"target":75,"source":82,"amount":105.33233153749991},{"type":"ability","x":18,"y":24,"level":0,"side":0,"text":"Siege impact","source":82},{"type":"attack","x":23,"y":25.4,"level":0,"side":0,"target":14,"source":85,"amount":18.52},{"type":"attack","x":23,"y":25.4,"level":0,"side":0,"target":75,"source":85,"amount":105.33233153749991},{"type":"ability","x":18,"y":24,"level":0,"side":0,"text":"Siege impact","source":85},{"type":"death","x":18,"y":24,"side":3,"source":75}]}
+
+stdout | tests/allied-ai.test.ts > allied requests executed by real units > restarts the attack arrival timer after an emergency pause
+EMERGENCY_AFTER_CLEAR {"kind":"attack","time":25.80000000000023,"fighter":{"id":14,"side":1,"kind":"unit","role":"melee","x":20,"y":24,"hp":100.92,"maxHp":175,"order":{"type":"attackMove","x":20,"y":24},"cooldown":0.8519210747563806,"progress":1,"queue":[],"trainProgress":0,"researchProgress":0,"facing":4,"animation":"attack","animTime":0.15000000000000002,"momentum":0.9978999999999999,"illusion":false,"expires":0,"carried":0,"carriedKind":"wood","path":[],"tactics":{"morale":65.46457142857346,"recentLoss":0},"veteran":{"experience":163.60120215500007,"rank":2,"nextSurvivalAt":45.05000000000008,"lastCombatAt":25.65000000000023,"promotions":[{"rank":1,"id":"vanguard"},{"rank":2,"id":"vanguard"}]},"shield":0,"lastDamagedAt":25.80000000000023,"lastAttacker":76},"request":{"id":1,"issuer":0,"recipient":1,"kind":"attack","destination":{"x":20,"y":24},"createdAt":0,"expiresAt":180,"status":"active","assigned":[14],"reason":"Defending the stronghold before continuing the request."},"liveRecipientUnits":[{"id":14,"side":1,"kind":"unit","role":"melee","x":20,"y":24,"hp":100.92,"maxHp":175,"order":{"type":"attackMove","x":20,"y":24},"cooldown":0.8519210747563806,"progress":1,"queue":[],"trainProgress":0,"researchProgress":0,"facing":4,"animation":"attack","animTime":0.15000000000000002,"momentum":0.9978999999999999,"illusion":false,"expires":0,"carried":0,"carriedKind":"wood","path":[],"tactics":{"morale":65.46457142857346,"recentLoss":0},"veteran":{"experience":163.60120215500007,"rank":2,"nextSurvivalAt":45.05000000000008,"lastCombatAt":25.65000000000023,"promotions":[{"rank":1,"id":"vanguard"},{"rank":2,"id":"vanguard"}]},"shield":0,"lastDamagedAt":25.80000000000023,"lastAttacker":76}],"events":[{"type":"attack","x":23,"y":23,"level":0,"side":0,"target":14,"source":76,"amount":18.52},{"type":"attack","x":23,"y":23,"level":0,"side":0,"target":75,"source":76,"amount":105.33233153749991},{"type":"ability","x":18,"y":24,"level":0,"side":0,"text":"Siege impact","source":76},{"type":"attack","x":23,"y":23.8,"level":0,"side":0,"target":14,"source":79,"amount":18.52},{"type":"attack","x":23,"y":23.8,"level":0,"side":0,"target":75,"source":79,"amount":105.33233153749991},{"type":"ability","x":18,"y":24,"level":0,"side":0,"text":"Siege impact","source":79},{"type":"attack","x":23,"y":24.6,"level":0,"side":0,"target":14,"source":82,"amount":18.52},{"type":"attack","x":23,"y":24.6,"level":0,"side":0,"target":75,"source":82,"amount":105.33233153749991},{"type":"ability","x":18,"y":24,"level":0,"side":0,"text":"Siege impact","source":82},{"type":"attack","x":23,"y":25.4,"level":0,"side":0,"target":14,"source":85,"amount":18.52},{"type":"attack","x":23,"y":25.4,"level":0,"side":0,"target":75,"source":85,"amount":105.33233153749991},{"type":"ability","x":18,"y":24,"level":0,"side":0,"text":"Siege impact","source":85},{"type":"death","x":18,"y":24,"side":3,"source":75}]}
+
+ ❯ tests/allied-ai.test.ts (43 tests | 2 failed | 41 skipped) 141ms
+     × restarts the defend arrival timer after an emergency pause 90ms
+     × restarts the attack arrival timer after an emergency pause 50ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/allied-ai.test.ts > allied requests executed by real units > restarts the defend arrival timer after an emergency pause
+ FAIL  tests/allied-ai.test.ts > allied requests executed by real units > restarts the attack arrival timer after an emergency pause
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ advanceUntil tests/allied-ai.test.ts:41:22
+     39| function advanceUntil(s:GameState,predicate:()=>boolean,seconds=60):vo…
+     40|  for(let tick=0;tick<seconds*20&&!predicate();tick++)stepGame(s,.05);
+     41|  expect(predicate()).toBe(true);
+       |                      ^
+     42| }
+     43|
+ ❯ tests/allied-ai.test.ts:237:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 41 skipped (43)
+   Start at  07:50:14
+   Duration  484ms (transform 229ms, setup 0ms, import 280ms, tests 141ms, environment 0ms)
+
