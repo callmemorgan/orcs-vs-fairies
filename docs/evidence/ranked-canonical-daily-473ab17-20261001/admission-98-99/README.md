@@ -1,0 +1,5 @@
+Original98 is admitted through two natural wins at ticks1959 and2009 on one account, with equal complete daily challenge configurations and the faster97.95-second standing preserved across restart. The separately admitted real HTTP server test supplies the two-account equal-map and starting-condition check; all source and test inputs except the reviewed main.ts cosmetics guard are unchanged. The raw daily method sentence is incorrect: actual play was external Orcs versus normal balanced infantry-rush Fairy AI. Original bytes are retained.
+
+Original99 is admitted through earned faction banners, building decorations and commander portraits, owner-side display, persistence and restart. Five reward settlements used authenticated guest surrender commands. Both SAVE4 session exports have replay rules4.0.1 and equal complete game envelopes; the equipped canvas changed1313 pixels. This does not claim natural five-win play or a campaign victory.
+
+The GPT-5.6 Sol admission review authenticates the original packets. Hosted remains failed and is not promoted by this admission. No product, simulation, tests or protected preview changed.

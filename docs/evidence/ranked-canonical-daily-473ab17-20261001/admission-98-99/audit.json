@@ -1,0 +1,71 @@
+{
+  "reviewerModel": "gpt-5.6-sol",
+  "verdict": "admit canonical 99 and daily 98 with preserved scope qualifications; hosted remains failed",
+  "productFreeze": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "executionCommit": "473ab17642211c3610aed648ae5f813b7680edc1",
+  "retentionPlan": {
+    "path": "/tmp/ovf-ranked-473-raw-packets-k67xwdxw/retention-plan.json",
+    "sha256": "ccb531baaebc8ef43911d0fb71fa58db4b33943f0188bb9b7fb80798c93514e1"
+  },
+  "canonical": {
+    "admitted": true,
+    "resultStatus": "passed",
+    "resultSha256": "5abeb67fac4fa4f90e22d3c0bc04928f0f39132597f28202e1b2acf570ec4464",
+    "checks": 18,
+    "rawMembersVerified": 28,
+    "rawBytesVerified": 25199862,
+    "gitDuplicatesVerified": 394,
+    "nativeGameVersionBeforeAfter": [4, 4],
+    "replayRevisionBeforeAfter": ["4.0.1", "4.0.1"],
+    "fullGameEqual": true,
+    "changedPixels": 1313,
+    "earnedTypes": ["banner", "building-decoration", "commander-portrait"],
+    "naturalVictoryClaim": false,
+    "campaignVictoryClaim": false
+  },
+  "daily": {
+    "admitted": true,
+    "resultSha256": "3cd687c5a8d1d2c367dc5a70d128af351f12ebbb6bba55acbde77eb6c6f279ff",
+    "rawMembersVerified": 4,
+    "rawBytesVerified": 93872,
+    "naturalWinTicks": [1959, 2009],
+    "standingTick": 1959,
+    "standingSeconds": 97.95,
+    "challengeObjectsEqual": true,
+    "actualControllers": ["external-orc", "normal-balanced-infantry-rush-fairy-ai"],
+    "rawMethodAccurate": false,
+    "correctionReadmePresent": true,
+    "rawObservationAccounts": 1,
+    "twoAccountEqualityBasis": "separately admitted unchanged-source tests"
+  },
+  "hosted": {
+    "admittedAsPassed": false,
+    "resultStatus": "failed",
+    "resultSha256": "9e8677bf8b3c85ceef6a5c86c7c5a85df568db028fde849069408097dfd129bb",
+    "rawMembersVerified": 76,
+    "rawBytesVerified": 13019775,
+    "gitDuplicatesVerified": 394,
+    "heldDatabaseBytesVerified": 378163200,
+    "passedScopes": ["startup", "native-2v2", "native-3v3"],
+    "failedAt": "4v4 lobby setup",
+    "observedGetCount": 2,
+    "requiredGetCount": 1,
+    "requestInitiatorEstablished": false
+  },
+  "sourceRuntimeIdentity": {
+    "canonicalAuditStatus": "passed",
+    "dailyAuditStatus": "passed",
+    "hostedAuditStatus": "failed",
+    "auditHead": "473ab17642211c3610aed648ae5f813b7680edc1",
+    "auditTree": "0d9bfe20d3b1d8128f0883058fc69be7a73791ff",
+    "saveVersion": 4,
+    "simulationRevision": "4.0.1",
+    "productPathDiffFromFreeze": []
+  },
+  "attention": [
+    "Daily raw evidence is one account running the same challenge twice; two-account equal-condition coverage comes from separately admitted unchanged-source tests.",
+    "Canonical rewards were earned through accepted guest surrender settlements, so retain the no-natural-victory qualification."
+  ],
+  "prohibitedExecutionPerformed": false,
+  "rootWritesPerformed": false
+}
