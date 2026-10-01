@@ -12,7 +12,7 @@ for name,digest in method['sourceSha256'].items():
 matches=[json.loads(p.read_text()) for p in sorted(out.glob('*.json')) if p.name not in ('method.json','summary.json')]
 assert len(matches)==method['games'],f'Expected {method["games"]} games, got {len(matches)}'
 assert len({(m['seed'],m['mapSize'],m['faction'],m['opponent']) for m in matches})==len(matches)
-factions=list(dict.fromkeys(m['faction'] for m in matches));cross=[m for m in matches if m['faction']!=m['opponent']]
+factions=list(dict.fromkeys(f for m in matches for f in (m['faction'],m['opponent'])));cross=[m for m in matches if m['faction']!=m['opponent']]
 standings={f:dict(wins=0,losses=0,draws=0,timeouts=0,side0Wins=0,side1Wins=0,games=0) for f in factions}
 for m in cross:
  for side,f in enumerate((m['faction'],m['opponent'])):
@@ -25,9 +25,10 @@ summary={'reporterSha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(
 def duration(s):n=round(s);return f'{n//60}:{n%60:02}'
 def score(mm,f):
  w=sum(m['winner'] is not None and (m['faction'],m['opponent'])[m['winner']]==f for m in mm);d=sum(m['draw'] or m['timeout'] for m in mm);return f'{w}–{len(mm)-w-d}–{d}'
-lines=[f'# {len(matches)}-game six-faction ladder','',f'Run `{a.run}` uses seeds {method["seeds"]} on {", ".join(method["sizes"])} maps, with all ordered faction pairings and mirrors. Both AI controllers think on the same simulation ticks; command order alternates each pulse. Cross-faction games determine the standings. Mirrors measure side effects separately.','', 'These are deterministic AI matches on a small seed sample, not independent trials or evidence of competitive balance. Map changes, movement, economy, AI choices and combat stats all affect the results. The original [64-game baseline](../ladder-64/REPORT.md) uses different maps and scheduling, so its results are not a controlled comparison of unit stats.','', '## Standings','', '| Faction | Games | W–L–D | Timeouts | Win rate | Side 0 wins | Side 1 wins |','| --- | --- | --- | --- | --- | --- | --- |']
+pairings='all ordered faction pairings and mirrors' if method.get('pairSelection','all-ordered')=='all-ordered' else 'selected ordered pairs: '+', '.join(f'{pair["faction"]} vs {pair["opponent"]}' for pair in method['pairs'])
+lines=[f'# {len(matches)}-game six-faction ladder','',f'Run `{a.run}` uses seeds {method["seeds"]} on {", ".join(method["sizes"])} maps, with {pairings}. Both AI controllers think on the same simulation ticks; command order alternates each pulse. Cross-faction games determine the standings. Mirrors measure side effects separately.','', 'These are deterministic AI matches on a small seed sample, not independent trials or evidence of competitive balance. Map changes, movement, economy, AI choices and combat stats all affect the results. The original [64-game baseline](../ladder-64/REPORT.md) uses different maps and scheduling, so its results are not a controlled comparison of unit stats.','', '## Standings','', '| Faction | Games | W–L–D | Timeouts | Win rate | Side 0 wins | Side 1 wins |','| --- | --- | --- | --- | --- | --- | --- |']
 for f in sorted(factions,key=lambda f:-standings[f]['wins']):
- r=standings[f];lines.append(f'| {f.title()} | {r["games"]} | {r["wins"]}–{r["losses"]}–{r["draws"]} | {r["timeouts"]} | {r["wins"]/r["games"]:.1%} | {r["side0Wins"]} | {r["side1Wins"]} |')
+ r=standings[f];rate=f'{r["wins"]/r["games"]:.1%}' if r['games'] else '—';lines.append(f'| {f.title()} | {r["games"]} | {r["wins"]}–{r["losses"]}–{r["draws"]} | {r["timeouts"]} | {rate} | {r["side0Wins"]} | {r["side1Wins"]} |')
 lines+=['','## Matchups','','Cells are row faction wins–losses–draws/timeouts.','', '| Faction | '+' | '.join(f.title() for f in factions)+' |','| --- | '+' | '.join('---' for f in factions)+' |']
 for f in factions:lines.append('| '+f.title()+' | '+' | '.join('—' if f==o else score([m for m in cross if {m['faction'],m['opponent']}=={f,o}],f) for o in factions)+' |')
 lines+=['','## Map size and starting side','','| Size | Games | Side 0 wins | Side 1 wins | Draws | Timeouts | Median | Movement stalls |','| --- | --- | --- | --- | --- | --- | --- | --- |']
