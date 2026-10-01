@@ -1,0 +1,363 @@
+{
+  "base": "http://127.0.0.1:9284",
+  "sourceCommit": "ff009bff72a5965cc3620f55b79ea825f14b2c5e",
+  "checks": [
+    {
+      "name": "Open objectives blocks battlefield selection while local draft ticks advance",
+      "data": {
+        "tick": 3,
+        "selected": [],
+        "paused": false
+      }
+    },
+    {
+      "name": "Normal mod launch retains custom rules, exact custom starter and completed AI draft turn",
+      "data": {
+        "faction": "lantern:keepers",
+        "rules": {
+          "mode": "hill",
+          "standardDefeat": true,
+          "startingAge": 1,
+          "sharedVision": true,
+          "friendlyFire": true,
+          "startingResources": {
+            "wood": 420,
+            "ore": 220,
+            "crystal": 0
+          },
+          "disabledDefinitionIds": [],
+          "hill": {
+            "radius": 5,
+            "captureTicks": 60,
+            "holdTicks": 1200
+          },
+          "relic": {
+            "count": 3,
+            "required": 2,
+            "holdTicks": 2400,
+            "pickupRadius": 1.5
+          },
+          "survival": {
+            "defenderTeam": 0,
+            "waveCount": 5,
+            "intervalTicks": 1200,
+            "recoveryTicks": 400,
+            "unitsPerWave": 2,
+            "rewardPerWave": {
+              "wood": 60,
+              "ore": 30,
+              "crystal": 0
+            }
+          },
+          "draft": {
+            "enabled": true,
+            "banRounds": 0,
+            "pickRounds": 1,
+            "turnTicks": 1200
+          }
+        },
+        "picks": [
+          [
+            "lantern:duelist"
+          ],
+          [
+            "fairy-ranged"
+          ]
+        ],
+        "starter": "lantern:duelist"
+      }
+    },
+    {
+      "name": "local-custom-hill normal canvas movement input",
+      "data": {
+        "target": {
+          "x": 18.5,
+          "y": 18.5,
+          "ownerTeam": null,
+          "captureTeam": null,
+          "captureTicks": 0,
+          "holdTicks": 0,
+          "contested": false
+        },
+        "camera": {
+          "x": 880,
+          "y": 238.01999999999998,
+          "zoom": 1,
+          "width": 1440,
+          "height": 1000
+        },
+        "point": {
+          "x": 720,
+          "y": 433.98
+        },
+        "units": [
+          {
+            "id": 37,
+            "x": 11.03033008588991,
+            "y": 9.03033008588991,
+            "order": {
+              "type": "move",
+              "x": 18.469375133514404,
+              "y": 18.469375133514404,
+              "level": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Normal canvas order and the main HUD use the active hill match",
+      "data": true
+    },
+    {
+      "name": "Exported custom objective replay reopens through normal session tools",
+      "data": true
+    },
+    {
+      "name": "Photo mode hides the objective launcher",
+      "data": true
+    },
+    {
+      "name": "Real server lobby preserves both picks, mode rules and exact starting definitions in Phaser",
+      "data": {
+        "rules": {
+          "mode": "relic",
+          "standardDefeat": true,
+          "startingAge": 1,
+          "sharedVision": true,
+          "friendlyFire": true,
+          "startingResources": {
+            "wood": 420,
+            "ore": 220,
+            "crystal": 0
+          },
+          "disabledDefinitionIds": [],
+          "hill": {
+            "radius": 5,
+            "captureTicks": 100,
+            "holdTicks": 2400
+          },
+          "relic": {
+            "count": 1,
+            "required": 1,
+            "holdTicks": 2400,
+            "pickupRadius": 1.5
+          },
+          "survival": {
+            "defenderTeam": 0,
+            "waveCount": 5,
+            "intervalTicks": 1200,
+            "recoveryTicks": 400,
+            "unitsPerWave": 2,
+            "rewardPerWave": {
+              "wood": 60,
+              "ore": 30,
+              "crystal": 0
+            }
+          },
+          "draft": {
+            "enabled": true,
+            "banRounds": 0,
+            "pickRounds": 1,
+            "turnTicks": 600
+          }
+        },
+        "draft": {
+          "status": "complete",
+          "turn": 2,
+          "remainingTicks": 0,
+          "order": [
+            {
+              "side": 0,
+              "action": "pick"
+            },
+            {
+              "side": 1,
+              "action": "pick"
+            }
+          ],
+          "banned": [],
+          "picks": [
+            [
+              "orc-ranged"
+            ],
+            [
+              "fairy-melee"
+            ]
+          ],
+          "pool": [
+            "orc-melee",
+            "orc-ranged",
+            "orc-special",
+            "orc-cavalry",
+            "orc-spear",
+            "orc-siege",
+            "core:orcs-commander",
+            "core:orcs-engineer",
+            "forged-weapons",
+            "tempered-armor",
+            "veteran-arms",
+            "core:ranged-arms",
+            "core:cavalry-barding",
+            "core:siege-gears",
+            "core:ranged-focus",
+            "core:ranged-mobility",
+            "worker-harvest",
+            "worker-speed",
+            "fairy-melee",
+            "fairy-ranged",
+            "fairy-special",
+            "fairy-cavalry",
+            "fairy-spear",
+            "fairy-siege",
+            "core:fairies-commander",
+            "core:fairies-engineer"
+          ]
+        },
+        "starter": "orc-ranged",
+        "simulationEnabled": false,
+        "guestStarter": "fairy-melee"
+      }
+    },
+    {
+      "name": "host normal canvas movement input",
+      "data": {
+        "target": {
+          "id": 1,
+          "x": 24.5,
+          "y": 18.5,
+          "carrierId": null,
+          "heldTeam": null
+        },
+        "camera": {
+          "x": 1075.8400000000001,
+          "y": 335.94000000000005,
+          "zoom": 1,
+          "width": 1440,
+          "height": 1000
+        },
+        "point": {
+          "x": 716.1599999999999,
+          "y": 432.05999999999995
+        },
+        "sent": {
+          "kind": "command",
+          "protocolVersion": 1,
+          "clientSeq": 1,
+          "observedTick": 176,
+          "command": {
+            "type": "move",
+            "ids": [
+              33
+            ],
+            "x": 24.495624542236328,
+            "y": 18.500625610351562,
+            "level": 0,
+            "queued": false
+          }
+        },
+        "receipt": {
+          "kind": "commandAck",
+          "clientSeq": 1,
+          "appliedTick": 182,
+          "accepted": true
+        },
+        "units": [
+          {
+            "id": 33,
+            "x": 10.712132034355964,
+            "y": 8.712132034355964,
+            "order": {
+              "type": "move",
+              "x": 24.495624542236328,
+              "y": 18.500625610351562,
+              "level": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Main objective control collects a relic through its accepted server command receipt",
+      "data": {
+        "command": {
+          "kind": "command",
+          "protocolVersion": 1,
+          "clientSeq": 2,
+          "observedTick": 360,
+          "command": {
+            "type": "collectRelic",
+            "id": 33,
+            "relicId": 1
+          }
+        },
+        "receipt": {
+          "kind": "commandAck",
+          "clientSeq": 2,
+          "appliedTick": 364,
+          "accepted": true
+        }
+      }
+    },
+    {
+      "name": "Main objective control drops the carried relic through its authoritative server receipt",
+      "data": {
+        "command": {
+          "kind": "command",
+          "protocolVersion": 1,
+          "clientSeq": 3,
+          "observedTick": 380,
+          "command": {
+            "type": "dropRelic",
+            "id": 33
+          }
+        },
+        "receipt": {
+          "kind": "commandAck",
+          "clientSeq": 3,
+          "appliedTick": 386,
+          "accepted": true
+        }
+      }
+    },
+    {
+      "name": "Guest main objectives show the received relic mode and shared public progress",
+      "data": true
+    },
+    {
+      "name": "All production profiles have no page errors",
+      "data": true
+    }
+  ],
+  "builds": [
+    {
+      "profile": "local-custom-hill",
+      "scripts": [
+        "http://127.0.0.1:9284/assets/index-bWeeYX_N.js"
+      ],
+      "styles": [
+        "http://127.0.0.1:9284/assets/index-B1ECCCs0.css"
+      ]
+    },
+    {
+      "profile": "host",
+      "scripts": [
+        "http://127.0.0.1:9284/assets/index-bWeeYX_N.js"
+      ],
+      "styles": [
+        "http://127.0.0.1:9284/assets/index-B1ECCCs0.css"
+      ]
+    },
+    {
+      "profile": "guest",
+      "scripts": [
+        "http://127.0.0.1:9284/assets/index-bWeeYX_N.js"
+      ],
+      "styles": [
+        "http://127.0.0.1:9284/assets/index-B1ECCCs0.css"
+      ]
+    }
+  ],
+  "passed": true,
+  "errors": []
+}
