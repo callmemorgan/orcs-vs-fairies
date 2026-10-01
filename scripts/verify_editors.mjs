@@ -1,15 +1,26 @@
-import { chromium } from '/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { worldSourceProof, checkCurrentSession, downloadWorldBuildReport, sha } from './world/proof-common.mjs';
+const { chromium } = await import(process.env.OVF_PLAYWRIGHT_MODULE ?? 'playwright');
 
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+process.chdir(root);
 const base = process.argv[2] || 'http://127.0.0.1:5364';
 const evidence = path.resolve(process.env.OVF_EDITOR_EVIDENCE_DIR || 'docs/evidence/editor-browser-20261001');
-await mkdir(evidence, { recursive: true });
+await mkdir(path.dirname(evidence), { recursive: true }); await mkdir(evidence);
+const source = await worldSourceProof(process.env.OVF_PRODUCTION_SOURCE_COMMIT ?? process.env.OVF_SOURCE_PIN);
+assert.equal(execFileSync('git', ['diff', source.sourcePin, '--name-only', '--', 'scripts/verify_editors.mjs'], { encoding: 'utf8' }).trim(), '', 'Editor driver must match the source pin');
+const scriptSha256 = sha(await readFile(fileURLToPath(import.meta.url)));
+execFileSync(process.execPath, ['scripts/verify_served_build.mjs', `${base}/editor.html`, path.join(evidence, 'served-build.json'), path.resolve(process.env.OVF_PROOF_DIST ?? 'dist')], { stdio: 'pipe' });
+const servedBuild = JSON.parse(await readFile(path.join(evidence, 'served-build.json'), 'utf8')); assert.equal(servedBuild.commit, source.sourcePin); assert.equal(servedBuild.sourceSha256, source.buildId);
 const browser = await chromium.launch({ headless: true });
 const context = await browser.newContext({ viewport: { width: 1440, height: 1050 }, acceptDownloads: true });
 const page = await context.newPage();
 const results = [], errors = [];
+let failure;
 page.on('pageerror', error => errors.push(error.message));
 function checked(name, details = {}) { results.push({ name, ...details }); process.stdout.write(`PASS ${name}\n`); }
 async function exported(name) {
@@ -28,6 +39,7 @@ try {
   await page.getByRole('button', { name: 'Play edited map', exact: true }).waitFor({ state: 'visible' });
   await page.getByRole('button', { name: 'Play edited map', exact: true }).isEnabled().then(assert);
   const original = await exported('initial-map.json');
+  assert.equal(original.simulationVersion, source.saveVersion);
   assert.equal(original.map.starts.length, 2); checked('default map validates with two starts');
   await page.getByLabel('Terrain brush', { exact: true }).selectOption('water');
   await clickTile(1, 1);
@@ -115,9 +127,19 @@ try {
     const underground = await page.evaluate(() => window.editorDiagnostics()); assert.equal(underground.viewLevel, 1);
     checked('normal world controls traverse the authored entrance and show the cave');
     await page.screenshot({ path: path.join(evidence, 'edited-map-in-play.png'), fullPage: true });
+    await page.locator('[data-session-tool="saves"]').click();
+    const downloading = page.waitForEvent('download'); await page.getByRole('button', { name: 'Export save', exact: true }).click();
+    await (await downloading).saveAs(path.join(evidence, 'edited-map-in-play.save.json'));
+    checkCurrentSession(JSON.parse(await readFile(path.join(evidence, 'edited-map-in-play.save.json'), 'utf8')), source);
+    const buildEvidence = {}; await downloadWorldBuildReport(page, { out: evidence, provenance: source }, 'edited-map-build-report.json', buildEvidence);
+    await page.getByRole('button', { name: 'Close session tools', exact: true }).click();
+    checked('actual edited match exports SAVE4, current replay rules and the frozen application build', { nativeExport: 'edited-map-in-play.save.json', ...buildEvidence });
   }
+  assert.deepEqual(await worldSourceProof(source.sourcePin), source, 'Source changed during map editor proof');
   assert.deepEqual(errors, []); checked('browser has no uncaught errors');
+} catch (error) {
+  failure = String(error); throw error;
 } finally {
-  await writeFile(path.join(evidence, 'result.json'), JSON.stringify({ base, results, errors, checkedAt: new Date().toISOString() }, null, 2));
+  await writeFile(path.join(evidence, 'result.json'), JSON.stringify({ base, source, scriptSha256, servedBuild, results, errors, failure, checkedAt: new Date().toISOString() }, null, 2));
   await browser.close();
 }

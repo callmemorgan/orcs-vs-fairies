@@ -1,15 +1,25 @@
-import { chromium } from '/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { worldSourceProof, checkCurrentSession, downloadWorldBuildReport, sha } from './world/proof-common.mjs';
+const { chromium } = await import(process.env.OVF_PLAYWRIGHT_MODULE ?? 'playwright');
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+process.chdir(root);
 const base = (process.argv[2] || 'http://127.0.0.1:5364').replace(/\/$/, '');
 const evidence = path.resolve(process.env.OVF_EDITOR_EVIDENCE_DIR || path.join(root, 'docs/evidence/layered-scenario-editor-20261001'));
-const fixturePath = path.resolve(process.env.OVF_EDITOR_MAP_FIXTURE || path.join(root, 'docs/evidence/editor-root-integration-20261001/map/two-level-map.json'));
+assert(process.env.OVF_EDITOR_MAP_FIXTURE, 'Set OVF_EDITOR_MAP_FIXTURE to the freshly exported SAVE4 two-level map');
+const fixturePath = path.resolve(process.env.OVF_EDITOR_MAP_FIXTURE);
 const fixture = JSON.parse(await readFile(fixturePath, 'utf8'));
-await mkdir(evidence, { recursive: true });
+await mkdir(path.dirname(evidence), { recursive: true }); await mkdir(evidence);
+const source = await worldSourceProof(process.env.OVF_PRODUCTION_SOURCE_COMMIT ?? process.env.OVF_SOURCE_PIN);
+assert.equal(fixture.simulationVersion, source.saveVersion, 'Regenerate the layered map fixture from SAVE4');
+assert.equal(execFileSync('git', ['diff', source.sourcePin, '--name-only', '--', 'scripts/verify_layered_scenario_editor.mjs'], { encoding: 'utf8' }).trim(), '', 'Layered scenario driver must match the source pin');
+const scriptSha256 = sha(await readFile(fileURLToPath(import.meta.url))), fixtureSha256 = sha(await readFile(fixturePath));
+execFileSync(process.execPath, ['scripts/verify_served_build.mjs', `${base}/editor.html`, path.join(evidence, 'served-build.json'), path.resolve(process.env.OVF_PROOF_DIST ?? 'dist')], { stdio: 'pipe' });
+const servedBuild = JSON.parse(await readFile(path.join(evidence, 'served-build.json'), 'utf8')); assert.equal(servedBuild.commit, source.sourcePin); assert.equal(servedBuild.sourceSha256, source.buildId);
 
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 1050 }, acceptDownloads: true });
@@ -149,6 +159,7 @@ try {
   await fill('Event 2 trigger condition 2 seconds', 2);
 
   const created = await exported('cave-scenario.json');
+  assert.equal(created.simulationVersion, source.saveVersion);
   assert.deepEqual(created.map, fixture, 'The scenario pins the exact imported map package');
   assert.deepEqual(created.scenario.map.world, fixture.map);
   assert.deepEqual(created.scenario.army[0], {
@@ -197,6 +208,13 @@ try {
   assert.equal(initial.scenario.runtime.triggers['custom-win-1'], undefined);
   timeline.push(sample(initial));
   checked('play retains both levels, terrain, cave resource, site and transition', { initialTick: initial.tick });
+  await page.locator('[data-session-tool="saves"]').click();
+  const downloading = page.waitForEvent('download'); await page.getByRole('button', { name: 'Export save', exact: true }).click();
+  await (await downloading).saveAs(path.join(evidence, 'cave-scenario-playing.save.json'));
+  checkCurrentSession(JSON.parse(await readFile(path.join(evidence, 'cave-scenario-playing.save.json'), 'utf8')), source);
+  const buildEvidence = {}; await downloadWorldBuildReport(page, { out: evidence, provenance: source }, 'cave-scenario-build-report.json', buildEvidence);
+  await page.getByRole('button', { name: 'Close session tools', exact: true }).click();
+  checked('layered scenario exports SAVE4, current replay rules and the frozen application build', { nativeExport: 'cave-scenario-playing.save.json', ...buildEvidence });
 
   const worldTools = page.locator('details.world-tools');
   await worldTools.waitFor({ state: 'visible' });
@@ -262,6 +280,8 @@ try {
   assert(final.scenario.runtime.triggers['wave-1'].lastTime < final.scenario.runtime.triggers['custom-win-1'].lastTime);
   checked('friendly timed wave spawns in the cave and runtime object IDs stay unique', { waveId: wave.id, runtimeObjects: ids.length });
   await page.screenshot({ path: path.join(evidence, 'cave-scenario-victory.png'), fullPage: true });
+  assert.deepEqual(await worldSourceProof(source.sourcePin), source, 'Source changed during layered scenario proof');
+  assert.equal(sha(await readFile(fixturePath)), fixtureSha256, 'Layered map input changed during proof');
   assert.deepEqual(errors, []);
   checked('browser has no uncaught errors');
 } catch (error) {
@@ -275,6 +295,6 @@ try {
   throw error;
 } finally {
   await save('cave-scenario-timeline.json', timeline);
-  await save('result.json', { base, fixture: fixturePath, fixtureHash: fixture.hash, results, errors, failure, checkedAt: new Date().toISOString() });
+  await save('result.json', { base, source, scriptSha256, servedBuild, fixture: fixturePath, fixtureHash: fixture.hash, fixtureSha256, results, errors, failure, checkedAt: new Date().toISOString() });
   await browser.close();
 }

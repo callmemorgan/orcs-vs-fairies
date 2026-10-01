@@ -1,14 +1,25 @@
-import { chromium } from '/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { worldSourceProof, checkCurrentSession, downloadWorldBuildReport, sha } from './world/proof-common.mjs';
+const { chromium } = await import(process.env.OVF_PLAYWRIGHT_MODULE ?? 'playwright');
 
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+process.chdir(root);
 const base = process.argv[2] || 'http://127.0.0.1:5364';
 const evidence = path.resolve(process.env.OVF_EDITOR_EVIDENCE_DIR || 'docs/evidence/scenario-editor-browser-20261001');
-await mkdir(evidence, { recursive: true });
+await mkdir(path.dirname(evidence), { recursive: true }); await mkdir(evidence);
+const source = await worldSourceProof(process.env.OVF_PRODUCTION_SOURCE_COMMIT ?? process.env.OVF_SOURCE_PIN);
+assert.equal(execFileSync('git', ['diff', source.sourcePin, '--name-only', '--', 'scripts/verify_scenario_editor.mjs'], { encoding: 'utf8' }).trim(), '', 'Scenario driver must match the source pin');
+const scriptSha256 = sha(await readFile(fileURLToPath(import.meta.url)));
+execFileSync(process.execPath, ['scripts/verify_served_build.mjs', `${base}/editor.html`, path.join(evidence, 'served-build.json'), path.resolve(process.env.OVF_PROOF_DIST ?? 'dist')], { stdio: 'pipe' });
+const servedBuild = JSON.parse(await readFile(path.join(evidence, 'served-build.json'), 'utf8')); assert.equal(servedBuild.commit, source.sourcePin); assert.equal(servedBuild.sourceSha256, source.buildId);
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 1050 }, acceptDownloads: true });
 const results = [], errors = [];
+let failure;
 page.on('pageerror', error => errors.push(error.message));
 function checked(name, details = {}) { results.push({ name, ...details }); process.stdout.write(`PASS ${name}\n`); }
 async function fill(name, value) { const field = page.getByLabel(name, { exact: true }); await field.fill(String(value)); await field.press('Tab'); }
@@ -36,6 +47,7 @@ try {
   await page.getByRole('button', { name: 'Add Event 2 trigger condition', exact: true }).click();
   await fill('Event 2 trigger condition 2 seconds', 5);
   const created = await exported('convoy-scenario.json');
+  assert.equal(created.simulationVersion, source.saveVersion); assert.equal(created.map.simulationVersion, source.saveVersion);
   assert.equal(created.scenario.army[0].role, 'worker'); assert.equal(created.scenario.escort.route[1].y, 14.5);
   assert.equal(created.scenario.events[0].when.seconds, 2); assert.equal(created.scenario.events[0].actions[0].actors.length, 1);
   assert.equal(created.scenario.events[1].when.type, 'all'); assert.equal(created.scenario.events[1].actions[0].outcome, 'won');
@@ -56,6 +68,14 @@ try {
   checked('scenario export and import preserve the exact graph and pinned map');
   await page.screenshot({ path: path.join(evidence, 'scenario-editor.png'), fullPage: true });
   await page.getByRole('button', { name: 'Play scenario', exact: true }).click();
+  await page.waitForFunction(() => window.editorDiagnostics?.()?.scenario?.runtime.outcome === 'playing');
+  await page.locator('[data-session-tool="saves"]').click();
+  const downloading = page.waitForEvent('download'); await page.getByRole('button', { name: 'Export save', exact: true }).click();
+  await (await downloading).saveAs(path.join(evidence, 'convoy-playing.save.json'));
+  checkCurrentSession(JSON.parse(await readFile(path.join(evidence, 'convoy-playing.save.json'), 'utf8')), source);
+  const buildEvidence = {}; await downloadWorldBuildReport(page, { out: evidence, provenance: source }, 'convoy-build-report.json', buildEvidence);
+  await page.getByRole('button', { name: 'Close session tools', exact: true }).click();
+  checked('authored scenario exports SAVE4, current replay rules and the frozen application build', { nativeExport: 'convoy-playing.save.json', ...buildEvidence });
   await page.waitForFunction(() => window.editorDiagnostics?.()?.scenario?.runtime.outcome === 'won', { timeout: 15000 });
   let diagnostics = await page.evaluate(() => window.editorDiagnostics());
   assert.equal(diagnostics.scenario.runtime.reason, 'Custom victory condition completed.');
@@ -84,12 +104,14 @@ try {
   assert(diagnostics.scenario.entities.find(entity => entity.id === diagnostics.scenario.runtime.labels.commander)?.hp <= 0);
   checked('protected convoy death produces mission failure without headquarters defeat', { tick: diagnostics.tick, reason: diagnostics.scenario.runtime.reason });
   await page.screenshot({ path: path.join(evidence, 'scenario-failure.png'), fullPage: true });
+  assert.deepEqual(await worldSourceProof(source.sourcePin), source, 'Source changed during scenario editor proof');
   assert.deepEqual(errors, []); checked('browser has no uncaught errors');
 } catch (error) {
+  failure = String(error);
   await page.screenshot({ path: path.join(evidence, 'scenario-verification-failure.png'), fullPage: true });
   await writeFile(path.join(evidence, 'scenario-verification-failure.json'), JSON.stringify({ error: String(error), fields: await page.locator('.scenario-authoring [aria-label]').evaluateAll(nodes => nodes.map(node => ({ label: node.getAttribute('aria-label'), visible: !!node.getClientRects().length }))), status: await page.locator('.scenario-authoring [role=status]').allTextContents() }, null, 2));
   throw error;
 } finally {
-  await writeFile(path.join(evidence, 'result.json'), JSON.stringify({ base, results, errors, checkedAt: new Date().toISOString() }, null, 2));
+  await writeFile(path.join(evidence, 'result.json'), JSON.stringify({ base, source, scriptSha256, servedBuild, results, errors, failure, checkedAt: new Date().toISOString() }, null, 2));
   await browser.close();
 }

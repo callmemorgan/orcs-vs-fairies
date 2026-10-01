@@ -1,26 +1,31 @@
-import { chromium } from '/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, readFile, writeFile, rm } from 'node:fs/promises';
-import { execFile } from 'node:child_process';
+import { execFile, execFileSync } from 'node:child_process';
 import { promisify } from 'node:util';
 import { tmpdir } from 'node:os';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
+import { worldSourceProof, checkCurrentSession, downloadWorldBuildReport, sha } from './world/proof-common.mjs';
+const { chromium } = await import(process.env.OVF_PLAYWRIGHT_MODULE ?? 'playwright');
 
 // Run after the combined content/editor build is available. The default server
 // binds an unused loopback port and serves this checkout's production dist.
 // OVF_COMMUNITY_MOD_FIXTURE selects another Lantern-compatible manifest.
 // OVF_COMMUNITY_MOD_DEPENDENCIES is a JSON array of exact dependency file paths.
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+process.chdir(root);
 const evidence = path.resolve(process.env.OVF_EDITOR_EVIDENCE_DIR || path.join(root, 'docs/evidence/community-mod-browser-20261001'));
-const staticDir = path.resolve(process.env.OVF_COMMUNITY_MOD_STATIC_DIR || path.join(root, 'dist'));
+const staticDir = path.resolve(process.env.OVF_COMMUNITY_MOD_STATIC_DIR || process.env.OVF_PROOF_DIST || path.join(root, 'dist'));
 const fixturePath = path.resolve(process.env.OVF_COMMUNITY_MOD_FIXTURE || path.join(root, 'public/mods/lantern/manifest.json'));
 const dependencyPaths = JSON.parse(process.env.OVF_COMMUNITY_MOD_DEPENDENCIES || '[]');
 assert(Array.isArray(dependencyPaths) && dependencyPaths.every(value => typeof value === 'string'), 'Dependencies must be a JSON array of file paths');
 const port = Number(process.env.OVF_COMMUNITY_MOD_PORT || 0);
 assert(Number.isSafeInteger(port) && port >= 0 && port <= 65535 && port !== 4173, 'Choose an unused local port; the root preview port 4173 is reserved');
-await mkdir(evidence, { recursive: true });
+await mkdir(path.dirname(evidence), { recursive: true }); await mkdir(evidence);
+const source = await worldSourceProof(process.env.OVF_PRODUCTION_SOURCE_COMMIT ?? process.env.OVF_SOURCE_PIN);
+assert.equal(execFileSync('git', ['diff', source.sourcePin, '--name-only', '--', 'scripts/verify_community_mod.mjs'], { encoding: 'utf8' }).trim(), '', 'Community mod driver must match the source pin');
+const scriptSha256 = sha(await readFile(fileURLToPath(import.meta.url))), inputHashes = {};
 const results = [], errors = [];
 let helperDir, dataDir, server, browser, publisherPage, receiverPage, base, failure, helpers, publisherAccount;
 let original, updated, originalBundle, updatedBundle, publishedOriginal, publishedUpdated;
@@ -221,9 +226,10 @@ try {
   await promisify(execFile)(path.join(root, 'node_modules/.bin/esbuild'), [entry, '--bundle', '--platform=node', '--format=esm', '--packages=external', `--outfile=${bundle}`]);
   helpers = await import(pathToFileURL(bundle).href);
   const sourceText = await readFile(fixturePath, 'utf8');
+  inputHashes[fixturePath] = sha(sourceText);
   original = helpers.decodeContentPackage(JSON.parse(sourceText));
   const dependencies = [];
-  for (const file of dependencyPaths) dependencies.push(helpers.decodeContentPackage(JSON.parse(await readFile(path.resolve(file), 'utf8'))));
+  for (const file of dependencyPaths) { const input = path.resolve(file), bytes = await readFile(input); inputHashes[input] = sha(bytes); dependencies.push(helpers.decodeContentPackage(JSON.parse(bytes.toString()))); }
   // Default proof exercises recursive dependency downloads, using two small
   // faction-only manifests so Lantern's gameplay definitions stay unchanged.
   if (dependencies.length === 0 && original.dependencies.length === 0) {
@@ -273,6 +279,7 @@ try {
   for (const page of [publisherPage, receiverPage]) { page.setDefaultTimeout(15000); page.on('pageerror', error => errors.push(error.message)); }
   const publisherBuild = await openWorkbench(publisherPage), receiverBuild = await openWorkbench(receiverPage);
   await promisify(execFile)(process.execPath, [path.join(root, 'scripts/verify_served_build.mjs'), `${base}/editor.html`, path.join(evidence, 'served-build.json'), staticDir], { cwd: root });
+  const servedBuild = JSON.parse(await readFile(path.join(evidence, 'served-build.json'), 'utf8')); assert.equal(servedBuild.commit, source.sourcePin); assert.equal(servedBuild.sourceSha256, source.buildId);
   const suffix = Date.now().toString(36);
   const author = await register(publisherPage, `ModPublisher${suffix}`);
   publisherAccount = author;
@@ -284,7 +291,8 @@ try {
   assert.deepEqual(receiverAssets, publisherAssets, 'Both browser profiles receive the same production entry assets');
   const sourceHead = await promisify(execFile)('git', ['rev-parse', 'HEAD'], { cwd: root });
   const sourceStatus = await promisify(execFile)('git', ['status', '--short'], { cwd: root });
-  await save('production-build.json', { staticDir, publisherBuild, receiverBuild, sourceCommit: sourceHead.stdout.trim(), sourceStatus: sourceStatus.stdout.trim(), servedEntryAssets: publisherAssets, serverBundleSha256: createHash('sha256').update(await readFile(bundle)).digest('hex') });
+  assert.equal(sourceHead.stdout.trim(), source.sourcePin);
+  await save('production-build.json', { staticDir, publisherBuild, receiverBuild, source, scriptSha256, inputHashes, sourceCommit: sourceHead.stdout.trim(), sourceStatus: sourceStatus.stdout.trim(), servedEntryAssets: publisherAssets, serverBundleSha256: createHash('sha256').update(await readFile(bundle)).digest('hex') });
   checked('real temporary server serves production output to two independent authenticated profiles');
 
   const byId = new Map([...dependencies, original].map(pkg => [pkg.id, pkg])), published = new Set();
@@ -364,6 +372,13 @@ try {
   await save('community-mod-trained.json', trained);
   await receiverPage.screenshot({ path: path.join(evidence, 'community-mod-trained.png'), fullPage: true });
   checked('ordinary custom producer trains two same-role definitions with authored costs, names, health, combat stats and SVG art');
+  await receiverPage.locator('[data-session-tool="saves"]').click();
+  const nativeDownloading = receiverPage.waitForEvent('download'); await receiverPage.getByRole('button', { name: 'Export save', exact: true }).click();
+  await (await nativeDownloading).saveAs(path.join(evidence, 'community-mod-trained.save.json'));
+  checkCurrentSession(JSON.parse(await readFile(path.join(evidence, 'community-mod-trained.save.json'), 'utf8')), source);
+  const buildEvidence = {}; await downloadWorldBuildReport(receiverPage, { out: evidence, provenance: source }, 'community-mod-build-report.json', buildEvidence);
+  await receiverPage.getByRole('button', { name: 'Close session tools', exact: true }).click();
+  checked('installed mod match exports SAVE4, current replay rules and the frozen application build', { nativeExport: 'community-mod-trained.save.json', ...buildEvidence });
 
   publishedUpdated = await publishFile(path.join(evidence, 'mod-updated.json'), updated);
   assert.notEqual(publishedUpdated.detail.hash, publishedOriginal.detail.hash);
@@ -401,6 +416,7 @@ try {
   const scenarioFile = path.join(evidence, 'authored-pinned-lantern-scenario.json');
   await (await scenarioDownloading).saveAs(scenarioFile);
   const scenarioPackage = helpers.decodeScenarioPackage(JSON.parse(await readFile(scenarioFile, 'utf8')));
+  assert.equal(scenarioPackage.simulationVersion, source.saveVersion); assert.equal(scenarioPackage.map.simulationVersion, source.saveVersion);
   assert.deepEqual(scenarioPackage.scenario.content, originalBundle);
   assert.equal(scenarioPackage.scenario.army[0].definitionId, recruits[1].id);
   const scenarioPublication = await publishFile(scenarioFile, scenarioPackage);
@@ -427,6 +443,8 @@ try {
   await save('played-pinned-lantern-scenario.json', playedScenario);
   await receiverPage.screenshot({ path: path.join(evidence, 'pinned-lantern-scenario-victory.png'), fullPage: true });
   checked('native authoring, remote publication, installation and scenario launch preserve the old mod closure and custom actor definition');
+  assert.deepEqual(await worldSourceProof(source.sourcePin), source, 'Source changed during community mod proof');
+  for (const [input, digest] of Object.entries(inputHashes)) assert.equal(sha(await readFile(input)), digest, `Mod input changed during proof: ${input}`);
   assert.deepEqual(errors, []);
   checked('both production browser profiles have no uncaught errors');
 } catch (error) {
@@ -437,7 +455,7 @@ try {
   }
   throw error;
 } finally {
-  await save('result.json', { base, staticDir, fixturePath, results, errors, failure, checkedAt: new Date().toISOString(), scope: 'Temporary local real server and production browsers; community publication, immutable installation, normal mod play/build/train, exact pinned root closure and authored custom-content scenario publication/install/play.' });
+  await save('result.json', { base, staticDir, fixturePath, source, scriptSha256, inputHashes, results, errors, failure, checkedAt: new Date().toISOString(), scope: 'Temporary local real server and production browsers; community publication, immutable installation, normal mod play/build/train, exact pinned root closure and authored custom-content scenario publication/install/play.' });
   await browser?.close();
   await server?.close();
   if (dataDir) await rm(dataDir, { recursive: true, force: true });
