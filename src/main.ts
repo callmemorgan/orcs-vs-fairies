@@ -91,6 +91,7 @@ const onlineApi=new OnlineApi();
 let lastAutosaveTime=0,autosaveFailure=false,replacementGeneration=0;
 const playerSide=():Side=>scene?.viewSide??0;
 const callbacks:HudCallbacks={
+ economyReserved:()=>onlineRender?.economy?.recruits.length??scene?.state.economy?.recruits.filter(r=>r.side===playerSide()).length??0,
  build:(role,definitionId)=>{scene?.setBuildRole(role,definitionId);shell.notice('Choose a clear location on explored ground. Right-click to cancel.');},
  train:(role,definitionId)=>{if(!scene)return;const id=scene.selected.find(id=>scene!.state.entities.some(e=>e.id===id&&e.side===playerSide()&&e.kind==='building'&&e.role===(role==='worker'?'hq':'barracks')));if(id===undefined||!scene.command({type:'train',id,role,definitionId}))shell.notice('Cannot recruit: check resources, population, and production building.');},
  cancelTrain:(id,index,expectedQueue)=>{if(!scene||scene.paused)return;const producer=scene.state.entities.find(e=>e.id===id);if(!producer||productionQueueKey(producer)!==expectedQueue)return;if(scene.command({type:'cancelTrain',id,index})){shell.update(scene.state,scene.selected,callbacks);shell.notice('Recruitment canceled. Resources refunded.');}},

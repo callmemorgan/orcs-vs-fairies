@@ -8,7 +8,7 @@ import type { Entity, GameState, UnitRole } from '../core/types';
 export function captureDigitHotkeys(paused:boolean,finished:boolean){return !paused&&!finished;}
 
 /** Explain target-dependent actions using the same radii and ownership as gameplay. */
-export function abilityTargetReason(state:GameState,casters:Entity[]):string {
+export function abilityTargetReason(state:GameState,casters:Entity[],reservedSupply?:number):string {
   let reason='';
   for(const caster of casters){
     if((caster.abilityReadyAt??0)>state.time)continue;
@@ -16,7 +16,7 @@ export function abilityTargetReason(state:GameState,casters:Entity[]):string {
     const nearby=state.entities.filter(e=>e.side===caster.side&&sameLevel(e,caster)&&e.hp>0&&e.kind==='unit'&&!e.illusion&&Math.hypot(e.x-caster.x,e.y-caster.y)<5);
     if(ability==='raise'){
       const player=state.players[caster.side];
-      const reserved=state.entities.filter(e=>e.side===caster.side&&sameLevel(e,caster)&&e.hp>0).reduce((n,e)=>n+e.queue.length,0);
+      const reserved=reservedSupply??state.entities.filter(e=>e.side===caster.side&&e.hp>0).reduce((n,e)=>n+e.queue.length,0)+(state.economy?.recruits.filter(r=>r.side===caster.side).length??0);
       if(player.population+reserved>=player.cap){reason='Build a depot for supply';continue;}
       const corpse=state.corpses.some(c=>c.expires>state.time&&sameLevel(c,caster)&&Math.hypot(c.x-caster.x,c.y-caster.y)<=6&&isVisible(state,caster.side,c.x,c.y,levelOf(c))&&walkable(state,c.x,c.y,levelOf(c)));
       if(!corpse){reason='No usable corpses within 6 tiles';continue;}

@@ -1,5 +1,6 @@
 import type { PlayerObservation } from '../online/protocol';
 import type { Side } from '../core/types';
+import type { EconomyView } from '../core/economy-types';
 
 /** Merge historical permitted teammate frames; never consult live authoritative state. */
 export function teamObservation(views:PlayerObservation[],perspective:Side):PlayerObservation {
@@ -31,7 +32,17 @@ export function teamObservation(views:PlayerObservation[],perspective:Side):Play
     creatures:unionById(worlds.map(world=>world.creatures)),
     fires:[...new Map(worlds.flatMap(world=>world.fires).map(fire=>[`${fire.level},${fire.x},${fire.y}`,fire])).values()],
   }:undefined;
-  return {...base,...(world?{world}:{}),teamPerspective:true,teamPlayers:members.map(view=>({side:view.side,player:view.player})),
+  const economies=members.flatMap(view=>view.economy?[view.economy]:[]),economyBase=base.economy??economies[0];
+  // Team spectators share disclosed markers. Local stores, assignments and ledgers
+  // keep the selected seat's privacy rules, as world-site loyalty does above.
+  const economy:EconomyView|undefined=economyBase?{...structuredClone(economyBase),
+    deepSites:[...new Set(economies.flatMap(view=>view.deepSites))],groves:structuredClone(unionById(economies.map(view=>view.groves))),
+    markets:structuredClone(unionById(economies.map(view=>view.markets))),salvage:structuredClone(unionById(economies.map(view=>view.salvage))),
+    structures:[...new Map(economies.flatMap(view=>view.structures).map(item=>[item.entityId,item])).values()].map(item=>({...structuredClone(item),stock:item.side===perspective?{...(base.economy?.structures.find(own=>own.entityId===item.entityId)?.stock??{wood:0,ore:0,crystal:0})}:{wood:0,ore:0,crystal:0}})),
+    caravans:[...new Map(economies.flatMap(view=>view.caravans).map(item=>[item.entityId,item])).values()].map(item=>item.side===perspective?structuredClone(base.economy?.caravans.find(own=>own.entityId===item.entityId)??item):({...structuredClone(item),stock:{wood:0,ore:0,crystal:0},tradeValue:0,sourceId:undefined,destinationId:undefined,contractId:undefined,task:undefined})),
+    contracts:structuredClone(unionById(economies.map(view=>view.contracts.filter(contract=>contract.side===null||contract.side===perspective)))),
+  }:undefined;
+  return {...base,...(world?{world}:{}),...(economy?{economy}:{}),teamPerspective:true,teamPlayers:members.map(view=>({side:view.side,player:view.player})),
     entities:[...entities.values()].sort((a,b)=>a.id-b.id),resources:[...resources.values()].sort((a,b)=>a.id-b.id).map(resource=>({...resource,visible:visible.has((resource.level??0)*base.map.width*base.map.height+Math.floor(resource.y)*base.map.width+Math.floor(resource.x))})),corpses:[...corpses.values()].sort((a,b)=>a.id-b.id),events:[...events.values()].sort((a,b)=>a.tick-b.tick),
     map:{...base.map,terrain:base.map.terrain.map((tile,index)=>tile??members.map(view=>view.map.terrain[index]).find(tile=>tile!==null)??null),starts:base.map.starts.map((point,index)=>point??members.map(view=>view.map.starts[index]).find(point=>point!==null)??null)},
     visible:[...visible].sort((a,b)=>a-b),explored:[...new Set(members.flatMap(view=>view.explored))].sort((a,b)=>a-b)};

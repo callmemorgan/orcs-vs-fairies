@@ -1,10 +1,16 @@
 import fs from 'node:fs';
 import { createMatch, issueCommand, refreshVisibility, stepGame } from '../../src/core/simulation';
+import { generateWorldMap } from '../../src/core/world-map';
+import { createContentBundle } from '../../src/core/content-registry';
+import { exampleMod } from '../../src/core/example-mod';
 import { ensureEconomy } from '../../src/core/economy';
 import { createSessionFile } from '../../src/core/session-storage';
 import type { Entity, ResourceKind } from '../../src/core/types';
-const s=createMatch({map:{seed:4127,size:'small'},players:[{id:0,teamId:0,factionId:'orcs',controller:'external',handicap:{startingResources:{wood:12000,ore:12000,crystal:1000},populationCap:100}},{id:1,teamId:1,factionId:'fairies',controller:'external',handicap:{startingResources:{wood:12000,ore:12000,crystal:1000},populationCap:100}}],rules:{startingAge:3}});
-s.terrain.fill('grass');s.resources=[];
+const mixed=process.argv.includes('--mixed'),world=mixed?generateWorldMap(4127,'small',2,'forest'):undefined;
+if(world){for(const level of world.levels){level.terrain.fill('grass');level.elevation.fill(0);}world.sites.push({id:99,x:18.5,y:18.5,level:0,kind:'village'});}
+const content=mixed?createContentBundle([exampleMod()]):undefined;
+const s=createMatch({...(content?{content}:{}),map:{seed:4127,size:'small',...(world?{world,biome:'forest' as const}:{})},players:[{id:0,teamId:0,factionId:mixed?'lantern:keepers':'orcs',controller:'external',handicap:{startingResources:{wood:12000,ore:12000,crystal:1000},populationCap:100}},{id:1,teamId:1,factionId:'fairies',controller:'external',handicap:{startingResources:{wood:12000,ore:12000,crystal:1000},populationCap:100}}],rules:{startingAge:3}});
+s.terrain.fill('grass');s.resources=[];if(s.world){s.world.creatures=[];s.world.sites=s.world.sites.filter(site=>site.kind!=='monster');for(const site of s.world.sites)site.creatureIds=[];Object.assign(s.world,{dayLength:10000,seasonLength:10000,weatherLength:10000});}
 const economy=ensureEconomy(s),workers=(side=0)=>s.entities.filter(e=>e.side===side&&e.kind==='unit'&&e.role==='worker'&&!economy.caravans.includes(e.id));
 const run=(seconds:number)=>{for(let i=0;i<seconds*20;i++)stepGame(s,.05);};
 const accept=(side:0|1,c:Parameters<typeof issueCommand>[2])=>{if(!issueCommand(s,side,c))throw new Error(`Scenario command rejected: ${JSON.stringify(c)}`);};
@@ -23,8 +29,9 @@ economy.salvage.push({id:s.nextId++,x:7.5,y:15.5,stock:{wood:30,ore:20,crystal:0
 for(const contract of economy.contracts){contract.status='open';contract.side=null;contract.delivered=0;contract.deadline=s.time+180;}
 for(const [i,w] of workers().entries()){const positions=[{x:7.5,y:11.5},{x:3.5,y:7.5},{x:16.5,y:5.5},{x:18.5,y:17.5},{x:6.5,y:15.5}];Object.assign(w,positions[i]??positions[0]);w.order={type:'idle'};w.path=[];w.carried=0;}
 const soldier=s.entities.find(e=>e.side===0&&e.kind==='unit'&&e.role==='melee')!;soldier.x=21.5;soldier.y=16.5;soldier.order={type:'hold'};
-const market=economy.markets[0];workers()[3].x=market.x;workers()[3].y=market.y+1;
+const market=economy.markets.find(m=>(m.level??0)===0)!;workers()[3].x=market.x;workers()[3].y=market.y+1;
 for(const caravan of s.entities.filter(e=>economy.caravans.includes(e.id))){caravan.x=originalHQ.x+4;caravan.y=originalHQ.y+2+economy.caravans.indexOf(caravan.id);caravan.order={type:'idle'};}
 for(const worker of workers(1)){worker.x=29.5;worker.y=31.5;worker.order={type:'idle'};}
+if(mixed){const caveWorker={...structuredClone(workers()[0]),id:s.nextId++,x:18.5,y:26.5,level:1,order:{type:'idle' as const},path:[],carried:0};s.entities.push(caveWorker);s.resources.push({id:s.nextId++,x:21.5,y:26.5,level:1,kind:'crystal',amount:600,maxAmount:600},{id:s.nextId++,x:7.5,y:11.5,level:1,kind:'crystal',amount:777,maxAmount:777});}
 refreshVisibility(s);
 const destination=process.argv[2]??'docs/evidence/economy-settlements-20261001/browser-scenario.json';fs.mkdirSync(destination.slice(0,destination.lastIndexOf('/')),{recursive:true});fs.writeFileSync(destination,JSON.stringify(createSessionFile(s),null,2));console.log(JSON.stringify({destination,tick:s.tick,time:s.time,structures:economy.structures.map(e=>e.entityId),caravans:economy.caravans}));

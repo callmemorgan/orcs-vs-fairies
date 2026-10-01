@@ -123,3 +123,18 @@ describe('economy panel lifecycle',()=>{
     const fixture=setup();control(fixture.root,'Close economy and settlements').click();const other=document.createElement('section');other.setAttribute('role','dialog');other.setAttribute('aria-modal','true');document.body.append(other);fixture.root.querySelector<HTMLButtonElement>('[data-economy-launch]')!.click();expect(fixture.onModal.mock.calls.filter(([open])=>open)).toHaveLength(1);fixture.tools.update({blocked:true});expect(fixture.root.querySelector<HTMLButtonElement>('[data-economy-launch]')!.disabled).toBe(true);
   });
 });
+
+describe('economy panel layer compatibility',()=>{
+ it('disables surface resource and warehouse targets for an underground worker',()=>{
+  const f=setup();for(const worker of f.workers.slice(0,2))worker.level=1;
+  f.setResources([{id:500,kind:'crystal',x:10,y:10,level:0,amount:100,maxAmount:100,visible:true},{id:501,kind:'ore',x:10,y:12,level:0,amount:0,maxAmount:100,visible:true}]);
+  const warehouse=addWarehouse(f);f.tools.update();expect(input<HTMLSelectElement>(f.root,'Crystal deposit').options[0].disabled).toBe(true);expect(input<HTMLSelectElement>(f.root,'Crystal deposit').options[0].textContent).toContain('Surface');expect(control(f.root,'Build crystal extractor').disabled).toBe(true);expect(control(f.root,'Build deep mine').disabled).toBe(true);
+  control(f.root,'Settlements and contracts').click();f.tools.update();expect(input<HTMLSelectElement>(f.root,'Worker delivery warehouse').options[0].value).toBe(String(warehouse.id));expect(input<HTMLSelectElement>(f.root,'Worker delivery warehouse').options[0].disabled).toBe(true);expect(control(f.root,'Assign worker warehouse').disabled).toBe(true);expect(f.submit).not.toHaveBeenCalled();
+ });
+ it('explains a mixed-layer worker selection before accepting a planting order',()=>{
+  const f=setup();f.workers[0].level=1;f.tools.update();expect(control(f.root,'Plant grove').disabled).toBe(true);expect(control(f.root,'Plant grove').title).toContain('one map level');
+ });
+ it('disables stock and accepted contract delivery across caravan layers',()=>{
+  const f=setup(),warehouse=addWarehouse(f),cart=addCaravan(f);cart.level=1;f.view.caravans[0].level=1;f.view.contracts.push({id:600,villageId:601,x:20,y:20,level:0,side:0,kind:'wood',amount:60,delivered:0,deadline:180,reward:zero(),status:'accepted'});f.tools.update();control(f.root,'Settlements and contracts').click();set(f.root,'Delivery stock destination',String(warehouse.id));expect(control(f.root,'Deliver stock').disabled).toBe(true);expect(control(f.root,'Deliver stock').title).toContain('same map level');expect(control(f.root,'Deliver contract').disabled).toBe(true);expect(control(f.root,'Deliver contract').title).toContain('same map level');
+ });
+});

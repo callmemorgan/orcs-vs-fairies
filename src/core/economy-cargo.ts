@@ -294,7 +294,7 @@ export function tickCargo(s:GameState,dt:number,economy:EconomyState,hooks:Econo
  }
  for(const cargo of economy.cargo){
   const entity=entityFor(s,cargo.entityId);
-  if(!entity||economy.tasks.some(task=>task.entityId===entity.id)||costTotal(cargo.stock)<=EPSILON)continue;
+  if(!entity||economy.tasks.some(task=>task.entityId===entity.id)||costTotal(cargo.stock)<=EPSILON||entity.order.type!=='idle'&&entity.order.type!=='hold')continue;
   cargo.origin='delivery';cargo.tradeValue=0;delete cargo.contractId;
   const target=nearestStorage(s,entity,economy);
   if(target&&distance(entity,target)<=hooks.radius(s,target)+1)depositCargo(s,entity,target,cargo,economy);

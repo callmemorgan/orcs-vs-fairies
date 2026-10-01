@@ -206,7 +206,7 @@ describe('seasonal lake crossings',()=>{
  });
  it('saves a crossing destroyed, rebuilt and destroyed again during the same winter',()=>{
   const s=createGame('orcs',1977,'undead',{controllers:['human','human'],mapSize:'small'}) as TestState;
-  s.width=16;s.height=16;s.terrain=Array(256).fill('grass');s.resources=[];s.starts=[{x:1.5,y:1.5},{x:14.5,y:14.5}];
+  s.width=16;s.height=16;s.terrain=Array(256).fill('grass');s.resources=[];delete s.economy;s.starts=[{x:1.5,y:1.5},{x:14.5,y:14.5}];
   const actor=s.entities.find(e=>e.side===0&&e.role==='melee')!,other=s.entities.find(e=>e.side===1&&e.role==='worker')!;
   s.entities=s.entities.filter(e=>e.role==='hq'||e===actor||e===other);
   for(const e of s.entities){e.x=e.side===0?1.5:14.5;e.y=e.side===0?1.5:14.5;e.path=[];e.order={type:'idle'};}

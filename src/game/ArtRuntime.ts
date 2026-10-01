@@ -20,7 +20,7 @@ export default class ArtRuntime {
   constructor(private scene:Phaser.Scene,public enabled=true){}
   preload(factions:FactionId[],content?:ContentBundle){
     const definitions=contentFactions(content);this.customArt=contentArt(content);
-    this.requiredIds=new Set(factions.flatMap(id=>[...(definitions[id].unitDefinitions??Object.values(definitions[id].units)),...(definitions[id].buildingDefinitions??Object.values(definitions[id].buildings))].map(a=>a.artId??a.id)));
+    this.requiredIds=new Set(factions.flatMap(id=>[...(definitions[id].unitDefinitions??Object.values(definitions[id].units)),...(definitions[id].buildingDefinitions??Object.values(definitions[id].buildings))].filter(a=>!a.id.startsWith('economy:')).map(a=>a.artId??a.id)));
     if(!this.enabled)return;
     for(const id of this.requiredIds){const art=this.customArt[id];if(art)this.scene.load.svg(`mod:${id}`,svgDataUrl(art.svg),{width:art.width,height:art.height});}
     this.scene.load.once('filecomplete-json-rts-manifest',(_key:string,_type:string,data:Manifest)=>{
