@@ -1,0 +1,556 @@
+[
+  {
+    "name": "hill-duel",
+    "config": {
+      "map": {
+        "seed": 4127,
+        "size": "small"
+      },
+      "players": [
+        {
+          "id": 0,
+          "teamId": 0,
+          "factionId": "orcs",
+          "controller": "ai"
+        },
+        {
+          "id": 1,
+          "teamId": 1,
+          "factionId": "fairies",
+          "controller": "ai"
+        }
+      ],
+      "rules": {
+        "mode": "hill",
+        "startingAge": 3,
+        "startingResources": {
+          "wood": 1400,
+          "ore": 1000,
+          "crystal": 500
+        },
+        "hill": {
+          "captureTicks": 40,
+          "holdTicks": 400
+        }
+      }
+    },
+    "tick": 714,
+    "time": 35.70000000000011,
+    "winner": 0,
+    "winningTeam": 0,
+    "headquarters": [
+      {
+        "side": 0,
+        "hp": 1800
+      },
+      {
+        "side": 1,
+        "hp": 1650
+      }
+    ],
+    "objectives": {
+      "hill": {
+        "x": 18.5,
+        "y": 18.5,
+        "ownerTeam": 0,
+        "captureTeam": null,
+        "captureTicks": 0,
+        "holdTicks": 400,
+        "contested": false
+      },
+      "relics": [],
+      "relicHoldTicks": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "survival": {
+        "wave": 0,
+        "nextWaveTick": 0,
+        "spawnedIds": [],
+        "phase": "waiting"
+      }
+    },
+    "checksum": "1d1a9939",
+    "authoritativeSha256": "cafa64255df639eb1f4a46d187a29d9cc367ce7b44a21ebe94ed3e90fa594ba9",
+    "resumeTick": 300,
+    "resumeTicks": [
+      300
+    ],
+    "firstDifference": null,
+    "waves": []
+  },
+  {
+    "name": "relic-duel",
+    "config": {
+      "map": {
+        "seed": 4127,
+        "size": "small"
+      },
+      "players": [
+        {
+          "id": 0,
+          "teamId": 0,
+          "factionId": "orcs",
+          "controller": "ai"
+        },
+        {
+          "id": 1,
+          "teamId": 1,
+          "factionId": "fairies",
+          "controller": "external"
+        }
+      ],
+      "rules": {
+        "mode": "relic",
+        "startingAge": 3,
+        "relic": {
+          "count": 3,
+          "required": 2,
+          "holdTicks": 400
+        }
+      }
+    },
+    "tick": 911,
+    "time": 45.54999999999955,
+    "winner": 0,
+    "winningTeam": 0,
+    "headquarters": [
+      {
+        "side": 0,
+        "hp": 1800
+      },
+      {
+        "side": 1,
+        "hp": 1650
+      }
+    ],
+    "objectives": {
+      "hill": {
+        "x": 18.5,
+        "y": 18.5,
+        "ownerTeam": null,
+        "captureTeam": null,
+        "captureTicks": 0,
+        "holdTicks": 0,
+        "contested": false
+      },
+      "relics": [
+        {
+          "id": 1,
+          "x": 13.821790598494387,
+          "y": 19.648086003344922,
+          "carrierId": 7,
+          "heldTeam": null
+        },
+        {
+          "id": 2,
+          "x": 7.514098600940892,
+          "y": 11.496898062630565,
+          "carrierId": null,
+          "heldTeam": 0
+        },
+        {
+          "id": 3,
+          "x": 10.305275505300278,
+          "y": 10.259439781949025,
+          "carrierId": null,
+          "heldTeam": 0
+        }
+      ],
+      "relicHoldTicks": [
+        400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "survival": {
+        "wave": 0,
+        "nextWaveTick": 0,
+        "spawnedIds": [],
+        "phase": "waiting"
+      }
+    },
+    "checksum": "b61e4c6a",
+    "authoritativeSha256": "46bb12f86b6cad8aaaa9d8c88aed0478bc2f0610ce6f92a7cf19e61442c72cac",
+    "resumeTick": 300,
+    "resumeTicks": [
+      300
+    ],
+    "firstDifference": null,
+    "waves": []
+  },
+  {
+    "name": "relic-contested",
+    "config": {
+      "map": {
+        "seed": 4127,
+        "size": "small"
+      },
+      "players": [
+        {
+          "id": 0,
+          "teamId": 0,
+          "factionId": "orcs",
+          "controller": "ai"
+        },
+        {
+          "id": 1,
+          "teamId": 1,
+          "factionId": "fairies",
+          "controller": "ai"
+        }
+      ],
+      "rules": {
+        "mode": "relic",
+        "startingAge": 3,
+        "startingResources": {
+          "wood": 1400,
+          "ore": 1000,
+          "crystal": 500
+        },
+        "relic": {
+          "count": 3,
+          "required": 2,
+          "holdTicks": 400
+        }
+      }
+    },
+    "tick": 783,
+    "time": 39.14999999999991,
+    "winner": 1,
+    "winningTeam": 1,
+    "headquarters": [
+      {
+        "side": 0,
+        "hp": 1800
+      },
+      {
+        "side": 1,
+        "hp": 1650
+      }
+    ],
+    "objectives": {
+      "hill": {
+        "x": 18.5,
+        "y": 18.5,
+        "ownerTeam": null,
+        "captureTeam": null,
+        "captureTicks": 0,
+        "holdTicks": 0,
+        "contested": false
+      },
+      "relics": [
+        {
+          "id": 1,
+          "x": 29.454731817838173,
+          "y": 24.668787966380858,
+          "carrierId": null,
+          "heldTeam": 1
+        },
+        {
+          "id": 2,
+          "x": 24.543414894676076,
+          "y": 29.08667879578541,
+          "carrierId": null,
+          "heldTeam": 1
+        },
+        {
+          "id": 3,
+          "x": 10.341564581199123,
+          "y": 10.272919162392167,
+          "carrierId": null,
+          "heldTeam": 0
+        }
+      ],
+      "relicHoldTicks": [
+        0,
+        400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "survival": {
+        "wave": 0,
+        "nextWaveTick": 0,
+        "spawnedIds": [],
+        "phase": "waiting"
+      }
+    },
+    "checksum": "e05f57e6",
+    "authoritativeSha256": "64757950923439b139fae8b85a43747598a953be39197aa93fe56339197256a3",
+    "resumeTick": 300,
+    "resumeTicks": [
+      300
+    ],
+    "firstDifference": null,
+    "waves": []
+  },
+  {
+    "name": "hill-2v2",
+    "config": {
+      "map": {
+        "seed": 4127,
+        "size": "small"
+      },
+      "players": [
+        {
+          "id": 0,
+          "teamId": 0,
+          "factionId": "orcs",
+          "controller": "ai"
+        },
+        {
+          "id": 1,
+          "teamId": 0,
+          "factionId": "fairies",
+          "controller": "ai"
+        },
+        {
+          "id": 2,
+          "teamId": 1,
+          "factionId": "orcs",
+          "controller": "ai"
+        },
+        {
+          "id": 3,
+          "teamId": 1,
+          "factionId": "fairies",
+          "controller": "ai"
+        }
+      ],
+      "rules": {
+        "mode": "hill",
+        "startingAge": 3,
+        "startingResources": {
+          "wood": 1400,
+          "ore": 1000,
+          "crystal": 500
+        },
+        "hill": {
+          "captureTicks": 40,
+          "holdTicks": 400
+        }
+      }
+    },
+    "tick": 823,
+    "time": 41.1499999999998,
+    "winner": 2,
+    "winningTeam": 1,
+    "headquarters": [
+      {
+        "side": 0,
+        "hp": 1800
+      },
+      {
+        "side": 1,
+        "hp": 1650
+      },
+      {
+        "side": 2,
+        "hp": 1800
+      },
+      {
+        "side": 3,
+        "hp": 1650
+      }
+    ],
+    "objectives": {
+      "hill": {
+        "x": 32.5,
+        "y": 32.5,
+        "ownerTeam": 1,
+        "captureTeam": null,
+        "captureTicks": 0,
+        "holdTicks": 400,
+        "contested": false
+      },
+      "relics": [],
+      "relicHoldTicks": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "survival": {
+        "wave": 0,
+        "nextWaveTick": 0,
+        "spawnedIds": [],
+        "phase": "waiting"
+      }
+    },
+    "checksum": "72ec4576",
+    "authoritativeSha256": "5a6a6e23ba113509eb868e02e544049aee5836b19dca188872a561be76240c83",
+    "resumeTick": 300,
+    "resumeTicks": [
+      300
+    ],
+    "firstDifference": null,
+    "waves": []
+  },
+  {
+    "name": "survival-five-waves",
+    "config": {
+      "map": {
+        "seed": 4127,
+        "size": "small"
+      },
+      "players": [
+        {
+          "id": 0,
+          "teamId": 0,
+          "factionId": "automata",
+          "controller": "ai"
+        },
+        {
+          "id": 1,
+          "teamId": 1,
+          "factionId": "orcs",
+          "controller": "external"
+        }
+      ],
+      "rules": {
+        "mode": "survival",
+        "startingAge": 3,
+        "startingResources": {
+          "wood": 2400,
+          "ore": 1800,
+          "crystal": 600
+        },
+        "survival": {
+          "waveCount": 5,
+          "intervalTicks": 2400,
+          "recoveryTicks": 300,
+          "unitsPerWave": 1
+        }
+      }
+    },
+    "tick": 11831,
+    "time": 591.5500000000097,
+    "winner": 0,
+    "winningTeam": 0,
+    "headquarters": [
+      {
+        "side": 0,
+        "hp": 1750
+      },
+      {
+        "side": 0,
+        "hp": 6
+      }
+    ],
+    "objectives": {
+      "hill": {
+        "x": 18.5,
+        "y": 18.5,
+        "ownerTeam": null,
+        "captureTeam": null,
+        "captureTicks": 0,
+        "holdTicks": 0,
+        "contested": false
+      },
+      "relics": [],
+      "relicHoldTicks": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "survival": {
+        "wave": 5,
+        "nextWaveTick": 9768,
+        "spawnedIds": [
+          83,
+          84,
+          85,
+          86,
+          87
+        ],
+        "phase": "complete"
+      }
+    },
+    "checksum": "995d40a8",
+    "authoritativeSha256": "0099e263eaab2183cc9ed9c529c185c51e7df85f5048f3e2b64a03ac96c1d782",
+    "resumeTick": 300,
+    "resumeTicks": [
+      300,
+      7475,
+      7899,
+      8936,
+      9468
+    ],
+    "firstDifference": null,
+    "waves": [
+      {
+        "tick": 2400,
+        "wave": 1,
+        "attackers": 1,
+        "roles": [
+          "melee"
+        ]
+      },
+      {
+        "tick": 7775,
+        "wave": 2,
+        "attackers": 2,
+        "roles": [
+          "spear",
+          "ranged"
+        ]
+      },
+      {
+        "tick": 8199,
+        "wave": 3,
+        "attackers": 3,
+        "roles": [
+          "melee",
+          "special",
+          "siege"
+        ]
+      },
+      {
+        "tick": 9236,
+        "wave": 4,
+        "attackers": 4,
+        "roles": [
+          "melee",
+          "special",
+          "siege",
+          "cavalry"
+        ]
+      },
+      {
+        "tick": 9768,
+        "wave": 5,
+        "attackers": 5,
+        "roles": [
+          "melee",
+          "special",
+          "siege",
+          "cavalry",
+          "melee"
+        ]
+      }
+    ]
+  }
+]
