@@ -1,0 +1,78 @@
+{
+  "status": "passed",
+  "method": "Read retained public CLI stdout. Recompute every native save SHA-256 and UTF-16 FNV checksum, compare to saved per-tick/core comparison records, compare sorted save SHA-256 to the CLI public hash log, and compare both process final saves to the retained native session game.",
+  "checks": [
+    {
+      "run": "clean-pin-13d4fbc",
+      "process": "main",
+      "publicRequests": 4819,
+      "nativeSavesMatchedToComparisons": 2410,
+      "cliHashLogEntries": 4819,
+      "protocolErrors": 0,
+      "nativeFinalSessionEqual": true
+    },
+    {
+      "run": "clean-pin-13d4fbc",
+      "process": "continuation",
+      "publicRequests": 13,
+      "nativeSavesMatchedToComparisons": 6,
+      "cliHashLogEntries": 11,
+      "protocolErrors": 2,
+      "nativeFinalSessionEqual": true
+    },
+    {
+      "run": "command-only-13d4fbc",
+      "process": "main",
+      "publicRequests": 11,
+      "nativeSavesMatchedToComparisons": 6,
+      "cliHashLogEntries": 11,
+      "protocolErrors": 0,
+      "nativeFinalSessionEqual": true
+    },
+    {
+      "run": "command-only-13d4fbc",
+      "process": "continuation",
+      "publicRequests": 15,
+      "nativeSavesMatchedToComparisons": 7,
+      "cliHashLogEntries": 13,
+      "protocolErrors": 2,
+      "nativeFinalSessionEqual": true
+    },
+    {
+      "run": "one-tick-13d4fbc",
+      "process": "main",
+      "publicRequests": 13,
+      "nativeSavesMatchedToComparisons": 7,
+      "cliHashLogEntries": 13,
+      "protocolErrors": 0,
+      "nativeFinalSessionEqual": true
+    },
+    {
+      "run": "one-tick-13d4fbc",
+      "process": "continuation",
+      "publicRequests": 17,
+      "nativeSavesMatchedToComparisons": 8,
+      "cliHashLogEntries": 15,
+      "protocolErrors": 2,
+      "nativeFinalSessionEqual": true
+    },
+    {
+      "run": "one-tick-gzip-13d4fbc",
+      "process": "main",
+      "publicRequests": 13,
+      "nativeSavesMatchedToComparisons": 7,
+      "cliHashLogEntries": 13,
+      "protocolErrors": 0,
+      "nativeFinalSessionEqual": true
+    },
+    {
+      "run": "one-tick-gzip-13d4fbc",
+      "process": "continuation",
+      "publicRequests": 17,
+      "nativeSavesMatchedToComparisons": 8,
+      "cliHashLogEntries": 15,
+      "protocolErrors": 2,
+      "nativeFinalSessionEqual": true
+    }
+  ]
+}

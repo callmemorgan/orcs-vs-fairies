@@ -1,0 +1,45 @@
+{
+  "status": "failed",
+  "generatedAt": "2026-10-01T15:19:16.701Z",
+  "cwd": "/home/morgana/.codex/worktrees/packaged-cli-parity/orcs-vs-Fairies",
+  "output": "/home/morgana/.codex/worktrees/packaged-cli-parity/orcs-vs-Fairies/work/packaged-cli-parity/reject-other-command-side-13d4fbc",
+  "input": "work/packaged-cli-parity/other-command-side.replay.json",
+  "checks": [],
+  "source": {
+    "head": "13d4fbcfa6238696cc1ab4903a76c384e1190fc8",
+    "sha256": "94d66760522b765add97c44e73ddb72a1435816c76c2c9965e0e39bc6a812a37",
+    "workingTree": "",
+    "files": 4608
+  },
+  "builds": {
+    "dist-cli/metafile.json": {
+      "sha256": "3bef244a695d994c025778dfa0b63e927b0418d2b365637c449f0fe6378dd2ca",
+      "bytes": 31075
+    },
+    "dist-cli/package.json": {
+      "sha256": "3ca9d4afd21425087cf31893b8f9f63c81b0b8408db5e343ca76e5f8aa26ab9a",
+      "bytes": 23
+    },
+    "dist-cli/rts.js": {
+      "sha256": "9d0c6995e840a2537109a0b65a493435ee3007df58b89d0bf1f3f6c5c49e19dd",
+      "bytes": 608022
+    },
+    "reference/core.mjs": {
+      "sha256": "3143d6be846a2325b8e978e873c4624da154633d6be811c448fd740033003732",
+      "bytes": 730644
+    },
+    "reference/metafile.json": {
+      "sha256": "48406666a449161b3f2f8af2952a1c857339a9eb8824a738ad44f3aa589b4881",
+      "bytes": 35916
+    }
+  },
+  "cleanupErrors": [],
+  "error": "Error: The public CLI can replay commands for only one controlled side.\n    at Module.decodeInput (file:///home/morgana/.codex/worktrees/packaged-cli-parity/orcs-vs-Fairies/work/packaged-cli-parity/reject-other-command-side-13d4fbc/reference/core.mjs:10846:29)\n    at file:///home/morgana/.codex/worktrees/packaged-cli-parity/orcs-vs-Fairies/scripts/tournaments/verify-packaged-cli-parity.mjs:162:18",
+  "method": "Build the production CLI using build:cli into a fresh dist-cli/rts.js, spawn it twice, send public JSON load/command/advance/save/result requests over stdin, compare complete native save JSON and checksum with a separately bundled direct-core reference every tick and command, then load a saved midpoint and continue in requests of at most 1200 ticks. Retain raw public stdin/stdout as gzip, CLI hash logs, process exits, native checkpoints and full source/build manifests.",
+  "limits": [
+    "Public CLI load changes human controllers and sets the controlled side to external; this full-save verifier rejects those incompatible archives.",
+    "Only commands for one controlled external side and 0.05-second ticks are supported.",
+    "The generated fixture is a short economy and recruitment run, not a natural victory or a full tournament.",
+    "This verifier executes the packaged CLI. Browser/Node helper parity remains a separate check."
+  ]
+}
