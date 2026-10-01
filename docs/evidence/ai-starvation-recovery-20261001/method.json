@@ -1,0 +1,190 @@
+{
+  "sourceCommit": "93c4f3c20214fc1825c24007f3359b5a50556695",
+  "baselineCoreCommit": "3f376c9ea75b9bcaed6643ea678ce3c4e5e80f77",
+  "baselineCapturedSaveSha256": "320aae5a9b6083cb3a245979e7a6d710a422d77c610aa82bb6a2232c6338b43e",
+  "sourceSha256": {
+    "src/core/ai-policy.ts": "5b306994d60509e2774ba73217918eb3ba3400a18d542023d8bcca974f5cb0f9",
+    "src/core/commands.ts": "e93f149cfd6fb9458105a5ea61d9702614b10a2408f2aaadd93a42fea5550911",
+    "src/core/content.ts": "b1a17ec7839e458ce6bf8cba63fe19ba3a27de0ed2e2ed9c7a08226f406da4f2",
+    "src/core/history-hooks.ts": "56a53b84aa389f3ccf189f72df2ecf2d632677f8a664b49fc16865e46bdf6f82",
+    "src/core/maps.ts": "e0d2f499bc8c49a071a750a3541d635fa66c9ad6ebe8329f91828749390bab55",
+    "src/core/navigation.ts": "d0b2f4b1557cd0ed66b0887d6ef5b9a34ebc825bdea104bc79554f7475257ac0",
+    "src/core/observation.ts": "f09552589c3c72886ffcfa7bba7456a16dbcea6728e13719392ce75dc0fe0cba",
+    "src/core/progression.ts": "8539ffc473d5587d4ef9e0181accb216fe20ffbaee82f7a64e96ff9215004c95",
+    "src/core/saves.ts": "6cb0788de61a3ba2ca755ae77eb8c4356b563b414b9c601db6c37c466e5bd660",
+    "src/core/simulation.ts": "62b067273aa047b75366358eb11c0fbe864c655720e3c126ae3b61bcce91593d",
+    "src/core/types.ts": "0a1ac2e525dbb3126d545398c53bd4471036221b567e3e4d26c6d2213c6954de",
+    "scripts/ai/diagnose.ts": "c5686f32faf9673dd5a6cb26b939589ec71cfb2600d856ef34d650998bfe45eb",
+    "scripts/ai/check-recovery.ts": "28f1cc30c7761189e7552f31091c16debb31de238c94566caa4abfb21f365bd3",
+    "scripts/ai/recovery-regression.test.ts": "238b4040fb0bcc4e6b6998f2adf063375572d31011dc1defb9a739b81fa0261f",
+    "vitest.ai-recovery.config.ts": "2e66ee782b2bc90874d4a46d5820473ac1592c681981149f730a6d8bf47bcd5b"
+  },
+  "command": "AI_RECOVERY_OUTPUT=work/ai-timeouts/reviewed-wood-recovery npx vitest run --config vitest.ai-recovery.config.ts",
+  "seed": 4127,
+  "stepSeconds": 0.05,
+  "maxMinutes": 45,
+  "focusedTests": 129,
+  "freshAffectedMatches": [
+    {
+      "file": "final/medium-dwarves-automata.json",
+      "time": 1283.1999999993807,
+      "winner": 1,
+      "timeout": false,
+      "saveSha256": "9fcebfd945f17a18cdc5bb1d8e2ab6f747214b4e421d9192d2d5099024034829"
+    },
+    {
+      "file": "final/medium-fairies-fairies.json",
+      "time": 908.9499999997211,
+      "winner": 0,
+      "timeout": false,
+      "saveSha256": "4d4b707305b7838eeb5c65392f12eaa24729bbd44c140f1b4b5e0b95afdd0560"
+    },
+    {
+      "file": "final/medium-orcs-orcs.json",
+      "time": 1204.749999999452,
+      "winner": 0,
+      "timeout": false,
+      "saveSha256": "23a019c8ee57ed12d83573fe1a5e5439fcfc177658f91b877920c45715c6367a"
+    },
+    {
+      "file": "final/medium-undead-dwarves.json",
+      "time": 1281.849999999382,
+      "winner": 1,
+      "timeout": false,
+      "saveSha256": "df75df1accdaa30d6ed462dbd1dfceae774c26756f1a1b48dc602b6000b9b341"
+    },
+    {
+      "file": "final/medium-undead-orcs.json",
+      "time": 1201.6999999994548,
+      "winner": 0,
+      "timeout": false,
+      "saveSha256": "ae0058cd32f158368fd2a398efc6de54df0695e244a8b0f2e32c0c216891d334"
+    },
+    {
+      "file": "final/small-automata-automata.json",
+      "time": 1001.0499999996373,
+      "winner": 1,
+      "timeout": false,
+      "saveSha256": "13b6de790e8afece04479a1fc955cd64761d1a90d26551c6da0b92bae3c58d28"
+    },
+    {
+      "file": "final/small-automata-dwarves.json",
+      "time": 1048.2499999995944,
+      "winner": 1,
+      "timeout": false,
+      "saveSha256": "da0f4af487b32cb07ea8a25ef4605cb025be991e9f0fe067798fe1de48e054ed"
+    },
+    {
+      "file": "final/small-orcs-undead.json",
+      "time": 918.6499999997122,
+      "winner": 0,
+      "timeout": false,
+      "saveSha256": "306ebe7608fb11fb4a5662f75654b2e0ec36dc4921ac96a6801d6c5fcfcb4a27"
+    }
+  ],
+  "intermediateAttempt": {
+    "description": "Actual workerless-only attempt outputs preserved unchanged: six completions and two natural timeouts. This attempt was reviewed but not committed. The two live-worker timeout envelopes are retained.",
+    "completed": 6,
+    "timeout": 2
+  },
+  "continuations": {
+    "reviewed-captured-original-report.json": {
+      "secondsAfterImport": 25.700000000093496,
+      "winner": 0,
+      "attacks": 155,
+      "banksUnchanged": true,
+      "resourceChanges": [
+        {
+          "wood": 0,
+          "ore": 0,
+          "crystal": 0
+        },
+        {
+          "wood": 0,
+          "ore": 0,
+          "crystal": 0
+        }
+      ],
+      "gathered": [
+        {
+          "wood": 0,
+          "ore": 0,
+          "crystal": 0
+        },
+        {
+          "wood": 0,
+          "ore": 0,
+          "crystal": 0
+        }
+      ],
+      "gainsMatchGathering": true
+    },
+    "reviewed-captured-live-worker-orcs-report.json": {
+      "secondsAfterImport": 34.900000000126965,
+      "winner": 0,
+      "attacks": 204,
+      "banksUnchanged": false,
+      "resourceChanges": [
+        {
+          "wood": 0,
+          "ore": 18,
+          "crystal": 4.979520000000008
+        },
+        {
+          "wood": 0,
+          "ore": 0,
+          "crystal": 0
+        }
+      ],
+      "gathered": [
+        {
+          "wood": 0,
+          "ore": 18,
+          "crystal": 4.979519999999997
+        },
+        {
+          "wood": 0,
+          "ore": 0,
+          "crystal": 0
+        }
+      ],
+      "gainsMatchGathering": true
+    },
+    "reviewed-captured-live-worker-dwarves-report.json": {
+      "secondsAfterImport": 27.15000000009877,
+      "winner": 1,
+      "attacks": 255,
+      "banksUnchanged": false,
+      "resourceChanges": [
+        {
+          "wood": 0,
+          "ore": 0,
+          "crystal": 0
+        },
+        {
+          "wood": 0,
+          "ore": 0,
+          "crystal": 10.759320000000002
+        }
+      ],
+      "gathered": [
+        {
+          "wood": 0,
+          "ore": 0,
+          "crystal": 0
+        },
+        {
+          "wood": 0,
+          "ore": 0,
+          "crystal": 10.759319999999997
+        }
+      ],
+      "gainsMatchGathering": true
+    }
+  },
+  "limits": [
+    "This is completion coverage for the eight reported seed4127 matches, not all108pair/map games or balance evidence.",
+    "The narrow recovery decision covers worker loss and exhausted visible wood; a live economy with all fighters retreating at full population is outside this change.",
+    "Full typechecking in this worktree still reports pre-existing SessionTools dynamic-Side tuple errors; root integration has its separate fix."
+  ]
+}
