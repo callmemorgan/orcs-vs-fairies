@@ -38,14 +38,17 @@ export function openDestination(s:GameState,to:Vec,from:Vec):Vec|undefined{
  return undefined;
 }
 
-interface Grid {terrain:GameState['terrain'];signature:string;width:number;height:number;blocked:Uint8Array;edges:Map<number,boolean>}
+interface Grid {terrain:GameState['terrain'];terrainSignature:string;signature:string;width:number;height:number;blocked:Uint8Array;edges:Map<number,boolean>}
 const grids=new WeakMap<GameState,Map<number,Grid>>();
 function gridFor(s:GameState,CELL:number):Grid{
  const buildings=s.entities.filter(e=>e.hp>0&&e.kind==='building'&&!e.gateOpen);
  const resources=s.resources.filter(r=>r.amount>0);
  const signature=`${s.width},${s.height};${buildings.map(b=>`${b.id},${b.x},${b.y},${buildingRadius(s,b)}`).join(';')}|${resources.map(r=>`${r.id},${r.x},${r.y}`).join(';')}`;
+ // Terrain edits can keep the same array. Compare exact walkability so bridges, floods
+ // and editor changes cannot reuse stale blocked cells or cached segment results.
+ const terrainSignature=s.terrain.map(kind=>TERRAIN[kind].walkable?'1':'0').join('');
  let caches=grids.get(s);if(!caches){caches=new Map();grids.set(s,caches);}
- const old=caches.get(CELL);if(old?.signature===signature&&old.terrain===s.terrain)return old;
+ const old=caches.get(CELL);if(old?.signature===signature&&old.terrain===s.terrain&&old.terrainSignature===terrainSignature)return old;
  const width=Math.round(s.width/CELL),height=Math.round(s.height/CELL),blocked=new Uint8Array(width*height);
  for(let y=0;y<height;y++)for(let x=0;x<width;x++)if((x+.5)*CELL<.35||(y+.5)*CELL<.35||(x+.5)*CELL>s.width-.35||(y+.5)*CELL>s.height-.35)blocked[y*width+x]=1;
  for(let y=0;y<height;y++)for(let x=0;x<width;x++){
@@ -60,7 +63,7 @@ function gridFor(s:GameState,CELL:number):Grid{
    if('role' in b?dx<r&&dy<r:Math.hypot(dx,dy)<r)blocked[y*width+x]=1;
   }
  }
- const grid={terrain:s.terrain,signature,width,height,blocked,edges:new Map<number,boolean>()};caches.set(CELL,grid);return grid;
+ const grid={terrain:s.terrain,terrainSignature,signature,width,height,blocked,edges:new Map<number,boolean>()};caches.set(CELL,grid);return grid;
 }
 
 // Half-tile A* retains passages wide enough for a unit but missed by tile centers.

@@ -118,7 +118,7 @@ describe('versioned match saves',()=>{
   attacker.x=20;attacker.y=20;target.x=21;target.y=20;target.hp=1;refreshVisibility(s);
   expect(issueCommand(s,0,{type:'attack',ids:[attacker.id],target:target.id})).toBe(true);stepGame(s,.1);expect(target.hp).toBe(0);
   expect(captureRuntime(s).hits).toEqual([]);stepGame(s,NaN);expect(()=>loadGame(saveGame(s))).not.toThrow();
-  s.winner=0;stepGame(s,.1);expect(loadGame(saveGame(s)).winner).toBe(0);
+  s.winner=0;s.winningTeam=0;stepGame(s,.1);expect(loadGame(saveGame(s)).winner).toBe(0);
  });
 
  it('does not invoke getters or mutate caller data when validating an object',()=>{
@@ -130,7 +130,7 @@ describe('versioned match saves',()=>{
  });
 
  it.each([
-  ['unsupported version',(s:any):unknown=>s.version=2],['missing runtime',(s:any):unknown=>delete s.runtime],['missing state field',(s:any):unknown=>delete s.state.tick],
+  ['unsupported version',(s:any):unknown=>s.version=999],['missing runtime',(s:any):unknown=>delete s.runtime],['missing state field',(s:any):unknown=>delete s.state.tick],
   ['bare state',(s:any):unknown=>{delete s.format;delete s.version;return undefined;}],['unknown state field',(s:any):unknown=>s.state.timer=1],
   ['NaN hp',(s:any):unknown=>s.state.entities[0].hp=NaN],['infinite resources',(s:any):unknown=>s.state.players[0].wood=Infinity],
   ['negative resources',(s:any):unknown=>s.state.players[0].ore=-1],['unbounded resources',(s:any):unknown=>s.state.players[0].wood=1e30],

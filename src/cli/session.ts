@@ -2,15 +2,17 @@ import { createHash } from 'node:crypto';
 import { FACTIONS } from '../core/content';
 import { validateCommand } from '../core/commands';
 import { PlayerView } from '../core/observation';
-import { saveGame, loadGame } from '../core/saves';
-import { createGame, isGameOver, issueCommand, stepGame } from '../core/simulation';
-import type { Command, FactionId, GameState, MapSize, Side } from '../core/types';
+import { loadGame, saveGame } from '../core/saves';
+import { createGame, createMatch, isGameOver, issueCommand, stepGame } from '../core/simulation';
+import type { FactionId, GameState, MapSize, MatchConfig, Side } from '../core/types';
 const record=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v);
 const integer=(v:unknown):v is number=>Number.isSafeInteger(v);
 const keys=(o:Record<string,unknown>,allowed:string[])=>Object.keys(o).every(k=>allowed.includes(k));
 export interface ReplayEntry {input:unknown;hash:string}
 export function stateHash(s:GameState):string{
- const json=JSON.stringify({...s,visible:s.visible.map(x=>[...x].sort((a,b)=>a-b)),explored:s.explored.map(x=>[...x].sort((a,b)=>a-b))});
+ const saved=saveGame(s);
+ saved.state.visible=saved.state.visible.map(x=>x.sort((a,b)=>a-b));saved.state.explored=saved.state.explored.map(x=>x.sort((a,b)=>a-b));
+ const json=JSON.stringify(saved);
  return createHash('sha256').update(json).digest('hex');
 }
 export class TerminalSession {
@@ -21,18 +23,27 @@ export class TerminalSession {
   if(!record(input)||typeof input.op!=='string')throw new Error('Expected an object with an op string.');
   let result:unknown;
   if(input.op==='load'){
-   if(!keys(input,['op','save','side'])||(input.side!==undefined&&input.side!==0&&input.side!==1))throw new Error('Invalid load request.');
-   const restored=loadGame(input.save),side=(input.side??1) as Side;
-   restored.controllers=side===0?['external','ai']:['ai','external'];
-   this.state=restored;this.view=new PlayerView(side);result=this.view.observe(restored);
-  }else if(input.op==='start'){
+   if(!keys(input,['op','save','side']))throw new Error('Invalid load request.');
+   const restored=loadGame(input.save),selected=input.side===undefined?Math.min(1,restored.players.length-1):input.side;
+   if(!integer(selected)||selected<0||selected>=restored.players.length)throw new Error('Invalid controlled side for this save.');
+   const side=selected as Side;
+   restored.controllers=restored.controllers.map((controller,i)=>i===side?'external':controller==='human'?'ai':controller);
+   const view=new PlayerView(side);result=view.observe(restored);this.state=restored;this.view=view;
+  }else if(input.op==='start'||input.op==='startMatch'){
    if(this.state)throw new Error('A match already exists. Start a new process for another match.');
+   if(input.op==='startMatch'){
+    if(!keys(input,['op','config','side'])||!record(input.config)||!integer(input.side)||input.side<0||input.side>7)throw new Error('Expected a match config and an explicit player side from 0 to 7.');
+    const state=createMatch(input.config as unknown as MatchConfig),side=input.side as Side;
+    if(!state.players[side]||state.controllers[side]!=='external')throw new Error('The controlled side must be an external player in the match.');
+    this.state=state;this.view=new PlayerView(side);result=this.view.observe(state);
+   }else{
    if(!keys(input,['op','faction','opponent','side','seed','mapSize']))throw new Error('Unknown start field.');
    const faction=input.faction??'orcs',opponent=input.opponent??'fairies',size=input.mapSize??'medium',seed=input.seed??4127,side=input.side??1;
    if(typeof faction!=='string'||!Object.hasOwn(FACTIONS,faction)||typeof opponent!=='string'||!Object.hasOwn(FACTIONS,opponent))throw new Error('Unknown faction.');
    if(!['small','medium','large','huge'].includes(size as string)||!integer(seed)||seed<0||seed>0xffffffff||(side!==0&&side!==1))throw new Error('Invalid map size, seed or side.');
    this.state=createGame((side===0?faction:opponent) as FactionId,seed,(side===1?faction:opponent) as FactionId,{mapSize:size as MapSize,controllers:side===0?['external','ai']:['ai','external']});
    this.view=new PlayerView(side);result=this.view.observe(this.state);
+   }
   }else{
    if(!this.state||!this.view)throw new Error('Start a match first.');
    const s=this.state,view=this.view;
@@ -49,8 +60,8 @@ export class TerminalSession {
     for(;advanced<input.ticks&&!isGameOver(s);advanced++){stepGame(s,.05);view.update(s);events.push(...view.events(s));}
     result={advanced,events,observation:view.observe(s)};
    }else if(input.op==='result'){
-    if(!keys(input,['op']))throw new Error('Unknown result field.');result={finished:isGameOver(s),winner:s.winner,draw:s.draw,time:s.time,tick:s.tick,side:view.side,outcome:isGameOver(s)?s.draw?'draw':s.winner===view.side?'win':'loss':null};
-   }else throw new Error('Unknown op. Use start, load, save, observe, command, advance or result.');
+    if(!keys(input,['op']))throw new Error('Unknown result field.');result={finished:isGameOver(s),winner:s.winner,winningTeam:s.winningTeam,draw:s.draw,eliminated:[...s.eliminated],time:s.time,tick:s.tick,side:view.side,teamId:s.teams[view.side],outcome:isGameOver(s)?s.draw?'draw':s.winningTeam===s.teams[view.side]?'win':'loss':null};
+   }else throw new Error('Unknown op. Use start, startMatch, load, save, observe, command, advance or result.');
   }
   this.replay.push({input:structuredClone(input),hash:stateHash(this.state!)});
   return {ok:true,result};
