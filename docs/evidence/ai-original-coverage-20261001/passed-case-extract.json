@@ -1,0 +1,1678 @@
+{
+  "suitePin": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+  "testsJsonSha256": "ced75e92e6e198d8bad063fc0e4b276bfd7ee1936bf1849830cafcd21f7a11a9",
+  "files": [
+    {
+      "path": "tests/ai-cost-recovery.test.ts",
+      "actualSuitePath": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/ai-cost-recovery.test.ts",
+      "cases": [
+        {
+          "fullName": "full resource cost AI recovery makes a final assault when every recruit is excluded by the match rules",
+          "status": "passed"
+        },
+        {
+          "fullName": "full resource cost AI recovery makes a final assault when ore is exhausted despite reachable wood income",
+          "status": "passed"
+        },
+        {
+          "fullName": "full resource cost AI recovery does not count optional cheap custom recruits when the selected defaults require crystal",
+          "status": "passed"
+        },
+        {
+          "fullName": "full resource cost AI recovery retains recovery when every default cost can be collected and delivered",
+          "status": "passed"
+        },
+        {
+          "fullName": "full resource cost AI recovery turns reachable finite deposits into delivered bank funds and a legal paid recruit",
+          "status": "passed"
+        },
+        {
+          "fullName": "full resource cost AI recovery does not treat a deposit below one recruit cost as unlimited future income",
+          "status": "passed"
+        },
+        {
+          "fullName": "full resource cost AI recovery does not replenish funds when the income factor is zero",
+          "status": "passed"
+        },
+        {
+          "fullName": "full resource cost AI recovery does not count insufficient carried wood as an unlimited income source",
+          "status": "passed"
+        },
+        {
+          "fullName": "full resource cost AI recovery waits for an already paid custom fighter with no remaining crystal or deposits",
+          "status": "passed"
+        },
+        {
+          "fullName": "full resource cost AI recovery does not promise a custom worker when its crystal cost is unavailable",
+          "status": "passed"
+        },
+        {
+          "fullName": "full resource cost AI recovery requires an observed collection route across a fully explored water barrier",
+          "status": "passed"
+        },
+        {
+          "fullName": "full resource cost AI recovery uses the final assault when a partial same-kind cargo load cannot reach collection or enter return",
+          "status": "passed"
+        },
+        {
+          "fullName": "full resource cost AI recovery produces the same decisions when hidden terrain and obstacles change",
+          "status": "passed"
+        },
+        {
+          "fullName": "full resource cost AI recovery continues the no-income final assault identically through a real save",
+          "status": "passed"
+        }
+      ],
+      "count": 14,
+      "allPassed": true
+    },
+    {
+      "path": "tests/ai-modes.test.ts",
+      "actualSuitePath": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/ai-modes.test.ts",
+      "cases": [
+        {
+          "fullName": "AI modes in the running simulation starts every difficulty with identical resources, troops, terrain and income",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI modes in the running simulation uses the same gathering rate when given the same orders at each difficulty",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI modes in the running simulation changes real decision cadence and easy hesitation without changing simulation speed",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI modes in the running simulation commits the rush opening to a real barracks foundation",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI modes in the running simulation commits the expand opening to a real depot foundation",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI modes in the running simulation commits the raid opening to a real barracks foundation",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI modes in the running simulation gathers crystal before committing the fortify opening to its first tower",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI modes in the running simulation recruits a cavalry counter after scouting and remembers it when the cavalry enters fog",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI modes in the running simulation issues identical orders when unobserved armies have different roles and health",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI modes in the running simulation retreats wounded troops, waits for a newly trained reinforcement, then returns them to the army",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI modes in the running simulation keeps retreating soldiers at the rally when a paid reinforcement dies before regrouping",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI modes in the running simulation does not mistake a raised unit for a living paid reinforcement",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI modes in the running simulation withdraws from a visible outnumbered fight while ignoring a large hidden army",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI modes in the running simulation keeps retreating troops out of expansion-scout selection on large maps",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI modes in the running simulation preserves legacy one-second global timers while rotating real decision batches",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI modes in the running simulation preserves configured modes, observed armies, retreat decisions and future cadence through saving",
+          "status": "passed"
+        }
+      ],
+      "count": 16,
+      "allPassed": true
+    },
+    {
+      "path": "tests/ai-policy.test.ts",
+      "actualSuitePath": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/ai-policy.test.ts",
+      "cases": [
+        {
+          "fullName": "AI decisions using supplied observations normalizes choices without introducing economic factors",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI decisions using supplied observations makes easy opponents miss a predictable decision while other levels keep responding",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI decisions using supplied observations offers different opening building commitments",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI decisions using supplied observations learns visible enemy cavalry and chooses spears, then forgets stale sightings",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI decisions using supplied observations does not learn workers or illusions as fighting forces",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI decisions using supplied observations keeps easy opponents on their opening composition after enemy sightings",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI decisions using supplied observations retreats a wounded fighter only when enemies are seen and regroups when outnumbered",
+          "status": "passed"
+        }
+      ],
+      "count": 7,
+      "allPassed": true
+    },
+    {
+      "path": "tests/ai-recovery.test.ts",
+      "actualSuitePath": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/ai-recovery.test.ts",
+      "cases": [
+        {
+          "fullName": "AI recovery after losing its economy uses its surviving fighter when it has no worker, worker funds or paid worker queue",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI recovery after losing its economy releases an expired retreat from its actual position even when it never reached the rally",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI recovery after losing its economy does not make a final assault before the existing retreat deadline",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI recovery after losing its economy does not abandon the ordinary recovery path when a worker can be afforded",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI recovery after losing its economy waits for a paid worker and keeps a live worker economy on normal regrouping rules",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI recovery after losing its economy uses its army when surviving workers only have non-wood income",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI recovery after losing its economy does not count hidden wood deposits as a source of future reinforcements",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI recovery after losing its economy keeps regrouping while an owned worker carries wood home",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI recovery after losing its economy waits for a completing paid fighter even without another source of wood",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI recovery after losing its economy counts a fighter paid for by the same decision before deciding to abandon regrouping",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI recovery after losing its economy includes a lone expansion scout in an emergency attack rather than excluding the only fighter",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI recovery after losing its economy does not retreat from first visible contact solely because its last fighter has low health",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI recovery after losing its economy bases the final-assault decision on its own economy rather than hidden enemy roles or banks",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI recovery after losing its economy restores the same recovery decisions and ordinary attacks after saving",
+          "status": "passed"
+        }
+      ],
+      "count": 14,
+      "allPassed": true
+    },
+    {
+      "path": "tests/ai-saves.test.ts",
+      "actualSuitePath": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/ai-saves.test.ts",
+      "cases": [
+        {
+          "fullName": "AI save migration and current schema migrates a complete version 2 snapshot after validating the original schema",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI save migration and current schema checks the byte limit again after a valid legacy migration adds AI fields",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI save migration and current schema validates per-player configuration on construction and saving",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI save migration and current schema rejects wrong per-player array length in aiConfigs",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI save migration and current schema rejects wrong per-player array length in aiDecisionAt",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI save migration and current schema rejects wrong per-player array length in aiDecisionTurns",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI save migration and current schema rejects wrong per-player array length in knownEnemyUnits",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI save migration and current schema rejects wrong per-player array length in retreating",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI save migration and current schema rejects wrong per-player array length in producedFighters",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI save migration and current schema rejects future observation without changing the supplied envelope",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI save migration and current schema rejects worker observation without changing the supplied envelope",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI save migration and current schema rejects invalid health without changing the supplied envelope",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI save migration and current schema rejects future decision without changing the supplied envelope",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI save migration and current schema rejects negative produced fighters without changing the supplied envelope",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI save migration and current schema rejects future retreat without changing the supplied envelope",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI save migration and current schema rejects unknown config property without changing the supplied envelope",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI save migration and current schema rejects missing observations without changing the supplied envelope",
+          "status": "passed"
+        },
+        {
+          "fullName": "AI save migration and current schema does not share observed-memory maps or configuration objects after restoration",
+          "status": "passed"
+        }
+      ],
+      "count": 18,
+      "allPassed": true
+    },
+    {
+      "path": "tests/allied-ai.test.ts",
+      "actualSuitePath": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/allied-ai.test.ts",
+      "cases": [
+        {
+          "fullName": "public allied resource transfers conserves every resource and uses the authenticated side, including side zero",
+          "status": "passed"
+        },
+        {
+          "fullName": "public allied resource transfers rejects negative amount without changing any bank or receipt",
+          "status": "passed"
+        },
+        {
+          "fullName": "public allied resource transfers rejects NaN amount without changing any bank or receipt",
+          "status": "passed"
+        },
+        {
+          "fullName": "public allied resource transfers rejects infinite amount without changing any bank or receipt",
+          "status": "passed"
+        },
+        {
+          "fullName": "public allied resource transfers rejects unknown resource without changing any bank or receipt",
+          "status": "passed"
+        },
+        {
+          "fullName": "public allied resource transfers rejects spoofed payer without changing any bank or receipt",
+          "status": "passed"
+        },
+        {
+          "fullName": "public allied resource transfers rejects unknown player without changing any bank or receipt",
+          "status": "passed"
+        },
+        {
+          "fullName": "public allied resource transfers rejects out of range player without changing any bank or receipt",
+          "status": "passed"
+        },
+        {
+          "fullName": "public allied resource transfers rejects hostile player without changing any bank or receipt",
+          "status": "passed"
+        },
+        {
+          "fullName": "public allied resource transfers rejects self transfer without changing any bank or receipt",
+          "status": "passed"
+        },
+        {
+          "fullName": "public allied resource transfers rejects insufficient ore after affordable wood without changing any bank or receipt",
+          "status": "passed"
+        },
+        {
+          "fullName": "public allied resource transfers rejects insufficient crystal after affordable wood and ore without changing any bank or receipt",
+          "status": "passed"
+        },
+        {
+          "fullName": "public allied resource transfers rejects empty transfer without changing any bank or receipt",
+          "status": "passed"
+        },
+        {
+          "fullName": "public allied resource transfers rolls back the entire transfer when the recipient bank would overflow",
+          "status": "passed"
+        },
+        {
+          "fullName": "public allied resource transfers rejects transfers from or to an eliminated ally",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied request authorization and team receipts allows only a living allied requester to address an AI recipient",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied request authorization and team receipts prevents another requester from replacing or cancelling a request, and allows its issuer to do both",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied request authorization and team receipts exposes copied team receipts without private troop assignments or banks and hides them from opponents",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied request authorization and team receipts requires the issuer to see an attack target and copies the observed position before it moves into fog",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied requests executed by real units sends an owned cavalry scout, moves through the world, observes the destination and completes",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied requests executed by real units moves defenders to the request and holds the area before completing its guard period",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied requests executed by real units expires an unavailable request at its deadline without waiting for another AI decision",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied requests executed by real units attacks a requested enemy with ordinary combat and completes after the cleared area is observed",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied requests executed by real units moves a 64-fighter public formation into an empty requested area and completes after saving",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied requests executed by real units sends requested support once through the public transfer command and conserves resources",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied requests executed by real units keeps its worker reserve while support waits and sends only after spare funds arrive",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied requests executed by real units restarts the defend arrival timer after an emergency pause",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied requests executed by real units restarts the attack arrival timer after an emergency pause",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied armies in the running simulation rejects an active saved assignment containing a hq",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied armies in the running simulation rejects an active saved assignment containing a worker",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied armies in the running simulation rejects an active saved assignment containing a dead fighter",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied armies in the running simulation rejects an active saved assignment containing a illusion",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied armies in the running simulation rejects an active saved assignment containing a enemy fighter",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied armies in the running simulation answers a teammate help waypoint without revealing the hidden attacker or granting shared vision",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied armies in the running simulation keeps one distinct scout and launches both approved armies in the same tick despite different decision cadences",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied armies in the running simulation preserves the existing final assault when an allied AI loses its source of reinforcements",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied armies in the running simulation lets a healthy ally launch its ordinary solo wave when its partner cannot replenish troops",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied armies in the running simulation bounds a full army wait when its recoverable allied economy has no fighters",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied armies in the running simulation releases existing scout and wave plans when observed wood is exhausted, then follows each owner cadence",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied armies in the running simulation continues pending directives, support and coordinated plans byte for byte after saving on every tick",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied armies in the running simulation cleans dead assigned troops before a save and continues the same ordinary combat after loading",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied armies in the running simulation starts a fresh guard period when a replacement arrives before the next recipient decision",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied armies in the running simulation removes eliminated owners from pending saved waves and fails their outstanding request",
+          "status": "passed"
+        }
+      ],
+      "count": 43,
+      "allPassed": true
+    },
+    {
+      "path": "tests/ally-directives-ui.test.ts",
+      "actualSuitePath": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/ally-directives-ui.test.ts",
+      "cases": [
+        {
+          "fullName": "allied AI directive panel offers labelled native controls and sends each destination request to recipient zero",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied AI directive panel requests resource support without requiring a destination",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied AI directive panel preserves recipient, request, edited destinations, resource drafts and focus across updates",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied AI directive panel can replace a typed destination with the selected unit position",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied AI directive panel blocks disabled and hidden-panel requests, including synthetic submit and cancellation",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied AI directive panel shows supplied status changes and allows only the issuer to cancel accepted or active requests",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied AI directive panel rejects blank, nonfinite and out-of-map destinations before dispatch",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied AI directive panel rejects invalid resource quantities and reports dispatch failures without changing statuses",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied AI directive panel renders ally names and supplied status data as text",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied AI directive panel keeps panel keyboard and pointer events away from gameplay without blocking native defaults",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied AI directive panel destroys only its own panel and blocks retained events after destruction",
+          "status": "passed"
+        }
+      ],
+      "count": 11,
+      "allPassed": true
+    },
+    {
+      "path": "tests/combat-tactics.test.ts",
+      "actualSuitePath": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/combat-tactics.test.ts",
+      "cases": [
+        {
+          "fullName": "combat tactics encounters line preserves stable slots, routes around a building, and regroups after a casualty",
+          "status": "passed"
+        },
+        {
+          "fullName": "combat tactics encounters wedge preserves stable slots, routes around a building, and regroups after a casualty",
+          "status": "passed"
+        },
+        {
+          "fullName": "combat tactics encounters square preserves stable slots, routes around a building, and regroups after a casualty",
+          "status": "passed"
+        },
+        {
+          "fullName": "combat tactics encounters loose preserves stable slots, routes around a building, and regroups after a casualty",
+          "status": "passed"
+        },
+        {
+          "fullName": "combat tactics encounters assigns the same formation destinations for arbitrary entity-array and command-ID order",
+          "status": "passed"
+        },
+        {
+          "fullName": "combat tactics encounters retains held facing and resolves front, side and rear damage through real attacks",
+          "status": "passed"
+        },
+        {
+          "fullName": "combat tactics encounters an isolated wounded fighter retreats while allied support recovers morale",
+          "status": "passed"
+        },
+        {
+          "fullName": "combat tactics encounters surrounded broken troops surrender without healing or changing their original definition",
+          "status": "passed"
+        },
+        {
+          "fullName": "combat tactics encounters a frontal shield consumes guard energy; rear and turned shields leave the ally exposed",
+          "status": "passed"
+        },
+        {
+          "fullName": "combat tactics encounters shield support also protects an allied player, and depletion restores full damage",
+          "status": "passed"
+        },
+        {
+          "fullName": "combat tactics encounters buildings and rocks reduce ranged hits; cover does not reduce melee damage",
+          "status": "passed"
+        },
+        {
+          "fullName": "combat tactics encounters destroying a covering structure through combat restores unprotected ranged damage",
+          "status": "passed"
+        },
+        {
+          "fullName": "combat tactics encounters siege shell impact obeys friendlyFire=true and survives a mid-flight save",
+          "status": "passed"
+        },
+        {
+          "fullName": "combat tactics encounters siege shell impact obeys friendlyFire=false and survives a mid-flight save",
+          "status": "passed"
+        },
+        {
+          "fullName": "combat tactics encounters moving cavalry gains impact while stops and sharp turns lose the charge",
+          "status": "passed"
+        },
+        {
+          "fullName": "combat tactics encounters frontal braced pikes cancel charge and hurt the rider; a rear charge retains impact",
+          "status": "passed"
+        },
+        {
+          "fullName": "combat tactics encounters crew deaths leave neutral equipment which channels capture, retains stats and obeys its new owner",
+          "status": "passed"
+        },
+        {
+          "fullName": "combat tactics encounters an enemy guard contests siege capture until it leaves the equipment",
+          "status": "passed"
+        },
+        {
+          "fullName": "combat tactics encounters ambush troops remain concealed, withhold fire, and reveal on the selected trigger",
+          "status": "passed"
+        },
+        {
+          "fullName": "combat tactics encounters scout detection, manual release and destroyed concealment expose an ambush without leaking its trigger",
+          "status": "passed"
+        },
+        {
+          "fullName": "combat tactics encounters formation, ambush and combat history replay to the same saved checksum",
+          "status": "passed"
+        },
+        {
+          "fullName": "combat tactics encounters rejects invalid command fields and malformed persistent tactical state",
+          "status": "passed"
+        }
+      ],
+      "count": 22,
+      "allPassed": true
+    },
+    {
+      "path": "tests/server-allied.test.ts",
+      "actualSuitePath": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/server-allied.test.ts",
+      "cases": [
+        {
+          "fullName": "allied commands over authenticated HTTP and WebSocket connections runs AI requests through public receipts, preserves issuer ownership, and hides them from opponents",
+          "status": "passed"
+        },
+        {
+          "fullName": "allied commands over authenticated HTTP and WebSocket connections conserves the authenticated payer bank and retries each transfer once before and after restart",
+          "status": "passed"
+        }
+      ],
+      "count": 2,
+      "allPassed": true
+    },
+    {
+      "path": "tests/server-teams.test.ts",
+      "actualSuitePath": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/server-teams.test.ts",
+      "cases": [
+        {
+          "fullName": "hosted team matches runs eight human seats, preserves private ownership and durable receipts, and resolves team forfeits after restart",
+          "status": "passed"
+        },
+        {
+          "fullName": "hosted team matches starts cooperative human seats without AI readiness and runs both computer opponents through delayed team observations",
+          "status": "passed"
+        },
+        {
+          "fullName": "hosted team matches requires a human participant and two teams when validating a custom roster",
+          "status": "passed"
+        },
+        {
+          "fullName": "hosted team matches assigns the host after AI slots and changes a roster without evicting present accounts or keeping stale readiness",
+          "status": "passed"
+        },
+        {
+          "fullName": "hosted team matches applies visible custom starting resources, age and population limits while rejecting malformed handicaps",
+          "status": "passed"
+        },
+        {
+          "fullName": "hosted team matches merges shared construction events once, retains owner details and orders buffered team events by tick",
+          "status": "passed"
+        },
+        {
+          "fullName": "hosted team matches hides visible enemy and allied economy events and redacts the source of a hidden attack",
+          "status": "passed"
+        }
+      ],
+      "count": 7,
+      "allPassed": true
+    },
+    {
+      "path": "tests/skirmish-options.test.ts",
+      "actualSuitePath": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/skirmish-options.test.ts",
+      "cases": [
+        {
+          "fullName": "skirmish options mounts labelled native controls, equal economy rules, and the selected opening plan",
+          "status": "passed"
+        },
+        {
+          "fullName": "skirmish options emits each difficulty change once and keeps manually selected openings",
+          "status": "passed"
+        },
+        {
+          "fullName": "skirmish options chooses the balanced personality opening before notifying callers",
+          "status": "passed"
+        },
+        {
+          "fullName": "skirmish options chooses the rush personality opening before notifying callers",
+          "status": "passed"
+        },
+        {
+          "fullName": "skirmish options chooses the fortify personality opening before notifying callers",
+          "status": "passed"
+        },
+        {
+          "fullName": "skirmish options chooses the expand personality opening before notifying callers",
+          "status": "passed"
+        },
+        {
+          "fullName": "skirmish options chooses the raid personality opening before notifying callers",
+          "status": "passed"
+        },
+        {
+          "fullName": "skirmish options copies constructor input, update input, getter values, and callback values",
+          "status": "passed"
+        },
+        {
+          "fullName": "skirmish options preserves focus and control nodes during updates",
+          "status": "passed"
+        },
+        {
+          "fullName": "skirmish options removes listeners and only its own DOM, and tolerates repeated destruction",
+          "status": "passed"
+        },
+        {
+          "fullName": "skirmish options rejects unknown runtime choices without inserting HTML",
+          "status": "passed"
+        },
+        {
+          "fullName": "skirmish options renders names, descriptions, plans, and weaknesses as plain text",
+          "status": "passed"
+        }
+      ],
+      "count": 12,
+      "allPassed": true
+    },
+    {
+      "path": "tests/skirmish-roster.test.ts",
+      "actualSuitePath": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/skirmish-roster.test.ts",
+      "cases": [
+        {
+          "fullName": "local skirmish roster keeps the legacy duel as the default and uses the selected faction cards and AI config",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster uses labelled native controls and keeps the local human fixed to the faction card",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster turns the duel preset into a complete playable 2-player match",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster turns the 2v2 preset into a complete playable 4-player match",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster turns the 3v3 preset into a complete playable 6-player match",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster turns the 4v4 preset into a complete playable 8-player match",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster makes co-op a human and AI ally against two AI opponents with shared vision",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster supports a custom 2-player roster with more than two teams",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster supports a custom 3-player roster with more than two teams",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster supports a custom 4-player roster with more than two teams",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster supports a custom 5-player roster with more than two teams",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster supports a custom 6-player roster with more than two teams",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster supports a custom 7-player roster with more than two teams",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster supports a custom 8-player roster with more than two teams",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster inherits the opponent faction for unedited CPU rows and retains concrete overrides when cards change",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster takes the legacy selected faction cards again when reduced back to a duel",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster configures AI separately for every CPU and applies personality openings before the callback",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster shows the balanced CPU personality plan and its weakness",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster shows the rush CPU personality plan and its weakness",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster shows the fortify CPU personality plan and its weakness",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster shows the expand CPU personality plan and its weakness",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster shows the raid CPU personality plan and its weakness",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster shows explicit handicaps for every player and applies custom resources, income, population, age and vision",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster starts every player at age 1 selected in the roster",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster starts every player at age 2 selected in the roster",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster starts every player at age 3 selected in the roster",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster uses a zero-resource, zero-income, minimum-cap handicap without substituting defaults",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster changes real delivered harvest income from the human handicap",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster runs every local CPU economy from the 2v2 UI config",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster runs every local CPU economy from the 4v4 UI config",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster returns detached player, AI, handicap, resource and rules objects",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster copies defaults and updates untouched AI rows without losing CPU edits or focused drafts",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster emits one callback per semantic edit and leaves controls and focus intact",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster disabling team setup returns the legacy duel without applying custom player handicaps",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster removes its listeners and owned DOM while preserving neighboring menu controls",
+          "status": "passed"
+        },
+        {
+          "fullName": "local skirmish roster disposes removed CPU row listeners before rebuilding a smaller roster",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid Player 2 starting wood  instead of using a fallback",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid Player 2 starting wood -1 instead of using a fallback",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid Player 2 starting wood NaN instead of using a fallback",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid Player 2 starting wood Infinity instead of using a fallback",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid Player 2 starting wood 1000000001 instead of using a fallback",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid Player 2 starting ore  instead of using a fallback",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid Player 2 starting ore -1 instead of using a fallback",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid Player 2 starting crystal  instead of using a fallback",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid Player 2 starting crystal -1 instead of using a fallback",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid Player 2 income factor  instead of using a fallback",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid Player 2 income factor -.1 instead of using a fallback",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid Player 2 income factor 10.1 instead of using a fallback",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid Player 2 income factor Infinity instead of using a fallback",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid Player 2 population cap  instead of using a fallback",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid Player 2 population cap 0 instead of using a fallback",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid Player 2 population cap 501 instead of using a fallback",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid Player 2 population cap 7.5 instead of using a fallback",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid Player 2 population cap NaN instead of using a fallback",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid team  before match creation",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid team -1 before match creation",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid team 8 before match creation",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid team 1.5 before match creation",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid team NaN before match creation",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid team Infinity before match creation",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects a roster with no opposing team",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation shows invalid draft feedback, preserves focused input, and recovers after correction",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation restores unsupported player count changes without creating or removing slots",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation restores invalid CPU difficulty choices without changing its validated AI config",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation restores invalid CPU personality choices without changing its validated AI config",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation restores invalid CPU opening choices without changing its validated AI config",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects unknown CPU faction values and fixed controller overrides",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid starting age ",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid starting age 0",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid starting age 4",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid starting age NaN",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation rejects invalid selected faction cards and AI configuration",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation accepts the maximum supported handicap and preserves fractional resources",
+          "status": "passed"
+        },
+        {
+          "fullName": "roster configuration validation renders faction names as text without creating markup",
+          "status": "passed"
+        }
+      ],
+      "count": 74,
+      "allPassed": true
+    },
+    {
+      "path": "tests/team-ai-policy.test.ts",
+      "actualSuitePath": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/team-ai-policy.test.ts",
+      "cases": [
+        {
+          "fullName": "owned team AI coordination produces the same assignments and saved plan regardless of report or entity order",
+          "status": "passed"
+        },
+        {
+          "fullName": "owned team AI coordination uses combined readiness below a solo threshold and launches all owners once in one pass",
+          "status": "passed"
+        },
+        {
+          "fullName": "owned team AI coordination coordinates independent teams in the same simulation step without mixing owners",
+          "status": "passed"
+        },
+        {
+          "fullName": "owned team AI coordination splits large approved armies into ordinary valid commands launched in the same step",
+          "status": "passed"
+        },
+        {
+          "fullName": "owned team AI coordination does not replace solo AI behavior or form an alliance across different teams",
+          "status": "passed"
+        },
+        {
+          "fullName": "owned team AI coordination waits one wave lifetime before a full owned army attacks with a worker-only ally",
+          "status": "passed"
+        },
+        {
+          "fullName": "owned team AI coordination requires the ordinary owned army threshold before falling back from an unready ally",
+          "status": "passed"
+        },
+        {
+          "fullName": "owned team AI coordination lets only the earliest ready owner attack its own private target in the solo fallback",
+          "status": "passed"
+        },
+        {
+          "fullName": "owned team AI coordination plans a common allied wave before launching an eligible solo fallback",
+          "status": "passed"
+        },
+        {
+          "fullName": "owned team AI coordination does not repeat a solo fallback launch after validating and loading its saved wave",
+          "status": "passed"
+        },
+        {
+          "fullName": "owned team AI coordination releases a surviving pending allied wave at its deadline before any solo fallback",
+          "status": "passed"
+        },
+        {
+          "fullName": "owned team AI coordination assigns one scout and expansion to different owners and keeps copied lease destinations",
+          "status": "passed"
+        },
+        {
+          "fullName": "owned team AI coordination reassigns a dead scout and a removed expansion owner without retaining dangling roles",
+          "status": "passed"
+        },
+        {
+          "fullName": "owned team AI coordination gives defense priority over planned attacks and releases threatened scout reservations",
+          "status": "passed"
+        },
+        {
+          "fullName": "owned team AI coordination uses shared public starts when other owners have different private sightings",
+          "status": "passed"
+        },
+        {
+          "fullName": "owned team AI coordination does not coordinate an enemy location different recipients observed at different coordinates",
+          "status": "passed"
+        },
+        {
+          "fullName": "owned team AI coordination lets an informed consenting pair attack without an uninformed third owner blocking them",
+          "status": "passed"
+        },
+        {
+          "fullName": "owned team AI coordination retains an agreed remembered position when another owner has a newer private sighting",
+          "status": "passed"
+        },
+        {
+          "fullName": "owned team AI coordination freezes previously approved target coordinates until launch and never aliases supplied sightings",
+          "status": "passed"
+        },
+        {
+          "fullName": "owned team AI coordination cleans dead and eliminated participants while preserving available owned IDs",
+          "status": "passed"
+        },
+        {
+          "fullName": "owned team AI coordination launches a surviving approved force at the deadline instead of waiting for paid replacements",
+          "status": "passed"
+        },
+        {
+          "fullName": "owned team AI coordination clears a plan with no surviving approved force and ignores old or future reports",
+          "status": "passed"
+        },
+        {
+          "fullName": "owned team AI coordination respects future owner cooldowns without creating an unbounded attack appointment",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace omits only a pristine namespace and preserves all behavioral counters",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace round-trips independent plain directive, wave and conserved-transfer records including side zero",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace checks present active ownership while allowing historical removed IDs on finished requests",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects unknown namespace field without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects zero directive ID without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects reused counter without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects duplicate directive without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects duplicate assigned troop without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects troop reused across roles without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects two active requests for one recipient without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects future arrival without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects negative resources without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects empty transfer without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects oversized resource transfer without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects forged issuer without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects hostile recipient without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects self directive without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects outside map without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects unbounded expiry without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects future target without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects hostile target observer without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects duplicate wave participant without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects wrong participant team without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects unbounded wave deadline without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects launched before its future appointment without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects hostile transfer without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects duplicate transfer without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects future transfer without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects wrong status without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace rejects resource support with troops without changing the supplied data",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace bounds record history and refuses getters or sparse saved arrays",
+          "status": "passed"
+        },
+        {
+          "fullName": "saved team AI namespace continues a saved pending wave through the same one-shot output as an uninterrupted plan",
+          "status": "passed"
+        }
+      ],
+      "count": 55,
+      "allPassed": true
+    },
+    {
+      "path": "tests/team-ai-tools.test.ts",
+      "actualSuitePath": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/team-ai-tools.test.ts",
+      "cases": [
+        {
+          "fullName": "owns a toolbar dialog, sends the selected cavern request and restores focus without leaking key events",
+          "status": "passed"
+        },
+        {
+          "fullName": "closes its own dialog when another owner blocks tools and prevents further sends",
+          "status": "passed"
+        }
+      ],
+      "count": 2,
+      "allPassed": true
+    },
+    {
+      "path": "tests/team-match.test.ts",
+      "actualSuitePath": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/team-match.test.ts",
+      "cases": [
+        {
+          "fullName": "playable team rosters runs hostile combat for every player in a 4-player match",
+          "status": "passed"
+        },
+        {
+          "fullName": "playable team rosters runs hostile combat for every player in a 6-player match",
+          "status": "passed"
+        },
+        {
+          "fullName": "playable team rosters runs hostile combat for every player in a 8-player match",
+          "status": "passed"
+        },
+        {
+          "fullName": "playable team rosters gives every player legal, distinct starting units in a 4-player match",
+          "status": "passed"
+        },
+        {
+          "fullName": "playable team rosters gives every player legal, distinct starting units in a 6-player match",
+          "status": "passed"
+        },
+        {
+          "fullName": "playable team rosters gives every player legal, distinct starting units in a 8-player match",
+          "status": "passed"
+        },
+        {
+          "fullName": "playable team rosters honors an explicit permutation of starting slots",
+          "status": "passed"
+        },
+        {
+          "fullName": "team ownership and combat keeps command ownership separate from alliance and shared vision",
+          "status": "passed"
+        },
+        {
+          "fullName": "team ownership and combat ignores a closer teammate while idle attacks a hostile",
+          "status": "passed"
+        },
+        {
+          "fullName": "team ownership and combat ignores a closer teammate while hold attacks a hostile",
+          "status": "passed"
+        },
+        {
+          "fullName": "team ownership and combat ignores a closer teammate while attackMove attacks a hostile",
+          "status": "passed"
+        },
+        {
+          "fullName": "team ownership and combat towers fire at hostile troops and leave nearby teammates unharmed",
+          "status": "passed"
+        },
+        {
+          "fullName": "team ownership and combat rejects queued attacks on teammates and discards a stale friendly attack order",
+          "status": "passed"
+        },
+        {
+          "fullName": "team ownership and combat repairs an allied building with the commanding worker owner paying",
+          "status": "passed"
+        },
+        {
+          "fullName": "team ownership and combat completes a queued allied foundation before continuing to the next waypoint",
+          "status": "passed"
+        },
+        {
+          "fullName": "team ownership and combat charges an allied repair only for the work the worker owner can afford",
+          "status": "passed"
+        },
+        {
+          "fullName": "team ownership and combat shares Fairy grove healing with allies while excluding enemies and illusions",
+          "status": "passed"
+        },
+        {
+          "fullName": "team ownership and combat lets Tideborn surge heal and accelerate another faction teammate",
+          "status": "passed"
+        },
+        {
+          "fullName": "team ownership and combat lets Automata ward restore allied shields without restoring enemies",
+          "status": "passed"
+        },
+        {
+          "fullName": "team ownership and combat packs up a teammate emplacement when allied construction displaces it",
+          "status": "passed"
+        },
+        {
+          "fullName": "shared team vision uses sharedVision=true for an enemy seen only at a teammate base",
+          "status": "passed"
+        },
+        {
+          "fullName": "shared team vision uses sharedVision=false for an enemy seen only at a teammate base",
+          "status": "passed"
+        },
+        {
+          "fullName": "shared team vision removes present sight when the last allied observer dies and retains exploration",
+          "status": "passed"
+        },
+        {
+          "fullName": "team elimination and outcomes continues after one teammate loses its HQ and ends after the last hostile teammate is eliminated",
+          "status": "passed"
+        },
+        {
+          "fullName": "team elimination and outcomes uses the winning team ID when its representative player was eliminated earlier",
+          "status": "passed"
+        },
+        {
+          "fullName": "team elimination and outcomes requires every completed HQ to be destroyed and does not count an unfinished replacement",
+          "status": "passed"
+        },
+        {
+          "fullName": "team elimination and outcomes draws simultaneous loss of all HQs with reversed entity order=false",
+          "status": "passed"
+        },
+        {
+          "fullName": "team elimination and outcomes draws simultaneous loss of all HQs with reversed entity order=true",
+          "status": "passed"
+        },
+        {
+          "fullName": "team elimination and outcomes resolves simultaneous final HQ destruction through real attacks as a draw",
+          "status": "passed"
+        },
+        {
+          "fullName": "team elimination and outcomes keeps a three-team match running until only one team survives",
+          "status": "passed"
+        },
+        {
+          "fullName": "team elimination and outcomes keeps a one-player practice match running while its HQ survives",
+          "status": "passed"
+        },
+        {
+          "fullName": "team AI and active economy runs real gathering, construction and training for all 4 players over 400 ticks",
+          "status": "passed"
+        },
+        {
+          "fullName": "team AI and active economy runs real gathering, construction and training for all 6 players over 400 ticks",
+          "status": "passed"
+        },
+        {
+          "fullName": "team AI and active economy runs real gathering, construction and training for all 8 players over 400 ticks",
+          "status": "passed"
+        },
+        {
+          "fullName": "team AI and active economy makes orcs AI defend against a hostile instead of a nearer teammate",
+          "status": "passed"
+        },
+        {
+          "fullName": "team AI and active economy makes fairies AI defend against a hostile instead of a nearer teammate",
+          "status": "passed"
+        },
+        {
+          "fullName": "team AI and active economy makes dwarves AI defend against a hostile instead of a nearer teammate",
+          "status": "passed"
+        },
+        {
+          "fullName": "team AI and active economy makes undead AI defend against a hostile instead of a nearer teammate",
+          "status": "passed"
+        },
+        {
+          "fullName": "team AI and active economy makes tideborn AI defend against a hostile instead of a nearer teammate",
+          "status": "passed"
+        },
+        {
+          "fullName": "team AI and active economy makes automata AI defend against a hostile instead of a nearer teammate",
+          "status": "passed"
+        },
+        {
+          "fullName": "team AI and active economy stops buying housing once AI reaches its configured population limit of 8",
+          "status": "passed"
+        },
+        {
+          "fullName": "team AI and active economy stops buying housing once AI reaches its configured population limit of 17",
+          "status": "passed"
+        },
+        {
+          "fullName": "team AI and active economy continues normal AI housing expansion with the default population limit",
+          "status": "passed"
+        },
+        {
+          "fullName": "team AI and active economy applies starting resources and population limits to real paid training",
+          "status": "passed"
+        },
+        {
+          "fullName": "team AI and active economy allows configured capacity above 100 and keeps teammate capacity independent",
+          "status": "passed"
+        },
+        {
+          "fullName": "team AI and active economy preserves the starting roster under a low population limit and blocks further recruitment",
+          "status": "passed"
+        },
+        {
+          "fullName": "team AI and active economy multiplies delivered harvest income without changing worker extraction",
+          "status": "passed"
+        },
+        {
+          "fullName": "team AI and active economy starts every player at configured age 1 with its unlocks active",
+          "status": "passed"
+        },
+        {
+          "fullName": "team AI and active economy starts every player at configured age 2 with its unlocks active",
+          "status": "passed"
+        },
+        {
+          "fullName": "team AI and active economy starts every player at configured age 3 with its unlocks active",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects no players",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects more than eight players",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects duplicate player IDs",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects out-of-range player ID",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects negative team ID",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects out-of-range team ID",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects unknown faction",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects unknown controller",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects duplicate starting slots",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects out-of-range starting slot",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects negative resources",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects non-finite resources",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects incomplete resource cost",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects negative income factor",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects non-finite income factor",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects excessive income factor",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects zero population limit",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects fractional population limit",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects excessive population limit",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects invalid starting age",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects invalid shared vision flag",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects unknown map size",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects non-finite map seed",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects unknown root option",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects unsupported schema version",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects out-of-order player IDs",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects fractional map seed",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects unknown map option",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects unknown player option",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects unknown rules option",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects unknown handicap option",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects null schema version",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects null map size",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects null starting slot",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects null income factor",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects null population limit",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects null starting resources",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects null handicap",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects null rules",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects null starting age",
+          "status": "passed"
+        },
+        {
+          "fullName": "strict match configuration validation rejects null shared vision",
+          "status": "passed"
+        }
+      ],
+      "count": 91,
+      "allPassed": true
+    }
+  ]
+}

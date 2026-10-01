@@ -1,0 +1,104 @@
+{
+  "status": "accepted-promotion",
+  "acceptedRequirementIds": [
+    51,
+    52,
+    54,
+    55,
+    56,
+    57,
+    58
+  ],
+  "excludedRequirementIds": [
+    53
+  ],
+  "coverageMap": {
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-c86e273-r1/original-coverage-r1/coverage-map.json",
+    "sha256": "deef9d6d77f2a82b7c048c17027e97afa0192f43ded2d07ef54c25d1d4a7cbcc"
+  },
+  "authentication": {
+    "sha256": "48ffccd7dd42a55c743c0c8a7b9600ad3b174e4e8e3d72e52b87b07ca5c0f9f0",
+    "suitePin": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+    "runtimeFreeze": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+    "currentProductPin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+    "suiteReportSha256": "8711be82822ba830200c91af9936e476c3db3617a6ce6b33089cf329da0590e5",
+    "testsJsonSha256": "ced75e92e6e198d8bad063fc0e4b276bfd7ee1936bf1849830cafcd21f7a11a9",
+    "suitePassed": true,
+    "passedTests": 2920,
+    "failedTests": 0,
+    "inputBridgeEntriesChecked": 917,
+    "inputTreeIdentityMismatches": 0,
+    "focusedFiles": 15,
+    "focusedCasesComparedToRaw": 388,
+    "focusedCaseMismatches": 0,
+    "mappedReferencesChecked": 52,
+    "mappedReferenceMismatches": 0,
+    "manifestFilesChecked": 7,
+    "manifestMismatches": 0,
+    "currentApplicabilitySha256": "1d03c6e295ccb027dfa2872f4ec68c328cf32de9e5243bc3af7bdf038646345f",
+    "currentApplicabilityInputs": 918,
+    "currentApplicabilityMismatches": 0,
+    "soleProductAddition": "public/favicon.ico"
+  },
+  "perRequirement": {
+    "51": {
+      "accepted": true,
+      "clauses": {
+        "vary AI decision quality": "passed",
+        "without hidden resource bonuses": "passed"
+      }
+    },
+    "52": {
+      "accepted": true,
+      "clauses": {
+        "choose rush": "passed",
+        "choose fortify": "passed",
+        "choose expand": "passed",
+        "choose raid": "passed"
+      }
+    },
+    "54": {
+      "accepted": true,
+      "clauses": {
+        "adapts army": "passed",
+        "to observed enemies": "passed with hidden-state negative control"
+      }
+    },
+    "55": {
+      "accepted": true,
+      "clauses": {
+        "organize attacks": "passed",
+        "divide responsibilities": "passed"
+      }
+    },
+    "56": {
+      "accepted": true,
+      "clauses": {
+        "preserve troops": "passed",
+        "return with reinforcements": "passed at paid-reinforcement regroup and reintegration scope"
+      },
+      "limit": "No later renewed enemy attack is asserted; that is stronger than the original clause."
+    },
+    "57": {
+      "accepted": true,
+      "clauses": {
+        "request defense": "passed",
+        "request scouting": "passed",
+        "request resource support": "passed",
+        "request attacks": "passed"
+      }
+    },
+    "58": {
+      "accepted": true,
+      "clauses": {
+        "explicitly adjust starting resources": "passed",
+        "explicitly adjust income": "passed",
+        "explicitly adjust population limits": "passed"
+      }
+    }
+  },
+  "findings": [],
+  "runtimeExecuted": false,
+  "repositoryEdited": false,
+  "ledgerEdited": false
+}

@@ -1,0 +1,424 @@
+{
+  "suitePin": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+  "runtimeFreeze": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+  "sourceAuthentication": "authentication.json",
+  "casesArtifact": "passed-case-extract.json",
+  "recommendationOnly": true,
+  "ledgerEdited": false,
+  "candidates": [
+    51,
+    52,
+    54,
+    55,
+    56,
+    57,
+    58
+  ],
+  "remainInProgress": [
+    53
+  ],
+  "features": [
+    {
+      "id": 51,
+      "title": "Honest difficulty settings",
+      "originalRequirement": "vary AI decision quality without hidden resource bonuses.",
+      "recordedLedgerStatus": "in-progress",
+      "recommendation": "eligible-for-original-clause-admission",
+      "coveredBehavior": "Easy, normal and hard start from equal resources/troops/terrain, use equal delivered income under equal orders, and take different decision cadences at the same simulation ticks.",
+      "passedCases": [
+        {
+          "sourcePath": "tests/ai-modes.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "AI modes in the running simulation starts every difficulty with identical resources, troops, terrain and income",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/ai-modes.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "AI modes in the running simulation uses the same gathering rate when given the same orders at each difficulty",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/ai-modes.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "AI modes in the running simulation changes real decision cadence and easy hesitation without changing simulation speed",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/ai-policy.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "AI decisions using supplied observations normalizes choices without introducing economic factors",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/ai-policy.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "AI decisions using supplied observations makes easy opponents miss a predictable decision while other levels keep responding",
+          "status": "passed"
+        }
+      ],
+      "limits": "The canonical 108 matrix uses normal difficulty. Its completion does not establish difficulty differences; these controlled suite cases do."
+    },
+    {
+      "id": 52,
+      "title": "AI personalities",
+      "originalRequirement": "choose opponents that rush, fortify, expand or raid.",
+      "recordedLedgerStatus": "in-progress",
+      "recommendation": "eligible-for-original-clause-admission",
+      "coveredBehavior": "Native DOM controls choose rush, fortify, expand and raid and emit the appropriate configuration. Real running AI spends for rush/raid barracks, an expand depot, and a fortify tower after crystal gathering.",
+      "passedCases": [
+        {
+          "sourcePath": "tests/skirmish-options.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "skirmish options chooses the rush personality opening before notifying callers",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/skirmish-options.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "skirmish options chooses the fortify personality opening before notifying callers",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/skirmish-options.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "skirmish options chooses the expand personality opening before notifying callers",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/skirmish-options.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "skirmish options chooses the raid personality opening before notifying callers",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/ai-modes.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "AI modes in the running simulation commits the rush opening to a real barracks foundation",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/ai-modes.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "AI modes in the running simulation commits the expand opening to a real depot foundation",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/ai-modes.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "AI modes in the running simulation commits the raid opening to a real barracks foundation",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/ai-modes.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "AI modes in the running simulation gathers crystal before committing the fortify opening to its first tower",
+          "status": "passed"
+        }
+      ],
+      "limits": "The four personality choices and first real commitments are proved. The matrix is balanced only; later natural/browser acceptance remains separate."
+    },
+    {
+      "id": 53,
+      "title": "AI opening strategies",
+      "originalRequirement": "opponents use recognizable builds with exploitable weaknesses.",
+      "recordedLedgerStatus": "in-progress",
+      "recommendation": "keep-in-progress-existing-coverage-partial",
+      "coveredBehavior": "Distinct first paid build commitments and displayed plans/weaknesses are proved. Expand spends first on a depot; fortify gathers crystal before spending on a tower. A separate current public move/attack combat case proves frontal pikes cancel cavalry charge and damage its rider.",
+      "passedCases": [
+        {
+          "sourcePath": "tests/ai-modes.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "AI modes in the running simulation commits the rush opening to a real barracks foundation",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/ai-modes.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "AI modes in the running simulation commits the expand opening to a real depot foundation",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/ai-modes.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "AI modes in the running simulation commits the raid opening to a real barracks foundation",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/ai-modes.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "AI modes in the running simulation gathers crystal before committing the fortify opening to its first tower",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/ai-policy.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "AI decisions using supplied observations offers different opening building commitments",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/skirmish-options.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "skirmish options mounts labelled native controls, equal economy rules, and the selected opening plan",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/skirmish-options.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "skirmish options emits each difficulty change once and keeps manually selected openings",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/skirmish-options.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "skirmish options renders names, descriptions, plans, and weaknesses as plain text",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/combat-tactics.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "combat tactics encounters frontal braced pikes cancel charge and hurt the rider; a rear charge retains impact",
+          "status": "passed"
+        }
+      ],
+      "limits": "No current retained case links an opening's paid mobile production or absence to an opponent exploiting its advertised weakness. The pike encounter uses authored actors and is not an AI-opening encounter. Historical eight-game outputs at 25267c5 record cumulative building order/training and terminal outcomes, not controlled exploitation. Do not promote from displayed text or default-matrix results."
+    },
+    {
+      "id": 54,
+      "title": "Scouting-based counters",
+      "originalRequirement": "AI adapts its army to enemies it has observed.",
+      "recordedLedgerStatus": "in-progress",
+      "recommendation": "eligible-for-original-clause-admission",
+      "coveredBehavior": "Visible cavalry causes an actual spear recruitment queue and memory persists into fog. States differing only in hidden enemy roles/health produce equal orders. Observation memory expires and excludes workers/illusions.",
+      "passedCases": [
+        {
+          "sourcePath": "tests/ai-modes.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "AI modes in the running simulation recruits a cavalry counter after scouting and remembers it when the cavalry enters fog",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/ai-modes.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "AI modes in the running simulation issues identical orders when unobserved armies have different roles and health",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/ai-policy.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "AI decisions using supplied observations learns visible enemy cavalry and chooses spears, then forgets stale sightings",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/ai-policy.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "AI decisions using supplied observations does not learn workers or illusions as fighting forces",
+          "status": "passed"
+        }
+      ],
+      "limits": "No dependence on the pending team UI or natural-match followups. The matrix supports overall completion, not an isolated observation-counter causal claim."
+    },
+    {
+      "id": 55,
+      "title": "Coordinated allied AI",
+      "originalRequirement": "computer teammates organize attacks and divide responsibilities.",
+      "recordedLedgerStatus": "in-progress",
+      "recommendation": "eligible-for-original-clause-admission",
+      "coveredBehavior": "Two real allied AI owners retain a separate scout and launch approved armies at the same tick despite different decision cadences. The coordinator assigns scout and expansion to distinct owners, gives defense priority, and reassigns removed/dead responsibilities.",
+      "passedCases": [
+        {
+          "sourcePath": "tests/allied-ai.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "allied armies in the running simulation keeps one distinct scout and launches both approved armies in the same tick despite different decision cadences",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/allied-ai.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "allied armies in the running simulation answers a teammate help waypoint without revealing the hidden attacker or granting shared vision",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/team-ai-policy.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "owned team AI coordination assigns one scout and expansion to different owners and keeps copied lease destinations",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/team-ai-policy.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "owned team AI coordination reassigns a dead scout and a removed expansion owner without retaining dangling roles",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/team-ai-policy.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "owned team AI coordination gives defense priority over planned attacks and releases threatened scout reservations",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/team-ai-policy.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "owned team AI coordination uses combined readiness below a solo threshold and launches all owners once in one pass",
+          "status": "passed"
+        }
+      ],
+      "limits": "Controlled running-simulation coverage satisfies organizing attacks and dividing responsibilities. Current native co-op browser and natural allied followups remain open under final acceptance; historical c9ae0fc/f75fdd9 runs are not relabeled current."
+    },
+    {
+      "id": 56,
+      "title": "AI retreat and regrouping",
+      "originalRequirement": "opponents preserve troops and return with reinforcements.",
+      "recordedLedgerStatus": "in-progress",
+      "recommendation": "eligible-for-original-clause-admission",
+      "coveredBehavior": "A wounded fighter receives a real retreat order and remains in retreat while a paid recruit trains. After simulation advances and the reinforcement reaches the rally, the retreat record is released and the recruit is at the same rally. Dead recruits and raised units cannot satisfy regrouping; observed numerical threat causes withdrawal.",
+      "passedCases": [
+        {
+          "sourcePath": "tests/ai-modes.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "AI modes in the running simulation retreats wounded troops, waits for a newly trained reinforcement, then returns them to the army",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/ai-modes.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "AI modes in the running simulation keeps retreating soldiers at the rally when a paid reinforcement dies before regrouping",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/ai-modes.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "AI modes in the running simulation does not mistake a raised unit for a living paid reinforcement",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/ai-modes.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "AI modes in the running simulation withdraws from a visible outnumbered fight while ignoring a large hidden army",
+          "status": "passed"
+        }
+      ],
+      "limits": "This proves preservation and regroup/reintegration with a real paid reinforcement. The focused case does not assert a later renewed enemy attack; architecture's full renewed-attack scenario is stronger than the original clause. Current native terminal equality does not prove advancing retreat continuation."
+    },
+    {
+      "id": 57,
+      "title": "Allied AI directives",
+      "originalRequirement": "request defense, scouting, resource support or attacks.",
+      "recordedLedgerStatus": "in-progress",
+      "recommendation": "eligible-for-original-clause-admission",
+      "coveredBehavior": "Native DOM controls emit defense, scout and attack location requests plus support resource requests. Real simulation moves an owned scout, guards a requested area, attacks/kills an observed enemy, and transfers support once with conservation. Expiry/authorization are enforced; authenticated HTTP/WS receipts cover issuer ownership and privacy.",
+      "passedCases": [
+        {
+          "sourcePath": "tests/ally-directives-ui.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "allied AI directive panel offers labelled native controls and sends each destination request to recipient zero",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/ally-directives-ui.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "allied AI directive panel requests resource support without requiring a destination",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/team-ai-tools.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "owns a toolbar dialog, sends the selected cavern request and restores focus without leaking key events",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/allied-ai.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "allied requests executed by real units sends an owned cavalry scout, moves through the world, observes the destination and completes",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/allied-ai.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "allied requests executed by real units moves defenders to the request and holds the area before completing its guard period",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/allied-ai.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "allied requests executed by real units attacks a requested enemy with ordinary combat and completes after the cleared area is observed",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/allied-ai.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "allied requests executed by real units sends requested support once through the public transfer command and conserves resources",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/allied-ai.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "allied requests executed by real units expires an unavailable request at its deadline without waiting for another AI decision",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/allied-ai.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "allied request authorization and team receipts allows only a living allied requester to address an AI recipient",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/server-allied.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "allied commands over authenticated HTTP and WebSocket connections runs AI requests through public receipts, preserves issuer ownership, and hides them from opponents",
+          "status": "passed"
+        }
+      ],
+      "limits": "DOM dispatch and real public-command effects are separately exercised in the admitted suite. The pending current production browser will join them through main.ts and native UI. Historical production browser coverage at f75fdd9 remains historical."
+    },
+    {
+      "id": 58,
+      "title": "Visible handicap settings",
+      "originalRequirement": "explicitly adjust starting resources, income or population limits.",
+      "recordedLedgerStatus": "in-progress",
+      "recommendation": "eligible-for-original-clause-admission",
+      "coveredBehavior": "Visible per-slot native DOM controls accept explicit starting banks, income factors and population limits and create a match using those values. Human DOM income changes alter real delivered harvest without changing extraction. Configured banks pay for training and the configured cap rejects further recruits.",
+      "passedCases": [
+        {
+          "sourcePath": "tests/skirmish-roster.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "local skirmish roster shows explicit handicaps for every player and applies custom resources, income, population, age and vision",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/skirmish-roster.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "local skirmish roster changes real delivered harvest income from the human handicap",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/skirmish-roster.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "local skirmish roster uses a zero-resource, zero-income, minimum-cap handicap without substituting defaults",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/team-match.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "team AI and active economy applies starting resources and population limits to real paid training",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/team-match.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "team AI and active economy multiplies delivered harvest income without changing worker extraction",
+          "status": "passed"
+        },
+        {
+          "sourcePath": "tests/server-teams.test.ts",
+          "resultArtifact": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+          "fullName": "hosted team matches applies visible custom starting resources, age and population limits while rejecting malformed handicaps",
+          "status": "passed"
+        }
+      ],
+      "limits": "The original local visible-adjustment clause is directly covered, including gameplay effects. Online guest visibility/readiness and ranked rejection are stronger adjacent acceptance clauses and retain their own remaining gates."
+    }
+  ],
+  "canonicalMatrixScope": "108 natural games at normal/balanced/infantry-rush; all complete. This adds integration evidence only. R3 actually loads/resaves all 108 native files, with 2160 terminal equality rows and zero advancing terminal ticks. No full-match replay playback occurred.",
+  "pendingAcceptance": "Current allied natural, allied UI, roster UI, co-op UI and online UI followups remain open. None was executed by this coverage pass. Root owns ledger admission."
+}
