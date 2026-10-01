@@ -1,0 +1,55 @@
+{
+  "reviewerModel": "gpt-5.6-sol",
+  "currentRoot": "202b739fb398d1f94fd2c53f659e10860eba3fc6",
+  "admissionMap": {
+    "path": "/tmp/ovf-original61-62-current-admission-58g4rmyl/admission-map.json",
+    "sha256": "333b3919162048a8d2042fe49c1e4cf59a2d15558a2b7f9d0bee683ad11a5b2c"
+  },
+  "verdict": {
+    "61": "admit with surrender and zero-command sixth-match qualifications",
+    "62": "admit from combined 2v2/3v3 browser, 4v4 roster, and eight-human server evidence"
+  },
+  "requirements": {
+    "61": "play against another human.",
+    "62": "support 2v2, 3v3 and 4v4.",
+    "98": "compete on the same map and starting conditions."
+  },
+  "qualifications": {
+    "canonical": "Five matches terminate through authenticated guest WebSocket surrender; the sixth live match stores zero game commands.",
+    "hosted4v4": "The browser 4v4 attempt failed and is not represented as passed.",
+    "roster4v4": "The native 4v4 roster export has one human and seven AI controllers.",
+    "server4v4": "The unchanged server test covers eight human seats over real HTTP/WebSocket paths.",
+    "dailyNatural": "The natural daily run uses one account twice."
+  },
+  "dailyTwoAccountReferences": [
+    {
+      "kind": "unchanged-source full-suite test",
+      "path": "tests/server-competitions.test.ts",
+      "lines": "84-94",
+      "test": "uses server UTC daily conditions, resumes duplicate starts, and refuses forged scores or dates",
+      "proof": "host and guest fetch complete daily challenge objects; equality and dailyAt(clock) are asserted",
+      "gitBlobAcrossSuiteFreezeRunRepairCurrent": "bfffc577c2716bf1f365bf4db93c5ca9499fdd63",
+      "currentSha256": "5c3b8263413d2a2cef3006037fd7eaa044ee4e76a5556d8d42399782777ebe18",
+      "suiteResultPath": "docs/evidence/root-assembly-20261001/root-save4-corrected-full-tests.json",
+      "suiteResultSha256": "871d949b3c4fbf243257a671ce6f8d8f5981ac8e3575376e537b6409e7c398eb",
+      "suiteStatus": "passed"
+    },
+    {
+      "kind": "browser observation",
+      "sourcePath": "scripts/verify_competitions.mjs",
+      "sourceLines": "44-47",
+      "sourceSha256": "9117a38906e4180adc5b90bb9639769cf24ccd7fb1bc3759fbfee153bbedffe5",
+      "resultPath": "docs/evidence/competitions-browser/result.json",
+      "resultSha256": "25d5834d1336f63284ba483ee3bc3363132ec9adafddb417965503c984fbbece",
+      "recordedCheck": "daily server date/config match across accounts and duplicate start resumes the same hosted run"
+    }
+  ],
+  "attention": [
+    "Do not describe the canonical five-match evidence as natural wins or as using a native surrender control.",
+    "Do not describe the failed hosted attempt as a completed all-human browser 4v4.",
+    "Do not describe the daily natural wins as a two-account run; two-account equality is supplied by the unchanged-source test and earlier browser observation."
+  ],
+  "newRuntimePerformed": false,
+  "rootWritesPerformed": false,
+  "ledgerEditsPerformed": false
+}
