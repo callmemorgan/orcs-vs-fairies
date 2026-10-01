@@ -22,7 +22,7 @@ const port = Number(process.env.OVF_COMMUNITY_MOD_PORT || 0);
 assert(Number.isSafeInteger(port) && port >= 0 && port <= 65535 && port !== 4173, 'Choose an unused local port; the root preview port 4173 is reserved');
 await mkdir(evidence, { recursive: true });
 const results = [], errors = [];
-let helperDir, dataDir, server, browser, publisherPage, receiverPage, base, failure, helpers;
+let helperDir, dataDir, server, browser, publisherPage, receiverPage, base, failure, helpers, publisherAccount;
 let original, updated, originalBundle, updatedBundle, publishedOriginal, publishedUpdated;
 
 function checked(name, details = {}) {
@@ -74,17 +74,33 @@ async function register(page, name) {
   return account;
 }
 async function publishFile(file, expected) {
-  const waiting = publisherPage.waitForResponse(response => response.url().endsWith('/api/packages') && response.request().method() === 'POST')
-    .then(async response => ({ response, publication: await response.json() }));
-  const [{ response, publication }] = await Promise.all([
+  const waiting = publisherPage.waitForResponse(response => response.url().endsWith('/api/packages') && response.request().method() === 'POST');
+  const [response] = await Promise.all([
     waiting,
     publisherPage.getByLabel('Package file to publish', { exact: true }).setInputFiles(file),
   ]);
   assert.equal(response.status(), 201, `Publication accepts ${expected.id ?? expected.scenario?.id}@${expected.version ?? expected.revision}`);
   assert.deepEqual(response.request().postDataJSON().package, expected, 'Publication uses the exact fixture content');
+  await publisherPage.locator('.community-status').filter({ hasText: 'Package file published.' }).waitFor();
+  await publisherPage.locator('.community-details .community-hash').filter({ hasText: `Download checksum ${helpers.contentHash(expected)}` }).waitFor();
+  await publisherPage.getByLabel('Published revision', { exact: true }).evaluate((select, version) => {
+    if (select.value !== version) throw new Error(`Published revision ${select.value} differs from ${version}`);
+  }, String(expected.version ?? expected.revision));
+  // The page validates its POST receipt. CDP can discard a large response body,
+  // so inspect the immutable publication through authenticated read-only GETs.
+  const kind = expected.scenario ? 'scenario' : 'mod', localId = expected.id ?? expected.scenario.id;
+  const params = new URLSearchParams({ q: localId, kind, pageSize: '50' });
+  const searchResponse = await publisherPage.request.get(`${base}/api/packages?${params}`);
+  assert.equal(searchResponse.status(), 200);
+  const matching = (await searchResponse.json()).items.filter(item => item.localId === localId && item.kind === kind && item.publisher.id === publisherAccount.id);
+  assert.equal(matching.length, 1, 'The authenticated publisher has one exact package identity');
+  const detailResponse = await publisherPage.request.get(`${base}/api/packages/${matching[0].id}`);
+  assert.equal(detailResponse.status(), 200);
+  const { detail } = await detailResponse.json();
+  const publication = { detail, verification: { mutationStatus: response.status(), receipt: 'authenticated immutable publication GET' } };
+  assert(detail.revisions.some(revision => revision.version === String(expected.version ?? expected.revision) && revision.packageHash === expected.hash));
   assert.equal(publication.detail.packageHash, expected.hash);
   assert.equal(publication.detail.hash, helpers.contentHash(expected));
-  await publisherPage.locator('.community-status').filter({ hasText: 'Package file published.' }).waitFor();
   return publication;
 }
 async function searchMod(page) {
@@ -259,6 +275,7 @@ try {
   await promisify(execFile)(process.execPath, [path.join(root, 'scripts/verify_served_build.mjs'), `${base}/editor.html`, path.join(evidence, 'served-build.json'), staticDir], { cwd: root });
   const suffix = Date.now().toString(36);
   const author = await register(publisherPage, `ModPublisher${suffix}`);
+  publisherAccount = author;
   const viewer = await register(receiverPage, `ModReceiver${suffix}`);
   assert.notEqual(author.id, viewer.id);
   const publisherCookies = await publisher.cookies(base), receiverCookies = await receiver.cookies(base);
