@@ -15,6 +15,8 @@ import type { OnlineRenderState } from '../online/render-state';
 import type { ConstructionBlueprint } from '../core/planning';
 import type { GameEvent, Vec } from '../core/types';
 import { AppearancePreferences, appearancePreferences, markerPolygon, ownershipStyle } from './Appearance';
+import { abilityNeedsTarget } from '../core/specialist-systems';
+import { ARTIFACTS, RANK_THRESHOLDS, equipmentEligible, observedArtifacts } from '../core/unit-progression';
 
 const TILE_W = 64, TILE_H = 32, OX = 1600, OY = 80;
 const CAMERA_TAP:Partial<Record<ControlAction,readonly [number,number]>> = {
@@ -69,8 +71,10 @@ export default class GameScene extends Phaser.Scene {
   private drag:{x:number;y:number;wx:number;wy:number}|null=null;
   private pan:{x:number;y:number}|null=null;
   private attackMode=false;
+  private targetMode:{kind:'ability'|'fieldRepair'|'bridge'|'barricade';ids:number[]}|null=null;
   private accumulated=0;
   private fogClock=0;
+  private groundTerrain:GameState['terrain']=[];
   private attackedNoticeAt=new Map<number,number>();
   private buildingAlertAt=-Infinity;
   private workerAlertAt=-Infinity;
@@ -113,7 +117,7 @@ export default class GameScene extends Phaser.Scene {
     if(this.actors){this.drawActors();this.drawOverlay();}
   }
   public togglePause(){if(this.remote){this.options.onNotice('The online match clock keeps running.');return;}if(this.photoMode||this.state.winner!==null||this.state.draw)return;this.paused=!this.paused;this.options.onPause?.(this.paused);}
-  public command(command:Command):boolean {if(!this.canCommand)return false;return this.options.onCommand?.(this.viewSide,command)??issueCommand(this.state,this.viewSide,command);}
+  public command(command:Command):boolean {if(!this.canCommand)return false;if(command.type==='stop'||command.type==='hold')this.setBuildRole(null);return this.options.onCommand?.(this.viewSide,command)??issueCommand(this.state,this.viewSide,command);}
   private get canCommand(){return !this.readOnly&&!this.photoMode&&!this.inputBlocked&&!this.paused&&!this.state.eliminated[this.viewSide]&&this.state.winner===null&&!this.state.draw;}
   private get controlContext(){return {selected:!!this.selected.length,playable:!this.photoMode&&(this.readOnly||!this.paused&&this.state.winner===null&&!this.state.draw)};}
   private inputSuppressed(target:EventTarget|null=document.activeElement){const modal=!!document.querySelector('dialog[open],.session-overlay:not([hidden]) [role="dialog"]')||Array.from(document.querySelectorAll('[role="dialog"][aria-modal="true"]:not(dialog)')).some(element=>!element.closest('[hidden]'));return this.inputBlocked||inputIsSuppressed(target,modal);}
@@ -164,6 +168,7 @@ export default class GameScene extends Phaser.Scene {
       if(this.photoMode||this.inputSuppressed()||!this.controlContext.playable)return;
       const pos=unproject(world.x,world.y);
       if(this.placeBlueprint(pos))return;
+      if(this.completeTargetAt(world.x,world.y))return;
       if(this.buildRole){
         const role=this.buildRole;
         if(this.command({type:'build',ids:this.selected,role,definitionId:this.buildDefinitionId,x:role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y:role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5,level:this.viewLevel})) {this.setBuildRole(null);this.options.onNotice('Construction ordered.');this.audio?.play('order');}
@@ -171,6 +176,7 @@ export default class GameScene extends Phaser.Scene {
         return;
       }
       if(this.attackMode){this.attackMode=false;this.order(p,true);return;}
+      if(Math.hypot(p.x-drag.x,p.y-drag.y)<=this.dragThreshold&&this.recoverArtifactAt(world.x,world.y))return;
       let ids:number[]=[];
       if(Math.hypot(p.x-drag.x,p.y-drag.y)>this.dragThreshold){
         const x1=Math.min(drag.wx,world.x),x2=Math.max(drag.wx,world.x),y1=Math.min(drag.wy,world.y),y2=Math.max(drag.wy,world.y);
@@ -203,12 +209,45 @@ export default class GameScene extends Phaser.Scene {
   public controlGroups(){return Object.fromEntries(Object.entries(this.groups).map(([key,ids])=>[key,ids.filter(id=>this.state.entities.some(e=>e.id===id&&e.hp>0&&this.visible(e)))]));}
   public recallGroup(key:string){const ids=this.controlGroups()[key];if(ids?.length)this.select(ids);}
   public selectEntities(ids:number[]){const first=this.state.entities.find(e=>ids.includes(e.id)&&e.side===this.viewSide&&e.hp>0);if(first&&levelOf(first)!==this.viewLevel)this.setViewLevel(levelOf(first));this.select(ids.filter(id=>this.state.entities.some(e=>e.id===id&&e.hp>0&&this.visible(e))));}
-  public beginAttackMove(){if(!this.canCommand||!this.selected.length)return;this.attackMode=true;this.buildRole=null;this.options.onNotice('Attack move: click a destination.');}
-  public setBuildRole(role:BuildingRole|null,definitionId?:string){this.buildRole=role&&this.canCommand?role:null;this.buildDefinitionId=this.buildRole?definitionId:undefined;this.attackMode=false;}
+  public beginAttackMove(){if(!this.canCommand||!this.selected.length)return;this.setBuildRole(null);this.attackMode=true;this.options.onNotice('Attack move: click a destination.');}
+  public setBuildRole(role:BuildingRole|null,definitionId?:string){this.buildRole=role&&this.canCommand?role:null;this.buildDefinitionId=this.buildRole?definitionId:undefined;this.attackMode=false;this.targetMode=null;}
+  public useAbility():boolean {
+    if(!this.canCommand)return false;
+    const casters=this.state.entities.filter(e=>this.selected.includes(e.id)&&e.side===this.viewSide&&e.hp>0&&e.kind==='unit'&&!e.illusion&&unitFor(this.state,e).ability&&(e.abilityReadyAt??0)<=this.state.time);
+    if(!casters.length)return false;this.setBuildRole(null);
+    if(casters.some(e=>abilityNeedsTarget(this.state,e))){this.targetMode={kind:'ability',ids:casters.map(e=>e.id)};this.options.onNotice('Ability: click a visible target or ground. Esc cancels.');return true;}
+    const ok=this.command({type:'ability',ids:casters.map(e=>e.id)});if(ok)this.audio?.play('order');return ok;
+  }
+  public beginEngineerBuild(kind:'bridge'|'barricade'):boolean {
+    if(!this.canCommand)return false;const ids=this.selectedEngineers();if(!ids.length)return false;this.setBuildRole(null);this.targetMode={kind,ids};this.options.onNotice(`Temporary ${kind}: click visible ground within 4 tiles. Esc cancels.`);return true;
+  }
+  public beginFieldRepair():boolean {
+    if(!this.canCommand)return false;const ids=this.selectedEngineers();if(!ids.length)return false;this.setBuildRole(null);this.targetMode={kind:'fieldRepair',ids};this.options.onNotice('Field repair: click a damaged allied building or siege engine within 4 tiles. Esc cancels.');return true;
+  }
+  private selectedEngineers(){return this.state.entities.filter(e=>this.selected.includes(e.id)&&e.side===this.viewSide&&e.hp>0&&e.kind==='unit'&&!e.illusion&&unitFor(this.state,e).tags?.includes('engineer')).map(e=>e.id);}
+  private completeTargetAt(x:number,y:number):boolean {
+    const mode=this.targetMode;if(!mode)return false;if(!this.canCommand)return true;
+    const pos=unproject(x,y),target=this.hit(x,y);let ok=false;
+    if(mode.kind==='ability')ok=this.command({type:'ability',ids:mode.ids,...(target?{target:target.id}:{x:pos.x,y:pos.y})});
+    else if(mode.kind==='fieldRepair'){
+      const engineers=this.state.entities.filter(e=>mode.ids.includes(e.id)&&e.hp>0).sort((a,b)=>target?Math.hypot(a.x-target.x,a.y-target.y)-Math.hypot(b.x-target.x,b.y-target.y):a.id-b.id);
+      if(target&&engineers.length)ok=this.command({type:'fieldRepair',id:engineers[0].id,target:target.id});
+    }else ok=this.command({type:'engineerBuild',ids:mode.ids,kind:mode.kind,x:Math.floor(pos.x)+.5,y:Math.floor(pos.y)+.5});
+    if(ok){this.targetMode=null;this.audio?.play('order');this.options.onNotice(mode.kind==='ability'?'Ability used.':mode.kind==='fieldRepair'?'Field repair ordered.':`Temporary ${mode.kind} ordered.`);}
+    else this.options.onNotice(mode.kind==='ability'?'No selected ability can use this target. Choose another target or press Esc.':mode.kind==='fieldRepair'?'Choose a damaged allied building or siege engine within 4 tiles.':'Cannot build here. Check range, resources, visibility and terrain.');
+    return true;
+  }
+  private recoverArtifactAt(x:number,y:number):boolean {
+    if(!this.canCommand)return false;
+    const item=observedArtifacts(this.state,this.viewSide).find(item=>item.position&&isVisible(this.state,this.viewSide,item.position.x,item.position.y)&&Math.abs(project(item.position.x,item.position.y).x-x)<15&&Math.abs(project(item.position.x,item.position.y).y-12-y)<15);
+    if(!item)return false;
+    const specialist=this.state.entities.filter(e=>this.selected.includes(e.id)&&e.side===this.viewSide&&e.hp>0&&e.kind==='unit'&&equipmentEligible(this.state,e)).sort((a,b)=>Math.hypot(a.x-item.position!.x,a.y-item.position!.y)-Math.hypot(b.x-item.position!.x,b.y-item.position!.y))[0];
+    if(!specialist)return false;const ok=this.command({type:'recoverArtifact',id:specialist.id,artifact:item.id});this.options.onNotice(ok?`${ARTIFACTS[item.definitionId].name} recovered.`:'Move a selected specialist within 2 tiles to recover this artifact.');if(ok)this.audio?.play('order');return true;
+  }
   public centerOn(x:number,y:number){const q=project(x,y),camera=this.cameras.main;camera.centerOn(q.x,q.y);const bounds=this.photoMode?undefined:this.options.viewBounds?.();if(bounds)camera.scrollY+=(camera.height/2-(bounds.top+bounds.bottom)/2)/camera.zoom;}
   public restart(state:GameState){this.setPhotoMode(false);this.audio?.reset();this.resultSoundPlayed=false;this.art.reset();this.state=state;this.viewLevel=levelOf(state.starts[this.viewSide]);this.playerView=new PlayerView(this.viewSide);this.paused=false;this.accumulated=0;this.attackedNoticeAt.clear();this.buildingAlertAt=-Infinity;this.workerAlertAt=-Infinity;this.groups={};this.markers=[];this.combatEffects=[];this.heldKeys.clear();this.controller.reset();this.controllerCursor=null;this.setBuildRole(null);this.select([]);this.drawGround();this.drawFog();this.centerOn(this.state.starts[this.viewSide].x,this.state.starts[this.viewSide].y);}
   public holdPosition(){if(!this.command({type:'hold',ids:this.selected}))return false;this.attackMode=false;this.setBuildRole(null);this.audio?.play('order');this.options.onNotice('Holding position: attack in range without pursuing.');return true;}
-  private select(ids:number[],audible=true){const changed=ids.length!==this.selected.length||ids.some((id,index)=>id!==this.selected[index]);this.selected=ids;this.options.onSelection(ids);if(audible&&changed&&ids.length)this.audio?.play('selection');}
+  private select(ids:number[],audible=true){const changed=ids.length!==this.selected.length||ids.some((id,index)=>id!==this.selected[index]);if(changed)this.targetMode=null;this.selected=ids;this.options.onSelection(ids);if(audible&&changed&&ids.length)this.audio?.play('selection');}
   private key(e:KeyboardEvent){
     if(this.inputSuppressed(e.target))return;
     this.heldKeys.add(e.code);this.updateModifiers(e);
@@ -236,7 +275,7 @@ export default class GameScene extends Phaser.Scene {
       case 'attackMove':this.beginAttackMove();return;
       case 'hold':this.holdPosition();return;
       case 'stop':if(this.command({type:'stop',ids:this.selected}))this.audio?.play('order');return;
-      case 'ability':if(this.command({type:'ability',ids:this.selected}))this.audio?.play('order');return;
+      case 'ability':this.useAbility();return;
     }
     if(action.startsWith('action')){if(this.canCommand)this.options.onActionSlot?.(Number(action.slice(6)));return;}
     if(action.startsWith('groupAssign')){const n=action.slice(-1);this.groups[n]=[...this.selected];this.options.onNotice(`Group ${n} assigned.`);}
@@ -251,7 +290,7 @@ export default class GameScene extends Phaser.Scene {
   private orderAt(x:number,y:number,attack=false,queued=false){
     if(!this.canCommand)return;
     if(this.blueprintPlacement){this.cancelBlueprintPlacement();return;}
-    if(this.buildRole){this.setBuildRole(null);return;}
+    if(this.buildRole||this.targetMode){this.setBuildRole(null);return;}
     const world=this.cameras.main.getWorldPoint(x,y);const pos=unproject(world.x,world.y);const hit=this.hit(world.x,world.y);
     let ok=false;
     const own=this.state.entities.filter(e=>this.selected.includes(e.id)&&e.side===this.viewSide&&e.hp>0);
@@ -275,6 +314,7 @@ export default class GameScene extends Phaser.Scene {
     if(!this.controlContext.playable||!this.controllerCursor)return;
     const {x,y}=this.controllerCursor;
     if(this.blueprintPlacement){const world=this.cameras.main.getWorldPoint(x,y);this.placeBlueprint(unproject(world.x,world.y));return;}
+    const targetWorld=this.cameras.main.getWorldPoint(x,y);if(this.completeTargetAt(targetWorld.x,targetWorld.y))return;
     if(this.buildRole){
       const world=this.cameras.main.getWorldPoint(x,y),pos=unproject(world.x,world.y),role=this.buildRole;
       if(this.command({type:'build',ids:this.selected,role,definitionId:this.buildDefinitionId,x:role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y:role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5,level:this.viewLevel})){this.setBuildRole(null);this.options.onNotice('Construction ordered.');this.audio?.play('order');}
@@ -283,6 +323,7 @@ export default class GameScene extends Phaser.Scene {
     }
     if(this.attackMode){this.attackMode=false;this.orderAt(x,y,true,queued);return;}
     const world=this.cameras.main.getWorldPoint(x,y),hit=this.hit(world.x,world.y);
+    if(this.recoverArtifactAt(world.x,world.y))return;
     const ids=hit?.side===this.viewSide?[hit.id]:[];
     this.select(queued?[...new Set([...this.selected,...ids])]:ids);
   }
@@ -332,6 +373,7 @@ export default class GameScene extends Phaser.Scene {
       while(this.accumulated>=.05&&this.state.winner===null&&!this.state.draw){stepGame(this.state,.05);this.accumulated-=.05;this.processEvents();this.options.onStep?.(this.state);}
     }
     const living=this.selected.filter(id=>this.state.entities.some(e=>e.id===id&&e.hp>0&&this.visible(e)));if(living.length!==this.selected.length)this.select(living,false);
+    if(this.groundTerrain.length!==this.state.terrain.length||this.state.terrain.some((terrain,i)=>terrain!==this.groundTerrain[i]))this.drawGround();
     const suppressed=this.inputSuppressed();if(suppressed)this.heldKeys.clear();
     const c=this.cameras.main,s=(suppressed?0:Math.min(delta,40))*.75*this.pixelDensity/c.zoom;
     for(const [action,direction] of Object.entries(CAMERA_TAP))if(this.controls.isHeld(action as ControlAction,this.keyboardState,this.controlContext)){c.scrollX+=direction![0]*s;c.scrollY+=direction![1]*s;}
@@ -383,6 +425,7 @@ export default class GameScene extends Phaser.Scene {
   }
   private diamond(g:Phaser.GameObjects.Graphics,x:number,y:number,w:number,h:number,color:number,alpha=1){g.fillStyle(color,alpha);g.beginPath();g.moveTo(x,y-h/2);g.lineTo(x+w/2,y);g.lineTo(x,y+h/2);g.lineTo(x-w/2,y);g.closePath();g.fillPath();}
   private drawGround(){
+    this.groundTerrain=this.state.terrain.slice();
     this.art.ground(this.state,project,this.viewLevel);
     const g=this.ground;g.clear();
     for(let y=0;y<this.state.height;y++)for(let x=0;x<this.state.width;x++){
@@ -470,6 +513,11 @@ export default class GameScene extends Phaser.Scene {
       this.diamond(g,q.x,q.y,size*64,size*32,0xa6d9d4,.18);g.lineStyle(2,blueprint.reason?0xe27964:0xa6d9d4,.8).strokeEllipse(q.x,q.y,size*64,size*32);
     }
     if(this.blueprintPlacement){const pos=unproject(world.x,world.y),role=this.blueprintPlacement.role,x=role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y=role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5,q=project(x,y),size=buildingFor(this.state,this.viewSide,role).size;this.diamond(g,q.x,q.y,size*64,size*32,0xa6d9d4,.4);}
+    for(const item of observedArtifacts(this.state,this.viewSide)){
+      if(!item.position||!isVisible(this.state,this.viewSide,item.position.x,item.position.y))continue;
+      const c=project(item.position.x,item.position.y),color=({weapon:0xf6a55b,armor:0xbdcddd,trinket:0x83e2bc})[ARTIFACTS[item.definitionId].slot];
+      this.diamond(g,c.x,c.y-12,22,22,color,.85);g.lineStyle(2,0xfff1ba,.95).strokeCircle(c.x,c.y-12,14);g.fillStyle(0x172720,1).fillCircle(c.x,c.y-12,3);
+    }
     const appearance=this.appearance.value,teams=(this.state as GameState&{teams?:number[]}).teams;
     for(const unit of this.state.entities){
       if(unit.hp<=0||!this.visible(unit))continue;
@@ -490,6 +538,11 @@ export default class GameScene extends Phaser.Scene {
         if(!ready)g.fillStyle(0xedc675,.8).fillRect(c.x-16,c.y+14,32*Math.min(1,(this.state.time-unit.entrenchedAt)/3),3);
       }
       if(unit.raised)g.lineStyle(1,0x82dec8,.7).strokeEllipse(c.x,c.y,28,13);
+      if(unit.kind==='unit'&&!unit.illusion&&!unit.raised&&unit.veteran){
+        const rank=unit.veteran.rank,top=(this.art.top(`entity:${unit.id}`)??c.y-40)-15,color=[0xc4bc9f,0xdca676,0xc9dbe3,0xf4d77f][rank];
+        for(let i=0;i<rank;i++)g.lineStyle(2,color,1).lineBetween(c.x-5,top-i*5,c.x,top-i*5-3).lineBetween(c.x,top-i*5-3,c.x+5,top-i*5);
+        if(this.selected.includes(unit.id)&&unit.side===this.viewSide){const start=RANK_THRESHOLDS[rank],end=RANK_THRESHOLDS[rank+1]??300,progress=Math.max(0,Math.min(1,(unit.veteran.experience-start)/(end-start)));g.fillStyle(0x182426,.9).fillRect(c.x-15,c.y+19,30,3);g.fillStyle(color,1).fillRect(c.x-15,c.y+19,30*progress,3);if(unit.veteran.pendingPromotion)g.lineStyle(2,0xf4d77f,.85).strokeCircle(c.x,c.y+22,6);}
+      }
     }
     this.combatEffects=this.combatEffects.filter(f=>this.state.time-f.born<.5);
     for(const f of this.combatEffects){const t=Math.min(1,(this.state.time-f.born)/.35),x=f.from.x+(f.to.x-f.from.x)*t,y=f.from.y-24+(f.to.y-f.from.y)*t-Math.sin(t*Math.PI)*(f.heavy?25:5);g.fillStyle(f.color,1-t*.6).fillCircle(x,y,f.heavy?4:2);if(t>=1)g.lineStyle(2,f.color,.5).strokeCircle(f.to.x,f.to.y-20,8);}
@@ -499,8 +552,9 @@ export default class GameScene extends Phaser.Scene {
       g.fillStyle(0x182426,.9).fillRect(q.x-w/2-1,y-1,w+2,5);g.fillStyle(ownershipStyle(e.side,this.viewSide,appearance,teams).color).fillRect(q.x-w/2,y,w*Math.max(0,e.hp/e.maxHp),3);
       if(e.kind==='building'&&e.progress<1){g.fillStyle(0x182b2a,.8).fillRect(q.x-27,y+7,54,4);g.fillStyle(0xe4c578).fillRect(q.x-27,y+7,54*e.progress,4);}
     }
-    if(this.drag&&Math.hypot(p.x-this.drag.x,p.y-this.drag.y)>this.dragThreshold&&!this.buildRole){g.lineStyle(1,0xe5dca6).strokeRect(this.drag.wx,this.drag.wy,world.x-this.drag.wx,world.y-this.drag.wy);g.fillStyle(0xd6e9a5,.12).fillRect(this.drag.wx,this.drag.wy,world.x-this.drag.wx,world.y-this.drag.wy);}
+    if(this.drag&&Math.hypot(p.x-this.drag.x,p.y-this.drag.y)>this.dragThreshold&&!this.buildRole&&!this.targetMode){g.lineStyle(1,0xe5dca6).strokeRect(this.drag.wx,this.drag.wy,world.x-this.drag.wx,world.y-this.drag.wy);g.fillStyle(0xd6e9a5,.12).fillRect(this.drag.wx,this.drag.wy,world.x-this.drag.wx,world.y-this.drag.wy);}
     if(this.buildRole){const pos=unproject(world.x,world.y);const x=this.buildRole==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y=this.buildRole==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5,q=project(x,y);const valid=canPlace(this.state,this.viewSide,this.buildRole,x,y,this.buildDefinitionId,this.viewLevel);const size=buildingFor(this.state,this.viewSide,this.buildRole,this.buildDefinitionId).size;this.diamond(g,q.x,q.y,size*64,size*32,valid?0xa6d99a:0xe27964,.5);}
+    if(this.targetMode){const pos=unproject(world.x,world.y),q=project(Math.floor(pos.x)+.5,Math.floor(pos.y)+.5),visible=isVisible(this.state,this.viewSide,pos.x,pos.y);if(this.targetMode.kind==='bridge')for(const dx of [-1,0,1]){const tile=project(Math.floor(pos.x)+.5+dx,Math.floor(pos.y)+.5);this.diamond(g,tile.x,tile.y,64,32,visible?0xa6d99a:0xe27964,.5);}else if(this.targetMode.kind==='barricade')this.diamond(g,q.x,q.y,64,32,visible?0xa6d99a:0xe27964,.5);else g.lineStyle(2,visible?0xf4d77f:0xe27964,.9).strokeCircle(world.x,world.y,14).lineBetween(world.x-20,world.y,world.x+20,world.y).lineBetween(world.x,world.y-20,world.x,world.y+20);}
     for(const building of this.state.entities){
       if(building.side!==this.viewSide||building.hp<=0||!building.rally||!this.selected.includes(building.id))continue;
       const from=project(building.x,building.y),to=project(building.rally.x,building.rally.y);
@@ -510,6 +564,6 @@ export default class GameScene extends Phaser.Scene {
     }
     this.markers=this.markers.filter(m=>this.time.now-m.born<700);for(const m of this.markers){const age=(this.time.now-m.born)/700;g.lineStyle(2,m.attack?0xe38b6b:0xf0dfa3,1-age).strokeEllipse(m.x,m.y,15+age*35,7+age*17);}
     if(this.controllerActive&&this.controllerCursor){g.lineStyle(2,0xffefb6,.95).strokeCircle(world.x,world.y,7/this.cameras.main.zoom).lineBetween(world.x-12/this.cameras.main.zoom,world.y,world.x+12/this.cameras.main.zoom,world.y).lineBetween(world.x,world.y-12/this.cameras.main.zoom,world.x,world.y+12/this.cameras.main.zoom);}
-    this.game.canvas.style.cursor=this.buildRole||this.attackMode||this.blueprintPlacement?'crosshair':'default';
+    this.game.canvas.style.cursor=this.buildRole||this.attackMode||this.blueprintPlacement||this.targetMode?'crosshair':'default';
   }
 }

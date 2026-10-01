@@ -41,9 +41,9 @@ it('keeps mixed selection commands within two rows and exposes age unlock reason
  const worker=s.entities.find(e=>e.side===0&&e.role==='worker')!;
  const cb={isMuted:()=>false,groups:()=>({}),cameraCorners:()=>[]} as unknown as HudCallbacks;
  const selected=[barracks.id,worker.id],buttons=()=>root.querySelectorAll('#action-buttons button');
- shell.update(s,selected,cb);expect(buttons()).toHaveLength(6);
+ shell.update(s,selected,cb);expect(buttons()).toHaveLength(8);
  root.querySelector<HTMLButtonElement>('[data-mode="recruit"]')!.click();shell.update(s,selected,cb);
- expect(buttons()).toHaveLength(6);
+ expect(buttons()).toHaveLength(8);
  const cavalry=root.querySelector<HTMLButtonElement>('[aria-label="Boar Rider"]')!;
  expect(cavalry.getAttribute('aria-disabled')).toBe('true');expect(cavalry.dataset.tooltip).toContain('Requires Town Age');
  s.players[0].upgrades.push('town-age');shell.update(s,selected,cb);expect(cavalry.getAttribute('aria-disabled')).toBe('false');
