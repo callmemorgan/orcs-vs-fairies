@@ -15,7 +15,12 @@ const {chromium}=await import(process.env.OVF_PLAYWRIGHT_MODULE??'playwright');
 const browser=await chromium.launch({headless:true,args:['--disable-dev-shm-usage']});
 const contexts=[],profiles=[],errors=[],result={base,sourceCommit:sourcePin,checks:[],builds:[],chunksBefore,
  pageErrors:[],consoleErrors:[],failedRequests:[],httpErrors:[],method:'Ordinary main production app, real SessionTools downloads/imports and two guest profiles against the owned authoritative server. Runtime evaluation reads state only.'};
-let phase='open production app';
+let phase='open production app',failure;
+const interruptHandlers=Object.fromEntries(['SIGINT','SIGTERM'].map(signal=>[signal,()=>{
+ failure??=new Error(`Browser proof interrupted by ${signal}`);result.result='failed';result.interrupted=signal;
+ void browser.close().catch(error=>(result.cleanupErrors??=[]).push(String(error)));
+}]));
+for(const [signal,handler] of Object.entries(interruptHandlers))process.on(signal,handler);
 const record=(name,data=true)=>{result.checks.push({name,data});console.log(`${name}: ${JSON.stringify(data)}`);};
 async function profile(name){const context=await browser.newContext({viewport:{width:1440,height:1000},acceptDownloads:true});contexts.push(context);const page=await context.newPage(),value={name,page,snapshots:[],sent:[],receipts:[]};profiles.push(value);observePage(page,result,proofContext);page.on('pageerror',error=>errors.push({name,message:error.message}));page.on('websocket',socket=>{socket.on('framesent',event=>{try{const message=JSON.parse(event.payload);if(message.kind==='command')value.sent.push(message);}catch{}});socket.on('framereceived',event=>{try{const message=JSON.parse(event.payload);if(message.kind==='snapshot')value.snapshots.push(message);if(message.kind==='commandAck')value.receipts.push(message);}catch{}});});await page.goto(base,{waitUntil:'domcontentloaded'});result.builds.push({profile:name,...await page.evaluate(()=>({scripts:[...document.querySelectorAll('script[type="module"][src]')].map(node=>node.src),styles:[...document.querySelectorAll('link[rel="stylesheet"]')].map(node=>node.href)}))});return value;}
 async function waitBattle(page,mode){await page.waitForFunction(mode=>window.rts?.mode===mode,mode,{timeout:60000});await page.waitForSelector('.loading-battle[hidden]',{state:'attached',timeout:60000});}
@@ -49,11 +54,18 @@ try{
  await host.page.waitForFunction(point=>window.rts.state.entities.some(e=>e.side===0&&e.kind==='unit'&&e.role!=='worker'&&Math.hypot(e.x-point.x,e.y-point.y)<=1.5),relic,{timeout:45000});await openObjectives(host.page);await host.page.getByRole('button',{name:'Collect relic 1',exact:true}).click();await host.page.waitForFunction(()=>document.querySelector('.objective-panel-relic button')?.textContent==='Drop relic',{},{timeout:10000});const collectCommand=host.sent.findLast(message=>message.command.type==='collectRelic'),collectReceipt=await receiptFor(host,collectCommand);assert.equal(collectReceipt.accepted,true);await host.page.screenshot({path:join(out,'hosted-relic-collected.png')});record('Main objective control collects a relic through its accepted server command receipt',{command:collectCommand,receipt:collectReceipt});
  await host.page.getByRole('button',{name:'Drop relic 1',exact:true}).click();await host.page.waitForFunction(()=>document.querySelector('.objective-panel-relic button')?.textContent==='Collect relic',{},{timeout:10000});const dropCommand=host.sent.findLast(message=>message.command.type==='dropRelic'),dropReceipt=await receiptFor(host,dropCommand);assert.equal(dropReceipt.accepted,true);await closeObjectives(host.page);await host.page.screenshot({path:join(out,'hosted-relic-marker.png')});record('Main objective control drops the carried relic through its authoritative server receipt',{command:dropCommand,receipt:dropReceipt});
  await openObjectives(other.page);assert.match(await other.page.locator('.objective-panel h3').first().textContent(),/Relic control/);await other.page.screenshot({path:join(out,'guest-relic-objectives.png')});record('Guest main objectives show the received relic mode and shared public progress');
- assert.deepEqual(errors,[]);record('All production profiles have no page errors');result.passed=true;result.result='passed';
-}catch(error){result.passed=false;result.result='failed';result.phase=phase;result.error=error.stack??String(error);result.failureProfiles=[];for(const value of profiles)try{await value.page.screenshot({path:join(out,`${value.name}-failure.png`)});result.failureProfiles.push({name:value.name,sent:value.sent,receipts:value.receipts,lastSnapshot:value.snapshots.at(-1),state:await value.page.evaluate(()=>window.rts&&({selected:window.rts.selected,paused:window.rts.paused,camera:window.rts.camera,entities:window.rts.state.entities,objectives:window.rts.state.objectives}))});}catch{}throw error;}
+ assert.deepEqual(errors,[]);record('All production profiles have no page errors');result.result='passed';
+}catch(error){failure=error;result.result='failed';result.phase=phase;result.error=error.stack??String(error);result.failureProfiles=[];for(const value of profiles)try{await value.page.screenshot({path:join(out,`${value.name}-failure.png`)});result.failureProfiles.push({name:value.name,sent:value.sent,receipts:value.receipts,lastSnapshot:value.snapshots.at(-1),state:await value.page.evaluate(()=>window.rts&&({selected:window.rts.selected,paused:window.rts.paused,camera:window.rts.camera,entities:window.rts.state.entities,objectives:window.rts.state.objectives}))});}catch{}}
 finally{
- result.errors=errors;await Promise.all(contexts.map(context=>context.close()));await browser.close();result.browserClosed=!browser.isConnected();
+ result.errors=errors;
+ const contextCleanup=await Promise.allSettled(contexts.map(context=>context.close()));
+ for(const entry of contextCleanup)if(entry.status==='rejected'){failure??=entry.reason;result.result='failed';(result.cleanupErrors??=[]).push(String(entry.reason));}
+ try{await browser.close();}catch(error){failure??=error;result.result='failed';(result.cleanupErrors??=[]).push(String(error));}
+ result.browserClosed=!browser.isConnected();
  try {assert.deepEqual(await modeProvenance(sourcePin),provenance,'Mode source or driver changed during browser proof');result.chunksAfter=await servedChunks(proofContext);assert.deepEqual(result.chunksAfter,chunksBefore);await Promise.all(proofContext.responseTasks);if(result.result==='passed')assert(Object.values(proofContext.servedAssets).some(asset=>asset.path.endsWith('.css')),'Capture actual browser-loaded production CSS');}
- catch(error){result.passed=false;result.result='failed';result.finalizationFailure={message:error.message};throw error;}
- finally{await finishProof(proofContext,result);}
+ catch(error){failure??=error;result.result='failed';result.finalizationFailure={message:error.message};}
+ if(failure)result.result='failed';
+ try{await finishProof(proofContext,result);}catch(error){failure??=error;}
+ for(const [signal,handler] of Object.entries(interruptHandlers))process.removeListener(signal,handler);
 }
+if(failure)throw failure;

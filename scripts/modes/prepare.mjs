@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import {mkdir,readFile,writeFile,readdir} from 'node:fs/promises';
+import {mkdir,readFile,writeFile,readdir,symlink} from 'node:fs/promises';
+import {openSync,closeSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {resolve,join} from 'node:path';
 import {pathToFileURL} from 'node:url';
@@ -43,14 +44,23 @@ const {proofSchema:schema}=await import(pathToFileURL(join(modulesDir,'schema.mj
 assert.equal(schema.saveVersion,4,'Final mode proof requires SAVE4');
 assert.equal(schema.replayChecksumVersion,schema.saveVersion);
 await writeFile(join(modulesDir,'manifest.json'),JSON.stringify({...provenance,sourceDigest:digest,schema,entries,bundleInputs,modules:await inventory(modulesDir)},null,2)+'\n');
-execFileSync(process.execPath,['node_modules/typescript/bin/tsc','--noEmit'],{stdio:'inherit'});
-const browserBuild=execFileSync(process.execPath,['node_modules/vite/bin/vite.js','build','--outDir',distDir],{encoding:'utf8'});
-await writeFile(join(out,'build.log'),browserBuild);
-const serverBuild=execFileSync(process.execPath,['scripts/build-server.mjs',serverDir],{encoding:'utf8'});
-await writeFile(join(out,'build-server.log'),serverBuild);
+function loggedBuild(name,args) {
+  const log=join(out,name),descriptor=openSync(log,'wx');
+  try{execFileSync(process.execPath,args,{stdio:['ignore',descriptor,descriptor]});}
+  catch(error){throw new Error(`Preparation failed; inspect ${log}`,{cause:error});}
+  finally{closeSync(descriptor);}
+}
+loggedBuild('typecheck.log',['node_modules/typescript/bin/tsc','--noEmit']);
+loggedBuild('build.log',['node_modules/vite/bin/vite.js','build','--outDir',distDir]);
+loggedBuild('build-server.log',['scripts/build-server.mjs',serverDir]);
+// The canonical server builder leaves ws external. ESM resolves packages from the
+// bundle location, so an output root outside the checkout needs this explicit link.
+const serverDependencies={link:join(serverDir,'node_modules'),target:resolve('node_modules'),
+  wsPackageSha256:sha(await readFile('node_modules/ws/package.json'))};
+await symlink(serverDependencies.target,serverDependencies.link,'dir');
 assert.deepEqual(await modeProvenance(sourcePin),provenance,'Source or proof scripts changed during preparation');
 const compiledFiles=await inventory(distDir),serverFiles=await inventory(serverDir),moduleFiles=await inventory(modulesDir);
 await writeFile(join(out,'build-manifest.json'),JSON.stringify({...provenance,compiledFiles,serverFiles},null,2)+'\n');
 await writeFile(join(out,'prepare.json'),JSON.stringify({sourcePin,sourceDigest:digest,schema,provenance,modulesDir,distDir,serverDir,
-  compiledFiles,serverFiles,moduleFiles,preparedAt:new Date().toISOString(),browserRun:false,naturalMatchesRun:false},null,2)+'\n');
+  compiledFiles,serverFiles,moduleFiles,serverDependencies,preparedAt:new Date().toISOString(),browserRun:false,naturalMatchesRun:false},null,2)+'\n');
 console.log(JSON.stringify({sourcePin,schema,out,modulesDir,distDir,serverDir,browserRun:false,naturalMatchesRun:false}));
