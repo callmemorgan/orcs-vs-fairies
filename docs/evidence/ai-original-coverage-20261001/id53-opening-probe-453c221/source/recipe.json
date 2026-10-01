@@ -1,0 +1,193 @@
+{
+  "featureId": 53,
+  "originalRequirement": "opponents use recognizable builds with exploitable weaknesses.",
+  "status": "HELD \u2014 concrete executable source prepared; no build or product execution",
+  "productPin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "ownedCheckout": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+  "originalOutline": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-c86e273-r1/original-coverage-r1/id53-public-command-probe-outline.json",
+  "originalOutlineSha256": "e775e7265697998c67814bafc10d9c376348c8369ab2aa3fc767b650bfea0749",
+  "scope": "One measured early military delay from the recognized depot-first opening under a matched ordinary paid infantry pressure policy. Existing recognizable-build evidence remains at its recorded pins. No victory, win-rate or all-opening balance requirement.",
+  "configuration": {
+    "map": {
+      "seed": 4127,
+      "size": "small"
+    },
+    "rules": {
+      "startingAge": 1
+    },
+    "players": [
+      {
+        "id": 0,
+        "teamId": 0,
+        "factionId": "orcs",
+        "controller": "external",
+        "ai": {
+          "difficulty": "normal",
+          "personality": "balanced",
+          "opening": "infantry-rush"
+        }
+      },
+      {
+        "id": 1,
+        "teamId": 1,
+        "factionId": "orcs",
+        "controller": "ai",
+        "ai": {
+          "difficulty": "normal",
+          "personality": "balanced",
+          "opening": "RUN_OPENING"
+        }
+      }
+    ],
+    "nativeDefaults": "No biome/world/content/draft package and no handicaps. Normal createMatch defaults supply equal wood420/ore220/crystal0 banks, income factor1, population limit100, initial cap12, one native HQ, five workers and one native starter fighter per side.",
+    "allowedSetup": "Only createMatch with the declared config before constructing MatchRecorder. No spawnDefinition, raw state assignments, teleporting, seeded extra units/resources, wounded HP, altered cooldowns, altered orders, runtime/controller edits or disabled opponents."
+  },
+  "arms": [
+    {
+      "name": "infantry-control",
+      "opening": "infantry-rush",
+      "executionOrder": 1
+    },
+    {
+      "name": "depot-first-pressure",
+      "opening": "fast-expansion",
+      "executionOrder": 2
+    }
+  ],
+  "initialComparison": "Retain both original recorder.initial SAVE4 envelopes. Their complete contents must differ only in aiConfigs[1].opening; compare without excluding runtime, controllers, banks, entities, terrain or other fields.",
+  "timing": {
+    "stepSeconds": 0.05,
+    "maxStepsPerArm": 3600,
+    "maxSimulationSecondsPerArm": 180,
+    "policyCadenceTicks": 20,
+    "pressureReleaseTick": 1200,
+    "pressureReleaseSeconds": 60,
+    "responseObservationSeconds": 12,
+    "maxArmCount": 2,
+    "driverWallTimeoutSeconds": 120,
+    "nativeValidatorWallTimeoutSecondsEach": 30,
+    "hardRuntimeBudgetSeconds": 180,
+    "automaticRetries": 0,
+    "budgetScope": "The 180-second wall budget includes the one two-arm driver, two artifact-only native validator processes and termination grace. Driver receives TERM by115 seconds then KILL by120; each validator receives TERM by25 then KILL by30. An outer supervisor enforces a180-second hard process-group deadline. Future helper bundling/authentication must finish before the runtime probe begins and remains held separately.",
+    "driverTerminateAfterSeconds": 115,
+    "nativeValidatorTerminateAfterSecondsEach": 25,
+    "terminationGraceSeconds": 5,
+    "totalSupervisorHardKillAfterSeconds": 180
+  },
+  "policyInformation": "Use one persistent PlayerView(0).observe(state). All command actor IDs, available bank, queues, completed units, construction destination candidates, deposits and worker targets come from that own observation. Public map.starts[1] may guide scouting. Full-state/defender diagnostics belong only to the read-only auditor and never select a target, command, release time or economy action.",
+  "publicCommandPolicy": [
+    {
+      "phase": "native starter",
+      "rule": "At tick0 issue hold to the ordinary initial nonworker IDs from side0 observation; do not dispatch them. They may still fire when attacked at home. Record their responses separately and exclude them from paid recruit completion and qualifying harassment sources."
+    },
+    {
+      "phase": "paid construction",
+      "rule": "At the next policy boundary, choose all five ordinary initial owned worker IDs, sorted ascending. Build one barracks through issueCommand with those IDs. Candidate centers are half-tile grid points in currently observed terrain 4.5\u20137 tiles from the observed owned HQ, same level; order by greatest projection toward public enemy start, then smallest squared distance to own HQ, then y, then x. Record each accepted/rejected attempt and stop candidates on first acceptance. Rejections add no fixture edits; no canPlace/full-state target query is used by policy. Retry from current observation only once per policy boundary until accepted or bounded stop."
+    },
+    {
+      "phase": "finish construction",
+      "rule": "Do not interrupt builders before the owned barracks has progress1 in PlayerView. Cooperative building is a declared adjustment from the original singular-builder outline; the one public foundation costs160wood/50ore and each worker in range contributes normal construction progress."
+    },
+    {
+      "phase": "visible gathering",
+      "rule": "After barracks completion, assign workers sorted by ID to three wood slots and two ore slots. For each worker choose only resources with visible:true, matching kind and amount>0, sorted by squared distance then ID. Keep a valid current gather order; retry when idle or its current node is no longer usable. Never use stale remembered resource entries as visible targets."
+    },
+    {
+      "phase": "three paid infantry",
+      "rule": "Once the owned barracks completes, issue up to three accepted train role:melee commands. Observe the actual bank and owned queue before each attempt. Record the exact immediate debit70wood/25ore/0crystal per accepted command, total210wood/75ore. Continue missing accepted slots at later policy boundaries; do not cancel/refund. Track completion from actual train events and own observed new nonworker IDs; exclude initial IDs. Queueing three fits default banks and capacity; completion of all three is not required before pressure starts."
+    },
+    {
+      "phase": "fixed release",
+      "rule": "Before tick1200 keep completed paid infantry held at the observed owned barracks. At and after tick1200, dispatch each completed paid recruit individually; never wait for the whole sequential108-second train queue. Use the same deterministic policy in both arms."
+    },
+    {
+      "phase": "observed harassment",
+      "rule": "For each live completed paid recruit, choose a currently observed hostile worker on the same level, nearest squared distance then lowest ID. If already attacking that same visible worker, keep the order; otherwise issue attack and retain the exact command-time own observation containing target ID/HP/position. If no worker is currently observed, issue attackMove toward public enemy start only when no prior pressure order remains. When an attack target leaves observation, choose again from a fresh own observation. No abilities, free summons or arbitrary hidden entity lookup."
+    }
+  ],
+  "auditor": {
+    "readOnly": "May read complete saved state and step events to authenticate outcomes, but contributes no gameplay commands or mutations. Capture events after every .05 step; the next step clears them.",
+    "recognizableCommitments": [
+      "First newly paid non-HQ building role, foundation ID/tick, expected native cost, complete before/after native bank/queue/research diagnostics and every same-step income/spend component. Expansion must be depot-first and control barracks-first. Show the actual cost charged after accounting for same-step worker recruitment, research and delivered resources; do not label the whole bank delta as building cost.",
+      "First barracks foundation and completion tick.",
+      "First paid nonworker queue insertion and first paid nonworker train completion tick/ID for side1. Count neither the default starter nor a summoned/raised unit as the first paid fighter. AI public commands issued during stepping are regenerated by replay rather than emitted as independent recorder commands; preserve queue diagnostics separately."
+    ],
+    "hitEvidence": [
+      "Retain all ordinary attack events, not only the first exchange.",
+      "A qualifying event has side0, positive resolved amount, a source actually completed from the paid melee queue, and the same worker targeted by an accepted public attack whose own-observation snapshot contains it.",
+      "Retain complete pre/post step victim HP or lethal death evidence and positions; distinguish damage to shield/HP and unrelated combat.",
+      "At every worker hit retain defender starter, paid fighter IDs/counts, their positions/orders and ordinary retaliation events. No AI retaliation, worker death or fixed damage threshold is an additional pass gate."
+    ],
+    "causalLimit": "Retain pre-first-hit foundation, completed-barracks and first paid combat-queue milestones. If those do not precede the first damaging pressure, report that the pressure could have created part of the delay. Later first-fighter completion is explicitly an outcome under this fixed policy, not an unpressured baseline.",
+    "commandCheckpoint": "Immediately after the first accepted public attack on a worker currently present in the command-time own observation, export the full native session before the next step. Name it checkpoint-at-first-worker-attack-command-session.json and retain its actual tick/action index. An earlier automatic attackMove hit may precede this checkpoint; retain that hit separately and do not describe the checkpoint as before the first hit. If no such accepted direct-target command occurs, record the checkpoint as absent."
+  },
+  "passingComparison": {
+    "recognizable": "Two equal initial games produce the expected paid depot-first versus barracks-first commitment; all external actions use the same own-observation policy.",
+    "measuredWeakness": "At least one paid-attacker ordinary worker hit in the expansion arm has controlFirstPaidFighterTick < hitTick < expansionFirstPaidFighterTick. Record exact endpoints and milliseconds/ticks; do not replace a missing endpoint with an assumed value.",
+    "causality": "First barracks commitment/completion and first paid combat-queue differences are already retained before that arm\u2019s first worker hit. Later worker harassment may compound the completion delay and must be described as such.",
+    "nativeIdentity": "Original emitted sessions have SAVE4, replay checksum4 and rules4.0.1, with complete raw game envelope and complete recorder history; authenticated native verification passes full decoder/resave and replay endpoint equality without field projection.",
+    "noExpandedGate": "A full match, victory, worker kill, specific win margin, all four advertised weaknesses, repeated seeds and browser run are outside this probe."
+  },
+  "stopRules": [
+    "For each arm start a12-second response observation window once three paid train commands, the first defender paid fighter completion and at least one ordinary paid-recruit worker hit are retained. Continue recording all hits and normal responses during that window.",
+    "Stop at tick3600 regardless of missing prerequisites, or sooner at window completion or native game-over. Game-over is an observed stop, never a victory requirement.",
+    "If any endpoint, hit, causal milestone or equality check is absent, record unmet with retained native artifacts. Do not widen duration, add units/banks, change seed/tactics, replace hidden targets, disable defenders or add automatic runs."
+  ],
+  "nativeArtifactsPerArm": [
+    "initial-save4.json",
+    "command-observations.jsonl",
+    "paid-spend-and-production.jsonl",
+    "ordinary-hit-events.jsonl",
+    "endpoint-session.json",
+    "checkpoint-at-first-worker-attack-command-session.json if a public direct-worker attack is accepted",
+    "endpoint-verification.json",
+    "run-receipt.json"
+  ],
+  "existingHelpers": {
+    "simulation": "src/core/simulation.ts createMatch, issueCommand, stepGame; src/core/observation.ts PlayerView",
+    "recorder": "src/core/replays.ts MatchRecorder; createSessionFile(state,recorder.export()) from src/core/session-storage.ts",
+    "verifier": "The core checks in committed scripts/controls-proof/verify-native.ts verify complete native decoder/resave and complete ReplayPlayer endpoint/checksum/analysis/technology equality. Its additional 100-tick restored continuation assumes an unfinished match and a living movable actor; that assumption is outside feature53.",
+    "verifierBinding": "prepare.mjs verifies all committed src/config bytes at453c221, bundles the external driver and validator with pin/source/helper digest defines, and retains actual helper source, bundle, esbuild inputs and metafile fingerprints. provenance.ts reauthenticates those identities before runtime. No bundle or manifest currently exists.",
+    "avoidUnrelatedPreparation": "The committed controls prepare entry also runs minimap generation and a web build. They are unnecessary for this headless opening probe. Prepare/authenticate only the artifact validator and driver; retain helper/source/config/metafile hashes. No build or helper execution is authorized by this preparation.",
+    "futureVerifierInvocation": "The concrete run.sh invokes native validator.mjs with endpoint, output receipt, full pin, actual build-manifest and optional command checkpoint under one per-arm25-second TERM/30-second KILL cap.",
+    "requiredValidator": "Concrete native-validator.ts imports committed native decodeSessionFile/createSessionFile/MatchRecorder/ReplayPlayer/replayChecksum/saveGame APIs. It verifies complete parsed session, resaved raw game/runtime and replay endpoint/checksum/analysis/technology equality for endpoint and any command checkpoint in one per-arm process; it does not require continuation.",
+    "continuationHandling": "The committed controls verifier continuation is inapplicable to terminal or actor-depleted endpoints and is not a feature53 acceptance gate. Do not run it as an automatic retry or add a nonterminal-survival requirement. No continuation result is claimed by this prepared artifact-only validation plan."
+  },
+  "executionAuthorization": "Runtime remains held. Root must assign the serial slot to AI before any bundle build, simulation, replay or native validator is executed. No product or feature-status changes are proposed.",
+  "preparationOnly": true,
+  "sourceDirectory": "/tmp/orcs-id53-executable-453c221-hvEbs6",
+  "executableSources": {
+    "driver.ts": "/tmp/orcs-id53-executable-453c221-hvEbs6/driver.ts",
+    "native-validator.ts": "/tmp/orcs-id53-executable-453c221-hvEbs6/native-validator.ts",
+    "provenance.ts": "/tmp/orcs-id53-executable-453c221-hvEbs6/provenance.ts",
+    "prepare.mjs": "/tmp/orcs-id53-executable-453c221-hvEbs6/prepare.mjs",
+    "run.sh": "/tmp/orcs-id53-executable-453c221-hvEbs6/run.sh",
+    "finalize.mjs": "/tmp/orcs-id53-executable-453c221-hvEbs6/finalize.mjs",
+    "run-supervisor.mjs": "/tmp/orcs-id53-executable-453c221-hvEbs6/run-supervisor.mjs"
+  },
+  "commandsAfterRuntimeRelease": {
+    "prepare": "node /tmp/orcs-id53-executable-453c221-hvEbs6/prepare.mjs /home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies /tmp/orcs-id53-build-NEW",
+    "run": "bash /tmp/orcs-id53-executable-453c221-hvEbs6/run.sh /home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies /tmp/orcs-id53-build-NEW /tmp/orcs-id53-run-NEW",
+    "freshDirectories": "Replace NEW with unused directory names. Build and output directories must not already exist. No package installation or general app build is needed.",
+    "budget": "Bundling/authentication precedes the probe. run-supervisor.mjs owns detached native process groups, sends group TERM/KILL at115/120 and25/30 seconds, retains the global180-second group KILL deadline after leader exit, and inspects Linux /proc to drain runnable descendants before any next stage or metadata finalizer. Post-guard finalization reads/writes artifacts only."
+  },
+  "actualPreparationState": {
+    "runtimeExecuted": false,
+    "compiled": false,
+    "testsExecuted": false,
+    "productWrites": false,
+    "sourceWritesOnly": true
+  },
+  "sourcePreparedAt": "2026-10-01T22:29:35.773954+00:00",
+  "outputLimits": {
+    "jsonlBytesPerArm": {
+      "command-observations.jsonl": 16777216,
+      "paid-spend-and-production.jsonl": 33554432,
+      "ordinary-hit-events.jsonl": 16777216
+    },
+    "maxJsonlBytesBothArms": 134217728,
+    "retention": "Retain full before/after audit snapshots only on bank/queue/research changes, paid-ledger insertions or actual build/train/research/combat/death events. Animation and production-progress advances alone do not emit redundant copies. The arm stops incomplete/unmet if any append would exceed its file cap, retaining native endpoint and real raw prefix. Final receipt computes actual JSONL and total retained byte sums."
+  },
+  "auditFailureHandling": "Blocked-spawn refund/drop stops that arm incomplete/unmet before a later recruit can inherit an incorrect payment token. Same-exchange paid attacker death still permits an ordinary hit, using its pre-step paid ledger. Native train events plus prior paid queue and produced-fighter counter authenticate defender completion even if death removes its ledger entry later in that step.",
+  "nativeValidationScope": "Two per-arm processes verify original endpoint and optional accepted-worker-attack command checkpoint only. No continuation or survival result is claimed."
+}

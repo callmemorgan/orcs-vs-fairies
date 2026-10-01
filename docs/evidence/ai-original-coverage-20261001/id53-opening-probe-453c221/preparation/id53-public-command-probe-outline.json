@@ -1,0 +1,37 @@
+{
+  "featureId": 53,
+  "status": "outline-only-not-executed",
+  "proposedProductPin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "gap": "The current tests show first build commitments and displayed weaknesses but do not record an opponent exploiting an opening-specific economic or military tradeoff.",
+  "smallestMeaningfulProbe": "Two equal-seed, same-faction controlled opening-pressure runs: fast-expansion versus infantry-rush. Change only the defending AI opening. The external opponent uses the same public economy/recruitment/harassment command policy in both runs.",
+  "setup": {
+    "seed": 4127,
+    "mapSize": "small",
+    "defendingFaction": "orcs",
+    "attackingFaction": "orcs",
+    "difficulty": "normal",
+    "personality": "balanced",
+    "defenderController": "ai",
+    "attackerController": "external",
+    "economy": "Default equal starting banks, income factor 1, population cap 100, starting age 1. No raw bank/unit/HP/order/AI-runtime edits after creation."
+  },
+  "commands": [
+    "Construct a barracks near the attacking side's observed HQ with an owned worker through the public build command.",
+    "Give owned workers gathering commands using only visible deposits.",
+    "Pay for three melee recruits through the public train command; identify troops through the attacker observation.",
+    "Scout toward the public enemy starting position with owned troops.",
+    "Issue attack-move through the public command, then target only an enemy worker actually present in the attacker observation. Use the same deterministic own-observation policy in both runs."
+  ],
+  "record": [
+    "Accepted command tick, side and payload.",
+    "Defender first paid non-HQ building and actual spending.",
+    "First completed barracks and first paid mobile fighter completion times.",
+    "Observed enemy worker identity/position at command time, ordinary attack events and resulting HP/loss.",
+    "Defender mobile response at each harassment hit.",
+    "Actual native save and MatchRecorder history, with source/executable envelope identities."
+  ],
+  "passingBehavior": "The expansion opening pays for its nonmilitary commitment and reaches mobile recruitment later than the matched infantry opening. The attacking player lands ordinary harassment during that measured delay against an observed worker. A matched control records the response/timing rather than attributing the result to a different faction, difficulty, starting bank or hidden target.",
+  "guard": "At most two 180-second simulations, stopping after the measured recruitment delay and first meaningful harassment exchange. A timeout or absent delay/hit remains an unmet result; do not widen the guard or fabricate a target.",
+  "scope": "This resolves one concrete advertised opening weakness and complements the already-passed recognizable-build cases. It requires no win-rate or full-match balance threshold. It does not prove all four displayed weakness statements through gameplay; root can decide whether additional narrow cases are needed for those statements.",
+  "authorization": "Prepare only. Execute only after root assigns the next runtime slot."
+}

@@ -1,0 +1,131 @@
+{
+  "status": "guarded-native-processes-complete",
+  "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "startedAt": "2026-10-01T22:38:46.933Z",
+  "finishedAt": "2026-10-01T22:38:51.226Z",
+  "nativeWallSeconds": 4.293487,
+  "runtimeExit": 0,
+  "deadlineReached": false,
+  "groupHardDeadlineSeconds": 180,
+  "processes": [
+    {
+      "label": "two-arm-driver",
+      "executable": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+      "args": [
+        "/tmp/orcs-id53-build-453c221-hvEbs6/driver.mjs",
+        "/tmp/orcs-id53-run-453c221-hvEbs6",
+        "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "/tmp/orcs-id53-build-453c221-hvEbs6/build-manifest.json"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+      "group": 1233731,
+      "startedElapsedSeconds": 0.001096,
+      "termSeconds": 115,
+      "killSeconds": 120,
+      "exit": {
+        "code": 0,
+        "signal": null,
+        "globalDeadline": false,
+        "leaderExitObserved": true
+      },
+      "waitEndedElapsedSeconds": 2.173467,
+      "leaderEndedElapsedSeconds": 2.17347,
+      "drain": {
+        "runnableMembers": [],
+        "checkedBy": "Linux /proc stat group/state after group KILL",
+        "elapsedSeconds": 2.178206
+      },
+      "finishedElapsedSeconds": 2.178218
+    },
+    {
+      "label": "infantry-control-native-validator",
+      "executable": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+      "args": [
+        "/tmp/orcs-id53-build-453c221-hvEbs6/validator.mjs",
+        "/tmp/orcs-id53-run-453c221-hvEbs6/infantry-control/endpoint-session.json",
+        "/tmp/orcs-id53-run-453c221-hvEbs6/infantry-control/endpoint-verification.json",
+        "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "/tmp/orcs-id53-build-453c221-hvEbs6/build-manifest.json",
+        "/tmp/orcs-id53-run-453c221-hvEbs6/infantry-control/checkpoint-at-first-worker-attack-command-session.json"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+      "group": 1239869,
+      "startedElapsedSeconds": 2.178614,
+      "termSeconds": 25,
+      "killSeconds": 30,
+      "exit": {
+        "code": 0,
+        "signal": null,
+        "globalDeadline": false,
+        "leaderExitObserved": true
+      },
+      "waitEndedElapsedSeconds": 3.185867,
+      "leaderEndedElapsedSeconds": 3.185869,
+      "drain": {
+        "runnableMembers": [],
+        "checkedBy": "Linux /proc stat group/state after group KILL",
+        "elapsedSeconds": 3.189827
+      },
+      "finishedElapsedSeconds": 3.189831
+    },
+    {
+      "label": "depot-first-pressure-native-validator",
+      "executable": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+      "args": [
+        "/tmp/orcs-id53-build-453c221-hvEbs6/validator.mjs",
+        "/tmp/orcs-id53-run-453c221-hvEbs6/depot-first-pressure/endpoint-session.json",
+        "/tmp/orcs-id53-run-453c221-hvEbs6/depot-first-pressure/endpoint-verification.json",
+        "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "/tmp/orcs-id53-build-453c221-hvEbs6/build-manifest.json",
+        "/tmp/orcs-id53-run-453c221-hvEbs6/depot-first-pressure/checkpoint-at-first-worker-attack-command-session.json"
+      ],
+      "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+      "group": 1245766,
+      "startedElapsedSeconds": 3.190203,
+      "termSeconds": 25,
+      "killSeconds": 30,
+      "exit": {
+        "code": 0,
+        "signal": null,
+        "globalDeadline": false,
+        "leaderExitObserved": true
+      },
+      "waitEndedElapsedSeconds": 4.288988,
+      "leaderEndedElapsedSeconds": 4.288989,
+      "drain": {
+        "runnableMembers": [],
+        "checkedBy": "Linux /proc stat group/state after group KILL",
+        "elapsedSeconds": 4.293192
+      },
+      "finishedElapsedSeconds": 4.293196
+    }
+  ],
+  "signals": [
+    {
+      "group": 1233731,
+      "signal": "SIGKILL",
+      "reason": "cleanup-after-leader-exit",
+      "elapsedSeconds": 2.173585,
+      "sent": false,
+      "detail": "group absent"
+    },
+    {
+      "group": 1239869,
+      "signal": "SIGKILL",
+      "reason": "cleanup-after-leader-exit",
+      "elapsedSeconds": 3.185917,
+      "sent": false,
+      "detail": "group absent"
+    },
+    {
+      "group": 1245766,
+      "signal": "SIGKILL",
+      "reason": "cleanup-after-leader-exit",
+      "elapsedSeconds": 4.289026,
+      "sent": false,
+      "detail": "group absent"
+    }
+  ],
+  "remainingOwnedRunnableGroups": 0,
+  "failure": null
+}

@@ -1,0 +1,1042 @@
+{
+  "status": "recorded-awaiting-native-validation",
+  "evidenceComplete": true,
+  "evidenceFailure": null,
+  "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "name": "infantry-control",
+  "opening": "infantry-rush",
+  "advertisedOpening": {
+    "name": "Infantry rush",
+    "plan": "Barracks first, then an early infantry attack.",
+    "weakness": "The first attack leaves few defenders at home."
+  },
+  "config": {
+    "map": {
+      "seed": 4127,
+      "size": "small"
+    },
+    "rules": {
+      "startingAge": 1
+    },
+    "players": [
+      {
+        "id": 0,
+        "teamId": 0,
+        "factionId": "orcs",
+        "controller": "external",
+        "ai": {
+          "difficulty": "normal",
+          "personality": "balanced",
+          "opening": "infantry-rush"
+        }
+      },
+      {
+        "id": 1,
+        "teamId": 1,
+        "factionId": "orcs",
+        "controller": "ai",
+        "ai": {
+          "difficulty": "normal",
+          "personality": "balanced",
+          "opening": "infantry-rush"
+        }
+      }
+    ]
+  },
+  "initialStarterIds": [
+    7
+  ],
+  "defenderStarterIds": [
+    14
+  ],
+  "acceptedTrains": 3,
+  "ownTrainReceipts": [
+    {
+      "commandOrdinal": 20,
+      "tick": 180,
+      "producerId": 48,
+      "paidCost": {
+        "wood": 70,
+        "ore": 25,
+        "crystal": 0
+      },
+      "beforeBank": {
+        "wood": 259.9999999999982,
+        "ore": 170,
+        "crystal": 0
+      },
+      "afterBank": {
+        "wood": 189.99999999999818,
+        "ore": 145,
+        "crystal": 0
+      },
+      "debited": {
+        "wood": 70,
+        "ore": 25,
+        "crystal": 0
+      },
+      "accepted": true
+    },
+    {
+      "commandOrdinal": 21,
+      "tick": 180,
+      "producerId": 48,
+      "paidCost": {
+        "wood": 70,
+        "ore": 25,
+        "crystal": 0
+      },
+      "beforeBank": {
+        "wood": 189.99999999999818,
+        "ore": 145,
+        "crystal": 0
+      },
+      "afterBank": {
+        "wood": 119.99999999999818,
+        "ore": 120,
+        "crystal": 0
+      },
+      "debited": {
+        "wood": 70,
+        "ore": 25,
+        "crystal": 0
+      },
+      "accepted": true
+    },
+    {
+      "commandOrdinal": 22,
+      "tick": 180,
+      "producerId": 48,
+      "paidCost": {
+        "wood": 70,
+        "ore": 25,
+        "crystal": 0
+      },
+      "beforeBank": {
+        "wood": 119.99999999999818,
+        "ore": 120,
+        "crystal": 0
+      },
+      "afterBank": {
+        "wood": 49.99999999999818,
+        "ore": 95,
+        "crystal": 0
+      },
+      "debited": {
+        "wood": 70,
+        "ore": 25,
+        "crystal": 0
+      },
+      "accepted": true
+    }
+  ],
+  "ownPaidCompletions": [
+    {
+      "commandOrdinal": 20,
+      "tick": 180,
+      "producerId": 48,
+      "paidCost": {
+        "wood": 70,
+        "ore": 25,
+        "crystal": 0
+      },
+      "completionTick": 901,
+      "completionTime": 45.04999999999958,
+      "unitId": 53,
+      "nativeActor": {
+        "id": 53,
+        "side": 0,
+        "kind": "unit",
+        "role": "melee",
+        "x": 12,
+        "y": 12.5,
+        "hp": 175,
+        "maxHp": 175,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 0,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        }
+      },
+      "observedActor": {
+        "id": 53,
+        "side": 0,
+        "owner": 0,
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "facing": 2,
+        "kind": "unit",
+        "role": "melee",
+        "x": 12,
+        "y": 12.5,
+        "hp": 175,
+        "maxHp": 175,
+        "progress": 1,
+        "illusion": false,
+        "order": {
+          "type": "idle"
+        },
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "cooldown": 0,
+        "expires": 0
+      },
+      "nativePaidRecordAfter": {
+        "entityId": 53,
+        "stock": {
+          "wood": 70,
+          "ore": 25,
+          "crystal": 0
+        }
+      },
+      "nativeTrainEvent": {
+        "type": "train",
+        "x": 12,
+        "y": 12.5,
+        "side": 0,
+        "source": 53
+      }
+    },
+    {
+      "commandOrdinal": 21,
+      "tick": 180,
+      "producerId": 48,
+      "paidCost": {
+        "wood": 70,
+        "ore": 25,
+        "crystal": 0
+      },
+      "completionTick": 1622,
+      "completionTime": 81.09999999999754,
+      "unitId": 60,
+      "nativeActor": {
+        "id": 60,
+        "side": 0,
+        "kind": "unit",
+        "role": "melee",
+        "x": 12,
+        "y": 12.5,
+        "hp": 175,
+        "maxHp": 175,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 0,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        }
+      },
+      "observedActor": {
+        "id": 60,
+        "side": 0,
+        "owner": 0,
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "facing": 2,
+        "kind": "unit",
+        "role": "melee",
+        "x": 12,
+        "y": 12.5,
+        "hp": 175,
+        "maxHp": 175,
+        "progress": 1,
+        "illusion": false,
+        "order": {
+          "type": "idle"
+        },
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "cooldown": 0,
+        "expires": 0
+      },
+      "nativePaidRecordAfter": {
+        "entityId": 60,
+        "stock": {
+          "wood": 70,
+          "ore": 25,
+          "crystal": 0
+        }
+      },
+      "nativeTrainEvent": {
+        "type": "train",
+        "x": 12,
+        "y": 12.5,
+        "side": 0,
+        "source": 60
+      }
+    }
+  ],
+  "checkpoint": {
+    "path": "/tmp/orcs-id53-run-453c221-hvEbs6/infantry-control/checkpoint-at-first-worker-attack-command-session.json",
+    "commandOrdinal": 25,
+    "tick": 1380,
+    "time": 68.99999999999822,
+    "replayActionIndex": 17,
+    "point": "after-first-accepted-observed-worker-attack-command-before-next-step"
+  },
+  "firstPaidBuilding": {
+    "tick": 1,
+    "time": 0.05,
+    "id": 47,
+    "role": "barracks",
+    "paidCost": {
+      "wood": 160,
+      "ore": 50,
+      "crystal": 0
+    },
+    "nativeActor": {
+      "id": 47,
+      "side": 1,
+      "kind": "building",
+      "role": "barracks",
+      "x": 26.5,
+      "y": 23.5,
+      "hp": 95,
+      "maxHp": 950,
+      "order": {
+        "type": "idle"
+      },
+      "cooldown": 0,
+      "progress": 0,
+      "queue": [],
+      "trainProgress": 0,
+      "researchProgress": 0,
+      "facing": 2,
+      "animation": "idle",
+      "animTime": 0.05,
+      "momentum": 0,
+      "illusion": false,
+      "expires": 0,
+      "carried": 0,
+      "carriedKind": "wood",
+      "path": []
+    },
+    "accounting": {
+      "side": 1,
+      "beforeBank": {
+        "wood": 420,
+        "ore": 220,
+        "crystal": 0
+      },
+      "afterBank": {
+        "wood": 210,
+        "ore": 170,
+        "crystal": 0
+      },
+      "income": {
+        "wood": 0,
+        "ore": 0,
+        "crystal": 0
+      },
+      "foundations": [
+        {
+          "entityId": 47,
+          "role": "barracks",
+          "cost": {
+            "wood": 160,
+            "ore": 50,
+            "crystal": 0
+          }
+        }
+      ],
+      "foundationSpend": {
+        "wood": 160,
+        "ore": 50,
+        "crystal": 0
+      },
+      "queueChanges": [
+        {
+          "role": "worker",
+          "before": 0,
+          "after": 1,
+          "completed": 0,
+          "added": 1,
+          "cost": {
+            "wood": 50,
+            "ore": 0,
+            "crystal": 0
+          }
+        }
+      ],
+      "queueSpend": {
+        "wood": 50,
+        "ore": 0,
+        "crystal": 0
+      },
+      "researchStarts": [],
+      "researchSpend": {
+        "wood": 0,
+        "ore": 0,
+        "crystal": 0
+      },
+      "accountedSpend": {
+        "wood": 210,
+        "ore": 50,
+        "crystal": 0
+      },
+      "residual": {
+        "wood": 0,
+        "ore": 0,
+        "crystal": 0
+      },
+      "fullyAccounted": true,
+      "limitation": "Queue counts retain all native arrays below. Death/refund/repair or other spending may leave a residual; never describe it as building cost."
+    }
+  },
+  "firstBarracksFoundation": {
+    "tick": 1,
+    "time": 0.05,
+    "id": 47,
+    "role": "barracks",
+    "paidCost": {
+      "wood": 160,
+      "ore": 50,
+      "crystal": 0
+    },
+    "nativeActor": {
+      "id": 47,
+      "side": 1,
+      "kind": "building",
+      "role": "barracks",
+      "x": 26.5,
+      "y": 23.5,
+      "hp": 95,
+      "maxHp": 950,
+      "order": {
+        "type": "idle"
+      },
+      "cooldown": 0,
+      "progress": 0,
+      "queue": [],
+      "trainProgress": 0,
+      "researchProgress": 0,
+      "facing": 2,
+      "animation": "idle",
+      "animTime": 0.05,
+      "momentum": 0,
+      "illusion": false,
+      "expires": 0,
+      "carried": 0,
+      "carriedKind": "wood",
+      "path": []
+    },
+    "accounting": {
+      "side": 1,
+      "beforeBank": {
+        "wood": 420,
+        "ore": 220,
+        "crystal": 0
+      },
+      "afterBank": {
+        "wood": 210,
+        "ore": 170,
+        "crystal": 0
+      },
+      "income": {
+        "wood": 0,
+        "ore": 0,
+        "crystal": 0
+      },
+      "foundations": [
+        {
+          "entityId": 47,
+          "role": "barracks",
+          "cost": {
+            "wood": 160,
+            "ore": 50,
+            "crystal": 0
+          }
+        }
+      ],
+      "foundationSpend": {
+        "wood": 160,
+        "ore": 50,
+        "crystal": 0
+      },
+      "queueChanges": [
+        {
+          "role": "worker",
+          "before": 0,
+          "after": 1,
+          "completed": 0,
+          "added": 1,
+          "cost": {
+            "wood": 50,
+            "ore": 0,
+            "crystal": 0
+          }
+        }
+      ],
+      "queueSpend": {
+        "wood": 50,
+        "ore": 0,
+        "crystal": 0
+      },
+      "researchStarts": [],
+      "researchSpend": {
+        "wood": 0,
+        "ore": 0,
+        "crystal": 0
+      },
+      "accountedSpend": {
+        "wood": 210,
+        "ore": 50,
+        "crystal": 0
+      },
+      "residual": {
+        "wood": 0,
+        "ore": 0,
+        "crystal": 0
+      },
+      "fullyAccounted": true,
+      "limitation": "Queue counts retain all native arrays below. Death/refund/repair or other spending may leave a residual; never describe it as building cost."
+    }
+  },
+  "firstBarracksComplete": {
+    "tick": 718,
+    "time": 35.9000000000001,
+    "id": 47,
+    "role": "barracks",
+    "nativeActor": {
+      "id": 47,
+      "side": 1,
+      "kind": "building",
+      "role": "barracks",
+      "x": 26.5,
+      "y": 23.5,
+      "hp": 949.9999999999818,
+      "maxHp": 950,
+      "order": {
+        "type": "idle"
+      },
+      "cooldown": 0,
+      "progress": 1,
+      "queue": [],
+      "trainProgress": 0,
+      "researchProgress": 0,
+      "facing": 2,
+      "animation": "idle",
+      "animTime": 35.9000000000001,
+      "momentum": 0,
+      "illusion": false,
+      "expires": 0,
+      "carried": 0,
+      "carriedKind": "wood",
+      "path": []
+    }
+  },
+  "firstCombatQueue": {
+    "tick": 721,
+    "time": 36.05000000000009,
+    "id": 47,
+    "role": "paid-combat-queue",
+    "added": [
+      {
+        "role": "ranged",
+        "before": 0,
+        "after": 1,
+        "completed": 0,
+        "added": 1,
+        "cost": {
+          "wood": 85,
+          "ore": 35,
+          "crystal": 0
+        }
+      }
+    ],
+    "accounting": {
+      "side": 1,
+      "beforeBank": {
+        "wood": 185.99999999999818,
+        "ore": 242,
+        "crystal": 36
+      },
+      "afterBank": {
+        "wood": 0.999999999998181,
+        "ore": 207,
+        "crystal": 36
+      },
+      "income": {
+        "wood": 0,
+        "ore": 0,
+        "crystal": 0
+      },
+      "foundations": [
+        {
+          "entityId": 51,
+          "role": "depot",
+          "cost": {
+            "wood": 100,
+            "ore": 0,
+            "crystal": 0
+          }
+        }
+      ],
+      "foundationSpend": {
+        "wood": 100,
+        "ore": 0,
+        "crystal": 0
+      },
+      "queueChanges": [
+        {
+          "role": "ranged",
+          "before": 0,
+          "after": 1,
+          "completed": 0,
+          "added": 1,
+          "cost": {
+            "wood": 85,
+            "ore": 35,
+            "crystal": 0
+          }
+        }
+      ],
+      "queueSpend": {
+        "wood": 85,
+        "ore": 35,
+        "crystal": 0
+      },
+      "researchStarts": [],
+      "researchSpend": {
+        "wood": 0,
+        "ore": 0,
+        "crystal": 0
+      },
+      "accountedSpend": {
+        "wood": 185,
+        "ore": 35,
+        "crystal": 0
+      },
+      "residual": {
+        "wood": 0,
+        "ore": 0,
+        "crystal": 0
+      },
+      "fullyAccounted": true,
+      "limitation": "Queue counts retain all native arrays below. Death/refund/repair or other spending may leave a residual; never describe it as building cost."
+    }
+  },
+  "firstPaidFighter": {
+    "tick": 1521,
+    "time": 76.04999999999782,
+    "id": 57,
+    "role": "ranged",
+    "paidCost": {
+      "wood": 85,
+      "ore": 35,
+      "crystal": 0
+    },
+    "nativeActor": {
+      "id": 57,
+      "side": 1,
+      "kind": "unit",
+      "role": "ranged",
+      "x": 24,
+      "y": 23.5,
+      "hp": 100,
+      "maxHp": 100,
+      "order": {
+        "type": "move",
+        "x": 25.98,
+        "y": 25.98
+      },
+      "cooldown": 0,
+      "progress": 1,
+      "queue": [],
+      "trainProgress": 0,
+      "researchProgress": 0,
+      "facing": 2,
+      "animation": "idle",
+      "animTime": 0,
+      "momentum": 0,
+      "illusion": false,
+      "expires": 0,
+      "carried": 0,
+      "carriedKind": "wood",
+      "path": [],
+      "tactics": {
+        "morale": 100,
+        "recentLoss": 0
+      }
+    },
+    "nativeTrainEvent": {
+      "type": "train",
+      "x": 24,
+      "y": 23.5,
+      "side": 1,
+      "source": 57
+    },
+    "nativePaidRecordAfter": {
+      "entityId": 57,
+      "stock": {
+        "wood": 85,
+        "ore": 35,
+        "crystal": 0
+      }
+    },
+    "priorPaidProducerCandidates": [
+      {
+        "id": 47,
+        "side": 1,
+        "kind": "building",
+        "role": "barracks",
+        "x": 26.5,
+        "y": 23.5,
+        "hp": 950,
+        "maxHp": 950,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [
+          "ranged",
+          "ranged"
+        ],
+        "trainProgress": 0.9999999999999842,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 75.99999999999783,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "rally": {
+          "x": 25.98,
+          "y": 25.98
+        }
+      }
+    ],
+    "producerAttribution": "Native train event omits producer; retain compatible paid-queue candidates without claiming one exact producer.",
+    "producedFighterCounterBefore": 0,
+    "producedFighterCounterAfter": 1,
+    "accounting": {
+      "side": 1,
+      "beforeBank": {
+        "wood": 21.99999999999818,
+        "ore": 334,
+        "crystal": 72
+      },
+      "afterBank": {
+        "wood": 21.99999999999818,
+        "ore": 334,
+        "crystal": 72
+      },
+      "income": {
+        "wood": 0,
+        "ore": 0,
+        "crystal": 0
+      },
+      "foundations": [],
+      "foundationSpend": {
+        "wood": 0,
+        "ore": 0,
+        "crystal": 0
+      },
+      "queueChanges": [
+        {
+          "role": "ranged",
+          "before": 2,
+          "after": 1,
+          "completed": 1,
+          "added": 0,
+          "cost": {
+            "wood": 85,
+            "ore": 35,
+            "crystal": 0
+          }
+        }
+      ],
+      "queueSpend": {
+        "wood": 0,
+        "ore": 0,
+        "crystal": 0
+      },
+      "researchStarts": [],
+      "researchSpend": {
+        "wood": 0,
+        "ore": 0,
+        "crystal": 0
+      },
+      "accountedSpend": {
+        "wood": 0,
+        "ore": 0,
+        "crystal": 0
+      },
+      "residual": {
+        "wood": 0,
+        "ore": 0,
+        "crystal": 0
+      },
+      "fullyAccounted": true,
+      "limitation": "Queue counts retain all native arrays below. Death/refund/repair or other spending may leave a residual; never describe it as building cost."
+    }
+  },
+  "firstPaidWorkerHitTick": 1421,
+  "responseEndTick": 1761,
+  "allWorkerHits": [
+    {
+      "tick": 1421,
+      "time": 71.04999999999811,
+      "source": 53,
+      "target": 9,
+      "amount": 17,
+      "qualifying": true,
+      "paidSource": true,
+      "observedTarget": true,
+      "resolvedLoss": true,
+      "commandOrdinal": 25
+    },
+    {
+      "tick": 1444,
+      "time": 72.19999999999804,
+      "source": 53,
+      "target": 9,
+      "amount": 17.96408,
+      "qualifying": true,
+      "paidSource": true,
+      "observedTarget": true,
+      "resolvedLoss": true,
+      "commandOrdinal": 25
+    },
+    {
+      "tick": 1467,
+      "time": 73.34999999999798,
+      "source": 53,
+      "target": 49,
+      "amount": 18.92816,
+      "qualifying": true,
+      "paidSource": true,
+      "observedTarget": true,
+      "resolvedLoss": true,
+      "commandOrdinal": 26
+    },
+    {
+      "tick": 1490,
+      "time": 74.49999999999791,
+      "source": 53,
+      "target": 49,
+      "amount": 19.892240000000008,
+      "qualifying": true,
+      "paidSource": true,
+      "observedTarget": true,
+      "resolvedLoss": true,
+      "commandOrdinal": 26
+    },
+    {
+      "tick": 1512,
+      "time": 75.59999999999785,
+      "source": 53,
+      "target": 49,
+      "amount": 20.86136,
+      "qualifying": true,
+      "paidSource": true,
+      "observedTarget": true,
+      "resolvedLoss": true,
+      "commandOrdinal": 26
+    },
+    {
+      "tick": 1534,
+      "time": 76.69999999999779,
+      "source": 53,
+      "target": 49,
+      "amount": 25.31824,
+      "qualifying": true,
+      "paidSource": true,
+      "observedTarget": true,
+      "resolvedLoss": true,
+      "commandOrdinal": 26
+    },
+    {
+      "tick": 1555,
+      "time": 77.74999999999773,
+      "source": 53,
+      "target": 9,
+      "amount": 23.99487199999999,
+      "qualifying": true,
+      "paidSource": true,
+      "observedTarget": true,
+      "resolvedLoss": true,
+      "commandOrdinal": 27
+    },
+    {
+      "tick": 1576,
+      "time": 78.79999999999767,
+      "source": 53,
+      "target": 9,
+      "amount": 25.01773999999999,
+      "qualifying": true,
+      "paidSource": true,
+      "observedTarget": true,
+      "resolvedLoss": true,
+      "commandOrdinal": 27
+    },
+    {
+      "tick": 1597,
+      "time": 79.8499999999976,
+      "source": 53,
+      "target": 9,
+      "amount": 1.0233080000000285,
+      "qualifying": true,
+      "paidSource": true,
+      "observedTarget": true,
+      "resolvedLoss": true,
+      "commandOrdinal": 27
+    },
+    {
+      "tick": 1618,
+      "time": 80.89999999999755,
+      "source": 53,
+      "target": 12,
+      "amount": 25.348867999999996,
+      "qualifying": true,
+      "paidSource": true,
+      "observedTarget": true,
+      "resolvedLoss": true,
+      "commandOrdinal": 28
+    },
+    {
+      "tick": 1639,
+      "time": 81.94999999999749,
+      "source": 53,
+      "target": 12,
+      "amount": 25.348867999999996,
+      "qualifying": true,
+      "paidSource": true,
+      "observedTarget": true,
+      "resolvedLoss": true,
+      "commandOrdinal": 28
+    },
+    {
+      "tick": 1660,
+      "time": 82.99999999999743,
+      "source": 53,
+      "target": 12,
+      "amount": 25.348867999999996,
+      "qualifying": true,
+      "paidSource": true,
+      "observedTarget": true,
+      "resolvedLoss": true,
+      "commandOrdinal": 28
+    },
+    {
+      "tick": 1681,
+      "time": 84.04999999999737,
+      "source": 53,
+      "target": 12,
+      "amount": 8.953396000000012,
+      "qualifying": true,
+      "paidSource": true,
+      "observedTarget": true,
+      "resolvedLoss": true,
+      "commandOrdinal": 28
+    }
+  ],
+  "stop": {
+    "reason": "completed-12-second-response-window",
+    "tick": 1761,
+    "simulatedSeconds": 88.04999999999714,
+    "terminal": false
+  },
+  "jsonlOutputs": [
+    {
+      "path": "/tmp/orcs-id53-run-453c221-hvEbs6/infantry-control/command-observations.jsonl",
+      "bytes": 886359,
+      "rows": 30,
+      "limitBytes": 16777216
+    },
+    {
+      "path": "/tmp/orcs-id53-run-453c221-hvEbs6/infantry-control/paid-spend-and-production.jsonl",
+      "bytes": 2964228,
+      "rows": 133,
+      "limitBytes": 33554432
+    },
+    {
+      "path": "/tmp/orcs-id53-run-453c221-hvEbs6/infantry-control/ordinary-hit-events.jsonl",
+      "bytes": 715932,
+      "rows": 25,
+      "limitBytes": 16777216
+    }
+  ],
+  "noPostRecorderDirectMutation": true,
+  "policyInformation": "Persistent PlayerView(0), including currently visible resource/worker targets; full state is read-only audit only.",
+  "causalLimit": "Later paid fighter completion is the outcome under matched pressure. Retained pre-hit milestones support the earlier spending delay; subsequent harassment can compound it.",
+  "inventoryExcludes": [
+    "run-receipt.json"
+  ],
+  "files": [
+    {
+      "path": "checkpoint-at-first-worker-attack-command-session.json",
+      "bytes": 174123,
+      "sha256": "e48a9e1897e047205df0ff2447b035af605983aeac2914849744d2e1473bfbf4"
+    },
+    {
+      "path": "command-observations.jsonl",
+      "bytes": 886359,
+      "sha256": "359b629a54dcc048eb73914ca2a8c005078d0d7d4b7e0b4f631b8bebdbd037d3"
+    },
+    {
+      "path": "endpoint-session.json",
+      "bytes": 187115,
+      "sha256": "d22fbefa0cf88dae94caa3affa7533f9e6ce3d6fecfe11b16e097c6bc5b3901e"
+    },
+    {
+      "path": "initial-save4.json",
+      "bytes": 55032,
+      "sha256": "9d1d8f33c89527e1b5ae289e006186ceb8d3d179f62b37ae8f000f12321ea3b8"
+    },
+    {
+      "path": "ordinary-hit-events.jsonl",
+      "bytes": 715932,
+      "sha256": "8c90db92a2ca765132164bb4bd9a64c79f9350510b0388de589e5d605972e3a6"
+    },
+    {
+      "path": "paid-spend-and-production.jsonl",
+      "bytes": 2964228,
+      "sha256": "858ffdbc59044f6db2aef1557275f38d4529d9484a8ef93b17105f4fe3360140"
+    }
+  ]
+}
