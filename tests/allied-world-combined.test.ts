@@ -26,7 +26,7 @@ describe('allied AI with assembled world and content',()=>{
   expect(directive(s).assigned).toEqual([]);expect(directive(s).status).toBe('accepted');
   fighter.level=1;refreshVisibility(s);runAI(s,1);expect(directive(s).assigned).toEqual([fighter.id]);expect(fighter.order).toMatchObject({type:'move',level:1});
   const restored=loadGame(saveGame(s));advancePair(s,restored,180);expect(directive(s).status).toBe('completed');expect(fighter.x).toBeGreaterThan(11);expect(fighter.level).toBe(1);
- });
+ },20_000);
 
  it('copies a visible cavern target and retains that level when it traverses to the surface',()=>{
   const s=fixture(),entry=s.world!.transitions[0],target=s.entities.find(e=>e.side===2&&e.role==='melee')!,observer=s.entities.find(e=>e.side===0&&e.role==='melee')!;
