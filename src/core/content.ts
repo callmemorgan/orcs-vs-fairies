@@ -1,10 +1,10 @@
-import type { FactionId, FactionDef, UnitDef, UnitRole, BuildingDef, BuildingRole, UpgradeDef } from './types';
+import type { BuiltinFactionId, FactionId, FactionDef, UnitDef, UnitRole, BuildingDef, BuildingRole, UpgradeDef } from './types';
 export const ECONOMY = { harvestPerSecond: 2.28 } as const;
 
 const unit=(id:string,name:string,role:UnitRole,wood:number,ore:number,hp:number,damage:number,armor:number,range:number,speed:number,cooldown:number,trainTime:number,ability:UnitDef['ability'],description:string):UnitDef=>({id,name,role,cost:{wood,ore,crystal:role==='special'?12:0},hp,damage,armor,range,speed,cooldown,trainTime,sight:role==='ranged'?9:7,ability,description});
 const building=(id:string,name:string,role:BuildingRole,wood:number,ore:number,hp:number,size:number,buildTime:number,description:string,ability?:'heal'):BuildingDef=>({id,name,role,cost:{wood,ore,crystal:role==='tower'?6:0},hp,size,buildTime,sight:role==='tower'?11:9,description,ability});
 type BaseFaction=Omit<FactionDef,'units'|'buildings'> & {units:Record<'worker'|'melee'|'ranged'|'special',UnitDef>;buildings:Record<'hq'|'depot'|'barracks'|'tower',BuildingDef>};
-const BASE_FACTIONS:Record<FactionId,BaseFaction>={
+const BASE_FACTIONS:Record<BuiltinFactionId,BaseFaction>={
  orcs:{id:'orcs',name:'Ironclad',subtitle:'Strength in the struggle',color:0xd07745,accent:'#dba35d',description:'Armored warbands gather fury as they fight. Hold the line, build momentum, and break the enemy stronghold.',ai:{aggression:1,armySize:9,composition:{melee:.45,ranged:.35,special:.20}},units:{
  worker:unit('orc-worker','Scrapper','worker',50,0,85,5,1,1.3,2.1,1.4,12,undefined,'Harvest timber, ore and crystal. Raise and repair your settlement.'),
  melee:unit('orc-melee','Ironjaw','melee',70,25,175,15,3,1.4,1.8,1.15,36,'momentum','Armored front line. Sustained attacks build Fury, granting up to 40% damage and 15% attack speed.'),
@@ -64,13 +64,13 @@ const BASE_FACTIONS:Record<FactionId,BaseFaction>={
 };
 
 // The three shared battlefield roles have faction-specific names and materials in art.
-const expansionNames:Record<FactionId,[string,string,string]>={
+const expansionNames:Record<BuiltinFactionId,[string,string,string]>={
  orcs:['Boar Rider','Pikejaw','Iron Catapult'],fairies:['Stag Rider','Briar Pike','Thorn Trebuchet'],
  dwarves:['Mountain Rider','Deep Pike','Stone Thrower'],undead:['Dread Rider','Bone Pike','Grave Catapult'],
  tideborn:['Shell Rider','Reef Pike','Coral Mangonel'],automata:['Strider','Lance Sentinel','Siege Engine'],
 };
 export const FACTIONS:Record<FactionId,FactionDef>=Object.fromEntries(Object.entries(BASE_FACTIONS).map(([id,base])=>{
- const faction=id as FactionId,prefix=base.units.worker.id.split('-')[0],names=expansionNames[faction];
+ const faction=id as BuiltinFactionId,prefix=base.units.worker.id.split('-')[0],names=expansionNames[faction];
  return [id,{...base,buildings:{...base.buildings,
   wall:{...building(`${prefix}-wall`,'Stone Wall','wall',30,25,1100,1,15,'A durable barrier. Siege engines break walls quickly.'),age:2},
   gate:{...building(`${prefix}-gate`,'Town Gate','gate',90,65,1400,2,28,'Open to let armies pass. An open gate also admits enemies. Cannot close on a unit.'),age:2},
