@@ -1,0 +1,45 @@
+{
+  "base": "http://127.0.0.1:9286",
+  "fixture": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/editor-root-integration-20261001/map-current/two-level-map.json",
+  "fixtureHash": "9b03625290fd323e",
+  "results": [
+    {
+      "name": "normal controls author a cave actor, move order, friendly wave and nested victory"
+    },
+    {
+      "name": "scenario export and import preserve the exact package and layered map"
+    },
+    {
+      "name": "play retains both levels, terrain, cave resource, site and transition",
+      "initialTick": 0
+    },
+    {
+      "name": "normal World tools select the cave view"
+    },
+    {
+      "name": "cave movement satisfies the level-aware condition while ground arrival stays false",
+      "initial": {
+        "x": 11.5,
+        "y": 8.5,
+        "level": 1
+      },
+      "reached": {
+        "x": 11.5,
+        "y": 9.02,
+        "level": 1
+      },
+      "layerControlTick": 38,
+      "victoryTick": 40
+    },
+    {
+      "name": "friendly timed wave spawns in the cave and runtime object IDs stay unique",
+      "waveId": 57,
+      "runtimeObjects": 34
+    },
+    {
+      "name": "browser has no uncaught errors"
+    }
+  ],
+  "errors": [],
+  "checkedAt": "2026-10-01T12:55:49.862Z"
+}

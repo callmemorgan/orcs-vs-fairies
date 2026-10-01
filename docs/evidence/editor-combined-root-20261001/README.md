@@ -1,0 +1,9 @@
+# Editors in the combined root app
+
+The canonical map/scenario/community editor chain is imported alongside allied AI and campaign ownership. At5c22a89,336 focused tests in thirteen files, the production build and server build pass. The first production scripts pass thirteen map authoring checks, eight flat scenario checks, seven layered scenario checks and fourteen community map/replay checks. Served editor HTML, JavaScript and CSS match the local build byte for byte.
+
+Independent review found a delayed campaign file read could reclaim ownership after an editor/community replacement. At57ea9eb, a generation check discards superseded reads and stale read errors; current read errors and synchronous restore errors remain visible. Editor map admission occurs before clearing the strategic owner. Three regressions and thirty-nine affected tests pass with the production build; the unchanged independent original race probe now passes. The later sixteen-check map run enables actual game play, confirms all authored level/transition geometry and traverses the entrance through ordinary World controls.
+
+Two community mod runs stop after eight passing checks with a Playwright response-body protocol error during the final custom scenario publication. No page errors occurred. Eager JSON consumption did not repair it. The browser diagnostic mentions navigation, but the verifier does not intentionally navigate the publisher there; the cause is still under investigation. Both failed runs and their artifacts are preserved. No final custom mod/scenario proof or community feature certification is claimed.
+
+The earlier owner proof at2915e37 remains in editor-root-integration-20261001 with its original pins. Later campaign/economy/combat/competition changes, SAVE4, the final rules revision and the complete root suite/native proof remain open. The temporary proof server9286 has been stopped and socket closure checked.
