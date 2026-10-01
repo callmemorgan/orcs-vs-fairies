@@ -1,0 +1,30 @@
+<!doctype html><html><head><meta charset="utf-8"></head><body><div id="app"></div><script type="module">
+import Phaser from 'phaser';
+import GameScene,{project} from '/src/game/GameScene.ts';
+import {createGame} from '/src/core/simulation.ts';
+import {mountShell} from '/src/ui/Hud.ts';
+import {AppearancePreferences} from '/src/game/Appearance.ts';
+import {replayChecksum} from '/src/core/replays.ts';
+const appearance=new AppearancePreferences(localStorage);
+const shell=mountShell(document.querySelector('#app'),()=>{},appearance);shell.showGame();
+const state=createGame('orcs',4127,'orcs',{controllers:['external','external']});
+const unit=state.entities.find(e=>e.side===0&&e.role==='melee'),hq=state.entities.find(e=>e.side===0&&e.role==='hq');
+state.entities=[];state.resources=[];state.terrain.fill('grass');
+const center={x:22,y:22};
+for(let side=0;side<8;side++){
+  const x=18+side%4*2.5,y=20+Math.floor(side/4)*4;
+  state.entities.push({...structuredClone(unit),id:side+100,side,x,y});
+  if(side>1){state.players.push(structuredClone(state.players[0]));state.controllers.push('external');state.starts.push({x,y});state.visible.push(new Set());state.explored.push(new Set());}
+}
+state.teams=[0,0,1,2,3,4,5,6];state.nextId=200;
+state.entities.push({...structuredClone(hq),id:200,x:23,y:17},{...structuredClone(hq),id:201,x:31,y:22,role:'depot'});state.nextId=202;
+state.starts[0]={x:23,y:17};
+const cells=Array.from({length:state.width*state.height},(_,i)=>i);state.visible[0]=new Set(cells);state.explored[0]=new Set(cells);
+window.centers=[];
+const callbacks={isReplay:()=>window.replayProof??false,build:()=>{},train:()=>{},cancelTrain:()=>{},research:()=>{},ability:()=>{},clearRally:()=>{},stop:()=>{},hold:()=>{},attackMove:()=>{},select:ids=>scene.selectEntities(ids),pause:()=>scene.togglePause(),restart:()=>{},center:(x,y)=>{centers.push({x,y});scene.centerOn(x,y);},toggleMuted:()=>{},isMuted:()=>true,isPaused:()=>false,side:()=>0,cameraCorners:()=>[],groups:()=>({}),recallGroup:()=>{}};
+const scene=new GameScene({state,appearance,simulationEnabled:false,onSelection:()=>{},onNotice:()=>{},onReady:()=>{scene.centerOn(center.x,center.y);shell.ready();window.ready=true;}});
+window.scene=scene;window.state=state;window.shell=shell;window.appearance=appearance;window.project=project;window.checksum=()=>replayChecksum(state);
+window.paint=()=>shell.update(scene.state,[],callbacks);
+const game=new Phaser.Game({type:Phaser.CANVAS,parent:'game-canvas',width:1400,height:900,scene:[scene],fps:{target:60}});window.game=game;
+game.events.on('step',()=>window.paint());
+</script></body></html>

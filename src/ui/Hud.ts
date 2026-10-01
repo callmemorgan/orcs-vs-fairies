@@ -6,6 +6,10 @@ import type { BuildingRole, Cost, Entity, FactionId, GameState, MapSize, UnitRol
 import './style.css';
 import { createTooltip } from './Tooltip';
 import { abilityTargetReason } from './availability';
+import { AppearancePreferences, appearancePreferences, markerPolygon, ownershipStyle } from '../game/Appearance';
+import { displaySettings } from './DisplaySettings';
+import { MinimapAlerts, type MinimapAlertKind } from './MinimapAlerts';
+import './minimap-alerts.css';
 
 export interface HudCallbacks {
   isReplay?:()=>boolean;
@@ -19,7 +23,7 @@ const art=(id:string)=>`/assets/selection-${id}.png`;
 const costMarkup=(cost:Cost)=>`<span class="cost wood">${cost.wood}<i>wood</i></span><span class="cost ore">${cost.ore}<i>ore</i></span>${cost.crystal?`<span class="cost crystal">${cost.crystal}<i>crystal</i></span>`:''}`;
 const escape = (value:string) => value.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
 const costText = (cost:Cost) => `${cost.wood} wood · ${cost.ore} ore${cost.crystal?` · ${cost.crystal} crystal`:""}`;
-export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:FactionId,mapSize:MapSize,seed:number)=>void) {
+export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:FactionId,mapSize:MapSize,seed:number)=>void,appearance:AppearancePreferences=appearancePreferences) {
   let faction:FactionId='orcs';
   let callbacks:HudCallbacks|undefined;
   let paused=false;
@@ -55,12 +59,12 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
         <div class="resource" title="Workers gather ore from deposits"><span class="ore-symbol">◆</span><div><small>ORE</small><b id="ore">0</b></div></div>
         <div class="resource" title="Crystal funds advanced troops and defensive towers"><span class="crystal-symbol">◆</span><div><small>CRYSTAL</small><b id="crystal">0</b></div></div>
         <div class="resource" title="Build a depot to raise your population limit"><span>⚑</span><div><small id="supply-label">SUPPLY</small><b id="population">0 / 0</b></div></div>
-        <div class="match-clock" id="clock">00:00</div><button id="technology-button" class="small-button">Technologies</button><button id="sound-button" class="small-button" aria-pressed="false">Mute sound</button><button id="pause-button" class="small-button">Pause</button><button id="restart-button" class="small-button">Restart</button>
+        <div class="match-clock" id="clock">00:00</div><button id="display-button" class="small-button">Display</button><button id="technology-button" class="small-button">Technologies</button><button id="sound-button" class="small-button" aria-pressed="false">Mute sound</button><button id="pause-button" class="small-button">Pause</button><button id="restart-button" class="small-button">Restart</button>
       </header>
       <div class="objective-tag">Destroy all enemy strongholds</div>
       <div class="notice" role="status" aria-live="polite" hidden></div>
       <footer class="tactical-bar">
-        <section class="minimap-panel panel"><div class="panel-label">ELDERWOOD <span>TACTICAL MAP</span></div><canvas id="minimap" width="216" height="216" title="Click to move your camera" aria-label="Tactical map; click to center the camera"></canvas></section>
+        <section class="minimap-panel panel"><div class="panel-label">ELDERWOOD <span>TACTICAL MAP</span></div><canvas id="minimap" width="216" height="216" title="Click to move your camera" aria-label="Tactical map; click to center the camera"></canvas><div class="minimap-alert-list" aria-label="Tactical alerts" hidden></div><span class="minimap-alert-status" role="status" aria-live="polite"></span></section>
         <section class="selection-panel panel"><div class="panel-label">SELECTION <span id="selection-count">NO UNITS</span></div><div class="selection-content"><div class="portrait" id="portrait">⚑</div><div class="selection-details"><h2 id="selection-name">Your command awaits</h2><div class="health-track" hidden><div id="health-fill"></div></div><div class="construction-track" hidden><i></i></div><p id="selection-status">Select a worker to gather resources or raise your first buildings.</p><p id="selection-description" hidden></p><div id="selection-stats"></div></div></div><div class="selection-roster" id="selection-roster"></div><div id="production-queue"></div><div class="saved-groups" id="saved-groups" aria-label="Control groups"></div><div class="key-guide"><span><kbd>F2</kbd> Army</span><span><kbd>Shift</kbd> Add selection</span><span><kbd>Ctrl + 1–9</kbd> Set group</span><span><kbd>1–9</kbd> Recall group</span><span><kbd>Space</kbd> Home</span></div></section>
         <section class="command-panel panel"><div class="panel-label">ORDERS <span id="command-hint">SELECT A UNIT</span><nav id="command-tabs" aria-label="Command category" hidden><button data-mode="build">Build</button><button data-mode="recruit">Recruit</button><button data-mode="orders">Orders</button></nav></div><div id="action-buttons"></div><div class="command-note"><span id="order-hint">Right-click to give orders</span> <span><kbd>Esc</kbd> Cancel</span></div></section>
       </footer>
@@ -69,13 +73,15 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
     <section class="game-overlay" hidden><div class="overlay-card panel"><div class="eyebrow" id="overlay-eyebrow">SKIRMISH</div><h2 id="overlay-title">Battle paused</h2><p id="overlay-description">Take a moment to plan your next move.</p><button id="resume-button" class="primary">Return to battle</button><button id="overlay-restart" class="small-button">New skirmish</button></div></section>
   </main>`;
   const tree=technologyTree(root,(id,building)=>callbacks?.research(id,building));
+  const display=displaySettings(root,appearance),minimapAlerts=new MinimapAlerts();
+  root.querySelector<HTMLButtonElement>('#display-button')!.onclick=()=>display.open();
   root.querySelector<HTMLButtonElement>('#technology-button')!.onclick=()=>tree.open();
   const el=<T extends HTMLElement=HTMLElement>(selector:string)=>root.querySelector<T>(selector)!;
   const tooltip=createTooltip(root);
   const menu=el('.war-menu'),hud=el('.war-hud'),overlay=el('.game-overlay');
   const setText=(selector:string,text:string)=>{const node=el(selector);if(node.textContent!==text)node.textContent=text;};
   const notice=(text:string)=>{setText('.notice',text);el('.notice').hidden=false;noticeUntil=performance.now()+4500;};
-  const reset=()=>{tooltip.hide();el('.loading-battle').hidden=true;paused=false;overlay.hidden=true;actionsKey='';actionMode='build';el('#selection-roster').dataset.ids='';el('#selection-roster').replaceChildren();el('#production-queue').dataset.key='';el('#production-queue').replaceChildren();el('#saved-groups').replaceChildren();};
+  const reset=()=>{display.close();minimapAlerts.reset();tooltip.hide();el('.loading-battle').hidden=true;paused=false;overlay.hidden=true;actionsKey='';actionMode='build';el('#selection-roster').dataset.ids='';el('#selection-roster').replaceChildren();el('#production-queue').dataset.key='';el('#production-queue').replaceChildren();el('#saved-groups').replaceChildren();};
   root.querySelectorAll<HTMLButtonElement>('[data-faction]').forEach(button=>button.addEventListener('click',()=>{
     faction=button.dataset.faction as FactionId;
     setText('#banner-brief-name',FACTIONS[faction].name);setText('#banner-brief-description',FACTIONS[faction].description);
@@ -100,18 +106,40 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
     ctx.fillStyle='#070e10';ctx.fillRect(0,0,map.width,map.height);
     for(const i of s.explored[localSide]){ctx.fillStyle=s.visible[localSide].has(i)?({grass:'#45654a',road:'#8e8058',mud:'#69593f',water:'#316579',shallows:'#609690',rock:'#7c8386',bridge:'#b49a6b'}[s.terrain[i]]):'#22342d';ctx.fillRect((i%s.width)*cw,Math.floor(i/s.width)*ch,Math.ceil(cw),Math.ceil(ch));}
     for(const r of playerView.resourcesFor(s)){const i=Math.floor(r.y)*s.width+Math.floor(r.x);if(r.amount<=0||!s.explored[localSide].has(i))continue;ctx.fillStyle=r.kind==='wood'?'#688c53':r.kind==='crystal'?'#b497e7':'#b49c76';ctx.fillRect(r.x*cw-1,r.y*ch-1,2,2);}
-    for(const e of s.entities){if(e.hp<=0||e.side!==localSide&&!s.visible[localSide].has(Math.floor(e.y)*s.width+Math.floor(e.x)))continue;ctx.fillStyle=e.side===localSide?'#d0eb96':'#ee785a';const size=e.kind==='building'?5:3;ctx.fillRect(e.x*cw-size/2,e.y*ch-size/2,size,size);}
+    const settings=appearance.value,teams=(s as GameState&{teams?:number[]}).teams;
+    for(const e of s.entities){
+      if(e.hp<=0||e.side!==localSide&&!s.visible[localSide].has(Math.floor(e.y)*s.width+Math.floor(e.x)))continue;
+      const style=ownershipStyle(e.side,localSide,settings,teams),size=e.kind==='building'?3.5:2.3,points=markerPolygon(settings.patterns?e.side:1,e.x*cw,e.y*ch,size);
+      ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.fillStyle=style.css;ctx.fill();ctx.lineWidth=settings.outlines?1.1:.7;ctx.strokeStyle=settings.outlines?style.outlineCss:'#101820';ctx.stroke();
+    }
+    const alerts=minimapAlerts.update(s,localSide),pulse=.7+.3*Math.sin(s.time*5);
+    for(const alert of alerts){
+      const x=alert.x*cw,y=alert.y*ch;ctx.strokeStyle=alert.kind==='idle'?'#f5de8c':alert.kind==='expansion'?'#78dfff':'#ffffff';ctx.lineWidth=2;ctx.globalAlpha=alert.kind==='idle'?1:pulse;ctx.beginPath();
+      if(alert.kind==='idle'){ctx.rect(x-5,y-5,10,10);ctx.moveTo(x-1.5,y-2.5);ctx.lineTo(x-1.5,y+2.5);ctx.moveTo(x+1.5,y-2.5);ctx.lineTo(x+1.5,y+2.5);}
+      else if(alert.kind==='expansion'){ctx.moveTo(x,y-8);ctx.lineTo(x+8,y);ctx.lineTo(x,y+8);ctx.lineTo(x-8,y);ctx.closePath();}
+      else{ctx.arc(x,y,7,0,Math.PI*2);ctx.moveTo(x,y-3);ctx.lineTo(x,y+1);ctx.moveTo(x,y+3);ctx.lineTo(x,y+3.5);}
+      ctx.stroke();ctx.globalAlpha=1;
+    }
+    const list=el('.minimap-alert-list'),labels:Record<MinimapAlertKind,string>={raid:'Raid',expansion:'Expansion',idle:'Idle'},key=alerts.map(a=>a.id).join(',');
+    if(list.dataset.alerts!==key){
+      list.dataset.alerts=key;list.replaceChildren();list.hidden=!alerts.length;
+      for(const kind of ['raid','expansion','idle'] as const){const group=alerts.filter(a=>a.kind===kind);if(!group.length)continue;let index=0;const button=document.createElement('button');button.type='button';button.dataset.kind=kind;button.textContent=`${labels[kind]} ${group.length}`;button.title=kind==='raid'?'Under attack or a visible raid':kind==='expansion'?'An expansion is threatened':'Recruitment idle for 12 seconds';button.setAttribute('aria-label',`${button.title}. Center camera; ${group.length} ${group.length===1?'location':'locations'}.`);button.onclick=()=>{const current=minimapAlerts.current.filter(a=>a.kind===kind);if(!current.length)return;const alert=current[index++%current.length];callbacks?.center(alert.x,alert.y);};list.append(button);}
+      el('.minimap-alert-status').textContent=alerts.length?(['raid','expansion','idle'] as const).map(kind=>{const count=alerts.filter(a=>a.kind===kind).length;return count?`${labels[kind]}: ${count}`:'';}).filter(Boolean).join('. '):'';
+    }
     const corners=callbacks?.cameraCorners()??[];if(corners.length){ctx.strokeStyle='#fff0b6';ctx.lineWidth=1.5;ctx.beginPath();corners.forEach((p,i)=>{if(i===0)ctx.moveTo(p.x*cw,p.y*ch);else ctx.lineTo(p.x*cw,p.y*ch);});ctx.closePath();ctx.stroke();}
   }
   return {
+    appearance,
+    minimapAlerts,
+    openDisplaySettings:()=>display.open(),
     showMenu:()=>{tree.close();reset();menu.hidden=false;hud.hidden=true;},
     showGame:()=>{reset();menu.hidden=true;hud.hidden=false;el('.loading-battle').hidden=false;},
     ready:()=>{el('.loading-battle').hidden=true;},
     battlefieldBounds:()=>({top:el('.resource-bar').getBoundingClientRect().bottom,bottom:el('.tactical-bar').getBoundingClientRect().top}),
     notice,
-    activateActionSlot:(slot:number)=>{const action=actions.find(a=>a.hotkey===['Z','C','B','V','N','M'][slot-1]);if(!action||paused||!menu.hidden||document.querySelector('.session-overlay:not([hidden])'))return false;action.button.click();return true;},
+    activateActionSlot:(slot:number)=>{const action=actions.find(a=>a.hotkey===['Z','C','B','V','N','M'][slot-1]);if(!action||display.isOpen()||paused||!menu.hidden||document.querySelector('.session-overlay:not([hidden])'))return false;action.button.click();return true;},
     update:(s:GameState,selected:number[],cb:HudCallbacks)=>{
-      state=s;callbacks=cb;paused=cb.isPaused?.()??paused;const nextSide=cb.side?.()??0;if(nextSide!==localSide){localSide=nextSide;playerView=new PlayerView(localSide);actionsKey='';}tree.update(s,paused,localSide);if(!menu.hidden)return;const player=s.players[localSide],definition=FACTIONS[player.faction];
+      if(cb.isReplay?.()&&state!==s)minimapAlerts.reset();state=s;callbacks=cb;paused=cb.isPaused?.()??paused;const nextSide=cb.side?.()??0;if(nextSide!==localSide){localSide=nextSide;playerView=new PlayerView(localSide);actionsKey='';}tree.update(s,paused,localSide);if(!menu.hidden)return;const player=s.players[localSide],definition=FACTIONS[player.faction];
       setText('#sound-button',cb.isMuted()?'Enable sound':'Mute sound');el('#sound-button').setAttribute('aria-pressed',String(cb.isMuted()));
       setText('#faction-name',definition.name);el<HTMLImageElement>('#banner-portrait').src=`/assets/portrait-${player.faction}.png`;setText('#wood',Math.floor(player.wood).toString());setText('#ore',Math.floor(player.ore).toString());setText('#crystal',Math.floor(player.crystal).toString());setText('#population',`${player.population} / ${player.cap}`);
       el('.objective-tag').textContent=`${AGE_NAMES[playerAge(s.players[localSide])]} · Destroy all enemy strongholds · ${s.mapSize} · seed ${s.seed}`;

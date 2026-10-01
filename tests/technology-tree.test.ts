@@ -3,9 +3,10 @@ import { afterEach, expect, it, vi } from 'vitest';
 import { createGame, issueCommand, stepGame } from '../src/core/simulation';
 import type { UpgradeId } from '../src/core/types';
 import { mountShell, type HudCallbacks } from '../src/ui/Hud';
+import { canvasContextStub } from './helpers/canvas-context';
 afterEach(()=>{vi.restoreAllMocks();document.body.replaceChildren();});
 it('shows the selected replay perspective in the technology tree',()=>{
- vi.spyOn(HTMLCanvasElement.prototype,'getContext').mockReturnValue({fillRect:()=>{}} as unknown as CanvasRenderingContext2D);
+ vi.spyOn(HTMLCanvasElement.prototype,'getContext').mockReturnValue(canvasContextStub());
  const root=document.createElement('div');document.body.append(root);const shell=mountShell(root,()=>{});shell.showGame();
  const s=createGame('orcs',4127,'fairies',{controllers:['human','human']});s.players[0].upgrades.push('worker-harvest');
  let side:0|1=1,paused=true;const callbacks={isMuted:()=>false,groups:()=>({}),cameraCorners:()=>[],side:()=>side,isPaused:()=>paused,isReplay:()=>true,research:vi.fn()} as unknown as HudCallbacks;
@@ -17,7 +18,7 @@ it('shows the selected replay perspective in the technology tree',()=>{
  side=0;shell.update(s,[],callbacks);expect(button().textContent).toContain('Already researched');expect(root.querySelector('.technology-tree')!.textContent).toContain('Scrapper');
 });
 it('researches through the global tree without requiring a selected headquarters',()=>{
- vi.spyOn(HTMLCanvasElement.prototype,'getContext').mockReturnValue({fillRect:()=>{}} as unknown as CanvasRenderingContext2D);
+ vi.spyOn(HTMLCanvasElement.prototype,'getContext').mockReturnValue(canvasContextStub());
  const root=document.createElement('div');document.body.append(root);const shell=mountShell(root,()=>{});shell.showGame();
  const s=createGame('orcs',4127,'fairies',{controllers:['human','human']});
  const callbacks={isMuted:()=>false,groups:()=>({}),cameraCorners:()=>[],research:(upgrade:UpgradeId,id?:number)=>issueCommand(s,0,{type:'research',id:id!,upgrade})} as unknown as HudCallbacks;
@@ -33,7 +34,7 @@ it('researches through the global tree without requiring a selected headquarters
  shell.showMenu();expect(root.querySelector<HTMLDialogElement>('dialog')!.open).toBe(false);
 });
 it('keeps mixed selection commands within two rows and exposes age unlock reasons',()=>{
- vi.spyOn(HTMLCanvasElement.prototype,'getContext').mockReturnValue({fillRect:()=>{}} as unknown as CanvasRenderingContext2D);
+ vi.spyOn(HTMLCanvasElement.prototype,'getContext').mockReturnValue(canvasContextStub());
  const root=document.createElement('div');document.body.append(root);const shell=mountShell(root,()=>{});shell.showGame();
  const s=createGame('orcs',4127,'fairies',{controllers:['human','human']});
  const barracks=s.entities.find(e=>e.side===0&&e.role==='hq')!;barracks.role='barracks';
@@ -51,7 +52,7 @@ it('keeps mixed selection commands within two rows and exposes age unlock reason
 });
 
 it('shows researched combat stats for owned troops without exposing enemy research',()=>{
- vi.spyOn(HTMLCanvasElement.prototype,'getContext').mockReturnValue({fillRect:()=>{}} as unknown as CanvasRenderingContext2D);
+ vi.spyOn(HTMLCanvasElement.prototype,'getContext').mockReturnValue(canvasContextStub());
  const root=document.createElement('div');document.body.append(root);const shell=mountShell(root,()=>{});shell.showGame();
  const s=createGame('orcs',4127,'fairies',{controllers:['human','human']});
  const own=s.entities.find(e=>e.side===0&&e.role==='melee')!;

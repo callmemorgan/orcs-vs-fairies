@@ -96,6 +96,32 @@ available in a read-only view.
 
 ## Verification
 
+The HUD's Display button opens keyboard-accessible color settings. Choose Default,
+Deuteranopia or Tritanopia, toggle player shapes, or toggle ownership outlines.
+White outlines identify your units, cyan identifies teammates and amber identifies
+enemies. Shapes distinguish eight players even when faction artwork is identical.
+The choices apply to the battlefield and tactical map and persist on this device.
+They do not change simulation state, saves, replays or replay checksums.
+
+`AppearancePreferences` can be injected through `GameSceneOptions.appearance` and
+the third argument of `mountShell`. Both default to `appearancePreferences`.
+`shell.openDisplaySettings()` lets an application action or controller menu open
+the same dialog. Its visible modal suppresses gameplay input; Escape closes it.
+`ownershipStyle` accepts numeric sides 0–7 and optional `teams:number[]`.
+
+The tactical map uses circles for attacks or visible raids, diamonds for threatened
+expansions, and squares with pause bars for recruitment idle for at least 12 seconds.
+The buttons below the map center the camera and cycle through matching locations.
+An unseen attacker produces a marker at its owned target. Enemy locations require
+current vision, and recruitment status is shown only for the viewing player.
+Replay state replacements reset idle timers.
+
+Run `node scripts/verify_appearance.mjs http://127.0.0.1:5293` with the same
+`OVF_PLAYWRIGHT_MODULE` setting used below to verify real canvas pixel changes,
+keyboard and controller modal suppression, preference persistence, hidden-attacker
+markers, alert expiry, camera navigation and forward replay seeks. The script
+writes `work/appearance-proof.json` and battlefield screenshots.
+
 `npx vitest run tests/controls.test.ts tests/gamepad.test.ts` checks saved profiles,
 contextual bindings, conflicts, modifier matching, deadzones, button edges,
 focus restoration, device replacement and HUD action slots.

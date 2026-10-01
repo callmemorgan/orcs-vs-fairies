@@ -3,11 +3,12 @@ import { afterEach, expect, it, vi } from 'vitest';
 import { FACTIONS } from '../src/core/content';
 import { createGame, issueCommand } from '../src/core/simulation';
 import { mountShell, type HudCallbacks } from '../src/ui/Hud';
+import { canvasContextStub } from './helpers/canvas-context';
 
 afterEach(()=>{vi.restoreAllMocks();document.body.replaceChildren();});
 
 it('disguises enemy doubles in selection health, group totals and roster tooltips without changing simulation health',()=>{
-  vi.spyOn(HTMLCanvasElement.prototype,'getContext').mockReturnValue({fillRect:()=>{}} as unknown as CanvasRenderingContext2D);
+  vi.spyOn(HTMLCanvasElement.prototype,'getContext').mockReturnValue(canvasContextStub());
   const root=document.createElement('div');document.body.append(root);
   const shell=mountShell(root,()=>{});shell.showGame();
   const callbacks={isMuted:()=>false,groups:()=>({}),cameraCorners:()=>[]} as unknown as HudCallbacks;
