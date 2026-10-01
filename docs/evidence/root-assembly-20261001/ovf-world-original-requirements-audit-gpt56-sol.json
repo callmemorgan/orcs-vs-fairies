@@ -1,0 +1,511 @@
+{
+  "kind": "independent-original-world-requirements-admission-audit",
+  "reviewer": "GPT-5.6 Sol",
+  "result": "passed",
+  "checkedAt": "2026-10-01T19:53:21.201724+00:00",
+  "ledgerPin": "a9f3a9af9de80c742cbc78dd3aaf75cbd2d9471f",
+  "sourcePin": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+  "rawArchive": "/home/morgana/.codex/worktrees/save4-den-resume/orcs-vs-Fairies/work/verification/world-save4-final-4.0.1-c86e273",
+  "retainedPackage": "docs/evidence/world-save4-4.0.1-c86e273",
+  "baseline": {
+    "counts": {
+      "verified": 51,
+      "in-progress": 49
+    },
+    "requirements": [
+      {
+        "id": 94,
+        "title": "Map editor",
+        "requirement": "paint terrain, place resources and define starting positions.",
+        "status": "in-progress",
+        "evidence": []
+      },
+      {
+        "id": 95,
+        "title": "Scenario editor",
+        "requirement": "create objectives, scripted events and custom victory conditions.",
+        "status": "in-progress",
+        "evidence": []
+      },
+      {
+        "id": 97,
+        "title": "Community content browser",
+        "requirement": "discover and install maps, scenarios and mods.",
+        "status": "in-progress",
+        "evidence": []
+      }
+    ]
+  },
+  "recommendedPromotion": {
+    "ids": [
+      94,
+      95,
+      97
+    ],
+    "status": "verified",
+    "resultingCounts": {
+      "verified": 54,
+      "in-progress": 46
+    }
+  },
+  "resultFiles": [
+    {
+      "path": "map/result.json",
+      "passedChecks": 17,
+      "errors": 0,
+      "sourcePin": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+      "scriptSha256": "77d8f8557a5b4b7b22fc2ff8eb7577c36e1dd3b43842cf8a3535ba4fc2ac867c"
+    },
+    {
+      "path": "flat/result.json",
+      "passedChecks": 9,
+      "errors": 0,
+      "sourcePin": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+      "scriptSha256": "4cbb901ea222a1f1078b58353ed6b0d66bba8133b3160ba72a67416aea81afb8"
+    },
+    {
+      "path": "layered/result.json",
+      "passedChecks": 8,
+      "errors": 0,
+      "sourcePin": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+      "scriptSha256": "a22106928369d725e3ac903b6f2d401c4ef6dc17f6e8ceaf1edd893c24515335"
+    },
+    {
+      "path": "community-map/result.json",
+      "passedChecks": 14,
+      "errors": 0,
+      "sourcePin": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+      "scriptSha256": "3cc133fb968ee4514f8af9ed7daa33e0177045f943e3780a214a4e0d5328e57e"
+    },
+    {
+      "path": "community-mod/result.json",
+      "passedChecks": 11,
+      "errors": 0,
+      "sourcePin": "c86e273c70738f144a00fe75f5ecf39e7fa324d8",
+      "scriptSha256": "4cfd4acc49f63761342da8011b03002e46837c362486f97ea8abf3bc978c7fc1"
+    }
+  ],
+  "scriptIntegrity": [
+    {
+      "result": "map/result.json",
+      "script": "scripts/verify_editors.mjs",
+      "sha256": "77d8f8557a5b4b7b22fc2ff8eb7577c36e1dd3b43842cf8a3535ba4fc2ac867c",
+      "matchesResultScriptSha256": true,
+      "matchesGitAtSourcePin": true
+    },
+    {
+      "result": "flat/result.json",
+      "script": "scripts/verify_scenario_editor.mjs",
+      "sha256": "4cbb901ea222a1f1078b58353ed6b0d66bba8133b3160ba72a67416aea81afb8",
+      "matchesResultScriptSha256": true,
+      "matchesGitAtSourcePin": true
+    },
+    {
+      "result": "layered/result.json",
+      "script": "scripts/verify_layered_scenario_editor.mjs",
+      "sha256": "a22106928369d725e3ac903b6f2d401c4ef6dc17f6e8ceaf1edd893c24515335",
+      "matchesResultScriptSha256": true,
+      "matchesGitAtSourcePin": true
+    },
+    {
+      "result": "community-map/result.json",
+      "script": "scripts/verify_community_browser.mjs",
+      "sha256": "3cc133fb968ee4514f8af9ed7daa33e0177045f943e3780a214a4e0d5328e57e",
+      "matchesResultScriptSha256": true,
+      "matchesGitAtSourcePin": true
+    },
+    {
+      "result": "community-mod/result.json",
+      "script": "scripts/verify_community_mod.mjs",
+      "sha256": "4cfd4acc49f63761342da8011b03002e46837c362486f97ea8abf3bc978c7fc1",
+      "matchesResultScriptSha256": true,
+      "matchesGitAtSourcePin": true
+    }
+  ],
+  "rawArtifactIntegrity": {
+    "checkedFiles": 37,
+    "allMatchArtifactHashesJson": true,
+    "allMatchRetainedArtifactHashesTsv": true,
+    "files": [
+      {
+        "path": "map/result.json",
+        "sha256": "c6824443bbb5f1ed800ce3d7382ea438c2946b0e470db26759265bf9295c5b92",
+        "bytes": 138038,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "map/initial-map.json",
+        "sha256": "b6e5101fb0dad5898454271bf2274f79454cc27b698e8fa1b9101600886e184c",
+        "bytes": 45155,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "map/painted-map.json",
+        "sha256": "f5d564e997a9e6ff0af5ea1595fdb819cb598c7c72f6f2f3cf817b774ae328c3",
+        "bytes": 45155,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "map/undo-map.json",
+        "sha256": "b7671ab76be84d52c00b9ba0499aad47f0d72cf4f99add0e499c1d256882cb07",
+        "bytes": 45155,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "map/redo-map.json",
+        "sha256": "0d4a09d3d377e862d62fbad0d87a8fc6dd7211cac5b79102b8c81ce12af265f0",
+        "bytes": 45155,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "map/elevation-map.json",
+        "sha256": "37c886409149fbdf3f0176374d58e975cdda488d667da2c44757f795f6d0cf94",
+        "bytes": 45155,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "map/moved-start-map.json",
+        "sha256": "b6e7b759f4754f02a2f81976729066d2d2f1574618b709de4b9559cf9cd6dd22",
+        "bytes": 45155,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "map/eight-start-map.json",
+        "sha256": "8c7d9cc556ec6926f7aa0e3c6c7f0999ba92222e69d14b76b81001adcea92f79",
+        "bytes": 258655,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "map/two-level-map.json",
+        "sha256": "e7755217b29780fecd2020cda550123aa5b660163d39c00d3fe6a89c266a3776",
+        "bytes": 85990,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "map/imported-two-level-map.json",
+        "sha256": "e7755217b29780fecd2020cda550123aa5b660163d39c00d3fe6a89c266a3776",
+        "bytes": 85990,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "map/edited-map-in-play.save.json",
+        "sha256": "5cee0b4f2cd562cd8ab5931fc735660a6556990fcab95fc55e9aa5b229687b12",
+        "bytes": 364392,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "native-reports/map.json",
+        "sha256": "c3948db23c9c529b08badb24f7197c5384ad1516af12687e405090db7430e247",
+        "bytes": 136746,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "flat/result.json",
+        "sha256": "c0ae19b532c487b6436d5a76d2ac603155c97b3826cdafa276c738b69ea455b7",
+        "bytes": 137520,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "flat/convoy-scenario.json",
+        "sha256": "6ea8fdf0a8f94e93a8092e0815a8b5d30ae04ed721a9099ab8f16cad669c17d4",
+        "bytes": 79399,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "flat/convoy-failure-scenario.json",
+        "sha256": "72a6586acce6051bf50e7d80332f362e142defb4dc64ac482cf829b7a2a01729",
+        "bytes": 79564,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "flat/convoy-playing.save.json",
+        "sha256": "01ccd0d467aa93117ea5868584e2f34a1ebd6a61441af099257de58498466b0d",
+        "bytes": 168522,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "native-reports/flat.json",
+        "sha256": "70381f594f13a42addeed122926122035853467ca55e2282dd57d2405780c501",
+        "bytes": 136741,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "layered/result.json",
+        "sha256": "52bdae0bda431a86b88f1aee023a5417fc6d69e2a42fba3aea321a36627fcdf1",
+        "bytes": 137906,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "layered/cave-scenario.json",
+        "sha256": "2d42245895cfafe851f82d093a50830d76a0d2f22ff9db15188550d33ea0391d",
+        "bytes": 233261,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "layered/cave-scenario-timeline.json",
+        "sha256": "8eed1e521eb7f5b3433399aad18f17b625bab80b0f9cfa53ea676f3007192984",
+        "bytes": 11620,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "layered/cave-scenario-playing.save.json",
+        "sha256": "2fa68db933d154b9b96efb8d310f314442c2f78f67ee79e8a4253fdfc22a52d7",
+        "bytes": 676305,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "native-reports/layered.json",
+        "sha256": "b514f22b9e65d0d3d757e27d34e4256f1274b4f568d5eb37acd88ca9b0d5cacf",
+        "bytes": 136751,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "community-map/result.json",
+        "sha256": "b383c395d34794190d35469de4687b7dfa58c83f2c8d75db8e70118cded14279",
+        "bytes": 138760,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "community-map/published-map-v1.json",
+        "sha256": "6e2610e02406f210c16e9cb8e86383365384ff0d6d5b7f7e6963be778c733d04",
+        "bytes": 14734,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "community-map/published-map-v2.json",
+        "sha256": "8d2b859683f07e1d54befb1e824c10c3dd8adcc21818ece8e1865d233a7f2d1e",
+        "bytes": 14743,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "community-map/browser-played-complete.save.json",
+        "sha256": "c0b379d8a1c310df9b80a6e46467f9f43cbb253bd6f68bf9fd235a3ffe71e491",
+        "bytes": 253261,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "native-reports/community-map-complete.json",
+        "sha256": "a56817b557168096175d692eec9e65175d8f0b82461c3cb4eb08d239ce08ad29",
+        "bytes": 136761,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "community-mod/result.json",
+        "sha256": "d26bdeca8da8201235ead624a47f2bbc5bfef0f3b923a050b63e998003d13a38",
+        "bytes": 138592,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "community-mod/mod-original.json",
+        "sha256": "ee0ecaf9a8aa5baedc03b369336744b287ee5c71679f4a393d19b8da02d9862b",
+        "bytes": 16436,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "community-mod/mod-updated.json",
+        "sha256": "effbae0844336cab5b5d52f9663b89c7199d95bdf2d45f6f7d8445632925252f",
+        "bytes": 16444,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "community-mod/installed-closure-1.0.0.json",
+        "sha256": "2a2e0bd3cf277c08c824a396ae5c395022aba0417e254087cc13f5593c8791b5",
+        "bytes": 20572,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "community-mod/installed-closure-1.0.1.json",
+        "sha256": "f1d55d1eb8490034b62c386d1bd322c18cb73b6a8bfd18fb5f86d08d946d3306",
+        "bytes": 20588,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "community-mod/authored-pinned-lantern-scenario.json",
+        "sha256": "a6a427b00e89e9cd339efefaef3b2e1dc117b784a270bc0afbb30423a3aa7b48",
+        "bytes": 97110,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "community-mod/published-pinned-lantern-scenario.json",
+        "sha256": "f5c651519792560ee25c7b7fca789e0f9d84a347a18e8253d20ff14b3874b53e",
+        "bytes": 53956,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "community-mod/played-pinned-lantern-scenario.json",
+        "sha256": "15e03da0ef1a8043de3a0dc3ef4f2b6413777af56b11a2c2b540cebafe78ea35",
+        "bytes": 92114,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "community-mod/community-mod-trained.save.json",
+        "sha256": "5aa10ab8546562139e33ebd2a592d4842b8745ce0fb8a5a712da398d753fe6b8",
+        "bytes": 193959,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      },
+      {
+        "path": "native-reports/community-mod.json",
+        "sha256": "afb016ea31806f6fae4a8855091c51dba689dd52e416d44a06293e2273c512c9",
+        "bytes": 136762,
+        "matchesArtifactHashesJson": true,
+        "matchesRetainedArtifactHashesTsv": true
+      }
+    ]
+  },
+  "requirementPredicates": {
+    "94": [
+      {
+        "predicate": "normal canvas input changes terrain cell (1,1) from grass to water",
+        "passed": true,
+        "evidence": [
+          "map/initial-map.json",
+          "map/painted-map.json"
+        ]
+      },
+      {
+        "predicate": "undo/redo and elevation painting preserve authored cells",
+        "passed": true,
+        "evidence": [
+          "map/undo-map.json",
+          "map/redo-map.json",
+          "map/elevation-map.json"
+        ]
+      },
+      {
+        "predicate": "player start slot 0 moves from (7.5,7.5) to (8.5,7.5), and slots 0-7 exist on the eight-player map",
+        "passed": true,
+        "evidence": [
+          "map/initial-map.json",
+          "map/moved-start-map.json",
+          "map/eight-start-map.json"
+        ]
+      },
+      {
+        "predicate": "authored underground crystal resource, relic site, and transition survive exact export/import",
+        "passed": true,
+        "evidence": [
+          "map/two-level-map.json",
+          "map/imported-two-level-map.json"
+        ]
+      },
+      {
+        "predicate": "edited map launches in the game and native SAVE4 roundtrip/replay/20-step continuation pass",
+        "passed": true,
+        "evidence": [
+          "map/result.json",
+          "native-reports/map.json"
+        ]
+      }
+    ],
+    "95": [
+      {
+        "predicate": "flat editor authors time, escort, and variable objectives plus timed and nested scripted events",
+        "passed": true,
+        "evidence": [
+          "flat/convoy-scenario.json",
+          "flat/result.json"
+        ]
+      },
+      {
+        "predicate": "custom finish wins at tick 100; protected commander death loses at tick 1 without headquarters defeat",
+        "passed": true,
+        "evidence": [
+          "flat/result.json",
+          "flat/convoy-failure-scenario.json"
+        ]
+      },
+      {
+        "predicate": "layered editor authors a level-aware actor/order, friendly wave, nested custom victory, and runtime wins at tick 40 after the tick-20 wave",
+        "passed": true,
+        "evidence": [
+          "layered/cave-scenario.json",
+          "layered/cave-scenario-timeline.json",
+          "layered/result.json"
+        ]
+      },
+      {
+        "predicate": "flat and layered native SAVE4 roundtrip/replay/20-step continuation pass",
+        "passed": true,
+        "evidence": [
+          "native-reports/flat.json",
+          "native-reports/layered.json"
+        ]
+      }
+    ],
+    "97": [
+      {
+        "predicate": "independent authenticated receiver searches, installs, and plays a checksum-verified map; immutable revisions survive restart",
+        "passed": true,
+        "evidence": [
+          "community-map/result.json",
+          "community-map/published-map-v1.json",
+          "community-map/published-map-v2.json"
+        ]
+      },
+      {
+        "predicate": "receiver searches, recursively downloads, verifies, installs, and plays the exact mod dependency closure; old and changed revisions stay separate",
+        "passed": true,
+        "evidence": [
+          "community-mod/result.json",
+          "community-mod/installed-closure-1.0.0.json",
+          "community-mod/installed-closure-1.0.1.json"
+        ]
+      },
+      {
+        "predicate": "production UI selects scenario kind, searches, downloads and installs, and plays the installed scenario to victory with the pinned mod closure and custom actor",
+        "passed": true,
+        "evidence": [
+          "scripts/verify_community_mod.mjs:426-445",
+          "community-mod/published-pinned-lantern-scenario.json",
+          "community-mod/played-pinned-lantern-scenario.json"
+        ]
+      },
+      {
+        "predicate": "community map and mod native SAVE4 roundtrip/replay/20-step continuation pass",
+        "passed": true,
+        "evidence": [
+          "native-reports/community-map-complete.json",
+          "native-reports/community-mod.json"
+        ]
+      }
+    ]
+  },
+  "findings": [],
+  "execution": "Read-only parsing and hashing only; no build, browser, server, generator, or simulation was run."
+}

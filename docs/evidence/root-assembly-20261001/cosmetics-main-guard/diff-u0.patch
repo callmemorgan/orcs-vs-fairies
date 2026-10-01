@@ -1,0 +1,7 @@
+diff --git a/src/main.ts b/src/main.ts
+index 022a7b8..2035c93 100644
+--- a/src/main.ts
++++ b/src/main.ts
+@@ -151 +151 @@ async function refreshHostedCosmetics(){const request=++hostedCosmeticRequest,co
+-function accountChanged(account:Account|null){const id=account?.id??null;if(cosmeticAccountId===id)return;cosmeticAccountId=id;cosmeticAccountEpoch++;campaignHost.resetCampaignReward();accountLoadouts.clear();applyCosmetics();cosmetics.reset();void cosmetics.refresh();}
++function accountChanged(account:Account|null){const id=account?.id??null;if(cosmeticAccountId===id)return;cosmeticAccountId=id;cosmeticAccountEpoch++;campaignHost.resetCampaignReward();accountLoadouts.clear();applyCosmetics();cosmetics.reset();if(id)void cosmetics.refresh();}
