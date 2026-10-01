@@ -1,4 +1,4 @@
-import { normalizeMatchRules, createDraft, draftPlayers, validateDraftState, validateObjectiveState, validateSavedRules, validateModeRoster } from './match-rules';
+import { normalizeMatchRules, createDraft, draftPlayers, definitionAllowed, validateDraftState, validateObjectiveState, validateSavedRules, validateModeRoster } from './match-rules';
 import { emptyObjectives } from './objectives';
 import { validateEconomyState } from './economy-validation';
 import { normalizeAiConfig } from './ai-policy';
@@ -86,7 +86,7 @@ function validateEntity(value:unknown,path:string,c:Context):void {
   const original=contentFactions(c.state.content)[(e.definitionFaction??c.state.players[e.side as Side].faction) as string],definition=entityDefinition(c.state,e as unknown as Entity);
   // Grove decoys inherit the template's raised flag, with scaled health and expiry.
   const healthFactor=e.illusion ? .4 : 1,lifetime=e.illusion?15:35;
-  if(e.kind!=='unit'||e.role!=='melee'||!(original.unitDefinitions??Object.values(original.units)).some(d=>d.ability==='raise')||definition.id!==original.units.melee.id||e.maxHp!==definition.hp*healthFactor||(e.expires as number)<=0||(e.expires as number)>c.time+lifetime+1e-8)bad(`${path}.raised`,'raised troops require the raising faction melee definition and their summon lifetime');
+  if(e.kind!=='unit'||e.role!=='melee'||!(original.unitDefinitions??Object.values(original.units)).some(d=>d.ability==='raise')||!(original.unitDefinitions??Object.values(original.units)).some(d=>d.role==='melee'&&d.id===definition.id)||e.maxHp!==definition.hp*healthFactor||(e.expires as number)<=0||(e.expires as number)>c.time+lifetime+1e-8)bad(`${path}.raised`,'raised troops require an admitted raising faction melee definition and their summon lifetime');
  }
  if(e.lastAttacker!==undefined)id(e.lastAttacker,`${path}.lastAttacker`,c);
  for(const key of ['abilityReadyAt','entrenchedAt','lastDamagedAt','surgeUntil','shield','maxShield'])optionalNumber(e,key,path);
@@ -206,7 +206,7 @@ function validate(envelope:unknown,version:1|2|3):void {
  if(s.economy!==undefined)validateEconomyState(s.economy,{width,height,time:c.time,nextId,playerCount,entities:s.entities as GameState['entities'],resources:s.resources as GameState['resources'],levels:c.levels,world:c.state.world});
  validateRuntime(save.runtime,c,version,s.teams as TeamId[]|undefined);
  validateSpecialists(c.state);
- if(version===3){const count=['rules','objectives','draft'].filter(k=>Object.hasOwn(s,k)).length;if(count!==0&&count!==3)bad('state.rules','rules, objectives and draft must be stored together');if(count===3){const state=s as unknown as GameState;state.rules=validateSavedRules(s.rules,state.content);validateDraftState(s.draft,draftPlayers(state),state.rules,state.content);validateObjectiveState(s.objectives,state);validateModeRoster(state);}}
+ if(version===3){const count=['rules','objectives','draft'].filter(k=>Object.hasOwn(s,k)).length;if(count!==0&&count!==3)bad('state.rules','rules, objectives and draft must be stored together');if(count===3){const state=s as unknown as GameState;state.rules=validateSavedRules(s.rules,state.content);validateDraftState(s.draft,draftPlayers(state),state.rules,state.content);validateObjectiveState(s.objectives,state);validateModeRoster(state);for(const [i,e] of state.entities.entries())if((e.raised||e.illusion)&&!definitionAllowed(state,e.side,entityDefinition(state,e).id))bad(`state.entities[${i}].${e.raised?'raised':'illusion'}`,'summoned definition is prohibited by the current owner match rules');}}
  if(s.scenario!==undefined)s.scenario=validateScenarioBinding(s.scenario,c.state);
 }
 function validateCurrent(envelope:unknown):asserts envelope is SaveEnvelope {validate(envelope,SAVE_VERSION);}

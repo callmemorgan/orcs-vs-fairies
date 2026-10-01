@@ -1,4 +1,5 @@
 import { playerAge } from './progression';
+import { definitionAllowed } from './match-rules';
 import { FACTION_STRUCTURE_INFO, factionStructureKind, TROPHY_STANDARD } from './faction-systems-content';
 import type { FactionStructureKind } from './faction-systems-content';
 import { canObserveTacticalEntity, initializeTactics, isCrewless, tacticalUnitDef } from './tactics';
@@ -113,7 +114,7 @@ export function stepFactionSystems(s:GameState,dt:number,h:FactionSystemHooks):v
   if(e.raised&&s.entities.some(b=>b.hp>0&&b.progress===1&&b.definitionId===FACTION_STRUCTURE_INFO.necropolis.definition.id&&allied(s,b.side,e.side)&&sameLevel(b,e)&&distance(b,e)<=6)){e.expires+=dt;e.hp=Math.min(e.maxHp,e.hp+dt*2);}
  }
  for(const grove of s.entities.filter(e=>e.hp>0&&e.progress===1&&e.definitionId===FACTION_STRUCTURE_INFO['enchanted-grove'].definition.id)){
-  const f=grove.factionState??={};if(s.time<(f.nextDecoyAt??0))continue;const scout=s.entities.filter(e=>real(e)&&e.role==='cavalry'&&!allied(s,e.side,grove.side)&&sameLevel(e,grove)&&canObserveTacticalEntity(s,grove.side,e)&&distance(e,grove)<8).sort((a,b)=>distance(a,grove)-distance(b,grove)||a.id-b.id)[0];if(!scout)continue;const template=s.entities.find(e=>real(e)&&military(e)&&e.side===grove.side&&sameLevel(e,grove)&&distance(e,grove)<=4);if(!template)continue;
+  const f=grove.factionState??={};if(s.time<(f.nextDecoyAt??0))continue;const scout=s.entities.filter(e=>real(e)&&e.role==='cavalry'&&!allied(s,e.side,grove.side)&&sameLevel(e,grove)&&canObserveTacticalEntity(s,grove.side,e)&&distance(e,grove)<8).sort((a,b)=>distance(a,grove)-distance(b,grove)||a.id-b.id)[0];if(!scout)continue;const template=s.entities.find(e=>real(e)&&military(e)&&e.side===grove.side&&sameLevel(e,grove)&&distance(e,grove)<=4&&definitionAllowed(s,grove.side,tacticalUnitDef(s,e).id));if(!template)continue;
   const point=h.openDestination({x:grove.x+Math.sign(scout.x-grove.x)*2,y:grove.y+Math.sign(scout.y-grove.y)*2,level:grove.level},grove);if(!point)continue;const clone={...structuredClone(template),id:s.nextId++,x:point.x,y:point.y,level:point.level,hp:template.maxHp*.4,maxHp:template.maxHp*.4,illusion:true,expires:s.time+15,cooldown:100,order:{type:'move' as const,x:scout.x,y:scout.y},path:[],tactics:undefined,factionState:undefined};delete clone.orderQueue;s.entities.push(clone);f.nextDecoyAt=s.time+20;note(s,grove,'Grove sent a decoy toward an observed scout',clone.id);
  }
 }

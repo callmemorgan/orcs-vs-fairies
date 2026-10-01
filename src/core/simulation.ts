@@ -320,26 +320,27 @@ function applyCommand(s:GameState,side:Side,c:Command):boolean{
  return workers.reduce((accepted,e)=>commandOrder(s,e,{type:c.type==='gather'?'gather':'build',target:target.id},c.queued)||accepted,false);
 }
 function useAbility(s:GameState,e:Entity):boolean{
- if((runtime(s).abilities.get(e.id)??0)>s.time)return false;const ability=unitDef(s,e).ability;if(!ability)return false;
+ if((runtime(s).abilities.get(e.id)??0)>s.time)return false;const definition=unitDef(s,e),ability=definition.ability;if(!ability)return false;
  if(ability==='entrench'){
  if(e.entrenchedAt!==undefined){e.entrenchedAt=undefined;commandOrder(s,e,{type:'idle'});}else{commandOrder(s,e,{type:'hold'});e.entrenchedAt=s.time;}
  }else if(ability==='raise'){
- const raisedDefinition=availableUnits(s,e.side).find(unit=>unit.role==='melee'&&definitionAllowed(s,e.side,unit.id));if(!raisedDefinition)return false;
+ const originalFaction=e.definitionFaction??s.players[e.side].faction,raisedDefinition=availableUnits({content:s.content,players:[{faction:originalFaction}]},0).find(unit=>unit.role==='melee'&&definitionAllowed(s,e.side,unit.id));if(!raisedDefinition)return false;
  updatePopulation(s);let count=0;
  const delivered=e.factionState?.deliveredCorpses??[];
  for(const corpse of [...delivered,...s.corpses].sort((a,b)=>distance(e,a)-distance(e,b))){
  if(count>=2||s.players[e.side].population+reserved(s,e.side)>=s.players[e.side].cap)break;
  const cached=delivered.includes(corpse),point=cached?openDestination(s,{x:e.x+.7,y:e.y+.7,level:levelOf(e)},e):corpse;
  if(corpse.expires<=s.time||!point||!cached&&(distance(e,corpse)>6||!isVisible(s,e.side,corpse.x,corpse.y,levelOf(corpse)))||!walkable(s,point.x,point.y,levelOf(point)))continue;
- const raised=spawnEntity(s,e.side,'unit','melee',point.x,point.y,1,undefined,levelOf(point),e.definitionFaction);raised.hp=raised.maxHp*.5;raised.raised=true;raised.expires=s.time+35;raised.order={type:'attackMove',x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level})};s.corpses=s.corpses.filter(c=>c.id!==corpse.id);if(e.factionState?.deliveredCorpses)e.factionState.deliveredCorpses=e.factionState.deliveredCorpses.filter(c=>c.id!==corpse.id);count++;updatePopulation(s);
+ const raised=spawnEntity(s,e.side,'unit','melee',point.x,point.y,1,raisedDefinition.id,levelOf(point),e.definitionFaction);raised.hp=raised.maxHp*.5;raised.raised=true;raised.expires=s.time+35;raised.order={type:'attackMove',x:e.x,y:e.y,...(e.level===undefined?{}:{level:e.level})};s.corpses=s.corpses.filter(c=>c.id!==corpse.id);if(e.factionState?.deliveredCorpses)e.factionState.deliveredCorpses=e.factionState.deliveredCorpses.filter(c=>c.id!==corpse.id);count++;updatePopulation(s);
  }
  if(!count)return false;runtime(s).abilities.set(e.id,s.time+22);
  }else if(ability==='illusion'){
+ if(!definitionAllowed(s,e.side,definition.id))return false;
  let placed=0;
  for(const offset of [-.6,.6]){
   const desired={x:clamp(e.x+offset,.5,s.width-.5),y:clamp(e.y-offset,.5,s.height-.5),...(e.level===undefined?{}:{level:e.level})};
   const point=walkable(s,desired.x,desired.y,levelOf(e))?desired:openDestination(s,desired,e);if(!point)continue;
-  const clone=spawnEntity(s,e.side,'unit',e.role,point.x,point.y,1,e.definitionId,levelOf(e),e.definitionFaction);clone.illusion=true;clone.hp=clone.maxHp*.4;clone.maxHp=clone.hp;clone.expires=s.time+18;clone.order={...e.order};placed++;
+  const clone=spawnEntity(s,e.side,'unit',e.role,point.x,point.y,1,definition.id,levelOf(e),e.definitionFaction);clone.illusion=true;clone.hp=clone.maxHp*.4;clone.maxHp=clone.hp;clone.expires=s.time+18;clone.order={...e.order};placed++;
  }
  if(!placed)return false;runtime(s).abilities.set(e.id,s.time+35);
  }else if(ability==='surge'){
