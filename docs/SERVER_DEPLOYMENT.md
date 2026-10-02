@@ -79,6 +79,14 @@ curl --fail http://127.0.0.1:8787/api/health
 
 The container runs as the `node` user with a read-only root filesystem. `/data` is a writable named volume; `/tmp` is temporary. A new volume takes its initial ownership from the image's `/data` directory. If using an existing volume or bind mount, give the container's `node` user write access before startup. The published port binds to the host's loopback interface. Place the TLS proxy on that host, or adapt the network configuration for a proxy container.
 
+## Komodo on ZimaCube
+
+The existing `orcs-vs-fairies` Komodo stack uses `deploy/compose.komodo.yaml` as its inline Compose definition. Build the release image with `Dockerfile.server` and publish an immutable Git commit tag before setting the non-secret `ORCS_V_FAIRIES_IMAGE` variable. Update the stack's inline Compose contents from this file as well as its image variable, then deploy the same stack.
+
+The host's existing tunnel continues to forward `https://orcs-v-fairies.morganafaye.dev` to `127.0.0.1:8088`; Compose maps that port to the server's container port 8787. Browser assets, `/api` and `/ws` share that origin. The named volume `orcs-vs-fairies-server-data` stores accounts and match records and must be retained for future releases. The earlier nginx deployment had no server volume. Its `/healthz` check is replaced by `/api/health` for the server image. Verify the running image digest, public browser asset hashes, API health and a WebSocket connection after deployment.
+
+The server trusts forwarded client addresses only when its socket peer is loopback. This Docker bridge deployment leaves `RTS_TRUST_PROXY` disabled, so requests share authentication rate limits at the proxy address. Do not enable that setting without verifying the proxy connection path.
+
 `docker compose down` preserves the named volume. `docker compose down --volumes` removes it and its accounts and records. Build outputs and a container's writable layer are not backups.
 
 ## TLS and the external origin

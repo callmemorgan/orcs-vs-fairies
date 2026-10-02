@@ -1,11 +1,30 @@
 services:
   orcs-vs-fairies:
     image: "[[ORCS_V_FAIRIES_IMAGE]]"
+    init: true
     restart: unless-stopped
     ports:
-      - "127.0.0.1:8088:8088"
+      - "127.0.0.1:8088:8787"
     read_only: true
     tmpfs:
-      - /var/cache/nginx
-      - /var/run
-      - /tmp
+      - /tmp:size=64m,mode=1777
+    environment:
+      RTS_HOST: 0.0.0.0
+      RTS_PORT: "8787"
+      RTS_DATA_DIR: /data
+      RTS_STATIC_DIR: /app/dist
+      RTS_ORIGIN: https://orcs-v-fairies.morganafaye.dev
+      RTS_SECURE_COOKIE: "1"
+      RTS_TRUST_PROXY: "0"
+      RTS_SPECTATOR_DELAY_SECONDS: "30"
+    volumes:
+      - server-data:/data
+    stop_grace_period: 30s
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  server-data:
+    name: orcs-vs-fairies-server-data
