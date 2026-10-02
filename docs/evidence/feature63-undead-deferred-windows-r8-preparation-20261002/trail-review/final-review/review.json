@@ -1,0 +1,235 @@
+{
+  "schema": "feature63-r8-static-preparation-import-trail-review-v1",
+  "at": "2026-10-02T11:03:16.672996+00:00",
+  "status": "PASS_STATIC_PREPARATION_IMPORT_TRAIL_COMPLETE",
+  "requestedReviewerModel": "gpt-5.6-sol",
+  "actualProviderAndModelFamily": "unavailable to this runtime; unauthenticated",
+  "freshClaudeUsed": false,
+  "scope": {
+    "sourceParent": "bd08bd49b07bfc0c4526354b381dad6163f102e0",
+    "packet": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-undead-deferred-windows-r8-preparation-20261002",
+    "selfAuditBundle": "/tmp/ovf-root-r8-preparation-self-audit-q5vmdcv6",
+    "transcriptWindow": {
+      "originalPath": "/tmp/ovf-root-r8-preparation-self-audit-q5vmdcv6/root-transcript-window.jsonl",
+      "originalResponseItems": 42,
+      "originalPreservedUnchanged": true,
+      "completedPath": "/tmp/ovf-root-r8-import-completed-transcript-vyxkohub/root-import-completed-transcript-window.jsonl",
+      "completedReadback": "/tmp/ovf-root-r8-import-completed-transcript-vyxkohub/completed-window-readback.json",
+      "start": "2026-10-02T10:47:15Z",
+      "responseItems": 43,
+      "firstTimestamp": "2026-10-02T10:47:18.596Z",
+      "lastTimestamp": "2026-10-02T10:54:09.762Z",
+      "reviewMethod": "Indexed the original 42 items, then read and authenticated the additive 43-item window containing the import call and its matching actual output."
+    },
+    "repositoryWritesByReviewer": false,
+    "indexOrCheckoutMutationByReviewer": false,
+    "runtimeOrUtilityExecutionByReviewer": false,
+    "broadStagedGitDiffCheckOrNumstatByReviewer": false,
+    "selectedFourPathStagedDiffOnly": true,
+    "rawDatabaseCheckpointBrowserProfilePublicWireOrOtherRuntimePayloadReadOrHashedByReviewer": false
+  },
+  "requiredFixes": [],
+  "staticImportAssessment": {
+    "status": "PASS_EXACT_REVIEWED_THREE_PROOF_SCRIPT_IMPORT_RUNTIME_HELD",
+    "rootImportSha256": "6ea241932c79e0870add8b45f22de65418ff4aa4a26d491e69313e0bf7228a84",
+    "selfAuditSha256": "4b15aa1ddce9de423732380d69026e79399a64a9a939c395e165c0f1b8952242",
+    "packetInventoryRecordCount": 71,
+    "packetInventoryExcludesOnlySelf": true,
+    "allPacketInventoryMembersMatchBytesDigestsAndModes": true,
+    "retainedSourceCopyCount": 53,
+    "allRetainedSourceCopiesByteIdentical": true,
+    "correctedStaticReviewSha256": "5175351d134b7e80123a5e4a74e83eaa9f534fb07268dbff9cf78443a307b128",
+    "preservedFirstStaticReviewSha256": "a9f7be7dbcb76e07af95e7fdba4f268a0cb5ed11e6e856de6afb27e14c5445d0",
+    "firstReviewPreservedUnchanged": true,
+    "correctedReviewChangesOnlyDescriptiveRiskAndCorrectionMetadata": true,
+    "importedScripts": [
+      {
+        "path": "scripts/feature63/run-minimal63.py",
+        "bytes": 54514,
+        "sha256": "c3bbf9b829b4f48f531d5bd2ee29a13bcd2ce23b7cc445815d3d2c90204c60e6",
+        "matchesReviewedCandidate": true
+      },
+      {
+        "path": "scripts/feature63/public-producer.mjs",
+        "bytes": 54601,
+        "sha256": "cc70fa74b115a2195dbc1e350b98e715db1f4c0ca2fe4612d691923d84bed9f3",
+        "matchesReviewedCandidate": true
+      },
+      {
+        "path": "scripts/feature63/collect-launched-waves.py",
+        "bytes": 18600,
+        "sha256": "abc1c9e156521feb1674b876b51abb5b8b8371f35bbf9026006ccaaf5d721392",
+        "matchesReviewedCandidate": true
+      }
+    ],
+    "selectedFourPathCanonicalDiffMatchesCurrentStage": true,
+    "trackedChangeCount": 76,
+    "unstagedTrackedChangeCount": 0,
+    "changesOutsidePreparationPacket": [
+      "docs/features/decisions.tsv",
+      "scripts/feature63/collect-launched-waves.py",
+      "scripts/feature63/public-producer.mjs",
+      "scripts/feature63/run-minimal63.py"
+    ],
+    "ownedCheckoutHead": "bd08bd49b07bfc0c4526354b381dad6163f102e0",
+    "ownedCheckoutTrackedClean": true,
+    "rootHead": "bd08bd49b07bfc0c4526354b381dad6163f102e0",
+    "futureSourcePin": null,
+    "futurePinsSuppliedAtExecution": true,
+    "r8RuntimePrefixExists": false,
+    "r8BindingOutputCount": 0,
+    "r8CaptureControlCount": 0,
+    "bindingUtilityImported": false,
+    "custodyUtilityImported": false,
+    "prelaunchUtilityImported": false,
+    "utilityExecuted": false,
+    "runtimeExecuted": false,
+    "captureBindingsAuthorityOrSlotCreated": false,
+    "productFilesEdited": false,
+    "packetInventorySha256": "725ce0ff12a3d409e8f93207b98ef63af414034f661c310d81c0923e86cedf5a",
+    "initialPacketInventoryPreserved": {
+      "records": 54,
+      "sha256": "1e112cd346ce941b5699dcbdb7d44ca79e92e370c065d8ac3065733898b4d8c5",
+      "path": "docs/evidence/feature63-undead-deferred-windows-r8-preparation-20261002/trail-review/initial-packet-inventory.json"
+    },
+    "consumerCompatibleStaticReview": {
+      "path": "docs/evidence/feature63-undead-deferred-windows-r8-preparation-20261002/static-review/consumer-compatible/review.json",
+      "bytes": 14773,
+      "sha256": "4ec4e1fc37230075ef445e52eca12691082bce751138970760210b0c101d4781",
+      "status": "PASS_STATIC_R8_UNDEAD_DEFERRED_WINDOWS_RUNTIME_HELD",
+      "fiveReviewedRolePathByteDigestTuplesUnchanged": true,
+      "verdictAndAuthorityUnchanged": true,
+      "captureAuthorizationExplicitlyFalse": true,
+      "modesMovedToSupplementalReviewedModes": true,
+      "metadataOnly": true
+    },
+    "consumerCompatibilityReceipt": {
+      "path": "docs/evidence/feature63-undead-deferred-windows-r8-preparation-20261002/review-consumer-compatibility.json",
+      "bytes": 838,
+      "sha256": "f8d8f1c9143076091ecd550c05929e0a3a53b7cc682a1a8d924f40f3058b098c",
+      "status": "PASS_METADATA_COMPATIBILITY_WITH_UNCHANGED_CONSUMER_GUARDS"
+    }
+  },
+  "ledger": {
+    "decisionLine": 313,
+    "decisionLineHasSixTsvFields": true,
+    "decisionEvidencePathResolves": true,
+    "featureCount": 100,
+    "verifiedCount": 99,
+    "inProgressCount": 1,
+    "feature63Status": "in-progress",
+    "feature63Qualified": false
+  },
+  "custodyRetention": {
+    "candidateAndIndependentReviewRetainedStaticOnly": true,
+    "custodyCandidateImported": false,
+    "custodyCandidateExecuted": false,
+    "futureSourcePin": null,
+    "qualification": "The retained custody review cites the earlier root-supplied source pin a8152d0d as its static review basis. It creates no current authority and must be rebound to a future committed source pin before any use."
+  },
+  "attentionFlags": [
+    {
+      "id": "runtime-unproven",
+      "detail": "Undead recruitment speed and a passing bounded owner-2/owner-3 cooperative combat window remain runtime hypotheses. No R8 capture exists."
+    },
+    {
+      "id": "public-native-gap",
+      "detail": "The public approach still waits for owner 2 while the frozen native audit requires owners 2 and 3 in one launched wave."
+    },
+    {
+      "id": "sequential-binding-checks",
+      "detail": "The retained binding utility authenticates files sequentially rather than from one atomic filesystem snapshot."
+    },
+    {
+      "id": "prelaunch-remains-held",
+      "detail": "The compatible report now satisfies the frozen consumer metadata shape, including captureAuthorization=false and exact reviewed-file keys. The prelaunch utility remains unimported and unexecuted, and runtime authority remains absent."
+    },
+    {
+      "id": "finite-lifetime-scope",
+      "detail": "Finite PID/start evidence does not exclude missed forks, reparenting, or other unobserved descendants."
+    },
+    {
+      "id": "prior-r7-git-blob-read",
+      "detail": "The scoped root history records a pre-import R7 committed-blob verification over 206 packet members. It mechanically read Git blobs, including retained raw evidence, without interpreting their contents. This R8 reviewer did not read or hash those payloads."
+    },
+    {
+      "id": "reviewer-identity",
+      "detail": "gpt-5.6-sol was requested, but this runtime provides no authenticated provider/model-family identity. No fresh Claude review was used."
+    },
+    {
+      "id": "additive-transcript-selector-first-failure",
+      "detail": "The first read-only selector matched its own pending serializer marker and wrote no artifact. The corrected selector pinned independently identified import index 41, retained the matching call-id output as item 42, preserved the original 42-item snapshot, and made no broader completeness claim."
+    }
+  ],
+  "authority": {
+    "runtimeAuthorizedByThisReview": false,
+    "captureAuthorizedByThisReview": false,
+    "proofScriptExecutionAuthorizedByThisReview": false,
+    "bindingUtilityExecutionAuthorizedByThisReview": false,
+    "custodyUtilityExecutionAuthorizedByThisReview": false,
+    "prelaunchExecutionAuthorizedByThisReview": false,
+    "extractionOrNativeAuditAuthorizedByThisReview": false,
+    "slotOrRuntimeAuthorityCreatedByThisReview": false,
+    "automaticRetryAuthorizedByThisReview": false,
+    "commitAuthorizedByThisReview": true,
+    "commitAuthorizationScope": "The exact staged static preparation packet, three reviewed proof scripts, and decision line 313 only."
+  },
+  "reviewedDescriptors": [
+    "/tmp/ovf-root-r8-preparation-self-audit-q5vmdcv6/self-audit.json",
+    "/tmp/ovf-root-r8-preparation-self-audit-q5vmdcv6/root-transcript-window.jsonl",
+    "/tmp/ovf-root-r8-preparation-self-audit-q5vmdcv6/canonical.diff",
+    "/tmp/ovf-root-r8-preparation-self-audit-q5vmdcv6/README.md",
+    "/tmp/ovf-root-r8-preparation-self-audit-q5vmdcv6/requirements.json",
+    "/tmp/ovf-root-r8-preparation-self-audit-q5vmdcv6/decisions.tsv",
+    "/tmp/ovf-root-r8-preparation-self-audit-q5vmdcv6/root-import.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-undead-deferred-windows-r8-preparation-20261002/root-import.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-undead-deferred-windows-r8-preparation-20261002/packet-inventory.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-undead-deferred-windows-r8-preparation-20261002/static-review/first/review.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-undead-deferred-windows-r8-preparation-20261002/static-review/corrected/review.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-undead-deferred-windows-r8-preparation-20261002/custody-static-review/review.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/features/README.md",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/features/requirements.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/features/decisions.tsv",
+    "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/run-minimal63.py",
+    "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/public-producer.mjs",
+    "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/collect-launched-waves.py",
+    "/tmp/ovf-root-r8-import-completed-transcript-vyxkohub/completed-window-readback.json",
+    "/tmp/ovf-root-r8-import-completed-transcript-vyxkohub/root-import-completed-transcript-window.jsonl",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-undead-deferred-windows-r8-preparation-20261002/review-consumer-compatibility.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-undead-deferred-windows-r8-preparation-20261002/static-review/consumer-compatible/review.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-undead-deferred-windows-r8-preparation-20261002/trail-review/initial-packet-inventory.json"
+  ],
+  "resolvedFindings": [
+    {
+      "id": "self-audit-transcript-omits-import-output",
+      "location": "/tmp/ovf-root-r8-preparation-self-audit-q5vmdcv6/root-transcript-window.jsonl:42",
+      "finding": "The 42-item transcript ends with the R8 import custom_tool_call and omits its matching custom_tool_call_output. The snapshot was created inside that same call, before its output response item existed.",
+      "impact": "The imported files and descriptors independently validate, and the missing live output reports exit code 0. The saved self-audit transcript nevertheless does not contain the complete relevant import input/output pair required for the trail.",
+      "liveSourceCrossCheck": {
+        "callId": "call_IGwyz4p1Lec8NBCfX07wQHSO",
+        "missingOutputTimestamp": "2026-10-02T10:54:09.762Z",
+        "exitCode": 0,
+        "reportedPacketFiles": 55,
+        "reportedRootImportSha256": "6ea241932c79e0870add8b45f22de65418ff4aa4a26d491e69313e0bf7228a84",
+        "reportedSelfAuditSha256": "4b15aa1ddce9de423732380d69026e79399a64a9a939c395e165c0f1b8952242"
+      },
+      "resolution": {
+        "status": "RESOLVED_ADDITIVELY",
+        "completedWindowReadbackSha256": "22a6016622a103936cd3b5693053f06b0edc294d5fc2ce9c1f537957a0b7d82d",
+        "completedWindowSha256": "604daed30f2cee4df85f723d4ed9d62e9ddc85cbce8a79ea3611ca82c9d2aacc",
+        "completedResponseItems": 43,
+        "original42ItemsAreByteIdenticalPrefix": true,
+        "matchingCallId": "call_IGwyz4p1Lec8NBCfX07wQHSO",
+        "importOutputExitCode": 0,
+        "qualification": "The additive window stops at the import result. It does not claim to include later retention or serializer output."
+      }
+    }
+  ],
+  "blockers": [],
+  "commitDisposition": {
+    "status": "STATIC_PREPARATION_ELIGIBLE_FOR_COMMIT",
+    "qualification": "This disposition covers the reviewed staged preparation only. It grants no runtime, binding, slot, capture, custody, extraction, audit, sync, or retry authority.",
+    "reviewedPacketInventorySha256": "725ce0ff12a3d409e8f93207b98ef63af414034f661c310d81c0923e86cedf5a",
+    "reviewedPacketNonSelfRecords": 71
+  }
+}

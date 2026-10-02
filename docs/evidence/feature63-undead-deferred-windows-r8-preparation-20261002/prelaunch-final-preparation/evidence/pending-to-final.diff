@@ -1,0 +1,39 @@
+--- /tmp/ovf-feature63-r8-static-prelaunch-final-candidate-lym40y0p/authenticate-prelaunch-r8.final-candidate.py
++++ /tmp/ovf-feature63-r8-static-prelaunch-authenticated-final-gs4pdw3a/authenticate-prelaunch-r8.final.py
+@@ -23,9 +23,9 @@
+ REPORT_NAME = 'root-independent-prelaunch-readback.json'
+ EXPECTATION_SCHEMA = 'feature63-r8-root-prelaunch-expectation-v1'
+ REVIEW = {
+-    'path': '/tmp/PENDING_R8_FINAL_STATIC_REVIEW/review.json',
+-    'bytes': None, 'mode': 0o644,
+-    'sha256': None,
++    'path': '/tmp/ovf-feature63-r8-final-static-independent-review-compatible-i7E5jU6o/review.json',
++    'bytes': 14773, 'mode': 0o400,
++    'sha256': '4ec4e1fc37230075ef445e52eca12691082bce751138970760210b0c101d4781',
+ }
+ TEMPLATE = {
+     'path': '/tmp/ovf-feature63-static-prep-r3-zsttudqb/independent-launcher/launch-capture.r3.template.py',
+@@ -44,17 +44,17 @@
+ }
+ PRODUCT_GIT_PATH = 'docs/evidence/main402-remaining-witness-2e5-20261001/raw/tested-product-before.json'
+ PROTECTED_GIT_PATH = 'docs/evidence/main402-remaining-witness-2e5-20261001/raw/protected-before.json'
+-PACKET = Path('/tmp/PENDING_R8_FINAL_STATIC_PACKET')
++PACKET = Path('/tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh')
+ REVIEWED = {
+-    'wrapper': ('script-candidates/candidates/run-minimal63.py', 54514,
++    'wrapper': ('candidates/run-minimal63.py', 54514,
+                 'c3bbf9b829b4f48f531d5bd2ee29a13bcd2ce23b7cc445815d3d2c90204c60e6'),
+-    'producer': ('script-candidates/candidates/public-producer.mjs', 54601,
++    'producer': ('candidates/public-producer.mjs', 54601,
+                  'cc70fa74b115a2195dbc1e350b98e715db1f4c0ca2fe4612d691923d84bed9f3'),
+-    'collector': ('script-candidates/candidates/collect-launched-waves.py', 18600,
++    'collector': ('candidates/collect-launched-waves.py', 18600,
+                   'abc1c9e156521feb1674b876b51abb5b8b8371f35bbf9026006ccaaf5d721392'),
+-    'frozenAuditor': ('script-candidates/originals/native-audit.py', 64185,
++    'frozenAuditor': ('originals/native-audit.py', 64185,
+                       '4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb'),
+-    'bindingUtility': ('binding-utility/fresh-r8-bindings.py', 24745,
++    'bindingUtility': ('binding-final/fresh-r8-bindings.py', 24745,
+                        '7524f5d9bcaa6659cf53e5ab954b5d73e6c09d070195a380a0c3f9c3e1a8874c'),
+ }
+ SCRIPT_NAMES = {

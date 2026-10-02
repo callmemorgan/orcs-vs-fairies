@@ -1,0 +1,259 @@
+{
+  "schema": "feature63-r8-custody-static-compatibility-v1",
+  "status": "STATIC_PREPARATION_ONLY_NO_AUTHORITY",
+  "authenticatedInputs": [
+    {
+      "path": "/tmp/feature63-r7-custody-utility.ggy3gNvB/fresh-r7-custody.py",
+      "bytes": 39374,
+      "sha256": "da53c2865998eb6a6851eeb99a4b7e3cae85ef0b474baffc90059a5c5623e824"
+    },
+    {
+      "path": "/tmp/feature63-r7-custody-utility.ggy3gNvB/expectation-schema.json",
+      "bytes": 3719,
+      "sha256": "18d1444377e49c14120e7a9c399459de54e5757a889599a24ca4ef4b2c7862f2"
+    },
+    {
+      "path": "/tmp/feature63-root-extraction-candidate-r2-LSZWmJUg/extract-closed63.py",
+      "bytes": 54321,
+      "sha256": "fccd7ba02a92c2496b56699cb8fbb323f16cb2a817596093951b10a72446e7d8"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r7-extraction-schema-guide-_2ix4h_c/guide.json",
+      "bytes": 39331,
+      "sha256": "2ce110c4cbc630ccdc2a71d359a71d63908bc8c8e916462b0db2f9b4c7e72c4e"
+    }
+  ],
+  "transform": {
+    "onlyReplacements": [
+      {
+        "from": "r7",
+        "to": "r8"
+      },
+      {
+        "from": "R7",
+        "to": "R8"
+      }
+    ],
+    "scriptReplacementCounts": {
+      "r7ToR8": 10,
+      "R7ToR8": 10
+    },
+    "schemaReplacementCounts": {
+      "r7ToR8": 8,
+      "R7ToR8": 2
+    },
+    "sourceHadNoR8Tokens": true,
+    "inverseReconstruction": {
+      "scriptExact": true,
+      "scriptSha256": "da53c2865998eb6a6851eeb99a4b7e3cae85ef0b474baffc90059a5c5623e824",
+      "schemaExact": true,
+      "schemaSha256": "18d1444377e49c14120e7a9c399459de54e5757a889599a24ca4ef4b2c7862f2"
+    },
+    "allOtherBytesPreservedInOrder": true
+  },
+  "staticValidation": {
+    "candidateAstParsed": true,
+    "candidateImported": false,
+    "candidateExecuted": false,
+    "helperImported": false,
+    "helperExecuted": false,
+    "runtimeProbesPerformed": false,
+    "rawDatabaseRead": false,
+    "checkpointRead": false,
+    "publicWireRead": false
+  },
+  "helperCompatibility": {
+    "helperSha256": "fccd7ba02a92c2496b56699cb8fbb323f16cb2a817596093951b10a72446e7d8",
+    "attemptPrefixRegex": "feature63-human-wave-composition-r[1-9][0-9]*",
+    "r8PrefixAcceptedByRegex": true,
+    "helperContainsR7SpecificLiteral": false,
+    "firstExtractionInputFieldCount": 30,
+    "firstExtractionInputFields": [
+      "approved",
+      "assignedBy",
+      "auditor",
+      "buildBinding",
+      "captureAssignment",
+      "captureResult",
+      "closedRawReceipt",
+      "collector",
+      "collectorAssignment",
+      "collectorFiles",
+      "extractAuthorized",
+      "freshPrefix",
+      "helperSha256",
+      "nativeAuditAuthorized",
+      "nativeSchemaReview",
+      "outputRoot",
+      "ownedNativeLifetimeIndependentlyAdmitted",
+      "productVersion",
+      "publicDriver",
+      "publicFiles",
+      "publicProducer",
+      "rawDatabase",
+      "rootCustodyReceipt",
+      "rootExtractionAdmissionApproved",
+      "rootNativeLifetimeReceipt",
+      "schema",
+      "serverBuild",
+      "sourceInventory",
+      "sourcePin",
+      "sourceRoot"
+    ],
+    "firstExtractionInputFieldListSha256": "981f316ec24b5e7388cdbab4ebcee009d3af3ed3cdda61d99c213c5932559c78",
+    "inputSchemaChanged": false,
+    "successReceiptSchemas": {
+      "closedRaw": "feature63-closed-raw-v1",
+      "rootCustody": "feature63-root-raw-custody-v1",
+      "rootNativeLifetime": "feature63-root-native-lifetime-disposition-v1"
+    },
+    "successReceiptHelperCompatible": true,
+    "nativeSchemaReviewIssuedRemainsFalse": true,
+    "successReceiptFieldSets": {
+      "root-native-lifetime.json": [
+        "schema",
+        "approved",
+        "assignedBy",
+        "sourcePin",
+        "matchId",
+        "captureResult",
+        "ownedNativeLifetimeIndependentlyAdmitted",
+        "closureEvidenceDescriptors",
+        "unobservedDescendantsExcluded"
+      ],
+      "closed-raw.json": [
+        "schema",
+        "sourcePin",
+        "matchId",
+        "sealId",
+        "producerClosed",
+        "ownedProcessesClosed",
+        "rootSealed",
+        "sidecarsAbsent",
+        "dbIdentity",
+        "rawBytes",
+        "rawSha256"
+      ],
+      "root-custody.json": [
+        "schema",
+        "approved",
+        "assignedBy",
+        "sourcePin",
+        "matchId",
+        "rawDatabase",
+        "captureResult",
+        "closedRawReceipt",
+        "freshDatabaseAuthenticated",
+        "oldRawNeverReadOrReused",
+        "rootSealed",
+        "noLivePrivateReadback",
+        "links",
+        "mode",
+        "nativeSchemaReviewIssued"
+      ],
+      "custody-result.json": [
+        "schema",
+        "status",
+        "sourcePin",
+        "branch",
+        "rootOutput",
+        "nativeLifetime",
+        "closedRaw",
+        "custody",
+        "rawDatabase",
+        "nativeSchemaReviewIssued",
+        "extractionExecuted",
+        "sqlExecuted"
+      ]
+    },
+    "helperRequiredSuccessFieldsPresent": true,
+    "nativeSchemaReviewIssuedValues": {
+      "root-custody.json": false,
+      "custody-result.json": false
+    }
+  },
+  "failureBranch": {
+    "hardlinkCallUnchanged": true,
+    "requiresLinkCountTwo": true,
+    "retainedRecordLinksTwo": true,
+    "extractionExecutedFalse": true,
+    "sqlExecutedFalse": true,
+    "status": "FAILED_R8_RAW_SEALED_AND_RETAINED_NO_EXTRACTION",
+    "dispositionOnlyNoExtraction": true,
+    "generatedFieldSets": {
+      "root-native-lifetime-disposition.json": [
+        "schema",
+        "status",
+        "sourcePin",
+        "matchId",
+        "captureResult",
+        "expectation",
+        "at",
+        "wrapperExitCode",
+        "registeredNativeCount",
+        "wrapperClosedSeparately",
+        "launcherClosedSeparately",
+        "rootFiniteLifetimeReadbacks",
+        "independentLauncherClosure",
+        "ports",
+        "protectedLifetime",
+        "rawOpenHoldersObserved",
+        "rawSidecarsAbsent",
+        "unobservedDescendantsExcluded",
+        "limit",
+        "priorFailedRawAccessed",
+        "rawContentsReadOnlyAfterAllReadOnlyGates",
+        "helperCompatibleApprovalIssued"
+      ],
+      "root-failure-disposition.json": [
+        "schema",
+        "status",
+        "sourcePin",
+        "matchId",
+        "captureResult",
+        "expectation",
+        "originalPath",
+        "retainedRaw",
+        "firstFailure",
+        "captureInvocations",
+        "automaticRetries",
+        "sidecarsAbsent",
+        "rootNativeLifetimeDisposition",
+        "sqlExtractionOrAudit",
+        "feature63Qualified",
+        "helperCompatibleApprovalIssued",
+        "slotReleasedByThisUtility"
+      ],
+      "custody-result.json": [
+        "schema",
+        "status",
+        "sourcePin",
+        "branch",
+        "rootOutput",
+        "nativeLifetimeDisposition",
+        "failureDisposition",
+        "retainedRaw",
+        "extractionExecuted",
+        "sqlExecuted"
+      ]
+    }
+  },
+  "unchangedLogic": {
+    "numericLiteralsAndBoundsChanged": false,
+    "gateOrInventoryCountChanged": false,
+    "receiptStructureChanged": false,
+    "branchControlFlowChanged": false,
+    "nativeSuccessReceiptVersionChanged": false
+  },
+  "preparationState": {
+    "rootExpectationCreated": false,
+    "approvalCreated": false,
+    "exclusiveSlotCreated": false,
+    "runtimeRepeated": false,
+    "canonicalWritePerformed": false,
+    "passedR8CaptureExists": false,
+    "independentReviewPending": true,
+    "rootR8CaptureChoice": "normal both AI undead plus skip pre-latch early-window generation",
+    "captureChoiceImplementedByThisCustodyCandidate": false
+  }
+}

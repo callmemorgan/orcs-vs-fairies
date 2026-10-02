@@ -1,0 +1,81 @@
+--- /tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh/binding-proposal/fresh-r8-bindings.py
++++ /tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh/binding-final/fresh-r8-bindings.py
+@@ -51,14 +51,20 @@
+     'sha256': '1b99137e822c004361ee4ff1906f10f4284453312914092441666dd721f0feb3', 'mode': 0o600,
+ }
+ 
+-EXPECTED_REVIEW_SCHEMA = 'feature63-r7-final-static-independent-review-v1'
+-EXPECTED_REVIEW_STATUS = 'PASS_STATIC_R7_PUBLIC_OWNER2_APPROACH_RUNTIME_HELD'
++EXPECTED_REVIEW_SCHEMA = 'feature63-r8-final-static-independent-review-v1'
++EXPECTED_REVIEW_STATUS = 'PASS_STATIC_R8_UNDEAD_DEFERRED_WINDOWS_RUNTIME_HELD'
+ REVIEW_ROLES = {'wrapper', 'producer', 'collector', 'frozenAuditor', 'bindingUtility'}
+ SCRIPT_NAMES = {
+     'wrapper': 'run-minimal63.py',
+     'producer': 'public-producer.mjs',
+     'collector': 'collect-launched-waves.py',
+     'frozenAuditor': 'native-audit.py',
++}
++EXPECTED_SCRIPT_DESCRIPTORS = {
++    'wrapper': {'bytes': 54514, 'sha256': 'c3bbf9b829b4f48f531d5bd2ee29a13bcd2ce23b7cc445815d3d2c90204c60e6'},
++    'producer': {'bytes': 54601, 'sha256': 'cc70fa74b115a2195dbc1e350b98e715db1f4c0ca2fe4612d691923d84bed9f3'},
++    'collector': {'bytes': 18600, 'sha256': 'abc1c9e156521feb1674b876b51abb5b8b8371f35bbf9026006ccaaf5d721392'},
++    'frozenAuditor': {'bytes': 64185, 'sha256': '4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb'},
+ }
+ MAX_DEFINITION_BYTES = 4 * 1024 * 1024
+ MAX_INVENTORY_MEMBER_BYTES = 2 * 1024 * 1024 * 1024
+@@ -197,13 +203,16 @@
+     })
+     review = review_entry['value']
+     require(review.get('schema') == EXPECTED_REVIEW_SCHEMA and review.get('status') == EXPECTED_REVIEW_STATUS
+-            and review.get('runtimeExecuted') is False, 'Independent R7 review is absent or has the wrong scope')
++            and review.get('runtimeExecuted') is False, 'Independent R8 review is absent or has the wrong scope')
+     reviewed_files = review.get('reviewedFiles')
+     require(isinstance(reviewed_files, list) and len(reviewed_files) == 5, 'Independent review must contain five reviewed roles')
+     reviewed_roles = {row.get('role'): row for row in reviewed_files if isinstance(row, dict)}
+     require(set(reviewed_roles) == REVIEW_ROLES and all(re.fullmatch('[0-9a-f]{64}', row.get('sha256', ''))
+                                                         for row in reviewed_roles.values()),
+             'Independent review role set or digest differs')
++    require(all(all(reviewed_roles[role].get(key) == expected[key] for key in ('bytes', 'sha256'))
++                for role, expected in EXPECTED_SCRIPT_DESCRIPTORS.items()),
++            'Independent R8 review script descriptors differ from approved R8 source candidates')
+ 
+     self_path = Path(__file__)
+     require(self_path.is_absolute(), 'Binding utility must be invoked by absolute path')
+@@ -215,8 +224,8 @@
+         reviewed_actual[role] = {}
+         for label, base in (('root', ROOT), ('owned', OWNED)):
+             actual, _raw = fresh_descriptor(base / 'scripts/feature63' / name)
+-            require(actual['sha256'] == reviewed_roles[role]['sha256'],
+-                    'Actual script differs from independently reviewed bytes: ' + role + '/' + label)
++            require(all(actual[key] == EXPECTED_SCRIPT_DESCRIPTORS[role][key] for key in ('bytes', 'sha256')),
++                    'Actual script differs from approved independently reviewed R8 bytes: ' + role + '/' + label)
+             reviewed_actual[role][label] = actual
+ 
+     # Stable definitions and prior receipts are each read once, hashed, then parsed from those same bytes.
+@@ -340,7 +349,7 @@
+         value.update({'sourcePin': pin, 'createdAt': stamp})
+         value['provenance'] = {
+             'priorR3Binding': r3_loaded[r3_name_by_schema[value['schema']]]['descriptor'],
+-            'r7StaticReview': review_entry['descriptor'],
++            'r8StaticReview': review_entry['descriptor'],
+             'r6RootBindingReadback': r6_readback_entry['descriptor'],
+             'r6RootPackage': r6_package_entry['descriptor'],
+             'scope': 'Root independently authenticated current bytes and files; retained R3 descriptors are historical provenance only; R6 package and readback are the immediate copy lineage.',
+@@ -360,7 +369,7 @@
+         'publicProducerSha256': previous['publicProducer']['sha256'],
+         'collectorSha256': previous['collector']['sha256'],
+         'staticDriverReviews': runtime_review['staticDriverReviews'] + [review_entry['descriptor']],
+-        'reviewScope': 'Root admits exact current R7 bytes and fresh bindings after the independent public-owner-2 approach static review. Prior reviews retain their original scopes. Runtime remains held.',
++        'reviewScope': 'Root admits exact current R8 bytes and fresh bindings after the independent static review of ordinary Undead AI faction selection and deferred pre-latch candidate generation. Prior reviews retain their original scopes. Runtime remains held.',
+     })
+     runtime_review_d = put(output, 'root-review.json', runtime_review)
+     browser.update({
+@@ -460,7 +469,7 @@
+     readback = put(output, 'root-binding-readback.json', {
+         'schema': 1,
+         'sourcePin': pin,
+-        'r7StaticReview': review_entry['descriptor'],
++        'r8StaticReview': review_entry['descriptor'],
+         'priorR6BindingReadback': r6_readback_entry['descriptor'],
+         'priorR6Package': r6_package_entry['descriptor'],
+         'captureAssignment': assignment,

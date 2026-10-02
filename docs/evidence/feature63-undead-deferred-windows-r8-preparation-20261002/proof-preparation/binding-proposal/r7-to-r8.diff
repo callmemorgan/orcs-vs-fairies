@@ -1,0 +1,110 @@
+--- /tmp/ovf-root-feature63-r7-static-packet-9l53j4bl/binding-utility/fresh-r7-bindings.py
++++ /tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh/binding-proposal/fresh-r8-bindings.py
+@@ -15,7 +15,7 @@
+ ROOT = Path('/home/morgana/Projects/orcs-vs-Fairies')
+ OWNED = Path('/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies')
+ PREVIOUS = Path('/tmp/ovf-root-feature63-r3-package-bind-aa0pwqy6/bindings')
+-PREFIX = OWNED / 'work/feature63-human-wave-composition-r7'
++PREFIX = OWNED / 'work/feature63-human-wave-composition-r8'
+ PRIOR = OWNED / 'work/feature63-human-wave-composition-r6'
+ 
+ R3_READBACK = PREVIOUS / 'binding-readback.json'
+@@ -183,7 +183,7 @@
+ 
+ 
+ def main():
+-    require(len(sys.argv) == 4, 'Usage: fresh-r7-bindings.py FUTURE_PIN REVIEW_PATH REVIEW_SHA256')
++    require(len(sys.argv) == 4, 'Usage: fresh-r8-bindings.py FUTURE_PIN REVIEW_PATH REVIEW_SHA256')
+     pin = sys.argv[1]
+     review_path = Path(sys.argv[2])
+     review_sha = sys.argv[3]
+@@ -257,7 +257,7 @@
+     for base in (ROOT, OWNED):
+         require(git_output(base, ['rev-parse', 'HEAD']).decode().strip() == pin, 'Checkout HEAD differs from future root pin')
+         require(git_output(base, ['status', '--porcelain', '--untracked-files=no']) == b'', 'Tracked checkout is dirty')
+-    require(not PREFIX.exists(), 'R7 prefix already exists')
++    require(not PREFIX.exists(), 'R8 prefix already exists')
+ 
+     previous = load_r3('capture-assignment.json')
+     source = load_r3('source-binding.json')
+@@ -295,14 +295,14 @@
+         authenticate_inventory(PRIOR / name, rows, complete=True)
+ 
+     # All read-only gates have passed. Filesystem writes start here.
+-    output = Path(tempfile.mkdtemp(prefix='ovf-root-feature63-r7-bindings-', dir='/tmp'))
++    output = Path(tempfile.mkdtemp(prefix='ovf-root-feature63-r8-bindings-', dir='/tmp'))
+     print(json.dumps({'rootOutput': str(output)}), flush=True)
+     stamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
+     PREFIX.mkdir()
+     for name, rows in (('dist', build['webRecords']), ('server', build['serverRecords'])):
+         shutil.copytree(PRIOR / name, PREFIX / name, copy_function=shutil.copy2)
+         authenticate_inventory(PREFIX / name, rows, complete=True)
+-    require(sorted(path.name for path in PREFIX.iterdir()) == ['dist', 'server'], 'Fresh R7 prefix contains unexpected entries')
++    require(sorted(path.name for path in PREFIX.iterdir()) == ['dist', 'server'], 'Fresh R8 prefix contains unexpected entries')
+ 
+     package = put(output, 'root-fresh-package-result.json', {
+         'schema': 1,
+@@ -325,7 +325,7 @@
+     slot = {
+         'approved': True,
+         'holder': '/root/ai_modes',
+-        'token': 'heavy-runtime-1-feature63-r7-' + pin[:12] + '-' + output.name.rsplit('-', 1)[-1],
++        'token': 'heavy-runtime-1-feature63-r8-' + pin[:12] + '-' + output.name.rsplit('-', 1)[-1],
+         'validUntil': (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=2)).isoformat(),
+     }
+ 
+@@ -373,7 +373,7 @@
+     assignment_value = previous
+     assignment_value.update({
+         'sourcePin': pin,
+-        'freshPrefix': 'work/feature63-human-wave-composition-r7',
++        'freshPrefix': 'work/feature63-human-wave-composition-r8',
+         'exclusiveHeavyApproval': slot,
+         'sourceBinding': source_d,
+         'buildBinding': build_d,
+@@ -407,12 +407,12 @@
+         'publicMatchIdentity': None,
+     })
+     assignment = put(output, 'capture-assignment.json', assignment_value)
+-    control = Path(tempfile.mkdtemp(prefix='ovf-feature63-r7-capture-control-', dir='/tmp'))
++    control = Path(tempfile.mkdtemp(prefix='ovf-feature63-r8-capture-control-', dir='/tmp'))
+     require(not list(control.iterdir()) and stat.S_IMODE(control.stat().st_mode) == 0o700,
+-            'Fresh R7 capture control is not empty and private')
++            'Fresh R8 capture control is not empty and private')
+     disposition_value = {
+         'schema': 1,
+-        'status': 'PASS_ROOT_R7_FRESH_CAPTURE_BINDINGS_AUTHENTICATED',
++        'status': 'PASS_ROOT_R8_FRESH_CAPTURE_BINDINGS_AUTHENTICATED',
+         'at': stamp,
+         'captureAdmitted': True,
+         'captureInvocationsAuthorized': 1,
+@@ -432,9 +432,9 @@
+     disposition = put(output, 'root-capture-disposition.json', disposition_value)
+ 
+     text = launcher_template_entry['raw'].decode()
+-    text = text.replace('feature63-human-wave-composition-r3', 'feature63-human-wave-composition-r7')
++    text = text.replace('feature63-human-wave-composition-r3', 'feature63-human-wave-composition-r8')
+     text = text.replace("SLOT_TOKEN.startswith('heavy-runtime-1-feature63-r3-')",
+-                        "SLOT_TOKEN.startswith('heavy-runtime-1-feature63-r7-')")
++                        "SLOT_TOKEN.startswith('heavy-runtime-1-feature63-r8-')")
+     mapping = {
+         'ROOT_RUNTIME_ANCHORS_FILLED=False': 'ROOT_RUNTIME_ANCHORS_FILLED=True',
+         'CONTROL=None': 'CONTROL=Path(' + repr(str(control)) + ')',
+@@ -450,7 +450,7 @@
+     for old, new in mapping.items():
+         require(text.count(old) == 1, 'Launcher template anchor count differs: ' + old)
+         text = text.replace(old, new)
+-    launcher = output / 'launch-capture.r7.py'
++    launcher = output / 'launch-capture.r8.py'
+     with os.fdopen(os.open(launcher, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600), 'w') as handle:
+         handle.write(text)
+         handle.flush()
+@@ -471,7 +471,7 @@
+         'runtimeExecuted': False,
+         'qualification': 'Bindings authorize one capture; no feature qualification, native custody, extraction, audit, or complete descendant enumeration is asserted.',
+     })
+-    require(not list(control.iterdir()), 'Fresh R7 capture control changed while binding')
++    require(not list(control.iterdir()), 'Fresh R8 capture control changed while binding')
+     print(json.dumps({
+         'rootOutput': str(output),
+         'captureAssignment': assignment,

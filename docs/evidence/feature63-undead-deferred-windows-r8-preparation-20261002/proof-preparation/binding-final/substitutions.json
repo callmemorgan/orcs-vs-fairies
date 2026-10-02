@@ -1,0 +1,219 @@
+{
+  "candidate": {
+    "bytes": 24745,
+    "mode": 256,
+    "path": "/tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh/binding-final/fresh-r8-bindings.py",
+    "sha256": "7524f5d9bcaa6659cf53e5ab954b5d73e6c09d070195a380a0c3f9c3e1a8874c"
+  },
+  "captureApprovalIssued": false,
+  "intermediate": {
+    "bytes": 23873,
+    "mode": 256,
+    "path": "/tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh/binding-proposal/fresh-r8-bindings.py",
+    "sha256": "394a857acc85d6675124627b747b889b99b2531ebd48b0b447d9131279acc0bd"
+  },
+  "schema": "feature63-r8-final-binding-static-edit-plan-v1",
+  "source": {
+    "bytes": 23873,
+    "mode": 256,
+    "path": "/tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh/binding-proposal/originals/fresh-r7-bindings.py",
+    "sha256": "bbeb0bc68b2dd5cd24679f8ade43baa2403d748e9877a7e24bcf2c7fe1c1dc02"
+  },
+  "staticGuardMetadataNamingChosenByRoot": true,
+  "substitutionCount": 23,
+  "substitutions": [
+    {
+      "index": 1,
+      "new": "PREFIX = OWNED / 'work/feature63-human-wave-composition-r8'",
+      "old": "PREFIX = OWNED / 'work/feature63-human-wave-composition-r7'",
+      "originalOccurrences": 1,
+      "role": "fresh-prefix",
+      "sourceLine": 18
+    },
+    {
+      "index": 2,
+      "new": "    require(len(sys.argv) == 4, 'Usage: fresh-r8-bindings.py FUTURE_PIN REVIEW_PATH REVIEW_SHA256')",
+      "old": "    require(len(sys.argv) == 4, 'Usage: fresh-r7-bindings.py FUTURE_PIN REVIEW_PATH REVIEW_SHA256')",
+      "originalOccurrences": 1,
+      "role": "usage-name",
+      "sourceLine": 186
+    },
+    {
+      "index": 3,
+      "new": "    require(not PREFIX.exists(), 'R8 prefix already exists')",
+      "old": "    require(not PREFIX.exists(), 'R7 prefix already exists')",
+      "originalOccurrences": 1,
+      "role": "fresh-prefix-message",
+      "sourceLine": 260
+    },
+    {
+      "index": 4,
+      "new": "    output = Path(tempfile.mkdtemp(prefix='ovf-root-feature63-r8-bindings-', dir='/tmp'))",
+      "old": "    output = Path(tempfile.mkdtemp(prefix='ovf-root-feature63-r7-bindings-', dir='/tmp'))",
+      "originalOccurrences": 1,
+      "role": "output-directory-prefix",
+      "sourceLine": 298
+    },
+    {
+      "index": 5,
+      "new": "    require(sorted(path.name for path in PREFIX.iterdir()) == ['dist', 'server'], 'Fresh R8 prefix contains unexpected entries')",
+      "old": "    require(sorted(path.name for path in PREFIX.iterdir()) == ['dist', 'server'], 'Fresh R7 prefix contains unexpected entries')",
+      "originalOccurrences": 1,
+      "role": "fresh-prefix-message",
+      "sourceLine": 305
+    },
+    {
+      "index": 6,
+      "new": "        'token': 'heavy-runtime-1-feature63-r8-' + pin[:12] + '-' + output.name.rsplit('-', 1)[-1],",
+      "old": "        'token': 'heavy-runtime-1-feature63-r7-' + pin[:12] + '-' + output.name.rsplit('-', 1)[-1],",
+      "originalOccurrences": 1,
+      "role": "slot-token-prefix",
+      "sourceLine": 328
+    },
+    {
+      "index": 7,
+      "new": "        'freshPrefix': 'work/feature63-human-wave-composition-r8',",
+      "old": "        'freshPrefix': 'work/feature63-human-wave-composition-r7',",
+      "originalOccurrences": 1,
+      "role": "assignment-fresh-prefix",
+      "sourceLine": 376
+    },
+    {
+      "index": 8,
+      "new": "    control = Path(tempfile.mkdtemp(prefix='ovf-feature63-r8-capture-control-', dir='/tmp'))",
+      "old": "    control = Path(tempfile.mkdtemp(prefix='ovf-feature63-r7-capture-control-', dir='/tmp'))",
+      "originalOccurrences": 1,
+      "role": "control-directory-prefix",
+      "sourceLine": 410
+    },
+    {
+      "index": 9,
+      "new": "            'Fresh R8 capture control is not empty and private')",
+      "old": "            'Fresh R7 capture control is not empty and private')",
+      "originalOccurrences": 1,
+      "role": "control-message",
+      "sourceLine": 412
+    },
+    {
+      "index": 10,
+      "new": "        'status': 'PASS_ROOT_R8_FRESH_CAPTURE_BINDINGS_AUTHENTICATED',",
+      "old": "        'status': 'PASS_ROOT_R7_FRESH_CAPTURE_BINDINGS_AUTHENTICATED',",
+      "originalOccurrences": 1,
+      "role": "proposed-disposition-phase-status",
+      "sourceLine": 415
+    },
+    {
+      "index": 11,
+      "new": "    text = text.replace('feature63-human-wave-composition-r3', 'feature63-human-wave-composition-r8')",
+      "old": "    text = text.replace('feature63-human-wave-composition-r3', 'feature63-human-wave-composition-r7')",
+      "originalOccurrences": 1,
+      "role": "frozen-launcher-replacement-target",
+      "sourceLine": 435
+    },
+    {
+      "index": 12,
+      "new": "                        \"SLOT_TOKEN.startswith('heavy-runtime-1-feature63-r8-')\")",
+      "old": "                        \"SLOT_TOKEN.startswith('heavy-runtime-1-feature63-r7-')\")",
+      "originalOccurrences": 1,
+      "role": "frozen-launcher-token-replacement-target",
+      "sourceLine": 437
+    },
+    {
+      "index": 13,
+      "new": "    launcher = output / 'launch-capture.r8.py'",
+      "old": "    launcher = output / 'launch-capture.r7.py'",
+      "originalOccurrences": 1,
+      "role": "launcher-output-name",
+      "sourceLine": 453
+    },
+    {
+      "index": 14,
+      "new": "    require(not list(control.iterdir()), 'Fresh R8 capture control changed while binding')",
+      "old": "    require(not list(control.iterdir()), 'Fresh R7 capture control changed while binding')",
+      "originalOccurrences": 1,
+      "role": "control-message",
+      "sourceLine": 474
+    },
+    {
+      "authorization": "Root-selected static guard/metadata/hash naming; no capture approval",
+      "index": 15,
+      "new": "EXPECTED_REVIEW_SCHEMA = 'feature63-r8-final-static-independent-review-v1'",
+      "old": "EXPECTED_REVIEW_SCHEMA = 'feature63-r7-final-static-independent-review-v1'",
+      "originalOccurrences": 1,
+      "role": "root-chosen-review-schema",
+      "sourceLine": 54
+    },
+    {
+      "authorization": "Root-selected static guard/metadata/hash naming; no capture approval",
+      "index": 16,
+      "new": "EXPECTED_REVIEW_STATUS = 'PASS_STATIC_R8_UNDEAD_DEFERRED_WINDOWS_RUNTIME_HELD'",
+      "old": "EXPECTED_REVIEW_STATUS = 'PASS_STATIC_R7_PUBLIC_OWNER2_APPROACH_RUNTIME_HELD'",
+      "originalOccurrences": 1,
+      "role": "root-chosen-review-status",
+      "sourceLine": 55
+    },
+    {
+      "authorization": "Root-selected static guard/metadata/hash naming; no capture approval",
+      "index": 17,
+      "new": "and review.get('runtimeExecuted') is False, 'Independent R8 review is absent or has the wrong scope')",
+      "old": "and review.get('runtimeExecuted') is False, 'Independent R7 review is absent or has the wrong scope')",
+      "originalOccurrences": 1,
+      "role": "current-review-rejection-message",
+      "sourceLine": 200
+    },
+    {
+      "authorization": "Root-selected static guard/metadata/hash naming; no capture approval",
+      "index": 18,
+      "new": "\n            'r8StaticReview': review_entry['descriptor'],",
+      "old": "\n            'r7StaticReview': review_entry['descriptor'],",
+      "originalOccurrences": 1,
+      "role": "current-binding-provenance-key",
+      "sourceLine": 342
+    },
+    {
+      "authorization": "Root-selected static guard/metadata/hash naming; no capture approval",
+      "index": 19,
+      "new": "\n        'r8StaticReview': review_entry['descriptor'],",
+      "old": "\n        'r7StaticReview': review_entry['descriptor'],",
+      "originalOccurrences": 1,
+      "role": "current-readback-provenance-key",
+      "sourceLine": 462
+    },
+    {
+      "authorization": "Root-selected static guard/metadata/hash naming; no capture approval",
+      "index": 20,
+      "new": "        'reviewScope': 'Root admits exact current R8 bytes and fresh bindings after the independent static review of ordinary Undead AI faction selection and deferred pre-latch candidate generation. Prior reviews retain their original scopes. Runtime remains held.',",
+      "old": "        'reviewScope': 'Root admits exact current R7 bytes and fresh bindings after the independent public-owner-2 approach static review. Prior reviews retain their original scopes. Runtime remains held.',",
+      "originalOccurrences": 1,
+      "role": "root-chosen-current-admission-scope",
+      "sourceLine": 363
+    },
+    {
+      "authorization": "Root-selected static guard/metadata/hash naming; no capture approval",
+      "index": 21,
+      "new": "EXPECTED_SCRIPT_DESCRIPTORS = {\n    'wrapper': {'bytes': 54514, 'sha256': 'c3bbf9b829b4f48f531d5bd2ee29a13bcd2ce23b7cc445815d3d2c90204c60e6'},\n    'producer': {'bytes': 54601, 'sha256': 'cc70fa74b115a2195dbc1e350b98e715db1f4c0ca2fe4612d691923d84bed9f3'},\n    'collector': {'bytes': 18600, 'sha256': 'abc1c9e156521feb1674b876b51abb5b8b8371f35bbf9026006ccaaf5d721392'},\n    'frozenAuditor': {'bytes': 64185, 'sha256': '4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb'},\n}\nMAX_DEFINITION_BYTES = 4 * 1024 * 1024",
+      "old": "MAX_DEFINITION_BYTES = 4 * 1024 * 1024",
+      "originalOccurrences": 1,
+      "role": "root-approved-script-descriptor-anchors",
+      "sourceLine": 63
+    },
+    {
+      "authorization": "Root-selected static guard/metadata/hash naming; no capture approval",
+      "index": 22,
+      "new": "            'Independent review role set or digest differs')\n    require(all(all(reviewed_roles[role].get(key) == expected[key] for key in ('bytes', 'sha256'))\n                for role, expected in EXPECTED_SCRIPT_DESCRIPTORS.items()),\n            'Independent R8 review script descriptors differ from approved R8 source candidates')\n\n    self_path = Path(__file__)",
+      "old": "            'Independent review role set or digest differs')\n\n    self_path = Path(__file__)",
+      "originalOccurrences": 1,
+      "role": "require-approved-r8-script-descriptors-before-output",
+      "sourceLine": 206
+    },
+    {
+      "authorization": "Root-selected static guard/metadata/hash naming; no capture approval",
+      "index": 23,
+      "new": "            require(all(actual[key] == EXPECTED_SCRIPT_DESCRIPTORS[role][key] for key in ('bytes', 'sha256')),\n                    'Actual script differs from approved independently reviewed R8 bytes: ' + role + '/' + label)",
+      "old": "            require(actual['sha256'] == reviewed_roles[role]['sha256'],\n                    'Actual script differs from independently reviewed bytes: ' + role + '/' + label)",
+      "originalOccurrences": 1,
+      "role": "require-root-and-owned-script-approved-descriptors",
+      "sourceLine": 218
+    }
+  ]
+}

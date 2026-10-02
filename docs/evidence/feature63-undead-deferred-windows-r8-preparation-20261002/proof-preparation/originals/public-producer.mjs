@@ -7,7 +7,7 @@ import {fileURLToPath, pathToFileURL} from 'node:url';
 
 // Static candidate. No browser/module import occurs before every launch guard passes.
 const SOURCE_ROOT = '/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies';
-const PREFIX = 'work/feature63-human-wave-composition-r8';
+const PREFIX = 'work/feature63-human-wave-composition-r7';
 const BASE_URL = 'http://127.0.0.1:5373';
 const ATTEMPT_MS = 300_000;
 const CLEANUP_MS = 120_000;
@@ -508,7 +508,7 @@ try {
   await ui(first, 'select', {label: 'Lobby starting age', value: '1'}, () => first.page.getByLabel('Lobby starting age', {exact: true}).selectOption('1'));
   for (let player = 1; player <= 4; player++) {
     const team = player <= 2 ? '0' : '1', controller = player <= 2 ? 'human' : 'ai';
-    const faction = player === 2 ? 'fairies' : player >= 3 ? 'undead' : 'orcs';
+    const faction = player === 2 ? 'fairies' : 'orcs';
     const factionLabel = player === 1 ? 'First lobby faction' : player === 2 ? 'Second lobby faction' : `Lobby player ${player} faction`;
     await ui(first, 'select', {label: factionLabel, value: faction}, () => first.page.getByLabel(factionLabel, {exact: true}).selectOption(faction));
     await ui(first, 'select', {label: `Lobby player ${player} team`, value: team}, () => first.page.getByLabel(`Lobby player ${player} team`, {exact: true}).selectOption(team));
@@ -529,7 +529,7 @@ try {
   for (const profile of profiles) { assert.equal(lobby.seats[profile.side].account.id, profile.account.id); assert.equal(lobby.seats[profile.side].account.username, profile.username); }
   assert.deepEqual(lobby.settings.players.map(p => p.teamId), [0, 0, 1, 1]);
   assert.deepEqual(lobby.settings.players.map(p => p.controller), ['human', 'human', 'ai', 'ai']);
-  assert.deepEqual(lobby.settings.players.map(p => p.factionId), ['orcs', 'fairies', 'undead', 'undead']);
+  assert.deepEqual(lobby.settings.players.map(p => p.factionId), ['orcs', 'fairies', 'orcs', 'orcs']);
   status('normal-lobby-response', result.lobbyResponse);
   result.seatsText = await first.page.locator('.online-seats li').allTextContents();
   result.receivedRulesText = await first.page.locator('.online-received-rule-values').allTextContents();
@@ -561,6 +561,7 @@ try {
         stagedOwners.add(profile.side);
       }
     }
+    indexWindow(); // Retain early candidates; the operational acquisition latch is still closed.
     if (stagedOwners.size < profiles.length) await pause(250);
   }
   phase = 'waiting for a public AI owner 2 combat actor near the common HQ';
@@ -568,6 +569,7 @@ try {
   while (true) {
     checkpoint();
     for (const profile of profiles) { assert.ok(topologyPass(profile.latest.message, profile.side)); assert.ok(alivePass(profile.latest.alive), 'A human HQ was lost.'); }
+    indexWindow();
     approaches = profiles.map(profile => publicApproach(profile, commonHq.id));
     if (approaches.every(Boolean)) break;
     await pause(250);

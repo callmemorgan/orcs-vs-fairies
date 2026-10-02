@@ -1,0 +1,138 @@
+{
+  "authorityDefinitionsCreated": false,
+  "candidate": {
+    "bytes": 23873,
+    "mode": 256,
+    "path": "/tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh/binding-proposal/fresh-r8-bindings.py",
+    "sha256": "394a857acc85d6675124627b747b889b99b2531ebd48b0b447d9131279acc0bd"
+  },
+  "runtimeAuthorized": false,
+  "schema": "feature63-r8-binding-phase-substitution-proposal-v1",
+  "source": {
+    "bytes": 23873,
+    "mode": 420,
+    "path": "/tmp/ovf-root-feature63-r7-static-packet-9l53j4bl/binding-utility/fresh-r7-bindings.py",
+    "sha256": "bbeb0bc68b2dd5cd24679f8ade43baa2403d748e9877a7e24bcf2c7fe1c1dc02"
+  },
+  "sourceSnapshot": {
+    "bytes": 23873,
+    "mode": 256,
+    "path": "/tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh/binding-proposal/originals/fresh-r7-bindings.py",
+    "sha256": "bbeb0bc68b2dd5cd24679f8ade43baa2403d748e9877a7e24bcf2c7fe1c1dc02"
+  },
+  "substitutionCount": 14,
+  "substitutions": [
+    {
+      "index": 1,
+      "new": "PREFIX = OWNED / 'work/feature63-human-wave-composition-r8'",
+      "old": "PREFIX = OWNED / 'work/feature63-human-wave-composition-r7'",
+      "originalOccurrences": 1,
+      "role": "fresh-prefix",
+      "sourceLine": 18
+    },
+    {
+      "index": 2,
+      "new": "    require(len(sys.argv) == 4, 'Usage: fresh-r8-bindings.py FUTURE_PIN REVIEW_PATH REVIEW_SHA256')",
+      "old": "    require(len(sys.argv) == 4, 'Usage: fresh-r7-bindings.py FUTURE_PIN REVIEW_PATH REVIEW_SHA256')",
+      "originalOccurrences": 1,
+      "role": "usage-name",
+      "sourceLine": 186
+    },
+    {
+      "index": 3,
+      "new": "    require(not PREFIX.exists(), 'R8 prefix already exists')",
+      "old": "    require(not PREFIX.exists(), 'R7 prefix already exists')",
+      "originalOccurrences": 1,
+      "role": "fresh-prefix-message",
+      "sourceLine": 260
+    },
+    {
+      "index": 4,
+      "new": "    output = Path(tempfile.mkdtemp(prefix='ovf-root-feature63-r8-bindings-', dir='/tmp'))",
+      "old": "    output = Path(tempfile.mkdtemp(prefix='ovf-root-feature63-r7-bindings-', dir='/tmp'))",
+      "originalOccurrences": 1,
+      "role": "output-directory-prefix",
+      "sourceLine": 298
+    },
+    {
+      "index": 5,
+      "new": "    require(sorted(path.name for path in PREFIX.iterdir()) == ['dist', 'server'], 'Fresh R8 prefix contains unexpected entries')",
+      "old": "    require(sorted(path.name for path in PREFIX.iterdir()) == ['dist', 'server'], 'Fresh R7 prefix contains unexpected entries')",
+      "originalOccurrences": 1,
+      "role": "fresh-prefix-message",
+      "sourceLine": 305
+    },
+    {
+      "index": 6,
+      "new": "        'token': 'heavy-runtime-1-feature63-r8-' + pin[:12] + '-' + output.name.rsplit('-', 1)[-1],",
+      "old": "        'token': 'heavy-runtime-1-feature63-r7-' + pin[:12] + '-' + output.name.rsplit('-', 1)[-1],",
+      "originalOccurrences": 1,
+      "role": "slot-token-prefix",
+      "sourceLine": 328
+    },
+    {
+      "index": 7,
+      "new": "        'freshPrefix': 'work/feature63-human-wave-composition-r8',",
+      "old": "        'freshPrefix': 'work/feature63-human-wave-composition-r7',",
+      "originalOccurrences": 1,
+      "role": "assignment-fresh-prefix",
+      "sourceLine": 376
+    },
+    {
+      "index": 8,
+      "new": "    control = Path(tempfile.mkdtemp(prefix='ovf-feature63-r8-capture-control-', dir='/tmp'))",
+      "old": "    control = Path(tempfile.mkdtemp(prefix='ovf-feature63-r7-capture-control-', dir='/tmp'))",
+      "originalOccurrences": 1,
+      "role": "control-directory-prefix",
+      "sourceLine": 410
+    },
+    {
+      "index": 9,
+      "new": "            'Fresh R8 capture control is not empty and private')",
+      "old": "            'Fresh R7 capture control is not empty and private')",
+      "originalOccurrences": 1,
+      "role": "control-message",
+      "sourceLine": 412
+    },
+    {
+      "index": 10,
+      "new": "        'status': 'PASS_ROOT_R8_FRESH_CAPTURE_BINDINGS_AUTHENTICATED',",
+      "old": "        'status': 'PASS_ROOT_R7_FRESH_CAPTURE_BINDINGS_AUTHENTICATED',",
+      "originalOccurrences": 1,
+      "role": "proposed-disposition-phase-status",
+      "sourceLine": 415
+    },
+    {
+      "index": 11,
+      "new": "    text = text.replace('feature63-human-wave-composition-r3', 'feature63-human-wave-composition-r8')",
+      "old": "    text = text.replace('feature63-human-wave-composition-r3', 'feature63-human-wave-composition-r7')",
+      "originalOccurrences": 1,
+      "role": "frozen-launcher-replacement-target",
+      "sourceLine": 435
+    },
+    {
+      "index": 12,
+      "new": "                        \"SLOT_TOKEN.startswith('heavy-runtime-1-feature63-r8-')\")",
+      "old": "                        \"SLOT_TOKEN.startswith('heavy-runtime-1-feature63-r7-')\")",
+      "originalOccurrences": 1,
+      "role": "frozen-launcher-token-replacement-target",
+      "sourceLine": 437
+    },
+    {
+      "index": 13,
+      "new": "    launcher = output / 'launch-capture.r8.py'",
+      "old": "    launcher = output / 'launch-capture.r7.py'",
+      "originalOccurrences": 1,
+      "role": "launcher-output-name",
+      "sourceLine": 453
+    },
+    {
+      "index": 14,
+      "new": "    require(not list(control.iterdir()), 'Fresh R8 capture control changed while binding')",
+      "old": "    require(not list(control.iterdir()), 'Fresh R7 capture control changed while binding')",
+      "originalOccurrences": 1,
+      "role": "control-message",
+      "sourceLine": 474
+    }
+  ]
+}

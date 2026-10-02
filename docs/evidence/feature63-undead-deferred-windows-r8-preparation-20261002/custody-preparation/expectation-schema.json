@@ -1,0 +1,110 @@
+{
+  "schema": "feature63-r8-custody-expectation-schema-v1",
+  "utilityExpectationSchema": "feature63-r8-custody-expectation-v1",
+  "cli": [
+    "python",
+    "/ABSOLUTE/REVIEWED/fresh-r8-custody.py",
+    "/ABSOLUTE/ROOT_FILLED/expectation.json",
+    "EXPECTATION_SHA256"
+  ],
+  "cliDigestRule": "EXPECTATION_SHA256 is a separate lowercase SHA-256 trust anchor for the complete expectation bytes.",
+  "topLevelExactKeys": [
+    "schema",
+    "approved",
+    "assignedBy",
+    "branch",
+    "sourcePin",
+    "utilitySha256",
+    "roots",
+    "paths",
+    "authority",
+    "expected",
+    "outputParent"
+  ],
+  "fixedValues": {
+    "schema": "feature63-r8-custody-expectation-v1",
+    "approved": true,
+    "assignedBy": "/root",
+    "roots": {
+      "root": "/home/morgana/Projects/orcs-vs-Fairies",
+      "owned": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies"
+    },
+    "freshPrefix": "work/feature63-human-wave-composition-r8"
+  },
+  "rootFilledScalars": {
+    "branch": "success or failure, selected from the actual completed capture",
+    "sourcePin": "the actual full lowercase pin in the generated R8 capture assignment; never the pre-import HEAD by inference",
+    "utilitySha256": "SHA-256 of the independently reviewed utility bytes",
+    "outputParent": "an existing canonical external directory outside both checkouts; for failure it must be on the fresh raw inode's filesystem so the retained hardlink is possible"
+  },
+  "pathsExactKeys": [
+    "bindingsRoot",
+    "controlRoot",
+    "freshPrefix"
+  ],
+  "authorityExactKeys": [
+    "captureAssignment",
+    "prelaunchReadback",
+    "independentClosure",
+    "launch",
+    "captureAssignmentActual",
+    "command",
+    "captureLaunchConsumed",
+    "captureResult",
+    "serverOwnership",
+    "driverEvents",
+    "sourceBinding",
+    "buildBinding",
+    "browserBinding",
+    "productInventory",
+    "protectedInventory"
+  ],
+  "authorityDescriptorExactKeys": [
+    "path",
+    "bytes",
+    "sha256"
+  ],
+  "literalAuthorityPaths": {
+    "captureAssignment": "<bindingsRoot>/capture-assignment.json",
+    "prelaunchReadback": "an explicit canonical external path supplied by root; it is not inferred under bindingsRoot",
+    "independentClosure": "<controlRoot>/independent-closure.json",
+    "launch": "<controlRoot>/launch.json",
+    "captureAssignmentActual": "<controlRoot>/capture-assignment.actual.json",
+    "command": "<controlRoot>/command.json",
+    "captureLaunchConsumed": "<controlRoot>/capture-launch-consumed.json",
+    "captureResult": "<owned>/work/feature63-human-wave-composition-r8/lifecycle/driver-result.json",
+    "serverOwnership": "<owned>/work/feature63-human-wave-composition-r8/lifecycle/server-ownership.json",
+    "driverEvents": "<owned>/work/feature63-human-wave-composition-r8/lifecycle/driver-events.ndjson"
+  },
+  "expectedExactKeys": [
+    "matchId",
+    "wrapperExitCode",
+    "firstFailure",
+    "registeredNativeKeys",
+    "launcherLifetime",
+    "wrapperLifetime",
+    "rawIdentity"
+  ],
+  "registeredNativeKeyExactKeys": [
+    "family",
+    "pid",
+    "startTicks",
+    "originalAdmittedSession",
+    "directRoot"
+  ],
+  "lifetimeExactKeys": [
+    "pid",
+    "startTicks"
+  ],
+  "rawIdentityExactKeys": [
+    "path",
+    "device",
+    "inode"
+  ],
+  "branchRules": {
+    "success": "wrapperExitCode is zero and firstFailure is null",
+    "failure": "wrapperExitCode is nonzero and firstFailure is the complete actual nonempty failure object"
+  },
+  "fillTiming": "Root fills and separately hashes this object only after the R8 capture, launcher closure, and all exact authority files exist.",
+  "executionStatus": "This schema is preparation only and grants no authority to run the utility."
+}

@@ -1,0 +1,55 @@
+{
+  "edits": {
+    "collect-launched-waves.py": [
+      {
+        "count": 2,
+        "name": "R7-to-R8 fresh prefix",
+        "new": "feature63-human-wave-composition-r8",
+        "old": "feature63-human-wave-composition-r7"
+      }
+    ],
+    "public-producer.mjs": [
+      {
+        "count": 1,
+        "name": "R7-to-R8 fresh prefix",
+        "new": "feature63-human-wave-composition-r8",
+        "old": "feature63-human-wave-composition-r7"
+      },
+      {
+        "count": 1,
+        "name": "Both ordinary AI lobby faction selectors undead",
+        "new": "    const faction = player === 2 ? 'fairies' : player >= 3 ? 'undead' : 'orcs';",
+        "old": "    const faction = player === 2 ? 'fairies' : 'orcs';"
+      },
+      {
+        "count": 1,
+        "name": "Matching ordinary lobby faction assertion",
+        "new": "  assert.deepEqual(lobby.settings.players.map(p => p.factionId), ['orcs', 'fairies', 'undead', 'undead']);",
+        "old": "  assert.deepEqual(lobby.settings.players.map(p => p.factionId), ['orcs', 'fairies', 'orcs', 'orcs']);"
+      },
+      {
+        "count": 1,
+        "name": "Skip prospective pre-latch staging index call",
+        "new": "    if (stagedOwners.size < profiles.length) await pause(250);\n",
+        "old": "    indexWindow(); // Retain early candidates; the operational acquisition latch is still closed.\n    if (stagedOwners.size < profiles.length) await pause(250);\n"
+      },
+      {
+        "count": 1,
+        "name": "Skip prospective pre-latch approach index call",
+        "new": "    approaches = profiles.map(profile => publicApproach(profile, commonHq.id));\n",
+        "old": "    indexWindow();\n    approaches = profiles.map(profile => publicApproach(profile, commonHq.id));\n"
+      }
+    ],
+    "run-minimal63.py": [
+      {
+        "count": 1,
+        "name": "R7-to-R8 fresh prefix",
+        "new": "feature63-human-wave-composition-r8",
+        "old": "feature63-human-wave-composition-r7"
+      }
+    ]
+  },
+  "futurePinAuthority": "Root must use the actual post-import committed source pin; no future pin is invented here.",
+  "schema": "feature63-r8-external-exact-edit-plan-v1",
+  "sourcePinForFutureBinding": null
+}

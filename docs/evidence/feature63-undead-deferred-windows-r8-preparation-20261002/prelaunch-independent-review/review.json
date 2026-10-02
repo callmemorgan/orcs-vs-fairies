@@ -1,0 +1,170 @@
+{
+  "schema": "feature63-r8-final-prelaunch-independent-static-review-v1",
+  "status": "PASS_STATIC_R8_PRELAUNCH_CONSUMER_COMPATIBLE_RUNTIME_HELD",
+  "requestedReviewerModel": "gpt-5.6-sol",
+  "actualProviderIdentity": "unverified",
+  "providerOrModelFamilyAuthenticated": false,
+  "runtimeExecuted": false,
+  "candidateImported": false,
+  "expectationCreatedOrRead": false,
+  "futureSourcePinInvented": false,
+  "bindingUtilityExecutedOrImported": false,
+  "processOrPortProbesPerformed": false,
+  "browserServerDatabaseCheckpointProfileOrPublicWireAccessed": false,
+  "checkoutOrProductFilesReadOrModified": false,
+  "packetWideGitDiffPerformed": false,
+  "reviewedCandidate": {
+    "path": "/tmp/ovf-feature63-r8-static-prelaunch-authenticated-final-gs4pdw3a/authenticate-prelaunch-r8.final.py",
+    "bytes": 41368,
+    "mode": 256,
+    "sha256": "06d2a7e0f5ffb5e8d6ceaf866a7a0731f22e76472ff69123cda0d65e35029b1f"
+  },
+  "reviewedManifest": {
+    "path": "/tmp/ovf-feature63-r8-static-prelaunch-authenticated-final-gs4pdw3a/manifest.json",
+    "bytes": 9287,
+    "mode": 256,
+    "sha256": "6708a68ab1eb57bdfcaf61b61e4db3f8cff366897ac57db56895748308aefb5f"
+  },
+  "r7Baseline": {
+    "path": "/tmp/ovf-feature63-r7-prelaunch-octal-correction-architecture-mkuAdGVP/authenticate-prelaunch-r7.py",
+    "bytes": 41418,
+    "sha256": "ca264de0ab515fa7c916a749a09d3b35b54ffbfccb50c7f8dd6a66db066657d0",
+    "packetCopyByteIdentical": true
+  },
+  "r8StaticReview": {
+    "path": "/tmp/ovf-feature63-r8-final-static-independent-review-compatible-i7E5jU6o/review.json",
+    "bytes": 14773,
+    "mode": 256,
+    "sha256": "4ec4e1fc37230075ef445e52eca12691082bce751138970760210b0c101d4781",
+    "packetCopyByteIdentical": true,
+    "schema": "feature63-r8-final-static-independent-review-v1",
+    "status": "PASS_STATIC_R8_UNDEAD_DEFERRED_WINDOWS_RUNTIME_HELD",
+    "runtimeExecuted": false,
+    "captureAuthorizationAuthorizedByThisReview": false
+  },
+  "reviewedRoleAnchors": [
+    {
+      "role": "wrapper",
+      "path": "/tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh/candidates/run-minimal63.py",
+      "bytes": 54514,
+      "sha256": "c3bbf9b829b4f48f531d5bd2ee29a13bcd2ce23b7cc445815d3d2c90204c60e6"
+    },
+    {
+      "role": "producer",
+      "path": "/tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh/candidates/public-producer.mjs",
+      "bytes": 54601,
+      "sha256": "cc70fa74b115a2195dbc1e350b98e715db1f4c0ca2fe4612d691923d84bed9f3"
+    },
+    {
+      "role": "collector",
+      "path": "/tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh/candidates/collect-launched-waves.py",
+      "bytes": 18600,
+      "sha256": "abc1c9e156521feb1674b876b51abb5b8b8371f35bbf9026006ccaaf5d721392"
+    },
+    {
+      "role": "frozenAuditor",
+      "path": "/tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh/originals/native-audit.py",
+      "bytes": 64185,
+      "sha256": "4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb"
+    },
+    {
+      "role": "bindingUtility",
+      "path": "/tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh/binding-final/fresh-r8-bindings.py",
+      "bytes": 24745,
+      "sha256": "7524f5d9bcaa6659cf53e5ab954b5d73e6c09d070195a380a0c3f9c3e1a8874c"
+    }
+  ],
+  "comparisonEvidence": {
+    "fullDiff": {
+      "path": "/tmp/ovf-feature63-r8-static-prelaunch-authenticated-final-gs4pdw3a/evidence/r7-to-r8-final-full.diff",
+      "bytes": 16959,
+      "sha256": "4284c220f272f0804340dd9d70263d0c12695ee5661b3dddef487e4f500914eb"
+    },
+    "explicitSubstitutions": {
+      "path": "/tmp/ovf-feature63-r8-static-prelaunch-authenticated-final-gs4pdw3a/evidence/explicit-substitutions.json",
+      "bytes": 5545,
+      "sha256": "e3b1ab95400153d56e85ef661a99de003a2a0aadcd5c46198dc3eaaf0a2c69fe"
+    },
+    "inverseProof": {
+      "path": "/tmp/ovf-feature63-r8-static-prelaunch-authenticated-final-gs4pdw3a/evidence/inverse-proof.json",
+      "bytes": 1629,
+      "sha256": "5f0299533ee1cc8d6f1982f2355cadee5e84eb62d0c52bcd72535d3a878b5288",
+      "restoresEveryR7Byte": true
+    },
+    "astSyntaxEvidence": {
+      "path": "/tmp/ovf-feature63-r8-static-prelaunch-authenticated-final-gs4pdw3a/evidence/ast-syntax.json",
+      "bytes": 883,
+      "sha256": "7954dff2ed05f084c45b73db2ae83c74cdf2e06d97db686dd1f78e2f96af7504",
+      "authenticatedWithoutRerun": true
+    }
+  },
+  "consumerCompatibility": {
+    "status": "PASS_STATIC",
+    "exactFiveReviewedRolesRequiredAndBound": true,
+    "reviewedFileRowsHaveExactRolePathBytesSha256Keys": true,
+    "captureAuthorizationAuthorizedByThisReviewExactlyFalse": true,
+    "requiredReviewSchemaAndStatusBound": true,
+    "r8StaticReviewRequiredInExpectationReadbackDefinitionsAndReport": true,
+    "activeR7StaticReviewReferencePresent": false,
+    "pendingReviewOrPacketAnchorPresent": false,
+    "r8RoleRelativePathsResolveToReviewedPacketFiles": true,
+    "mismatchedOrStaleR7ExpectationBindingControlReportAndLauncherNamesRejected": true,
+    "futureFullSourcePinAndExpectationDigestRemainCliBound": true
+  },
+  "hardeningAssessment": {
+    "status": "UNCHANGED_FROM_CORRECTED_R7_EXCEPT_RECORDED_R8_BINDINGS_AND_LABELS",
+    "assertNodeOrAssertStatementPresent": false,
+    "optimizedPythonRejectedBeforeAuthorityInput": true,
+    "pythonOptimizeEnvironmentRejectedInMain": true,
+    "canonicalAbsoluteNonSymlinkPathsRequired": true,
+    "stableSingleFdReadsWithIdentityAndGrowthChecks": true,
+    "duplicateJsonKeysAndNonfiniteNumbersRejected": true,
+    "definitionsParsedOnceFromAuthenticatedBytes": true,
+    "privateUidOwnedDirectoriesAndEmptyControlReportRequired": true,
+    "completeBindingAndArtifactInventoriesRequired": true,
+    "fixedDescriptorsAndCrossReceiptRelationshipsRequired": true,
+    "bothCheckoutsMustMatchFuturePinAndTrackedStateClean": true,
+    "productProtectedAndDependencyInventoriesPreserved": true,
+    "r6CopyLineageAndFixedReceiptsPreserved": true,
+    "frozenR3LauncherTemplateAndLiteralOnlyReconstructionPreserved": true,
+    "protectedPid": 1063,
+    "protectedStartTicks": 874,
+    "protectedPort": 4173,
+    "protectedSocket": "socket:[3783]",
+    "privatePortsRequiredEmpty": [5373, 5374],
+    "slotHolder": "/root/ai_modes",
+    "slotMinimumRemainingSeconds": 510,
+    "readOnlyGatesAndFullRevalidationPrecedeOnlyWrite": true,
+    "onlyWriteIsExclusiveMode0400ExternalReport": true
+  },
+  "r8ChangeAssessment": {
+    "status": "ACCOUNTED",
+    "freshPrefix": "work/feature63-human-wave-composition-r8",
+    "launcherName": "launch-capture.r8.py",
+    "slotTokenPrefix": "heavy-runtime-1-feature63-r8-",
+    "dispositionStatus": "PASS_ROOT_R8_FRESH_CAPTURE_BINDINGS_AUTHENTICATED",
+    "reportStatus": "PASS_ROOT_EXPECTATION_BOUND_R8_PRELAUNCH_AUTHENTICATION_ONLY",
+    "ordinaryAiFactions": ["undead", "undead"],
+    "deferredPreLatchOptionalCandidateIndexCalls": 2,
+    "publicRecordNativeCollectorFrozenAuditorCriteriaUnchanged": true,
+    "publicInputBudgetBytes": 67108864,
+    "inventoryCounts": [966, 570, 397, 398, 22, 114, 303]
+  },
+  "blockers": [],
+  "requiredFixes": [],
+  "qualifications": [
+    "This is a static review of the prelaunch authenticator bytes. It does not authenticate a future expectation, source pin, generated binding set, slot, protected process, listener state, or runtime result.",
+    "The verifier was not executed or imported. No capture, server, browser, native custody, extraction, audit, or Feature 63 qualification was performed or authorized.",
+    "The requested reviewer identity was gpt-5.6-sol, but the provider and model family were not authenticated.",
+    "The unchanged frozen runtime anchors still require PID 1063, start ticks 874, port 4173, and socket inode 3783 when the verifier is later run. This review did not observe them.",
+    "The verifier preserves the prior limitation that unobserved descendants are not excluded."
+  ],
+  "authority": {
+    "runtimeAuthorizedByThisReview": false,
+    "captureAuthorizedByThisReview": false,
+    "bindingOrExpectationCreationAuthorizedByThisReview": false,
+    "slotReservationAuthorizedByThisReview": false,
+    "checkoutOrProductWriteAuthorizedByThisReview": false,
+    "automaticRetryAuthorizedByThisReview": false
+  }
+}

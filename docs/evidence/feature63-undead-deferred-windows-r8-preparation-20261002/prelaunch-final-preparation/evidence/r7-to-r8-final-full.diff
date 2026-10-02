@@ -1,0 +1,245 @@
+--- /tmp/ovf-feature63-r7-prelaunch-octal-correction-architecture-mkuAdGVP/authenticate-prelaunch-r7.py
++++ /tmp/ovf-feature63-r8-static-prelaunch-authenticated-final-gs4pdw3a/authenticate-prelaunch-r8.final.py
+@@ -16,16 +16,16 @@
+ 
+ ROOT = Path('/home/morgana/Projects/orcs-vs-Fairies')
+ OWNED = Path('/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies')
+-RELATIVE_PREFIX = 'work/feature63-human-wave-composition-r7'
++RELATIVE_PREFIX = 'work/feature63-human-wave-composition-r8'
+ PREFIX = OWNED / RELATIVE_PREFIX
+ MAX_DEFINITION_BYTES = 4 * 1024 * 1024
+ MAX_MEMBER_BYTES = 2 * 1024 * 1024 * 1024
+ REPORT_NAME = 'root-independent-prelaunch-readback.json'
+-EXPECTATION_SCHEMA = 'feature63-r7-root-prelaunch-expectation-v1'
++EXPECTATION_SCHEMA = 'feature63-r8-root-prelaunch-expectation-v1'
+ REVIEW = {
+-    'path': '/tmp/ovf-feature63-r7-final-static-independent-review-upsx1DQX/review.json',
+-    'bytes': 10341, 'mode': 0o644,
+-    'sha256': '9be9b64bdd2a5637bed71ad6d8a36423b0e4242c3f1bd9afe519f172f3c9bd53',
++    'path': '/tmp/ovf-feature63-r8-final-static-independent-review-compatible-i7E5jU6o/review.json',
++    'bytes': 14773, 'mode': 0o400,
++    'sha256': '4ec4e1fc37230075ef445e52eca12691082bce751138970760210b0c101d4781',
+ }
+ TEMPLATE = {
+     'path': '/tmp/ovf-feature63-static-prep-r3-zsttudqb/independent-launcher/launch-capture.r3.template.py',
+@@ -44,18 +44,18 @@
+ }
+ PRODUCT_GIT_PATH = 'docs/evidence/main402-remaining-witness-2e5-20261001/raw/tested-product-before.json'
+ PROTECTED_GIT_PATH = 'docs/evidence/main402-remaining-witness-2e5-20261001/raw/protected-before.json'
+-PACKET = Path('/tmp/ovf-root-feature63-r7-static-packet-9l53j4bl')
++PACKET = Path('/tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh')
+ REVIEWED = {
+-    'wrapper': ('script-candidates/candidates/run-minimal63.py', 54514,
+-                '054a652dff3c718fbc0d8b1093578a1e7b9c37badd9cde60c1e4f0f3572713f0'),
+-    'producer': ('script-candidates/candidates/public-producer.mjs', 54689,
+-                 '6c8e203732d9e33a72645fa55c9bee4b1e6148725c4b88c9db2d3ea3c9c1c8eb'),
+-    'collector': ('script-candidates/candidates/collect-launched-waves.py', 18600,
+-                  'd6b1eee12bca979a0ff77a7fde7e7d9dbea22bb569ef2055cbdf7da871ec20ec'),
+-    'frozenAuditor': ('script-candidates/originals/native-audit.py', 64185,
++    'wrapper': ('candidates/run-minimal63.py', 54514,
++                'c3bbf9b829b4f48f531d5bd2ee29a13bcd2ce23b7cc445815d3d2c90204c60e6'),
++    'producer': ('candidates/public-producer.mjs', 54601,
++                 'cc70fa74b115a2195dbc1e350b98e715db1f4c0ca2fe4612d691923d84bed9f3'),
++    'collector': ('candidates/collect-launched-waves.py', 18600,
++                  'abc1c9e156521feb1674b876b51abb5b8b8371f35bbf9026006ccaaf5d721392'),
++    'frozenAuditor': ('originals/native-audit.py', 64185,
+                       '4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb'),
+-    'bindingUtility': ('binding-utility/fresh-r7-bindings.py', 23873,
+-                       'bbeb0bc68b2dd5cd24679f8ade43baa2403d748e9877a7e24bcf2c7fe1c1dc02'),
++    'bindingUtility': ('binding-final/fresh-r8-bindings.py', 24745,
++                       '7524f5d9bcaa6659cf53e5ab954b5d73e6c09d070195a380a0c3f9c3e1a8874c'),
+ }
+ SCRIPT_NAMES = {
+     'wrapper': 'run-minimal63.py', 'producer': 'public-producer.mjs',
+@@ -68,7 +68,7 @@
+ }
+ OUTPUT_NAMES = set(BINDING_NAMES.values()) | {
+     'root-fresh-package-result.json', 'capture-assignment.json',
+-    'root-capture-disposition.json', 'launch-capture.r7.py',
++    'root-capture-disposition.json', 'launch-capture.r8.py',
+ }
+ FILES = {}
+ DIRECTORIES = {}
+@@ -423,7 +423,7 @@
+ def main():
+     require(sys.flags.optimize == 0 and 'PYTHONOPTIMIZE' not in os.environ,
+             'Invoke with PYTHONOPTIMIZE removed and without -O/-OO')
+-    require(len(sys.argv) == 3, 'Usage: authenticate-prelaunch-r7.py EXPECTATION_JSON EXPECTATION_SHA256')
++    require(len(sys.argv) == 3, 'Usage: authenticate-prelaunch-r8.py EXPECTATION_JSON EXPECTATION_SHA256')
+     expectation_path = canonical(sys.argv[1])
+     expected_sha = sys.argv[2]
+     require(re.fullmatch('[0-9a-f]{64}', expected_sha), 'Expectation SHA-256 must be lowercase')
+@@ -438,7 +438,7 @@
+     FILES[expectation_path] = expectation_entry
+     expectation = parsed(expectation_entry)
+     expected_keys = {'schema', 'sourcePin', 'bindingDirectory', 'controlDirectory', 'reportDirectory',
+-                     'readback', 'assignment', 'launcher', 'disposition', 'r7StaticReview', 'launcherTemplate'}
++                     'readback', 'assignment', 'launcher', 'disposition', 'r8StaticReview', 'launcherTemplate'}
+     require(type(expectation) is dict and set(expectation) == expected_keys and
+             expectation['schema'] == EXPECTATION_SCHEMA, 'Root expectation schema/fields differ')
+     pin = expectation['sourcePin']
+@@ -446,9 +446,9 @@
+     binding = canonical(expectation['bindingDirectory'])
+     control = canonical(expectation['controlDirectory'])
+     report_directory = canonical(expectation['reportDirectory'])
+-    for path, pattern in ((binding, 'ovf-root-feature63-r7-bindings-[A-Za-z0-9_-]+'),
+-                          (control, 'ovf-feature63-r7-capture-control-[A-Za-z0-9_-]+'),
+-                          (report_directory, 'ovf-feature63-r7-prelaunch-report-[A-Za-z0-9_-]+')):
++    for path, pattern in ((binding, 'ovf-root-feature63-r8-bindings-[A-Za-z0-9_-]+'),
++                          (control, 'ovf-feature63-r8-capture-control-[A-Za-z0-9_-]+'),
++                          (report_directory, 'ovf-feature63-r8-prelaunch-report-[A-Za-z0-9_-]+')):
+         require(path.parent == Path('/tmp') and re.fullmatch(pattern, path.name),
+                 'Unexpected external directory: ' + str(path))
+     require(len({binding, control, report_directory}) == 3 and
+@@ -457,10 +457,10 @@
+     directory(binding, private=True)
+     directory(control, private=True, empty=True)
+     directory(report_directory, private=True, empty=True)
+-    require(expectation['r7StaticReview'] == REVIEW and expectation['launcherTemplate'] == TEMPLATE,
++    require(expectation['r8StaticReview'] == REVIEW and expectation['launcherTemplate'] == TEMPLATE,
+             'Root review or frozen template anchor differs')
+     top_names = {'readback': 'root-binding-readback.json', 'assignment': 'capture-assignment.json',
+-                 'launcher': 'launch-capture.r7.py', 'disposition': 'root-capture-disposition.json'}
++                 'launcher': 'launch-capture.r8.py', 'disposition': 'root-capture-disposition.json'}
+     top = {}
+     for key, name in top_names.items():
+         desc = expectation[key]
+@@ -471,9 +471,9 @@
+     review_entry = definition(REVIEW)
+     template_entry = definition(TEMPLATE)
+     review = parsed(review_entry)
+-    require(review.get('schema') == 'feature63-r7-final-static-independent-review-v1' and
+-            review.get('status') == 'PASS_STATIC_R7_PUBLIC_OWNER2_APPROACH_RUNTIME_HELD' and
+-            review.get('runtimeExecuted') is False, 'Known R7 review scope differs')
++    require(review.get('schema') == 'feature63-r8-final-static-independent-review-v1' and
++            review.get('status') == 'PASS_STATIC_R8_UNDEAD_DEFERRED_WINDOWS_RUNTIME_HELD' and
++            review.get('runtimeExecuted') is False, 'Known R8 review scope differs')
+     require(review.get('captureAuthorization', {}).get('authorizedByThisReview') is False,
+             'Static review cannot authorize capture')
+     reviewed_files = review.get('reviewedFiles')
+@@ -495,7 +495,7 @@
+     disposition = parsed(top['disposition'])
+     require(readback.get('schema') == 1 and readback.get('sourcePin') == pin and
+             readback.get('runtimeExecuted') is False, 'Readback pin/schema/runtime scope differs')
+-    require(readback.get('r7StaticReview') == without_mode(REVIEW) and
++    require(readback.get('r8StaticReview') == without_mode(REVIEW) and
+             readback.get('captureAssignment') == without_mode(expectation['assignment']) and
+             readback.get('launcher') == without_mode(expectation['launcher']) and
+             readback.get('freshControl') == str(control), 'Readback authority relationships differ')
+@@ -506,7 +506,7 @@
+     COMPLETE_SETS[binding] = OUTPUT_NAMES | {'root-binding-readback.json'}
+     output_entries = {}
+     for name, row in output_records.items():
+-        require(row['mode'] == (0o600 if name == 'launch-capture.r7.py' else 0o644),
++        require(row['mode'] == (0o600 if name == 'launch-capture.r8.py' else 0o644),
+                 'Generated file mode differs: ' + name)
+         output_entries[name] = definition({**row, 'path': str(binding / name)})
+     for key, name in top_names.items():
+@@ -517,7 +517,7 @@
+             assignment.get('approved') is True and assignment.get('assignedBy') == '/root' and
+             assignment.get('phase') == 'capture' and assignment.get('sourcePin') == pin and
+             assignment.get('sourceRoot') == str(OWNED) and assignment.get('freshPrefix') == RELATIVE_PREFIX and
+-            assignment.get('productVersion') == '4.0.2', 'R7 capture assignment guards differ')
++            assignment.get('productVersion') == '4.0.2', 'R8 capture assignment guards differ')
+     definitions = {}
+     schemas = {'sourceBinding': 'feature63-new-source-binding-v1', 'buildBinding': 'feature63-build-binding-v1',
+                'testedBuildReceipt': 'feature63-tested-build-v1', 'reviewReceipt': 'feature63-dedicated-wrapper-review-v1',
+@@ -529,8 +529,8 @@
+         require(value.get('schema') == schemas[key] and value.get('sourcePin') == pin and
+                 value.get('approved') is True and value.get('assignedBy') == '/root',
+                 'Definition schema/pin/approval differs: ' + key)
+-        require(value.get('provenance', {}).get('r7StaticReview') == without_mode(REVIEW),
+-                'Definition R7 review provenance differs: ' + key)
++        require(value.get('provenance', {}).get('r8StaticReview') == without_mode(REVIEW),
++                'Definition R8 review provenance differs: ' + key)
+         definitions[key] = value
+     source, build, tests, runtime_review, browser = (definitions[key] for key in BINDING_NAMES)
+     flags(source, ['authenticatedInputs', 'includesSourceConfigPublicBuildAndProof',
+@@ -538,8 +538,8 @@
+     require(source.get('status') == 'PASS' and source.get('inputCount') == 966 and
+             source.get('testedProductInputCount') == 570, 'Source count/status differs')
+     require(build.get('webDistPath') == str(PREFIX / 'dist') and build.get('serverBuildPath') == str(PREFIX / 'server'),
+-            'Build paths differ from R7 prefix')
+-    require(directory(PREFIX) == {'dist', 'server'}, 'R7 prefix contains unexpected entries')
++            'Build paths differ from R8 prefix')
++    require(directory(PREFIX) == {'dist', 'server'}, 'R8 prefix contains unexpected entries')
+     require(build.get('webRecords') == build.get('originalTestedWebRecords'), 'Copied web records differ from tested records')
+     flags(tests, ['buildPassed', 'fullSuitePassed', 'originalAndPackagedWebBytesModesAndFilenameSetsMatch',
+                   'sourceAndBuiltBytesMatchTested402'], 'Tested build')
+@@ -549,7 +549,7 @@
+             '9c5d2f1ff26bd6849b1ad5e311300669fb5f02feebbe4d311b6f8d670df243e1',
+             'Tested build relationships differ')
+     require(runtime_review.get('status') == 'PASS' and without_mode(REVIEW) in runtime_review.get('staticDriverReviews', []),
+-            'Runtime review does not contain admitted R7 static review')
++            'Runtime review does not contain admitted R8 static review')
+ 
+     for role, name in SCRIPT_NAMES.items():
+         for base in (ROOT, OWNED):
+@@ -577,7 +577,7 @@
+             browser.get('producerSha256') == assignment['publicProducer']['sha256'] and
+             browser.get('buildBindingSha256') == assignment['buildBinding']['sha256'], 'Build/browser digest relationships differ')
+ 
+-    token = 'heavy-runtime-1-feature63-r7-' + pin[:12] + '-' + binding.name.rsplit('-', 1)[-1]
++    token = 'heavy-runtime-1-feature63-r8-' + pin[:12] + '-' + binding.name.rsplit('-', 1)[-1]
+     slot = assignment['exclusiveHeavyApproval']
+     check_slot(slot, token)
+     require(browser.get('exclusiveSlotToken') == token and browser.get('cdpBaseUrl') == 'http://127.0.0.1:5374' and
+@@ -603,7 +603,7 @@
+             collector.get('freshDatabase') == {'path': str(PREFIX / 'server-data/server.sqlite'), 'device': None, 'inode': None} and
+             collector.get('ownedServer') == {key: None for key in ('argv', 'cwd', 'executable', 'pid', 'startTicks')} and
+             collector.get('publicMatchIdentity') is None, 'Collector template relationships differ')
+-    require(disposition.get('schema') == 1 and disposition.get('status') == 'PASS_ROOT_R7_FRESH_CAPTURE_BINDINGS_AUTHENTICATED' and
++    require(disposition.get('schema') == 1 and disposition.get('status') == 'PASS_ROOT_R8_FRESH_CAPTURE_BINDINGS_AUTHENTICATED' and
+             disposition.get('sourcePin') == pin and disposition.get('captureAssignment') == without_mode(expectation['assignment']) and
+             disposition.get('captureAdmitted') is True and type(disposition.get('captureInvocationsAuthorized')) is int and
+             disposition['captureInvocationsAuthorized'] == 1 and disposition.get('slotExclusivelyAssignedTo') == '/root/ai_modes' and
+@@ -625,9 +625,9 @@
+     }
+     require(readback.get('launcherChanges') == mapping, 'Launcher change map differs from root-approved anchors')
+     text = template_entry['raw'].decode('utf-8')
+-    text = text.replace('feature63-human-wave-composition-r3', 'feature63-human-wave-composition-r7')
++    text = text.replace('feature63-human-wave-composition-r3', 'feature63-human-wave-composition-r8')
+     text = text.replace("SLOT_TOKEN.startswith('heavy-runtime-1-feature63-r3-')",
+-                        "SLOT_TOKEN.startswith('heavy-runtime-1-feature63-r7-')")
++                        "SLOT_TOKEN.startswith('heavy-runtime-1-feature63-r8-')")
+     for old, new in mapping.items():
+         require(text.count(old) == 1, 'Frozen launcher anchor is missing or repeated: ' + old)
+         text = text.replace(old, new)
+@@ -671,7 +671,7 @@
+     revalidate_files_and_sets()
+     directory(binding, private=True)
+     directory(control, private=True, empty=True)
+-    require(directory(PREFIX) == {'dist', 'server'}, 'R7 prefix changed before report')
++    require(directory(PREFIX) == {'dist', 'server'}, 'R8 prefix changed before report')
+     protected_process = assignment['protectedProcess']
+     require(type(protected_process) is dict and set(protected_process) == {'pid', 'startTicks', 'cwd', 'executable', 'argv'} and
+             type(protected_process['pid']) is int and protected_process['pid'] == 1063 and
+@@ -688,23 +688,23 @@
+     directory(control, private=True, empty=True)
+     require(directory(binding, private=True) == OUTPUT_NAMES | {'root-binding-readback.json'},
+             'Bindings changed immediately before report')
+-    require(directory(PREFIX) == {'dist', 'server'}, 'R7 prefix changed immediately before report')
++    require(directory(PREFIX) == {'dist', 'server'}, 'R8 prefix changed immediately before report')
+     revalidate_files_and_sets()
+     report = {
+-        'schema': 'feature63-r7-independent-prelaunch-readback-v1',
+-        'status': 'PASS_ROOT_EXPECTATION_BOUND_R7_PRELAUNCH_AUTHENTICATION_ONLY',
++        'schema': 'feature63-r8-independent-prelaunch-readback-v1',
++        'status': 'PASS_ROOT_EXPECTATION_BOUND_R8_PRELAUNCH_AUTHENTICATION_ONLY',
+         'at': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+         'sourcePin': pin, 'rootExpectation': expectation_descriptor,
+         'bindingDirectory': str(binding), 'assignment': expectation['assignment'],
+         'launcher': expectation['launcher'], 'disposition': expectation['disposition'],
+-        'bindingReadback': expectation['readback'], 'r7StaticReview': REVIEW, 'frozenLauncherTemplate': TEMPLATE,
++        'bindingReadback': expectation['readback'], 'r8StaticReview': REVIEW, 'frozenLauncherTemplate': TEMPLATE,
+         'counts': {'sourceEachCheckout': 966, 'productEachCheckout': 570, 'protectedDist': 397,
+                    'web': 398, 'server': 22, 'playwright': 114, 'chromium': 303},
+         'allBoundFilesAuthenticatedWithStableSingleFdReads': True,
+         'definitionsParsedOnceFromAuthenticatedBytes': True,
+         'completeBindingInventoryExcludesOnlyReadbackItself': True,
+         'rootAndOwnedHeadMatchExpectedPinAndTrackedStateClean': True,
+-        'launcherOnlyReviewedR3ToR7LiteralsAndRootAnchors': True,
++        'launcherOnlyReviewedR3ToR8LiteralsAndRootAnchors': True,
+         'control': {'path': str(control), 'mode': 0o700, 'empty': True},
+         'slot': slot, 'slotSecondsRemainingAtFinalGate': remaining,
+         'protectedPreview': protected_after, 'listeners': listener_after,

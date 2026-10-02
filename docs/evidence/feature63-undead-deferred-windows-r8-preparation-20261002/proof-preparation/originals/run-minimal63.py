@@ -15,7 +15,7 @@ import urllib.request
 from pathlib import Path
 
 CHECKOUT = Path('/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies')
-PREFIX_NAME = 'work/feature63-human-wave-composition-r8'
+PREFIX_NAME = 'work/feature63-human-wave-composition-r7'
 PREFIX = CHECKOUT / PREFIX_NAME
 PROTECTED_ROOT = Path('/home/morgana/Projects/orcs-vs-Fairies')
 PORTS = {'server': 5373, 'browser': 5374, 'protected': 4173}

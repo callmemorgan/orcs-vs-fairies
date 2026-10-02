@@ -1,0 +1,248 @@
+{
+  "schema": "feature63-r8-final-static-independent-review-v1",
+  "status": "PASS_STATIC_R8_UNDEAD_DEFERRED_WINDOWS_RUNTIME_HELD",
+  "requestedReviewerModel": "gpt-5.6-sol",
+  "actualProviderIdentity": "unverified",
+  "providerOrModelFamilyAuthenticated": false,
+  "claudeUsed": false,
+  "runtimeExecuted": false,
+  "candidateImported": false,
+  "proofScriptOrBindingUtilityExecuted": false,
+  "processOrPortProbesPerformed": false,
+  "browserOrServerAccessed": false,
+  "databaseCheckpointProfileOrPublicWireDataAccessed": false,
+  "rawCustodyOrExtractionOrAuditPerformed": false,
+  "checkoutOrProductFilesReadOrModified": false,
+  "sourcePinInvented": false,
+  "packetModified": false,
+  "packet": "/tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh",
+  "packetManifest": {
+    "path": "/tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh/preparation-manifest.json",
+    "bytes": 12309,
+    "mode": 256,
+    "sha256": "39e91f44122cfeacee8eb92e46ccfef5ecd6735ce65325b7fae128cd1c5c6bde",
+    "authenticated": true
+  },
+  "sourceBasis": {
+    "path": "/tmp/ovf-feature63-r7-public-acquisition-static-yf3hu5_3/analysis.json",
+    "sha256": "d4b9f42509bf36246ed2dbb9837c387df9df95bc389af9fe9b0da2326c18ee35",
+    "packetCopyByteIdentical": true,
+    "rawRuntimeEvidenceOpened": false
+  },
+  "reviewedFiles": [
+    {
+      "role": "wrapper",
+      "path": "/tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh/candidates/run-minimal63.py",
+      "bytes": 54514,
+      "mode": 256,
+      "sha256": "c3bbf9b829b4f48f531d5bd2ee29a13bcd2ce23b7cc445815d3d2c90204c60e6"
+    },
+    {
+      "role": "producer",
+      "path": "/tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh/candidates/public-producer.mjs",
+      "bytes": 54601,
+      "mode": 256,
+      "sha256": "cc70fa74b115a2195dbc1e350b98e715db1f4c0ca2fe4612d691923d84bed9f3"
+    },
+    {
+      "role": "collector",
+      "path": "/tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh/candidates/collect-launched-waves.py",
+      "bytes": 18600,
+      "mode": 256,
+      "sha256": "abc1c9e156521feb1674b876b51abb5b8b8371f35bbf9026006ccaaf5d721392"
+    },
+    {
+      "role": "frozenAuditor",
+      "path": "/tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh/originals/native-audit.py",
+      "bytes": 64185,
+      "mode": 256,
+      "sha256": "4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb"
+    },
+    {
+      "role": "bindingUtility",
+      "path": "/tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh/binding-final/fresh-r8-bindings.py",
+      "bytes": 24745,
+      "mode": 256,
+      "sha256": "7524f5d9bcaa6659cf53e5ab954b5d73e6c09d070195a380a0c3f9c3e1a8874c"
+    }
+  ],
+  "blockers": [],
+  "requiredFixes": [],
+  "proofScriptAssessment": {
+    "status": "STATIC_ELIGIBLE_UNEXECUTED",
+    "wrapper": {
+      "r7ToR8PrefixReplacementCount": 1,
+      "otherByteChanges": false,
+      "inverseReproducesPriorR7Bytes": true
+    },
+    "collector": {
+      "r7ToR8PrefixReplacementCount": 2,
+      "otherByteChanges": false,
+      "inverseReproducesPriorR7Bytes": true,
+      "queryByteIdenticalToFrozenAuditorExpectedQuery": true
+    },
+    "producer": {
+      "r7ToR8PrefixReplacementCount": 1,
+      "aiPlayer3Faction": "undead",
+      "aiPlayer4Faction": "undead",
+      "expectedLobbyFactions": [
+        "orcs",
+        "fairies",
+        "undead",
+        "undead"
+      ],
+      "preLatchIndexWindowCallsRemoved": 2,
+      "remainingIndexWindowUses": [
+        "post-latch selection loop",
+        "final failure preservation"
+      ],
+      "indexWindowPredicateAndFunctionContentsUnchanged": true,
+      "rawFramesAndPublicWiresRetained": true,
+      "prospectiveDerivedPreLatchSummariesSkipped": true,
+      "inverseReproducesPriorR7Bytes": true
+    },
+    "combinedDiff": {
+      "path": "/tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh/proof-scripts.diff",
+      "sha256": "a9f02fa0b27b103a44b40838c50fc3a14f9556f35ea44cae6199b62d8fa8ab44",
+      "freshDiffDigestMatches": true
+    },
+    "pythonCandidatesAstParsedWithoutExecution": true,
+    "nodeSyntaxEvidenceAuthenticatedWithoutRerun": true
+  },
+  "undeadCompatibilityAssessment": {
+    "status": "STATIC_COMPATIBLE_RUNTIME_UNPROVEN",
+    "frozenAuditorHasFactionWhitelist": false,
+    "requiredPlayerCount": 4,
+    "requiredControllers": [
+      "external",
+      "external",
+      "ai",
+      "ai"
+    ],
+    "requiredTeams": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "annihilationRequired": true,
+    "standardDefeatRequired": true,
+    "sharedVisionRequired": true,
+    "collectorConfigMustEqualNativeMatchConfig": true,
+    "checkpointFormatAndReceiptContractsFactionIndependent": true,
+    "producerUsesPublicLobbyFactionSelectors": true,
+    "producerVerifiesReturnedLobbyFactionList": true,
+    "fasterOrCheaperUndeadUnitsAreOnlyAStaticHypothesis": true
+  },
+  "deferredWindowAssessment": {
+    "status": "STATIC_COMPATIBLE_RUNTIME_UNPROVEN",
+    "preLatchDerivedWindowSummaries": "not computed",
+    "postLatchSelectionPredicate": "unchanged",
+    "finalFailurePreservation": "unchanged",
+    "rawEvidenceRetention": "unchanged",
+    "publicApproachStillWaitsForOwner": 2,
+    "nativeAuditStillRequiresOwnersInOneWave": [
+      2,
+      3
+    ]
+  },
+  "frozenAuditorAssessment": {
+    "status": "UNCHANGED",
+    "requiresSelectedBoundedCandidate": true,
+    "historicalRejectedCandidatesAccepted": false,
+    "publicInputBudgetBytes": 67108864,
+    "sameWaveIdentityMustBeProvedAtRuntime": true,
+    "bothHumanAttackOwnersMustBeProvedAtRuntime": true
+  },
+  "bindingUtilityAssessment": {
+    "status": "STATIC_ELIGIBLE_UNEXECUTED",
+    "manifest": {
+      "path": "/tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh/binding-final/final-manifest.json",
+      "bytes": 5604,
+      "mode": 256,
+      "sha256": "16ed1d9f5db895c1ca44128608890f83e71a5cc93bea5eeeabd87993584d5c8f"
+    },
+    "manifestArtifactCount": 10,
+    "allManifestArtifactBytesDigestsAndModesMatch": true,
+    "requiredReviewSchema": "feature63-r8-final-static-independent-review-v1",
+    "requiredReviewStatus": "PASS_STATIC_R8_UNDEAD_DEFERRED_WINDOWS_RUNTIME_HELD",
+    "requiredReviewRuntimeExecuted": false,
+    "reviewProvenanceKey": "r8StaticReview",
+    "activeR7StaticReviewReferencePresent": false,
+    "exactFiveRoleSetRequired": true,
+    "reviewSelfHashGatePresent": true,
+    "fixedDescriptorsRequiredForBothRootAndOwnedCopies": true,
+    "futureFullSourcePinReviewPathAndReviewDigestAreCliArguments": true,
+    "r6CopyLineageAndPinnedReceiptsPreserved": true,
+    "productAndProtectedInventoriesPreserved": true,
+    "frozenR3LauncherTemplatePreserved": true,
+    "writesBeginOnlyAfterReadOnlyGates": true,
+    "r8OutputControlSlotDispositionAndLauncherNamesConsistent": true,
+    "prelaunchVerifierMustConsumeR8StaticReview": true,
+    "prelaunchConsumerReviewedHere": false,
+    "intermediateCandidateAdmitted": false,
+    "intermediateCandidateSha256": "394a857acc85d6675124627b747b889b99b2531ebd48b0b447d9131279acc0bd",
+    "substitutionProof": {
+      "substitutionCount": 23,
+      "forwardReconstructionEqualsFinalCandidate": true,
+      "inverseReconstructionEqualsReviewedR7Utility": true,
+      "reviewedR7UtilitySha256": "bbeb0bc68b2dd5cd24679f8ade43baa2403d748e9877a7e24bcf2c7fe1c1dc02",
+      "astParsesWithoutExecution": true,
+      "assertNodeCount": 0
+    },
+    "savedDiffProof": {
+      "r7ToFinal": {
+        "path": "/tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh/binding-final/r7-to-final-r8.diff",
+        "sha256": "eb1479df1b090f0d483a606a23f4e10fe2640e790ec9ee1bd397b3486b77dfa0",
+        "appliedToStatedBaseReconstructsFinalCandidate": true
+      },
+      "intermediateToFinal": {
+        "path": "/tmp/ovf-feature63-r8-proof-preparation-architecture-uHipCdKh/binding-final/intermediate-to-final-r8.diff",
+        "sha256": "be95ad6039b3078e7f2c24822e23eee9f9107e50842b42d65d2657b2e99b70f2",
+        "appliedToStatedBaseReconstructsFinalCandidate": true
+      },
+      "freshGnuDiffByteIdenticalToSavedDiff": false,
+      "difference": "Unified hunk grouping differs while byte lengths match. Each saved diff applies cleanly to its stated base and produces the reviewed final candidate digest."
+    },
+    "utilityExecuted": false,
+    "bindingsGenerated": false,
+    "slotReserved": false,
+    "r8PrefixCreated": false,
+    "controlDirectoryCreated": false
+  },
+  "excludedFromReview": {
+    "custodyCandidate": {
+      "reviewedHere": false,
+      "reason": "A separate independent architecture review covers the R8 custody candidate. It is not one of the five roles accepted by the binding utility."
+    },
+    "prelaunchConsumer": {
+      "reviewedHere": false,
+      "reason": "Consumer compatibility is a separate follow-up and is not evidence for this proof-script and final-binding verdict."
+    }
+  },
+  "risks": [
+    "Static source cannot establish a passing bounded candidate, same-wave identity, accepted attacks from both humans, or completion under the frozen 64 MiB public-input limit.",
+    "The R7 report says both commands were accepted but only three positive human attacks were found. This review did not open raw evidence, so the R8 Undead change remains a runtime hypothesis.",
+    "The public approach still waits for owner 2 while the frozen native audit requires owners 2 and 3 in one wave.",
+    "The binding utility checks files sequentially rather than from an atomic filesystem snapshot. Concurrent changes can cause a failure or a race after an earlier gate.",
+    "A future binding run must fail closed unless both checkouts match the root-supplied source pin and the fixed reviewed descriptors."
+  ],
+  "finiteQualifications": [
+    "This verdict approves the reviewed bytes for static R8 preparation only. It does not claim that a capture, bounded candidate, native audit, or Feature 63 proof will pass.",
+    "The 64 MiB public audit-input bound is unchanged.",
+    "No passed R8 capture, runtime result, source pin, binding output, control directory, expectation, or capture authority was created by this review.",
+    "The future R8 prelaunch verifier must consume r8StaticReview and receive a separate compatibility review."
+  ],
+  "authority": {
+    "runtimeAuthorizedByThisReview": false,
+    "captureAuthorizedByThisReview": false,
+    "proofScriptExecutionAuthorizedByThisReview": false,
+    "bindingUtilityExecutionAuthorizedByThisReview": false,
+    "custodyUtilityExecutionAuthorizedByThisReview": false,
+    "extractionAuthorizedByThisReview": false,
+    "auditAuthorizedByThisReview": false,
+    "importOrPinAuthorizedByThisReview": false,
+    "checkoutOrProductWriteAuthorizedByThisReview": false,
+    "automaticRetryAuthorizedByThisReview": false
+  }
+}
