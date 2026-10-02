@@ -1,0 +1,476 @@
+{
+  "schema": 1,
+  "sourceCommit": "f18a50d904c57ae1652f157b946ebd39d8d8923c",
+  "saveVersion": 4,
+  "simulationRevision": "4.0.1",
+  "setup": "Authored setup only, no simulation or commands executed by generator. Native save imports begin recording; all proof actions use production HUD controls.",
+  "scenarios": {
+    "specialists-orcs": {
+      "file": "specialists-orcs.json",
+      "ids": {
+        "faction": "orcs",
+        "hero": 59,
+        "engineer": 60,
+        "cavalry": 61,
+        "battle": 62,
+        "siege": 63,
+        "shellTarget": 64,
+        "undergroundWorker": 58,
+        "points": {
+          "command": {
+            "x": 13.5,
+            "y": 21.5
+          },
+          "queen": {
+            "x": 17.5,
+            "y": 19.5
+          },
+          "leap": {
+            "x": 12.5,
+            "y": 25.5
+          }
+        }
+      },
+      "authored": {
+        "description": "Distinct native commander, cavalry and paid siege ability. A living cavalry target survives the first payload; save and replay capture pending and active effects separately.",
+        "woundedHeroHealth": 180,
+        "woundedEngineerHealth": 70,
+        "woundedCavalryHealth": 100,
+        "ownAndEnemyCombatCooldown": 300,
+        "siegeCooldown": 6,
+        "undeadCorpse": null,
+        "wetGround": null,
+        "initialResources": {
+          "wood": 5000,
+          "ore": 5000,
+          "crystal": 1000
+        },
+        "weather": "Clear, day; calendar intervals 10000 seconds",
+        "secondLayer": "One owned worker",
+        "setupOnly": true
+      },
+      "faction": "orcs",
+      "initialTick": 0,
+      "initialTime": 0
+    },
+    "specialists-fairies": {
+      "file": "specialists-fairies.json",
+      "ids": {
+        "faction": "fairies",
+        "hero": 59,
+        "engineer": 60,
+        "cavalry": 61,
+        "battle": 62,
+        "siege": 63,
+        "shellTarget": 64,
+        "undergroundWorker": 58,
+        "points": {
+          "command": {
+            "x": 13.5,
+            "y": 21.5
+          },
+          "queen": {
+            "x": 17.5,
+            "y": 19.5
+          },
+          "leap": {
+            "x": 12.5,
+            "y": 25.5
+          }
+        }
+      },
+      "authored": {
+        "description": "Distinct native commander, cavalry and paid siege ability. A living cavalry target survives the first payload; save and replay capture pending and active effects separately.",
+        "woundedHeroHealth": 180,
+        "woundedEngineerHealth": 70,
+        "woundedCavalryHealth": 100,
+        "ownAndEnemyCombatCooldown": 300,
+        "siegeCooldown": 6,
+        "undeadCorpse": null,
+        "wetGround": null,
+        "initialResources": {
+          "wood": 5000,
+          "ore": 5000,
+          "crystal": 1000
+        },
+        "weather": "Clear, day; calendar intervals 10000 seconds",
+        "secondLayer": "One owned worker",
+        "setupOnly": true
+      },
+      "faction": "fairies",
+      "initialTick": 0,
+      "initialTime": 0
+    },
+    "specialists-dwarves": {
+      "file": "specialists-dwarves.json",
+      "ids": {
+        "faction": "dwarves",
+        "hero": 59,
+        "engineer": 60,
+        "cavalry": 61,
+        "battle": 62,
+        "siege": 63,
+        "shellTarget": 64,
+        "undergroundWorker": 58,
+        "points": {
+          "command": {
+            "x": 13.5,
+            "y": 21.5
+          },
+          "queen": {
+            "x": 17.5,
+            "y": 19.5
+          },
+          "leap": {
+            "x": 12.5,
+            "y": 25.5
+          }
+        }
+      },
+      "authored": {
+        "description": "Distinct native commander, cavalry and paid siege ability. A living cavalry target survives the first payload; save and replay capture pending and active effects separately.",
+        "woundedHeroHealth": 180,
+        "woundedEngineerHealth": 70,
+        "woundedCavalryHealth": 100,
+        "ownAndEnemyCombatCooldown": 300,
+        "siegeCooldown": 6,
+        "undeadCorpse": null,
+        "wetGround": null,
+        "initialResources": {
+          "wood": 5000,
+          "ore": 5000,
+          "crystal": 1000
+        },
+        "weather": "Clear, day; calendar intervals 10000 seconds",
+        "secondLayer": "One owned worker",
+        "setupOnly": true
+      },
+      "faction": "dwarves",
+      "initialTick": 0,
+      "initialTime": 0
+    },
+    "specialists-undead": {
+      "file": "specialists-undead.json",
+      "ids": {
+        "faction": "undead",
+        "hero": 59,
+        "engineer": 60,
+        "cavalry": 61,
+        "battle": 62,
+        "siege": 63,
+        "shellTarget": 64,
+        "undergroundWorker": 58,
+        "points": {
+          "command": {
+            "x": 13.5,
+            "y": 21.5
+          },
+          "queen": {
+            "x": 17.5,
+            "y": 19.5
+          },
+          "leap": {
+            "x": 12.5,
+            "y": 25.5
+          }
+        }
+      },
+      "authored": {
+        "description": "Distinct native commander, cavalry and paid siege ability. A living cavalry target survives the first payload; save and replay capture pending and active effects separately.",
+        "woundedHeroHealth": 180,
+        "woundedEngineerHealth": 70,
+        "woundedCavalryHealth": 100,
+        "ownAndEnemyCombatCooldown": 300,
+        "siegeCooldown": 6,
+        "undeadCorpse": "One visible authored corpse, expires at 45 seconds",
+        "wetGround": null,
+        "initialResources": {
+          "wood": 5000,
+          "ore": 5000,
+          "crystal": 1000
+        },
+        "weather": "Clear, day; calendar intervals 10000 seconds",
+        "secondLayer": "One owned worker",
+        "setupOnly": true
+      },
+      "faction": "undead",
+      "initialTick": 0,
+      "initialTime": 0
+    },
+    "specialists-tideborn": {
+      "file": "specialists-tideborn.json",
+      "ids": {
+        "faction": "tideborn",
+        "hero": 59,
+        "engineer": 60,
+        "cavalry": 61,
+        "battle": 62,
+        "siege": 63,
+        "shellTarget": 64,
+        "undergroundWorker": 58,
+        "points": {
+          "command": {
+            "x": 13.5,
+            "y": 21.5
+          },
+          "queen": {
+            "x": 17.5,
+            "y": 19.5
+          },
+          "leap": {
+            "x": 12.5,
+            "y": 25.5
+          }
+        }
+      },
+      "authored": {
+        "description": "Distinct native commander, cavalry and paid siege ability. A living cavalry target survives the first payload; save and replay capture pending and active effects separately.",
+        "woundedHeroHealth": 180,
+        "woundedEngineerHealth": 70,
+        "woundedCavalryHealth": 100,
+        "ownAndEnemyCombatCooldown": 300,
+        "siegeCooldown": 6,
+        "undeadCorpse": null,
+        "wetGround": "Mud under cavalry",
+        "initialResources": {
+          "wood": 5000,
+          "ore": 5000,
+          "crystal": 1000
+        },
+        "weather": "Clear, day; calendar intervals 10000 seconds",
+        "secondLayer": "One owned worker",
+        "setupOnly": true
+      },
+      "faction": "tideborn",
+      "initialTick": 0,
+      "initialTime": 0
+    },
+    "specialists-automata": {
+      "file": "specialists-automata.json",
+      "ids": {
+        "faction": "automata",
+        "hero": 59,
+        "engineer": 60,
+        "cavalry": 61,
+        "battle": 62,
+        "siege": 63,
+        "shellTarget": 64,
+        "undergroundWorker": 58,
+        "points": {
+          "command": {
+            "x": 13.5,
+            "y": 21.5
+          },
+          "queen": {
+            "x": 17.5,
+            "y": 19.5
+          },
+          "leap": {
+            "x": 12.5,
+            "y": 25.5
+          }
+        }
+      },
+      "authored": {
+        "description": "Distinct native commander, cavalry and paid siege ability. A living cavalry target survives the first payload; save and replay capture pending and active effects separately.",
+        "woundedHeroHealth": 180,
+        "woundedEngineerHealth": 70,
+        "woundedCavalryHealth": 100,
+        "ownAndEnemyCombatCooldown": 300,
+        "siegeCooldown": 6,
+        "undeadCorpse": null,
+        "wetGround": null,
+        "initialResources": {
+          "wood": 5000,
+          "ore": 5000,
+          "crystal": 1000
+        },
+        "weather": "Clear, day; calendar intervals 10000 seconds",
+        "secondLayer": "One owned worker",
+        "setupOnly": true
+      },
+      "faction": "automata",
+      "initialTick": 0,
+      "initialTime": 0
+    },
+    "specialists-veteran": {
+      "file": "specialists-veteran.json",
+      "ids": {
+        "hero": 59,
+        "victim": 60,
+        "undergroundWorker": 58
+      },
+      "authored": {
+        "description": "An unranked commander must approach and defeat an authored 80-health hostile engineer. No XP or promotion is assigned. Enemy retaliation cooldown is 300 seconds.",
+        "initialResources": {
+          "wood": 5000,
+          "ore": 5000,
+          "crystal": 1000
+        },
+        "weather": "Clear, day; calendar intervals 10000 seconds",
+        "secondLayer": "One owned worker",
+        "setupOnly": true
+      },
+      "faction": "orcs",
+      "initialTick": 0,
+      "initialTime": 0
+    },
+    "specialists-recovery": {
+      "file": "specialists-recovery.json",
+      "ids": {
+        "hero": 60,
+        "killer": 61,
+        "hall": 59,
+        "artifact": 1,
+        "march": {
+          "x": 13.5,
+          "y": 18.5
+        },
+        "undergroundWorker": 58
+      },
+      "authored": {
+        "description": "A wounded living commander holds a recoverable ground artifact. The player recovers/equips it and moves into the authored enemy marksman’s range. Defeat, item drop, 30-second recovery and full-price 25-second rerecruitment occur in gameplay.",
+        "woundedHeroHealth": 1,
+        "killerCooldown": 8,
+        "ownCombatCooldown": 300,
+        "initialResources": {
+          "wood": 5000,
+          "ore": 5000,
+          "crystal": 1000
+        },
+        "weather": "Clear, day; calendar intervals 10000 seconds",
+        "secondLayer": "One owned worker",
+        "setupOnly": true
+      },
+      "faction": "orcs",
+      "initialTick": 0,
+      "initialTime": 0
+    },
+    "specialists-artifact-damage": {
+      "file": "specialists-artifact-damage.json",
+      "ids": {
+        "engineer": 59,
+        "target": 60,
+        "artifact": 1,
+        "undergroundWorker": 58
+      },
+      "authored": {
+        "description": "The same fixture is loaded for a recovered but unequipped baseline and an equipped Ember Blade run. Read actual first attack damage and preserve both complete native endpoints.",
+        "firstAttackCooldown": 8,
+        "enemyRetaliationCooldown": 300,
+        "initialXP": 0,
+        "targetFacing": "West toward attacker, front hit",
+        "initialResources": {
+          "wood": 5000,
+          "ore": 5000,
+          "crystal": 1000
+        },
+        "weather": "Clear, day; calendar intervals 10000 seconds",
+        "secondLayer": "One owned worker",
+        "setupOnly": true
+      },
+      "faction": "orcs",
+      "initialTick": 0,
+      "initialTime": 0
+    },
+    "specialists-bridge-crossing": {
+      "file": "specialists-bridge-crossing.json",
+      "ids": {
+        "engineer": 59,
+        "traveler": 60,
+        "occupant": 61,
+        "bridge": {
+          "x": 18.5,
+          "y": 18.5
+        },
+        "destination": {
+          "x": 22.5,
+          "y": 18.5
+        },
+        "undergroundWorker": 58
+      },
+      "authored": {
+        "description": "A three-tile water channel blocks every route. A native move order remains blocked before a paid bridge; the same traveler crosses afterward. Another worker is ordered onto the bridge. After 60 simulated seconds the three tiles restore water and the bridge occupant relocates to shore through central expiry handling.",
+        "initialResources": {
+          "wood": 5000,
+          "ore": 5000,
+          "crystal": 1000
+        },
+        "weather": "Clear, day; calendar intervals 10000 seconds",
+        "secondLayer": "One owned worker",
+        "setupOnly": true
+      },
+      "faction": "orcs",
+      "initialTick": 0,
+      "initialTime": 0
+    },
+    "specialists-barricade-obstruction": {
+      "file": "specialists-barricade-obstruction.json",
+      "ids": {
+        "engineer": 59,
+        "traveler": 60,
+        "barricade": {
+          "x": 14.5,
+          "y": 18.5
+        },
+        "destination": {
+          "x": 22.5,
+          "y": 18.5
+        },
+        "undergroundWorker": 58
+      },
+      "authored": {
+        "description": "A one-tile land corridor is the only passage through a seven-tile water barrier. A paid native field barricade blocks it. The native move remains blocked until the barricade expires after 60 simulated seconds, then the traveler crosses.",
+        "initialResources": {
+          "wood": 5000,
+          "ore": 5000,
+          "crystal": 1000
+        },
+        "weather": "Clear, day; calendar intervals 10000 seconds",
+        "secondLayer": "One owned worker",
+        "setupOnly": true
+      },
+      "faction": "orcs",
+      "initialTick": 0,
+      "initialTime": 0
+    },
+    "specialists-beacon-link": {
+      "file": "specialists-beacon-link.json",
+      "ids": {
+        "first": 59,
+        "second": 60,
+        "intruder": 61,
+        "destroyer": 62,
+        "observer": 63,
+        "farTile": {
+          "x": 34.5,
+          "y": 10.5,
+          "level": 0
+        },
+        "undergroundWorker": 58
+      },
+      "authored": {
+        "description": "Two beacons are each 11 tiles from their preceding link. A distant intruder causes a real native alert. An authored enemy marksman destroys the wounded first link after its 10-second cooldown. The surviving remote beacon disconnects and loses current sight while exploration remains.",
+        "firstLinkHealth": 60,
+        "destroyerInitialCooldown": 10,
+        "otherCombatCooldowns": 300,
+        "farSightPoint": {
+          "x": 34.5,
+          "y": 10.5,
+          "level": 0
+        },
+        "initialResources": {
+          "wood": 5000,
+          "ore": 5000,
+          "crystal": 1000
+        },
+        "weather": "Clear, day; calendar intervals 10000 seconds",
+        "secondLayer": "One owned worker",
+        "setupOnly": true
+      },
+      "faction": "orcs",
+      "initialTick": 0,
+      "initialTime": 0
+    }
+  }
+}

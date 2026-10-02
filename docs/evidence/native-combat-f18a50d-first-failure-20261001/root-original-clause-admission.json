@@ -1,0 +1,232 @@
+{
+  "observedAt": "2026-10-02T00:27:48.516557+00:00",
+  "producer": {
+    "harness": "Codex",
+    "model": "GPT-6",
+    "agent": "/root"
+  },
+  "originalFeatureDecisions": {
+    "2": "verified",
+    "5": "verified",
+    "7": "verified",
+    "8": "verified",
+    "6": "in-progress"
+  },
+  "basis": {
+    "2": "Native front/side/rear attacks deal12/15/18, with unchanged passing simulation assertion.",
+    "5": "Native front-facing guard reduces troop damage6.8vs17; turned/rear bypass it, with unchanged passed guard/depletion assertions.",
+    "7": "Native ordinary siege impact damages allied troop19.6when enabled,zero when disabled; unchanged mid-flight save assertions pass.",
+    "8": "Native moving charge grows4.9and hits29.4vsstationary15. The passed frontal holding-pike assertion cancels impact bonus, consumes charge and damages rider on unchanged code.",
+    "6": "Native rock/building cover is supported; ruins have no simulation geometry or passed behavior assertion."
+  },
+  "nativeReadbacks": [
+    {
+      "path": "docs/evidence/native-combat-f18a50d-first-failure-20261001/raw/browser/flank-front-save.json",
+      "bytes": 370540,
+      "sha256": "cef7803928feb393d38b556ac843e23a4c574221105f003f9280c3c9d0362256",
+      "entityId": 51,
+      "hp": 163,
+      "tactics": {
+        "morale": 94.2228571428574,
+        "recentLoss": 0
+      }
+    },
+    {
+      "path": "docs/evidence/native-combat-f18a50d-first-failure-20261001/raw/browser/flank-side-save.json",
+      "bytes": 370338,
+      "sha256": "92fbe2f344b705325ffa9d8ecb6231d32afbd6d5579908caf10bd6ddb71e20e1",
+      "entityId": 51,
+      "hp": 160,
+      "tactics": {
+        "morale": 93.12857142857169,
+        "recentLoss": 0
+      }
+    },
+    {
+      "path": "docs/evidence/native-combat-f18a50d-first-failure-20261001/raw/browser/flank-rear-save.json",
+      "bytes": 369943,
+      "sha256": "2ec82927c7f6725dace5a30dfceebde176f9229a8e5c57407a699aad506c0aa1",
+      "entityId": 51,
+      "hp": 157,
+      "tactics": {
+        "morale": 92.01428571428598,
+        "recentLoss": 0
+      }
+    },
+    {
+      "path": "docs/evidence/native-combat-f18a50d-first-failure-20261001/raw/browser/shield-front-first-hit-save.json",
+      "bytes": 380884,
+      "sha256": "2fe033956708ab540728aeb36a9a6e32746e283c088d26a6b2f20cd5adf5b00c",
+      "entityId": 51,
+      "hp": 88.2,
+      "tactics": {
+        "morale": 95.75986842105262,
+        "recentLoss": 0
+      }
+    },
+    {
+      "path": "docs/evidence/native-combat-f18a50d-first-failure-20261001/raw/browser/shield-front-first-hit-save.json",
+      "bytes": 380884,
+      "sha256": "2fe033956708ab540728aeb36a9a6e32746e283c088d26a6b2f20cd5adf5b00c",
+      "entityId": 52,
+      "hp": 170,
+      "tactics": {
+        "morale": 100,
+        "recentLoss": 0,
+        "guard": {
+          "value": 29.8,
+          "max": 40,
+          "lastDamagedAt": 3.049999999999997
+        }
+      }
+    },
+    {
+      "path": "docs/evidence/native-combat-f18a50d-first-failure-20261001/raw/browser/shield-turned-first-hit-save.json",
+      "bytes": 380581,
+      "sha256": "5eb1dd9660f35dcc6be653e1782e3861facf03ccb1ab2ff2ffeb8a71370f291a",
+      "entityId": 51,
+      "hp": 78,
+      "tactics": {
+        "morale": 88.78092105263156,
+        "recentLoss": 0
+      }
+    },
+    {
+      "path": "docs/evidence/native-combat-f18a50d-first-failure-20261001/raw/browser/shield-rear-first-hit-save.json",
+      "bytes": 374105,
+      "sha256": "923a155f742e1ff895ed5af89557f35bb8ceca6585eaceac6b819fc174f117d0",
+      "entityId": 51,
+      "hp": 78,
+      "tactics": {
+        "morale": 88.78092105263156,
+        "recentLoss": 0
+      }
+    },
+    {
+      "path": "docs/evidence/native-combat-f18a50d-first-failure-20261001/raw/browser/friendly-fire-on-impact-save.json",
+      "bytes": 382556,
+      "sha256": "fb9b9799794185c3ff9dc8cbe1a27ff7b0a6030f439b7726cfb0ed2926195d43",
+      "entityId": 53,
+      "hp": 120.4,
+      "tactics": {
+        "morale": 89.26000000000033,
+        "recentLoss": 0
+      }
+    },
+    {
+      "path": "docs/evidence/native-combat-f18a50d-first-failure-20261001/raw/browser/friendly-fire-off-impact-save.json",
+      "bytes": 382459,
+      "sha256": "e1df21647dd652cf754ad4ad67b2c37092035cfa3a494516f5565e7d8e808e03",
+      "entityId": 53,
+      "hp": 140,
+      "tactics": {
+        "morale": 98.36000000000033,
+        "recentLoss": 0
+      }
+    },
+    {
+      "path": "docs/evidence/native-combat-f18a50d-first-failure-20261001/raw/browser/charge-stationary-impact-save.json",
+      "bytes": 363729,
+      "sha256": "26c301669812bafa92c898d4df3328b4804df2cf71be91eb228507e80ced4242",
+      "entityId": 52,
+      "hp": 160,
+      "tactics": {
+        "morale": 93.1085714285717,
+        "recentLoss": 0
+      }
+    },
+    {
+      "path": "docs/evidence/native-combat-f18a50d-first-failure-20261001/raw/browser/charge-charge-moving-save.json",
+      "bytes": 364454,
+      "sha256": "3efa49bea4f2325874f66a87863ea122688d90655092cbff002b6e6f84af6601",
+      "entityId": 51,
+      "hp": 210,
+      "tactics": {
+        "morale": 99.56000000000009,
+        "recentLoss": 0,
+        "charge": {
+          "distance": 4.899999999999992,
+          "heading": 0,
+          "lastMovedAt": 1.950000000000001
+        }
+      }
+    },
+    {
+      "path": "docs/evidence/native-combat-f18a50d-first-failure-20261001/raw/browser/charge-charge-impact-save.json",
+      "bytes": 365071,
+      "sha256": "2cc229ebf303f3afd4fd6342ba2493f6f2814186d8993a633328be109b32b8af",
+      "entityId": 52,
+      "hp": 145.6,
+      "tactics": {
+        "morale": 88.46000000000012,
+        "recentLoss": 0
+      }
+    }
+  ],
+  "sourceApplicability": [
+    {
+      "from": "f18a50d904c57ae1652f157b946ebd39d8d8923c",
+      "to": "9024c59674c4bbe471b5d0dbb467ce69b20d1584",
+      "paths": [
+        "src/core",
+        "tests",
+        "src/scenarios",
+        "src/content-art"
+      ],
+      "diffEmpty": true
+    },
+    {
+      "from": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+      "to": "9024c59674c4bbe471b5d0dbb467ce69b20d1584",
+      "paths": [
+        "src/core",
+        "tests",
+        "src/scenarios",
+        "src/content-art"
+      ],
+      "diffEmpty": true
+    }
+  ],
+  "retainedPassedAssertions": [
+    {
+      "title": "retains held facing and resolves front, side and rear damage through real attacks",
+      "status": "passed"
+    },
+    {
+      "title": "a frontal shield consumes guard energy; rear and turned shields leave the ally exposed",
+      "status": "passed"
+    },
+    {
+      "title": "shield support also protects an allied player, and depletion restores full damage",
+      "status": "passed"
+    },
+    {
+      "title": "siege shell impact obeys friendlyFire=true and survives a mid-flight save",
+      "status": "passed"
+    },
+    {
+      "title": "siege shell impact obeys friendlyFire=false and survives a mid-flight save",
+      "status": "passed"
+    },
+    {
+      "title": "moving cavalry gains impact while stops and sharp turns lose the charge",
+      "status": "passed"
+    },
+    {
+      "title": "frontal braced pikes cancel charge and hurt the rider; a rear charge retains impact",
+      "status": "passed"
+    }
+  ],
+  "failedBatchStatus": "Stage06failed;84checks;zero completedgroups;39encountersopen;07/08unrun. Individual admissions do not relabel the batch.",
+  "id8Qualification": "Pike cancellation is a recorded passing simulation test; no mounted browser pike/forced movement-halt claim. Physical immobilization is not required by the original charge-mechanic sentence.",
+  "peerReview": "clause-peer-review/original-combat-admission-review.md",
+  "peerModelQualification": "The peer report states GPT-6.1 Sol though the requested override was gpt-5.6-sol. Different-family review is not established by that request; actual attribution is preserved and further trail review remains separate.",
+  "observerStatus": "V1 findings and corrected V2 static review retained; V2 remains unexecuted. Artwork failure cause remains unproved.",
+  "retention": {
+    "originalRawFiles": 303,
+    "originalRawBytes": 94034440,
+    "planAdditionalFiles": 20,
+    "planAdditionalBytes": 5573114,
+    "receipt": "root-retention.json"
+  }
+}

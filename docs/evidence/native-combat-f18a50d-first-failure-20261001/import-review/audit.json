@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "reviewerModel": "gpt-5.6-sol",
+  "operation": "bounded file-only static retention admission",
+  "result": "admit",
+  "flags": [],
+  "plan": {
+    "path": "/tmp/ovf-native-combat-f18a50d-retry-20261001-zssa25k5/postflight/retention-packet/full-native-retention-plan.json",
+    "bytes": 97054,
+    "sha256": "b99cddba8cc57724f1508af4559219c9b2b560225f6e4e55748c5907f11cc7e3",
+    "sourceRunPath": "/tmp/ovf-native-combat-f18a50d-retry-20261001-zssa25k5",
+    "repositoryPrefix": "docs/evidence/native-combat-f18a50d-first-failure-20261001"
+  },
+  "import": {
+    "fileCount": 323,
+    "bytes": 99607554,
+    "raw": {
+      "fileCount": 303,
+      "bytes": 94034440,
+      "batchCount": 13,
+      "batchLimitBytes": 8388608,
+      "largestBatchBytes": 8348314,
+      "allBatchesWithinLimit": true,
+      "payloadRehashedByThisReview": false
+    },
+    "additional": {
+      "fileCount": 20,
+      "bytes": 5573114,
+      "allHashesVerifiedByThisReview": true,
+      "sealFileCount": 1,
+      "cleanupReleaseFileCount": 2,
+      "visualQaFileCount": 16,
+      "independentDiagnosisFileCount": 1
+    }
+  },
+  "mapping": {
+    "uniqueRawSourcePaths": true,
+    "uniqueRawTargetPaths": true,
+    "uniqueCombinedTargetPaths": true,
+    "normalizedRelativePaths": true,
+    "rawTargetsPreserveSourceLogicalPaths": true,
+    "allSourcesRegularFiles": true,
+    "sourceSymlinkCount": 0,
+    "allSourceSizesMatch": true
+  },
+  "identity": {
+    "originalSealSha256": "922c604e7d17c015d878cfd4f1ce0f133df2c208ef5f7ad9ca8b0a9c2b8d9fba",
+    "sealMatchesAll303RawPlanRows": true,
+    "registeredNativeDownloads": 148,
+    "allNativeDownloadRowsMatchPlan": true,
+    "screenshotCount": 39
+  },
+  "retainedStatus": {
+    "stage06Failed": true,
+    "recordedChecks": 84,
+    "completedGroups": 0,
+    "all39EncountersOpen": true,
+    "browserCompleted": false,
+    "stage07NativeHistoryRan": false,
+    "stage08FinalAssetAcceptanceRan": false,
+    "heavySlotReleased": true
+  },
+  "pins": {
+    "fixedProduct": "453c2218af9973b9eca8fb78392435bd9d46a740",
+    "runtimeProof": "f18a50d904c57ae1652f157b946ebd39d8d8923c",
+    "checkerDocs": "37bf0e794e7f62cf33347d2e92c739d593bf1cc4",
+    "keptDistinct": true
+  },
+  "protectedRootBaseline": {
+    "rootHead": "829e2d9f18a08ed5874694a24620221a4d2eda88",
+    "protectedPid": 1063,
+    "protectedStartTime": "874",
+    "protectedPort": 4173,
+    "distFileCount": 397,
+    "cleanupRecordsPidUnchanged": true,
+    "cleanupRecordsPortListening": true,
+    "cleanupRecordsAllDistFingerprintsUnchanged": true
+  },
+  "scope": {
+    "retentionOnly": true,
+    "introducesFeatureGate": false,
+    "idSpecificCombinedAdmission": false,
+    "rootRepositoryWritesPerformed": false,
+    "runtimeOrProductExecutionPerformed": false,
+    "largePayloadRehashed": false
+  }
+}

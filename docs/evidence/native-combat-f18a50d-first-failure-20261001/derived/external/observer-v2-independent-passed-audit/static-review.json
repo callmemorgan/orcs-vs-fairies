@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "reviewedAt": "2026-10-02T00:19:47.930364+00:00",
+  "status": "both-reported-findings-addressed-no-additional-actionable-finding",
+  "files": [
+    {
+      "path": "/tmp/ovf-f18-replay-observer-v2-tzwrd686/observe-one-replay-import.mjs",
+      "bytes": 15561,
+      "sha256": "20eed615d6d97a574ec257ce207f397c9a0403db7213deb90334559df38a1aad"
+    },
+    {
+      "path": "/tmp/ovf-f18-replay-observer-v2-tzwrd686/README.md",
+      "bytes": 4854,
+      "sha256": "0b492fd1408b4319493118faa99a6245f2e9aece61e6a0dfaa4f39145163c45b"
+    }
+  ],
+  "previousCandidateUnchanged": true,
+  "previousReview": "/tmp/ovf-f18-observer-review-68b161-mz0ykdzn/static-review.json",
+  "scope": "Static text and diff review only. No execution, syntax check, tests, browser, project module imports, source/root/candidate edits, or runtime authorization.",
+  "closedFindings": [
+    {
+      "title": "Executable identity gates replay input",
+      "references": [
+        "/tmp/ovf-f18-replay-observer-v2-tzwrd686/observe-one-replay-import.mjs:121",
+        "/tmp/ovf-f18-replay-observer-v2-tzwrd686/observe-one-replay-import.mjs:124",
+        "/tmp/ovf-f18-replay-observer-v2-tzwrd686/observe-one-replay-import.mjs:125",
+        "/tmp/ovf-f18-replay-observer-v2-tzwrd686/observe-one-replay-import.mjs:126",
+        "/tmp/ovf-f18-replay-observer-v2-tzwrd686/observe-one-replay-import.mjs:132"
+      ],
+      "result": "Initial response tasks settle; all observed script/style responses must be successful and match the frozen dist/origin; every HTML-declared executable must be observed; recorded executable request failures reject input. The checks occur before replay file selection and Import click."
+    },
+    {
+      "title": "Final body-task intake is sealed",
+      "references": [
+        "/tmp/ovf-f18-replay-observer-v2-tzwrd686/observe-one-replay-import.mjs:150",
+        "/tmp/ovf-f18-replay-observer-v2-tzwrd686/observe-one-replay-import.mjs:151",
+        "/tmp/ovf-f18-replay-observer-v2-tzwrd686/observe-one-replay-import.mjs:154",
+        "/tmp/ovf-f18-replay-observer-v2-tzwrd686/observe-one-replay-import.mjs:155"
+      ],
+      "result": "Body response listener is removed synchronously before counting/draining tasks. Late responses are status-only and cannot start body tasks or manifest writes. Every admitted task settles while Chromium is alive before browser close and final receipt serialization. Independent child static review agrees."
+    }
+  ],
+  "preservedConstraints": [
+    "Original readiness predicate with 60000 ms timeout and 20 ms polling remains unchanged.",
+    "One native Import replay attempt; no Play, End, seek or combat input.",
+    "Attempt count and observed replay mode now have separate fields.",
+    "All assets request/response/failure capture and console warning/error capture remain before navigation.",
+    "Actual manifest bytes and full readiness/state snapshot remain.",
+    "Original fixed pins and all 591 source/public/proof and 398 dist byte comparison code remain.",
+    "No product source modification, fallback, retry, feature/group/stage admission or root write."
+  ],
+  "remainingLimits": [
+    "Passing one fresh import does not explain the long-sequence failure.",
+    "Private ArtRuntime texture/frame maps remain unavailable.",
+    "Late responses after sealing explicitly lack body capture.",
+    "15-second body timeout records error and bounds admitted tasks; underlying response read is not canceled by Promise.race.",
+    "Root owns preview, runtime slot release, process supervision/cleanup and artifact retention."
+  ]
+}

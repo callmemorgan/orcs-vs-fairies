@@ -1,0 +1,7 @@
+Static review of observer candidate `68b161c6b5fc988a73198d51578ad7e9f3df17c20a311e35376cd71e432e4e57`. No execution or runtime authorization.
+
+Two corrections remain. [Candidate line 95](/tmp/ovf-f18-replay-observer-candidate-21d054qg/observe-one-replay-import.mjs:95) records served script/style identity without requiring it before the replay file input at line 110 and Import click at line 112. Initial executable responses must settle and match the frozen dist before that input. Artwork failures must remain diagnostic observations.
+
+The response callback at line 86 can append capture tasks while [line 127](/tmp/ovf-f18-replay-observer-candidate-21d054qg/observe-one-replay-import.mjs:127) drains only its initial promise batch. Browser close and receipt serialization at lines 128-130 can outrun late capture tasks. Seal response intake at a recorded boundary, then drain every admitted task while the browser is alive before writing completion.
+
+The original readiness predicate, 60-second timeout, 20 ms polling and one Import action are preserved. The candidate has no Play, End or seek input. It reads the current camera and all four readiness terms, tracks all same-origin assets, retains runtime manifest bytes and records console warnings/errors. Parsed receipt shapes contain 591 source/public/proof fingerprints and 398 dist fingerprints. The candidate has not run; byte binding is proposed code, not executed evidence. Root retains runtime admission and process ownership.

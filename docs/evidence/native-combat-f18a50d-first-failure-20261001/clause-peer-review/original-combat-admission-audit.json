@@ -1,0 +1,251 @@
+{
+  "schema": 1,
+  "reviewKind": "original-feature-admission",
+  "reviewer": {
+    "harness": "Codex",
+    "model": "OpenAI GPT-6.1 Sol",
+    "independent": true,
+    "subagentsUsed": false
+  },
+  "scope": {
+    "mode": "static-only",
+    "requestedFeatureIds": [2, 5, 7, 8],
+    "contextFeatureIds": [6],
+    "admit": [2, 5, 7, 8],
+    "hold": [6],
+    "newProofGatesRequired": false
+  },
+  "originalSource": {
+    "path": "/home/morgana/.codex/attachments/917bc3a6-a1e9-4a3e-b2eb-8682eb3c4ec4/pasted-text-1.txt",
+    "bytes": 8555,
+    "sha256": "2cd629293a1b8e04c56ecb1909edd284409b4687895519bd67b28e192f6fd948",
+    "features": {
+      "2": "Flanking bonuses: reward attacks against an enemy’s sides and rear.",
+      "5": "Directional shields: shield units protect troops standing behind them.",
+      "6": "Cover: rocks, ruins and buildings reduce incoming ranged damage.",
+      "7": "Siege friendly fire: careless artillery placement can hurt your own army.",
+      "8": "Cavalry charges: build impact through movement, with pikes stopping the charge."
+    }
+  },
+  "suppliedReports": [
+    {
+      "path": "/tmp/ovf-f18-ids2-5-6-7-static-ahaqurz8/assessment.md",
+      "bytes": 18333,
+      "sha256": "bc5faa208b5fae5284f578ae9698cee81d94edb483f6630cff4bfa07378097fc",
+      "hashMatchedAssignment": true
+    },
+    {
+      "path": "/tmp/ovf-f18-id8-combined-evidence-20261001-a35ds1nu/id8-combined-evidence-review.md",
+      "bytes": 17565,
+      "sha256": "a910ad0ceb253e151a64523ed7ca7b7fe9ceb708e51ff812d7a057e18ba0221d",
+      "hashMatchedAssignment": true
+    }
+  ],
+  "provenance": {
+    "nativeRun": {
+      "path": "/tmp/ovf-native-combat-f18a50d-retry-20261001-zssa25k5",
+      "runtimeCommit": "f18a50d904c57ae1652f157b946ebd39d8d8923c",
+      "checkerDocsCommit": "37bf0e794e7f62cf33347d2e92c739d593bf1cc4",
+      "saveVersion": 4,
+      "simulationRevision": "4.0.1",
+      "expectedBuildId": "5e49e689af13d4eef08c0760f904ad0bce2c2eebaa1144dea5d89cadecf310c0",
+      "receiptPath": "/tmp/ovf-native-combat-f18a50d-retry-20261001-zssa25k5/browser/browser-native-acceptance.json",
+      "receiptBytes": 304363,
+      "receiptSha256": "7c24b87e4a1d8ef89e6164e86a544b29c272a5d00f2cf8d2c604b681a2fbd3a4",
+      "checkCount": 84,
+      "completed": false,
+      "completeGroups": 0,
+      "groups": {},
+      "nativeHistoryRan": false,
+      "finalAssetGateRan": false,
+      "all39EncountersRemainOpen": true,
+      "firstStageFailure": "06-browser charge-stop-interrupted replay readiness timeout60000ms",
+      "sealedFileCount": 303,
+      "sealedTotalBytes": 94034440,
+      "failureState": {
+        "mode": "replay",
+        "tick": 0,
+        "paused": true,
+        "artLoaded": false
+      }
+    },
+    "historicalSuite": {
+      "path": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0",
+      "testedCommit": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+      "reportSha256": "8711be82822ba830200c91af9936e476c3db3617a6ce6b33089cf329da0590e5",
+      "testsSha256": "ced75e92e6e198d8bad063fc0e4b276bfd7ee1936bf1849830cafcd21f7a11a9",
+      "sourceBeforeSha256": "53a7006baf049eba955a8cb382ce6355ba3cb6b9e7816848363b386b82df7694",
+      "sourceAfterSha256": "53a7006baf049eba955a8cb382ce6355ba3cb6b9e7816848363b386b82df7694",
+      "commandExitCode": 0,
+      "inputIntegrityPassed": true,
+      "passed": true,
+      "testFiles": 157,
+      "testSuitesPassed": 377,
+      "testsPassed": 2920,
+      "testsFailed": 0
+    },
+    "unchangedCode": {
+      "gitReplaceObjectsDisabled": true,
+      "pathLimitedDiffEmpty": true,
+      "srcCoreTreeAtBothCommits": "d73253481ba0cb85afdf71bc09948a710981902f",
+      "testsTreeAtBothCommits": "dc095381fd75be2a6b54dc1d6d4bc9dfd733a488",
+      "blobsAtBothCommits": {
+        "src/core/tactics.ts": "b5052c62671aa875caa9215655683d40d2c8a5dd",
+        "src/core/simulation.ts": "66bd44db02798f07467f888ab1193b06b52f364d",
+        "tests/combat-tactics.test.ts": "30aa05a184aeff9446e0d578ec4ed3154bdbe362"
+      }
+    }
+  },
+  "features": [
+    {
+      "id": 2,
+      "decision": "admit",
+      "originalRequirementSatisfied": true,
+      "nativeEvidence": {
+        "receiptCheckIndices": [3, 7, 11],
+        "frontDamage": 12,
+        "sideDamage": 15,
+        "rearDamage": 18,
+        "targetFacing": 4,
+        "roundTripsAndReplayEndpointsRecorded": true
+      },
+      "historicalTest": {
+        "fullName": "combat tactics encounters retains held facing and resolves front, side and rear damage through real attacks",
+        "status": "passed",
+        "failureMessages": []
+      },
+      "source": [
+        "src/core/tactics.ts:94-98",
+        "src/core/simulation.ts:405"
+      ],
+      "limitation": "The native batch as a whole is incomplete; this decision uses the completed per-encounter observations retained before the later failure."
+    },
+    {
+      "id": 5,
+      "decision": "admit",
+      "originalRequirementSatisfied": true,
+      "nativeEvidence": {
+        "receiptCheckIndices": [17, 23, 29, 35, 40],
+        "frontProtectedDamage": 6.799999999999997,
+        "frontGuardEnergyAfter": 29.8,
+        "turnedDamage": 17,
+        "rearDamage": 17,
+        "bypassGuardEnergyAfter": 40,
+        "damageAfterDepletion": 17,
+        "roundTripsAndReplayEndpointsRecorded": true
+      },
+      "historicalTests": [
+        {
+          "fullName": "combat tactics encounters a frontal shield consumes guard energy; rear and turned shields leave the ally exposed",
+          "status": "passed"
+        },
+        {
+          "fullName": "combat tactics encounters shield support also protects an allied player, and depletion restores full damage",
+          "status": "passed"
+        }
+      ],
+      "source": [
+        "src/core/tactics.ts:112-123",
+        "src/core/simulation.ts:483"
+      ],
+      "limitation": "The native batch as a whole is incomplete; this decision uses the completed shield observations retained before the later failure."
+    },
+    {
+      "id": 6,
+      "decision": "hold",
+      "originalRequirementSatisfied": false,
+      "established": {
+        "uncoveredRangedDamage": 15,
+        "rockCoverDamage": 8.699999999999989,
+        "buildingCoverDamage": 8.699999999999989,
+        "damageAfterBuildingDestroyed": 15
+      },
+      "missing": "A ruin with simulation geometry that reduces incoming ranged damage and a passing behavior observation.",
+      "sourceFindings": [
+        "src/core/types.ts:18 has no ruin TerrainKind",
+        "src/core/tactics.ts:102-109 accepts only live completed buildings or rock terrain",
+        "scripts/acceptance/direction-defense-fixtures.ts:112 enumerates none, rock and building",
+        "tests/combat-tactics.test.ts:62-67 tests rock and building but no ruin",
+        "src/game/ArtRuntime.ts:40 contains ruin-pillar and ruin-ring presentation asset names only"
+      ],
+      "reason": "The original wording explicitly names ruins, so proving two of its three cover classes is incomplete."
+    },
+    {
+      "id": 7,
+      "decision": "admit",
+      "originalRequirementSatisfied": true,
+      "nativeEvidence": {
+        "receiptCheckIndices": [63, 69],
+        "enemyLossFriendlyFireOff": 25,
+        "allyLossFriendlyFireOff": 0,
+        "enemyLossFriendlyFireOn": 25,
+        "allyLossFriendlyFireOn": 19.599999999999994,
+        "impactTick": 82,
+        "roundTripsAndReplayEndpointsRecorded": true
+      },
+      "historicalTests": [
+        {
+          "fullName": "combat tactics encounters siege shell impact obeys friendlyFire=true and survives a mid-flight save",
+          "status": "passed"
+        },
+        {
+          "fullName": "combat tactics encounters siege shell impact obeys friendlyFire=false and survives a mid-flight save",
+          "status": "passed"
+        }
+      ],
+      "source": [
+        "src/core/simulation.ts:425-435"
+      ],
+      "interpretation": "The mechanic is available when the friendly-fire match rule is enabled; a rule that can disable it does not negate the feature.",
+      "limitation": "The native batch as a whole is incomplete; this decision uses the completed projectile observations retained before the later failure."
+    },
+    {
+      "id": 8,
+      "decision": "admit",
+      "originalRequirementSatisfied": true,
+      "nativeEvidence": {
+        "receiptCheckIndices": [73, 79],
+        "stationaryDamage": 15,
+        "movingChargeDistance": 4.899999999999992,
+        "movingDamage": 29.400000000000006,
+        "riderLossInBothNativeCases": 0,
+        "roundTripsAndReplayEndpointsRecorded": true,
+        "nativePikeCasesReached": false
+      },
+      "historicalTests": [
+        {
+          "fullName": "combat tactics encounters moving cavalry gains impact while stops and sharp turns lose the charge",
+          "status": "passed"
+        },
+        {
+          "fullName": "combat tactics encounters frontal braced pikes cancel charge and hurt the rider; a rear charge retains impact",
+          "status": "passed",
+          "assertions": {
+            "frontImpactApproximately": 17,
+            "frontRiderDamageGreaterThan": 10,
+            "frontChargeAfter": 0,
+            "rearImpactGreaterThanFrontTimes": 1.5,
+            "rearRiderDamage": 0
+          }
+        }
+      ],
+      "source": [
+        "src/core/tactics.ts:125-135",
+        "src/core/simulation.ts:419-421"
+      ],
+      "interpretation": "Stopping the charge means countering the charge mechanic: cancel its movement-built impact bonus, consume stored charge and damage the rider. The original sentence does not require a forced movement halt or timed immobilization.",
+      "limitation": "The pike clause is established by a recorded passing simulation test on byte-identical core and test code. The browser run failed before its native pike fixtures."
+    }
+  ],
+  "constraintsObserved": {
+    "buildsRun": false,
+    "testsRun": false,
+    "runtimeRun": false,
+    "browserRun": false,
+    "largeRawEvidenceRehashed": false,
+    "sourceTreeRehashed": false,
+    "sourceOrRootWrites": false,
+    "ledgerChanged": false,
+    "failedBatchRelabeled": false
+  }
+}

@@ -1,0 +1,7 @@
+The root retained every original file from the failed combat f18 run in the admitted 13 batches. The 303 raw files total 94,034,440 bytes. The unchanged seal and 19 cleanup/diagnosis files are separate. The import plan, independent retention review, clause reports, artwork diagnosis and both observer revisions are preserved with full-byte copy verification.
+
+Original features 2, 5, 7 and 8 are verified through the completed native observations and actual passing simulation assertions on unchanged core and test code. Root read the copied saves and checked their health, guard and charge values. The pike half of feature 8 is supported by the recorded passing core assertion; there is no mounted browser pike or forced movement-halt claim. Original feature 6 remains in progress because ruin cover lacks simulation geometry and behavior evidence.
+
+The full batch remains failed after 84 checks, with zero complete groups and all 39 encounters open. Stages 07 and 08 were not run. The first artwork-readiness failure and observer V1 findings remain intact. Corrected observer V2 passed static review and remains unexecuted; the artwork failure cause is not established.
+
+The clause peer report states GPT-6.1 Sol although the requested model override was GPT-5.6 Sol. That request does not establish different-family review. The original report attribution is preserved, and trail review is recorded separately.

@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "reviewedAt": "2026-10-02T00:16:09.866228+00:00",
+  "reviewedCandidateFiles": [
+    {
+      "path": "/tmp/ovf-f18-replay-observer-candidate-21d054qg/observe-one-replay-import.mjs",
+      "bytes": 12625,
+      "sha256": "68b161c6b5fc988a73198d51578ad7e9f3df17c20a311e35376cd71e432e4e57"
+    },
+    {
+      "path": "/tmp/ovf-f18-replay-observer-candidate-21d054qg/README.md",
+      "bytes": 4062,
+      "sha256": "8e4d4952ce4afad016ca7a8221d406b0a83d28e287db275b18f4e19dc392b124"
+    }
+  ],
+  "scope": "Static text/file/JSON reads only. No candidate execution, syntax check, browser, tests, module import or root/source/candidate edits. This review grants no runtime authorization.",
+  "status": "two-corrections-required-before-runtime-review",
+  "productPin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "proofPin": "f18a50d904c57ae1652f157b946ebd39d8d8923c",
+  "checkerDocsPin": "37bf0e794e7f62cf33347d2e92c739d593bf1cc4",
+  "artifactShapeChecks": {
+    "sourcePublicProofFingerprintCount": 591,
+    "distFingerprintCount": 398,
+    "freezeSourceFileFingerprintShapeValid": true,
+    "receiptPinsAgree": true,
+    "qualification": "Metadata shapes were read. Neither candidate nor its proposed runtime preflight was executed."
+  },
+  "findings": [
+    {
+      "title": "Executable identity must gate replay input",
+      "candidateLines": [
+        95,
+        105,
+        110,
+        112
+      ],
+      "detail": "frozenIdentityMatch for served script/CSS responses is recorded only. A mismatch or failed capture does not stop the replay import, so readinessPassed can be set on an unbound executable. The served HTML has an assertion, but associated executable/style assets do not.",
+      "correction": "After bounded capture settlement for initial production load and before replay file input, require successful captured declared JS/CSS responses and frozen identity equality. Preserve art failures/mismatches as diagnostic observations rather than broadening readiness."
+    },
+    {
+      "title": "Seal response intake before completion",
+      "candidateLines": [
+        86,
+        100,
+        127,
+        128,
+        130
+      ],
+      "detail": "Response events can append tasks while Promise.allSettled(assetPromises) waits its original batch. Newly appended bodies/errors/manifest writes may still be running when Chromium closes and the receipt is serialized. Perbody timeout does not seal intake.",
+      "correction": "Unregister the response intake at a recorded final capture boundary, drain all admitted promises while Chromium remains alive, then serialize the final completion/captureerrors. Alternately implement bounded stable-count drain plus explicit intake seal; do not allow untracked new tasks."
+    }
+  ],
+  "positiveChecks": [
+    "The ready predicate is identical to the original, including 60000 ms timeout and 20 ms polling.",
+    "Native input path contains one Import replay click and no Play, End, seek or combat action.",
+    "The initial menu match precedes the replay input, matching the existing application flow.",
+    "All same-origin /assets responses and failures are selected, including PNG and atlas JSON; console warning/error and pageerror callbacks are registered before navigation.",
+    "Actual manifest response bytes are retained unchanged with unique filenames.",
+    "Full observed state, current camera and readiness terms are read, with no private texture/frame hook claimed.",
+    "Preflight source/public/proof, dist and runtime comparisons use retained original hashes and pins; fresh output is external and owned port 5397 is fixed.",
+    "Admissions remain empty; no feature/group/stage promotion occurs."
+  ],
+  "completionLimits": [
+    "replayImports increment before click records an attempt, not successful admission. Successful replay mode and tick 0/paused checks supply admission evidence.",
+    "Promise.race records a body timeout but does not cancel underlying browser body work; browser close remains required after bounded collection.",
+    "Private frame/texture completeness conditions remain unobserved.",
+    "Passing one fresh import cannot explain the preceding long sequence failure.",
+    "Root owns sole-slot release, preview/process supervision, original stdout/stderr/exit receipts, cleanup and retention."
+  ]
+}
