@@ -1,0 +1,847 @@
+{
+  "schema": "feature63-r7-extraction-inspection-schema-guide-v1",
+  "status": "STATIC_REFERENCE_ONLY_NO_AUTHORIZATION",
+  "authority": {
+    "sourcePin": null,
+    "sourcePinOnlyFrom": "future generated actual R7 capture assignment.sourcePin",
+    "symbols": {
+      "P": "future actual R7 capture assignment.sourcePin, full 40 lowercase hex",
+      "M": "actual passing closed R7 capture result.matchId",
+      "L": "actual public/native R7 lobbyId"
+    },
+    "historicalInputsAreShapeOnly": true,
+    "historicalPinPrefixAndLineNumbersMustNotBeReused": true,
+    "rootOnlyOneShotPhases": [
+      "fresh closed raw custody/seal",
+      "closed extraction",
+      "approved-copy promotion",
+      "native audit"
+    ],
+    "operationsPerformed": "Only named static files were read; only this fresh external guide was written. No runtime/capture/checkpoint/profile/database access, extraction, promotion or audit."
+  },
+  "namedStaticSourceDescriptors": [
+    {
+      "path": "/tmp/feature63-root-extraction-candidate-r2-LSZWmJUg/extract-closed63.py",
+      "bytes": 54321,
+      "sha256": "fccd7ba02a92c2496b56699cb8fbb323f16cb2a817596093951b10a72446e7d8"
+    },
+    {
+      "path": "/tmp/feature63-r3-extraction-input-map-nfNB1jVK/field-map.json",
+      "bytes": 10414,
+      "sha256": "08f1483941731d719f8764bb8ecf5a86af33e640a55189a880637794c999843e"
+    },
+    {
+      "path": "/tmp/feature63-r3-extraction-input-map-nfNB1jVK/root-extraction-input-r3.pending.json",
+      "bytes": 3067,
+      "sha256": "5dfca2438ffceb1cc2a763caa0552d69aacf96ca3e0f91450da5b6dfcb5b1ce5"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/native-audit.py",
+      "bytes": 64185,
+      "sha256": "4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/run-minimal63.py",
+      "bytes": 54514,
+      "sha256": "054a652dff3c718fbc0d8b1093578a1e7b9c37badd9cde60c1e4f0f3572713f0"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-second-pre-match-failure-1257-20261001/static-schema-basis/post-extraction-promotion-procedure.json",
+      "bytes": 7389,
+      "sha256": "71903e536a64246c96ac038b374572150a4cb562e8174046e73aaa64f83cb73a"
+    }
+  ],
+  "descriptorShapes": {
+    "externalFile": {
+      "exactKeys": [
+        "path",
+        "bytes",
+        "sha256"
+      ],
+      "fields": {
+        "path": "canonical absolute path to the actual bound file",
+        "bytes": "integer complete byte count",
+        "sha256": "64 lowercase hexadecimal characters over complete bytes"
+      }
+    },
+    "bundleFile": {
+      "exactKeys": [
+        "file",
+        "bytes",
+        "sha256"
+      ],
+      "fields": {
+        "file": "literal bundle-relative filename",
+        "bytes": "integer complete byte count",
+        "sha256": "SHA-256 of original complete bytes"
+      }
+    },
+    "rawDatabase": {
+      "exactKeys": [
+        "path",
+        "bytes",
+        "sha256",
+        "device",
+        "inode"
+      ]
+    },
+    "bundleInventoryRow": {
+      "fields": [
+        "path",
+        "bytes",
+        "sha256",
+        "mode"
+      ],
+      "path": "unique canonical relative path",
+      "mode": "0444 (integer 292); sorted complete rows, no missing or extra physical files"
+    }
+  },
+  "firstExtractionInput": {
+    "schema": "feature63-root-closed-extraction-assignment-v1",
+    "fieldSet": [
+      "approved",
+      "assignedBy",
+      "auditor",
+      "buildBinding",
+      "captureAssignment",
+      "captureResult",
+      "closedRawReceipt",
+      "collector",
+      "collectorAssignment",
+      "collectorFiles",
+      "extractAuthorized",
+      "freshPrefix",
+      "helperSha256",
+      "nativeAuditAuthorized",
+      "nativeSchemaReview",
+      "outputRoot",
+      "ownedNativeLifetimeIndependentlyAdmitted",
+      "productVersion",
+      "publicDriver",
+      "publicFiles",
+      "publicProducer",
+      "rawDatabase",
+      "rootCustodyReceipt",
+      "rootExtractionAdmissionApproved",
+      "rootNativeLifetimeReceipt",
+      "schema",
+      "serverBuild",
+      "sourceInventory",
+      "sourcePin",
+      "sourceRoot"
+    ],
+    "requiredRootDisposition": {
+      "approved": true,
+      "assignedBy": "/root",
+      "extractAuthorized": true,
+      "ownedNativeLifetimeIndependentlyAdmitted": true,
+      "nativeAuditAuthorized": false,
+      "rootExtractionAdmissionApproved": false
+    },
+    "rebind": "Replace every historical pin/prefix/runtime/file descriptor with actual future R7 values; sourcePin comes only from R7 assignment. Copy actual source/build/script descriptors; serverBuild uses actual rts-server.js bytes row without mode.",
+    "collectorFiles": "collector-receipt.json, queries.ndjson, every actual contiguous native-wave-checkpoint-01..N.json; N=actual collector.rows length,1..4. Exact physical collector set and checkpoint rows must agree.",
+    "publicFiles": "Exactly the nine frozen public literals, complete unchanged bytes, total <=64 MiB.",
+    "pathRule": "Raw path is actual R7 PREFIX/server-data/server.sqlite at original capture path. outputRoot is fresh canonical private external path, absent before extraction, outside both checkouts.",
+    "preconditionReceipts": [
+      "Passing closed actual R7 capture result, no first failure or cleanup/protected-readback failure.",
+      "Separate root custody and independent native lifetime receipts, all bound to actual R7 M/P/raw identity; lifetime binds nonempty independent closure evidence.",
+      "Actual closed raw receipt has producerClosed/ownedProcessesClosed/rootSealed/sidecarsAbsent=true.",
+      "Native schema review binds P and frozen auditor digest; actual source/build/scripts match capture assignment."
+    ]
+  },
+  "exactExtractionOutputSet": {
+    "topLevelFiles": [
+      "selection-receipt.json",
+      "raw-verification-receipt.json",
+      "root-extraction-input.json",
+      "root-extraction-admission.json",
+      "extraction-result.json"
+    ],
+    "topLevelDirectories": [
+      "bundle"
+    ],
+    "bundlePublicFiles": [
+      "public-results.json",
+      "public-identities.json",
+      "public-windows.json",
+      "public-cleanup.json",
+      "public-match-identity.json",
+      "human-one-wire.ndjson",
+      "human-two-wire.ndjson",
+      "human-one-ui-actions.ndjson",
+      "human-two-ui-actions.ndjson"
+    ],
+    "bundleFixedNativeFiles": [
+      "match-row.json",
+      "native-checkpoint.json"
+    ],
+    "bundleCollectorFiles": "native-wave-checkpoint-01.json through native-wave-checkpoint-NN.json, contiguous NN=N actual collector rows (1..4).",
+    "bundleFrameFiles": "native-frame-01.json through native-frame-FF.json, contiguous FF=F selected frameRows (2..16), numbered by ascending frame tick.",
+    "bundleFixedReceiptFiles": [
+      "root-assignment.json",
+      "source-binding-receipt.json",
+      "closed-raw-receipt.json",
+      "collector-receipt.json",
+      "extraction-receipt.json"
+    ],
+    "bundleFileCountFormula": "16+N+F; exact helper-produced count depends only on authenticated actual collector and selected frame rows.",
+    "notCopiedIntoBundle": [
+      "queries.ndjson",
+      "selection-receipt.json",
+      "raw-verification-receipt.json",
+      "root-extraction-input.json",
+      "root-extraction-admission.json",
+      "extraction-result.json"
+    ],
+    "modeRule": "Helper output files mode0444; root/bundle directories private0700. All complete payloads remain byte-identical. Native and public TEXT are not normalized or compacted."
+  },
+  "generatedReceiptSchemas": [
+    {
+      "schema": "feature63-source-binding-v1",
+      "generatedFields": [
+        "schema",
+        "sourcePin",
+        "productVersion",
+        "allActualInputsAuthenticated",
+        "serverBuildSha256",
+        "inputs",
+        "collectorSourceInventorySha256",
+        "schemaReview",
+        "actualSourceInventory",
+        "nativeSchemaReview",
+        "actualBuildBinding"
+      ],
+      "helperLine": 204,
+      "file": "bundle/source-binding-receipt.json",
+      "rootChecks": [
+        "sourcePin=P; productVersion=4.0.2; allActualInputsAuthenticated=true.",
+        "schemaReview.status=approved; schemaReview.sourcePin=P; schemaReview.auditorSha256=frozen auditor digest.",
+        "Every source input has path,gitMode,gitBlob,bytes,sha256; required source input set complete and bound to actual source/build/schema receipts."
+      ]
+    },
+    {
+      "schema": "feature63-root-native-selection-v1",
+      "generatedFields": [
+        "schema",
+        "sourcePin",
+        "matchId",
+        "selection",
+        "selectedCandidateIndex",
+        "boundedDiscoveryQueries",
+        "inputAssignmentSha256",
+        "completeQualifyingHumanFramesRetained",
+        "truncated"
+      ],
+      "helperLine": 711,
+      "file": "selection-receipt.json",
+      "rootChecks": [
+        "sourcePin=P; matchId=M; inputAssignmentSha256=SHA256(original root-extraction-input.json bytes).",
+        "selectedCandidateIndex equals actual selected public candidate; selection.frameTicks sorted unique; selected native frames complete.",
+        "completeQualifyingHumanFramesRetained=true; truncated=false; boundedDiscoveryQueries retains exact query text, parameters and returnedRows."
+      ]
+    },
+    {
+      "schema": "feature63-root-raw-verification-v1",
+      "generatedFields": [
+        "schema",
+        "sourcePin",
+        "matchId",
+        "before",
+        "after",
+        "unchanged",
+        "closedOnly"
+      ],
+      "helperLine": 715,
+      "file": "raw-verification-receipt.json",
+      "rootChecks": [
+        "sourcePin=P; matchId=M; unchanged=true; closedOnly=true.",
+        "before equals after as the complete nine-field raw verification object, including mtimeNs and ctimeNs.",
+        "Its path/bytes/sha256/device/inode equal the actual original R7 rawDatabase descriptor; no write bits, linkCount=1, sidecars absent."
+      ]
+    },
+    {
+      "schema": "feature63-native-extraction-v1",
+      "generatedFields": [
+        "schema",
+        "sourcePin",
+        "sealId",
+        "matchId",
+        "lobbyId",
+        "closedOnly",
+        "rawUnchanged",
+        "noLivePrivateReadback",
+        "noReplay",
+        "nativeFiles",
+        "publicFiles",
+        "frameRows",
+        "waveCheckpointRows",
+        "candidateCheckpointFile",
+        "candidateWaveId",
+        "launchBeforeTick",
+        "launchAfterTick",
+        "queries",
+        "selectionReceipt",
+        "rawVerificationReceipt",
+        "rootCustodyReceipt",
+        "rootNativeLifetimeReceipt"
+      ],
+      "helperLine": 718,
+      "file": "bundle/extraction-receipt.json",
+      "rootChecks": [
+        "sourcePin=P; matchId=M; lobbyId=L; sealId=closedRaw.sealId.",
+        "closedOnly/rawUnchanged/noLivePrivateReadback/noReplay=true.",
+        "nativeFiles and publicFiles bind every complete literal payload; frameRows and waveCheckpointRows bind exact complete selections and ordinals.",
+        "candidateCheckpointFile/candidateWaveId and launchBeforeTick/launchAfterTick equal selection; bracket is adjacent four ticks.",
+        "queries bind the fixed match row and exact selected native frame ticks for M; selected-frame TEXT is not rewritten or truncated.",
+        "Selection/raw-verification/custody/lifetime descriptors bind the actual separate root receipts."
+      ]
+    },
+    {
+      "schema": "feature63-root-audit-assignment-v1",
+      "generatedFields": [
+        "schema",
+        "scope",
+        "sourcePin",
+        "productVersion",
+        "auditAuthorized",
+        "auditorSha256",
+        "publicProducerSha256",
+        "publicDriverSha256",
+        "sourceBindingReceipt",
+        "closedRawReceipt",
+        "extractionReceipt",
+        "collectorReceipt"
+      ],
+      "helperLine": 734,
+      "file": "bundle/root-assignment.json",
+      "rootChecks": [
+        "Exactly these 12 generated fields; scope=original-feature63-closed-native-composition; sourcePin=P; productVersion=4.0.2.",
+        "auditAuthorized=false in original extraction, true only in independently copied approved bundle after root approval.",
+        "auditor/publicProducer/publicDriver digests bind actual R7 bytes; four receipt descriptors use bundle-local file,bytes,sha256."
+      ]
+    },
+    {
+      "schema": "feature63-root-extraction-admission-v1",
+      "generatedFields": [
+        "schema",
+        "sourcePin",
+        "approved",
+        "closedFreshRawAuthenticated",
+        "completeSelectedTextAndQueryMetadataAuthenticated",
+        "matchId",
+        "auditorSha256",
+        "rootAssignmentSha256",
+        "bundlePath",
+        "bundleRecords",
+        "ownedNativeLifetimeIndependentlyAdmitted",
+        "rootNativeLifetimeReceipt",
+        "rootCustodyReceipt",
+        "captureResult",
+        "inputAssignmentSha256"
+      ],
+      "helperLine": 755,
+      "file": "root-extraction-admission.json",
+      "rootChecks": [
+        "sourcePin=P; matchId=M; approved=false in original extraction.",
+        "closedFreshRawAuthenticated/completeSelectedTextAndQueryMetadataAuthenticated/ownedNativeLifetimeIndependentlyAdmitted=true.",
+        "rootAssignmentSha256 binds original unapproved root assignment; bundlePath and complete bundleRecords bind original bundle.",
+        "inputAssignmentSha256 and original custody/lifetime/capture provenance stay unchanged on separate promotion."
+      ]
+    },
+    {
+      "schema": "feature63-root-extraction-result-v1",
+      "generatedFields": [
+        "schema",
+        "status",
+        "sourcePin",
+        "matchId",
+        "feature63Qualified",
+        "auditorExecuted",
+        "nativeBundle",
+        "nativeAuditAssignment",
+        "rootExtractionAdmission",
+        "rootAssignmentSha256MustBeAuthenticatedSeparatelyByRoot",
+        "rootAuditAuthorizationSupplied",
+        "rootAdmissionApprovalSupplied"
+      ],
+      "helperLine": 764,
+      "file": "extraction-result.json",
+      "rootChecks": [
+        "status=EXTRACTED_PENDING_ROOT_REVIEW; sourcePin=P; matchId=M; feature63Qualified=false; auditorExecuted=false.",
+        "rootAuditAuthorizationSupplied=false; rootAdmissionApprovalSupplied=false.",
+        "nativeAuditAssignment/rootExtractionAdmission descriptors and independently authenticated root-assignment digest equal actual output files."
+      ]
+    }
+  ],
+  "literalAndNativePayloadSchemas": [
+    {
+      "file": "root-extraction-input.json",
+      "schema": "feature63-root-closed-extraction-assignment-v1",
+      "rootCheck": "Byte-for-byte original concrete extraction assignment; hash equals original extraction anchor and all inputAssignmentSha256 fields."
+    },
+    {
+      "file": "bundle/closed-raw-receipt.json",
+      "schema": "feature63-closed-raw-v1",
+      "requiredFields": [
+        "schema",
+        "sourcePin",
+        "matchId",
+        "sealId",
+        "dbIdentity",
+        "rawBytes",
+        "rawSha256",
+        "producerClosed",
+        "ownedProcessesClosed",
+        "rootSealed",
+        "sidecarsAbsent"
+      ],
+      "rootCheck": "Literal original root receipt; P/M/raw identity and seal exact; closure/seal booleans true."
+    },
+    {
+      "file": "bundle/collector-receipt.json",
+      "schema": "feature63-passive-wave-collector-v1",
+      "requiredFields": [
+        "schema",
+        "sourcePin",
+        "matchId",
+        "status",
+        "failure",
+        "activeQuery",
+        "closed",
+        "readOnly",
+        "noFeedback",
+        "bounds",
+        "assignmentIdentity",
+        "reviewIdentity",
+        "dbIdentity",
+        "sourceInventory",
+        "publicMatchIdentity",
+        "rows",
+        "records",
+        "checkpointPayloadBytes"
+      ],
+      "rootCheck": "Literal original collector receipt; PASS, failure/activeQuery=null; closure/readOnly/noFeedback=true; complete contiguous rows1..N. Each row binds original checkpoint bytes, query/parameters, original generationText/configText and their hashes. Bounds/receipt/assignment/source/public identity all agree."
+    },
+    {
+      "file": "bundle/match-row.json",
+      "schema": "No schema wrapper; helper-generated metadata object",
+      "generatedFields": [
+        "id",
+        "lobby_id",
+        "config",
+        "configText",
+        "tick",
+        "checkpoint_tick",
+        "engine_hash",
+        "state_hash"
+      ],
+      "rootCheck": "id=M,lobby_id=L; parse original configText equals config; checkpoint_tick equals final native state.tick and tick>=checkpoint_tick; engine_hash=sourceBinding.serverBuildSha256; state_hash retains the original row field; the auditor checks SHA-256 syntax without recomputing it or verifying a row digest."
+    },
+    {
+      "file": "bundle/native-checkpoint.json and bundle/native-wave-checkpoint-NN.json",
+      "schema": "Native save envelope format=orcs-vs-fairies-save, version=4; state/runtime objects",
+      "rootCheck": "Retain original complete UTF-8 TEXT. Native config/state controllers[external,external,ai,ai],teams[0,0,1,1]; four players IDs0..3; annihilation,standardDefeat=true,sharedVision=true. Selected native checkpoint additionally authenticates runtime.aiWave, teamAI.coordinator wave, source-derived participant orders and public combat overlap."
+    },
+    {
+      "file": "bundle/native-frame-FF.json",
+      "schema": "Raw array of exactly four native owner views, each version=1; no schema wrapper",
+      "rootCheck": "Array positions/sides0..3; all ticks equal frameRows tick; all owner-view times equal; frameRows sorted ascending. Every overlapping human side0/1 view equals complete same-tick public received view, not just selected IDs/events."
+    },
+    {
+      "file": "bundle/public-results.json",
+      "schema": "feature63-public-result-v1",
+      "rootCheck": "P/M identity; publicCandidatePassed/cleanupPassed=true, feature63Qualified=false, nativeCompositionAuditRequired=true, firstFailure=null, errors/acquisitionFailures empty; producerSha256 and publicProducerSha256 equal native assignment publicProducerSha256; publicDriverSha256 equals native assignment publicDriverSha256; selectedCandidateIndex equals public-windows index."
+    },
+    {
+      "file": "bundle/public-identities.json",
+      "schema": "feature63-public-identities-v1",
+      "rootCheck": "P/M/L and two normal guest identity/context/hello records; teams/controllers exact."
+    },
+    {
+      "file": "bundle/public-match-identity.json",
+      "schema": "feature63-public-match-identity-v1",
+      "rootCheck": "P/M/L; expectedControllers[external,external,ai,ai],expectedTeams[0,0,1,1]; equals collector assignment/receipt publicMatchIdentity descriptor."
+    },
+    {
+      "file": "bundle/public-windows.json",
+      "schema": "feature63-public-windows-v1",
+      "rootCheck": "M identity, with P bound by the enclosing authenticated receipt chain rather than a required sourcePin field; selectedCandidateIndex valid and same as result/selection receipt; selected window0<end-start<=400,aligned4ticks,maxTicks400; continuous received frames,start-4 preceding frame,live human HQs; original positive predicate unchanged."
+    },
+    {
+      "file": "bundle/public-cleanup.json",
+      "schema": "feature63-public-cleanup-v1",
+      "rootCheck": "M,exactly two closed contexts; browserClosed/allOwnedBrowsersClosed=true,failures/captureFailures empty."
+    },
+    {
+      "file": "bundle/human-one-wire.ndjson and bundle/human-two-wire.ndjson",
+      "schema": "Each row feature63-public-wire-v1",
+      "rootCheck": "Complete literal stream; profile exact; ordinals1..N without gaps/duplicates; one authenticated socket/profile and matching M/role/player side0/1/generation. payloadType=string,binaryBase64=null; raw original payload parsed without rewritten evidence."
+    },
+    {
+      "file": "bundle/human-one-ui-actions.ndjson and bundle/human-two-ui-actions.ndjson",
+      "schema": "Each row feature63-public-ui-action-v1",
+      "rootCheck": "Complete genuine normal UI lifecycle; action IDs bind began/completed/accepted records, real selection/minimap/key/canvas steps, selected actors and exact command/ack evidence."
+    }
+  ],
+  "rawBeforeAfterAndProvenanceEqualities": [
+    "All future receipt sourcePin values == P from actual R7 capture assignment; all matchId values == M from passing closed capture result.",
+    "captureResult.closedFreshDatabaseIdentity == {path,device,inode} from extractionInput.rawDatabase.",
+    "closedRaw.dbIdentity == collectorReceipt.dbIdentity == collectorAssignment.freshDatabase device/inode; closedRaw.rawBytes/rawSha256 == rawDatabase.bytes/sha256.",
+    "custody.rawDatabase == input.rawDatabase; custody.captureResult == input.captureResult; custody.closedRawReceipt == input.closedRawReceipt.",
+    "lifetime.captureResult == input.captureResult; lifetime.ownedNativeLifetimeIndependentlyAdmitted == input boolean == true, with independent closure descriptors.",
+    "rawVerification.before == rawVerification.after for all path,bytes,sha256,device,inode,mtimeNs,ctimeNs,mode,linkCount fields; these first five equal original R7 raw descriptor. No sidecars, single regular inode, no write bits.",
+    "input.sourceInventory == captureAssignment.sourceBinding == collectorAssignment.sourceInventory == collectorReceipt.sourceInventory.",
+    "input.buildBinding/publicProducer/collector/auditor == corresponding actual capture descriptors; input.publicDriver.sha256 == captureAssignment.wrapperSha256.",
+    "collectorReceipt.assignmentIdentity == input.collectorAssignment; collectorReceipt.reviewIdentity == collectorAssignment.reviewReceipt.",
+    "collectorReceipt.publicMatchIdentity == collectorAssignment.publicMatchIdentity == input.publicFiles[public-match-identity.json].",
+    "SHA256(root-extraction-input.json literal bytes) == selectionReceipt.inputAssignmentSha256 == original admission.inputAssignmentSha256.",
+    "extraction nativeFiles/publicFiles file-byte-hash descriptors == actual complete output payloads; frameRows/waveCheckpointRows == actual native literal selections and collector ordinals.",
+    "selected native frame human owner views == public full views at the same tick; native row M/L == public M/L."
+  ],
+  "nativePublicCommandAndCombatIdentityChecks": [
+    "For each accepted ordinary direct unqueued attackMove: sent command and received accepted commandAck are on the same authenticated profile/socket; command ordinal<ack ordinal; clientSeq matches entry/command/ack; appliedTick matches and <= fight start; no ack reason.",
+    "Eligibility frame ordinal is before command ordinal; eligibility tick is before appliedTick; each exact commanded ID is an eligible living owned unit with matching owner/side, excluding workers, illusions, caravans and uncrewed siege actors in that public frame.",
+    "Genuine UI action accepted record has the same uiActionId, commandWireOrdinal, ackWireOrdinal, clientSeq, exact command/ack, selected IDs and real UI steps.",
+    "Public fight frames cover start..end every4ticks plus preceding start-4, frameSeq=tick,M/profile/socket exact; both human sides remain noneliminated with living completed HQs.",
+    "Selected native wave participants cover AI owners2and3, no duplicate IDs; at least four participant IDs collectively and retained launch/checkpoint provenance. Adjacent launch frames differ4ticks, bound both-human HQ survival, and map shared20Hz aiWave clock to actual launch tick.",
+    "Qualifying positive human attacks occur after committed launch, source is eligible commanded human owner0or1, target is authenticated participant of the selected coordinated native wave. Source-owner union[0,1],target-owner union[2,3],event tick within original<=400tick public fight window.",
+    "Each qualifying event eventId/tick/side/source/target/amount and complete same-frame owner view match public received wire and native selected frame identities; no replay, guessed membership or public appearance substitutes for native participant authentication."
+  ],
+  "unchangedBudgets": {
+    "nativeLiteralTotalBytes": 8388608,
+    "ninePublicLiteralTotalBytes": 67108864,
+    "fiveAuditorReceiptAggregateBytes": 1048576,
+    "rawHelperMaximumBytes": 1073741824,
+    "selectedNativeFrameCount": [
+      2,
+      16
+    ],
+    "actualCollectorCheckpointCount": [
+      1,
+      4
+    ]
+  },
+  "approvedCopyPromotion": [
+    "Root preserves original unapproved extraction output and inventories exact filenames/bytes/SHA256/modes. No in-place approval or rerun.",
+    "Root independently byte-copies entire bundle into one fresh canonical private external directory outside both checkouts; no symlinks or hardlinks; authenticate every copied original byte.",
+    "Root replaces only copied bundle/root-assignment.json: auditAuthorized false->true; preserve every other exact12-field value/descriptor. File remains0444; compute complete new bytes/SHA256.",
+    "Root inventories approved copied bundle completely. All rows except root-assignment.json equal original inventory, all modes0444. Promotion documents stay outside copied bundle.",
+    "Root creates a fresh approved external rootExtractionAdmission changing only approved=true,bundlePath=new copy,rootAssignmentSha256=new assignment digest,bundleRecords=new complete inventory. Retain actual R7 P/M/auditor/custody/lifetime/capture/inputAssignmentSha256 provenance.",
+    "Root issues separately approved audit-phase wrapper assignment using actual R7 bindings, approved copy, fresh admission, actual copied root assignment descriptor and a separately supplied SHA256 anchor. Root alone invokes audit once after all concrete conditions pass."
+  ],
+  "auditWrapperAssignment": {
+    "schema": "feature63-dedicated-wrapper-assignment-v1",
+    "requiredTopLevelFields": [
+      "schema",
+      "approved",
+      "assignedBy",
+      "phase",
+      "sourceRoot",
+      "freshPrefix",
+      "sourcePin",
+      "productVersion",
+      "wrapperSha256",
+      "exclusiveHeavyApproval",
+      "protectedProcess",
+      "protectedListenerSockets",
+      "sourceBinding",
+      "buildBinding",
+      "testedBuildId",
+      "testedBuildReceipt",
+      "reviewReceipt",
+      "publicProducer",
+      "collector",
+      "auditor",
+      "nodeExecutable",
+      "pythonExecutable",
+      "browserBinding",
+      "captureResult",
+      "rootExtractionAdmission",
+      "nativeAuditAssignment",
+      "nativeBundle"
+    ],
+    "requiredFieldCount": 27,
+    "keyValidationQualification": "Wrapper requires these fields through guard/protected/audit, but does not enforce an exact-key allowlist; this is the full required audit shape, not a new rejection rule.",
+    "symbolicShapeNotAnExecutableAssignment": {
+      "schema": "feature63-dedicated-wrapper-assignment-v1",
+      "approved": "<true only after separate root audit approval>",
+      "assignedBy": "/root",
+      "phase": "audit",
+      "sourceRoot": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+      "freshPrefix": "work/feature63-human-wave-composition-r7",
+      "sourcePin": "<future actual R7 capture assignment.sourcePin>",
+      "productVersion": "4.0.2",
+      "wrapperSha256": "<actual reviewed R7 wrapper SHA-256>",
+      "exclusiveHeavyApproval": {
+        "approved": "<true only from root>",
+        "holder": "/root/ai_modes",
+        "token": "<root token of at least 16 characters, equal browser binding token>",
+        "validUntil": "<ISO timestamp strictly more than 510 seconds after audit guard time>"
+      },
+      "protectedProcess": {
+        "pid": "<actual R7 protected identity; wrapper expects integer 1063>",
+        "startTicks": "<actual R7 protected identity; wrapper expects integer 874>",
+        "executable": "<actual canonical executable string>",
+        "cwd": "/home/morgana/Projects/orcs-vs-Fairies",
+        "argv": [
+          "<actual argument strings>"
+        ]
+      },
+      "protectedListenerSockets": [
+        "<actual nonempty 4173 listener socket identity strings>"
+      ],
+      "sourceBinding": {
+        "path": "canonical absolute path to the actual bound file",
+        "bytes": "integer complete byte count",
+        "sha256": "64 lowercase hexadecimal characters over complete bytes"
+      },
+      "buildBinding": {
+        "path": "canonical absolute path to the actual bound file",
+        "bytes": "integer complete byte count",
+        "sha256": "64 lowercase hexadecimal characters over complete bytes"
+      },
+      "testedBuildId": "<actual R7 tested build ID>",
+      "testedBuildReceipt": {
+        "path": "canonical absolute path to the actual bound file",
+        "bytes": "integer complete byte count",
+        "sha256": "64 lowercase hexadecimal characters over complete bytes"
+      },
+      "reviewReceipt": {
+        "path": "canonical absolute path to the actual bound file",
+        "bytes": "integer complete byte count",
+        "sha256": "64 lowercase hexadecimal characters over complete bytes"
+      },
+      "publicProducer": {
+        "path": "canonical absolute path to the actual bound file",
+        "bytes": "integer complete byte count",
+        "sha256": "64 lowercase hexadecimal characters over complete bytes"
+      },
+      "collector": {
+        "path": "canonical absolute path to the actual bound file",
+        "bytes": "integer complete byte count",
+        "sha256": "64 lowercase hexadecimal characters over complete bytes"
+      },
+      "auditor": {
+        "path": "canonical absolute path to the actual bound file",
+        "bytes": "integer complete byte count",
+        "sha256": "64 lowercase hexadecimal characters over complete bytes"
+      },
+      "nodeExecutable": {
+        "path": "canonical absolute path to the actual bound file",
+        "bytes": "integer complete byte count",
+        "sha256": "64 lowercase hexadecimal characters over complete bytes"
+      },
+      "pythonExecutable": {
+        "path": "canonical absolute path to the actual bound file",
+        "bytes": "integer complete byte count",
+        "sha256": "64 lowercase hexadecimal characters over complete bytes"
+      },
+      "browserBinding": {
+        "path": "canonical absolute path to the actual bound file",
+        "bytes": "integer complete byte count",
+        "sha256": "64 lowercase hexadecimal characters over complete bytes"
+      },
+      "captureResult": {
+        "path": "canonical absolute path to the actual bound file",
+        "bytes": "integer complete byte count",
+        "sha256": "64 lowercase hexadecimal characters over complete bytes"
+      },
+      "rootExtractionAdmission": {
+        "path": "canonical absolute path to the actual bound file",
+        "bytes": "integer complete byte count",
+        "sha256": "64 lowercase hexadecimal characters over complete bytes"
+      },
+      "nativeAuditAssignment": {
+        "path": "canonical absolute path to the actual bound file",
+        "bytes": "integer complete byte count",
+        "sha256": "64 lowercase hexadecimal characters over complete bytes"
+      },
+      "nativeBundle": "<fresh approved copied external bundle canonical path>"
+    },
+    "descriptorQualification": "Wrapper bound() accepts bytes as optional; include actual bytes in every concrete descriptor. Exact3-field descriptor objects are required by the extraction helper/native bundle contracts.",
+    "externalAnchor": "SHA256(complete actual fresh audit wrapper assignment bytes) must equal separately root-supplied OVF_FEATURE63_WRAPPER_ASSIGNMENT_SHA256.",
+    "guardConditions": [
+      "Owned checkout/prefix match hard R7 wrapper constants; owned HEAD=P and tracked tree clean, checked only by root at execution.",
+      "Actual source/build/tested-build/review/browser/script/executable bindings still authenticate P and intended4.0.2 bytes.",
+      "Protected process/listener invariants and current approved exclusive slot hold; browserBinding.exclusiveSlotToken=slot.token. Static source expects protected PID1063/startTicks874/primary cwd; no live condition was observed by this guide.",
+      "CaptureResult is actual closed PASS at P; no listeners5373or5374 at audit time; approved extraction admission binds M/P/frozen auditor/independent lifetime.",
+      "PREFIX/native-audit does not exist; wrapper creation prohibits a second invocation. Native audit max60seconds, complete audit output cap2MiB; automatic retries0."
+    ]
+  },
+  "promotionAuditEqualityChain": [
+    "SHA256(approvedBundle/root-assignment.json) == auditWrapper.nativeAuditAssignment.sha256 == freshApprovedAdmission.rootAssignmentSha256.",
+    "freshApprovedAdmission.bundlePath == auditWrapper.nativeBundle == approvedBundle canonical path.",
+    "freshApprovedAdmission.bundleRecords == complete actual approvedBundle physical inventory.",
+    "SHA256(freshApprovedAdmission bytes) == auditWrapper.rootExtractionAdmission.sha256.",
+    "SHA256(complete fresh audit wrapper assignment bytes) == separate OVF_FEATURE63_WRAPPER_ASSIGNMENT_SHA256 anchor.",
+    "wrapper forwards SHA256(approved root-assignment bytes) as auditor --assignment-sha256; native root assignment exact12fields and auditAuthorized=true."
+  ],
+  "sourceReferences": [
+    {
+      "path": "/tmp/feature63-root-extraction-candidate-r2-LSZWmJUg/extract-closed63.py",
+      "startLine": 566,
+      "endLine": 659
+    },
+    {
+      "path": "/tmp/feature63-root-extraction-candidate-r2-LSZWmJUg/extract-closed63.py",
+      "startLine": 664,
+      "endLine": 770
+    },
+    {
+      "path": "/tmp/feature63-root-extraction-candidate-r2-LSZWmJUg/extract-closed63.py",
+      "startLine": 456,
+      "endLine": 550
+    },
+    {
+      "path": "/tmp/feature63-root-extraction-candidate-r2-LSZWmJUg/extract-closed63.py",
+      "startLine": 244,
+      "endLine": 319
+    },
+    {
+      "path": "/tmp/feature63-root-extraction-candidate-r2-LSZWmJUg/extract-closed63.py",
+      "startLine": 382,
+      "endLine": 451
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/native-audit.py",
+      "startLine": 349,
+      "endLine": 405
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/native-audit.py",
+      "startLine": 430,
+      "endLine": 513
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/native-audit.py",
+      "startLine": 615,
+      "endLine": 665
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/native-audit.py",
+      "startLine": 748,
+      "endLine": 925
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/run-minimal63.py",
+      "startLine": 289,
+      "endLine": 380
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/run-minimal63.py",
+      "startLine": 856,
+      "endLine": 920
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/native-audit.py",
+      "startLine": 700,
+      "endLine": 709
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/native-audit.py",
+      "startLine": 938,
+      "endLine": 963
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/run-minimal63.py",
+      "startLine": 393,
+      "endLine": 397
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/native-audit.py",
+      "startLine": 270,
+      "endLine": 284
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/native-audit.py",
+      "startLine": 446,
+      "endLine": 450
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/native-audit.py",
+      "startLine": 737,
+      "endLine": 741
+    }
+  ],
+  "finalQualification": "This is a static schema guide, not an approved extraction input, admission, promotion or audit assignment. No future source pin, capture pass, raw closure/lifetime, native wave or feature qualification is asserted. Original criteria, fixed payload sets and budgets remain unchanged.",
+  "normalAuditOutput": {
+    "scope": "Static normal wrapper audit output after the one-shot auditor starts and finalization completes. A guard failure before output creation or a finalization exception may leave no directory or partial files; preserve any original outputs and do not retry.",
+    "directory": "actual R7 freshPrefix/native-audit",
+    "files": [
+      {
+        "file": "one-shot-admission.json",
+        "schema": "feature63-audit-one-shot-v1",
+        "generatedFields": [
+          "schema",
+          "at",
+          "sourcePin",
+          "rootAssignmentSha256",
+          "auditorSha256",
+          "automaticRetries"
+        ],
+        "rootCheck": "sourcePin=P; root assignment and auditor digests equal admitted values; automaticRetries=0."
+      },
+      {
+        "file": "driver-events.ndjson",
+        "schema": "No schema wrapper; each literal JSON row has at/action plus event-specific values.",
+        "rootCheck": "Keep complete wrapper-produced event bytes and authenticate them with the output inventory."
+      },
+      {
+        "file": "native-audit.json",
+        "schema": "feature63-closed-native-audit-v1",
+        "source": "Complete original native auditor stdout bytes, renamed from native-audit.stdout.",
+        "initialFields": [
+          "schema",
+          "status",
+          "passed",
+          "qualificationClaim",
+          "failures",
+          "sourcePin",
+          "sqliteOpened",
+          "databaseContentHashed",
+          "runtimeOrReplayRun",
+          "checksUseAssertions"
+        ],
+        "passingValues": {
+          "status": "closed-native-composition-pass-pending-root-disposition",
+          "passed": true,
+          "qualificationClaim": false,
+          "failures": [],
+          "sourcePin": "P",
+          "sqliteOpened": false,
+          "databaseContentHashed": false,
+          "runtimeOrReplayRun": false,
+          "checksUseAssertions": false
+        },
+        "additionalOutput": "Auditor adds authenticated native/public evidence, check booleans, inputIdentities and inputByteTotals when reached. A passing report does not grant feature qualification."
+      },
+      {
+        "file": "native-audit.stderr.txt",
+        "schema": "Literal original auditor stderr bytes; no JSON schema.",
+        "source": "Renamed from native-audit.stderr; preserve complete bytes."
+      },
+      {
+        "file": "driver-result.json",
+        "schema": "feature63-audit-driver-result-v1",
+        "generatedFields": [
+          "schema",
+          "sourcePin",
+          "status",
+          "firstFailure",
+          "auditorExitCode",
+          "nativeAuditInvocations",
+          "protectedFinalReadback",
+          "finishedAt"
+        ],
+        "rootCheck": "P; PASS requires firstFailure=null, auditorExitCode=0, nativeAuditInvocations=1 and protectedFinalReadback.status=PASS. Failure status is FAIL_NO_RETRY."
+      }
+    ],
+    "limits": {
+      "auditorInvocations": 1,
+      "automaticRetries": 0,
+      "auditorWallSeconds": 60,
+      "completeOutputBytes": 2097152
+    },
+    "outputBudgetQualification": "Wrapper checks all current output files before finishing and then includes driver-result bytes in the complete output budget. If it exceeds the cap, preserve all original bytes and report failure."
+  }
+}

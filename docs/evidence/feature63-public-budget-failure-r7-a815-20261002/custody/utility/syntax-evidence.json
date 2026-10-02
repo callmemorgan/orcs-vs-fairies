@@ -1,0 +1,47 @@
+{
+  "schema": "feature63-r7-custody-utility-syntax-evidence-v1",
+  "status": "PASS_AST_ONLY_CANDIDATE_UNEXECUTED",
+  "candidate": {
+    "path": "/tmp/feature63-r7-custody-utility.ggy3gNvB/fresh-r7-custody.py",
+    "bytes": 39374,
+    "sha256": "da53c2865998eb6a6851eeb99a4b7e3cae85ef0b474baffc90059a5c5623e824",
+    "mode": "0644"
+  },
+  "expectationSchema": {
+    "path": "/tmp/feature63-r7-custody-utility.ggy3gNvB/expectation-schema.json",
+    "bytes": 3719,
+    "sha256": "18d1444377e49c14120e7a9c399459de54e5757a889599a24ca4ef4b2c7862f2",
+    "mode": "0644"
+  },
+  "validation": {
+    "pythonAstParsed": true,
+    "candidateImported": false,
+    "candidateExecuted": false,
+    "assertNodeCount": 0,
+    "sqliteImported": false,
+    "sourcePinLiteralPresent": false,
+    "r6PinOrPrefixLiteralPresent": false,
+    "firstMainFilesystemMutation": {
+      "line": 569,
+      "call": "os.fchmod"
+    },
+    "holderAndSidecarGatesBeforeFirstMutation": true,
+    "outputCreationAfterStableSealAndHash": true,
+    "expectationJsonValidated": true
+  },
+  "heldActions": {
+    "expectationCreated": false,
+    "runtimeRead": false,
+    "processInspected": false,
+    "databaseRead": false,
+    "profileRead": false,
+    "nativeCheckpointRead": false,
+    "rawModeChanged": false,
+    "rawLinkCreated": false,
+    "custodyOutputCreated": false,
+    "repositoryWritten": false
+  },
+  "cli": "python /tmp/feature63-r7-custody-utility.ggy3gNvB/fresh-r7-custody.py EXPECTATION_JSON EXPECTATION_SHA256",
+  "sourcePin": null,
+  "sourcePinRule": "The future source pin exists only in the root-filled post-capture expectation and must equal the generated R7 capture assignment pin."
+}

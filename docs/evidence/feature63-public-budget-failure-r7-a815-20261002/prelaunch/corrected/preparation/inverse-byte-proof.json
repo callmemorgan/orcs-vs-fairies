@@ -1,0 +1,26 @@
+{
+  "candidateExecutedOrImported": false,
+  "changedLines": [
+    231
+  ],
+  "corrected": {
+    "bytes": 41418,
+    "path": "/tmp/ovf-feature63-r7-prelaunch-octal-correction-architecture-mkuAdGVP/authenticate-prelaunch-r7.py",
+    "sha256": "ca264de0ab515fa7c916a749a09d3b35b54ffbfccb50c7f8dd6a66db066657d0"
+  },
+  "diffHunks": 1,
+  "lineCountUnchanged": true,
+  "newExpression": "re.fullmatch('(?:0o)?0?[0-7]{3,4}', permission)",
+  "newExpressionOccurrencesInCorrected": 1,
+  "oldExpression": "re.fullmatch('0?[0-7]{3,4}', permission)",
+  "oldExpressionOccurrencesInOriginal": 1,
+  "original": {
+    "bytes": 41411,
+    "path": "/tmp/ovf-feature63-r7-prelaunch-preparation-architecture-Ey24e3td/authenticate-prelaunch-r7.py",
+    "sha256": "6e1bb976f414f4575ac193429285313a534cb3809ecafb9967281dd0b780414a"
+  },
+  "otherByteChanges": false,
+  "qualification": "Source substitution and inverse-byte proof only; no runtime authentication was performed.",
+  "reversingSingleSubstitutionReproducesOriginalBytes": true,
+  "schema": "feature63-r7-prelaunch-octal-prefix-inverse-byte-proof-v1"
+}

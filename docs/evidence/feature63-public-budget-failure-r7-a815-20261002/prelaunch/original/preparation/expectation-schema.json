@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The checker also requires canonical paths, same binding-directory parent for all four generated descriptors, three distinct private UID-owned directories, empty control/report directories, UID-owned expectation mode0400 or0600, and CLI-pinned expectation SHA-256.",
+  "properties": {
+    "assignment": {
+      "additionalProperties": false,
+      "properties": {
+        "bytes": {
+          "maximum": 4194304,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "mode": {
+          "const": 420
+        },
+        "path": {
+          "pattern": "^/tmp/ovf-root-feature63-r7-bindings-[A-Za-z0-9_-]+/capture-assignment\\.json$",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "bytes",
+        "sha256",
+        "mode"
+      ],
+      "type": "object"
+    },
+    "bindingDirectory": {
+      "pattern": "^/tmp/ovf-root-feature63-r7-bindings-[A-Za-z0-9_-]+$",
+      "type": "string"
+    },
+    "controlDirectory": {
+      "pattern": "^/tmp/ovf-feature63-r7-capture-control-[A-Za-z0-9_-]+$",
+      "type": "string"
+    },
+    "disposition": {
+      "additionalProperties": false,
+      "properties": {
+        "bytes": {
+          "maximum": 4194304,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "mode": {
+          "const": 420
+        },
+        "path": {
+          "pattern": "^/tmp/ovf-root-feature63-r7-bindings-[A-Za-z0-9_-]+/root-capture-disposition\\.json$",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "bytes",
+        "sha256",
+        "mode"
+      ],
+      "type": "object"
+    },
+    "launcher": {
+      "additionalProperties": false,
+      "properties": {
+        "bytes": {
+          "maximum": 4194304,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "mode": {
+          "const": 384
+        },
+        "path": {
+          "pattern": "^/tmp/ovf-root-feature63-r7-bindings-[A-Za-z0-9_-]+/launch-capture\\.r7\\.py$",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "bytes",
+        "sha256",
+        "mode"
+      ],
+      "type": "object"
+    },
+    "launcherTemplate": {
+      "const": {
+        "bytes": 19356,
+        "mode": 384,
+        "path": "/tmp/ovf-feature63-static-prep-r3-zsttudqb/independent-launcher/launch-capture.r3.template.py",
+        "sha256": "1b99137e822c004361ee4ff1906f10f4284453312914092441666dd721f0feb3"
+      }
+    },
+    "r7StaticReview": {
+      "const": {
+        "bytes": 10341,
+        "mode": 420,
+        "path": "/tmp/ovf-feature63-r7-final-static-independent-review-upsx1DQX/review.json",
+        "sha256": "9be9b64bdd2a5637bed71ad6d8a36423b0e4242c3f1bd9afe519f172f3c9bd53"
+      }
+    },
+    "readback": {
+      "additionalProperties": false,
+      "properties": {
+        "bytes": {
+          "maximum": 4194304,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "mode": {
+          "const": 420
+        },
+        "path": {
+          "pattern": "^/tmp/ovf-root-feature63-r7-bindings-[A-Za-z0-9_-]+/root-binding-readback\\.json$",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "bytes",
+        "sha256",
+        "mode"
+      ],
+      "type": "object"
+    },
+    "reportDirectory": {
+      "pattern": "^/tmp/ovf-feature63-r7-prelaunch-report-[A-Za-z0-9_-]+$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "feature63-r7-root-prelaunch-expectation-v1"
+    },
+    "sourcePin": {
+      "pattern": "^[0-9a-f]{40}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "sourcePin",
+    "bindingDirectory",
+    "controlDirectory",
+    "reportDirectory",
+    "readback",
+    "assignment",
+    "launcher",
+    "disposition",
+    "r7StaticReview",
+    "launcherTemplate"
+  ],
+  "title": "Root R7 prelaunch expectation",
+  "type": "object"
+}

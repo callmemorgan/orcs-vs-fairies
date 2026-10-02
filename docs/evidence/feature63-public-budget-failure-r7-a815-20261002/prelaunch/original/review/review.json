@@ -1,0 +1,164 @@
+{
+  "actualProviderIdentity": "unverified",
+  "blockers": [],
+  "candidate": {
+    "assertNodeCount": 0,
+    "bytes": 41411,
+    "lines": 724,
+    "mode": 256,
+    "path": "/tmp/ovf-feature63-r7-prelaunch-preparation-architecture-Ey24e3td/authenticate-prelaunch-r7.py",
+    "sha256": "6e1bb976f414f4575ac193429285313a534cb3809ecafb9967281dd0b780414a",
+    "syntaxParsedWithoutExecution": true
+  },
+  "candidateExecuted": false,
+  "candidateImported": false,
+  "claudeUsed": false,
+  "currentBindingControlOrReportStateInspected": false,
+  "databaseOrProfileAccessed": false,
+  "executionDisposition": {
+    "candidateExecutionAdmitted": true,
+    "candidateExecutionCountAdmitted": 1,
+    "captureAuthorizedByThisReview": false,
+    "requiredCandidateSha256": "6e1bb976f414f4575ac193429285313a534cb3809ecafb9967281dd0b780414a",
+    "requiredExpectationSha256": "8ae5a1a4bb745a70d57515e92197a9911b6409c765db3b13857017410f204235",
+    "requiredInvocationConditions": [
+      "Use the reviewed Python executable without -O or -OO.",
+      "Remove PYTHONOPTIMIZE from the environment.",
+      "Execute the exact reviewed candidate path with the expectation path and expectation SHA-256 as its only two arguments.",
+      "Reauthenticate the candidate exact bytes immediately before execution."
+    ],
+    "runtimeOrCaptureResultPredicted": false
+  },
+  "preparationPacket": {
+    "allManifestArtifactPathsBytesDigestsAndModesMatch": true,
+    "companions": [
+      {
+        "bytes": 6682,
+        "mode": 256,
+        "path": "/tmp/ovf-feature63-r7-prelaunch-preparation-architecture-Ey24e3td/CLI-and-schema.md",
+        "sha256": "0d7fc6933310ed04ba81e7c046cf464bde2374b2d9574b865b28ab4218f11ec2"
+      },
+      {
+        "bytes": 4376,
+        "mode": 256,
+        "path": "/tmp/ovf-feature63-r7-prelaunch-preparation-architecture-Ey24e3td/expectation-schema.json",
+        "sha256": "b4797a20a11d4ec8d488b46612e1e747b91bd9ea037aafc21337777f5294dcc7"
+      },
+      {
+        "bytes": 46728,
+        "mode": 256,
+        "path": "/tmp/ovf-feature63-r7-prelaunch-preparation-architecture-Ey24e3td/replacement.diff",
+        "sha256": "af4819edf11a42613e0259793484dceec343a2a6be8e0f30e15d749500bb7301"
+      },
+      {
+        "bytes": 1443,
+        "mode": 256,
+        "path": "/tmp/ovf-feature63-r7-prelaunch-preparation-architecture-Ey24e3td/syntax-evidence.json",
+        "sha256": "4387dc62bcf80cd2aa4765638e55318957e62c246108c03362f3161d1e767c88"
+      }
+    ],
+    "manifest": {
+      "bytes": 3349,
+      "mode": 256,
+      "path": "/tmp/ovf-feature63-r7-prelaunch-preparation-architecture-Ey24e3td/preparation-manifest.json",
+      "sha256": "2ecba16e69f28ff9dff3ca6e57d4838bbce50c0bca54bbe9853f4b687669e9d9"
+    },
+    "replacementDiffReconstructsCandidateExactly": true
+  },
+  "priorBlockerResolution": [
+    {
+      "evidence": "The optimize guard runs immediately after importing sys and before reading authority input; all gates use always-active require calls; the documented invocation removes PYTHONOPTIMIZE.",
+      "id": "assert-gates-can-be-disabled",
+      "resolved": true
+    },
+    {
+      "evidence": "The CLI-pinned root expectation binds the source pin, binding/control/report directories, readback, assignment, launcher, disposition, fixed R7 review, and frozen launcher template. The candidate verifies the fixed review schema, pass status, runtimeExecuted false, no capture authorization, and the exact five reviewed roles before using generated definitions.",
+      "id": "root-authority-files-are-self-asserted-and-unbound",
+      "resolved": true
+    },
+    {
+      "evidence": "Stable reads use one O_NOFOLLOW file descriptor with size and regular-file checks plus before, after, and named identity equality. Retained authenticated bytes are parsed once with duplicate-key and nonfinite-number rejection and then cached.",
+      "id": "verified-files-are-parsed-or-used-through-separate-reads",
+      "resolved": true
+    }
+  ],
+  "processOrPortProbesPerformed": false,
+  "providerOrModelFamilyAuthenticated": false,
+  "qualifications": [
+    "This is a static source and contract review. It did not execute or import the candidate and did not inspect protected process, listener, binding, control, report, runtime, database, profile, collector, or checkpoint state.",
+    "A report write failure may leave a partial one-shot report. It cannot produce the success stdout result, and the nonempty report directory prevents reuse.",
+    "The candidate establishes prelaunch authentication only. It does not establish launch success, native custody, extraction, audit, feature63 qualification, or complete descendant exclusion."
+  ],
+  "referenceAuthentication": {
+    "allNamedReferenceDescriptorsMatch": true,
+    "bindingUtility": {
+      "bytes": 23873,
+      "mode": 420,
+      "path": "/tmp/ovf-root-feature63-r7-static-packet-9l53j4bl/binding-utility/fresh-r7-bindings.py",
+      "sha256": "bbeb0bc68b2dd5cd24679f8ade43baa2403d748e9877a7e24bcf2c7fe1c1dc02"
+    },
+    "launcherTemplate": {
+      "bytes": 19356,
+      "mode": 384,
+      "path": "/tmp/ovf-feature63-static-prep-r3-zsttudqb/independent-launcher/launch-capture.r3.template.py",
+      "sha256": "1b99137e822c004361ee4ff1906f10f4284453312914092441666dd721f0feb3"
+    },
+    "priorCompatibilityReview": {
+      "bytes": 7710,
+      "mode": 420,
+      "path": "/tmp/ovf-feature63-r7-prelaunch-compatibility-review-Al0hAdO4/review.json",
+      "sha256": "676a5e0ff8d22d4affbb722f518bcf54231fedd01577ee83b7ec20900252807d"
+    },
+    "r7IndependentReview": {
+      "bytes": 10341,
+      "mode": 420,
+      "path": "/tmp/ovf-feature63-r7-final-static-independent-review-upsx1DQX/review.json",
+      "sha256": "9be9b64bdd2a5637bed71ad6d8a36423b0e4242c3f1bd9afe519f172f3c9bd53"
+    },
+    "rejectedOriginal": {
+      "bytes": 4369,
+      "mode": 420,
+      "path": "/tmp/ovf-root-feature63-r3-preparation-551FgMyq/authenticate-prelaunch.py",
+      "sha256": "8626c914b0b717f6836a20a3fe55d261ddbfeb562eae7ffda749e60818fdf870"
+    }
+  },
+  "repositoryModified": false,
+  "requestedReviewerModel": "gpt-5.6-sol",
+  "rootExpectation": {
+    "bytes": 1725,
+    "candidateContractValidationPassed": true,
+    "mode": 256,
+    "path": "/tmp/ovf-root-feature63-r7-prelaunch-input-czn3hzo_/expectation.json",
+    "sha256": "8ae5a1a4bb745a70d57515e92197a9911b6409c765db3b13857017410f204235",
+    "sourcePin": "a8152d0dc83dff49fb93f09606e7bbf2c3510894"
+  },
+  "runtimeExecuted": false,
+  "schema": "feature63-r7-prelaunch-authenticator-independent-static-review-v1",
+  "staticFindings": {
+    "allAuthenticationGatesAlwaysActive": true,
+    "allRetainedFilesDirectoriesAndCompleteSetsRevalidatedBeforeReport": true,
+    "bindingControlAndReportDirectoriesCanonicalDistinctPrivateAndUidOwned": true,
+    "bindingDirectoryExactFilenameSetCheckedAndRechecked": true,
+    "captureLaunchedByCandidate": false,
+    "checkoutPinAndTrackedCleanStateCheckedTwice": true,
+    "completeInventoriesRejectSymlinksNonregularFilesTraversalAndRuntimeDatabaseOrProfileMembers": true,
+    "controlAndPrefixStateRecheckedImmediatelyBeforeReport": true,
+    "expectationRequiresUidOwnershipAndMode0400Or0600": true,
+    "firstFilesystemWriteIsExclusiveReportCreation": true,
+    "fiveGeneratedDefinitionsBoundParsedOnceAndRelationshipChecked": true,
+    "fixedR7ReviewAndExactFiveRolesAuthenticated": true,
+    "generatedTopLevelDescriptorsAgreeWithRootExpectation": true,
+    "launcherParsedButNeverExecuted": true,
+    "launcherReconstructedFromFrozenTemplateAndBindingUtilityChangeMap": true,
+    "protectedProcessAndListenersReadTwiceOnlyDuringAuthorizedExecution": true,
+    "reportDirectoryMustBeEmptyBeforeAnyWrite": true,
+    "reportMode": 256,
+    "reportWriteCallLine": 719,
+    "reportWriteFunctionLine": 396,
+    "reviewedScriptsAuthenticatedInBothCheckouts": true,
+    "rootExpectationSha256RequiredOnCli": true,
+    "savedReportBytesAndIdentityReverified": true,
+    "sourceProductProtectedWebServerPlaywrightAndChromiumInventoriesAuthenticated": true
+  },
+  "status": "PASS_STATIC_R7_PRELAUNCH_AUTHENTICATOR_RUNTIME_HELD"
+}

@@ -1,0 +1,43 @@
+diff --git a/docs/features/README.md b/docs/features/README.md
+index 3ccd39f..8dbe8cc 100644
+--- a/docs/features/README.md
++++ b/docs/features/README.md
+@@ -2,6 +2,8 @@
+ 
+ The full scope is the 100 entries in `requirements.json`. The list preserves the user’s requested behavior. A file, option, or passing unit test alone does not make a feature complete: it must be reachable through the game, work through its real simulation or service path, and have evidence covering its stated behavior.
+ 
+-The main application now includes session controls, online roster and team infrastructure, custom content, technology branches, specialists, layered worlds, victory modes and tournament mounting. The ledger records which behaviors have passed assembled checks. Economy, combat, allied AI, campaigns and community features are still being reconciled and verified together.
++The ledger records 99 verified features. Cooperative skirmishes (63) remain in progress. The latest retained capture contains accepted ordinary attack-move orders from both human profiles, but their attacks only covered AI owner 3. It exceeded the frozen public-evidence limit and does not qualify the feature. The failed capture and its closed-process and database-retention evidence are in `../evidence/feature63-public-budget-failure-r7-a815-20261002/`.
+ 
+-`decisions.tsv` records implementation choices and verification. `HUNDRED_FEATURE_ARCHITECTURE.md` describes the larger simulation, content, campaign and server changes. Each retained proof identifies its tested source; an isolated feature proof does not establish that its later integration works. The combined save migration, rules revision, runtime parity and full regression checks remain required.
++The assembled 4.0.2 product passed 2,942 tests across 160 files and built successfully at `f7f3e187ea40079492589a6fce39f0b33f77f04a`. The latest capture authenticated the same 570 product files. Regression and build evidence is retained in `../evidence/current402-full-suite-build-f7-20261001/`; those checks do not replace the remaining cooperative fight proof.
++
++`decisions.tsv` records implementation choices and verification. `HUNDRED_FEATURE_ARCHITECTURE.md` describes the simulation, content, campaign and server changes. Each retained proof identifies its tested source; an isolated feature proof does not establish that its later integration works.
+diff --git a/docs/features/decisions.tsv b/docs/features/decisions.tsv
+index 9d152aa..0543179 100644
+--- a/docs/features/decisions.tsv
++++ b/docs/features/decisions.tsv
+@@ -304,3 +304,8 @@ ts	phase	decision	why	evidence	result
+ 2026-10-02T08:51:36.431393+00:00	feature63-r6-custody-trail-qualification	Bound the execution claim and clarified the closure counts	A static review proves eligibility; the real execution receipt proves once and exit0; the wrapper is separate from 25 native records	docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/root-custody-execution/execution.json;docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/root-retention-readback.json;docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/trail-review/first/review.json	Qualifies preceding two R6 rows; 25 held PIDFD native exits; wrapper separately closed; 27 finite absent readbacks;137 original copies verified; sequential inventories;99/1
+ 2026-10-02T09:05:39.560522+00:00	feature63-r7-public-owner2-arrival	Imported reviewed owner 2 arrival trigger for both ordinary UI attack-moves	R6 never released Hold before its frozen public byte limit; the first visible owner 2 fighter offers an earlier attempt	docs/evidence/feature63-public-owner2-arrival-r7-preparation-20261002/root-import.json	Exact reviewed scripts and syntax passed; product570/protected397 unchanged; frozen audit and public fight criterion unchanged; bindings/runtime held;99/1
+ 2026-10-02T09:18:23.501653+00:00	feature63-r7-prelaunch-reuse-held	Preserved the old verifier and its static rejection before any R7 use	Disableable assertions, unbound authority inputs, and separate verification/parsing reads prevent an independent prelaunch check	docs/evidence/feature63-public-owner2-arrival-r7-preparation-20261002/prelaunch-original-rejection/review.json	Original verifier not executed; external replacement under preparation; bindings/runtime held;99/1
++2026-10-02T10:26:30Z	feature63-r7-prelaunch-format-failure-and-correction	Preserved one failed verifier and one reviewed octal-format correction	The pinned inventories use 0o644 strings; the first hardened verifier rejected them before any capture	docs/evidence/feature63-public-budget-failure-r7-a815-20261002/prelaunch/original/execution/execution.json;docs/evidence/feature63-public-budget-failure-r7-a815-20261002/prelaunch/corrected/execution/execution.json	First verifier once exit1; corrected verifier once exit0; capture remained unused until later dispatch
++2026-10-02T10:26:30Z	feature63-r7-public-budget-failure	Preserved the single R7 capture and kept original63 pending	Both renewed human UI orders were accepted, but no commanded human attacked owner2 before the frozen byte limit failed	docs/evidence/feature63-public-budget-failure-r7-a815-20261002/capture/runtime/lifecycle/driver-result.json;docs/evidence/feature63-public-budget-failure-r7-a815-20261002/public-diagnosis/positional-followup/positional-diagnosis.json	67,252,066 public bytes against67,108,864; zero passing windows; one unaudited checkpoint;99/1
++2026-10-02T10:26:30Z	feature63-r7-failed-custody-and-slot-release	Sealed the failed raw once and released the consumed slot after root receipt readback	Independent registered exits and finite root readbacks allowed failure retention without SQL or native audit	docs/evidence/feature63-public-budget-failure-r7-a815-20261002/custody/execution/execution.json;docs/evidence/feature63-public-budget-failure-r7-a815-20261002/custody/root-readback/root-custody-readback-and-slot-release-disposition.json;docs/evidence/feature63-public-budget-failure-r7-a815-20261002/capture/operator/slot-release.json	Custody once exit0; raw0444/link2;25 independent held-PIDFD exits plus separate wrapper and launcher;27 finite readbacks; unobserved descendants not excluded
++2026-10-02T10:26:30Z	feature63-r7-diagnosis-and-release-comparison-qualifications	Preserved original executed diagnosis bytes and the corrected release comparison	The later prepared analyzer was edited after execution; custody stdout adds a result descriptor absent from its saved JSON	docs/evidence/feature63-public-budget-failure-r7-a815-20261002/public-diagnosis/positional-followup/execution-history.json;docs/evidence/feature63-public-budget-failure-r7-a815-20261002/capture/operator/slot-release-authentication-first-failure.json	Corrected analyzer not executed; additive positional follow-up and root public readback support findings; metadata-only comparison correction; no additional custody or runtime
++2026-10-02T10:26:30Z	feature-ledger-readme-current99	Updated the feature index to the current99 verified and63 pending status	The old README still described completed integration and regression work as unfinished	docs/evidence/feature63-public-budget-failure-r7-a815-20261002/root-retention.json;docs/evidence/current402-full-suite-build-f7-20261001/root-current-result-readback.json	2942 tests passed on retained tested product; latest failed proof does not admit63; no product edits
+diff --git a/docs/features/requirements.json b/docs/features/requirements.json
+index 0cd6a4a..d02fc7e 100644
+--- a/docs/features/requirements.json
++++ b/docs/features/requirements.json
+@@ -927,7 +927,9 @@
+         "docs/evidence/assembled-allied-ai-83941bc-runtime-r1/review/review.md",
+         "docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/report.json",
+         "tests/allied-ai.test.ts",
+-        "docs/evidence/claude-admissions-review-703fc-20261001/root-reconciliation.json"
++        "docs/evidence/claude-admissions-review-703fc-20261001/root-reconciliation.json",
++        "docs/evidence/feature63-public-budget-failure-r7-a815-20261002/root-retention.json",
++        "docs/evidence/feature63-public-budget-failure-r7-a815-20261002/public-diagnosis/positional-followup/positional-diagnosis.json"
+       ]
+     },
+     {

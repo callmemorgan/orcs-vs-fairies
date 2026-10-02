@@ -1,0 +1,205 @@
+{
+  "schema": "feature63-r7-failed-capture-retention-trail-review-v1",
+  "at": "2026-10-02T10:35:06Z",
+  "status": "NEEDS_ONE_TRAIL_CORRECTION",
+  "reviewer": {
+    "requestedModel": "gpt-5.6-sol",
+    "actualProviderAndModelFamily": "unavailable to this runtime; unauthenticated",
+    "freshClaudeUsed": false
+  },
+  "scope": {
+    "packetRoot": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r7-a815-20261002",
+    "selfAuditBundle": "/tmp/ovf-root-feature63-r7-retention-self-audit-2v_38oe4",
+    "transcriptWindow": {
+      "path": "/tmp/ovf-root-feature63-r7-retention-self-audit-2v_38oe4/root-transcript-window.jsonl",
+      "start": "2026-10-02T09:18:00Z",
+      "responseItems": 380,
+      "reviewMethod": "Indexed all response items and read the complete relevant tool calls, outputs, messages, and receipts for prelaunch failure/correction, capture dispatch and failure, custody, release, diagnosis correction, retention, ledger edits, and self-audit."
+    },
+    "repositoryWritesByReviewer": false,
+    "indexOrCheckoutMutationByReviewer": false,
+    "runtimeAuditOrPacketScriptExecutionByReviewer": false
+  },
+  "blockers": [
+    {
+      "id": "commanded-owner2-attack-claim-is-too-broad",
+      "locations": [
+        "/home/morgana/Projects/orcs-vs-Fairies/docs/features/README.md:5",
+        "/home/morgana/Projects/orcs-vs-Fairies/docs/features/decisions.tsv:308"
+      ],
+      "claim": "The README says the humans' attacks only covered owner 3, and the decision row says no commanded human attacked owner 2.",
+      "evidence": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r7-a815-20261002/public-diagnosis/positional-followup/positional-diagnosis.json",
+      "finding": "Commanded actor 7 has seven fully attributed attack events, all against owner 3. Commanded actor 14 has nine raw attack events, but only eight have complete target attribution; those eight target owner 3. The retained evidence supports 'all fully attributed commanded-human targets were owner 3' and 'no attributed commanded-human target was owner 2.' It does not support the unqualified statement for the ninth event.",
+      "impact": "The 99 verified / 1 in-progress result and the R7 failure disposition remain correct. The wording overstates the public attribution evidence."
+    }
+  ],
+  "fixes": [
+    {
+      "target": "/home/morgana/Projects/orcs-vs-Fairies/docs/features/README.md:5",
+      "action": "Replace the broad attack sentence with wording that says all fully attributed commanded-human attack targets were owner 3 and one human-two event lacked target attribution. Keep feature 63 in progress."
+    },
+    {
+      "target": "/home/morgana/Projects/orcs-vs-Fairies/docs/features/decisions.tsv",
+      "action": "Preserve append-only history. Add a superseding row that qualifies row 308: all fully attributed commanded-human targets were owner 3; one actor-14 event lacked target attribution; zero positive public windows and 99/1 are unchanged.",
+      "evidence": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r7-a815-20261002/public-diagnosis/positional-followup/positional-diagnosis.json"
+    }
+  ],
+  "verified": {
+    "selfAuditSnapshotSha256": {
+      "expected": "6c2914dc9e3eec139fe813bb1d6d5145dc7460cde5ec83ae21858d4e6da9d47f",
+      "actual": "6c2914dc9e3eec139fe813bb1d6d5145dc7460cde5ec83ae21858d4e6da9d47f",
+      "matches": true
+    },
+    "packet": {
+      "fileCount": 180,
+      "inventoryRecordCount": 179,
+      "inventoryExcludesOnlySelf": true,
+      "inventoryPathsUnique": true,
+      "packetInventorySha256": "b9cbdf9ec07fef503bc250c8fffa2e3c36412ab831c5a48881e067e36e7094ce",
+      "selectedAllowedArtifactsMatchInventoryHashesAndModes": true
+    },
+    "prelaunch": {
+      "firstVerifierInvocations": 1,
+      "firstVerifierExitCode": 1,
+      "firstVerifierFailure": "Invalid octal inventory mode",
+      "firstVerifierCaptureLaunched": false,
+      "captureInvocationCountAtFirstFailure": 0,
+      "databaseOrProfileCreatedAtFirstFailure": false,
+      "observedInventoryMode": "0o644",
+      "correctionLimitedToOctalPrefixRegex": true,
+      "correctedVerifierReviewedWithNoBlockers": true,
+      "correctedVerifierInvocations": 1,
+      "correctedVerifierExitCode": 0,
+      "correctedVerifierCaptureLaunched": false
+    },
+    "capture": {
+      "captureInvocations": 1,
+      "automaticRetries": 0,
+      "status": "FAIL_FIRST_FAILURE_NO_RETRY",
+      "publicInputBytes": 67252066,
+      "publicInputLimit": 67108864,
+      "excessBytes": 143202,
+      "positivePublicWindowCount": 0,
+      "nativeCheckpointCount": 1,
+      "nativeCheckpointAudited": false,
+      "feature63Qualified": false
+    },
+    "closure": {
+      "registeredNativeCount": 25,
+      "registeredIndependentHeldPidfdReadyExitCount": 25,
+      "wrapperClosedSeparately": true,
+      "launcherClosedSeparately": true,
+      "finitePidStartReadbackCount": 27,
+      "unobservedDescendantsExcluded": false
+    },
+    "custody": {
+      "executionInvocations": 1,
+      "automaticRetries": 0,
+      "exitCode": 0,
+      "sqlExtractionOrNativeAuditExecuted": false,
+      "feature63Qualified": false,
+      "rawModeFromReviewedCustodyReceipts": "0444",
+      "rawLinkCountFromReviewedCustodyReceipts": 2,
+      "rawBytesOpenedOrHashedByThisReviewer": false,
+      "rawReceiptQualification": "Receipt-backed only; the reviewer did not stat, open, hash, or query the raw database."
+    },
+    "release": {
+      "initialReadOnlyComparisonFailed": true,
+      "initialFailurePreserved": true,
+      "failureReason": "Custody stdout adds the result descriptor that the saved custody-result JSON omits.",
+      "correctedReadOnlyComparisonPassed": true,
+      "slotReleased": true,
+      "runtimeInvocationsSinceReleaseRequestAtFailure": 0,
+      "additionalRuntimeCaptureOrRetryAuthorized": false
+    },
+    "diagnosis": {
+      "originalAnalyzerExecutionCount": 1,
+      "originalAnalyzerExitCode": 0,
+      "originalExecutedScriptAndOutputPreservedByDigest": true,
+      "laterPreparedAnalyzerExecuted": false,
+      "positionalFollowupIsAdditive": true,
+      "owner2MeleeVisibilityTicks": [1644, 1668],
+      "renewedAttackAppliedTicks": [1676, 1705],
+      "owner2RangedVisibilityTicks": [1864, 1884],
+      "fullyAttributedCommandedTargetOwners": [3],
+      "actor14UnattributedAttackEventCount": 1
+    },
+    "ledger": {
+      "featureCount": 100,
+      "verifiedCount": 99,
+      "inProgressCount": 1,
+      "feature63Status": "in-progress",
+      "feature63AdmissionAddedByR7": false,
+      "newDecisionRowsReviewed": 5,
+      "allNewRowsHaveSixTsvColumns": true,
+      "allNewRowEvidencePathsResolve": true,
+      "readmeRegressionClaim": {
+        "sourceCommit": "f7f3e187ea40079492589a6fce39f0b33f77f04a",
+        "testFiles": 160,
+        "passedTests": 2942,
+        "failedTests": 0,
+        "buildExitCode": 0,
+        "productFilesAuthenticatedByLatestCapture": 570
+      }
+    }
+  },
+  "attentionFlags": [
+    {
+      "id": "finite-closure-scope",
+      "detail": "The 25 registered native exits plus separate wrapper and launcher readbacks cover 27 finite PID/start identities. They do not exclude missed forks, reparenting, or other unobserved descendants."
+    },
+    {
+      "id": "sequential-inventories",
+      "detail": "The product and retained-copy inventories were authenticated sequentially, not as one atomic snapshot."
+    },
+    {
+      "id": "no-feature63-admission",
+      "detail": "Feature 63 remains in progress. The R7 packet and ledger add failure evidence only; they do not admit cooperative skirmishes."
+    },
+    {
+      "id": "prepared-analyzer-not-executed",
+      "detail": "The later corrected public analyzer was prepared after the one original execution and was not rerun. The additive positional follow-up and root readback support the corrected findings; preserve this qualification."
+    },
+    {
+      "id": "reviewer-identity",
+      "detail": "gpt-5.6-sol was requested, but this runtime provides no authenticated provider/model-family identity. No fresh Claude review was used."
+    }
+  ],
+  "reviewProcedureDeviation": {
+    "occurred": true,
+    "detail": "The reviewer ran git diff --cached --check and git diff --cached --numstat over the whole scoped staged packet. Git therefore mechanically read staged public-wire and native-checkpoint blobs to compute whitespace and line counts, although no payload content was printed. No raw database or browser profile was opened, no query or hash of excluded payloads was performed by the reviewer, and no state changed. The substantive findings do not rely on those line counts. This crossed the requested no-open boundary and should remain visible to the root reviewer."
+  },
+  "reviewedDescriptors": [
+    "/tmp/ovf-root-feature63-r7-retention-self-audit-2v_38oe4/self-audit.json",
+    "/tmp/ovf-root-feature63-r7-retention-self-audit-2v_38oe4/root-transcript-window.jsonl",
+    "/tmp/ovf-root-feature63-r7-retention-self-audit-2v_38oe4/repository.diff",
+    "/tmp/ovf-root-feature63-r7-retention-self-audit-2v_38oe4/decisions.tsv",
+    "/tmp/ovf-root-feature63-r7-retention-self-audit-2v_38oe4/requirements.json",
+    "/tmp/ovf-root-feature63-r7-retention-self-audit-2v_38oe4/README.md",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r7-a815-20261002/packet-inventory.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r7-a815-20261002/root-retention.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r7-a815-20261002/prelaunch/original/execution/execution.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r7-a815-20261002/prelaunch/original/failure/disposition.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r7-a815-20261002/prelaunch/corrected/execution/execution.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r7-a815-20261002/prelaunch/corrected/review/review.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r7-a815-20261002/prelaunch/corrected/report/root-independent-prelaunch-readback.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r7-a815-20261002/capture/runtime/lifecycle/driver-result.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r7-a815-20261002/capture/control/independent-closure.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r7-a815-20261002/capture/operator/finite-readback.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r7-a815-20261002/capture/operator/slot-release-authentication-first-failure.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r7-a815-20261002/capture/operator/slot-release.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r7-a815-20261002/custody/execution/execution.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r7-a815-20261002/custody/receipts/root-custody-result.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r7-a815-20261002/custody/receipts/root-failure-disposition.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r7-a815-20261002/custody/receipts/root-native-lifetime-disposition.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r7-a815-20261002/custody/root-readback/root-custody-readback-and-slot-release-disposition.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r7-a815-20261002/custody/independent-expectation/root-expectation-comparison.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r7-a815-20261002/public-diagnosis/positional-followup/execution-history.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r7-a815-20261002/public-diagnosis/positional-followup/positional-diagnosis.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/features/README.md",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/features/requirements.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/features/decisions.tsv",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/current402-full-suite-build-f7-20261001/root-current-result-readback.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/current402-full-suite-build-f7-20261001/full-tests.json"
+  ]
+}

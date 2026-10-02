@@ -1,0 +1,438 @@
+{
+  "schema": "feature63-r7-public-acquisition-static-analysis-v1",
+  "status": "STATIC_RECOMMENDATION_ONLY_NO_IMPLEMENTATION_OR_LAUNCH_AUTHORIZATION",
+  "scope": {
+    "sourcePin": null,
+    "sourcePinRule": "Any future assignment must take its source pin from root-approved actual source bindings. No pin is inferred by this report.",
+    "operationsPerformed": "Read static source and exact allowed public status/results metadata only. Wrote only this fresh external report. No wire files, private state, raw database, native checkpoints, profile, runtime, capture, flags, budget change, retries, audit, or checkout edits."
+  },
+  "recommendation": {
+    "firstChoice": "Skip derived candidate generation while the existing operational acquisition latch is closed. Retain every full incoming wire, public frame, latest frame and genuine UI-action literal; run the unchanged window calculation and predicate after the existing latch opens.",
+    "scope": "Capture-only prospective generation change at current calls564 and572, not an ordinary game setup or product behavior change. No implementation is supplied or applied.",
+    "whySmallest": "Before acquisitionStartTick is assigned, selectionEligible is false. These calls generate permanently unselectable early summaries. The frozen auditor requires a bounded candidates list and the selected candidate, not the historical sequence of nonselected summaries.",
+    "sourceRefs": [
+      "producerEarlyWindowCalls",
+      "producerWindowPredicate",
+      "producerLatchAndSelection",
+      "auditorSelectedCandidate",
+      "producerCapture",
+      "auditorSelectedFrameCoverage"
+    ],
+    "preservedContract": [
+      "The selected candidate is generated and retained before selection; result and window selected indexes agree.",
+      "The positive predicate still requires both commanded humans and human target owners2/3, living human HQs, contiguous four-tick public frames and a window of at most400ticks.",
+      "Original wire ordinals and all complete payloads remain retained. Selected-window preceding frame, commands, acknowledgements and UI lifecycles remain available.",
+      "Native audit still authenticates one naturally committed wave containing owners2/3 and qualifying post-launch attacks."
+    ],
+    "whyNotTruncation": "Generation is skipped prospectively before those derived summaries exist. No file rows are deleted or shortened after capture; no literal exposed payload is omitted. This does not authorize editing the already failed R7 evidence.",
+    "finalFailureHandling": "The current finally block may generate one failure summary at603. It need not reconstruct skipped history. Passing captures still need at least one retained selected candidate. Any failure stays a failure and is not retried.",
+    "budgetAccounting": "save() subtracts the previous file size and adds the replacement size; savings concern the current public-windows.json size rather than cumulative rewrite I/O. The nine literal public inputs still have the unchanged64MiB bound.",
+    "parentSuppliedSizeContext": {
+      "notIndependentlyReadHere": true,
+      "priorWindowsBytes": 3604135,
+      "priorTwoWireStreamsBytes": 63598784,
+      "scope": "Parent supplied these totals; this agent did not read wire files or independently measure candidate payload sizes. Another agent assesses timeline sufficiency."
+    },
+    "risks": [
+      "Static contract analysis does not prove that the recovered bytes suffice for both post-launch human attacks.",
+      "Retaining post-latch nonselected candidate summaries may still grow the derived file; no further pruning is proposed.",
+      "Any future reviewed producer must bind its changed complete bytes and descriptors in fresh root assignments; old producer digests must not be reused."
+    ]
+  },
+  "whyCurrentOwner2HqWaitIsLate": {
+    "currentSetup": "Four players, small map, age1, orcs/fairies/orcs/orcs, shared vision; genuine attack-move and hold stage both human armies near side0 HQ.",
+    "currentTrigger": "Both profiles must observe at least one living non-worker owner2 unit, on the HQ level and within12map units of side0 HQ. It neither waits for owner3 nor proves wave participation. Ground target remains6map units from the same HQ.",
+    "cost": "Staging travel, hold confirmation, AI production/cooldown, and then owner2 travel to the human HQ all run while every full snapshot continues to be retained. The latch opens only after renewed genuine attack-move commands. Early qualifying-looking fights before that latch cannot be selected.",
+    "publicOnlyObservedStatus": {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r7/public/public-status.ndjson",
+      "owner2ApproachTicks": [
+        1652,
+        1652
+      ],
+      "owner2Ids": [
+        21
+      ],
+      "renewedAttackAppliedTicks": [
+        1676,
+        1705
+      ],
+      "acquisitionStartTick": 1708,
+      "firstHumanHoldAppliedTick": 124,
+      "secondHumanHoldAppliedTick": 314,
+      "nativeMembershipNotObserved": true
+    },
+    "scoutCaution": "Balanced profile begins scouting after65seconds. The coordinator assigns one scout and breaks owner ties by side; dispatch marks initial-scout completion for both allied reporters. A single owner2 arrival is compatible with that one-owner operation. Public appearance alone cannot establish whether the observed actor belongs to a later committed shared wave.",
+    "sourceRefs": [
+      "producerCurrentSetup",
+      "producerEarlyWindowCalls",
+      "producerPublicApproach",
+      "producerLatchAndSelection",
+      "producerWindowPredicate",
+      "balancedTimingProfile",
+      "coordinatorScout",
+      "cooperativeCommandApplication"
+    ]
+  },
+  "naturalSharedWaveRequirements": {
+    "ownerRequirements": "Each AI reporter must have a completed living owned HQ, recoverable income and at least two eligible fighters. Fighters exclude workers, illusions, retreating units, active directive assignments and entrenched units, and share the HQ level.",
+    "combinedRequirement": "Two participating owners and at least four fighters combined; no cooperative starting-age or full-faction-army-size requirement.",
+    "targetRequirement": "Both owners approve the same known target key, coordinates and level. HQ/building targets outrank units and known starts; distance is not a target sort key.",
+    "firstWaveTiming": "Default normal/balanced/infantry-rush has waveIntervalFactor1. Initial aiWave is0. Readiness is last committed launch plus max(15,65/factionAggression). A wave can be created up to12seconds before readiness and dispatches no earlier than max(creation+3seconds,both readiness times). Owner launches apply together in one simulation step.",
+    "positioningConstraint": "Visible humans within less than12units of either AI HQ create priority defense threats. Those threats block new shared-wave creation and can occupy up to three nearby fighters per threat.",
+    "auditRequirement": "Retained selected wave must be launched for team1 with owners2/3, at least four distinct participant IDs, equal committed aiWave clocks, adjacent four-tick launch bracket and exact source-derived attack-move transitions. Both commanded humans must then produce positive attacks against the same authenticated participant set, collectively covering AI owners2/3, with living human HQs.",
+    "sourceRefs": [
+      "initialWaveClocks",
+      "cooperativeReportsAndCooldown",
+      "normalAiDefaults",
+      "balancedTimingProfile",
+      "coordinatorMinimaAndTiming",
+      "coordinatorSharedReadinessAndTarget",
+      "cooperativeCommandApplication",
+      "coordinatorThreatPriority",
+      "auditorWaveCriteria",
+      "auditorLaunchOrders",
+      "auditorPostLaunchCombat"
+    ]
+  },
+  "ordinaryUiAlternatives": [
+    {
+      "choice": "Keep current age1, small map, factions and staging; skip pre-latch derived summaries.",
+      "assessment": "Smallest overall correction supported by the existing frozen audit contract. It recovers byte capacity without changing match acquisition behavior. Timeline remains unproven here.",
+      "sourceRefs": [
+        "producerEarlyWindowCalls",
+        "auditorSelectedCandidate"
+      ]
+    },
+    {
+      "choice": "Change both AI faction selectors to undead; leave human factions, age1, teams/controllers and shared vision unchanged.",
+      "assessment": "Best setup-only fallback hypothesis. Both timers become65/1.1\u224859.09seconds instead of65. Undead melee costs45wood/15ore, trains24seconds and moves2.35, versus orc70/25,36seconds,1.8. Undead ranged trains32seconds/speed2.25 versus orc40seconds/2.0. Both AI factions must change because dispatch waits for both readiness times.",
+      "risks": [
+        "Lower undead health/armor can kill participants before both humans engage.",
+        "Different recruitment composition, retreat behavior and special-unit systems can change timing and evidence size.",
+        "The current producer faction assertion at532 must agree with the ordinary selected lobby factions in any separately reviewed future producer.",
+        "Source rates do not prove completion within64MiB."
+      ],
+      "sourceRefs": [
+        "normalPlayerOptions",
+        "orcUnits",
+        "undeadUnits",
+        "cooperativeReportsAndCooldown",
+        "coordinatorSharedReadinessAndTarget",
+        "producerFactionAssertion"
+      ]
+    },
+    {
+      "choice": "Stage both human forces on public observed open ground closer to the AI approach route, comfortably beyond12units from both AI HQs.",
+      "assessment": "Can reduce travel-to-contact while preserving the natural cooldown. Use stationary visible terrain/actors and genuine UI move, hold and attack-move commands. A visible human unit may become a shared target if no higher-ranked known building exists.",
+      "risks": [
+        "A human force too near an AI HQ causes defense instead of a new shared wave.",
+        "Hold units still attack in range and may remove scouts or future participants before the desired launch.",
+        "Overwhelming local forces can trigger retreat and remove reporters eligible fighters.",
+        "A remembered human HQ/building outranks a nearer visible unit.",
+        "Blocked target offsets can be moved by openDestination; the frozen auditor requires the exact clamped planner-target formation offsets, so clear ground around all participant positions is safer.",
+        "Exploring more terrain can increase literal snapshot size. No arbitrary fixed unseen coordinate is proposed."
+      ],
+      "sourceRefs": [
+        "cooperativeReportsAndCooldown",
+        "coordinatorThreatPriority",
+        "coordinatorSharedReadinessAndTarget",
+        "holdBehavior",
+        "retreatBehavior",
+        "openDestination",
+        "auditorLaunchOrders"
+      ]
+    },
+    {
+      "choice": "Select starting age2 or3.",
+      "assessment": "Weaker option. Only age upgrades are preinstalled; all players still receive five workers and one fighter. Higher age does not lower the shared readiness threshold/timer and raises balanced AI worker targets13\u219219/24, enabling additional expansion/research spending.",
+      "sourceRefs": [
+        "normalLobbyOptions",
+        "startingAgeAndArmy",
+        "ageWorkerAndExpansionSpending",
+        "balancedTimingProfile",
+        "cooperativeReportsAndCooldown"
+      ]
+    },
+    {
+      "choice": "Select a smaller normal map setting.",
+      "assessment": "Current small is already selected. For four players, small/medium/large all normalize to64\u00d764. Huge expands to88\u00d788. No smaller ordinary four-player map exists. Online source exposes no seed, biome or world-type selector.",
+      "sourceRefs": [
+        "normalLobbyOptions",
+        "mapSizeDefinitions",
+        "fourPlayerMapMinimum",
+        "onlineSettingAllowlist"
+      ]
+    },
+    {
+      "choice": "Alter normal resource/income/population handicaps or AI profile.",
+      "assessment": "Handicaps are genuine UI settings but are a larger setup change and do not reduce unit training durations; resources can divert spending into workers, research or expansion. Difficulty/personality/opening have no normal online setting; online player allowlist omits ai, config creation supplies no override and defaults are normal/balanced/infantry-rush. No shortcut through private settings is proposed.",
+      "sourceRefs": [
+        "normalPlayerOptions",
+        "onlineSettingAllowlist",
+        "onlineConfigWithoutAiOverrides",
+        "normalAiDefaults",
+        "ageWorkerAndExpansionSpending"
+      ]
+    }
+  ],
+  "sourceReferences": {
+    "producerCapture": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/public-producer.mjs",
+      "startLine": 226,
+      "endLine": 255
+    },
+    "producerWindowPredicate": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/public-producer.mjs",
+      "startLine": 440,
+      "endLine": 486
+    },
+    "producerEarlyWindowCalls": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/public-producer.mjs",
+      "startLine": 547,
+      "endLine": 575
+    },
+    "producerLatchAndSelection": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/public-producer.mjs",
+      "startLine": 578,
+      "endLine": 594
+    },
+    "producerFinalFailureWindow": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/public-producer.mjs",
+      "startLine": 603,
+      "endLine": 606
+    },
+    "producerReplacementAccounting": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/public-producer.mjs",
+      "startLine": 169,
+      "endLine": 186
+    },
+    "producerCurrentSetup": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/public-producer.mjs",
+      "startLine": 505,
+      "endLine": 517
+    },
+    "producerFactionAssertion": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/public-producer.mjs",
+      "startLine": 530,
+      "endLine": 532
+    },
+    "producerPublicApproach": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/public-producer.mjs",
+      "startLine": 432,
+      "endLine": 437
+    },
+    "auditorPublicBound": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/native-audit.py",
+      "startLine": 410,
+      "endLine": 423
+    },
+    "auditorConfigCriteria": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/native-audit.py",
+      "startLine": 428,
+      "endLine": 438
+    },
+    "auditorSelectedCandidate": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/native-audit.py",
+      "startLine": 737,
+      "endLine": 749
+    },
+    "auditorWireOrdinals": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/native-audit.py",
+      "startLine": 290,
+      "endLine": 343
+    },
+    "auditorSelectedFrameCoverage": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/native-audit.py",
+      "startLine": 854,
+      "endLine": 877
+    },
+    "auditorWaveCriteria": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/native-audit.py",
+      "startLine": 580,
+      "endLine": 628
+    },
+    "auditorLaunchOrders": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/native-audit.py",
+      "startLine": 651,
+      "endLine": 661
+    },
+    "auditorPostLaunchCombat": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/native-audit.py",
+      "startLine": 902,
+      "endLine": 924
+    },
+    "normalLobbyOptions": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/ui/OnlineLobby.ts",
+      "startLine": 39,
+      "endLine": 41
+    },
+    "normalPlayerOptions": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/ui/OnlineLobby.ts",
+      "startLine": 71,
+      "endLine": 80
+    },
+    "onlineSettingAllowlist": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/server/server.ts",
+      "startLine": 178,
+      "endLine": 185
+    },
+    "onlineConfigWithoutAiOverrides": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/server/server.ts",
+      "startLine": 217,
+      "endLine": 217
+    },
+    "normalAiDefaults": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/ai-policy.ts",
+      "startLine": 7,
+      "endLine": 7
+    },
+    "balancedTimingProfile": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/ai-policy.ts",
+      "startLine": 41,
+      "endLine": 48
+    },
+    "startingAgeAndArmy": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/simulation.ts",
+      "startLine": 119,
+      "endLine": 128
+    },
+    "ageWorkerAndExpansionSpending": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/simulation.ts",
+      "startLine": 759,
+      "endLine": 764
+    },
+    "cooperativeReportsAndCooldown": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/simulation.ts",
+      "startLine": 689,
+      "endLine": 714
+    },
+    "cooperativeCommandApplication": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/simulation.ts",
+      "startLine": 716,
+      "endLine": 730
+    },
+    "coordinatorMinimaAndTiming": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/team-ai.ts",
+      "startLine": 5,
+      "endLine": 11
+    },
+    "coordinatorThreatPriority": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/team-ai.ts",
+      "startLine": 84,
+      "endLine": 108
+    },
+    "coordinatorScout": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/team-ai.ts",
+      "startLine": 122,
+      "endLine": 128
+    },
+    "coordinatorSharedReadinessAndTarget": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/team-ai.ts",
+      "startLine": 135,
+      "endLine": 149
+    },
+    "coordinatorSoloFallback": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/team-ai.ts",
+      "startLine": 151,
+      "endLine": 159
+    },
+    "orcUnits": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/content.ts",
+      "startLine": 8,
+      "endLine": 16
+    },
+    "fairyUnits": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/content.ts",
+      "startLine": 17,
+      "endLine": 24
+    },
+    "undeadUnits": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/content.ts",
+      "startLine": 35,
+      "endLine": 43
+    },
+    "mapSizeDefinitions": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/maps.ts",
+      "startLine": 4,
+      "endLine": 4
+    },
+    "fourPlayerMapMinimum": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/maps.ts",
+      "startLine": 103,
+      "endLine": 107
+    },
+    "holdBehavior": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/simulation.ts",
+      "startLine": 562,
+      "endLine": 563
+    },
+    "retreatBehavior": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/simulation.ts",
+      "startLine": 821,
+      "endLine": 826
+    },
+    "openDestination": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/navigation.ts",
+      "startLine": 37,
+      "endLine": 43
+    },
+    "initialWaveClocks": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/simulation.ts",
+      "startLine": 59,
+      "endLine": 59
+    }
+  },
+  "staticSourceDescriptors": [
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/native-audit.py",
+      "bytes": 64185,
+      "sha256": "4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/public-producer.mjs",
+      "bytes": 54689,
+      "sha256": "6c8e203732d9e33a72645fa55c9bee4b1e6148725c4b88c9db2d3ea3c9c1c8eb"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/ai-policy.ts",
+      "bytes": 7629,
+      "sha256": "1dc343542d2cef97f22f608c53d01bc1d61ed6296918f98ced75e1c27fe8a75d"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/content.ts",
+      "bytes": 19805,
+      "sha256": "4495966583a38f122f23f40c8cfbc0c7655b00cc463b37efdf26a0c9b0a86160"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/maps.ts",
+      "bytes": 13683,
+      "sha256": "ef8e28bbbbb04478082b428ace10b9613fc8b7d3baa99315555684246890f195"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/navigation.ts",
+      "bytes": 9590,
+      "sha256": "27924b6c886d55ee2288a61101e2fa2f34853f6a20241e770c9c50c5d9c796a0"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/simulation.ts",
+      "bytes": 106228,
+      "sha256": "e301c65d0352ffe648a5bc4ee6acbda1f562164deacdfe60f8f3b03e7bdccf35"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/team-ai.ts",
+      "bytes": 25877,
+      "sha256": "246afca59757266635d823fbd943d72ef500db0bab3385107da4f7ca930836b2"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/server/server.ts",
+      "bytes": 50662,
+      "sha256": "6cee3a6770a2e692ca4ad3ad155c3b06cf6f9116b43460f1eefe7eb7572a1f65"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/ui/OnlineLobby.ts",
+      "bytes": 29283,
+      "sha256": "91b8e98d7a3ec977186da829e7ba8aca7b3ddfead1fcf603e58a66bc672d597b"
+    }
+  ],
+  "finalQualification": "Static source supports the contract-preserving candidate-generation change and identifies ordinary UI fallbacks. It cannot prove a future capture, shared-wave identity, byte deadline or feature qualification. No implementation or run is authorized by this report."
+}

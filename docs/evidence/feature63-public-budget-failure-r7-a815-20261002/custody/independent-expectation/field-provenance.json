@@ -1,0 +1,322 @@
+{
+  "approved": false,
+  "authorityIssued": false,
+  "candidate": {
+    "bytes": 9324,
+    "path": "/tmp/ovf-feature63-r7-failure-custody-expectation-architecture-4pLZeedb/custody-expectation.candidate.json",
+    "sha256": "ed696f391d99f3c93dd0ca734373bb522fd48937f87a97cc78fd4f8e87e9c7ea"
+  },
+  "fieldProvenance": {
+    "approved": "Explicit false; candidate grants no root authority",
+    "assignedBy": "Required future root authority issuer in reviewed schema; no approval issued here",
+    "authority": "Descriptors computed over stable same-FD reads; operator inventory descriptors checked where supplied; binding descriptors followed from authenticated assignment/readback/package",
+    "authority.productInventory": "Authenticated packagingReceipt.productInventoryOriginal, selected through root-pinned bindingReadback completeOutputRecords",
+    "authority.protectedInventory": "Authenticated packagingReceipt.protectedInventoryOriginal, selected through root-pinned bindingReadback completeOutputRecords",
+    "branch": "captureResult.status=FAIL_FIRST_FAILURE_NO_RETRY, independentClosure.wrapperExitCode=1",
+    "expected.firstFailure": "Complete captureResult.firstFailure object, copied without changes",
+    "expected.launcherLifetime": "launch.launcher.identity pid/startTicks, launcher PID matches operatorLaunch",
+    "expected.matchId": "captureResult.matchId",
+    "expected.rawIdentity": "serverOwnership.freshDatabase equals captureResult.closedFreshDatabaseIdentity; metadata declarations only, raw not statted/opened/hashed",
+    "expected.registeredNativeKeys": "Driver registered native resource events, unique keys matching independentClosure.rememberedResources",
+    "expected.wrapperExitCode": "independentClosure.wrapperExitCode; distinct from concrete launcher exit0",
+    "expected.wrapperLifetime": "launch.wrapper.identity pid/startTicks, identical closure.wrapperInitial lifetime",
+    "outputParent": "Root-supplied external parent; raw/output filesystem and hardlink eligibility not probed here",
+    "paths.bindingsRoot": "Root-supplied generator directory, verified assignment/readback descriptors",
+    "paths.controlRoot": "Root-supplied actual launcher control path, launch.controlDirectory",
+    "paths.freshPrefix": "captureAssignment.freshPrefix and reviewed schema R7 literal",
+    "roots": "Reviewed utility/schema fixed roots",
+    "schema": "reviewedSchema.utilityExpectationSchema",
+    "sourcePin": "captureAssignment.sourcePin, matching captureResult/prelaunch/bindings/command/server",
+    "utilitySha256": "Exact root-supplied reviewed utility digest and stable source bytes"
+  },
+  "preparationScope": {
+    "approvalIssued": false,
+    "eitherCheckoutControlOrRawMutated": false,
+    "nativeCheckpointFilesRead": false,
+    "processPortOrProcProbesPerformed": false,
+    "rawDatabaseStatOpenReadHashLinkSealOrSQLPerformed": false,
+    "retryExtractionOrAuditPerformed": false,
+    "reviewedUtilityExecutedOrImported": false,
+    "slotReleased": false
+  },
+  "qualification": "Static failure expectation candidate only. It intentionally remains approved=false and the reviewed utility will reject it before authority-file reads. Finite remembered lifetime metadata does not exclude missed forks or reparenting; unobservedDescendantsExcluded remains false.",
+  "schema": "feature63-r7-failure-custody-expectation-provenance-v1",
+  "sourceInputs": {
+    "bindingReadback": {
+      "descriptor": {
+        "bytes": 3990,
+        "path": "/tmp/ovf-root-feature63-r7-bindings-wnogqe6l/root-binding-readback.json",
+        "sha256": "15bae06b9a1f7d9a88aa216de57933ae188eb1f80461a77334fdaddc0468ca0a"
+      },
+      "device": 55,
+      "inode": 1743697,
+      "links": 1,
+      "mode": 420,
+      "stableSingleFdRead": true
+    },
+    "browserBinding": {
+      "descriptor": {
+        "bytes": 79547,
+        "path": "/tmp/ovf-root-feature63-r7-bindings-wnogqe6l/browser-binding.json",
+        "sha256": "52a6a7c3d225c227a0dcc0f11085224d438cae9ae6c3d7f996802852068d9701"
+      },
+      "device": 55,
+      "inode": 1743692,
+      "links": 1,
+      "mode": 420,
+      "stableSingleFdRead": true
+    },
+    "buildBinding": {
+      "descriptor": {
+        "bytes": 151028,
+        "path": "/tmp/ovf-root-feature63-r7-bindings-wnogqe6l/build-binding.json",
+        "sha256": "eb8ff522e5fd7472db463b332b45881a889b4cc1c071c18c2d33e3733ea4644d"
+      },
+      "device": 55,
+      "inode": 1743689,
+      "links": 1,
+      "mode": 420,
+      "stableSingleFdRead": true
+    },
+    "captureAssignment": {
+      "descriptor": {
+        "bytes": 6958,
+        "path": "/tmp/ovf-root-feature63-r7-bindings-wnogqe6l/capture-assignment.json",
+        "sha256": "7291c791bfcc16f303f424b8df42bb927d2da388b97957af50123cb10de01984"
+      },
+      "device": 55,
+      "inode": 1743693,
+      "links": 1,
+      "mode": 420,
+      "stableSingleFdRead": true
+    },
+    "captureAssignmentActual": {
+      "descriptor": {
+        "bytes": 6958,
+        "path": "/tmp/ovf-feature63-r7-capture-control-bm4i57oz/capture-assignment.actual.json",
+        "sha256": "7291c791bfcc16f303f424b8df42bb927d2da388b97957af50123cb10de01984"
+      },
+      "device": 55,
+      "inode": 1743820,
+      "links": 1,
+      "mode": 384,
+      "stableSingleFdRead": true
+    },
+    "captureLaunchConsumed": {
+      "descriptor": {
+        "bytes": 189,
+        "path": "/tmp/ovf-feature63-r7-capture-control-bm4i57oz/capture-launch-consumed.json",
+        "sha256": "c256d5e2c776a8db535cc477211e1e2e76ef6ac66adb336d8a5e5c5d0a6e818e"
+      },
+      "device": 55,
+      "inode": 1743828,
+      "links": 1,
+      "mode": 384,
+      "stableSingleFdRead": true
+    },
+    "captureResult": {
+      "descriptor": {
+        "bytes": 1775,
+        "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r7/lifecycle/driver-result.json",
+        "sha256": "795b17232e40dc6628bbd8eba9a59cee7ed6357b64eda5f4c75c74a21efd02a7"
+      },
+      "device": 52,
+      "inode": 43007114,
+      "links": 1,
+      "mode": 420,
+      "stableSingleFdRead": true
+    },
+    "command": {
+      "descriptor": {
+        "bytes": 2133,
+        "path": "/tmp/ovf-feature63-r7-capture-control-bm4i57oz/command.json",
+        "sha256": "619c0da59f1ccc6f31dde7fe661df6b96536d089fbfe2f9a30852948b01f54d9"
+      },
+      "device": 55,
+      "inode": 1743827,
+      "links": 1,
+      "mode": 384,
+      "stableSingleFdRead": true
+    },
+    "driverEvents": {
+      "descriptor": {
+        "bytes": 418194,
+        "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r7/lifecycle/driver-events.ndjson",
+        "sha256": "8af0089d19817605629cbe52ac59c402c9b328fb59fcad0ab9feb2f63bd168b2"
+      },
+      "device": 52,
+      "inode": 43005570,
+      "links": 1,
+      "mode": 420,
+      "stableSingleFdRead": true
+    },
+    "independentClosure": {
+      "descriptor": {
+        "bytes": 311499,
+        "path": "/tmp/ovf-feature63-r7-capture-control-bm4i57oz/independent-closure.json",
+        "sha256": "b904f92c6127893d462f6cdf27d12b00d8718fe08966ef7bca6274ddca0b1888"
+      },
+      "device": 55,
+      "inode": 1745619,
+      "links": 1,
+      "mode": 384,
+      "stableSingleFdRead": true
+    },
+    "launch": {
+      "descriptor": {
+        "bytes": 2400,
+        "path": "/tmp/ovf-feature63-r7-capture-control-bm4i57oz/launch.json",
+        "sha256": "4c1d6c7c7bf978466116cc6d570396a2ae3b3dafd1a1fad384a29cf540d1efc1"
+      },
+      "device": 55,
+      "inode": 1743831,
+      "links": 1,
+      "mode": 384,
+      "stableSingleFdRead": true
+    },
+    "operatorDescriptorInventory": {
+      "descriptor": {
+        "bytes": 6657,
+        "path": "/tmp/ovf-feature63-r7-capture-execution-1hxb_yrj/result-and-control-descriptors.json",
+        "sha256": "ac861d63eddb85d2e9dc9af1a4e466dd3bc0711a6894564eee17a06da432c3cf"
+      },
+      "device": 55,
+      "inode": 1745665,
+      "links": 1,
+      "mode": 384,
+      "stableSingleFdRead": true
+    },
+    "operatorLaunch": {
+      "descriptor": {
+        "bytes": 451,
+        "path": "/tmp/ovf-feature63-r7-capture-execution-1hxb_yrj/operator-launch.json",
+        "sha256": "20dc4df994fc58a4e0fa34bdc11eaf8e5acedb9de819606353852dde9ef7d791"
+      },
+      "device": 55,
+      "inode": 1743819,
+      "links": 1,
+      "mode": 384,
+      "stableSingleFdRead": true
+    },
+    "operatorResult": {
+      "descriptor": {
+        "bytes": 963,
+        "path": "/tmp/ovf-feature63-r7-capture-execution-1hxb_yrj/operator-result.json",
+        "sha256": "f9d93d5c60dfb802705ca09c62ba4085509176cb6b1269b33e5554a509d23c0c"
+      },
+      "device": 55,
+      "inode": 1745620,
+      "links": 1,
+      "mode": 384,
+      "stableSingleFdRead": true
+    },
+    "packagingReceipt": {
+      "descriptor": {
+        "bytes": 88410,
+        "path": "/tmp/ovf-root-feature63-r7-bindings-wnogqe6l/root-fresh-package-result.json",
+        "sha256": "45052797c54765eba33fd2da564eb403b6a7d4764974cae603b64ba48f4a2e56"
+      },
+      "device": 55,
+      "inode": 1743687,
+      "links": 1,
+      "mode": 420,
+      "stableSingleFdRead": true
+    },
+    "prelaunchReadback": {
+      "descriptor": {
+        "bytes": 4053,
+        "path": "/tmp/ovf-feature63-r7-prelaunch-report-qyexlrq8/root-independent-prelaunch-readback.json",
+        "sha256": "de360bbc998a00a7866cbe89685a6f1557ce848d68f34ec49f3e38bbfec072c3"
+      },
+      "device": 55,
+      "inode": 1743789,
+      "links": 1,
+      "mode": 256,
+      "stableSingleFdRead": true
+    },
+    "productInventory": {
+      "descriptor": {
+        "bytes": 101264,
+        "path": "/tmp/ovf-main402-remaining-2e5-r1/tested-product-before.json",
+        "sha256": "582f809d9a4e0180dd3d59147b7edfd881b091334f715d86bd56ea93c9db4a06"
+      },
+      "device": 55,
+      "inode": 1714913,
+      "links": 1,
+      "mode": 420,
+      "stableSingleFdRead": true
+    },
+    "protectedInventory": {
+      "descriptor": {
+        "bytes": 74175,
+        "path": "/tmp/ovf-main402-remaining-2e5-r1/protected-before.json",
+        "sha256": "ed80088ef418debe90883929c364a588521815d14dbdd9703d8c6927c5855a5b"
+      },
+      "device": 55,
+      "inode": 1714915,
+      "links": 1,
+      "mode": 420,
+      "stableSingleFdRead": true
+    },
+    "reviewedSchema": {
+      "descriptor": {
+        "bytes": 3719,
+        "path": "/tmp/feature63-r7-custody-utility.ggy3gNvB/expectation-schema.json",
+        "sha256": "18d1444377e49c14120e7a9c399459de54e5757a889599a24ca4ef4b2c7862f2"
+      },
+      "device": 55,
+      "inode": 1743681,
+      "links": 1,
+      "mode": 420,
+      "stableSingleFdRead": true
+    },
+    "reviewedUtility": {
+      "descriptor": {
+        "bytes": 39374,
+        "path": "/tmp/feature63-r7-custody-utility.ggy3gNvB/fresh-r7-custody.py",
+        "sha256": "da53c2865998eb6a6851eeb99a4b7e3cae85ef0b474baffc90059a5c5623e824"
+      },
+      "device": 55,
+      "inode": 1743673,
+      "links": 1,
+      "mode": 420,
+      "stableSingleFdRead": true
+    },
+    "serverOwnership": {
+      "descriptor": {
+        "bytes": 1155,
+        "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r7/lifecycle/server-ownership.json",
+        "sha256": "31f92a5cbbb19a23409d30915db257a4486c4af77e3994d12564b20ef43d4cc0"
+      },
+      "device": 52,
+      "inode": 43005577,
+      "links": 1,
+      "mode": 420,
+      "stableSingleFdRead": true
+    },
+    "sourceBinding": {
+      "descriptor": {
+        "bytes": 183334,
+        "path": "/tmp/ovf-root-feature63-r7-bindings-wnogqe6l/source-binding.json",
+        "sha256": "4ecd4f3f681c23417fd46649cfe4f65639b8ceebbf14b31bb7e585a7d2fb8a07"
+      },
+      "device": 55,
+      "inode": 1743688,
+      "links": 1,
+      "mode": 420,
+      "stableSingleFdRead": true
+    }
+  },
+  "staticRelationships": {
+    "authorityCount": 15,
+    "automaticRetries": 0,
+    "captureInvocations": 1,
+    "driverAndIndependentClosureNativeKeySetsEqual": true,
+    "driverAndServerRawIdentityDeclarationsEqual": true,
+    "feature63Qualified": false,
+    "launchAndOperatorLauncherPidEqual": true,
+    "registeredNativeKeyCount": 25,
+    "slotReleasedByThisPreparation": false,
+    "unobservedDescendantsExcluded": false
+  }
+}

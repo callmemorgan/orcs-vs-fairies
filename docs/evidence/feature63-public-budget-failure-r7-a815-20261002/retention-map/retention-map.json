@@ -1,0 +1,287 @@
+{
+  "schema": "feature63-r7-failed-capture-external-retention-map-v1",
+  "status": "READY_FOR_ROOT_RETENTION_COPY_CUSTODY_STILL_PENDING",
+  "sourcePin": "a8152d0dc83dff49fb93f09606e7bbf2c3510894",
+  "feature63Status": {
+    "verified": 99,
+    "inProgress": 1,
+    "feature63Qualified": false
+  },
+  "scope": {
+    "transcriptWindowStart": "2026-10-02T09:18:00Z",
+    "repositoryEditedByThisMappingTask": false,
+    "sourceDirectoriesCopiedByThisMappingTask": false,
+    "databaseContentsRead": false,
+    "nativeCheckpointContentsRead": false,
+    "publicWireContentsRead": false,
+    "runtimeOrAuditExecuted": false,
+    "checkoutsDirtied": false
+  },
+  "manifestDefinition": {
+    "fileListSha256": "SHA-256 of sorted relative file paths, each followed by LF.",
+    "contentManifestSha256": "SHA-256 of sorted lines: relativePath, TAB, byteLength, TAB, decimal mode, TAB, file SHA-256, LF.",
+    "selection": "Copy every regular file recursively from each source directory unless the mapping says the source is an intentionally empty directory. Preserve file modes and verify the count, total bytes, file-list digest, and content-manifest digest after copying."
+  },
+  "suggestedPacketRoot": "docs/evidence/feature63-public-budget-failure-r7-a815-20261002",
+  "mappings": [
+    {
+      "role": "binding-execution",
+      "source": "/tmp/ovf-root-feature63-r7-binding-execution-8dh00qej",
+      "destination": "binding/execution",
+      "files": 3,
+      "bytes": 2295,
+      "fileListSha256": "febab2a13657a7685e9ea42b59ac9dd72ca4997d8e7b6303d8a6b0cd75243734",
+      "contentManifestSha256": "6f46d7a42afa1ec38b7c9fe78b5d46327851a22ce772abc770eb27a031115f84",
+      "evidence": "execution.json records one invocation, exit 0, no retry, no capture, and binds utility SHA-256 bbeb0bc68b2dd5cd24679f8ade43baa2403d748e9877a7e24bcf2c7fe1c1dc02."
+    },
+    {
+      "role": "generated-bindings",
+      "source": "/tmp/ovf-root-feature63-r7-bindings-wnogqe6l",
+      "destination": "binding/generated",
+      "files": 10,
+      "bytes": 542106,
+      "fileListSha256": "e545d681bdce8a756041f8350daae7ade5dd4afbfb2dbba5b6529bb4d34f6d89",
+      "contentManifestSha256": "438c989784c27561de344e7510131beb17cc4c8f0c2e7ffe19ed6d4d9baa945b",
+      "evidence": "root-binding-readback.json binds the complete output, assignment, launcher, disposition, fresh control directory, and source pin."
+    },
+    {
+      "role": "prelaunch-original-preparation",
+      "source": "/tmp/ovf-feature63-r7-prelaunch-preparation-architecture-Ey24e3td",
+      "destination": "prelaunch/original/preparation",
+      "files": 6,
+      "bytes": 103989,
+      "fileListSha256": "e9d5b4fec624d5334cb83fe6eea2764f6c7d82900a8ef5aae55a0865e9794a31",
+      "contentManifestSha256": "183eee7aa095c942c6777ee1e156aa7fcf246b131f466b758f7697f5f1c1a703",
+      "evidence": "preparation-manifest.json and syntax-evidence.json bind the 41,411-byte verifier candidate with SHA-256 6e1bb976f414f4575ac193429285313a534cb3809ecafb9967281dd0b780414a."
+    },
+    {
+      "role": "prelaunch-original-static-review",
+      "source": "/tmp/ovf-feature63-r7-prelaunch-static-review-j1xh8_wi",
+      "destination": "prelaunch/original/review",
+      "files": 1,
+      "bytes": 8098,
+      "fileListSha256": "f6f7ed97304057f655df0bb766bccf677927d74fedd3834c7009ae487f2cf89f",
+      "contentManifestSha256": "21ca9a5dd9cedde5366f77492547f87f4a558b17b821286844ae565bafbc480d",
+      "evidence": "review.json records PASS_STATIC_R7_PRELAUNCH_AUTHENTICATOR_RUNTIME_HELD and admits one verifier invocation without authorizing capture."
+    },
+    {
+      "role": "prelaunch-first-input",
+      "source": "/tmp/ovf-root-feature63-r7-prelaunch-input-czn3hzo_",
+      "destination": "prelaunch/original/input",
+      "files": 1,
+      "bytes": 1725,
+      "fileListSha256": "31fb19bdac862e62ded7a15e226066f4d6cd71d4ca1e5c69aeb85ecaefe55eaa",
+      "contentManifestSha256": "75eab97b314f46f0fb703c4756e6b697dcfcd20708e83b9a0ad0939f9cb71866",
+      "evidence": "expectation.json has SHA-256 8ae5a1a4bb745a70d57515e92197a9911b6409c765db3b13857017410f204235 and points to the first report directory."
+    },
+    {
+      "role": "prelaunch-first-report-empty",
+      "source": "/tmp/ovf-feature63-r7-prelaunch-report-izvdvxy7",
+      "destination": "prelaunch/original/report-empty",
+      "files": 0,
+      "bytes": 0,
+      "fileListSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "contentManifestSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "evidence": "The directory is empty. prelaunch/first-failure/disposition.json separately records originalReportEmpty true.",
+      "retentionNote": "Git does not preserve an empty directory. Root may retain a generated notice that names this source and these zero-file digests, while keeping the original disposition as the factual evidence."
+    },
+    {
+      "role": "prelaunch-first-execution",
+      "source": "/tmp/ovf-root-feature63-r7-prelaunch-execution-quz9c70o",
+      "destination": "prelaunch/original/execution",
+      "files": 3,
+      "bytes": 2529,
+      "fileListSha256": "febab2a13657a7685e9ea42b59ac9dd72ca4997d8e7b6303d8a6b0cd75243734",
+      "contentManifestSha256": "5ef83b4969ce5e4ddc862bce36d81a89feb45f64771102ed47233aa30af92b32",
+      "evidence": "execution.json records one invocation, exit 1, no retry, no capture, and stderr SHA-256 ce042caa7aec533e65dd583ac177308c5778d0b6dd1d94f0b982ef379c137b3c."
+    },
+    {
+      "role": "prelaunch-first-failure-disposition",
+      "source": "/tmp/ovf-root-r7-prelaunch-failure-disposition-r2fboxw0",
+      "destination": "prelaunch/original/failure",
+      "files": 1,
+      "bytes": 1471,
+      "fileListSha256": "af2f293ff0ef9baee50cc2961f80b3956d9052e8c10e7ab3fe40a9bb15e91d4d",
+      "contentManifestSha256": "700704d73a5eb6dc70d57a3f3743eddd7c2ed7375df11dc72e349dd3af7cab7f",
+      "evidence": "disposition.json records PRELAUNCH_VERIFIER_FORMAT_FAILURE_CAPTURE_UNUSED, Invalid octal inventory mode, zero capture invocations, and the empty first report."
+    },
+    {
+      "role": "prelaunch-corrected-input",
+      "source": "/tmp/ovf-root-feature63-r7-prelaunch-input-corrected-y3d9tpvr",
+      "destination": "prelaunch/corrected/input",
+      "files": 1,
+      "bytes": 1725,
+      "fileListSha256": "31fb19bdac862e62ded7a15e226066f4d6cd71d4ca1e5c69aeb85ecaefe55eaa",
+      "contentManifestSha256": "29e29e31806ff282122fef5458c2194597c8cdb6e1d2445b3e683824846c31da",
+      "evidence": "expectation.json has SHA-256 fee547e0c2879bdcf3415925ee2358afcdb3b8ee2dd843c64d5ad705a5fbe166 and differs from the first expectation only by reportDirectory."
+    },
+    {
+      "role": "prelaunch-octal-correction-preparation",
+      "source": "/tmp/ovf-feature63-r7-prelaunch-octal-correction-architecture-mkuAdGVP",
+      "destination": "prelaunch/corrected/preparation",
+      "files": 7,
+      "bytes": 54063,
+      "fileListSha256": "2cb6aa0861fb63765f70f9e3581b2e7b9ac92a99bfdcec06dc37b397c2cd6766",
+      "contentManifestSha256": "862e544373f0930dcb84807ef383a517f850cd36b485c463d0a030ad59ace601",
+      "evidence": "inverse-byte-proof.json and regex-only.diff bind the one-regex correction; corrected verifier SHA-256 is ca264de0ab515fa7c916a749a09d3b35b54ffbfccb50c7f8dd6a66db066657d0."
+    },
+    {
+      "role": "prelaunch-octal-correction-review",
+      "source": "/tmp/ovf-feature63-r7-prelaunch-octal-correction-static-review-vvup9ppi",
+      "destination": "prelaunch/corrected/review",
+      "files": 1,
+      "bytes": 9263,
+      "fileListSha256": "f6f7ed97304057f655df0bb766bccf677927d74fedd3834c7009ae487f2cf89f",
+      "contentManifestSha256": "f3c5bb9c6fa4ab358bf5a0c396b9bc6ebbbdf64e5da1834cae6b60fe0a494125",
+      "evidence": "review.json records PASS_STATIC_R7_PRELAUNCH_OCTAL_CORRECTION_RUNTIME_HELD and admits one corrected verifier invocation without authorizing capture."
+    },
+    {
+      "role": "prelaunch-corrected-execution",
+      "source": "/tmp/ovf-root-feature63-r7-prelaunch-corrected-execution-x78qzxrl",
+      "destination": "prelaunch/corrected/execution",
+      "files": 3,
+      "bytes": 1815,
+      "fileListSha256": "febab2a13657a7685e9ea42b59ac9dd72ca4997d8e7b6303d8a6b0cd75243734",
+      "contentManifestSha256": "820a65766eea37b84e78d953ae76a7c5629a35386dc5e754f56603d8314c832f",
+      "evidence": "execution.json records one invocation, exit 0, no retry, no capture, and corrected candidate SHA-256 ca264de0ab515fa7c916a749a09d3b35b54ffbfccb50c7f8dd6a66db066657d0."
+    },
+    {
+      "role": "prelaunch-corrected-report",
+      "source": "/tmp/ovf-feature63-r7-prelaunch-report-qyexlrq8",
+      "destination": "prelaunch/corrected/report",
+      "files": 1,
+      "bytes": 4053,
+      "fileListSha256": "f17bdcf7869c55898ee287f42f75ec59e1bd772bfc003717b428e9d5679fe4d3",
+      "contentManifestSha256": "65682c3d84db4bab1dd36837e4f47d2aa2966567c8ded7998e1e5d97dca02759",
+      "evidence": "root-independent-prelaunch-readback.json has SHA-256 de360bbc998a00a7866cbe89685a6f1557ce848d68f34ec49f3e38bbfec072c3 and records PASS_ROOT_EXPECTATION_BOUND_R7_PRELAUNCH_AUTHENTICATION_ONLY."
+    },
+    {
+      "role": "custody-utility-preparation",
+      "source": "/tmp/feature63-r7-custody-utility.ggy3gNvB",
+      "destination": "custody/utility",
+      "files": 4,
+      "bytes": 48493,
+      "fileListSha256": "3a04cfb9a43272f15c673801a2e2a9f75e806642d1c68a24ea5fa84958a5a2c1",
+      "contentManifestSha256": "cf2105672ed98821a4ab4780d721dd1ec41d1f1a8604383ce653c022bc7ae541",
+      "evidence": "manifest.json binds fresh-r7-custody.py at SHA-256 da53c2865998eb6a6851eeb99a4b7e3cae85ef0b474baffc90059a5c5623e824 and expectation-schema.json at SHA-256 18d1444377e49c14120e7a9c399459de54e5757a889599a24ca4ef4b2c7862f2."
+    },
+    {
+      "role": "custody-utility-review",
+      "source": "/tmp/ovf-feature63-r7-custody-static-review-kNGcTSln",
+      "destination": "custody/review",
+      "files": 2,
+      "bytes": 18637,
+      "fileListSha256": "b442a14db707060583aa7fb6e2929f65a95c1b28a3243321fbc6593ec0970d98",
+      "contentManifestSha256": "85668ea0073f32c370dce41c675ce6e33607401888e3e0d68ad6e7c7d65f5abf",
+      "evidence": "review.json records PASS_STATIC_R7_CUSTODY_UTILITY_POST_MATCH_FAILURE_SCOPE_RUNTIME_HELD with no blockers or required fixes."
+    },
+    {
+      "role": "extraction-schema-guide",
+      "source": "/tmp/ovf-feature63-r7-extraction-schema-guide-_2ix4h_c",
+      "destination": "unused-extraction-preparation/schema-guide",
+      "files": 1,
+      "bytes": 39331,
+      "fileListSha256": "6575d7eaa3a253256d6442b129ae90bf56140a5d27762ea331c9e3e8b0ef33f7",
+      "contentManifestSha256": "f1451d7a4dc0f43c299bbbe05d9a6bcd9de672a3cb88fab6c6223405e703ec87",
+      "evidence": "guide.json has SHA-256 2ce110c4cbc630ccdc2a71d359a71d63908bc8c8e916462b0db2f9b4c7e72c4e. It is a schema guide only; no extraction or audit was run."
+    },
+    {
+      "role": "capture-control",
+      "source": "/tmp/ovf-feature63-r7-capture-control-bm4i57oz",
+      "destination": "capture/control",
+      "files": 14,
+      "bytes": 1017551,
+      "fileListSha256": "a462936bff472802a7d23924669d3d195ecb63f4268b08400d2e52f2c6f34e83",
+      "contentManifestSha256": "1d8321bdba739ec5d42cbf2f6fcf43d114aad592bc5f242036b85f9a3ca33192",
+      "evidence": "independent-closure.json has SHA-256 b904f92c6127893d462f6cdf27d12b00d8718fe08966ef7bca6274ddca0b1888; result-and-control-descriptors.json in the operator directory binds all 14 files."
+    },
+    {
+      "role": "capture-operator",
+      "source": "/tmp/ovf-feature63-r7-capture-execution-1hxb_yrj",
+      "destination": "capture/operator",
+      "files": 43,
+      "bytes": 1507851,
+      "fileListSha256": "87774070874d6f8acb605f961b851ccb068c464d4affc7e547a6179994608cbf",
+      "contentManifestSha256": "61d8fdb07075869d2f8897f28a72d5813b4f8ed1e13ff44d027bb0c19ec2985c",
+      "evidence": "finite-readback.json has SHA-256 256beb4efa1989570313b486d270bdce6c818e4ff0c90d26b4d150dd73b8759f; result-and-control-descriptors.json has SHA-256 ac861d63eddb85d2e9dc9af1a4e466dd3bc0711a6894564eee17a06da432c3cf; operator-result.json has SHA-256 f9d93d5c60dfb802705ca09c62ba4085509176cb6b1269b33e5554a509d23c0c."
+    },
+    {
+      "role": "root-failure-custody-expectation",
+      "source": "/tmp/ovf-root-feature63-r7-failure-custody-expectation-nya_z2g8",
+      "destination": "custody/root-expectation",
+      "files": 2,
+      "bytes": 14274,
+      "fileListSha256": "5e76163aff2baaae96f333d0d6b83fd7390d2c573e083da1ad6ba16ffd9e68c5",
+      "contentManifestSha256": "6c6ee00fa6103d990c9f6b0be0402b77df3a6379e83fa28f0f3f06ef2523264f",
+      "evidence": "expectation.json has SHA-256 55f2d2874acfb0bb4b1515abb5f965620a549d71869725fa73fd59d4f300d2a2; root-construction-readback.json records 25 unique closure-equal native keys, separate wrapper exit evidence, stat-only raw identity, clean pinned checkouts, and custodyUtilityExecuted false."
+    }
+  ],
+  "alreadyRetainedReferences": [
+    {
+      "role": "rejected-reusable-prelaunch-verifier-and-compatibility-rejection",
+      "location": "docs/evidence/feature63-public-owner2-arrival-r7-preparation-20261002/prelaunch-original-rejection",
+      "action": "Reference the already committed evidence; do not duplicate its external source."
+    },
+    {
+      "role": "r7-reviewed-static-packet-and-independent-review",
+      "location": "docs/evidence/feature63-public-owner2-arrival-r7-preparation-20261002",
+      "action": "Reference the committed packet as provenance for the binding execution; do not recopy its pre-import temporary directories."
+    }
+  ],
+  "doNotCopyOrRead": [
+    "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r7/server-data/server.sqlite",
+    "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r7/native-collector/native-wave-checkpoint-01.json",
+    "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r7/public/human-one-wire.ndjson",
+    "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r7/public/human-two-wire.ndjson"
+  ],
+  "captureFacts": {
+    "captureInvocations": 1,
+    "automaticRetries": 0,
+    "failureType": "RuntimeError",
+    "failureMessage": "Auditor public-input 64 MiB budget exceeded; bytes preserved",
+    "publicInputBytes": 67252066,
+    "publicInputLimit": 67108864,
+    "excessBytes": 143202,
+    "registeredNativeCount": 25,
+    "wrapperClosedSeparately": true,
+    "finiteKnownLifetimeCountIncludingConcreteLauncher": 27,
+    "nativeCheckpointCount": 1,
+    "nativeCheckpointAudited": false,
+    "slotReleased": false,
+    "rootCustodyPending": true
+  },
+  "flags": [
+    {
+      "id": "custody-output-not-yet-created",
+      "level": "required-before-final-seal",
+      "detail": "The reviewed custody utility has not run. The final packet must add its one-shot execution receipt, root lifetime disposition, raw custody receipt, and later slot-release receipt. This map is intentionally pre-custody."
+    },
+    {
+      "id": "raw-remains-active-for-root-custody",
+      "level": "attention",
+      "detail": "The expectation records the raw database by stat only as device 52, inode 43005572, 128888832 bytes, mode 0644, one link. Do not copy, hash, query, or open it outside the reviewed root custody utility."
+    },
+    {
+      "id": "empty-first-report",
+      "level": "attention",
+      "detail": "The first report directory contains zero files. Preserve its emptiness through the first failure disposition and, if desired, a root-generated retention notice."
+    },
+    {
+      "id": "sequential-inventory-copy",
+      "level": "attention",
+      "detail": "Root should reauthenticate every mapped source and retained copy against the counts, modes, sizes, and digests before sealing the packet."
+    },
+    {
+      "id": "provider-identity",
+      "level": "attention",
+      "detail": "The static review records requested model gpt-5.6-sol, actual provider/model-family identity unverified, and no Claude review."
+    }
+  ],
+  "rootCopyOrder": [
+    "Copy and verify the immutable preparation, review, binding, prelaunch, capture-control, and operator mappings above without opening excluded payloads.",
+    "Retain the zero-file first-report fact through the existing failure disposition.",
+    "Execute the reviewed custody utility once only after root reauthenticates its expectation and all authority inputs.",
+    "Add the custody execution outputs and slot-release receipt to the packet.",
+    "Create a final packet inventory and read back every original and retained copy before appending the decision trail and committing."
+  ]
+}

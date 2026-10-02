@@ -1,0 +1,11 @@
+--- /tmp/ovf-feature63-r7-prelaunch-preparation-architecture-Ey24e3td/authenticate-prelaunch-r7.py
++++ /tmp/ovf-feature63-r7-prelaunch-octal-correction-architecture-mkuAdGVP/authenticate-prelaunch-r7.py
+@@ -228,7 +228,7 @@
+         require(name not in result, 'Duplicate inventory path: ' + name)
+         permission = row['mode']
+         if type(permission) is str:
+-            require(re.fullmatch('0?[0-7]{3,4}', permission), 'Invalid octal inventory mode')
++            require(re.fullmatch('(?:0o)?0?[0-7]{3,4}', permission), 'Invalid octal inventory mode')
+             permission = int(permission, 8)
+         require(type(permission) is int and 0 <= permission <= 0o7777, 'Invalid inventory mode')
+         require(type(row['bytes']) is int and 0 <= row['bytes'] <= MAX_MEMBER_BYTES,

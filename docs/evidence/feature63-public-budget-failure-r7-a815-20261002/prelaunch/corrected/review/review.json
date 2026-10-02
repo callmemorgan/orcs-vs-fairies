@@ -1,0 +1,227 @@
+{
+  "actualProviderIdentity": "unverified",
+  "blockers": [],
+  "candidate": {
+    "assertNodeCount": 0,
+    "bytes": 41418,
+    "correctedExpression": "re.fullmatch('(?:0o)?0?[0-7]{3,4}', permission)",
+    "correctedLine": 231,
+    "lines": 724,
+    "mode": 256,
+    "path": "/tmp/ovf-feature63-r7-prelaunch-octal-correction-architecture-mkuAdGVP/authenticate-prelaunch-r7.py",
+    "sha256": "ca264de0ab515fa7c916a749a09d3b35b54ffbfccb50c7f8dd6a66db066657d0",
+    "syntaxParsedWithoutExecution": true
+  },
+  "candidateExecuted": false,
+  "candidateImported": false,
+  "claudeUsed": false,
+  "companions": [
+    {
+      "bytes": 2523,
+      "mode": 256,
+      "path": "/tmp/ovf-feature63-r7-prelaunch-octal-correction-architecture-mkuAdGVP/CLI-and-schema.md",
+      "sha256": "fd242c17c2c7028860d3a89964741ee4d66198b6a4d24a53dbe8539868fc3efb"
+    },
+    {
+      "bytes": 4376,
+      "mode": 256,
+      "path": "/tmp/ovf-feature63-r7-prelaunch-octal-correction-architecture-mkuAdGVP/expectation-schema.json",
+      "sha256": "b4797a20a11d4ec8d488b46612e1e747b91bd9ea037aafc21337777f5294dcc7"
+    },
+    {
+      "bytes": 1090,
+      "mode": 256,
+      "path": "/tmp/ovf-feature63-r7-prelaunch-octal-correction-architecture-mkuAdGVP/inverse-byte-proof.json",
+      "sha256": "6744d0e6c146d92c7aaec0d12866ba12e4e8a17e83a619f614827a2e08a6d85d"
+    },
+    {
+      "bytes": 794,
+      "mode": 256,
+      "path": "/tmp/ovf-feature63-r7-prelaunch-octal-correction-architecture-mkuAdGVP/regex-only.diff",
+      "sha256": "fca72a61101536b5091a939757c87d09bdab0c75b54aa18e23d3cd7e8c6e1089"
+    },
+    {
+      "bytes": 589,
+      "mode": 256,
+      "path": "/tmp/ovf-feature63-r7-prelaunch-octal-correction-architecture-mkuAdGVP/syntax-evidence.json",
+      "sha256": "bf28477af0c3c0a044783d45efb7401c8c70c3750ed0dfdaaacc30ff6e2e3551"
+    }
+  ],
+  "correctionAssessment": {
+    "correctionCoversEveryObservedProductAndProtectedModeValue": true,
+    "correctionPreservesPreviousAcceptedLanguage": true,
+    "failureCauseReproducedFromAuthenticatedStaticDefinitions": true,
+    "modeStillNormalizedByIntBase8AndBoundedTo07777": true,
+    "remainingStaticBlockers": [],
+    "scopeLimitedToRequiredCompatibilityFix": true
+  },
+  "currentBindingControlOrReportStateInspected": false,
+  "databaseProfileCollectorOrCheckpointAccessed": false,
+  "executionDisposition": {
+    "allLiveBindingControlReportProcessListenerAndSlotGatesRemainMandatory": true,
+    "captureAuthorizedByThisReview": false,
+    "captureRemainsRootHeld": true,
+    "correctedVerifierExecutionAdmitted": true,
+    "maximumCorrectedVerifierExecutionsAdmitted": 1,
+    "requiredCandidateSha256": "ca264de0ab515fa7c916a749a09d3b35b54ffbfccb50c7f8dd6a66db066657d0",
+    "requiredExpectationSha256": "fee547e0c2879bdcf3415925ee2358afcdb3b8ee2dd843c64d5ad705a5fbe166",
+    "requiredInvocationConditions": [
+      "Use the reviewed Python executable without -O or -OO.",
+      "Remove PYTHONOPTIMIZE from the environment.",
+      "Execute the corrected candidate path with the fresh expectation path and expectation SHA-256 as its only two arguments.",
+      "Reauthenticate the corrected candidate and fresh expectation exact bytes immediately before execution.",
+      "Do not rerun the rejected candidate or reuse its original report directory."
+    ],
+    "runtimeOrCaptureOutcomePredicted": false
+  },
+  "failureDisposition": {
+    "bytes": 1471,
+    "liveStateIndependentlyProbedByThisReview": false,
+    "mode": 420,
+    "path": "/tmp/ovf-root-r7-prelaunch-failure-disposition-r2fboxw0/disposition.json",
+    "rootRecordedCaptureInvocationCount": 0,
+    "rootRecordedCaptureSlotConsumed": false,
+    "rootRecordedDatabaseOrProfileCreated": false,
+    "rootRecordedFreshPrefixEntries": [
+      "dist",
+      "server"
+    ],
+    "rootRecordedOriginalReportEmpty": true,
+    "sha256": "256163fac13663c47c937d46ec4250a74066768ed4666142ab4e7ea633419fcf",
+    "status": "PRELAUNCH_VERIFIER_FORMAT_FAILURE_CAPTURE_UNUSED"
+  },
+  "freshExpectation": {
+    "authoritativeBindingLauncherAssignmentDispositionAndSourcePinDescriptorsUnchanged": true,
+    "bytes": 1725,
+    "contractValidationPassed": true,
+    "mode": 256,
+    "onlyObjectChangeFromPriorExpectation": "reportDirectory",
+    "path": "/tmp/ovf-root-feature63-r7-prelaunch-input-corrected-y3d9tpvr/expectation.json",
+    "reportDirectory": "/tmp/ovf-feature63-r7-prelaunch-report-qyexlrq8",
+    "sha256": "fee547e0c2879bdcf3415925ee2358afcdb3b8ee2dd843c64d5ad705a5fbe166",
+    "sourcePin": "a8152d0dc83dff49fb93f09606e7bbf2c3510894"
+  },
+  "inventoryFormatAuthentication": {
+    "additionalAcceptedLowercasePrefixForms": [
+      "0o644",
+      "0o0644"
+    ],
+    "correctedRegexAcceptsAllObservedModeValues": true,
+    "invalidSampleFormsRemainRejected": [
+      "0O644",
+      "0x644",
+      "644x",
+      "888",
+      ""
+    ],
+    "octalConversionOf0o644": 420,
+    "previouslyAcceptedFormsRemainAccepted": [
+      "644",
+      "0644"
+    ],
+    "product": {
+      "bytes": 101264,
+      "distinctModeValues": [
+        "0o644"
+      ],
+      "mode": 420,
+      "modeValueTypes": [
+        "string"
+      ],
+      "path": "/tmp/ovf-main402-remaining-2e5-r1/tested-product-before.json",
+      "rowCount": 570,
+      "sha256": "582f809d9a4e0180dd3d59147b7edfd881b091334f715d86bd56ea93c9db4a06"
+    },
+    "protected": {
+      "bytes": 74175,
+      "distinctModeValues": [
+        "0o644"
+      ],
+      "mode": 420,
+      "modeValueTypes": [
+        "string"
+      ],
+      "path": "/tmp/ovf-main402-remaining-2e5-r1/protected-before.json",
+      "rowCount": 397,
+      "sha256": "ed80088ef418debe90883929c364a588521815d14dbdd9703d8c6927c5855a5b"
+    }
+  },
+  "inverseProof": {
+    "byteLengthDelta": 7,
+    "changedLines": [
+      231
+    ],
+    "diffHunks": 1,
+    "lineCountUnchanged": true,
+    "originalCandidate": {
+      "bytes": 41411,
+      "mode": 256,
+      "path": "/tmp/ovf-feature63-r7-prelaunch-preparation-architecture-Ey24e3td/authenticate-prelaunch-r7.py",
+      "sha256": "6e1bb976f414f4575ac193429285313a534cb3809ecafb9967281dd0b780414a"
+    },
+    "otherByteChanges": false,
+    "regexOnlyDiffMatchesFreshDiffOutput": true,
+    "reversingSingleSubstitutionReproducesOriginalBytes": true
+  },
+  "preparationManifest": {
+    "allSixManifestArtifactPathsBytesDigestsAndModesMatch": true,
+    "bytes": 3273,
+    "mode": 256,
+    "path": "/tmp/ovf-feature63-r7-prelaunch-octal-correction-architecture-mkuAdGVP/preparation-manifest.json",
+    "sha256": "0b0ddb8e2d509cacd89ddc46f7c08ece0a411a7ede97fcf691150aaa0f588dcc"
+  },
+  "priorFailedExecution": {
+    "automaticRetries": 0,
+    "candidateSha256": "6e1bb976f414f4575ac193429285313a534cb3809ecafb9967281dd0b780414a",
+    "captureLaunched": false,
+    "executionRecord": {
+      "bytes": 1435,
+      "mode": 420,
+      "path": "/tmp/ovf-root-feature63-r7-prelaunch-execution-quz9c70o/execution.json",
+      "sha256": "8d25e7865b03d2f846433729f85adb07c16a35b543f6f8b18b019ba89ea2db92"
+    },
+    "exitCode": 1,
+    "expectationSha256": "8ae5a1a4bb745a70d57515e92197a9911b6409c765db3b13857017410f204235",
+    "failure": "Invalid octal inventory mode",
+    "failureLine": 231,
+    "stderr": {
+      "bytes": 1094,
+      "mode": 420,
+      "path": "/tmp/ovf-root-feature63-r7-prelaunch-execution-quz9c70o/stderr",
+      "sha256": "ce042caa7aec533e65dd583ac177308c5778d0b6dd1d94f0b982ef379c137b3c"
+    },
+    "stdout": {
+      "bytes": 0,
+      "mode": 420,
+      "path": "/tmp/ovf-root-feature63-r7-prelaunch-execution-quz9c70o/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "successfulStdoutProduced": false
+  },
+  "processOrPortProbesPerformed": false,
+  "providerOrModelFamilyAuthenticated": false,
+  "qualification": "Static review of the octal-format correction only. The review admits at most one corrected-verifier execution. It does not authorize capture or establish launch success, native custody, extraction, audit, feature63 qualification, or complete descendant exclusion.",
+  "repositoryModified": false,
+  "requestedReviewerModel": "gpt-5.6-sol",
+  "runtimeExecutedByThisReview": false,
+  "schema": "feature63-r7-prelaunch-octal-correction-independent-static-review-v1",
+  "status": "PASS_STATIC_R7_PRELAUNCH_OCTAL_CORRECTION_RUNTIME_HELD",
+  "unchangedGateReview": {
+    "allSourceOutsideLine231ByteIdenticalToPriorReviewedCandidate": true,
+    "alwaysActiveRequireGatesUnchanged": true,
+    "captureLauncherIsNeverExecutedByVerifier": true,
+    "exclusiveExternalReportWriteRemainsTheOnlyFilesystemWrite": true,
+    "finalFileDirectorySetControlPrefixProcessListenerAndSlotRechecksUnchanged": true,
+    "inventoryPathTraversalDatabaseProfileSymlinkAndNonregularRejectionsUnchanged": true,
+    "launcherReconstructionAndStaticParseUnchanged": true,
+    "optimizationGuardUnchanged": true,
+    "priorIndependentReview": {
+      "bytes": 8098,
+      "path": "/tmp/ovf-feature63-r7-prelaunch-static-review-j1xh8_wi/review.json",
+      "sha256": "cf82c12fc03a192bfe0c74652dce2ad954d589e823c0ac26083fa893b7017d24"
+    },
+    "priorRuntimeFailureExposedMissedInventoryFormatCompatibility": true,
+    "rootExpectationAndFixedAuthorityBindingsUnchanged": true,
+    "stableSingleDescriptorReadAndParseCacheUnchanged": true
+  }
+}

@@ -1,0 +1,470 @@
+{
+  "schema": "feature63-r7-public-diagnosis-v1",
+  "scope": {
+    "readOnly": true,
+    "inputCount": 10,
+    "publicInputCount": 9,
+    "producerInputCount": 1,
+    "noRetriesPerformed": true,
+    "noNativePrivateDatabaseCheckpointAuditControlRuntimeOrProfileInputAccess": true
+  },
+  "identity": {
+    "sourcePin": "a8152d0dc83dff49fb93f09606e7bbf2c3510894",
+    "matchId": "def0d24e-8c4a-45cf-b654-c2b017c2a1a2",
+    "lobbyId": "6f12251c-c5f5-4036-8485-2ca2f263ea4d",
+    "expectedTeams": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "expectedControllers": [
+      "external",
+      "external",
+      "ai",
+      "ai"
+    ]
+  },
+  "producerContract": {
+    "windowTicks": 400,
+    "frameStep": 4,
+    "budgetComparison": "retainedBytes > maximum",
+    "wirePayloadPersistedBeforeParsing": true,
+    "owner2ApproachRule": "one or more live, owned, non-worker owner-2 units at the common HQ level and within 12 world units, in both public player views",
+    "latchRule": "round the later renewed attack-move applied tick up to the four-tick frame cadence",
+    "frozenPredicate": "coverage and both humans alive, accepted command owners [0,1], human combat owners [0,1], and human attack targets [2,3]"
+  },
+  "completionState": {
+    "publicResultsValue": null,
+    "publicCleanupValue": null,
+    "filesStillAtInitializedNull": [
+      "public-results.json",
+      "public-cleanup.json"
+    ],
+    "selectedCandidateIndex": null,
+    "candidateCount": 292,
+    "positivePublicWindowCount": 0,
+    "positivePublicWindowIndexes": [],
+    "publicCandidatePassed": false
+  },
+  "ordinaryUiAttacks": {
+    "occurredBeforeCaptureStopped": true,
+    "acceptedCount": 4,
+    "initialStagingAttacks": [
+      {
+        "profile": "human-one",
+        "side": 0,
+        "actionId": "59061640-d765-461b-beb7-57400d4a6f6d",
+        "reason": "defend the same allied HQ",
+        "beganAt": "2026-10-02T09:55:22.546Z",
+        "acceptedAt": "2026-10-02T09:55:22.669Z",
+        "displayedTick": 68,
+        "eligibilityFrameTick": 68,
+        "eligibilityWireOrdinal": 19,
+        "commandWireOrdinal": 24,
+        "ackWireOrdinal": 25,
+        "clientSeq": 1,
+        "appliedTick": 88,
+        "eligibleCommandedIds": [
+          7
+        ],
+        "target": {
+          "type": "attackMove",
+          "ids": [
+            7
+          ],
+          "x": 21.6118745803833,
+          "y": 19.566874504089355,
+          "level": 0,
+          "queued": false
+        },
+        "accepted": true
+      },
+      {
+        "profile": "human-two",
+        "side": 1,
+        "actionId": "311ecafe-fc05-4234-8096-aa6f105388f2",
+        "reason": "defend the same allied HQ",
+        "beganAt": "2026-10-02T09:55:23.929Z",
+        "acceptedAt": "2026-10-02T09:55:24.154Z",
+        "displayedTick": 88,
+        "eligibilityFrameTick": 88,
+        "eligibilityWireOrdinal": 18,
+        "commandWireOrdinal": 25,
+        "ackWireOrdinal": 26,
+        "clientSeq": 1,
+        "appliedTick": 116,
+        "eligibleCommandedIds": [
+          14
+        ],
+        "target": {
+          "type": "attackMove",
+          "ids": [
+            14
+          ],
+          "x": 21.6118745803833,
+          "y": 19.566874504089355,
+          "level": 0,
+          "queued": false
+        },
+        "accepted": true
+      }
+    ],
+    "owner2ApproachReleaseAttacks": [
+      {
+        "profile": "human-one",
+        "side": 0,
+        "actionId": "577f42c6-3a68-4cf8-b5cc-05829ec7c915",
+        "reason": "public combat from AI owner 2 approaches the common HQ",
+        "beganAt": "2026-10-02T09:56:43.326Z",
+        "acceptedAt": "2026-10-02T09:56:43.451Z",
+        "displayedTick": 1656,
+        "eligibilityFrameTick": 1656,
+        "eligibilityWireOrdinal": 420,
+        "commandWireOrdinal": 425,
+        "ackWireOrdinal": 426,
+        "clientSeq": 3,
+        "appliedTick": 1676,
+        "eligibleCommandedIds": [
+          7
+        ],
+        "target": {
+          "type": "attackMove",
+          "ids": [
+            7
+          ],
+          "x": 22.66562557220459,
+          "y": 20.815625190734863,
+          "level": 0,
+          "queued": false
+        },
+        "accepted": true
+      },
+      {
+        "profile": "human-two",
+        "side": 1,
+        "actionId": "3ee19f48-ba3a-415a-a786-c115b656d180",
+        "reason": "public combat from AI owner 2 approaches the common HQ",
+        "beganAt": "2026-10-02T09:56:44.759Z",
+        "acceptedAt": "2026-10-02T09:56:44.969Z",
+        "displayedTick": 1680,
+        "eligibilityFrameTick": 1680,
+        "eligibilityWireOrdinal": 420,
+        "commandWireOrdinal": 426,
+        "ackWireOrdinal": 428,
+        "clientSeq": 3,
+        "appliedTick": 1705,
+        "eligibleCommandedIds": [
+          14
+        ],
+        "target": {
+          "type": "attackMove",
+          "ids": [
+            14
+          ],
+          "x": 22.66562557220459,
+          "y": 20.815625190734863,
+          "level": 0,
+          "queued": false
+        },
+        "accepted": true
+      }
+    ],
+    "acquisitionLatchStartTick": 1708,
+    "wireCommandAndAckCrossChecksPassed": true
+  },
+  "owner2Timing": {
+    "commonHqId": 1,
+    "byProfile": {
+      "human-one": {
+        "firstVisible": {
+          "tick": 1644,
+          "capturedAt": "2026-10-02T09:56:41.875Z",
+          "wireOrdinal": 417,
+          "owner2VisibleIds": [
+            21
+          ]
+        },
+        "firstApproachEligible": {
+          "tick": 1652,
+          "capturedAt": "2026-10-02T09:56:42.282Z",
+          "wireOrdinal": 419,
+          "owner2ApproachIds": [
+            21
+          ]
+        },
+        "firstOwner2Combat": {
+          "eventId": "a30885d0-e1d4-4056-add3-8d96d7d8a3d2",
+          "tick": 1873,
+          "side": 2,
+          "source": 91,
+          "target": 14,
+          "amount": 19,
+          "targetSide": 1,
+          "profile": "human-one",
+          "wireOrdinal": 477,
+          "frameTick": 1876
+        },
+        "lastSnapshot": {
+          "tick": 2300,
+          "capturedAt": "2026-10-02T09:57:14.811Z",
+          "wireOrdinal": 583
+        }
+      },
+      "human-two": {
+        "firstVisible": {
+          "tick": 1644,
+          "capturedAt": "2026-10-02T09:56:41.852Z",
+          "wireOrdinal": 411,
+          "owner2VisibleIds": [
+            21
+          ]
+        },
+        "firstApproachEligible": {
+          "tick": 1652,
+          "capturedAt": "2026-10-02T09:56:42.258Z",
+          "wireOrdinal": 413,
+          "owner2ApproachIds": [
+            21
+          ]
+        },
+        "firstOwner2Combat": {
+          "eventId": "a30885d0-e1d4-4056-add3-8d96d7d8a3d2",
+          "tick": 1873,
+          "side": 2,
+          "source": 91,
+          "target": 14,
+          "amount": 19,
+          "targetSide": 1,
+          "profile": "human-two",
+          "wireOrdinal": 471,
+          "frameTick": 1876
+        },
+        "lastSnapshot": {
+          "tick": 2300,
+          "capturedAt": "2026-10-02T09:57:14.834Z",
+          "wireOrdinal": 577
+        }
+      }
+    },
+    "releaseAppliedTicks": {
+      "human-one": 1676,
+      "human-two": 1705
+    },
+    "acquisitionLatchStartTick": 1708,
+    "firstAttributedCombatInAuthorizedWire": {
+      "sourceOwner2": {
+        "eventId": "a30885d0-e1d4-4056-add3-8d96d7d8a3d2",
+        "tick": 1873,
+        "side": 2,
+        "source": 91,
+        "target": 14,
+        "amount": 19,
+        "targetSide": 1,
+        "profile": "human-one",
+        "wireOrdinal": 477,
+        "frameTick": 1876
+      },
+      "targetOwner2": null
+    }
+  },
+  "combat": {
+    "uniqueAttributedWireEventCount": 40,
+    "eventSourceOwnerCounts": {
+      "0": 16,
+      "1": 8,
+      "2": 1,
+      "3": 15
+    },
+    "eventTargetOwnerCounts": {
+      "0": 15,
+      "1": 1,
+      "3": 24
+    },
+    "firstAttributedEvents": {
+      "sourceOwner0": {
+        "eventId": "87f7b1d1-e3d9-499a-a741-f02f7dffa00d",
+        "tick": 1891,
+        "side": 0,
+        "source": 5,
+        "target": 28,
+        "amount": 2,
+        "targetSide": 3,
+        "profile": "human-one",
+        "wireOrdinal": 481,
+        "frameTick": 1892
+      },
+      "targetOwner0": {
+        "eventId": "912fd78e-bdbf-4ad0-a622-4a90cbbf123c",
+        "tick": 1749,
+        "side": 3,
+        "source": 92,
+        "target": 5,
+        "amount": 14,
+        "targetSide": 0,
+        "profile": "human-one",
+        "wireOrdinal": 446,
+        "frameTick": 1752
+      },
+      "sourceOwner1": {
+        "eventId": "b832138d-0004-4f5d-a44b-656c90b953ea",
+        "tick": 1896,
+        "side": 1,
+        "source": 14,
+        "target": 28,
+        "amount": 17.4,
+        "targetSide": 3,
+        "profile": "human-one",
+        "wireOrdinal": 482,
+        "frameTick": 1896
+      },
+      "targetOwner1": {
+        "eventId": "a30885d0-e1d4-4056-add3-8d96d7d8a3d2",
+        "tick": 1873,
+        "side": 2,
+        "source": 91,
+        "target": 14,
+        "amount": 19,
+        "targetSide": 1,
+        "profile": "human-one",
+        "wireOrdinal": 477,
+        "frameTick": 1876
+      },
+      "sourceOwner2": {
+        "eventId": "a30885d0-e1d4-4056-add3-8d96d7d8a3d2",
+        "tick": 1873,
+        "side": 2,
+        "source": 91,
+        "target": 14,
+        "amount": 19,
+        "targetSide": 1,
+        "profile": "human-one",
+        "wireOrdinal": 477,
+        "frameTick": 1876
+      },
+      "targetOwner2": null,
+      "sourceOwner3": {
+        "eventId": "912fd78e-bdbf-4ad0-a622-4a90cbbf123c",
+        "tick": 1749,
+        "side": 3,
+        "source": 92,
+        "target": 5,
+        "amount": 14,
+        "targetSide": 0,
+        "profile": "human-one",
+        "wireOrdinal": 446,
+        "frameTick": 1752
+      },
+      "targetOwner3": {
+        "eventId": "87f7b1d1-e3d9-499a-a741-f02f7dffa00d",
+        "tick": 1891,
+        "side": 0,
+        "source": 5,
+        "target": 28,
+        "amount": 2,
+        "targetSide": 3,
+        "profile": "human-one",
+        "wireOrdinal": 481,
+        "frameTick": 1892
+      }
+    },
+    "bestRetainedCandidate": {
+      "index": 262,
+      "startTick": 1748,
+      "endTick": 2148,
+      "coveragePassed": true,
+      "bothHumansAliveThroughout": true,
+      "humanOwners": [
+        0,
+        1
+      ],
+      "humanTargetOwners": [
+        3
+      ],
+      "aiOwners": [
+        2,
+        3
+      ],
+      "combatEventCount": 40,
+      "firstCombatEvent": {
+        "eventId": "912fd78e-bdbf-4ad0-a622-4a90cbbf123c",
+        "tick": 1749,
+        "side": 3,
+        "source": 92,
+        "target": 5,
+        "amount": 14,
+        "targetSide": 0,
+        "profile": "human-one",
+        "wireOrdinal": 446,
+        "frameTick": 1752
+      },
+      "lastCombatEvent": {
+        "eventId": "6c1c88dc-b8d1-4ea1-a402-09b762561baa",
+        "tick": 2041,
+        "side": 1,
+        "source": 14,
+        "target": 92,
+        "amount": 15,
+        "targetSide": 3,
+        "profile": "human-one",
+        "wireOrdinal": 519,
+        "frameTick": 2044
+      },
+      "publicPredicatePassed": false
+    }
+  },
+  "budget": {
+    "maximumBytes": 67108864,
+    "maximumMiB": 64,
+    "authorizedPublicInputBytesAtRest": 67252066,
+    "authorizedPublicInputExcessOverMaximum": 143202,
+    "reconstructedKnownProducerOutputBytesAtEnd": 125870899,
+    "latestPossibleCrossingFromReconstructablePublicWrites": {
+      "time": "2026-10-02T09:56:22.219Z",
+      "event": {
+        "kind": "derived-append",
+        "file": "human-one-public-frames.ndjson",
+        "bytes": 50654
+      },
+      "reconstructedRetainedBytes": 67126335,
+      "maximum": 67108864,
+      "excess": 17471
+    },
+    "exactProducerRecordedBreachUnavailable": true,
+    "reasonExactRecordedBreachUnavailable": "public-results.json and public-cleanup.json remain at their initialized null values, and the authorized inputs do not include errors.ndjson or public-status.ndjson. The producer also counts retained public outputs outside this ten-file diagnosis allowlist.",
+    "interpretation": "The reconstructed crossing omits status, error, and browser-ownership bytes, so the producer's actual crossing occurred no later than this event. The exact nine authorized public files now exceed the unchanged 64 MiB limit on their own."
+  },
+  "diagnosis": {
+    "failureClass": "retained-byte budget exhaustion before a positive frozen-predicate window was selected",
+    "publicEvidence": "Both humans completed accepted ordinary UI attack moves for the owner-2 approach and the acquisition latch opened. The public wire later contains combat by both humans against owner 3, while no retained candidate covers human attack targets [2,3]. The selected index stayed null and the result and cleanup summaries were never finalized.",
+    "owner2Finding": "Owner 2 became publicly approach-eligible and triggered the renewed attack pair, but no attributed owner-2 combat or human attack against owner 2 appears in the authorized wire before capture stopped.",
+    "frozenPredicateChanged": false
+  },
+  "recommendation": {
+    "kind": "bounded ordinary-UI acquisition timing adjustment",
+    "text": "Keep the frozen predicate and 64 MiB limit. Start the two ordinary UI staging moves later, close to the first public owner-2 approach, so the retained full-wire history spends fewer bytes before the renewed attack pair. Preserve one attempt, the four-tick cadence, complete payload retention, and the same owner-2 approach rule. This recommendation does not claim that a retry will pass.",
+    "basis": "The renewed ordinary UI attacks were accepted before capture stopped, but owner-2 combat was still absent while the retained evidence already exceeded the byte limit and owner-3 combat dominated the retained candidate."
+  },
+  "validation": {
+    "jsonDuplicateKeysRejected": true,
+    "ndjsonStreamedLineByLine": true,
+    "wireOrdinalsContiguous": {
+      "human-one": true,
+      "human-two": true
+    },
+    "profileSummaries": {
+      "human-one": {
+        "wireRows": 583,
+        "lastWireOrdinal": 583,
+        "snapshotCount": 576,
+        "helloCount": 1
+      },
+      "human-two": {
+        "wireRows": 577,
+        "lastWireOrdinal": 577,
+        "snapshotCount": 570,
+        "helloCount": 1
+      }
+    }
+  }
+}

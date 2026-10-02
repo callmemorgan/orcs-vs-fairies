@@ -1,0 +1,87 @@
+{
+  "schema": "feature63-r7-custody-utility-candidate-manifest-v1",
+  "status": "STATIC_CANDIDATE_READY_FOR_INDEPENDENT_REVIEW_RUNTIME_HELD",
+  "candidate": {
+    "path": "/tmp/feature63-r7-custody-utility.ggy3gNvB/fresh-r7-custody.py",
+    "bytes": 39374,
+    "sha256": "da53c2865998eb6a6851eeb99a4b7e3cae85ef0b474baffc90059a5c5623e824",
+    "mode": "0644"
+  },
+  "expectationSchema": {
+    "path": "/tmp/feature63-r7-custody-utility.ggy3gNvB/expectation-schema.json",
+    "bytes": 3719,
+    "sha256": "18d1444377e49c14120e7a9c399459de54e5757a889599a24ca4ef4b2c7862f2",
+    "mode": "0644"
+  },
+  "syntaxEvidence": {
+    "path": "/tmp/feature63-r7-custody-utility.ggy3gNvB/syntax-evidence.json",
+    "bytes": 1671,
+    "sha256": "fdaf9c9b8d6a651ee3e159d9026956aaf2ae371b03b911b57baf99df71774db9",
+    "mode": "0644"
+  },
+  "designBases": [
+    {
+      "role": "selectedR6FailureAuthenticationAndCustodyChain",
+      "path": "/tmp/ovf-root-feature63-r6-failure-capture-path-preparation-xu86b620/failed-r6-closure-and-custody.py",
+      "bytes": 17226,
+      "sha256": "69f96b73f080e9175f4b3f9a51847e16db65e238e8f5f40ebab99a2ee5e1afba"
+    },
+    {
+      "role": "reviewedR6SuccessReceiptSchemas",
+      "path": "/tmp/ovf-feature63-r6-success-closure-preparation-architecture-1nt6jj06/admit-r6-closure-and-seal.py",
+      "bytes": 7762,
+      "sha256": "5b740285f8c65c7ac659feaaefa99639f476cb0eb1ecc4945b2d71ad82f96dff"
+    }
+  ],
+  "priorAccessQualification": {
+    "path": "/tmp/feature63-r7-post-capture-assessment.ylqnkNXh/assessment.json",
+    "bytes": 7647,
+    "sha256": "eb80648af56577d09c00c5b994f4960109235f1fb62504f597da647785d26de1",
+    "scope": "Records the earlier broad-rg qualification. No broad search or runtime/checkpoint/database/profile read was repeated during this candidate preparation."
+  },
+  "contract": {
+    "expectationSchema": "feature63-r7-custody-expectation-v1",
+    "cli": "python /tmp/feature63-r7-custody-utility.ggy3gNvB/fresh-r7-custody.py EXPECTATION_JSON EXPECTATION_SHA256",
+    "sourcePin": null,
+    "sourcePinRule": "Root supplies the actual generated R7 capture assignment pin after capture; no current or historical pin is inferred.",
+    "branches": [
+      "success",
+      "failure"
+    ]
+  },
+  "staticProperties": {
+    "allPolicyChecksUseAlwaysActiveRequire": true,
+    "stableCanonicalSingleFdDefinitionReads": true,
+    "definitionsParsedFromVerifiedCachedBytes": true,
+    "exactAuthorityDescriptorSet": true,
+    "bothCheckoutsMustBeCleanAtFuturePin": true,
+    "sevenInventoryCategoriesAuthenticated": true,
+    "fullCaptureCommandConsumptionLaunchServerEventsClosureChain": true,
+    "registeredKeysMustBeUniqueAndEqualClosureKeys": true,
+    "heldPidfdEvidenceRequiredForEveryRegisteredNativeRecord": true,
+    "wrapperAndLauncherReceiveSeparateFiniteReadbacks": true,
+    "unobservedDescendantsExcluded": false,
+    "protectedPreviewFixed": "pid1063/start874/session1063/fd22/socket3783 with private ports 5373 and 5374 absent",
+    "priorFailedRawAccessed": false,
+    "firstMutationAfterAllReadOnlyHolderAndSidecarGates": true,
+    "freshRawReadOnlyAndNoSql": true,
+    "successKeepsSingleLinkAndIssuesNoSchemaReview": true,
+    "failureCreatesExternalSecondHardlinkAndNoHelperApproval": true,
+    "externalOutputFilesMode": "0444",
+    "externalOutputDirectoryMode": "0555"
+  },
+  "heldActions": {
+    "utilityImported": false,
+    "utilityExecuted": false,
+    "expectationCreated": false,
+    "runtimeRead": false,
+    "databaseRead": false,
+    "profileRead": false,
+    "nativeCheckpointRead": false,
+    "rawSealed": false,
+    "rawHardlinked": false,
+    "custodyOutputCreated": false,
+    "repositoryWritten": false
+  },
+  "independentReviewRequired": true
+}

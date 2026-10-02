@@ -1,0 +1,665 @@
+{
+  "schema": "feature63-r7-public-positional-followup-v1",
+  "scope": {
+    "readOnly": true,
+    "inputCount": 7,
+    "noRetryOrImplementation": true,
+    "noDatabaseCheckpointRuntimeNativeAuditPrivateOrProfileInputAccess": true,
+    "originalFrozenDiagnosisReadOrModified": false
+  },
+  "identity": {
+    "matchId": "def0d24e-8c4a-45cf-b654-c2b017c2a1a2"
+  },
+  "publicStatus": {
+    "approach": {
+      "schema": "feature63-public-status-v1",
+      "capturedAt": "2026-10-02T09:56:42.318Z",
+      "phase": "waiting for a public AI owner 2 combat actor near the common HQ",
+      "action": "public-ai-owner-2-combat-observed",
+      "observedTicks": [
+        1652,
+        1652
+      ],
+      "commonHqId": 1,
+      "groups": [
+        {
+          "side": 2,
+          "ids": [
+            21
+          ]
+        }
+      ],
+      "nativeWaveMembershipUnverified": true
+    },
+    "latch": {
+      "schema": "feature63-public-status-v1",
+      "capturedAt": "2026-10-02T09:56:44.969Z",
+      "phase": "waiting for a public AI owner 2 combat actor near the common HQ",
+      "action": "public-ai-owner-2-approach-acquisition-latched",
+      "startTick": 1708,
+      "renewedAttackAppliedTicks": [
+        1676,
+        1705
+      ],
+      "nativeWaveMembershipUnverified": true
+    },
+    "errorRowCount": 0
+  },
+  "renewedOrdinaryUiAttacks": {
+    "sharedGroundTarget": {
+      "x": 22.66562557220459,
+      "y": 20.815625190734863
+    },
+    "commands": [
+      {
+        "profile": "human-one",
+        "side": 0,
+        "actionId": "577f42c6-3a68-4cf8-b5cc-05829ec7c915",
+        "eligibleCommandedIds": [
+          7
+        ],
+        "eligibilityFrameTick": 1656,
+        "commandWireOrdinal": 425,
+        "ackWireOrdinal": 426,
+        "appliedTick": 1676,
+        "groundTarget": {
+          "x": 22.66562557220459,
+          "y": 20.815625190734863
+        },
+        "accepted": true
+      },
+      {
+        "profile": "human-two",
+        "side": 1,
+        "actionId": "3ee19f48-ba3a-415a-a786-c115b656d180",
+        "eligibleCommandedIds": [
+          14
+        ],
+        "eligibilityFrameTick": 1680,
+        "commandWireOrdinal": 426,
+        "ackWireOrdinal": 428,
+        "appliedTick": 1705,
+        "groundTarget": {
+          "x": 22.66562557220459,
+          "y": 20.815625190734863
+        },
+        "accepted": true
+      }
+    ],
+    "commandedIdsBySide": {
+      "0": [
+        7
+      ],
+      "1": [
+        14
+      ]
+    }
+  },
+  "publicUnitDefinitions": {
+    "commandedHuman7": {
+      "id": "orc-melee",
+      "name": "Ironjaw",
+      "role": "melee",
+      "hp": 175,
+      "damage": 15,
+      "range": 1.4,
+      "speed": 1.8,
+      "sight": 7
+    },
+    "commandedHuman14": {
+      "id": "fairy-melee",
+      "name": "Thornblade",
+      "role": "melee",
+      "hp": 140,
+      "damage": 17,
+      "range": 1.5,
+      "speed": 2.75,
+      "sight": 7
+    },
+    "owner2Melee21": {
+      "id": "orc-melee",
+      "name": "Ironjaw",
+      "role": "melee",
+      "hp": 175,
+      "damage": 15,
+      "range": 1.4,
+      "speed": 1.8,
+      "sight": 7
+    },
+    "owner2Ranged91": {
+      "id": "orc-ranged",
+      "name": "Boltspitter",
+      "role": "ranged",
+      "hp": 100,
+      "damage": 15,
+      "range": 6.5,
+      "speed": 2,
+      "sight": 9
+    },
+    "interpretation": "Ranges are base ranges exposed in each public snapshot's content definition. The report does not infer hidden modifiers."
+  },
+  "requestedTicks": [
+    {
+      "tick": 1652,
+      "sharedPublicView": {
+        "profile": "human-one",
+        "wireOrdinal": 419,
+        "capturedAt": "2026-10-02T09:56:42.282Z"
+      },
+      "commandedHumans": [
+        {
+          "actor": {
+            "id": 7,
+            "side": 0,
+            "owner": 0,
+            "role": "melee",
+            "position": {
+              "x": 21.15656220635371,
+              "y": 19.13145442869602
+            },
+            "hp": 175,
+            "maxHp": 175,
+            "order": {
+              "type": "hold"
+            },
+            "animation": "idle",
+            "publicBaseAttackRange": 1.4
+          },
+          "ownViewProfile": "human-one",
+          "ownViewWireOrdinal": 419,
+          "distanceToReleaseGroundTarget": 2.2613499061091114,
+          "distancesToVisibleOwner2": [
+            {
+              "owner2Id": 21,
+              "distance": 6.807829903106844,
+              "humanBaseRange": 1.4,
+              "distanceBeyondHumanBaseRange": 5.407829903106844,
+              "owner2BaseRange": 1.4,
+              "withinHumanBaseRange": false,
+              "withinOwner2BaseRange": false
+            }
+          ]
+        },
+        {
+          "actor": {
+            "id": 14,
+            "side": 1,
+            "owner": 1,
+            "role": "melee",
+            "position": {
+              "x": 23.1690180270095,
+              "y": 18.665857021157386
+            },
+            "hp": 140,
+            "maxHp": 140,
+            "order": {
+              "type": "hold"
+            },
+            "animation": "idle",
+            "publicBaseAttackRange": 1.5
+          },
+          "ownViewProfile": "human-two",
+          "ownViewWireOrdinal": 413,
+          "distanceToReleaseGroundTarget": 2.20791918930087,
+          "distancesToVisibleOwner2": [
+            {
+              "owner2Id": 21,
+              "distance": 6.472361326098512,
+              "humanBaseRange": 1.5,
+              "distanceBeyondHumanBaseRange": 4.972361326098512,
+              "owner2BaseRange": 1.4,
+              "withinHumanBaseRange": false,
+              "withinOwner2BaseRange": false
+            }
+          ]
+        }
+      ],
+      "visibleOwner2": [
+        {
+          "id": 21,
+          "side": 2,
+          "owner": 2,
+          "role": "melee",
+          "position": {
+            "x": 24.672290682413518,
+            "y": 24.961222972322595
+          },
+          "hp": 175,
+          "maxHp": 175,
+          "order": null,
+          "animation": "walk",
+          "publicBaseAttackRange": 1.4
+        }
+      ]
+    },
+    {
+      "tick": 1708,
+      "sharedPublicView": {
+        "profile": "human-one",
+        "wireOrdinal": 435,
+        "capturedAt": "2026-10-02T09:56:45.063Z"
+      },
+      "commandedHumans": [
+        {
+          "actor": {
+            "id": 7,
+            "side": 0,
+            "owner": 0,
+            "role": "melee",
+            "position": {
+              "x": 22.302434296755642,
+              "y": 20.30085135938971
+            },
+            "hp": 175,
+            "maxHp": 175,
+            "order": {
+              "type": "idle"
+            },
+            "animation": "idle",
+            "publicBaseAttackRange": 1.4
+          },
+          "ownViewProfile": "human-one",
+          "ownViewWireOrdinal": 435,
+          "distanceToReleaseGroundTarget": 0.6300000000000008,
+          "distancesToVisibleOwner2": []
+        },
+        {
+          "actor": {
+            "id": 14,
+            "side": 1,
+            "owner": 1,
+            "role": "melee",
+            "position": {
+              "x": 23.209987110895284,
+              "y": 19.214329020593603
+            },
+            "hp": 140,
+            "maxHp": 140,
+            "order": {
+              "type": "attackMove",
+              "x": 22.66562557220459,
+              "y": 20.815625190734863,
+              "level": 0
+            },
+            "animation": "walk",
+            "publicBaseAttackRange": 1.5
+          },
+          "ownViewProfile": "human-two",
+          "ownViewWireOrdinal": 429,
+          "distanceToReleaseGroundTarget": 1.6912950391090165,
+          "distancesToVisibleOwner2": []
+        }
+      ],
+      "visibleOwner2": []
+    },
+    {
+      "tick": 1876,
+      "sharedPublicView": {
+        "profile": "human-one",
+        "wireOrdinal": 477,
+        "capturedAt": "2026-10-02T09:56:53.578Z"
+      },
+      "commandedHumans": [
+        {
+          "actor": {
+            "id": 7,
+            "side": 0,
+            "owner": 0,
+            "role": "melee",
+            "position": {
+              "x": 20.216758229011297,
+              "y": 21.72638312638124
+            },
+            "hp": 159.8956,
+            "maxHp": 175,
+            "order": {
+              "type": "idle"
+            },
+            "animation": "walk",
+            "publicBaseAttackRange": 1.4
+          },
+          "ownViewProfile": "human-one",
+          "ownViewWireOrdinal": 477,
+          "distanceToReleaseGroundTarget": 2.6127440138485483,
+          "distancesToVisibleOwner2": [
+            {
+              "owner2Id": 91,
+              "distance": 6.5335660968811355,
+              "humanBaseRange": 1.4,
+              "distanceBeyondHumanBaseRange": 5.133566096881136,
+              "owner2BaseRange": 6.5,
+              "withinHumanBaseRange": false,
+              "withinOwner2BaseRange": false
+            }
+          ]
+        },
+        {
+          "actor": {
+            "id": 14,
+            "side": 1,
+            "owner": 1,
+            "role": "melee",
+            "position": {
+              "x": 20.842090077391376,
+              "y": 21.23387928303999
+            },
+            "hp": 121,
+            "maxHp": 140,
+            "order": {
+              "type": "idle"
+            },
+            "animation": "walk",
+            "publicBaseAttackRange": 1.5
+          },
+          "ownViewProfile": "human-two",
+          "ownViewWireOrdinal": 471,
+          "distanceToReleaseGroundTarget": 1.8708870052928528,
+          "distancesToVisibleOwner2": [
+            {
+              "owner2Id": 91,
+              "distance": 6.413131776611261,
+              "humanBaseRange": 1.5,
+              "distanceBeyondHumanBaseRange": 4.913131776611261,
+              "owner2BaseRange": 6.5,
+              "withinHumanBaseRange": false,
+              "withinOwner2BaseRange": true
+            }
+          ]
+        }
+      ],
+      "visibleOwner2": [
+        {
+          "id": 91,
+          "side": 2,
+          "owner": 2,
+          "role": "ranged",
+          "position": {
+            "x": 25.250527534347853,
+            "y": 25.891554494160257
+          },
+          "hp": 100,
+          "maxHp": 100,
+          "order": null,
+          "animation": "walk",
+          "publicBaseAttackRange": 6.5
+        }
+      ]
+    },
+    {
+      "tick": 2148,
+      "sharedPublicView": {
+        "profile": "human-one",
+        "wireOrdinal": 545,
+        "capturedAt": "2026-10-02T09:57:07.200Z"
+      },
+      "commandedHumans": [
+        {
+          "actor": {
+            "id": 7,
+            "side": 0,
+            "owner": 0,
+            "role": "melee",
+            "position": {
+              "x": 17.592072421854645,
+              "y": 26.272490906820675
+            },
+            "hp": 41.28865000000006,
+            "maxHp": 175,
+            "order": {
+              "type": "idle"
+            },
+            "animation": "idle",
+            "publicBaseAttackRange": 1.4
+          },
+          "ownViewProfile": "human-one",
+          "ownViewWireOrdinal": 545,
+          "distanceToReleaseGroundTarget": 7.451062005702178,
+          "distancesToVisibleOwner2": []
+        },
+        {
+          "actor": {
+            "id": 14,
+            "side": 1,
+            "owner": 1,
+            "role": "melee",
+            "position": {
+              "x": 17.036667409090228,
+              "y": 26.439599469725604
+            },
+            "hp": 121,
+            "maxHp": 140,
+            "order": {
+              "type": "idle"
+            },
+            "animation": "idle",
+            "publicBaseAttackRange": 1.5
+          },
+          "ownViewProfile": "human-two",
+          "ownViewWireOrdinal": 539,
+          "distanceToReleaseGroundTarget": 7.957025618460785,
+          "distancesToVisibleOwner2": []
+        }
+      ],
+      "visibleOwner2": []
+    },
+    {
+      "tick": 2300,
+      "sharedPublicView": {
+        "profile": "human-one",
+        "wireOrdinal": 583,
+        "capturedAt": "2026-10-02T09:57:14.811Z"
+      },
+      "commandedHumans": [
+        {
+          "actor": {
+            "id": 7,
+            "side": 0,
+            "owner": 0,
+            "role": "melee",
+            "position": {
+              "x": 17.592072421854645,
+              "y": 26.272490906820675
+            },
+            "hp": 41.28865000000006,
+            "maxHp": 175,
+            "order": {
+              "type": "idle"
+            },
+            "animation": "idle",
+            "publicBaseAttackRange": 1.4
+          },
+          "ownViewProfile": "human-one",
+          "ownViewWireOrdinal": 583,
+          "distanceToReleaseGroundTarget": 7.451062005702178,
+          "distancesToVisibleOwner2": []
+        },
+        {
+          "actor": {
+            "id": 14,
+            "side": 1,
+            "owner": 1,
+            "role": "melee",
+            "position": {
+              "x": 17.036667409090228,
+              "y": 26.439599469725604
+            },
+            "hp": 121,
+            "maxHp": 140,
+            "order": {
+              "type": "idle"
+            },
+            "animation": "idle",
+            "publicBaseAttackRange": 1.5
+          },
+          "ownViewProfile": "human-two",
+          "ownViewWireOrdinal": 577,
+          "distanceToReleaseGroundTarget": 7.957025618460785,
+          "distancesToVisibleOwner2": []
+        }
+      ],
+      "visibleOwner2": []
+    }
+  ],
+  "owner2PublicVisibility": [
+    {
+      "id": 21,
+      "side": 2,
+      "owner": 2,
+      "role": "melee",
+      "hp": 175,
+      "maxHp": 175,
+      "publicBaseAttackRange": 1.4,
+      "visibilityByProfile": {
+        "human-one": {
+          "firstTick": 1644,
+          "firstWireOrdinal": 417,
+          "lastTick": 1668,
+          "lastWireOrdinal": 423,
+          "frameCount": 7
+        },
+        "human-two": {
+          "firstTick": 1644,
+          "firstWireOrdinal": 411,
+          "lastTick": 1668,
+          "lastWireOrdinal": 417,
+          "frameCount": 7
+        }
+      }
+    },
+    {
+      "id": 91,
+      "side": 2,
+      "owner": 2,
+      "role": "ranged",
+      "hp": 100,
+      "maxHp": 100,
+      "publicBaseAttackRange": 6.5,
+      "visibilityByProfile": {
+        "human-one": {
+          "firstTick": 1864,
+          "firstWireOrdinal": 474,
+          "lastTick": 1884,
+          "lastWireOrdinal": 479,
+          "frameCount": 6
+        },
+        "human-two": {
+          "firstTick": 1864,
+          "firstWireOrdinal": 468,
+          "lastTick": 1884,
+          "lastWireOrdinal": 473,
+          "frameCount": 6
+        }
+      }
+    }
+  ],
+  "combat": {
+    "owner2RelatedEvents": [
+      {
+        "eventId": "a30885d0-e1d4-4056-add3-8d96d7d8a3d2",
+        "tick": 1873,
+        "side": 2,
+        "source": 91,
+        "target": 14,
+        "amount": 19,
+        "targetSide": 1,
+        "frameTick": 1876,
+        "wireOrdinal": 477,
+        "profile": "human-one"
+      }
+    ],
+    "commandedHumanAttackEvents": {
+      "7": {
+        "rawEventCount": 7,
+        "fullyAttributedEventCount": 7,
+        "targetOwnerCounts": {
+          "3": 7
+        },
+        "first": {
+          "eventId": "f9c8cdae-f1b4-448c-af60-be82c3167772",
+          "tick": 1901,
+          "side": 0,
+          "source": 7,
+          "target": 28,
+          "amount": 15,
+          "targetSide": 3,
+          "frameTick": 1904,
+          "wireOrdinal": 484,
+          "profile": "human-one"
+        },
+        "last": {
+          "eventId": "b9dd21c1-16b9-46d0-88f7-9c993b44ea0f",
+          "tick": 2041,
+          "side": 0,
+          "source": 7,
+          "target": 92,
+          "amount": 17.81199999999999,
+          "targetSide": 3,
+          "frameTick": 2044,
+          "wireOrdinal": 519,
+          "profile": "human-one"
+        }
+      },
+      "14": {
+        "rawEventCount": 9,
+        "fullyAttributedEventCount": 8,
+        "targetOwnerCounts": {
+          "3": 8
+        },
+        "first": {
+          "eventId": "b832138d-0004-4f5d-a44b-656c90b953ea",
+          "tick": 1896,
+          "side": 1,
+          "source": 14,
+          "target": 28,
+          "amount": 17.4,
+          "targetSide": 3,
+          "frameTick": 1896,
+          "wireOrdinal": 482,
+          "profile": "human-one"
+        },
+        "last": {
+          "eventId": "3bf7ce28-d797-4737-8fbc-a5f8a5a593cc",
+          "tick": 2064,
+          "side": 1,
+          "source": 14,
+          "amount": 3.9952000000000183,
+          "targetSide": null,
+          "frameTick": 2064,
+          "wireOrdinal": 524,
+          "profile": "human-one"
+        }
+      }
+    },
+    "otherOwner0AttackEventsExcludedFromCommandedActorProof": {
+      "count": 10,
+      "sourceIds": [
+        4,
+        5,
+        6
+      ],
+      "first": {
+        "eventId": "87f7b1d1-e3d9-499a-a741-f02f7dffa00d",
+        "tick": 1891,
+        "side": 0,
+        "source": 5,
+        "target": 28,
+        "amount": 2,
+        "targetSide": 3,
+        "frameTick": 1892,
+        "wireOrdinal": 481,
+        "profile": "human-one"
+      }
+    }
+  },
+  "findings": {
+    "whyOwner2Melee21WasNotHit": "Owner-2 melee 21 was visible only from ticks 1644 through 1668. The first renewed attack applied at tick 1676 and the second at tick 1705, after 21 had left both public views. The ordinary attackMove targeted a ground point, not entity 21. By tick 1708 actor 7 was idle 0.63 units from that point and actor 14 still had the attackMove order 1.69 units away, while no owner-2 unit was publicly visible.",
+    "laterOwner2Ranged91": "Owner-2 ranged 91 was visible from ticks 1864 through 1884. At tick 1876 it was 6.53 units from actor 7 and 6.41 units from actor 14. Public base ranges are 1.4 and 1.5 for the humans and 6.5 for ranged 91. Event a30885d0-e1d4-4056-add3-8d96d7d8a3d2 records 91 attacking 14 at event tick 1873 for 19 damage. Both humans were idle in their own public views at tick 1876.",
+    "commandedActorAttribution": "Commanded actor 7 produced seven public attack events and commanded actor 14 produced nine; every fully attributed target was owner 3. Aggregate owner-0 events from source 5 are excluded because source 5 was not in the accepted command's eligibleCommandedIds.",
+    "nativeMembership": "The public data authenticates owner, side, role, position, health, visibility, and one attack event. It does not identify whether owner-2 units 21 or 91 belonged to the same native coordinated wave. Unit 21 may have been a scout or another ordinary AI actor; that cannot be decided from public evidence."
+  },
+  "boundedRecommendation": {
+    "text": "A second ordinary UI attackMove issued while ranged owner-2 unit 91 was publicly visible, with a ground target near its current public position, could have moved actors 7 and 14 inside their 1.4 and 1.5 base ranges. This is plausible because 91 stayed about 6.4 to 7.3 units away while it could fire at 6.5 range and both humans were idle. It is not a pass guarantee: 91 was visible for only ticks 1864 through 1884, attackMove remains a ground command, movement and target selection can change, and native wave membership remains unverified.",
+    "implementationPerformed": false,
+    "predicateOrBudgetChangeProposed": false
+  }
+}

@@ -1,0 +1,271 @@
+{
+  "schema": "feature63-r7-custody-utility-independent-static-review-v1",
+  "status": "PASS_STATIC_R7_CUSTODY_UTILITY_POST_MATCH_FAILURE_SCOPE_RUNTIME_HELD",
+  "requestedReviewerModel": "gpt-5.6-sol",
+  "actualProviderIdentity": "unverified",
+  "providerOrModelFamilyAuthenticated": false,
+  "claudeUsed": false,
+  "runtimeExecuted": false,
+  "candidateImported": false,
+  "expectationCreated": false,
+  "processOrPortProbesPerformed": false,
+  "databaseOrProfileAccessed": false,
+  "nativeCheckpointAccessed": false,
+  "sqlQueryExtractionOrAuditPerformed": false,
+  "repositoryModified": false,
+  "executionAuthorized": false,
+  "reviewedFiles": [
+    {
+      "role": "custodyUtility",
+      "path": "/tmp/feature63-r7-custody-utility.ggy3gNvB/fresh-r7-custody.py",
+      "bytes": 39374,
+      "lines": 761,
+      "sha256": "da53c2865998eb6a6851eeb99a4b7e3cae85ef0b474baffc90059a5c5623e824"
+    },
+    {
+      "role": "expectationSchema",
+      "path": "/tmp/feature63-r7-custody-utility.ggy3gNvB/expectation-schema.json",
+      "bytes": 3719,
+      "sha256": "18d1444377e49c14120e7a9c399459de54e5757a889599a24ca4ef4b2c7862f2"
+    },
+    {
+      "role": "syntaxEvidence",
+      "path": "/tmp/feature63-r7-custody-utility.ggy3gNvB/syntax-evidence.json",
+      "bytes": 1671,
+      "sha256": "fdaf9c9b8d6a651ee3e159d9026956aaf2ae371b03b911b57baf99df71774db9"
+    },
+    {
+      "role": "candidateManifest",
+      "path": "/tmp/feature63-r7-custody-utility.ggy3gNvB/manifest.json",
+      "bytes": 3729,
+      "sha256": "38932e28c3ce0b1971a7703a92ae13635caf213c0f853b6160a5ab696780c4b8"
+    }
+  ],
+  "comparisonSources": [
+    {
+      "role": "frozenExtractionHelper",
+      "path": "/tmp/feature63-root-extraction-candidate-r2-LSZWmJUg/extract-closed63.py",
+      "bytes": 54321,
+      "sha256": "fccd7ba02a92c2496b56699cb8fbb323f16cb2a817596093951b10a72446e7d8"
+    },
+    {
+      "role": "reviewedR6SuccessReceiptPrecedent",
+      "path": "/tmp/ovf-feature63-r6-success-closure-preparation-architecture-1nt6jj06/admit-r6-closure-and-seal.py",
+      "bytes": 7762,
+      "sha256": "5b740285f8c65c7ac659feaaefa99639f476cb0eb1ecc4945b2d71ad82f96dff"
+    },
+    {
+      "role": "reviewedR6FailureCustodyPrecedent",
+      "path": "/tmp/ovf-root-feature63-r6-failure-capture-path-preparation-xu86b620/failed-r6-closure-and-custody.py",
+      "bytes": 17226,
+      "sha256": "69f96b73f080e9175f4b3f9a51847e16db65e238e8f5f40ebab99a2ee5e1afba"
+    }
+  ],
+  "blockers": [],
+  "requiredFixes": [],
+  "expectationContract": {
+    "status": "PASS_STATIC",
+    "cliDigestSeparateFromJson": true,
+    "exactTopLevelFieldCount": 11,
+    "branches": ["success", "failure"],
+    "sourcePinMustBeFullLowercaseCommit": true,
+    "utilitySelfDigestRequired": true,
+    "rootAndOwnedPathsFixed": true,
+    "r7PrefixFixed": "work/feature63-human-wave-composition-r7",
+    "authorityDescriptorCount": 15,
+    "authorityDescriptorExactFields": ["path", "bytes", "sha256"],
+    "expectedRuntimeFields": [
+      "matchId",
+      "wrapperExitCode",
+      "firstFailure",
+      "registeredNativeKeys",
+      "launcherLifetime",
+      "wrapperLifetime",
+      "rawIdentity"
+    ],
+    "matchIdMustBeNonemptyStringForBothBranches": true,
+    "expectedRegisteredKeysMustBeUnique": true,
+    "successRequiresZeroExitAndNullFailure": true,
+    "failureRequiresNonzeroExitAndCompleteNonemptyFailure": true
+  },
+  "staticHardening": {
+    "status": "PASS_STATIC",
+    "optimizedPythonRejected": true,
+    "assertNodeCount": 0,
+    "allPolicyChecksAlwaysActive": true,
+    "duplicateJsonKeysRejected": true,
+    "nonfiniteJsonConstantsRejected": true,
+    "canonicalAbsoluteInputPathsRequired": true,
+    "symlinksRejected": true,
+    "stableReadsUseONoFollowAndOneFd": true,
+    "beforeAfterAndNamedIdentityCompared": true,
+    "authorityDefinitionsSingleLinkRequired": true,
+    "authorityDefinitionsParsedFromVerifiedBytes": true,
+    "authorityDefinitionsCachedAndLoadedOnce": true,
+    "databasePathsForbiddenInAuthorityDescriptors": true,
+    "inventoryRelativePathsCanonicalAndUnique": true,
+    "inventoryMemberBytesModesAndDigestsVerified": true,
+    "completeInventoriesEnumeratedWhereRequired": true,
+    "gitOptionalLocksDisabled": true,
+    "sqlLibraryImported": false,
+    "sqlStatementsPresent": false
+  },
+  "authorityAndSameRunChain": {
+    "status": "PASS_STATIC",
+    "actualAssignmentRequiredEqualAnchoredAssignment": true,
+    "assignmentSchemaPhaseApprovalRootPinAndR7PrefixChecked": true,
+    "sourceBuildBrowserDescriptorsRequiredEqualAssignment": true,
+    "sourceBuildBrowserCapturePinsRequiredEqualExpectationPin": true,
+    "fourScriptDigestsCheckedInBothRootsAgainstAssignment": true,
+    "bothCheckoutHeadsRequiredAtExpectationPin": true,
+    "bothCheckoutTrackedStatusRequiredClean": true,
+    "productAndProtectedDefinitionsRequiredEqualPinnedGitBytesInBothRoots": true,
+    "inventoryCounts": {
+      "source": 966,
+      "product": 570,
+      "protectedDist": 397,
+      "web": 398,
+      "server": 22,
+      "playwright": 114,
+      "chromium": 303
+    },
+    "commandSourceCwdWrapperSlotAndExactInvocationBound": true,
+    "consumedAssignmentDigestBound": true,
+    "captureInvocationsRequiredOne": true,
+    "automaticRetriesRequiredZero": true,
+    "protectedBeforeAfterIdentityBound": true,
+    "launchWrapperAndControlBoundToClosure": true,
+    "serverSchemaPinPrefixSlotAndRawIdentityBound": true,
+    "prelaunchSourcePinBound": true,
+    "captureSchemaMatchCleanupAndProtectedReadbackChecked": true,
+    "branchSpecificCaptureStatusAndFailureChecked": true
+  },
+  "finiteClosure": {
+    "status": "PASS_STATIC_FINITE_SCOPE",
+    "expectationKeysUnique": true,
+    "closureKeysUniqueAndEqualExpectation": true,
+    "driverRegistrationKeysUniqueAndEqualExpectation": true,
+    "everyClosureRecordRequiresNoObservationFailure": true,
+    "everyClosureRecordRequiresNotLive": true,
+    "everyClosureRecordRequiresIndependentPidfdOpenedWhileLive": true,
+    "everyClosureRecordRequiresIndependentPidfdReadyEvidence": true,
+    "wrapperClosureCheckedSeparately": true,
+    "launcherAndWrapperLifetimesRequiredEqualExpectation": true,
+    "rootReobservesEveryRegisteredLifetimePlusLauncherAndWrapper": true,
+    "privatePortsRequiredAbsent": true,
+    "protectedPreviewIdentityAndSocketRequiredUnchanged": true,
+    "unobservedDescendantsExcluded": false
+  },
+  "mutationAndSealOrder": {
+    "status": "PASS_STATIC",
+    "allAuthorityInventoryCheckoutCommandClosureLifetimePreviewRawIdentitySidecarAndHolderGatesBeforeMutation": true,
+    "firstMainMutation": {
+      "line": 569,
+      "operation": "os.fchmod(raw_fd, 0o444)"
+    },
+    "rawContentsReadOnlyAfterReadOnlyGates": true,
+    "rawOpenedWithONoFollow": true,
+    "rawDescriptorIdentityRequiredEqualPreopenLstat": true,
+    "rawModeChangedTo0444": true,
+    "rawHashedThroughSameFd": true,
+    "rawIdentityStableDuringHash": true,
+    "sidecarsRecheckedAfterReceiptConstruction": true,
+    "receiptFilesMode": "0444",
+    "receiptDirectoryMode": "0555"
+  },
+  "successBranch": {
+    "status": "PASS_STATIC_HELPER_COMPATIBLE_RECEIPTS_PENDING_SCHEMA_REVIEW",
+    "rawLinkCountRequiredOne": true,
+    "rawHardlinkCreated": false,
+    "rootIndependentNativeClosureIssued": true,
+    "rootNativeLifetimeReceipt": {
+      "schema": "feature63-root-native-lifetime-disposition-v1",
+      "helperCompatible": true,
+      "approved": true,
+      "ownedNativeLifetimeIndependentlyAdmitted": true,
+      "captureResultBound": true,
+      "nonemptyClosureEvidenceDescriptors": true
+    },
+    "closedRawReceipt": {
+      "schema": "feature63-closed-raw-v1",
+      "helperCompatible": true,
+      "producerClosed": true,
+      "ownedProcessesClosed": true,
+      "rootSealed": true,
+      "sidecarsAbsent": true,
+      "databaseIdentityBytesAndShaBound": true
+    },
+    "rootCustodyReceipt": {
+      "schema": "feature63-root-raw-custody-v1",
+      "helperCompatible": true,
+      "approved": true,
+      "rawDatabaseCaptureResultAndClosedRawReceiptBound": true,
+      "freshDatabaseAuthenticated": true,
+      "oldRawNeverReadOrReused": true,
+      "rootSealed": true,
+      "noLivePrivateReadback": true,
+      "links": 1,
+      "mode": 292
+    },
+    "nativeSchemaReviewIssued": false,
+    "extractionReadyWithoutSeparateSchemaReview": false,
+    "extractionExecuted": false,
+    "sqlExecuted": false
+  },
+  "failureBranch": {
+    "status": "PASS_STATIC_POST_MATCH_DISPOSITION_ONLY",
+    "supportedScope": "A failed capture that already has a nonempty string matchId and a complete closedFreshDatabaseIdentity chain.",
+    "preMatchNullMatchIdSupported": false,
+    "preMatchFailureFailsBeforeRawAccess": true,
+    "genericAllFailureClaim": false,
+    "outputParentMustShareRawFilesystem": true,
+    "rawLinkCountBeforeCustody": 1,
+    "rawLinkCountAfterCustody": 2,
+    "externalHardlinkCreated": true,
+    "retainedHardlinkIdentityRequiredEqualRawIdentity": true,
+    "retainedHashEqualsSameInodeRawHash": true,
+    "failedLifetimeReceiptHelperCompatibleApprovalIssued": false,
+    "failureDispositionIncludesCompleteExpectedFailure": true,
+    "captureInvocations": 1,
+    "automaticRetries": 0,
+    "feature63Qualified": false,
+    "slotReleasedByUtility": false,
+    "extractionExecuted": false,
+    "sqlExecuted": false
+  },
+  "frozenHelperCompatibility": {
+    "status": "PASS_STATIC_FOR_THREE_SUCCESS_RECEIPTS_ONLY",
+    "helperSha256": "fccd7ba02a92c2496b56699cb8fbb323f16cb2a817596093951b10a72446e7d8",
+    "rawDescriptorExactFields": ["path", "bytes", "sha256", "device", "inode"],
+    "lifetimeSchemaAndRequiredFieldsMatch": true,
+    "closedRawSchemaAndRequiredClosureBooleansMatch": true,
+    "custodySchemaDescriptorsAndRequiredBooleansMatch": true,
+    "extraCustodyFieldNativeSchemaReviewIssuedFalseIsIgnoredByHelper": true,
+    "helperDoesNotRequireExactCustodyKeySet": true,
+    "separateNativeSchemaReviewStillRequiredByHelper": true,
+    "nativeAuditAuthorizationStillSeparate": true,
+    "rootExtractionAdmissionStillSeparate": true
+  },
+  "r6PrecedentComparison": {
+    "successReceiptSchemasAndCoreFieldsRetained": true,
+    "successSingleLinkReadonlyRawRetained": true,
+    "failureReadonlySecondHardlinkPatternRetained": true,
+    "r7AddsExternalExpectationDigest": true,
+    "r7AddsStableCachedAuthorityReads": true,
+    "r7AddsCompleteSameRunChain": true,
+    "r7AddsUniqueExpectedClosureAndEventKeys": true,
+    "r7AddsSeparateLauncherAndWrapperRootReadbacks": true,
+    "r7DoesNotIssueNativeSchemaApproval": true
+  },
+  "qualificationsAndRisks": [
+    "This is static eligibility only. No runtime authority file, process, port, database, profile, checkpoint, holder, or sidecar fact was independently checked.",
+    "The closure is finite. PID/start observations do not exclude missed forks or reparenting, and unobservedDescendantsExcluded remains false.",
+    "Inventory files are authenticated one at a time rather than as an atomic filesystem snapshot. The checkouts and dependency trees must remain quiescent during execution.",
+    "The one-shot seal begins when the raw inode is changed to mode 0444. Any later failure can leave the raw sealed and can leave a partial custody directory hardened to mode 0555.",
+    "The success branch deliberately leaves the raw database at its original path with one link. Extraction remains impossible until root separately issues and binds a native schema review and later extraction and audit approvals.",
+    "The failure branch requires an external output parent on the same filesystem as the raw inode and leaves the slot unreleased.",
+    "Failure custody is limited to post-match failures. validate_expectation requires a nonempty string matchId for both branches, so a pre-match capture result with matchId null cannot pass and reaches no raw access.",
+    "The printed report contains a descriptor of root-custody-result.json that is not embedded recursively in that file. Consumers should treat the file descriptor from stdout as the external reference.",
+    "R7 binding reportedly succeeded once at a8152d0 and no capture has occurred, but those facts were supplied and not read by this review."
+  ]
+}

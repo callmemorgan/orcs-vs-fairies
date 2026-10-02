@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "/tmp/ovf-feature63-r7-prelaunch-preparation-architecture-Ey24e3td/authenticate-prelaunch-r7.py", line 724, in <module>
+    main()
+    ~~~~^^
+  File "/tmp/ovf-feature63-r7-prelaunch-preparation-architecture-Ey24e3td/authenticate-prelaunch-r7.py", line 647, in main
+    authenticate_inventory(base, product_rows, 570)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/ovf-feature63-r7-prelaunch-preparation-architecture-Ey24e3td/authenticate-prelaunch-r7.py", line 265, in authenticate_inventory
+    records = normalized_rows(rows)
+  File "/tmp/ovf-feature63-r7-prelaunch-preparation-architecture-Ey24e3td/authenticate-prelaunch-r7.py", line 231, in normalized_rows
+    require(re.fullmatch('0?[0-7]{3,4}', permission), 'Invalid octal inventory mode')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/ovf-feature63-r7-prelaunch-preparation-architecture-Ey24e3td/authenticate-prelaunch-r7.py", line 80, in require
+    raise RuntimeError(message)
+RuntimeError: Invalid octal inventory mode
