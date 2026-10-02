@@ -36,7 +36,6 @@ assert.equal(typeof helper.observeNative,'function');
 const runners={canonical:runCanonicalTacticsSmoke,'remaining-combat':runRemainingCanonicalTacticsSmoke,ruins:runRuinCoverMainSmoke};
 const groups=(groupsArg??'canonical,ruins').split(',');
 assert(groups.length&&new Set(groups).size===groups.length&&groups.every(group=>Object.hasOwn(runners,group)),'Select known unique acceptance groups');
-assert(!(groups.includes('canonical')&&groups.includes('remaining-combat')),'Choose one canonical scope per browser run');
 const distHtml=await readFile(resolve(root,'dist/index.html')),declaredAssets=htmlAssets(distHtml.toString(),base);
 const evidence={schema:1,completed:false,base,startedAt:new Date().toISOString(),setup:manifest.setup,selectedGroups:groups,source:{...frozen.source,sealedContractSha256:digest(freezeBytes),executedRunnerSha256:digest(await readFile(entry)),distHtmlSha256:digest(distHtml)},helper:helperProvenance,checks:[],downloads:{},servedAssets:[],assetFailures:[],errors:[],groups:{}};
 const receiptPath=resolve(out,'browser-main-smoke402.json');

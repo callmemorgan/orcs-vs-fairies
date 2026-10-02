@@ -6,7 +6,7 @@ import { assertAssetBytes, assertSessionIdentity, comparePersisted, digest, fing
 import { createNativeContext } from './native-context.mjs';
 import { assertAcceptanceFreeze, captureAcceptanceFreeze } from './main-smoke-freeze.mjs';
 import { loadPinnedHelper } from './helper-provenance.mjs';
-import { runCanonicalTacticsSmoke, runRemainingCanonicalTacticsSmoke } from './canonical-main-smoke.mjs';
+import { runCanonicalTacticsSmoke } from './canonical-main-smoke.mjs';
 import { runRuinCoverMainSmoke } from './ruin-cover-main-smoke.mjs';
 
 const entry=fileURLToPath(import.meta.url);
@@ -22,7 +22,7 @@ if(process.argv[2]==='--freeze') {
 }
 
 const [, , baseArg,rootArg,outArg,fixturesArg,freezeArg,helperArg,groupsArg]=process.argv;
-assert(baseArg&&rootArg&&outArg&&fixturesArg&&freezeArg&&helperArg,'Use BASE ROOT NEW_EVIDENCE FIXTURES FREEZE AUDIT_BUNDLE [canonical,remaining-combat,ruins]');
+assert(baseArg&&rootArg&&outArg&&fixturesArg&&freezeArg&&helperArg,'Use BASE ROOT NEW_EVIDENCE FIXTURES FREEZE AUDIT_BUNDLE [canonical,ruins]');
 const base=baseArg,root=resolve(rootArg),out=resolve(outArg),fixtures=resolve(fixturesArg),freezePath=resolve(freezeArg);
 assert.equal(entry,resolve(root,'scripts/acceptance/verify-main-smoke402.mjs'),'Execute browser runner from pinned checkout');
 assert(out!==fixtures&&!out.startsWith(`${fixtures}${sep}`),'Evidence output is outside frozen fixtures');
@@ -33,10 +33,9 @@ const identity={saveVersion:frozen.source.saveVersion,simulationRevision:frozen.
 const manifest=JSON.parse(await readFile(resolve(fixtures,'manifest.json'),'utf8'));
 const {module:helper,provenance:helperProvenance}=await loadPinnedHelper(root,frozen.source.commit,helperArg,'scripts/acceptance/native-audit.ts');
 assert.equal(typeof helper.observeNative,'function');
-const runners={canonical:runCanonicalTacticsSmoke,'remaining-combat':runRemainingCanonicalTacticsSmoke,ruins:runRuinCoverMainSmoke};
+const runners={canonical:runCanonicalTacticsSmoke,ruins:runRuinCoverMainSmoke};
 const groups=(groupsArg??'canonical,ruins').split(',');
 assert(groups.length&&new Set(groups).size===groups.length&&groups.every(group=>Object.hasOwn(runners,group)),'Select known unique acceptance groups');
-assert(!(groups.includes('canonical')&&groups.includes('remaining-combat')),'Choose one canonical scope per browser run');
 const distHtml=await readFile(resolve(root,'dist/index.html')),declaredAssets=htmlAssets(distHtml.toString(),base);
 const evidence={schema:1,completed:false,base,startedAt:new Date().toISOString(),setup:manifest.setup,selectedGroups:groups,source:{...frozen.source,sealedContractSha256:digest(freezeBytes),executedRunnerSha256:digest(await readFile(entry)),distHtmlSha256:digest(distHtml)},helper:helperProvenance,checks:[],downloads:{},servedAssets:[],assetFailures:[],errors:[],groups:{}};
 const receiptPath=resolve(out,'browser-main-smoke402.json');

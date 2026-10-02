@@ -16,7 +16,6 @@ import { readAuthenticatedDownload } from './native-downloads';
 
 const digest = (value: string | Buffer) => createHash('sha256').update(value).digest('hex');
 const canonicalCases = ['formation-line', 'formation-wedge', 'formation-square', 'formation-loose', 'charge-pike-front', 'charge-pike-rear', 'siege-full-crew-capture', 'ambush-selected-trigger', 'morale-supported-full-fight'];
-const remainingCanonicalCases = ['siege-full-crew-capture', 'ambush-selected-trigger', 'morale-supported-full-fight'];
 const replayFields = ['format', 'version', 'initial', 'actions', 'finalTick', 'finalChecksum', 'checksumVersion', 'simulationRevision'] as const;
 type Frame = {
   tick: number; time: number; actors: Entity[];
@@ -114,16 +113,13 @@ export function verifyMainSmoke402Artifacts({ evidenceDir, fixturesDir, manifest
   assert.equal(receipt.cleanup?.completed, true, 'Completed receipt includes its browser cleanup');
   const selected: string[] = receipt.selectedGroups;
   assert(Array.isArray(selected) && selected.length > 0 && new Set(selected).size === selected.length);
-  assert(selected.every(group => ['canonical', 'remaining-combat', 'ruins'].includes(group)));
-  assert(!(selected.includes('canonical') && selected.includes('remaining-combat')), 'Choose one canonical scope per retained receipt');
+  assert(selected.every(group => ['canonical', 'ruins'].includes(group)));
   assert.deepEqual(Object.keys(receipt.groups).sort(), [...selected].sort());
   assert(receipt.downloads && Object.keys(receipt.downloads).length > 0);
-  const hasCanonical = selected.includes('canonical') || selected.includes('remaining-combat');
-  const canonical = selected.includes('canonical') ? receipt.groups.canonical : receipt.groups['remaining-combat'];
-  if (hasCanonical) {
-    assert.equal(canonical.completed, true);
-    assert.deepEqual([...canonical.caseNames].sort(), [...(selected.includes('canonical') ? canonicalCases : remainingCanonicalCases)].sort());
-    assert(Array.isArray(canonical.exports));
+  if (selected.includes('canonical')) {
+    assert.equal(receipt.groups.canonical.completed, true);
+    assert.deepEqual([...receipt.groups.canonical.caseNames].sort(), [...canonicalCases].sort());
+    assert(Array.isArray(receipt.groups.canonical.exports));
   }
   if (selected.includes('ruins')) assert(receipt.groups.ruins.results && receipt.groups.ruins.capture);
 
@@ -212,15 +208,15 @@ export function verifyMainSmoke402Artifacts({ evidenceDir, fixturesDir, manifest
   replayOriginal(report.session, 'production-build-report.json#session', false);
 
   const suppliedPairs: [string, string][] = [];
-  if (hasCanonical) {
-    const declared = canonical.continuations; assert(Array.isArray(declared));
+  if (selected.includes('canonical')) {
+    const declared = receipt.groups.canonical.continuations; assert(Array.isArray(declared));
     for (const item of declared) {
       assert(typeof item.checkpoint === 'string' && typeof item.final === 'string' && item.checkpoint !== item.final);
       const partial = sessions.get(item.checkpoint), full = sessions.get(item.final); assert(partial && full);
       assert.equal(partial.game.state.tick, item.checkpointTick); assert.equal(full.game.state.tick, item.finalTick);
       suppliedPairs.push([item.checkpoint, item.final]);
     }
-    for (const item of canonical.exports) {
+    for (const item of receipt.groups.canonical.exports) {
       assert.equal(item.file, `${item.name}-save.json`); const file = sessions.get(item.file); assert(file);
       assert.equal(file.game.state.tick, item.tick);
     }
@@ -276,8 +272,7 @@ export function verifyMainSmoke402Artifacts({ evidenceDir, fixturesDir, manifest
     assert(charge[0].returnHits.length > 0 && charge[0].stoppedMessages.some(item => item.tick === charge[0].firstHit.tick));
     assert(charge[1].firstHit.event.amount! > charge[0].firstHit.event.amount!);
     observations.charges = charge;
-  }
-  if (hasCanonical) {
+
     const siege = history('siege-new-owner-impact', 'siege-full-crew-capture'), siegeIds = authoredByName.get(siege.scenario)!.scenario.ids;
     const initialEngine = siege.initial.state.entities.find(item => item.id === siegeIds.engine)!;
     assert(initialEngine.tactics?.siegeCrew && initialEngine.tactics.siegeCrew.hp === initialEngine.tactics.siegeCrew.maxHp && !initialEngine.tactics.siegeCrew.uncrewed);

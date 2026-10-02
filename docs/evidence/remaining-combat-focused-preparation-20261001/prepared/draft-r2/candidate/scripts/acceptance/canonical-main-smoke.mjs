@@ -126,8 +126,7 @@ export async function runCanonicalTacticsSmoke(ctx,{remainingOnly=false}={}){
 export async function runRemainingCanonicalTacticsSmoke(ctx){
  async function setPaused(wanted){
   await ctx.closeSessions();const before=await ctx.snap();if(before.paused===wanted)return;
-  // Tactics/faction panels stop keydown propagation; their native close buttons restore outside focus.
-  await ctx.closePanels();await ctx.page.keyboard.press('KeyP');await ctx.wait(wanted=>window.rts.paused===wanted,wanted);
+  await ctx.page.keyboard.press('KeyP');await ctx.wait(wanted=>window.rts.paused===wanted,wanted);
   (ctx.evidence.nativePauseInputs??=[]).push({key:'KeyP',beforeTick:before.tick,beforePaused:before.paused,wantedPaused:wanted});
  }
  const pause=()=>setPaused(true),resume=()=>setPaused(false);

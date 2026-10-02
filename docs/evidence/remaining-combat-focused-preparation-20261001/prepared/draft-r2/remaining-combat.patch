@@ -1,0 +1,163 @@
+diff --git a/scripts/acceptance/canonical-main-smoke.mjs b/scripts/acceptance/canonical-main-smoke.mjs
+--- a/scripts/acceptance/canonical-main-smoke.mjs
++++ b/scripts/acceptance/canonical-main-smoke.mjs
+@@ -4,6 +4,7 @@
+ import { assertSessionIdentity } from './native-contract.mjs';
+ 
+ export const CANONICAL_CASES=['formation-line','formation-wedge','formation-square','formation-loose','charge-pike-front','charge-pike-rear','siege-full-crew-capture','ambush-selected-trigger','morale-supported-full-fight'];
++export const REMAINING_CANONICAL_CASES=['siege-full-crew-capture','ambush-selected-trigger','morale-supported-full-fight'];
+ const entity=(s,id)=>{const e=s.entities.find(e=>e.id===id);assert(e,`Entity #${id}`);return e;};
+ const hp=(s,id)=>s.entities.find(e=>e.id===id)?.hp??0;
+ const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+@@ -19,10 +20,10 @@
+ };
+ 
+ /** Native input and read-only observations. No issueCommand/stepGame/browser state writes. */
+-export async function runCanonicalTacticsSmoke(ctx){
++export async function runCanonicalTacticsSmoke(ctx,{remainingOnly=false}={}){
+  assert.equal(ctx.identity.saveVersion,4);assert.equal(ctx.identity.simulationRevision,'4.0.2');
+  assert.equal(ctx.manifest.simulationRevision,'4.0.2');assert.equal(ctx.manifest.sourceCommit,ctx.evidence.source.commit);
+- const exports=[],continuations=[],results={},traces={},requiredEventAudits=[];
++ const exports=[],continuations=[],results={},traces={},requiredEventAudits=[],caseNames=remainingOnly?REMAINING_CANONICAL_CASES:CANONICAL_CASES;
+  let active,tracked=[];const progress={activeCase:null,completedCases:[],exports,continuations,results,requiredEventAudits};ctx.evidence.canonicalProgress=progress;
+  function collect(s){
+   const trace=traces[active];if(!trace||trace.seen.has(s.tick))return;trace.seen.add(s.tick);
+@@ -38,7 +39,7 @@
+  async function attack(ids,target){await ctx.resume();await ctx.selectMany(ids);await ctx.entityClick(target,'right');await ctx.wait(({ids,target})=>ids.every(id=>{const o=window.rts.state.entities.find(e=>e.id===id)?.order;return o?.type==='attack'&&o.target===target;}),{ids,target});}
+  async function finishTrace(name){const trace=traces[name];delete trace.seen;await writeFile(resolve(ctx.out,`${name}-observations.json`),`${JSON.stringify(trace,null,2)}\n`,{flag:'wx'});progress.completedCases.push(name);}
+  try{
+- for(const kind of ['line','wedge','square','loose']){
++ for(const kind of remainingOnly?[]:['line','wedge','square','loose']){
+   const name=`formation-${kind}`,{ids}=await load(name);tracked=ids.army;const initial=await ctx.snap();assert(ids.army.every(id=>hp(initial,id)===entity(initial,id).maxHp));collect(initial);
+   await ctx.selectTroop(ids.army[0]);await selectEntireOwnedArmy(ids.army);const panel=await ctx.openTactics();await panel.getByLabel('Troop facing',{exact:true}).selectOption('0');await panel.getByLabel('Formation spacing',{exact:true}).fill('.8');
+   await panel.getByRole('button',{name:kind[0].toUpperCase()+kind.slice(1),exact:true}).click();await ctx.wait(({army,kind})=>army.every(id=>window.rts.state.entities.find(e=>e.id===id)?.tactics?.formation?.kind===kind),{army:ids.army,kind});
+@@ -54,7 +55,7 @@
+   command(file,'formation',c=>sameIds(c.ids,ids.army)&&c.formation===kind&&c.spacing===.8&&c.facing===0);const acceptedMove=command(file,'move',c=>sameIds(c.ids,ids.army)&&Math.hypot(c.x-ids.destination.x,c.y-ids.destination.y)<.05);assert.equal(acceptedMove.x,actualAnchor.x);assert.equal(acceptedMove.y,actualAnchor.y);
+   results[name]={tick:settled.tick,army:ids.army,requestedDestination:ids.destination,acceptedMove,actualAnchor,group:entity(settled,ids.army[0]).tactics.formation.group};ctx.record(`${name} applies through main Tactics, moves and persists six living troops`,results[name]);await finishTrace(name);
+  }
+- for(const direction of ['front','rear']){
++ for(const direction of remainingOnly?[]:['front','rear']){
+   const name=`charge-pike-${direction}`,{ids}=await load(name);tracked=[ids.source,ids.target];const before=await ctx.snap();assert.equal(hp(before,ids.source),entity(before,ids.source).maxHp);assert.equal(hp(before,ids.target),entity(before,ids.target).maxHp);collect(before);
+   await attack([ids.source],ids.target);const moving=await until(s=>(entity(s,ids.source).tactics?.charge?.distance??0)>=4&&hp(s,ids.target)===hp(before,ids.target),`${name} charged before first hit`);collect(moving);
+   const movingName=`${name}-moving`,movingFile=await verified(movingName);command(movingFile,'attack',c=>sameIds(c.ids,[ids.source])&&c.target===ids.target);assert((entity(movingFile.game.state,ids.source).tactics?.charge?.distance??0)>=4);assert.equal(hp(movingFile.game.state,ids.target),hp(before,ids.target));
+@@ -115,9 +116,24 @@
+   requiredEventAudits.push({scenario:name,kind:'full-morale-combat-causal-chain',attackerIds:ids.siege,squadIds:ids.squad,deadAllies,retreater:retreater.id,nativeAttackTick:nativeAttack.tick,beforeVolleyTick:beforeVolleyState.tick,requiredChronology:'Accepted native attack precedes the first ordinary launch, actual damage, nearby allied death and morale retreat; derive hit amounts and casualty count from replay rather than an exact predicted gate.',observedEvents:traces[name].events.filter(item=>['attack','death','message'].includes(item.event.type))});
+   results[name]={initialSquad:ids.squad.map(id=>entity(initial,id)),nativeAttack,beforeVolleyTick:beforeVolleyState.tick,deadAllies,wounded,retreat:{tick:retreat.tick,retreater,support,supportDistance:distance(retreater,support),visibleThreat:threat.id},movedTick:moved.tick,movement:distance(entity(moved,retreater.id),origin)};ctx.record('Full-health morale100 squad suffers real wounds/deaths and retreats with a live close ally',results[name]);await finishTrace(name);
+  }
+- return{completed:true,scope:'Nine bounded canonical production-main encounters; no full39-case or stress certification',caseNames:CANONICAL_CASES,exports,continuations,results,requiredEventAudits,status:'Native observations and complete browser persistence only. Root must inspect transient event/replay continuation evidence before admission.'};
++ return{completed:true,scope:remainingOnly?'Three remaining canonical production-main encounters for originals4/9/10; no full39-case or stress certification':'Nine bounded canonical production-main encounters; no full39-case or stress certification',caseNames,exports,continuations,results,requiredEventAudits,status:'Native observations and complete browser persistence only. Root must inspect transient event/replay continuation evidence before admission.'};
+  }catch(error){
+   progress.failure={case:active,message:String(error.stack??error)};const trace=traces[active];if(trace)try{await writeFile(resolve(ctx.out,`${active}-failure-observations.json`),`${JSON.stringify({samples:trace.samples,events:trace.events},null,2)}\n`,{flag:'wx'});}catch(captureError){progress.failure.traceCaptureError=String(captureError.stack??captureError);}throw error;
+  }
+ }
+ 
++/** Root's focused originals4/9/10 group. Public KeyP input replaces slow DOM pause clicks only here. */
++export async function runRemainingCanonicalTacticsSmoke(ctx){
++ async function setPaused(wanted){
++  await ctx.closeSessions();const before=await ctx.snap();if(before.paused===wanted)return;
++  await ctx.page.keyboard.press('KeyP');await ctx.wait(wanted=>window.rts.paused===wanted,wanted);
++  (ctx.evidence.nativePauseInputs??=[]).push({key:'KeyP',beforeTick:before.tick,beforePaused:before.paused,wantedPaused:wanted});
++ }
++ const pause=()=>setPaused(true),resume=()=>setPaused(false);
++ async function runUntil(predicate,{timeout=15000,label='native condition'}={}){
++  await resume();const deadline=Date.now()+timeout;
++  while(Date.now()<deadline){const state=await ctx.snap();if(await predicate(state)){await pause();return await ctx.snap();}await ctx.page.waitForTimeout(20);}
++  await pause();assert.fail(`Timed out: ${label}`);
++ }
++ return runCanonicalTacticsSmoke({...ctx,pause,resume,runUntil},{remainingOnly:true});
++}
+diff --git a/scripts/acceptance/verify-main-smoke402.mjs b/scripts/acceptance/verify-main-smoke402.mjs
+--- a/scripts/acceptance/verify-main-smoke402.mjs
++++ b/scripts/acceptance/verify-main-smoke402.mjs
+@@ -6,7 +6,7 @@
+ import { createNativeContext } from './native-context.mjs';
+ import { assertAcceptanceFreeze, captureAcceptanceFreeze } from './main-smoke-freeze.mjs';
+ import { loadPinnedHelper } from './helper-provenance.mjs';
+-import { runCanonicalTacticsSmoke } from './canonical-main-smoke.mjs';
++import { runCanonicalTacticsSmoke, runRemainingCanonicalTacticsSmoke } from './canonical-main-smoke.mjs';
+ import { runRuinCoverMainSmoke } from './ruin-cover-main-smoke.mjs';
+ 
+ const entry=fileURLToPath(import.meta.url);
+@@ -22,7 +22,7 @@
+ }
+ 
+ const [, , baseArg,rootArg,outArg,fixturesArg,freezeArg,helperArg,groupsArg]=process.argv;
+-assert(baseArg&&rootArg&&outArg&&fixturesArg&&freezeArg&&helperArg,'Use BASE ROOT NEW_EVIDENCE FIXTURES FREEZE AUDIT_BUNDLE [canonical,ruins]');
++assert(baseArg&&rootArg&&outArg&&fixturesArg&&freezeArg&&helperArg,'Use BASE ROOT NEW_EVIDENCE FIXTURES FREEZE AUDIT_BUNDLE [canonical,remaining-combat,ruins]');
+ const base=baseArg,root=resolve(rootArg),out=resolve(outArg),fixtures=resolve(fixturesArg),freezePath=resolve(freezeArg);
+ assert.equal(entry,resolve(root,'scripts/acceptance/verify-main-smoke402.mjs'),'Execute browser runner from pinned checkout');
+ assert(out!==fixtures&&!out.startsWith(`${fixtures}${sep}`),'Evidence output is outside frozen fixtures');
+@@ -33,9 +33,10 @@
+ const manifest=JSON.parse(await readFile(resolve(fixtures,'manifest.json'),'utf8'));
+ const {module:helper,provenance:helperProvenance}=await loadPinnedHelper(root,frozen.source.commit,helperArg,'scripts/acceptance/native-audit.ts');
+ assert.equal(typeof helper.observeNative,'function');
+-const runners={canonical:runCanonicalTacticsSmoke,ruins:runRuinCoverMainSmoke};
++const runners={canonical:runCanonicalTacticsSmoke,'remaining-combat':runRemainingCanonicalTacticsSmoke,ruins:runRuinCoverMainSmoke};
+ const groups=(groupsArg??'canonical,ruins').split(',');
+ assert(groups.length&&new Set(groups).size===groups.length&&groups.every(group=>Object.hasOwn(runners,group)),'Select known unique acceptance groups');
++assert(!(groups.includes('canonical')&&groups.includes('remaining-combat')),'Choose one canonical scope per browser run');
+ const distHtml=await readFile(resolve(root,'dist/index.html')),declaredAssets=htmlAssets(distHtml.toString(),base);
+ const evidence={schema:1,completed:false,base,startedAt:new Date().toISOString(),setup:manifest.setup,selectedGroups:groups,source:{...frozen.source,sealedContractSha256:digest(freezeBytes),executedRunnerSha256:digest(await readFile(entry)),distHtmlSha256:digest(distHtml)},helper:helperProvenance,checks:[],downloads:{},servedAssets:[],assetFailures:[],errors:[],groups:{}};
+ const receiptPath=resolve(out,'browser-main-smoke402.json');
+diff --git a/scripts/acceptance/main-smoke402-history-audit.ts b/scripts/acceptance/main-smoke402-history-audit.ts
+--- a/scripts/acceptance/main-smoke402-history-audit.ts
++++ b/scripts/acceptance/main-smoke402-history-audit.ts
+@@ -16,6 +16,7 @@
+ 
+ const digest = (value: string | Buffer) => createHash('sha256').update(value).digest('hex');
+ const canonicalCases = ['formation-line', 'formation-wedge', 'formation-square', 'formation-loose', 'charge-pike-front', 'charge-pike-rear', 'siege-full-crew-capture', 'ambush-selected-trigger', 'morale-supported-full-fight'];
++const remainingCanonicalCases = ['siege-full-crew-capture', 'ambush-selected-trigger', 'morale-supported-full-fight'];
+ const replayFields = ['format', 'version', 'initial', 'actions', 'finalTick', 'finalChecksum', 'checksumVersion', 'simulationRevision'] as const;
+ type Frame = {
+   tick: number; time: number; actors: Entity[];
+@@ -113,13 +114,16 @@
+   assert.equal(receipt.cleanup?.completed, true, 'Completed receipt includes its browser cleanup');
+   const selected: string[] = receipt.selectedGroups;
+   assert(Array.isArray(selected) && selected.length > 0 && new Set(selected).size === selected.length);
+-  assert(selected.every(group => ['canonical', 'ruins'].includes(group)));
++  assert(selected.every(group => ['canonical', 'remaining-combat', 'ruins'].includes(group)));
++  assert(!(selected.includes('canonical') && selected.includes('remaining-combat')), 'Choose one canonical scope per retained receipt');
+   assert.deepEqual(Object.keys(receipt.groups).sort(), [...selected].sort());
+   assert(receipt.downloads && Object.keys(receipt.downloads).length > 0);
+-  if (selected.includes('canonical')) {
+-    assert.equal(receipt.groups.canonical.completed, true);
+-    assert.deepEqual([...receipt.groups.canonical.caseNames].sort(), [...canonicalCases].sort());
+-    assert(Array.isArray(receipt.groups.canonical.exports));
++  const hasCanonical = selected.includes('canonical') || selected.includes('remaining-combat');
++  const canonical = selected.includes('canonical') ? receipt.groups.canonical : receipt.groups['remaining-combat'];
++  if (hasCanonical) {
++    assert.equal(canonical.completed, true);
++    assert.deepEqual([...canonical.caseNames].sort(), [...(selected.includes('canonical') ? canonicalCases : remainingCanonicalCases)].sort());
++    assert(Array.isArray(canonical.exports));
+   }
+   if (selected.includes('ruins')) assert(receipt.groups.ruins.results && receipt.groups.ruins.capture);
+ 
+@@ -208,15 +212,15 @@
+   replayOriginal(report.session, 'production-build-report.json#session', false);
+ 
+   const suppliedPairs: [string, string][] = [];
+-  if (selected.includes('canonical')) {
+-    const declared = receipt.groups.canonical.continuations; assert(Array.isArray(declared));
++  if (hasCanonical) {
++    const declared = canonical.continuations; assert(Array.isArray(declared));
+     for (const item of declared) {
+       assert(typeof item.checkpoint === 'string' && typeof item.final === 'string' && item.checkpoint !== item.final);
+       const partial = sessions.get(item.checkpoint), full = sessions.get(item.final); assert(partial && full);
+       assert.equal(partial.game.state.tick, item.checkpointTick); assert.equal(full.game.state.tick, item.finalTick);
+       suppliedPairs.push([item.checkpoint, item.final]);
+     }
+-    for (const item of receipt.groups.canonical.exports) {
++    for (const item of canonical.exports) {
+       assert.equal(item.file, `${item.name}-save.json`); const file = sessions.get(item.file); assert(file);
+       assert.equal(file.game.state.tick, item.tick);
+     }
+@@ -272,7 +276,8 @@
+     assert(charge[0].returnHits.length > 0 && charge[0].stoppedMessages.some(item => item.tick === charge[0].firstHit.tick));
+     assert(charge[1].firstHit.event.amount! > charge[0].firstHit.event.amount!);
+     observations.charges = charge;
+-
++  }
++  if (hasCanonical) {
+     const siege = history('siege-new-owner-impact', 'siege-full-crew-capture'), siegeIds = authoredByName.get(siege.scenario)!.scenario.ids;
+     const initialEngine = siege.initial.state.entities.find(item => item.id === siegeIds.engine)!;
+     assert(initialEngine.tactics?.siegeCrew && initialEngine.tactics.siegeCrew.hp === initialEngine.tactics.siegeCrew.maxHp && !initialEngine.tactics.siegeCrew.uncrewed);

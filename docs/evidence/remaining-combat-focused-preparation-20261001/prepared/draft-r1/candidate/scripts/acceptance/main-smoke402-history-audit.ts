@@ -118,9 +118,8 @@ export function verifyMainSmoke402Artifacts({ evidenceDir, fixturesDir, manifest
   assert(!(selected.includes('canonical') && selected.includes('remaining-combat')), 'Choose one canonical scope per retained receipt');
   assert.deepEqual(Object.keys(receipt.groups).sort(), [...selected].sort());
   assert(receipt.downloads && Object.keys(receipt.downloads).length > 0);
-  const hasCanonical = selected.includes('canonical') || selected.includes('remaining-combat');
   const canonical = selected.includes('canonical') ? receipt.groups.canonical : receipt.groups['remaining-combat'];
-  if (hasCanonical) {
+  if (canonical) {
     assert.equal(canonical.completed, true);
     assert.deepEqual([...canonical.caseNames].sort(), [...(selected.includes('canonical') ? canonicalCases : remainingCanonicalCases)].sort());
     assert(Array.isArray(canonical.exports));
@@ -212,7 +211,7 @@ export function verifyMainSmoke402Artifacts({ evidenceDir, fixturesDir, manifest
   replayOriginal(report.session, 'production-build-report.json#session', false);
 
   const suppliedPairs: [string, string][] = [];
-  if (hasCanonical) {
+  if (canonical) {
     const declared = canonical.continuations; assert(Array.isArray(declared));
     for (const item of declared) {
       assert(typeof item.checkpoint === 'string' && typeof item.final === 'string' && item.checkpoint !== item.final);
@@ -277,7 +276,7 @@ export function verifyMainSmoke402Artifacts({ evidenceDir, fixturesDir, manifest
     assert(charge[1].firstHit.event.amount! > charge[0].firstHit.event.amount!);
     observations.charges = charge;
   }
-  if (hasCanonical) {
+  if (canonical) {
     const siege = history('siege-new-owner-impact', 'siege-full-crew-capture'), siegeIds = authoredByName.get(siege.scenario)!.scenario.ids;
     const initialEngine = siege.initial.state.entities.find(item => item.id === siegeIds.engine)!;
     assert(initialEngine.tactics?.siegeCrew && initialEngine.tactics.siegeCrew.hp === initialEngine.tactics.siegeCrew.maxHp && !initialEngine.tactics.siegeCrew.uncrewed);

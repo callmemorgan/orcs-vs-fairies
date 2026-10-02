@@ -4,7 +4,6 @@ import { resolve } from 'node:path';
 import { assertSessionIdentity } from './native-contract.mjs';
 
 export const CANONICAL_CASES=['formation-line','formation-wedge','formation-square','formation-loose','charge-pike-front','charge-pike-rear','siege-full-crew-capture','ambush-selected-trigger','morale-supported-full-fight'];
-export const REMAINING_CANONICAL_CASES=['siege-full-crew-capture','ambush-selected-trigger','morale-supported-full-fight'];
 const entity=(s,id)=>{const e=s.entities.find(e=>e.id===id);assert(e,`Entity #${id}`);return e;};
 const hp=(s,id)=>s.entities.find(e=>e.id===id)?.hp??0;
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
@@ -20,10 +19,10 @@ const offset=(kind,slot,count,spacing)=>{
 };
 
 /** Native input and read-only observations. No issueCommand/stepGame/browser state writes. */
-export async function runCanonicalTacticsSmoke(ctx,{remainingOnly=false}={}){
+export async function runCanonicalTacticsSmoke(ctx){
  assert.equal(ctx.identity.saveVersion,4);assert.equal(ctx.identity.simulationRevision,'4.0.2');
  assert.equal(ctx.manifest.simulationRevision,'4.0.2');assert.equal(ctx.manifest.sourceCommit,ctx.evidence.source.commit);
- const exports=[],continuations=[],results={},traces={},requiredEventAudits=[],caseNames=remainingOnly?REMAINING_CANONICAL_CASES:CANONICAL_CASES;
+ const exports=[],continuations=[],results={},traces={},requiredEventAudits=[];
  let active,tracked=[];const progress={activeCase:null,completedCases:[],exports,continuations,results,requiredEventAudits};ctx.evidence.canonicalProgress=progress;
  function collect(s){
   const trace=traces[active];if(!trace||trace.seen.has(s.tick))return;trace.seen.add(s.tick);
@@ -39,7 +38,7 @@ export async function runCanonicalTacticsSmoke(ctx,{remainingOnly=false}={}){
  async function attack(ids,target){await ctx.resume();await ctx.selectMany(ids);await ctx.entityClick(target,'right');await ctx.wait(({ids,target})=>ids.every(id=>{const o=window.rts.state.entities.find(e=>e.id===id)?.order;return o?.type==='attack'&&o.target===target;}),{ids,target});}
  async function finishTrace(name){const trace=traces[name];delete trace.seen;await writeFile(resolve(ctx.out,`${name}-observations.json`),`${JSON.stringify(trace,null,2)}\n`,{flag:'wx'});progress.completedCases.push(name);}
  try{
- for(const kind of remainingOnly?[]:['line','wedge','square','loose']){
+ for(const kind of ['line','wedge','square','loose']){
   const name=`formation-${kind}`,{ids}=await load(name);tracked=ids.army;const initial=await ctx.snap();assert(ids.army.every(id=>hp(initial,id)===entity(initial,id).maxHp));collect(initial);
   await ctx.selectTroop(ids.army[0]);await selectEntireOwnedArmy(ids.army);const panel=await ctx.openTactics();await panel.getByLabel('Troop facing',{exact:true}).selectOption('0');await panel.getByLabel('Formation spacing',{exact:true}).fill('.8');
   await panel.getByRole('button',{name:kind[0].toUpperCase()+kind.slice(1),exact:true}).click();await ctx.wait(({army,kind})=>army.every(id=>window.rts.state.entities.find(e=>e.id===id)?.tactics?.formation?.kind===kind),{army:ids.army,kind});
@@ -55,7 +54,7 @@ export async function runCanonicalTacticsSmoke(ctx,{remainingOnly=false}={}){
   command(file,'formation',c=>sameIds(c.ids,ids.army)&&c.formation===kind&&c.spacing===.8&&c.facing===0);const acceptedMove=command(file,'move',c=>sameIds(c.ids,ids.army)&&Math.hypot(c.x-ids.destination.x,c.y-ids.destination.y)<.05);assert.equal(acceptedMove.x,actualAnchor.x);assert.equal(acceptedMove.y,actualAnchor.y);
   results[name]={tick:settled.tick,army:ids.army,requestedDestination:ids.destination,acceptedMove,actualAnchor,group:entity(settled,ids.army[0]).tactics.formation.group};ctx.record(`${name} applies through main Tactics, moves and persists six living troops`,results[name]);await finishTrace(name);
  }
- for(const direction of remainingOnly?[]:['front','rear']){
+ for(const direction of ['front','rear']){
   const name=`charge-pike-${direction}`,{ids}=await load(name);tracked=[ids.source,ids.target];const before=await ctx.snap();assert.equal(hp(before,ids.source),entity(before,ids.source).maxHp);assert.equal(hp(before,ids.target),entity(before,ids.target).maxHp);collect(before);
   await attack([ids.source],ids.target);const moving=await until(s=>(entity(s,ids.source).tactics?.charge?.distance??0)>=4&&hp(s,ids.target)===hp(before,ids.target),`${name} charged before first hit`);collect(moving);
   const movingName=`${name}-moving`,movingFile=await verified(movingName);command(movingFile,'attack',c=>sameIds(c.ids,[ids.source])&&c.target===ids.target);assert((entity(movingFile.game.state,ids.source).tactics?.charge?.distance??0)>=4);assert.equal(hp(movingFile.game.state,ids.target),hp(before,ids.target));
@@ -116,25 +115,9 @@ export async function runCanonicalTacticsSmoke(ctx,{remainingOnly=false}={}){
   requiredEventAudits.push({scenario:name,kind:'full-morale-combat-causal-chain',attackerIds:ids.siege,squadIds:ids.squad,deadAllies,retreater:retreater.id,nativeAttackTick:nativeAttack.tick,beforeVolleyTick:beforeVolleyState.tick,requiredChronology:'Accepted native attack precedes the first ordinary launch, actual damage, nearby allied death and morale retreat; derive hit amounts and casualty count from replay rather than an exact predicted gate.',observedEvents:traces[name].events.filter(item=>['attack','death','message'].includes(item.event.type))});
   results[name]={initialSquad:ids.squad.map(id=>entity(initial,id)),nativeAttack,beforeVolleyTick:beforeVolleyState.tick,deadAllies,wounded,retreat:{tick:retreat.tick,retreater,support,supportDistance:distance(retreater,support),visibleThreat:threat.id},movedTick:moved.tick,movement:distance(entity(moved,retreater.id),origin)};ctx.record('Full-health morale100 squad suffers real wounds/deaths and retreats with a live close ally',results[name]);await finishTrace(name);
  }
- return{completed:true,scope:remainingOnly?'Three remaining canonical production-main encounters for originals4/9/10; no full39-case or stress certification':'Nine bounded canonical production-main encounters; no full39-case or stress certification',caseNames,exports,continuations,results,requiredEventAudits,status:'Native observations and complete browser persistence only. Root must inspect transient event/replay continuation evidence before admission.'};
+ return{completed:true,scope:'Nine bounded canonical production-main encounters; no full39-case or stress certification',caseNames:CANONICAL_CASES,exports,continuations,results,requiredEventAudits,status:'Native observations and complete browser persistence only. Root must inspect transient event/replay continuation evidence before admission.'};
  }catch(error){
   progress.failure={case:active,message:String(error.stack??error)};const trace=traces[active];if(trace)try{await writeFile(resolve(ctx.out,`${active}-failure-observations.json`),`${JSON.stringify({samples:trace.samples,events:trace.events},null,2)}\n`,{flag:'wx'});}catch(captureError){progress.failure.traceCaptureError=String(captureError.stack??captureError);}throw error;
  }
 }
 
-/** Root's focused originals4/9/10 group. Public KeyP input replaces slow DOM pause clicks only here. */
-export async function runRemainingCanonicalTacticsSmoke(ctx){
- async function setPaused(wanted){
-  await ctx.closeSessions();const before=await ctx.snap();if(before.paused===wanted)return;
-  // Tactics/faction panels stop keydown propagation; their native close buttons restore outside focus.
-  await ctx.closePanels();await ctx.page.keyboard.press('KeyP');await ctx.wait(wanted=>window.rts.paused===wanted,wanted);
-  (ctx.evidence.nativePauseInputs??=[]).push({key:'KeyP',beforeTick:before.tick,beforePaused:before.paused,wantedPaused:wanted});
- }
- const pause=()=>setPaused(true),resume=()=>setPaused(false);
- async function runUntil(predicate,{timeout=15000,label='native condition'}={}){
-  await resume();const deadline=Date.now()+timeout;
-  while(Date.now()<deadline){const state=await ctx.snap();if(await predicate(state)){await pause();return await ctx.snap();}await ctx.page.waitForTimeout(20);}
-  await pause();assert.fail(`Timed out: ${label}`);
- }
- return runCanonicalTacticsSmoke({...ctx,pause,resume,runUntil},{remainingOnly:true});
-}

@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "revision": "r3 final static artifact readback",
+  "status": "No candidate execution",
+  "remainingDriverBodies": {
+    "byteEqualToCommittedBaseline": true,
+    "bytes": 13953,
+    "sha256": "8d7af0af7088a63c4b8b6d5bb644fedf3b594568272a3aeac33192a216ebb9d0"
+  },
+  "remainingAuditBodies": {
+    "byteEqualToCommittedBaseline": true,
+    "bytes": 9907,
+    "sha256": "868850875662ea8dc6e61a0ac7af509999876fa624c2551f297ae7a0f4482748"
+  },
+  "patchExternalBaseline": "/tmp/ovf-remaining-combat-static-patch-r3-fz683g_4",
+  "patchDryRun": {
+    "exitCode": 0,
+    "stdout": "checking file scripts/acceptance/canonical-main-smoke.mjs\nchecking file scripts/acceptance/verify-main-smoke402.mjs\nchecking file scripts/acceptance/main-smoke402-history-audit.ts\n",
+    "stderr": ""
+  },
+  "patchExternalApplication": {
+    "exitCode": 0,
+    "stdout": "patching file scripts/acceptance/canonical-main-smoke.mjs\npatching file scripts/acceptance/verify-main-smoke402.mjs\npatching file scripts/acceptance/main-smoke402-history-audit.ts\n",
+    "stderr": "",
+    "allThreeFilesMatchCandidate": true
+  },
+  "staticFacts": [
+    "Remaining group skips formation and charge browser loops",
+    "Original default nine-case run remains the default",
+    "Three siege/ambush/morale browser case bodies and three corresponding causal-audit bodies are byte-identical to baseline",
+    "Only the remaining context replaces pause/resume/runUntil with native KeyP input and readonly polling",
+    "SessionTools closes before a toggle; army/faction panels close before KeyP to avoid stopped propagation",
+    "Production main places panel launchers in sessionToolbar outside stopping host; native Close focuses those launchers",
+    "Public default pause is KeyP; Space centers HQ",
+    "A declared remaining-combat group with null payload reaches completion validation and fails instead of skipping causal audit",
+    "Browser and audit reject combined canonical+remaining-combat scopes before duplicate checkpoint use"
+  ],
+  "rootReadback": {
+    "head": "2b6eb946cd2f27873db4c7fcdde00b90e49458a7",
+    "porcelain": "",
+    "targetSourcePathsStillBaseline": true
+  },
+  "ownedReadback": {
+    "path": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies",
+    "head": "f18a50d904c57ae1652f157b946ebd39d8d8923c",
+    "porcelain": "?? node_modules\n"
+  },
+  "limitations": [
+    "No JS/TS syntax check or module import",
+    "No runtime, test, build, browser, simulation, replay, DB, server or signal",
+    "Native timing, retained downloads and actual combat claims remain unverified until root execution",
+    "Future integration/build/helper/fixture/freeze/native/audit binding remains null"
+  ]
+}

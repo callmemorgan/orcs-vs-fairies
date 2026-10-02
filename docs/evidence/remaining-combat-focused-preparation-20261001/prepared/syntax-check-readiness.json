@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "status": "Prepared commands only; no syntax check/import/compile executed",
+  "executionSourceCommit": null,
+  "javascriptSyntaxCommands": [
+    {
+      "argv": [
+        "node",
+        "--check",
+        "scripts/acceptance/canonical-main-smoke.mjs"
+      ],
+      "cwd": "<root-owned-pinned-integration-checkout>"
+    },
+    {
+      "argv": [
+        "node",
+        "--check",
+        "scripts/acceptance/verify-main-smoke402.mjs"
+      ],
+      "cwd": "<root-owned-pinned-integration-checkout>"
+    }
+  ],
+  "typescriptHistoryReadiness": {
+    "path": "scripts/acceptance/main-smoke402-history-audit.ts",
+    "action": "Use the existing source-pinned main402 helper compilation/check workflow after root integration",
+    "newImports": false,
+    "newDependencies": false,
+    "compileStatus": "not-run"
+  },
+  "futureRuntimeGroup": "remaining-combat",
+  "noModuleExecutionHere": true
+}

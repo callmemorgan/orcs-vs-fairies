@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "revision": "r1 static artifact verification",
+  "status": "No candidate execution",
+  "remainingDriverBodies": {
+    "byteEqualToCommittedBaseline": true,
+    "bytes": 13953,
+    "sha256": "8d7af0af7088a63c4b8b6d5bb644fedf3b594568272a3aeac33192a216ebb9d0"
+  },
+  "remainingAuditBodies": {
+    "byteEqualToCommittedBaseline": true,
+    "bytes": 9907,
+    "sha256": "868850875662ea8dc6e61a0ac7af509999876fa624c2551f297ae7a0f4482748"
+  },
+  "patchExternalBaseline": "/tmp/ovf-remaining-combat-static-patch-r1-mx12k2qj",
+  "patchDryRun": {
+    "exitCode": 0,
+    "stdout": "checking file scripts/acceptance/canonical-main-smoke.mjs\nchecking file scripts/acceptance/verify-main-smoke402.mjs\nchecking file scripts/acceptance/main-smoke402-history-audit.ts\n",
+    "stderr": ""
+  },
+  "patchExternalApplication": {
+    "exitCode": 0,
+    "stdout": "patching file scripts/acceptance/canonical-main-smoke.mjs\npatching file scripts/acceptance/verify-main-smoke402.mjs\npatching file scripts/acceptance/main-smoke402-history-audit.ts\n",
+    "stderr": "",
+    "allThreeFilesMatchCandidate": true
+  },
+  "knownCorrectionsPendingIndependentReview": [
+    "Replace payload-truthiness gating with selected-scope gating in audit",
+    "Reject canonical+remaining-combat duplicate scope in browser as in audit"
+  ]
+}

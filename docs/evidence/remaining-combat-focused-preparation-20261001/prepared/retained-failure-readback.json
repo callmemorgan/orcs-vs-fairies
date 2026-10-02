@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "method": "Read actual retained report JSON; no fresh execution",
+  "interpretation": "These failures preceded the remaining siege/ambush/morale cases. The r4 charge-checkpoint assertion is left unchanged and bypassed only by the new focused group. Original1/8 admission remains root-owned separate evidence.",
+  "reports": [
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/main402-formations-charge-witness-7e-20261001/raw/browser/browser-main-smoke402.json",
+      "bytes": 428373,
+      "sha256": "dfd2e5a9e55cfff345bcc5ee7540f53abd68fae15adc4c4a0cba48fd7d5e4b0d",
+      "sourceCommit": "7e80356c9564151749a7753971fba13eec349509",
+      "completed": false,
+      "failure": {
+        "phase": "native canonical encounters",
+        "message": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert((entity(movingFile.game.state,ids.source).tactics?.charge?.distance??0)>=4)\n\n    at Object.runCanonicalTacticsSmoke [as canonical] (file:///tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/canonical-main-smoke.mjs:60:158)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at process.processImmediate (node:internal/timers:541:9)\n    at async file:///tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/verify-main-smoke402.mjs:81:88"
+      },
+      "completedCanonicalCases": [
+        "formation-line",
+        "formation-wedge",
+        "formation-square",
+        "formation-loose"
+      ],
+      "activeCanonicalCase": "charge-pike-front",
+      "lastCheckNames": [
+        "formation-loose-settled complete native round trip",
+        "formation-loose-settled complete replay endpoint",
+        "formation-loose applies through main Tactics, moves and persists six living troops",
+        "Native import preserves charge-pike-front",
+        "charge-pike-front-moving complete native round trip",
+        "charge-pike-front-moving complete replay endpoint"
+      ],
+      "remainingCasesReached": false
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/main402-camera-failure-8db-20261001/raw/browser/browser-main-smoke402.json",
+      "bytes": 354989,
+      "sha256": "0b6a753ec14811c88f69cddda9924f5c6e77fcc28c018f6143e88a2a3824eecc",
+      "sourceCommit": "8db0f2dd0b38302f0f588c80316db082bc49e9b3",
+      "completed": false,
+      "failure": {
+        "phase": "native canonical encounters",
+        "message": "AssertionError [ERR_ASSERTION]: Native pointer action must reach the battlefield canvas\n    at canvasInput (file:///tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/native-context.mjs:64:195)\n    at async Object.ground (file:///tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/native-context.mjs:65:267)\n    at async Object.runCanonicalTacticsSmoke [as canonical] (file:///tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/canonical-main-smoke.mjs:45:221)\n    at async file:///tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/verify-main-smoke402.mjs:81:88"
+      },
+      "completedCanonicalCases": [],
+      "activeCanonicalCase": "formation-line",
+      "lastCheckNames": [
+        "Native import preserves formation-line"
+      ],
+      "remainingCasesReached": false
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/native-combat-f18a50d-first-failure-20261001/raw/browser/browser-native-acceptance.json",
+      "bytes": 304363,
+      "sha256": "7c24b87e4a1d8ef89e6164e86a544b29c272a5d00f2cf8d2c604b681a2fbd3a4",
+      "sourceCommit": "f18a50d904c57ae1652f157b946ebd39d8d8923c",
+      "completed": false,
+      "failure": {
+        "phase": "native direction encounters",
+        "message": "page.waitForFunction: Timeout 60000ms exceeded.\n    at wait (/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/native-context.mjs:13:50)\n    at ready (/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/native-context.mjs:18:19)\n    at persistence (/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/native-context.mjs:96:57)\n    at async Object.exportAndVerify (/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/native-context.mjs:102:74)\n    at async verified (/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/direction-defense.mjs:14:18)\n    at async Object.runDirectionDefense (/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/direction-defense.mjs:156:68)\n    at async file:///home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/scripts/acceptance/verify-native-acceptance.mjs:84:88"
+      },
+      "completedCanonicalCases": null,
+      "activeCanonicalCase": null,
+      "lastCheckNames": [
+        "charge-charge-impact complete replay endpoint",
+        "Native cavalry charge impact records target and rider health",
+        "Native import preserves charge-stop",
+        "charge-stop-moving complete native round trip",
+        "charge-stop-moving complete replay endpoint",
+        "charge-stop-interrupted complete native round trip"
+      ],
+      "remainingCasesReached": false
+    }
+  ]
+}
