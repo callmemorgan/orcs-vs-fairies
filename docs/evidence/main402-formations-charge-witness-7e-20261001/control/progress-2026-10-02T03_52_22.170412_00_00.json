@@ -1,0 +1,60 @@
+{
+  "at": "2026-10-02T03:52:22.170412+00:00",
+  "status": "failed; first failure retained; no runtime retry",
+  "phase": {
+    "name": "main15-strict-art-browser",
+    "startedAt": "2026-10-02T03:50:35.778737+00:00",
+    "exitCode": 1,
+    "timedOut": null
+  },
+  "logTail": [
+    "PASS formation-wedge-settled complete native round trip",
+    "PASS formation-wedge-settled complete replay endpoint",
+    "PASS formation-wedge applies through main Tactics, moves and persists six living troops",
+    "PASS Native import preserves formation-square",
+    "PASS formation-square-settled complete native round trip",
+    "PASS formation-square-settled complete replay endpoint",
+    "PASS formation-square applies through main Tactics, moves and persists six living troops",
+    "PASS Native import preserves formation-loose",
+    "PASS formation-loose-settled complete native round trip",
+    "PASS formation-loose-settled complete replay endpoint",
+    "PASS formation-loose applies through main Tactics, moves and persists six living troops",
+    "PASS Native import preserves charge-pike-front",
+    "PASS charge-pike-front-moving complete native round trip",
+    "PASS charge-pike-front-moving complete replay endpoint"
+  ],
+  "browser": {
+    "completed": false,
+    "groupKeys": [],
+    "checkNames": [
+      "Native import preserves formation-line",
+      "formation-line-settled complete native round trip",
+      "formation-line-settled complete replay endpoint",
+      "formation-line applies through main Tactics, moves and persists six living troops",
+      "Native import preserves formation-wedge",
+      "formation-wedge-settled complete native round trip",
+      "formation-wedge-settled complete replay endpoint",
+      "formation-wedge applies through main Tactics, moves and persists six living troops",
+      "Native import preserves formation-square",
+      "formation-square-settled complete native round trip",
+      "formation-square-settled complete replay endpoint",
+      "formation-square applies through main Tactics, moves and persists six living troops",
+      "Native import preserves formation-loose",
+      "formation-loose-settled complete native round trip",
+      "formation-loose-settled complete replay endpoint",
+      "formation-loose applies through main Tactics, moves and persists six living troops",
+      "Native import preserves charge-pike-front",
+      "charge-pike-front-moving complete native round trip",
+      "charge-pike-front-moving complete replay endpoint"
+    ],
+    "failure": {
+      "phase": "native canonical encounters",
+      "message": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert((entity(movingFile.game.state,ids.source).tactics?.charge?.distance??0)>=4)\n\n    at Object.runCanonicalTacticsSmoke [as canonical] (file:///tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/canonical-main-smoke.mjs:60:158)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at process.processImmediate (node:internal/timers:541:9)\n    at async file:///tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/verify-main-smoke402.mjs:81:88"
+    },
+    "cleanup": {
+      "completed": true,
+      "errors": []
+    }
+  },
+  "downloadCount": 30
+}

@@ -1,0 +1,65 @@
+{
+  "at": "2026-10-02T04:03:15.922578+00:00",
+  "sourcePin": "7e80356c9564151749a7753971fba13eec349509",
+  "testedProductPin": "f7f3e187ea40079492589a6fce39f0b33f77f04a",
+  "productVersion": "4.0.2",
+  "featureIds": [
+    1,
+    8
+  ],
+  "originalRequirementsOnly": true,
+  "rootDirectAuthentication": {
+    "rawAndControlCompleteBytesModesNames": true,
+    "allFourCompleteNativeSaveRuntimeAndReplayEndpointsEqual": true,
+    "frontNativeMovementChargeDistance": 4.024999999999998,
+    "frontDamageToPike": 17,
+    "pikeCounterDamageToRider": 18,
+    "chargeReset": 0,
+    "nativeBracedPikeStopMessageRetained": true,
+    "passingCurrentFullTests": {
+      "file": "docs/evidence/current402-full-suite-build-f7-20261001/full-tests.json",
+      "sha256": "12883cfc398fcbbebdcb140b129748a6a2c57afec3f04d68198f9ce55359125e",
+      "assertions": [
+        {
+          "index": 14,
+          "name": "combat tactics encounters moving cavalry gains impact while stops and sharp turns lose the charge",
+          "status": "passed"
+        },
+        {
+          "index": 15,
+          "name": "combat tactics encounters frontal braced pikes cancel charge and hurt the rider; a rear charge retains impact",
+          "status": "passed"
+        }
+      ]
+    },
+    "sourceApplicability": [
+      {
+        "path": "tests/combat-tactics.test.ts",
+        "sha256": "930e2db43072914103ae6ca8bed0b44a615e8f805d669abc7b211dfd589dc75d",
+        "bytes": 16841,
+        "currentEqualsTestedF7": true
+      },
+      {
+        "path": "src/core/tactics.ts",
+        "sha256": "c211c0f9e592d00fed035589fc62c41ec2aa329ce9906a62a0d71c7ed3495b2d",
+        "bytes": 18834,
+        "currentEqualsTestedF7": true
+      },
+      {
+        "path": "src/core/simulation.ts",
+        "sha256": "e301c65d0352ffe648a5bc4ee6acbda1f562164deacdfe60f8f3b03e7bdccf35",
+        "bytes": 106228,
+        "currentEqualsTestedF7": true
+      }
+    ]
+  },
+  "failedBatchQualification": "R4 stopped on an extra moving-checkpoint distance assertion after actual impact. All four formation cases and front native saved impact replay passed. Whole browser/history batch/placeholder did not complete.",
+  "slotReleased": true,
+  "remainingFeatureIds": [
+    4,
+    9,
+    10,
+    63
+  ],
+  "verifiedCount": 96
+}

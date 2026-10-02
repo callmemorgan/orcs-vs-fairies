@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-02T04:00:57Z",
+  "repository": "/home/morgana/Projects/orcs-vs-Fairies",
+  "pins": {
+    "testedProduct": "f7f3e187ea40079492589a6fce39f0b33f77f04a",
+    "admittedScripts": "7e80356c9564151749a7753971fba13eec349509"
+  },
+  "rootReadback": {
+    "head": "7e80356c9564151749a7753971fba13eec349509",
+    "branch": "codex/100-features",
+    "porcelainStatus": "?? docs/evidence/main402-formations-charge-witness-7e-20261001/",
+    "clean": false
+  },
+  "requirementsAtAdmittedScriptsPin": [
+    {
+      "id": 1,
+      "title": "Army formations",
+      "requirement": "arrange troops into lines, wedges, squares or loose skirmish groups.",
+      "status": "in-progress"
+    },
+    {
+      "id": 8,
+      "title": "Cavalry charges",
+      "requirement": "build impact through movement, with pikes stopping the charge.",
+      "status": "in-progress"
+    }
+  ],
+  "staticEquality": {
+    "command": "git diff --exit-code f7f3e187ea40079492589a6fce39f0b33f77f04a 7e80356c9564151749a7753971fba13eec349509 -- src tests/combat-tactics.test.ts",
+    "exitCode": 0,
+    "equal": true
+  },
+  "sourceFiles": [
+    {
+      "path": "tests/combat-tactics.test.ts",
+      "testedPinGitBlobSha1": "30aa05a184aeff9446e0d578ec4ed3154bdbe362",
+      "admittedScriptsPinGitBlobSha1": "30aa05a184aeff9446e0d578ec4ed3154bdbe362",
+      "testedPinSha256": "930e2db43072914103ae6ca8bed0b44a615e8f805d669abc7b211dfd589dc75d",
+      "admittedScriptsPinSha256": "930e2db43072914103ae6ca8bed0b44a615e8f805d669abc7b211dfd589dc75d",
+      "equal": true,
+      "relevantLines": [
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78
+      ],
+      "snapshot": "    24\tdescribe('combat tactics encounters',()=>{\n    25\t it.each<FormationKind>(['line','wedge','square','loose'])('%s preserves stable slots, routes around a building, and regroups after a casualty',kind=>{\n    26\t  const s=fixture(),roles:UnitRole[]=['melee','ranged','spear','cavalry','melee','ranged'],army=roles.map((role,i)=>unit(s,0,role,18.5+i*.7,20.5));building(s,0,'depot',24.5,20.5);refreshVisibility(s);\n    27\t  expect(issueCommand(s,0,{type:'formation',ids:army.map(e=>e.id).reverse(),formation:kind,spacing:.8,facing:0})).toBe(true);\n    28\t  expect(army.map(e=>e.tactics!.formation!.slot)).toEqual([0,1,2,3,4,5]);\n    29\t  expect(issueCommand(s,0,{type:'move',ids:army.map(e=>e.id),x:30.5,y:20.5})).toBe(true);advance(s,16);\n    30\t  for(const e of army){const goal=formationDestination(e.tactics!.formation!,s);expect(Math.hypot(e.x-goal.x,e.y-goal.y)).toBeLessThan(.7);expect(e.order.type).toBe('hold');expect(e.facing).toBe(0);}\n    31\t  const victim=army[2],enemy=unit(s,1,'ranged',victim.x-5,victim.y);victim.hp=1;victim.tactics!.morale=100;fire(s,enemy,victim);expect(victim.hp).toBe(0);enemy.cooldown=100;expect(issueCommand(s,1,{type:'move',ids:[enemy.id],x:10.5,y:10.5})).toBe(true);advance(s,8);\n    32\t  const survivors=army.filter(e=>e.hp>0);expect(survivors.map(e=>e.tactics!.formation!.slot)).toEqual([0,1,2,3,4]);for(const e of survivors){expect(e.tactics!.formation!.count).toBe(5);expect(Math.hypot(e.x-formationDestination(e.tactics!.formation!,s).x,e.y-formationDestination(e.tactics!.formation!,s).y)).toBeLessThan(.75);}\n    33\t });\n    72\t it('moving cavalry gains impact while stops and sharp turns lose the charge',()=>{\n    73\t  const trial=(motion:'stationary'|'charge'|'stop'|'turn')=>{const s=fixture(),cavalry=unit(s,0,'cavalry',18.5,24.5),target=unit(s,1,'melee',26,24.5);target.facing=4;cavalry.cooldown=100;refreshVisibility(s);if(motion!=='stationary'){issueCommand(s,0,{type:'move',ids:[cavalry.id],x:25.1,y:24.5});advance(s,1.8);expect(cavalry.tactics!.charge!.distance).toBeGreaterThan(4);if(motion==='stop'){issueCommand(s,0,{type:'hold',ids:[cavalry.id]});advance(s,1.5);}if(motion==='turn'){issueCommand(s,0,{type:'move',ids:[cavalry.id],x:cavalry.x,y:cavalry.y-2});advance(s,.4);}}else cavalry.x=25.1;const hp=target.hp;fire(s,cavalry,target,.3);return hp-target.hp;};\n    74\t  expect(trial('charge')).toBeGreaterThan(trial('stationary')*1.5);expect(trial('stop')).toBeLessThan(trial('charge'));expect(trial('turn')).toBeLessThan(trial('charge'));\n    75\t });\n    76\t it('frontal braced pikes cancel charge and hurt the rider; a rear charge retains impact',()=>{\n    77\t  const trial=(facing:number)=>{const s=fixture(),rider=unit(s,0,'cavalry',18.5,24.5),pike=unit(s,1,'spear',26,24.5);pike.facing=facing;rider.cooldown=100;refreshVisibility(s);issueCommand(s,0,{type:'move',ids:[rider.id],x:25.1,y:24.5});advance(s,1.8);const hp=pike.hp,riderHp=rider.hp;fire(s,rider,pike,.05);return {loss:hp-pike.hp,riderLoss:riderHp-rider.hp,charge:rider.tactics!.charge!.distance};};\n    78\t  const front=trial(4),rear=trial(0);expect(front.loss).toBeCloseTo(17);expect(front.riderLoss).toBeGreaterThan(10);expect(front.charge).toBe(0);expect(rear.loss).toBeGreaterThan(front.loss*1.5);expect(rear.riderLoss).toBe(0);\n"
+    },
+    {
+      "path": "src/core/tactics.ts",
+      "testedPinGitBlobSha1": "683b0c5c2ba513ce8f4aff9eb311c74b06e951e6",
+      "admittedScriptsPinGitBlobSha1": "683b0c5c2ba513ce8f4aff9eb311c74b06e951e6",
+      "testedPinSha256": "c211c0f9e592d00fed035589fc62c41ec2aa329ce9906a62a0d71c7ed3495b2d",
+      "admittedScriptsPinSha256": "c211c0f9e592d00fed035589fc62c41ec2aa329ce9906a62a0d71c7ed3495b2d",
+      "equal": true,
+      "relevantLines": [
+        127,
+        128,
+        129,
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138
+      ],
+      "snapshot": "   127\texport function updateCharge(s:GameState,e:Entity,from:Vec,dt:number):void {\n   128\t if(e.role!=='cavalry'||e.illusion)return;const t=initializeTactics(s,e),moved=distance(from,e),c=t.charge??={distance:0,heading:e.facing,lastMovedAt:s.time};\n   129\t if(moved>dt*.5){const turn=Math.abs(Math.atan2(Math.sin((e.facing-c.heading)*Math.PI/4),Math.cos((e.facing-c.heading)*Math.PI/4)));if(turn>Math.PI/4+.01)c.distance=0;c.distance=Math.min(TACTICS.chargeDistance,c.distance+moved);c.heading=e.facing;c.lastMovedAt=s.time;}\n   130\t\n   131\t}\n   132\texport function ageCharge(s:GameState,e:Entity,dt:number):void {const c=e.tactics?.charge;if(c&&s.time-c.lastMovedAt>.25)c.distance=Math.max(0,c.distance-dt*5);}\n   133\texport function cavalryImpact(s:GameState,source:Entity,target:Entity):{factor:number;pikeDamage:number} {\n   134\t if(source.role!=='cavalry'||source.illusion)return {factor:1,pikeDamage:0};\n   135\t const c=initializeTactics(s,source).charge,turn=c?Math.abs(Math.atan2(Math.sin((source.facing-c.heading)*Math.PI/4),Math.cos((source.facing-c.heading)*Math.PI/4))):0,distanceCharged=turn>Math.PI/4+.01?0:c?.distance??0,charged=distanceCharged>=1.5,front=facingDamageFactor(source,target)===1,braced=target.kind==='unit'&&target.role==='spear'&&target.order.type==='hold'&&front;\n   136\t if(c)c.distance=0;\n   137\t return braced&&charged?{factor:1,pikeDamage:TACTICS.pikeReturn*(distanceCharged/TACTICS.chargeDistance)}:{factor:1+TACTICS.chargeBonus*(distanceCharged/TACTICS.chargeDistance),pikeDamage:0};\n   138\t}\n"
+    },
+    {
+      "path": "src/core/simulation.ts",
+      "testedPinGitBlobSha1": "66bd44db02798f07467f888ab1193b06b52f364d",
+      "admittedScriptsPinGitBlobSha1": "66bd44db02798f07467f888ab1193b06b52f364d",
+      "testedPinSha256": "e301c65d0352ffe648a5bc4ee6acbda1f562164deacdfe60f8f3b03e7bdccf35",
+      "admittedScriptsPinSha256": "e301c65d0352ffe648a5bc4ee6acbda1f562164deacdfe60f8f3b03e7bdccf35",
+      "equal": true,
+      "relevantLines": [
+        419,
+        420,
+        421
+      ],
+      "snapshot": "   419\t  const entity=isEntityTarget(b),building=isBridgeTarget(b)||entity&&b.kind==='building',impact=entity?cavalryImpact(s,a,b):{factor:1,pikeDamage:0},multiplier=building?(d?.buildingDamageMultiplier??1):entity?(d?.bonusAgainst?.[b.role as UnitRole]??1):1,crew=entity&&b.role==='siege'&&!isCrewless(b)&&(d?.range??7)<=2.2;\n   420\t  queueWeaponHit(s,a,b,raw*multiplier*impact.factor*(modification==='stone'&&building?1.25:modification==='grapeshot'&&!building?1.5:1),(d?.range??7)>2.2,crew);\n   421\t  if(impact.pikeDamage>0&&entity){queueWeaponHit(s,b,a,impact.pikeDamage,false);emit(s,'message',a,b.id,'Charge stopped by braced pikes');}\n"
+    }
+  ],
+  "retainedFullSuite": {
+    "executionPath": "/tmp/ovf-id6-composed-full-build-f7-r2-o0w9akew/execution.json",
+    "status": "passed",
+    "authorizedSourceCommit": "f7f3e187ea40079492589a6fce39f0b33f77f04a",
+    "files": 160,
+    "tests": 2942,
+    "passed": 2942,
+    "failed": 0,
+    "pending": 0,
+    "success": true
+  },
+  "limits": {
+    "method": "Static reads only.",
+    "productRuntimeStarted": false,
+    "sourceModulesImported": false,
+    "buildRun": false,
+    "testsRun": false,
+    "browserRun": false,
+    "simulationRun": false,
+    "databaseReadOrWrite": false,
+    "rootEdited": false,
+    "signalsSent": false
+  }
+}

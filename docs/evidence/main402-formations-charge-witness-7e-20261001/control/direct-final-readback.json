@@ -1,0 +1,251 @@
+{
+  "schema": 1,
+  "at": "2026-10-02T03:54:54.579795+00:00",
+  "integrationPin": "7e80356c9564151749a7753971fba13eec349509",
+  "status": "failed; first failure retained; no runtime retry",
+  "wrapperExitCode": 1,
+  "rawManifest": {
+    "path": "/tmp/ovf-main402-native15-7e80356-r4/run-artifact-manifest.json",
+    "bytes": 123790,
+    "sha256": "f635c49936ba7953c003fb8d3c335bc69640b919e51e25e79e88ea58f424f6a4",
+    "artifactCount": 585,
+    "artifactBytes": 116571737
+  },
+  "allManifestArtifactsReauthenticated": true,
+  "directSourceAndDistReadbackCounts": {
+    "rootProduct": 570,
+    "ownedProduct": 570,
+    "helpers": 194,
+    "rootDist": 397,
+    "ownedDist": 398
+  },
+  "finalRootHead": "7e80356c9564151749a7753971fba13eec349509",
+  "finalOwnedHead": "7e80356c9564151749a7753971fba13eec349509",
+  "firstFailure": {
+    "message": "main15-strict-art-browser failed exit 1; no retry",
+    "traceback": "Traceback (most recent call last):\n  File \"/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/main15-bounded.v5.py\", line 250, in main\n    phase('main15-strict-art-browser',node+[str(OWNED/'scripts/acceptance/verify-main-smoke402.mjs'),base,str(OWNED),str(browser_out),str(fixtures),str(freeze),str(helpers/'audit.mjs'),'canonical,ruins'],900,env)\n    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/main15-bounded.v5.py\", line 138, in phase\n    if proc.returncode:raise RuntimeError(name+' failed exit '+str(proc.returncode)+'; no retry')\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: main15-strict-art-browser failed exit 1; no retry\n",
+    "at": "2026-10-02T03:52:08.871674+00:00"
+  },
+  "browserFailure": {
+    "phase": "native canonical encounters",
+    "message": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert((entity(movingFile.game.state,ids.source).tactics?.charge?.distance??0)>=4)\n\n    at Object.runCanonicalTacticsSmoke [as canonical] (file:///tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/canonical-main-smoke.mjs:60:158)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at process.processImmediate (node:internal/timers:541:9)\n    at async file:///tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/verify-main-smoke402.mjs:81:88"
+  },
+  "browserReceipt": {
+    "path": "/tmp/ovf-main402-native15-7e80356-r4/browser/browser-main-smoke402.json",
+    "bytes": 428373,
+    "sha256": "dfd2e5a9e55cfff345bcc5ee7540f53abd68fae15adc4c4a0cba48fd7d5e4b0d",
+    "completed": false,
+    "cleanup": {
+      "completed": true,
+      "errors": []
+    },
+    "checks": [
+      "Native import preserves formation-line",
+      "formation-line-settled complete native round trip",
+      "formation-line-settled complete replay endpoint",
+      "formation-line applies through main Tactics, moves and persists six living troops",
+      "Native import preserves formation-wedge",
+      "formation-wedge-settled complete native round trip",
+      "formation-wedge-settled complete replay endpoint",
+      "formation-wedge applies through main Tactics, moves and persists six living troops",
+      "Native import preserves formation-square",
+      "formation-square-settled complete native round trip",
+      "formation-square-settled complete replay endpoint",
+      "formation-square applies through main Tactics, moves and persists six living troops",
+      "Native import preserves formation-loose",
+      "formation-loose-settled complete native round trip",
+      "formation-loose-settled complete replay endpoint",
+      "formation-loose applies through main Tactics, moves and persists six living troops",
+      "Native import preserves charge-pike-front",
+      "charge-pike-front-moving complete native round trip",
+      "charge-pike-front-moving complete replay endpoint"
+    ],
+    "downloadCount": 30,
+    "assetFailures": [],
+    "errors": []
+  },
+  "completedCaseNamesObservedFromActualChecks": [
+    "formation-line",
+    "formation-wedge",
+    "formation-square",
+    "formation-loose"
+  ],
+  "chargeCheckpoint": {
+    "path": "/tmp/ovf-main402-native15-7e80356-r4/browser/charge-pike-front-moving-save.json",
+    "bytes": 593536,
+    "sha256": "70260e883fd3df72776ecce312563a3afda8f74f4ea32e2049d0bd81453ea84b",
+    "tick": 56,
+    "source": {
+      "id": 54,
+      "side": 0,
+      "kind": "unit",
+      "role": "cavalry",
+      "x": 24.546066195514413,
+      "y": 24.668677043285225,
+      "level": 0,
+      "hp": 192,
+      "maxHp": 210,
+      "order": {
+        "type": "attack",
+        "target": 55
+      },
+      "cooldown": 1.3,
+      "progress": 1,
+      "queue": [],
+      "trainProgress": 0,
+      "researchProgress": 0,
+      "facing": 0,
+      "animation": "attack",
+      "animTime": 0,
+      "momentum": 0,
+      "illusion": false,
+      "expires": 0,
+      "carried": 0,
+      "carriedKind": "wood",
+      "path": [
+        {
+          "x": 24.75,
+          "y": 24.75
+        }
+      ],
+      "definitionId": "fairy-cavalry",
+      "tactics": {
+        "morale": 93.94857142857153,
+        "recentLoss": 0,
+        "charge": {
+          "distance": 0,
+          "heading": 0,
+          "lastMovedAt": 2.7499999999999982
+        }
+      },
+      "shield": 0,
+      "lastDamagedAt": 2.799999999999998,
+      "veteran": {
+        "experience": 5.1,
+        "rank": 0,
+        "nextSurvivalAt": 17.799999999999997,
+        "lastCombatAt": 2.799999999999998,
+        "promotions": []
+      },
+      "lastAttacker": 55
+    },
+    "initialSource": {
+      "id": 54,
+      "side": 0,
+      "kind": "unit",
+      "role": "cavalry",
+      "x": 19.5,
+      "y": 24.5,
+      "level": 0,
+      "hp": 210,
+      "maxHp": 210,
+      "order": {
+        "type": "hold"
+      },
+      "cooldown": 0,
+      "progress": 1,
+      "queue": [],
+      "trainProgress": 0,
+      "researchProgress": 0,
+      "facing": 0,
+      "animation": "idle",
+      "animTime": 0,
+      "momentum": 0,
+      "illusion": false,
+      "expires": 0,
+      "carried": 0,
+      "carriedKind": "wood",
+      "path": [],
+      "definitionId": "fairy-cavalry",
+      "tactics": {
+        "morale": 100,
+        "recentLoss": 0
+      }
+    },
+    "commandActions": [
+      {
+        "type": "command",
+        "side": 0,
+        "command": {
+          "type": "attack",
+          "ids": [
+            54
+          ],
+          "target": 55,
+          "queued": false
+        }
+      }
+    ],
+    "readbackOnly": true
+  },
+  "fixtureCount": 15,
+  "fixturesExecuted": true,
+  "previewExecuted": true,
+  "browserExecuted": true,
+  "historyExecuted": false,
+  "placeholderExecuted": false,
+  "cleanupErrors": [],
+  "signals": [
+    {
+      "at": "2026-10-02T03:52:08.879284+00:00",
+      "pid": 1779588,
+      "startTicks": 8892936,
+      "signal": 15,
+      "protected4173": {
+        "pid": 1063,
+        "startTicks": 874,
+        "port": 4173,
+        "listeners": [
+          {
+            "table": "tcp",
+            "inode": "3783",
+            "local": "0100007F:104D"
+          }
+        ],
+        "matchingFds": [
+          {
+            "fd": "22",
+            "target": "socket:[3783]"
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-02T03:52:08.880515+00:00",
+      "pid": 1779580,
+      "startTicks": 8892930,
+      "signal": 15,
+      "protected4173": {
+        "pid": 1063,
+        "startTicks": 874,
+        "port": 4173,
+        "listeners": [
+          {
+            "table": "tcp",
+            "inode": "3783",
+            "local": "0100007F:104D"
+          }
+        ],
+        "matchingFds": [
+          {
+            "fd": "22",
+            "target": "socket:[3783]"
+          }
+        ]
+      }
+    }
+  ],
+  "wrapperClosed": true,
+  "rememberedOwnedChildrenClosed": true,
+  "rememberedOwnedChildCount": 22,
+  "closureQualification": "Only previously bound exact identities checked; no atomic unobserved-descendant exclusion claim.",
+  "protectedPreview": {
+    "pid": 1063,
+    "startTicks": 874,
+    "listenerInode": "3783",
+    "fd22": "socket:[3783]"
+  },
+  "owned4187Listeners": [],
+  "runtimeRetryCount": 0,
+  "visualAcceptance": "No complete main15 group/history/placeholder; partial formation screenshots remain root-reviewed only."
+}
