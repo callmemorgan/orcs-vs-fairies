@@ -1,0 +1,36 @@
+{
+  "at": "2026-10-02T03:32:10.592960+00:00",
+  "reviewType": "Bounded static selection and source-authentication review",
+  "basePin": "f67ee00f50b159a5e236abe72956b2938d567515",
+  "candidateSha256": "b08b45bd2d51278a599f453cd2a791a699d7ec4bb85d570ad1dc01060466899f",
+  "assessment": "No static blocker found for importing the authenticated single-call candidate. Runtime success is unverified.",
+  "recommendation": {
+    "file": "scripts/acceptance/canonical-main-smoke.mjs",
+    "line": 43,
+    "before": "await ctx.resume();await ctx.selectMany(ids.army);",
+    "after": "await selectEntireOwnedArmy(ids.army);",
+    "scope": "All four formation cases: line, wedge, square, loose."
+  },
+  "findings": [
+    "Candidate byte-equals the pinned canonical helper after one substitution. Fixture generation, formation/command assertions, movement checks, persistence checks, and general selectMany implementation are unchanged.",
+    "All four retained fixtures declare IDs54\u201359 and contain only those six owned living combat units on level0. Owned workers and buildings cannot enter the F2 set. None of the six is crewless.",
+    "Pinned Controls.ts:12 binds F2 to Select army. GameScene.ts:289 filters ownership, current-level observation, unit kind, nonworker role, living HP, and crew. Owned crewed units satisfy canObserveTacticalEntity at src/core/tactics.ts:58 even without fog visibility; all six fixtures also retain fog visibility.",
+    "The existing helper at canonical-main-smoke.mjs:36 resumes, closes blocking session tools through resume, closes tactics/faction panels through ground, selects map level0, asserts that native pointer input reaches the canvas, clicks it, presses F2, and waits for equal ID count plus every expected ID. Suppression or an incorrect army set therefore fails before tactics.",
+    "The sealed r2 report failed at selectMany before formation authoring, with selection54,55,57,58,59. Pointer target56 was followed by a pre-selection already containing57. All six remain alive, held, and on level0; page and asset failure lists are empty. This supports a pointer hit-test selection failure.",
+    "The helper is already called by multi-unit hold at canonical line37 and morale at line98."
+  ],
+  "limitations": [
+    "Static inspection does not demonstrate a future browser F2 event or the remaining acceptance cases. Root must use a fresh authorized native run to establish runtime success.",
+    "This correction uses a public alternative selection path. It does not repair or establish correctness of overlapping sprite pointer hit testing."
+  ],
+  "actionsPerformed": [
+    "Read pinned Git/file source and sealed selected JSON evidence.",
+    "Copied pinned reviewed source and authenticated external candidate into this fresh review directory.",
+    "Wrote compact static source, fixture, and failure readbacks."
+  ],
+  "actionsNotPerformed": [
+    "No product or fixture source edits.",
+    "No browser, server, build, syntax check, project imports, database actions, or signals.",
+    "No original evidence changes."
+  ]
+}

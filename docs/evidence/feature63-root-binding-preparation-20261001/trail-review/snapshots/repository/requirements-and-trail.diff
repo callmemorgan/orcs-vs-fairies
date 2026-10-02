@@ -1,0 +1,61 @@
+diff --git a/docs/features/decisions.tsv b/docs/features/decisions.tsv
+index 7b397ed..2faedf6 100644
+--- a/docs/features/decisions.tsv
++++ b/docs/features/decisions.tsv
+@@ -272,3 +272,8 @@ ts	phase	decision	why	evidence	result
+ 2026-10-02T03:33:14.508798+00:00	main15-f67-selection-first-failure	Retain r2 stopped by selecting cavalry57 instead of spear56	Native overlapping sprite click left five selected before any formation command	docs/evidence/main402-formation-selection-failure-f67-20261001/raw/browser/browser-main-smoke402.json;docs/evidence/main402-formation-selection-failure-f67-20261001/root-selection-diagnosis.json;docs/evidence/main402-formation-selection-failure-f67-20261001/control/slot-release.json	94 verified /6 pending; fixture/import/artwork passed; browser stopped; no history/placeholder; owned slot released
+ 2026-10-02T03:33:14.508798+00:00	main15-r2-retention-copy-correction	Continue control copy after repeated destination mkdir failed	Raw copy had completed; second origin iteration raised FileExistsError before copying control	docs/evidence/main402-formation-selection-failure-f67-20261001/root-retention-copy-first-failure.json;docs/evidence/main402-formation-selection-failure-f67-20261001/root-retention-v2.json	All originals authenticated and copied; no source/runtime change from retention failure
+ 2026-10-02T03:33:14.508798+00:00	main15-public-f2-selection-repair	Use existing public F2 helper in the four formation cases	The fixture army is the complete eligible owned army and exact-ID wait retains selection checks	docs/evidence/main402-formation-selection-failure-f67-20261001/correction-review/static-review.json;docs/evidence/main402-formation-selection-failure-f67-20261001/correction/root-formation-f2-correction.patch	One proof call changed; all assertions/fixtures unchanged; Node syntax passed;570 product inputs equal passingf7; native retry unexecuted
++2026-10-02T03:43:32.853211+00:00	main15-8db-movement-first-failure	Preserve r3 after six-unit F2 selection and native line formation	The next movement input failed its canvas check before any completed encounter	docs/evidence/main402-camera-failure-8db-20261001/raw/browser/browser-main-smoke402.json;docs/evidence/main402-camera-failure-8db-20261001/root-native-result-readback.json;docs/evidence/main402-camera-failure-8db-20261001/control/slot-release.json	94 verified /6 pending; owned closure and protected invariants passed; history/placeholder unexecuted
++2026-10-02T03:43:32.853211+00:00	main15-public-camera-centering-repair	Restore public troop-list centering before F2 in four formation cases	Replacing selectMany removed its initial selectTroop camera centering	docs/evidence/main402-camera-failure-8db-20261001/correction-review/static-review.json;docs/evidence/main402-camera-failure-8db-20261001/correction/root-formation-camera-correction.patch	One public selection call added; assertions/fixtures unchanged; Node syntax passed; native retry pending
++2026-10-02T03:44:23.642250+00:00	feature63-dedicated-static-import	Retain sealed minimal co-op proof preparation and import its four reviewed scripts	Two real human public orders and positive attacks against both coordinated AI owners need a fresh natural match	docs/evidence/feature63-dedicated-preparation-20261001/root-import-readback.json;docs/evidence/feature63-dedicated-preparation-20261001/prepared/FINAL-CANDIDATE-CONTRACT-r3.md	76 sealed originals plus predecessor inputs retained; scripts byte-equal candidates; syntax/AST pass; no runtime or feature admission;94/6
++2026-10-02T04:03:15.923827+00:00	main15-7e-partial-witness-first-failure	Retain four completed formations and real pike impact before extra checkpoint assertion failed	The original features use their actual witnesses even when a later batch assertion stops	docs/evidence/main402-formations-charge-witness-7e-20261001/root-native-witness-readback.json;docs/evidence/main402-formations-charge-witness-7e-20261001/raw/browser/browser-main-smoke402.json	All4 formations native/save/replay passed; charge reached4.025 then pikes caused17/18 damage and reset; whole browser/history/placeholder incomplete; slot released
++2026-10-02T04:03:15.923827+00:00	original1-8-current402-admission	Verify original1 and8 from authenticated native witnesses and unchanged executed impact comparisons	All requested formations work; moving cavalry builds impact and braced pikes stop the charge	docs/evidence/main402-formations-charge-witness-7e-20261001/root-original1-8-admission.json;docs/evidence/main402-formations-charge-witness-7e-20261001/clause-assessment/clause-assessment.md	96 verified /4 pending:4,9,10,63; no additional checkpoint/rear-native/whole-batch gate
+diff --git a/docs/features/requirements.json b/docs/features/requirements.json
+index 4182f2b..65381f5 100644
+--- a/docs/features/requirements.json
++++ b/docs/features/requirements.json
+@@ -6,7 +6,7 @@
+       "id": 1,
+       "title": "Army formations",
+       "requirement": "arrange troops into lines, wedges, squares or loose skirmish groups.",
+-      "status": "in-progress",
++      "status": "verified",
+       "evidence": [
+         "docs/evidence/native-combat-f18a50d-first-failure-20261001/root-remaining-clause-admission.json",
+         "docs/evidence/native-combat-f18a50d-first-failure-20261001/remaining-clause-review/assessment.md",
+@@ -15,7 +15,11 @@
+         "tests/combat-tactics.test.ts",
+         "tests/tactics-tools.test.ts",
+         "src/ui/TacticsTools.ts",
+-        "docs/evidence/claude-admissions-review-703fc-20261001/root-reconciliation.json"
++        "docs/evidence/claude-admissions-review-703fc-20261001/root-reconciliation.json",
++        "docs/evidence/main402-formations-charge-witness-7e-20261001/root-original1-8-admission.json",
++        "docs/evidence/main402-formations-charge-witness-7e-20261001/root-native-witness-readback.json",
++        "docs/evidence/main402-formations-charge-witness-7e-20261001/clause-assessment/clause-assessment.md",
++        "docs/evidence/main402-formations-charge-witness-7e-20261001/raw/browser/browser-main-smoke402.json"
+       ]
+     },
+     {
+@@ -109,7 +113,7 @@
+       "id": 8,
+       "title": "Cavalry charges",
+       "requirement": "build impact through movement, with pikes stopping the charge.",
+-      "status": "in-progress",
++      "status": "verified",
+       "evidence": [
+         "docs/evidence/native-combat-f18a50d-first-failure-20261001/root-original-clause-admission.json",
+         "docs/evidence/native-combat-f18a50d-first-failure-20261001/root-retention.json",
+@@ -118,7 +122,11 @@
+         "docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/report.json",
+         "docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+         "tests/combat-tactics.test.ts",
+-        "docs/evidence/claude-admissions-review-703fc-20261001/root-reconciliation.json"
++        "docs/evidence/claude-admissions-review-703fc-20261001/root-reconciliation.json",
++        "docs/evidence/main402-formations-charge-witness-7e-20261001/root-original1-8-admission.json",
++        "docs/evidence/main402-formations-charge-witness-7e-20261001/root-native-witness-readback.json",
++        "docs/evidence/main402-formations-charge-witness-7e-20261001/clause-assessment/clause-assessment.md",
++        "docs/evidence/main402-formations-charge-witness-7e-20261001/raw/browser/browser-main-smoke402.json"
+       ]
+     },
+     {

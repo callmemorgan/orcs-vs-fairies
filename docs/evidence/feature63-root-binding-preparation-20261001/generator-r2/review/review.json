@@ -1,0 +1,99 @@
+{
+  "schema": "feature63-root-binding-generator-r2-static-review-v1",
+  "reviewedAt": "2026-10-02T04:15:44Z",
+  "status": "PASS_STATIC_MINIMAL_CORRECTION_GENERATOR_NOT_EXECUTED",
+  "runtimeDisposition": "NO_FEATURE_RUNTIME_OR_GENERATOR_EXECUTION_AUTHORIZED_BY_THIS_REVIEW",
+  "reviewer": {
+    "harness": "Codex",
+    "requestedModel": "gpt-5.6-sol",
+    "providerIdentityVerified": false
+  },
+  "scope": "Independent static review of the r2 root-binding-generator correction, exact r1-to-r2 delta, correction receipt, README, decision trail, preserved r1 source and preserved root failure artifacts.",
+  "execution": {
+    "generatorExecuted": false,
+    "generatorImported": false,
+    "generatorFunctionsCalled": false,
+    "candidateScriptsExecuted": false,
+    "buildRun": false,
+    "testsRun": false,
+    "browserRun": false,
+    "databaseRead": false,
+    "signalsSent": false,
+    "sourceOrOriginalGeneratorWritten": false,
+    "staticAstJsonReadHashHelpersUsed": true
+  },
+  "reviewedArtifacts": [
+    {
+      "path": "/tmp/ovf-feature63-root-binding-generator-r2-TZsiGOCJ/generate-root-bindings.py",
+      "bytes": 27181,
+      "sha256": "2e1d74eb6a731691528aa4e5df533d0af6e0c863187ba5845d3e614eb9500e99",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-root-binding-generator-r2-TZsiGOCJ/root-parameters.pending.json",
+      "bytes": 1574,
+      "sha256": "c6b456e4fc6e75863430e1889673598515eb20c4e5ac901e967d6b909e935e52",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-root-binding-generator-r2-TZsiGOCJ/minimal-r2.diff",
+      "bytes": 807,
+      "sha256": "e3b9c52acdfb365d5079dd3e84b7560e590a3bd0629873a9eccf00a2e0b4bfe4",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-root-binding-generator-r2-TZsiGOCJ/correction-receipt.json",
+      "bytes": 3043,
+      "sha256": "76f8287862ee618affca6348a210b614422a75e4231a3bb5c4c6d0a32df8fe68",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-root-binding-generator-r2-TZsiGOCJ/README.md",
+      "bytes": 1448,
+      "sha256": "6ce50456a64724c253788055dd65f25ac9a1bf537c87ba02a477953fe84aa6d7",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-root-binding-generator-r2-TZsiGOCJ/decisions.tsv",
+      "bytes": 904,
+      "sha256": "51b4d22f9506a4f46f5f7f924369c042537d1351bdb1b607b05c4a30b21efe28",
+      "mode": 420
+    }
+  ],
+  "baseline": {
+    "originalGenerator": {
+      "path": "/tmp/ovf-feature63-root-binding-generator-0Ag7O7ga/generate-root-bindings.py",
+      "bytes": 27212,
+      "sha256": "5d2005b7a8e08827c5a8a34672a51ab72c53f1aa45e156a5c41e56256b9504b1",
+      "mode": 420
+    },
+    "originalStaticReview": {
+      "path": "/tmp/ovf-feature63-root-binding-generator-0Ag7O7ga/review/review.json",
+      "bytes": 7181,
+      "sha256": "c0108a7b62b4dd3266165292090ea3b6df7e0616861525570acc0b84996c8a45",
+      "status": "PASS_STATIC_GENERATOR_NOT_EXECUTED"
+    }
+  },
+  "findings": [],
+  "verifiedCorrection": [
+    "The 27181-byte r2 generator parses as Python AST without importing or executing it.",
+    "A line-based sequence comparison found one changed source line and no other changed lines.",
+    "The removed text is only the conjunct requiring literal b'__OVF_BUILD_ID__' in the authenticated built chunk. The check requiring TESTED_ID.encode() in the chunk remains.",
+    "minimal-r2.diff represents that one-line replacement and no other source delta.",
+    "The authenticated main-3vb5PXT5.js is 2455409 bytes with SHA256 af386aa4c80682f388c4b5093c4e3f7a65098a50ca2fdfd90acd0e52f2241956. It contains the tested build ID 9c5d2f1ff26bd6849b1ad5e311300669fb5f02feebbe4d311b6f8d670df243e1 and does not contain literal __OVF_BUILD_ID__.",
+    "The current authenticated vite.config.ts defines __OVF_BUILD_ID__ as JSON.stringify(buildHash.digest('hex')), so Vite substitutes the identifier with the digest during the build. Absence of the identifier name from the built chunk is expected.",
+    "The correction removes a false requirement on transformed output. It does not add a parameter, approval, receipt field, inventory exception, alternate tested ID or runtime gate.",
+    "The original tested-manifest anchor, expected Git input comparison, complete original and packaged web filename/byte/hash/mode comparisons, embedded tested-ID check, complete server and dependency inventories, schema checks and assignment equality checks remain byte-for-byte unchanged from the previously reviewed r1 generator.",
+    "The pending parameter specimen is byte-identical to r1 and remains unapproved with runtime-only fields pending.",
+    "Every record in correction-receipt.json matches the actual r2 file bytes, SHA256 and numeric mode.",
+    "The four root failure artifact descriptors match their preserved files. The stderr records the r1 macro-conjunct failure, stdout is empty, and the requested bindings output directory remains absent.",
+    "The preserved r1 generator still has SHA256 5d2005b7a8e08827c5a8a34672a51ab72c53f1aa45e156a5c41e56256b9504b1.",
+    "README.md states the limited correction, preserved failure, future root-only execution and continued capture hold. decisions.tsv records diagnosis before correction and does not claim generator execution."
+  ],
+  "limitations": [
+    "R2 was not run, so this review does not establish that it produces a receipt directory or passes later filesystem, Git, dependency, schema or size checks.",
+    "This review inherits the unchanged r1 contract analysis only because the independent source comparison found no other changed line and the original r1 review is byte-bound above.",
+    "No private workspace transcript was searched or used.",
+    "The requested model name is recorded from the assignment; provider model identity was not independently authenticated."
+  ]
+}

@@ -1,0 +1,21 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert((entity(movingFile.game.state,ids.source).tactics?.charge?.distance??0)>=4)
+
+    at Object.runCanonicalTacticsSmoke [as canonical] (file:///tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/canonical-main-smoke.mjs:60:158)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at process.processImmediate (node:internal/timers:541:9)
+    at async file:///tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/verify-main-smoke402.mjs:81:88 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.21.0

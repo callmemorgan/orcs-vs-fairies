@@ -1,0 +1,85 @@
+{
+  "schema": "feature63-root-binding-generator-static-review-v1",
+  "reviewedAt": "2026-10-02T03:54:49Z",
+  "status": "PASS_STATIC_GENERATOR_NOT_EXECUTED",
+  "runtimeDisposition": "GENERATOR_NOT_EXECUTED_CAPTURE_NOT_AUTHORIZED_BY_THIS_REVIEW",
+  "reviewer": {
+    "harness": "Codex",
+    "requestedModel": "gpt-5.6-sol",
+    "providerIdentityVerified": false
+  },
+  "scope": "Read-only static review of the root binding generator, pending parameters, documentation, decision trail and preparation receipt against the sealed feature63 driver, public producer, collector and assignment field schemas.",
+  "execution": {
+    "generatorExecuted": false,
+    "generatorImported": false,
+    "generatorFunctionsCalled": false,
+    "candidateScriptsExecuted": false,
+    "buildRun": false,
+    "testsRun": false,
+    "browserRun": false,
+    "databaseRead": false,
+    "signalsSent": false,
+    "cgroupWork": false,
+    "sourceOrSealedPacketWritten": false,
+    "staticAstJsonReadHashHelpersUsed": true
+  },
+  "reviewedArtifacts": [
+    {
+      "path": "/tmp/ovf-feature63-root-binding-generator-0Ag7O7ga/generate-root-bindings.py",
+      "bytes": 27212,
+      "sha256": "5d2005b7a8e08827c5a8a34672a51ab72c53f1aa45e156a5c41e56256b9504b1",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-root-binding-generator-0Ag7O7ga/root-parameters.pending.json",
+      "bytes": 1574,
+      "sha256": "c6b456e4fc6e75863430e1889673598515eb20c4e5ac901e967d6b909e935e52",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-root-binding-generator-0Ag7O7ga/README.md",
+      "bytes": 5171,
+      "sha256": "06beb627ae365c9d1c97d5bfa7987f4fdbac0e6550ddf1036bcfa66e5e87f6fe",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-root-binding-generator-0Ag7O7ga/decisions.tsv",
+      "bytes": 1967,
+      "sha256": "b106373f5c5d1bee26ba93b9fbf813e5f0741bfa0734182f8a0bb7731e6f2d27",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-root-binding-generator-0Ag7O7ga/preparation-receipt.json",
+      "bytes": 1597,
+      "sha256": "9429d0fdfc52d12b859bac24aff0fa7f4b260d15109c1aa2bb468ad7348c7519",
+      "mode": 420
+    }
+  ],
+  "findings": [],
+  "verifiedContractProperties": [
+    "The generator source parses as Python AST without importing or executing it.",
+    "The pending parameter and preparation receipt files parse as JSON and remain unapproved with null runtime-only source, executable, output, slot and protected-process fields.",
+    "The generator requires the externally supplied parameter SHA256, future full 40-hex source pin, clean dedicated checkout HEAD equality and the fixed checkout and runtime prefix compiled into the sealed candidates.",
+    "The four imported candidate descriptors use the dedicated checkout paths and must match the sealed candidate bytes, sizes and numeric modes. Static readback found wrapper e333b6386e4a48ac4194ef760a6ee605bc567252b8fdae832f0d65a630e687be, producer d661329136041f8ccb15dfb9e94ae0556c303a6f995304c7f08889698b5a5f0f, collector c6c768ad7d54696e5e1e8456881f038cd7b7bb70112cd9b8b17d86b0feaebd7f and auditor 4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb.",
+    "The source receipt selection contains every current tracked src, tests, scripts and public path, the twelve authenticated f7 root configuration files, seven authenticated historical fixtures and explicit root additionalSourcePaths. Root must assert that this is the complete admitted source/config/public/build/proof input set.",
+    "The generator compares all 570 tested product inputs: 164 src files, 394 public files and twelve root configuration files. It also compares scripts/build-server.mjs separately.",
+    "The original f7 manifest is anchored by SHA256 7439266f468c658d419b2c801b6a741a20b202aa8459169c96b47532640d3ec2 and authenticates expected-git-inputs.json, owned-build-outputs.json and execution.json at source pin f7f3e187ea40079492589a6fce39f0b33f77f04a and tested build ID 9c5d2f1ff26bd6849b1ad5e311300669fb5f02feebbe4d311b6f8d670df243e1.",
+    "The packaging receipt source pin is historical provenance rather than an execution-pin gate. The generated build receipt exposes it as rootPackagingSourcePin, while future source equality is established by the tested product and build-script comparisons, exact packaged inventory comparisons and explicit root source/build equivalence admission.",
+    "Historical 0o-prefixed modes are converted to JSON integers. Web paths lose one required dist/ prefix before comparison with the original and packaged dist roots.",
+    "Static tree readback found 398 packaged dist files totaling 70907294 bytes and 22 packaged server files totaling 1679922 bytes, with no symlinks, numeric mode 420 and full equality to the bound packaging receipt inventories.",
+    "Build webRecords and serverRecords are complete actual inventories with paths relative to their respective roots. The source, build, tested, review and browser receipts remain external bound-file descriptors in the capture assignment.",
+    "The root review emits every flat digest consumed by the driver and is suitable for the collector PASS review because it contains the same future source pin, status PASS and collectorSha256.",
+    "The browser binding sets producerSha256, buildBindingSha256 and the shared slot token correctly, binds the exact Playwright entry and Chromium executable, inventories both dependency directories, and limits the CDP source-review claim to the seven retained Playwright files.",
+    "The public assignment template shares the assignment's source, build, browser and slot objects and binds the imported producer. The collector template shares the source descriptor and slot token and uses the root review descriptor.",
+    "Wrapper-only server ownership, browser ownership, early public match identity, owned server process identity and fresh database device/inode remain pending for capture-time replacement.",
+    "The schema validation and driver-size limits are applied before writing. The generated capture assignment is externally anchored for OVF_FEATURE63_WRAPPER_ASSIGNMENT_SHA256.",
+    "The final r4 static review is required to have status PASS. The retained r3 review remains sealed FAIL history and is referenced only as history; the generator does not turn either static receipt into runtime evidence.",
+    "The decision trail preserves chronology: its first row records that syntax and independent review were pending, followed by explicit syntax-pass and packaging-provenance rows after those events occurred.",
+    "The generator introduces no new approval flow. Root's source-set, tested-equivalence, dedicated-review and complete-dependency assertions remain explicit input booleans, while native-lifetime, extraction, audit and feature qualification remain later root work."
+  ],
+  "limitations": [
+    "The generator was not executed, so this review does not verify a concrete generated receipt directory or capture-assignment digest.",
+    "No private workspace transcript was searched or used.",
+    "The requested model name is recorded from the assignment; provider model identity was not independently authenticated."
+  ]
+}

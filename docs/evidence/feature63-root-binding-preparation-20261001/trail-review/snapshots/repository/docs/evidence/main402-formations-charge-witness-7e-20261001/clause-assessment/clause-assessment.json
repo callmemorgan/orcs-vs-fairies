@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-02T04:00:57Z",
+  "scope": {
+    "clauses": [
+      1,
+      8
+    ],
+    "testedProductPin": "f7f3e187ea40079492589a6fce39f0b33f77f04a",
+    "admittedScriptsPin": "7e80356c9564151749a7753971fba13eec349509",
+    "assessmentMethod": "static reads only"
+  },
+  "decisions": [
+    {
+      "id": 1,
+      "requirement": "arrange troops into lines, wedges, squares or loose skirmish groups.",
+      "decision": "supported",
+      "basis": "All four native formation cases completed. Each records native import, the public Tactics command for six troops, accepted movement, the requested persisted formation, and complete save/runtime and replay endpoint equality."
+    },
+    {
+      "id": 8,
+      "requirement": "build impact through movement, with pikes stopping the charge.",
+      "decision": "supported",
+      "basis": "The native front encounter records charge distance growing through movement to 4.025, then a frontal held pike stopping the charge, damaging the rider, and resetting charge distance. Unchanged tests in the retained passing suite compare moving charge damage with stationary, stopped, and turned attacks and prove the frontal and rear pike behavior."
+    }
+  ],
+  "receiptFailure": {
+    "qualified": true,
+    "explanation": "The saved moving checkpoint was downloaded at tick 56 after impact reset charge distance to 0. The extra distance >= 4 checkpoint assertion failed after the trace had recorded distance 4.025 at tick 49 and the pike stop at tick 56.",
+    "effectOnClause1": "none; all four formation cases had completed with their round-trip and replay checks",
+    "effectOnClause8": "none; the original movement-built impact and pike-stop behavior is present in the native trace and unchanged passing tests"
+  },
+  "excludedAsAdmissionConditions": [
+    "overall browser receipt completion",
+    "history batch completion",
+    "native rear execution",
+    "successful pre-impact downloaded checkpoint",
+    "another recipe run",
+    "full-recipe, checkpoint, history-batch, rear-native, or overall-batch gates"
+  ],
+  "evidenceIndexes": {
+    "artifactSnapshot": "/tmp/ovf-original1-8-r4-clause-assessment-8oyeaORX/artifact-snapshot.json",
+    "sourceReadback": "/tmp/ovf-original1-8-r4-clause-assessment-8oyeaORX/source-readback.json"
+  },
+  "limits": "No runtime, source imports, builds, tests, browser, simulation, database, root edits, or signals. Root alone may admit after direct authentication and closure."
+}

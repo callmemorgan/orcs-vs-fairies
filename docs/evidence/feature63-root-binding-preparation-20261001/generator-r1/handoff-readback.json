@@ -1,0 +1,68 @@
+{
+  "schema": "feature63-binding-generator-handoff-readback-v1",
+  "createdAt": "2026-10-02T03:57:36.810889+00:00",
+  "status": "PASS_STATIC_PREPARATION_ONLY",
+  "generatorExecuted": false,
+  "allReviewedArtifactHashesMatchedBeforeFinalTrailAppend": true,
+  "reviewedTrailSnapshot": "review/decisions-reviewed.tsv",
+  "reviewedTrailScope": "Review binds the snapshot bytes from before the final-readback checkpoint; current decisions.tsv preserves that checkpoint additively.",
+  "generatorSyntaxCheckedWithAstOnly": true,
+  "allJsonParsed": true,
+  "sealedFeature63Packet74RecordsReverifiedUnchanged": true,
+  "rootOrSourceGitBuildRuntimeDatabaseSignalCgroupWritesByThisPreparation": false,
+  "requestedReviewerModel": "gpt-5.6-sol",
+  "actualProviderModelFamilyAuthenticated": false,
+  "records": [
+    {
+      "path": "README.md",
+      "mode": 420,
+      "bytes": 5171,
+      "sha256": "06beb627ae365c9d1c97d5bfa7987f4fdbac0e6550ddf1036bcfa66e5e87f6fe"
+    },
+    {
+      "path": "decisions.tsv",
+      "mode": 420,
+      "bytes": 2414,
+      "sha256": "544ccb76274624b32114702526038499a3c32deb9b8dcee6ee8ef090108b4788"
+    },
+    {
+      "path": "generate-root-bindings.py",
+      "mode": 420,
+      "bytes": 27212,
+      "sha256": "5d2005b7a8e08827c5a8a34672a51ab72c53f1aa45e156a5c41e56256b9504b1"
+    },
+    {
+      "path": "preparation-receipt.json",
+      "mode": 420,
+      "bytes": 1597,
+      "sha256": "9429d0fdfc52d12b859bac24aff0fa7f4b260d15109c1aa2bb468ad7348c7519"
+    },
+    {
+      "path": "review/decisions-reviewed.tsv",
+      "mode": 420,
+      "bytes": 1967,
+      "sha256": "b106373f5c5d1bee26ba93b9fbf813e5f0741bfa0734182f8a0bb7731e6f2d27"
+    },
+    {
+      "path": "review/review.json",
+      "mode": 420,
+      "bytes": 7181,
+      "sha256": "c0108a7b62b4dd3266165292090ea3b6df7e0616861525570acc0b84996c8a45"
+    },
+    {
+      "path": "review/review.md",
+      "mode": 420,
+      "bytes": 4025,
+      "sha256": "038560b62fa654edc2cfa8afdb5380e3b48cb4d6e5caecad5ab25baabd21e9da"
+    },
+    {
+      "path": "root-parameters.pending.json",
+      "mode": 420,
+      "bytes": 1574,
+      "sha256": "c6b456e4fc6e75863430e1889673598515eb20c4e5ac901e967d6b909e935e52"
+    }
+  ],
+  "fileCountExcludingThisReadback": 8,
+  "totalBytesExcludingThisReadback": 51141,
+  "remainingRootWork": "Fill and externally authenticate actual root parameters, including the existing exclusive-slot admission and fresh protected identity. Root alone runs the generator after source/packaging admission and inspects its actual outputs before separately running capture. This preparation grants no runtime admission."
+}

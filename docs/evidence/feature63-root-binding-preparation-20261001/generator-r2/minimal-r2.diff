@@ -1,0 +1,11 @@
+--- /tmp/ovf-feature63-root-binding-generator-0Ag7O7ga/generate-root-bindings.py
++++ /tmp/ovf-feature63-root-binding-generator-r2-TZsiGOCJ/generate-root-bindings.py
+@@ -293,7 +293,7 @@
+     for name in web_baseline['embeddedBuildIdPaths']:
+         need(name.startswith('dist/'), 'Embedded build path prefix differs')
+         _, _, raw = read_actual(TESTED_WEB / safe_relative(name[5:]), retain=True)
+-        need(TESTED_ID.encode() in raw and b'__OVF_BUILD_ID__' in raw, 'Embedded original tested build ID absent')
++        need(TESTED_ID.encode() in raw, 'Embedded original tested build ID absent')
+     server_records = inventory(PREFIX / 'server')
+     need({'rts-server.js', 'canonical-campaign.mjs'} <= {r['path'] for r in server_records}, 'Packaged server outputs absent')
+     package_desc = None

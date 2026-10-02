@@ -1,0 +1,49 @@
+{
+  "schema": "feature63-binding-generator-preparation-v1",
+  "createdAt": "2026-10-02T03:50:15.247830+00:00",
+  "status": "PASS_SYNTAX_ONLY_GENERATOR_NOT_EXECUTED",
+  "generatorExecuted": false,
+  "pythonAstParsed": true,
+  "pendingParametersJsonParsed": true,
+  "pendingSourcePin": null,
+  "pendingApproval": false,
+  "subprocessCallSites": [
+    {
+      "line": 220,
+      "function": "subprocess.check_output",
+      "args": "['git', 'rev-parse', 'HEAD']"
+    },
+    {
+      "line": 222,
+      "function": "subprocess.check_output",
+      "args": "['git', 'status', '--porcelain', '--untracked-files=no']"
+    },
+    {
+      "line": 223,
+      "function": "subprocess.check_output",
+      "args": "['git', 'ls-files', '-z']"
+    }
+  ],
+  "scope": "Static syntax/JSON and source readback only. Runtime receipt generation remains root-owned.",
+  "artifacts": [
+    {
+      "path": "/tmp/ovf-feature63-root-binding-generator-0Ag7O7ga/generate-root-bindings.py",
+      "bytes": 27212,
+      "sha256": "5d2005b7a8e08827c5a8a34672a51ab72c53f1aa45e156a5c41e56256b9504b1",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-root-binding-generator-0Ag7O7ga/root-parameters.pending.json",
+      "bytes": 1574,
+      "sha256": "c6b456e4fc6e75863430e1889673598515eb20c4e5ac901e967d6b909e935e52",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-root-binding-generator-0Ag7O7ga/README.md",
+      "bytes": 5171,
+      "sha256": "06beb627ae365c9d1c97d5bfa7987f4fdbac0e6550ddf1036bcfa66e5e87f6fe",
+      "mode": 420
+    }
+  ],
+  "updatedAt": "2026-10-02T03:54:22.666664+00:00"
+}

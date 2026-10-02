@@ -1,0 +1,32 @@
+{
+  "at": "2026-10-02T03:41:56.996942+00:00",
+  "reviewType": "Bounded static camera restoration review",
+  "basePin": "8db0f2dd0b38302f0f588c80316db082bc49e9b3",
+  "candidateSha256": "09d1eaecb6722e2b2eabf4330e203e3db80d507a7e4462575cbace695df1e2e1",
+  "assessment": "No concrete static blocker found for the authenticated one-call insertion. Runtime success remains unverified.",
+  "recommendation": {
+    "file": "scripts/acceptance/canonical-main-smoke.mjs",
+    "line": 43,
+    "insertion": "await ctx.selectTroop(ids.army[0]);",
+    "placement": "Immediately before the existing selectEntireOwnedArmy(ids.army) in the four-case formation loop."
+  },
+  "findings": [
+    "The candidate byte-equals pinned8db source with one added public selectTroop call. No product, fixture, general helper, exact-ID selection wait, formation, movement, command or persistence assertion changes.",
+    "The former selectMany began with selectTroop(ids[0]). selectTroop clicks the owned troop-list button and waits for singleton selection. WorldTools36 calls select then center; main451 connects center to GameScene.centerOn. Public selectEntities also handles the troop level. The call remains available while the fixture is paused.",
+    "The retained r3 evidence selected IDs54\u201359 and all six have accepted line formation with count6, spacing0.8 and facing0. The run then rejected ground at canonical line45 through canvasInput before issuing the requested destination move. No page or asset failure is recorded.",
+    "The camera restoration addresses the missing side effect of replacing selectMany. F2 still supplies the final six-ID army selection and its exact count/membership wait. Selecting54 beforehand restores the former public centering path, then native ground focuses and collapses world tools before F2.",
+    "At recorded1440\u00d71000, zoom1, the earlier native troop-list centering retained camera816,274.5. The unchanged point formula places the formation destination at1104,621.5 and F2 focus at656,429.5. Both fit within the battlefield shown by the retained screenshot. The same viewport bounds with HQ centering place the destination at1392,861.5, under the tactical HUD.",
+    "The r3 display scroll coordinates are startup observations taken before fixture runs, not a failure-time camera object. Static projection uses the source centering formula plus the earlier recorded centering camera rather than relabeling that startup object."
+  ],
+  "limitations": [
+    "Fresh authorized native execution must demonstrate restored input, later formation movement and remaining acceptance cases.",
+    "No failure-time camera sample is stored in the r3 report. HQ-centering coordinates in projection readback are derived from source and the unchanged recorded viewport bounds."
+  ],
+  "actionsPerformed": [
+    "Pinned Git/file reads, sealed JSON reads and local screenshot viewing.",
+    "Fresh external snapshots of reviewed sources, authenticated candidate and compact failure/projection readbacks."
+  ],
+  "actionsNotPerformed": [
+    "No runtime, build, syntax check, browser automation, product imports, signals, root writes or original evidence changes."
+  ]
+}
