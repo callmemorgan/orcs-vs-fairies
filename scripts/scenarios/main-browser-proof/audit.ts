@@ -17,7 +17,7 @@ type Documents = Record<string, unknown>;
 
 /** Audit downloaded artifacts; the CUA transcript and screenshots prove their UI origin. */
 export function auditMainBrowserExports(fixtures: Documents, exports: Documents, expectedBuild: string) {
-  assert.equal(SAVE_VERSION, 4); assert.equal(SIMULATION_REVISION, '4.0.1');
+  assert.equal(SAVE_VERSION, 4); assert.equal(SIMULATION_REVISION, '4.0.2');
   for (const name of fixtureNames) assert.ok(Object.hasOwn(fixtures, name), `Missing fixture ${name}`);
   for (const name of exportNames) assert.ok(Object.hasOwn(exports, name), `Missing UI export ${name}`);
   const checks: string[] = [];

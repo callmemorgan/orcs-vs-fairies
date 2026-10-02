@@ -1,0 +1,78 @@
+diff --git a/scripts/acceptance/faction-powers-fixtures.ts b/scripts/acceptance/faction-powers-fixtures.ts
+index 1404750..afb0b3d 100644
+--- a/scripts/acceptance/faction-powers-fixtures.ts
++++ b/scripts/acceptance/faction-powers-fixtures.ts
+@@ -40,7 +40,7 @@ export function buildFactionPowerFixtures(output: string, sourceCommit: string):
+   assert(output, 'Supply a new output directory.');
+   assert.match(sourceCommit, /^[a-f0-9]{40}$/, 'Supply the full frozen source commit.');
+   assert.equal(SAVE_VERSION, 4, 'Faction acceptance requires SAVE4.');
+-  assert.equal(SIMULATION_REVISION, '4.0.1', 'Faction acceptance requires the admitted rules revision.');
++  assert.equal(SIMULATION_REVISION, '4.0.2', 'Faction acceptance requires the admitted rules revision.');
+   const out = resolve(output);
+   assert(!existsSync(out), 'Fixture output directory must be new.');
+   mkdirSync(out, { recursive: true });
+diff --git a/scripts/mods/scenario.ts b/scripts/mods/scenario.ts
+index 9c10f5a..58c9543 100644
+--- a/scripts/mods/scenario.ts
++++ b/scripts/mods/scenario.ts
+@@ -16,7 +16,7 @@ function write(name:string,value:unknown){writeFileSync(resolve(out,name),JSON.s
+ const state=createMatch({content:createContentBundle([exampleMod()]),map:{seed:4127,size:'small'},players:[{id:0,teamId:0,factionId:'lantern:keepers',controller:'human',handicap:{startingResources:{wood:2000,ore:1000,crystal:100}}},{id:1,teamId:1,factionId:'orcs',controller:'external'}]});
+ const sentinel=state.entities.find(e=>e.definitionId==='lantern:sentinel')!,enemy=state.entities.find(e=>e.side===1&&e.role==='melee')!;
+ sentinel.hp-=45;enemy.x=22.5;enemy.y=15.5;while(!walkable(state,enemy.x,enemy.y)&&enemy.y<25)enemy.y++;enemy.order={type:'hold'};refreshVisibility(state);
+-if(SAVE_VERSION!==4||SIMULATION_REVISION!=='4.0.1')throw new Error('The mod proof requires SAVE4 and simulation revision 4.0.1.');
++if(SAVE_VERSION!==4||SIMULATION_REVISION!=='4.0.2')throw new Error('The mod proof requires SAVE4 and simulation revision 4.0.2.');
+ const session=createSessionFile(state);assert.deepEqual(saveGame(decodeSessionFile(JSON.stringify(session)).state),session.game);write('scenario.json',session);
+ write('lantern.json',exampleMod());
+ 
+diff --git a/scripts/scenarios/main-browser-proof/audit.ts b/scripts/scenarios/main-browser-proof/audit.ts
+index 618b9bd..3fd6020 100644
+--- a/scripts/scenarios/main-browser-proof/audit.ts
++++ b/scripts/scenarios/main-browser-proof/audit.ts
+@@ -17,7 +17,7 @@ type Documents = Record<string, unknown>;
+ 
+ /** Audit downloaded artifacts; the CUA transcript and screenshots prove their UI origin. */
+ export function auditMainBrowserExports(fixtures: Documents, exports: Documents, expectedBuild: string) {
+-  assert.equal(SAVE_VERSION, 4); assert.equal(SIMULATION_REVISION, '4.0.1');
++  assert.equal(SAVE_VERSION, 4); assert.equal(SIMULATION_REVISION, '4.0.2');
+   for (const name of fixtureNames) assert.ok(Object.hasOwn(fixtures, name), `Missing fixture ${name}`);
+   for (const name of exportNames) assert.ok(Object.hasOwn(exports, name), `Missing UI export ${name}`);
+   const checks: string[] = [];
+diff --git a/scripts/verify_mods.mjs b/scripts/verify_mods.mjs
+index 71fd3f0..581f465 100644
+--- a/scripts/verify_mods.mjs
++++ b/scripts/verify_mods.mjs
+@@ -19,7 +19,7 @@ const fixture=JSON.parse(await readFile(path.join(fixtures,'scenario.json'),'utf
+ const fixtureManifest=JSON.parse(await readFile(path.join(fixtures,'fixture-manifest.json'),'utf8'));assert.equal(fixtureManifest.sourceCommit,sourceCommit);assert.equal(fixtureManifest.sourceFingerprint,sourceFingerprint);assert.equal(fixtureManifest.saveVersion,source.saveVersion);assert.equal(fixtureManifest.simulationRevision,source.simulationRevision);
+ const prepared=verifyWorldPreparation(source,process.env.OVF_WORLD_MODULES,process.env.OVF_WORLD_PREPARATION_SHA256);assert.equal(fixtureManifest.bundle.sha256,prepared.manifest.modules['mod-fixture'].sha256);assert.equal(fixtureManifest.bundle.preparationSha256,prepared.preparationSha256);assert.equal(fixtureManifest.bundle.sourceDigest,source.sourceDigest);
+ for(const [name,digest] of Object.entries(fixtureManifest.files))assert.equal(createHash('sha256').update(await readFile(path.join(fixtures,name))).digest('hex'),digest,`Mod input changed after fixture generation: ${name}`);
+-function assertReplay(replay){assert.equal(replay.initial.version,4);assert.equal(replay.checksumVersion,4);assert.equal(replay.simulationRevision,'4.0.1');}
++function assertReplay(replay){assert.equal(replay.initial.version,4);assert.equal(replay.checksumVersion,4);assert.equal(replay.simulationRevision,'4.0.2');}
+ const browser=await chromium.launch({headless:true,args:['--disable-dev-shm-usage']});const errors=[],evidence={};
+ const page=await browser.newPage({viewport:{width:1440,height:1000},acceptDownloads:true});page.on('pageerror',error=>errors.push(error.message));
+ async function waitReady(){await page.waitForSelector('.loading-battle[hidden]',{state:'attached',timeout:60000});await page.waitForFunction(()=>window.rts?.art?.loaded,null,{timeout:60000});}
+diff --git a/scripts/world/README.md b/scripts/world/README.md
+index 58278b1..73a572b 100644
+--- a/scripts/world/README.md
++++ b/scripts/world/README.md
+@@ -109,7 +109,7 @@ the flat scenario's `convoy-playing.save.json`, the layered scenario's
+ `community-mod-trained.save.json`, and every community map
+ `browser-replay-*.save.json` and `browser-played-complete.save.json` download.
+ Content package engine version remains 3. Save version 4 and simulation revision
+-4.0.1 belong to native saves and recordings.
++4.0.2 belongs to current native saves and recordings.
+ 
+ Preparation syntax, bundle and lightweight native checks do not establish final
+ browser acceptance. Keep failure captures and use a new output directory for each
+diff --git a/scripts/world/proof-common.mjs b/scripts/world/proof-common.mjs
+index 8d0bc45..ba97eb2 100644
+--- a/scripts/world/proof-common.mjs
++++ b/scripts/world/proof-common.mjs
+@@ -54,7 +54,7 @@ export async function worldSourceProof(sourcePin=process.env.OVF_PRODUCTION_SOUR
+  const sourceDigest=sha(Object.entries(inputs).sort(([a],[b])=>a<b?-1:a>b?1:0).map(([path,item])=>`${path}\0${item.sha256}\n`).join(''));
+  const saveSource=await readFile('src/core/saves.ts','utf8'),rulesSource=await readFile('src/core/versions.ts','utf8');
+  const saveVersion=Number(saveSource.match(/export const SAVE_VERSION\s*=\s*(\d+)/)?.[1]),simulationRevision=rulesSource.match(/export const SIMULATION_REVISION\s*=\s*['"]([^'"]+)/)?.[1];
+- assert.equal(saveVersion,4,'Regenerate final proof from SAVE4 source');assert.equal(simulationRevision,'4.0.1','Use the approved SAVE4 rules revision');
++ assert.equal(saveVersion,4,'Regenerate final proof from SAVE4 source');assert.equal(simulationRevision,'4.0.2','Use the approved SAVE4 rules revision');
+  return {...provenance,worldScriptFiles,sourceDigest,saveVersion,simulationRevision};
+ }
+ 

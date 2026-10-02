@@ -1,0 +1,89 @@
+--- /dev/null
++++ b/src/core/ruins.ts
+@@ -0,0 +1,10 @@
++import type { WorldPoint, WorldSite } from './world-types';
++
++export const RUIN_PILLAR_RADIUS = .45;
++export type RuinGeometry = Readonly<WorldPoint & {site:number;radius:number}>;
++
++/** Relic shrines retain the same stone pillar when ownership or capture progress changes. */
++export function ruinGeometry(site:Pick<WorldSite,'id'|'kind'|'x'|'y'|'level'>):RuinGeometry|undefined {
++ if(site.kind!=='relic')return;
++ return {site:site.id,x:site.x,y:site.y,level:site.level,radius:RUIN_PILLAR_RADIUS};
++}
+--- a/src/core/tactics.ts
++++ b/src/core/tactics.ts
+@@ -6,6 +6,7 @@
+ import type { UnitDef, BuildingDef } from './types';
+ import { FACTIONS } from './content';
+ import { terrainAt } from './maps';
++import { ruinGeometry } from './ruins';
+ import type { Entity, FactionId, GameState, Side, UnitRole, Vec } from './types';
+ 
+ export type FormationKind='line'|'wedge'|'square'|'loose';
+@@ -105,6 +106,7 @@
+  // Cover must stand between the shot and its victim, within three tiles of the victim.
+  const between=(p:Vec,radius:number)=>sameLevel(p,target)&&distance(p,target)<radius+3&&distance(p,source)>radius+.4&&distance(p,target)>.3&&segmentDistance(p,source,target)<radius+.1;
+  for(const e of s.entities)if(e.id!==target.id&&e.hp>0&&e.kind==='building'&&e.progress===1){const radius=buildingFor(s,e).size/2;if(between(e,radius))return TACTICS.coverFactor;}
++ for(const site of s.world?.sites??[]){const ruin=ruinGeometry(site);if(!ruin)continue;const along=(ruin.x-source.x)*(target.x-source.x)+(ruin.y-source.y)*(target.y-source.y);if(along>0&&along<length*length&&between(ruin,ruin.radius))return TACTICS.coverFactor;}
+  for(let y=Math.max(0,Math.floor(target.y-3));y<=Math.min(s.height-1,Math.ceil(target.y+3));y++)for(let x=Math.max(0,Math.floor(target.x-3));x<=Math.min(s.width-1,Math.ceil(target.x+3));x++)if(terrainAt(s,x+.5,y+.5,target.level??0)==='rock'&&between({x:x+.5,y:y+.5,level:target.level??0},.55))return TACTICS.coverFactor;
+  return 1;
+ }
+--- a/src/game/GameScene.ts
++++ b/src/game/GameScene.ts
+@@ -11,6 +11,7 @@
+ import { buildingFor, entityDefinition, factionFor, unitFor } from '../core/content-registry';
+ import { elevationAt, fogKey, levelOf } from '../core/world-map';
+ import { terrainAt } from '../core/maps';
++import { ruinGeometry } from '../core/ruins';
+ import { ControlProfiles, inputIsSuppressed } from './Controls';
+ import type { ControlAction, KeyboardState } from './Controls';
+ import { GamepadController } from './Gamepad';
+@@ -530,7 +531,19 @@
+   private drawWorldObjects(g:Phaser.GameObjects.Graphics){
+     const world=this.state.world;if(!world)return;const visible=(p:{x:number;y:number;level:number})=>p.level===this.viewLevel&&this.state.visible[this.viewSide].has(fogKey(this.state,p));
+     for(const transition of world.transitions)for(const entrance of [transition.from,transition.to])if(visible(entrance)){const p=project(entrance.x,entrance.y);g.fillStyle(0x2a2233,.9).fillEllipse(p.x,p.y-4,36,22);g.lineStyle(3,0xb8d7e0).strokeEllipse(p.x,p.y-4,36,22);g.lineBetween(p.x-12,p.y-5,p.x+12,p.y-5);}
+-    for(const site of world.sites)if(visible(site)){const p=project(site.x,site.y),color=site.owner===null?0xe6d38a:ownershipStyle(site.owner,this.viewSide,this.appearance.value,this.state.teams).color;if(site.kind==='relic'){g.fillStyle(color).fillTriangle(p.x-12,p.y,p.x,p.y-43,p.x+12,p.y);g.lineStyle(2,0xf1efd8).strokeCircle(p.x,p.y-28,10);}else if(site.kind==='village'){g.fillStyle(0x7b6550).fillRect(p.x-22,p.y-28,44,27);g.fillStyle(color).fillTriangle(p.x-30,p.y-28,p.x,p.y-49,p.x+30,p.y-28);}else{g.fillStyle(0x3a2b26).fillEllipse(p.x,p.y-8,50,34);g.lineStyle(3,0xa99576).strokeEllipse(p.x,p.y-8,50,34);}if(site.progress>0){g.fillStyle(0x182b2a).fillRect(p.x-24,p.y+4,48,5);g.fillStyle(color).fillRect(p.x-24,p.y+4,48*site.progress,5);}}
++    for(const site of world.sites)if(visible(site)){
++      const p=project(site.x,site.y),color=site.owner===null?0xe6d38a:ownershipStyle(site.owner,this.viewSide,this.appearance.value,this.state.teams).color,ruin=ruinGeometry(site);
++      if(ruin){
++        const stone=project(ruin.x,ruin.y);
++        if(!this.art.environment(`ruin:${ruin.site}`,'ruin-pillar',stone.x,stone.y)){
++          g.fillStyle(0x696d68).fillEllipse(stone.x,stone.y-2,ruin.radius*TILE_W,16).fillRect(stone.x-10,stone.y-49,20,46);
++          g.fillStyle(0x92978d).fillTriangle(stone.x-10,stone.y-49,stone.x-3,stone.y-58,stone.x+10,stone.y-47);
++          g.lineStyle(2,0x424b48).lineBetween(stone.x+2,stone.y-43,stone.x-3,stone.y-32).lineBetween(stone.x-3,stone.y-32,stone.x+4,stone.y-24);
++        }
++        g.fillStyle(color).fillTriangle(p.x-9,p.y-78,p.x,p.y-109,p.x+9,p.y-78);g.lineStyle(2,0xf1efd8).strokeCircle(p.x,p.y-91,8);
++      }else if(site.kind==='village'){g.fillStyle(0x7b6550).fillRect(p.x-22,p.y-28,44,27);g.fillStyle(color).fillTriangle(p.x-30,p.y-28,p.x,p.y-49,p.x+30,p.y-28);}else{g.fillStyle(0x3a2b26).fillEllipse(p.x,p.y-8,50,34);g.lineStyle(3,0xa99576).strokeEllipse(p.x,p.y-8,50,34);}
++      if(site.progress>0){const barY=p.y+(ruin?22:4);g.fillStyle(0x182b2a).fillRect(p.x-24,barY,48,5);g.fillStyle(color).fillRect(p.x-24,barY,48*site.progress,5);}
++    }
+     for(const creature of world.creatures)if(creature.hp>0&&visible(creature)){const p=project(creature.x,creature.y);g.fillStyle(0x914e42).fillEllipse(p.x,p.y-13,25,24);g.fillStyle(0xd0b78d).fillTriangle(p.x-12,p.y-18,p.x-9,p.y-34,p.x-4,p.y-19);g.fillTriangle(p.x+4,p.y-19,p.x+9,p.y-34,p.x+12,p.y-18);if(!this.photoMode){g.fillStyle(0x182b2a).fillRect(p.x-16,p.y-40,32,4);g.fillStyle(0xd47760).fillRect(p.x-16,p.y-40,32*creature.hp/creature.maxHp,4);}}
+     for(const fire of world.fires)if(visible(fire)){const p=project(fire.x,fire.y),sway=Math.sin(this.state.time*9+fire.x)*3;g.fillStyle(0xd45327,.8).fillTriangle(p.x-14,p.y+5,p.x+sway,p.y-34,p.x+14,p.y+5);g.fillStyle(0xf4cf65).fillTriangle(p.x-7,p.y+4,p.x-sway,p.y-22,p.x+7,p.y+4);}
+   }
+--- a/src/core/versions.ts
++++ b/src/core/versions.ts
+@@ -1,5 +1,5 @@
+ /** Change when deterministic rules change, even if the save schema stays the same. */
+-export const SIMULATION_REVISION = '4.0.1';
++export const SIMULATION_REVISION = '4.0.2';
+ 
+ /** Replays written before rules revisions were recorded retain their original identity. */
+ export const LEGACY_SIMULATION_REVISIONS:Readonly<Record<number,string>> = {
+--- a/src/ui/WorldTools.ts
++++ b/src/ui/WorldTools.ts
+@@ -25,13 +25,13 @@
+  function update(){
+   const s=c.state(),world=s?.world;host.hidden=!world;if(!s||!world){signature='';return;}const side=c.side(),level=c.level(),phase=c.phase?.()??environmentPhase(s);summary.textContent=`World · ${phase.day} · ${phase.weather} · ${phase.season}`;
+   if(current!==s||levels.options.length!==world.levels.length){levels.replaceChildren(...world.levels.map(l=>{const option=element('option',l.title);option.value=String(l.id);return option;}));current=s;signature='';}levels.value=String(level);
+-  description.textContent=`${world.biome} · ${phase.day==='night'?'Night reduces surface sight; Undead keep full sight.':'Daylight changes surface sight.'} ${phase.weather==='rain'?'Rain slows troops and weakens ranged attacks; it stops fire spread.':phase.weather==='fog'?'Fog reduces surface sight to 65%.':phase.weather==='wind'?'Wind changes ranged reach and projectile drift.':'Clear weather.'}${phase.thawIn!==null?` Lake ice thaws in ${Math.ceil(phase.thawIn)}s; leave lake crossings.`:''} Caverns use independent fog and paths.`;
++  description.textContent=`${world.biome} · ${phase.day==='night'?'Night reduces surface sight; Undead keep full sight.':'Daylight changes surface sight.'} ${phase.weather==='rain'?'Rain slows troops and weakens ranged attacks; it stops fire spread.':phase.weather==='fog'?'Fog reduces surface sight to 65%.':phase.weather==='wind'?'Wind changes ranged reach and projectile drift.':'Clear weather.'}${phase.thawIn!==null?` Lake ice thaws in ${Math.ceil(phase.thawIn)}s; leave lake crossings.`:''} Caverns use independent fog and paths. Relic ruins provide ranged cover.`;
+   const known=(p:Vec)=>levelOf(p)===level&&s.visible[side].has(fogKey(s,p)),observed=observeNeutralWorld(s,side),entrances=world.transitions.flatMap(t=>[t.from,t.to].filter(known).map(p=>({id:t.id,p}))),bridges=world.bridges.filter(known),sites=observed.sites.filter(known),creatures=observed.creatures.filter(known),troops=s.entities.filter(e=>e.side===side&&e.hp>0&&e.kind==='unit');
+   const key=JSON.stringify([level,c.selected(),entrances.map(e=>e.id),bridges.map(e=>[e.id,e.hp===0]),sites.map(e=>[e.id,e.owner]),creatures.map(e=>e.id),troops.map(e=>[e.id,levelOf(e)])]);
+   if(key!==signature){signature=key;rows.replaceChildren();
+    for(const entrance of entrances){const row=element('div');row.className='world-row';row.append(element('span',`Entrance ${entrance.id} · ${entrance.p.x}, ${entrance.p.y}`));addButton(row,'Traverse entrance',()=>({type:'traverse',ids:c.selected(),transition:entrance.id}));rows.append(row);}
+    for(const bridge of bridges){const row=element('div');row.className='world-row';row.append(element('span',`Bridge #${bridge.id}`));addButton(row,bridge.hp===0?'Rebuild bridge':'Attack bridge',()=>({type:bridge.hp===0?'repairBridge':'worldAttack',ids:c.selected(),target:bridge.id}));if(bridge.hp>0)addButton(row,'Repair bridge',()=>({type:'repairBridge',ids:c.selected(),target:bridge.id}));rows.append(row);}
+-   for(const site of sites){const row=element('div');row.className='world-row';row.append(element('span',`${site.kind} #${site.id}${site.owner===null?'':` · player ${site.owner+1}`}`));if(site.kind==='relic')addButton(row,'Capture relic',()=>({type:'captureSite',ids:c.selected(),target:site.id}));else if(site.kind==='village'){addButton(row,'Support village / collect supplies',()=>({type:'supportVillage',ids:c.selected(),target:site.id}));addButton(row,'Recruit local defender',()=>({type:'recruitVillage',ids:c.selected(),target:site.id}));addButton(row,'Raid village',()=>({type:'worldAttack',ids:c.selected(),target:site.id}));}else addButton(row,'Attack monster den',()=>({type:'worldAttack',ids:c.selected(),target:site.id}));rows.append(row);}
++   for(const site of sites){const row=element('div');row.className='world-row';row.append(element('span',`${site.kind==='relic'?'relic ruins':site.kind} #${site.id}${site.owner===null?'':` · player ${site.owner+1}`}`));if(site.kind==='relic')addButton(row,'Capture relic',()=>({type:'captureSite',ids:c.selected(),target:site.id}));else if(site.kind==='village'){addButton(row,'Support village / collect supplies',()=>({type:'supportVillage',ids:c.selected(),target:site.id}));addButton(row,'Recruit local defender',()=>({type:'recruitVillage',ids:c.selected(),target:site.id}));addButton(row,'Raid village',()=>({type:'worldAttack',ids:c.selected(),target:site.id}));}else addButton(row,'Attack monster den',()=>({type:'worldAttack',ids:c.selected(),target:site.id}));rows.append(row);}
+    for(const creature of creatures){const row=element('div');row.className='world-row';row.append(element('span',`Creature #${creature.id}`));addButton(row,'Attack creature',()=>({type:'worldAttack',ids:c.selected(),target:creature.id}));rows.append(row);}
+    const army=element('details'),title=element('summary','Owned troops by level');army.append(title);for(const troop of troops){const button=element('button',`${troop.role} #${troop.id} · ${world.levels[levelOf(troop)].title}`);button.addEventListener('click',()=>{c.select([troop.id]);c.center(troop);});army.append(button);}rows.append(army);
+   }

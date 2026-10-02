@@ -11,6 +11,7 @@ import { publicObjectives } from '../core/objectives';
 import { buildingFor, entityDefinition, factionFor, unitFor } from '../core/content-registry';
 import { elevationAt, fogKey, levelOf } from '../core/world-map';
 import { terrainAt } from '../core/maps';
+import { ruinGeometry } from '../core/ruins';
 import { ControlProfiles, inputIsSuppressed } from './Controls';
 import type { ControlAction, KeyboardState } from './Controls';
 import { GamepadController } from './Gamepad';
@@ -530,7 +531,19 @@ export default class GameScene extends Phaser.Scene {
   private drawWorldObjects(g:Phaser.GameObjects.Graphics){
     const world=this.state.world;if(!world)return;const visible=(p:{x:number;y:number;level:number})=>p.level===this.viewLevel&&this.state.visible[this.viewSide].has(fogKey(this.state,p));
     for(const transition of world.transitions)for(const entrance of [transition.from,transition.to])if(visible(entrance)){const p=project(entrance.x,entrance.y);g.fillStyle(0x2a2233,.9).fillEllipse(p.x,p.y-4,36,22);g.lineStyle(3,0xb8d7e0).strokeEllipse(p.x,p.y-4,36,22);g.lineBetween(p.x-12,p.y-5,p.x+12,p.y-5);}
-    for(const site of world.sites)if(visible(site)){const p=project(site.x,site.y),color=site.owner===null?0xe6d38a:ownershipStyle(site.owner,this.viewSide,this.appearance.value,this.state.teams).color;if(site.kind==='relic'){g.fillStyle(color).fillTriangle(p.x-12,p.y,p.x,p.y-43,p.x+12,p.y);g.lineStyle(2,0xf1efd8).strokeCircle(p.x,p.y-28,10);}else if(site.kind==='village'){g.fillStyle(0x7b6550).fillRect(p.x-22,p.y-28,44,27);g.fillStyle(color).fillTriangle(p.x-30,p.y-28,p.x,p.y-49,p.x+30,p.y-28);}else{g.fillStyle(0x3a2b26).fillEllipse(p.x,p.y-8,50,34);g.lineStyle(3,0xa99576).strokeEllipse(p.x,p.y-8,50,34);}if(site.progress>0){g.fillStyle(0x182b2a).fillRect(p.x-24,p.y+4,48,5);g.fillStyle(color).fillRect(p.x-24,p.y+4,48*site.progress,5);}}
+    for(const site of world.sites)if(visible(site)){
+      const p=project(site.x,site.y),color=site.owner===null?0xe6d38a:ownershipStyle(site.owner,this.viewSide,this.appearance.value,this.state.teams).color,ruin=ruinGeometry(site);
+      if(ruin){
+        const stone=project(ruin.x,ruin.y);
+        if(!this.art.environment(`ruin:${ruin.site}`,'ruin-pillar',stone.x,stone.y)){
+          g.fillStyle(0x696d68).fillEllipse(stone.x,stone.y-2,ruin.radius*TILE_W,16).fillRect(stone.x-10,stone.y-49,20,46);
+          g.fillStyle(0x92978d).fillTriangle(stone.x-10,stone.y-49,stone.x-3,stone.y-58,stone.x+10,stone.y-47);
+          g.lineStyle(2,0x424b48).lineBetween(stone.x+2,stone.y-43,stone.x-3,stone.y-32).lineBetween(stone.x-3,stone.y-32,stone.x+4,stone.y-24);
+        }
+        g.fillStyle(color).fillTriangle(p.x-9,p.y-78,p.x,p.y-109,p.x+9,p.y-78);g.lineStyle(2,0xf1efd8).strokeCircle(p.x,p.y-91,8);
+      }else if(site.kind==='village'){g.fillStyle(0x7b6550).fillRect(p.x-22,p.y-28,44,27);g.fillStyle(color).fillTriangle(p.x-30,p.y-28,p.x,p.y-49,p.x+30,p.y-28);}else{g.fillStyle(0x3a2b26).fillEllipse(p.x,p.y-8,50,34);g.lineStyle(3,0xa99576).strokeEllipse(p.x,p.y-8,50,34);}
+      if(site.progress>0){const barY=p.y+(ruin?22:4);g.fillStyle(0x182b2a).fillRect(p.x-24,barY,48,5);g.fillStyle(color).fillRect(p.x-24,barY,48*site.progress,5);}
+    }
     for(const creature of world.creatures)if(creature.hp>0&&visible(creature)){const p=project(creature.x,creature.y);g.fillStyle(0x914e42).fillEllipse(p.x,p.y-13,25,24);g.fillStyle(0xd0b78d).fillTriangle(p.x-12,p.y-18,p.x-9,p.y-34,p.x-4,p.y-19);g.fillTriangle(p.x+4,p.y-19,p.x+9,p.y-34,p.x+12,p.y-18);if(!this.photoMode){g.fillStyle(0x182b2a).fillRect(p.x-16,p.y-40,32,4);g.fillStyle(0xd47760).fillRect(p.x-16,p.y-40,32*creature.hp/creature.maxHp,4);}}
     for(const fire of world.fires)if(visible(fire)){const p=project(fire.x,fire.y),sway=Math.sin(this.state.time*9+fire.x)*3;g.fillStyle(0xd45327,.8).fillTriangle(p.x-14,p.y+5,p.x+sway,p.y-34,p.x+14,p.y+5);g.fillStyle(0xf4cf65).fillTriangle(p.x-7,p.y+4,p.x-sway,p.y-22,p.x+7,p.y+4);}
   }

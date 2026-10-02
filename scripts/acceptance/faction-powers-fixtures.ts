@@ -40,7 +40,7 @@ export function buildFactionPowerFixtures(output: string, sourceCommit: string):
   assert(output, 'Supply a new output directory.');
   assert.match(sourceCommit, /^[a-f0-9]{40}$/, 'Supply the full frozen source commit.');
   assert.equal(SAVE_VERSION, 4, 'Faction acceptance requires SAVE4.');
-  assert.equal(SIMULATION_REVISION, '4.0.1', 'Faction acceptance requires the admitted rules revision.');
+  assert.equal(SIMULATION_REVISION, '4.0.2', 'Faction acceptance requires the admitted rules revision.');
   const out = resolve(output);
   assert(!existsSync(out), 'Fixture output directory must be new.');
   mkdirSync(out, { recursive: true });

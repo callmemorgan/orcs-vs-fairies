@@ -1,0 +1,102 @@
+{
+  "status": "Prepared in owned isolated checkout; no tests/build/browser/server/simulation executed",
+  "ownedCheckout": "/tmp/ovf-id6-integration-703fc-20261001",
+  "baseCommit": "703fc036c6327a830a79d5746eec805188cbbaa6",
+  "simulationRevision": "4.0.2",
+  "saveVersion": 4,
+  "reviewedProductFiles": [
+    {
+      "path": "src/core/ruins.ts",
+      "candidateSha256": "96a1db3473a35388e2f87104eb0966b32d468a7a2716915aeb1ba467f04632a2",
+      "bytes": 497,
+      "matchesReviewedV2": true
+    },
+    {
+      "path": "src/core/tactics.ts",
+      "candidateSha256": "c211c0f9e592d00fed035589fc62c41ec2aa329ce9906a62a0d71c7ed3495b2d",
+      "bytes": 18834,
+      "matchesReviewedV2": true
+    },
+    {
+      "path": "src/game/GameScene.ts",
+      "candidateSha256": "7acb2668ec99d0805b13bb2ad68fa0094ff33671dd94556332d855c330068fdd",
+      "bytes": 62749,
+      "matchesReviewedV2": true
+    },
+    {
+      "path": "src/core/versions.ts",
+      "candidateSha256": "57023377ade74d193b0397fb8fbaf71da39bed7d48d4187fc3e7a466c1fd433b",
+      "bytes": 346,
+      "matchesReviewedV2": true
+    },
+    {
+      "path": "src/ui/WorldTools.ts",
+      "candidateSha256": "cd1bb734e4a0d27c92f0fecdbd0b472e6b1c065bc41bcc4dd4ab8baef983ff19",
+      "bytes": 8712,
+      "matchesReviewedV2": true
+    }
+  ],
+  "patches": [
+    {
+      "file": "product-tests.patch",
+      "bytes": 36593,
+      "sha256": "6d4457912d6a45ba08ece308b88e25b1229018c8594914774efacf5c6315568a",
+      "scope": [
+        "src",
+        "tests"
+      ]
+    },
+    {
+      "file": "current-proof-guards.patch",
+      "bytes": 6962,
+      "sha256": "db689d0de7fa91f1eb50b41e07f0ad4ee9c8e96dee705e4a20874f3225708f68",
+      "scope": [
+        "scripts/scenarios/main-browser-proof/audit.ts",
+        "scripts/acceptance/faction-powers-fixtures.ts",
+        "scripts/verify_mods.mjs",
+        "scripts/mods/scenario.ts",
+        "scripts/world/proof-common.mjs",
+        "scripts/world/README.md"
+      ]
+    },
+    {
+      "file": "ruin-browser-preparation.patch",
+      "bytes": 13188,
+      "sha256": "b5a8dd1925afbe10c3cbadc460d2652de84e2fad32f9d64089d3a003edfd2ffc",
+      "scope": [
+        "scripts/acceptance/ruin-cover-fixtures.ts",
+        "scripts/acceptance/ruin-cover-main-smoke.mjs"
+      ]
+    },
+    {
+      "file": "reviewed-product-v2.patch",
+      "bytes": 11599,
+      "sha256": "e8d0152ac8573921d0f2fc891d2de469cf099a6c0952158dd719af9497c22802"
+    }
+  ],
+  "preparationFailures": [
+    {
+      "operation": "git sparse-checkout add --no-cone",
+      "exitCode": 129,
+      "error": "error: unknown option `no-cone`",
+      "resolution": "Retried supported git sparse-checkout add without --no-cone; success."
+    },
+    {
+      "operation": "Selective current proof README text update",
+      "exitCode": 1,
+      "error": "AssertionError: expected backticked wording was absent",
+      "resolution": "Read actual plain sentence, then replaced its one declared current4.0.1 sentence. Earlier five script guards had already been applied; no runtime occurred."
+    },
+    {
+      "operation": "Static authored ruin+rock runtime precondition review",
+      "error": "A cavern rock directly on the firing lane blocks terrainLineOfSight, preventing the asserted accepted hit.",
+      "resolution": "Removed this inadmissible new fixture before execution; non-stacking now uses two ruins plus building, and existing no-world rock tests remain in recipe."
+    }
+  ],
+  "historicRulesPreserved": [
+    "LEGACY_SIMULATION_REVISIONS[4]=4.0.0",
+    "Genuine4.0.0 session SHA91ae02c1fc5b43c37257a31f8594ca98b291d10a58158b06038615bd7d7241ca/checksum00ac2f44",
+    "Genuine4.0.1 cover-none first hit session SHA90a6b6720ac35b5cbe4155d1abd2ed49be10d2c60869956cf9d7583134e0ee4a/checksumbf34812d",
+    "All historical fixtures/docs/evidence are unchanged."
+  ]
+}

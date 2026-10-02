@@ -1,0 +1,127 @@
+{
+  "kind": "bounded-unexecuted-faction-composition-plan",
+  "attribution": "Codex / GPT-6",
+  "sourceBase": "703fc036c6327a830a79d5746eec805188cbbaa6",
+  "executionCheckout": "/home/morgana/.codex/worktrees/faction-economy-cleanup/orcs-vs-Fairies",
+  "executionCheckoutPin": "827496b06bb660b6639257e5113ac2f199be29ba",
+  "simulationRevision": "4.0.1",
+  "checkoutQualification": "The clean owned827 checkout has the inspected product source identical to703fc. Candidate files are external and neither patch is applied yet. Root may instead use another isolated703fc checkout after authenticating the same source.",
+  "runtimeAdmitted": false,
+  "executed": false,
+  "requiredIds": [
+    25,
+    28
+  ],
+  "supplementalIds": [
+    23,
+    24
+  ],
+  "admissionOwner": "root",
+  "preflight": [
+    "Wait for root heavy-slot admission; do not start any application/test/runtime before it.",
+    "Verify source pin, clean owned status, SIMULATION_REVISION4.0.1, unchanged runtime/package/lock/configuration and import closure against candidate-manifest/source applicability.",
+    "Apply only the required patch into the owned isolated checkout; verify exact new-file bytes against manifest. Do not edit tracked engine/UI/source, root checkout, root ledger/trail or original r2 payloads.",
+    "Create a fresh external execution directory and data-only source-before fingerprint inventory including the newly applied candidate. Keep all command stdout/stderr/exit and timing."
+  ],
+  "requiredCommand": {
+    "label": "required",
+    "cwd": "/home/morgana/.codex/worktrees/faction-economy-cleanup/orcs-vs-Fairies",
+    "argv": [
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=5s",
+      "90s",
+      "npm",
+      "test",
+      "--",
+      "tests/faction-original-clause-composition.test.ts",
+      "--maxWorkers=1",
+      "--testTimeout=15000",
+      "--reporter=default",
+      "--reporter=json",
+      "--outputFile.json=/tmp/ovf-faction-composed-candidates-703fc-k574x6pm/execution-r1/required-tests.json"
+    ],
+    "maximumWorkerCount": 1,
+    "wallTimeoutSeconds": 90,
+    "termKillGraceSeconds": 5,
+    "caseTimeoutMs": 15000,
+    "expectedNamedCases": 2,
+    "stdout": "/tmp/ovf-faction-composed-candidates-703fc-k574x6pm/execution-r1/required.stdout.log",
+    "stderr": "/tmp/ovf-faction-composed-candidates-703fc-k574x6pm/execution-r1/required.stderr.log",
+    "receipt": "/tmp/ovf-faction-composed-candidates-703fc-k574x6pm/execution-r1/required.receipt.json",
+    "recordedResult": "not started"
+  },
+  "supplementalCommand": {
+    "label": "supplemental",
+    "cwd": "/home/morgana/.codex/worktrees/faction-economy-cleanup/orcs-vs-Fairies",
+    "argv": [
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=5s",
+      "90s",
+      "npm",
+      "test",
+      "--",
+      "tests/faction-fairy-supplemental-witness.test.ts",
+      "--maxWorkers=1",
+      "--testTimeout=15000",
+      "--reporter=default",
+      "--reporter=json",
+      "--outputFile.json=/tmp/ovf-faction-composed-candidates-703fc-k574x6pm/execution-r1/supplemental-tests.json"
+    ],
+    "maximumWorkerCount": 1,
+    "wallTimeoutSeconds": 90,
+    "termKillGraceSeconds": 5,
+    "caseTimeoutMs": 15000,
+    "expectedNamedCases": 2,
+    "stdout": "/tmp/ovf-faction-composed-candidates-703fc-k574x6pm/execution-r1/supplemental.stdout.log",
+    "stderr": "/tmp/ovf-faction-composed-candidates-703fc-k574x6pm/execution-r1/supplemental.stderr.log",
+    "receipt": "/tmp/ovf-faction-composed-candidates-703fc-k574x6pm/execution-r1/supplemental.receipt.json",
+    "recordedResult": "not started",
+    "conditional": "Only if root admits these additional witnesses; apply the separate optional patch and authenticate exact bytes first. No extra acceptance gate is imposed by their existence."
+  },
+  "acceptanceReadback": [
+    "Read actual saved Vitest JSON: required two exact named cases passed, no failures/skips, command exit0; source-after integrity equals source-before except generated outputs outside source.",
+    "Inspect the command receipt, actual log hashes and candidate file identities. Do not infer individual passes from counts alone.",
+    "If supplemental command is run, require its two exact case records and preserve the external-controller/combat-selection/browser qualification.",
+    "Root decides any ledger/status acceptance; do not rewrite the failed native r2 recipe as passed."
+  ],
+  "bounds": {
+    "requiredMaximumSimulatedSeconds": [
+      38.1,
+      83
+    ],
+    "supplementalMaximumSimulatedSeconds": [
+      0,
+      41
+    ],
+    "newTestsMaximum": 4,
+    "engineChanges": 0,
+    "browserServerBuildRuns": 0,
+    "automaticRetries": 0,
+    "concurrentCommands": 1
+  },
+  "failureHandling": "Stop after the first failed command, preserve raw logs/report/receipts/source identities, diagnose by source/data readback, and request root admission for any revised execution. No automatic retry or engine fix.",
+  "patches": [
+    {
+      "path": "/tmp/ovf-faction-composed-candidates-703fc-k574x6pm/required25-28.patch",
+      "bytes": 7871,
+      "sha256": "53df892667c1e0af5bf25281ae0e2c887ab5b915aee7b9232949451d879c6e73"
+    },
+    {
+      "path": "/tmp/ovf-faction-composed-candidates-703fc-k574x6pm/optional23-24.patch",
+      "bytes": 6425,
+      "sha256": "658f49856f2902eccd0fff0c51373a800ea7a71906c50183220792a1ac657fb8"
+    },
+    {
+      "path": "/tmp/ovf-faction-composed-candidates-703fc-k574x6pm/all-candidates.patch",
+      "bytes": 14296,
+      "sha256": "8521940a45222cae0f024e44495b511ed368aa64598b16ebc463881526ac2671"
+    }
+  ],
+  "manifest": {
+    "path": "/tmp/ovf-faction-composed-candidates-703fc-k574x6pm/candidate-manifest.json",
+    "bytes": 31652,
+    "sha256": "ddf36be848563139da1d67d664d8c182d7081ac3d34d34304c053b80ccd4d365"
+  }
+}

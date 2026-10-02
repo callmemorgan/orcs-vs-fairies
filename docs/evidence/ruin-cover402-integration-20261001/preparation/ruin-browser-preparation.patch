@@ -1,0 +1,129 @@
+diff --git a/scripts/acceptance/ruin-cover-fixtures.ts b/scripts/acceptance/ruin-cover-fixtures.ts
+new file mode 100644
+index 0000000..7fcaee1
+--- /dev/null
++++ b/scripts/acceptance/ruin-cover-fixtures.ts
+@@ -0,0 +1,57 @@
++import assert from 'node:assert/strict';
++import { createHash } from 'node:crypto';
++import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
++import { resolve } from 'node:path';
++import { FACTIONS } from '../../src/core/content';
++import { MatchRecorder } from '../../src/core/replays';
++import { SAVE_VERSION, saveGame } from '../../src/core/saves';
++import { createSessionFile, decodeSessionFile } from '../../src/core/session-storage';
++import { createMatch, refreshVisibility, spawnDefinition } from '../../src/core/simulation';
++import { initializeTactics } from '../../src/core/tactics';
++import { SIMULATION_REVISION } from '../../src/core/versions';
++import { generateWorldMap, validateWorldMap } from '../../src/core/world-map';
++import type { Entity, GameState, Side, UnitRole } from '../../src/core/types';
++import type { WorldPoint } from '../../src/core/world-types';
++
++/** Author fixture starting conditions only; the production main app performs every later action. */
++export function buildRuinCoverFixtures(output:string,sourceCommit:string) {
++ assert(output,'Supply a new fixture output directory.');assert.match(sourceCommit,/^[0-9a-f]{40}$/);
++ assert.equal(SAVE_VERSION,4);assert.equal(SIMULATION_REVISION,'4.0.2');
++ const out=resolve(output);assert(!existsSync(out),'Use a new fixture directory.');mkdirSync(out,{recursive:true});
++ const scenarios:Record<string,unknown>={};
++ const lane:WorldPoint={x:23.5,y:24.5,level:1};
++ function reset(e:Entity,point:WorldPoint,cooldown=1000){Object.assign(e,{...point,order:{type:'hold'},path:[],cooldown,facing:4,momentum:0,animation:'idle',animTime:0});delete e.orderQueue;}
++ function base(points:WorldPoint[]) {
++  const map=generateWorldMap(4127,'small',2,'temperate');for(const level of map.levels){level.terrain.fill('grass');level.elevation.fill(0);}
++  map.sites=points.map((point,i)=>({...point,id:i+1,kind:'relic'}));assert.deepEqual(validateWorldMap(map),{valid:true,issues:[]});
++  const state=createMatch({map:{seed:map.seed,size:map.size,biome:'temperate',world:map},players:[{id:0,teamId:0,factionId:'orcs',controller:'human'},{id:1,teamId:1,factionId:'orcs',controller:'external'}]});
++  state.resources=[];state.entities=state.entities.filter(e=>e.role==='hq'||e.role==='worker');
++  for(const side of [0,1] as Side[]){const hq=state.entities.find(e=>e.side===side&&e.role==='hq')!;reset(hq,{x:side?31.5:5.5,y:side?31.5:5.5,level:0});state.starts[side]={x:hq.x,y:hq.y,level:0};state.entities.filter(e=>e.side===side&&e.role==='worker').forEach((e,i)=>reset(e,{x:side?30.5+i*.4:4.5+i*.4,y:side?28.5:8.5,level:0}));}
++  return {state,map};
++ }
++ function actor(state:GameState,side:Side,role:UnitRole,point:WorldPoint,cooldown=1000) {
++  const e=spawnDefinition(state,side,'unit',FACTIONS.orcs.units[role].id,point.x,point.y);reset(e,point,cooldown);initializeTactics(state,e);return e;
++ }
++ function write(name:string,state:GameState,map:unknown,ids:Record<string,unknown>,authored:Record<string,unknown>) {
++  refreshVisibility(state);const recorder=new MatchRecorder(state);
++  try {
++   const file=createSessionFile(state,recorder.export());assert.deepEqual(saveGame(decodeSessionFile(file).state),file.game);
++   assert.equal(state.tick,0);const bytes=Buffer.from(JSON.stringify(file,null,2)+'\n'),inputMap=Buffer.from(JSON.stringify(map,null,2)+'\n');
++   writeFileSync(resolve(out,`${name}.json`),bytes,{flag:'wx'});writeFileSync(resolve(out,`${name}-input-map.json`),inputMap,{flag:'wx'});
++   scenarios[name]={file:`${name}.json`,group:'ruin',ids,authored,initialTick:state.tick,initialTime:state.time,sha256:createHash('sha256').update(bytes).digest('hex'),inputMap:{file:`${name}-input-map.json`,sha256:createHash('sha256').update(inputMap).digest('hex')}};
++  }finally{recorder.dispose();}
++ }
++ const points:Record<string,WorldPoint[]>={control:[],covered:[lane],'other-level':[{...lane,level:0}],'beyond-victim':[{x:25.9,y:24.5,level:1}],'inside-near-victim':[{x:25.1,y:24.5,level:1}]};
++ for(const [kind,sites] of Object.entries(points)) {
++  const {state,map}=base(sites),source=actor(state,0,'ranged',{x:20.5,y:24.5,level:1},3),target=actor(state,1,'melee',{x:25.5,y:24.5,level:1});
++  write(`ruin-${kind}`,state,map,{source:source.id,target:target.id,sites:state.world!.sites.map(s=>s.id),expectedFirstDamage:kind==='covered'||kind==='inside-near-victim'?6.75:12,withdrawal:{x:9.5,y:24.5,level:1},returnPoint:{x:20.5,y:24.5,level:1}}, {map:'Valid generated two-layer map flattened to grass and zero elevation before createMatch; generated starts/resources/transitions retained in input. Runtime resources and default combat troops removed; HQs and workers relocated away from the cavern firing lane before recording.',siteDefinitions:sites,sourceCooldown:3,targetCooldown:1000,health:'Ordinary full definition health; neutral ruins; no owned-relic damage bonus.',postRecordingWrites:'Native UI/pointer/keyboard commands and normal engine ticks only.'});
++ }
++ {
++  const {state,map}=base([lane]),worker=actor(state,0,'worker',{x:22.5,y:24.5,level:1});
++  write('ruin-capture',state,map,{worker:worker.id,site:state.world!.sites[0].id,sitePoint:lane}, {map:'Same valid flat generated cavern input.',capture:'Neutral relic, zero progress and owner null; ordinary owned worker in capture range. Capture is started by the main World tools button, with no authored capture progress.'});
++ }
++ const manifest={schema:1,group:'ruin',sourceCommit,saveVersion:SAVE_VERSION,simulationRevision:SIMULATION_REVISION,setup:'Six authored starting conditions. The generator performs no simulation ticks. Production main UI owns all attacks, movement, capture and native exports.',scenarios};
++ writeFileSync(resolve(out,'manifest.json'),JSON.stringify(manifest,null,2)+'\n',{flag:'wx'});return manifest;
++}
++
++if(process.argv[2]&&process.argv[3])console.log(JSON.stringify(buildRuinCoverFixtures(process.argv[2],process.argv[3]),null,2));
+diff --git a/scripts/acceptance/ruin-cover-main-smoke.mjs b/scripts/acceptance/ruin-cover-main-smoke.mjs
+new file mode 100644
+index 0000000..40a5af3
+--- /dev/null
++++ b/scripts/acceptance/ruin-cover-main-smoke.mjs
+@@ -0,0 +1,60 @@
++import assert from 'node:assert/strict';
++
++// Run with createNativeContext against the built production index, after root admission.
++// Browser evaluation in that context reads state and coordinates; these actions use native UI.
++export async function runRuinCoverMainSmoke(ctx) {
++ const {page}=ctx,results={};
++ const actor=(state,id)=>{const e=state.entities.find(e=>e.id===id);assert(e,`Actor ${id}`);return e;};
++ const site=(state,id)=>{const s=state.world.sites.find(s=>s.id===id);assert(s,`Site ${id}`);return s;};
++ const visible=(state,p)=>state.visible[state.viewSide].includes(p.level*state.width*state.height+Math.floor(p.y)*state.width+Math.floor(p.x));
++ const recorded=(file,predicate,message)=>assert(file.replay.actions.some(a=>a.type==='command'&&a.side===0&&predicate(a.command)),message);
++ async function load(name){const fixture=await ctx.loadScenario(name);await ctx.pause();return fixture;}
++ async function attack(source,target){
++  await ctx.selectTroop(source);await ctx.closePanels();await ctx.resume();
++  const before=await ctx.snap(),victim=actor(before,target);assert.equal(victim.level,before.viewLevel);assert(visible(before,victim),'Victim visible before native pointer input');
++  await ctx.entityClick(target,'right');
++  await ctx.wait(({source,target})=>{const order=window.rts.state.entities.find(e=>e.id===source)?.order;return order?.type==='attack'&&order.target===target;},{source,target});
++ }
++ async function move(id,point){await ctx.selectTroop(id);await ctx.closePanels();await ctx.resume();await ctx.ground(point,'right');await ctx.wait(id=>window.rts.state.entities.find(e=>e.id===id)?.order.type==='move',id);}
++
++ for(const kind of ['control','covered','other-level','beyond-victim','inside-near-victim']){
++  const name=`ruin-${kind}`,fixture=await load(name),{ids}=fixture,before=await ctx.snap();
++  assert.equal(actor(before,ids.target).hp,actor(before,ids.target).maxHp);
++  await attack(ids.source,ids.target);
++  const after=await ctx.runUntil(s=>actor(s,ids.target).hp<actor(before,ids.target).hp,{label:`${name} first native hit`});
++  const loss=actor(before,ids.target).hp-actor(after,ids.target).hp;
++  assert(Math.abs(loss-ids.expectedFirstDamage)<1e-6,`${name} measured ${loss}, expected ${ids.expectedFirstDamage}`);
++  const native=await ctx.exportAndVerify(`${name}-first-hit`);
++  recorded(native,c=>c.type==='attack'&&c.ids.includes(ids.source)&&c.target===ids.target,`${name} recorded native attack`);
++  assert.equal(native.replay.simulationRevision,'4.0.2');
++  results[name]={loss,tick:after.tick,source:actor(after,ids.source),target:actor(after,ids.target),sites:after.world.sites};
++  ctx.record(`${name} real first hit and complete native round trip/replay`,{loss,tick:after.tick});await ctx.screenshot(`${name}-first-hit`);
++  if(kind==='covered'){
++   await ctx.selectTroop(ids.source);const world=await ctx.openWorld();assert((await world.textContent()).includes('Relic ruins provide ranged cover.'));assert((await world.textContent()).includes(`relic ruins #${ids.sites[0]}`));await ctx.screenshot('ruin-world-tools');
++   await move(ids.source,ids.withdrawal);
++   const hidden=await ctx.runUntil(s=>Math.hypot(actor(s,ids.source).x-ids.withdrawal.x,actor(s,ids.source).y-ids.withdrawal.y)<.6&&!visible(s,site(s,ids.sites[0])),{label:'Owned shooter leaves current relic fog'});
++   const hiddenSave=await ctx.exportSave('ruin-fog-hidden');recorded(hiddenSave,c=>c.type==='move'&&c.ids.includes(ids.source),'Fog check records a native move');await ctx.closeSessions();await ctx.screenshot('ruin-fog-hidden');
++   ctx.record('Current fog hides the same saved relic site',{site:site(hidden,ids.sites[0]),tick:hidden.tick,rendering:'Screenshot needs visual inspection of pillar cleanup.'});
++   await move(ids.source,ids.returnPoint);
++   const revealed=await ctx.runUntil(s=>visible(s,site(s,ids.sites[0]))&&Math.hypot(actor(s,ids.source).x-ids.returnPoint.x,actor(s,ids.source).y-ids.returnPoint.y)<.6,{label:'Owned shooter reveals relic again'});
++   assert.deepEqual(site(revealed,ids.sites[0]),site(hidden,ids.sites[0]));await ctx.screenshot('ruin-fog-revealed');
++   const levels=await ctx.openWorld();await levels.getByLabel('Map level',{exact:true}).selectOption('0');await ctx.wait(()=>window.rts.viewLevel===0);await ctx.screenshot('ruin-off-level');
++   await levels.getByLabel('Map level',{exact:true}).selectOption('1');await ctx.wait(()=>window.rts.viewLevel===1);await ctx.screenshot('ruin-level-restored');
++   ctx.record('Displayed levels switch away from and back to the same ruin',{site:site(revealed,ids.sites[0]),rendering:'Screenshots need visual inspection of pillar cleanup and restoration.'});
++  }
++ }
++ assert.equal(results['ruin-control'].loss,12);assert.equal(results['ruin-other-level'].loss,12);assert.equal(results['ruin-beyond-victim'].loss,12);assert(results['ruin-covered'].loss<results['ruin-control'].loss);assert.equal(results['ruin-inside-near-victim'].loss,results['ruin-covered'].loss);
++
++ const captureFixture=await load('ruin-capture'),{ids}=captureFixture,before=await ctx.snap();
++ assert.equal(site(before,ids.site).owner,null);assert.equal(site(before,ids.site).progress,0);
++ await ctx.selectTroop(ids.worker);await ctx.resume();const world=await ctx.openWorld();await world.getByRole('button',{name:'Capture relic',exact:true}).click();
++ await ctx.wait(({worker,site})=>{const e=window.rts.state.entities.find(e=>e.id===worker);return e?.order.type==='captureSite'&&e.order.target===site;},{worker:ids.worker,site:ids.site});
++ const progressing=await ctx.runUntil(s=>site(s,ids.site).progress>=.3&&site(s,ids.site).progress<.8,{label:'Real relic capture progress'});
++ await ctx.screenshot('ruin-capture-progress');const checkpoint=await ctx.exportAndVerify('ruin-capture-progress');
++ recorded(checkpoint,c=>c.type==='captureSite'&&c.ids.includes(ids.worker)&&c.target===ids.site,'Main World tools records public capture');
++ const captured=await ctx.runUntil(s=>site(s,ids.site).owner===0,{label:'Relic capture completes'});
++ assert.equal(site(captured,ids.site).x,site(before,ids.site).x);assert.equal(site(captured,ids.site).y,site(before,ids.site).y);assert.equal(site(captured,ids.site).level,site(before,ids.site).level);
++ await ctx.exportAndVerify('ruin-captured');await ctx.screenshot('ruin-captured');
++ ctx.record('Main capture button advances, saves, resumes and completes the same ruin',{progressTick:progressing.tick,finalTick:captured.tick,initial:site(before,ids.site),final:site(captured,ids.site),rendering:'Inspect progress-bar and ownership-marker screenshots.'});
++ return {results,capture:{progressTick:progressing.tick,finalTick:captured.tick,initial:site(before,ids.site),final:site(captured,ids.site)},visualAcceptanceRequired:true};
++}

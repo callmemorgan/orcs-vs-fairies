@@ -13,11 +13,17 @@ const capturedSession = () => {
   return JSON.parse(bytes.toString());
 };
 
-describe('SAVE4 rules 4.0.0 history after the 4.0.1 gameplay repairs', () => {
+const capturedRules401Session = () => {
+  const bytes = readFileSync(new URL('../docs/evidence/native-combat-f18a50d-first-failure-20261001/raw/browser/cover-none-first-hit-save.json', import.meta.url));
+  expect(createHash('sha256').update(bytes).digest('hex')).toBe('90a6b6720ac35b5cbe4155d1abd2ed49be10d2c60869956cf9d7583134e0ee4a');
+  return JSON.parse(bytes.toString());
+};
+
+describe('SAVE4 historical rules under 4.0.2', () => {
   it('preserves the genuine browser game and replay while requiring new history for continuation', () => {
     const source = capturedSession(), before = JSON.stringify(source);
     const restored = decodeSessionFile(source);
-    expect(SIMULATION_REVISION).toBe('4.0.1');
+    expect(SIMULATION_REVISION).toBe('4.0.2');
     expect(restored.file).toEqual(source);
     expect(restored.file.game.version).toBe(4);
     expect(checksumSaveEnvelope(restored.file.game)).toBe('00ac2f44');
@@ -33,7 +39,7 @@ describe('SAVE4 rules 4.0.0 history after the 4.0.1 gameplay repairs', () => {
       expect(issueCommand(restored.state, 0, { type: 'hold', ids: [worker.id] })).toBe(true);
       for (let tick = 0; tick < 20; tick++) stepGame(restored.state, .05);
       const continued = createSessionFile(restored.state, fresh.export());
-      expect(continued.replay!.simulationRevision).toBe('4.0.1');
+      expect(continued.replay!.simulationRevision).toBe('4.0.2');
       expect(continued.game.state.tick).toBe(126);
       const playback = new ReplayPlayer(continued.replay);
       try {
@@ -57,5 +63,34 @@ describe('SAVE4 rules 4.0.0 history after the 4.0.1 gameplay repairs', () => {
     expect(replayRulesCompatible(decoded)).toBe(false);
     expect(() => new ReplayPlayer(decoded)).toThrow('rules 4.0.0');
     expect(JSON.stringify(replay)).toBe(before);
+  });
+
+  it('preserves genuine 4.0.1 browser history and starts 4.0.2 history from its ordinary saved match', () => {
+    const source = capturedRules401Session(), before = JSON.stringify(source), restored = decodeSessionFile(source);
+    expect(restored.file).toEqual(source);
+    expect(checksumSaveEnvelope(restored.file.game)).toBe('bf34812d');
+    expect(saveGame(restored.state)).toEqual(source.game);
+    expect(restored.file.replay!.simulationRevision).toBe('4.0.1');
+    expect(restored.file.replay!.finalChecksum).toBe('bf34812d');
+    expect(replayRulesCompatible(restored.file.replay!)).toBe(false);
+    expect(() => new ReplayPlayer(restored.file.replay)).toThrow('rules 4.0.1');
+    expect(() => new MatchRecorder(restored.state, restored.file.replay)).toThrow('Older replay history');
+    const recorder = new MatchRecorder(restored.state);
+    try {
+      const actor = restored.state.entities.find(entity => entity.side === 0 && entity.kind === 'unit' && entity.hp > 0)!;
+      expect(issueCommand(restored.state, 0, { type: 'hold', ids: [actor.id] })).toBe(true);
+      for (let tick = 0; tick < 20; tick++) stepGame(restored.state, .05);
+      const current = createSessionFile(restored.state, recorder.export());
+      expect(current.replay!.simulationRevision).toBe('4.0.2');
+      expect(current.replay!.initial).toEqual(source.game);
+      const player = new ReplayPlayer(current.replay);
+      try {
+        expect(player.advance(20)).toBe(20);
+        expect(player.finished).toBe(true);
+        expect(saveGame(player.state)).toEqual(current.game);
+      } finally { player.dispose(); }
+      expect(decodeSessionFile(current).file).toEqual(current);
+    } finally { recorder.dispose(); }
+    expect(JSON.stringify(source)).toBe(before);
   });
 });

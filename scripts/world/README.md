@@ -109,7 +109,7 @@ the flat scenario's `convoy-playing.save.json`, the layered scenario's
 `community-mod-trained.save.json`, and every community map
 `browser-replay-*.save.json` and `browser-played-complete.save.json` download.
 Content package engine version remains 3. Save version 4 and simulation revision
-4.0.1 belong to native saves and recordings.
+4.0.2 belong to current native saves and recordings.
 
 Preparation syntax, bundle and lightweight native checks do not establish final
 browser acceptance. Keep failure captures and use a new output directory for each

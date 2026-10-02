@@ -1,0 +1,111 @@
+import { describe, expect, it } from 'vitest';
+import { FACTIONS } from '../src/core/content';
+import { entityDefinition } from '../src/core/content-registry';
+import { FACTION_STRUCTURE_INFO } from '../src/core/faction-systems-content';
+import type { FactionStructureKind } from '../src/core/faction-systems-content';
+import { NEUTRAL_RULES } from '../src/core/neutral-world';
+import { createMatch, issueCommand, refreshVisibility, spawnDefinition, stepGame } from '../src/core/simulation';
+import { generateWorldMap } from '../src/core/world-map';
+import type { BuiltinFactionId, Entity, GameState, UnitRole, Vec } from '../src/core/types';
+
+// Actors, terrain and initial ownership are encounter fixtures. Construction,
+// capture, squad transfer, raising and support use public commands and real ticks.
+function fixture(faction: BuiltinFactionId, relic = false): GameState {
+  const map = generateWorldMap(4127, 'large', 2, 'temperate');
+  for (const layer of map.levels) { layer.terrain.fill('grass'); layer.elevation.fill(0); }
+  map.sites = relic ? [{ id: 1, kind: 'relic', x: 28.5, y: 32.5, level: 1 }] : [];
+  // Keep generated opening resources through normal match admission.
+  const state = createMatch({
+    map: { seed: map.seed, size: map.size, world: map }, rules: { startingAge: 3 },
+    players: [faction, 'orcs' as const].map((factionId, id) => ({
+      id: id as 0 | 1, teamId: id as 0 | 1, factionId, controller: 'external' as const,
+      handicap: { startingResources: { wood: 10000, ore: 10000, crystal: 10000 } },
+    })),
+  });
+  state.entities = state.entities.filter(entity => entity.role === 'hq');
+  state.resources = [];
+  return state;
+}
+function actor(state: GameState, role: UnitRole, x: number, y: number): Entity {
+  const unit = spawnDefinition(state, 0, 'unit', FACTIONS[state.players[0].faction].units[role].id, x, y, 1, 1);
+  unit.order = { type: 'hold' }; unit.cooldown = 100;
+  return unit;
+}
+function advance(state: GameState, seconds: number): void {
+  for (let tick = 0; tick < Math.round(seconds / .05); tick++) stepGame(state, .05);
+}
+function until(state: GameState, ready: () => boolean, seconds: number): void {
+  for (let tick = 0; tick < Math.ceil(seconds / .05) && !ready(); tick++) stepGame(state, .05);
+  expect(ready()).toBe(true);
+}
+function build(state: GameState, worker: Entity, structure: FactionStructureKind, point: Vec): Entity {
+  const definition = FACTION_STRUCTURE_INFO[structure].definition;
+  const previous = new Set(state.entities.map(entity => entity.id));
+  const wallet = { wood: state.players[0].wood, ore: state.players[0].ore, crystal: state.players[0].crystal };
+  refreshVisibility(state);
+  expect(issueCommand(state, 0, { type: 'buildFactionStructure', ids: [worker.id], structure, ...point })).toBe(true);
+  const foundation = state.entities.find(entity => !previous.has(entity.id) && entity.definitionId === definition.id)!;
+  expect(foundation).toMatchObject({ side: 0, level: 1, progress: 0, x: point.x, y: point.y });
+  expect(worker.order).toEqual({ type: 'build', target: foundation.id });
+  for (const kind of ['wood', 'ore', 'crystal'] as const) expect(state.players[0][kind]).toBe(wallet[kind] - definition.cost[kind]);
+  return foundation;
+}
+function distance(a: Vec, b: Vec): number { return Math.hypot(a.x - b.x, a.y - b.y); }
+
+describe('original faction clause compositions through public commands', () => {
+  it('ID25 transfers a two-troop squad between worker-constructed underground entrances', () => {
+    const state = fixture('dwarves');
+    const firstBuilder = actor(state, 'worker', 18.5, 20.5), secondBuilder = actor(state, 'worker', 38.5, 20.5);
+    const squad = [actor(state, 'melee', 22.5, 19.5), actor(state, 'ranged', 22.5, 21.5)];
+    expect(state.entities.filter(entity => entity.definitionId === FACTION_STRUCTURE_INFO.tunnel.definition.id)).toHaveLength(0);
+    const origin = build(state, firstBuilder, 'tunnel', { x: 20.5, y: 20.5, level: 1 });
+    const exit = build(state, secondBuilder, 'tunnel', { x: 40.5, y: 20.5, level: 1 });
+    until(state, () => origin.progress === 1 && exit.progress === 1, 35);
+    expect(state.entities.filter(entity => entity.definitionId === FACTION_STRUCTURE_INFO.tunnel.definition.id)).toHaveLength(2);
+    for (const troop of squad) expect(distance(troop, origin)).toBeLessThan(3);
+    refreshVisibility(state);
+    expect(issueCommand(state, 0, { type: 'tunnelTravel', ids: squad.map(troop => troop.id), target: exit.id })).toBe(true);
+    for (const troop of squad) expect(troop.factionState!.tunnel).toEqual({ target: exit.id, progress: 0 });
+    advance(state, 3.1);
+    for (const troop of squad) {
+      expect(troop.hp).toBeGreaterThan(0); expect(troop.level).toBe(1);
+      expect(troop.factionState!.tunnel).toBeUndefined();
+      expect(distance(troop, exit)).toBeLessThan(3); expect(distance(troop, origin)).toBeGreaterThan(15);
+    }
+  });
+
+  it('ID28 turns captured ground into a paid necropolis that sustains a public Gravecaller summon', () => {
+    const state = fixture('undead', true), site = state.world!.sites[0];
+    site.owner = 1;
+    const captor = actor(state, 'melee', 30.5, 32.5), worker = actor(state, 'worker', 23.5, 32.5);
+    const gravecaller = actor(state, 'special', 28.5, 36.5);
+    expect(state.corpses).toHaveLength(0); expect(state.entities.filter(entity => entity.raised)).toHaveLength(0);
+    expect(state.entities.filter(entity => entity.definitionId === FACTION_STRUCTURE_INFO.necropolis.definition.id)).toHaveLength(0);
+    refreshVisibility(state);
+    expect(issueCommand(state, 0, { type: 'captureSite', ids: [captor.id], target: site.id })).toBe(true);
+    until(state, () => site.owner === 0, NEUTRAL_RULES.captureSeconds + 2);
+    const necropolis = build(state, worker, 'necropolis', { x: 25.5, y: 32.5, level: 1 });
+    expect(distance(necropolis, site)).toBeLessThan(NEUTRAL_RULES.relicRadius);
+    until(state, () => necropolis.progress === 1, 35);
+    expect(site.owner).toBe(0); expect(state.entities.filter(entity => entity.raised)).toHaveLength(0);
+    refreshVisibility(state);
+    // Ticks auto-raise nearby bodies. Insert this disclosed fresh corpse only now
+    // and dispatch the public ability synchronously, before another tick.
+    const corpse = { id: state.nextId++, x: 28.5, y: 35.5, level: 1, expires: state.time + 45 };
+    state.corpses.push(corpse);
+    expect(issueCommand(state, 0, { type: 'ability', ids: [gravecaller.id] })).toBe(true);
+    const raised = state.entities.find(entity => entity.raised && !entity.illusion)!;
+    expect(raised).toBeDefined(); expect(entityDefinition(state, raised)).toEqual(FACTIONS.undead.units.melee);
+    expect(state.corpses.some(body => body.id === corpse.id)).toBe(false);
+    expect(raised.level).toBe(1); expect(distance(raised, site)).toBeLessThan(NEUTRAL_RULES.relicRadius);
+    expect(distance(raised, necropolis)).toBeLessThan(FACTION_STRUCTURE_INFO.necropolis.radius);
+    expect(issueCommand(state, 0, { type: 'hold', ids: [raised.id] })).toBe(true);
+    const ordinaryExpiry = raised.expires, remainingLifetime = raised.expires - state.time;
+    expect(remainingLifetime).toBeCloseTo(35);
+    advance(state, remainingLifetime + 1);
+    expect(state.time).toBeGreaterThan(ordinaryExpiry); expect(raised.hp).toBeGreaterThan(0);
+    expect(raised.expires - state.time).toBeCloseTo(remainingLifetime);
+    expect(distance(raised, necropolis)).toBeLessThan(FACTION_STRUCTURE_INFO.necropolis.radius);
+    expect(site.owner).toBe(0);
+  });
+});

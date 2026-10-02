@@ -33,7 +33,7 @@ describe('scenario ownership in ordinary session saves', () => {
       const originalJournal = structuredClone(profile.active!.recording), originalReplay = match.export();
       const source = createSessionFile(run.session.state, originalReplay, undefined, { kind: 'campaign', profile });
       expect(source.game.version).toBe(4);
-      expect(source.replay).toMatchObject({ checksumVersion: 4, simulationRevision: '4.0.1', initial: { version: 4 } });
+      expect(source.replay).toMatchObject({ checksumVersion: 4, simulationRevision: '4.0.2', initial: { version: 4 } });
       const restored = decodeSessionFile(JSON.stringify(source)), session = scenarioSessionForState(restored.state)!;
       expect(restored.file).toEqual(source); expect(saveGame(restored.state)).toEqual(source.game);
       run.recorder.destroy(); match.dispose();

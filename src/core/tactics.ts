@@ -6,6 +6,7 @@ import type { ArtilleryModification } from './faction-systems';
 import type { UnitDef, BuildingDef } from './types';
 import { FACTIONS } from './content';
 import { terrainAt } from './maps';
+import { ruinGeometry } from './ruins';
 import type { Entity, FactionId, GameState, Side, UnitRole, Vec } from './types';
 
 export type FormationKind='line'|'wedge'|'square'|'loose';
@@ -105,6 +106,7 @@ export function rangedCoverFactor(s:GameState,source:Vec,target:Entity):number {
  // Cover must stand between the shot and its victim, within three tiles of the victim.
  const between=(p:Vec,radius:number)=>sameLevel(p,target)&&distance(p,target)<radius+3&&distance(p,source)>radius+.4&&distance(p,target)>.3&&segmentDistance(p,source,target)<radius+.1;
  for(const e of s.entities)if(e.id!==target.id&&e.hp>0&&e.kind==='building'&&e.progress===1){const radius=buildingFor(s,e).size/2;if(between(e,radius))return TACTICS.coverFactor;}
+ for(const site of s.world?.sites??[]){const ruin=ruinGeometry(site);if(!ruin)continue;const along=(ruin.x-source.x)*(target.x-source.x)+(ruin.y-source.y)*(target.y-source.y);if(along>0&&along<length*length&&between(ruin,ruin.radius))return TACTICS.coverFactor;}
  for(let y=Math.max(0,Math.floor(target.y-3));y<=Math.min(s.height-1,Math.ceil(target.y+3));y++)for(let x=Math.max(0,Math.floor(target.x-3));x<=Math.min(s.width-1,Math.ceil(target.x+3));x++)if(terrainAt(s,x+.5,y+.5,target.level??0)==='rock'&&between({x:x+.5,y:y+.5,level:target.level??0},.55))return TACTICS.coverFactor;
  return 1;
 }

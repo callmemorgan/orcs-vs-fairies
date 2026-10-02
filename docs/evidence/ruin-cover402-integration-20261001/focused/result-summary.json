@@ -1,0 +1,466 @@
+{
+  "status": "First bounded focused execution passed; product remains uncommitted in isolated checkout, root admission/rendering/full suite/build still pending",
+  "baseCommit": "703fc036c6327a830a79d5746eec805188cbbaa6",
+  "ownedCheckout": "/tmp/ovf-id6-integration-703fc-20261001",
+  "actualNode": {
+    "path": "/home/morgana/.local/bin/node",
+    "version": "v24.21.0"
+  },
+  "actualNpm": {
+    "path": "/home/morgana/.local/bin/npm",
+    "version": "11.19.0"
+  },
+  "actualVitestVersion": "4.1.11",
+  "files": 8,
+  "tests": 101,
+  "passed": 101,
+  "failed": 0,
+  "jsonDescribeSuites": 16,
+  "results": [
+    {
+      "path": "/tmp/ovf-id6-integration-703fc-20261001/tests/combat-tactics.test.ts",
+      "status": "passed",
+      "tests": 22
+    },
+    {
+      "path": "/tmp/ovf-id6-integration-703fc-20261001/tests/neutral-world-integration.test.ts",
+      "status": "passed",
+      "tests": 5
+    },
+    {
+      "path": "/tmp/ovf-id6-integration-703fc-20261001/tests/ruin-cover.test.ts",
+      "status": "passed",
+      "tests": 17
+    },
+    {
+      "path": "/tmp/ovf-id6-integration-703fc-20261001/tests/save4-corpus.test.ts",
+      "status": "passed",
+      "tests": 22
+    },
+    {
+      "path": "/tmp/ovf-id6-integration-703fc-20261001/tests/save4-rule-revision.test.ts",
+      "status": "passed",
+      "tests": 3
+    },
+    {
+      "path": "/tmp/ovf-id6-integration-703fc-20261001/tests/scenario-recording-compatibility.test.ts",
+      "status": "passed",
+      "tests": 15
+    },
+    {
+      "path": "/tmp/ovf-id6-integration-703fc-20261001/tests/scenario-save4-wrapper-migration.test.ts",
+      "status": "passed",
+      "tests": 10
+    },
+    {
+      "path": "/tmp/ovf-id6-integration-703fc-20261001/tests/session-scenario-profile.test.ts",
+      "status": "passed",
+      "tests": 7
+    }
+  ],
+  "measurements": {
+    "uncovered": {
+      "tick": 1,
+      "hpBefore": 175,
+      "hpAfter": 163,
+      "loss": 12,
+      "attacks": [
+        {
+          "type": "attack",
+          "x": 20.5,
+          "y": 24.5,
+          "level": 1,
+          "side": 0,
+          "target": 51,
+          "source": 50,
+          "amount": 12
+        }
+      ],
+      "source": {
+        "id": 50,
+        "x": 20.5,
+        "y": 24.5,
+        "level": 1,
+        "facing": 0
+      },
+      "target": {
+        "id": 51,
+        "x": 25.5,
+        "y": 24.5,
+        "level": 1,
+        "facing": 4
+      },
+      "geometry": []
+    },
+    "covered": {
+      "tick": 1,
+      "hpBefore": 175,
+      "hpAfter": 168.25,
+      "loss": 6.75,
+      "attacks": [
+        {
+          "type": "attack",
+          "x": 20.5,
+          "y": 24.5,
+          "level": 1,
+          "side": 0,
+          "target": 52,
+          "source": 51,
+          "amount": 6.75
+        }
+      ],
+      "source": {
+        "id": 51,
+        "x": 20.5,
+        "y": 24.5,
+        "level": 1,
+        "facing": 0
+      },
+      "target": {
+        "id": 52,
+        "x": 25.5,
+        "y": 24.5,
+        "level": 1,
+        "facing": 4
+      },
+      "geometry": [
+        {
+          "site": 1,
+          "x": 23.5,
+          "y": 24.5,
+          "level": 1,
+          "radius": 0.45
+        }
+      ]
+    },
+    "other-level": {
+      "tick": 1,
+      "hpBefore": 175,
+      "hpAfter": 163,
+      "loss": 12,
+      "attacks": [
+        {
+          "type": "attack",
+          "x": 20.5,
+          "y": 24.5,
+          "level": 1,
+          "side": 0,
+          "target": 52,
+          "source": 51,
+          "amount": 12
+        }
+      ],
+      "source": {
+        "id": 51,
+        "x": 20.5,
+        "y": 24.5,
+        "level": 1,
+        "facing": 0
+      },
+      "target": {
+        "id": 52,
+        "x": 25.5,
+        "y": 24.5,
+        "level": 1,
+        "facing": 4
+      },
+      "geometry": [
+        {
+          "site": 1,
+          "x": 23.5,
+          "y": 24.5,
+          "level": 0,
+          "radius": 0.45
+        }
+      ]
+    },
+    "beyond-victim": {
+      "tick": 1,
+      "hpBefore": 175,
+      "hpAfter": 163,
+      "loss": 12,
+      "attacks": [
+        {
+          "type": "attack",
+          "x": 20.5,
+          "y": 24.5,
+          "level": 1,
+          "side": 0,
+          "target": 52,
+          "source": 51,
+          "amount": 12
+        }
+      ],
+      "source": {
+        "id": 51,
+        "x": 20.5,
+        "y": 24.5,
+        "level": 1,
+        "facing": 0
+      },
+      "target": {
+        "id": 52,
+        "x": 25.5,
+        "y": 24.5,
+        "level": 1,
+        "facing": 4
+      },
+      "geometry": [
+        {
+          "site": 1,
+          "x": 25.9,
+          "y": 24.5,
+          "level": 1,
+          "radius": 0.45
+        }
+      ]
+    },
+    "near-victim-inside": {
+      "tick": 1,
+      "hpBefore": 175,
+      "hpAfter": 168.25,
+      "loss": 6.75,
+      "attacks": [
+        {
+          "type": "attack",
+          "x": 20.5,
+          "y": 24.5,
+          "level": 1,
+          "side": 0,
+          "target": 52,
+          "source": 51,
+          "amount": 6.75
+        }
+      ],
+      "source": {
+        "id": 51,
+        "x": 20.5,
+        "y": 24.5,
+        "level": 1,
+        "facing": 0
+      },
+      "target": {
+        "id": 52,
+        "x": 25.5,
+        "y": 24.5,
+        "level": 1,
+        "facing": 4
+      },
+      "geometry": [
+        {
+          "site": 1,
+          "x": 25.1,
+          "y": 24.5,
+          "level": 1,
+          "radius": 0.45
+        }
+      ]
+    },
+    "near-victim-outside": {
+      "tick": 1,
+      "hpBefore": 175,
+      "hpAfter": 163,
+      "loss": 12,
+      "attacks": [
+        {
+          "type": "attack",
+          "x": 20.5,
+          "y": 24.5,
+          "level": 1,
+          "side": 0,
+          "target": 52,
+          "source": 51,
+          "amount": 12
+        }
+      ],
+      "source": {
+        "id": 51,
+        "x": 20.5,
+        "y": 24.5,
+        "level": 1,
+        "facing": 0
+      },
+      "target": {
+        "id": 52,
+        "x": 25.5,
+        "y": 24.5,
+        "level": 1,
+        "facing": 4
+      },
+      "geometry": [
+        {
+          "site": 1,
+          "x": 25.9,
+          "y": 24.5,
+          "level": 1,
+          "radius": 0.45
+        }
+      ]
+    },
+    "ruin-building": {
+      "tick": 1,
+      "hpBefore": 175,
+      "hpAfter": 168.25,
+      "loss": 6.75,
+      "attacks": [
+        {
+          "type": "attack",
+          "x": 20.5,
+          "y": 24.5,
+          "level": 1,
+          "side": 0,
+          "target": 52,
+          "source": 51,
+          "amount": 6.75
+        }
+      ],
+      "source": {
+        "id": 51,
+        "x": 20.5,
+        "y": 24.5,
+        "level": 1,
+        "facing": 0
+      },
+      "target": {
+        "id": 52,
+        "x": 25.5,
+        "y": 24.5,
+        "level": 1,
+        "facing": 4
+      },
+      "geometry": [
+        {
+          "site": 1,
+          "x": 23.5,
+          "y": 24.5,
+          "level": 1,
+          "radius": 0.45
+        }
+      ]
+    },
+    "two-ruins-building": {
+      "tick": 1,
+      "hpBefore": 175,
+      "hpAfter": 168.25,
+      "loss": 6.75,
+      "attacks": [
+        {
+          "type": "attack",
+          "x": 20.5,
+          "y": 24.5,
+          "level": 1,
+          "side": 0,
+          "target": 53,
+          "source": 52,
+          "amount": 6.75
+        }
+      ],
+      "source": {
+        "id": 52,
+        "x": 20.5,
+        "y": 24.5,
+        "level": 1,
+        "facing": 0
+      },
+      "target": {
+        "id": 53,
+        "x": 25.5,
+        "y": 24.5,
+        "level": 1,
+        "facing": 4
+      },
+      "geometry": [
+        {
+          "site": 1,
+          "x": 23.5,
+          "y": 24.5,
+          "level": 1,
+          "radius": 0.45
+        },
+        {
+          "site": 2,
+          "x": 24.5,
+          "y": 24.5,
+          "level": 1,
+          "radius": 0.45
+        }
+      ]
+    },
+    "capture": {
+      "initialSite": {
+        "x": 23.5,
+        "y": 24.5,
+        "level": 1,
+        "id": 1,
+        "kind": "relic",
+        "owner": null,
+        "loyalty": [
+          0,
+          0
+        ],
+        "progress": 0,
+        "capturing": null,
+        "reward": {
+          "wood": 180,
+          "ore": 100,
+          "crystal": 40
+        },
+        "rewarded": [],
+        "request": {
+          "wood": 80,
+          "ore": 20,
+          "crystal": 0
+        },
+        "supplied": false,
+        "creatureIds": [],
+        "respawnAt": 0
+      },
+      "tick": 205,
+      "owner": 0,
+      "geometry": {
+        "site": 1,
+        "x": 23.5,
+        "y": 24.5,
+        "level": 1,
+        "radius": 0.45
+      },
+      "checkpointTick": 80,
+      "identicalResumedTicks": 125
+    },
+    "continuation": {
+      "ticks": 40,
+      "initialGeometry": {
+        "site": 1,
+        "x": 23.5,
+        "y": 24.5,
+        "level": 1,
+        "radius": 0.45
+      },
+      "finalGeometry": {
+        "site": 1,
+        "x": 23.5,
+        "y": 24.5,
+        "level": 1,
+        "radius": 0.45
+      },
+      "finalChecksum": "ff6620c2",
+      "finalTick": 40,
+      "targetHp": 160.9969
+    }
+  },
+  "sourceInventoryBeforeAfterEqual": true,
+  "sourcePatchBeforeAfterEqual": true,
+  "protectedPreviewAndDistUnchanged": true,
+  "slotReleased": true,
+  "stdout": "focused.stdout.log",
+  "stderr": "focused.stderr.log",
+  "reporter": "focused-tests.json",
+  "noAutomaticRetry": true,
+  "qualifications": [
+    "Native main/browser rendering, art/fog cleanup, capture glyph/bar readability and fallback remain unexecuted.",
+    "Only these8files/101tests were executed; no current full-suite claim.",
+    "Ordinary rules4.0.1 browser input remains genuine unchanged rawbytes; new test uses exact oldrules/history rejection and fresh4.0.2 continuation.",
+    "New browser fixture producer/driver source is prepared and unexecuted.",
+    "Product source identity is baseline703fc plus retained patch and actual file hashes, not byte-equal baseline703fc."
+  ]
+}
