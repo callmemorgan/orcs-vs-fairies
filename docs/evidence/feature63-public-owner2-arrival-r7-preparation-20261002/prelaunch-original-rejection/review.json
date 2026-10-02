@@ -1,0 +1,133 @@
+{
+  "schema": "feature63-r7-prelaunch-compatibility-static-review-v1",
+  "status": "FAIL_STATIC_R7_PRELAUNCH_AUTHENTICATOR_UNBOUND_ASSERT_GATES",
+  "requestedReviewerModel": "gpt-5.6-sol",
+  "actualProviderIdentity": "unverified",
+  "providerOrModelFamilyAuthenticated": false,
+  "claudeUsed": false,
+  "runtimeExecuted": false,
+  "candidateImported": false,
+  "processOrPortProbesPerformed": false,
+  "databaseOrProfileAccessed": false,
+  "repositoryModified": false,
+  "productOrPreviewModified": false,
+  "packetAuthentication": {
+    "path": "/tmp/ovf-root-feature63-r7-static-packet-9l53j4bl/review-input-seal.json",
+    "bytes": 5170,
+    "mode": 420,
+    "sha256": "e1c4e3e7545138dde0ca6c6a01cdd08daef44c1d1659e7b4a24e98cb76d1bd5c",
+    "expectedSha256Matches": true,
+    "declaredRecordCount": 19,
+    "actualRecordCount": 19,
+    "allRecordPathsBytesDigestsAndModesMatch": true
+  },
+  "independentReviewAuthentication": {
+    "path": "/tmp/ovf-feature63-r7-final-static-independent-review-upsx1DQX/review.json",
+    "bytes": 10341,
+    "mode": 420,
+    "sha256": "9be9b64bdd2a5637bed71ad6d8a36423b0e4242c3f1bd9afe519f172f3c9bd53",
+    "expectedSha256Matches": true,
+    "schema": "feature63-r7-final-static-independent-review-v1",
+    "status": "PASS_STATIC_R7_PUBLIC_OWNER2_APPROACH_RUNTIME_HELD",
+    "runtimeExecuted": false,
+    "reviewedFilesExactlyEqualSealReviewRoles": true,
+    "reviewedRoleCount": 5
+  },
+  "reviewRoleCorrespondence": [
+    {
+      "role": "wrapper",
+      "path": "/tmp/ovf-root-feature63-r7-static-packet-9l53j4bl/script-candidates/candidates/run-minimal63.py",
+      "bytes": 54514,
+      "sha256": "054a652dff3c718fbc0d8b1093578a1e7b9c37badd9cde60c1e4f0f3572713f0"
+    },
+    {
+      "role": "producer",
+      "path": "/tmp/ovf-root-feature63-r7-static-packet-9l53j4bl/script-candidates/candidates/public-producer.mjs",
+      "bytes": 54689,
+      "sha256": "6c8e203732d9e33a72645fa55c9bee4b1e6148725c4b88c9db2d3ea3c9c1c8eb"
+    },
+    {
+      "role": "collector",
+      "path": "/tmp/ovf-root-feature63-r7-static-packet-9l53j4bl/script-candidates/candidates/collect-launched-waves.py",
+      "bytes": 18600,
+      "sha256": "d6b1eee12bca979a0ff77a7fde7e7d9dbea22bb569ef2055cbdf7da871ec20ec"
+    },
+    {
+      "role": "frozenAuditor",
+      "path": "/tmp/ovf-root-feature63-r7-static-packet-9l53j4bl/script-candidates/originals/native-audit.py",
+      "bytes": 64185,
+      "sha256": "4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb"
+    },
+    {
+      "role": "bindingUtility",
+      "path": "/tmp/ovf-root-feature63-r7-static-packet-9l53j4bl/binding-utility/fresh-r7-bindings.py",
+      "bytes": 23873,
+      "sha256": "bbeb0bc68b2dd5cd24679f8ade43baa2403d748e9877a7e24bcf2c7fe1c1dc02"
+    }
+  ],
+  "prelaunchCandidate": {
+    "path": "/tmp/ovf-root-feature63-r3-preparation-551FgMyq/authenticate-prelaunch.py",
+    "bytes": 4369,
+    "lines": 28,
+    "sha256": "8626c914b0b717f6836a20a3fe55d261ddbfeb562eae7ffda749e60818fdf870",
+    "executed": false
+  },
+  "structuralR7Compatibility": {
+    "status": "PASS_STATIC_FIELD_AND_LAUNCHER_SHAPE_ONLY",
+    "phaseArgumentR7ProducesR7PrefixLiteral": true,
+    "phaseArgumentR7ProducesR7SlotPrefixLiteral": true,
+    "r7ReadbackFieldsConsumed": [
+      "completeOutputRecords",
+      "freshControl",
+      "launcher",
+      "launcherChanges"
+    ],
+    "r7AssignmentDescriptorFieldsConsumed": [
+      "sourceBinding",
+      "buildBinding",
+      "testedBuildReceipt",
+      "reviewReceipt",
+      "browserBinding",
+      "publicProducer",
+      "collector",
+      "auditor",
+      "nodeExecutable",
+      "pythonExecutable"
+    ],
+    "inventoryCountsExpected": [966, 570, 397, 398, 22, 114, 303],
+    "launcherReconstructionMatchesR7BindingUtilityAlgorithm": true,
+    "prelaunchReadbackIsOneShotBecauseOutputSetCheckExcludesExistingPrelaunchReadback": true
+  },
+  "blockers": [
+    {
+      "id": "assert-gates-can-be-disabled",
+      "lines": [6, 7, 8, 9, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25],
+      "finding": "Every authentication and live-preview decision uses Python assert, and the script has no sys.flags.optimize guard. Running under python -O or with PYTHONOPTIMIZE set removes those checks while the script can still write root-independent-prelaunch-readback.json at line 28.",
+      "requiredChange": "Reject sys.flags.optimize != 0 before any input read and replace security assertions with an always-active require() function. The intended invocation must also remove PYTHONOPTIMIZE from the environment."
+    },
+    {
+      "id": "root-authority-files-are-self-asserted-and-unbound",
+      "lines": [3, 5, 10, 11, 12, 13, 14, 18, 21, 22, 23, 24],
+      "finding": "The script accepts only OUT and PHASE. It has no expected digest for root-binding-readback.json, capture-assignment.json, the R7 independent review, or the pinned launcher template. The unbound readback supplies completeOutputRecords, freshControl, launcher, and launcherChanges; the unbound assignment supplies all binding and executable descriptors. A self-consistent altered or wrong output directory can therefore define what the script accepts.",
+      "requiredChange": "Require the expected source pin, binding-readback path and digest, capture-assignment path and digest, R7 review path and digest, and pinned launcher-template digest as root-supplied anchors. Require PHASE == r7 and canonical absolute paths. Verify the review schema, pass status, runtimeExecuted false, and exact five reviewed roles before trusting output records or launcher changes."
+    },
+    {
+      "id": "verified-files-are-parsed-or-used-through-separate-reads",
+      "lines": [5, 10, 12, 14, 15, 16, 18, 22, 24],
+      "finding": "desc() performs stat and read_bytes separately. The assignment, readback, source, build, browser, product, protected, and launcher-template JSON or text are parsed with direct reads and later hashed or compared through other reads. This recreates the time-of-check/time-of-use gap removed from the R7 binding utility.",
+      "requiredChange": "Use the R7 binding utility's stable single-descriptor reader: O_NOFOLLOW, regular-file and size bounds, before/after/path identity equality, one byte buffer, digest verification, and parsing from those same bytes. Cache retained definitions and reuse their parsed objects."
+    }
+  ],
+  "additionalQualifications": [
+    "The script hardcodes the protected preview PID, start tick, session, cwd, executable, argv, and socket check. Those values are compatible with the retained workflow but were not probed in this review.",
+    "The script enumerates and stats existing external SQLite custody paths when it runs. It does not read their contents, but that live metadata action was not performed here.",
+    "Line 20 requires both checkouts to have the assignment source pin and clean tracked state. After importing the three reviewed proof scripts, the future assignment pin must be the resulting committed pin and both checkouts must match it.",
+    "The R7 binding utility remains the trusted producer of the future output. This review does not weaken its earlier PASS status; it blocks only reuse of the old prelaunch authenticator as an independent R7 trust gate."
+  ],
+  "recommendedDisposition": "Prepare a hardened external R7 prelaunch authenticator from the reviewed R7 stable-read pattern, review its exact bytes, and use it only after the reviewed binding utility succeeds. Do not run the reusable R3 script as-is.",
+  "rootStateSuppliedNotIndependentlyRead": {
+    "head": "c50e54b26618a5361b0782139381366b9608070f",
+    "plannedImport": "Only the three reviewed proof scripts",
+    "productAndPreviewMustRemainUntouched": true
+  }
+}

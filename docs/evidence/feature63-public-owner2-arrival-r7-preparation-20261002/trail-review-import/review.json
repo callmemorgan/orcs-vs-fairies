@@ -1,0 +1,166 @@
+{
+  "schema": "ovf-feature63-r7-static-preparation-trail-review-v1",
+  "status": "PASS_WITH_ATTENTION_NO_REQUIRED_FIXES",
+  "requiredFixes": [],
+  "scope": {
+    "decisionRow": "feature63-r7-public-owner2-arrival",
+    "decisionFile": "/home/morgana/Projects/orcs-vs-Fairies/docs/features/decisions.tsv",
+    "evidenceRoot": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-owner2-arrival-r7-preparation-20261002",
+    "transcript": "/home/morgana/.codex/sessions/2026/09/30/rollout-2026-09-30T22-54-08-01a0f606-ff76-7312-a274-41e17906a3bd.jsonl",
+    "transcriptReview": "Only records tied to the resumed R7 static packet, independent review, and root import after the R6/R7 capsule were inspected.",
+    "repositoryModifiedByReview": false,
+    "databaseAccessedByReview": false,
+    "processOrRuntimeLaunchedByReview": false,
+    "nativeCheckpointAccessedByReview": false
+  },
+  "reviewerQualification": {
+    "requestedModel": "gpt-5.6-sol",
+    "actualServingProviderIdentity": "not independently authenticated",
+    "actualServingModelIdentity": "not independently authenticated",
+    "actualServingModelFamily": "not independently authenticated",
+    "claudeUsed": false
+  },
+  "row": {
+    "id": "feature63-r7-public-owner2-arrival",
+    "lineSha256WithLf": "f947511df963d32e4a58ca2793122ad82466315abfdfb0796e78321ee4278334",
+    "assessment": "SUPPORTED_WITH_QUALIFICATIONS",
+    "citedEvidence": "docs/evidence/feature63-public-owner2-arrival-r7-preparation-20261002/root-import.json",
+    "decision": "Imported reviewed owner 2 arrival trigger for both ordinary UI attack-moves",
+    "reason": "R6 never released Hold before its frozen public byte limit; the first visible owner 2 fighter offers an earlier attempt",
+    "result": "Exact reviewed scripts and syntax passed; product570/protected397 unchanged; frozen audit and public fight criterion unchanged; bindings/runtime held;99/1"
+  },
+  "verifiedClaims": {
+    "threeExactCandidateFilesImported": true,
+    "importedCandidateSha256": {
+      "scripts/feature63/run-minimal63.py": "054a652dff3c718fbc0d8b1093578a1e7b9c37badd9cde60c1e4f0f3572713f0",
+      "scripts/feature63/public-producer.mjs": "6c8e203732d9e33a72645fa55c9bee4b1e6148725c4b88c9db2d3ea3c9c1c8eb",
+      "scripts/feature63/collect-launched-waves.py": "d6b1eee12bca979a0ff77a7fde7e7d9dbea22bb569ef2055cbdf7da871ec20ec"
+    },
+    "nativeAuditorSha256": "4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb",
+    "nativeAuditorUnchanged": true,
+    "reviewStatus": "PASS_STATIC_R7_PUBLIC_OWNER2_APPROACH_RUNTIME_HELD",
+    "reviewBlockerCount": 0,
+    "reviewRequiredFixCount": 0,
+    "sealedReviewedPacketRecords": 19,
+    "completeEvidencePacketRecordsExcludingInventory": 22,
+    "allRetainedPacketDescriptorsVerified": true,
+    "syntax": {
+      "pythonAst": true,
+      "nodeExit": 0
+    },
+    "productInventoryCountAuthenticatedInBothRoots": 570,
+    "protectedDistCountAuthenticated": 397,
+    "productSourceChangedByPacket": false,
+    "bindingsGenerated": false,
+    "runtimeExecuted": false,
+    "captureAuthorizedByReview": false,
+    "feature63Qualified": false,
+    "ledger": {
+      "verified": 99,
+      "inProgress": 1,
+      "feature63Status": "in-progress"
+    }
+  },
+  "behaviorReview": {
+    "owner2ArrivalGate": {
+      "requiredInEachHumanPublicView": true,
+      "side": 2,
+      "owner": 2,
+      "kind": "unit",
+      "workerExcluded": true,
+      "mustBeLive": true,
+      "mustMatchCommonHqLevel": true,
+      "maximumDistanceFromCommonHq": 12,
+      "minimumCountPerView": 1
+    },
+    "ordinaryUiAttackMoves": {
+      "bothHumanProfilesUseUnchangedAttackMoveHelper": true,
+      "targetSelectedFromFirstHumanView": true,
+      "acceptedAcknowledgementAndAppliedTickChecksUnchanged": true
+    },
+    "publicPositiveCriterionUnchanged": {
+      "maximumWindowTicks": 400,
+      "frameStepTicks": 4,
+      "bothHumanStreamsContiguous": true,
+      "bothHumanHqsAlive": true,
+      "acceptedCommandOwners": [0, 1],
+      "positiveHumanCombatOwners": [0, 1],
+      "collectiveTargetOwners": [2, 3]
+    },
+    "frozenNativeAuditorAndExtractionCriteriaUnchanged": true,
+    "nativeWaveMembershipClaimedByStaticPreparation": false
+  },
+  "attention": [
+    {
+      "id": "r6-basis-outside-r7-seal",
+      "detail": "The row's R6 failure rationale comes from the earlier committed R6 record. The R7 independent review says the R6 diagnosis was outside the sealed R7 packet and was not independently read by that reviewer. The new R7 evidence proves the import, not the historical R6 diagnosis by itself."
+    },
+    {
+      "id": "first-visible-wording",
+      "detail": "The R7 gate does not act on visibility in only one profile. A qualifying live owner-2 unit must be visible in each human public view. The two views need not contain the same actor, and target coordinates are selected from the first profile's qualifying actor."
+    },
+    {
+      "id": "same-budget-risk",
+      "detail": "The wrapper still retains complete public wire streams and enforces the same 67,108,864-byte public input limit. The earlier trigger can still fail the same byte budget before producing a usable public result."
+    },
+    {
+      "id": "static-only",
+      "detail": "No bindings were generated, no R7 prefix or control directory was created, no slot was reserved, no capture was authorized or run, and feature 63 remains unqualified."
+    },
+    {
+      "id": "future-pin-required",
+      "detail": "The retained candidates were derived from the R6 source at f2e0025937b8caf5dc8f6f9f3de134d92a2d547a and imported after sourceBefore c50e54b26618a5361b0782139381366b9608070f. The reviewed binding utility requires a later full commit pin with both checkouts clean and equal."
+    },
+    {
+      "id": "sequential-future-authentication",
+      "detail": "The future binding utility authenticates inventory members one at a time rather than from an atomic filesystem snapshot. Concurrent checkout changes can make it fail or race after an earlier check."
+    },
+    {
+      "id": "product-changes-field-scope",
+      "detail": "root-import.json records productChanges as 0 while also recording three imported script candidates. Read productChanges as product-source changes, not as a claim that no repository script bytes changed."
+    },
+    {
+      "id": "ledger-evidence",
+      "detail": "The 99/1 state is true on direct read: 99 verified, 1 in progress, and feature 63 is the in-progress feature. root-import.json itself does not include those ledger counts."
+    },
+    {
+      "id": "provider-identity",
+      "detail": "The requested independent reviewer model was gpt-5.6-sol, but the retained review records the actual provider and model family as unverified and records that Claude was not used."
+    }
+  ],
+  "reviewedArtifactDescriptors": [
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/features/decisions.tsv",
+      "bytes": 137720,
+      "sha256": "2691f53958e08de80bd57d21d7807be4f56028743acdeedca4c1d68ef6ef94f5"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-owner2-arrival-r7-preparation-20261002/root-import.json",
+      "bytes": 1451,
+      "sha256": "69189d38dad439ca213d7c566e402a856d0818ba38670ae5a457d5319cd7e86a"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-owner2-arrival-r7-preparation-20261002/independent-static-review/review.json",
+      "bytes": 10341,
+      "sha256": "9be9b64bdd2a5637bed71ad6d8a36423b0e4242c3f1bd9afe519f172f3c9bd53"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-owner2-arrival-r7-preparation-20261002/reviewed-packet/review-input-seal.json",
+      "bytes": 5170,
+      "sha256": "e1c4e3e7545138dde0ca6c6a01cdd08daef44c1d1659e7b4a24e98cb76d1bd5c"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-owner2-arrival-r7-preparation-20261002/complete-packet-inventory.json",
+      "bytes": 4662,
+      "sha256": "ddb7d7c7a07a1caa18685dd13583243c85267e786e9a8ac1e0e7651155b4e19c"
+    }
+  ],
+  "finalState": {
+    "r7PreparationImported": true,
+    "bindingsHeld": true,
+    "runtimeHeld": true,
+    "nativeAuditorUnchanged": true,
+    "feature63Status": "in-progress",
+    "readyForCommitFromTrailReviewPerspective": true
+  }
+}

@@ -1,0 +1,205 @@
+{
+  "schema": "feature63-r7-final-static-independent-review-v1",
+  "status": "PASS_STATIC_R7_PUBLIC_OWNER2_APPROACH_RUNTIME_HELD",
+  "requestedReviewerModel": "gpt-5.6-sol",
+  "actualProviderIdentity": "unverified",
+  "providerOrModelFamilyAuthenticated": false,
+  "claudeUsed": false,
+  "runtimeExecuted": false,
+  "candidateImported": false,
+  "processOrPortProbesPerformed": false,
+  "databaseOrProfileAccessed": false,
+  "nativeCheckpointAccessed": false,
+  "sqlQueryExtractionOrAuditPerformed": false,
+  "repositoryLedgerOrTrailModified": false,
+  "packetModified": false,
+  "packet": "/tmp/ovf-root-feature63-r7-static-packet-9l53j4bl",
+  "packetSeal": {
+    "path": "/tmp/ovf-root-feature63-r7-static-packet-9l53j4bl/review-input-seal.json",
+    "bytes": 5170,
+    "sha256": "e1c4e3e7545138dde0ca6c6a01cdd08daef44c1d1659e7b4a24e98cb76d1bd5c",
+    "recordCount": 19,
+    "authenticated": true,
+    "allRecordPathsBytesDigestsAndModesMatch": true,
+    "captureNotAuthorized": true
+  },
+  "reviewedFiles": [
+    {
+      "role": "wrapper",
+      "path": "/tmp/ovf-root-feature63-r7-static-packet-9l53j4bl/script-candidates/candidates/run-minimal63.py",
+      "bytes": 54514,
+      "sha256": "054a652dff3c718fbc0d8b1093578a1e7b9c37badd9cde60c1e4f0f3572713f0"
+    },
+    {
+      "role": "producer",
+      "path": "/tmp/ovf-root-feature63-r7-static-packet-9l53j4bl/script-candidates/candidates/public-producer.mjs",
+      "bytes": 54689,
+      "sha256": "6c8e203732d9e33a72645fa55c9bee4b1e6148725c4b88c9db2d3ea3c9c1c8eb"
+    },
+    {
+      "role": "collector",
+      "path": "/tmp/ovf-root-feature63-r7-static-packet-9l53j4bl/script-candidates/candidates/collect-launched-waves.py",
+      "bytes": 18600,
+      "sha256": "d6b1eee12bca979a0ff77a7fde7e7d9dbea22bb569ef2055cbdf7da871ec20ec"
+    },
+    {
+      "role": "frozenAuditor",
+      "path": "/tmp/ovf-root-feature63-r7-static-packet-9l53j4bl/script-candidates/originals/native-audit.py",
+      "bytes": 64185,
+      "sha256": "4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb"
+    },
+    {
+      "role": "bindingUtility",
+      "path": "/tmp/ovf-root-feature63-r7-static-packet-9l53j4bl/binding-utility/fresh-r7-bindings.py",
+      "bytes": 23873,
+      "sha256": "bbeb0bc68b2dd5cd24679f8ade43baa2403d748e9877a7e24bcf2c7fe1c1dc02"
+    }
+  ],
+  "blockers": [],
+  "requiredFixes": [],
+  "exactSourceAndManualEqualityProof": {
+    "sourcePinForFutureBinding": "supplied at binding time as a full lowercase 40-character commit ID",
+    "wrapper": {
+      "inverseSubstitutionReproducesSealedR6Original": true,
+      "prefixReplacementCount": 1,
+      "otherByteChanges": false
+    },
+    "collector": {
+      "inverseSubstitutionReproducesSealedR6Original": true,
+      "prefixReplacementCount": 2,
+      "otherByteChanges": false
+    },
+    "producer": {
+      "inverseSubstitutionsReproduceSealedR6Original": true,
+      "r7PrefixReplacementCount": 1,
+      "owner2PredicateReplacementCount": 2,
+      "phaseAndStatusLabelReplacementCount": 5,
+      "otherByteChanges": false
+    },
+    "frozenAuditorMatchesR6ReviewedAuditor": true,
+    "frozenAuditorSha256": "4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb",
+    "wrapperHeldPidfdLogicByteUnchangedApartFromPrefix": true,
+    "wrapperLiteralPublicInputBudgetBytes": 67108864,
+    "wrapperExact64MiBFailureMessageUnchanged": "Auditor public-input 64 MiB budget exceeded; bytes preserved",
+    "producerAttackMoveHelperByteUnchanged": true,
+    "producerCoordinateAssertionByteUnchanged": true,
+    "producerIndexWindowBodyByteUnchanged": true,
+    "nativeAuditAndExtractionCriteriaUnchanged": true,
+    "productSourceChangedByPacket": false
+  },
+  "publicOwner2Approach": {
+    "status": "PASS_STATIC_ACQUISITION_ONLY",
+    "requiredInEachHumanPublicView": true,
+    "actorSide": 2,
+    "actorOwner": 2,
+    "actorKind": "unit",
+    "workerExcluded": true,
+    "actorMustBeLive": true,
+    "actorLevelMustEqualCommonHqLevel": true,
+    "maximumDistanceFromCommonHq": 12,
+    "minimumActorCountPerView": 1,
+    "commonHqMustBeLive": true,
+    "targetSelection": "The first human view selects the nearest qualifying owner-2 actor and passes it through the unchanged groundTarget projection.",
+    "renewalPath": "Both human profiles use the unchanged genuine UI attackMove helper, with command type, selected IDs, coordinate, accepted acknowledgement, and applied tick checks.",
+    "acquisitionStart": "The next four-tick boundary at or after the later renewed attackMove acknowledgement.",
+    "nativeWaveMembershipClaimed": false,
+    "nativeWaveMembershipUnverifiedLabelsRetained": true
+  },
+  "publicPredicate": {
+    "status": "UNCHANGED",
+    "candidateMustStartAtOrAfterAcquisitionLatch": true,
+    "windowDurationPositive": true,
+    "maximumWindowTicks": 400,
+    "frameStepTicks": 4,
+    "bothHumanStreamsRequiredContiguous": true,
+    "bothHumanHqsRequiredAliveThroughout": true,
+    "acceptedCommandOwnersRequired": [0, 1],
+    "positiveHumanCombatOwnersRequired": [0, 1],
+    "collectiveHumanTargetOwnersRequired": [2, 3],
+    "nativeParticipantOverlapStillUnverified": true,
+    "nativeAuditStillRequiredForSameWaveMembership": true
+  },
+  "bindingUtilityAssessment": {
+    "status": "STATIC_ELIGIBLE_UNEXECUTED",
+    "candidateSha256": "bbeb0bc68b2dd5cd24679f8ade43baa2403d748e9877a7e24bcf2c7fe1c1dc02",
+    "requiredReviewSchema": "feature63-r7-final-static-independent-review-v1",
+    "requiredReviewStatus": "PASS_STATIC_R7_PUBLIC_OWNER2_APPROACH_RUNTIME_HELD",
+    "requiredReviewRuntimeExecuted": false,
+    "exactFiveRoleSetRequired": true,
+    "utilitySelfDigestCheckedBeforeFirstWrite": true,
+    "fourScriptDigestsCheckedInRootAndOwnedCheckoutsBeforeFirstWrite": true,
+    "reviewAndScriptGatesEndBeforeFirstWrite": true,
+    "firstFilesystemWriter": {
+      "call": "tempfile.mkdtemp",
+      "line": 298
+    },
+    "stableReadUsesSingleFdWithBeforeAfterAndNamedIdentity": true,
+    "definitionsParsedFromVerifiedSameBytesAndLoadedOnce": true,
+    "inventoryMembersReadFresh": true,
+    "historicalR3ReadbackAndSixDefinitionsPinned": true,
+    "immediatePriorR6ReadbackPinned": {
+      "bytes": 3541,
+      "sha256": "6697c4abdbbaf43fbc0e6dffddccca604ac88e336af8185322995072a544229c"
+    },
+    "immediatePriorR6PackagePinned": {
+      "bytes": 87565,
+      "sha256": "c052f6e73d8f831f10ca66594fddcfdcc5cfaf1b00340565cea8f0698d2e17e3"
+    },
+    "productInventoryPinnedCount": 570,
+    "protectedDistPinnedCount": 397,
+    "sourceInventoryCount": 966,
+    "playwrightDependencyCount": 114,
+    "chromiumDependencyCount": 303,
+    "webBuildCount": 398,
+    "serverBuildCount": 22,
+    "productAndProtectedDefinitionsComparedByteForByteWithFuturePinInBothRoots": true,
+    "bothCheckoutHeadsRequiredEqualFuturePin": true,
+    "bothCheckoutTrackedStatusRequiredClean": true,
+    "r7PrefixRequiredAbsent": true,
+    "freshPrefixCopiesOnlyAuthenticatedR6DistAndServer": true,
+    "freshPrefixAllowedTopLevelEntries": ["dist", "server"],
+    "priorFailedDatabaseProfileOrRuntimeDataCopied": false,
+    "futurePinCliRequired": true,
+    "launcherUsesPinnedR3Template": true,
+    "launcherEditsLimitedToR7LiteralAndFilledRootAnchors": true,
+    "launcherFileWriterClosesDescriptorOnce": true,
+    "captureInvocationsAuthorizedAfterSuccessfulBinding": 1,
+    "automaticRetryAuthorized": false,
+    "utilityExecuted": false,
+    "bindingsGenerated": false,
+    "slotReserved": false,
+    "r7PrefixCreated": false,
+    "controlDirectoryCreated": false
+  },
+  "r6FailureBasis": {
+    "suppliedRetainedPath": "docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/public-diagnosis/diagnosis.json",
+    "includedInSealedPacket": false,
+    "independentlyReadByThisReview": false,
+    "role": "Context for the owner-2 acquisition change only; it is not proof of R7 runtime behavior.",
+    "r6FailedRuntimePreserved": true,
+    "sqlUsedByThisReview": false
+  },
+  "risks": [
+    "The producer still retains full public wire streams and the wrapper still enforces the same 64 MiB public audit-input limit. R7 can fail on the same budget before producing a usable public result.",
+    "The owner-2 arrival trigger is easier to satisfy than R6's two-owner, two-actor trigger, but it does not guarantee a qualifying 400-tick public window or native capture.",
+    "The two public profiles need not observe the same owner-2 actor. The target is selected from the first profile's view, then both profiles must produce accepted UI attackMove commands and later satisfy the unchanged combat predicate.",
+    "The binding utility authenticates files one at a time rather than from an atomic filesystem snapshot. Concurrent checkout changes can make it fail or can race after an earlier gate.",
+    "The sealed manifest reports tracked and untracked changes in the shared root during preparation. A future binding invocation fails closed unless both checkouts have clean tracked state at the supplied pin."
+  ],
+  "finiteQualifications": [
+    "Public observation of a live owner-2 actor near the HQ is an acquisition opportunity only. It does not establish native source, checkpoint, participant, or same-wave membership.",
+    "The unchanged lifetime proof covers direct unreaped roots and bound observed original-session descendants. It does not exclude missed forks or reparenting, and unobservedDescendantsExcluded remains false.",
+    "The 500 millisecond held-PIDFD wait applies to each missing managed observation. Repeated waits can accumulate, so the nominal cleanup duration is not a strict aggregate deadline.",
+    "The frozen auditor and extraction criteria are unchanged, but no native audit or extraction was prepared or run in this review.",
+    "The retained R6 diagnosis is outside the sealed packet and was not reauthenticated here."
+  ],
+  "captureAuthorization": {
+    "authorizedByThisReview": false,
+    "requiredNextSteps": [
+      "Root imports and commits the exact reviewed script bytes at a chosen future pin.",
+      "Root runs the reviewed binding utility with that future pin, this review path, and this review's SHA-256.",
+      "The utility authenticates both checkouts, creates fresh R7 bindings and a fresh control directory, and returns a one-invocation launcher.",
+      "Root performs a separate one-invocation dispatch with no automatic retry."
+    ]
+  }
+}

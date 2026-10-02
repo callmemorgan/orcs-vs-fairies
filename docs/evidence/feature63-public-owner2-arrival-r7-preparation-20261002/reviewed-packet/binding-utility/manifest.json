@@ -1,0 +1,148 @@
+{
+  "schema": "feature63-r7-fresh-binding-utility-manifest-v1",
+  "status": "PASS_AST_ONLY_UTILITY_UNEXECUTED",
+  "utilityExecuted": false,
+  "bindingsGenerated": false,
+  "slotReserved": false,
+  "candidate": {
+    "path": "/tmp/feature63-r7-fresh-binding-utility.YGzBAZZK/fresh-r7-bindings.py",
+    "bytes": 23873,
+    "sha256": "bbeb0bc68b2dd5cd24679f8ade43baa2403d748e9877a7e24bcf2c7fe1c1dc02",
+    "mode": "0644"
+  },
+  "authenticatedBase": {
+    "path": "/tmp/ovf-root-feature63-r6-enforced-static-packet-4b2sdmb8/r6-binding-utility/fresh-r6-bindings.py",
+    "bytes": 11797,
+    "sha256": "380ead609814e326f40b2d2f85e9f6bf176855999d47fb7813ae0aae3ee429d6",
+    "mode": "0644"
+  },
+  "exactUnifiedDiff": {
+    "path": "/tmp/feature63-r7-fresh-binding-utility.YGzBAZZK/fresh-r7-bindings.diff",
+    "bytes": 36420,
+    "sha256": "8f14f084541385ee919225d56e5b19e324fa5e133284091d2da6ddc586e483be",
+    "mode": "0644",
+    "verifiedByRegeneration": true
+  },
+  "pinnedDefinitions": {
+    "r3BindingReadback": {
+      "path": "/tmp/ovf-root-feature63-r3-package-bind-aa0pwqy6/bindings/binding-readback.json",
+      "bytes": 5665,
+      "sha256": "510f81922a5987163247eb9623b138068cdcb1d727d5389582607cfc8195cb7f",
+      "mode": "0644"
+    },
+    "r6BindingReadback": {
+      "path": "/tmp/ovf-root-feature63-r6-bindings-xyvt_n02/root-binding-readback.json",
+      "bytes": 3541,
+      "sha256": "6697c4abdbbaf43fbc0e6dffddccca604ac88e336af8185322995072a544229c",
+      "mode": "0644"
+    },
+    "r6FreshPackage": {
+      "path": "/tmp/ovf-root-feature63-r6-bindings-xyvt_n02/root-fresh-package-result.json",
+      "bytes": 87565,
+      "sha256": "c052f6e73d8f831f10ca66594fddcfdcc5cfaf1b00340565cea8f0698d2e17e3",
+      "mode": "0644"
+    },
+    "productInventoryOriginal": {
+      "path": "/tmp/ovf-main402-remaining-2e5-r1/tested-product-before.json",
+      "bytes": 101264,
+      "sha256": "582f809d9a4e0180dd3d59147b7edfd881b091334f715d86bd56ea93c9db4a06",
+      "mode": "0644",
+      "gitPath": "docs/evidence/main402-remaining-witness-2e5-20261001/raw/tested-product-before.json"
+    },
+    "protectedInventoryOriginal": {
+      "path": "/tmp/ovf-main402-remaining-2e5-r1/protected-before.json",
+      "bytes": 74175,
+      "sha256": "ed80088ef418debe90883929c364a588521815d14dbdd9703d8c6927c5855a5b",
+      "mode": "0644",
+      "gitPath": "docs/evidence/main402-remaining-witness-2e5-20261001/raw/protected-before.json"
+    },
+    "r3LauncherTemplate": {
+      "path": "/tmp/ovf-feature63-static-prep-r3-zsttudqb/independent-launcher/launch-capture.r3.template.py",
+      "bytes": 19356,
+      "sha256": "1b99137e822c004361ee4ff1906f10f4284453312914092441666dd721f0feb3",
+      "mode": "0600"
+    }
+  },
+  "requiredIndependentReview": {
+    "schema": "feature63-r7-final-static-independent-review-v1",
+    "status": "PASS_STATIC_R7_PUBLIC_OWNER2_APPROACH_RUNTIME_HELD",
+    "reviewedRoles": [
+      "wrapper",
+      "producer",
+      "collector",
+      "frozenAuditor",
+      "bindingUtility"
+    ],
+    "runtimeExecuted": false
+  },
+  "r7Names": {
+    "freshPrefix": "work/feature63-human-wave-composition-r7",
+    "immediatePriorPrefix": "work/feature63-human-wave-composition-r6",
+    "outputDirectoryPrefix": "ovf-root-feature63-r7-bindings-",
+    "controlDirectoryPrefix": "ovf-feature63-r7-capture-control-",
+    "slotTokenPrefix": "heavy-runtime-1-feature63-r7-"
+  },
+  "staticValidation": {
+    "astParsed": true,
+    "utilityImported": false,
+    "utilityExecuted": false,
+    "firstFilesystemWritingCallInMain": {
+      "call": "tempfile.mkdtemp",
+      "line": 298
+    },
+    "reviewAndBothRootScriptGatesEndBeforeFirstWrite": true,
+    "exactReviewRoleSchemaAndStatusGates": true,
+    "candidateSelfDigestGateBeforeFirstWrite": true,
+    "stableReadUsesOneDescriptorWithBeforeAfterAndNamedIdentityChecks": true,
+    "definitionsReadOnceFromHashedBytesAndCached": true,
+    "stableCachedDefinitionGroups": [
+      "independent R7 review",
+      "R3 binding readback and six R3 binding definitions",
+      "R6 binding readback and package",
+      "product and protected inventory originals",
+      "R3 launcher template"
+    ],
+    "inventoryMembersFreshlyReadWithoutDefinitionCache": true,
+    "productAndProtectedOriginalsComparedByteForByteWithGitInBothRoots": true,
+    "gitSubprocessOperations": [
+      "cat-file blob",
+      "rev-parse HEAD",
+      "status --porcelain --untracked-files=no"
+    ],
+    "gitOptionalLocksDisabled": true,
+    "runtimeDatabaseProfileBrowserOrNetworkAPIsFound": false,
+    "selectionPredicateSchemaChanged": false,
+    "nativePredicateSchemaChanged": false,
+    "launcherDescriptorCloseBugFixed": true
+  },
+  "heldActions": {
+    "bindingsGenerated": false,
+    "slotReserved": false,
+    "r7PrefixCreated": false,
+    "controlDirectoryCreated": false,
+    "captureAuthorized": false,
+    "launcherExecuted": false,
+    "runtimeExecuted": false,
+    "databaseAccessed": false,
+    "profileAccessed": false,
+    "repositoryWrittenByThisPreparation": false
+  },
+  "intendedInvocation": [
+    "python",
+    "/tmp/feature63-r7-fresh-binding-utility.YGzBAZZK/fresh-r7-bindings.py",
+    "FUTURE_PIN",
+    "ABSOLUTE_R7_REVIEW_PATH",
+    "R7_REVIEW_SHA256"
+  ],
+  "executionPrerequisites": [
+    "The independent review must bind this candidate SHA-256 and the four exact script SHA-256 values under the required five roles.",
+    "Both checkouts must be at FUTURE_PIN with no tracked changes.",
+    "The R7 prefix must not exist.",
+    "All pinned external definitions and immediate-prior R6 artifacts must retain their recorded bytes, modes, and SHA-256 values."
+  ],
+  "boundedRisks": [
+    "Validation is static only; the candidate has not been imported or executed.",
+    "The future run authenticates files one at a time rather than from an atomic filesystem snapshot, so a concurrent checkout change can make the run fail or can race after an earlier gate.",
+    "Tracked and untracked changes appeared in the shared root checkout during this external preparation; a future invocation will fail closed until its tracked state is clean."
+  ]
+}

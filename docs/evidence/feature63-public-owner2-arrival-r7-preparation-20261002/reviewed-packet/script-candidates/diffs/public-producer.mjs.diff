@@ -1,0 +1,52 @@
+--- a/scripts/feature63/public-producer.mjs
++++ b/scripts/feature63/public-producer.mjs
+@@ -7,7 +7,7 @@
+ 
+ // Static candidate. No browser/module import occurs before every launch guard passes.
+ const SOURCE_ROOT = '/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies';
+-const PREFIX = 'work/feature63-human-wave-composition-r6';
++const PREFIX = 'work/feature63-human-wave-composition-r7';
+ const BASE_URL = 'http://127.0.0.1:5373';
+ const ATTEMPT_MS = 300_000;
+ const CLEANUP_MS = 120_000;
+@@ -433,8 +433,8 @@
+   const frame = profile.latest;
+   const hq = frame?.message.view.entities.find(entity => entity.id === commonHqId && entity.hp > 0);
+   if (!hq) return null;
+-  const groups = [2, 3].map(side => frame.message.view.entities.filter(entity => entity.side === side && entity.owner === side && entity.kind === 'unit' && entity.role !== 'worker' && entity.hp > 0 && (entity.level ?? 0) === (hq.level ?? 0) && Math.hypot(entity.x - hq.x, entity.y - hq.y) <= 12));
+-  return groups.every(group => group.length >= 2) ? {frame, hq, groups} : null;
++  const groups = [2].map(side => frame.message.view.entities.filter(entity => entity.side === side && entity.owner === side && entity.kind === 'unit' && entity.role !== 'worker' && entity.hp > 0 && (entity.level ?? 0) === (hq.level ?? 0) && Math.hypot(entity.x - hq.x, entity.y - hq.y) <= 12));
++  return groups.every(group => group.length >= 1) ? {frame, hq, groups} : null;
+ }
+ 
+ function indexWindow() {
+@@ -564,7 +564,7 @@
+     indexWindow(); // Retain early candidates; the operational acquisition latch is still closed.
+     if (stagedOwners.size < profiles.length) await pause(250);
+   }
+-  phase = 'waiting for public combat groups from both AI owners near the common HQ';
++  phase = 'waiting for a public AI owner 2 combat actor near the common HQ';
+   let approaches;
+   while (true) {
+     checkpoint();
+@@ -575,16 +575,16 @@
+     await pause(250);
+   }
+   const approach = approaches[0];
+-  status('public-combat-groups-observed', {observedTicks: approaches.map(value => value.frame.message.tick), commonHqId: commonHq.id, groups: approach.groups.map(group => ({side: group[0].side, ids: group.map(entity => entity.id)})), nativeWaveMembershipUnverified: true});
++  status('public-ai-owner-2-combat-observed', {observedTicks: approaches.map(value => value.frame.message.tick), commonHqId: commonHq.id, groups: approach.groups.map(group => ({side: group[0].side, ids: group.map(entity => entity.id)})), nativeWaveMembershipUnverified: true});
+   const hostile = approach.groups.flat().sort((a, b) => Math.hypot(a.x - approach.hq.x, a.y - approach.hq.y) - Math.hypot(b.x - approach.hq.x, b.y - approach.hq.y))[0];
+   target = groundTarget(approach.hq, hostile, approach.frame.message.view.entities, approach.frame.message.view.map.width, approach.frame.message.view.map.height);
+   const renewedAttackMoves = [];
+   for (const profile of profiles) {
+-    renewedAttackMoves.push(await attackMove(profile, target, commonHq.id, 'public combat groups from both AI owners approach the common HQ'));
++    renewedAttackMoves.push(await attackMove(profile, target, commonHq.id, 'public combat from AI owner 2 approaches the common HQ'));
+   }
+   acquisitionStartTick = Math.ceil(Math.max(...renewedAttackMoves.map(command => command.appliedTick)) / FRAME_STEP) * FRAME_STEP;
+-  status('public-approach-acquisition-latched', {startTick: acquisitionStartTick, renewedAttackAppliedTicks: renewedAttackMoves.map(command => command.appliedTick), nativeWaveMembershipUnverified: true});
+-  phase = 'retaining a natural shared AI fight candidate after the public approach';
++  status('public-ai-owner-2-approach-acquisition-latched', {startTick: acquisitionStartTick, renewedAttackAppliedTicks: renewedAttackMoves.map(command => command.appliedTick), nativeWaveMembershipUnverified: true});
++  phase = 'retaining a natural shared AI fight candidate after the public AI owner 2 arrival';
+   while (true) {
+     checkpoint();
+     for (const profile of profiles) { assert.ok(topologyPass(profile.latest.message, profile.side)); assert.ok(alivePass(profile.latest.alive), 'A human HQ was lost.'); }

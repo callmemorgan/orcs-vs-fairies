@@ -1,0 +1,141 @@
+{
+  "schema": "feature63-r7-owner2-arrival-candidate-manifest-v1",
+  "preparedBy": "/root/architecture",
+  "sourcePin": "f2e0025937b8caf5dc8f6f9f3de134d92a2d547a",
+  "sourceRepository": "/home/morgana/Projects/orcs-vs-Fairies",
+  "files": [
+    {
+      "sourcePath": "scripts/feature63/run-minimal63.py",
+      "original": {
+        "path": "/tmp/ovf-feature63-r7-owner2-arrival-candidates-architecture-poovs9q_/originals/run-minimal63.py",
+        "bytes": 54514,
+        "sha256": "04bd5e0f8ddeb9633324d72be1eeb7c266a73ec074cb287e1bd641f4cdf579db"
+      },
+      "candidate": {
+        "path": "/tmp/ovf-feature63-r7-owner2-arrival-candidates-architecture-poovs9q_/candidates/run-minimal63.py",
+        "bytes": 54514,
+        "sha256": "054a652dff3c718fbc0d8b1093578a1e7b9c37badd9cde60c1e4f0f3572713f0"
+      },
+      "diff": {
+        "path": "/tmp/ovf-feature63-r7-owner2-arrival-candidates-architecture-poovs9q_/diffs/run-minimal63.py.diff",
+        "bytes": 491,
+        "sha256": "f3fc5f2ee2768630db8ee7edf423e8133bb2474466ca9297013a1b05eb990011"
+      },
+      "prefixReplacementCount": 1,
+      "additionalLiteralReplacements": [],
+      "inverseSubstitutionsReproduceOriginal": true
+    },
+    {
+      "sourcePath": "scripts/feature63/public-producer.mjs",
+      "original": {
+        "path": "/tmp/ovf-feature63-r7-owner2-arrival-candidates-architecture-poovs9q_/originals/public-producer.mjs",
+        "bytes": 54684,
+        "sha256": "0161a7e480e931d95a13f6c36c5ead7b12c88b1884a2f60b4f68ad5de5edc13b"
+      },
+      "candidate": {
+        "path": "/tmp/ovf-feature63-r7-owner2-arrival-candidates-architecture-poovs9q_/candidates/public-producer.mjs",
+        "bytes": 54689,
+        "sha256": "6c8e203732d9e33a72645fa55c9bee4b1e6148725c4b88c9db2d3ea3c9c1c8eb"
+      },
+      "diff": {
+        "path": "/tmp/ovf-feature63-r7-owner2-arrival-candidates-architecture-poovs9q_/diffs/public-producer.mjs.diff",
+        "bytes": 4159,
+        "sha256": "f78300fd4e2c46f142edbe0a3705f348e63d3721d18390ead79536b7dea2cbc0"
+      },
+      "prefixReplacementCount": 1,
+      "additionalLiteralReplacements": [
+        {
+          "before": "  const groups = [2, 3].map(side => frame.message.view.entities.filter(",
+          "after": "  const groups = [2].map(side => frame.message.view.entities.filter(",
+          "count": 1
+        },
+        {
+          "before": "  return groups.every(group => group.length >= 2) ? {frame, hq, groups} : null;",
+          "after": "  return groups.every(group => group.length >= 1) ? {frame, hq, groups} : null;",
+          "count": 1
+        },
+        {
+          "before": "  phase = 'waiting for public combat groups from both AI owners near the common HQ';",
+          "after": "  phase = 'waiting for a public AI owner 2 combat actor near the common HQ';",
+          "count": 1
+        },
+        {
+          "before": "  status('public-combat-groups-observed',",
+          "after": "  status('public-ai-owner-2-combat-observed',",
+          "count": 1
+        },
+        {
+          "before": "'public combat groups from both AI owners approach the common HQ'",
+          "after": "'public combat from AI owner 2 approaches the common HQ'",
+          "count": 1
+        },
+        {
+          "before": "  status('public-approach-acquisition-latched',",
+          "after": "  status('public-ai-owner-2-approach-acquisition-latched',",
+          "count": 1
+        },
+        {
+          "before": "  phase = 'retaining a natural shared AI fight candidate after the public approach';",
+          "after": "  phase = 'retaining a natural shared AI fight candidate after the public AI owner 2 arrival';",
+          "count": 1
+        }
+      ],
+      "inverseSubstitutionsReproduceOriginal": true
+    },
+    {
+      "sourcePath": "scripts/feature63/collect-launched-waves.py",
+      "original": {
+        "path": "/tmp/ovf-feature63-r7-owner2-arrival-candidates-architecture-poovs9q_/originals/collect-launched-waves.py",
+        "bytes": 18600,
+        "sha256": "c142cb705f7a781ec1dd7e949de8ea17d05134c8e7213627224936d634873824"
+      },
+      "candidate": {
+        "path": "/tmp/ovf-feature63-r7-owner2-arrival-candidates-architecture-poovs9q_/candidates/collect-launched-waves.py",
+        "bytes": 18600,
+        "sha256": "d6b1eee12bca979a0ff77a7fde7e7d9dbea22bb569ef2055cbdf7da871ec20ec"
+      },
+      "diff": {
+        "path": "/tmp/ovf-feature63-r7-owner2-arrival-candidates-architecture-poovs9q_/diffs/collect-launched-waves.py.diff",
+        "bytes": 1276,
+        "sha256": "b39ec31954dcca7b4bd0bbdf880def8952391515307b803f106d1bf636d7d458"
+      },
+      "prefixReplacementCount": 2,
+      "additionalLiteralReplacements": [],
+      "inverseSubstitutionsReproduceOriginal": true
+    }
+  ],
+  "combinedDiff": {
+    "path": "/tmp/ovf-feature63-r7-owner2-arrival-candidates-architecture-poovs9q_/candidate.diff",
+    "bytes": 5926,
+    "sha256": "73583e769035773ec4a6cef1a2733ed905240a7f33c12308cbac0b506b5d6633"
+  },
+  "frozenAuditorReference": {
+    "path": "/tmp/ovf-feature63-r7-owner2-arrival-candidates-architecture-poovs9q_/originals/native-audit.py",
+    "bytes": 64185,
+    "sha256": "4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb"
+  },
+  "nativeExtractionHelper": "No extraction-helper candidate, edit, import or execution; frozen helper is outside this three-script patch.",
+  "syntaxChecks": {
+    "path": "/tmp/ovf-feature63-r7-owner2-arrival-candidates-architecture-poovs9q_/syntax/checks.json",
+    "bytes": 486,
+    "sha256": "a194b93faf17df5103460022239475b94c08d9a3e5b574d97b1a176378e36695"
+  },
+  "acquisitionChange": "The public approach contains only live nonworker unit actors whose side and owner are 2, same level as the common living HQ and within 12 tiles. Each human public view must show at least one such actor. Both existing ordinary UI attackMove calls renew toward the nearest actor from the first view's owner-2-only group.",
+  "proofQualification": "This acquisition trigger claims public observation only. It grants no native wave membership. The unchanged public predicate still requires positive commanded human 0/1 attacks collectively targeting AI owners 2/3 in a contiguous <=400-tick window, with both human HQs alive, followed by unchanged frozen native qualification.",
+  "unchangedChecks": {
+    "attackMoveHelperByteIdentical": true,
+    "coordinateAssertionByteIdentical": true,
+    "indexWindowBodyByteIdentical": true,
+    "heldPidfdExitWaitAndGuards": "Wrapper changes are prefix-only; all held PIDFD and guard code is unchanged.",
+    "literalFullWireStreamsAnd64MiB": "Producer inverse substitutions reproduce all other original bytes; wire retention and resource-limit logic unchanged.",
+    "frozenAuditor": "SHA256 4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb",
+    "productSourceChanged": false
+  },
+  "otherProofScriptEditNecessary": false,
+  "runtimeAuthorized": false,
+  "bindingGenerationPerformed": false,
+  "candidateImported": false,
+  "repositoryEdits": false,
+  "databaseAccess": false,
+  "status": "EXTERNAL_STATIC_CANDIDATE_ONLY_R7_LAUNCH_NOT_AUTHORIZED"
+}
