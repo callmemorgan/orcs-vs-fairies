@@ -1,0 +1,141 @@
+{
+  "schema": 1,
+  "reviewKind": "original-feature-admission",
+  "reviewer": {
+    "harness": "Codex",
+    "requestedModel": "gpt-5.6-sol",
+    "actualModel": "OpenAI GPT-6.1 Sol",
+    "attributionUsesActualModel": true,
+    "modelIdentitySource": "Trusted active orchestration message from the parent/root host explicitly reported that the spawn requested gpt-5.6-sol while the active model was GPT-6.1 Sol.",
+    "subagentsUsed": false
+  },
+  "scope": {
+    "mode": "static-only",
+    "featureIds": [1, 4, 9, 10],
+    "admit": [1, 4, 9, 10],
+    "hold": [],
+    "newProofGatesRequired": false
+  },
+  "originalSource": {
+    "path": "/home/morgana/.codex/attachments/917bc3a6-a1e9-4a3e-b2eb-8682eb3c4ec4/pasted-text-1.txt",
+    "bytes": 8555,
+    "sha256": "2cd629293a1b8e04c56ecb1909edd284409b4687895519bd67b28e192f6fd948",
+    "features": {
+      "1": "Army formations: arrange troops into lines, wedges, squares or loose skirmish groups.",
+      "4": "Morale: isolated or badly damaged squads can retreat or surrender.",
+      "9": "Capturable siege engines: defeat their crews and claim the equipment.",
+      "10": "Ambush orders: conceal troops and set conditions for revealing them."
+    }
+  },
+  "provenance": {
+    "commits": {
+      "tested": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+      "native": "f18a50d904c57ae1652f157b946ebd39d8d8923c",
+      "rootHead": "9024c59674c4bbe471b5d0dbb467ce69b20d1584"
+    },
+    "historicalSuite": {
+      "path": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0",
+      "reportSha256": "8711be82822ba830200c91af9936e476c3db3617a6ce6b33089cf329da0590e5",
+      "testsSha256": "ced75e92e6e198d8bad063fc0e4b276bfd7ee1936bf1849830cafcd21f7a11a9",
+      "commandExitCode": 0,
+      "inputIntegrityPassed": true,
+      "passed": true,
+      "testFiles": 157,
+      "testSuitesPassed": 377,
+      "testsPassed": 2920,
+      "testsFailed": 0
+    },
+    "unchangedCoreAndTests": {
+      "gitReplaceObjectsDisabled": true,
+      "pathLimitedDiffsEmpty": true,
+      "srcCoreTreeAtAllThreeCommits": "d73253481ba0cb85afdf71bc09948a710981902f",
+      "testsTreeAtAllThreeCommits": "dc095381fd75be2a6b54dc1d6d4bc9dfd733a488"
+    },
+    "currentUiLinkage": {
+      "tacticsToolsBlobAtAllThreeCommits": "300edac6a1d55c3f7f714e6729b91b5b7da3ab25",
+      "tacticsToolsTestBlobAtAllThreeCommits": "035ae73ce08dfb2e2d6a62f56fb7ad8b79985108",
+      "panelAssertionsPassed": 19,
+      "rootMainMount": "src/main.ts:378",
+      "rootAndNativeMainBlob": "2035c932e7c2b9fc1bfa00c5881050ac7f036986"
+    },
+    "mountedBrowserEvidence": {
+      "requestedPathPresent": false,
+      "actualPath": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/combat-tactics-20261001",
+      "resultsPath": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/combat-tactics-20261001/browser/results.json",
+      "resultsGitBlob": "4c999947625a331162e8092de639593a076f2b6b",
+      "lastModifyingCommit": "317e47ba0c9e41f1529bb36f90e7356dd88446ad",
+      "browserErrors": [],
+      "corroborationOnly": true,
+      "qualification": "The results blob is unchanged at root, but TacticsTools.ts, src/main.ts and tests/tactics-tools.test.ts changed after the capture commit. Current UI proof comes from the 2920-pass suite and exact UI/test blobs through root."
+    }
+  },
+  "features": [
+    {
+      "id": 1,
+      "decision": "admit",
+      "originalRequirementSatisfied": true,
+      "combatTestAssertions": [
+        {"index": 0, "fullName": "combat tactics encounters line preserves stable slots, routes around a building, and regroups after a casualty", "status": "passed"},
+        {"index": 1, "fullName": "combat tactics encounters wedge preserves stable slots, routes around a building, and regroups after a casualty", "status": "passed"},
+        {"index": 2, "fullName": "combat tactics encounters square preserves stable slots, routes around a building, and regroups after a casualty", "status": "passed"},
+        {"index": 3, "fullName": "combat tactics encounters loose preserves stable slots, routes around a building, and regroups after a casualty", "status": "passed"},
+        {"index": 4, "fullName": "combat tactics encounters assigns the same formation destinations for arbitrary entity-array and command-ID order", "status": "passed"}
+      ],
+      "uiTestAssertionIndices": [1, 2, 3, 4],
+      "executedBehavior": "Each named formation is issued through the command path, mixed troops move into it, and survivors regroup after a casualty.",
+      "source": ["src/core/tactics.ts:66-92", "src/core/simulation.ts:284-287", "src/core/simulation.ts:309-313", "src/core/simulation.ts:564", "src/core/simulation.ts:570"],
+      "extraExamplesNotRequired": ["routing around a depot", "casualty regrouping", "reversed command order", "custom spacing"]
+    },
+    {
+      "id": 4,
+      "decision": "admit",
+      "originalRequirementSatisfied": true,
+      "combatTestAssertions": [
+        {"index": 6, "fullName": "combat tactics encounters an isolated wounded fighter retreats while allied support recovers morale", "status": "passed"},
+        {"index": 7, "fullName": "combat tactics encounters surrounded broken troops surrender without healing or changing their original definition", "status": "passed"}
+      ],
+      "executedBehavior": "An isolated half-health fighter retreats, an allied-support control recovers morale, and a badly damaged low-morale fighter surrounded from three directions surrenders and changes command ownership.",
+      "source": ["src/core/tactics.ts:137-166", "src/core/simulation.ts:550-552"],
+      "interpretation": "The game's controllable combat unit is the morale-bearing actor; the wording does not require a separate multi-entity squad object."
+    },
+    {
+      "id": 9,
+      "decision": "admit",
+      "originalRequirementSatisfied": true,
+      "combatTestAssertions": [
+        {"index": 16, "fullName": "combat tactics encounters crew deaths leave neutral equipment which channels capture, retains stats and obeys its new owner", "status": "passed"},
+        {"index": 17, "fullName": "combat tactics encounters an enemy guard contests siege capture until it leaves the equipment", "status": "passed"}
+      ],
+      "uiTestAssertionIndices": [7, 8, 9],
+      "executedBehavior": "A normal attack defeats the crew without destroying the engine; the engine becomes neutral, completes a capture channel, restores its crew, preserves its definition and obeys its new owner.",
+      "source": ["src/core/tactics.ts:42-45", "src/core/tactics.ts:62-64", "src/core/tactics.ts:169-177", "src/core/simulation.ts:295-297", "src/core/simulation.ts:480-482", "src/core/simulation.ts:551-552"],
+      "mountedBrowserQualification": "The browser fixture starts with an authored uncrewed engine and proves capture UI only; crew defeat is established by the executed encounter test."
+    },
+    {
+      "id": 10,
+      "decision": "admit",
+      "originalRequirementSatisfied": true,
+      "combatTestAssertions": [
+        {"index": 18, "fullName": "combat tactics encounters ambush troops remain concealed, withhold fire, and reveal on the selected trigger", "status": "passed"},
+        {"index": 19, "fullName": "combat tactics encounters scout detection, manual release and destroyed concealment expose an ambush without leaking its trigger", "status": "passed"},
+        {"index": 20, "fullName": "combat tactics encounters formation, ambush and combat history replay to the same saved checksum", "status": "passed"}
+      ],
+      "uiTestAssertionIndices": [6],
+      "executedBehavior": "A normal ambush order stores a target class and radius, conceals the troop from enemy observation and targeting, withholds fire, then reveals and attacks when the chosen enemy enters the radius.",
+      "source": ["src/core/tactics.ts:49-60", "src/core/tactics.ts:166", "src/core/simulation.ts:290-294"],
+      "extraExamplesNotRequired": ["scout detection", "manual release", "loss of standing wood", "private-condition filtering", "replay checksum"]
+    }
+  ],
+  "constraintsObserved": {
+    "buildsRun": false,
+    "testsRun": false,
+    "runtimeRun": false,
+    "browserRun": false,
+    "databaseAccessed": false,
+    "largeArtifactsRehashed": false,
+    "sourceTreeRehashed": false,
+    "sourceOrRootWrites": false,
+    "ledgerChanged": false,
+    "failedBatchRelabeled": false
+  }
+}
