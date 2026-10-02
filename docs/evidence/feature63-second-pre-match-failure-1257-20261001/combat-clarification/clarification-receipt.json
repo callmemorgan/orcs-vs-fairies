@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-02T05:11:11Z",
+  "purpose": "Additive wording clarification for the accepted original-clause 4, 9, and 10 assessment. This receipt does not replace or modify the original assessment.",
+  "rootAcceptance": {
+    "abbreviatedCommitReportedByRoot": "9d3f172",
+    "currentHeadReadback": "1257b24db0121a72a12a6de10592397dc4996038",
+    "branch": "codex/100-features",
+    "porcelainStatus": ""
+  },
+  "originalAssessment": {
+    "directory": "/tmp/ovf-original4-9-10-2e5-clause-assessment-XvX2zhvC",
+    "filesPreserved": [
+      {
+        "path": "/tmp/ovf-original4-9-10-2e5-clause-assessment-XvX2zhvC/artifact-snapshot.json",
+        "bytes": 39095,
+        "sha256": "334786d5e51370e536b573c716231dcae60f31d5adb6819823ba728182056275"
+      },
+      {
+        "path": "/tmp/ovf-original4-9-10-2e5-clause-assessment-XvX2zhvC/clause-assessment.json",
+        "bytes": 3204,
+        "sha256": "8e90120cc80465499e7d47c73679d06a1242768437643792c21ff595a5581ca8"
+      },
+      {
+        "path": "/tmp/ovf-original4-9-10-2e5-clause-assessment-XvX2zhvC/clause-assessment.md",
+        "bytes": 5758,
+        "sha256": "9237a63b70a2972b4759698934b908aa052fc640fd0249776224345aba68471b"
+      },
+      {
+        "path": "/tmp/ovf-original4-9-10-2e5-clause-assessment-XvX2zhvC/source-readback.json",
+        "bytes": 29918,
+        "sha256": "387410d147f6ccf7621f5bebff4c9a8d75ca57a5e43cff23425a30d5f2b9fbad"
+      }
+    ]
+  },
+  "sourceArtifacts": [
+    {
+      "path": "/tmp/ovf-main402-remaining-2e5-r1/browser/browser-main-smoke402.json",
+      "bytes": 428039,
+      "sha256": "172e4b46ad9f6ad310c860852ba1f0366ee3dd5184746a90b30d9344784f5b2a"
+    },
+    {
+      "path": "/tmp/ovf-main402-remaining-2e5-r1/browser/morale-supported-full-fight-failure-observations.json",
+      "bytes": 5874,
+      "sha256": "f64a1a7c9796c3660f74dc91bcd408346fdc1d504c036fe1b581b40f34662614"
+    },
+    {
+      "path": "/tmp/ovf-main402-remaining-2e5-r1/browser/siege-full-crew-capture-observations.json",
+      "bytes": 314043,
+      "sha256": "856698122b9049cc37adb20f04ae5bc0fb097c312768f7e0c49910b6b6ff6681"
+    }
+  ],
+  "clarifications": [
+    {
+      "clause": 4,
+      "correction": "At lastState time 15.85000000000009, each retained retreat.until value is 12.699999999999992. The retreat deadline is expired. The evidence is a retained retreat marker, a move order toward the HQ, and observed movement toward that destination; it should not be described as an active retreat timer.",
+      "lastState": {
+        "tick": 317,
+        "time": 15.85000000000009,
+        "hqDestination": {
+          "x": 42.5,
+          "y": 42.5,
+          "level": 0
+        },
+        "actors": [
+          {
+            "id": 61,
+            "hp": 62.11600801979281,
+            "maxHp": 210,
+            "morale": 24.886383434697674,
+            "retreatUntil": 12.699999999999992,
+            "timerExpiredAtLastState": true,
+            "baseline": {
+              "x": 25.5,
+              "y": 24.5
+            },
+            "retainedPosition": {
+              "x": 40.936791068030026,
+              "y": 40.08373675586745
+            },
+            "retainedOrder": {
+              "type": "move",
+              "x": 42.5,
+              "y": 42.5,
+              "level": 0
+            },
+            "displacement": 21.935071683361002,
+            "initialDistanceToHq": 24.758836806279895,
+            "retainedDistanceToHq": 2.8778377699127984
+          },
+          {
+            "id": 62,
+            "hp": 48.77268441862971,
+            "maxHp": 210,
+            "morale": 20.75630708195672,
+            "retreatUntil": 12.699999999999992,
+            "timerExpiredAtLastState": true,
+            "baseline": {
+              "x": 25.5,
+              "y": 25.2
+            },
+            "retainedPosition": {
+              "x": 41.16671092401198,
+              "y": 40.616218548819305
+            },
+            "retainedOrder": {
+              "type": "move",
+              "x": 42.5,
+              "y": 42.5,
+              "level": 0
+            },
+            "displacement": 21.979663908292974,
+            "initialDistanceToHq": 24.2546902680698,
+            "retainedDistanceToHq": 2.307876148315034
+          }
+        ]
+      },
+      "assessmentEffect": "The qualification does not change the supported decision. The actors moved about 22 tiles from their baseline positions and ended within about 3 tiles of the HQ under matching move orders; unchanged passing tests separately establish the retreat and surrender branches."
+    },
+    {
+      "clause": 9,
+      "correction": "The attack event amounts 15 and 12 are positive event amounts. They must not be added and presented as the numeric explanation for the 42-point crew reduction.",
+      "independentStateProof": {
+        "initial": {
+          "tick": 1,
+          "crew": {
+            "hp": 42,
+            "maxHp": 42,
+            "uncrewed": false
+          },
+          "hullHp": 185
+        },
+        "defeated": {
+          "tick": 69,
+          "crew": {
+            "hp": 0,
+            "maxHp": 42,
+            "uncrewed": true
+          },
+          "hullHp": 185,
+          "message": "Siege crew defeated: engine uncrewed"
+        },
+        "captured": {
+          "eventTick": 174,
+          "crew": {
+            "hp": 42,
+            "maxHp": 42,
+            "uncrewed": false
+          },
+          "hullHp": 185,
+          "side": 0,
+          "message": "Siege crew replaced: engine captured"
+        },
+        "positiveAttackEvents": [
+          {
+            "tick": 49,
+            "eventAmount": 15,
+            "source": 54,
+            "target": 55
+          },
+          {
+            "tick": 69,
+            "eventAmount": 12,
+            "source": 54,
+            "target": 55
+          }
+        ]
+      },
+      "assessmentEffect": "The qualification does not change the supported decision. Full crew 42 to crew zero with uncrewed true and hull 185 is proved by the retained state samples; capture restores crew 42, keeps hull 185, and changes ownership."
+    }
+  ],
+  "limits": {
+    "additiveOnly": true,
+    "originalAssessmentEdited": false,
+    "rootEdited": false,
+    "runtimeActionRun": false
+  }
+}

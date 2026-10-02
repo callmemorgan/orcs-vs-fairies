@@ -1,0 +1,860 @@
+{
+  "contexts": [
+    {
+      "path": "/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/scripts/run-minimal63.py",
+      "sha256": "f1aeeca031e80029f49d3dd4327ccda6caf02848f427bc8a21df72b87ff9618d",
+      "ranges": [
+        {
+          "start": 211,
+          "end": 283,
+          "lines": [
+            {
+              "number": 211,
+              "text": "def inventory(records, root, complete=False):"
+            },
+            {
+              "number": 212,
+              "text": "    root = Path(root)"
+            },
+            {
+              "number": 213,
+              "text": "    require(root.is_absolute() and root.resolve() == root and not root.is_symlink(), 'Inventory root is noncanonical')"
+            },
+            {
+              "number": 214,
+              "text": "    seen = set()"
+            },
+            {
+              "number": 215,
+              "text": "    for row in records:"
+            },
+            {
+              "number": 216,
+              "text": "        relative = Path(row['path'])"
+            },
+            {
+              "number": 217,
+              "text": "        require(not relative.is_absolute() and '..' not in relative.parts and row['path'] not in seen, 'Inventory path is invalid or duplicate')"
+            },
+            {
+              "number": 218,
+              "text": "        path = root / relative"
+            },
+            {
+              "number": 219,
+              "text": "        bound({'path': str(path), 'bytes': row['bytes'], 'sha256': row['sha256']}, MAX_RAW_BYTES)"
+            },
+            {
+              "number": 220,
+              "text": "        require(stat.S_IMODE(path.stat().st_mode) == row['mode'], 'Inventory mode differs')"
+            },
+            {
+              "number": 221,
+              "text": "        seen.add(row['path'])"
+            },
+            {
+              "number": 222,
+              "text": "    if complete:"
+            },
+            {
+              "number": 223,
+              "text": "        actual = set()"
+            },
+            {
+              "number": 224,
+              "text": "        for path in root.rglob('*'):"
+            },
+            {
+              "number": 225,
+              "text": "            require(not path.is_symlink(), 'Symlink in complete inventory')"
+            },
+            {
+              "number": 226,
+              "text": "            if path.is_file():"
+            },
+            {
+              "number": 227,
+              "text": "                actual.add(path.relative_to(root).as_posix())"
+            },
+            {
+              "number": 228,
+              "text": "        require(actual == seen, 'Complete inventory filename set differs')"
+            },
+            {
+              "number": 229,
+              "text": "    return seen"
+            },
+            {
+              "number": 230,
+              "text": ""
+            },
+            {
+              "number": 231,
+              "text": ""
+            },
+            {
+              "number": 232,
+              "text": "def guard(path, phase):"
+            },
+            {
+              "number": 233,
+              "text": "    raw = raw_file(path, 128 * 1024)"
+            },
+            {
+              "number": 234,
+              "text": "    anchor = os.environ.get('OVF_FEATURE63_WRAPPER_ASSIGNMENT_SHA256', '')"
+            },
+            {
+              "number": 235,
+              "text": "    require(re.fullmatch('[0-9a-f]{64}', anchor) and sha(raw) == anchor, 'Root must supply the external assignment digest')"
+            },
+            {
+              "number": 236,
+              "text": "    a = json.loads(raw)"
+            },
+            {
+              "number": 237,
+              "text": "    require(a['schema'] == 'feature63-dedicated-wrapper-assignment-v1' and a['approved'] is True and a['assignedBy'] == '/root', 'Dedicated wrapper is held')"
+            },
+            {
+              "number": 238,
+              "text": "    require(a['phase'] == phase and a['sourceRoot'] == str(CHECKOUT) and a['freshPrefix'] == PREFIX_NAME, 'Phase/checkout/prefix differs')"
+            },
+            {
+              "number": 239,
+              "text": "    require(Path.cwd().resolve() == CHECKOUT and CHECKOUT.resolve() == CHECKOUT, 'Use the owned checkout cwd')"
+            },
+            {
+              "number": 240,
+              "text": "    pin = a['sourcePin']"
+            },
+            {
+              "number": 241,
+              "text": "    require(re.fullmatch('[0-9a-f]{40}', pin or '') and a['productVersion'] == '4.0.2', 'Root source pin/version missing')"
+            },
+            {
+              "number": 242,
+              "text": "    require(a['wrapperSha256'] == sha(Path(__file__).read_bytes()), 'Wrapper bytes differ')"
+            },
+            {
+              "number": 243,
+              "text": "    require(subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=CHECKOUT, text=True).strip() == pin, 'Source HEAD differs')"
+            },
+            {
+              "number": 244,
+              "text": "    require(subprocess.check_output(['git', 'status', '--porcelain', '--untracked-files=no'], cwd=CHECKOUT, text=True) == '', 'Tracked source is dirty')"
+            },
+            {
+              "number": 245,
+              "text": "    slot = a['exclusiveHeavyApproval']"
+            },
+            {
+              "number": 246,
+              "text": "    require(slot['approved'] is True and slot['holder'] == '/root/ai_modes' and len(slot['token']) >= 16, 'Exclusive slot absent')"
+            },
+            {
+              "number": 247,
+              "text": "    until = datetime.datetime.fromisoformat(slot['validUntil'].replace('Z', '+00:00')).timestamp()"
+            },
+            {
+              "number": 248,
+              "text": "    require(until > time.time() + MAX_ATTEMPT + MAX_CLEANUP + 90, 'Exclusive slot expires too soon')"
+            },
+            {
+              "number": 249,
+              "text": "    protected(a)"
+            },
+            {
+              "number": 250,
+              "text": "    source = receipt(a['sourceBinding'], 'feature63-new-source-binding-v1', pin)"
+            },
+            {
+              "number": 251,
+              "text": "    require(source['authenticatedInputs'] is True and source['includesSourceConfigPublicBuildAndProof'] is True, 'Source binding scope incomplete')"
+            },
+            {
+              "number": 252,
+              "text": "    paths = inventory(source['records'], CHECKOUT)"
+            },
+            {
+              "number": 253,
+              "text": "    require(set(REQUIRED_SOURCE) <= paths and source['inputCount'] == len(paths), 'Required source paths absent')"
+            },
+            {
+              "number": 254,
+              "text": "    require(source['requiredInputSetAuthenticatedByRoot'] is True, 'Root has not admitted the complete product/build/proof input set')"
+            },
+            {
+              "number": 255,
+              "text": "    build = receipt(a['buildBinding'], 'feature63-build-binding-v1', pin)"
+            },
+            {
+              "number": 256,
+              "text": "    require(build['productVersion'] == '4.0.2' and build['publicDriverSha256'] == a['wrapperSha256'], 'Build version/driver differs')"
+            },
+            {
+              "number": 257,
+              "text": "    require(build['webDistPath'] == str(PREFIX / 'dist') and build['serverBuildPath'] == str(PREFIX / 'server'), 'Build paths differ')"
+            },
+            {
+              "number": 258,
+              "text": "    inventory(build['webRecords'], PREFIX / 'dist', complete=True)"
+            },
+            {
+              "number": 259,
+              "text": "    inventory(build['serverRecords'], PREFIX / 'server', complete=True)"
+            },
+            {
+              "number": 260,
+              "text": "    require(build['testedBuildId'] == a['testedBuildId'] and bool(a['testedBuildId']), 'Tested build ID differs')"
+            },
+            {
+              "number": 261,
+              "text": "    tests = receipt(a['testedBuildReceipt'], 'feature63-tested-build-v1', pin)"
+            },
+            {
+              "number": 262,
+              "text": "    require(tests['testedBuildId'] == a['testedBuildId'] and tests['sourceAndBuiltBytesMatchTested402'] is True"
+            },
+            {
+              "number": 263,
+              "text": "            and tests['fullSuitePassed'] is True and tests['buildPassed'] is True, 'Tested 4.0.2 binding absent')"
+            },
+            {
+              "number": 264,
+              "text": "    review = receipt(a['reviewReceipt'], 'feature63-dedicated-wrapper-review-v1', pin)"
+            },
+            {
+              "number": 265,
+              "text": "    require(review['status'] == 'PASS' and review['wrapperSha256'] == a['wrapperSha256']"
+            },
+            {
+              "number": 266,
+              "text": "            and review['restoredBothOwnerHumanTargetUnion'] is True, 'Dedicated wrapper/scope review absent')"
+            },
+            {
+              "number": 267,
+              "text": "    for key in ('publicProducer', 'collector', 'auditor', 'nodeExecutable', 'pythonExecutable'):"
+            },
+            {
+              "number": 268,
+              "text": "        bound(a[key], MAX_RAW_BYTES)"
+            },
+            {
+              "number": 269,
+              "text": "        require(review[key + 'Sha256'] == a[key]['sha256'], 'Review candidate/dependency differs')"
+            },
+            {
+              "number": 270,
+              "text": "    require(build['producerSha256'] == a['publicProducer']['sha256'], 'Build producer binding differs')"
+            },
+            {
+              "number": 271,
+              "text": "    browser = receipt(a['browserBinding'], 'feature63-browser-binding-v1', pin)"
+            },
+            {
+              "number": 272,
+              "text": "    require(browser['producerSha256'] == a['publicProducer']['sha256'] and browser['buildBindingSha256'] == a['buildBinding']['sha256']"
+            },
+            {
+              "number": 273,
+              "text": "            and browser['exclusiveSlotToken'] == slot['token'], 'Browser dependency binding differs')"
+            },
+            {
+              "number": 274,
+              "text": "    require(browser['contextCount'] == 2 and browser['browserCount'] == 1 and browser['headless'] is True"
+            },
+            {
+              "number": 275,
+              "text": "            and browser['nativeLifecycleOwner'] == 'dedicated-wrapper' and browser['reviewedCdpDisconnectHasNoNativeSignals'] is True"
+            },
+            {
+              "number": 276,
+              "text": "            and browser['cdpBaseUrl'] == 'http://127.0.0.1:5374' and browser['allDependencyBytesAuthenticated'] is True"
+            },
+            {
+              "number": 277,
+              "text": "            and browser['nativeLifetimeReviewRequiredByRoot'] is True,"
+            },
+            {
+              "number": 278,
+              "text": "            'External browser lifecycle/dependency review absent')"
+            },
+            {
+              "number": 279,
+              "text": "    bound(browser['playwrightEntry'], MAX_RAW_BYTES)"
+            },
+            {
+              "number": 280,
+              "text": "    bound(browser['chromiumExecutable'], MAX_RAW_BYTES)"
+            },
+            {
+              "number": 281,
+              "text": "    inventory(browser['dependencyRecords'], Path(browser['dependencyRoot']), complete=True)"
+            },
+            {
+              "number": 282,
+              "text": "    require(browser['playwrightModulePath'] == browser['playwrightEntry']['path'], 'Playwright module differs')"
+            },
+            {
+              "number": 283,
+              "text": "    return a, build, browser"
+            }
+          ]
+        },
+        {
+          "start": 696,
+          "end": 719,
+          "lines": [
+            {
+              "number": 696,
+              "text": "def audit(assignment_path):"
+            },
+            {
+              "number": 697,
+              "text": "    a, _build, _browser = guard(assignment_path, 'audit')"
+            },
+            {
+              "number": 698,
+              "text": "    require(not listeners(5373) and not listeners(5374), 'Capture resources must close before audit')"
+            },
+            {
+              "number": 699,
+              "text": "    capture_result = json.loads(bound(a['captureResult']))"
+            },
+            {
+              "number": 700,
+              "text": "    require(capture_result['status'] == 'CAPTURE_PASS_ROOT_SEAL_AND_EXTRACTION_PENDING' and capture_result['sourcePin'] == a['sourcePin'], 'Root has not admitted a passing closed capture')"
+            },
+            {
+              "number": 701,
+              "text": "    # Root must seal/extract the fresh closed DB separately. This driver never reads SQLite."
+            },
+            {
+              "number": 702,
+              "text": "    ready = receipt(a['rootExtractionAdmission'], 'feature63-root-extraction-admission-v1', a['sourcePin'])"
+            },
+            {
+              "number": 703,
+              "text": "    require(ready['closedFreshRawAuthenticated'] is True and ready['completeSelectedTextAndQueryMetadataAuthenticated'] is True"
+            },
+            {
+              "number": 704,
+              "text": "            and ready['matchId'] == capture_result['matchId'] and ready['auditorSha256'] == a['auditor']['sha256']"
+            },
+            {
+              "number": 705,
+              "text": "            and ready['ownedNativeLifetimeIndependentlyAdmitted'] is True, 'Root native extraction/seal/lifetime admission absent')"
+            },
+            {
+              "number": 706,
+              "text": "    root_assignment = bound(a['nativeAuditAssignment'])"
+            },
+            {
+              "number": 707,
+              "text": "    require(a['nativeAuditAssignment']['sha256'] == ready['rootAssignmentSha256'], 'External native root assignment trust anchor differs')"
+            },
+            {
+              "number": 708,
+              "text": "    bundle = Path(a['nativeBundle'])"
+            },
+            {
+              "number": 709,
+              "text": "    require(bundle.is_absolute() and bundle.resolve() == bundle and bundle.is_dir() and PROTECTED_ROOT not in bundle.parents, 'Native bundle is outside the owned extracted location')"
+            },
+            {
+              "number": 710,
+              "text": "    require(str(bundle) == ready['bundlePath'], 'Root native bundle differs')"
+            },
+            {
+              "number": 711,
+              "text": "    inventory(ready['bundleRecords'], bundle, complete=True)"
+            },
+            {
+              "number": 712,
+              "text": "    output = PREFIX / 'native-audit'"
+            },
+            {
+              "number": 713,
+              "text": "    output.mkdir()  # Existing output prohibits a second invocation."
+            },
+            {
+              "number": 714,
+              "text": "    write_new(output / 'one-shot-admission.json', {'schema': 'feature63-audit-one-shot-v1', 'at': now(), 'sourcePin': a['sourcePin'],"
+            },
+            {
+              "number": 715,
+              "text": "        'rootAssignmentSha256': sha(root_assignment), 'auditorSha256': a['auditor']['sha256'], 'automaticRetries': 0})"
+            },
+            {
+              "number": 716,
+              "text": "    manager = Children(a, output)"
+            },
+            {
+              "number": 717,
+              "text": "    command = [a['pythonExecutable']['path'], a['auditor']['path'], '--bundle', str(bundle),"
+            },
+            {
+              "number": 718,
+              "text": "               '--assignment-sha256', sha(root_assignment)]"
+            },
+            {
+              "number": 719,
+              "text": "    env = {key: value for key, value in os.environ.items() if key not in ('PYTHONOPTIMIZE', 'PYTHONPATH')}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/scripts/native-audit.py",
+      "sha256": "4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb",
+      "ranges": [
+        {
+          "start": 348,
+          "end": 365,
+          "lines": [
+            {
+              "number": 348,
+              "text": "    assignment_raw = bundle.read(\"root-assignment.json\", \"receipt\")"
+            },
+            {
+              "number": 349,
+              "text": "    require(sha(assignment_raw) == digest(anchor, \"external root assignment digest\"),"
+            },
+            {
+              "number": 350,
+              "text": "            \"root assignment does not match separately supplied root digest\")"
+            },
+            {
+              "number": 351,
+              "text": "    assignment = exact(parse(assignment_raw, \"root-assignment.json\"),"
+            },
+            {
+              "number": 352,
+              "text": "                       [\"schema\", \"scope\", \"sourcePin\", \"productVersion\", \"auditAuthorized\","
+            },
+            {
+              "number": 353,
+              "text": "                        \"auditorSha256\", \"publicProducerSha256\", \"publicDriverSha256\","
+            },
+            {
+              "number": 354,
+              "text": "                        \"sourceBindingReceipt\", \"closedRawReceipt\", \"extractionReceipt\", \"collectorReceipt\"], \"assignment\")"
+            },
+            {
+              "number": 355,
+              "text": "    require(assignment[\"schema\"] == \"feature63-root-audit-assignment-v1\" and"
+            },
+            {
+              "number": 356,
+              "text": "            assignment[\"scope\"] == \"original-feature63-closed-native-composition\" and"
+            },
+            {
+              "number": 357,
+              "text": "            assignment[\"productVersion\"] == \"4.0.2\" and assignment[\"auditAuthorized\"] is True,"
+            },
+            {
+              "number": 358,
+              "text": "            \"root assignment is absent, held, or for another scope\")"
+            },
+            {
+              "number": 359,
+              "text": "    source_pin = pin(assignment[\"sourcePin\"], \"assignment.sourcePin\")"
+            },
+            {
+              "number": 360,
+              "text": "    require(assignment[\"auditorSha256\"] == sha(Path(__file__).read_bytes()),"
+            },
+            {
+              "number": 361,
+              "text": "            \"auditor bytes differ from root-frozen assignment\")"
+            },
+            {
+              "number": 362,
+              "text": "    digest(assignment[\"publicProducerSha256\"], \"public producer\")"
+            },
+            {
+              "number": 363,
+              "text": "    digest(assignment[\"publicDriverSha256\"], \"public driver\")"
+            },
+            {
+              "number": 364,
+              "text": "    report[\"sourcePin\"] = source_pin"
+            },
+            {
+              "number": 365,
+              "text": "    report[\"assignmentSha256\"] = anchor"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/tmp/feature63-root-extraction-candidate-r2-LSZWmJUg/extract-closed63.py",
+      "sha256": "fccd7ba02a92c2496b56699cb8fbb323f16cb2a817596093951b10a72446e7d8",
+      "ranges": [
+        {
+          "start": 565,
+          "end": 615,
+          "lines": [
+            {
+              "number": 565,
+              "text": ""
+            },
+            {
+              "number": 566,
+              "text": "def extract(a, assignment_raw, anchor):"
+            },
+            {
+              "number": 567,
+              "text": "    global SOURCE_ROOT, PREFIX, RAW_PATH"
+            },
+            {
+              "number": 568,
+              "text": "    require(a.get('schema')=='feature63-root-closed-extraction-assignment-v1' and a.get('approved') is True"
+            },
+            {
+              "number": 569,
+              "text": "            and a.get('assignedBy')=='/root' and a.get('extractAuthorized') is True, 'Root extraction is held')"
+            },
+            {
+              "number": 570,
+              "text": "    require(type(a.get('sourcePin')) is str and re.fullmatch('[0-9a-f]{40}',a['sourcePin']) and a.get('productVersion')=='4.0.2', 'Root full pin/version absent')"
+            },
+            {
+              "number": 571,
+              "text": "    require(a.get('helperSha256')==sha(Path(__file__).read_bytes()), 'Root helper digest differs')"
+            },
+            {
+              "number": 572,
+              "text": "    require(a.get('ownedNativeLifetimeIndependentlyAdmitted') is True, 'Root native lifetime disposition pending')"
+            },
+            {
+              "number": 573,
+              "text": "    for key in ('nativeAuditAuthorized','rootExtractionAdmissionApproved'):"
+            },
+            {
+              "number": 574,
+              "text": "        require(type(a.get(key)) is bool, 'Root disposition boolean must be supplied: '+key)"
+            },
+            {
+              "number": 575,
+              "text": "    SOURCE_ROOT = canonical(a['sourceRoot'])"
+            },
+            {
+              "number": 576,
+              "text": "    relative_prefix = Path(a['freshPrefix'])"
+            },
+            {
+              "number": 577,
+              "text": "    require(SOURCE_ROOT.is_dir() and SOURCE_ROOT!=PROTECTED and PROTECTED not in SOURCE_ROOT.parents"
+            },
+            {
+              "number": 578,
+              "text": "            and not relative_prefix.is_absolute() and '..' not in relative_prefix.parts and str(relative_prefix)==a['freshPrefix']"
+            },
+            {
+              "number": 579,
+              "text": "            and len(relative_prefix.parts)>=2 and relative_prefix.parts[0]=='work'"
+            },
+            {
+              "number": 580,
+              "text": "            and re.fullmatch('feature63-human-wave-composition-r[1-9][0-9]*',relative_prefix.parts[-1]), 'Future owned source/fresh prefix differs')"
+            },
+            {
+              "number": 581,
+              "text": "    PREFIX = canonical(str(SOURCE_ROOT/relative_prefix))"
+            },
+            {
+              "number": 582,
+              "text": "    RAW_PATH = PREFIX/'server-data/server.sqlite'"
+            },
+            {
+              "number": 583,
+              "text": "    require(PREFIX.is_dir() and '/ai-save401-final-83941bc-r1/' not in str(PREFIX), 'Old runtime prefix prohibited')"
+            },
+            {
+              "number": 584,
+              "text": "    output = canonical(a['outputRoot'])"
+            },
+            {
+              "number": 585,
+              "text": "    require(not output.exists() and output.parent.is_dir() and PROTECTED not in output.parents and SOURCE_ROOT not in output.parents"
+            },
+            {
+              "number": 586,
+              "text": "            and output!=PROTECTED and output!=SOURCE_ROOT and '/ai-save401-final-83941bc-r1/' not in str(output), 'Output must be fresh and external')"
+            },
+            {
+              "number": 587,
+              "text": "    capture, _ = bound_json(a['captureAssignment'])"
+            },
+            {
+              "number": 588,
+              "text": "    result, _ = bound_json(a['captureResult'],16*1024*1024,PREFIX/'lifecycle/driver-result.json')"
+            },
+            {
+              "number": 589,
+              "text": "    require(capture.get('schema')=='feature63-dedicated-wrapper-assignment-v1' and capture.get('phase')=='capture'"
+            },
+            {
+              "number": 590,
+              "text": "            and capture.get('approved') is True and capture.get('assignedBy')=='/root' and capture.get('sourcePin')==a['sourcePin']"
+            },
+            {
+              "number": 591,
+              "text": "            and capture.get('sourceRoot')==str(SOURCE_ROOT) and capture.get('freshPrefix')==a['freshPrefix']"
+            },
+            {
+              "number": 592,
+              "text": "            and capture.get('productVersion')=='4.0.2', 'Authenticated actual capture assignment differs')"
+            },
+            {
+              "number": 593,
+              "text": "    require(result.get('schema')=='feature63-dedicated-capture-result-v1' and result.get('sourcePin')==a['sourcePin']"
+            },
+            {
+              "number": 594,
+              "text": "            and result.get('status')=='CAPTURE_PASS_ROOT_SEAL_AND_EXTRACTION_PENDING' and result.get('firstFailure') is None"
+            },
+            {
+              "number": 595,
+              "text": "            and result.get('cleanupFailures')==[] and result.get('protectedFinalReadback',{}).get('status')=='PASS', 'Capture is not admitted closed')"
+            },
+            {
+              "number": 596,
+              "text": "    match = result['matchId']"
+            },
+            {
+              "number": 597,
+              "text": "    raw_identity = {'path':str(RAW_PATH),'device':a['rawDatabase']['device'],'inode':a['rawDatabase']['inode']}"
+            },
+            {
+              "number": 598,
+              "text": "    require(result.get('closedFreshDatabaseIdentity')==raw_identity, 'Capture fresh raw identity differs')"
+            },
+            {
+              "number": 599,
+              "text": "    closed, closed_raw = bound_json(a['closedRawReceipt'],MAX_RECEIPTS)"
+            },
+            {
+              "number": 600,
+              "text": "    require(closed.get('schema')=='feature63-closed-raw-v1' and closed.get('sourcePin')==a['sourcePin'] and closed.get('matchId')==match"
+            },
+            {
+              "number": 601,
+              "text": "            and all(closed.get(k) is True for k in ('producerClosed','ownedProcessesClosed','rootSealed','sidecarsAbsent')), 'Root closure/seal is held')"
+            },
+            {
+              "number": 602,
+              "text": "    custody, _ = bound_json(a['rootCustodyReceipt'])"
+            },
+            {
+              "number": 603,
+              "text": "    require(custody.get('schema')=='feature63-root-raw-custody-v1' and custody.get('approved') is True and custody.get('assignedBy')=='/root'"
+            },
+            {
+              "number": 604,
+              "text": "            and custody.get('sourcePin')==a['sourcePin'] and custody.get('matchId')==match and custody.get('rawDatabase')==a['rawDatabase']"
+            },
+            {
+              "number": 605,
+              "text": "            and custody.get('closedRawReceipt')==a['closedRawReceipt'] and custody.get('captureResult')==a['captureResult']"
+            },
+            {
+              "number": 606,
+              "text": "            and all(custody.get(k) is True for k in ('freshDatabaseAuthenticated','oldRawNeverReadOrReused','rootSealed','noLivePrivateReadback')),"
+            },
+            {
+              "number": 607,
+              "text": "            'Separate root fresh raw custody is held')"
+            },
+            {
+              "number": 608,
+              "text": "    lifetime, _ = bound_json(a['rootNativeLifetimeReceipt'])"
+            },
+            {
+              "number": 609,
+              "text": "    require(lifetime.get('schema')=='feature63-root-native-lifetime-disposition-v1' and lifetime.get('approved') is True"
+            },
+            {
+              "number": 610,
+              "text": "            and lifetime.get('assignedBy')=='/root' and lifetime.get('sourcePin')==a['sourcePin'] and lifetime.get('matchId')==match"
+            },
+            {
+              "number": 611,
+              "text": "            and lifetime.get('captureResult')==a['captureResult'] and lifetime.get('ownedNativeLifetimeIndependentlyAdmitted') is True,"
+            },
+            {
+              "number": 612,
+              "text": "            'Independent root lifetime disposition is held; capture reports cannot supply it')"
+            },
+            {
+              "number": 613,
+              "text": "    evidence = lifetime.get('closureEvidenceDescriptors')"
+            },
+            {
+              "number": 614,
+              "text": "    require(type(evidence) is list and evidence, 'Root lifetime must bind independent closure evidence')"
+            },
+            {
+              "number": 615,
+              "text": "    for record in evidence:"
+            }
+          ]
+        },
+        {
+          "start": 734,
+          "end": 769,
+          "lines": [
+            {
+              "number": 734,
+              "text": "    audit_assignment={'schema':'feature63-root-audit-assignment-v1','scope':'original-feature63-closed-native-composition',"
+            },
+            {
+              "number": 735,
+              "text": "                      'sourcePin':a['sourcePin'],'productVersion':'4.0.2','auditAuthorized':a['nativeAuditAuthorized'],"
+            },
+            {
+              "number": 736,
+              "text": "                      'auditorSha256':a['auditor']['sha256'],'publicProducerSha256':a['publicProducer']['sha256'],"
+            },
+            {
+              "number": 737,
+              "text": "                      'publicDriverSha256':a['publicDriver']['sha256'],"
+            },
+            {
+              "number": 738,
+              "text": "                      'sourceBindingReceipt':descriptor('source-binding-receipt.json',bundle_bytes['source-binding-receipt.json']),"
+            },
+            {
+              "number": 739,
+              "text": "                      'closedRawReceipt':descriptor('closed-raw-receipt.json',closed_raw),"
+            },
+            {
+              "number": 740,
+              "text": "                      'extractionReceipt':descriptor('extraction-receipt.json',bundle_bytes['extraction-receipt.json']),"
+            },
+            {
+              "number": 741,
+              "text": "                      'collectorReceipt':descriptor('collector-receipt.json',bundle_bytes['collector-receipt.json'])}"
+            },
+            {
+              "number": 742,
+              "text": "    bundle_bytes['root-assignment.json']=encoded(audit_assignment)"
+            },
+            {
+              "number": 743,
+              "text": "    require(sum(len(v) for n,v in bundle_bytes.items() if n in ('root-assignment.json','source-binding-receipt.json','closed-raw-receipt.json','collector-receipt.json','extraction-receipt.json'))<=MAX_RECEIPTS,"
+            },
+            {
+              "number": 744,
+              "text": "            'Aggregate native-auditor receipt bytes exceed1MiB')"
+            },
+            {
+              "number": 745,
+              "text": "    output.mkdir(mode=0o700)"
+            },
+            {
+              "number": 746,
+              "text": "    bundle=output/'bundle'"
+            },
+            {
+              "number": 747,
+              "text": "    bundle.mkdir(mode=0o700)"
+            },
+            {
+              "number": 748,
+              "text": "    for name,raw in bundle_bytes.items():"
+            },
+            {
+              "number": 749,
+              "text": "        write(bundle/name,raw)"
+            },
+            {
+              "number": 750,
+              "text": "    assignment_digest=sha(bundle_bytes['root-assignment.json'])"
+            },
+            {
+              "number": 751,
+              "text": "    write(output/'selection-receipt.json',selection_raw)"
+            },
+            {
+              "number": 752,
+              "text": "    write(output/'raw-verification-receipt.json',verification_raw)"
+            },
+            {
+              "number": 753,
+              "text": "    write(output/'root-extraction-input.json',assignment_raw)"
+            },
+            {
+              "number": 754,
+              "text": "    records=[{'path':n,'bytes':len(v),'sha256':sha(v),'mode':0o444} for n,v in sorted(bundle_bytes.items())]"
+            },
+            {
+              "number": 755,
+              "text": "    admission={'schema':'feature63-root-extraction-admission-v1','sourcePin':a['sourcePin'],"
+            },
+            {
+              "number": 756,
+              "text": "               'approved':a['rootExtractionAdmissionApproved'],'closedFreshRawAuthenticated':True,"
+            },
+            {
+              "number": 757,
+              "text": "               'completeSelectedTextAndQueryMetadataAuthenticated':True,'matchId':match,'auditorSha256':a['auditor']['sha256'],"
+            },
+            {
+              "number": 758,
+              "text": "               'rootAssignmentSha256':assignment_digest,'bundlePath':str(bundle),'bundleRecords':records,"
+            },
+            {
+              "number": 759,
+              "text": "               'ownedNativeLifetimeIndependentlyAdmitted':a['ownedNativeLifetimeIndependentlyAdmitted'],"
+            },
+            {
+              "number": 760,
+              "text": "               'rootNativeLifetimeReceipt':a['rootNativeLifetimeReceipt'],'rootCustodyReceipt':a['rootCustodyReceipt'],"
+            },
+            {
+              "number": 761,
+              "text": "               'captureResult':a['captureResult'],'inputAssignmentSha256':anchor}"
+            },
+            {
+              "number": 762,
+              "text": "    admission_raw=encoded(admission)"
+            },
+            {
+              "number": 763,
+              "text": "    write(output/'root-extraction-admission.json',admission_raw)"
+            },
+            {
+              "number": 764,
+              "text": "    report={'schema':'feature63-root-extraction-result-v1','status':'EXTRACTED_PENDING_ROOT_REVIEW',"
+            },
+            {
+              "number": 765,
+              "text": "            'sourcePin':a['sourcePin'],'matchId':match,'feature63Qualified':False,'auditorExecuted':False,"
+            },
+            {
+              "number": 766,
+              "text": "            'nativeBundle':str(bundle),'nativeAuditAssignment':file_descriptor(bundle/'root-assignment.json',bundle_bytes['root-assignment.json']),"
+            },
+            {
+              "number": 767,
+              "text": "            'rootExtractionAdmission':file_descriptor(output/'root-extraction-admission.json',admission_raw),"
+            },
+            {
+              "number": 768,
+              "text": "            'rootAssignmentSha256MustBeAuthenticatedSeparatelyByRoot':assignment_digest,"
+            },
+            {
+              "number": 769,
+              "text": "            'rootAuditAuthorizationSupplied':a['nativeAuditAuthorized'],'rootAdmissionApprovalSupplied':a['rootExtractionAdmissionApproved']}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,316 @@
+{
+  "schema": "feature63-consumed-r2-capture-closure-independent-review-v1",
+  "status": "PASS_READONLY_CAPTURE_FAILURE_AND_BOUNDED_OPERATIONAL_CLOSURE",
+  "reviewer": "/root/ai_modes/corrective_r2_full_candidate_review",
+  "requestedModel": "gpt-5.6-sol",
+  "actualProviderFamily": "unverified",
+  "writeScope": "/tmp/ovf-feature63-consumed-r2-closure-review-FvS66h",
+  "reviewCutoff": "Files listed in reviewedArtifacts at their recorded mtimeUtc; later parent artifacts are outside this review unless listed.",
+  "findings": [],
+  "capturedAttempt": {
+    "disposition": "FAIL_FIRST_FAILURE_NO_RETRY",
+    "captureInvocations": 1,
+    "automaticRetries": 0,
+    "wrapperExitCode": 1,
+    "sourcePin": "1257b24db0121a72a12a6de10592397dc4996038",
+    "wrapperSha256": "f1aeeca031e80029f49d3dd4327ccda6caf02848f427bc8a21df72b87ff9618d",
+    "assignmentSha256": "8f0e36dde392d934a3a684b1e3da7fa4a486500aad79c50e196bf128199bd6e1",
+    "firstFailure": {
+      "type": "RuntimeError",
+      "message": "Managed PID/start/session/executable/cwd changed; no signal is permitted",
+      "at": "2026-10-02T05:20:00.546451+00:00"
+    },
+    "cleanupFailures": [],
+    "feature63Qualified": false,
+    "collectorStarted": false,
+    "publicProducerStarted": true,
+    "publicOutputDirectoryCreated": false,
+    "browserEvidence": "browser.stderr contains repeated 'Crashing due to FD ownership violation' stacks, a DevTools listener line, and NetworkService restart errors.",
+    "databaseEvidenceScope": "server-ownership.json and fresh filesystem stat metadata only; no database content was read, hashed, copied, sealed, queried, extracted, or audited."
+  },
+  "operationalClosure": {
+    "disposition": "PASS_BOUNDED_REMEMBERED_RESOURCE_AND_PORT_CLOSURE",
+    "retainedClosureAt": "2026-10-02T05:20:00.870514+00:00",
+    "registeredResources": 14,
+    "pidfdsOpenedWhileAlive": 9,
+    "families": {
+      "server": 1,
+      "browser": 12,
+      "public": 1
+    },
+    "allRememberedRegisteredIdentitiesAbsentAtRetainedClosure": true,
+    "privateListenersAbsentAtRetainedClosure": true,
+    "protectedIdentitySocketAndFdUnchangedAtRetainedClosure": true,
+    "freshReadOnlyRecheck": {
+      "exactRememberedPidsPlusLauncherAndWrapperAbsent": 16,
+      "rememberedOriginalSessionMembers": 0,
+      "privateListeners": {
+        "5373": [],
+        "5374": []
+      },
+      "protected": {
+        "pid": 1063,
+        "startTicks": 874,
+        "session": 1063,
+        "executable": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+        "cwd": "/home/morgana/Projects/orcs-vs-Fairies",
+        "fd22": "socket:[3783]",
+        "listener4173": [
+          "socket:[3783]"
+        ]
+      }
+    },
+    "unobservedDescendantsExcluded": false,
+    "rootNativeLifetimeDispositionRequired": true,
+    "slotReleaseAssessment": "The bounded remembered identities, remembered original sessions, private ports, and protected-root recheck support slot release within this finite scope. They do not prove global descendant absence; root owns final native-lifetime disposition."
+  },
+  "checksPerformed": [
+    "Read the exact command, launch, consumed marker, assignment copy, bound receipt copies, launcher source, independent observations, closure, driver events/result, lifecycle ownership metadata, logs, and frozen decisions trail.",
+    "Confirmed the command used the bound Python executable, pinned checkout, wrapper SHA, exact assignment digest environment anchor, approved exclusive slot, and automaticRetries=0.",
+    "Confirmed capture-launch-consumed.json records one invocation and zero retries.",
+    "Inspected launcher guards, its PIDFD observation logic, finite registered-resource tracking, protected-root checks, port checks, and explicit no-signal/database-scope disclosures.",
+    "Confirmed 14 registered resources in driver events and closure: one server, twelve browser, and one public process; nine were independently PIDFD-bound while alive.",
+    "Confirmed the wrapper emitted one first-failure event, three PIDFD signal events, and one closed event for each of public, server, and browser, each with two observed-session scans and unobservedDescendantsExcluded=false.",
+    "Confirmed driver-result.json records FAIL_FIRST_FAILURE_NO_RETRY, zero automatic retries, empty cleanupFailures, feature63Qualified=false, and rootNativeLifetimeDispositionRequired=true.",
+    "Confirmed the producer process started, the collector did not start, public stdout/stderr are empty, and no public output directory exists.",
+    "Read only database filesystem metadata: path, device 52, inode 42331276, size 184320, mode 0644, and mtimeNs 1790918400605024531. The server ownership record matches device and inode.",
+    "Performed a fresh read-only /proc and network-table check: the 14 remembered PIDs, launcher PID, and wrapper PID are absent; no member remains in their remembered sessions; ports 5373 and 5374 are clear; protected PID 1063 and socket 3783 remain unchanged."
+  ],
+  "attention": [
+    {
+      "area": "captured failure",
+      "flag": "The attempt failed during startup ownership checking. Browser stderr still shows FD ownership crashes. This is not a successful capture and does not qualify feature63."
+    },
+    {
+      "area": "finite closure",
+      "flag": "The retained and fresh checks cover remembered exact identities, their original sessions, and ports 5373/5374. unobservedDescendantsExcluded remains false, so no global descendant-absence claim is justified."
+    },
+    {
+      "area": "lifetime disposition",
+      "flag": "Operational closure and slot-release support are bounded. Root must make the final native-lifetime disposition before any extraction, audit, or feature decision."
+    },
+    {
+      "area": "retry authority",
+      "flag": "The one authorized invocation is consumed. No automatic retry occurred and no further runtime authority exists."
+    },
+    {
+      "area": "trail honesty",
+      "flag": "The two-row control trail correctly separates the runtime failure from independent launcher closure and does not present startup as feature proof."
+    },
+    {
+      "area": "transcript",
+      "flag": "The active workspace transcript directory remained unavailable. Root authorization is supported by supplied bound artifacts and in-session messages, not an independently authenticated complete transcript."
+    }
+  ],
+  "reviewLimitations": [
+    "A finite /proc and listener snapshot cannot exclude an unobserved process that forked, reparented, changed session, or exited between observations.",
+    "Only nine of fourteen registered resources were independently PIDFD-opened while alive; the remaining five are supported by registered immutable identities and later absence observations.",
+    "The wrapper sent three signals through its bound PIDFD path. The private launcher sent none.",
+    "Database content and browser profile contents were not inspected. Database metadata does not prove data integrity or absence of application records.",
+    "No extraction or native audit was performed, and no match or feature behavior was captured.",
+    "Later parent closure or retention artifacts are outside this review unless their paths appear in reviewedArtifacts."
+  ],
+  "runtimeUntouchedByReviewer": {
+    "browserOrRuntimeLaunched": false,
+    "generatorOrCandidateImported": false,
+    "candidateFunctionsCalled": false,
+    "signalsSent": false,
+    "packageOrCleanupRun": false,
+    "databaseContentReadHashedCopiedSealedQueriedOrAudited": false,
+    "extractionOrAuditRun": false,
+    "sourceRootGitOrLedgerWritten": false,
+    "controlOrR2PrefixWritten": false
+  },
+  "reviewedArtifacts": [
+    {
+      "path": "/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/launch-capture.py",
+      "bytes": 9668,
+      "sha256": "86f7e0f11cb284878d0550165ba7656745cd3a3991042e904f9b3abcc93bfe07",
+      "mode": 420,
+      "mtimeUtc": "2026-10-02T05:18:50.507852208Z"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/capture-assignment.actual.json",
+      "bytes": 6958,
+      "sha256": "8f0e36dde392d934a3a684b1e3da7fa4a486500aad79c50e196bf128199bd6e1",
+      "mode": 384,
+      "mtimeUtc": "2026-10-02T05:19:59.859035729Z"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/root-disposition.actual.json",
+      "bytes": 1312,
+      "sha256": "7e81c1aab1159c0a33a62904e89b0746d3cbc1f2ba654738d1f47866bce40420",
+      "mode": 384,
+      "mtimeUtc": "2026-10-02T05:19:59.859070274Z"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/sourceBinding.actual.json",
+      "bytes": 184903,
+      "sha256": "2f3a40b7a6945fb4f2558ac79060bf9bcd07ba435fb1ad484925fc6d5eb74523",
+      "mode": 384,
+      "mtimeUtc": "2026-10-02T05:19:59.859230377Z"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/buildBinding.actual.json",
+      "bytes": 152598,
+      "sha256": "125c6a88ef3103a26b4a9dc6e0c144fe347a37dc32d5ecb63e5694ebc26930c0",
+      "mode": 384,
+      "mtimeUtc": "2026-10-02T05:19:59.859383797Z"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/testedBuildReceipt.actual.json",
+      "bytes": 3890,
+      "sha256": "dfb92ec1fdd5555622a3f86fdedc52437fcb957392bb2cfb6ba481a29dd3195d",
+      "mode": 384,
+      "mtimeUtc": "2026-10-02T05:19:59.859425136Z"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/reviewReceipt.actual.json",
+      "bytes": 5396,
+      "sha256": "de8c02bb79abf107dd02e14dc8ea6cbba7c94a68ecf2542f1c85cac85c17447e",
+      "mode": 384,
+      "mtimeUtc": "2026-10-02T05:19:59.859452457Z"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/browserBinding.actual.json",
+      "bytes": 81116,
+      "sha256": "914529b61facf0539eb947f179a52204cced00d520b52562bb5f540c45372c87",
+      "mode": 384,
+      "mtimeUtc": "2026-10-02T05:19:59.859520676Z"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/command.json",
+      "bytes": 2133,
+      "sha256": "90e001ab1931f7044705551b422abc31a2166dac0034cc3040b7cba71363f543",
+      "mode": 384,
+      "mtimeUtc": "2026-10-02T05:19:59.863706797Z"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/capture-launch-consumed.json",
+      "bytes": 189,
+      "sha256": "315941d89860fa91ccea628ce5447d4c8d72cbd9b3c2218146bfcf0430fb560b",
+      "mode": 384,
+      "mtimeUtc": "2026-10-02T05:19:59.863726234Z"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/launch.json",
+      "bytes": 2393,
+      "sha256": "62e084dabf9c9b9702c599713406c81fc921077ecdbf09198f148950efb9143e",
+      "mode": 384,
+      "mtimeUtc": "2026-10-02T05:19:59.864150717Z"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/independent-observations.ndjson",
+      "bytes": 59235,
+      "sha256": "9183f7e195eab30b3f02f0d98e378a534ff3e0fe99b580894f3790746a67c86d",
+      "mode": 420,
+      "mtimeUtc": "2026-10-02T05:20:00.867004914Z"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/independent-closure.json",
+      "bytes": 51170,
+      "sha256": "2d341b1689b38137735254e62bd8e7001ebed9a431d7eddfa7e4a0d8936aa50a",
+      "mode": 384,
+      "mtimeUtc": "2026-10-02T05:20:00.870726896Z"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/driver.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": 384,
+      "mtimeUtc": "2026-10-02T05:19:59.863726234Z"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/driver.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": 384,
+      "mtimeUtc": "2026-10-02T05:19:59.863726234Z"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/decisions.tsv",
+      "bytes": 820,
+      "sha256": "9ae98496e4dbc1eedaf1dfdb57a2a6ae4c0bc9b507712a2d533dd507a2d32e73",
+      "mode": 420,
+      "mtimeUtc": "2026-10-02T05:22:39.182593338Z"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r2/lifecycle/driver-result.json",
+      "bytes": 1544,
+      "sha256": "507fd0d5fbb324a39c9372bcf2a28c3d0966d9bbf357428a6dbcc52351b8c02a",
+      "mode": 420,
+      "mtimeUtc": "2026-10-02T05:20:00.794418606Z"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r2/lifecycle/driver-events.ndjson",
+      "bytes": 73123,
+      "sha256": "2a32b9f959dc0380667e7e9c666073da783a5dcf90fba328f9cfb7133a738386",
+      "mode": 420,
+      "mtimeUtc": "2026-10-02T05:20:00.792027644Z"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r2/lifecycle/server-ownership.json",
+      "bytes": 1153,
+      "sha256": "d439ff38178cdcec56ddb61c5c373a72ecb0c5f0d1005a03d12c28f2611cf72d",
+      "mode": 420,
+      "mtimeUtc": "2026-10-02T05:20:00.380928245Z"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r2/lifecycle/browser-ownership.json",
+      "bytes": 1389,
+      "sha256": "a3c22025be01609f565b6b52345cb38abc66dd08cf5090eba59f57b1606ad1bb",
+      "mode": 420,
+      "mtimeUtc": "2026-10-02T05:20:00.522988081Z"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r2/lifecycle/public-assignment.json",
+      "bytes": 2361,
+      "sha256": "c6a6860864f3b75904c57de8bac185686d6bc95afb00d693a7921bb3319dc39e",
+      "mode": 420,
+      "mtimeUtc": "2026-10-02T05:20:00.525484304Z"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r2/lifecycle/browser.stderr",
+      "bytes": 3535,
+      "sha256": "e197f401b95704f257ea13cba27af031e0ad2b825c6125706bf094a0cca9947e",
+      "mode": 420,
+      "mtimeUtc": "2026-10-02T05:20:00.608024581Z"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r2/lifecycle/server.stdout",
+      "bytes": 60,
+      "sha256": "77c999d2cd7168b39b663c14a25f4476d211523ee56e8109ced55197bdfdf783",
+      "mode": 420,
+      "mtimeUtc": "2026-10-02T05:20:00.358020421Z"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r2/lifecycle/server.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": 420,
+      "mtimeUtc": "2026-10-02T05:20:00.248018590Z"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r2/lifecycle/browser.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": 420,
+      "mtimeUtc": "2026-10-02T05:20:00.383020837Z"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r2/lifecycle/public.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": 420,
+      "mtimeUtc": "2026-10-02T05:20:00.528023250Z"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r2/lifecycle/public.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": 420,
+      "mtimeUtc": "2026-10-02T05:20:00.528023250Z"
+    }
+  ]
+}
+

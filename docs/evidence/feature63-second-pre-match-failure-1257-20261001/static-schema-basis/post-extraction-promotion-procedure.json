@@ -1,0 +1,126 @@
+{
+  "schema": 1,
+  "at": "2026-10-02T05:25:12.966676+00:00",
+  "procedureOnly": true,
+  "capturePin": "1257b24db0121a72a12a6de10592397dc4996038",
+  "auditorSha256": "4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb",
+  "helperSha256": "fccd7ba02a92c2496b56699cb8fbb323f16cb2a817596093951b10a72446e7d8",
+  "rootApprovalNotIssued": true,
+  "preconditions": [
+    "Passing actual capture at1257 with complete root closure, fresh raw custody/seal and independent native lifetime disposition.",
+    "Actual extraction runs with nativeAuditAuthorized=false and rootExtractionAdmissionApproved=false; generated root-assignment.auditAuthorized and extraction admission.approved must remain false.",
+    "Root inspects concrete complete native/public files, selection receipts, query metadata, raw before/after equality and actual custody/lifetime/source/build identities before any promotion."
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "action": "Seal and retain the complete original unapproved extraction directory without mutation.",
+      "detail": "Record complete filenames, byte counts, SHA-256 and modes. Preserve original bundle/root-assignment.json, original root-extraction-admission.json, original root-extraction-input.json, extraction result, selection receipt and raw-verification receipt. Read-only files plus root policy preserve this baseline; no rerun or in-place approval edit."
+    },
+    {
+      "number": 2,
+      "action": "Copy the entire original bundle to one fresh canonical private external directory outside both checkouts.",
+      "detail": "Use independent regular-file byte copies, no symlinks or hardlinks. Retain the complete original filename set and byte-identical native/public/source/closed/collector/extraction receipts. Keep promotion documents outside bundle. Authenticate all copied bytes against the retained original before authorizing."
+    },
+    {
+      "number": 3,
+      "action": "Replace only copied bundle/root-assignment.json with the approved native assignment.",
+      "detail": "Parse its existing exact12-field object. Set auditAuthorized fromfalse totrue after root approval. Preserve every other field and descriptor. Write complete new bytes, set mode0444 and compute its new byte count and SHA-256. Keep the original file unchanged."
+    },
+    {
+      "number": 4,
+      "action": "Inventory every file in the approved copy after that replacement.",
+      "detail": "Produce sorted complete unique relative path/bytes/sha256/mode rows. Each file is mode0444. All rows except root-assignment.json must match the original inventory. Compute the new native root assignment digest independently; it is the new audit anchor."
+    },
+    {
+      "number": 5,
+      "action": "Issue a fresh rootExtractionAdmission outside the copied bundle.",
+      "fieldsToChange": {
+        "approved": true,
+        "bundlePath": "absolute canonical path to approved copied bundle",
+        "rootAssignmentSha256": "new copied root-assignment.json SHA-256",
+        "bundleRecords": "complete actual approved-copy inventory"
+      },
+      "fieldsToRetain": "Original sourcePin1257, matchId, auditorSha2564862672e, closedFreshRawAuthenticated=true, completeSelectedTextAndQueryMetadataAuthenticated=true, ownedNativeLifetimeIndependentlyAdmitted=true and original custody/lifetime/capture/inputAssignment provenance.",
+      "detail": "Do not edit the original admission or extraction input. Preserve the original inputAssignmentSha256 as extraction provenance. Compute a new descriptor of this fresh approved admission. Record the promotion separately, binding original and approved bundle inventories plus original/new assignment and admission hashes."
+    },
+    {
+      "number": 6,
+      "action": "Issue a fresh separately approved audit-phase wrapper assignment.",
+      "fieldsToBind": {
+        "phase": "audit",
+        "approved": true,
+        "assignedBy": "/root",
+        "sourcePin": "1257b24db0121a72a12a6de10592397dc4996038",
+        "captureResult": "descriptor of actual passing closed capture result",
+        "rootExtractionAdmission": "descriptor of fresh approved admission",
+        "nativeAuditAssignment": "absolute descriptor of copied approved bundle/root-assignment.json with new bytes/SHA-256",
+        "nativeBundle": "same copied bundle path as approved admission"
+      },
+      "detail": "Retain actual root-approved source/build/test/review/browser/runtime/protected identities and wrapper hash. Refresh exclusive-slot validity if needed while maintaining the browser binding token relationship. Hash the entire fresh wrapper assignment; root supplies that separate hash as OVF_FEATURE63_WRAPPER_ASSIGNMENT_SHA256."
+    },
+    {
+      "number": 7,
+      "action": "Only after those concrete root approvals, root may run the existing one-shot audit path.",
+      "detail": "Wrapper forwards the new native assignment digest as --assignment-sha256. Preserve both original extraction and promoted copy plus approval packet and complete audit output. A native auditor pass still has no feature qualification claim until root disposition."
+    }
+  ],
+  "equalityChain": [
+    "sha256(approvedBundle/root-assignment.json) == nativeAuditAssignment.sha256 == freshRootExtractionAdmission.rootAssignmentSha256",
+    "freshRootExtractionAdmission.bundlePath == auditWrapperAssignment.nativeBundle == approvedBundle",
+    "freshRootExtractionAdmission.bundleRecords == actual complete approvedBundle file inventory",
+    "sha256(freshRootExtractionAdmission bytes) == auditWrapperAssignment.rootExtractionAdmission.sha256",
+    "sha256(fresh audit wrapper assignment bytes) == separately supplied OVF_FEATURE63_WRAPPER_ASSIGNMENT_SHA256"
+  ],
+  "concreteWrapperGates": [
+    {
+      "line": 235,
+      "gate": "External wrapper assignment digest must match complete assignment bytes."
+    },
+    {
+      "line": 238,
+      "gate": "Audit phase, exact owned checkout and r2 prefix; correct owned cwd."
+    },
+    {
+      "line": 243,
+      "gate": "Owned HEAD remains capture pin1257 and tracked source clean."
+    },
+    {
+      "line": 245,
+      "gate": "Exclusive slot approved, holder/root/ai_modes, token>=16 chars and validUntil strictly more than510seconds ahead; browser binding token must match."
+    },
+    {
+      "line": 250,
+      "gate": "All actual source, build, test, wrapper review, browser dependency and protected process/socket bindings still authenticate."
+    },
+    {
+      "line": 698,
+      "gate": "No listeners on5373 or5374 before audit."
+    },
+    {
+      "line": 700,
+      "gate": "Passing closed capture result at same source pin."
+    },
+    {
+      "line": 702,
+      "gate": "Fresh approved extraction admission with matching source/match/auditor and independently admitted lifetime."
+    },
+    {
+      "line": 707,
+      "gate": "New native assignment descriptor hash equals approved admission rootAssignmentSha256."
+    },
+    {
+      "line": 709,
+      "gate": "Canonical copied bundle path outside protected root and equal admitted path; full inventory authenticates."
+    },
+    {
+      "line": 713,
+      "gate": "R2 PREFIX/native-audit must not exist; creation prohibits second invocation."
+    }
+  ],
+  "actualSchemaIncompatibilities": [],
+  "runtimeExecuted": false,
+  "databaseAccessed": false,
+  "sourceEdits": false,
+  "unapprovedBundleModified": false
+}
