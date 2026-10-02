@@ -1,0 +1,396 @@
+{
+  "scope": "Light authentication and qualification supplement. Existing bridge.json and bridge.md remain unchanged. No fresh game runtime or acceptance run.",
+  "targetSourcePin": "83941bc80ce9ec08840b0645d9b33e8018d5309a",
+  "retainedNaturalSourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "permittedAuthentication": {
+    "sealPath": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/final-manifest.json",
+    "files": [
+      {
+        "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/envelopes/natural-allied/run.json",
+        "bytes": 1203,
+        "sha256": "70bbc46bb6610088f9fb0e891b91f2c8b6294f3e2e037d540a04e121d0f7d38f",
+        "matchesRetainedFinalSeal": true,
+        "verification": "Actual bytes were hashed and compared to this retained seal during this light followup."
+      },
+      {
+        "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/envelopes/natural-allied/stdout.log",
+        "bytes": 1435,
+        "sha256": "c3e4894609b413f5eeb5d8c040a40264d138635d5360987e4780e0a2ce7588c3",
+        "matchesRetainedFinalSeal": true,
+        "verification": "Actual bytes were hashed and compared to this retained seal during this light followup."
+      },
+      {
+        "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/envelopes/natural-allied/manifest.json",
+        "bytes": 1403,
+        "sha256": "90a56079f01c5d4def54bf6efc92e3aa51b679ea05a2d29ba411f3e6b084375c",
+        "matchesRetainedFinalSeal": true,
+        "verification": "Actual bytes were hashed and compared to this retained seal during this light followup."
+      },
+      {
+        "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/envelopes/natural-allied/artifacts.json",
+        "bytes": 1202,
+        "sha256": "e475057beb81ab853d3bb94818d74a7fad4647d95626f63f6b80fcc8c502f4ba",
+        "matchesRetainedFinalSeal": true,
+        "verification": "Actual bytes were hashed and compared to this retained seal during this light followup."
+      },
+      {
+        "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/natural-allied/small-orcs-fairies-dwarves-undead.json",
+        "bytes": 128374,
+        "sha256": "526bf743bc143412caf735ed2798c11777f004282729081ed67f2ceef5f8c6c9",
+        "matchesRetainedFinalSeal": true,
+        "verification": "Actual bytes were hashed and compared to this retained seal during this light followup."
+      },
+      {
+        "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/natural-allied/medium-dwarves-undead-orcs-fairies.json",
+        "bytes": 124633,
+        "sha256": "93bd95cac03a6807fd79a569bd3a32724c5821782a25188507c6c7e674bc1fe7",
+        "matchesRetainedFinalSeal": true,
+        "verification": "Actual bytes were hashed and compared to this retained seal during this light followup."
+      }
+    ],
+    "innerEnvelopeManifestPath": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/envelopes/natural-allied/manifest.json",
+    "innerEnvelopeResult": "passed",
+    "innerArtifactIndexPath": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/envelopes/natural-allied/artifacts.json",
+    "rawReportIndexAndFinalSealDigestsAgree": true,
+    "runner": {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/scripts/ai/team-regression.test.ts",
+      "bytes": 9747,
+      "sha256": "a5176924441d35d53079615c36e7cf03bfe2db398a18af059b23871a3d4456e8",
+      "gitBlobAt453And839": "4d36f8eccedac23be4bad4044a773e283b6fe4c5",
+      "matchesRetainedSourceSeal": true,
+      "currentBytesEqual453GitBytes": true,
+      "sealPath": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/envelopes/natural-allied/source-before.json",
+      "sealPointer": "/canonicalFiles/scripts~1ai~1team-regression.test.ts"
+    },
+    "excludedFromFreshHashing": [
+      "Native save envelopes",
+      "Stored frames",
+      "Checkpoints",
+      "SQLite databases",
+      "Build packages",
+      "All other source and retained suite payloads"
+    ]
+  },
+  "authenticatedRecordedNaturalExecution": {
+    "command": [
+      "npx",
+      "--no-install",
+      "vitest",
+      "run",
+      "--config",
+      "vitest.ai-team.config.ts",
+      "--reporter=verbose"
+    ],
+    "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+    "sourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+    "startedAt": "2026-10-01T21:28:58.572Z",
+    "completedAt": "2026-10-01T21:31:27.664Z",
+    "exit": {
+      "code": 0,
+      "signal": null
+    },
+    "result": "passed",
+    "strictAlliedAssertions": true,
+    "testFilesPassed": 1,
+    "testsPassed": 2,
+    "testsFailed": 0,
+    "recordedWallSeconds": 147.52,
+    "testNames": [
+      "finishes a natural four-AI allied match: small-orcs-fairies-dwarves-undead",
+      "finishes a natural four-AI allied match: medium-dwarves-undead-orcs-fairies"
+    ],
+    "sourceApplicability": {
+      "paths": [
+        "scripts/ai/team-regression.test.ts",
+        "src/core",
+        "src/server"
+      ],
+      "commitDiff453To839Exit": 0,
+      "ownedWorkingTreeVs839DiffExit": 0
+    },
+    "coordinationExamples": [
+      {
+        "reportPath": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/natural-allied/small-orcs-fairies-dwarves-undead.json",
+        "planPointer": "/plans/1",
+        "launchPointer": "/launches/1",
+        "teamId": 1,
+        "sides": [
+          2,
+          3
+        ],
+        "waveId": 2,
+        "tick": 3101,
+        "timeSeconds": 155.050000000001,
+        "sameOwnerAiWaveTimes": true,
+        "sharedTarget": "entity:75",
+        "matchingFormationDestinations": [
+          [
+            18.9,
+            21.9
+          ],
+          [
+            18.1,
+            21.9
+          ]
+        ],
+        "jointSide2Side3Launches": 2
+      },
+      {
+        "reportPath": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/natural-allied/medium-dwarves-undead-orcs-fairies.json",
+        "planPointer": "/plans/1",
+        "launchPointer": "/launches/1",
+        "teamId": 0,
+        "sides": [
+          2,
+          3
+        ],
+        "waveId": 2,
+        "tick": 2304,
+        "timeSeconds": 115.1999999999956,
+        "sameOwnerAiWaveTimes": true,
+        "sharedTarget": "entity:75",
+        "matchingFormationDestinations": [
+          [
+            18.9,
+            21.9
+          ],
+          [
+            18.1,
+            21.9
+          ]
+        ],
+        "jointSide2Side3Launches": 4
+      }
+    ]
+  },
+  "rootSameMatchLaterFrameQualification": {
+    "readbackPath": "/tmp/ovf-ai839-root-coordination-readback-20261001.json",
+    "readbackBytes": 4199,
+    "readbackSha256": "2c6de4df55979a4d93ea5c3b0920da1cd733848370fbac0112f2eb35dacc42fb",
+    "readbackHashPurpose": "Identity of small root-authored metadata; not independent authentication of the SQLite/frame/checkpoint payloads.",
+    "capturedAt": "2026-10-01T23:36:27.366643+00:00",
+    "scopeVerbatim": "Root direct closed-SQLite readback and source bridge. Browser14 checks end at408; stored frames3324-3328 and checkpoint4040 come from the same server match later. No complete human victory or fresh runtime claim.",
+    "passedReportedByRoot": true,
+    "passedReadbackChecks": 19,
+    "sameMatchAttribution": "Root directly checked the closed SQLite records and attributes these later frames/checkpoint to the same 839 cooperative server match. This followup did not read the database or independently match raw frame/checkpoint payloads.",
+    "cooperativeUIReportPath": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-83941bc-r1/coop-ui/results.json",
+    "cooperativeMatchId": "eba6d3ae-5100-432c-a95f-633e236ecada",
+    "humanBrowserChecks": 14,
+    "humanBrowserFinalCheckedTick": 408,
+    "storedFrameTicks": [
+      3324,
+      3328
+    ],
+    "checkpointTick": 4040,
+    "matchTickReportedByRoot": 4059,
+    "rootVerifiedPayloadIdentities": {
+      "checkpoint": {
+        "matchTick": 4059,
+        "checkpointTick": 4040,
+        "bytes": 127824,
+        "sha256": "4f74afaba38df332ae8e254db387d990243c11d7c11032b737863fe988fb0f2a"
+      },
+      "frame3324": {
+        "bytes": 259258,
+        "sha256": "37adb272c2f34772e3386ede9980d80cba701859d384ee1e8e549ecb98daff4b"
+      },
+      "frame3328": {
+        "bytes": 259168,
+        "sha256": "d1155ccff21dc7bb5a2f6c87e009836f12cf73d52ac13dc0e3dde267dded93db"
+      }
+    },
+    "rootReportedAIWaveTimes": [
+      0,
+      0,
+      166.35000000000358,
+      166.35000000000358
+    ],
+    "rootReportedOwnedTransitions": [
+      {
+        "side": 2,
+        "id": 21,
+        "before": {
+          "type": "idle"
+        },
+        "after": {
+          "type": "attackMove",
+          "x": 47.9,
+          "y": 16.9
+        }
+      },
+      {
+        "side": 2,
+        "id": 93,
+        "before": {
+          "type": "idle"
+        },
+        "after": {
+          "type": "attackMove",
+          "x": 47.1,
+          "y": 16.9
+        }
+      },
+      {
+        "side": 2,
+        "id": 103,
+        "before": {
+          "type": "idle"
+        },
+        "after": {
+          "type": "attackMove",
+          "x": 47.9,
+          "y": 16.1
+        }
+      },
+      {
+        "side": 3,
+        "id": 28,
+        "before": {
+          "type": "idle"
+        },
+        "after": {
+          "type": "attackMove",
+          "x": 47.9,
+          "y": 16.9
+        }
+      },
+      {
+        "side": 3,
+        "id": 94,
+        "before": {
+          "type": "idle"
+        },
+        "after": {
+          "type": "attackMove",
+          "x": 47.1,
+          "y": 16.9
+        }
+      },
+      {
+        "side": 3,
+        "id": 104,
+        "before": {
+          "type": "idle"
+        },
+        "after": {
+          "type": "attackMove",
+          "x": 47.9,
+          "y": 16.1
+        }
+      }
+    ],
+    "matchingThreeFormationDestinations": [
+      [
+        47.9,
+        16.9
+      ],
+      [
+        47.1,
+        16.9
+      ],
+      [
+        47.9,
+        16.1
+      ]
+    ],
+    "interpretation": "Stored frames bracket the order changes over ticks 3324 to 3328. The later checkpoint records equal AI side 2/3 wave clocks and a shared coordinator with launched waves. Combined with the unchanged source, this supports coordination in the same hosted co-op match. It is later server evidence, not an observation made by the browser capture ending at tick 408.",
+    "rootSourceComparisons": [
+      {
+        "name": "unchanged relevant source from 453c2218af9973b9eca8fb78392435bd9d46a740",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "unchanged relevant source from 4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+        "passed": true,
+        "details": ""
+      }
+    ]
+  },
+  "retained2920RegressionQualification": {
+    "authenticationBasis": "Root personally checked the retained suite and unchanged 4a71-to-839 source. This followup safely located actual metadata and selected assertion records; it did not freshly authenticate or rehash the retained suite payloads.",
+    "sourcePin": "4a71cd07bacc12d214acaf5a0f95a7d9b486f52c",
+    "reportPath": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/report.json",
+    "reportBytes": 1340,
+    "recordedTests": {
+      "numTotalTests": 2920,
+      "numPassedTests": 2920,
+      "numFailedTests": 0
+    },
+    "recordedTestFiles": 157,
+    "recordedInputIntegrityPassed": true,
+    "recordedPassed": true,
+    "actualArtifacts": [
+      {
+        "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/README.md",
+        "bytes": 660,
+        "recordedSha256FromReport": null,
+        "freshlyHashed": false
+      },
+      {
+        "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/report.json",
+        "bytes": 1340,
+        "recordedSha256FromReport": null,
+        "freshlyHashed": false
+      },
+      {
+        "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/command-1.log",
+        "bytes": 41365,
+        "recordedSha256FromReport": "07d9194e5cb32f01c112c7847b0b345ee1dcfa4887fcefc6ecf0cc3d2592ea54",
+        "freshlyHashed": false
+      },
+      {
+        "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+        "bytes": 1017281,
+        "recordedSha256FromReport": "ced75e92e6e198d8bad063fc0e4b276bfd7ee1936bf1849830cafcd21f7a11a9",
+        "freshlyHashed": false
+      }
+    ],
+    "alliedTestsPassed": 43,
+    "assertionSourcePath": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/tests/allied-ai.test.ts",
+    "assertionSourceBytes": 35182,
+    "assertionSourceAndAllCoreServerUnchanged4a71To839": true,
+    "selectedPassedAssertions": [
+      {
+        "name": "keeps one distinct scout and launches both approved armies in the same tick despite different decision cadences",
+        "status": "passed",
+        "failureMessages": [],
+        "sourceLine": 270,
+        "assertionLines": [
+          272,
+          285
+        ],
+        "logLine": 137,
+        "qualification": "Fixture participants are sides 1 and 2. It excludes the selected scout from attacking IDs, retains its movement, crosses the shared launchAt in one step, uses approved attack orders and compares equal owner aiWave times. It does not assert exactly one global scout reservation."
+      },
+      {
+        "name": "continues pending directives, support and coordinated plans byte for byte after saving on every tick",
+        "status": "passed",
+        "failureMessages": [],
+        "sourceLine": 341,
+        "assertionLines": [
+          344,
+          350
+        ],
+        "logLine": 141,
+        "qualification": "Each fixture loads once initially, then compares serialized saves after each paired tick: 240 ticks for pending directives/coordinated waves, and 40 for support with an identical transfer at tick 10. It does not reload on every tick."
+      }
+    ],
+    "topologyLimit": "These are synthetic core fixtures with sides 0 to 2 on team 3 and side 3 on team 7. They establish focused coordination/continuation regressions, not the natural online two-human versus two-AI topology."
+  },
+  "preservedStaleCoopLimit": {
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/scripts/verify_assembled_coop.mjs",
+    "line": 195,
+    "reportPointer": "/limits/0",
+    "verbatim": "This proves human co-op, shared team vision, and autonomous combat from both AI opponents. It does not prove synchronized AI waves or a shared target planner; the current AI makes per-player decisions.",
+    "qualification": "Its browser-observation limit remains valid. Its implication about the current AI making only per-player decisions omits the shared coordinator. Later root server readback and sealed natural-wave evidence qualify that statement without rewriting the script or original browser results."
+  },
+  "remainingLimits": [
+    "No human objective cooperation or complete co-op victory is established by the 14 browser checks or later coordination readback.",
+    "The original 453 natural coordination runs used four AI controllers and one seed; requested small/medium maps both normalize to large 64 by 64 maps.",
+    "Natural retained-wave counts omit waves removed on their launch step; their order snapshots are read after each simulation step.",
+    "The 839 later frames/checkpoint are root-authenticated readback evidence, not a new browser capture or an independently repeated database audit by this followup.",
+    "The 839 online failure remains a separate result; the original sealed 453 co-op failure and freeze verdict remain unchanged.",
+    "No runtime, build, simulation, browser, database access, native codec, source write, checkout change or trail write occurred. Only this fresh external qualification.json was written."
+  ]
+}

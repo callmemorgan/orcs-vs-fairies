@@ -1,0 +1,41 @@
+{
+  "capturedAt": "2026-10-01T23:42:45.616361+00:00",
+  "scope": "Closing record of discovery and late process observation limitations. Historical discovery errors below were retained in the compacted task record; no original stderr receipt exists for those discovery commands.",
+  "discovery": {
+    "guessedNonexistentPaths": [
+      "src/render/render-state.ts",
+      "src/core/model.ts",
+      "src/core/team-coordinator.ts",
+      "src/core/ai-team-coordinator.ts",
+      "src/game/render-state.ts"
+    ],
+    "operation": "rg on guessed paths returned missing-path errors",
+    "correctDiscoveredPaths": [
+      "src/online/render-state.ts",
+      "src/core/team-ai.ts"
+    ],
+    "qualification": "Source-discovery command errors only, not payload failures or new runtime failures. No exact historical command exit or stderr bytes are reconstructed."
+  },
+  "lateProcessSnapshots": [
+    {
+      "receipt": "receipts/coop-ui-later-process-snapshot.json",
+      "qualification": "Recorded browser root already absent; this does not establish live descendant coverage."
+    },
+    {
+      "receipt": "receipts/online-ui-later-process-snapshot.json",
+      "qualification": "Recorded browser root already absent; this does not establish live descendant coverage."
+    }
+  ],
+  "actualRuntimeFailure": {
+    "receipt": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-83941bc-r1/envelopes/online-ui/stderr.log",
+    "result": "Canonical online exit1 remains preserved after six partial checks."
+  },
+  "transcriptAudit": {
+    "searchedOnly": [
+      "/home/morgana/.codex/worktrees/assembled-allied-ai/agent-transcripts",
+      "/home/morgana/Projects/orcs-vs-Fairies/agent-transcripts"
+    ],
+    "available": false,
+    "qualification": "No active-workspace agent-transcripts directory exists. Do not imply a raw transcript review; independent review can read the decision trail, retained receipts and this explicit gap."
+  }
+}

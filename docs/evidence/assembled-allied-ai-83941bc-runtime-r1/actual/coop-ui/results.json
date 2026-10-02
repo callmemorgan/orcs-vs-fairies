@@ -1,0 +1,298 @@
+{
+  "base": "http://127.0.0.1:5371",
+  "startedAt": "2026-10-01T23:19:41.003Z",
+  "buildLabel": "83941bc80ce9ec08840b0645d9b33e8018d5309a",
+  "pageBuilds": [
+    {
+      "profile": "human-one",
+      "url": "http://127.0.0.1:5371/",
+      "moduleScripts": [
+        "http://127.0.0.1:5371/assets/main-BxMb13AF.js"
+      ],
+      "stylesheets": [
+        "http://127.0.0.1:5371/assets/main-CxCO6VnC.css"
+      ]
+    },
+    {
+      "profile": "human-two",
+      "url": "http://127.0.0.1:5371/",
+      "moduleScripts": [
+        "http://127.0.0.1:5371/assets/main-BxMb13AF.js"
+      ],
+      "stylesheets": [
+        "http://127.0.0.1:5371/assets/main-CxCO6VnC.css"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "Two isolated browser profiles receive different real guest accounts",
+      "details": {
+        "guests": [
+          "Guest-9d8bf8",
+          "Guest-d58df8"
+        ]
+      }
+    },
+    {
+      "name": "Server lobby has two human teammates and two AI opponents",
+      "details": {
+        "lobbyId": "2d7b3b40-41db-4ddc-987b-ebcb09ade914",
+        "seats": [
+          "Player 1: Guest-9d8bf8 · Ironclad · Team 1 · Ready",
+          "Player 2: Guest-d58df8 · Wild Court · Team 1 · Ready",
+          "Player 3: AI · Ironclad · Team 2 · AI ready",
+          "Player 4: AI · Wild Court · Team 2 · AI ready"
+        ]
+      }
+    },
+    {
+      "name": "Both playable clients join the same authoritative cooperative match",
+      "details": {
+        "matchId": "eba6d3ae-5100-432c-a95f-633e236ecada",
+        "teams": [
+          0,
+          0,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "Each human sees teammate vision beyond its own observers",
+      "details": {
+        "tick": 60,
+        "visibleTiles": 570,
+        "exploredTiles": 570,
+        "contribution": [
+          {
+            "viewer": 0,
+            "ally": 1,
+            "allyHq": 8,
+            "allyHqVisibleBeyondOwnSight": true
+          },
+          {
+            "viewer": 1,
+            "ally": 0,
+            "allyHq": 1,
+            "allyHqVisibleBeyondOwnSight": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "Both browser renderers apply their authoritative allied vision",
+      "details": {
+        "players": [
+          {
+            "tick": 60,
+            "side": 0,
+            "visibleTiles": 570,
+            "exploredTiles": 570,
+            "alliedHqs": [
+              8
+            ]
+          },
+          {
+            "tick": 60,
+            "side": 1,
+            "visibleTiles": 570,
+            "exploredTiles": 570,
+            "alliedHqs": [
+              1
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "First human HUD recruitment is accepted",
+      "details": {
+        "side": 0,
+        "producerId": 1,
+        "command": {
+          "kind": "command",
+          "protocolVersion": 1,
+          "clientSeq": 1,
+          "observedTick": 96,
+          "command": {
+            "type": "train",
+            "id": 1,
+            "role": "worker"
+          }
+        },
+        "receipt": {
+          "kind": "commandAck",
+          "clientSeq": 1,
+          "appliedTick": 102,
+          "accepted": true
+        }
+      }
+    },
+    {
+      "name": "Second human HUD recruitment is accepted",
+      "details": {
+        "side": 1,
+        "producerId": 8,
+        "command": {
+          "kind": "command",
+          "protocolVersion": 1,
+          "clientSeq": 1,
+          "observedTick": 140,
+          "command": {
+            "type": "train",
+            "id": 8,
+            "role": "worker"
+          }
+        },
+        "receipt": {
+          "kind": "commandAck",
+          "clientSeq": 1,
+          "appliedTick": 144,
+          "accepted": true
+        }
+      }
+    },
+    {
+      "name": "human-one scouts unexplored terrain with an accepted attack-move",
+      "details": {
+        "side": 0,
+        "target": {
+          "x": 16.5,
+          "y": 44.8
+        },
+        "targetCell": 2832,
+        "initiallyUnexplored": true,
+        "ids": [
+          7
+        ],
+        "clientSeq": 2,
+        "appliedTick": 166
+      }
+    },
+    {
+      "name": "human-two scouts unexplored terrain with an accepted attack-move",
+      "details": {
+        "side": 1,
+        "target": {
+          "x": 47.5,
+          "y": 44.8
+        },
+        "targetCell": 2863,
+        "initiallyUnexplored": true,
+        "ids": [
+          14
+        ],
+        "clientSeq": 2,
+        "appliedTick": 190
+      }
+    },
+    {
+      "name": "Both enemy AI players attack human-team units in authoritative observations",
+      "details": {
+        "sides": [
+          2,
+          3
+        ],
+        "eventCount": 2,
+        "examples": [
+          {
+            "profile": "human-two",
+            "tick": 393,
+            "frameTick": 396,
+            "eventId": "e01fa0ce-8fd8-4079-ae28-e3766ecb6bd9",
+            "side": 2,
+            "source": 21,
+            "target": 14,
+            "targetSide": 1,
+            "targetKind": "unit",
+            "amount": 13,
+            "x": 48.0301321151987,
+            "y": 42.1963255181565
+          },
+          {
+            "profile": "human-two",
+            "tick": 397,
+            "frameTick": 400,
+            "eventId": "a70b4c61-9d09-4193-80f3-fbd839c8d3da",
+            "side": 3,
+            "source": 28,
+            "target": 7,
+            "targetSide": 0,
+            "targetKind": "unit",
+            "amount": 14,
+            "x": 17.770591394858968,
+            "y": 41.05406797845595
+          }
+        ]
+      }
+    },
+    {
+      "name": "Both accepted attack-move targets later become explored",
+      "details": [
+        {
+          "side": 0,
+          "targetCell": 2832,
+          "appliedTick": 166,
+          "exploredAtTick": 384
+        },
+        {
+          "side": 1,
+          "targetCell": 2863,
+          "appliedTick": 190,
+          "exploredAtTick": 332
+        }
+      ]
+    },
+    {
+      "name": "Both AI opponents advance construction without human control",
+      "details": [
+        {
+          "side": 2,
+          "id": 75,
+          "role": "barracks",
+          "first": {
+            "tick": 324,
+            "progress": 0.43714285714285867
+          },
+          "last": {
+            "tick": 408,
+            "progress": 0.5542857142857172
+          }
+        },
+        {
+          "side": 3,
+          "id": 76,
+          "role": "barracks",
+          "first": {
+            "tick": 368,
+            "progress": 0.5042857142857166
+          },
+          "last": {
+            "tick": 408,
+            "progress": 0.5614285714285744
+          }
+        }
+      ]
+    },
+    {
+      "name": "Allied shared vision remains equal during combat",
+      "details": {
+        "tick": 408,
+        "afterAttackFrameTick": 400,
+        "visibleTiles": 872
+      }
+    },
+    {
+      "name": "Neither browser reports page errors or WebSocket capture errors",
+      "details": true
+    }
+  ],
+  "limits": [
+    "This proves human co-op, shared team vision, and autonomous combat from both AI opponents. It does not prove synchronized AI waves or a shared target planner; the current AI makes per-player decisions."
+  ],
+  "lobbyId": "2d7b3b40-41db-4ddc-987b-ebcb09ade914",
+  "matchId": "eba6d3ae-5100-432c-a95f-633e236ecada",
+  "completed": true,
+  "completedAt": "2026-10-01T23:20:03.638Z"
+}

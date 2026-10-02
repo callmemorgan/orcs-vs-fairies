@@ -1,0 +1,127 @@
+{
+  "state": "read_only_native_coop_history_comparison",
+  "match_id": "eba6d3ae-5100-432c-a95f-633e236ecada",
+  "source_pin": "83941bc80ce9ec08840b0645d9b33e8018d5309a",
+  "sqlite_sealed_sha256": "a29a5ba1c0cba00c719cf39679fd40183610494eac5b332d846f08660a94834e",
+  "query": "SELECT tick,views FROM frames WHERE match_id=? AND tick IN (3324,3328) ORDER BY tick",
+  "raw_frames": [
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-839-runtime-control-r1/coordination/closed-coop-views-tick-3324.json",
+      "bytes": 259258,
+      "sha256": "37adb272c2f34772e3386ede9980d80cba701859d384ee1e8e549ecb98daff4b",
+      "tick": 3324
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-839-runtime-control-r1/coordination/closed-coop-views-tick-3328.json",
+      "bytes": 259168,
+      "sha256": "d1155ccff21dc7bb5a2f6c87e009836f12cf73d52ac13dc0e3dde267dded93db",
+      "tick": 3328
+    }
+  ],
+  "AI_owner_order_changes": [
+    {
+      "side": 2,
+      "id": 21,
+      "role": "melee",
+      "before": {
+        "type": "idle"
+      },
+      "after": {
+        "type": "attackMove",
+        "x": 47.9,
+        "y": 16.9
+      }
+    },
+    {
+      "side": 2,
+      "id": 93,
+      "role": "ranged",
+      "before": {
+        "type": "idle"
+      },
+      "after": {
+        "type": "attackMove",
+        "x": 47.1,
+        "y": 16.9
+      }
+    },
+    {
+      "side": 2,
+      "id": 103,
+      "role": "ranged",
+      "before": {
+        "type": "idle"
+      },
+      "after": {
+        "type": "attackMove",
+        "x": 47.9,
+        "y": 16.1
+      }
+    },
+    {
+      "side": 3,
+      "id": 28,
+      "role": "melee",
+      "before": {
+        "type": "idle"
+      },
+      "after": {
+        "type": "attackMove",
+        "x": 47.9,
+        "y": 16.9
+      }
+    },
+    {
+      "side": 3,
+      "id": 94,
+      "role": "ranged",
+      "before": {
+        "type": "idle"
+      },
+      "after": {
+        "type": "attackMove",
+        "x": 47.1,
+        "y": 16.9
+      }
+    },
+    {
+      "side": 3,
+      "id": 104,
+      "role": "ranged",
+      "before": {
+        "type": "idle"
+      },
+      "after": {
+        "type": "attackMove",
+        "x": 47.9,
+        "y": 16.1
+      }
+    }
+  ],
+  "checkpoint_tick": 4040,
+  "checkpoint_controllers": [
+    "external",
+    "external",
+    "ai",
+    "ai"
+  ],
+  "checkpoint_teams": [
+    0,
+    0,
+    1,
+    1
+  ],
+  "checkpoint_coordinator": {
+    "nextWaveId": 3,
+    "reservations": [],
+    "waves": []
+  },
+  "checkpoint_aiWave": [
+    0,
+    0,
+    166.35000000000358,
+    166.35000000000358
+  ],
+  "source_metadata_unchanged": true,
+  "limit": "These are later stored frames of the same co-op match after the short browser phase completed. They do not add a synchronized-wave UI check or prove a completed cooperative human victory."
+}

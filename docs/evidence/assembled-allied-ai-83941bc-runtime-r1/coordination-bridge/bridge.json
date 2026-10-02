@@ -1,0 +1,617 @@
+{
+  "scope": "Read-only original63 coordination applicability bridge; not a fresh runtime or complete co-op acceptance claim.",
+  "targetSourcePin": "83941bc80ce9ec08840b0645d9b33e8018d5309a",
+  "retainedSourcePin": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "sourceEquality": {
+    "paths": [
+      "src/core",
+      "src/server"
+    ],
+    "commitDiffExit": 0,
+    "workingTreeVsTargetDiffExit": 0,
+    "teamAiGitBlob": "7ccf72ae132da963b0ac4d1845cf6518df7d59a4",
+    "simulationGitBlob": "66bd44db02798f07467f888ab1193b06b52f364d",
+    "retainedRecordedSha256": {
+      "src/core/team-ai.ts": "246afca59757266635d823fbd943d72ef500db0bab3385107da4f7ca930836b2",
+      "src/core/simulation.ts": "e301c65d0352ffe648a5bc4ee6acbda1f562164deacdfe60f8f3b03e7bdccf35",
+      "src/core/ally-directives.ts": "2111264d57817395be56aa4df2f100c635d37a1433ed5ce0c70a5aa99d4a920b",
+      "src/server/server.ts": "6cee3a6770a2e692ca4ad3ad155c3b06cf6f9116b43460f1eefe7eb7572a1f65"
+    },
+    "sourceManifestPath": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/natural-allied/source-before.json",
+    "sourceManifestRecordedDigest": {
+      "bytes": 7099,
+      "sha256": "0cc3604df57df43454ebd6d99379334a2e09e9a73ab19e07eea5745612e08df3"
+    },
+    "perCaseAfterManifestsRecordedDigest": {
+      "bytes": 7072,
+      "sha256": "4e572f21f1ae916435632e0a9fa3489da9853abf8cb60b6c0fbd0f79497a2979"
+    }
+  },
+  "evidenceDigestMethod": "Digest values copied from the retained envelope artifact indexes; no large-payload digests were recomputed.",
+  "naturalEnvelope": {
+    "manifestPath": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/envelopes/natural-allied/manifest.json",
+    "runPath": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/envelopes/natural-allied/run.json",
+    "artifactIndexPath": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/envelopes/natural-allied/artifacts.json",
+    "result": "passed",
+    "buildId": "5e49e689af13d4eef08c0760f904ad0bce2c2eebaa1144dea5d89cadecf310c0"
+  },
+  "naturalEvidence": [
+    {
+      "reportPath": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/natural-allied/small-orcs-fairies-dwarves-undead.json",
+      "reportRecordedDigest": {
+        "bytes": 128374,
+        "sha256": "526bf743bc143412caf735ed2798c11777f004282729081ed67f2ceef5f8c6c9"
+      },
+      "nativeSavePath": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/natural-allied/small-orcs-fairies-dwarves-undead-save.json",
+      "nativeSaveRecordedDigest": {
+        "bytes": 267855,
+        "sha256": "a1d80ade1337b574034a5a4ad75968f906c216210b85873f64c99e98c835a260"
+      },
+      "configuration": {
+        "map": {
+          "seed": 4127,
+          "size": "small"
+        },
+        "players": [
+          {
+            "id": 0,
+            "teamId": 0,
+            "factionId": "orcs",
+            "controller": "ai",
+            "ai": {
+              "difficulty": "normal",
+              "personality": "balanced"
+            }
+          },
+          {
+            "id": 1,
+            "teamId": 0,
+            "factionId": "fairies",
+            "controller": "ai",
+            "ai": {
+              "difficulty": "normal",
+              "personality": "balanced"
+            }
+          },
+          {
+            "id": 2,
+            "teamId": 1,
+            "factionId": "dwarves",
+            "controller": "ai",
+            "ai": {
+              "difficulty": "normal",
+              "personality": "balanced"
+            }
+          },
+          {
+            "id": 3,
+            "teamId": 1,
+            "factionId": "undead",
+            "controller": "ai",
+            "ai": {
+              "difficulty": "normal",
+              "personality": "balanced"
+            }
+          }
+        ]
+      },
+      "finishSeconds": 718.8999999998939,
+      "winner": 0,
+      "jointSide2Side3Waves": [
+        {
+          "launchPointer": "/launches/1",
+          "planPointer": "/plans/1",
+          "waveId": 2,
+          "tick": 3101,
+          "time": 155.050000000001,
+          "teamId": 1
+        },
+        {
+          "launchPointer": "/launches/7",
+          "planPointer": "/plans/8",
+          "waveId": 9,
+          "tick": 9781,
+          "time": 489.0500000000769,
+          "teamId": 1
+        }
+      ],
+      "example": {
+        "launchPointer": "/launches/1",
+        "planPointer": "/plans/1",
+        "plan": {
+          "time": 152.05000000000032,
+          "tick": 3041,
+          "wave": {
+            "id": 2,
+            "teamId": 1,
+            "target": {
+              "key": "entity:75",
+              "kind": "building",
+              "x": 18.5,
+              "y": 21.5,
+              "observer": 2,
+              "seenAt": 0
+            },
+            "participants": [
+              {
+                "side": 2,
+                "ids": [
+                  123,
+                  132
+                ]
+              },
+              {
+                "side": 3,
+                "ids": [
+                  112,
+                  131
+                ]
+              }
+            ],
+            "launchAt": 155.05000000000032,
+            "expiresAt": 164.05000000000032,
+            "launched": false
+          },
+          "directives": 0,
+          "transfers": 0
+        },
+        "launch": {
+          "time": 155.050000000001,
+          "tick": 3101,
+          "waveId": 2,
+          "teamId": 1,
+          "target": {
+            "key": "entity:75",
+            "kind": "building",
+            "x": 18.5,
+            "y": 21.5,
+            "observer": 2,
+            "seenAt": 0
+          },
+          "synchronized": true,
+          "crossOwner": true,
+          "owners": [
+            {
+              "side": 2,
+              "ids": [
+                123,
+                132
+              ],
+              "aiWave": 155.050000000001,
+              "orders": [
+                {
+                  "id": 123,
+                  "side": 2,
+                  "role": "melee",
+                  "order": {
+                    "type": "attackMove",
+                    "x": 18.9,
+                    "y": 21.9
+                  },
+                  "x": 43.140173013686486,
+                  "y": 43.06531124628668
+                },
+                {
+                  "id": 132,
+                  "side": 2,
+                  "role": "ranged",
+                  "order": {
+                    "type": "attackMove",
+                    "x": 18.1,
+                    "y": 21.9
+                  },
+                  "x": 47.717039414099375,
+                  "y": 42.03208060653009
+                }
+              ]
+            },
+            {
+              "side": 3,
+              "ids": [
+                112,
+                131
+              ],
+              "aiWave": 155.050000000001,
+              "orders": [
+                {
+                  "id": 112,
+                  "side": 3,
+                  "role": "ranged",
+                  "order": {
+                    "type": "attackMove",
+                    "x": 18.9,
+                    "y": 21.9
+                  },
+                  "x": 41.18729227874906,
+                  "y": 37.65235729108076
+                },
+                {
+                  "id": 131,
+                  "side": 3,
+                  "role": "ranged",
+                  "order": {
+                    "type": "attackMove",
+                    "x": 18.1,
+                    "y": 21.9
+                  },
+                  "x": 16.59582653886148,
+                  "y": 43.0699762330194
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "directives": 0,
+      "transfers": 0,
+      "violations": [],
+      "roundtripReported": true,
+      "sourceUnchangedReported": true,
+      "nativeFinalState": {
+        "format": "orcs-vs-fairies-save",
+        "version": 4,
+        "rulesMode": "annihilation",
+        "controllers": [
+          "ai",
+          "ai",
+          "ai",
+          "ai"
+        ],
+        "teams": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "actualMapSize": "large",
+        "coordinator": {
+          "nextWaveId": 14,
+          "reservations": [],
+          "waves": []
+        },
+        "aiWave": [
+          683.7999999999258,
+          683.7999999999258,
+          489.0500000000769,
+          606.2999999999963
+        ]
+      }
+    },
+    {
+      "reportPath": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/natural-allied/medium-dwarves-undead-orcs-fairies.json",
+      "reportRecordedDigest": {
+        "bytes": 124633,
+        "sha256": "93bd95cac03a6807fd79a569bd3a32724c5821782a25188507c6c7e674bc1fe7"
+      },
+      "nativeSavePath": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-453c221-r1/natural-allied/medium-dwarves-undead-orcs-fairies-save.json",
+      "nativeSaveRecordedDigest": {
+        "bytes": 257179,
+        "sha256": "eee09b32d3726c7abedb2fb061e951452a64a89f196718384f20c14663107172"
+      },
+      "configuration": {
+        "map": {
+          "seed": 4127,
+          "size": "medium"
+        },
+        "players": [
+          {
+            "id": 0,
+            "teamId": 1,
+            "factionId": "dwarves",
+            "controller": "ai",
+            "ai": {
+              "difficulty": "normal",
+              "personality": "balanced"
+            }
+          },
+          {
+            "id": 1,
+            "teamId": 1,
+            "factionId": "undead",
+            "controller": "ai",
+            "ai": {
+              "difficulty": "normal",
+              "personality": "balanced"
+            }
+          },
+          {
+            "id": 2,
+            "teamId": 0,
+            "factionId": "orcs",
+            "controller": "ai",
+            "ai": {
+              "difficulty": "normal",
+              "personality": "balanced"
+            }
+          },
+          {
+            "id": 3,
+            "teamId": 0,
+            "factionId": "fairies",
+            "controller": "ai",
+            "ai": {
+              "difficulty": "normal",
+              "personality": "balanced"
+            }
+          }
+        ]
+      },
+      "finishSeconds": 655.3999999999517,
+      "winner": 2,
+      "jointSide2Side3Waves": [
+        {
+          "launchPointer": "/launches/1",
+          "planPointer": "/plans/1",
+          "waveId": 2,
+          "tick": 2304,
+          "time": 115.1999999999956,
+          "teamId": 0
+        },
+        {
+          "launchPointer": "/launches/2",
+          "planPointer": "/plans/2",
+          "waveId": 3,
+          "tick": 3749,
+          "time": 187.45000000000837,
+          "teamId": 0
+        },
+        {
+          "launchPointer": "/launches/4",
+          "planPointer": "/plans/4",
+          "waveId": 5,
+          "tick": 5194,
+          "time": 259.7000000000248,
+          "teamId": 0
+        },
+        {
+          "launchPointer": "/launches/5",
+          "planPointer": "/plans/5",
+          "waveId": 6,
+          "tick": 6639,
+          "time": 331.9500000000412,
+          "teamId": 0
+        }
+      ],
+      "example": {
+        "launchPointer": "/launches/1",
+        "planPointer": "/plans/1",
+        "plan": {
+          "time": 112.14999999999577,
+          "tick": 2243,
+          "wave": {
+            "id": 2,
+            "teamId": 0,
+            "target": {
+              "key": "entity:75",
+              "kind": "building",
+              "x": 18.5,
+              "y": 21.5,
+              "observer": 2,
+              "seenAt": 0
+            },
+            "participants": [
+              {
+                "side": 2,
+                "ids": [
+                  107,
+                  125
+                ]
+              },
+              {
+                "side": 3,
+                "ids": [
+                  28,
+                  123
+                ]
+              }
+            ],
+            "launchAt": 115.14999999999577,
+            "expiresAt": 124.14999999999577,
+            "launched": false
+          },
+          "directives": 0,
+          "transfers": 0
+        },
+        "launch": {
+          "time": 115.1999999999956,
+          "tick": 2304,
+          "waveId": 2,
+          "teamId": 0,
+          "target": {
+            "key": "entity:75",
+            "kind": "building",
+            "x": 18.5,
+            "y": 21.5,
+            "observer": 2,
+            "seenAt": 0
+          },
+          "synchronized": true,
+          "crossOwner": true,
+          "owners": [
+            {
+              "side": 2,
+              "ids": [
+                107,
+                125
+              ],
+              "aiWave": 115.1999999999956,
+              "orders": [
+                {
+                  "id": 107,
+                  "side": 2,
+                  "role": "ranged",
+                  "order": {
+                    "type": "attackMove",
+                    "x": 18.9,
+                    "y": 21.9
+                  },
+                  "x": 44.59330016569286,
+                  "y": 39.857150261231894
+                },
+                {
+                  "id": 125,
+                  "side": 2,
+                  "role": "melee",
+                  "order": {
+                    "type": "attackMove",
+                    "x": 18.1,
+                    "y": 21.9
+                  },
+                  "x": 46.73879260924659,
+                  "y": 40.26149442320141
+                }
+              ]
+            },
+            {
+              "side": 3,
+              "ids": [
+                28,
+                123
+              ],
+              "aiWave": 115.1999999999956,
+              "orders": [
+                {
+                  "id": 28,
+                  "side": 3,
+                  "role": "melee",
+                  "order": {
+                    "type": "attackMove",
+                    "x": 18.9,
+                    "y": 21.9
+                  },
+                  "x": 43.3797645367367,
+                  "y": 40.078382396480414
+                },
+                {
+                  "id": 123,
+                  "side": 3,
+                  "role": "ranged",
+                  "order": {
+                    "type": "attackMove",
+                    "x": 18.1,
+                    "y": 21.9
+                  },
+                  "x": 16.60411581194626,
+                  "y": 43.1789718269657
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "directives": 0,
+      "transfers": 0,
+      "violations": [],
+      "roundtripReported": true,
+      "sourceUnchangedReported": true,
+      "nativeFinalState": {
+        "format": "orcs-vs-fairies-save",
+        "version": 4,
+        "rulesMode": "annihilation",
+        "controllers": [
+          "ai",
+          "ai",
+          "ai",
+          "ai"
+        ],
+        "teams": [
+          1,
+          1,
+          0,
+          0
+        ],
+        "actualMapSize": "large",
+        "coordinator": {
+          "nextWaveId": 17,
+          "reservations": [],
+          "waves": []
+        },
+        "aiWave": [
+          474.15000000007353,
+          474.15000000007353,
+          638.0499999999674,
+          611.049999999992
+        ]
+      }
+    }
+  ],
+  "currentRuntimeAnchors": [
+    {
+      "path": "src/core/team-ai.ts",
+      "line": 75,
+      "fact": "Groups AI reports by teamId; two-owner participation threshold."
+    },
+    {
+      "path": "src/core/team-ai.ts",
+      "line": 135,
+      "fact": "Selects shared approved target, multi-owner troop participants and shared launch time."
+    },
+    {
+      "path": "src/core/team-ai.ts",
+      "line": 102,
+      "fact": "Emits participating owner launch commands for the shared wave."
+    },
+    {
+      "path": "src/core/simulation.ts",
+      "line": 533,
+      "fact": "Calls team coordination in annihilation steps."
+    },
+    {
+      "path": "src/core/simulation.ts",
+      "line": 689,
+      "fact": "Live eligible AI owners supply team-tagged reports; shared planner called at716."
+    },
+    {
+      "path": "src/core/simulation.ts",
+      "line": 727,
+      "fact": "Applies every approved owner launch in one step, storing s.time at729."
+    },
+    {
+      "path": "src/server/server.ts",
+      "line": 217,
+      "fact": "Preserves AI controllers and teams; creates match at225 and steps authoritative state at480."
+    },
+    {
+      "path": "scripts/verify_assembled_coop.mjs",
+      "line": 149,
+      "fact": "Two humans team0, two AI opponents team1."
+    },
+    {
+      "path": "scripts/ai/team-regression.test.ts",
+      "line": 55,
+      "fact": "Reports serialize captured native teamAI waves, owner aiWave clocks and real orders after stepGame."
+    }
+  ],
+  "cooperativeRetry": {
+    "reportPath": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-83941bc-r1/coop-ui/results.json",
+    "reportRecordedDigest": {
+      "bytes": 7396,
+      "sha256": "3e333b5f91cbafcb231f35ab3396bcac29ec2ec5ddd53a0af2bc2ec214884273"
+    },
+    "checks": 14,
+    "completed": true,
+    "teams": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "staleLimitVerbatim": "This proves human co-op, shared team vision, and autonomous combat from both AI opponents. It does not prove synchronized AI waves or a shared target planner; the current AI makes per-player decisions.",
+    "staleLimitLocations": [
+      "scripts/verify_assembled_coop.mjs:195",
+      "work/ai-save401-final-83941bc-r1/coop-ui/results.json:/limits/0"
+    ],
+    "qualification": "The observation limit is correct for this short browser capture. The blanket statement about current per-player AI decisions omits the shared coordinator proven by unchanged source and retained natural waves. The raw script and report remain unchanged."
+  },
+  "claim": "The 839 two-human authoritative co-op setup uses the same coordination runtime that recorded shared targets, waves and dispatch timestamps for AI sides 2 and 3 at 453. This supports the coordination facet through retained equivalent-team evidence and unchanged source; the 839 browser attack observations alone are insufficient.",
+  "limits": [
+    "No new runtime, test, simulation, browser, build, database write, checkout change, source edit or ledger work was performed.",
+    "The 453 natural matches have four AI controllers, rather than two human clients. No new shared-wave telemetry was observed inside the 839 two-human browser match.",
+    "Natural reports contain captured pending and launched wave snapshots. Final native saves have empty active waves and reservations because those records were consumed or pruned; their nextWaveId values are 14 and 17.",
+    "Recorded retained-wave counts omit waves removed on their launch step; order snapshots are read after each step.",
+    "Both requested map sizes normalize to large 64 by 64 maps; only seed 4127, built-in factions and the default map are covered.",
+    "Original 63 architecture acceptance at docs/HUNDRED_FEATURE_ARCHITECTURE.md:273 also asks human cooperation on an objective and match completion. The 14-check 839 co-op run does not establish those additional behaviors.",
+    "The 839 online failure is a separate acceptance result, not addressed by this coordination bridge.",
+    "The original sealed 453 packet preserves its failed co-op phase and rejected product freeze. This bridge does not rewrite that verdict."
+  ]
+}

@@ -1,0 +1,153 @@
+{
+  "capturedAt": "2026-10-01T23:42:45.570159+00:00",
+  "scope": "Small file authentication plus pure Node assertion qualification only. No product import, browser, server, build, simulation or retry.",
+  "sourcePin": "83941bc80ce9ec08840b0645d9b33e8018d5309a",
+  "checks": [
+    {
+      "name": "complete external source copy equals pinned839 Git blob",
+      "passed": true,
+      "details": {
+        "bytes": 27497,
+        "sha256": "f99162c75ae3d55b5f07572294df2dd5fc09a60106f3f95d7e00ddcd36773e45"
+      }
+    },
+    {
+      "name": "sourceCopy small native bytes equal recorded seal",
+      "passed": true,
+      "details": {
+        "bytes": 27497,
+        "sha256": "f99162c75ae3d55b5f07572294df2dd5fc09a60106f3f95d7e00ddcd36773e45"
+      }
+    },
+    {
+      "name": "candidate small native bytes equal recorded seal",
+      "passed": true,
+      "details": {
+        "bytes": 27634,
+        "sha256": "110669533d317e3d7440661e5457e2ef5003053506044376e9c6fc298e5a9a4a"
+      }
+    },
+    {
+      "name": "patch small native bytes equal recorded seal",
+      "passed": true,
+      "details": {
+        "bytes": 1273,
+        "sha256": "cbf54154c3b445b76e982a8b37f97cc382aa7046ba4455c23fb288698fd3861f"
+      }
+    },
+    {
+      "name": "one narrow private-player block is the entire candidate difference",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "all bytes outside the optional-field block including complete save/replay guards remain unchanged",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "pure Node qualification exits zero with no stderr",
+      "passed": true,
+      "details": {
+        "command": [
+          "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+          "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-839-online-optional-proof-r1/qualification/qualify.mjs"
+        ],
+        "exit": 0
+      }
+    },
+    {
+      "name": "pure Node qualification output equals retained result bytes",
+      "passed": true,
+      "details": {
+        "bytes": 937,
+        "sha256": "41262233814494cfb2d5e220eeabe9964d4b86613a4d81fd6c9c83d03a789e2c"
+      }
+    },
+    {
+      "name": "qualification contains eleven cases and no product runtime import",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "original failed online stderr retains final packet seal",
+      "passed": true,
+      "details": {
+        "bytes": 4727,
+        "sha256": "c12ef4da8701f14dd11be5873ce82f3082372ae853e398a2cc75b87d5c8b3599"
+      }
+    },
+    {
+      "name": "original failed online results retains final packet seal",
+      "passed": true,
+      "details": {
+        "bytes": 2309,
+        "sha256": "06bb9f9040d6efca523668bafd0d5dd3885528fdaa4eed64c4b92842d3045ff5"
+      }
+    },
+    {
+      "name": "online remains failed after six partial checks",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "recorded first private-player0 diagnostic distinguishes only displayed heroRecovery key presence",
+      "passed": true,
+      "details": null
+    }
+  ],
+  "passed": true,
+  "diagnostic": {
+    "assertion": "Private player 0 must match its authorized server view",
+    "sourceLine": 100,
+    "callSiteLine": 177,
+    "rawStderrPath": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-83941bc-r1/envelopes/online-ui/stderr.log",
+    "actualRawBlock": "  actual: {\n    faction: 'orcs',\n    wood: 420,\n    ore: 220,\n    crystal: 0,\n    population: 6,\n    cap: 12,\n    heroRecovery: undefined,\n    upgrades: []\n  },\n",
+    "expectedRawBlock": "  expected: {\n    faction: 'orcs',\n    wood: 420,\n    ore: 220,\n    crystal: 0,\n    population: 6,\n    cap: 12,\n    upgrades: []\n  },\n",
+    "typedFields": {
+      "faction": {
+        "actual": "orcs",
+        "expected": "orcs"
+      },
+      "wood": {
+        "actual": 420,
+        "expected": 420
+      },
+      "ore": {
+        "actual": 220,
+        "expected": 220
+      },
+      "crystal": {
+        "actual": 0,
+        "expected": 0
+      },
+      "population": {
+        "actual": 6,
+        "expected": 6
+      },
+      "cap": {
+        "actual": 12,
+        "expected": 12
+      },
+      "upgrades": {
+        "actual": [],
+        "expected": []
+      },
+      "heroRecovery": {
+        "actual": {
+          "present": true,
+          "type": "undefined"
+        },
+        "expected": {
+          "present": false
+        }
+      }
+    },
+    "qualification": "Typed fields transcribe the exact retained Node diagnostic for the first private-player0 object only. No later player or assertion result is inferred."
+  },
+  "limits": [
+    "Candidate is external and has not run against the browser or product runtime.",
+    "Second private-player comparison and all later online checks remain unrun.",
+    "Original failed diagnostic, results and sealed packet remain unchanged."
+  ]
+}

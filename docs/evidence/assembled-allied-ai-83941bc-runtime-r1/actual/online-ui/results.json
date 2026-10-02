@@ -1,0 +1,83 @@
+{
+  "base": "http://127.0.0.1:5371",
+  "startedAt": "2026-10-01T23:22:11.844Z",
+  "buildLabel": "83941bc80ce9ec08840b0645d9b33e8018d5309a",
+  "pageBuilds": [
+    {
+      "profile": "player-one",
+      "capturedAt": "2026-10-01T23:22:12.058Z",
+      "url": "http://127.0.0.1:5371/",
+      "moduleScripts": [
+        "http://127.0.0.1:5371/assets/main-BxMb13AF.js"
+      ],
+      "stylesheets": [
+        "http://127.0.0.1:5371/assets/main-CxCO6VnC.css"
+      ]
+    },
+    {
+      "profile": "player-two",
+      "capturedAt": "2026-10-01T23:22:14.751Z",
+      "url": "http://127.0.0.1:5371/",
+      "moduleScripts": [
+        "http://127.0.0.1:5371/assets/main-BxMb13AF.js"
+      ],
+      "stylesheets": [
+        "http://127.0.0.1:5371/assets/main-CxCO6VnC.css"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "player-one starts from a paused local through normal controls",
+      "details": {
+        "mode": "local",
+        "paused": true,
+        "tick": 14
+      }
+    },
+    {
+      "name": "player-two starts from a paused replay through normal controls",
+      "details": {
+        "mode": "replay",
+        "paused": true,
+        "tick": 0
+      }
+    },
+    {
+      "name": "Separate browser profiles receive separate server guest accounts",
+      "details": true
+    },
+    {
+      "name": "Normal lobby starts eight-slot server match and both Phaser clients join",
+      "details": {
+        "matchId": "8e1f033c-012a-43ef-883d-36d6fe95f8af",
+        "teams": [
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "name": "player-one joins online from paused local with input unpaused",
+      "details": true
+    },
+    {
+      "name": "player-two joins online from paused replay with input unpaused",
+      "details": true
+    }
+  ],
+  "matchId": "8e1f033c-012a-43ef-883d-36d6fe95f8af",
+  "lobbyId": "6d5a80d7-cfb8-447a-8af7-aa8e41f759a1",
+  "completed": false,
+  "failure": {
+    "phase": "creating eight-slot lobby",
+    "message": "Private player 0 must match its authorized server view\n+ actual - expected\n\n  {\n    cap: 12,\n    crystal: 0,\n    faction: 'orcs',\n+   heroRecovery: undefined,\n    ore: 220,\n    population: 6,\n    upgrades: [],\n    wood: 420\n  }\n"
+  },
+  "pageErrors": []
+}

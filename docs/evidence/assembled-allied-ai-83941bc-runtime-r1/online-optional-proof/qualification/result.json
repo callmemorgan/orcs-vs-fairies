@@ -1,0 +1,21 @@
+{
+  "kind": "pure-node-optional-field-qualification",
+  "productRuntimeImported": false,
+  "sourceSha256": "f99162c75ae3d55b5f07572294df2dd5fc09a60106f3f95d7e00ddcd36773e45",
+  "candidateSha256": "110669533d317e3d7440661e5457e2ef5003053506044376e9c6fc298e5a9a4a",
+  "exactSourceReplacement": true,
+  "cases": [
+    "JSON serialization omits an object key whose value is undefined",
+    "preserved diagnostic accepts only undefined heroRecovery omission",
+    "already omitted heroRecovery remains accepted",
+    "defined heroRecovery remains strict",
+    "defined heroRecovery cannot match an omitted key",
+    "defined heroRecovery content mismatch is rejected",
+    "null heroRecovery is not treated as undefined",
+    "another private field mismatch is rejected",
+    "another undefined key is retained and rejected",
+    "an extra defined key is retained and rejected",
+    "a missing ordinary key is rejected"
+  ],
+  "passed": 11
+}

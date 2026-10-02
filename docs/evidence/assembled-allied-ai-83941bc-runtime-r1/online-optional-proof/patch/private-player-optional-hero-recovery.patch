@@ -1,0 +1,14 @@
+--- a/scripts/verify_assembled_online.mjs
++++ b/scripts/verify_assembled_online.mjs
+@@ -97,7 +97,10 @@
+   assert.equal(render.seed,0);assert.equal(view.map.seed,undefined);assert.deepEqual(render.teams,[0,1,0,1,0,1,0,1]);
+   const disclosedPlayers=new Map([[side,view.player],...(view.teamPlayers??[]).map(member=>[member.side,member.player])]);
+   for(let player=0;player<8;player++) {
+-    if(privateSides.includes(player))assert.deepEqual(render.players[player],disclosedPlayers.get(player),`Private player ${player} must match its authorized server view`);
++    if(privateSides.includes(player)) {
++      const privatePlayer={...render.players[player]};if(privatePlayer.heroRecovery===undefined)delete privatePlayer.heroRecovery;
++      assert.deepEqual(privatePlayer,disclosedPlayers.get(player),`Private player ${player} must match its authorized server view`);
++    }
+     else assert.deepEqual(render.players[player],{faction:render.players[player].faction,wood:0,ore:0,crystal:0,population:0,cap:0,upgrades:[]},`Player ${player} economy must remain unavailable`);
+     assert.deepEqual(render.explored[player],player===side?[...view.explored].sort((a,b)=>a-b):[]);
+     assert.deepEqual(render.visible[player],player===side?[...view.visible].sort((a,b)=>a-b):[]);

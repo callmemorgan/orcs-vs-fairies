@@ -1,0 +1,51 @@
+{
+  "reviewer": "GPT-5.6 Sol in Codex",
+  "created_at": "2026-10-02T00:03:42.733208+00:00",
+  "scope": "File-only clarification of two sentences in review.md. The three existing review files remain byte-identical. No new qualification, product checker, build, test, browser, server, simulation, database operation, import, or runtime was performed.",
+  "audit_verdict": "unchanged_pass_with_no_findings",
+  "online_status": "failed_preserved_not_accepted",
+  "candidate_optional_field_condition": {
+    "normalization": "The candidate makes a shallow copy of the rendered private player and deletes only heroRecovery when its value is undefined. It does not mutate the original rendered player and does not normalize any other key.",
+    "accepts": [
+      "The rendered player already omits heroRecovery and the remaining object is strictly deep-equal to the disclosed player.",
+      "The rendered player has an own heroRecovery property whose value is undefined, the disclosed player omits that property, and every remaining field is strictly deep-equal.",
+      "heroRecovery is defined on both objects and the values, along with every other field, are strictly deep-equal."
+    ],
+    "rejects": [
+      "The rendered player has a defined heroRecovery value while the disclosed player omits the property.",
+      "The two objects have different defined heroRecovery content.",
+      "The rendered player has null heroRecovery while the disclosed player omits the property.",
+      "Any other field is missing, extra, mismatched, or retained with an undefined value."
+    ],
+    "strictness": "Defined heroRecovery values remain strict. A matching defined recovery passes; an omitted expected recovery or mismatched defined recovery fails.",
+    "evidence": {
+      "qualification_script": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-839-online-optional-proof-r1/qualification/qualify.mjs",
+      "qualification_script_sha256": "9833224913ffdb7316ee1aa90ba02ffdec004dba3366ed4e6634d64d17ea0dbd",
+      "qualification_result": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-839-online-optional-proof-r1/qualification/result.json",
+      "qualification_result_sha256": "41262233814494cfb2d5e220eeabe9964d4b86613a4d81fd6c9c83d03a789e2c",
+      "retained_cases_passed": 11,
+      "product_runtime_imported": false
+    }
+  },
+  "checker_wording": {
+    "review_sentence_meaning": "The statement that this reviewer did not run a checker refers to a product or runtime checker.",
+    "local_validation_performed": "A local file-only Python static validator did run and passed all 41 audit checks. It read metadata and small files within the review bounds and performed no product or runtime execution."
+  },
+  "preserved_review_files": [
+    {
+      "path": "audit.json",
+      "bytes": 15555,
+      "sha256": "de1df3ada0eb18b13218e7d9ece1fcfb0818aacb2933a8b093fa738d9539cfbb"
+    },
+    {
+      "path": "review.md",
+      "bytes": 7752,
+      "sha256": "14533276613b645afc5a8381b00c5ba01f38b2453e5ebae8f36ca563cd44fce1"
+    },
+    {
+      "path": "first-failures.json",
+      "bytes": 1862,
+      "sha256": "1cf79898523a55374f5b3a9b8f792d169fc5ba976a87349c02d5c99234a0f476"
+    }
+  ]
+}

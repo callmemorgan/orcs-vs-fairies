@@ -1,0 +1,83 @@
+{
+  "kind": "external-online-verifier-candidate",
+  "preparedAt": "2026-10-01T23:36:14Z",
+  "sourcePin": "83941bc80ce9ec08840b0645d9b33e8018d5309a",
+  "sourceParent": "efeb9a8e1363e3360774699ba3facc82ccf3f836",
+  "sourceTree": "f881294cb0479a6d1ed4f00112ac7f9cfa6c0551",
+  "sourcePath": "scripts/verify_assembled_online.mjs",
+  "sourceGitBlob": "fabf32365f9bcbac65b60ead126cb13de23749cc",
+  "sourceCopy": {
+    "path": "source/verify_assembled_online.83941bc.mjs",
+    "bytes": 27497,
+    "sha256": "f99162c75ae3d55b5f07572294df2dd5fc09a60106f3f95d7e00ddcd36773e45",
+    "matchesPinnedGitBlob": true
+  },
+  "candidate": {
+    "path": "candidate/verify_assembled_online.mjs",
+    "bytes": 27634,
+    "sha256": "110669533d317e3d7440661e5457e2ef5003053506044376e9c6fc298e5a9a4a",
+    "completeVerifier": true,
+    "sourceAssertTokens": 91,
+    "candidateAssertTokens": 91,
+    "sourceDeepEqualTokens": 17,
+    "candidateDeepEqualTokens": 17
+  },
+  "patch": {
+    "path": "patch/private-player-optional-hero-recovery.patch",
+    "bytes": 1273,
+    "sha256": "cbf54154c3b445b76e982a8b37f97cc382aa7046ba4455c23fb288698fd3861f",
+    "matchesSourceToCandidateDiff": true,
+    "scope": "Shallow-copy an authorized private rendered player, delete only heroRecovery when its value is undefined, then retain strict deep equality."
+  },
+  "preservedFirstFailure": {
+    "stderr": {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-83941bc-r1/envelopes/online-ui/stderr.log",
+      "bytes": 4727,
+      "sha256": "c12ef4da8701f14dd11be5873ce82f3082372ae853e398a2cc75b87d5c8b3599"
+    },
+    "results": {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/ai-save401-final-83941bc-r1/online-ui/results.json",
+      "bytes": 2309,
+      "sha256": "06bb9f9040d6efca523668bafd0d5dd3885528fdaa4eed64c4b92842d3045ff5",
+      "completed": false,
+      "recordedChecks": 6
+    },
+    "assertionLine": 100,
+    "actualOnlyDifference": "own heroRecovery property with value undefined",
+    "expectedHeroRecoveryKeyPresent": false
+  },
+  "qualification": {
+    "command": "node qualification/qualify.mjs",
+    "script": "qualification/qualify.mjs",
+    "scriptSha256": "9833224913ffdb7316ee1aa90ba02ffdec004dba3366ed4e6634d64d17ea0dbd",
+    "result": "qualification/result.json",
+    "resultBytes": 937,
+    "resultSha256": "41262233814494cfb2d5e220eeabe9964d4b86613a4d81fd6c9c83d03a789e2c",
+    "productRuntimeImported": false,
+    "passedCases": 11,
+    "exactSourceReplacement": true
+  },
+  "writes": {
+    "externalDirectoryOnly": true,
+    "ownedCheckoutModified": false,
+    "productSourceModified": false,
+    "ledgerOrTrailModified": false
+  },
+  "execution": {
+    "pureNodeQualificationOnly": true,
+    "browser": false,
+    "server": false,
+    "build": false,
+    "compiler": false,
+    "simulation": false,
+    "databaseWrite": false,
+    "codec": false,
+    "retry": false
+  },
+  "limits": [
+    "The candidate has not run in a browser or against product runtime code.",
+    "Only the first observed assertion mismatch is addressed.",
+    "The second private-player assertion and every later online verifier check remain unproven.",
+    "No later pass or online acceptance is claimed."
+  ]
+}

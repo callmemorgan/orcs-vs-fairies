@@ -1,0 +1,89 @@
+{
+  "observedAt": "2026-10-02T00:17:46.340538+00:00",
+  "producer": {
+    "harness": "Codex",
+    "model": "GPT-6",
+    "agent": "/root"
+  },
+  "featureId": 63,
+  "originalRequirement": "human teammates fight coordinated computer opponents.",
+  "decision": "verified",
+  "basis": "Two separate human guest clients join the same allied match, receive shared vision, spend resources and scout; both AI opponents fight and build. Later native frames and checkpoint from the same match record a coordinated attack. Relevant core/server/test bytes are unchanged at root.",
+  "sourcePin": "83941bc80ce9ec08840b0645d9b33e8018d5309a",
+  "rootPreAdmissionHead": "fc7c04d37b43c6896565e9dfa0d4ff318060065d",
+  "rootRelevantSourceDiffEmpty": true,
+  "selectedRetainedPassingAssertions": [
+    {
+      "title": "keeps one distinct scout and launches both approved armies in the same tick despite different decision cadences",
+      "status": "passed"
+    },
+    {
+      "title": "continues pending directives, support and coordinated plans byte for byte after saving on every tick",
+      "status": "passed"
+    }
+  ],
+  "rootVisualInspection": [
+    "cooperative-lobby.png confirms human/human/AI/AI roster and teams",
+    "human-one-combat.png shows active rendered battlefield and HUD"
+  ],
+  "artifacts": [
+    {
+      "path": "docs/evidence/assembled-allied-ai-83941bc-runtime-r1/root-retention.json",
+      "bytes": 156146,
+      "sha256": "65e0a919b6953ed99d05cdb4005eee511db77ec1f557bc6d18b6c7a77134bf5b"
+    },
+    {
+      "path": "docs/evidence/assembled-allied-ai-83941bc-runtime-r1/actual/coop-ui/results.json",
+      "bytes": 7396,
+      "sha256": "3e333b5f91cbafcb231f35ab3396bcac29ec2ec5ddd53a0af2bc2ec214884273"
+    },
+    {
+      "path": "docs/evidence/assembled-allied-ai-83941bc-runtime-r1/actual/online-ui/results.json",
+      "bytes": 2309,
+      "sha256": "06bb9f9040d6efca523668bafd0d5dd3885528fdaa4eed64c4b92842d3045ff5"
+    },
+    {
+      "path": "docs/evidence/assembled-allied-ai-83941bc-runtime-r1/control/closing/coordination-admission.json",
+      "bytes": 11725,
+      "sha256": "22ae20e17c825662e9aed7af231037591a3e9a9f0e15e7d80a28ca8315fd8dff"
+    },
+    {
+      "path": "docs/evidence/assembled-allied-ai-83941bc-runtime-r1/control/closing/root-coordination-readback.json",
+      "bytes": 4199,
+      "sha256": "2c6de4df55979a4d93ea5c3b0920da1cd733848370fbac0112f2eb35dacc42fb"
+    },
+    {
+      "path": "docs/evidence/assembled-allied-ai-83941bc-runtime-r1/coordination-bridge/qualification.json",
+      "bytes": 16801,
+      "sha256": "fb96bc088d4dea716ca92a71ee1c88d89cb0972503dc9f06396f396fc1eee150"
+    },
+    {
+      "path": "docs/evidence/assembled-allied-ai-83941bc-runtime-r1/review/audit.json",
+      "bytes": 15555,
+      "sha256": "de1df3ada0eb18b13218e7d9ece1fcfb0818aacb2933a8b093fa738d9539cfbb"
+    },
+    {
+      "path": "docs/evidence/assembled-allied-ai-83941bc-runtime-r1/review/review.md",
+      "bytes": 7752,
+      "sha256": "14533276613b645afc5a8381b00c5ba01f38b2453e5ebae8f36ca563cd44fce1"
+    },
+    {
+      "path": "docs/evidence/assembled-allied-ai-83941bc-runtime-r1/review/clarifications.json",
+      "bytes": 3203,
+      "sha256": "9e2174788185a766f181049575702d1c8420a25afdc47449afb3c677cfa702dc"
+    },
+    {
+      "path": "docs/evidence/assembled-allied-ai-83941bc-runtime-r1/review/key-presence-addendum.json",
+      "bytes": 854,
+      "sha256": "eb1578c8528a717173e85a94864f7a2ae991db8bac6a41d428a25e90b0cd2dc9"
+    }
+  ],
+  "qualifications": [
+    "Browser14checks end aroundtick408; native frames3324/3328 and checkpoint4040 are later records from the same still-running match.",
+    "No human objective completion, full match outcome or cooperative victory is claimed or required by the original sentence.",
+    "The original stale per-player-planner limit remains unchanged and is qualified by the coordination admission.",
+    "Online remains failed after6partialchecks; retained candidate has no product runtime acceptance.",
+    "Raw SQLite remains external, unencoded and preserved; this import used the prior full-read seal and current stat only.",
+    "The independent review lacked raw workspace transcripts; retained original receipts and trails are available."
+  ]
+}
