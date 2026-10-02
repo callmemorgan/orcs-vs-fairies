@@ -1,0 +1,215 @@
+{
+  "at": "2026-10-02T05:40:37.723173+00:00",
+  "checks": {
+    "bothHeldPidfdsReadyAfterNaturalExits": true,
+    "coordinatorPidStartAndReservedSessionUnchanged": true,
+    "descendantExecutableCwdAndArgvUnchanged": true,
+    "descendantPidAndStartUnchanged": true,
+    "descendantSessionChangesToItsOwnPid": true,
+    "heldPidfdsValidAndNonreadyAroundEveryLiveObservation": true,
+    "newDescendantInitiallyInOriginalCoordinatorSession": true
+  },
+  "command": [
+    "/home/linuxbrew/.linuxbrew/opt/python@3.14/bin/python3.14",
+    "-I",
+    "-u",
+    "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/session-coordinator.py",
+    "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/session-child.py"
+  ],
+  "coordinatorPidfdAfterNaturalExit": {
+    "events": [
+      [
+        4,
+        17
+      ]
+    ],
+    "ready": true,
+    "valid": true
+  },
+  "descendantPidfdAfterNaturalExit": {
+    "events": [
+      [
+        7,
+        17
+      ]
+    ],
+    "ready": true,
+    "valid": true
+  },
+  "exitCode": 0,
+  "heldPidfds": {
+    "coordinator": 4,
+    "descendant": 7
+  },
+  "heldPidfdsClosedOnlyAfterAllObservations": true,
+  "observations": [
+    {
+      "at": "2026-10-02T05:40:37.716371+00:00",
+      "identity": {
+        "argv": [
+          "/home/linuxbrew/.linuxbrew/opt/python@3.14/bin/python3.14",
+          "-I",
+          "-u",
+          "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/session-coordinator.py",
+          "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/session-child.py"
+        ],
+        "cwd": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/session-cwd",
+        "executable": "/home/linuxbrew/.linuxbrew/Cellar/python@3.14/3.14.7/bin/python3.14",
+        "pid": 1898276,
+        "session": 1898276,
+        "startTicks": 9553131
+      },
+      "phase": "coordinator before descendant setsid",
+      "pidfdAfter": {
+        "events": [],
+        "ready": false,
+        "valid": true
+      },
+      "pidfdBefore": {
+        "events": [],
+        "ready": false,
+        "valid": true
+      },
+      "rawCmdlineHex": "2f686f6d652f6c696e7578627265772f2e6c696e7578627265772f6f70742f707974686f6e40332e31342f62696e2f707974686f6e332e3134002d49002d75002f746d702f6f76662d6665617475726536332d72322d6964656e746974792d73656d616e746963732d6172636869746563747572652d6e7359514c5038552f73657373696f6e2d636f6f7264696e61746f722e7079002f746d702f6f76662d6665617475726536332d72322d6964656e746974792d73656d616e746963732d6172636869746563747572652d6e7359514c5038552f73657373696f6e2d6368696c642e707900",
+      "rawStatAfter": "1898276 (python3.14) S 1898269 1898276 1898276 0 -1 4194304 1554 0 0 0 1 0 0 0 12 -8 1 0 9553131 20877312 2990 18446744073709551615 94241014247424 94241014247785 140720322453952 0 0 0 0 16781312 2 1 0 0 17 6 0 0 0 0 0 94241014267904 94241014269888 94241901436928 140720322460969 140720322461199 140720322461199 140720322465726 0\n",
+      "rawStatBefore": "1898276 (python3.14) S 1898269 1898276 1898276 0 -1 4194304 1554 0 0 0 1 0 0 0 12 -8 1 0 9553131 20877312 2990 18446744073709551615 94241014247424 94241014247785 140720322453952 0 0 0 0 16781312 2 1 0 0 17 6 0 0 0 0 0 94241014267904 94241014269888 94241901436928 140720322460969 140720322461199 140720322461199 140720322465726 0\n",
+      "withinObservationStable": true
+    },
+    {
+      "at": "2026-10-02T05:40:37.716456+00:00",
+      "identity": {
+        "argv": [
+          "/home/linuxbrew/.linuxbrew/opt/python@3.14/bin/python3.14",
+          "-I",
+          "-u",
+          "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/session-child.py"
+        ],
+        "cwd": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/session-cwd",
+        "executable": "/home/linuxbrew/.linuxbrew/Cellar/python@3.14/3.14.7/bin/python3.14",
+        "pid": 1898277,
+        "session": 1898276,
+        "startTicks": 9553133
+      },
+      "phase": "descendant admitted in coordinator session",
+      "pidfdAfter": {
+        "events": [],
+        "ready": false,
+        "valid": true
+      },
+      "pidfdBefore": {
+        "events": [],
+        "ready": false,
+        "valid": true
+      },
+      "rawCmdlineHex": "2f686f6d652f6c696e7578627265772f2e6c696e7578627265772f6f70742f707974686f6e40332e31342f62696e2f707974686f6e332e3134002d49002d75002f746d702f6f76662d6665617475726536332d72322d6964656e746974792d73656d616e746963732d6172636869746563747572652d6e7359514c5038552f73657373696f6e2d6368696c642e707900",
+      "rawStatAfter": "1898277 (python3.14) S 1898276 1898276 1898276 0 -1 4194304 1216 0 0 0 0 0 0 0 12 -8 1 0 9553133 19099648 2656 18446744073709551615 94120011186176 94120011186537 140730802927376 0 0 0 0 16781312 2 1 0 0 17 7 0 0 0 0 0 94120011206656 94120011208640 94120612921344 140730802933119 140730802933263 140730802933263 140730802937790 0\n",
+      "rawStatBefore": "1898277 (python3.14) S 1898276 1898276 1898276 0 -1 4194304 1216 0 0 0 0 0 0 0 12 -8 1 0 9553133 19099648 2656 18446744073709551615 94120011186176 94120011186537 140730802927376 0 0 0 0 16781312 2 1 0 0 17 7 0 0 0 0 0 94120011206656 94120011208640 94120612921344 140730802933119 140730802933263 140730802933263 140730802937790 0\n",
+      "withinObservationStable": true
+    },
+    {
+      "at": "2026-10-02T05:40:37.716645+00:00",
+      "identity": {
+        "argv": [
+          "/home/linuxbrew/.linuxbrew/opt/python@3.14/bin/python3.14",
+          "-I",
+          "-u",
+          "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/session-child.py"
+        ],
+        "cwd": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/session-cwd",
+        "executable": "/home/linuxbrew/.linuxbrew/Cellar/python@3.14/3.14.7/bin/python3.14",
+        "pid": 1898277,
+        "session": 1898277,
+        "startTicks": 9553133
+      },
+      "phase": "same admitted descendant after setsid",
+      "pidfdAfter": {
+        "events": [],
+        "ready": false,
+        "valid": true
+      },
+      "pidfdBefore": {
+        "events": [],
+        "ready": false,
+        "valid": true
+      },
+      "rawCmdlineHex": "2f686f6d652f6c696e7578627265772f2e6c696e7578627265772f6f70742f707974686f6e40332e31342f62696e2f707974686f6e332e3134002d49002d75002f746d702f6f76662d6665617475726536332d72322d6964656e746974792d73656d616e746963732d6172636869746563747572652d6e7359514c5038552f73657373696f6e2d6368696c642e707900",
+      "rawStatAfter": "1898277 (python3.14) S 1898276 1898277 1898277 0 -1 4194304 1217 0 0 0 0 0 0 0 12 -8 1 0 9553133 19099648 2656 18446744073709551615 94120011186176 94120011186537 140730802927376 0 0 0 0 16781312 2 1 0 0 17 7 0 0 0 0 0 94120011206656 94120011208640 94120612921344 140730802933119 140730802933263 140730802933263 140730802937790 0\n",
+      "rawStatBefore": "1898277 (python3.14) S 1898276 1898277 1898277 0 -1 4194304 1217 0 0 0 0 0 0 0 12 -8 1 0 9553133 19099648 2656 18446744073709551615 94120011186176 94120011186537 140730802927376 0 0 0 0 16781312 2 1 0 0 17 7 0 0 0 0 0 94120011206656 94120011208640 94120612921344 140730802933119 140730802933263 140730802933263 140730802937790 0\n",
+      "withinObservationStable": true
+    },
+    {
+      "at": "2026-10-02T05:40:37.716716+00:00",
+      "identity": {
+        "argv": [
+          "/home/linuxbrew/.linuxbrew/opt/python@3.14/bin/python3.14",
+          "-I",
+          "-u",
+          "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/session-coordinator.py",
+          "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/session-child.py"
+        ],
+        "cwd": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/session-cwd",
+        "executable": "/home/linuxbrew/.linuxbrew/Cellar/python@3.14/3.14.7/bin/python3.14",
+        "pid": 1898276,
+        "session": 1898276,
+        "startTicks": 9553131
+      },
+      "phase": "coordinator after descendant setsid",
+      "pidfdAfter": {
+        "events": [],
+        "ready": false,
+        "valid": true
+      },
+      "pidfdBefore": {
+        "events": [],
+        "ready": false,
+        "valid": true
+      },
+      "rawCmdlineHex": "2f686f6d652f6c696e7578627265772f2e6c696e7578627265772f6f70742f707974686f6e40332e31342f62696e2f707974686f6e332e3134002d49002d75002f746d702f6f76662d6665617475726536332d72322d6964656e746974792d73656d616e746963732d6172636869746563747572652d6e7359514c5038552f73657373696f6e2d636f6f7264696e61746f722e7079002f746d702f6f76662d6665617475726536332d72322d6964656e746974792d73656d616e746963732d6172636869746563747572652d6e7359514c5038552f73657373696f6e2d6368696c642e707900",
+      "rawStatAfter": "1898276 (python3.14) S 1898269 1898276 1898276 0 -1 4194304 1554 0 0 0 1 0 0 0 12 -8 1 0 9553131 20877312 2990 18446744073709551615 94241014247424 94241014247785 140720322453952 0 0 0 0 16781312 2 1 0 0 17 6 0 0 0 0 0 94241014267904 94241014269888 94241901436928 140720322460969 140720322461199 140720322461199 140720322465726 0\n",
+      "rawStatBefore": "1898276 (python3.14) S 1898269 1898276 1898276 0 -1 4194304 1554 0 0 0 1 0 0 0 12 -8 1 0 9553131 20877312 2990 18446744073709551615 94241014247424 94241014247785 140720322453952 0 0 0 0 16781312 2 1 0 0 17 6 0 0 0 0 0 94241014267904 94241014269888 94241901436928 140720322460969 140720322461199 140720322461199 140720322465726 0\n",
+      "withinObservationStable": true
+    },
+    {
+      "at": "2026-10-02T05:40:37.719999+00:00",
+      "identity": {
+        "argv": [
+          "/home/linuxbrew/.linuxbrew/opt/python@3.14/bin/python3.14",
+          "-I",
+          "-u",
+          "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/session-coordinator.py",
+          "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/session-child.py"
+        ],
+        "cwd": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/session-cwd",
+        "executable": "/home/linuxbrew/.linuxbrew/Cellar/python@3.14/3.14.7/bin/python3.14",
+        "pid": 1898276,
+        "session": 1898276,
+        "startTicks": 9553131
+      },
+      "phase": "unreaped coordinator before natural exit",
+      "pidfdAfter": {
+        "events": [],
+        "ready": false,
+        "valid": true
+      },
+      "pidfdBefore": {
+        "events": [],
+        "ready": false,
+        "valid": true
+      },
+      "rawCmdlineHex": "2f686f6d652f6c696e7578627265772f2e6c696e7578627265772f6f70742f707974686f6e40332e31342f62696e2f707974686f6e332e3134002d49002d75002f746d702f6f76662d6665617475726536332d72322d6964656e746974792d73656d616e746963732d6172636869746563747572652d6e7359514c5038552f73657373696f6e2d636f6f7264696e61746f722e7079002f746d702f6f76662d6665617475726536332d72322d6964656e746974792d73656d616e746963732d6172636869746563747572652d6e7359514c5038552f73657373696f6e2d6368696c642e707900",
+      "rawStatAfter": "1898276 (python3.14) S 1898269 1898276 1898276 0 -1 4194304 1554 1218 0 0 1 0 0 0 12 -8 1 0 9553131 20877312 2990 18446744073709551615 94241014247424 94241014247785 140720322453952 0 0 0 0 16781312 2 1 0 0 17 6 0 0 0 0 0 94241014267904 94241014269888 94241901436928 140720322460969 140720322461199 140720322461199 140720322465726 0\n",
+      "rawStatBefore": "1898276 (python3.14) S 1898269 1898276 1898276 0 -1 4194304 1554 1218 0 0 1 0 0 0 12 -8 1 0 9553131 20877312 2990 18446744073709551615 94241014247424 94241014247785 140720322453952 0 0 0 0 16781312 2 1 0 0 17 6 0 0 0 0 0 94241014267904 94241014269888 94241901436928 140720322460969 140720322461199 140720322461199 140720322465726 0\n",
+      "withinObservationStable": true
+    }
+  ],
+  "schema": "feature63-isolated-descendant-session-semantics-v1",
+  "scope": {
+    "broadPpidArgvOrSessionGroupAdmissionUsed": false,
+    "gameBrowserServerOrDatabaseUsed": false,
+    "ordinaryCoordinatorAndDescendantOnly": true,
+    "r2OffendingTupleOrCauseEstablished": false,
+    "rootCheckoutWritten": false,
+    "signalsSent": 0
+  },
+  "status": "PASS"
+}

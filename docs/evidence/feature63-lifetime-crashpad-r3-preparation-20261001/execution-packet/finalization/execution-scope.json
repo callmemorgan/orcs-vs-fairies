@@ -1,0 +1,42 @@
+{
+  "at": "2026-10-02T06:17:30.229458+00:00",
+  "concreteReviewStatus": "PASS_STATIC_WITH_REQUIRED_FINALIZATION_GUARDS_RUNTIME_HELD",
+  "futureRootExecutionPin": null,
+  "generatorFinalizationPermitted": "Exactly four reviewed top-level anchors; logic unchanged",
+  "inputReviewSealPreserved": {
+    "bytes": 13756,
+    "mode": 420,
+    "path": "/tmp/ovf-feature63-static-prep-r3-zsttudqb/packet/final-static-seal-r3.json",
+    "sha256": "733a21a32c8ae251161ac6af8ba8118a2283c645b0063cc670b09e50fd569dac"
+  },
+  "launcherRuntimeAnchorsUnfilled": true,
+  "newCaptureApproved": false,
+  "packet": "/tmp/ovf-feature63-r3-execution-packet-upoca1fi/packet",
+  "positiveClosureGuardRequirements": [
+    {
+      "id": "generator-four-anchor-fill",
+      "requirement": "The final generator copy may change exactly four top-level anchors: DRAFT_READY_FOR_ROOT_BINDINGS from false to true, PACKET from null to the sealed execution packet Path, SEAL_SHA from null to that packet's exact digest, and CURRENT_CANDIDATE_REVIEW_STATUS from null to this receipt's exact status. The consolidated handoff currently names only packet, seal, and review status; omitting the readiness boolean leaves the generator permanently inactive. No other generator byte may change without another review."
+    },
+    {
+      "id": "launcher-anchor-only-fill",
+      "requirement": "The final launcher copy may fill ROOT_RUNTIME_ANCHORS_FILLED, CONTROL, ASSIGNMENT, DIGEST, DISPOSITION, DISPOSITION_SHA, PIN, and SLOT_TOKEN only. WRAPPER_SHA must remain f5b5428c531e99f15885cd48a513d4167aea02bab461f998a99719315d9ddc70 and all logic bytes must remain unchanged."
+    },
+    {
+      "id": "fresh-control-directory",
+      "requirement": "Root must bind CONTROL to a fresh private empty directory before launch and retain its path/mode/readback. The launcher uses exclusive creation for fixed JSON files but appends independent-observations.ndjson, so freshness must come from the root execution packet rather than an in-template empty-directory assertion."
+    },
+    {
+      "id": "closure-disposition-fields",
+      "requirement": "A positive root closure disposition must require wrapperExitCode to be non-null, wrapperLifetimeReadback.rememberedIdentityStillLive false, wrapperLifetimeReadback.observationFailure null, allRememberedRegisteredIdentitiesNotLive true, everyRememberedLifetimeObservationComplete true, and privateListenersAbsent true. The allRemembered aggregate covers registered native resources and does not include the wrapper. unobservedDescendantsExcluded remains false and cannot be promoted."
+    },
+    {
+      "id": "review-status-binding",
+      "requirement": "The execution packet must retain this concrete receipt, seal its exact descriptor, and fill CURRENT_CANDIDATE_REVIEW_STATUS with PASS_STATIC_WITH_REQUIRED_FINALIZATION_GUARDS_RUNTIME_HELD. Root's separate dedicatedReviewApproved assertion remains required."
+    }
+  ],
+  "rootNativeLifetimeDispositionRequired": true,
+  "rootSourceImportProductPackagingBindingsRuntimeBuildOrDbContentsPerformed": false,
+  "schema": "feature63-r3-reviewed-static-execution-packet-scope-v1",
+  "scriptsAndTemplatesUnchangedFromReviewedBytes": true,
+  "unobservedDescendantsExcluded": false
+}

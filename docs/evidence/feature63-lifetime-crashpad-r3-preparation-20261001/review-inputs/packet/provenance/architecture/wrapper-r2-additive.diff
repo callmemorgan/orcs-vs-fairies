@@ -1,0 +1,142 @@
+--- /tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/run-minimal63.candidate.py
++++ /tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/run-minimal63.candidate-r2.py
+@@ -202,17 +202,38 @@
+             'cmdline': {'nulBytesHex': None if raw is None else raw.hex(), 'nulSeparatedArgv': argv}}
+ 
+ 
++def protected_descendant_binding(assignment, record):
++    # Validate every protected-preview invariant before handling target exit races.
++    check = protected(assignment)
++    observed = owned_observation(record)
++    if observed is None:
++        return False  # owned_observation returns None only when the held pidfd is ready.
++    pid = record['lifetimeIdentity']['pid']
++    require(pid != 1063, 'Descendant is the protected process')
++    namespace = os.readlink('/proc/self/ns/net')
++    try:
++        require(os.readlink('/proc/' + str(pid) + '/ns/net') == namespace,
++                'Candidate network namespace differs')
++        require(not (sockets(pid) & set(check['listeningSockets'])),
++                'Candidate holds a protected 4173 listening socket')
++    except (FileNotFoundError, ProcessLookupError):
++        if not pidfd_live(record['pidfd']):
++            return False
++        raise RuntimeError('Candidate namespace/socket snapshot unavailable while bound pidfd remains live; no signal is permitted')
++    return owned_observation(record) is not None
++
++
+ def owned_observation(record):
+     if not pidfd_live(record['pidfd']):
+         return None
+-    value = (managed_process_observation(record) if record['admitted'] else
+-             process_observation(record['immutableIdentity']['pid']))
++    value = (process_observation(record['immutableIdentity']['pid'])
++             if record['directRoot'] and not record['admitted'] else managed_process_observation(record))
+     if value is None:
+         if not pidfd_live(record['pidfd']):
+             return None
+         require_managed_identity(False, record, None,
+             'Managed process snapshot unavailable while bound pidfd remains live; no signal is permitted')
+-    if not record['admitted']:
++    if record['directRoot'] and not record['admitted']:
+         require_managed_identity(value['immutableIdentity'] == record['immutableIdentity'], record, value,
+             'Managed PID/start/session/executable/cwd changed during initial binding; no signal is permitted')
+     else:
+@@ -400,7 +421,7 @@
+         ident = observed['identity']
+         immutable = observed['immutableIdentity']
+         root = self.roots[family]
+-        require(root is not None and immutable['session'] == root['pid'], 'Resource is outside its original owned session')
++        require(root is not None, 'Original owned root reservation is missing')
+         key = (ident['pid'], ident['startTicks'])
+         if key in self.resources:
+             record = self.resources[key]
+@@ -408,26 +429,56 @@
+                     and record['family'] == family, 'Previously registered lifetime identity or family changed')
+             self.observe(record)
+             return
++        direct_root = ident['pid'] == root['pid']
++        admission_session = immutable['session'] if direct_root else observed['admissionSession']
++        lifetime = ({key: immutable[key] for key in ('pid', 'startTicks')} if direct_root else
++                    observed['admissionLifetimeIdentity'])
++        require(admission_session == root['pid'], 'Resource was not initially observed in its original owned session')
++        if not direct_root:
++            require(observed['kernelBefore'] == observed['kernelAfter'] == lifetime,
++                    'New descendant PID/start changed during original-session observation; comparison=' +
++                    json.dumps({'expectedLifetimeIdentity': lifetime, 'actualObservation': observed}, sort_keys=True))
++
++        def skipped(reason):
++            protected(self.assignment)  # Target disappearance never suppresses a preview failure.
++            self.event('transient native descendant not admitted', family=family,
++                       identity=ident, immutableIdentity=immutable, lifetimeIdentity=lifetime,
++                       originalAdmittedSession=admission_session, directRoot=False,
++                       originalObservation=observed, reason=reason, signalsSent=0,
++                       unobservedDescendantsExcluded=False)
++
+         require(hasattr(os, 'pidfd_open') and hasattr(signal, 'pidfd_send_signal'), 'Kernel-bound pidfd signaling is required')
+-        fd = os.pidfd_open(ident['pid'])
++        try:
++            fd = os.pidfd_open(ident['pid'])
++        except ProcessLookupError:
++            if direct_root:
++                raise
++            skipped('pidfd_open reported that the initially observed descendant PID vanished')
++            return
+         record = {'identity': ident, 'immutableIdentity': immutable, 'family': family,
+-                  'pidfd': fd, 'admitted': False, 'directRoot': ident['pid'] == root['pid'],
+-                  'lifetimeIdentity': {key: immutable[key] for key in ('pid', 'startTicks')},
+-                  'originalAdmittedSession': immutable['session'],
++                  'pidfd': fd, 'admitted': False, 'directRoot': direct_root,
++                  'lifetimeIdentity': lifetime, 'originalAdmittedSession': admission_session,
+                   'lastObservation': {key: item for key, item in observed.items() if key != 'observedAt'}}
+         try:
+-            require(owned_observation(record) is not None, 'Process exited while opening pidfd')
+-            protected(self.assignment, record)
+-            record['admitted'] = True  # Full binding and protected checks have passed.
++            bound_observation = owned_observation(record)
++            if bound_observation is None and not direct_root:
++                skipped('held pidfd reported descendant exit during initial binding')
++                return
++            require(bound_observation is not None, 'Process exited while opening pidfd')
++            if direct_root:
++                protected(self.assignment, record)
++            elif not protected_descendant_binding(self.assignment, record):
++                skipped('held pidfd reported descendant exit during protected candidate checks')
++                return
++            record['admitted'] = True  # Bound lifetime and all protected checks have passed.
+             self.resources[key] = record
+             self.event('registered native resource', identity=ident, immutableIdentity=immutable,
+                        cmdline=observed['cmdline'], family=family, lifetimeIdentity=record['lifetimeIdentity'],
+                        originalAdmittedSession=record['originalAdmittedSession'], directRoot=record['directRoot'])
+             self.observe(record)
+-        except Exception:
++        finally:
+             if key not in self.resources:
+                 os.close(fd)
+-            raise
+ 
+     def exited(self, family):
+         # Observing /proc never wait()s or reaps a child. The direct PID remains reserved.
+@@ -472,9 +523,12 @@
+                 require(known['family'] == family, 'Registered lifetime family changed')
+                 self.observe(known)
+                 continue
+-            observed = process_observation(pid)
++            # The first stat observed membership in a still-reserved original SID.
++            lifetime = {'pid': pid, 'startTicks': state['startTicks']}
++            observed = managed_process_observation({'lifetimeIdentity': lifetime})
+             if observed is not None:
+-                require(observed['immutableIdentity']['session'] == self.roots[family]['pid'], 'Resource left its admitted session')
++                observed['admissionSession'] = state['session']
++                observed['admissionLifetimeIdentity'] = lifetime
+                 self.register(observed, family)
+         for value in self.resources.values():
+             if selected_family is not None and value['family'] != selected_family:
+@@ -515,6 +569,7 @@
+         return ident
+ 
+     def send(self, record, signum):
++        require(record['admitted'] is True, 'Only admitted held-pidfd lifetimes may receive signals')
+         ident = record['identity']
+         if self.observe(record) is None:
+             return

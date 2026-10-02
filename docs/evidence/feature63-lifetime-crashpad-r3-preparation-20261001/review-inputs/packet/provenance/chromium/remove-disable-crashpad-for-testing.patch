@@ -1,0 +1,11 @@
+--- scripts/feature63/run-minimal63.py
++++ scripts/feature63/run-minimal63.py
+@@ -589,7 +589,7 @@
+             'processIdentity': server, 'listenerSockets': server_sockets, 'freshDatabase': fresh_db})
+         browser_command = [browser['chromiumExecutable']['path'], '--headless=new', '--no-sandbox',
+                            '--enable-unsafe-swiftshader', '--disable-dev-shm-usage',
+-                           '--disable-crash-reporter', '--disable-breakpad', '--disable-crashpad-for-testing',
++                           '--disable-crash-reporter', '--disable-breakpad',
+                            '--remote-debugging-address=127.0.0.1', '--remote-debugging-port=5374',
+                            '--user-data-dir=' + str(PREFIX / 'browser-profile'), '--no-first-run', '--no-default-browser-check', 'about:blank']
+         chrome = manager.start('browser', browser_command, env)

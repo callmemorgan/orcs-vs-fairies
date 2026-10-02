@@ -1,0 +1,277 @@
+--- /tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/run-minimal63.original.py
++++ /tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/run-minimal63.candidate-r2.py
+@@ -141,14 +141,110 @@
+     return not ready
+ 
+ 
++def require_managed_identity(ok, record, observed, message):
++    if ok:
++        return
++    details = {'family': record['family'], 'admitted': record['admitted'],
++               'directRoot': record['directRoot'], 'lifetimeIdentity': record['lifetimeIdentity'],
++               'originalAdmittedSession': record['originalAdmittedSession'],
++               'expectedRegisteredIdentity': record['immutableIdentity'],
++               'actualObservation': observed, 'pidfdLiveBeforeObservation': True,
++               'pidfdLiveAfterObservation': 'not checked because identity guard failed'}
++    raise RuntimeError(message + '; comparison=' + json.dumps(details, sort_keys=True))
++
++
++def managed_process_observation(record):
++    # Admitted lifetime ownership is separate from mutable process context.
++    pid = record['lifetimeIdentity']['pid']
++    p = Path('/proc') / str(pid)
++    unavailable = []
++
++    def read_stat():
++        try:
++            raw = (p / 'stat').read_text()
++            fields = raw[raw.rfind(')') + 2:].split()
++            return None if fields[0] in ('Z', 'X') else fields
++        except (FileNotFoundError, ProcessLookupError):
++            return None
++
++    def read_link(name, phase):
++        try:
++            return os.readlink(p / name)
++        except OSError as error:
++            unavailable.append({'field': name, 'phase': phase, 'error': type(error).__name__})
++            return None
++
++    before = read_stat()
++    if before is None:
++        return None
++    context_before = {'session': int(before[3]), 'executable': read_link('exe', 'before'),
++                      'cwd': read_link('cwd', 'before')}
++    try:
++        raw = (p / 'cmdline').read_bytes()
++    except OSError as error:
++        unavailable.append({'field': 'cmdline', 'phase': 'single read', 'error': type(error).__name__})
++        raw = None
++    context_after = {'executable': read_link('exe', 'after'), 'cwd': read_link('cwd', 'after')}
++    after = read_stat()
++    if after is None:
++        return None
++    context_after['session'] = int(after[3])
++    argv = None if raw is None else [part.decode(errors='replace') for part in raw.split(b'\0') if part]
++    kernel_before = {'pid': pid, 'startTicks': int(before[19])}
++    kernel_after = {'pid': pid, 'startTicks': int(after[19])}
++    current = {**kernel_after, **context_after}
++    return {'observedAt': now(), 'identity': {**kernel_after, 'executable': context_after['executable'],
++            'cwd': context_after['cwd'], 'argv': argv}, 'immutableIdentity': current,
++            'kernelBefore': kernel_before, 'kernelAfter': kernel_after,
++            'mutableSnapshots': {'before': context_before, 'after': context_after},
++            'ambiguity': {'mutableContextChanged': context_before != context_after,
++                          'unavailableFields': unavailable},
++            'cmdline': {'nulBytesHex': None if raw is None else raw.hex(), 'nulSeparatedArgv': argv}}
++
++
++def protected_descendant_binding(assignment, record):
++    # Validate every protected-preview invariant before handling target exit races.
++    check = protected(assignment)
++    observed = owned_observation(record)
++    if observed is None:
++        return False  # owned_observation returns None only when the held pidfd is ready.
++    pid = record['lifetimeIdentity']['pid']
++    require(pid != 1063, 'Descendant is the protected process')
++    namespace = os.readlink('/proc/self/ns/net')
++    try:
++        require(os.readlink('/proc/' + str(pid) + '/ns/net') == namespace,
++                'Candidate network namespace differs')
++        require(not (sockets(pid) & set(check['listeningSockets'])),
++                'Candidate holds a protected 4173 listening socket')
++    except (FileNotFoundError, ProcessLookupError):
++        if not pidfd_live(record['pidfd']):
++            return False
++        raise RuntimeError('Candidate namespace/socket snapshot unavailable while bound pidfd remains live; no signal is permitted')
++    return owned_observation(record) is not None
++
++
+ def owned_observation(record):
+     if not pidfd_live(record['pidfd']):
+         return None
+-    value = process_observation(record['immutableIdentity']['pid'])
++    value = (process_observation(record['immutableIdentity']['pid'])
++             if record['directRoot'] and not record['admitted'] else managed_process_observation(record))
+     if value is None:
+-        return None
+-    require(value['immutableIdentity'] == record['immutableIdentity'],
+-            'Managed PID/start/session/executable/cwd changed; no signal is permitted')
++        if not pidfd_live(record['pidfd']):
++            return None
++        require_managed_identity(False, record, None,
++            'Managed process snapshot unavailable while bound pidfd remains live; no signal is permitted')
++    if record['directRoot'] and not record['admitted']:
++        require_managed_identity(value['immutableIdentity'] == record['immutableIdentity'], record, value,
++            'Managed PID/start/session/executable/cwd changed during initial binding; no signal is permitted')
++    else:
++        require_managed_identity(value['kernelBefore'] == record['lifetimeIdentity']
++            and value['kernelAfter'] == record['lifetimeIdentity'], record, value,
++            'Managed PID/start changed; no signal is permitted')
++        if record['directRoot']:
++            require_managed_identity(value['mutableSnapshots']['before']['session'] ==
++                value['mutableSnapshots']['after']['session'] == record['originalAdmittedSession'] ==
++                record['lifetimeIdentity']['pid'], record, value,
++                'Managed direct-root reserved session changed; no signal is permitted')
+     return value if pidfd_live(record['pidfd']) else None
+ 
+ 
+@@ -300,11 +396,16 @@
+ 
+     def observe(self, record):
+         value = owned_observation(record)
+-        if value is not None and value['cmdline'] != record['lastCmdline']:
+-            self.event('native process cmdline changed', identity=record['identity'],
+-                       immutableIdentity=record['immutableIdentity'], family=record['family'],
+-                       previousCmdline=record['lastCmdline'], cmdline=value['cmdline'])
+-            record['lastCmdline'] = value['cmdline']
++        if value is not None:
++            snapshot = {key: item for key, item in value.items() if key != 'observedAt'}
++            if snapshot != record['lastObservation']:
++                self.event('native process mutable observation changed', identity=record['identity'],
++                           immutableIdentity=record['immutableIdentity'], family=record['family'],
++                           lifetimeIdentity=record['lifetimeIdentity'],
++                           originalAdmittedSession=record['originalAdmittedSession'],
++                           directRoot=record['directRoot'], previousObservation=record['lastObservation'],
++                           observation=value)
++                record['lastObservation'] = snapshot
+         return value
+ 
+     def resource(self, ident):
+@@ -320,29 +421,64 @@
+         ident = observed['identity']
+         immutable = observed['immutableIdentity']
+         root = self.roots[family]
+-        require(root is not None and immutable['session'] == root['pid'], 'Resource is outside its original owned session')
++        require(root is not None, 'Original owned root reservation is missing')
+         key = (ident['pid'], ident['startTicks'])
+         if key in self.resources:
+             record = self.resources[key]
+-            require(record['immutableIdentity'] == immutable and record['family'] == family,
+-                    'Previously registered immutable resource identity or family changed')
++            require(record['lifetimeIdentity'] == {key: immutable[key] for key in ('pid', 'startTicks')}
++                    and record['family'] == family, 'Previously registered lifetime identity or family changed')
+             self.observe(record)
+             return
++        direct_root = ident['pid'] == root['pid']
++        admission_session = immutable['session'] if direct_root else observed['admissionSession']
++        lifetime = ({key: immutable[key] for key in ('pid', 'startTicks')} if direct_root else
++                    observed['admissionLifetimeIdentity'])
++        require(admission_session == root['pid'], 'Resource was not initially observed in its original owned session')
++        if not direct_root:
++            require(observed['kernelBefore'] == observed['kernelAfter'] == lifetime,
++                    'New descendant PID/start changed during original-session observation; comparison=' +
++                    json.dumps({'expectedLifetimeIdentity': lifetime, 'actualObservation': observed}, sort_keys=True))
++
++        def skipped(reason):
++            protected(self.assignment)  # Target disappearance never suppresses a preview failure.
++            self.event('transient native descendant not admitted', family=family,
++                       identity=ident, immutableIdentity=immutable, lifetimeIdentity=lifetime,
++                       originalAdmittedSession=admission_session, directRoot=False,
++                       originalObservation=observed, reason=reason, signalsSent=0,
++                       unobservedDescendantsExcluded=False)
++
+         require(hasattr(os, 'pidfd_open') and hasattr(signal, 'pidfd_send_signal'), 'Kernel-bound pidfd signaling is required')
+-        fd = os.pidfd_open(ident['pid'])
++        try:
++            fd = os.pidfd_open(ident['pid'])
++        except ProcessLookupError:
++            if direct_root:
++                raise
++            skipped('pidfd_open reported that the initially observed descendant PID vanished')
++            return
+         record = {'identity': ident, 'immutableIdentity': immutable, 'family': family,
+-                  'pidfd': fd, 'lastCmdline': observed['cmdline']}
++                  'pidfd': fd, 'admitted': False, 'directRoot': direct_root,
++                  'lifetimeIdentity': lifetime, 'originalAdmittedSession': admission_session,
++                  'lastObservation': {key: item for key, item in observed.items() if key != 'observedAt'}}
+         try:
+-            require(owned_observation(record) is not None, 'Process exited while opening pidfd')
+-            protected(self.assignment, record)
++            bound_observation = owned_observation(record)
++            if bound_observation is None and not direct_root:
++                skipped('held pidfd reported descendant exit during initial binding')
++                return
++            require(bound_observation is not None, 'Process exited while opening pidfd')
++            if direct_root:
++                protected(self.assignment, record)
++            elif not protected_descendant_binding(self.assignment, record):
++                skipped('held pidfd reported descendant exit during protected candidate checks')
++                return
++            record['admitted'] = True  # Bound lifetime and all protected checks have passed.
+             self.resources[key] = record
+             self.event('registered native resource', identity=ident, immutableIdentity=immutable,
+-                       cmdline=observed['cmdline'], family=family)
++                       cmdline=observed['cmdline'], family=family, lifetimeIdentity=record['lifetimeIdentity'],
++                       originalAdmittedSession=record['originalAdmittedSession'], directRoot=record['directRoot'])
+             self.observe(record)
+-        except Exception:
++        finally:
+             if key not in self.resources:
+                 os.close(fd)
+-            raise
+ 
+     def exited(self, family):
+         # Observing /proc never wait()s or reaps a child. The direct PID remains reserved.
+@@ -352,9 +488,9 @@
+         if root is not None and state is not None:
+             require(state['startTicks'] == root['startTicks'] and state['session'] == root['session'] == root['pid'],
+                     'Unreaped direct root start tick or session changed')
++        record = None if root is None else self.resources.get((root['pid'], root['startTicks']))
+         if state is None or state['state'] in ('Z', 'X'):
+-            return True
+-        record = None if root is None else self.resources.get((root['pid'], root['startTicks']))
++            return True if record is None else self.observe(record) is None
+         return False if record is None else self.observe(record) is None
+ 
+     def refresh(self, selected_family=None):
+@@ -382,9 +518,17 @@
+             family = None if state is None else sessions.get(state['session'])
+             if family is None or state['state'] in ('Z', 'X'):
+                 continue
+-            observed = process_observation(pid)
++            known = self.resources.get((pid, state['startTicks']))
++            if known is not None:
++                require(known['family'] == family, 'Registered lifetime family changed')
++                self.observe(known)
++                continue
++            # The first stat observed membership in a still-reserved original SID.
++            lifetime = {'pid': pid, 'startTicks': state['startTicks']}
++            observed = managed_process_observation({'lifetimeIdentity': lifetime})
+             if observed is not None:
+-                require(observed['immutableIdentity']['session'] == self.roots[family]['pid'], 'Resource left its admitted session')
++                observed['admissionSession'] = state['session']
++                observed['admissionLifetimeIdentity'] = lifetime
+                 self.register(observed, family)
+         for value in self.resources.values():
+             if selected_family is not None and value['family'] != selected_family:
+@@ -392,9 +536,9 @@
+             if value['family'] in self.closed_families:
+                 continue
+             observed = self.observe(value)
+-            if observed is not None:
++            if observed is not None and value['directRoot']:
+                 require(observed['immutableIdentity']['session'] == self.roots[value['family']]['pid'],
+-                        'Managed process left its original owned session; no signal is permitted')
++                        'Managed direct root left its reserved session; no signal is permitted')
+ 
+     def start(self, label, command, env):
+         protected(self.assignment)
+@@ -425,6 +569,7 @@
+         return ident
+ 
+     def send(self, record, signum):
++        require(record['admitted'] is True, 'Only admitted held-pidfd lifetimes may receive signals')
+         ident = record['identity']
+         if self.observe(record) is None:
+             return
+@@ -441,7 +586,9 @@
+         state = process_state(self.children[family].pid)
+         if self.roots[family] is None and state is not None:
+             self.roots[family] = {'pid': state['pid'], 'startTicks': state['startTicks'], 'session': state['session']}
+-        actual = process_observation(self.children[family].pid)
++        root = self.roots[family]
++        known = None if root is None else self.resources.get((root['pid'], root['startTicks']))
++        actual = self.observe(known) if known is not None else process_observation(self.children[family].pid)
+         if actual is not None:
+             require(state is not None and self.roots[family] is not None and state['startTicks'] == self.roots[family]['startTicks']
+                     and state['session'] == self.roots[family]['session'] == self.roots[family]['pid'],

@@ -1,0 +1,33 @@
+Chromium 153.0.8010.12 source diagnosis
+
+The minimal source-backed proposal is to remove --disable-crashpad-for-testing from the affected normal Chrome launch and restore ordinary Crashpad initialization. This proposal has not been runtime-verified. The sources establish an omitted handler socket plus child initialization that assumes the reserved Crashpad descriptor; they do not establish the actual owner of fd3 in the observed crash.
+
+The exact stderr text is from base::ScopedFD ownership enforcement. base/files/scoped_file_linux.cc line31 is: RAW_LOG(ERROR, "Crashing due to FD ownership violation:\n");. UpdateAndCheckFdOwnership at lines40–45 crashes when a tracked fd is acquired or released with its ownership bit already in the requested state. The separate close wrapper at lines103–107 crashes when close(fd) targets a fd still owned by ScopedFD.
+
+The guard is unconditional in Linux/ChromeOS non-component process startup. content/app/content_main.cc line307 is: base::subtle::EnableFDOwnershipEnforcement(true);. ContentMainRunner::Initialize follows at line311. There is no feature or switch at this activation call, so --disable-features=FileDescriptorOwnership would not control it.
+
+Browser-only suppression and child descriptor assumption
+
+chrome/common/chrome_switches.cc lines219–221 defines --disable-crashpad-for-testing and says it disables Crashpad initialization. ChromeMainDelegate::PreSandboxStartup at chrome/app/chrome_main_delegate.cc lines1545–1547 gates initialization on the current process not being a zygote and not having this flag. Linux InitializeCrashpad is at line1564. The examined child switch copy lists in ChromeContentBrowserClient, BrowserChildProcessHostImpl and LaunchZygoteHelper do not forward this flag.
+
+ChromeContentBrowserClient::AppendExtraCommandLineSwitches at chrome/browser/chrome_content_browser_client.cc line2916 is: command_line->AppendSwitchASCII(switches::kEnableCrashReporter, switch_value);. It adds handler pid only if GetHandlerSocket succeeds at lines2902–2905. GetCrashSignalFD at line1102 is: return crash_reporter::GetHandlerSocket(&fd, nullptr) ? fd : -1;. Child descriptor mapping at lines5240–5243 shares kCrashDumpSignal only for a nonnegative result. Browser Crashpad suppression can therefore remove the actual handler socket and handler pid from child setup while the child still follows the normal initialization path.
+
+ContentMainRunnerImpl::Initialize at content/app/content_main_runner_impl.cc lines869–870 is: g_fds->Set(kCrashDumpSignal, kCrashDumpSignal + base::GlobalDescriptors::kBaseDescriptor);. kCrashDumpSignal is the first enum member at content/public/common/content_descriptors.h line13, so its value is0. kBaseDescriptor is3 at base/posix/global_descriptors.h line59. Thus this reserved key still maps to fd3 even if the browser never shared a real handler socket.
+
+The child branch in components/crash/core/app/crashpad_linux.cc line247 gets the reserved descriptor: int fd = base::GlobalDescriptors::GetInstance()->Get(kCrashDumpSignal);. Line261 is: client.SetHandlerSocket(crashpad::ScopedFileHandle(fd), pid);. On POSIX, third_party/crashpad/crashpad/util/file/file_io.h line47 is: using ScopedFileHandle = base::ScopedFD;. If another ScopedFD owns fd3 because no handler socket was mapped there, constructing this Crashpad ScopedFD produces the double-acquire guard failure. The source supports that mechanism; the identity of the other fd3 owner remains a hypothesis.
+
+The examined Crashpad initialization path has no --disable-crash-reporter gate. components/crash/core/app/crashpad.cc lines252–256 explicitly says Crashpad dumping is enabled unconditionally and it does not need the older --disable-breakpad behavior. Upload consent is controlled separately.
+
+Normal Crashpad lifetime qualification
+
+CrashpadClient::StartHandler at third_party/crashpad/crashpad/client/crashpad_client_linux.cc creates a credential socketpair at lines465–469, starts the handler with the handler endpoint at line476, closes the browser's duplicate handler endpoint at line479, and installs the browser client endpoint at lines487–488. Initialize obtains the handler's pid from credentials at lines368–371 when the supplied pid is negative. GetHandlerSocket returns the stored socket and pid at lines384–395.
+
+third_party/crashpad/crashpad/util/posix/spawn_subprocess.cc describes a parent/child/grandchild arrangement at lines126–133. It forks at line134, creates a new session/process group with setsid at line162, uses posix_spawn at lines215–222, exits the intermediate child at line227, and waits for that intermediate child at line238. This Linux path does not use the function name DoubleForkAndExec. Its comments at lines155–160 say the detached handler manages its own lifetime by monitoring clients.
+
+third_party/crashpad/crashpad/handler/linux/exception_handler_server.cc line297 is: while (keep_running_ && clients_.size() > 0) {. HandleEvent removes a socket on EPOLLHUP or EPOLLRDHUP at lines343–345; UninstallClientSocket removes it from clients_ at line406. Loss of all clients ends this server loop. This supports normal handler self-shutdown after client sockets close. The full handler main shutdown was not fetched, and no current handler disappearance was observed here. This source finding does not change the parent's existing qualified finite process closure or independent server/database closure.
+
+Public corroboration
+
+https://github.com/rubycdp/ferrum/pull/620 reports that --disable-crashpad-for-testing made normal Chrome child startup fail with FD-ownership violations and NetworkService crash loops while browser CDP still answered. Treat that as third-party corroboration, not host-specific proof. The fetched issue metadata is github-search-0.json.
+
+All research writes are confined to /tmp/chromium-fd-source.ZvRsNW. No browser/server runtime, signal, database read/hash/query, repository edit, or package/runtime update was performed. source-manifest.json records exact ref-qualified URLs, source byte counts, SHA256 digests, and citation lines. Only the manifest-listed sources are sealed as exact153. Main-branch files fetched at the beginning are outside that manifest.

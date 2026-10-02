@@ -1,0 +1,133 @@
+{
+  "at": "2026-10-02T05:38:57.130781+00:00",
+  "checks": {
+    "chdirChangesCwdWithoutChangingExecutable": true,
+    "execChangesExecutableWithoutChangingCwd": true,
+    "heldPidfdBecomesReadyAfterNaturalExit": true,
+    "heldPidfdValidAndNonreadyAroundEachLiveObservation": true,
+    "originalFiveFieldEqualityRejectsBothLaterSnapshots": true,
+    "samePidStartAndSessionThroughout": true
+  },
+  "command": [
+    "/home/linuxbrew/.linuxbrew/opt/python@3.14/bin/python3.14",
+    "-I",
+    "-u",
+    "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/ordinary-child.py",
+    "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/changed-cwd"
+  ],
+  "exitCode": 0,
+  "heldPidfd": 4,
+  "heldPidfdClosedOnlyAfterAllObservations": true,
+  "observations": [
+    {
+      "at": "2026-10-02T05:38:56.315277+00:00",
+      "identity": {
+        "argv": [
+          "/home/linuxbrew/.linuxbrew/opt/python@3.14/bin/python3.14",
+          "-I",
+          "-u",
+          "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/ordinary-child.py",
+          "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/changed-cwd"
+        ],
+        "cwd": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/initial-cwd",
+        "executable": "/home/linuxbrew/.linuxbrew/Cellar/python@3.14/3.14.7/bin/python3.14",
+        "pid": 1897990,
+        "session": 1897990,
+        "startTicks": 9542993
+      },
+      "phase": "initial Python",
+      "pidfdAfter": {
+        "events": [],
+        "ready": false,
+        "valid": true
+      },
+      "pidfdBefore": {
+        "events": [],
+        "ready": false,
+        "valid": true
+      },
+      "rawCmdlineHex": "2f686f6d652f6c696e7578627265772f2e6c696e7578627265772f6f70742f707974686f6e40332e31342f62696e2f707974686f6e332e3134002d49002d75002f746d702f6f76662d6665617475726536332d72322d6964656e746974792d73656d616e746963732d6172636869746563747572652d6e7359514c5038552f6f7264696e6172792d6368696c642e7079002f746d702f6f76662d6665617475726536332d72322d6964656e746974792d73656d616e746963732d6172636869746563747572652d6e7359514c5038552f6368616e6765642d63776400",
+      "rawStatAfter": "1897990 (python3.14) S 1897983 1897990 1897990 0 -1 4194304 1213 0 0 0 0 0 0 0 12 -8 1 0 9542993 19103744 2654 18446744073709551615 94764560330752 94764560331113 140725790287488 0 0 0 0 16781312 2 1 0 0 17 8 0 0 0 0 0 94764560351232 94764560353216 94765585059840 140725790289203 140725790289423 140725790289423 140725790293950 0\n",
+      "rawStatBefore": "1897990 (python3.14) S 1897983 1897990 1897990 0 -1 4194304 1213 0 0 0 0 0 0 0 12 -8 1 0 9542993 19103744 2654 18446744073709551615 94764560330752 94764560331113 140725790287488 0 0 0 0 16781312 2 1 0 0 17 8 0 0 0 0 0 94764560351232 94764560353216 94765585059840 140725790289203 140725790289423 140725790289423 140725790293950 0\n",
+      "withinObservationStable": true
+    },
+    {
+      "at": "2026-10-02T05:38:56.315368+00:00",
+      "identity": {
+        "argv": [
+          "/home/linuxbrew/.linuxbrew/opt/python@3.14/bin/python3.14",
+          "-I",
+          "-u",
+          "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/ordinary-child.py",
+          "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/changed-cwd"
+        ],
+        "cwd": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/changed-cwd",
+        "executable": "/home/linuxbrew/.linuxbrew/Cellar/python@3.14/3.14.7/bin/python3.14",
+        "pid": 1897990,
+        "session": 1897990,
+        "startTicks": 9542993
+      },
+      "phase": "after chdir in Python",
+      "pidfdAfter": {
+        "events": [],
+        "ready": false,
+        "valid": true
+      },
+      "pidfdBefore": {
+        "events": [],
+        "ready": false,
+        "valid": true
+      },
+      "rawCmdlineHex": "2f686f6d652f6c696e7578627265772f2e6c696e7578627265772f6f70742f707974686f6e40332e31342f62696e2f707974686f6e332e3134002d49002d75002f746d702f6f76662d6665617475726536332d72322d6964656e746974792d73656d616e746963732d6172636869746563747572652d6e7359514c5038552f6f7264696e6172792d6368696c642e7079002f746d702f6f76662d6665617475726536332d72322d6964656e746974792d73656d616e746963732d6172636869746563747572652d6e7359514c5038552f6368616e6765642d63776400",
+      "rawStatAfter": "1897990 (python3.14) S 1897983 1897990 1897990 0 -1 4194304 1213 0 0 0 0 0 0 0 12 -8 1 0 9542993 19103744 2654 18446744073709551615 94764560330752 94764560331113 140725790287488 0 0 0 0 16781312 2 1 0 0 17 8 0 0 0 0 0 94764560351232 94764560353216 94765585059840 140725790289203 140725790289423 140725790289423 140725790293950 0\n",
+      "rawStatBefore": "1897990 (python3.14) S 1897983 1897990 1897990 0 -1 4194304 1213 0 0 0 0 0 0 0 12 -8 1 0 9542993 19103744 2654 18446744073709551615 94764560330752 94764560331113 140725790287488 0 0 0 0 16781312 2 1 0 0 17 8 0 0 0 0 0 94764560351232 94764560353216 94765585059840 140725790289203 140725790289423 140725790289423 140725790293950 0\n",
+      "withinObservationStable": true
+    },
+    {
+      "at": "2026-10-02T05:38:56.316503+00:00",
+      "identity": {
+        "argv": [],
+        "cwd": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/changed-cwd",
+        "executable": "/usr/bin/sleep",
+        "pid": 1897990,
+        "session": 1897990,
+        "startTicks": 9542993
+      },
+      "phase": "after exec to sleep",
+      "pidfdAfter": {
+        "events": [],
+        "ready": false,
+        "valid": true
+      },
+      "pidfdBefore": {
+        "events": [],
+        "ready": false,
+        "valid": true
+      },
+      "rawCmdlineHex": "",
+      "rawStatAfter": "1897990 (sleep) D 1897983 1897990 1897990 0 -1 4194304 1216 0 0 0 0 0 0 0 12 -8 1 0 9542993 204800 0 18446744073709551615 0 0 140731752893991 0 0 0 0 16781312 0 1 0 0 17 8 0 0 0 0 0 0 0 0 140731752893991 0 0 0 0\n",
+      "rawStatBefore": "1897990 (sleep) D 1897983 1897990 1897990 0 -1 4194304 1216 0 0 0 0 0 0 0 12 -8 1 0 9542993 204800 0 18446744073709551615 0 0 140731752893991 0 0 0 0 16781312 0 1 0 0 17 8 0 0 0 0 0 0 0 0 140731752893991 0 0 0 0\n",
+      "withinObservationStable": true
+    }
+  ],
+  "pidfdAfterExit": {
+    "events": [
+      [
+        4,
+        17
+      ]
+    ],
+    "ready": true,
+    "valid": true
+  },
+  "schema": "feature63-isolated-process-identity-semantics-v1",
+  "scope": {
+    "gameBrowserServerOrDatabaseUsed": false,
+    "ordinaryChildOnly": true,
+    "r2OffendingTupleOrCauseEstablished": false,
+    "rootCheckoutWritten": false,
+    "sessionTransitionExercised": false,
+    "signalsSent": 0
+  },
+  "status": "PASS"
+}

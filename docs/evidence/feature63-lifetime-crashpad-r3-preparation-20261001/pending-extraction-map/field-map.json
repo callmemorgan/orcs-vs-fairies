@@ -1,0 +1,245 @@
+{
+  "approvalIssued": false,
+  "auditIssued": false,
+  "collectorActualCheckpointCountRange": [
+    1,
+    4
+  ],
+  "descriptorExactKeys": [
+    "path",
+    "bytes",
+    "sha256"
+  ],
+  "futureSourcePin": null,
+  "helperExecuted": false,
+  "helperPath": "/tmp/feature63-root-extraction-candidate-r2-LSZWmJUg/extract-closed63.py",
+  "helperSha256": "fccd7ba02a92c2496b56699cb8fbb323f16cb2a817596093951b10a72446e7d8",
+  "intendedFreshPrefix": "work/feature63-human-wave-composition-r3",
+  "mustRebindPromotionToActualFuturePinAndPrefix": true,
+  "newCriteriaAdded": [],
+  "originalFeature63CriteriaUnchanged": true,
+  "productVersion": "4.0.2",
+  "promotionBasisDirectory": "/tmp/feature63-native-schema-promotion-basis-architecture-ct70a5d6",
+  "promotionBasisIsPriorContextOnly": true,
+  "promotionBasisRecordedPin": "1257b24db0121a72a12a6de10592397dc4996038",
+  "promotionBasisRecordedPrefix": "r2",
+  "publicNames": [
+    "public-results.json",
+    "public-identities.json",
+    "public-windows.json",
+    "public-cleanup.json",
+    "public-match-identity.json",
+    "human-one-wire.ndjson",
+    "human-two-wire.ndjson",
+    "human-one-ui-actions.ndjson",
+    "human-two-ui-actions.ndjson"
+  ],
+  "rawAccessed": false,
+  "rawDatabaseExactKeys": [
+    "path",
+    "bytes",
+    "sha256",
+    "device",
+    "inode"
+  ],
+  "receiptValueEqualities": [
+    "All sourcePin values equal actual future captureAssignment.sourcePin.",
+    "All matchId values equal actual passing captureResult.matchId.",
+    "captureResult.closedFreshDatabaseIdentity == {path,device,inode} from rawDatabase.",
+    "closedRaw.dbIdentity == collectorReceipt.dbIdentity == {device,inode} from rawDatabase.",
+    "closedRaw.rawBytes == rawDatabase.bytes; closedRaw.rawSha256 == rawDatabase.sha256.",
+    "custody.rawDatabase == input.rawDatabase; custody.captureResult == input.captureResult; custody.closedRawReceipt == input.closedRawReceipt.",
+    "lifetime.captureResult == input.captureResult; lifetime.ownedNativeLifetimeIndependentlyAdmitted == input.ownedNativeLifetimeIndependentlyAdmitted == true.",
+    "input.sourceInventory == captureAssignment.sourceBinding == collectorAssignment.sourceInventory == collectorReceipt.sourceInventory.",
+    "input.buildBinding == captureAssignment.buildBinding; input.publicProducer/collector/auditor == matching captureAssignment descriptors.",
+    "input.publicDriver.sha256 == captureAssignment.wrapperSha256.",
+    "collectorReceipt.assignmentIdentity == input.collectorAssignment; collectorReceipt.publicMatchIdentity == collectorAssignment.publicMatchIdentity == input.publicFiles[public-match-identity.json].",
+    "nativeSchemaReview.sourcePin == input.sourcePin; nativeSchemaReview.auditorSha256 == input.auditor.sha256."
+  ],
+  "rows": [
+    {
+      "field": "sourcePin",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "The actual full 40-character lowercase root-assigned r3 pin; never infer from this packet or old1257.",
+      "source": "actual capture assignment.sourcePin"
+    },
+    {
+      "field": "sourceRoot",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "Copy the canonical owned checkout path.",
+      "source": "actual capture assignment.sourceRoot"
+    },
+    {
+      "field": "freshPrefix",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "Already pending r3. Require equality with actual capture prefix.",
+      "source": "actual capture assignment.freshPrefix"
+    },
+    {
+      "field": "outputRoot",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "A new canonical private external directory outside both checkouts; its parent exists and output path does not.",
+      "source": "root-selected fresh extraction path"
+    },
+    {
+      "field": "captureAssignment",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "Bind the exact actual passing r3 capture assignment bytes as {path,bytes,sha256}.",
+      "source": "root actual capture assignment file"
+    },
+    {
+      "field": "captureResult",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "Bind actual r3 PREFIX/lifecycle/driver-result.json.",
+      "source": "actual passing capture result file"
+    },
+    {
+      "field": "sourceInventory",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "Copy descriptor unchanged.",
+      "source": "actual capture assignment.sourceBinding"
+    },
+    {
+      "field": "buildBinding",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "Copy descriptor unchanged.",
+      "source": "actual capture assignment.buildBinding"
+    },
+    {
+      "field": "publicProducer",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "Copy descriptor unchanged.",
+      "source": "actual capture assignment.publicProducer"
+    },
+    {
+      "field": "collector",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "Copy descriptor unchanged.",
+      "source": "actual capture assignment.collector"
+    },
+    {
+      "field": "auditor",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "Copy descriptor unchanged.",
+      "source": "actual capture assignment.auditor"
+    },
+    {
+      "field": "publicDriver",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "Bind the actual reviewed wrapper file used for r3 invocation; its digest equals capture.wrapperSha256.",
+      "source": "actual invoked wrapper file and actual capture assignment.wrapperSha256"
+    },
+    {
+      "field": "serverBuild",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "Convert serverRecords rts-server.js row into {path: PREFIX/server/rts-server.js,bytes,sha256}; omit mode from descriptor.",
+      "source": "actual buildBinding.serverRecords row path=rts-server.js"
+    },
+    {
+      "field": "collectorAssignment",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "Bind actual r3 PREFIX/lifecycle/collector-assignment.json.",
+      "source": "actual runtime collector assignment file"
+    },
+    {
+      "field": "collectorFiles",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "Bind receipt, queries.ndjson and every actual contiguous checkpoint01..N from collector.rows, N=1..4; append02..04 only if present.",
+      "source": "actual r3 PREFIX/native-collector file set and collector receipt.rows"
+    },
+    {
+      "field": "publicFiles",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "Bind all nine literal files unchanged.",
+      "source": "actual r3 PREFIX/public/<literal name>"
+    },
+    {
+      "field": "rawDatabase.path",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "Use only r3 PREFIX/server-data/server.sqlite at original capture path.",
+      "source": "actual passing capture result.closedFreshDatabaseIdentity.path"
+    },
+    {
+      "field": "rawDatabase.device + rawDatabase.inode",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "Copy actual fresh identity; match capture result, collector assignment/receipt, and closed seal.",
+      "source": "actual passing capture result.closedFreshDatabaseIdentity"
+    },
+    {
+      "field": "rawDatabase.bytes + rawDatabase.sha256",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "Root obtains after actual owned closure, sidecar removal/checkpoint disposition and single-link filesystem seal; this preparation does not read/hash raw.",
+      "source": "root actual closed fresh r3 raw custody/seal verification"
+    },
+    {
+      "field": "closedRawReceipt",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "Complete closed-raw-r3.pending.json from actual closure/seal, retain fresh root receipt, bind its descriptor.",
+      "source": "root actual closed raw receipt"
+    },
+    {
+      "field": "rootCustodyReceipt",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "Complete root-custody-r3.pending.json from actual fresh custody with same rawDatabase, captureResult and closedRawReceipt objects.",
+      "source": "root actual custody receipt"
+    },
+    {
+      "field": "rootNativeLifetimeReceipt",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "Complete root-native-lifetime-r3.pending.json from actual independent native closure; bind capture result and nonempty independent closure-evidence descriptors.",
+      "source": "root actual native lifetime disposition"
+    },
+    {
+      "field": "ownedNativeLifetimeIndependentlyAdmitted",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "Supply true only from actual root lifetime disposition; same true in its bound receipt.",
+      "source": "root actual closure disposition; not capture/collector reports alone"
+    },
+    {
+      "field": "nativeSchemaReview",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "Complete four-field native-schema-review-r3.pending.json only after root binds future actual r3 source/auditor to the static basis; then bind separate receipt descriptor.",
+      "source": "root schema disposition, reference /tmp/feature63-native-schema-promotion-basis-architecture-ct70a5d6/native-schema-disposition-basis.json"
+    },
+    {
+      "field": "approved + extractAuthorized",
+      "phase": "after-passing-r3-capture",
+      "required": true,
+      "rootFill": "Root supplies true only when authorizing the concrete closed extraction assignment; not issued here.",
+      "source": "root extraction disposition"
+    },
+    {
+      "field": "nativeAuditAuthorized + rootExtractionAdmissionApproved",
+      "phase": "after-extraction-root-inspection",
+      "required": true,
+      "rootFill": "Keep both false for first concrete extraction; generated outputs stay unapproved.",
+      "source": "existing separate approved-copy promotion procedure"
+    }
+  ],
+  "schema": "feature63-r3-extraction-field-map-v1",
+  "status": "STATIC_PENDING_PREPARATION_ONLY"
+}

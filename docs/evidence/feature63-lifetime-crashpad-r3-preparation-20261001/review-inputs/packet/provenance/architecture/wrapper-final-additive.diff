@@ -1,0 +1,30 @@
+--- /tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/run-minimal63.candidate-r2.py
++++ /tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/run-minimal63.candidate-r2-final.py
+@@ -525,11 +525,23 @@
+                 continue
+             # The first stat observed membership in a still-reserved original SID.
+             lifetime = {'pid': pid, 'startTicks': state['startTicks']}
++            if pid == self.roots[family]['pid']:
++                observed = process_observation(pid)
++                require(observed is not None, 'Direct-root admission snapshot unavailable; no transient skip')
++                self.register(observed, family)
++                continue
+             observed = managed_process_observation({'lifetimeIdentity': lifetime})
+-            if observed is not None:
+-                observed['admissionSession'] = state['session']
+-                observed['admissionLifetimeIdentity'] = lifetime
+-                self.register(observed, family)
++            if observed is None:
++                protected(self.assignment)
++                self.event('transient native descendant not admitted', family=family,
++                           lifetimeIdentity=lifetime, originalAdmittedSession=state['session'],
++                           directRoot=False, originalProcessState=state,
++                           reason='Required proc snapshot unavailable or terminal before held-pidfd binding; no lifetime exit conclusion',
++                           signalsSent=0, unobservedDescendantsExcluded=False)
++                continue
++            observed['admissionSession'] = state['session']
++            observed['admissionLifetimeIdentity'] = lifetime
++            self.register(observed, family)
+         for value in self.resources.values():
+             if selected_family is not None and value['family'] != selected_family:
+                 continue

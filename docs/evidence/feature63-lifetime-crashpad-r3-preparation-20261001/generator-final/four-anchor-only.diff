@@ -1,0 +1,24 @@
+--- /tmp/ovf-feature63-r3-execution-packet-upoca1fi/binding-generator/generate-root-bindings.pending-original.py
++++ /tmp/ovf-feature63-r3-execution-packet-upoca1fi/binding-generator/generate-root-bindings.py
+@@ -19,8 +19,8 @@
+ 
+ CHECKOUT = Path('/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies')
+ PROTECTED = Path('/home/morgana/Projects/orcs-vs-Fairies')
+-DRAFT_READY_FOR_ROOT_BINDINGS = False
+-PACKET = None  # Pending final assembled r3 packet path; the staging directory is not authority.
++DRAFT_READY_FOR_ROOT_BINDINGS = True
++PACKET = Path('/tmp/ovf-feature63-r3-execution-packet-upoca1fi/packet')  # Pending final assembled r3 packet path; the staging directory is not authority.
+ HISTORICAL_PACKET = Path('/home/morgana/.codex/worktrees/assembled-allied-ai/feature63-dedicated-wrapper-readiness-r1')
+ PREFIX_NAME = 'work/feature63-human-wave-composition-r3'
+ PREFIX = CHECKOUT / PREFIX_NAME
+@@ -28,8 +28,8 @@
+ TESTED_WEB = Path('/tmp/ovf-id6-integration-703fc-20261001/dist')
+ TESTED_PIN = 'f7f3e187ea40079492589a6fce39f0b33f77f04a'
+ TESTED_ID = '9c5d2f1ff26bd6849b1ad5e311300669fb5f02feebbe4d311b6f8d670df243e1'
+-SEAL_SHA = None  # Pending final r3 packet seal digest.
+-CURRENT_CANDIDATE_REVIEW_STATUS = None  # Pending selected final r3 static review disposition.
++SEAL_SHA = '3e44f36c82c485342b75f030e6887179dbdb98b0cd46fe9a0a03d9ddf2b0d649'  # Pending final r3 packet seal digest.
++CURRENT_CANDIDATE_REVIEW_STATUS = 'PASS_STATIC_WITH_REQUIRED_FINALIZATION_GUARDS_RUNTIME_HELD'  # Pending selected final r3 static review disposition.
+ HISTORICAL_R2_HANDOFF = {
+     'path': '/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/final-capture-handoff.json',
+     'bytes': 11679,

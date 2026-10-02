@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "reviewType": "independent static r3 cooperative-capture preparation review",
+  "status": "PASS_STATIC_WITH_REQUIRED_FINALIZATION_GUARDS_RUNTIME_HELD",
+  "requestedReviewerModel": "gpt-5.6-sol",
+  "actualProviderIdentity": "unavailable",
+  "freshClaudeRun": false,
+  "artifactSnapshot": "artifact-snapshot.json",
+  "runtimeAuthorized": false,
+  "feature63Qualified": false,
+  "databaseOperationsPerformed": false,
+  "candidateImportedOrExecuted": false,
+  "rootSourceOrLedgerEdited": false,
+  "packetAuthentication": {
+    "sealSha256": "733a21a32c8ae251161ac6af8ba8118a2283c645b0063cc670b09e50fd569dac",
+    "recordCount": 55,
+    "allRecordBytesHashesModesMatched": true,
+    "exactFileSetMatchedExcludingSeal": true
+  },
+  "assessment": {
+    "wrapper": "No static blocker found in the selected lifetime design. PIDFD readiness governs bound exits. Missing or terminal proc observations while a PIDFD remains live are retained as observation failure and never become exit. Initial descendant admission requires an observation in the reserved original SID plus stable PID/start, while later executable, cwd, argv, and non-direct SID values are observations rather than ownership gates. Direct roots retain the original SID requirement.",
+    "terminalFallback": "For a resource without an independently held PIDFD, two stable PID/start reads govern the fallback. A matching Z or X process is conservatively reported as still live. A missing proc entry or different start tick reports that the remembered lifetime is absent. This can delay closure but does not create false closure for a still-present matching terminal process.",
+    "chromiumDelta": "The sealed wrapper differs from the selected architecture only by the r2-to-r3 prefix and deletion of --disable-crashpad-for-testing. --no-sandbox, --enable-unsafe-swiftshader, and all other existing flags remain. The producer and collector contain only their declared r3 prefix edits. The native auditor is byte-identical to the prior target.",
+    "generator": "The inactive generator authenticates the current sealed candidate and later review, requires fresh r3 packaging and slot authority, rejects the consumed r2 slot token, checks product and dependency inventories, and emits only fresh external binding receipts. Pending approvals and pins are false or null. No runtime or feature claim is produced.",
+    "launcher": "The launcher sends no signals, independently observes registered lifetimes, retains protected-preview checks, records wrapper lifetime separately, and leaves unobservedDescendantsExcluded false with a required root native-lifetime disposition."
+  },
+  "requiredFinalizationGuards": [
+    {
+      "id": "generator-four-anchor-fill",
+      "requirement": "The final generator copy may change exactly four top-level anchors: DRAFT_READY_FOR_ROOT_BINDINGS from false to true, PACKET from null to the sealed execution packet Path, SEAL_SHA from null to that packet's exact digest, and CURRENT_CANDIDATE_REVIEW_STATUS from null to this receipt's exact status. The consolidated handoff currently names only packet, seal, and review status; omitting the readiness boolean leaves the generator permanently inactive. No other generator byte may change without another review."
+    },
+    {
+      "id": "launcher-anchor-only-fill",
+      "requirement": "The final launcher copy may fill ROOT_RUNTIME_ANCHORS_FILLED, CONTROL, ASSIGNMENT, DIGEST, DISPOSITION, DISPOSITION_SHA, PIN, and SLOT_TOKEN only. WRAPPER_SHA must remain f5b5428c531e99f15885cd48a513d4167aea02bab461f998a99719315d9ddc70 and all logic bytes must remain unchanged."
+    },
+    {
+      "id": "fresh-control-directory",
+      "requirement": "Root must bind CONTROL to a fresh private empty directory before launch and retain its path/mode/readback. The launcher uses exclusive creation for fixed JSON files but appends independent-observations.ndjson, so freshness must come from the root execution packet rather than an in-template empty-directory assertion."
+    },
+    {
+      "id": "closure-disposition-fields",
+      "requirement": "A positive root closure disposition must require wrapperExitCode to be non-null, wrapperLifetimeReadback.rememberedIdentityStillLive false, wrapperLifetimeReadback.observationFailure null, allRememberedRegisteredIdentitiesNotLive true, everyRememberedLifetimeObservationComplete true, and privateListenersAbsent true. The allRemembered aggregate covers registered native resources and does not include the wrapper. unobservedDescendantsExcluded remains false and cannot be promoted."
+    },
+    {
+      "id": "review-status-binding",
+      "requirement": "The execution packet must retain this concrete receipt, seal its exact descriptor, and fill CURRENT_CANDIDATE_REVIEW_STATUS with PASS_STATIC_WITH_REQUIRED_FINALIZATION_GUARDS_RUNTIME_HELD. Root's separate dedicatedReviewApproved assertion remains required."
+    }
+  ],
+  "qualifications": [
+    "This static pass approves preparation structure and the specified anchor-only finalization. It does not approve a capture, extraction, audit, database read, retry, or feature-63 admission.",
+    "The r2 immutable mismatch cause remains undiagnosed. Removing one Chromium flag is a bounded fresh hypothesis, not an established cause.",
+    "The wrapper and launcher both retain unobservedDescendantsExcluded=false. Root must not infer complete descendant enumeration from session scans or remembered-resource closure.",
+    "Actual provider identity and a complete root transcript were unavailable; no transcript claims are made."
+  ],
+  "findings": [
+    {
+      "severity": "required-before-generation",
+      "subject": "generator handoff omits readiness anchor",
+      "finding": "The stated packet/seal/review-status-only fill contract is incomplete because line 22 remains DRAFT_READY_FOR_ROOT_BINDINGS=False and main requires it to be true. Use the explicit four-anchor fill above."
+    },
+    {
+      "severity": "required-before-positive-closure",
+      "subject": "wrapper is outside the remembered-resource aggregate",
+      "finding": "allRememberedRegisteredIdentitiesNotLive does not include wrapperLifetimeReadback. Root must test the wrapper lifetime fields separately before any positive closure disposition."
+    }
+  ],
+  "noOtherStaticFindings": true
+}

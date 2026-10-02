@@ -1,0 +1,974 @@
+
+/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000006a9ab80 <ChromeMain@@Base+0xacd270>:
+     6a9ab80:	c7                   	(bad)
+     6a9ab81:	48 8b 05 80 90 d6 0a 	mov    0xad69080(%rip),%rax        # 11803c08 <__bss_start@@Base+0x4dc08>
+     6a9ab88:	c6 00 00             	movb   $0x0,(%rax)
+     6a9ab8b:	48 c7 05 7a 90 d6 0a 	movq   $0x0,0xad6907a(%rip)        # 11803c10 <__bss_start@@Base+0x4dc10>
+     6a9ab92:	00 00 00 00 
+     6a9ab96:	e9 78 fe ff ff       	jmp    6a9aa13 <ChromeMain@@Base+0xacd103>
+     6a9ab9b:	cc                   	int3
+     6a9ab9c:	cc                   	int3
+     6a9ab9d:	cc                   	int3
+     6a9ab9e:	cc                   	int3
+     6a9ab9f:	cc                   	int3
+     6a9aba0:	55                   	push   %rbp
+     6a9aba1:	48 89 e5             	mov    %rsp,%rbp
+     6a9aba4:	c7 47 18 00 00 00 00 	movl   $0x0,0x18(%rdi)
+     6a9abab:	5d                   	pop    %rbp
+     6a9abac:	c3                   	ret
+     6a9abad:	cc                   	int3
+     6a9abae:	cc                   	int3
+     6a9abaf:	cc                   	int3
+     6a9abb0:	55                   	push   %rbp
+     6a9abb1:	48 89 e5             	mov    %rsp,%rbp
+     6a9abb4:	53                   	push   %rbx
+     6a9abb5:	50                   	push   %rax
+     6a9abb6:	48 89 fb             	mov    %rdi,%rbx
+     6a9abb9:	be fa 00 00 00       	mov    $0xfa,%esi
+     6a9abbe:	e8 1d 00 00 00       	call   6a9abe0 <ChromeMain@@Base+0xacd2d0>
+     6a9abc3:	48 89 83 d0 07 00 00 	mov    %rax,0x7d0(%rbx)
+     6a9abca:	48 83 c4 08          	add    $0x8,%rsp
+     6a9abce:	5b                   	pop    %rbx
+     6a9abcf:	5d                   	pop    %rbp
+     6a9abd0:	c3                   	ret
+     6a9abd1:	cc                   	int3
+     6a9abd2:	cc                   	int3
+     6a9abd3:	cc                   	int3
+     6a9abd4:	cc                   	int3
+     6a9abd5:	cc                   	int3
+     6a9abd6:	cc                   	int3
+     6a9abd7:	cc                   	int3
+     6a9abd8:	cc                   	int3
+     6a9abd9:	cc                   	int3
+     6a9abda:	cc                   	int3
+     6a9abdb:	cc                   	int3
+     6a9abdc:	cc                   	int3
+     6a9abdd:	cc                   	int3
+     6a9abde:	cc                   	int3
+     6a9abdf:	cc                   	int3
+
+
+/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+000000000b757e80 <__libc_csu_fini@@Base+0x45c81c0>:
+     b757e80:	81 fe ff 0f 00 00    	cmp    $0xfff,%esi
+     b757e86:	77 13                	ja     b757e9b <__libc_csu_fini@@Base+0x45c81db>
+     b757e88:	89 f0                	mov    %esi,%eax
+     b757e8a:	48 8d 0d 10 d4 0b 06 	lea    0x60bd410(%rip),%rcx        # 118152a1 <__bss_start@@Base+0x5f2a1>
+     b757e91:	31 d2                	xor    %edx,%edx
+     b757e93:	86 14 08             	xchg   %dl,(%rax,%rcx,1)
+     b757e96:	f6 c2 01             	test   $0x1,%dl
+     b757e99:	74 01                	je     b757e9c <__libc_csu_fini@@Base+0x45c81dc>
+     b757e9b:	c3                   	ret
+     b757e9c:	8a 05 16 e4 0b 06    	mov    0x60be416(%rip),%al        # 118162b8 <__bss_start@@Base+0x602b8>
+     b757ea2:	3c 01                	cmp    $0x1,%al
+     b757ea4:	75 f5                	jne    b757e9b <__libc_csu_fini@@Base+0x45c81db>
+     b757ea6:	55                   	push   %rbp
+     b757ea7:	48 89 e5             	mov    %rsp,%rbp
+     b757eaa:	e8 21 00 00 00       	call   b757ed0 <__libc_csu_fini@@Base+0x45c8210>
+     b757eaf:	cc                   	int3
+     b757eb0:	55                   	push   %rbp
+     b757eb1:	48 89 e5             	mov    %rsp,%rbp
+     b757eb4:	48 8d 05 e6 d3 0b 06 	lea    0x60bd3e6(%rip),%rax        # 118152a1 <__bss_start@@Base+0x5f2a1>
+     b757ebb:	31 c9                	xor    %ecx,%ecx
+     b757ebd:	31 d2                	xor    %edx,%edx
+     b757ebf:	86 14 01             	xchg   %dl,(%rcx,%rax,1)
+     b757ec2:	48 ff c1             	inc    %rcx
+     b757ec5:	48 81 f9 00 10 00 00 	cmp    $0x1000,%rcx
+     b757ecc:	75 ef                	jne    b757ebd <__libc_csu_fini@@Base+0x45c81fd>
+     b757ece:	5d                   	pop    %rbp
+     b757ecf:	c3                   	ret
+     b757ed0:	55                   	push   %rbp
+     b757ed1:	48 89 e5             	mov    %rsp,%rbp
+     b757ed4:	53                   	push   %rbx
+     b757ed5:	48 81 ec d8 07 00 00 	sub    $0x7d8,%rsp
+     b757edc:	48 8d 35 01 1b 92 f6 	lea    -0x96de4ff(%rip),%rsi        # 20799e4 <_IO_stdin_used@@Base+0x71df9c>
+     b757ee3:	bf 02 00 00 00       	mov    $0x2,%edi
+     b757ee8:	e8 c3 c0 93 f9       	call   5093fb0 <_ZnamSt11align_val_t@@Base+0x7945b0>
+     b757eed:	48 8d 9d 20 f8 ff ff 	lea    -0x7e0(%rbp),%rbx
+     b757ef4:	48 89 df             	mov    %rbx,%rdi
+     b757ef7:	e8 b4 2c 34 fb       	call   6a9abb0 <ChromeMain@@Base+0xacd2a0>
+     b757efc:	48 89 df             	mov    %rbx,%rdi
+     b757eff:	e8 ec 27 00 00       	call   b75a6f0 <__libc_csu_fini@@Base+0x45caa30>
+     b757f04:	cc                   	int3
+     b757f05:	0f 0b                	ud2
+     b757f07:	cc                   	int3
+     b757f08:	cc                   	int3
+     b757f09:	cc                   	int3
+     b757f0a:	cc                   	int3
+     b757f0b:	cc                   	int3
+     b757f0c:	cc                   	int3
+     b757f0d:	cc                   	int3
+     b757f0e:	cc                   	int3
+     b757f0f:	cc                   	int3
+     b757f10:	55                   	push   %rbp
+     b757f11:	48 89 e5             	mov    %rsp,%rbp
+     b757f14:	e8 a7 a2 00 00       	call   b7621c0 <__libc_csu_fini@@Base+0x45d2500>
+     b757f19:	84 c0                	test   %al,%al
+     b757f1b:	74 02                	je     b757f1f <__libc_csu_fini@@Base+0x45c825f>
+     b757f1d:	5d                   	pop    %rbp
+     b757f1e:	c3                   	ret
+     b757f1f:	31 ff                	xor    %edi,%edi
+     b757f21:	e8 8a 8c 75 f9       	call   4eb0bb0 <_ZnamSt11align_val_t@@Base+0x5b11b0>
+     b757f26:	cc                   	int3
+     b757f27:	cc                   	int3
+     b757f28:	cc                   	int3
+     b757f29:	cc                   	int3
+     b757f2a:	cc                   	int3
+     b757f2b:	cc                   	int3
+     b757f2c:	cc                   	int3
+     b757f2d:	cc                   	int3
+     b757f2e:	cc                   	int3
+     b757f2f:	cc                   	int3
+     b757f30:	48 8b 05 f9 60 f0 05 	mov    0x5f060f9(%rip),%rax        # 1165e030 <__data_start@@Base+0x41030>
+     b757f37:	48 8b 40 18          	mov    0x18(%rax),%rax
+     b757f3b:	48                   	rex.W
+     b757f3c:	8d                   	.byte 0x8d
+     b757f3d:	0d                   	.byte 0xd
+     b757f3e:	1e                   	(bad)
+     b757f3f:	33                   	.byte 0x33
+
+
+/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000006393ab0 <ChromeMain@@Base+0x3c61a0>:
+     6393ab0:	55                   	push   %rbp
+     6393ab1:	48 89 e5             	mov    %rsp,%rbp
+     6393ab4:	41 57                	push   %r15
+     6393ab6:	41 56                	push   %r14
+     6393ab8:	41 55                	push   %r13
+     6393aba:	41 54                	push   %r12
+     6393abc:	53                   	push   %rbx
+     6393abd:	48 81 ec 38 01 00 00 	sub    $0x138,%rsp
+     6393ac4:	4c 8b 6d 18          	mov    0x18(%rbp),%r13
+     6393ac8:	48 8d 85 b0 fe ff ff 	lea    -0x150(%rbp),%rax
+     6393acf:	0f 57 c0             	xorps  %xmm0,%xmm0
+     6393ad2:	0f 11 00             	movups %xmm0,(%rax)
+     6393ad5:	48 89 40 f8          	mov    %rax,-0x8(%rax)
+     6393ad9:	4c 8b 3d b0 74 46 0b 	mov    0xb4674b0(%rip),%r15        # 117faf90 <__bss_start@@Base+0x44f90>
+     6393ae0:	85 ff                	test   %edi,%edi
+     6393ae2:	0f 84 f6 00 00 00    	je     6393bde <ChromeMain@@Base+0x3c62ce>
+     6393ae8:	0f 29 85 10 ff ff ff 	movaps %xmm0,-0xf0(%rbp)
+     6393aef:	48 c7 85 20 ff ff ff 	movq   $0x0,-0xe0(%rbp)
+     6393af6:	00 00 00 00 
+     6393afa:	49 8b 07             	mov    (%r15),%rax
+     6393afd:	48 8d 1d a4 eb 78 0a 	lea    0xa78eba4(%rip),%rbx        # 10b226a8 <memmove@plt+0x44f78>
+     6393b04:	48 89 d9             	mov    %rbx,%rcx
+     6393b07:	48 29 c1             	sub    %rax,%rcx
+     6393b0a:	48 c1 c9 05          	ror    $0x5,%rcx
+     6393b0e:	48 83 f9 05          	cmp    $0x5,%rcx
+     6393b12:	0f 87 86 0c 00 00    	ja     639479e <ChromeMain@@Base+0x3c6e8e>
+     6393b18:	ba 21 00 00 00       	mov    $0x21,%edx
+     6393b1d:	0f a3 ca             	bt     %ecx,%edx
+     6393b20:	0f 83 78 0c 00 00    	jae    639479e <ChromeMain@@Base+0x3c6e8e>
+     6393b26:	4c 89 ff             	mov    %r15,%rdi
+     6393b29:	4c 89 ee             	mov    %r13,%rsi
+     6393b2c:	ff 50 30             	call   *0x30(%rax)
+     6393b2f:	49 8b 07             	mov    (%r15),%rax
+     6393b32:	48 89 d9             	mov    %rbx,%rcx
+     6393b35:	48 29 c1             	sub    %rax,%rcx
+     6393b38:	48 c1 c9 05          	ror    $0x5,%rcx
+     6393b3c:	48 83 f9 05          	cmp    $0x5,%rcx
+     6393b40:	0f 87 5d 0c 00 00    	ja     63947a3 <ChromeMain@@Base+0x3c6e93>
+     6393b46:	ba 21 00 00 00       	mov    $0x21,%edx
+     6393b4b:	0f a3 ca             	bt     %ecx,%edx
+     6393b4e:	0f 83 4f 0c 00 00    	jae    63947a3 <ChromeMain@@Base+0x3c6e93>
+     6393b54:	48 8d b5 10 ff ff ff 	lea    -0xf0(%rbp),%rsi
+     6393b5b:	4c 89 ff             	mov    %r15,%rdi
+     6393b5e:	ff 50 38             	call   *0x38(%rax)
+     6393b61:	0f 57 c0             	xorps  %xmm0,%xmm0
+     6393b64:	48 8d 75 80          	lea    -0x80(%rbp),%rsi
+     6393b68:	0f 29 06             	movaps %xmm0,(%rsi)
+     6393b6b:	48 c7 46 10 00 00 00 	movq   $0x0,0x10(%rsi)
+     6393b72:	00 
+     6393b73:	bf 03 00 00 00       	mov    $0x3,%edi
+     6393b78:	e8 e3 42 62 fe       	call   49b7e60 <_ZnamSt11align_val_t@@Base+0xb8460>
+     6393b7d:	84 c0                	test   %al,%al
+     6393b7f:	0f 85 50 03 00 00    	jne    6393ed5 <ChromeMain@@Base+0x3c65c5>
+     6393b85:	80 7d 97 00          	cmpb   $0x0,-0x69(%rbp)
+     6393b89:	78 10                	js     6393b9b <ChromeMain@@Base+0x3c628b>
+     6393b8b:	80 bd 27 ff ff ff 00 	cmpb   $0x0,-0xd9(%rbp)
+     6393b92:	78 20                	js     6393bb4 <ChromeMain@@Base+0x3c62a4>
+     6393b94:	31 db                	xor    %ebx,%ebx
+     6393b96:	e9 61 02 00 00       	jmp    6393dfc <ChromeMain@@Base+0x3c64ec>
+     6393b9b:	48 8b 7d 80          	mov    -0x80(%rbp),%rdi
+     6393b9f:	48 be ff ff ff ff ff 	movabs $0x7fffffffffffffff,%rsi
+     6393ba6:	ff ff 7f 
+     6393ba9:	48 23 75 90          	and    -0x70(%rbp),%rsi
+     6393bad:	e8 1e e0 9d ff       	call   5d71bd0 <localtime_r@@Base+0x719650>
+     6393bb2:	eb d7                	jmp    6393b8b <ChromeMain@@Base+0x3c627b>
+     6393bb4:	48 8b bd 10 ff ff ff 	mov    -0xf0(%rbp),%rdi
+     6393bbb:	48 be ff ff ff ff ff 	movabs $0x7fffffffffffffff,%rsi
+     6393bc2:	ff ff 7f 
+     6393bc5:	48 23 b5 20 ff ff ff 	and    -0xe0(%rbp),%rsi
+     6393bcc:	e8 ff df 9d ff       	call   5d71bd0 <localtime_r@@Base+0x719650>
+     6393bd1:	eb c1                	jmp    6393b94 <ChromeMain@@Base+0x3c6284>
+     6393bd3:	48 83 c2 18          	add    $0x18,%rdx
+     6393bd7:	48 39 d1             	cmp    %rdx,%rcx
+     6393bda:	75 23                	jne    6393bff <ChromeMain@@Base+0x3c62ef>
+     6393bdc:	eb 2c                	jmp    6393c0a <ChromeMain@@Base+0x3c62fa>
+     6393bde:	e8 ed 75 c3 ff       	call   5fcb1d0 <localtime_r@@Base+0x972c50>
+     6393be3:	48 8b 48 08          	mov    0x8(%rax),%rcx
+     6393be7:	48 c1 e1 03          	shl    $0x3,%rcx
+     6393beb:	48 8d 0c 49          	lea    (%rcx,%rcx,2),%rcx
+     6393bef:	41 bc ff ff ff ff    	mov    $0xffffffff,%r12d
+     6393bf5:	48 85 c9             	test   %rcx,%rcx
+     6393bf8:	74 10                	je     6393c0a <ChromeMain@@Base+0x3c62fa>
+     6393bfa:	48 8b 00             	mov    (%rax),%rax
+     6393bfd:	31 d2                	xor    %edx,%edx
+     6393bff:	83 3c 10 00          	cmpl   $0x0,(%rax,%rdx,1)
+     6393c03:	75 ce                	jne    6393bd3 <ChromeMain@@Base+0x3c62c3>
+     6393c05:	44 8b 64 10 04       	mov    0x4(%rax,%rdx,1),%r12d
+     6393c0a:	c7 45 80 00 00 00 00 	movl   $0x0,-0x80(%rbp)
+     6393c11:	48 8d 3d 7b ea 89 fc 	lea    -0x3761585(%rip),%rdi        # 2c32693 <_IO_stdin_used@@Base+0x12d6c4b>
+     6393c18:	e8 93 49 74 0a       	call   10ad85b0 <getenv@plt>
+     6393c1d:	48 85 c0             	test   %rax,%rax
+     6393c20:	0f 85 81 00 00 00    	jne    6393ca7 <ChromeMain@@Base+0x3c6397>
+     6393c26:	4c 89 fb             	mov    %r15,%rbx
+     6393c29:	0f 57 c0             	xorps  %xmm0,%xmm0
+     6393c2c:	4c 8d bd 30 ff ff ff 	lea    -0xd0(%rbp),%r15
+     6393c33:	41 0f 29 07          	movaps %xmm0,(%r15)
+     6393c37:	49 c7 47 10 00 00 00 	movq   $0x0,0x10(%r15)
+     6393c3e:	00 
+     6393c3f:	48 8b 35 8a ac 47 0b 	mov    0xb47ac8a(%rip),%rsi        # 1180e8d0 <__bss_start@@Base+0x588d0>
+     6393c46:	48 8d 15 93 0c ba fc 	lea    -0x345f36d(%rip),%rdx        # 2f348e0 <_IO_stdin_used@@Base+0x15d8e98>
+     6393c4d:	b9 14 00 00 00       	mov    $0x14,%ecx
+     6393c52:	4c 89 ff             	mov    %r15,%rdi
+     6393c55:	e8 16 10 78 fd       	call   3b14c70 <__libc_realloc@@Base+0x3fff88>
+     6393c5a:	49 0f be 77 17       	movsbq 0x17(%r15),%rsi
+     6393c5f:	48 85 f6             	test   %rsi,%rsi
+     6393c62:	79 0e                	jns    6393c72 <ChromeMain@@Base+0x3c6362>
+     6393c64:	4c 8b bd 30 ff ff ff 	mov    -0xd0(%rbp),%r15
+     6393c6b:	48 8b b5 38 ff ff ff 	mov    -0xc8(%rbp),%rsi
+     6393c72:	48 8d 55 80          	lea    -0x80(%rbp),%rdx
+     6393c76:	4c 89 ff             	mov    %r15,%rdi
+     6393c79:	e8 a2 60 c3 ff       	call   5fc9d20 <localtime_r@@Base+0x9717a0>
+     6393c7e:	80 bd 47 ff ff ff 00 	cmpb   $0x0,-0xb9(%rbp)
+     6393c85:	79 1d                	jns    6393ca4 <ChromeMain@@Base+0x3c6394>
+     6393c87:	48 8b bd 30 ff ff ff 	mov    -0xd0(%rbp),%rdi
+     6393c8e:	48 be ff ff ff ff ff 	movabs $0x7fffffffffffffff,%rsi
+     6393c95:	ff ff 7f 
+     6393c98:	48 23 b5 40 ff ff ff 	and    -0xc0(%rbp),%rsi
+     6393c9f:	e8 2c df 9d ff       	call   5d71bd0 <localtime_r@@Base+0x719650>
+     6393ca4:	49 89 df             	mov    %rbx,%r15
+     6393ca7:	bf 20 00 00 00       	mov    $0x20,%edi
+     6393cac:	e8 ef 6c 51 ff       	call   58aa9a0 <localtime_r@@Base+0x252420>
+     6393cb1:	48 85 c0             	test   %rax,%rax
+     6393cb4:	0f 84 f3 0a 00 00    	je     63947ad <ChromeMain@@Base+0x3c6e9d>
+     6393cba:	48 8d 8d 38 ff ff ff 	lea    -0xc8(%rbp),%rcx
+     6393cc1:	c7 40 1c 1f 00 00 00 	movl   $0x1f,0x1c(%rax)
+     6393cc8:	0f 57 c0             	xorps  %xmm0,%xmm0
+     6393ccb:	0f 11 00             	movups %xmm0,(%rax)
+     6393cce:	48 89 48 10          	mov    %rcx,0x10(%rax)
+     6393cd2:	48 89 01             	mov    %rax,(%rcx)
+     6393cd5:	48 89 41 f8          	mov    %rax,-0x8(%rcx)
+     6393cd9:	c6 40 18 01          	movb   $0x1,0x18(%rax)
+     6393cdd:	48 c7 41 08 01 00 00 	movq   $0x1,0x8(%rcx)
+     6393ce4:	00 
+     6393ce5:	48 8d bd a8 fe ff ff 	lea    -0x158(%rbp),%rdi
+     6393cec:	4c 8d b5 30 ff ff ff 	lea    -0xd0(%rbp),%r14
+     6393cf3:	4c 89 f6             	mov    %r14,%rsi
+     6393cf6:	e8 35 f2 bb ff       	call   5f52f30 <localtime_r@@Base+0x8fa9b0>
+     6393cfb:	49 8b 76 08          	mov    0x8(%r14),%rsi
+     6393cff:	48 8d bd 10 ff ff ff 	lea    -0xf0(%rbp),%rdi
+     6393d06:	4c 89 37             	mov    %r14,(%rdi)
+     6393d09:	e8 42 bc f1 fd       	call   42af950 <posix_memalign@@Base+0x355530>
+     6393d0e:	48 8d 1d bb 3d 79 0a 	lea    0xa793dbb(%rip),%rbx        # 10b27ad0 <memmove@plt+0x4a3a0>
+     6393d15:	48 89 9d 00 ff ff ff 	mov    %rbx,-0x100(%rbp)
+     6393d1c:	44 89 a5 08 ff ff ff 	mov    %r12d,-0xf8(%rbp)
+     6393d23:	c6 85 0c ff ff ff 00 	movb   $0x0,-0xf4(%rbp)
+     6393d2a:	41 81 fc ff 0f 00 00 	cmp    $0xfff,%r12d
+     6393d31:	77 18                	ja     6393d4b <ChromeMain@@Base+0x3c643b>
+     6393d33:	44 89 e0             	mov    %r12d,%eax
+     6393d36:	48 8d 0d 64 15 48 0b 	lea    0xb481564(%rip),%rcx        # 118152a1 <__bss_start@@Base+0x5f2a1>
+     6393d3d:	b2 01                	mov    $0x1,%dl
+     6393d3f:	86 14 08             	xchg   %dl,(%rax,%rcx,1)
+     6393d42:	f6 c2 01             	test   $0x1,%dl
+     6393d45:	0f 85 6a 0a 00 00    	jne    63947b5 <ChromeMain@@Base+0x3c6ea5>
+     6393d4b:	8b 55 80             	mov    -0x80(%rbp),%edx
+     6393d4e:	48 8d bd a8 fe ff ff 	lea    -0x158(%rbp),%rdi
+     6393d55:	4c 8d b5 00 ff ff ff 	lea    -0x100(%rbp),%r14
+     6393d5c:	4c 89 f6             	mov    %r14,%rsi
+     6393d5f:	e8 8c 9c a8 fe       	call   4e1d9f0 <_ZnamSt11align_val_t@@Base+0x51dff0>
+     6393d64:	49 89 1e             	mov    %rbx,(%r14)
+     6393d67:	41 80 7e 0c 01       	cmpb   $0x1,0xc(%r14)
+     6393d6c:	0f 84 3d 0a 00 00    	je     63947af <ChromeMain@@Base+0x3c6e9f>
+     6393d72:	8b 85 08 ff ff ff    	mov    -0xf8(%rbp),%eax
+     6393d78:	b9 ff ff ff ff       	mov    $0xffffffff,%ecx
+     6393d7d:	48 39 c8             	cmp    %rcx,%rax
+     6393d80:	0f 85 c0 00 00 00    	jne    6393e46 <ChromeMain@@Base+0x3c6536>
+     6393d86:	41 80 7d 17 00       	cmpb   $0x0,0x17(%r13)
+     6393d8b:	0f 88 99 00 00 00    	js     6393e2a <ChromeMain@@Base+0x3c651a>
+     6393d91:	0f 57 c0             	xorps  %xmm0,%xmm0
+     6393d94:	41 0f 11 45 00       	movups %xmm0,0x0(%r13)
+     6393d99:	49 c7 45 10 00 00 00 	movq   $0x0,0x10(%r13)
+     6393da0:	00 
+     6393da1:	49 8b 07             	mov    (%r15),%rax
+     6393da4:	48 8d 0d fd e8 78 0a 	lea    0xa78e8fd(%rip),%rcx        # 10b226a8 <memmove@plt+0x44f78>
+     6393dab:	48 29 c1             	sub    %rax,%rcx
+     6393dae:	48 c1 c9 05          	ror    $0x5,%rcx
+     6393db2:	48 83 f9 05          	cmp    $0x5,%rcx
+     6393db6:	0f 87 dd 09 00 00    	ja     6394799 <ChromeMain@@Base+0x3c6e89>
+     6393dbc:	ba 21 00 00 00       	mov    $0x21,%edx
+     6393dc1:	0f a3 ca             	bt     %ecx,%edx
+     6393dc4:	0f 83 cf 09 00 00    	jae    6394799 <ChromeMain@@Base+0x3c6e89>
+     6393dca:	4c 89 ff             	mov    %r15,%rdi
+     6393dcd:	ff 50 18             	call   *0x18(%rax)
+     6393dd0:	84 c0                	test   %al,%al
+     6393dd2:	b8 00 00 40 00       	mov    $0x400000,%eax
+     6393dd7:	bb 00 40 00 00       	mov    $0x4000,%ebx
+     6393ddc:	0f 45 d8             	cmovne %eax,%ebx
+     6393ddf:	8a 05 2b dc 49 0b    	mov    0xb49dc2b(%rip),%al        # 11831a10 <__bss_start@@Base+0x7ba10>
+     6393de5:	84 c0                	test   %al,%al
+     6393de7:	0f 84 76 09 00 00    	je     6394763 <ChromeMain@@Base+0x3c6e53>
+     6393ded:	c6 05 02 1c 2d 0b 01 	movb   $0x1,0xb2d1c02(%rip)        # 116659f6 <__memalign_hook@@Base+0x79a6>
+     6393df4:	89 1d f2 1b 2d 0b    	mov    %ebx,0xb2d1bf2(%rip)        # 116659ec <__memalign_hook@@Base+0x799c>
+     6393dfa:	b3 01                	mov    $0x1,%bl
+     6393dfc:	48 8d 85 a8 fe ff ff 	lea    -0x158(%rbp),%rax
+     6393e03:	48 8b 70 08          	mov    0x8(%rax),%rsi
+     6393e07:	48 8d bd 30 ff ff ff 	lea    -0xd0(%rbp),%rdi
+     6393e0e:	48 89 07             	mov    %rax,(%rdi)
+     6393e11:	e8 3a bb f1 fd       	call   42af950 <posix_memalign@@Base+0x355530>
+     6393e16:	89 d8                	mov    %ebx,%eax
+     6393e18:	48 81 c4 38 01 00 00 	add    $0x138,%rsp
+     6393e1f:	5b                   	pop    %rbx
+     6393e20:	41 5c                	pop    %r12
+     6393e22:	41 5d                	pop    %r13
+     6393e24:	41 5e                	pop    %r14
+     6393e26:	41 5f                	pop    %r15
+     6393e28:	5d                   	pop    %rbp
+     6393e29:	c3                   	ret
+     6393e2a:	49 8b 7d 00          	mov    0x0(%r13),%rdi
+     6393e2e:	48 be ff ff ff ff ff 	movabs $0x7fffffffffffffff,%rsi
+     6393e35:	ff ff 7f 
+     6393e38:	49 23 75 10          	and    0x10(%r13),%rsi
+     6393e3c:	e8 8f dd 9d ff       	call   5d71bd0 <localtime_r@@Base+0x719650>
+     6393e41:	e9 4b ff ff ff       	jmp    6393d91 <ChromeMain@@Base+0x3c6481>
+     6393e46:	3d ff 0f 00 00       	cmp    $0xfff,%eax
+     6393e4b:	77 15                	ja     6393e62 <ChromeMain@@Base+0x3c6552>
+     6393e4d:	48 8d 0d 4d 14 48 0b 	lea    0xb48144d(%rip),%rcx        # 118152a1 <__bss_start@@Base+0x5f2a1>
+     6393e54:	31 d2                	xor    %edx,%edx
+     6393e56:	86 14 08             	xchg   %dl,(%rax,%rcx,1)
+     6393e59:	f6 c2 01             	test   $0x1,%dl
+     6393e5c:	0f 84 66 09 00 00    	je     63947c8 <ChromeMain@@Base+0x3c6eb8>
+     6393e62:	8b bd 08 ff ff ff    	mov    -0xf8(%rbp),%edi
+     6393e68:	e8 43 10 3b ff       	call   5744eb0 <localtime_r@@Base+0xec930>
+     6393e6d:	83 f8 ff             	cmp    $0xffffffff,%eax
+     6393e70:	0f 84 62 09 00 00    	je     63947d8 <ChromeMain@@Base+0x3c6ec8>
+     6393e76:	85 c0                	test   %eax,%eax
+     6393e78:	0f 85 71 09 00 00    	jne    63947ef <ChromeMain@@Base+0x3c6edf>
+     6393e7e:	c7 85 08 ff ff ff ff 	movl   $0xffffffff,-0xf8(%rbp)
+     6393e85:	ff ff ff 
+     6393e88:	e9 f9 fe ff ff       	jmp    6393d86 <ChromeMain@@Base+0x3c6476>
+     6393e8d:	48 8b b5 60 ff ff ff 	mov    -0xa0(%rbp),%rsi
+     6393e94:	48 8b 95 68 ff ff ff 	mov    -0x98(%rbp),%rdx
+     6393e9b:	e8 f0 0a e6 fc       	call   31f4990 <_IO_stdin_used@@Base+0x1898f48>
+     6393ea0:	e9 f0 02 00 00       	jmp    6394195 <ChromeMain@@Base+0x3c6885>
+     6393ea5:	48 8b b5 48 ff ff ff 	mov    -0xb8(%rbp),%rsi
+     6393eac:	48 8b 95 50 ff ff ff 	mov    -0xb0(%rbp),%rdx
+     6393eb3:	e8 d8 0a e6 fc       	call   31f4990 <_IO_stdin_used@@Base+0x1898f48>
+     6393eb8:	e9 09 02 00 00       	jmp    63940c6 <ChromeMain@@Base+0x3c67b6>
+     6393ebd:	48 8b b5 30 ff ff ff 	mov    -0xd0(%rbp),%rsi
+     6393ec4:	48 8b 95 38 ff ff ff 	mov    -0xc8(%rbp),%rdx
+     6393ecb:	e8 c0 0a e6 fc       	call   31f4990 <_IO_stdin_used@@Base+0x1898f48>
+     6393ed0:	e9 46 01 00 00       	jmp    639401b <ChromeMain@@Base+0x3c670b>
+     6393ed5:	48 8d 15 c1 99 7a fb 	lea    -0x485663f(%rip),%rdx        # 1b3d89d <_IO_stdin_used@@Base+0x1e1e55>
+     6393edc:	48 8d bd 30 ff ff ff 	lea    -0xd0(%rbp),%rdi
+     6393ee3:	4c 8d 75 80          	lea    -0x80(%rbp),%r14
+     6393ee7:	b9 17 00 00 00       	mov    $0x17,%ecx
+     6393eec:	4c 89 f6             	mov    %r14,%rsi
+     6393eef:	e8 ac ac 50 fe       	call   489eba0 <posix_memalign@@Base+0x944780>
+     6393ef4:	41 80 7e 17 00       	cmpb   $0x0,0x17(%r14)
+     6393ef9:	0f 88 f9 07 00 00    	js     63946f8 <ChromeMain@@Base+0x3c6de8>
+     6393eff:	48 8b 85 40 ff ff ff 	mov    -0xc0(%rbp),%rax
+     6393f06:	48 89 45 90          	mov    %rax,-0x70(%rbp)
+     6393f0a:	0f 10 85 30 ff ff ff 	movups -0xd0(%rbp),%xmm0
+     6393f11:	0f 29 45 80          	movaps %xmm0,-0x80(%rbp)
+     6393f15:	31 c0                	xor    %eax,%eax
+     6393f17:	48 89 85 d0 fe ff ff 	mov    %rax,-0x130(%rbp)
+     6393f1e:	0f 57 c0             	xorps  %xmm0,%xmm0
+     6393f21:	0f 29 85 c0 fe ff ff 	movaps %xmm0,-0x140(%rbp)
+     6393f28:	48 89 85 70 ff ff ff 	mov    %rax,-0x90(%rbp)
+     6393f2f:	0f 29 85 60 ff ff ff 	movaps %xmm0,-0xa0(%rbp)
+     6393f36:	0f 29 85 50 ff ff ff 	movaps %xmm0,-0xb0(%rbp)
+     6393f3d:	0f 29 85 40 ff ff ff 	movaps %xmm0,-0xc0(%rbp)
+     6393f44:	0f 29 85 30 ff ff ff 	movaps %xmm0,-0xd0(%rbp)
+     6393f4b:	49 8b 07             	mov    (%r15),%rax
+     6393f4e:	48 29 c3             	sub    %rax,%rbx
+     6393f51:	48 c1 cb 05          	ror    $0x5,%rbx
+     6393f55:	48 83 fb 05          	cmp    $0x5,%rbx
+     6393f59:	0f 87 49 08 00 00    	ja     63947a8 <ChromeMain@@Base+0x3c6e98>
+     6393f5f:	b9 21 00 00 00       	mov    $0x21,%ecx
+     6393f64:	0f a3 d9             	bt     %ebx,%ecx
+     6393f67:	0f 83 3b 08 00 00    	jae    63947a8 <ChromeMain@@Base+0x3c6e98>
+     6393f6d:	4c 8d a5 30 ff ff ff 	lea    -0xd0(%rbp),%r12
+     6393f74:	4c 89 ff             	mov    %r15,%rdi
+     6393f77:	4c 89 e6             	mov    %r12,%rsi
+     6393f7a:	ff 50 40             	call   *0x40(%rax)
+     6393f7d:	48 8d 85 e8 fe ff ff 	lea    -0x118(%rbp),%rax
+     6393f84:	0f 57 c0             	xorps  %xmm0,%xmm0
+     6393f87:	0f 11 00             	movups %xmm0,(%rax)
+     6393f8a:	48 89 40 f8          	mov    %rax,-0x8(%rax)
+     6393f8e:	48 8d 45 b4          	lea    -0x4c(%rbp),%rax
+     6393f92:	c6 40 13 04          	movb   $0x4,0x13(%rax)
+     6393f96:	48 8d 0d 64 7f 96 fb 	lea    -0x469809c(%rip),%rcx        # 1cfbf01 <_IO_stdin_used@@Base+0x3a04b9>
+     6393f9d:	4c 8d 75 b0          	lea    -0x50(%rbp),%r14
+     6393fa1:	49 39 ce             	cmp    %rcx,%r14
+     6393fa4:	0f 97 c2             	seta   %dl
+     6393fa7:	48 39 c8             	cmp    %rcx,%rax
+     6393faa:	0f 96 c0             	setbe  %al
+     6393fad:	08 d0                	or     %dl,%al
+     6393faf:	0f 84 f8 07 00 00    	je     63947ad <ChromeMain@@Base+0x3c6e9d>
+     6393fb5:	c7 45 b0 70 72 6f 64 	movl   $0x646f7270,-0x50(%rbp)
+     6393fbc:	c6 45 b4 00          	movb   $0x0,-0x4c(%rbp)
+     6393fc0:	48 8d 4d 98          	lea    -0x68(%rbp),%rcx
+     6393fc4:	4c 89 31             	mov    %r14,(%rcx)
+     6393fc7:	48 8d 15 2a 00 0a fc 	lea    -0x3f5ffd6(%rip),%rdx        # 2433ff8 <_IO_stdin_used@@Base+0xad85b0>
+     6393fce:	48 8d bd e0 fe ff ff 	lea    -0x120(%rbp),%rdi
+     6393fd5:	4c 8d 85 78 ff ff ff 	lea    -0x88(%rbp),%r8
+     6393fdc:	48 89 fe             	mov    %rdi,%rsi
+     6393fdf:	e8 9c d6 2a fe       	call   4641680 <posix_memalign@@Base+0x6e7260>
+     6393fe4:	48 8d 78 38          	lea    0x38(%rax),%rdi
+     6393fe8:	4c 39 e7             	cmp    %r12,%rdi
+     6393feb:	74 2e                	je     639401b <ChromeMain@@Base+0x3c670b>
+     6393fed:	80 78 4f 00          	cmpb   $0x0,0x4f(%rax)
+     6393ff1:	0f b6 95 47 ff ff ff 	movzbl -0xb9(%rbp),%edx
+     6393ff8:	0f 88 9d 06 00 00    	js     639469b <ChromeMain@@Base+0x3c6d8b>
+     6393ffe:	84 d2                	test   %dl,%dl
+     6394000:	0f 88 b7 fe ff ff    	js     6393ebd <ChromeMain@@Base+0x3c65ad>
+     6394006:	48 8b 85 40 ff ff ff 	mov    -0xc0(%rbp),%rax
+     639400d:	48 89 47 10          	mov    %rax,0x10(%rdi)
+     6394011:	0f 28 85 30 ff ff ff 	movaps -0xd0(%rbp),%xmm0
+     6394018:	0f 11 07             	movups %xmm0,(%rdi)
+     639401b:	80 7d c7 00          	cmpb   $0x0,-0x39(%rbp)
+     639401f:	79 1a                	jns    639403b <ChromeMain@@Base+0x3c672b>
+     6394021:	48 8b 7d b0          	mov    -0x50(%rbp),%rdi
+     6394025:	48 8b 75 c0          	mov    -0x40(%rbp),%rsi
+     6394029:	48 b8 ff ff ff ff ff 	movabs $0x7fffffffffffffff,%rax
+     6394030:	ff ff 7f 
+     6394033:	48 21 c6             	and    %rax,%rsi
+     6394036:	e8 95 db 9d ff       	call   5d71bd0 <localtime_r@@Base+0x719650>
+     639403b:	48 8d 45 b3          	lea    -0x4d(%rbp),%rax
+     639403f:	c6 40 14 03          	movb   $0x3,0x14(%rax)
+     6394043:	48 8d 0d 62 b1 79 fb 	lea    -0x4864e9e(%rip),%rcx        # 1b2f1ac <_IO_stdin_used@@Base+0x1d3764>
+     639404a:	49 39 ce             	cmp    %rcx,%r14
+     639404d:	0f 97 c2             	seta   %dl
+     6394050:	48 39 c8             	cmp    %rcx,%rax
+     6394053:	0f 96 c0             	setbe  %al
+     6394056:	08 d0                	or     %dl,%al
+     6394058:	0f 84 4f 07 00 00    	je     63947ad <ChromeMain@@Base+0x3c6e9d>
+     639405e:	4c 8d ad 48 ff ff ff 	lea    -0xb8(%rbp),%r13
+     6394065:	c7 45 b0 76 65 72 00 	movl   $0x726576,-0x50(%rbp)
+     639406c:	4c 8d 65 98          	lea    -0x68(%rbp),%r12
+     6394070:	4d 89 34 24          	mov    %r14,(%r12)
+     6394074:	48 8d 15 7d ff 09 fc 	lea    -0x3f60083(%rip),%rdx        # 2433ff8 <_IO_stdin_used@@Base+0xad85b0>
+     639407b:	48 8d bd e0 fe ff ff 	lea    -0x120(%rbp),%rdi
+     6394082:	4c 8d 85 78 ff ff ff 	lea    -0x88(%rbp),%r8
+     6394089:	48 89 fe             	mov    %rdi,%rsi
+     639408c:	4c 89 e1             	mov    %r12,%rcx
+     639408f:	e8 ec d5 2a fe       	call   4641680 <posix_memalign@@Base+0x6e7260>
+     6394094:	48 8d 78 38          	lea    0x38(%rax),%rdi
+     6394098:	4c 39 ef             	cmp    %r13,%rdi
+     639409b:	74 29                	je     63940c6 <ChromeMain@@Base+0x3c67b6>
+     639409d:	80 78 4f 00          	cmpb   $0x0,0x4f(%rax)
+     63940a1:	0f b6 95 5f ff ff ff 	movzbl -0xa1(%rbp),%edx
+     63940a8:	0f 88 0c 06 00 00    	js     63946ba <ChromeMain@@Base+0x3c6daa>
+     63940ae:	84 d2                	test   %dl,%dl
+     63940b0:	0f 88 ef fd ff ff    	js     6393ea5 <ChromeMain@@Base+0x3c6595>
+     63940b6:	49 8b 45 10          	mov    0x10(%r13),%rax
+     63940ba:	48 89 47 10          	mov    %rax,0x10(%rdi)
+     63940be:	41 0f 10 45 00       	movups 0x0(%r13),%xmm0
+     63940c3:	0f 11 07             	movups %xmm0,(%rdi)
+     63940c6:	80 7d c7 00          	cmpb   $0x0,-0x39(%rbp)
+     63940ca:	79 1a                	jns    63940e6 <ChromeMain@@Base+0x3c67d6>
+     63940cc:	48 8b 7d b0          	mov    -0x50(%rbp),%rdi
+     63940d0:	48 8b 75 c0          	mov    -0x40(%rbp),%rsi
+     63940d4:	48 b8 ff ff ff ff ff 	movabs $0x7fffffffffffffff,%rax
+     63940db:	ff ff 7f 
+     63940de:	48 21 c6             	and    %rax,%rsi
+     63940e1:	e8 ea da 9d ff       	call   5d71bd0 <localtime_r@@Base+0x719650>
+     63940e6:	48 0f be 85 77 ff ff 	movsbq -0x89(%rbp),%rax
+     63940ed:	ff 
+     63940ee:	48 85 c0             	test   %rax,%rax
+     63940f1:	79 07                	jns    63940fa <ChromeMain@@Base+0x3c67ea>
+     63940f3:	48 8b 85 68 ff ff ff 	mov    -0x98(%rbp),%rax
+     63940fa:	48 85 c0             	test   %rax,%rax
+     63940fd:	0f 84 b2 00 00 00    	je     63941b5 <ChromeMain@@Base+0x3c68a5>
+     6394103:	48 8d 45 b7          	lea    -0x49(%rbp),%rax
+     6394107:	c6 40 10 07          	movb   $0x7,0x10(%rax)
+     639410b:	48 8d 0d 21 4b 85 fb 	lea    -0x47ab4df(%rip),%rcx        # 1be8c33 <_IO_stdin_used@@Base+0x28d1eb>
+     6394112:	49 39 ce             	cmp    %rcx,%r14
+     6394115:	0f 97 c2             	seta   %dl
+     6394118:	48 39 c8             	cmp    %rcx,%rax
+     639411b:	0f 96 c0             	setbe  %al
+     639411e:	08 d0                	or     %dl,%al
+     6394120:	0f 84 87 06 00 00    	je     63947ad <ChromeMain@@Base+0x3c6e9d>
+     6394126:	4c 8d ad 60 ff ff ff 	lea    -0xa0(%rbp),%r13
+     639412d:	c7 45 b3 6e 6e 65 6c 	movl   $0x6c656e6e,-0x4d(%rbp)
+     6394134:	c7 45 b0 63 68 61 6e 	movl   $0x6e616863,-0x50(%rbp)
+     639413b:	c6 45 b7 00          	movb   $0x0,-0x49(%rbp)
+     639413f:	48 8d 4d 98          	lea    -0x68(%rbp),%rcx
+     6394143:	4c 89 31             	mov    %r14,(%rcx)
+     6394146:	48 8d 15 ab fe 09 fc 	lea    -0x3f60155(%rip),%rdx        # 2433ff8 <_IO_stdin_used@@Base+0xad85b0>
+     639414d:	48 8d bd e0 fe ff ff 	lea    -0x120(%rbp),%rdi
+     6394154:	4c 8d 85 78 ff ff ff 	lea    -0x88(%rbp),%r8
+     639415b:	48 89 fe             	mov    %rdi,%rsi
+     639415e:	e8 1d d5 2a fe       	call   4641680 <posix_memalign@@Base+0x6e7260>
+     6394163:	48 8d 78 38          	lea    0x38(%rax),%rdi
+     6394167:	4c 39 ef             	cmp    %r13,%rdi
+     639416a:	74 29                	je     6394195 <ChromeMain@@Base+0x3c6885>
+     639416c:	80 78 4f 00          	cmpb   $0x0,0x4f(%rax)
+     6394170:	0f b6 95 77 ff ff ff 	movzbl -0x89(%rbp),%edx
+     6394177:	0f 88 5c 05 00 00    	js     63946d9 <ChromeMain@@Base+0x3c6dc9>
+     639417d:	84 d2                	test   %dl,%dl
+     639417f:	0f 88 08 fd ff ff    	js     6393e8d <ChromeMain@@Base+0x3c657d>
+     6394185:	49 8b 45 10          	mov    0x10(%r13),%rax
+     6394189:	48 89 47 10          	mov    %rax,0x10(%rdi)
+     639418d:	41 0f 10 45 00       	movups 0x0(%r13),%xmm0
+     6394192:	0f 11 07             	movups %xmm0,(%rdi)
+     6394195:	80 7d c7 00          	cmpb   $0x0,-0x39(%rbp)
+     6394199:	79 1a                	jns    63941b5 <ChromeMain@@Base+0x3c68a5>
+     639419b:	48 8b 7d b0          	mov    -0x50(%rbp),%rdi
+     639419f:	48 8b 75 c0          	mov    -0x40(%rbp),%rsi
+     63941a3:	48 b8 ff ff ff ff ff 	movabs $0x7fffffffffffffff,%rax
+     63941aa:	ff ff 7f 
+     63941ad:	48 21 c6             	and    %rax,%rsi
+     63941b0:	e8 1b da 9d ff       	call   5d71bd0 <localtime_r@@Base+0x719650>
+     63941b5:	48 8d 45 b5          	lea    -0x4b(%rbp),%rax
+     63941b9:	c6 40 12 05          	movb   $0x5,0x12(%rax)
+     63941bd:	48 8d 0d f5 60 67 fb 	lea    -0x4989f0b(%rip),%rcx        # 1a0a2b9 <_IO_stdin_used@@Base+0xae871>
+     63941c4:	49 39 ce             	cmp    %rcx,%r14
+     63941c7:	0f 97 c2             	seta   %dl
+     63941ca:	48 39 c8             	cmp    %rcx,%rax
+     63941cd:	0f 96 c0             	setbe  %al
+     63941d0:	08 d0                	or     %dl,%al
+     63941d2:	0f 84 d5 05 00 00    	je     63947ad <ChromeMain@@Base+0x3c6e9d>
+     63941d8:	c7 45 b0 4c 69 6e 75 	movl   $0x756e694c,-0x50(%rbp)
+     63941df:	66 c7 45 b4 78 00    	movw   $0x78,-0x4c(%rbp)
+     63941e5:	48 8d 45 9c          	lea    -0x64(%rbp),%rax
+     63941e9:	c6 40 13 04          	movb   $0x4,0x13(%rax)
+     63941ed:	48 8d 0d c3 56 6f fb 	lea    -0x490a93d(%rip),%rcx        # 1a898b7 <_IO_stdin_used@@Base+0x12de6f>
+     63941f4:	49 39 cc             	cmp    %rcx,%r12
+     63941f7:	0f 97 c2             	seta   %dl
+     63941fa:	48 39 c8             	cmp    %rcx,%rax
+     63941fd:	0f 96 c0             	setbe  %al
+     6394200:	08 d0                	or     %dl,%al
+     6394202:	0f 84 a5 05 00 00    	je     63947ad <ChromeMain@@Base+0x3c6e9d>
+     6394208:	c7 45 98 70 6c 61 74 	movl   $0x74616c70,-0x68(%rbp)
+     639420f:	c6 45 9c 00          	movb   $0x0,-0x64(%rbp)
+     6394213:	48 8d 8d 78 ff ff ff 	lea    -0x88(%rbp),%rcx
+     639421a:	4c 89 21             	mov    %r12,(%rcx)
+     639421d:	48 8d 15 d4 fd 09 fc 	lea    -0x3f6022c(%rip),%rdx        # 2433ff8 <_IO_stdin_used@@Base+0xad85b0>
+     6394224:	48 8d bd e0 fe ff ff 	lea    -0x120(%rbp),%rdi
+     639422b:	4c 8d 45 d7          	lea    -0x29(%rbp),%r8
+     639422f:	48 89 fe             	mov    %rdi,%rsi
+     6394232:	e8 49 d4 2a fe       	call   4641680 <posix_memalign@@Base+0x6e7260>
+     6394237:	48 8d 58 38          	lea    0x38(%rax),%rbx
+     639423b:	80 78 4f 00          	cmpb   $0x0,0x4f(%rax)
+     639423f:	0f 88 d2 04 00 00    	js     6394717 <ChromeMain@@Base+0x3c6e07>
+     6394245:	48 8b 45 c0          	mov    -0x40(%rbp),%rax
+     6394249:	48 89 43 10          	mov    %rax,0x10(%rbx)
+     639424d:	0f 10 45 b0          	movups -0x50(%rbp),%xmm0
+     6394251:	0f 11 03             	movups %xmm0,(%rbx)
+     6394254:	80 7d af 00          	cmpb   $0x0,-0x51(%rbp)
+     6394258:	79 1a                	jns    6394274 <ChromeMain@@Base+0x3c6964>
+     639425a:	48 8b 7d 98          	mov    -0x68(%rbp),%rdi
+     639425e:	48 8b 75 a8          	mov    -0x58(%rbp),%rsi
+     6394262:	48 b8 ff ff ff ff ff 	movabs $0x7fffffffffffffff,%rax
+     6394269:	ff ff 7f 
+     639426c:	48 21 c6             	and    %rax,%rsi
+     639426f:	e8 5c d9 9d ff       	call   5d71bd0 <localtime_r@@Base+0x719650>
+     6394274:	48 8d 7d b0          	lea    -0x50(%rbp),%rdi
+     6394278:	e8 f3 12 2f ff       	call   5685570 <localtime_r@@Base+0x2cff0>
+     639427d:	48 8d 45 a3          	lea    -0x5d(%rbp),%rax
+     6394281:	c6 40 0c 0b          	movb   $0xb,0xc(%rax)
+     6394285:	48 8d 0d ac af 8e fb 	lea    -0x4715054(%rip),%rcx        # 1c7f238 <_IO_stdin_used@@Base+0x3237f0>
+     639428c:	49 39 cc             	cmp    %rcx,%r12
+     639428f:	0f 97 c2             	seta   %dl
+     6394292:	48 39 c8             	cmp    %rcx,%rax
+     6394295:	0f 96 c0             	setbe  %al
+     6394298:	08 d0                	or     %dl,%al
+     639429a:	0f 84 0d 05 00 00    	je     63947ad <ChromeMain@@Base+0x3c6e9d>
+     63942a0:	48 b8 6c 73 62 2d 72 	movabs $0x656c65722d62736c,%rax
+     63942a7:	65 6c 65 
+     63942aa:	48 89 45 98          	mov    %rax,-0x68(%rbp)
+     63942ae:	c7 45 9f 65 61 73 65 	movl   $0x65736165,-0x61(%rbp)
+     63942b5:	c6 45 a3 00          	movb   $0x0,-0x5d(%rbp)
+     63942b9:	48 8d 8d 78 ff ff ff 	lea    -0x88(%rbp),%rcx
+     63942c0:	4c 89 21             	mov    %r12,(%rcx)
+     63942c3:	48 8d 15 2e fd 09 fc 	lea    -0x3f602d2(%rip),%rdx        # 2433ff8 <_IO_stdin_used@@Base+0xad85b0>
+     63942ca:	48 8d bd e0 fe ff ff 	lea    -0x120(%rbp),%rdi
+     63942d1:	4c 8d 45 d7          	lea    -0x29(%rbp),%r8
+     63942d5:	48 89 fe             	mov    %rdi,%rsi
+     63942d8:	e8 a3 d3 2a fe       	call   4641680 <posix_memalign@@Base+0x6e7260>
+     63942dd:	48 8d 58 38          	lea    0x38(%rax),%rbx
+     63942e1:	80 78 4f 00          	cmpb   $0x0,0x4f(%rax)
+     63942e5:	0f 88 4b 04 00 00    	js     6394736 <ChromeMain@@Base+0x3c6e26>
+     63942eb:	48 8b 45 c0          	mov    -0x40(%rbp),%rax
+     63942ef:	48 89 43 10          	mov    %rax,0x10(%rbx)
+     63942f3:	0f 10 45 b0          	movups -0x50(%rbp),%xmm0
+     63942f7:	0f 11 03             	movups %xmm0,(%rbx)
+     63942fa:	31 c0                	xor    %eax,%eax
+     63942fc:	88 45 c7             	mov    %al,-0x39(%rbp)
+     63942ff:	88 45 b0             	mov    %al,-0x50(%rbp)
+     6394302:	38 45 af             	cmp    %al,-0x51(%rbp)
+     6394305:	0f 88 c4 02 00 00    	js     63945cf <ChromeMain@@Base+0x3c6cbf>
+     639430b:	0f 57 c0             	xorps  %xmm0,%xmm0
+     639430e:	0f 29 45 b0          	movaps %xmm0,-0x50(%rbp)
+     6394312:	48 c7 45 c0 00 00 00 	movq   $0x0,-0x40(%rbp)
+     6394319:	00 
+     639431a:	49 8b 1f             	mov    (%r15),%rbx
+     639431d:	31 c0                	xor    %eax,%eax
+     639431f:	48 8d 0d 82 e3 78 0a 	lea    0xa78e382(%rip),%rcx        # 10b226a8 <memmove@plt+0x44f78>
+     6394326:	41 be 00 00 00 00    	mov    $0x0,%r14d
+     639432c:	48 39 cb             	cmp    %rcx,%rbx
+     639432f:	75 77                	jne    63943a8 <ChromeMain@@Base+0x3c6a98>
+     6394331:	48 8d 45 a6          	lea    -0x5a(%rbp),%rax
+     6394335:	c6 40 09 0e          	movb   $0xe,0x9(%rax)
+     6394339:	48 8d 0d f5 c7 8b fb 	lea    -0x474380b(%rip),%rcx        # 1c50b35 <_IO_stdin_used@@Base+0x2f50ed>
+     6394340:	49 39 cc             	cmp    %rcx,%r12
+     6394343:	0f 97 c2             	seta   %dl
+     6394346:	48 39 c8             	cmp    %rcx,%rax
+     6394349:	0f 96 c0             	setbe  %al
+     639434c:	08 d0                	or     %dl,%al
+     639434e:	0f 84 59 04 00 00    	je     63947ad <ChromeMain@@Base+0x3c6e9d>
+     6394354:	48 b8 74 6f 72 2d 73 	movabs $0x666c65732d726f74,%rax
+     639435b:	65 6c 66 
+     639435e:	48 89 45 9e          	mov    %rax,-0x62(%rbp)
+     6394362:	48 b8 2d 2d 6d 6f 6e 	movabs $0x6f74696e6f6d2d2d,%rax
+     6394369:	69 74 6f 
+     639436c:	48 89 45 98          	mov    %rax,-0x68(%rbp)
+     6394370:	c6 45 a6 00          	movb   $0x0,-0x5a(%rbp)
+     6394374:	bf 18 00 00 00       	mov    $0x18,%edi
+     6394379:	e8 22 66 51 ff       	call   58aa9a0 <localtime_r@@Base+0x252420>
+     639437e:	48 85 c0             	test   %rax,%rax
+     6394381:	0f 84 26 04 00 00    	je     63947ad <ChromeMain@@Base+0x3c6e9d>
+     6394387:	48 8b 4d a8          	mov    -0x58(%rbp),%rcx
+     639438b:	48 89 48 10          	mov    %rcx,0x10(%rax)
+     639438f:	0f 10 45 98          	movups -0x68(%rbp),%xmm0
+     6394393:	0f 11 00             	movups %xmm0,(%rax)
+     6394396:	48 89 45 b0          	mov    %rax,-0x50(%rbp)
+     639439a:	41 be 01 00 00 00    	mov    $0x1,%r14d
+     63943a0:	4c 89 75 c0          	mov    %r14,-0x40(%rbp)
+     63943a4:	4c 89 75 b8          	mov    %r14,-0x48(%rbp)
+     63943a8:	48 89 85 28 ff ff ff 	mov    %rax,-0xd8(%rbp)
+     63943af:	bf 40 00 00 00       	mov    $0x40,%edi
+     63943b4:	e8 e7 65 51 ff       	call   58aa9a0 <localtime_r@@Base+0x252420>
+     63943b9:	49 89 c4             	mov    %rax,%r12
+     63943bc:	48 83 c0 30          	add    $0x30,%rax
+     63943c0:	4c 39 e0             	cmp    %r12,%rax
+     63943c3:	0f 82 e4 03 00 00    	jb     63947ad <ChromeMain@@Base+0x3c6e9d>
+     63943c9:	48 8d 0d 3f 95 7a fb 	lea    -0x4856ac1(%rip),%rcx        # 1b3d90f <_IO_stdin_used@@Base+0x1e1ec7>
+     63943d0:	49 39 cc             	cmp    %rcx,%r12
+     63943d3:	0f 97 c2             	seta   %dl
+     63943d6:	48 39 c8             	cmp    %rcx,%rax
+     63943d9:	0f 96 c0             	setbe  %al
+     63943dc:	08 d0                	or     %dl,%al
+     63943de:	0f 84 c9 03 00 00    	je     63947ad <ChromeMain@@Base+0x3c6e9d>
+     63943e4:	4d 89 fd             	mov    %r15,%r13
+     63943e7:	43 8d 04 36          	lea    (%r14,%r14,1),%eax
+     63943eb:	48 8d 0d b6 e2 78 0a 	lea    0xa78e2b6(%rip),%rcx        # 10b226a8 <memmove@plt+0x44f78>
+     63943f2:	48 39 cb             	cmp    %rcx,%rbx
+     63943f5:	0f 10 05 33 95 7a fb 	movups -0x4856acd(%rip),%xmm0        # 1b3d92f <_IO_stdin_used@@Base+0x1e1ee7>
+     63943fc:	41 0f 11 44 24 20    	movups %xmm0,0x20(%r12)
+     6394402:	0f 10 05 16 95 7a fb 	movups -0x4856aea(%rip),%xmm0        # 1b3d91f <_IO_stdin_used@@Base+0x1e1ed7>
+     6394409:	41 0f 11 44 24 10    	movups %xmm0,0x10(%r12)
+     639440f:	0f 10 05 f9 94 7a fb 	movups -0x4856b07(%rip),%xmm0        # 1b3d90f <_IO_stdin_used@@Base+0x1e1ec7>
+     6394416:	41 0f 11 04 24       	movups %xmm0,(%r12)
+     639441b:	41 c6 44 24 30 00    	movb   $0x0,0x30(%r12)
+     6394421:	49 89 df             	mov    %rbx,%r15
+     6394424:	bb 01 00 00 00       	mov    $0x1,%ebx
+     6394429:	48 0f 44 d8          	cmove  %rax,%rbx
+     639442d:	8d 04 dd 00 00 00 00 	lea    0x0(,%rbx,8),%eax
+     6394434:	48 8d 3c 40          	lea    (%rax,%rax,2),%rdi
+     6394438:	e8 63 65 51 ff       	call   58aa9a0 <localtime_r@@Base+0x252420>
+     639443d:	4b 8d 0c 76          	lea    (%r14,%r14,2),%rcx
+     6394441:	c1 e1 03             	shl    $0x3,%ecx
+     6394444:	48 01 c1             	add    %rax,%rcx
+     6394447:	0f 84 60 03 00 00    	je     63947ad <ChromeMain@@Base+0x3c6e9d>
+     639444d:	4c 89 ad f8 fe ff ff 	mov    %r13,-0x108(%rbp)
+     6394454:	48 b8 ff ff ff ff ff 	movabs $0x7fffffffffffffff,%rax
+     639445b:	ff ff 7f 
+     639445e:	48 83 c0 41          	add    $0x41,%rax
+     6394462:	41 c1 e6 03          	shl    $0x3,%r14d
+     6394466:	4f 8d 2c 76          	lea    (%r14,%r14,2),%r13
+     639446a:	49 89 ce             	mov    %rcx,%r14
+     639446d:	4d 29 ee             	sub    %r13,%r14
+     6394470:	4c 89 21             	mov    %r12,(%rcx)
+     6394473:	48 c7 41 08 30 00 00 	movq   $0x30,0x8(%rcx)
+     639447a:	00 
+     639447b:	48 89 41 10          	mov    %rax,0x10(%rcx)
+     639447f:	48 8d 05 22 e2 78 0a 	lea    0xa78e222(%rip),%rax        # 10b226a8 <memmove@plt+0x44f78>
+     6394486:	49 39 c7             	cmp    %rax,%r15
+     6394489:	48 8b bd 28 ff ff ff 	mov    -0xd8(%rbp),%rdi
+     6394490:	75 19                	jne    63944ab <ChromeMain@@Base+0x3c6b9b>
+     6394492:	4c 89 f7             	mov    %r14,%rdi
+     6394495:	48 8b b5 28 ff ff ff 	mov    -0xd8(%rbp),%rsi
+     639449c:	4c 89 ea             	mov    %r13,%rdx
+     639449f:	e8 bc 90 74 0a       	call   10add560 <memcpy@plt>
+     63944a4:	48 8b bd 28 ff ff ff 	mov    -0xd8(%rbp),%rdi
+     63944ab:	4c 8b 65 10          	mov    0x10(%rbp),%r12
+     63944af:	4d 89 ef             	mov    %r13,%r15
+     63944b2:	49 f7 df             	neg    %r15
+     63944b5:	4c 89 75 b0          	mov    %r14,-0x50(%rbp)
+     63944b9:	48 89 5d c0          	mov    %rbx,-0x40(%rbp)
+     63944bd:	48 85 ff             	test   %rdi,%rdi
+     63944c0:	74 08                	je     63944ca <ChromeMain@@Base+0x3c6bba>
+     63944c2:	4c 89 ee             	mov    %r13,%rsi
+     63944c5:	e8 06 d7 9d ff       	call   5d71bd0 <localtime_r@@Base+0x719650>
+     63944ca:	b0 18                	mov    $0x18,%al
+     63944cc:	44 28 f8             	sub    %r15b,%al
+     63944cf:	c0 e8 03             	shr    $0x3,%al
+     63944d2:	0f b6 c0             	movzbl %al,%eax
+     63944d5:	6b c0 ab             	imul   $0xffffffab,%eax,%eax
+     63944d8:	0f b6 c0             	movzbl %al,%eax
+     63944db:	48 89 45 b8          	mov    %rax,-0x48(%rbp)
+     63944df:	31 c0                	xor    %eax,%eax
+     63944e1:	48 8d bd a8 fe ff ff 	lea    -0x158(%rbp),%rdi
+     63944e8:	48 8d 75 80          	lea    -0x80(%rbp),%rsi
+     63944ec:	48 8d 8d 10 ff ff ff 	lea    -0xf0(%rbp),%rcx
+     63944f3:	4c 8d 85 c0 fe ff ff 	lea    -0x140(%rbp),%r8
+     63944fa:	4c 8d b5 e0 fe ff ff 	lea    -0x120(%rbp),%r14
+     6394501:	48 8b 55 18          	mov    0x18(%rbp),%rdx
+     6394505:	4d 89 f1             	mov    %r14,%r9
+     6394508:	41 54                	push   %r12
+     639450a:	50                   	push   %rax
+     639450b:	50                   	push   %rax
+     639450c:	48 8d 45 b0          	lea    -0x50(%rbp),%rax
+     6394510:	50                   	push   %rax
+     6394511:	e8 ba b0 a8 fe       	call   4e1f5d0 <_ZnamSt11align_val_t@@Base+0x51fbd0>
+     6394516:	48 83 c4 20          	add    $0x20,%rsp
+     639451a:	84 c0                	test   %al,%al
+     639451c:	0f 84 90 02 00 00    	je     63947b2 <ChromeMain@@Base+0x3c6ea2>
+     6394522:	48 8b 5d b0          	mov    -0x50(%rbp),%rbx
+     6394526:	48 85 db             	test   %rbx,%rbx
+     6394529:	4c 8b bd f8 fe ff ff 	mov    -0x108(%rbp),%r15
+     6394530:	0f 85 dc 00 00 00    	jne    6394612 <ChromeMain@@Base+0x3c6d02>
+     6394536:	48 8b b5 e8 fe ff ff 	mov    -0x118(%rbp),%rsi
+     639453d:	48 8d 7d b0          	lea    -0x50(%rbp),%rdi
+     6394541:	4c 89 37             	mov    %r14,(%rdi)
+     6394544:	e8 47 13 e6 fc       	call   31f5890 <_IO_stdin_used@@Base+0x1899e48>
+     6394549:	48 8d bd 30 ff ff ff 	lea    -0xd0(%rbp),%rdi
+     6394550:	e8 fb fd 36 00       	call   6704350 <ChromeMain@@Base+0x736a40>
+     6394555:	80 bd d7 fe ff ff 00 	cmpb   $0x0,-0x129(%rbp)
+     639455c:	79 20                	jns    639457e <ChromeMain@@Base+0x3c6c6e>
+     639455e:	48 8b bd c0 fe ff ff 	mov    -0x140(%rbp),%rdi
+     6394565:	48 8b b5 d0 fe ff ff 	mov    -0x130(%rbp),%rsi
+     639456c:	48 b8 ff ff ff ff ff 	movabs $0x7fffffffffffffff,%rax
+     6394573:	ff ff 7f 
+     6394576:	48 21 c6             	and    %rax,%rsi
+     6394579:	e8 52 d6 9d ff       	call   5d71bd0 <localtime_r@@Base+0x719650>
+     639457e:	80 7d 97 00          	cmpb   $0x0,-0x69(%rbp)
+     6394582:	78 2f                	js     63945b3 <ChromeMain@@Base+0x3c6ca3>
+     6394584:	80 bd 27 ff ff ff 00 	cmpb   $0x0,-0xd9(%rbp)
+     639458b:	0f 89 10 f8 ff ff    	jns    6393da1 <ChromeMain@@Base+0x3c6491>
+     6394591:	48 8b bd 10 ff ff ff 	mov    -0xf0(%rbp),%rdi
+     6394598:	48 be ff ff ff ff ff 	movabs $0x7fffffffffffffff,%rsi
+     639459f:	ff ff 7f 
+     63945a2:	48 23 b5 20 ff ff ff 	and    -0xe0(%rbp),%rsi
+     63945a9:	e8 22 d6 9d ff       	call   5d71bd0 <localtime_r@@Base+0x719650>
+     63945ae:	e9 ee f7 ff ff       	jmp    6393da1 <ChromeMain@@Base+0x3c6491>
+     63945b3:	48 8b 7d 80          	mov    -0x80(%rbp),%rdi
+     63945b7:	48 8b 75 90          	mov    -0x70(%rbp),%rsi
+     63945bb:	48 b8 ff ff ff ff ff 	movabs $0x7fffffffffffffff,%rax
+     63945c2:	ff ff 7f 
+     63945c5:	48 21 c6             	and    %rax,%rsi
+     63945c8:	e8 03 d6 9d ff       	call   5d71bd0 <localtime_r@@Base+0x719650>
+     63945cd:	eb b5                	jmp    6394584 <ChromeMain@@Base+0x3c6c74>
+     63945cf:	48 8b 7d 98          	mov    -0x68(%rbp),%rdi
+     63945d3:	48 8b 75 a8          	mov    -0x58(%rbp),%rsi
+     63945d7:	48 b8 ff ff ff ff ff 	movabs $0x7fffffffffffffff,%rax
+     63945de:	ff ff 7f 
+     63945e1:	48 21 c6             	and    %rax,%rsi
+     63945e4:	e8 e7 d5 9d ff       	call   5d71bd0 <localtime_r@@Base+0x719650>
+     63945e9:	80 7d c7 00          	cmpb   $0x0,-0x39(%rbp)
+     63945ed:	0f 89 18 fd ff ff    	jns    639430b <ChromeMain@@Base+0x3c69fb>
+     63945f3:	48 8b 7d b0          	mov    -0x50(%rbp),%rdi
+     63945f7:	48 8b 75 c0          	mov    -0x40(%rbp),%rsi
+     63945fb:	48 b8 ff ff ff ff ff 	movabs $0x7fffffffffffffff,%rax
+     6394602:	ff ff 7f 
+     6394605:	48 21 c6             	and    %rax,%rsi
+     6394608:	e8 c3 d5 9d ff       	call   5d71bd0 <localtime_r@@Base+0x719650>
+     639460d:	e9 f9 fc ff ff       	jmp    639430b <ChromeMain@@Base+0x3c69fb>
+     6394612:	48 8b 45 b8          	mov    -0x48(%rbp),%rax
+     6394616:	48 c1 e0 03          	shl    $0x3,%rax
+     639461a:	4c 8d 3c 40          	lea    (%rax,%rax,2),%r15
+     639461e:	48 89 df             	mov    %rbx,%rdi
+     6394621:	4d 85 ff             	test   %r15,%r15
+     6394624:	74 22                	je     6394648 <ChromeMain@@Base+0x3c6d38>
+     6394626:	4c 8d 63 e8          	lea    -0x18(%rbx),%r12
+     639462a:	4c 89 e0             	mov    %r12,%rax
+     639462d:	4c 01 f8             	add    %r15,%rax
+     6394630:	0f 84 77 01 00 00    	je     63947ad <ChromeMain@@Base+0x3c6e9d>
+     6394636:	43 80 7c 3c 17 00    	cmpb   $0x0,0x17(%r12,%r15,1)
+     639463c:	78 40                	js     639467e <ChromeMain@@Base+0x3c6d6e>
+     639463e:	49 83 c7 e8          	add    $0xffffffffffffffe8,%r15
+     6394642:	75 e6                	jne    639462a <ChromeMain@@Base+0x3c6d1a>
+     6394644:	48 8b 7d b0          	mov    -0x50(%rbp),%rdi
+     6394648:	48 29 fb             	sub    %rdi,%rbx
+     639464b:	48 c1 fb 03          	sar    $0x3,%rbx
+     639464f:	48 b8 ab aa aa aa aa 	movabs $0xaaaaaaaaaaaaaaab,%rax
+     6394656:	aa aa aa 
+     6394659:	48 0f af c3          	imul   %rbx,%rax
+     639465d:	48 89 45 b8          	mov    %rax,-0x48(%rbp)
+     6394661:	48 8b 45 c0          	mov    -0x40(%rbp),%rax
+     6394665:	48 c1 e0 03          	shl    $0x3,%rax
+     6394669:	48 8d 34 40          	lea    (%rax,%rax,2),%rsi
+     639466d:	e8 5e d5 9d ff       	call   5d71bd0 <localtime_r@@Base+0x719650>
+     6394672:	4c 8b bd f8 fe ff ff 	mov    -0x108(%rbp),%r15
+     6394679:	e9 b8 fe ff ff       	jmp    6394536 <ChromeMain@@Base+0x3c6c26>
+     639467e:	4b 8b 3c 3c          	mov    (%r12,%r15,1),%rdi
+     6394682:	4b 8b 74 3c 10       	mov    0x10(%r12,%r15,1),%rsi
+     6394687:	48 b8 ff ff ff ff ff 	movabs $0x7fffffffffffffff,%rax
+     639468e:	ff ff 7f 
+     6394691:	48 21 c6             	and    %rax,%rsi
+     6394694:	e8 37 d5 9d ff       	call   5d71bd0 <localtime_r@@Base+0x719650>
+     6394699:	eb a3                	jmp    639463e <ChromeMain@@Base+0x3c6d2e>
+     639469b:	84 d2                	test   %dl,%dl
+     639469d:	79 0e                	jns    63946ad <ChromeMain@@Base+0x3c6d9d>
+     639469f:	4c 8b a5 30 ff ff ff 	mov    -0xd0(%rbp),%r12
+     63946a6:	48 8b 95 38 ff ff ff 	mov    -0xc8(%rbp),%rdx
+     63946ad:	4c 89 e6             	mov    %r12,%rsi
+     63946b0:	e8 2b 3d 4f fe       	call   48883e0 <posix_memalign@@Base+0x92dfc0>
+     63946b5:	e9 61 f9 ff ff       	jmp    639401b <ChromeMain@@Base+0x3c670b>
+     63946ba:	84 d2                	test   %dl,%dl
+     63946bc:	79 0e                	jns    63946cc <ChromeMain@@Base+0x3c6dbc>
+     63946be:	4c 8b ad 48 ff ff ff 	mov    -0xb8(%rbp),%r13
+     63946c5:	48 8b 95 50 ff ff ff 	mov    -0xb0(%rbp),%rdx
+     63946cc:	4c 89 ee             	mov    %r13,%rsi
+     63946cf:	e8 0c 3d 4f fe       	call   48883e0 <posix_memalign@@Base+0x92dfc0>
+     63946d4:	e9 ed f9 ff ff       	jmp    63940c6 <ChromeMain@@Base+0x3c67b6>
+     63946d9:	84 d2                	test   %dl,%dl
+     63946db:	79 0e                	jns    63946eb <ChromeMain@@Base+0x3c6ddb>
+     63946dd:	4c 8b ad 60 ff ff ff 	mov    -0xa0(%rbp),%r13
+     63946e4:	48 8b 95 68 ff ff ff 	mov    -0x98(%rbp),%rdx
+     63946eb:	4c 89 ee             	mov    %r13,%rsi
+     63946ee:	e8 ed 3c 4f fe       	call   48883e0 <posix_memalign@@Base+0x92dfc0>
+     63946f3:	e9 9d fa ff ff       	jmp    6394195 <ChromeMain@@Base+0x3c6885>
+     63946f8:	48 8b 7d 80          	mov    -0x80(%rbp),%rdi
+     63946fc:	48 8b 75 90          	mov    -0x70(%rbp),%rsi
+     6394700:	48 b8 ff ff ff ff ff 	movabs $0x7fffffffffffffff,%rax
+     6394707:	ff ff 7f 
+     639470a:	48 21 c6             	and    %rax,%rsi
+     639470d:	e8 be d4 9d ff       	call   5d71bd0 <localtime_r@@Base+0x719650>
+     6394712:	e9 e8 f7 ff ff       	jmp    6393eff <ChromeMain@@Base+0x3c65ef>
+     6394717:	48 8b 78 38          	mov    0x38(%rax),%rdi
+     639471b:	48 8b 70 48          	mov    0x48(%rax),%rsi
+     639471f:	48 b8 ff ff ff ff ff 	movabs $0x7fffffffffffffff,%rax
+     6394726:	ff ff 7f 
+     6394729:	48 21 c6             	and    %rax,%rsi
+     639472c:	e8 9f d4 9d ff       	call   5d71bd0 <localtime_r@@Base+0x719650>
+     6394731:	e9 0f fb ff ff       	jmp    6394245 <ChromeMain@@Base+0x3c6935>
+     6394736:	48 8b 78 38          	mov    0x38(%rax),%rdi
+     639473a:	48 8b 70 48          	mov    0x48(%rax),%rsi
+     639473e:	48 b8 ff ff ff ff ff 	movabs $0x7fffffffffffffff,%rax
+     6394745:	ff ff 7f 
+     6394748:	48 21 c6             	and    %rax,%rsi
+     639474b:	e8 80 d4 9d ff       	call   5d71bd0 <localtime_r@@Base+0x719650>
+     6394750:	0f 57 c0             	xorps  %xmm0,%xmm0
+     6394753:	0f 11 03             	movups %xmm0,(%rbx)
+     6394756:	48 c7 43 10 00 00 00 	movq   $0x0,0x10(%rbx)
+     639475d:	00 
+     639475e:	e9 88 fb ff ff       	jmp    63942eb <ChromeMain@@Base+0x3c69db>
+     6394763:	48 8d 3d a6 d2 49 0b 	lea    0xb49d2a6(%rip),%rdi        # 11831a10 <__bss_start@@Base+0x7ba10>
+     639476a:	e8 dc 01 3b ff       	call   574494b <localtime_r@@Base+0xec3cb>
+     639476f:	85 c0                	test   %eax,%eax
+     6394771:	0f 84 76 f6 ff ff    	je     6393ded <ChromeMain@@Base+0x3c64dd>
+     6394777:	48 8d 05 42 e4 5f fb 	lea    -0x4a01bbe(%rip),%rax        # 1992bc0 <_IO_stdin_used@@Base+0x37178>
+     639477e:	48 8b 00             	mov    (%rax),%rax
+     6394781:	48 89 05 10 d8 6b 0b 	mov    %rax,0xb6bd810(%rip)        # 11a51f98 <__bss_start@@Base+0x29bf98>
+     6394788:	48 8d 3d 81 d2 49 0b 	lea    0xb49d281(%rip),%rdi        # 11831a10 <__bss_start@@Base+0x7ba10>
+     639478f:	e8 55 00 3b ff       	call   57447e9 <localtime_r@@Base+0xec269>
+     6394794:	e9 54 f6 ff ff       	jmp    6393ded <ChromeMain@@Base+0x3c64dd>
+     6394799:	67 0f b9 40 02       	ud1    0x2(%eax),%eax
+     639479e:	67 0f b9 40 02       	ud1    0x2(%eax),%eax
+     63947a3:	67 0f b9 40 02       	ud1    0x2(%eax),%eax
+     63947a8:	67 0f b9 40 02       	ud1    0x2(%eax),%eax
+
+
+/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000006392f60 <ChromeMain@@Base+0x3c5650>:
+     6392f60:	00 48 85             	add    %cl,-0x7b(%rax)
+     6392f63:	ff 0f                	decl   (%rdi)
+     6392f65:	84 2c ff             	test   %ch,(%rdi,%rdi,8)
+     6392f68:	ff                   	(bad)
+     6392f69:	ff                   	ljmp   (bad)
+     6392f6a:	e8 21 c2 fd ff       	call   636f190 <ChromeMain@@Base+0x3a1880>
+     6392f6f:	48 8d 35 7a 48 01 01 	lea    0x101487a(%rip),%rsi        # 73a77f0 <__libc_csu_fini@@Base+0x217b30>
+     6392f76:	48 8d 15 d3 c9 e9 0a 	lea    0xae9c9d3(%rip),%rdx        # 1122f950 <memmove@plt+0x752220>
+     6392f7d:	e9 14 ff ff ff       	jmp    6392e96 <ChromeMain@@Base+0x3c5586>
+     6392f82:	cc                   	int3
+     6392f83:	cc                   	int3
+     6392f84:	cc                   	int3
+     6392f85:	cc                   	int3
+     6392f86:	cc                   	int3
+     6392f87:	cc                   	int3
+     6392f88:	cc                   	int3
+     6392f89:	cc                   	int3
+     6392f8a:	cc                   	int3
+     6392f8b:	cc                   	int3
+     6392f8c:	cc                   	int3
+     6392f8d:	cc                   	int3
+     6392f8e:	cc                   	int3
+     6392f8f:	cc                   	int3
+     6392f90:	55                   	push   %rbp
+     6392f91:	48 89 e5             	mov    %rsp,%rbp
+     6392f94:	41 57                	push   %r15
+     6392f96:	41 56                	push   %r14
+     6392f98:	41 55                	push   %r13
+     6392f9a:	41 54                	push   %r12
+     6392f9c:	53                   	push   %rbx
+     6392f9d:	48 81 ec b8 00 00 00 	sub    $0xb8,%rsp
+     6392fa4:	49 89 f6             	mov    %rsi,%r14
+     6392fa7:	0f 57 c0             	xorps  %xmm0,%xmm0
+     6392faa:	0f 29 85 40 ff ff ff 	movaps %xmm0,-0xc0(%rbp)
+     6392fb1:	31 c0                	xor    %eax,%eax
+     6392fb3:	48 89 85 50 ff ff ff 	mov    %rax,-0xb0(%rbp)
+     6392fba:	48 89 85 70 ff ff ff 	mov    %rax,-0x90(%rbp)
+     6392fc1:	0f 29 85 60 ff ff ff 	movaps %xmm0,-0xa0(%rbp)
+     6392fc8:	48 89 45 90          	mov    %rax,-0x70(%rbp)
+     6392fcc:	0f 29 45 80          	movaps %xmm0,-0x80(%rbp)
+     6392fd0:	48 89 45 b0          	mov    %rax,-0x50(%rbp)
+     6392fd4:	0f 29 45 a0          	movaps %xmm0,-0x60(%rbp)
+     6392fd8:	4c 0f be 7e 17       	movsbq 0x17(%rsi),%r15
+     6392fdd:	4d 85 ff             	test   %r15,%r15
+     6392fe0:	79 04                	jns    6392fe6 <ChromeMain@@Base+0x3c56d6>
+     6392fe2:	4d 8b 7e 08          	mov    0x8(%r14),%r15
+     6392fe6:	31 f6                	xor    %esi,%esi
+     6392fe8:	4d 85 ff             	test   %r15,%r15
+     6392feb:	40 0f 94 c6          	sete   %sil
+     6392fef:	4c 8d 95 20 ff ff ff 	lea    -0xe0(%rbp),%r10
+     6392ff6:	49 89 42 10          	mov    %rax,0x10(%r10)
+     6392ffa:	41 0f 29 02          	movaps %xmm0,(%r10)
+     6392ffe:	48 8d 45 a0          	lea    -0x60(%rbp),%rax
+     6393002:	48 8d 8d 40 ff ff ff 	lea    -0xc0(%rbp),%rcx
+     6393009:	4c 8d 85 60 ff ff ff 	lea    -0xa0(%rbp),%r8
+     6393010:	4c 8d 4d 80          	lea    -0x80(%rbp),%r9
+     6393014:	31 d2                	xor    %edx,%edx
+     6393016:	41 52                	push   %r10
+     6393018:	50                   	push   %rax
+     6393019:	e8 92 0a 00 00       	call   6393ab0 <ChromeMain@@Base+0x3c61a0>
+     639301e:	48 83 c4 10          	add    $0x10,%rsp
+     6393022:	89 c3                	mov    %eax,%ebx
+     6393024:	84 c0                	test   %al,%al
+     6393026:	0f 84 ca 01 00 00    	je     63931f6 <ChromeMain@@Base+0x3c58e6>
+     639302c:	e8 ef c9 ff ff       	call   638fa20 <ChromeMain@@Base+0x3c2110>
+     6393031:	4d 85 ff             	test   %r15,%r15
+     6393034:	0f 84 47 02 00 00    	je     6393281 <ChromeMain@@Base+0x3c5971>
+     639303a:	49 0f be 46 17       	movsbq 0x17(%r14),%rax
+     639303f:	48                   	rex.W

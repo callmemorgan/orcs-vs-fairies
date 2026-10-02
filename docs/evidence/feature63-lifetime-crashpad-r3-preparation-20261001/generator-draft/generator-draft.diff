@@ -1,0 +1,227 @@
+--- /tmp/ovf-feature63-final-binding-generator-r2-9h7kcykr/generate-root-bindings.py
++++ /tmp/ovf-feature63-r3-generator-draft-S6wC5ekG/generate-root-bindings.r3.draft.py
+@@ -1,5 +1,7 @@
+ #!/usr/bin/env python3
+-"""Preparation only. Root may run this after script import and isolated packaging.
++"""INACTIVE R3 DRAFT. Parent/root must select and review all pending anchors first.
++
++Preparation only. Root may later run the finalized generator after import and isolated packaging.
+ 
+ Reads authenticated files and Git metadata; writes a fresh external receipt directory.
+ Never builds, imports a candidate, launches a match, reads a database, or signals a PID.
+@@ -17,15 +19,27 @@
+ 
+ CHECKOUT = Path('/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies')
+ PROTECTED = Path('/home/morgana/Projects/orcs-vs-Fairies')
+-PACKET = Path('/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet')
++DRAFT_READY_FOR_ROOT_BINDINGS = False
++PACKET = None  # Pending final assembled r3 packet path; the staging directory is not authority.
+ HISTORICAL_PACKET = Path('/home/morgana/.codex/worktrees/assembled-allied-ai/feature63-dedicated-wrapper-readiness-r1')
+-PREFIX_NAME = 'work/feature63-human-wave-composition-r2'
++PREFIX_NAME = 'work/feature63-human-wave-composition-r3'
+ PREFIX = CHECKOUT / PREFIX_NAME
+ TESTED_PACKET = Path('/tmp/ovf-id6-composed-full-build-f7-r2-o0w9akew')
+ TESTED_WEB = Path('/tmp/ovf-id6-integration-703fc-20261001/dist')
+ TESTED_PIN = 'f7f3e187ea40079492589a6fce39f0b33f77f04a'
+ TESTED_ID = '9c5d2f1ff26bd6849b1ad5e311300669fb5f02feebbe4d311b6f8d670df243e1'
+-SEAL_SHA = 'fd11e341714b1fcbf6a26ff0d0e5482df5dfe8ade0f0d68281874daeedc4e811'
++SEAL_SHA = None  # Pending final r3 packet seal digest.
++CURRENT_CANDIDATE_REVIEW_STATUS = None  # Pending selected final r3 static review disposition.
++HISTORICAL_R2_HANDOFF = {
++    'path': '/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/final-capture-handoff.json',
++    'bytes': 11679,
++    'sha256': '459770874dc8efac23fab3958ed76bc39a8467b9d3d81a2ce379c92fedc08708',
++}
++HISTORICAL_R2_PACKAGE_RECEIPT = {
++    'path': '/tmp/ovf-root-feature63-fresh-r2-package-w5gp__sx/root-fresh-package-result.json',
++    'bytes': 87864,
++    'sha256': '27875d606ea53538d30e238a463b4cb17a691d36f0769f4d06675a30e0353c27',
++}
+ HISTORICAL_SEAL_SHA = '88d08b5409ed13d3f8d783b7d8e40ddb95a6a3843992a0cae5599731b55d3034'
+ TESTED_MANIFEST_SHA = '7439266f468c658d419b2c801b6a741a20b202aa8459169c96b47532640d3ec2'
+ SCRIPT_MAP = {
+@@ -202,13 +216,27 @@
+ 
+ 
+ def main():
++    need(DRAFT_READY_FOR_ROOT_BINDINGS is True and isinstance(PACKET, Path)
++         and isinstance(SEAL_SHA, str) and re.fullmatch('[a-f0-9]{64}', SEAL_SHA)
++         and isinstance(CURRENT_CANDIDATE_REVIEW_STATUS, str),
++         'Inactive r3 draft: final packet, seal, review, architecture and Chromium choices are pending')
+     need(len(sys.argv) == 3, 'Syntax: generate-root-bindings.py ABSOLUTE_ROOT_PARAMETERS ROOT_PARAMETERS_SHA256')
+     parameter_desc, _, parameter_raw = read_actual(sys.argv[1], retain=True, maximum=128 * 1024)
+     need(re.fullmatch('[a-f0-9]{64}', sys.argv[2]) and parameter_desc['sha256'] == sys.argv[2], 'External root parameter digest differs')
+     params = json.loads(parameter_raw)
+-    need(params['schema'] == 'feature63-root-binding-generator-input-v1', 'Parameter schema differs')
++    need(params['schema'] == 'feature63-root-binding-generator-input-r3-v1', 'Fresh r3 parameter schema differs')
++    historical_r2, historical_r2_desc, _ = bound_json(HISTORICAL_R2_HANDOFF)
++    need(historical_r2['schema'] == 'feature63-r2-consumed-capture-final-handoff-v1'
++         and historical_r2['captureInvocations'] == 1
++         and historical_r2['captureStatus'] == 'FAIL_FIRST_FAILURE_NO_RETRY'
++         and historical_r2['feature63Qualified'] is False
++         and historical_r2['furtherRuntimeAuthority'] is False
++         and historical_r2['closure']['unobservedDescendantsExcluded'] is False
++         and historical_r2['closure']['rootNativeLifetimeDispositionRequired'] is True,
++         'Historical r2 handoff scope differs; it supplies no current authority')
+     pin = params['sourcePin']
+     need(isinstance(pin, str) and re.fullmatch('[a-f0-9]{40}', pin), 'Root must supply the future full scripts-only pin')
++    need(pin != historical_r2['sourcePin'], 'Root must issue the new r3 scripts-only pin')
+     need(params['testedBuildId'] == TESTED_ID, 'Use the authenticated tested f7 build ID')
+     admission = params['rootAdmission']
+     for k in ('approved', 'sourceInputSetAuthenticated', 'sourceAndBuiltBytesMatchTested402',
+@@ -225,7 +253,7 @@
+     tracked = set(subprocess.check_output(['git', 'ls-files', '-z'], cwd=CHECKOUT).decode().rstrip('\0').split('\0'))
+ 
+     need(re.fullmatch('[a-f0-9]{64}', SEAL_SHA) is not None, 'Root must replace the pending current packet seal anchor')
+-    seal_desc, _, seal_raw = read_actual(PACKET / 'final-static-seal-r2.json', retain=True, maximum=2 * 1024 * 1024)
++    seal_desc, _, seal_raw = read_actual(PACKET / 'final-static-seal-r3.json', retain=True, maximum=2 * 1024 * 1024)
+     need(seal_desc['sha256'] == SEAL_SHA, 'Current static packet seal differs')
+     sealed = {r['path']: r for r in json.loads(seal_raw)['records']}
+     historical_seal_desc, _, historical_seal_raw = read_actual(HISTORICAL_PACKET / 'final-static-seal-r1.json', retain=True, maximum=2 * 1024 * 1024)
+@@ -258,7 +286,7 @@
+             ast.parse(raw, filename=old)
+         candidates[key] = d
+     candidate_review, candidate_review_desc = packet_json('review/candidate-review.json')
+-    need(candidate_review['status'] == 'PASS_STATIC_CORRECTIVE_R2_CANDIDATE_RUNTIME_HELD', 'Current corrective candidate static review disposition differs')
++    need(candidate_review['status'] == CURRENT_CANDIDATE_REVIEW_STATUS, 'Current selected r3 candidate static review disposition differs')
+     r4, r4_desc = historical_packet_json('review-driver-pidfd-r4/review.json')
+     r3, r3_desc = historical_packet_json('review-driver-pidfd-r3/review.json')
+     cdp, cdp_desc = historical_packet_json('dependency-review-r1/receipt.json')
+@@ -313,31 +341,53 @@
+     need({'rts-server.js', 'canonical-campaign.mjs'} <= {r['path'] for r in server_records}, 'Packaged server outputs absent')
+     package_desc = None
+     historical_package_desc = None
++    historical_r2_package_desc = None
+     package_source_pin = None
+-    if params.get('rootPackagingReceipt') is not None:
+-        fresh_package, package_desc, _ = bound_json(params['rootPackagingReceipt'])
+-        prior_prefix = CHECKOUT / 'work/feature63-human-wave-composition-r1'
+-        need(type(fresh_package['schema']) is int and fresh_package['schema'] == 1
+-             and fresh_package['status'] == 'EXACT_WEB_AND_SERVER_COPY_PASSED', 'Fresh root package-copy receipt scope differs')
+-        need(fresh_package['sourcePrefix'] == str(prior_prefix) and fresh_package['freshPrefix'] == str(PREFIX),
+-             'Fresh root package-copy receipt prefixes differ')
+-        for field in ('productBuildExecuted', 'serverBrowserDatabaseRuntimeExecuted', 'databaseProfileOrOldDataCopied',
+-                      'sourcePrefixRuntimeDataRead', 'captureAuthorized'):
+-            need(fresh_package[field] is False, 'Fresh root package-copy receipt exceeds declared scope: ' + field)
+-        need(fresh_package['rootProtectedIdentityUnchanged'] is True, 'Fresh root package-copy receipt lacks protected identity declaration')
+-        copy_inventories = {r['directory']: normalize(r['files']) for r in fresh_package['completeInventories']}
+-        need(len(copy_inventories) == len(fresh_package['completeInventories']) == 2
+-             and set(copy_inventories) == {'dist', 'server'}
+-             and fresh_package['counts'] == {'dist': 398, 'server': 22}
+-             and fresh_package['counts'] == {'dist': len(web_records), 'server': len(server_records)}
+-             and copy_inventories['dist'] == web_records and copy_inventories['server'] == server_records,
+-             'Fresh root package-copy inventories differ from actual packaged trees')
+-        package, historical_package_desc, _ = bound_json(fresh_package['priorPackagingReceipt'])
+-        package_source_pin = package['sourcePin']
+-        package_inventories = {r['directory']: normalize(r['files']) for r in package['completeInventories']}
+-        need(package['prefix'] == str(prior_prefix) and package['testedBuildId'] == TESTED_ID
+-             and package['buildExitCode'] == 0 and package_inventories['dist'] == web_records
+-             and package_inventories['server'] == server_records, 'Historical root packaging receipt differs from actual packaged copies')
++    need(params.get('rootPackagingReceipt') is not None, 'Root must supply a fresh r3 product-copy receipt')
++    fresh_package, package_desc, _ = bound_json(params['rootPackagingReceipt'])
++    prior_prefix = CHECKOUT / 'work/feature63-human-wave-composition-r2'
++    original_package_prefix = CHECKOUT / 'work/feature63-human-wave-composition-r1'
++    need(type(fresh_package['schema']) is int and fresh_package['schema'] == 1
++         and fresh_package['status'] == 'EXACT_WEB_AND_SERVER_COPY_PASSED', 'Fresh root package-copy receipt scope differs')
++    need(fresh_package['sourcePrefix'] == str(prior_prefix) and fresh_package['freshPrefix'] == str(PREFIX),
++         'Fresh root package-copy receipt prefixes differ')
++    for field in ('productBuildExecuted', 'serverBrowserDatabaseRuntimeExecuted', 'databaseProfileOrOldDataCopied',
++                  'sourcePrefixRuntimeDataRead', 'captureAuthorized'):
++        need(fresh_package[field] is False, 'Fresh root package-copy receipt exceeds declared scope: ' + field)
++    need(fresh_package['rootProtectedIdentityUnchanged'] is True, 'Fresh root package-copy receipt lacks protected identity declaration')
++    copy_inventories = {r['directory']: normalize(r['files']) for r in fresh_package['completeInventories']}
++    need(len(copy_inventories) == len(fresh_package['completeInventories']) == 2
++         and set(copy_inventories) == {'dist', 'server'}
++         and fresh_package['counts'] == {'dist': 398, 'server': 22}
++         and fresh_package['counts'] == {'dist': len(web_records), 'server': len(server_records)}
++         and copy_inventories['dist'] == web_records and copy_inventories['server'] == server_records,
++         'Fresh root package-copy inventories differ from actual packaged trees')
++    need(fresh_package['priorPackagingReceipt'] == HISTORICAL_R2_PACKAGE_RECEIPT,
++         'Fresh r3 product-copy receipt must bind the authenticated historical r2 copy receipt')
++    prior_copy, historical_r2_package_desc, _ = bound_json(fresh_package['priorPackagingReceipt'])
++    need(type(prior_copy['schema']) is int and prior_copy['schema'] == 1
++         and prior_copy['status'] == 'EXACT_WEB_AND_SERVER_COPY_PASSED'
++         and prior_copy['sourcePrefix'] == str(original_package_prefix)
++         and prior_copy['freshPrefix'] == str(prior_prefix),
++         'Historical r2 product-copy receipt scope or prefixes differ')
++    for field in ('productBuildExecuted', 'serverBrowserDatabaseRuntimeExecuted', 'databaseProfileOrOldDataCopied',
++                  'sourcePrefixRuntimeDataRead', 'captureAuthorized'):
++        need(prior_copy[field] is False, 'Historical r2 product-copy receipt exceeds declared scope: ' + field)
++    need(prior_copy['rootProtectedIdentityUnchanged'] is True,
++         'Historical r2 product-copy receipt lacks protected identity declaration')
++    prior_copy_inventories = {r['directory']: normalize(r['files']) for r in prior_copy['completeInventories']}
++    need(len(prior_copy_inventories) == len(prior_copy['completeInventories']) == 2
++         and set(prior_copy_inventories) == {'dist', 'server'}
++         and prior_copy['counts'] == {'dist': 398, 'server': 22}
++         and prior_copy['counts'] == {'dist': len(web_records), 'server': len(server_records)}
++         and prior_copy_inventories['dist'] == web_records and prior_copy_inventories['server'] == server_records,
++         'Historical r2 product-copy inventories differ from actual fresh r3 packaged trees')
++    package, historical_package_desc, _ = bound_json(prior_copy['priorPackagingReceipt'])
++    package_source_pin = package['sourcePin']
++    package_inventories = {r['directory']: normalize(r['files']) for r in package['completeInventories']}
++    need(package['prefix'] == str(original_package_prefix) and package['testedBuildId'] == TESTED_ID
++         and package['buildExitCode'] == 0 and package_inventories['dist'] == web_records
++         and package_inventories['server'] == server_records, 'Historical root packaging receipt differs from actual packaged copies')
+ 
+     node, node_mode, _ = read_actual(params['nodeExecutablePath'])
+     python, python_mode, _ = read_actual(params['pythonExecutablePath'])
+@@ -358,16 +408,22 @@
+         need(d['bytes'] == r['bytes'] and d['sha256'] == r['sha256'], 'Reviewed Playwright source bytes differ: ' + str(rel))
+         cdp_live_records.append({'path': rel.as_posix(), 'bytes': d['bytes'], 'sha256': d['sha256'], 'mode': mode})
+     slot = params['exclusiveHeavyApproval']
++    need(slot['approved'] is True and slot['holder'] == '/root/ai_modes'
++         and isinstance(slot['token'], str) and slot['token'].startswith('heavy-runtime-1-feature63-r3-')
++         and slot['token'] != historical_r2['slotRelease']['token'],
++         'Root must issue fresh r3 exclusive slot authority; consumed r2 authority is rejected')
+     until = datetime.datetime.fromisoformat(slot['validUntil'].replace('Z', '+00:00'))
+     need(until.tzinfo is not None and until.timestamp() > datetime.datetime.now(datetime.timezone.utc).timestamp() + 510, 'Existing wrapper slot-expiry requirement not met')
+     stamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
+     provenance = {'rootParameters': parameter_desc, 'staticPacketSeal': seal_desc,
++                  'historicalConsumedCaptureR2': historical_r2_desc,
+                   'historicalStaticPacketSealR1': historical_seal_desc, 'currentCandidateReview': candidate_review_desc,
+                   'fieldSchemas': schema_desc,
+                   'originalTestedManifest': original_desc, 'originalTestedInputs': baseline_desc,
+                   'originalTestedWebInventory': web_baseline_desc, 'originalTestedExecution': execution_desc}
+     if package_desc is not None:
+         provenance['rootPackagingReceipt'] = package_desc
++        provenance['historicalR2RootPackagingReceipt'] = historical_r2_package_desc
+         provenance['historicalRootPackagingReceipt'] = historical_package_desc
+     payloads = {}
+ 
+@@ -408,7 +464,17 @@
+               'auditorSha256': candidates['auditor']['sha256'], 'nodeExecutableSha256': node['sha256'],
+               'pythonExecutableSha256': python['sha256'], 'rootAdmission': admission, 'staticDriverReviews': [r3_desc, r4_desc, candidate_review_desc],
+               'nativeExecutableRecords': [{**node, 'mode': node_mode}, {**python, 'mode': python_mode}, {**chromium, 'mode': chromium_mode}],
+-              'reviewScope': 'Root admits these current bytes and bindings; the corrective candidate review is static and runtime-held, and retained r1 reviews supply their stated bounded scopes.',
++              'reviewScope': 'Root admits these current bytes and bindings; the selected r3 candidate review is static and runtime-held, and retained r1 reviews supply their stated bounded scopes.',
++              'historicalR2CaptureLimits': {
++                  'captureStatus': historical_r2['captureStatus'],
++                  'feature63Qualified': historical_r2['feature63Qualified'],
++                  'furtherRuntimeAuthority': historical_r2['furtherRuntimeAuthority'],
++                  'immutableMismatchFieldOrProcessEstablished': historical_r2['immutableMismatchFieldOrProcessEstablished'],
++                  'unobservedDescendantsExcluded': historical_r2['closure']['unobservedDescendantsExcluded'],
++                  'rootNativeLifetimeDispositionRequired': historical_r2['closure']['rootNativeLifetimeDispositionRequired'],
++                  'finiteClosureLimit': historical_r2['closure']['limit'],
++                  'independentReview': historical_r2['independentReview'],
++              },
+               'provenance': provenance}
+     review_d = plan('root-review.json', review, 'rootRuntimeReviewReceipt')
+     browser = {**common, 'schema': 'feature63-browser-binding-v1', 'producerSha256': candidates['publicProducer']['sha256'],
+@@ -425,6 +491,17 @@
+                'provenance': provenance}
+     browser_d = plan('browser-binding.json', browser, 'browserDependencyBinding')
+     pending, _ = packet_json('capture-assignment.pending.json')
++    need(pending['approved'] is False and pending['sourcePin'] is None
++         and pending['sourceRoot'] == str(CHECKOUT) and pending['freshPrefix'] == PREFIX_NAME
++         and pending['publicAssignmentTemplate']['freshPrefix'] == PREFIX_NAME
++         and pending['publicAssignmentTemplate']['outputRoot'] == str(PREFIX / 'public')
++         and pending['collectorAssignmentTemplate']['outputPrefix'] == PREFIX_NAME
++         and pending['collectorAssignmentTemplate']['freshDatabase']['path'] == str(PREFIX / 'server-data/server.sqlite'),
++         'Fresh unapproved r3 assignment or nested template paths differ')
++    need(pending['wrapperSha256'] == candidates['wrapper']['sha256']
++         and pending['publicAssignmentTemplate']['publicDriverSha256'] == candidates['wrapper']['sha256']
++         and pending['collectorAssignmentTemplate']['collectorSha256'] == candidates['collector']['sha256'],
++         'Selected sealed pending-assignment script hashes differ')
+     assignment = pending
+     assignment.update({'approved': True, 'sourcePin': pin, 'testedBuildId': TESTED_ID,
+                        'wrapperSha256': candidates['wrapper']['sha256'],

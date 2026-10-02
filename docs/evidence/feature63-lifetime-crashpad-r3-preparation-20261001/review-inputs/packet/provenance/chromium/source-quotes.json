@@ -1,0 +1,154 @@
+[
+  {
+    "byteExactText": "  if (process_type != switches::kZygoteProcess &&\n      !command_line.HasSwitch(switches::kDisableCrashpadForTesting)) {\n",
+    "lineEnd": 1547,
+    "lineStart": 1546,
+    "path": "chrome/app/chrome_main_delegate.cc",
+    "sourceSha256": "528904d996333dbe575a6f01095c9f43bc2f00d481d7e8594adf7a4eb42ff6e4",
+    "sourceUrl": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.12/chrome/app/chrome_main_delegate.cc"
+  },
+  {
+    "byteExactText": "int GetCrashSignalFD(const base::CommandLine& command_line) {\n  int fd;\n  return crash_reporter::GetHandlerSocket(&fd, nullptr) ? fd : -1;\n",
+    "lineEnd": 1102,
+    "lineStart": 1100,
+    "path": "chrome/browser/chrome_content_browser_client.cc",
+    "sourceSha256": "447f8903d42ae209e215c49ffefdfde2a6578ccede1368b8213baf143735ec93",
+    "sourceUrl": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.12/chrome/browser/chrome_content_browser_client.cc"
+  },
+  {
+    "byteExactText": "  command_line->AppendSwitchASCII(switches::kEnableCrashReporter, switch_value);\n",
+    "lineEnd": 2916,
+    "lineStart": 2916,
+    "path": "chrome/browser/chrome_content_browser_client.cc",
+    "sourceSha256": "447f8903d42ae209e215c49ffefdfde2a6578ccede1368b8213baf143735ec93",
+    "sourceUrl": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.12/chrome/browser/chrome_content_browser_client.cc"
+  },
+  {
+    "byteExactText": "  int crash_signal_fd = GetCrashSignalFD(command_line);\n  if (crash_signal_fd >= 0) {\n    mappings->Share(kCrashDumpSignal, crash_signal_fd);\n  }\n",
+    "lineEnd": 5243,
+    "lineStart": 5240,
+    "path": "chrome/browser/chrome_content_browser_client.cc",
+    "sourceSha256": "447f8903d42ae209e215c49ffefdfde2a6578ccede1368b8213baf143735ec93",
+    "sourceUrl": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.12/chrome/browser/chrome_content_browser_client.cc"
+  },
+  {
+    "byteExactText": "  g_fds->Set(kCrashDumpSignal,\n             kCrashDumpSignal + base::GlobalDescriptors::kBaseDescriptor);\n",
+    "lineEnd": 870,
+    "lineStart": 869,
+    "path": "content/app/content_main_runner_impl.cc",
+    "sourceSha256": "1360b725e18f57764087e3511c151b712f1b4648784368d7f97e64393ac9d6ab",
+    "sourceUrl": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.12/content/app/content_main_runner_impl.cc"
+  },
+  {
+    "byteExactText": "    int fd = base::GlobalDescriptors::GetInstance()->Get(kCrashDumpSignal);\n",
+    "lineEnd": 247,
+    "lineStart": 247,
+    "path": "components/crash/core/app/crashpad_linux.cc",
+    "sourceSha256": "f986f90e1864716ea169a1f554066ddbae1f2180e912910491d42073371a5e7b",
+    "sourceUrl": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.12/components/crash/core/app/crashpad_linux.cc"
+  },
+  {
+    "byteExactText": "    client.SetHandlerSocket(crashpad::ScopedFileHandle(fd), pid);\n",
+    "lineEnd": 261,
+    "lineStart": 261,
+    "path": "components/crash/core/app/crashpad_linux.cc",
+    "sourceSha256": "f986f90e1864716ea169a1f554066ddbae1f2180e912910491d42073371a5e7b",
+    "sourceUrl": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.12/components/crash/core/app/crashpad_linux.cc"
+  },
+  {
+    "byteExactText": "using ScopedFileHandle = base::ScopedFD;\n",
+    "lineEnd": 47,
+    "lineStart": 47,
+    "path": "third_party/crashpad/crashpad/util/file/file_io.h",
+    "sourceSha256": "1f4ccc594232e2bc8f68d82a8dd5ada97cb02783498030fade755b86f84ede2e",
+    "sourceUrl": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.12/third_party/crashpad/crashpad/util/file/file_io.h"
+  },
+  {
+    "byteExactText": "#if (BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX)) && !defined(COMPONENT_BUILD)\n    base::subtle::EnableFDOwnershipEnforcement(true);\n#endif\n",
+    "lineEnd": 308,
+    "lineStart": 306,
+    "path": "content/app/content_main.cc",
+    "sourceSha256": "151a5bd97cb99c68058d5fa40a0fa7cb7893fec37475fe85c91d2205f35e329a",
+    "sourceUrl": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.12/content/app/content_main.cc"
+  },
+  {
+    "byteExactText": "NOINLINE void CrashOnFdOwnershipViolation() {\n  RAW_LOG(ERROR, \"Crashing due to FD ownership violation:\\n\");\n  base::debug::StackTrace().Print();\n  base::ImmediateCrash();\n}\n",
+    "lineEnd": 34,
+    "lineStart": 30,
+    "path": "base/files/scoped_file_linux.cc",
+    "sourceSha256": "f2215bbeca93571972cd12e5896c3d1552e67bf1375bfc7527cec4a51cbaf303",
+    "sourceUrl": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.12/base/files/scoped_file_linux.cc"
+  },
+  {
+    "byteExactText": "  if (CanTrack(fd) &&\n      g_is_fd_owned[static_cast<size_t>(fd)].exchange(owned) == owned &&\n      g_is_ownership_enforced) {\n    CrashOnFdOwnershipViolation();\n  }\n",
+    "lineEnd": 45,
+    "lineStart": 41,
+    "path": "base/files/scoped_file_linux.cc",
+    "sourceSha256": "f2215bbeca93571972cd12e5896c3d1552e67bf1375bfc7527cec4a51cbaf303",
+    "sourceUrl": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.12/base/files/scoped_file_linux.cc"
+  },
+  {
+    "byteExactText": "  static const int kBaseDescriptor = 3;  // 0, 1, 2 are already taken.\n",
+    "lineEnd": 59,
+    "lineStart": 59,
+    "path": "base/posix/global_descriptors.h",
+    "sourceSha256": "352d29d1470758ce8f6360a0db4dee5366dcf7a7c2300c9e35541806794d9c1c",
+    "sourceUrl": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.12/base/posix/global_descriptors.h"
+  },
+  {
+    "byteExactText": "enum {\n  kCrashDumpSignal,\n",
+    "lineEnd": 13,
+    "lineStart": 12,
+    "path": "content/public/common/content_descriptors.h",
+    "sourceSha256": "1b62ce2953aa613d5bb7d02b35f76a1e4896bce4a1ed12113d25d5d45efadae8",
+    "sourceUrl": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.12/content/public/common/content_descriptors.h"
+  },
+  {
+    "byteExactText": "  ScopedFileHandle client_sock, handler_sock;\n  if (!UnixCredentialSocket::CreateCredentialSocketpair(&client_sock,\n                                                        &handler_sock)) {\n    return false;\n  }\n\n",
+    "lineEnd": 470,
+    "lineStart": 465,
+    "path": "third_party/crashpad/crashpad/client/crashpad_client_linux.cc",
+    "sourceSha256": "9fae124c6495adb95be871d33003d38f737c59914759793f140b6b863a4492ff",
+    "sourceUrl": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.12/third_party/crashpad/crashpad/client/crashpad_client_linux.cc"
+  },
+  {
+    "byteExactText": "  argv.push_back(FormatArgumentInt(\"initial-client-fd\", handler_sock.get()));\n  argv.push_back(\"--shared-client-connection\");\n  if (!SpawnSubprocess(argv, nullptr, handler_sock.get(), false, nullptr)) {\n    return false;\n  }\n  handler_sock.reset();\n\n",
+    "lineEnd": 480,
+    "lineStart": 474,
+    "path": "third_party/crashpad/crashpad/client/crashpad_client_linux.cc",
+    "sourceSha256": "9fae124c6495adb95be871d33003d38f737c59914759793f140b6b863a4492ff",
+    "sourceUrl": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.12/third_party/crashpad/crashpad/client/crashpad_client_linux.cc"
+  },
+  {
+    "byteExactText": "    if (pid < 0) {\n      ucred creds;\n      if (!client.GetHandlerCredentials(&creds)) {\n        return false;\n      }\n      pid = creds.pid;\n    }\n",
+    "lineEnd": 372,
+    "lineStart": 366,
+    "path": "third_party/crashpad/crashpad/client/crashpad_client_linux.cc",
+    "sourceSha256": "9fae124c6495adb95be871d33003d38f737c59914759793f140b6b863a4492ff",
+    "sourceUrl": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.12/third_party/crashpad/crashpad/client/crashpad_client_linux.cc"
+  },
+  {
+    "byteExactText": "    // grandchild manages its own lifetime, such as by monitoring clients on its\n    // own and exiting when it loses all clients and when it deems it\n    // appropraite to do so. It may serve clients in different process groups or\n    // sessions than its original client, and receiving signals intended for its\n    // original client\u2019s process group could be harmful in that case.\n    PCHECK(setsid() != -1) << \"setsid\";\n",
+    "lineEnd": 162,
+    "lineStart": 157,
+    "path": "third_party/crashpad/crashpad/util/posix/spawn_subprocess.cc",
+    "sourceSha256": "00f6fd4dc6d5a72fbcb3dca6306aa8b6c982ffde403e98a5c8adba083e2fae30",
+    "sourceUrl": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.12/third_party/crashpad/crashpad/util/posix/spawn_subprocess.cc"
+  },
+  {
+    "byteExactText": "  while (keep_running_ && clients_.size() > 0) {\n    epoll_event poll_event;\n",
+    "lineEnd": 298,
+    "lineStart": 297,
+    "path": "third_party/crashpad/crashpad/handler/linux/exception_handler_server.cc",
+    "sourceSha256": "7002251eb1e9f85b93e700fe2d17c37087f8da20854fd2aa11e56841bc70f9a3",
+    "sourceUrl": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.12/third_party/crashpad/crashpad/handler/linux/exception_handler_server.cc"
+  },
+  {
+    "byteExactText": "  if (event_type & EPOLLHUP || event_type & EPOLLRDHUP) {\n    UninstallClientSocket(event);\n    return;\n",
+    "lineEnd": 345,
+    "lineStart": 343,
+    "path": "third_party/crashpad/crashpad/handler/linux/exception_handler_server.cc",
+    "sourceSha256": "7002251eb1e9f85b93e700fe2d17c37087f8da20854fd2aa11e56841bc70f9a3",
+    "sourceUrl": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.12/third_party/crashpad/crashpad/handler/linux/exception_handler_server.cc"
+  }
+]

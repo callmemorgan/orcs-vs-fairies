@@ -1,0 +1,619 @@
+{
+  "at": "2026-10-02T05:59:48.056343+00:00",
+  "browserStderr": {
+    "causalConnectionToIdentityGuardEstablished": false,
+    "fdOwnershipCrashBlocks": 3,
+    "firstLoggedCleanupSignalAtUtc": "2026-10-02T05:20:00.557321+00:00",
+    "firstNetworkRestartAtUtc": "2026-10-02T05:20:00.510817+00:00",
+    "networkServiceRestartReports": 2,
+    "offendingFdOrSymbolizedCauseEstablishedFromInspectedLogs": false
+  },
+  "candidateRationale": {
+    "closureContract": "Future independent launcher must use PIDFD lifetime readiness, not historical mutable tuple equality. R2 retained final observations are null.",
+    "discoveryLimit": "Children newly created outside the original SID are not admitted; unobservedDescendantsExcluded remains false.",
+    "explicitFields": [
+      "lifetimeIdentity:{pid,startTicks}",
+      "originalAdmittedSession:integer",
+      "directRoot:boolean",
+      "admitted:boolean (record only)"
+    ],
+    "freshDescendantAdmission": "First proc state must be in reserved original SID; following expected PID/start snapshots plus newly opened held pidfd bind that initially observed lifetime despite mutable transition.",
+    "historicalAdmissionTuplePreserved": true,
+    "knownObservation": "Exact lifetime PID/start checked before and after the proc context reads and bracketed by held-pidfd liveness. Mutable exe/cwd/descendant SID/argv snapshots and unavailable fields logged; direct-root SID remains strict.",
+    "missingSnapshot": "Never interpreted as exit while a held pidfd remains live.",
+    "signals": "Adds admitted=True requirement to otherwise identical Children.send(); original pidfd_send_signal and protected namespace/socket exclusions retained.",
+    "strictPreviewAndLaunch": "protected(), default strict process_observation(), Children.start(), and original-descriptor resource() are byte-identical to pin1257. Direct-root initial binding retains full five-field comparison.",
+    "transientExit": "Only absent unbound snapshot, pidfd_open ProcessLookupError or ready held pidfd can skip a non-direct new descendant; original evidence/reason logged, preview checked, zero signal, fd closed. Direct roots never skipped."
+  },
+  "candidateVersions": {
+    "additiveR2": {
+      "bytes": 53649,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/run-minimal63.candidate-r2.py",
+      "sha256": "61d34c0539f0cd6a409b08abf7fbe07ca7d9c3aaf0f4e0d5c78bfa2786907ab4"
+    },
+    "finalSupplement": {
+      "bytes": 54459,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/run-minimal63.candidate-r2-final.py",
+      "sha256": "0ff962549beb55c07f67747d4152a78f6fcb4c732971b5bac503741f1ce57505"
+    },
+    "finalSupplementDiff": {
+      "bytes": 1903,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/wrapper-final-additive.diff",
+      "sha256": "daa42ed9c529858bae8c122840489b8de2174ca8f7bc46d60594d7046e57faf3"
+    },
+    "finalSupplementDiffLines": 30,
+    "first": {
+      "bytes": 50431,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/run-minimal63.candidate.py",
+      "sha256": "d3028ca17e796b37784ee52d4c387f8011c9369709ecf63d9a331998785cb32b"
+    },
+    "fullFinalDiff": {
+      "bytes": 16649,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/wrapper-final-exact.diff",
+      "sha256": "780f21654833fd53380d3f5e0450255a4585ec3889fc861e919be7cbe9fdd669"
+    },
+    "notAppliedExecutedImportedOrCompiled": true,
+    "original": {
+      "bytes": 45113,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/run-minimal63.original.py",
+      "sha256": "f1aeeca031e80029f49d3dd4327ccda6caf02848f427bc8a21df72b87ff9618d"
+    },
+    "rootSelectedAtLastMessage": "additiveR2 (61d34c0539f0cd6a409b08abf7fbe07ca7d9c3aaf0f4e0d5c78bfa2786907ab4); finalSupplement separately reported for root decision",
+    "staticCheck": {
+      "bytes": 2069,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/candidate-final-static-check.json",
+      "sha256": "2b5340560f5a070a6beafe434f0f416b81265cb6376afe05192e8f25df4d6a31"
+    }
+  },
+  "externalArtifacts": [
+    {
+      "bytes": 2069,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/candidate-final-static-check.json",
+      "sha256": "2b5340560f5a070a6beafe434f0f416b81265cb6376afe05192e8f25df4d6a31"
+    },
+    {
+      "bytes": 2055,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/candidate-r2-static-check.json",
+      "sha256": "0d29b6d059ac753663c12ee2bb8db753587bbe493780609aa8292fc553524d67"
+    },
+    {
+      "bytes": 1868,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/candidate-static-check.json",
+      "sha256": "2008251a2766741c4b7eff98900a6d509165f62924698452067f994b9ebb98cc"
+    },
+    {
+      "bytes": 49,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/child-transcript.json",
+      "sha256": "027ffc0eb7f853527240c9e88c951f2547c524611a2841c810949fdacdea6829"
+    },
+    {
+      "bytes": 0,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/child.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 284,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/ordinary-child.py",
+      "sha256": "435df7d8a1fbe19a9035c45dc827bd822b344fa76e51b5d0ed09f689fcb30be2"
+    },
+    {
+      "bytes": 7026,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/proof-runner.py",
+      "sha256": "a8c7c7a497adff2c06b4de5b92346d0ebc3f67db18dc40edeac30e8f31e3aa9e"
+    },
+    {
+      "bytes": 6585,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/proof.json",
+      "sha256": "e328f8f7f3feb31f1ac720ec10c13b50a3d27d2dcaf7a840f1bb691b533c46a9"
+    },
+    {
+      "bytes": 54459,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/run-minimal63.candidate-r2-final.py",
+      "sha256": "0ff962549beb55c07f67747d4152a78f6fcb4c732971b5bac503741f1ce57505"
+    },
+    {
+      "bytes": 53649,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/run-minimal63.candidate-r2.py",
+      "sha256": "61d34c0539f0cd6a409b08abf7fbe07ca7d9c3aaf0f4e0d5c78bfa2786907ab4"
+    },
+    {
+      "bytes": 50431,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/run-minimal63.candidate.py",
+      "sha256": "d3028ca17e796b37784ee52d4c387f8011c9369709ecf63d9a331998785cb32b"
+    },
+    {
+      "bytes": 45113,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/run-minimal63.original.py",
+      "sha256": "f1aeeca031e80029f49d3dd4327ccda6caf02848f427bc8a21df72b87ff9618d"
+    },
+    {
+      "bytes": 176,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/session-child.py",
+      "sha256": "4e468d39a142cd620dfa6680d5214c2dcdb6c378c9ce58119bfa8dbdd215c519"
+    },
+    {
+      "bytes": 0,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/session-child.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 660,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/session-coordinator.py",
+      "sha256": "1eea74052ae0df3b04e607f60495531e380d013e05528ffa9f4532ee5bc6355f"
+    },
+    {
+      "bytes": 7960,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/session-proof-runner.py",
+      "sha256": "23c2c641f1c46a02732d4e0f3b839697c8d76b5c4ca1520dae5a04b2377153db"
+    },
+    {
+      "bytes": 11876,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/session-proof.json",
+      "sha256": "8f767c77cac524d55915fe6661c4b7848f0fe3e2bdfbccffaf2b6f4f9f0c1da0"
+    },
+    {
+      "bytes": 63,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/session-transcript.json",
+      "sha256": "5ea15b36214110076b6dd0aaa1436cf842f90bd8c7c9772cf4e0c69313a057b2"
+    },
+    {
+      "bytes": 11175,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/wrapper-exact.diff",
+      "sha256": "226b13ab5249897dc4272fff0f06cbcb96fdf27e13c3b104543f03007ca7ce70"
+    },
+    {
+      "bytes": 1903,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/wrapper-final-additive.diff",
+      "sha256": "daa42ed9c529858bae8c122840489b8de2174ca8f7bc46d60594d7046e57faf3"
+    },
+    {
+      "bytes": 16649,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/wrapper-final-exact.diff",
+      "sha256": "780f21654833fd53380d3f5e0450255a4585ec3889fc861e919be7cbe9fdd669"
+    },
+    {
+      "bytes": 8284,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/wrapper-r2-additive.diff",
+      "sha256": "01a76ae6771a6781c3a8490872ca13c037f91efd70bac2a40c5f8a2abb238164"
+    },
+    {
+      "bytes": 15776,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/wrapper-r2-exact.diff",
+      "sha256": "2041c64f812214b1057af5874f03ec8c67f788009c243be4a6cc63669ab6cd5a"
+    }
+  ],
+  "r2Diagnosis": {
+    "argvRewriteCausesFiveFieldGuard": false,
+    "differingFieldEstablished": false,
+    "expectedActualFailureTupleRetained": false,
+    "firstFailure": {
+      "at": "2026-10-02T05:20:00.546451+00:00",
+      "message": "Managed PID/start/session/executable/cwd changed; no signal is permitted",
+      "type": "RuntimeError"
+    },
+    "independentBrowserSamplingFirstAt": "2026-10-02T05:20:00.615003+00:00",
+    "limitation": "Browser samples follow the failure; launcher observes successful registration events only. Last registered PID does not identify the offending PID.",
+    "matchingComparisonCount": 18,
+    "matchingLifetimeCount": 9,
+    "offendingPidEstablished": false,
+    "retainedIndependentTupleComparisons": [
+      {
+        "actual": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+          "pid": 1892309,
+          "session": 1892309,
+          "startTicks": 9429387
+        },
+        "at": "2026-10-02T05:20:00.364577+00:00",
+        "equal": true,
+        "expected": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+          "pid": 1892309,
+          "session": 1892309,
+          "startTicks": 9429387
+        },
+        "line": 1
+      },
+      {
+        "actual": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+          "pid": 1892309,
+          "session": 1892309,
+          "startTicks": 9429387
+        },
+        "at": "2026-10-02T05:20:00.364655+00:00",
+        "equal": true,
+        "expected": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+          "pid": 1892309,
+          "session": 1892309,
+          "startTicks": 9429387
+        },
+        "line": 2
+      },
+      {
+        "actual": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892320,
+          "session": 1892320,
+          "startTicks": 9429401
+        },
+        "at": "2026-10-02T05:20:00.615003+00:00",
+        "equal": true,
+        "expected": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892320,
+          "session": 1892320,
+          "startTicks": 9429401
+        },
+        "line": 3
+      },
+      {
+        "actual": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892322,
+          "session": 1892320,
+          "startTicks": 9429402
+        },
+        "at": "2026-10-02T05:20:00.615146+00:00",
+        "equal": true,
+        "expected": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892322,
+          "session": 1892320,
+          "startTicks": 9429402
+        },
+        "line": 4
+      },
+      {
+        "actual": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892323,
+          "session": 1892320,
+          "startTicks": 9429402
+        },
+        "at": "2026-10-02T05:20:00.615250+00:00",
+        "equal": true,
+        "expected": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892323,
+          "session": 1892320,
+          "startTicks": 9429402
+        },
+        "line": 5
+      },
+      {
+        "actual": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892345,
+          "session": 1892320,
+          "startTicks": 9429403
+        },
+        "at": "2026-10-02T05:20:00.615356+00:00",
+        "equal": true,
+        "expected": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892345,
+          "session": 1892320,
+          "startTicks": 9429403
+        },
+        "line": 6
+      },
+      {
+        "actual": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892351,
+          "session": 1892320,
+          "startTicks": 9429406
+        },
+        "at": "2026-10-02T05:20:00.615457+00:00",
+        "equal": true,
+        "expected": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892351,
+          "session": 1892320,
+          "startTicks": 9429406
+        },
+        "line": 7
+      },
+      {
+        "actual": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892380,
+          "session": 1892320,
+          "startTicks": 9429409
+        },
+        "at": "2026-10-02T05:20:00.615554+00:00",
+        "equal": true,
+        "expected": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892380,
+          "session": 1892320,
+          "startTicks": 9429409
+        },
+        "line": 8
+      },
+      {
+        "actual": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892394,
+          "session": 1892320,
+          "startTicks": 9429410
+        },
+        "at": "2026-10-02T05:20:00.615651+00:00",
+        "equal": true,
+        "expected": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892394,
+          "session": 1892320,
+          "startTicks": 9429410
+        },
+        "line": 9
+      },
+      {
+        "actual": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892404,
+          "session": 1892320,
+          "startTicks": 9429411
+        },
+        "at": "2026-10-02T05:20:00.615752+00:00",
+        "equal": true,
+        "expected": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892404,
+          "session": 1892320,
+          "startTicks": 9429411
+        },
+        "line": 10
+      },
+      {
+        "actual": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892320,
+          "session": 1892320,
+          "startTicks": 9429401
+        },
+        "at": "2026-10-02T05:20:00.615956+00:00",
+        "equal": true,
+        "expected": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892320,
+          "session": 1892320,
+          "startTicks": 9429401
+        },
+        "line": 16
+      },
+      {
+        "actual": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892322,
+          "session": 1892320,
+          "startTicks": 9429402
+        },
+        "at": "2026-10-02T05:20:00.616008+00:00",
+        "equal": true,
+        "expected": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892322,
+          "session": 1892320,
+          "startTicks": 9429402
+        },
+        "line": 17
+      },
+      {
+        "actual": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892323,
+          "session": 1892320,
+          "startTicks": 9429402
+        },
+        "at": "2026-10-02T05:20:00.616057+00:00",
+        "equal": true,
+        "expected": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892323,
+          "session": 1892320,
+          "startTicks": 9429402
+        },
+        "line": 18
+      },
+      {
+        "actual": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892345,
+          "session": 1892320,
+          "startTicks": 9429403
+        },
+        "at": "2026-10-02T05:20:00.616106+00:00",
+        "equal": true,
+        "expected": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892345,
+          "session": 1892320,
+          "startTicks": 9429403
+        },
+        "line": 19
+      },
+      {
+        "actual": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892351,
+          "session": 1892320,
+          "startTicks": 9429406
+        },
+        "at": "2026-10-02T05:20:00.616156+00:00",
+        "equal": true,
+        "expected": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892351,
+          "session": 1892320,
+          "startTicks": 9429406
+        },
+        "line": 20
+      },
+      {
+        "actual": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892380,
+          "session": 1892320,
+          "startTicks": 9429409
+        },
+        "at": "2026-10-02T05:20:00.616205+00:00",
+        "equal": true,
+        "expected": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892380,
+          "session": 1892320,
+          "startTicks": 9429409
+        },
+        "line": 21
+      },
+      {
+        "actual": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892394,
+          "session": 1892320,
+          "startTicks": 9429410
+        },
+        "at": "2026-10-02T05:20:00.616257+00:00",
+        "equal": true,
+        "expected": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892394,
+          "session": 1892320,
+          "startTicks": 9429410
+        },
+        "line": 22
+      },
+      {
+        "actual": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892404,
+          "session": 1892320,
+          "startTicks": 9429411
+        },
+        "at": "2026-10-02T05:20:00.616306+00:00",
+        "equal": true,
+        "expected": {
+          "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+          "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "pid": 1892404,
+          "session": 1892320,
+          "startTicks": 9429411
+        },
+        "line": 23
+      }
+    ]
+  },
+  "retainedEvidence": [
+    {
+      "bytes": 1544,
+      "path": "/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/lifecycle-driver-result.json",
+      "sha256": "507fd0d5fbb324a39c9372bcf2a28c3d0966d9bbf357428a6dbcc52351b8c02a"
+    },
+    {
+      "bytes": 73123,
+      "path": "/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/lifecycle-driver-events.ndjson",
+      "sha256": "2a32b9f959dc0380667e7e9c666073da783a5dcf90fba328f9cfb7133a738386"
+    },
+    {
+      "bytes": 3535,
+      "path": "/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/lifecycle-browser.stderr",
+      "sha256": "e197f401b95704f257ea13cba27af031e0ad2b825c6125706bf094a0cca9947e"
+    },
+    {
+      "bytes": 59235,
+      "path": "/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/independent-observations.ndjson",
+      "sha256": "9183f7e195eab30b3f02f0d98e378a534ff3e0fe99b580894f3790746a67c86d"
+    },
+    {
+      "bytes": 51170,
+      "path": "/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/independent-closure.json",
+      "sha256": "2d341b1689b38137735254e62bd8e7001ebed9a431d7eddfa7e4a0d8936aa50a"
+    },
+    {
+      "bytes": 8380,
+      "path": "/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/final-independent-live-readback.json",
+      "sha256": "925b1c304716d2db5f192fef71fd2982c839c281cb6fc5b0238c387ba1eaea4d"
+    },
+    {
+      "bytes": 5394,
+      "path": "/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/lifecycle-retention-readback.json",
+      "sha256": "494a2178068041643058ca1047d8745b209029decb4e943f3cd14bab47fcadc3"
+    },
+    {
+      "bytes": 9668,
+      "path": "/tmp/ovf-feature63-r2-capture-control-V8aSd0IH/launch-capture.py",
+      "sha256": "86f7e0f11cb284878d0550165ba7656745cd3a3991042e904f9b3abcc93bfe07"
+    }
+  ],
+  "schema": "feature63-r2-diagnostic-and-native-lifetime-semantics-manifest-v1",
+  "scope": {
+    "captureRetries": 0,
+    "databaseContentReadHashedQueriedCopiedSealedExtractedOrAudited": false,
+    "feature63Qualified": false,
+    "liveProcessProbesOutsideExplicitlyIsolatedProofProcesses": false,
+    "retainedEvidenceWrites": false,
+    "rootOrOwnedCheckoutWrites": false,
+    "signalsSent": 0
+  },
+  "semanticsProofs": {
+    "allChecksPassed": true,
+    "conclusion": "PID/start and a held live pidfd preserve process lifetime across cwd, executable and descendant session changes. Original SID admission and direct-root SID reservation remain distinct ownership requirements.",
+    "descendantSession": {
+      "bytes": 11876,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/session-proof.json",
+      "sha256": "8f767c77cac524d55915fe6661c4b7848f0fe3e2bdfbccffaf2b6f4f9f0c1da0"
+    },
+    "execCwd": {
+      "bytes": 6585,
+      "path": "/tmp/ovf-feature63-r2-identity-semantics-architecture-nsYQLP8U/proof.json",
+      "sha256": "e328f8f7f3feb31f1ac720ec10c13b50a3d27d2dcaf7a840f1bb691b533c46a9"
+    },
+    "processesExitedNaturally": true,
+    "scopeLimitations": [
+      "No game wrapper, browser, server, capture, collector, database, or auditor was executed.",
+      "These proofs do not determine r2 cause or qualify feature63.",
+      "The after-exec cmdline sample was empty; no atomic argv snapshot is claimed.",
+      "Candidate missing-snapshot, transient-exit and concurrent mutation branches received static review only."
+    ],
+    "signalsSent": 0
+  },
+  "sourcePin": "1257b24db0121a72a12a6de10592397dc4996038"
+}
