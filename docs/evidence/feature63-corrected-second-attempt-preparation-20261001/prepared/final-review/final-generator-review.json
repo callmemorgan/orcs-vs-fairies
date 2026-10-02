@@ -1,0 +1,176 @@
+{
+  "schema": "feature63-final-corrective-r2-generator-static-review-v1",
+  "status": "PASS_STATIC_FINAL_CORRECTIVE_R2_GENERATOR_RUNTIME_HELD",
+  "reviewer": "/root/ai_modes/corrective_r2_full_candidate_review",
+  "requestedModel": "gpt-5.6-sol",
+  "actualProviderFamily": "unverified",
+  "writeScope": "/tmp/ovf-feature63-final-generator-static-review-Wqpw0U",
+  "findings": [],
+  "checksPerformed": [
+    "Parsed the final generator with ast.parse without importing it, executing it, or calling its functions.",
+    "Confirmed the final generator is the fresh-copy draft with exactly one replacement: SEAL_SHA changed from PENDING_ROOT_SEAL_SHA256 to fd11e341714b1fcbf6a26ff0d0e5482df5dfe8ade0f0d68281874daeedc4e811.",
+    "Confirmed seal-anchor-only.diff, full-generator.diff, and fresh-copy-r2.diff exactly reproduce their stated source and target files.",
+    "Inspected the full generator change from corrected base SHA256 2e1d74eb6a731691528aa4e5df533d0af6e0c863187ba5845d3e614eb9500e99.",
+    "Confirmed current packet, historical packet, r2 prefix, script-map, current PASS review, historical r4 PASS review, and separate historical r3 descriptor handling.",
+    "Confirmed the original tested f7 source, build ID, suite/build proof, source/dependency authentication, output freshness, bounded reads, approval gates, slot expiry, protected identity inputs, and exact generated assignment digest flow remain present.",
+    "Confirmed the generator has no Vite macro-conjunct requirement and does not read old r1 runtime trees.",
+    "Confirmed rootPackagingReceipt in the pending parameters binds the fresh receipt; the generator checks its schema, PASS status, r1/r2 prefixes, false runtime/build/database/capture declarations, protected-root declaration, counts, and complete numeric-mode inventories.",
+    "Confirmed the generator follows priorPackagingReceipt from the fresh receipt, retains its source pin only as provenance, requires the tested build ID and buildExitCode zero, and compares both recorded inventories with the actual r2 dist and server inventories when root later executes it.",
+    "Confirmed current seal SHA256 fd11e341714b1fcbf6a26ff0d0e5482df5dfe8ade0f0d68281874daeedc4e811 has 33 records and 384215 payload bytes; every current record matched path, bytes, SHA256, and numeric mode.",
+    "Confirmed current candidate review SHA256 bb2729077bdc25dd34f51288567e4c794395850ffd42d63ae25b7e5519651b0e has PASS_STATIC_CORRECTIVE_R2_CANDIDATE_RUNTIME_HELD status.",
+    "Read the 12-decision frozen parent trail and its disclosed correction-orchestration failure, preserved initial seal/readback history, corrected current seal/readback, and final generator handoff."
+  ],
+  "runtimeUntouched": {
+    "generatorImported": false,
+    "generatorExecuted": false,
+    "generatorFunctionsCalled": false,
+    "candidatesImportedOrExecuted": false,
+    "buildOrTestRun": false,
+    "browserOrRuntimeRun": false,
+    "liveProcessSocketNamespaceOrTreeObserved": false,
+    "databaseContentReadHashedCopiedOrSealed": false,
+    "signalsSent": false,
+    "packageOrCleanupRun": false,
+    "sourceRootGitOrLedgerWritten": false,
+    "packetOrCandidateDirectoriesWritten": false,
+    "newCaptureAuthorized": false
+  },
+  "attention": [
+    {
+      "trailLine": 5,
+      "decisionRow": 4,
+      "phase": "launch",
+      "flag": "The active workspace transcript directory was unavailable. The supplied in-session root message copy and receipts are not an independently authenticated full transcript, and unrelated private chats were not searched."
+    },
+    {
+      "trailLine": 11,
+      "decisionRow": 10,
+      "phase": "correct",
+      "flag": "The parent disclosed that a too-strict correction assertion expected only one JSON-field change even though writeScope also changed; later log and seal commands still ran. The initial packet and readback were preserved, the active packet was rebuilt with the corrected review, the current 33-record seal independently revalidated, and later dependent commands now stop on errors."
+    },
+    {
+      "trailLine": 13,
+      "decisionRow": 12,
+      "phase": "bindings",
+      "flag": "The final generator remains static and unexecuted. Root must keep the reviewed fresh-receipt descriptor in the exact parameters, import and pin scripts, fill remaining live bindings and approvals, generate a separate exact assignment digest, and explicitly authorize capture."
+    }
+  ],
+  "reviewLimitations": [
+    "This review verifies generator source, saved diffs, JSON metadata, seals, and frozen trail bytes. It does not prove that current r2 dist or server trees match either receipt inventory.",
+    "The generator will read and compare the actual r2 dist and server inventories only when root later executes it with an exact reviewed parameter digest.",
+    "rootPackagingReceipt remains an optional generator branch inherited from the earlier design. The reviewed pending parameters include it; both packaging receipts are bound only if root retains that descriptor in the exact parameters.",
+    "No runtime launch, Chromium behavior, FD crash repair, cleanup completeness, descendant exclusion, native lifetime disposition, extraction admission, audit result, or feature qualification is proved here.",
+    "Root-owned native lifetime disposition follows the closed capture and must precede extraction, audit, or qualification.",
+    "The transcript limitation prevents independent authentication of the complete inter-agent history."
+  ],
+  "reviewedArtifacts": [
+    {
+      "path": "/tmp/ovf-feature63-final-binding-generator-r2-9h7kcykr/generate-root-bindings.py",
+      "bytes": 30479,
+      "sha256": "e4c92972a00277f01de5366482acdd823caf32cabc8f4e2dfa10a3cd191cc828",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-final-binding-generator-r2-9h7kcykr/root-parameters.pending.json",
+      "bytes": 1574,
+      "sha256": "215548b62023ede1faff089f3365a8b743771a1e907d4a60cbb83fcefaef3e7d",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-final-binding-generator-r2-9h7kcykr/preparation-receipt.json",
+      "bytes": 1997,
+      "sha256": "417c9af2e3cdab31210d7db82d5ee84f8fc72e3a5def676b61d8efac33ff3e58",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-final-binding-generator-r2-9h7kcykr/README.md",
+      "bytes": 1310,
+      "sha256": "0430c1b435e2f4c2823c3137482acbdf255247abdc8d7acae6d5511ec2ca50b4",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-final-binding-generator-r2-9h7kcykr/full-generator.diff",
+      "bytes": 12695,
+      "sha256": "7dc3d4eedc2eaa3633da78c13a58fdf1754c762184eec6cbb8406a31da89bfad",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-final-binding-generator-r2-9h7kcykr/seal-anchor-only.diff",
+      "bytes": 716,
+      "sha256": "159d85ac88bd15b023d1cc2ff881c0b345dd906667f5d54e743fb8a5aa6bf99e",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-root-binding-generator-fresh-copy-r2-z6wa99a5/generate-root-bindings.py",
+      "bytes": 30439,
+      "sha256": "fd70c0211ebc70a7be360cccdac127da3ebb83d92bc1d9886b5b22fd01a6bffc",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-root-binding-generator-fresh-copy-r2-z6wa99a5/fresh-copy-r2.diff",
+      "bytes": 3610,
+      "sha256": "09f24be03629aa94952a1426888e519c8bae5a6b932eba37cbeb66065fd005cb",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-root-binding-generator-fresh-copy-r2-z6wa99a5/final-readback.json",
+      "bytes": 3522,
+      "sha256": "de4f53403fb7eec27001e0ab3a60288695d315bb70df3ca6cf49b2b004885b69",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-root-binding-generator-r2-TZsiGOCJ/generate-root-bindings.py",
+      "bytes": 27181,
+      "sha256": "2e1d74eb6a731691528aa4e5df533d0af6e0c863187ba5845d3e614eb9500e99",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/final-static-seal-r2.json",
+      "bytes": 6755,
+      "sha256": "fd11e341714b1fcbf6a26ff0d0e5482df5dfe8ade0f0d68281874daeedc4e811",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/candidate-static-readback.json",
+      "bytes": 870,
+      "sha256": "c537a939fed16ae1fe3ce1528b35954412c3f5793b0e0cbe921f8ba8df4c3c4b",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/candidate-static-readback-initial.json",
+      "bytes": 762,
+      "sha256": "270ef8cd59a69cbe4a96fe5cf8a45d3064a25167414835066982ca92c02c5729",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/review/candidate-review.json",
+      "bytes": 11898,
+      "sha256": "bb2729077bdc25dd34f51288567e4c794395850ffd42d63ae25b7e5519651b0e",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/decisions-final-generator-review.tsv",
+      "bytes": 4411,
+      "sha256": "2dabc1a85614a95d4a804a8cb161d739e10d9754a681973c11a95e635e8ca454",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-root-feature63-fresh-r2-package-w5gp__sx/root-fresh-package-result.json",
+      "bytes": 87864,
+      "sha256": "27875d606ea53538d30e238a463b4cb17a691d36f0769f4d06675a30e0353c27",
+      "mode": 420
+    },
+    {
+      "path": "/tmp/ovf-root-feature63-minimal-server-package-02ue3q1y/root-package-result.json",
+      "bytes": 87887,
+      "sha256": "d579b5bae4b859e5a56a848c3b89c950a504bf34261e008fe0f013d3197906a5",
+      "mode": 420
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/feature63-dedicated-wrapper-readiness-r1/final-static-seal-r1.json",
+      "bytes": 15117,
+      "sha256": "88d08b5409ed13d3f8d783b7d8e40ddb95a6a3843992a0cae5599731b55d3034",
+      "mode": 420
+    }
+  ]
+}

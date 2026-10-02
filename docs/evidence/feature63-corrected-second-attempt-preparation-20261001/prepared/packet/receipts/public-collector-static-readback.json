@@ -1,0 +1,45 @@
+{
+  "schema": "feature63-public-collector-r2-static-readback-v1",
+  "status": "PASS_STATIC_ONLY",
+  "createdAt": "2026-10-02T04:36:54.746882+00:00",
+  "receipt": {
+    "path": "/tmp/ovf-feature63-public-collector-r2-unfwgtxc/change-receipt.json",
+    "bytes": 2641,
+    "sha256": "e2934f617d92d30c04ea6f6c059a41d6d439c873709a28738ceb83a8c4015653",
+    "mode": 420
+  },
+  "runtimeProof": false,
+  "candidateImportedOrExecuted": false,
+  "databaseReadHashedOrCopied": false,
+  "sourceFilesWritten": false,
+  "checks": [
+    {
+      "name": "public-producer.mjs",
+      "byteBindings": "PASS",
+      "modes": "PASS",
+      "literalReplacementOnly": "PASS",
+      "exactUnifiedDiff": "PASS",
+      "candidateSha256": "4301ab3107df4e414250762b0f606bf64c2255db7ece010977721f28cff3b0e5",
+      "staticParser": "Node --check; no module import or candidate execution",
+      "parseStatus": "PASS",
+      "parseCommand": [
+        "/home/morgana/.local/bin/node",
+        "--check",
+        "/tmp/ovf-feature63-public-collector-r2-unfwgtxc/public-producer.mjs"
+      ],
+      "parseReturnCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "collect-launched-waves.py",
+      "byteBindings": "PASS",
+      "modes": "PASS",
+      "literalReplacementOnly": "PASS",
+      "exactUnifiedDiff": "PASS",
+      "candidateSha256": "fe89d94194a6a6a74ae0f20597c130dd0e4b08c1bdd626d28144c5fda8376966",
+      "staticParser": "Python ast.parse",
+      "parseStatus": "PASS"
+    }
+  ]
+}

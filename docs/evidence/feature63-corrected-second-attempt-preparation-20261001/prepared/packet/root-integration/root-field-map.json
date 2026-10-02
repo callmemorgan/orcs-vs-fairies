@@ -1,0 +1,30 @@
+{
+  "schema": "feature63-second-attempt-root-field-map-v1",
+  "createdAt": "2026-10-02T04:45:03.894659+00:00",
+  "futureFullSourcePin": "Root supplies the scripts-only pin after import; preparation pin is provenance only.",
+  "captureAssignment": "Root runs the separately reviewed external generator with concrete fresh parameters, then separately assigns the resulting exact capture digest.",
+  "auditAssignment": "Root later creates a fresh phase-audit assignment and a separate wrapper digest; capture authority and native audit digest do not authorize it.",
+  "protectedProcess": "Root supplies the unchanged five-key PID1063/start874/exe/cwd/argv descriptor and socket list. Protected full argv equality remains strict.",
+  "ownedProcess": "Wrapper keeps five-key child-facing descriptor snapshots. Internal PID/start/session/executable/cwd plus bound PIDFD determine owned liveness and signaling; changed raw NUL cmdline observations are separate events.",
+  "pendingFields": [
+    "approved",
+    "sourcePin",
+    "testedBuildId",
+    "exclusiveHeavyApproval",
+    "protectedProcess executable/argv",
+    "protectedListenerSockets",
+    "sourceBinding",
+    "buildBinding",
+    "testedBuildReceipt",
+    "reviewReceipt",
+    "browserBinding",
+    "nodeExecutable",
+    "pythonExecutable"
+  ],
+  "sourceBindingSchemas": "Capture uses feature63-new-source-binding-v1 with numeric mode. Closed-native audit uses feature63-source-binding-v1 with gitMode/gitBlob; root must not reuse capture source binding unchanged.",
+  "nativeAuditCli": "--bundle ABSOLUTE_BUNDLE --assignment-sha256 NATIVE_ROOT_ASSIGNMENT_DIGEST",
+  "nativeLifetime": "unobservedDescendantsExcluded=false and rootNativeLifetimeDispositionRequired=true remain. Root admission later requires ownedNativeLifetimeIndependentlyAdmitted=true.",
+  "candidateSealOrder": "Seal current packet after candidate review; generator and final filled-generator review remain outside seal to avoid hash cycles.",
+  "newCaptureAuthorized": false,
+  "feature63Qualified": false
+}

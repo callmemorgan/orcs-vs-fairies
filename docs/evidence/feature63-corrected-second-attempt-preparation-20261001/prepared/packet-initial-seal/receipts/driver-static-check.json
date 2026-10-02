@@ -1,0 +1,319 @@
+{
+  "basePath": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/scripts/feature63/run-minimal63.py",
+  "baseSha256": "e333b6386e4a48ac4194ef760a6ee605bc567252b8fdae832f0d65a630e687be",
+  "candidateBytes": 45113,
+  "candidateFunctionsWereCalled": false,
+  "candidateMode": "0o644",
+  "candidatePath": "/tmp/ovf-feature63-corrective-r2-driver-vmhywo95/run-minimal63.py",
+  "candidateSha256": "f1aeeca031e80029f49d3dd4327ccda6caf02848f427bc8a21df72b87ff9618d",
+  "candidateWasExecuted": false,
+  "candidateWasImported": false,
+  "checks": [
+    {
+      "check": "static syntax",
+      "detail": "Only ast.parse on source text. No candidate import, compile, function call, subprocess, or runtime action.",
+      "status": "PASS"
+    },
+    {
+      "check": "semantic and audit guards unchanged",
+      "detail": "AST equality for require, now, sha, raw_file, bound, receipt, write_new, process_state, session_id, sockets, listeners, inventory, guard, request_json, final_protected_readback, runtime_budget, audit, main.",
+      "status": "PASS"
+    },
+    {
+      "check": "manager output and release unchanged",
+      "detail": "Children.__init__, event, and finish retain their original behavior.",
+      "status": "PASS"
+    },
+    {
+      "check": "capture final byte caps and result guards unchanged",
+      "detail": "The entire capture finally block is AST-identical, including 16 MiB lifecycle cap, result accounting, per-family final cleanup, and protected final readback. Audit retains its 2 MiB cap.",
+      "status": "PASS"
+    },
+    {
+      "check": "constant CHECKOUT",
+      "detail": "AST-identical.",
+      "status": "PASS"
+    },
+    {
+      "check": "constant PROTECTED_ROOT",
+      "detail": "AST-identical.",
+      "status": "PASS"
+    },
+    {
+      "check": "constant PORTS",
+      "detail": "AST-identical.",
+      "status": "PASS"
+    },
+    {
+      "check": "constant REQUIRED_SOURCE",
+      "detail": "AST-identical.",
+      "status": "PASS"
+    },
+    {
+      "check": "constant MAX_ATTEMPT",
+      "detail": "AST-identical.",
+      "status": "PASS"
+    },
+    {
+      "check": "constant MAX_CLEANUP",
+      "detail": "AST-identical.",
+      "status": "PASS"
+    },
+    {
+      "check": "constant MAX_RAW_BYTES",
+      "detail": "AST-identical.",
+      "status": "PASS"
+    },
+    {
+      "check": "constant MAX_PUBLIC_BYTES",
+      "detail": "AST-identical.",
+      "status": "PASS"
+    },
+    {
+      "check": "constant MAX_COLLECTOR_BYTES",
+      "detail": "AST-identical.",
+      "status": "PASS"
+    },
+    {
+      "check": "constant AUDIT_INPUTS",
+      "detail": "AST-identical.",
+      "status": "PASS"
+    },
+    {
+      "check": "fresh r2 prefix only",
+      "detail": "r1 remains untouched; this is candidate text only and creates no runtime prefix.",
+      "status": "PASS"
+    },
+    {
+      "check": "five-key public descriptor",
+      "detail": "Public/collector identity dict remains exactly pid/startTicks/executable/cwd/argv. Immutable session and raw cmdline are separate.",
+      "status": "PASS"
+    },
+    {
+      "check": "cmdline NUL parsing only",
+      "detail": "Raw bytes are preserved as hex with NUL bytes; decoded argv splits only on NUL. Chrome joined titles are never whitespace- or shell-split.",
+      "status": "PASS"
+    },
+    {
+      "check": "protected full identity equality retained",
+      "detail": "Protected PID 1063/startTicks 874/cwd, full five-key argv equality, 4173 holder, namespace, and bound listener sockets remain strict.",
+      "status": "PASS"
+    },
+    {
+      "check": "protected root guards retained",
+      "detail": "All protected root statements before candidate checks are AST-identical. Candidate checks use bound PIDFD and immutable tuple around socket disjointness.",
+      "status": "PASS"
+    },
+    {
+      "check": "no owned current-argv equality remains",
+      "detail": "The only current five-key identity call is the full protected root check. Owned liveness flows through immutableIdentity equality and pidfd_live.",
+      "status": "PASS"
+    },
+    {
+      "check": "initial Popen argv unchanged",
+      "detail": "Popen receives the same command list with cwd=CHECKOUT and start_new_session=True; event records the submitted argv separately.",
+      "status": "PASS"
+    },
+    {
+      "check": "initial launch argv validation retained",
+      "detail": "The captured initial argv must exactly equal the submitted command. Initial descriptor is never replaced with a later Chrome title.",
+      "status": "PASS"
+    },
+    {
+      "check": "only root-selected Chrome additions",
+      "detail": "Only --no-sandbox and --enable-unsafe-swiftshader were added. Parent conveyed root selection on 2026-10-01. These align known passing main15 launch; FD crash causality remains unproved.",
+      "status": "PASS"
+    },
+    {
+      "check": "PIDFD-only individual signaling",
+      "detail": "Only signal.pidfd_send_signal(record[pidfd], signum); immutable/PIDFD observation precedes protected socket checks and is repeated immediately before signal.",
+      "status": "PASS"
+    },
+    {
+      "check": "unreaped root reservation retained",
+      "detail": "No Popen.poll or early wait. Both wait calls stay in stop_family; live-session reservations include PID/startTicks/session and final closure retains two observed-session scans.",
+      "status": "PASS"
+    },
+    {
+      "check": "original-session-only admission retained",
+      "detail": "Only observed members of the reserved original kernel session are admitted. Numeric PPID alone admits nothing. Cleanup remains family-filtered.",
+      "status": "PASS"
+    },
+    {
+      "check": "no cgroup or unobserved-descendant claim",
+      "detail": "No cgroup gate or unobserved descendant absence claim. Root independent native lifetime disposition remains required.",
+      "status": "PASS"
+    }
+  ],
+  "createdAt": "2026-10-02T04:42:42.161030+00:00",
+  "diffPath": "/tmp/ovf-feature63-corrective-r2-driver-vmhywo95/run-minimal63.patch",
+  "diffSha256": "3991c450077515f03e16cac37ac009873cdad27cd48107f0422d77cb615a6a64",
+  "knownIncident": {
+    "automaticRetryAuthorized": false,
+    "change": "argv changed to one joined title 8 ms after initial strict registration; immutable owner fields stayed the same",
+    "pid": 1804106,
+    "r1PrefixPreserved": true,
+    "session": 1804106,
+    "startTicks": 9074516
+  },
+  "launchFlagEvidence": {
+    "addedFlags": [
+      "--no-sandbox",
+      "--enable-unsafe-swiftshader"
+    ],
+    "authorization": "Parent conveyed root-selected additions after initial writer task",
+    "comparison": "Known passing main15 native launch used both",
+    "fdCrashCausalityProved": false
+  },
+  "processAuthenticationCallsites": [
+    {
+      "candidateLine": 101,
+      "change": "Adds stable PID/start/session/executable/cwd snapshot plus raw NUL cmdline bytes/list. identity() still returns the original five public keys.",
+      "originalLine": 100,
+      "purpose": "identity snapshot"
+    },
+    {
+      "candidateLine": 195,
+      "change": "Retained full strict five-key comparison, including argv. No owned-process exception applies to protected PID 1063.",
+      "originalLine": 154,
+      "purpose": "protected root equality"
+    },
+    {
+      "candidateLine": 201,
+      "change": "Replaces mutable current-argv equality with bound immutable tuple/PIDFD liveness before and after protected socket disjointness.",
+      "originalLine": 160,
+      "purpose": "protected candidate equality"
+    },
+    {
+      "candidateLine": 327,
+      "change": "Compares complete immutable tuple plus family; cmdline changes only produce separate events.",
+      "originalLine": 259,
+      "purpose": "repeat registration equality"
+    },
+    {
+      "candidateLine": 336,
+      "change": "Revalidates immutable tuple and PIDFD liveness after opening the kernel descriptor. A later process title cannot invalidate ownership.",
+      "originalLine": 263,
+      "purpose": "PIDFD opening revalidation"
+    },
+    {
+      "candidateLine": 353,
+      "change": "Adds immutable original session equality to reserved startTicks. Bound live roots additionally authenticate through observe/PIDFD without reaping.",
+      "originalLine": 274,
+      "purpose": "direct root exit identity"
+    },
+    {
+      "candidateLine": 353,
+      "change": "Retains unreaped PID/startTicks reservation and pins the stored original session ID to the direct PID.",
+      "originalLine": 289,
+      "purpose": "direct PID/session reservation"
+    },
+    {
+      "candidateLine": 387,
+      "change": "Uses one stable snapshot session; registration also requires original root session and immutable/PIDFD binding.",
+      "originalLine": 304,
+      "purpose": "descendant session admission"
+    },
+    {
+      "candidateLine": 396,
+      "change": "observe validates immutable tuple/PIDFD; this check retains original-family session membership. Raw cmdline changes are audit events only.",
+      "originalLine": 314,
+      "purpose": "refresh ownership equality"
+    },
+    {
+      "candidateLine": 423,
+      "change": "Retained strict captured-initial argv comparison with submitted Popen command; initial descriptor remains immutable as stored data.",
+      "originalLine": 341,
+      "purpose": "initial launch argv equality"
+    },
+    {
+      "candidateLine": 424,
+      "change": "Retained direct session ownership check; registration separately binds this session into immutableIdentity.",
+      "originalLine": 342,
+      "purpose": "initial launch session equality"
+    },
+    {
+      "candidateLine": 429,
+      "change": "Uses bound PIDFD liveness and immutable tuple; mutable argv never determines a live signal target.",
+      "originalLine": 347,
+      "purpose": "signal target liveness"
+    },
+    {
+      "candidateLine": 431,
+      "change": "The preceding observe authenticates immutable ownership. Protected candidate receives the bound resource and rechecks it around socket disjointness.",
+      "originalLine": 349,
+      "purpose": "signal equality before sockets"
+    },
+    {
+      "candidateLine": 432,
+      "change": "Repeats immutable/PIDFD authentication immediately before the only individual signal primitive.",
+      "originalLine": 351,
+      "purpose": "signal equality after sockets"
+    },
+    {
+      "candidateLine": 444,
+      "change": "Obtains immutable/session/raw cmdline snapshot; registration uses immutable tuple rather than full current argv.",
+      "originalLine": 362,
+      "purpose": "cleanup direct root observation"
+    },
+    {
+      "candidateLine": 447,
+      "change": "Adds stored original session to reserved startTicks equality before any direct-root registration or cleanup.",
+      "originalLine": 364,
+      "purpose": "cleanup direct root reservation equality"
+    },
+    {
+      "candidateLine": 468,
+      "change": "Replaces full current identity equality with immutable/PIDFD-authenticated liveness for this family.",
+      "originalLine": 384,
+      "purpose": "parent grace survival equality"
+    },
+    {
+      "candidateLine": 474,
+      "change": "Keeps family filter and selects only immutable/PIDFD-authenticated live records; send repeats protected checks.",
+      "originalLine": 390,
+      "purpose": "family SIGTERM selection equality"
+    },
+    {
+      "candidateLine": 480,
+      "change": "Uses the same immutable/PIDFD liveness helper; no argv-based false absence.",
+      "originalLine": 396,
+      "purpose": "descendant grace survival equality"
+    },
+    {
+      "candidateLine": 487,
+      "change": "Uses immutable/PIDFD liveness, retaining the original-session scan and family filter.",
+      "originalLine": 403,
+      "purpose": "first final-scan survival equality"
+    },
+    {
+      "candidateLine": 492,
+      "change": "Same helper in the repeated observed-session scan before first reap; no global absence claim.",
+      "originalLine": 408,
+      "purpose": "second final-scan survival equality"
+    },
+    {
+      "candidateLine": 532,
+      "change": "Converts five-key descriptor to its bound internal resource; protected root/4173/socket disjointness remains adjacent to startup and timeout checks.",
+      "originalLine": 447,
+      "purpose": "listener ownership and timeout protection"
+    },
+    {
+      "candidateLine": 539,
+      "change": "Same bound-resource candidate check immediately before startup timeout failure.",
+      "originalLine": 454,
+      "purpose": "listener timeout candidate protection"
+    },
+    {
+      "candidateLine": 621,
+      "change": "Both owned server/browser use the immutable/PIDFD helper instead of full current argv; strict protected root and attempt timeout checks remain.",
+      "originalLine": 535,
+      "purpose": "capture owner liveness equality"
+    }
+  ],
+  "runtimeApprovalImplied": false,
+  "runtimeValidationPerformed": false,
+  "schema": "feature63-corrective-r2-driver-static-check-v1",
+  "status": "PASS_STATIC_ONLY",
+  "writeScope": "/tmp/ovf-feature63-corrective-r2-driver-vmhywo95"
+}

@@ -1,0 +1,112 @@
+{
+  "schema": "feature63-corrective-r2-candidate-static-review-v1",
+  "status": "PASS_STATIC_CORRECTIVE_R2_CANDIDATE_RUNTIME_HELD",
+  "reviewer": "/root/ai_modes/corrective_r2_full_candidate_review",
+  "requestedModel": "gpt-5.6-sol",
+  "actualProviderFamily": "unverified",
+  "packetRoot": "/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet",
+  "writeScope": "/tmp/ovf-feature63-corrective-r2-static-review-MvPm4Z",
+  "findings": [],
+  "checksPerformed": [
+    "Read AGENTS.md, writing-style.md, and the Unslop instructions before review.",
+    "Parsed every packet JSON file and every packet Python file with ast.parse without importing or calling candidate functions.",
+    "Read the candidate script bytes, source diffs, import map, field map, scope, README, pending assignments, receipts, and frozen decisions-reviewed.tsv.",
+    "Compared the wrapper with base SHA256 e333b6386e4a48ac4194ef760a6ee605bc567252b8fdae832f0d65a630e687be and inspected all changed ownership, registration, liveness, cleanup, signaling, launch, and protected-root callsites.",
+    "Confirmed that owned process authentication uses PID, startTicks, original session, executable, cwd, and a bound PIDFD while raw NUL cmdline bytes and decoded argv changes are recorded separately.",
+    "Confirmed that the initial five-key descriptor and submitted launch argv equality remain strict, and that protected PID 1063/startTicks 874/cwd/executable/full argv/network namespace/socket 4173 checks remain strict.",
+    "Confirmed that the only browser launch additions are --no-sandbox and --enable-unsafe-swiftshader; this is launch parity evidence and does not prove the FD crash cause.",
+    "Confirmed by inverse byte comparison that public-producer.mjs has one, collect-launched-waves.py has two, and assignment-field-schemas.json has seven mechanical r1-to-r2 prefix replacements.",
+    "Confirmed that native-audit.py is byte-identical to the base and that no new victory, 4v4, AI-to-human, end-fight, continuous-input, shared exact-tick, or global descendant-absence gate was introduced.",
+    "Confirmed that both assignment specimens parse, remain unapproved, retain five-key child-facing processIdentity descriptors, and bind the packet script hashes.",
+    "Confirmed all 19 packet-local path/bytes/SHA256 descriptors against current files and numeric modes where present.",
+    "Ran patch --dry-run only; minimal-source.patch applies to the three base source files without writing them.",
+    "Read and revalidated the original sealed packet manifest: all 74 non-database records, 907896 payload bytes, SHA256 values, and modes match.",
+    "Checked the frozen trail has one six-column header and six six-column decision rows, with evidence paths and results populated.",
+    "Inspected the external generator draft only for path, byte count, mode, and SHA256. It is outside this review and is not bound into this verdict."
+  ],
+  "runtimeUntouched": {
+    "candidateImported": false,
+    "candidateExecuted": false,
+    "candidateFunctionsCalled": false,
+    "generatorImported": false,
+    "generatorExecuted": false,
+    "buildOrTestRun": false,
+    "browserOrRuntimeRun": false,
+    "databaseContentReadHashedCopiedOrSealed": false,
+    "signalsSent": false,
+    "sourceRootGitOrLedgerWritten": false,
+    "packetWritten": false,
+    "newCaptureAuthorized": false
+  },
+  "attention": [
+    {
+      "trailRow": 2,
+      "phase": "scope",
+      "flag": "The authority evidence is a supplied in-session message copy and cleanup metadata, not an independently authenticated full transcript. The active workspace transcript directory was unavailable and unrelated private chats were not searched."
+    },
+    {
+      "trailRow": 3,
+      "phase": "paths",
+      "flag": "The row discloses that an initial count assertion was corrected before packet files were written. The final schema independently checks as seven literal prefix replacements."
+    },
+    {
+      "trailRow": 5,
+      "phase": "launch",
+      "flag": "The two selected flags match a known passing launch, but this packet contains no runtime proof and does not establish the FD crash cause."
+    },
+    {
+      "trailRow": 6,
+      "phase": "preserve",
+      "flag": "The preserved-r1 receipt is producer evidence. This review independently revalidated all 74 seal records but did not inspect or operate on database content."
+    },
+    {
+      "trailRow": 7,
+      "phase": "integrate",
+      "flag": "The assignments remain pending and unapproved. Root must import and pin the source, fill bindings, review the final external generator, issue a separate exact assignment digest, and independently admit native lifetime before runtime."
+    }
+  ],
+  "reviewLimitations": [
+    "This is a static review. It does not show that Chromium launches, that the FD crash is fixed, that cleanup observes every descendant, or that feature63 qualifies.",
+    "unobservedDescendantsExcluded remains false and rootNativeLifetimeDispositionRequired remains true; later root admission must supply ownedNativeLifetimeIndependentlyAdmitted=true.",
+    "The supplied receipts and in-session root message copy are not an independently authenticated full agent transcript.",
+    "The final filled generator and its seal anchor are intentionally outside this packet review. The draft generator at /tmp/ovf-feature63-root-binding-generator-corrective-r2-qsgneakk/generate-root-bindings.py was not reviewed for final binding correctness and was not executed.",
+    "No database content, build output, runtime artifact, browser state, process state, socket state, or live namespace was examined."
+  ],
+  "externalGeneratorDraftMetadata": {
+    "path": "/tmp/ovf-feature63-root-binding-generator-corrective-r2-qsgneakk/generate-root-bindings.py",
+    "bytes": 28659,
+    "sha256": "1f06ac4e860213ed288dd6fa760ef1ee31a31bff77a119d962f7e2a273f11ff9",
+    "mode": 420,
+    "inReviewScope": false
+  },
+  "reviewedArtifacts": [
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/scripts/run-minimal63.py","bytes":45113,"sha256":"f1aeeca031e80029f49d3dd4327ccda6caf02848f427bc8a21df72b87ff9618d","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/scripts/public-producer.mjs","bytes":48578,"sha256":"4301ab3107df4e414250762b0f606bf64c2255db7ece010977721f28cff3b0e5","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/scripts/collect-launched-waves.py","bytes":18600,"sha256":"fe89d94194a6a6a74ae0f20597c130dd0e4b08c1bdd626d28144c5fda8376966","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/scripts/native-audit.py","bytes":64185,"sha256":"4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/root-integration/assignment-field-schemas.json","bytes":50959,"sha256":"705822951672a6d87e9bf0682556ed916e16b72109d761cf5bcfe09a1659e134","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/root-integration/import-map.json","bytes":3490,"sha256":"7e170e61bdc608d98c5d27bd798de7e97d2c925ef89c75b03f75cc1b2ab31c97","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/root-integration/root-field-map.json","bytes":2034,"sha256":"dc09d478c2638121d4824dbab22b4e5055888ba372562f6eac1a28dc9b4bf6e3","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/root-integration/minimal-source.patch","bytes":21368,"sha256":"badc9764e0cb3f627c0cf42466c992b1541a2ec84436b577eae78d5f5e234bcc","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/capture-assignment.pending.json","bytes":4913,"sha256":"ac388f4e3378015f220dbf3b7320d58cbd7260250f08e6106212dc30565e05d6","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/audit-assignment.pending.json","bytes":5199,"sha256":"52c0297aac891e0e41cbca3b0b9c51082ed4ea7eadaefbac56a8c86043ede381","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/scope.json","bytes":2207,"sha256":"67c612287661fd81c7dcd1d9cf1a13f03085022fbecfd09e216d0fefe49667b4","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/root-selected-flags.json","bytes":1047,"sha256":"26258af5fb681b943e5176da2cb75f80e42fc9dc42dd0d3c895c6605df82c89c","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/README.md","bytes":2221,"sha256":"c4370c87455a6d133920f9c780867c1ac17a87b0b0b50e270d6928b3a1efb38d","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/trail/decisions-reviewed.tsv","bytes":2035,"sha256":"3040b68d9009247f4b9bdb74b4fe839aae4254d5c356846f7e3a5f020dbc8824","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/diffs/run-minimal63.py.diff","bytes":19586,"sha256":"3991c450077515f03e16cac37ac009873cdad27cd48107f0422d77cb615a6a64","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/diffs/public-producer.mjs.diff","bytes":599,"sha256":"cf86834bb431073de790e97f8fd9d442f37ed1673df8b98f12daf96a0f297b26","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/diffs/collect-launched-waves.py.diff","bytes":1369,"sha256":"95f11a0ba95b025d0c08bce1618caf585d0884829cdcf5c91a999cb9c43e2a07","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/diffs/assignment-field-schemas.json.diff","bytes":2756,"sha256":"f26bbe1e7af9aec7ca27a065e1fa1f0e42ada3b8b51818d9030e6362f834cc41","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/diffs/capture-assignment.pending.json.diff","bytes":4398,"sha256":"59d0cf63e640328256a3ba460da52e8166515148ba4706d1f190d7c9f96e3ced","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/diffs/audit-assignment.pending.json.diff","bytes":4394,"sha256":"e3f5831dc1fc2328d6c52f63d088cbbbd0c488a9bb8d15ddde246d67c57372d0","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/receipts/driver-static-check.json","bytes":13036,"sha256":"e7cd3ceb62d9052a80151e29e1236428316fb7789b1f75861663fa6f3808a94d","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/receipts/driver-static-check.md","bytes":6983,"sha256":"5e789f55c431fcf4b488953c421b973f68a0298268fd4ef825d187c9bbee5767","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/receipts/driver-static-check.py","bytes":19521,"sha256":"55bec9cf59d52a71cb6ded27e2736883e6ba8b5083d4d958f550f4756eb60589","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/receipts/parent-static-readback.json","bytes":3597,"sha256":"413727a35aaf760a3f2e93206c8c14c61a7a31530bc7b1875148ce44226f1d19","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/receipts/public-collector-change.json","bytes":2641,"sha256":"e2934f617d92d30c04ea6f6c059a41d6d439c873709a28738ceb83a8c4015653","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/receipts/public-collector-static-readback.json","bytes":1485,"sha256":"0c392e3c62b5f43481875b17eec028fd9e79117413d87e1bdea5c544305bf3d0","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/receipts/preserved-r1-static-packet-readback.json","bytes":566,"sha256":"7b67c90a5842050b03cdaca84a607802d3bdb5418fe575b7b68d9cf3c1e410b1","mode":420},
+    {"path":"/tmp/ovf-feature63-second-attempt-prep-r2-4kTK32yI/packet/receipts/retained-r1-cleanup-readback.json","bytes":636,"sha256":"2d05f8021f6cbd9160c8844fd8239d8a9cd50132fbc4bbda05611673fde13341","mode":420}
+  ]
+}

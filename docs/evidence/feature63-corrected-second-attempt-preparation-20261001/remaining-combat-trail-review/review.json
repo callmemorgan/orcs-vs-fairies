@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "reviewType": "show-me-your-work independent cross-family trail review",
+  "requestedReviewerModel": "gpt-5.6-sol",
+  "actualProviderIdentity": "unavailable",
+  "freshClaudeRun": false,
+  "artifactSnapshot": "artifact-snapshot.json",
+  "verdict": "The new trail rows map to real actions and their evidence resolves. Originals 4, 9, and 10 are supportable from their original sentences. Feature 63 remains pending. The failed supplemental morale wait and unexecuted history phase are preserved and are not extra feature gates.",
+  "qualifications": [
+    "The final morale state is at time 15.85 while retreat.until is 12.7. Treat the retreat object as retained metadata, not an active timer. The proof is the displacement from about 25,25 to about 41,40 toward the side-1 HQ at 42.5,42.5 together with current move orders to that HQ and unchanged passing retreat/surrender tests.",
+    "The positive siege attack event amounts 15 and 12 do not sum to the 42 crew HP loss. They establish ordinary attack activity and chronology, while the authenticated state change establishes crew defeat. Do not claim those two amounts alone account for all crew damage.",
+    "The root admission at SHA-256 0773cafab7b199975f80fd6b8e9a4f92283377dc14b75182c60b5800344eee22 preserves both qualifications.",
+    "The feature-63 extraction helper is static preparation only. It was not executed or imported, SQLite was not opened, and no native audit or feature admission occurred."
+  ],
+  "flags": [
+    {
+      "severity": "minor",
+      "subject": "clause-assessment retreat wording",
+      "evidence": "docs/evidence/main402-remaining-witness-2e5-20261001/clause-assessment/clause-assessment.json SHA-256 8e90120cc80465499e7d47c73679d06a1242768437643792c21ff595a5581ca8 and clause-assessment.md SHA-256 9237a63b70a2972b4759698934b908aa052fc640fd0249776224345aba68471b",
+      "finding": "The retained independent assessment calls the final retreat state active, but retreat.until 12.7 is earlier than final time 15.85. The later root admission corrects the interpretation, so this is a stale wording problem rather than a failed feature admission. Any future summary should use the root admission qualification."
+    },
+    {
+      "severity": "operational",
+      "subject": "evidence commit size",
+      "evidence": "commit 9d3f172b9b2c7d7af14839edd153c7709d0df579 contains 718 reviewed paths totaling 126782879 blob bytes; 285 paths are binary",
+      "finding": "The evidence preservation commit includes generated dist assets, GPU caches, and dependency snapshots. No single reviewed blob exceeds GitHub's 100 MiB limit, but the permanent repository growth is large enough that the user should confirm this retention scope is intentional."
+    }
+  ],
+  "noOtherFlags": true
+}

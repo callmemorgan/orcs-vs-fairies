@@ -1,0 +1,1953 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Feature63 root runtime field schemas; pending specimens deliberately fail approval/full-pin constraints",
+  "createdAt": "2026-10-02T03:21:23.259238+00:00",
+  "futureSourcePin": null,
+  "runtimeAuthorized": false,
+  "$defs": {
+    "boundFile": {
+      "type": "object",
+      "required": [
+        "path",
+        "bytes",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "relativeActualFile": {
+      "type": "object",
+      "required": [
+        "path",
+        "bytes",
+        "sha256",
+        "mode"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "mode": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4095
+        }
+      },
+      "additionalProperties": false
+    },
+    "processIdentity": {
+      "type": "object",
+      "required": [
+        "pid",
+        "startTicks",
+        "executable",
+        "cwd",
+        "argv"
+      ],
+      "properties": {
+        "pid": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "startTicks": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "executable": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "cwd": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "argv": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "rootDriverAssignment": {
+      "type": "object",
+      "required": [
+        "schema",
+        "approved",
+        "assignedBy",
+        "phase",
+        "sourcePin",
+        "productVersion",
+        "sourceRoot",
+        "freshPrefix",
+        "wrapperSha256",
+        "testedBuildId",
+        "exclusiveHeavyApproval",
+        "protectedProcess",
+        "protectedListenerSockets",
+        "sourceBinding",
+        "buildBinding",
+        "testedBuildReceipt",
+        "reviewReceipt",
+        "browserBinding",
+        "publicProducer",
+        "collector",
+        "auditor",
+        "nodeExecutable",
+        "pythonExecutable",
+        "publicAssignmentTemplate",
+        "collectorAssignmentTemplate"
+      ],
+      "properties": {
+        "schema": {
+          "const": "feature63-dedicated-wrapper-assignment-v1"
+        },
+        "approved": {
+          "const": true
+        },
+        "assignedBy": {
+          "const": "/root"
+        },
+        "phase": {
+          "enum": [
+            "capture",
+            "audit"
+          ]
+        },
+        "sourcePin": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "productVersion": {
+          "const": "4.0.2"
+        },
+        "sourceRoot": {
+          "const": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies"
+        },
+        "freshPrefix": {
+          "const": "work/feature63-human-wave-composition-r2"
+        },
+        "wrapperSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "testedBuildId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "exclusiveHeavyApproval": {
+          "type": "object",
+          "required": [
+            "approved",
+            "holder",
+            "token",
+            "validUntil"
+          ],
+          "properties": {
+            "approved": {
+              "const": true
+            },
+            "holder": {
+              "const": "/root/ai_modes"
+            },
+            "token": {
+              "type": "string",
+              "minLength": 16
+            },
+            "validUntil": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "additionalProperties": true
+        },
+        "protectedProcess": {
+          "type": "object",
+          "required": [
+            "pid",
+            "startTicks",
+            "executable",
+            "cwd",
+            "argv"
+          ],
+          "properties": {
+            "pid": {
+              "const": 1063
+            },
+            "startTicks": {
+              "const": 874
+            },
+            "executable": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "cwd": {
+              "const": "/home/morgana/Projects/orcs-vs-Fairies"
+            },
+            "argv": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "protectedListenerSockets": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^socket:\\[\\d+\\]$"
+          },
+          "minItems": 1
+        },
+        "sourceBinding": {
+          "type": "object",
+          "required": [
+            "path",
+            "bytes",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "buildBinding": {
+          "type": "object",
+          "required": [
+            "path",
+            "bytes",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "testedBuildReceipt": {
+          "type": "object",
+          "required": [
+            "path",
+            "bytes",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "reviewReceipt": {
+          "type": "object",
+          "required": [
+            "path",
+            "bytes",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "browserBinding": {
+          "type": "object",
+          "required": [
+            "path",
+            "bytes",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "publicProducer": {
+          "type": "object",
+          "required": [
+            "path",
+            "bytes",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "collector": {
+          "type": "object",
+          "required": [
+            "path",
+            "bytes",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "auditor": {
+          "type": "object",
+          "required": [
+            "path",
+            "bytes",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "nodeExecutable": {
+          "type": "object",
+          "required": [
+            "path",
+            "bytes",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "pythonExecutable": {
+          "type": "object",
+          "required": [
+            "path",
+            "bytes",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "publicAssignmentTemplate": {
+          "$ref": "#/$defs/rootPublicTemplate"
+        },
+        "collectorAssignmentTemplate": {
+          "$ref": "#/$defs/rootCollectorTemplate"
+        },
+        "captureResult": {
+          "type": "object",
+          "required": [
+            "path",
+            "bytes",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "rootExtractionAdmission": {
+          "type": "object",
+          "required": [
+            "path",
+            "bytes",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "nativeAuditAssignment": {
+          "type": "object",
+          "required": [
+            "path",
+            "bytes",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "nativeBundle": {
+          "type": "string",
+          "pattern": "^/"
+        }
+      },
+      "additionalProperties": true,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "phase": {
+                "const": "audit"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "captureResult",
+              "rootExtractionAdmission",
+              "nativeAuditAssignment",
+              "nativeBundle"
+            ]
+          }
+        }
+      ]
+    },
+    "sourceBinding": {
+      "type": "object",
+      "required": [
+        "schema",
+        "sourcePin",
+        "approved",
+        "status",
+        "authenticatedInputs",
+        "inputCount",
+        "includesSourceConfigPublicBuildAndProof",
+        "requiredInputSetAuthenticatedByRoot",
+        "records"
+      ],
+      "properties": {
+        "schema": {
+          "const": "feature63-new-source-binding-v1"
+        },
+        "sourcePin": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "approved": {
+          "const": true
+        },
+        "status": {
+          "const": "PASS"
+        },
+        "authenticatedInputs": {
+          "const": true
+        },
+        "inputCount": {
+          "type": "integer",
+          "minimum": 22
+        },
+        "includesSourceConfigPublicBuildAndProof": {
+          "const": true
+        },
+        "requiredInputSetAuthenticatedByRoot": {
+          "const": true
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "bytes",
+              "sha256",
+              "mode"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "mode": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4095
+              }
+            },
+            "additionalProperties": false
+          },
+          "minItems": 22,
+          "allOf": [
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "path"
+                ],
+                "properties": {
+                  "path": {
+                    "const": "src/core/team-ai.ts"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "path"
+                ],
+                "properties": {
+                  "path": {
+                    "const": "src/core/simulation.ts"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "path"
+                ],
+                "properties": {
+                  "path": {
+                    "const": "src/core/saves.ts"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "path"
+                ],
+                "properties": {
+                  "path": {
+                    "const": "src/core/observation.ts"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "path"
+                ],
+                "properties": {
+                  "path": {
+                    "const": "src/core/commands.ts"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "path"
+                ],
+                "properties": {
+                  "path": {
+                    "const": "src/core/ally-directives.ts"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "path"
+                ],
+                "properties": {
+                  "path": {
+                    "const": "src/server/server.ts"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "path"
+                ],
+                "properties": {
+                  "path": {
+                    "const": "src/server/store.ts"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "path"
+                ],
+                "properties": {
+                  "path": {
+                    "const": "src/server/views.ts"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "path"
+                ],
+                "properties": {
+                  "path": {
+                    "const": "src/online/protocol.ts"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "path"
+                ],
+                "properties": {
+                  "path": {
+                    "const": "src/online/render-state.ts"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "path"
+                ],
+                "properties": {
+                  "path": {
+                    "const": "src/core/economy.ts"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "path"
+                ],
+                "properties": {
+                  "path": {
+                    "const": "src/core/economy-types.ts"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "path"
+                ],
+                "properties": {
+                  "path": {
+                    "const": "src/core/tactics.ts"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "path"
+                ],
+                "properties": {
+                  "path": {
+                    "const": "src/game/GameScene.ts"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "path"
+                ],
+                "properties": {
+                  "path": {
+                    "const": "src/game/Controls.ts"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "path"
+                ],
+                "properties": {
+                  "path": {
+                    "const": "src/main.ts"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "path"
+                ],
+                "properties": {
+                  "path": {
+                    "const": "src/ui/Hud.ts"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "path"
+                ],
+                "properties": {
+                  "path": {
+                    "const": "src/ui/OnlineLobby.ts"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "path"
+                ],
+                "properties": {
+                  "path": {
+                    "const": "src/core/types.ts"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "path"
+                ],
+                "properties": {
+                  "path": {
+                    "const": "src/core/navigation.ts"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "path"
+                ],
+                "properties": {
+                  "path": {
+                    "const": "src/ui/SessionTools.ts"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "buildBinding": {
+      "type": "object",
+      "required": [
+        "schema",
+        "sourcePin",
+        "approved",
+        "productVersion",
+        "producerSha256",
+        "publicDriverSha256",
+        "webDistPath",
+        "serverBuildPath",
+        "testedBuildId",
+        "webRecords",
+        "serverRecords"
+      ],
+      "properties": {
+        "schema": {
+          "const": "feature63-build-binding-v1"
+        },
+        "sourcePin": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "approved": {
+          "const": true
+        },
+        "productVersion": {
+          "const": "4.0.2"
+        },
+        "producerSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "publicDriverSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "webDistPath": {
+          "const": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r2/dist"
+        },
+        "serverBuildPath": {
+          "const": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r2/server"
+        },
+        "testedBuildId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "webRecords": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "bytes",
+              "sha256",
+              "mode"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "mode": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4095
+              }
+            },
+            "additionalProperties": false
+          },
+          "minItems": 1
+        },
+        "serverRecords": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "bytes",
+              "sha256",
+              "mode"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "mode": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4095
+              }
+            },
+            "additionalProperties": false
+          },
+          "minItems": 2
+        }
+      },
+      "additionalProperties": true
+    },
+    "testedBuildReceipt": {
+      "type": "object",
+      "required": [
+        "schema",
+        "sourcePin",
+        "approved",
+        "testedBuildId",
+        "sourceAndBuiltBytesMatchTested402",
+        "fullSuitePassed",
+        "buildPassed"
+      ],
+      "properties": {
+        "schema": {
+          "const": "feature63-tested-build-v1"
+        },
+        "sourcePin": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "approved": {
+          "const": true
+        },
+        "testedBuildId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "sourceAndBuiltBytesMatchTested402": {
+          "const": true
+        },
+        "fullSuitePassed": {
+          "const": true
+        },
+        "buildPassed": {
+          "const": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "rootRuntimeReviewReceipt": {
+      "type": "object",
+      "required": [
+        "schema",
+        "sourcePin",
+        "approved",
+        "status",
+        "wrapperSha256",
+        "restoredBothOwnerHumanTargetUnion",
+        "publicProducerSha256",
+        "collectorSha256",
+        "auditorSha256",
+        "nodeExecutableSha256",
+        "pythonExecutableSha256"
+      ],
+      "properties": {
+        "schema": {
+          "const": "feature63-dedicated-wrapper-review-v1"
+        },
+        "sourcePin": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "approved": {
+          "const": true
+        },
+        "status": {
+          "const": "PASS"
+        },
+        "wrapperSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "restoredBothOwnerHumanTargetUnion": {
+          "const": true
+        },
+        "publicProducerSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "collectorSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "auditorSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "nodeExecutableSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "pythonExecutableSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "additionalProperties": true
+    },
+    "browserDependencyBinding": {
+      "type": "object",
+      "required": [
+        "schema",
+        "sourcePin",
+        "approved",
+        "producerSha256",
+        "buildBindingSha256",
+        "exclusiveSlotToken",
+        "contextCount",
+        "browserCount",
+        "headless",
+        "nativeLifecycleOwner",
+        "reviewedCdpDisconnectHasNoNativeSignals",
+        "nativeLifetimeReviewRequiredByRoot",
+        "cdpBaseUrl",
+        "allDependencyBytesAuthenticated",
+        "playwrightEntry",
+        "chromiumExecutable",
+        "playwrightModulePath",
+        "dependencyRoot",
+        "dependencyRecords"
+      ],
+      "properties": {
+        "schema": {
+          "const": "feature63-browser-binding-v1"
+        },
+        "sourcePin": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "approved": {
+          "const": true
+        },
+        "producerSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "buildBindingSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "exclusiveSlotToken": {
+          "type": "string",
+          "minLength": 16
+        },
+        "contextCount": {
+          "const": 2
+        },
+        "browserCount": {
+          "const": 1
+        },
+        "headless": {
+          "const": true
+        },
+        "nativeLifecycleOwner": {
+          "const": "dedicated-wrapper"
+        },
+        "reviewedCdpDisconnectHasNoNativeSignals": {
+          "const": true
+        },
+        "nativeLifetimeReviewRequiredByRoot": {
+          "const": true
+        },
+        "cdpBaseUrl": {
+          "const": "http://127.0.0.1:5374"
+        },
+        "allDependencyBytesAuthenticated": {
+          "const": true
+        },
+        "playwrightEntry": {
+          "type": "object",
+          "required": [
+            "path",
+            "bytes",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "chromiumExecutable": {
+          "type": "object",
+          "required": [
+            "path",
+            "bytes",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "playwrightModulePath": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "dependencyRoot": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "dependencyRecords": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "bytes",
+              "sha256",
+              "mode"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "mode": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4095
+              }
+            },
+            "additionalProperties": false
+          },
+          "minItems": 1
+        }
+      },
+      "additionalProperties": true
+    },
+    "collectorReviewReceipt": {
+      "type": "object",
+      "required": [
+        "sourcePin",
+        "status",
+        "collectorSha256"
+      ],
+      "properties": {
+        "sourcePin": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "status": {
+          "const": "PASS"
+        },
+        "collectorSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "additionalProperties": true
+    },
+    "rootExtractionAdmission": {
+      "type": "object",
+      "required": [
+        "schema",
+        "sourcePin",
+        "approved",
+        "closedFreshRawAuthenticated",
+        "completeSelectedTextAndQueryMetadataAuthenticated",
+        "matchId",
+        "auditorSha256",
+        "rootAssignmentSha256",
+        "bundlePath",
+        "bundleRecords",
+        "ownedNativeLifetimeIndependentlyAdmitted"
+      ],
+      "properties": {
+        "schema": {
+          "const": "feature63-root-extraction-admission-v1"
+        },
+        "sourcePin": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "approved": {
+          "const": true
+        },
+        "closedFreshRawAuthenticated": {
+          "const": true
+        },
+        "completeSelectedTextAndQueryMetadataAuthenticated": {
+          "const": true
+        },
+        "matchId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "auditorSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "rootAssignmentSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "bundlePath": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "bundleRecords": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "bytes",
+              "sha256",
+              "mode"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "mode": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4095
+              }
+            },
+            "additionalProperties": false
+          },
+          "minItems": 1
+        },
+        "ownedNativeLifetimeIndependentlyAdmitted": {
+          "const": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "rootPublicTemplate": {
+      "type": "object",
+      "required": [
+        "schema",
+        "approved",
+        "assignedBy",
+        "sourcePin",
+        "sourceRoot",
+        "freshPrefix",
+        "baseUrl",
+        "outputRoot",
+        "productVersion",
+        "review",
+        "publicDriverSha256",
+        "reviewedProducer",
+        "exclusiveHeavyApproval",
+        "sourceBinding",
+        "buildBinding",
+        "serverOwnership",
+        "externalBrowserOwnership",
+        "browserBinding",
+        "maxRetainedBytes"
+      ],
+      "properties": {
+        "schema": {
+          "const": "feature63-public-producer-assignment-v1"
+        },
+        "approved": {
+          "const": true
+        },
+        "assignedBy": {
+          "const": "/root"
+        },
+        "sourcePin": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "sourceRoot": {
+          "const": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies"
+        },
+        "freshPrefix": {
+          "const": "work/feature63-human-wave-composition-r2"
+        },
+        "baseUrl": {
+          "const": "http://127.0.0.1:5373"
+        },
+        "outputRoot": {
+          "const": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r2/public"
+        },
+        "productVersion": {
+          "const": "4.0.2"
+        },
+        "review": {
+          "type": "object",
+          "required": [
+            "approved",
+            "reviewedBy"
+          ],
+          "properties": {
+            "approved": {
+              "const": true
+            },
+            "reviewedBy": {
+              "const": "/root"
+            }
+          },
+          "additionalProperties": true
+        },
+        "publicDriverSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "reviewedProducer": {
+          "type": "object",
+          "required": [
+            "path",
+            "bytes",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "exclusiveHeavyApproval": {
+          "type": "object",
+          "required": [
+            "approved",
+            "holder",
+            "token",
+            "validUntil"
+          ],
+          "properties": {
+            "approved": {
+              "const": true
+            },
+            "holder": {
+              "const": "/root/ai_modes"
+            },
+            "token": {
+              "type": "string",
+              "minLength": 16
+            },
+            "validUntil": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "additionalProperties": true
+        },
+        "sourceBinding": {
+          "type": "object",
+          "required": [
+            "path",
+            "bytes",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "buildBinding": {
+          "type": "object",
+          "required": [
+            "path",
+            "bytes",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "serverOwnership": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": [
+                "path",
+                "bytes",
+                "sha256"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "pattern": "^/"
+                },
+                "bytes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "externalBrowserOwnership": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": [
+                "path",
+                "bytes",
+                "sha256"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "pattern": "^/"
+                },
+                "bytes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "browserBinding": {
+          "type": "object",
+          "required": [
+            "path",
+            "bytes",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "maxRetainedBytes": {
+          "const": 1073741824
+        }
+      },
+      "additionalProperties": true
+    },
+    "rootCollectorTemplate": {
+      "type": "object",
+      "required": [
+        "kind",
+        "rootApproved",
+        "sourcePin",
+        "checkout",
+        "outputPrefix",
+        "collectorSha256",
+        "heavySlot",
+        "sourceInventory",
+        "reviewReceipt",
+        "publicMatchIdentity",
+        "ownedServer",
+        "freshDatabase",
+        "bounds"
+      ],
+      "properties": {
+        "kind": {
+          "const": "feature63-passive-wave-collector-assignment-v1"
+        },
+        "rootApproved": {
+          "const": true
+        },
+        "sourcePin": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "checkout": {
+          "const": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies"
+        },
+        "outputPrefix": {
+          "const": "work/feature63-human-wave-composition-r2"
+        },
+        "collectorSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "heavySlot": {
+          "type": "object",
+          "required": [
+            "assigned",
+            "exclusive",
+            "slotId"
+          ],
+          "properties": {
+            "assigned": {
+              "const": true
+            },
+            "exclusive": {
+              "const": true
+            },
+            "slotId": {
+              "type": "string",
+              "minLength": 16
+            }
+          },
+          "additionalProperties": false
+        },
+        "sourceInventory": {
+          "type": "object",
+          "required": [
+            "path",
+            "bytes",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "reviewReceipt": {
+          "type": "object",
+          "required": [
+            "path",
+            "bytes",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "publicMatchIdentity": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": [
+                "path",
+                "bytes",
+                "sha256"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "pattern": "^/"
+                },
+                "bytes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ownedServer": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": [
+                "pid",
+                "startTicks",
+                "executable",
+                "cwd",
+                "argv"
+              ],
+              "properties": {
+                "pid": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "startTicks": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "executable": {
+                  "type": "string",
+                  "pattern": "^/"
+                },
+                "cwd": {
+                  "type": "string",
+                  "pattern": "^/"
+                },
+                "argv": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "pid",
+                "startTicks",
+                "executable",
+                "cwd",
+                "argv"
+              ],
+              "properties": {
+                "pid": {
+                  "const": null
+                },
+                "startTicks": {
+                  "const": null
+                },
+                "executable": {
+                  "const": null
+                },
+                "cwd": {
+                  "const": null
+                },
+                "argv": {
+                  "const": null
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "freshDatabase": {
+          "type": "object",
+          "required": [
+            "path",
+            "device",
+            "inode"
+          ],
+          "properties": {
+            "path": {
+              "const": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r2/server-data/server.sqlite"
+            },
+            "device": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "inode": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "bounds": {
+          "type": "object",
+          "required": [
+            "maxSeconds",
+            "pollIntervalSeconds",
+            "maxQueries",
+            "maxRecords",
+            "maxCheckpointBytes"
+          ],
+          "properties": {
+            "maxSeconds": {
+              "const": 300
+            },
+            "pollIntervalSeconds": {
+              "const": 1
+            },
+            "maxQueries": {
+              "const": 300
+            },
+            "maxRecords": {
+              "const": 4
+            },
+            "maxCheckpointBytes": {
+              "const": 8388608
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "crossFieldConstraintsNotExpressedByJSONSchema": [
+    "Protected process pid1063/startTicks874/cwd protected root; actual executable/argv match live identity.",
+    "Slot validUntil later than current time +510s; collector heavySlot.slotId equals wrapper exclusive token.",
+    "All receipt sourcePin equals full root scripts-only pin; current owned checkoutHEAD equals same pin and tracked source is clean.",
+    "source.records count equals inputCount and contains required 22 native source paths plus complete actual source/config/public/build/proof inputs.",
+    "source/build/dependency records actual bytes/hash/numeric permission mode match; web/server/browser dependency filename sets are complete.",
+    "build producerSha256/publicDriverSha256 equal actual current public/driver bytes; testedBuildId equals assignment/tested receipt and authenticated tested f7 web build ID.",
+    "browser playwrightModulePath equals real playwrightEntry.path; reviewed module files match static CDP receipt, all full future dependency bytes are root authenticated.",
+    "Every direct script/executable descriptor equals review flat digest; public root template bindings equal driver binding descriptors exactly.",
+    "Wrapper fills server/browser ownership and early public identity/DB inode fields only after admitted fresh launches.",
+    "Native audit bundle mode/hash/name inventory complete; external root assignment sha matches rootExtractionAdmission and actual bundle root-assignment bytes."
+  ],
+  "specimens": [
+    "../capture-assignment-r4.pending.json",
+    "../audit-assignment-r4.pending.json"
+  ],
+  "nativeAuditorSeparateExactSchema": "../native-auditor-r2/wrapper-interface.json",
+  "sourcePinModel": "The reported f5 root commit is context only. Root creates/adopts a full scripts-only execution pin after importing current four scripts; no pin is inferred here.",
+  "runtimeFilledFields": {
+    "serverOwnership": "Root wrapper writes bound lifecycle/server-ownership.json after actual owned server identity/listener/DB readback; template may be null beforehand.",
+    "externalBrowserOwnership": "Root wrapper writes bound lifecycle/browser-ownership.json after native Chromium PID/start/exe/cwd/argv/CDP5374 readback; template may be null beforehand.",
+    "collectorOwnedServer": "At launch must be full processIdentity exact keys, startTicks integer. Before launch specimen is pending.",
+    "collectorFreshDatabase": "At launch actual device/inode integers from fresh single-link DB; before launch null.",
+    "collectorPublicMatchIdentity": "At launch bound descriptor to immutable early public-match-identity.json; before launch null.",
+    "publicRuntimeAssignment": "After wrapper fills ownership descriptors, producer requires concrete descriptors, approved source/build/browser receipts and full pin; pending template alone cannot execute."
+  },
+  "distinctSourceSchemas": {
+    "driverProducerCollectorSource": "feature63-new-source-binding-v1 plus collector-required status PASS",
+    "closedNativeAuditorSource": "feature63-source-binding-v1 exact required fields in native-auditor-r2/wrapper-interface.json; do not reuse one as the other."
+  }
+}
