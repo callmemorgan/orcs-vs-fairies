@@ -1,0 +1,370 @@
+{
+  "startedAt": "2026-10-02T03:20:58.476186+00:00",
+  "testedProductPin": "f7f3e187ea40079492589a6fce39f0b33f77f04a",
+  "integrationPin": "f67ee00f50b159a5e236abe72956b2938d567515",
+  "testedBuildId": "9c5d2f1ff26bd6849b1ad5e311300669fb5f02feebbe4d311b6f8d670df243e1",
+  "phases": [
+    {
+      "name": "fetch-admitted-script-pin",
+      "argv": [
+        "git",
+        "fetch",
+        "--no-tags",
+        "/home/morgana/Projects/orcs-vs-Fairies",
+        "f67ee00f50b159a5e236abe72956b2938d567515"
+      ],
+      "cwd": "/tmp/ovf-id6-integration-703fc-20261001",
+      "boundSeconds": 30,
+      "startedAt": "2026-10-02T03:20:59.184888+00:00",
+      "child": {
+        "pid": 1638010,
+        "ppid": 1638007,
+        "startTicks": 8715281,
+        "state": "R"
+      },
+      "exitCode": 0,
+      "finishedAt": "2026-10-02T03:20:59.192705+00:00"
+    },
+    {
+      "name": "checkout-admitted-script-pin",
+      "argv": [
+        "git",
+        "checkout",
+        "--detach",
+        "-f",
+        "f67ee00f50b159a5e236abe72956b2938d567515"
+      ],
+      "cwd": "/tmp/ovf-id6-integration-703fc-20261001",
+      "boundSeconds": 30,
+      "startedAt": "2026-10-02T03:20:59.192737+00:00",
+      "child": {
+        "pid": 1638015,
+        "ppid": 1638007,
+        "startTicks": 8715281,
+        "state": "R"
+      },
+      "exitCode": 0,
+      "finishedAt": "2026-10-02T03:20:59.399152+00:00"
+    },
+    {
+      "name": "build-focused-helpers",
+      "argv": [
+        "/home/morgana/.local/bin/node",
+        "--import",
+        "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/protected-signal-guard.v2.mjs",
+        "/tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/build-native-helpers.mjs",
+        "/tmp/ovf-id6-integration-703fc-20261001",
+        "/tmp/ovf-main402-native15-f67ee00-r2/helpers",
+        "f67ee00f50b159a5e236abe72956b2938d567515",
+        "main-smoke"
+      ],
+      "cwd": "/tmp/ovf-id6-integration-703fc-20261001",
+      "boundSeconds": 90,
+      "startedAt": "2026-10-02T03:21:00.149583+00:00",
+      "child": {
+        "pid": 1638039,
+        "ppid": 1638007,
+        "startTicks": 8715377,
+        "state": "R"
+      },
+      "exitCode": 0,
+      "finishedAt": "2026-10-02T03:21:01.605851+00:00"
+    },
+    {
+      "name": "generate-fifteen-zero-tick-fixtures",
+      "argv": [
+        "/home/morgana/.local/bin/node",
+        "--import",
+        "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/protected-signal-guard.v2.mjs",
+        "/tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/main-smoke-freeze.mjs",
+        "--generate",
+        "/tmp/ovf-id6-integration-703fc-20261001",
+        "/tmp/ovf-main402-native15-f67ee00-r2/fixtures",
+        "f67ee00f50b159a5e236abe72956b2938d567515",
+        "/tmp/ovf-main402-native15-f67ee00-r2/helpers/fixtures.mjs"
+      ],
+      "cwd": "/tmp/ovf-id6-integration-703fc-20261001",
+      "boundSeconds": 90,
+      "startedAt": "2026-10-02T03:21:02.308810+00:00",
+      "child": {
+        "pid": 1655033,
+        "ppid": 1638007,
+        "startTicks": 8715593,
+        "state": "R"
+      },
+      "exitCode": 0,
+      "finishedAt": "2026-10-02T03:21:03.765195+00:00"
+    },
+    {
+      "name": "seal-fifteen-focused-fixtures",
+      "argv": [
+        "/home/morgana/.local/bin/node",
+        "--import",
+        "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/protected-signal-guard.v2.mjs",
+        "/tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/verify-main-smoke402.mjs",
+        "--freeze",
+        "/tmp/ovf-id6-integration-703fc-20261001",
+        "/tmp/ovf-main402-native15-f67ee00-r2/fixtures",
+        "/tmp/ovf-main402-native15-f67ee00-r2/focused-freeze.json",
+        "f67ee00f50b159a5e236abe72956b2938d567515"
+      ],
+      "cwd": "/tmp/ovf-id6-integration-703fc-20261001",
+      "boundSeconds": 90,
+      "startedAt": "2026-10-02T03:21:04.470114+00:00",
+      "child": {
+        "pid": 1661836,
+        "ppid": 1638007,
+        "startTicks": 8715809,
+        "state": "R"
+      },
+      "exitCode": 0,
+      "finishedAt": "2026-10-02T03:21:05.301188+00:00"
+    },
+    {
+      "name": "main15-strict-art-browser",
+      "argv": [
+        "/home/morgana/.local/bin/node",
+        "--import",
+        "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/protected-signal-guard.v2.mjs",
+        "/tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/verify-main-smoke402.mjs",
+        "http://127.0.0.1:4187/index.html",
+        "/tmp/ovf-id6-integration-703fc-20261001",
+        "/tmp/ovf-main402-native15-f67ee00-r2/browser",
+        "/tmp/ovf-main402-native15-f67ee00-r2/fixtures",
+        "/tmp/ovf-main402-native15-f67ee00-r2/focused-freeze.json",
+        "/tmp/ovf-main402-native15-f67ee00-r2/helpers/audit.mjs",
+        "canonical,ruins"
+      ],
+      "cwd": "/tmp/ovf-id6-integration-703fc-20261001",
+      "boundSeconds": 900,
+      "startedAt": "2026-10-02T03:21:06.112973+00:00",
+      "child": {
+        "pid": 1672121,
+        "ppid": 1638007,
+        "startTicks": 8715973,
+        "state": "R"
+      },
+      "exitCode": 1,
+      "finishedAt": "2026-10-02T03:21:29.476156+00:00"
+    }
+  ],
+  "status": "failed; first failure retained; no runtime retry",
+  "runtimeRetryCount": 0,
+  "browserExecuted": true,
+  "buildExecuted": false,
+  "artMode": "strict",
+  "previewPort": 4187,
+  "fallbackExecuted": false,
+  "main15BrowserCompleted": false,
+  "main15HistoryCompleted": false,
+  "fallbackCompleted": false,
+  "childDiscovery": {
+    "1638010": {
+      "boundIdentity": {
+        "pid": 1638010,
+        "ppid": 1638007,
+        "startTicks": 8715281,
+        "state": "R"
+      },
+      "scanCount": 0,
+      "skipCount": 1,
+      "lastLabel": "phase guarded rescan before polling/reaping direct parent",
+      "lastParentIdentity": {
+        "pid": 1638010,
+        "ppid": 1638007,
+        "startTicks": 8715281,
+        "state": "Z"
+      },
+      "lastAdoptedCount": 0,
+      "closureQualification": "Direct parent identity changed during discovery; candidates were discarded without ancestry adoption."
+    },
+    "1638015": {
+      "boundIdentity": {
+        "pid": 1638015,
+        "ppid": 1638007,
+        "startTicks": 8715281,
+        "state": "R"
+      },
+      "scanCount": 1,
+      "skipCount": 1,
+      "lastLabel": "phase guarded rescan before polling/reaping direct parent",
+      "lastParentIdentity": {
+        "pid": 1638015,
+        "ppid": 1638007,
+        "startTicks": 8715281,
+        "state": "Z"
+      },
+      "lastAdoptedCount": 0,
+      "closureQualification": "No ancestry adoption from a missing, reused, or terminated direct parent; cleanup uses only previously bound child identities."
+    },
+    "1638039": {
+      "boundIdentity": {
+        "pid": 1638039,
+        "ppid": 1638007,
+        "startTicks": 8715377,
+        "state": "R"
+      },
+      "scanCount": 7,
+      "skipCount": 1,
+      "lastLabel": "phase guarded rescan before polling/reaping direct parent",
+      "lastParentIdentity": {
+        "pid": 1638039,
+        "ppid": 1638007,
+        "startTicks": 8715377,
+        "state": "Z"
+      },
+      "lastAdoptedCount": 0,
+      "closureQualification": "No ancestry adoption from a missing, reused, or terminated direct parent; cleanup uses only previously bound child identities."
+    },
+    "1655033": {
+      "boundIdentity": {
+        "pid": 1655033,
+        "ppid": 1638007,
+        "startTicks": 8715593,
+        "state": "R"
+      },
+      "scanCount": 7,
+      "skipCount": 1,
+      "lastLabel": "phase guarded rescan before polling/reaping direct parent",
+      "lastParentIdentity": {
+        "pid": 1655033,
+        "ppid": 1638007,
+        "startTicks": 8715593,
+        "state": "Z"
+      },
+      "lastAdoptedCount": 0,
+      "closureQualification": "No ancestry adoption from a missing, reused, or terminated direct parent; cleanup uses only previously bound child identities."
+    },
+    "1661836": {
+      "boundIdentity": {
+        "pid": 1661836,
+        "ppid": 1638007,
+        "startTicks": 8715809,
+        "state": "R"
+      },
+      "scanCount": 4,
+      "skipCount": 1,
+      "lastLabel": "phase guarded rescan before polling/reaping direct parent",
+      "lastParentIdentity": {
+        "pid": 1661836,
+        "ppid": 1638007,
+        "startTicks": 8715809,
+        "state": "Z"
+      },
+      "lastAdoptedCount": 0,
+      "closureQualification": "No ancestry adoption from a missing, reused, or terminated direct parent; cleanup uses only previously bound child identities."
+    },
+    "1672121": {
+      "boundIdentity": {
+        "pid": 1672121,
+        "ppid": 1638007,
+        "startTicks": 8715973,
+        "state": "R"
+      },
+      "scanCount": 107,
+      "skipCount": 1,
+      "lastLabel": "phase guarded rescan before polling/reaping direct parent",
+      "lastParentIdentity": {
+        "pid": 1672121,
+        "ppid": 1638007,
+        "startTicks": 8715973,
+        "state": "Z"
+      },
+      "lastAdoptedCount": 0,
+      "closureQualification": "No ancestry adoption from a missing, reused, or terminated direct parent; cleanup uses only previously bound child identities."
+    },
+    "1672095": {
+      "boundIdentity": {
+        "pid": 1672095,
+        "ppid": 1638007,
+        "startTicks": 8715963,
+        "state": "R"
+      },
+      "scanCount": 109,
+      "skipCount": 0,
+      "lastLabel": "cleanup guarded final parent rescan",
+      "lastParentIdentity": {
+        "pid": 1672095,
+        "ppid": 1638007,
+        "startTicks": 8715963,
+        "state": "S"
+      },
+      "lastAdoptedCount": 1
+    }
+  },
+  "ownedPreview": {
+    "argv": [
+      "/home/morgana/.local/bin/node",
+      "--import",
+      "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/protected-signal-guard.v2.mjs",
+      "/tmp/ovf-id6-integration-703fc-20261001/node_modules/vite/bin/vite.js",
+      "preview",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "4187",
+      "--strictPort"
+    ],
+    "pid": 1672095,
+    "ppid": 1638007,
+    "startTicks": 8715963,
+    "state": "R"
+  },
+  "failure": {
+    "message": "main15-strict-art-browser failed exit 1; no retry",
+    "traceback": "Traceback (most recent call last):\n  File \"/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/main15-bounded.v5.py\", line 250, in main\n    phase('main15-strict-art-browser',node+[str(OWNED/'scripts/acceptance/verify-main-smoke402.mjs'),base,str(OWNED),str(browser_out),str(fixtures),str(freeze),str(helpers/'audit.mjs'),'canonical,ruins'],900,env)\n    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/main15-bounded.v5.py\", line 138, in phase\n    if proc.returncode:raise RuntimeError(name+' failed exit '+str(proc.returncode)+'; no retry')\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: main15-strict-art-browser failed exit 1; no retry\n",
+    "at": "2026-10-02T03:21:29.476893+00:00"
+  },
+  "signals": [
+    {
+      "at": "2026-10-02T03:21:29.484533+00:00",
+      "pid": 1672103,
+      "startTicks": 8715970,
+      "signal": 15,
+      "protected4173": {
+        "pid": 1063,
+        "startTicks": 874,
+        "port": 4173,
+        "listeners": [
+          {
+            "table": "tcp",
+            "inode": "3783",
+            "local": "0100007F:104D"
+          }
+        ],
+        "matchingFds": [
+          {
+            "fd": "22",
+            "target": "socket:[3783]"
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-02T03:21:29.485777+00:00",
+      "pid": 1672095,
+      "startTicks": 8715963,
+      "signal": 15,
+      "protected4173": {
+        "pid": 1063,
+        "startTicks": 874,
+        "port": 4173,
+        "listeners": [
+          {
+            "table": "tcp",
+            "inode": "3783",
+            "local": "0100007F:104D"
+          }
+        ],
+        "matchingFds": [
+          {
+            "fd": "22",
+            "target": "socket:[3783]"
+          }
+        ]
+      }
+    }
+  ],
+  "cleanupErrors": [],
+  "finishedAt": "2026-10-02T03:21:30.289815+00:00"
+}

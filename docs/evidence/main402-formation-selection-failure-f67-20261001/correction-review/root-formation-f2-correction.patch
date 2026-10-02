@@ -1,0 +1,11 @@
+--- a/scripts/acceptance/canonical-main-smoke.mjs
++++ b/scripts/acceptance/canonical-main-smoke.mjs
+@@ -40,7 +40,7 @@
+  try{
+  for(const kind of ['line','wedge','square','loose']){
+   const name=`formation-${kind}`,{ids}=await load(name);tracked=ids.army;const initial=await ctx.snap();assert(ids.army.every(id=>hp(initial,id)===entity(initial,id).maxHp));collect(initial);
+-  await ctx.resume();await ctx.selectMany(ids.army);const panel=await ctx.openTactics();await panel.getByLabel('Troop facing',{exact:true}).selectOption('0');await panel.getByLabel('Formation spacing',{exact:true}).fill('.8');
++  await selectEntireOwnedArmy(ids.army);const panel=await ctx.openTactics();await panel.getByLabel('Troop facing',{exact:true}).selectOption('0');await panel.getByLabel('Formation spacing',{exact:true}).fill('.8');
+   await panel.getByRole('button',{name:kind[0].toUpperCase()+kind.slice(1),exact:true}).click();await ctx.wait(({army,kind})=>army.every(id=>window.rts.state.entities.find(e=>e.id===id)?.tactics?.formation?.kind===kind),{army:ids.army,kind});
+   assert.equal(await panel.getByRole('status').innerText(),`${kind[0].toUpperCase()+kind.slice(1)} applied to 6 units.`);await ctx.pause();await ctx.screenshot(`${name}-panel`);await ctx.closePanels();await ctx.resume();await ctx.ground(ids.destination,'right');
+   await ctx.wait(({army,destination})=>army.every(id=>{const f=window.rts.state.entities.find(e=>e.id===id)?.tactics?.formation;return f&&Math.hypot(f.anchor.x-destination.x,f.anchor.y-destination.y)<.05;}),{army:ids.army,destination:ids.destination});const actualAnchor=entity(await ctx.snap(),ids.army[0]).tactics.formation.anchor;

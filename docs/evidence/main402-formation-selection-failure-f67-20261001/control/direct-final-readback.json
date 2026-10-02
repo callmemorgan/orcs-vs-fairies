@@ -1,0 +1,367 @@
+{
+  "schema": 1,
+  "at": "2026-10-02T03:23:49.772018+00:00",
+  "integrationPin": "f67ee00f50b159a5e236abe72956b2938d567515",
+  "status": "failed; first failure retained; no runtime retry",
+  "wrapperExitCode": 1,
+  "rawManifest": {
+    "path": "/tmp/ovf-main402-native15-f67ee00-r2/run-artifact-manifest.json",
+    "bytes": 114600,
+    "sha256": "7761b6bb3350ad5aafc87957c34a6601d5fb0340e93f3324c41a1d300d28d78e",
+    "artifactCount": 539,
+    "artifactBytes": 92868971
+  },
+  "allManifestArtifactsReauthenticated": true,
+  "directSourceAndDistReadbackCounts": {
+    "rootProduct": 570,
+    "ownedProduct": 570,
+    "helpers": 194,
+    "rootDist": 397,
+    "ownedDist": 398
+  },
+  "finalRootHead": "f67ee00f50b159a5e236abe72956b2938d567515",
+  "finalOwnedHead": "f67ee00f50b159a5e236abe72956b2938d567515",
+  "firstFailure": {
+    "message": "main15-strict-art-browser failed exit 1; no retry",
+    "traceback": "Traceback (most recent call last):\n  File \"/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/main15-bounded.v5.py\", line 250, in main\n    phase('main15-strict-art-browser',node+[str(OWNED/'scripts/acceptance/verify-main-smoke402.mjs'),base,str(OWNED),str(browser_out),str(fixtures),str(freeze),str(helpers/'audit.mjs'),'canonical,ruins'],900,env)\n    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/main15-bounded.v5.py\", line 138, in phase\n    if proc.returncode:raise RuntimeError(name+' failed exit '+str(proc.returncode)+'; no retry')\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: main15-strict-art-browser failed exit 1; no retry\n",
+    "at": "2026-10-02T03:21:29.476893+00:00"
+  },
+  "browserFailure": {
+    "phase": "native canonical encounters",
+    "message": "page.waitForFunction: Timeout 15000ms exceeded.\n    at wait (/tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/native-context.mjs:13:50)\n    at Object.selectMany (/tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/native-context.mjs:77:11)\n    at async Object.runCanonicalTacticsSmoke (/tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/canonical-main-smoke.mjs:43:22)\n    at async file:///tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/verify-main-smoke402.mjs:81:88"
+  },
+  "browserReceipt": {
+    "path": "/tmp/ovf-main402-native15-f67ee00-r2/browser/browser-main-smoke402.json",
+    "bytes": 355361,
+    "sha256": "e34218cedc20ca5864ec9516d4427ec18173e399be69f51494be901532db6989",
+    "completed": false,
+    "cleanup": {
+      "completed": true,
+      "errors": []
+    },
+    "checks": [
+      "Native import preserves formation-line"
+    ],
+    "assetFailures": [],
+    "errors": []
+  },
+  "selectionObservation": {
+    "expectedFixtureIds": {
+      "army": [
+        54,
+        55,
+        56,
+        57,
+        58,
+        59
+      ],
+      "roles": [
+        "melee",
+        "ranged",
+        "spear",
+        "cavalry",
+        "melee",
+        "ranged"
+      ],
+      "obstacle": 60,
+      "undergroundWorker": 6,
+      "formation": "line",
+      "spacing": 0.8,
+      "facing": 0,
+      "destination": {
+        "x": 30.5,
+        "y": 20.5,
+        "level": 0
+      }
+    },
+    "actualSelected": [
+      54,
+      55,
+      57,
+      58,
+      59
+    ],
+    "lastTick": 345,
+    "lastPaused": false,
+    "art": {
+      "enabled": true,
+      "loaded": true,
+      "assets": 100,
+      "loadedAtlasPages": 46,
+      "decodedAtlasMiB": 467.5018310546875,
+      "renderedUnits": 10
+    },
+    "pointerInputs": [
+      {
+        "kind": "entity",
+        "button": "left",
+        "target": 55,
+        "tick": 18,
+        "selected": [
+          54
+        ],
+        "viewSide": 0,
+        "viewLevelBefore": 0,
+        "targetWorld": {
+          "x": 19.2,
+          "y": 20.5,
+          "level": 0
+        },
+        "targetFogKey": 979,
+        "targetFogVisible": true,
+        "screen": {
+          "x": 742.4000000000001,
+          "y": 410.70000000000005,
+          "zoom": 1,
+          "scaleX": 1,
+          "scaleY": 1,
+          "camera": {
+            "x": 816,
+            "y": 274.5,
+            "zoom": 1,
+            "width": 1440,
+            "height": 1000
+          },
+          "canvas": {
+            "left": 0,
+            "top": 0,
+            "width": 1440,
+            "height": 1000
+          }
+        }
+      },
+      {
+        "kind": "entity",
+        "button": "left",
+        "target": 56,
+        "tick": 25,
+        "selected": [
+          54,
+          55
+        ],
+        "viewSide": 0,
+        "viewLevelBefore": 0,
+        "targetWorld": {
+          "x": 19.9,
+          "y": 20.5,
+          "level": 0
+        },
+        "targetFogKey": 979,
+        "targetFogVisible": true,
+        "screen": {
+          "x": 764.8,
+          "y": 421.9,
+          "zoom": 1,
+          "scaleX": 1,
+          "scaleY": 1,
+          "camera": {
+            "x": 816,
+            "y": 274.5,
+            "zoom": 1,
+            "width": 1440,
+            "height": 1000
+          },
+          "canvas": {
+            "left": 0,
+            "top": 0,
+            "width": 1440,
+            "height": 1000
+          }
+        }
+      },
+      {
+        "kind": "entity",
+        "button": "left",
+        "target": 57,
+        "tick": 29,
+        "selected": [
+          54,
+          55,
+          57
+        ],
+        "viewSide": 0,
+        "viewLevelBefore": 0,
+        "targetWorld": {
+          "x": 20.6,
+          "y": 20.5,
+          "level": 0
+        },
+        "targetFogKey": 980,
+        "targetFogVisible": true,
+        "screen": {
+          "x": 787.2,
+          "y": 433.1,
+          "zoom": 1,
+          "scaleX": 1,
+          "scaleY": 1,
+          "camera": {
+            "x": 816,
+            "y": 274.5,
+            "zoom": 1,
+            "width": 1440,
+            "height": 1000
+          },
+          "canvas": {
+            "left": 0,
+            "top": 0,
+            "width": 1440,
+            "height": 1000
+          }
+        }
+      },
+      {
+        "kind": "entity",
+        "button": "left",
+        "target": 58,
+        "tick": 35,
+        "selected": [
+          54,
+          55,
+          57,
+          58
+        ],
+        "viewSide": 0,
+        "viewLevelBefore": 0,
+        "targetWorld": {
+          "x": 21.3,
+          "y": 20.5,
+          "level": 0
+        },
+        "targetFogKey": 981,
+        "targetFogVisible": true,
+        "screen": {
+          "x": 809.5999999999999,
+          "y": 444.29999999999995,
+          "zoom": 1,
+          "scaleX": 1,
+          "scaleY": 1,
+          "camera": {
+            "x": 816,
+            "y": 274.5,
+            "zoom": 1,
+            "width": 1440,
+            "height": 1000
+          },
+          "canvas": {
+            "left": 0,
+            "top": 0,
+            "width": 1440,
+            "height": 1000
+          }
+        }
+      },
+      {
+        "kind": "entity",
+        "button": "left",
+        "target": 59,
+        "tick": 40,
+        "selected": [
+          54,
+          55,
+          57,
+          58
+        ],
+        "viewSide": 0,
+        "viewLevelBefore": 0,
+        "targetWorld": {
+          "x": 22,
+          "y": 20.5,
+          "level": 0
+        },
+        "targetFogKey": 982,
+        "targetFogVisible": true,
+        "screen": {
+          "x": 832,
+          "y": 455.5,
+          "zoom": 1,
+          "scaleX": 1,
+          "scaleY": 1,
+          "camera": {
+            "x": 816,
+            "y": 274.5,
+            "zoom": 1,
+            "width": 1440,
+            "height": 1000
+          },
+          "canvas": {
+            "left": 0,
+            "top": 0,
+            "width": 1440,
+            "height": 1000
+          }
+        }
+      }
+    ]
+  },
+  "helperSourceSha256": "4897f625184615f55128b0d6b76fe7c40995d150763a71c242d1e5b8c253d393",
+  "fixtureCount": 15,
+  "fixturesExecuted": true,
+  "previewExecuted": true,
+  "browserExecuted": true,
+  "historyExecuted": false,
+  "placeholderExecuted": false,
+  "cleanupErrors": [],
+  "signals": [
+    {
+      "at": "2026-10-02T03:21:29.484533+00:00",
+      "pid": 1672103,
+      "startTicks": 8715970,
+      "signal": 15,
+      "protected4173": {
+        "pid": 1063,
+        "startTicks": 874,
+        "port": 4173,
+        "listeners": [
+          {
+            "table": "tcp",
+            "inode": "3783",
+            "local": "0100007F:104D"
+          }
+        ],
+        "matchingFds": [
+          {
+            "fd": "22",
+            "target": "socket:[3783]"
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-02T03:21:29.485777+00:00",
+      "pid": 1672095,
+      "startTicks": 8715963,
+      "signal": 15,
+      "protected4173": {
+        "pid": 1063,
+        "startTicks": 874,
+        "port": 4173,
+        "listeners": [
+          {
+            "table": "tcp",
+            "inode": "3783",
+            "local": "0100007F:104D"
+          }
+        ],
+        "matchingFds": [
+          {
+            "fd": "22",
+            "target": "socket:[3783]"
+          }
+        ]
+      }
+    }
+  ],
+  "wrapperClosed": true,
+  "rememberedOwnedChildrenClosed": true,
+  "rememberedOwnedChildCount": 22,
+  "closureQualification": "Only previously bound exact identities checked; no atomic unobserved-descendant exclusion claim.",
+  "protectedPreview": {
+    "pid": 1063,
+    "startTicks": 874,
+    "listenerInode": "3783",
+    "fd22": "socket:[3783]"
+  },
+  "owned4187Listeners": [],
+  "runtimeRetryCount": 0,
+  "visualAcceptance": "No completed encounter; first-failure screenshot retained for root inspection."
+}
