@@ -1,0 +1,16 @@
+--- /home/morgana/.codex/worktrees/assembled-allied-ai/feature63-dedicated-wrapper-readiness-r1/driver/run-minimal63-pidfd-r3.py
++++ /home/morgana/.codex/worktrees/assembled-allied-ai/feature63-dedicated-wrapper-readiness-r1/driver/run-minimal63-pidfd-r4.py
+@@ -595,6 +595,13 @@
+                        'protectedFinalReadback': final_protected_readback(a), 'closedFreshDatabaseIdentity': result.get('matchId') and fresh_db})
+         if cleanup_failures or result['protectedFinalReadback']['status'] != 'PASS':
+             result['status'] = 'FAIL_CLEANUP_HELD_NO_UNVERIFIED_SIGNAL'
++        lifecycle_bytes = sum(p.stat().st_size for p in lifecycle.rglob('*') if p.is_file())
++        result_size = len((json.dumps(result, indent=2, sort_keys=True) + '\n').encode())
++        if lifecycle_bytes + result_size > 16 * 1024 * 1024:
++            result['status'] = 'FAIL_LIFECYCLE_OUTPUT_BUDGET_NO_RETRY'
++            result['firstFailure'] = result['firstFailure'] or {
++                'type': 'OutputBudget', 'message': 'Complete lifecycle output exceeded 16 MiB; bytes preserved', 'at': now()}
++            result['lifecycleBytesBeforeFinalResult'] = lifecycle_bytes
+         write_new(lifecycle / 'driver-result.json', result)
+         manager.finish()
+     return 0 if result['status'] == 'CAPTURE_PASS_ROOT_SEAL_AND_EXTRACTION_PENDING' else 1

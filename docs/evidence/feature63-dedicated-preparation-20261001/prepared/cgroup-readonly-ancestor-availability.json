@@ -1,0 +1,236 @@
+{
+  "schema": "feature63-cgroup-read-only-ancestor-availability-v1",
+  "capturedAt": "2026-10-02T02:51:40.708458+00:00",
+  "currentAncestryOnly": true,
+  "currentProcessUid": 1000,
+  "observations": [
+    {
+      "path": "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/app-org.chromium.Chromium-10644.scope",
+      "mode": "0o755",
+      "uid": 1000,
+      "gid": 1000,
+      "writableByCurrentProcessCheck": true,
+      "controls": [
+        {
+          "name": "cgroup.events",
+          "exists": true,
+          "mode": "0o444",
+          "uid": 1000,
+          "gid": 1000,
+          "writableByCurrentProcessCheck": false,
+          "text": "populated 1\nfrozen 0\n"
+        },
+        {
+          "name": "cgroup.freeze",
+          "exists": true,
+          "mode": "0o644",
+          "uid": 1000,
+          "gid": 1000,
+          "writableByCurrentProcessCheck": true,
+          "text": "0\n"
+        },
+        {
+          "name": "cgroup.procs",
+          "exists": true,
+          "mode": "0o644",
+          "uid": 1000,
+          "gid": 1000,
+          "writableByCurrentProcessCheck": true,
+          "memberLineCount": 74
+        },
+        {
+          "name": "cgroup.subtree_control",
+          "exists": true,
+          "mode": "0o644",
+          "uid": 1000,
+          "gid": 1000,
+          "writableByCurrentProcessCheck": true,
+          "text": ""
+        }
+      ]
+    },
+    {
+      "path": "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice",
+      "mode": "0o755",
+      "uid": 1000,
+      "gid": 1000,
+      "writableByCurrentProcessCheck": true,
+      "controls": [
+        {
+          "name": "cgroup.events",
+          "exists": true,
+          "mode": "0o444",
+          "uid": 1000,
+          "gid": 1000,
+          "writableByCurrentProcessCheck": false,
+          "text": "populated 1\nfrozen 0\n"
+        },
+        {
+          "name": "cgroup.freeze",
+          "exists": true,
+          "mode": "0o644",
+          "uid": 1000,
+          "gid": 1000,
+          "writableByCurrentProcessCheck": true,
+          "text": "0\n"
+        },
+        {
+          "name": "cgroup.procs",
+          "exists": true,
+          "mode": "0o644",
+          "uid": 1000,
+          "gid": 1000,
+          "writableByCurrentProcessCheck": true,
+          "memberLineCount": 0
+        },
+        {
+          "name": "cgroup.subtree_control",
+          "exists": true,
+          "mode": "0o644",
+          "uid": 1000,
+          "gid": 1000,
+          "writableByCurrentProcessCheck": true,
+          "text": "memory pids\n"
+        }
+      ]
+    },
+    {
+      "path": "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service",
+      "mode": "0o755",
+      "uid": 1000,
+      "gid": 1000,
+      "writableByCurrentProcessCheck": true,
+      "controls": [
+        {
+          "name": "cgroup.events",
+          "exists": true,
+          "mode": "0o444",
+          "uid": 0,
+          "gid": 0,
+          "writableByCurrentProcessCheck": false,
+          "text": "populated 1\nfrozen 0\n"
+        },
+        {
+          "name": "cgroup.freeze",
+          "exists": true,
+          "mode": "0o644",
+          "uid": 0,
+          "gid": 0,
+          "writableByCurrentProcessCheck": false,
+          "text": "0\n"
+        },
+        {
+          "name": "cgroup.procs",
+          "exists": true,
+          "mode": "0o644",
+          "uid": 1000,
+          "gid": 1000,
+          "writableByCurrentProcessCheck": true,
+          "memberLineCount": 0
+        },
+        {
+          "name": "cgroup.subtree_control",
+          "exists": true,
+          "mode": "0o644",
+          "uid": 1000,
+          "gid": 1000,
+          "writableByCurrentProcessCheck": true,
+          "text": "cpu io memory pids\n"
+        }
+      ]
+    },
+    {
+      "path": "/sys/fs/cgroup/user.slice/user-1000.slice",
+      "mode": "0o755",
+      "uid": 0,
+      "gid": 0,
+      "writableByCurrentProcessCheck": false,
+      "controls": [
+        {
+          "name": "cgroup.events",
+          "exists": true,
+          "mode": "0o444",
+          "uid": 0,
+          "gid": 0,
+          "writableByCurrentProcessCheck": false,
+          "text": "populated 1\nfrozen 0\n"
+        },
+        {
+          "name": "cgroup.freeze",
+          "exists": true,
+          "mode": "0o644",
+          "uid": 0,
+          "gid": 0,
+          "writableByCurrentProcessCheck": false,
+          "text": "0\n"
+        },
+        {
+          "name": "cgroup.procs",
+          "exists": true,
+          "mode": "0o644",
+          "uid": 0,
+          "gid": 0,
+          "writableByCurrentProcessCheck": false,
+          "memberLineCount": 0
+        },
+        {
+          "name": "cgroup.subtree_control",
+          "exists": true,
+          "mode": "0o644",
+          "uid": 0,
+          "gid": 0,
+          "writableByCurrentProcessCheck": false,
+          "text": "cpuset cpu io memory pids\n"
+        }
+      ]
+    },
+    {
+      "path": "/sys/fs/cgroup/user.slice",
+      "mode": "0o755",
+      "uid": 0,
+      "gid": 0,
+      "writableByCurrentProcessCheck": false,
+      "controls": [
+        {
+          "name": "cgroup.events",
+          "exists": true,
+          "mode": "0o444",
+          "uid": 0,
+          "gid": 0,
+          "writableByCurrentProcessCheck": false,
+          "text": "populated 1\nfrozen 0\n"
+        },
+        {
+          "name": "cgroup.freeze",
+          "exists": true,
+          "mode": "0o644",
+          "uid": 0,
+          "gid": 0,
+          "writableByCurrentProcessCheck": false,
+          "text": "0\n"
+        },
+        {
+          "name": "cgroup.procs",
+          "exists": true,
+          "mode": "0o644",
+          "uid": 0,
+          "gid": 0,
+          "writableByCurrentProcessCheck": false,
+          "memberLineCount": 0
+        },
+        {
+          "name": "cgroup.subtree_control",
+          "exists": true,
+          "mode": "0o644",
+          "uid": 0,
+          "gid": 0,
+          "writableByCurrentProcessCheck": false,
+          "text": "cpuset cpu io memory pids\n"
+        }
+      ]
+    }
+  ],
+  "delegatedFreshExclusiveGroupsEstablished": false,
+  "createdDirectoryOrWroteControl": false,
+  "qualification": "Some ancestry permissions may permit user delegation; no owned fresh group, freeze, child movement or populated=0 execution contract has been established."
+}

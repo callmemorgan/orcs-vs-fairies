@@ -1,0 +1,22 @@
+{
+  "schema": "feature63-pidfd-driver-final-output-budget-correction-v1",
+  "createdAt": "2026-10-02T02:58:57.879856+00:00",
+  "futureSourcePin": null,
+  "runtimeAuthorized": false,
+  "candidate": {
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/feature63-dedicated-wrapper-readiness-r1/driver/run-minimal63-pidfd-r4.py",
+    "bytes": 40975,
+    "sha256": "e333b6386e4a48ac4194ef760a6ee605bc567252b8fdae832f0d65a630e687be"
+  },
+  "preservedR3": {
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/feature63-dedicated-wrapper-readiness-r1/driver/run-minimal63-pidfd-r3.py",
+    "bytes": 40397,
+    "sha256": "eabf3048df363f397275021886fcd831176d8de9e0e5bfc9f7fccc659a0a0fee"
+  },
+  "change": "Check final lifecycle stdout/stderr/events/assignment/ownership bytes plus serialized driver-result size before capture PASS. On exceed preserve all produced bytes, fail and do not retry.",
+  "checks": [
+    "Python AST parse only",
+    "actual byte/hash readback"
+  ],
+  "executed": false
+}

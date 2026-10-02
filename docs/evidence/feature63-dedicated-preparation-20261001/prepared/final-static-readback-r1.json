@@ -1,0 +1,30 @@
+{
+  "schema": "feature63-dedicated-final-static-readback-v1",
+  "createdAt": "2026-10-02T03:34:05.986233+00:00",
+  "status": "PASS_STATIC_SEAL_READBACK_RUNTIME_HELD",
+  "seal": {
+    "path": "final-static-seal-r1.json",
+    "mode": 420,
+    "bytes": 15117,
+    "sha256": "88d08b5409ed13d3f8d783b7d8e40ddb95a6a3843992a0cae5599731b55d3034"
+  },
+  "verificationMethod": "Separate second full-byte read pass over every declared record, with independently calculated SHA256, byte counts, modes, and exact filename-set comparison. No candidate execution.",
+  "sealedFileCountRead": 74,
+  "sealedPayloadBytesRead": 907896,
+  "exactFilenameSetMatched": true,
+  "allRecordedModesBytesAndSha256Matched": true,
+  "jsonFilesParsed": 40,
+  "pythonFilesAstParsedWithoutExecution": 7,
+  "currentManifestRecordsReadAndMatched": 21,
+  "patchOutputsReconstructedAndByteMatched": 4,
+  "recordsCanonicalSha256": "6a094a4745781976dcf87d48a2e3f4370a9b94d64748350bbb2f631d997649a6",
+  "copySealedRecordsPlusFinalSealAndThisReadback": true,
+  "plannedImportFileCount": 76,
+  "plannedImportBytesBeforeThisReadback": 923013,
+  "futureSourcePin": null,
+  "testedBuildId": null,
+  "runtimeAuthorized": false,
+  "repositorySourceRootGitDatabaseRuntimeBuildTestSignalCgroupWrite": false,
+  "remainingRootOwnedWork": "Fresh import/source/build/dependency/slot/lifetime bindings, capture, closed raw seal/extraction, one native audit, and feature disposition.",
+  "limitations": "Static packet readback only. Finite PIDFD process observation does not exclude an unobserved final fork/reparent; root owns lifetime disposition. No cgroup or global descendant-absence gate."
+}

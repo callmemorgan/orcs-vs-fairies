@@ -1,0 +1,224 @@
+{
+  "schema": "feature63-dedicated-wrapper-trail-review-v1",
+  "kind": "feature63-wrapper-trail-review",
+  "createdAt": "2026-10-02T02:36:27Z",
+  "status": "STATIC_TRAIL_REVIEW_COMPLETE_RUNTIME_HELD",
+  "requestedReviewerModel": "gpt-5.6-sol",
+  "providerModelIdentityAuthenticated": false,
+  "providerModelIdentityNote": "reviewed by requested gpt-5.6-sol; actual provider model family unverified",
+  "workspaceTranscriptsPresent": false,
+  "workspaceTranscriptStatusBasis": "trail-scope.json:4-16 reports that the two workspace transcript paths were absent; this reviewer did not inspect private session directories.",
+  "privateSessionDirectoriesRead": false,
+  "candidateExecuted": false,
+  "hashesIndependentlyCalculated": false,
+  "repositoryOrRootStateInspected": false,
+  "driverImplementationReviewed": false,
+  "driverImplementationScopeNote": "The parent assigned driver implementation review separately. This receipt reviews trail truth, static public/native lifecycle changes, preserved-original assertions, and binding/runtime holds.",
+  "reviewedFiles": [
+    "decisions.tsv",
+    "scope-restoration.json",
+    "trail-scope.json",
+    "public-producer-r2/change-receipt-r3.json",
+    "public-producer-r2/verify-human-wave-r3.mjs",
+    "native-auditor-r2/change-receipt.json",
+    "native-auditor-r2/audit-human-wave-r6.py",
+    "static-readback-r1.json",
+    "README.md",
+    "capture-assignment.pending.json",
+    "audit-assignment.pending.json"
+  ],
+  "supportedClaims": [
+    {
+      "claim": "The static public candidate requires the two qualifying human targets to collectively cover AI owners 2 and 3.",
+      "evidence": [
+        "public-producer-r2/verify-human-wave-r3.mjs:423-433"
+      ],
+      "limit": "This is source-text evidence only; the producer was not executed."
+    },
+    {
+      "claim": "The static native auditor candidate applies the matching target-owner-union predicate within the selected shared wave.",
+      "evidence": [
+        "native-auditor-r2/audit-human-wave-r6.py:920-935"
+      ],
+      "limit": "This is source-text evidence only; the auditor was not executed."
+    },
+    {
+      "claim": "The public candidate is wired to attach to wrapper-owned Chromium through CDP, create two contexts, close those contexts, and call browser.close on the attached connection.",
+      "evidence": [
+        "public-producer-r2/verify-human-wave-r3.mjs:118-130",
+        "public-producer-r2/verify-human-wave-r3.mjs:443-453",
+        "public-producer-r2/verify-human-wave-r3.mjs:528-542"
+      ],
+      "limit": "Whether browser.close disconnects without signaling or terminating the native Chromium process is still an authenticated dependency-review prerequisite."
+    },
+    {
+      "claim": "Both pending specimens are intentionally nonexecutable and declare product version 4.0.2.",
+      "evidence": [
+        "capture-assignment.pending.json:3-17",
+        "audit-assignment.pending.json:3-17",
+        "README.md:19-27"
+      ],
+      "limit": "The version label is present, but no tested build ID or tested-build receipt is bound."
+    },
+    {
+      "claim": "The packet reports that no runtime, build, browser, SQLite, or signal action occurred during preparation.",
+      "evidence": [
+        "README.md:1",
+        "public-producer-r2/change-receipt-r3.json:29-39",
+        "native-auditor-r2/change-receipt.json:26-28",
+        "static-readback-r1.json:32-49"
+      ],
+      "limit": "This is consistent packet metadata, not transcript-backed or independently executed verification."
+    }
+  ],
+  "flags": [
+    {
+      "id": "SOURCE_AND_TESTED_INPUT_IDENTITY_UNAUTHENTICATED",
+      "severity": "HOLD",
+      "finding": "The only concrete 40-hex source-related value is a reported current docs pin, b65df28c73656465c5be5a02829fa68b87e24f35. The packet explicitly says it is not an executable source pin. The future source pin and tested build ID remain null, and no packet artifact authenticates an f7 or testedinputs identity.",
+      "evidence": [
+        "README.md:1",
+        "README.md:21-25",
+        "scope-restoration.json:4-6",
+        "scope-restoration.json:21-25",
+        "capture-assignment.pending.json:3-11",
+        "audit-assignment.pending.json:3-11"
+      ]
+    },
+    {
+      "id": "TRAIL_EVIDENCE_POINTER_OVERSTATES_SUPPORT",
+      "severity": "QUALIFICATION",
+      "finding": "decisions.tsv row 2 cites scope-restoration.json for the result 'Public r3 bytes read and hashed; native r6 AST parity checked; sealed originals preserved.' That cited policy record does not contain the byte/hash or AST-parity evidence. Separate packet-produced receipts report those checks, so the result is self-reported static preparation rather than independent review proof.",
+      "evidence": [
+        "decisions.tsv:2",
+        "scope-restoration.json:1-27",
+        "public-producer-r2/change-receipt-r3.json:29-31",
+        "native-auditor-r2/change-receipt.json:18-24",
+        "static-readback-r1.json:4-35"
+      ]
+    },
+    {
+      "id": "INDEPENDENT_SOURCE_REVIEW_WORDING_UNSUPPORTED",
+      "severity": "QUALIFICATION",
+      "finding": "README.md says preparation checks included independent source review, while the same packet says root review remains unbound and trail-scope.json reports no workspace transcripts and unauthenticated reviewer provider identity. No reviewed packet artifact supplies an authenticated independent source-review receipt.",
+      "evidence": [
+        "README.md:1",
+        "README.md:27",
+        "README.md:45-47",
+        "trail-scope.json:4-16",
+        "capture-assignment.pending.json:41-49"
+      ]
+    },
+    {
+      "id": "CDP_CLOSE_SEMANTICS_PENDING",
+      "severity": "HOLD",
+      "finding": "The public source asserts a reviewed no-native-signal disconnect property and later calls browser.close on the CDP-attached browser, but the dependency/browser binding and review receipts are null. Static source inspection cannot establish the future Playwright/Chromium close semantics.",
+      "evidence": [
+        "public-producer-r2/verify-human-wave-r3.mjs:105-130",
+        "public-producer-r2/verify-human-wave-r3.mjs:443-450",
+        "public-producer-r2/verify-human-wave-r3.mjs:528-542",
+        "README.md:11",
+        "capture-assignment.pending.json:36-49"
+      ]
+    },
+    {
+      "id": "PRESERVED_ORIGINALS_NOT_INDEPENDENTLY_AUTHENTICATED",
+      "severity": "QUALIFICATION",
+      "finding": "The packet names the frozen r11 location and reports exact original byte/hash matches, but this review did not read that external packet or independently calculate any hash. Preservation is therefore supported only as a packet assertion.",
+      "evidence": [
+        "scope-restoration.json:7",
+        "public-producer-r2/change-receipt-r3.json:6-11",
+        "native-auditor-r2/change-receipt.json:12-24",
+        "static-readback-r1.json:4-29",
+        "README.md:5"
+      ]
+    },
+    {
+      "id": "DRIVER_CLAIM_REQUIRES_SEPARATE_REVIEW",
+      "severity": "SCOPE",
+      "finding": "decisions.tsv row 4 uses the driver source as evidence for prepared capture and one-shot audit admissions. The two pending specimens show the intended interfaces, but driver correctness and enforcement were assigned to the parent's separate implementation review and are not authenticated here.",
+      "evidence": [
+        "decisions.tsv:4",
+        "capture-assignment.pending.json:1-175",
+        "audit-assignment.pending.json:1-191"
+      ]
+    }
+  ],
+  "runtimeAndBindingHolds": [
+    {
+      "hold": "future scripts-only source pin",
+      "state": null,
+      "evidence": [
+        "scope-restoration.json:4",
+        "capture-assignment.pending.json:6",
+        "audit-assignment.pending.json:6"
+      ]
+    },
+    {
+      "hold": "runtime approval",
+      "state": false,
+      "evidence": [
+        "scope-restoration.json:6",
+        "capture-assignment.pending.json:3",
+        "audit-assignment.pending.json:3"
+      ]
+    },
+    {
+      "hold": "tested build ID and tested-build receipt",
+      "state": "UNBOUND",
+      "evidence": [
+        "capture-assignment.pending.json:11,36-40",
+        "audit-assignment.pending.json:11,36-40"
+      ]
+    },
+    {
+      "hold": "source, build, browser/dependency, and root review receipts",
+      "state": "UNBOUND",
+      "evidence": [
+        "capture-assignment.pending.json:26-50",
+        "audit-assignment.pending.json:26-50"
+      ]
+    },
+    {
+      "hold": "Node and Python executable bindings",
+      "state": "UNBOUND",
+      "evidence": [
+        "capture-assignment.pending.json:66-75",
+        "audit-assignment.pending.json:66-75"
+      ]
+    },
+    {
+      "hold": "protected listener socket set",
+      "state": null,
+      "evidence": [
+        "capture-assignment.pending.json:18-25",
+        "audit-assignment.pending.json:18-25"
+      ]
+    },
+    {
+      "hold": "exclusive heavy slot",
+      "state": "UNASSIGNED",
+      "evidence": [
+        "capture-assignment.pending.json:12-17",
+        "capture-assignment.pending.json:96-100",
+        "capture-assignment.pending.json:136-140",
+        "audit-assignment.pending.json:12-17"
+      ]
+    },
+    {
+      "hold": "closed capture seal, extraction admission, native audit assignment, and extracted native bundle",
+      "state": "UNBOUND",
+      "evidence": [
+        "README.md:31-35",
+        "audit-assignment.pending.json:176-191"
+      ]
+    }
+  ],
+  "preservedOriginalQualification": {
+    "reportedPreservedPacket": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-online-only-retry-readiness-r1",
+    "packetReportsExactMatches": true,
+    "independentlyReadOrHashedByThisReview": false,
+    "conclusion": "Preservation is reported and internally consistent across packet metadata, but it is not independently authenticated by this review."
+  },
+  "conclusion": "The packet contains the requested static owner-union and wrapper/CDP lifecycle changes, and its pending specimens correctly remain nonexecutable. Runtime remains held. Root must supply an authenticated future source pin, tested build and receipts, dependency close-semantics review, executable bindings, protected listener set, final reviews, exclusive slot, closed seal, extraction admission, and one-shot native audit inputs before any execution or qualification claim."
+}

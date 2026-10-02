@@ -1,0 +1,124 @@
+{
+  "schema": "feature63-dedicated-wrapper-review-v1",
+  "reviewedAt": "2026-10-01T20:03:57-07:00",
+  "status": "PASS",
+  "approved": false,
+  "runtimeDisposition": "HELD",
+  "sourcePin": null,
+  "productVersion": "4.0.2",
+  "reviewer": {
+    "harness": "Codex",
+    "model": "GPT-6",
+    "providerIdentityVerified": false
+  },
+  "scope": "Static supplement for the bounded PIDFD R4 change and its current assignment and contract files",
+  "execution": {
+    "packetScriptsRun": false,
+    "nodeRun": false,
+    "testsRun": false,
+    "buildRun": false,
+    "browserRun": false,
+    "serverRun": false,
+    "sqliteRun": false,
+    "simulationRun": false,
+    "signalsSent": false,
+    "cgroupWrites": false,
+    "rootWrites": false
+  },
+  "wrapper": {
+    "path": "driver/run-minimal63-pidfd-r4.py",
+    "bytes": 40975,
+    "sha256": "e333b6386e4a48ac4194ef760a6ee605bc567252b8fdae832f0d65a630e687be"
+  },
+  "publicProducer": {
+    "path": "public-producer-r2/verify-human-wave-r3.mjs",
+    "bytes": 48578,
+    "sha256": "d661329136041f8ccb15dfb9e94ae0556c303a6f995304c7f08889698b5a5f0f"
+  },
+  "collector": {
+    "path": "passive-collector-r2/collect-launched-waves-r7.py",
+    "bytes": 18600,
+    "sha256": "c6c768ad7d54696e5e1e8456881f038cd7b7bb70112cd9b8b17d86b0feaebd7f"
+  },
+  "auditor": {
+    "path": "native-auditor-r2/audit-human-wave-r6.py",
+    "bytes": 64185,
+    "sha256": "4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb"
+  },
+  "currentDocuments": {
+    "readme": {
+      "path": "README-r4.md",
+      "sha256": "17b3062e4170710766bf1058066c6f3a1096caca1835aa60e0a2fe4e89b08158"
+    },
+    "contract": {
+      "path": "FINAL-CANDIDATE-CONTRACT-r3.md",
+      "sha256": "340ba85d8ddc4a18a068f66b4ae926b363bc33c490c616d62cd0b6e599faa3fc"
+    },
+    "captureAssignment": {
+      "path": "capture-assignment-r4.pending.json",
+      "sha256": "8120bc451069f820093802f4cc40f092dc75bd5576cbe15ea0115ff6b1a1007c"
+    },
+    "auditAssignment": {
+      "path": "audit-assignment-r4.pending.json",
+      "sha256": "3c733d194045d8b902528d1beb65d7c5ae301b48a1bf2d67deddde8fccbeebf1"
+    },
+    "cdpDependencySourceReview": {
+      "path": "dependency-review-r1/receipt.json",
+      "sha256": "785842ccd09cc315990417003ad58abacb2ad41f34c7348ebd0ca92b99754509"
+    },
+    "cdpDependencyRetentionReadback": {
+      "path": "dependency-review-r1/parent-retention-readback.json",
+      "sha256": "be52135a84a1b24bd69ed437db9b2c27dab34a89c5edd5f179be2ec86d8edca9"
+    }
+  },
+  "checks": {
+    "successfulCaptureIncludesFinalResultInLifecycleLimit": true,
+    "budgetBreachPreservesBytesAndReturnsFailure": true,
+    "captureAssignmentBindsR4Wrapper": true,
+    "auditAssignmentBindsR4Wrapper": true,
+    "assignmentsBindUnchangedPublicProducer": true,
+    "assignmentsBindUnchangedCollector": true,
+    "assignmentsBindUnchangedAuditor": true,
+    "readmeNamesCurrentR4Files": true,
+    "contractNamesCurrentR4Files": true,
+    "boundedNativeLifetimeDisclosurePreserved": true,
+    "auditRequiresIndependentRootNativeLifetimeAdmission": true,
+    "globalDescendantEmptyClaimMade": false,
+    "cgroupOptionIncludedInCurrentRecipe": false,
+    "newImplementationBlockerFound": false,
+    "cdpCloseSemanticsEstablishedForReviewedPlaywrightBytes": true,
+    "runtimeDependencyBindingComplete": false
+  },
+  "resolvedPriorFindings": [
+    {
+      "id": "F63-PIDFD-R3-001",
+      "resolution": "Lines 598-605 size existing lifecycle files and the complete encoded driver-result.json before a successful capture can return. A sum above 16 MiB changes the status to FAIL_LIFECYCLE_OUTPUT_BUDGET_NO_RETRY and records OutputBudget as the first failure when none exists."
+    },
+    {
+      "id": "F63-PIDFD-R3-002",
+      "resolution": "README-r4.md and FINAL-CANDIDATE-CONTRACT-r3.md name PIDFD R4 and the R4 specimens, supersede the earlier files, and retain the finite native-lifetime scope and required root admission."
+    }
+  ],
+  "findings": [],
+  "verifiedStaticProperties": [
+    "The seven added capture-finalization lines close the successful-capture lifecycle-budget gap found in PIDFD R3.",
+    "Both R4 pending assignments bind wrapper e333b6386e4a48ac4194ef760a6ee605bc567252b8fdae832f0d65a630e687be and the unchanged public R3, collector R7 and native R6 hashes.",
+    "The current README and final contract identify the R4 driver and specimens and state that runtime remains held.",
+    "The documents limit native closure evidence to direct roots and bound observed original-session descendants, set unobservedDescendantsExcluded=false, and require ownedNativeLifetimeIndependentlyAdmitted=true before audit.",
+    "The current recipe excludes the preserved cgroup option and makes no global native-helper session or complete process-scan claim.",
+    "The retained Playwright 1.63.0 source-review receipt establishes that URL CDP Browser.close disconnects without a native browser-close command, OS signal or external PID reap, and that each returned guest-context close disposes only its own explicit context ID."
+  ],
+  "runtimeHolds": [
+    "The scripts-only source pin and tested 4.0.2 build remain unbound.",
+    "Source, build, Node, Python, Playwright and Chromium byte bindings remain unbound.",
+    "Root review, protected process and socket admission, and the exclusive heavy slot remain pending.",
+    "Independent root native-lifetime disposition remains pending.",
+    "The retained Playwright source review has no source pin and grants no runtime admission; future dependency and executable bindings remain pending."
+  ],
+  "limitations": [
+    "This supplement reviewed only the seven-line PIDFD R4 change and the current R4 assignment and contract files. It relies on the PIDFD R3 review for unchanged implementation details.",
+    "No reviewed program or runtime dependency was executed.",
+    "Both R4 specimens remain unapproved and contain null runtime bindings.",
+    "The model provider was not independently authenticated."
+  ]
+}

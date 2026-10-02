@@ -1,0 +1,279 @@
+{
+  "schema": "feature63-dedicated-wrapper-final-trail-supplement-v1",
+  "kind": "feature63-wrapper-trail-authority-holds-review",
+  "createdAt": "2026-10-02T03:06:29Z",
+  "status": "PASS_STATIC_TRAIL_SUPPLEMENT_RUNTIME_HELD",
+  "approved": false,
+  "runtimeAuthorized": false,
+  "newImplementationBlockerFound": false,
+  "requestedReviewerModel": "gpt-5.6-sol",
+  "providerModelIdentityAuthenticated": false,
+  "providerModelIdentityNote": "reviewed by requested gpt-5.6-sol; actual provider model family unverified",
+  "workspaceTranscriptsAvailable": false,
+  "privateSessionDirectoriesRead": false,
+  "candidateCodeReviewReperformed": false,
+  "candidateOrRuntimeExecutedByThisReview": false,
+  "hashesIndependentlyCalculatedByThisReview": false,
+  "nodeTestsBuildBrowserSqliteSignalsOrCgroupReadsRunByThisReview": false,
+  "repositoryRootOrProtectedStateInspectedByThisReview": false,
+  "writesOutsideReviewTrailR2": false,
+  "reviewScope": "Bounded static review of updated trail truth, current authority, preserved historical qualifications, and unresolved admission/runtime holds. Driver implementation correctness remains established only by the supplied r3 and r4 review receipts.",
+  "reviewedArtifacts": [
+    "CURRENT-HANDOFF.md",
+    "README-r4.md",
+    "FINAL-CANDIDATE-CONTRACT-r3.md",
+    "admission-dependency-supplement.json",
+    "static-readback-r2.json",
+    "decisions.tsv",
+    "review-driver-pidfd-r4/review.json",
+    "review-driver-pidfd-r3/review.json",
+    "dependency-review-r1/parent-retention-readback.json",
+    "dependency-review-r1/receipt.json",
+    "candidate-manifest-r1.json",
+    "root-import-plan-r1.json"
+  ],
+  "authorityOrder": [
+    {
+      "rank": 1,
+      "artifact": "candidate-manifest-r1.json and root-import-plan-r1.json",
+      "role": "Authoritative static candidate identity/exclusion manifest and root-owned import procedure; the import plan requires a later final seal, fresh destination, imported-byte/mode/name authentication, and fresh bindings.",
+      "evidence": [
+        "candidate-manifest-r1.json:1-32",
+        "candidate-manifest-r1.json:34-130",
+        "candidate-manifest-r1.json:147-156",
+        "root-import-plan-r1.json:1-20"
+      ]
+    },
+    {
+      "rank": 2,
+      "artifact": "CURRENT-HANDOFF.md",
+      "role": "Current entrypoint; names the controlling contract, current candidates, later dependency status, finite lifetime limitation, and runtime holds.",
+      "evidence": [
+        "CURRENT-HANDOFF.md:1-9"
+      ]
+    },
+    {
+      "rank": 3,
+      "artifact": "FINAL-CANDIDATE-CONTRACT-r3.md",
+      "role": "Controlling current recipe and explicit predecessor exclusion.",
+      "evidence": [
+        "FINAL-CANDIDATE-CONTRACT-r3.md:1-13"
+      ]
+    },
+    {
+      "rank": 4,
+      "artifact": "admission-dependency-supplement.json",
+      "role": "Later dependency-source status and remaining root-work supplement.",
+      "evidence": [
+        "admission-dependency-supplement.json:3-32"
+      ]
+    },
+    {
+      "rank": 5,
+      "artifact": "review-driver-pidfd-r4/review.json",
+      "role": "Final bounded static driver-review disposition: PASS, approved false, runtime held, no new implementation finding.",
+      "evidence": [
+        "review-driver-pidfd-r4/review.json:4-14",
+        "review-driver-pidfd-r4/review.json:74-102",
+        "review-driver-pidfd-r4/review.json:111-123"
+      ]
+    },
+    {
+      "rank": 6,
+      "artifact": "README-r4.md",
+      "role": "Current design description except where CURRENT-HANDOFF.md explicitly supplies the post-receipt dependency status.",
+      "evidence": [
+        "CURRENT-HANDOFF.md:5",
+        "README-r4.md:11",
+        "README-r4.md:47"
+      ]
+    },
+    {
+      "rank": 7,
+      "artifact": "static-readback-r2.json and decisions.tsv",
+      "role": "Time-scoped static readback and append-only history; later rows and supplements qualify earlier status statements.",
+      "evidence": [
+        "static-readback-r2.json:3-6",
+        "decisions.tsv:2-11"
+      ]
+    }
+  ],
+  "confirmedTruth": [
+    {
+      "claim": "The authoritative unexecuted candidates are PIDFD driver r4, public producer r3, collector r7, and native auditor r6; earlier drivers, specimens, contracts, and the cgroup option are excluded from the current recipe.",
+      "evidence": [
+        "CURRENT-HANDOFF.md:1",
+        "FINAL-CANDIDATE-CONTRACT-r3.md:1",
+        "README-r4.md:50-54",
+        "static-readback-r2.json:7-46",
+        "candidate-manifest-r1.json:8-32",
+        "candidate-manifest-r1.json:111-130",
+        "root-import-plan-r1.json:15-18"
+      ]
+    },
+    {
+      "claim": "The both-owner witness union is restored: qualifying human attacks collectively target AI owners 2 and 3 within one authenticated native coordinated wave.",
+      "evidence": [
+        "CURRENT-HANDOFF.md:3",
+        "FINAL-CANDIDATE-CONTRACT-r3.md:3",
+        "README-r4.md:3",
+        "review-driver-pidfd-r3/review.json:34-41",
+        "review-driver-pidfd-r3/review.json:96-105"
+      ]
+    },
+    {
+      "claim": "The r4 static review is PASS with approved=false and runtimeDisposition=HELD, resolves the two r3 implementation/document findings, and reports no new implementation blocker.",
+      "evidence": [
+        "review-driver-pidfd-r4/review.json:4-14",
+        "review-driver-pidfd-r4/review.json:74-102"
+      ],
+      "limit": "This supplement does not independently re-review the implementation or recalculate its hashes."
+    },
+    {
+      "claim": "The exact retained Playwright 1.63.0 source review establishes URL-CDP Browser.close disconnect-only behavior and explicit returned-context-ID disposal for the seven declared package files.",
+      "evidence": [
+        "dependency-review-r1/receipt.json:4-47",
+        "dependency-review-r1/receipt.json:71-152",
+        "dependency-review-r1/parent-retention-readback.json:4-54",
+        "admission-dependency-supplement.json:12-21",
+        "review-driver-pidfd-r4/review.json:65-90",
+        "review-driver-pidfd-r4/review.json:103-110"
+      ],
+      "limit": "This is static source proof for the retained bytes. It supplies no future source pin, full runtime dependency binding, Chromium binary/version behavior, actual detach observation, or native-process exit proof. This reviewer did not independently hash those files."
+    },
+    {
+      "claim": "The native lifetime contract expressly denies a global descendant-empty proof and requires independent root lifetime disposition before audit.",
+      "evidence": [
+        "CURRENT-HANDOFF.md:7-9",
+        "FINAL-CANDIDATE-CONTRACT-r3.md:5-7",
+        "review-driver-pidfd-r3/review.json:35-41",
+        "review-driver-pidfd-r3/review.json:97-107",
+        "review-driver-pidfd-r4/review.json:84-90",
+        "review-driver-pidfd-r4/review.json:103-116"
+      ]
+    },
+    {
+      "claim": "The append-only trail corrects the initial scope-restoration evidence pointer and later records the retained dependency source proof while preserving earlier rows as history.",
+      "evidence": [
+        "decisions.tsv:2-7",
+        "decisions.tsv:11"
+      ]
+    },
+    {
+      "claim": "Cgroup delegation is excluded and unadmitted; the trail records only read-only availability observations and no fresh group, movement, freeze, or control write.",
+      "evidence": [
+        "CURRENT-HANDOFF.md:1,7",
+        "FINAL-CANDIDATE-CONTRACT-r3.md:1,7",
+        "README-r4.md:54",
+        "decisions.tsv:8-9",
+        "review-driver-pidfd-r4/review.json:84-90"
+      ],
+      "limit": "This supplement performed no cgroup read and did not re-open the underlying availability artifacts."
+    }
+  ],
+  "attentionFlags": [
+    {
+      "id": "TEMPORALLY_STALE_DEPENDENCY_STATUS",
+      "severity": "DOCUMENTATION_QUALIFICATION",
+      "finding": "static-readback-r2.json was created before the retained dependency review and still lists 'dependency close semantics receipt' under notAuthenticated. The later parent retention readback, admission supplement, r4 review, and handoff establish the bounded static CDP/context source proof. Consumers must not treat static-readback-r2:50 as the current dependency-source status.",
+      "evidence": [
+        "static-readback-r2.json:3",
+        "static-readback-r2.json:47-56",
+        "dependency-review-r1/parent-retention-readback.json:3-10",
+        "dependency-review-r1/parent-retention-readback.json:49-62",
+        "admission-dependency-supplement.json:3-21",
+        "CURRENT-HANDOFF.md:5",
+        "review-driver-pidfd-r4/review.json:89-90"
+      ],
+      "implementationBlocker": false
+    },
+    {
+      "id": "README_PRE_RECEIPT_STATUS_SUPERSEDED",
+      "severity": "AUTHORITY_QUALIFICATION",
+      "finding": "README-r4.md retains pre-receipt wording that a delegate is preparing the dependency review. CURRENT-HANDOFF.md explicitly supersedes that status, while the design and all runtime holds remain applicable.",
+      "evidence": [
+        "README-r4.md:11",
+        "CURRENT-HANDOFF.md:1,5",
+        "admission-dependency-supplement.json:12-21"
+      ],
+      "implementationBlocker": false
+    },
+    {
+      "id": "SOURCE_PROOF_IS_NOT_RUNTIME_BINDING",
+      "severity": "HOLD",
+      "finding": "The retained dependency receipt is exact static source proof only. It has sourcePin=null and runtimeAdmissionGranted=false; future source/build/dependency and executable bindings remain missing.",
+      "evidence": [
+        "dependency-review-r1/receipt.json:4-6",
+        "dependency-review-r1/receipt.json:210-215",
+        "dependency-review-r1/receipt.json:231-242",
+        "dependency-review-r1/parent-retention-readback.json:49-62",
+        "review-driver-pidfd-r4/review.json:89-90",
+        "review-driver-pidfd-r4/review.json:111-121"
+      ],
+      "implementationBlocker": false
+    },
+    {
+      "id": "NATIVE_LIFETIME_DISPOSITION_PENDING",
+      "severity": "HOLD",
+      "finding": "PIDFD evidence covers direct roots and bound observed original-session descendants only. It cannot exclude an unobserved fork or reparent; root must independently admit native lifetime before sealing and one-shot audit.",
+      "evidence": [
+        "CURRENT-HANDOFF.md:7-9",
+        "FINAL-CANDIDATE-CONTRACT-r3.md:5-7,13",
+        "README-r4.md:13,35",
+        "review-driver-pidfd-r4/review.json:84-90",
+        "review-driver-pidfd-r4/review.json:111-121"
+      ],
+      "implementationBlocker": false
+    },
+    {
+      "id": "ROOT_ADMISSION_CHAIN_PENDING",
+      "severity": "HOLD",
+      "finding": "The scripts-only source pin and tested build ID are null. Root still must bind source, build, full dependencies, Node/Python/Chromium bytes, protected process/socket identities, final reviews, and the exclusive slot, then execute, seal, extract, admit lifetime, and run the native auditor once.",
+      "evidence": [
+        "CURRENT-HANDOFF.md:9",
+        "FINAL-CANDIDATE-CONTRACT-r3.md:11-13",
+        "admission-dependency-supplement.json:4-6",
+        "admission-dependency-supplement.json:22-29",
+        "review-driver-pidfd-r4/review.json:111-121"
+      ],
+      "implementationBlocker": false
+    },
+    {
+      "id": "REVIEW_IDENTITY_AND_INDEPENDENT_RECALCULATION_UNVERIFIED",
+      "severity": "PROVENANCE_QUALIFICATION",
+      "finding": "No workspace transcripts are available, reviewer provider identity is unauthenticated, and this supplement did not independently recalculate hashes. Its conclusions are bounded to the supplied retained artifacts and their internal cross-references.",
+      "evidence": [
+        "review-driver-pidfd-r4/review.json:9-13",
+        "review-driver-pidfd-r4/review.json:118-123"
+      ],
+      "implementationBlocker": false
+    },
+    {
+      "id": "FINAL_STATIC_SEAL_AND_IMPORT_PENDING",
+      "severity": "HOLD",
+      "finding": "The candidate manifest is present, but the import plan intentionally leaves destinationDirectory null and permits copying only after the final seal. Root must authenticate the imported actual bytes, modes, and filename set against that seal and create fresh destination bindings.",
+      "evidence": [
+        "candidate-manifest-r1.json:1-7",
+        "candidate-manifest-r1.json:147-156",
+        "root-import-plan-r1.json:3-17"
+      ],
+      "implementationBlocker": false
+    }
+  ],
+  "runtimeHolds": {
+    "futureScriptsOnlySourcePin": null,
+    "testedBuildId": null,
+    "runtimeApproval": false,
+    "sourceBuildAndFullDependencyBinding": "PENDING",
+    "nodePythonChromiumExecutableBinding": "PENDING",
+    "protected4173HolderAndProcessReadback": "PENDING",
+    "exclusiveHeavySlot": "PENDING",
+    "independentRootNativeLifetimeDisposition": "PENDING",
+    "freshCapture": "NOT_RUN",
+    "closedRawSealAndExtraction": "PENDING",
+    "oneShotNativeAudit": "NOT_RUN",
+    "rootFeatureDisposition": "PENDING",
+    "finalStaticPacketSealAndImport": "PENDING"
+  },
+  "conclusion": "The updated current authority, manifest, import plan, and append-only trail are materially truthful when read in their stated order. The r4 static review reports PASS with no new implementation blocker, while approval and runtime remain held. The exact retained dependency receipt resolves the prior CDP disconnect/context source question for the reviewed Playwright bytes only. The two documentation qualifications are temporal status issues: README-r4's pre-receipt paragraph is explicitly superseded, and static-readback-r2's dependency-receipt entry predates the later source proof. All source/test/runtime bindings, root native-lifetime disposition, final static packet seal, destination selection, import authentication, and fresh destination bindings remain unresolved."
+}

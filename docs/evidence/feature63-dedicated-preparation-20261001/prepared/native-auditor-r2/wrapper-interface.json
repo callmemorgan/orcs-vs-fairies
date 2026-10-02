@@ -1,0 +1,77 @@
+{
+  "schema": "feature63-dedicated-native-auditor-interface-v1",
+  "status": "static_candidate_unexecuted",
+  "auditor": "audit-human-wave-r6.py",
+  "futureSourcePin": null,
+  "productVersion": "4.0.2",
+  "cli": {
+    "argv": ["python3", "ABSOLUTE_APPROVED_AUDITOR_PATH", "--bundle", "ABSOLUTE_ROOT_EXPORT_DIRECTORY", "--assignment-sha256", "SEPARATELY_AUTHENTICATED_ROOT_ASSIGNMENT_SHA256"],
+    "inputTrust": "The assignment digest must come from root outside the export bundle. No pending specimen or latest HEAD inference supplies authorization.",
+    "stdoutFile": "native-audit.json",
+    "stderrFile": "native-audit.stderr.txt",
+    "outputSchema": "feature63-closed-native-audit-v1",
+    "passExitCode": 0,
+    "rejectionExitCode": 1,
+    "passStatus": "closed-native-composition-pass-pending-root-disposition",
+    "passField": "passed",
+    "newRequiredCheck": "checks.humanWitnessesTargetBothAIWaveOwners",
+    "qualificationClaim": false
+  },
+  "rootAssignment": {
+    "schema": "feature63-root-audit-assignment-v1",
+    "exactKeys": ["schema", "scope", "sourcePin", "productVersion", "auditAuthorized", "auditorSha256", "publicProducerSha256", "publicDriverSha256", "sourceBindingReceipt", "closedRawReceipt", "extractionReceipt", "collectorReceipt"],
+    "scope": "original-feature63-closed-native-composition",
+    "sourcePin": "root-assigned 40-hex pin",
+    "productVersion": "4.0.2",
+    "auditAuthorized": true,
+    "receiptDescriptorExactKeys": ["file", "bytes", "sha256"],
+    "requiredReceiptFiles": ["source-binding-receipt.json", "closed-raw-receipt.json", "extraction-receipt.json"],
+    "optionalReceiptFile": "collector-receipt.json",
+    "collectorReceiptPrimaryOnly": null
+  },
+  "sourceBinding": {
+    "schema": "feature63-source-binding-v1",
+    "requiredKeys": ["sourcePin", "productVersion", "allActualInputsAuthenticated", "serverBuildSha256", "schemaReview", "inputs"],
+    "schemaReview": {"status": "approved", "sourcePin": "same root pin", "auditorSha256": "same actual r6 bytes"},
+    "sourceInputKeys": ["path", "gitMode", "gitBlob", "bytes", "sha256"],
+    "sourcePaths": ["src/core/team-ai.ts", "src/core/simulation.ts", "src/core/saves.ts", "src/core/observation.ts", "src/core/commands.ts", "src/core/ally-directives.ts", "src/server/server.ts", "src/server/store.ts", "src/server/views.ts", "src/online/protocol.ts", "src/online/render-state.ts", "src/core/economy.ts", "src/core/economy-types.ts", "src/core/tactics.ts", "src/game/GameScene.ts", "src/game/Controls.ts", "src/main.ts", "src/ui/Hud.ts", "src/ui/OnlineLobby.ts", "src/core/types.ts", "src/core/navigation.ts", "src/ui/SessionTools.ts"],
+    "collectorExtraBinding": "collectorSourceInventorySha256 must equal collector-receipt.sourceInventory.sha256"
+  },
+  "closedRootSeal": {
+    "schema": "feature63-closed-raw-v1",
+    "requiredKeys": ["sourcePin", "matchId", "sealId", "rawBytes", "rawSha256", "producerClosed", "ownedProcessesClosed", "rootSealed", "sidecarsAbsent"],
+    "booleansAllTrue": ["producerClosed", "ownedProcessesClosed", "rootSealed", "sidecarsAbsent"],
+    "collectorExtraIdentity": {"dbIdentity": ["device", "inode"]},
+    "rawReferenceHandling": "Root-authenticated receipt data only; auditor never reads or hashes raw database content."
+  },
+  "extraction": {
+    "schema": "feature63-native-extraction-v1",
+    "requiredKeys": ["sourcePin", "sealId", "matchId", "lobbyId", "closedOnly", "rawUnchanged", "noLivePrivateReadback", "noReplay", "nativeFiles", "publicFiles", "frameRows", "queries", "candidateCheckpointFile", "candidateWaveId", "launchBeforeTick", "launchAfterTick", "waveCheckpointRows"],
+    "booleansAllTrue": ["closedOnly", "rawUnchanged", "noLivePrivateReadback", "noReplay"],
+    "fileDescriptorExactKeys": ["file", "bytes", "sha256"],
+    "frameRowExactKeys": ["file", "matchId", "tick"],
+    "waveCheckpointRowExactKeys": ["file", "matchId", "tick", "collectorOrdinal"],
+    "primaryOnlyWaveCheckpointRows": [],
+    "queryExactKeys": ["kind", "text", "parameters"],
+    "matchQuery": "SELECT id,lobby_id,config,tick,checkpoint_tick,checkpoint,engine_hash,state_hash FROM matches WHERE id=?",
+    "matchQueryParameters": ["ACTUAL_PUBLIC_MATCH_ID"],
+    "framesQuery": "SELECT tick,views FROM frames WHERE match_id=? AND tick IN (ONE_QUESTION_MARK_PER_SELECTED_TICK) ORDER BY tick",
+    "framesQueryParameters": "actual match ID followed by sorted unique retained ticks",
+    "nativeRepresentation": "Complete original checkpoint/views UTF-8 TEXT bytes; no wrapping, reencoding, projection, truncation or codec.",
+    "minimumNativeFramePurposes": ["adjacent shared-launch bracket", "public fight boundaries", "every qualifying human witness frame"],
+    "timeJoin": "same retained native wave and participant IDs; later human events must follow its launch but need not share its checkpoint tick"
+  },
+  "literalInputs": {
+    "requiredReceipts": ["root-assignment.json", "source-binding-receipt.json", "closed-raw-receipt.json", "extraction-receipt.json"],
+    "optionalReceipt": "collector-receipt.json",
+    "requiredNative": ["match-row.json", "native-checkpoint.json"],
+    "nativeFrames": ["native-frame-01.json", "native-frame-02.json", "native-frame-03.json", "native-frame-04.json", "native-frame-05.json", "native-frame-06.json", "native-frame-07.json", "native-frame-08.json", "native-frame-09.json", "native-frame-10.json", "native-frame-11.json", "native-frame-12.json", "native-frame-13.json", "native-frame-14.json", "native-frame-15.json", "native-frame-16.json"],
+    "collectorCheckpoints": ["native-wave-checkpoint-01.json", "native-wave-checkpoint-02.json", "native-wave-checkpoint-03.json", "native-wave-checkpoint-04.json"],
+    "publicInputs": ["public-results.json", "public-identities.json", "public-windows.json", "public-cleanup.json", "public-match-identity.json", "human-one-wire.ndjson", "human-two-wire.ndjson", "human-one-ui-actions.ndjson", "human-two-ui-actions.ndjson"]
+  },
+  "unchangedBounds": {"nativeJsonBytes": 8388608, "nativeFrames": 16, "collectorCheckpoints": 4, "publicReaderBytes": 67108864, "receiptReaderBytes": 1048576, "fightWindowTicks": 400, "collectorCompleteOutputBytes": 8388608, "collectorMetadataReserveBytes": 2097152, "collectorPayloadUpperBoundBytes": 6291456, "collectorQueries": 300, "collectorSeconds": 300},
+  "publicNativePredicate": "Accepted-command-sourced positive eligible human witnesses from both sides 0 and 1 must collectively target AI owners 2 and 3 inside one authenticated native coordinated wave while both humans remain alive.",
+  "extraGatesRequired": {"victory": false, "sameLaunchAndHumanHitTick": false, "4v4": false, "positiveAIToHumanHit": false, "endOfFight": false},
+  "runtimeAuthorized": false,
+  "scriptExecuted": false
+}

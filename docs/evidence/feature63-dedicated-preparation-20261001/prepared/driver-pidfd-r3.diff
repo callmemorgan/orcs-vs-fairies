@@ -1,0 +1,204 @@
+--- /home/morgana/.codex/worktrees/assembled-allied-ai/feature63-dedicated-wrapper-readiness-r1/driver/run-minimal63-r2.py
++++ /home/morgana/.codex/worktrees/assembled-allied-ai/feature63-dedicated-wrapper-readiness-r1/driver/run-minimal63-pidfd-r3.py
+@@ -229,7 +229,7 @@
+     require(browser['contextCount'] == 2 and browser['browserCount'] == 1 and browser['headless'] is True
+             and browser['nativeLifecycleOwner'] == 'dedicated-wrapper' and browser['reviewedCdpDisconnectHasNoNativeSignals'] is True
+             and browser['cdpBaseUrl'] == 'http://127.0.0.1:5374' and browser['allDependencyBytesAuthenticated'] is True
+-            and browser['reviewedNativeChildrenRemainOwnedSession'] is True,
++            and browser['nativeLifetimeReviewRequiredByRoot'] is True,
+             'External browser lifecycle/dependency review absent')
+     bound(browser['playwrightEntry'], MAX_RAW_BYTES)
+     bound(browser['chromiumExecutable'], MAX_RAW_BYTES)
+@@ -274,9 +274,13 @@
+             require(state['startTicks'] == root['startTicks'], 'Unreaped direct root start tick changed')
+         return state is None or state['state'] in ('Z', 'X')
+ 
+-    def refresh(self):
++    def refresh(self, selected_family=None):
+         sessions = {}
+         for family, root in self.roots.items():
++            if selected_family is not None and family != selected_family:
++                continue
++            if root is None:
++                continue
+             if family in self.closed_families:
+                 continue
+             process = self.children[family]
+@@ -300,6 +304,8 @@
+                 require(session_id(pid) == self.roots[family]['pid'], 'Resource left its admitted session')
+                 self.register(ident, family)
+         for value in self.resources.values():
++            if selected_family is not None and value['family'] != selected_family:
++                continue
+             if value['family'] in self.closed_families:
+                 continue
+             ident = value['identity']
+@@ -315,19 +321,25 @@
+         self.logs += [out, err]
+         process = subprocess.Popen(command, cwd=CHECKOUT, env=env, stdout=out, stderr=err, stdin=subprocess.DEVNULL, start_new_session=True)
+         self.children[label] = process
++        state = process_state(process.pid)
++        self.roots[label] = None if state is None else {'pid': process.pid, 'startTicks': state['startTicks']}
++        self.event('reserved direct child before launch authentication', family=label, pid=process.pid, processState=state, command=command)
+         deadline = time.monotonic() + 2
+         ident = None
+         while time.monotonic() < deadline:
+             candidate = identity(process.pid)
+-            if candidate is not None and candidate['argv'] == command and candidate['cwd'] == str(CHECKOUT):
++            if candidate is not None:
++                # A Popen child stays unreaped; its numeric PID cannot be replaced during this binding.
++                # Retain its actual complete identity even if the intended command check will reject it.
++                self.register(candidate, label)
+                 ident = candidate
+                 break
+-            else:
+-                time.sleep(0.02)
+-        require(ident is not None and ident['argv'] == command and ident['cwd'] == str(CHECKOUT), 'New child launch identity differs')
++            if self.exited(label):
++                break
++            time.sleep(0.02)
++        protected(self.assignment)
++        require(ident is not None and ident['argv'] == command and ident['cwd'] == str(CHECKOUT), 'New child launch identity differs; reserved root retained for guarded cleanup')
+         require(session_id(process.pid) == process.pid, 'New child must own a distinct kernel session')
+-        self.roots[label] = ident
+-        self.register(ident, label)
+         return ident
+ 
+     def send(self, record, signum):
+@@ -343,8 +355,23 @@
+     def stop_family(self, family, grace):
+         if family not in self.children or family in self.closed_families:
+             return
+-        require(family in self.roots, 'Failed launch has no authenticated native root; cleanup held')
+-        self.refresh()
++        require(family in self.roots and self.children[family].returncode is None, 'Direct launch reservation is missing or was prematurely reaped')
++        state = process_state(self.children[family].pid)
++        if self.roots[family] is None and state is not None:
++            self.roots[family] = {'pid': state['pid'], 'startTicks': state['startTicks']}
++        actual = identity(self.children[family].pid)
++        if actual is not None:
++            require(state is not None and self.roots[family] is not None and state['startTicks'] == self.roots[family]['startTicks'], 'Reserved direct root start ticks changed')
++            self.register(actual, family)
++        if state is None:
++            # A vanished own child needs no signal. Its Popen object has never been reaped here.
++            protected(self.assignment)
++            self.children[family].wait(timeout=2)
++            self.closed_families.add(family)
++            self.event('reserved direct child already exited', family=family, exitCode=self.children[family].returncode,
++                       unobservedDescendantsExcluded=False)
++            return
++        self.refresh(family)
+         direct = self.children[family]
+         records = [v for v in self.resources.values() if v['family'] == family]
+         for record in records:
+@@ -352,31 +379,31 @@
+                 self.send(record, signal.SIGTERM)
+         deadline = time.monotonic() + grace
+         while time.monotonic() < deadline:
+-            self.refresh()
++            self.refresh(family)
+             records = [v for v in self.resources.values() if v['family'] == family]
+             if not any(identity(v['identity']['pid']) == v['identity'] for v in records):
+                 break
+             time.sleep(0.1)
+         # Discover again after graceful parent exit; the direct root is still unreaped.
+-        self.refresh()
++        self.refresh(family)
+         for record in list(self.resources.values()):
+             if record['family'] == family and identity(record['identity']['pid']) == record['identity']:
+                 self.send(record, signal.SIGTERM)
+         term_deadline = time.monotonic() + 2
+         while time.monotonic() < term_deadline:
+-            self.refresh()
++            self.refresh(family)
+             records = [v for v in self.resources.values() if v['family'] == family]
+             if not any(identity(v['identity']['pid']) == v['identity'] for v in records):
+                 break
+             time.sleep(0.1)
+         kill_deadline = time.monotonic() + 3
+         while True:
+-            self.refresh()
++            self.refresh(family)
+             records = [v for v in self.resources.values() if v['family'] == family]
+             survivors = [v for v in records if identity(v['identity']['pid']) == v['identity']]
+             if not survivors:
+-                # No live parent can fork after this point. Scan once more before reaping.
+-                self.refresh()
++                # Repeat observed-session discovery; this is not an atomic global empty-membership proof.
++                self.refresh(family)
+                 records = [v for v in self.resources.values() if v['family'] == family]
+                 survivors = [v for v in records if identity(v['identity']['pid']) == v['identity']]
+                 if not survivors:
+@@ -390,7 +417,7 @@
+         direct.wait(timeout=2)  # First reap occurs only after both final owned-session scans.
+         self.closed_families.add(family)
+         self.event('resource family closed', family=family, exitCode=direct.returncode,
+-                   identities=[v['identity'] for v in records], finalSessionScans=2)
++                   identities=[v['identity'] for v in records], observedSessionScans=2, unobservedDescendantsExcluded=False)
+ 
+     def finish(self):
+         for handle in self.logs:
+@@ -424,6 +451,7 @@
+             require(live <= sockets(owner['pid']), 'Owned port has another socket holder')
+             return sorted(live)
+         time.sleep(0.1)
++    protected(children.assignment, owner)
+     raise RuntimeError(label + ' startup timeout; no retry')
+ 
+ 
+@@ -452,7 +480,9 @@
+     manager = Children(a, lifecycle)
+     failure = None
+     result = {'schema': 'feature63-dedicated-capture-result-v1', 'sourcePin': a['sourcePin'], 'testedBuildId': a['testedBuildId'],
+-              'startedAt': now(), 'feature63Qualified': False, 'rootSealAndExtractionRequired': True, 'automaticRetries': 0}
++              'startedAt': now(), 'feature63Qualified': False, 'rootSealAndExtractionRequired': True, 'automaticRetries': 0,
++              'nativeClosureEvidenceScope': 'Direct unreaped roots and bound observed original-session descendants only',
++              'unobservedDescendantsExcluded': False, 'rootNativeLifetimeDispositionRequired': True}
+     env = {key: value for key, value in os.environ.items() if not key.startswith('RTS_') and key not in ('NODE_OPTIONS', 'PYTHONOPTIMIZE')}
+     try:
+         env.update({'RTS_HOST': '127.0.0.1', 'RTS_PORT': '5373', 'RTS_DATA_DIR': str(PREFIX / 'server-data'),
+@@ -503,6 +533,7 @@
+             protected(a)
+             runtime_budget()
+             require(identity(server['pid']) == server and identity(chrome['pid']) == chrome, 'Owned server/browser exited or changed')
++            protected(a)
+             require(time.monotonic() - public_start <= MAX_ATTEMPT + 5, 'Public attempt exceeded wrapper bound')
+             if collector_started is None:
+                 path = PREFIX / 'public/public-match-identity.json'
+@@ -577,7 +608,8 @@
+     # Root must seal/extract the fresh closed DB separately. This driver never reads SQLite.
+     ready = receipt(a['rootExtractionAdmission'], 'feature63-root-extraction-admission-v1', a['sourcePin'])
+     require(ready['closedFreshRawAuthenticated'] is True and ready['completeSelectedTextAndQueryMetadataAuthenticated'] is True
+-            and ready['matchId'] == capture_result['matchId'] and ready['auditorSha256'] == a['auditor']['sha256'], 'Root native extraction/seal admission absent')
++            and ready['matchId'] == capture_result['matchId'] and ready['auditorSha256'] == a['auditor']['sha256']
++            and ready['ownedNativeLifetimeIndependentlyAdmitted'] is True, 'Root native extraction/seal/lifetime admission absent')
+     root_assignment = bound(a['nativeAuditAssignment'])
+     require(a['nativeAuditAssignment']['sha256'] == ready['rootAssignmentSha256'], 'External native root assignment trust anchor differs')
+     bundle = Path(a['nativeBundle'])
+@@ -615,12 +647,24 @@
+         except Exception as error:
+             failure = failure or {'type': type(error).__name__, 'message': str(error), 'at': now()}
+         manager.finish()
++        # Check final stdout/stderr/events before reporting success; preserve all produced bytes.
++        final_bytes = sum(p.stat().st_size for p in output.iterdir() if p.is_file())
++        if final_bytes > 2 * 1024 * 1024:
++            failure = failure or {'type': 'OutputBudget', 'message': 'Final native audit output exceeded 2 MiB; bytes preserved', 'at': now()}
+         # Complete stdout is kept byte-for-byte under the required native-audit.json name.
+         (output / 'native-audit.stdout').rename(output / 'native-audit.json')
+         (output / 'native-audit.stderr').rename(output / 'native-audit.stderr.txt')
+-        write_new(output / 'driver-result.json', {'schema': 'feature63-audit-driver-result-v1', 'sourcePin': a['sourcePin'],
++        audit_result = {'schema': 'feature63-audit-driver-result-v1', 'sourcePin': a['sourcePin'],
+             'status': 'PASS' if failure is None and code == 0 else 'FAIL_NO_RETRY', 'firstFailure': failure,
+-            'auditorExitCode': code, 'nativeAuditInvocations': 1, 'protectedFinalReadback': final_protected_readback(a), 'finishedAt': now()})
++            'auditorExitCode': code, 'nativeAuditInvocations': 1, 'protectedFinalReadback': final_protected_readback(a), 'finishedAt': now()}
++        if audit_result['protectedFinalReadback']['status'] != 'PASS':
++            failure = failure or {'type': 'ProtectedReadback', 'message': 'Final protected process/socket readback failed', 'at': now()}
++            audit_result.update({'status': 'FAIL_NO_RETRY', 'firstFailure': failure})
++        result_size = len((json.dumps(audit_result, indent=2, sort_keys=True) + '\n').encode())
++        if final_bytes + result_size > 2 * 1024 * 1024:
++            failure = failure or {'type': 'OutputBudget', 'message': 'Complete native audit output exceeded 2 MiB; bytes preserved', 'at': now()}
++            audit_result.update({'status': 'FAIL_NO_RETRY', 'firstFailure': failure})
++        write_new(output / 'driver-result.json', audit_result)
+     return 0 if failure is None and code == 0 else 1
+ 
+ 

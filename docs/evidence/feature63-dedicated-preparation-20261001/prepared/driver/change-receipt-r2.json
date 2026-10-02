@@ -1,0 +1,43 @@
+{
+  "schema": "feature63-driver-and-cadence-static-correction-v1",
+  "createdAt": "2026-10-02T02:40:51.930167+00:00",
+  "futureSourcePin": null,
+  "runtimeAuthorized": false,
+  "r1Preserved": {
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/feature63-dedicated-wrapper-readiness-r1/driver/run-minimal63-r1.py",
+    "bytes": 33868,
+    "sha256": "7024f7749aae9fca2f23e0349c5bdd4667cb948f4948cafd004a7b69d305e0aa"
+  },
+  "driverCandidate": {
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/feature63-dedicated-wrapper-readiness-r1/driver/run-minimal63-r2.py",
+    "bytes": 37033,
+    "sha256": "611715dfafc6d2b15c624f055b773b702a93a5b116e6d3a639c55ffa5d63f946"
+  },
+  "collectorOriginal": {
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/ai-online-only-retry-readiness-r1/feature63-human-wave-composition-r1/passive-collector-r1/collect-launched-waves-r6.py",
+    "bytes": 18518,
+    "sha256": "dad5854754b709e137b6b2c923f059017d2d2c52f710c35d6243717adf651a50"
+  },
+  "collectorCandidate": {
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/feature63-dedicated-wrapper-readiness-r1/passive-collector-r2/collect-launched-waves-r7.py",
+    "bytes": 18600,
+    "sha256": "c6c768ad7d54696e5e1e8456881f038cd7b7bb70112cd9b8b17d86b0feaebd7f"
+  },
+  "reviewTrigger": "/home/morgana/.codex/worktrees/assembled-allied-ai/feature63-dedicated-wrapper-readiness-r1/review-driver-r1/review.json",
+  "changes": [
+    "Eliminate PPID-based admission; admit managed descendants only by original kernel session whose direct child remains unreaped.",
+    "Never poll() or reap direct children before two final owned-session closure scans.",
+    "Require known native resources remain in their original owned session; changed identity/session blocks all signals.",
+    "Require source-bound dependency review of Chromium child session semantics; no proof claimed yet.",
+    "Require collector heavySlot slotId equal wrapper exclusive token.",
+    "Cap lifecycle output at16MiB and one-shot native audit output at2MiB; preserve breached bytes.",
+    "Require one full second after each collector SELECT completes; no schedule catch-up."
+  ],
+  "checks": [
+    "Python AST parse only",
+    "Actual bytes and hashes",
+    "No poll() calls in r2 source",
+    "Unchanged collector SQL and all other collector source except next-poll scheduling"
+  ],
+  "sourceAndRuntimeHoldsRemain": true
+}

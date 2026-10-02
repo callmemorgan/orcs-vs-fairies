@@ -1,0 +1,73 @@
+{
+  "schema": "feature63-cgroup-read-only-availability-v1",
+  "capturedAt": "2026-10-02T02:51:14.748548+00:00",
+  "mounts": [
+    {
+      "mountPoint": "/sys/fs/cgroup",
+      "mountOptions": "rw,nosuid,nodev,noexec,relatime",
+      "filesystem": "cgroup2",
+      "superOptions": "rw,nsdelegate,memory_recursiveprot,memory_hugetlb_accounting"
+    }
+  ],
+  "selfCgroup": "0::/user.slice/user-1000.slice/user@1000.service/app.slice/app-org.chromium.Chromium-10644.scope\n",
+  "rootDirectory": {
+    "path": "/sys/fs/cgroup",
+    "mode": "0o555",
+    "uid": 0,
+    "gid": 0,
+    "device": 29,
+    "inode": 1,
+    "writableByCurrentProcessCheck": false
+  },
+  "files": [
+    {
+      "path": "/sys/fs/cgroup/cgroup.controllers",
+      "exists": true,
+      "mode": "0o444",
+      "uid": 0,
+      "gid": 0,
+      "device": 29,
+      "inode": 4,
+      "writableByCurrentProcessCheck": false,
+      "text": "cpuset cpu io memory hugetlb pids rdma misc dmem\n"
+    },
+    {
+      "path": "/sys/fs/cgroup/cgroup.events",
+      "exists": false
+    },
+    {
+      "path": "/sys/fs/cgroup/cgroup.type",
+      "exists": false
+    },
+    {
+      "path": "/sys/fs/cgroup/cgroup.procs",
+      "exists": true,
+      "mode": "0o644",
+      "uid": 0,
+      "gid": 0,
+      "device": 29,
+      "inode": 2,
+      "writableByCurrentProcessCheck": false,
+      "memberLineCount": 423
+    },
+    {
+      "path": "/sys/fs/cgroup/cgroup.freeze",
+      "exists": false
+    },
+    {
+      "path": "/sys/fs/cgroup/cgroup.subtree_control",
+      "exists": true,
+      "mode": "0o644",
+      "uid": 0,
+      "gid": 0,
+      "device": 29,
+      "inode": 5,
+      "writableByCurrentProcessCheck": false,
+      "text": "cpuset cpu io memory hugetlb pids rdma misc dmem\n"
+    }
+  ],
+  "createdDirectoriesOrWroteControls": false,
+  "signalsOrRuntimeExecuted": false,
+  "delegatedFreshExclusiveGroupsEstablished": false,
+  "qualification": "Read-only mount, mode, access and control-file observations only. No delegation, freeze, movement or writable-cgroup experiment."
+}

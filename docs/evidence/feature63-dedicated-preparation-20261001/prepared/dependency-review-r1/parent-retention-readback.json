@@ -1,0 +1,63 @@
+{
+  "schema": "feature63-dependency-receipt-actual-byte-retention-v1",
+  "capturedAt": "2026-10-02T03:03:23.043595+00:00",
+  "status": "PASS_STATIC_BYTES_CDP_SOURCE_SCOPE_ONLY",
+  "futureSourcePin": null,
+  "originalReceiptPath": "/tmp/ovf-feature63-dependency-review-dPm45n/receipt.json",
+  "retainedExactReceipt": {
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/feature63-dedicated-wrapper-readiness-r1/dependency-review-r1/receipt.json",
+    "bytes": 8710,
+    "sha256": "785842ccd09cc315990417003ad58abacb2ad41f34c7348ebd0ca92b99754509"
+  },
+  "parentActualPackageReadback": [
+    {
+      "path": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/package.json",
+      "bytes": 876,
+      "sha256": "f061c58427e47e843e26d201f0a57076c734e57c734ecbbd87d4a23b7a20db9b"
+    },
+    {
+      "path": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/index.js",
+      "bytes": 697,
+      "sha256": "a58fb2cec4293e7dcf73c58a179898a4f3986666451a19da4e731fa3af63265b"
+    },
+    {
+      "path": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/index.mjs",
+      "bytes": 1063,
+      "sha256": "3d36e2132d3c8b62397d23f0bb4177336aaee503203ae2a2c90fbeb5bf3317dd"
+    },
+    {
+      "path": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/bootstrap.js",
+      "bytes": 3481,
+      "sha256": "4637f4dbfef9cfc01baeb5f5d2cb63fa0901522c96915ea2227290558d27123e"
+    },
+    {
+      "path": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js",
+      "bytes": 3477183,
+      "sha256": "549070af3acabb3efcc4f55bfe6210f9f7c2fcf633cf7eaa59bfe60719969171"
+    },
+    {
+      "path": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/utilsBundle.js",
+      "bytes": 3048692,
+      "sha256": "2d1ccc01d21b7d54ca99a6305991d7fb6e072ea4e725d7fec5eb6184188c52c9"
+    },
+    {
+      "path": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/types/types.d.ts",
+      "bytes": 1131883,
+      "sha256": "2806f6d7810fba0306066d500cd716a6d1128d90af2c3cf71723e3ea0a8904c4"
+    }
+  ],
+  "reviewedDriverWas": "driver/run-minimal63-pidfd-r3.py",
+  "currentDriverIs": "driver/run-minimal63-pidfd-r4.py",
+  "r4Applicability": "Only final lifecycle result-byte accounting differs; current driver independent review must authenticate the unchanged source portions and delta. No inherited whole-driver pass claimed.",
+  "resolvedStaticScope": [
+    "URL CDP Browser.close disconnects WebSocket/temp artifacts without native Browser.close/OS signal/reap for exact installed playwright-core1.63.0 reviewed bytes.",
+    "Returned guest context close disposes only its own explicit CDP context ID."
+  ],
+  "unresolved": [
+    "Future source/build/dependency execution bindings.",
+    "Chromium binary/version/runtime behavior.",
+    "Native direct/descendant closure beyond observed PIDFD evidence.",
+    "Root runtime/seal/extraction/slot admission."
+  ],
+  "importedDependenciesOrExecutedCandidates": false
+}

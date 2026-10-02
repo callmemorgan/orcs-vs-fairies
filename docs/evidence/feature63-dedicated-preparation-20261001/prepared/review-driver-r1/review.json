@@ -1,0 +1,115 @@
+{
+  "schema": "feature63-dedicated-wrapper-review-v1",
+  "reviewedAt": "2026-10-01T19:35:27-07:00",
+  "status": "FAIL",
+  "approved": false,
+  "runtimeDisposition": "HELD",
+  "sourcePin": null,
+  "productVersion": "4.0.2",
+  "reviewer": {
+    "harness": "Codex",
+    "model": "GPT-6",
+    "providerIdentityVerified": false
+  },
+  "scope": "Static independent review of the feature 63 dedicated wrapper packet",
+  "execution": {
+    "packetScriptsRun": false,
+    "nodeRun": false,
+    "testsRun": false,
+    "buildRun": false,
+    "browserRun": false,
+    "serverRun": false,
+    "sqliteRun": false,
+    "simulationRun": false,
+    "signalsSent": false
+  },
+  "wrapperSha256": "7024f7749aae9fca2f23e0349c5bdd4667cb948f4948cafd004a7b69d305e0aa",
+  "publicProducerSha256": "d661329136041f8ccb15dfb9e94ae0556c303a6f995304c7f08889698b5a5f0f",
+  "collectorSha256": "dad5854754b709e137b6b2c923f059017d2d2c52f710c35d6243717adf651a50",
+  "auditorSha256": "4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb",
+  "restoredBothOwnerHumanTargetUnion": true,
+  "checks": {
+    "registeredSignalTargetsUseExactIdentityAndPidfd": true,
+    "protected1063And4173CheckedImmediatelyBeforeEachSignal": true,
+    "fresh5373And5374Required": true,
+    "sourceTestedBuild402BindingPresent": true,
+    "dependencyByteBindingPresent": true,
+    "collectorQueryTimeRecordAndByteCapsPresent": true,
+    "strictOneSecondMinimumPollInterval": false,
+    "bothHumanSourceOwnersRequired": true,
+    "bothAiTargetOwnersInSelectedNativeWaveRequired": true,
+    "firstFailureAndNoRetryControlsPresent": true,
+    "oneShotAuditAfterRootSealAndExtraction": true,
+    "descendantOwnershipClosedAgainstPidAndSessionReuse": false,
+    "collectorSlotBoundToWrapperSlotToken": false,
+    "cdpDisconnectNoNativeSignalsIndependentlyProven": false
+  },
+  "findings": [
+    {
+      "id": "F63-R1-001",
+      "severity": "high",
+      "title": "Descendant discovery can adopt an unrelated reused PID or session and can miss a final child",
+      "file": "driver/run-minimal63-r1.py",
+      "lines": [266, 284, 317, 343],
+      "reason": "refresh maps every retained Popen PID to a family as a bare numeric session ID, including after that child has exited. A later unrelated session leader with the reused PID satisfies this test and can be registered and signaled. The parent map is also a snapshot of numeric PIDs. stop_family exits once its known records are gone and performs no final discovery pass, so a child created after the last refresh and before its parent exits can escape the asserted cleanup.",
+      "requiredChange": "Use an ownership mechanism whose membership cannot be reassigned by PID reuse, such as a dedicated cgroup with verified membership, and prove the owned group is empty before reporting closure. Do not discover signal targets from stale numeric PID, PPID, or session values alone."
+    },
+    {
+      "id": "F63-R1-002",
+      "severity": "high",
+      "title": "The collector heavy-slot ID is not bound to the wrapper's admitted slot token",
+      "file": "driver/run-minimal63-r1.py",
+      "lines": [471, 477],
+      "related": [
+        {
+          "file": "capture-assignment.pending.json",
+          "lines": [12, 16, 136, 139]
+        },
+        {
+          "file": "../ai-online-only-retry-readiness-r1/feature63-human-wave-composition-r1/passive-collector-r1/collect-launched-waves-r6.py",
+          "lines": [148, 150]
+        }
+      ],
+      "reason": "The wrapper checks the public template's full exclusiveHeavyApproval object but only checks four unrelated collector-template fields. The collector accepts any nonempty heavySlot.slotId. The wrapper and collector can therefore run under different slot identities even though README.md says they must use the same root slot token.",
+      "requiredChange": "Require collectorAssignmentTemplate.heavySlot to be assigned and exclusive and require its slotId to equal exclusiveHeavyApproval.token before launching the collector."
+    },
+    {
+      "id": "F63-R1-003",
+      "severity": "blocking-prerequisite",
+      "title": "CDP close behavior is asserted by receipts but has not been independently proven",
+      "file": "public-producer-r2/verify-human-wave-r3.mjs",
+      "lines": [103, 120, 163, 166, 537, 539],
+      "related": [
+        {
+          "file": "driver/run-minimal63-r1.py",
+          "lines": [227, 236]
+        }
+      ],
+      "reason": "Both guards trust reviewedCdpDisconnectHasNoNativeSignals. The producer calls browser.close on the object returned by chromium.connectOverCDP during emergency and normal cleanup. No bound Playwright implementation or independent dependency review was supplied to this review, so the no-native-signal claim remains unproved.",
+      "requiredChange": "Root must review the exact authenticated Playwright dependency bytes and prove that close on this connectOverCDP object only disconnects and does not signal or terminate the wrapper-owned Chromium process. Bind that proof to the admitted dependency inventory."
+    },
+    {
+      "id": "F63-R1-004",
+      "severity": "medium",
+      "title": "The collector can issue catch-up queries without a one-second minimum interval",
+      "file": "../ai-online-only-retry-readiness-r1/feature63-human-wave-composition-r1/passive-collector-r1/collect-launched-waves-r6.py",
+      "lines": [201, 209, 267, 269],
+      "reason": "The next poll deadline is based on started plus queryOrdinal. If a query or its file work takes more than one second, the deadline is already in the past and the next query begins immediately. The 300-query and 300-second caps still hold, but the code does not enforce at least one second between query starts.",
+      "requiredChange": "If one-second cadence means a strict maximum frequency, base the next deadline on the prior query start or completion and wait for the remaining interval. Root may instead document and approve absolute scheduled cadence with catch-up if that is the intended bound."
+    }
+  ],
+  "verifiedStaticProperties": [
+    "Every explicit SIGTERM and SIGKILL for a registered resource routes through the exact PID/startTicks/executable/cwd/argv check, a fresh protected-process/socket check, and pidfd_send_signal.",
+    "Capture requires ports 5373 and 5374 to be unused before launch and verifies listener ownership after launch.",
+    "The guard binds a 40-hex source pin, product version 4.0.2, clean tracked source, complete build inventories, a nonempty tested build ID, successful test/build receipt fields, and authenticated browser dependency inventory.",
+    "The collector limits lifetime and query count to 300, records to four, and complete collector output to 8 MiB with a 2 MiB metadata reserve.",
+    "The auditor binds qualifying accepted-command human attacks from source owners 0 and 1 to participant IDs in one selected launched wave and requires target owners 2 and 3.",
+    "Capture and producer code preserve the first recorded acquisition failure and declare zero retries; cleanup failures remain separately recorded.",
+    "The audit phase requires an admitted passing closed capture and root extraction admission, creates a fresh audit directory before launch, and records one native-audit invocation."
+  ],
+  "limitations": [
+    "This was a static review. No reviewed program or runtime dependency was executed.",
+    "The pending assignments contain false approvals and null source, build, dependency, executable, and slot bindings. They are specimens, not runtime authority.",
+    "The model provider was not independently authenticated."
+  ]
+}

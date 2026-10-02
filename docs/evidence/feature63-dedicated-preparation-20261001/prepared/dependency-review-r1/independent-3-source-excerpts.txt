@@ -1,0 +1,514 @@
+/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js:34918-34964
+ 34918	      Disconnected: /* @__PURE__ */ Symbol("ConnectionEvents.Disconnected")
+ 34919	    };
+ 34920	    kBrowserCloseMessageId = -9999;
+ 34921	    CRConnection = class extends SdkObject {
+ 34922	      constructor(parent, transport, protocolLogger, browserLogsCollector) {
+ 34923	        super(parent, "cr-connection");
+ 34924	        this._lastId = 0;
+ 34925	        this._sessions = /* @__PURE__ */ new Map();
+ 34926	        this._closed = false;
+ 34927	        this.setMaxListeners(0);
+ 34928	        this._transport = transport;
+ 34929	        this._protocolLogger = protocolLogger;
+ 34930	        this._browserLogsCollector = browserLogsCollector;
+ 34931	        this.rootSession = new CRSession(this, null, "");
+ 34932	        this._sessions.set("", this.rootSession);
+ 34933	        this._transport.onmessage = this._onMessage.bind(this);
+ 34934	        this._transport.onclose = this._onClose.bind(this);
+ 34935	      }
+ 34936	      _rawSend(sessionId, method, params2) {
+ 34937	        const id = ++this._lastId;
+ 34938	        const message = { id, method, params: params2 };
+ 34939	        if (sessionId)
+ 34940	          message.sessionId = sessionId;
+ 34941	        this._protocolLogger("send", message);
+ 34942	        this._transport.send(message);
+ 34943	        return id;
+ 34944	      }
+ 34945	      async _onMessage(message) {
+ 34946	        this._protocolLogger("receive", message);
+ 34947	        if (message.id === kBrowserCloseMessageId)
+ 34948	          return;
+ 34949	        const session2 = this._sessions.get(message.sessionId || "");
+ 34950	        if (session2)
+ 34951	          session2._onMessage(message);
+ 34952	      }
+ 34953	      _onClose(reason) {
+ 34954	        this._closed = true;
+ 34955	        this._transport.onmessage = void 0;
+ 34956	        this._transport.onclose = void 0;
+ 34957	        this._browserDisconnectedLogs = helper.formatBrowserLogs(this._browserLogsCollector.recentLogs(), reason);
+ 34958	        this.rootSession.dispose();
+ 34959	        Promise.resolve().then(() => this.emit(ConnectionEvents.Disconnected));
+ 34960	      }
+ 34961	      close() {
+ 34962	        if (!this._closed)
+ 34963	          this._transport.close();
+ 34964	      }
+
+/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js:38346-38396
+ 38346	      static async connect(parent, transport, options, devtools) {
+ 38347	        options = { ...options };
+ 38348	        const connection = new CRConnection(parent, transport, options.protocolLogger, options.browserLogsCollector);
+ 38349	        const browser = new _CRBrowser(parent, connection, options);
+ 38350	        browser._devtools = devtools;
+ 38351	        if (browser.isClank())
+ 38352	          browser._isBrowserCollocatedWithServer = false;
+ 38353	        const session2 = connection.rootSession;
+ 38354	        if (options.__testHookOnConnectToBrowser)
+ 38355	          await options.__testHookOnConnectToBrowser();
+ 38356	        const version3 = await session2.send("Browser.getVersion");
+ 38357	        browser._revision = version3.revision;
+ 38358	        browser._version = version3.product.substring(version3.product.indexOf("/") + 1);
+ 38359	        try {
+ 38360	          browser._majorVersion = +browser._version.split(".")[0];
+ 38361	        } catch {
+ 38362	        }
+ 38363	        browser._userAgent = version3.userAgent;
+ 38364	        browser.options.headful = !version3.userAgent.includes("Headless");
+ 38365	        if (!options.persistent) {
+ 38366	          await session2.send("Target.setAutoAttach", { autoAttach: true, waitForDebuggerOnStart: true, flatten: true });
+ 38367	          return browser;
+ 38368	        }
+ 38369	        browser._defaultContext = new CRBrowserContext(browser, void 0, options.persistent);
+ 38370	        await Promise.all([
+ 38371	          session2.send("Target.setAutoAttach", { autoAttach: true, waitForDebuggerOnStart: true, flatten: true }).then(async () => {
+ 38372	            await session2.send("Target.getTargetInfo");
+ 38373	          }),
+ 38374	          browser._defaultContext.initialize()
+ 38375	        ]);
+ 38376	        await browser._waitForAllPagesToBeInitialized();
+ 38377	        return browser;
+ 38378	      }
+ 38379	      async doCreateNewContext(options) {
+ 38380	        const proxy = options.proxyOverride || options.proxy;
+ 38381	        let proxyBypassList = void 0;
+ 38382	        if (proxy) {
+ 38383	          if (shouldProxyLoopback(proxy.bypass))
+ 38384	            proxyBypassList = "<-loopback>" + (proxy.bypass ? `,${proxy.bypass}` : "");
+ 38385	          else
+ 38386	            proxyBypassList = proxy.bypass;
+ 38387	        }
+ 38388	        const { browserContextId } = await this._session.send("Target.createBrowserContext", {
+ 38389	          disposeOnDetach: true,
+ 38390	          proxyServer: proxy ? proxy.server : void 0,
+ 38391	          proxyBypassList
+ 38392	        });
+ 38393	        const context = new CRBrowserContext(this, browserContextId, options);
+ 38394	        await context.initialize();
+ 38395	        this._contexts.set(browserContextId, context);
+ 38396	        return context;
+
+/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js:38474-38482
+ 38474	      _didDisconnect() {
+ 38475	        for (const crPage of this._crPages.values())
+ 38476	          crPage.didClose();
+ 38477	        this._crPages.clear();
+ 38478	        for (const serviceWorker of this._serviceWorkers.values())
+ 38479	          serviceWorker.didClose();
+ 38480	        this._serviceWorkers.clear();
+ 38481	        this.didClose();
+ 38482	      }
+
+/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js:38749-38764
+ 38749	      async doClose(reason) {
+ 38750	        await this.dialogManager.closeBeforeUnloadDialogs();
+ 38751	        if (!this._browserContextId) {
+ 38752	          return "close-browser";
+ 38753	        }
+ 38754	        await Promise.all([...this._downloads].map((download) => download.cancel().catch(() => {
+ 38755	        })));
+ 38756	        await this._browser._session.send("Target.disposeBrowserContext", { browserContextId: this._browserContextId });
+ 38757	        this._browser._contexts.delete(this._browserContextId);
+ 38758	        for (const [targetId, serviceWorker] of this._browser._serviceWorkers) {
+ 38759	          if (serviceWorker.browserContext !== this)
+ 38760	            continue;
+ 38761	          serviceWorker.didClose();
+ 38762	          this._browser._serviceWorkers.delete(targetId);
+ 38763	        }
+ 38764	      }
+
+/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js:39609-39619
+ 39609	      close() {
+ 39610	        this._progress?.log(`<ws disconnecting> ${this._logUrl}`);
+ 39611	        this._ws.close();
+ 39612	      }
+ 39613	      async closeAndWait() {
+ 39614	        if (this._ws.readyState === ws.CLOSED)
+ 39615	          return;
+ 39616	        const promise = new Promise((f) => this._ws.once("close", f));
+ 39617	        this.close();
+ 39618	        await promise;
+ 39619	      }
+
+/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js:43075-43155
+ 43075	      async connectOverCDP(progress2, params2) {
+ 43076	        if (params2.transport)
+ 43077	          return this._connectOverCDPImpl(progress2, params2.transport, async () => params2.transport.close(), { ...params2, isLocal: true });
+ 43078	        return await this._connectOverCDPInternal(progress2, params2.endpointURL, params2);
+ 43079	      }
+ 43080	      async _connectOverCDPInternal(progress2, endpointURL, options, onClose) {
+ 43081	        let headersMap;
+ 43082	        if (options.headers)
+ 43083	          headersMap = headersArrayToObject(options.headers, false);
+ 43084	        if (!headersMap)
+ 43085	          headersMap = { "User-Agent": getUserAgent() };
+ 43086	        else if (headersMap && !Object.keys(headersMap).some((key) => key.toLowerCase() === "user-agent"))
+ 43087	          headersMap["User-Agent"] = getUserAgent();
+ 43088	        const channel = isChromiumChannelName(endpointURL) ? endpointURL : void 0;
+ 43089	        if (channel)
+ 43090	          endpointURL = await resolveChannelEndpoint(progress2, endpointURL);
+ 43091	        let wsEndpoint;
+ 43092	        let chromeTransport;
+ 43093	        try {
+ 43094	          wsEndpoint = await urlToWSEndpoint(progress2, endpointURL, headersMap);
+ 43095	          chromeTransport = await WebSocketTransport.connect(progress2, wsEndpoint, { headers: headersMap, followRedirects: true, debugLogHeader: "x-playwright-debug-log" });
+ 43096	        } catch (e) {
+ 43097	          if (channel)
+ 43098	            throw new Error(`Could not connect to ${channel}.
+ 43099	${remoteDebuggingHint(channel)}`);
+ 43100	          throw e;
+ 43101	        }
+ 43102	        const closeAndWait = async () => await chromeTransport.closeAndWait();
+ 43103	        return this._connectOverCDPImpl(progress2, chromeTransport, closeAndWait, options, onClose);
+ 43104	      }
+ 43105	      async _connectOverCDPImpl(progress2, transport, closeAndWait, options, onClose) {
+ 43106	        let artifactsDir;
+ 43107	        const tempDirectories = [];
+ 43108	        if (options.artifactsDir) {
+ 43109	          artifactsDir = options.artifactsDir;
+ 43110	        } else {
+ 43111	          artifactsDir = await progress2.race(import_fs27.default.promises.mkdtemp(ARTIFACTS_FOLDER2));
+ 43112	          tempDirectories.push(artifactsDir);
+ 43113	        }
+ 43114	        const doCleanup = async () => {
+ 43115	          await removeFolders(tempDirectories);
+ 43116	          const cb = onClose;
+ 43117	          onClose = void 0;
+ 43118	          await cb?.();
+ 43119	        };
+ 43120	        const doClose = async () => {
+ 43121	          await closeAndWait();
+ 43122	          await doCleanup();
+ 43123	        };
+ 43124	        try {
+ 43125	          const browserProcess = { close: doClose, kill: doClose };
+ 43126	          const persistent = {
+ 43127	            noDefaultViewport: true,
+ 43128	            ...options.noDefaults ? { acceptDownloads: "internal-browser-default" } : {}
+ 43129	          };
+ 43130	          const browserOptions = {
+ 43131	            slowMo: options.slowMo,
+ 43132	            name: "chromium",
+ 43133	            browserType: "chromium",
+ 43134	            persistent,
+ 43135	            browserProcess,
+ 43136	            protocolLogger: helper.debugProtocolLogger(),
+ 43137	            browserLogsCollector: new RecentLogsCollector(),
+ 43138	            artifactsDir,
+ 43139	            downloadsPath: options.downloadsPath || artifactsDir,
+ 43140	            tracesDir: options.tracesDir || artifactsDir,
+ 43141	            originalLaunchOptions: {},
+ 43142	            noDefaults: options.noDefaults,
+ 43143	            isWebView: options.isWebView
+ 43144	          };
+ 43145	          validateBrowserContextOptions(persistent, browserOptions);
+ 43146	          const browser = await progress2.race(CRBrowser.connect(this.attribution.playwright, transport, browserOptions));
+ 43147	          if (!options.isLocal)
+ 43148	            browser._isBrowserCollocatedWithServer = false;
+ 43149	          browser.on(Browser.Events.Disconnected, doCleanup);
+ 43150	          return browser;
+ 43151	        } catch (error) {
+ 43152	          await progress2.race(doClose().catch(() => {
+ 43153	          }));
+ 43154	          throw error;
+ 43155	        }
+
+/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js:43222-43225
+ 43222	      attemptToGracefullyCloseBrowser(transport) {
+ 43223	        const message = { method: "Browser.close", id: kBrowserCloseMessageId, params: {} };
+ 43224	        transport.send(message);
+ 43225	      }
+
+/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js:51552-51570
+ 51552	      constructor(browser, options, browserContextId) {
+ 51553	        super(browser, "browser-context");
+ 51554	        this._pageBindings = /* @__PURE__ */ new Map();
+ 51555	        this.requestInterceptors = [];
+ 51556	        this._closedStatus = "open";
+ 51557	        this._permissions = /* @__PURE__ */ new Map();
+ 51558	        this._downloads = /* @__PURE__ */ new Set();
+ 51559	        this._origins = /* @__PURE__ */ new Set();
+ 51560	        this._tempDirs = [];
+ 51561	        this._creatingStorageStatePage = false;
+ 51562	        this.initScripts = [];
+ 51563	        this._routesInFlight = /* @__PURE__ */ new Set();
+ 51564	        this._consoleApiExposed = false;
+ 51565	        this.attribution.context = this;
+ 51566	        this._browser = browser;
+ 51567	        this._options = options;
+ 51568	        this._browserContextId = browserContextId;
+ 51569	        this._isPersistentContext = !browserContextId;
+ 51570	        this._closePromise = new Promise((fulfill) => this._closePromiseFulfill = fulfill);
+
+/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js:51671-51685
+ 51671	      browserClosed() {
+ 51672	        for (const page of this.pages())
+ 51673	          page._didClose();
+ 51674	        this._didCloseInternal();
+ 51675	      }
+ 51676	      _didCloseInternal() {
+ 51677	        if (this._closedStatus === "closed") {
+ 51678	          return;
+ 51679	        }
+ 51680	        this._closedStatus = "closed";
+ 51681	        this._clientCertificatesProxy?.close().catch(() => {
+ 51682	        });
+ 51683	        this.tracing.abort();
+ 51684	        this.fetchRequest.tracing().abort();
+ 51685	        this._closePromiseFulfill(new Error("Context closed"));
+
+/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js:51904-51932
+ 51904	      async close(progress2, options) {
+ 51905	        let flushError;
+ 51906	        if (this._closedStatus === "open") {
+ 51907	          if (options.reason)
+ 51908	            this._closeReason = options.reason;
+ 51909	          this.emit(_BrowserContext.Events.BeforeClose);
+ 51910	          this._closedStatus = "closing";
+ 51911	          await progress2.race(Promise.all([
+ 51912	            this.tracing.flush().catch((e) => flushError = flushError ?? e),
+ 51913	            this.fetchRequest.tracing().flush().catch((e) => flushError = flushError ?? e)
+ 51914	          ]));
+ 51915	          await progress2.race(Promise.all(this.pages().map((page) => page.screencast.handlePageOrContextClose())));
+ 51916	          if (this._customCloseHandler) {
+ 51917	            await progress2.race(this._customCloseHandler());
+ 51918	          } else {
+ 51919	            const disposition = await progress2.race(this.doClose(options.reason));
+ 51920	            if (disposition === "close-browser")
+ 51921	              await this._browser.close(progress2, { reason: options.reason });
+ 51922	          }
+ 51923	          const promises2 = [];
+ 51924	          promises2.push(this._deleteAllDownloads());
+ 51925	          promises2.push(this._deleteAllTempDirs());
+ 51926	          await progress2.race(Promise.all(promises2));
+ 51927	          if (!this._customCloseHandler)
+ 51928	            this._didCloseInternal();
+ 51929	        }
+ 51930	        await this._closePromise;
+ 51931	        if (flushError)
+ 51932	          throw flushError;
+
+/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js:52677-52705
+ 52677	      didClose() {
+ 52678	        for (const context of this.contexts())
+ 52679	          context.browserClosed();
+ 52680	        if (this._defaultContext)
+ 52681	          this._defaultContext.browserClosed();
+ 52682	        for (const download of this._downloads.values())
+ 52683	          download.artifact.reportFinished(new TargetClosedError(void 0));
+ 52684	        this.stopServer(nullProgress).catch(() => {
+ 52685	        });
+ 52686	        this.emit(_Browser.Events.Disconnected);
+ 52687	        this.instrumentation.onBrowserClose(this);
+ 52688	      }
+ 52689	      async close(progress2, options) {
+ 52690	        return await progress2.race(this._close(options));
+ 52691	      }
+ 52692	      async _close(options) {
+ 52693	        if (!this._startedClosing) {
+ 52694	          if (options.reason)
+ 52695	            this._closeReason = options.reason;
+ 52696	          this._startedClosing = true;
+ 52697	          await this.options.browserProcess.close();
+ 52698	        }
+ 52699	        if (this.isConnected())
+ 52700	          await new Promise((x) => this.once(_Browser.Events.Disconnected, x));
+ 52701	      }
+ 52702	      async killForTests(progress2) {
+ 52703	        await progress2.race(this.options.browserProcess.kill());
+ 52704	        if (this.isConnected())
+ 52705	          await progress2.race(new Promise((x) => this.once(_Browser.Events.Disconnected, x)));
+
+/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js:54421-54423
+ 54421	      async close(params2, progress2) {
+ 54422	        await this._context.close(progress2, params2);
+ 54423	      }
+
+/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js:55389-55406
+ 55389	    BrowserDispatcher = class extends Dispatcher {
+ 55390	      constructor(scope, browser, options = {}) {
+ 55391	        super(scope, browser, "Browser", { version: browser.version(), name: browser.options.name, browserName: browser.options.browserType });
+ 55392	        this._type_Browser = true;
+ 55393	        this._isolatedContexts = /* @__PURE__ */ new Set();
+ 55394	        this._options = options;
+ 55395	        if (!options.isolateContexts) {
+ 55396	          this.addObjectListener(Browser.Events.Context, (context) => this._dispatchEvent("context", { context: BrowserContextDispatcher.from(this, context) }));
+ 55397	          this.addObjectListener(Browser.Events.Disconnected, () => this._didClose());
+ 55398	          if (browser._defaultContext)
+ 55399	            this._dispatchEvent("context", { context: BrowserContextDispatcher.from(this, browser._defaultContext) });
+ 55400	          for (const context of browser.contexts())
+ 55401	            this._dispatchEvent("context", { context: BrowserContextDispatcher.from(this, context) });
+ 55402	        }
+ 55403	      }
+ 55404	      _didClose() {
+ 55405	        this._dispatchEvent("close");
+ 55406	        this._dispose();
+
+/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js:55437-55445
+ 55437	      async close(params2, progress2) {
+ 55438	        if (this._options.ignoreStopAndKill)
+ 55439	          return;
+ 55440	        await this._object.close(progress2, params2);
+ 55441	      }
+ 55442	      async killForTests(params2, progress2) {
+ 55443	        if (this._options.ignoreStopAndKill)
+ 55444	          return;
+ 55445	        await this._object.killForTests(progress2);
+
+/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js:55513-55521
+ 55513	      async connectOverCDP(params2, progress2) {
+ 55514	        if (this._denyLaunch)
+ 55515	          throw new Error(`Launching more browsers is not allowed.`);
+ 55516	        const browser = await this._object.connectOverCDP(progress2, params2);
+ 55517	        const browserDispatcher = new BrowserDispatcher(this, browser);
+ 55518	        return {
+ 55519	          browser: browserDispatcher,
+ 55520	          defaultContext: browser._defaultContext ? BrowserContextDispatcher.from(browserDispatcher, browser._defaultContext) : void 0
+ 55521	        };
+
+/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js:62666-62677
+ 62666	    Browser2 = class extends ChannelOwner {
+ 62667	      constructor(parent, type3, guid, initializer) {
+ 62668	        super(parent, type3, guid, initializer);
+ 62669	        this._contexts = /* @__PURE__ */ new Set();
+ 62670	        this._isConnected = true;
+ 62671	        this._shouldCloseConnectionOnClose = false;
+ 62672	        this._options = {};
+ 62673	        this._name = initializer.name;
+ 62674	        this._browserName = initializer.browserName;
+ 62675	        this._channel.on("context", ({ context }) => this._didCreateContext(BrowserContext2.from(context)));
+ 62676	        this._channel.on("close", () => this._didClose());
+ 62677	        this._closedPromise = new Promise((f) => this.once(Events.Browser.Disconnected, f));
+
+/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js:62781-62801
+ 62781	      async [Symbol.asyncDispose]() {
+ 62782	        await this.close();
+ 62783	      }
+ 62784	      async close(options = {}) {
+ 62785	        this._closeReason = options.reason;
+ 62786	        try {
+ 62787	          if (this._shouldCloseConnectionOnClose)
+ 62788	            this._connection.close();
+ 62789	          else
+ 62790	            await this._channel.close(options, kNoTimeout);
+ 62791	          await this._closedPromise;
+ 62792	        } catch (e) {
+ 62793	          if (isTargetClosedError2(e))
+ 62794	            return;
+ 62795	          throw e;
+ 62796	        }
+ 62797	      }
+ 62798	      _didClose() {
+ 62799	        this._isConnected = false;
+ 62800	        this.emit(Events.Browser.Disconnected, this);
+ 62801	      }
+
+/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js:62806-62841
+ 62806	// packages/playwright-core/src/client/connect.ts
+ 62807	async function connectToBrowser(playwright2, params2) {
+ 62808	  const deadline = params2.timeout ? monotonicTime() + params2.timeout : 0;
+ 62809	  const nameParam = params2.browserName ? { "x-playwright-browser": params2.browserName } : {};
+ 62810	  const headers = { ...nameParam, ...params2.headers };
+ 62811	  const connectParams = {
+ 62812	    endpoint: params2.endpoint,
+ 62813	    headers,
+ 62814	    exposeNetwork: params2.exposeNetwork,
+ 62815	    slowMo: params2.slowMo
+ 62816	  };
+ 62817	  if (params2.__testHookRedirectPortForwarding)
+ 62818	    connectParams.socksProxyRedirectPortForTest = params2.__testHookRedirectPortForwarding;
+ 62819	  const connection = await connectToEndpoint(playwright2._connection, connectParams, { signal: void 0, timeout: params2.timeout || 0 });
+ 62820	  let browser;
+ 62821	  connection.on("close", () => {
+ 62822	    for (const context of browser?.contexts() || []) {
+ 62823	      for (const page of context.pages())
+ 62824	        page._onClose();
+ 62825	      context._onClose();
+ 62826	    }
+ 62827	    setTimeout(() => browser?._didClose(), 0);
+ 62828	  });
+ 62829	  const result2 = await raceAgainstDeadline(async () => {
+ 62830	    if (params2.__testHookBeforeCreateBrowser)
+ 62831	      await params2.__testHookBeforeCreateBrowser();
+ 62832	    const playwright3 = await connection.initializePlaywright();
+ 62833	    if (!playwright3._initializer.preLaunchedBrowser) {
+ 62834	      connection.close();
+ 62835	      throw new Error("Malformed endpoint. Did you use BrowserType.launchServer method?");
+ 62836	    }
+ 62837	    playwright3.selectors = playwright3.selectors;
+ 62838	    browser = Browser2.from(playwright3._initializer.preLaunchedBrowser);
+ 62839	    browser._shouldCloseConnectionOnClose = true;
+ 62840	    browser.on(Events.Browser.Disconnected, () => connection.close());
+ 62841	    return browser;
+
+/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js:63361-63400
+ 63361	      async connectOverCDP(overloaded, options) {
+ 63362	        let endpointURL;
+ 63363	        let transport;
+ 63364	        let params2;
+ 63365	        if (typeof overloaded === "string") {
+ 63366	          endpointURL = overloaded;
+ 63367	          params2 = options ?? {};
+ 63368	        } else if (isConnectionTransport(overloaded)) {
+ 63369	          if (this.name() !== "chromium" && this.name() !== "webkit")
+ 63370	            throw new Error("Connecting over CDP is only supported in Chromium and WebKit.");
+ 63371	          if (this._connection.isRemote())
+ 63372	            throw new Error("Passing a ConnectionTransport to connectOverCDP is not supported when connecting remotely.");
+ 63373	          transport = overloaded;
+ 63374	          params2 = options ?? {};
+ 63375	        } else {
+ 63376	          endpointURL = "endpointURL" in overloaded ? overloaded.endpointURL : overloaded.wsEndpoint;
+ 63377	          assert(endpointURL, "Cannot connect over CDP without wsEndpoint.");
+ 63378	          params2 = overloaded;
+ 63379	        }
+ 63380	        if (endpointURL && this.name() !== "chromium" && this.name() !== "webkit")
+ 63381	          throw new Error("Connecting over CDP is only supported in Chromium and WebKit.");
+ 63382	        const result2 = await this._channel.connectOverCDP({
+ 63383	          endpointURL,
+ 63384	          transport,
+ 63385	          headers: params2.headers ? headersObjectToArray(params2.headers) : void 0,
+ 63386	          slowMo: params2.slowMo,
+ 63387	          isLocal: params2.isLocal,
+ 63388	          noDefaults: params2.noDefaults,
+ 63389	          isWebView: params2.isWebView,
+ 63390	          artifactsDir: params2.artifactsDir
+ 63391	        }, new TimeoutSettings().timeout(params2));
+ 63392	        return await this._browserFromConnectResult(result2);
+ 63393	      }
+ 63394	      async _browserFromConnectResult(result2) {
+ 63395	        const browser = Browser2.from(result2.browser);
+ 63396	        browser._connectToBrowserType(this, {}, void 0);
+ 63397	        if (result2.defaultContext)
+ 63398	          await this._instrumentation.runAfterCreateBrowserContext(BrowserContext2.from(result2.defaultContext));
+ 63399	        return browser;
+ 63400	      }
+
+/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js:13345-13349
+ 13345	      async closeBeforeUnloadDialogs() {
+ 13346	        await Promise.all([...this._openedDialogs].map(async (dialog) => {
+ 13347	          if (dialog.type() === "beforeunload")
+ 13348	            await dialog._dismiss();
+ 13349	        }));
+
+/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js:38423-38430
+ 38423	      _onAttachedToTarget({ targetInfo, sessionId, waitingForDebugger }) {
+ 38424	        if (targetInfo.type === "browser")
+ 38425	          return;
+ 38426	        const session2 = this._session.createChildSession(sessionId);
+ 38427	        assert(targetInfo.browserContextId, "targetInfo: " + JSON.stringify(targetInfo, null, 2));
+ 38428	        let context = this._contexts.get(targetInfo.browserContextId) || null;
+ 38429	        if (!context) {
+ 38430	          context = this._defaultContext;
+

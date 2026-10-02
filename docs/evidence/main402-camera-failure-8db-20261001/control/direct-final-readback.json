@@ -1,0 +1,155 @@
+{
+  "schema": 1,
+  "at": "2026-10-02T03:41:04.476410+00:00",
+  "integrationPin": "8db0f2dd0b38302f0f588c80316db082bc49e9b3",
+  "status": "failed; first failure retained; no runtime retry",
+  "wrapperExitCode": 1,
+  "rawManifest": {
+    "path": "/tmp/ovf-main402-native15-8db0f2d-r3/run-artifact-manifest.json",
+    "bytes": 114792,
+    "sha256": "0bc9b7b5df75c26f226f52e319a7723383287039afae66b91f90bc2f3474d4d0",
+    "artifactCount": 540,
+    "artifactBytes": 93185612
+  },
+  "allManifestArtifactsReauthenticated": true,
+  "directSourceAndDistReadbackCounts": {
+    "rootProduct": 570,
+    "ownedProduct": 570,
+    "helpers": 194,
+    "rootDist": 397,
+    "ownedDist": 398
+  },
+  "finalRootHead": "8db0f2dd0b38302f0f588c80316db082bc49e9b3",
+  "finalOwnedHead": "8db0f2dd0b38302f0f588c80316db082bc49e9b3",
+  "firstFailure": {
+    "message": "main15-strict-art-browser failed exit 1; no retry",
+    "traceback": "Traceback (most recent call last):\n  File \"/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/main15-bounded.v5.py\", line 250, in main\n    phase('main15-strict-art-browser',node+[str(OWNED/'scripts/acceptance/verify-main-smoke402.mjs'),base,str(OWNED),str(browser_out),str(fixtures),str(freeze),str(helpers/'audit.mjs'),'canonical,ruins'],900,env)\n    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/main15-bounded.v5.py\", line 138, in phase\n    if proc.returncode:raise RuntimeError(name+' failed exit '+str(proc.returncode)+'; no retry')\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: main15-strict-art-browser failed exit 1; no retry\n",
+    "at": "2026-10-02T03:36:20.098488+00:00"
+  },
+  "browserFailure": {
+    "phase": "native canonical encounters",
+    "message": "AssertionError [ERR_ASSERTION]: Native pointer action must reach the battlefield canvas\n    at canvasInput (file:///tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/native-context.mjs:64:195)\n    at async Object.ground (file:///tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/native-context.mjs:65:267)\n    at async Object.runCanonicalTacticsSmoke [as canonical] (file:///tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/canonical-main-smoke.mjs:45:221)\n    at async file:///tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/verify-main-smoke402.mjs:81:88"
+  },
+  "browserReceipt": {
+    "path": "/tmp/ovf-main402-native15-8db0f2d-r3/browser/browser-main-smoke402.json",
+    "bytes": 354989,
+    "sha256": "0b6a753ec14811c88f69cddda9924f5c6e77fcc28c018f6143e88a2a3824eecc",
+    "completed": false,
+    "cleanup": {
+      "completed": true,
+      "errors": []
+    },
+    "checks": [
+      "Native import preserves formation-line"
+    ],
+    "assetFailures": [],
+    "errors": []
+  },
+  "selectionObservation": {
+    "expected": [
+      54,
+      55,
+      56,
+      57,
+      58,
+      59
+    ],
+    "actual": [
+      54,
+      55,
+      56,
+      57,
+      58,
+      59
+    ],
+    "tick": 31,
+    "paused": false,
+    "art": {
+      "enabled": true,
+      "loaded": true,
+      "assets": 100,
+      "loadedAtlasPages": 46,
+      "decodedAtlasMiB": 467.5018310546875,
+      "renderedUnits": 10
+    }
+  },
+  "pointerObservationLimit": "The retained lastState has no camera field; no exact screen coordinate or live DOM attribution is claimed. Source/read-only screenshot inspection remains root-owned.",
+  "firstFailureScreenshot": {
+    "path": "/tmp/ovf-main402-native15-8db0f2d-r3/browser/native-acceptance-first-failure.png",
+    "bytes": 770182,
+    "sha256": "07b751d062c053c38f0b5d052ec3b79fa57ae8b836b9d5d3bac1b7ed1859d002",
+    "inspected": true,
+    "observation": "Shows six selected troops near lower-right and the Orders panel at lower-right."
+  },
+  "fixtureCount": 15,
+  "fixturesExecuted": true,
+  "previewExecuted": true,
+  "browserExecuted": true,
+  "historyExecuted": false,
+  "placeholderExecuted": false,
+  "cleanupErrors": [],
+  "signals": [
+    {
+      "at": "2026-10-02T03:36:20.106046+00:00",
+      "pid": 1725830,
+      "startTicks": 8806541,
+      "signal": 15,
+      "protected4173": {
+        "pid": 1063,
+        "startTicks": 874,
+        "port": 4173,
+        "listeners": [
+          {
+            "table": "tcp",
+            "inode": "3783",
+            "local": "0100007F:104D"
+          }
+        ],
+        "matchingFds": [
+          {
+            "fd": "22",
+            "target": "socket:[3783]"
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-02T03:36:20.107285+00:00",
+      "pid": 1725822,
+      "startTicks": 8806534,
+      "signal": 15,
+      "protected4173": {
+        "pid": 1063,
+        "startTicks": 874,
+        "port": 4173,
+        "listeners": [
+          {
+            "table": "tcp",
+            "inode": "3783",
+            "local": "0100007F:104D"
+          }
+        ],
+        "matchingFds": [
+          {
+            "fd": "22",
+            "target": "socket:[3783]"
+          }
+        ]
+      }
+    }
+  ],
+  "wrapperClosed": true,
+  "rememberedOwnedChildrenClosed": true,
+  "rememberedOwnedChildCount": 22,
+  "closureQualification": "Only previously bound exact identities checked; no atomic unobserved-descendant exclusion claim.",
+  "protectedPreview": {
+    "pid": 1063,
+    "startTicks": 874,
+    "listenerInode": "3783",
+    "fd22": "socket:[3783]"
+  },
+  "owned4187Listeners": [],
+  "runtimeRetryCount": 0,
+  "originalTemplateAndPreparationManifestUnchanged": true,
+  "visualAcceptance": "No completed encounter; first-failure screenshot inspected only."
+}

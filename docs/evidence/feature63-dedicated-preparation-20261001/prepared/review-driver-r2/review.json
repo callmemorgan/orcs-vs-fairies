@@ -1,0 +1,128 @@
+{
+  "schema": "feature63-dedicated-wrapper-review-v1",
+  "reviewedAt": "2026-10-01T19:44:22-07:00",
+  "status": "FAIL",
+  "approved": false,
+  "runtimeDisposition": "HELD",
+  "sourcePin": null,
+  "productVersion": "4.0.2",
+  "reviewer": {
+    "harness": "Codex",
+    "model": "GPT-6",
+    "providerIdentityVerified": false
+  },
+  "scope": "Static independent R2 review of the feature 63 dedicated wrapper and collector cadence correction",
+  "execution": {
+    "packetScriptsRun": false,
+    "nodeRun": false,
+    "testsRun": false,
+    "buildRun": false,
+    "browserRun": false,
+    "serverRun": false,
+    "sqliteRun": false,
+    "simulationRun": false,
+    "signalsSent": false
+  },
+  "wrapperSha256": "611715dfafc6d2b15c624f055b773b702a93a5b116e6d3a639c55ffa5d63f946",
+  "publicProducerSha256": "d661329136041f8ccb15dfb9e94ae0556c303a6f995304c7f08889698b5a5f0f",
+  "collectorSha256": "c6c768ad7d54696e5e1e8456881f038cd7b7bb70112cd9b8b17d86b0feaebd7f",
+  "auditorSha256": "4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb",
+  "nodeExecutableSha256": null,
+  "pythonExecutableSha256": null,
+  "restoredBothOwnerHumanTargetUnion": true,
+  "r1Findings": {
+    "staleNumericSessionReuse": "partially-fixed-but-nonatomic-enumeration-remains",
+    "collectorSlotTokenMismatch": "fixed",
+    "cdpCloseProof": "still-pending",
+    "collectorCatchUpCadence": "fixed"
+  },
+  "checks": {
+    "registeredSignalTargetsUseExactIdentityAndPidfd": true,
+    "protected1063And4173CheckedImmediatelyBeforeEachSignal": true,
+    "directRootKeptUnreapedUntilSessionScans": true,
+    "numericPpidAdmissionRemoved": true,
+    "sessionEmptyCheckAtomic": false,
+    "failedLaunchAlwaysHasClosableAuthenticatedRoot": false,
+    "collectorSlotBoundToWrapperSlotToken": true,
+    "collectorStrictOneSecondMinimumPollInterval": true,
+    "fresh5373And5374Required": true,
+    "sourceTestedBuild402BindingPresent": true,
+    "dependencyByteBindingPresent": true,
+    "bothHumanSourceOwnersRequired": true,
+    "bothAiTargetOwnersInSelectedNativeWaveRequired": true,
+    "firstFailureAndNoRetryControlsPresent": true,
+    "oneShotAuditAfterRootSealAndExtraction": true,
+    "nativeAuditTwoMiBFinalBoundEnforced": false,
+    "currentPacketEntryPointsUnambiguous": false,
+    "cdpDisconnectNoNativeSignalsIndependentlyProven": false,
+    "chromiumChildrenRemainOwnedSessionIndependentlyProven": false
+  },
+  "findings": [
+    {
+      "id": "F63-R2-001",
+      "severity": "high",
+      "title": "Two non-atomic proc scans do not prove the owned session is empty",
+      "file": "driver/run-minimal63-r2.py",
+      "lines": [372, 390],
+      "reason": "refresh enumerates proc one PID at a time. A live member can fork after its directory was passed and exit before inspection, leaving a new session member that the current scan misses. A descendant can repeat that handoff during the second scan. Therefore an empty survivors list after two scans does not establish the comment that no live parent can fork or prove complete session closure.",
+      "requiredChange": "Use kernel-backed ownership with an authoritative empty state, such as a dedicated cgroup whose membership is checked after cgroup.kill and whose populated value reaches zero. Do not treat a fixed number of proc enumerations as an atomic emptiness proof."
+    },
+    {
+      "id": "F63-R2-002",
+      "severity": "high",
+      "title": "A process can remain live when launch authentication fails before root registration",
+      "file": "driver/run-minimal63-r2.py",
+      "lines": [311, 330, 343, 347],
+      "reason": "start stores the Popen child before it authenticates argv, cwd, session and the protected state, but it assigns self.roots only after those checks. If authentication times out or fails while the child remains live, stop_family sees a child without a root, raises cleanup held, and sends no signal. The result records no complete identity for that still-running process.",
+      "requiredChange": "Establish and retain a kernel-backed launch handle and enough pre-exec custody to close or hand off every successful Popen, including failures before full admission. If exact executable/cwd/argv cannot be authenticated, preserve a concrete manual-custody record for the live PID/pidfd and do not let the wrapper exit as though cleanup accounting were complete."
+    },
+    {
+      "id": "F63-R2-003",
+      "severity": "medium",
+      "title": "The two MiB native-audit output bound is not checked after process exit",
+      "file": "driver/run-minimal63-r2.py",
+      "lines": [597, 623],
+      "reason": "The size check runs only inside while not exited. A final stdout or stderr write can cross the limit before the process exits, after which the loop body is skipped. stop_family then appends a driver event, and the wrapper adds driver-result.json, with no final aggregate check. Exit code zero can still produce a PASS result over the stated limit.",
+      "requiredChange": "Check the complete retained audit directory after the child is closed and before assigning PASS, reserving space for the closure event and final driver result or defining those files outside the capped set."
+    },
+    {
+      "id": "F63-R2-004",
+      "severity": "medium",
+      "title": "The packet README still identifies the R1 assignments and frozen R6 collector",
+      "file": "README.md",
+      "lines": [5, 21, 27],
+      "reason": "R2 adds run-minimal63-r2.py, collector R7, and two -r2.pending assignment specimens while preserving the R1 files. README.md still calls frozen collector R6 the collector authority and tells root to use capture-assignment.pending.json and audit-assignment.pending.json. Those older specimens bind the R1 driver and R6 collector, leaving two conflicting operator paths in one packet.",
+      "requiredChange": "Name the current R2 driver, R7 collector and -r2.pending specimens in the packet entry-point documentation and mark the R1 files historical. Add a current manifest that binds the four candidate hashes."
+    },
+    {
+      "id": "F63-R2-005",
+      "severity": "blocking-prerequisite",
+      "title": "CDP disconnect and Chromium child-session behavior still lack dependency-level proof",
+      "file": "driver/run-minimal63-r2.py",
+      "lines": [226, 238],
+      "related": [
+        {
+          "file": "public-producer-r2/verify-human-wave-r3.mjs",
+          "lines": [103, 120, 163, 166, 537, 539]
+        }
+      ],
+      "reason": "R2 adds reviewedNativeChildrenRemainOwnedSession but, like reviewedCdpDisconnectHasNoNativeSignals, it is a receipt boolean. The pending browser binding and dependency inventory are null, so this review could not inspect the Playwright close implementation or prove that the admitted Chromium command keeps all native children in the wrapper's session.",
+      "requiredChange": "Root must review and bind the exact Playwright and Chromium dependency bytes for both properties before runtime admission."
+    }
+  ],
+  "verifiedStaticProperties": [
+    "R2 no longer admits descendants by PPID and keeps each authenticated direct root unreaped while its session is scanned.",
+    "The direct root's start ticks and session ID are checked on each refresh, preventing stale session-ID reuse before wait.",
+    "Every explicit signal to a registered resource still uses exact PID/startTicks/executable/cwd/argv identity, a fresh PID 1063/start 874/port 4173 check, and the retained pidfd.",
+    "The collector template's heavySlot object must contain the wrapper's admitted exclusive slot token.",
+    "Collector R7 waits at least one second after each SELECT completes and retains the previous 300-second, 300-query, four-record and 8 MiB bounds.",
+    "The source, tested 4.0.2 build, complete build inventories, dependency bytes, fresh ports and one-shot post-seal audit guards remain present.",
+    "The unchanged public R3 and native R6 candidates require human source owners 0 and 1 and AI target owners 2 and 3 within the selected authenticated wave.",
+    "Capture and audit retain the first recorded failure and contain no automatic retry path."
+  ],
+  "limitations": [
+    "This was a static review. No reviewed program or runtime dependency was executed.",
+    "The R2 pending assignments contain false approvals and null source, build, dependency, executable and slot bindings.",
+    "The model provider was not independently authenticated."
+  ]
+}

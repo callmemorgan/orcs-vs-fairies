@@ -1,0 +1,244 @@
+{
+  "schema": "feature63-dependency-cdp-lifecycle-review-v1",
+  "author": "Codex / GPT-6",
+  "status": "PASS_STATIC_CDP_CONTEXT_SCOPE",
+  "sourcePin": null,
+  "runtimeAdmissionGranted": false,
+  "package": {
+    "name": "playwright-core",
+    "version": "1.63.0",
+    "directory": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core",
+    "files": [
+      {
+        "path": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/package.json",
+        "bytes": 876,
+        "sha256": "f061c58427e47e843e26d201f0a57076c734e57c734ecbbd87d4a23b7a20db9b"
+      },
+      {
+        "path": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/index.js",
+        "bytes": 697,
+        "sha256": "a58fb2cec4293e7dcf73c58a179898a4f3986666451a19da4e731fa3af63265b"
+      },
+      {
+        "path": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/index.mjs",
+        "bytes": 1063,
+        "sha256": "3d36e2132d3c8b62397d23f0bb4177336aaee503203ae2a2c90fbeb5bf3317dd"
+      },
+      {
+        "path": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/bootstrap.js",
+        "bytes": 3481,
+        "sha256": "4637f4dbfef9cfc01baeb5f5d2cb63fa0901522c96915ea2227290558d27123e"
+      },
+      {
+        "path": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js",
+        "bytes": 3477183,
+        "sha256": "549070af3acabb3efcc4f55bfe6210f9f7c2fcf633cf7eaa59bfe60719969171"
+      },
+      {
+        "path": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/utilsBundle.js",
+        "bytes": 3048692,
+        "sha256": "2d1ccc01d21b7d54ca99a6305991d7fb6e072ea4e725d7fec5eb6184188c52c9"
+      },
+      {
+        "path": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/types/types.d.ts",
+        "bytes": 1131883,
+        "sha256": "2806f6d7810fba0306066d500cd716a6d1128d90af2c3cf71723e3ea0a8904c4"
+      }
+    ]
+  },
+  "preparedInputs": [
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/feature63-dedicated-wrapper-readiness-r1/driver/run-minimal63-pidfd-r3.py",
+      "bytes": 40397,
+      "sha256": "eabf3048df363f397275021886fcd831176d8de9e0e5bfc9f7fccc659a0a0fee"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/feature63-dedicated-wrapper-readiness-r1/public-producer-r2/verify-human-wave-r3.mjs",
+      "bytes": 48578,
+      "sha256": "d661329136041f8ccb15dfb9e94ae0556c303a6f995304c7f08889698b5a5f0f"
+    },
+    {
+      "path": "/usr/lib/python3.14/subprocess.py",
+      "bytes": 90732,
+      "sha256": "6628ffdd65c093a6c08cae01ffe82877d3ced515aac9e7be0cff16512c30a7d9"
+    },
+    {
+      "path": "/usr/share/man/man2/setsid.2.gz",
+      "bytes": 1167,
+      "sha256": "cf33e3d8ec282d9df4bfcc2d5a582b346e1f16501edaba46d1c51fdae23895b4"
+    }
+  ],
+  "findings": [
+    {
+      "topic": "URL CDP browser.close",
+      "status": "established statically for reviewed path",
+      "locations": {
+        "lib/coreBundle.js": [
+          [
+            63361,
+            63400
+          ],
+          [
+            62784,
+            62795
+          ],
+          [
+            55437,
+            55440
+          ],
+          [
+            52689,
+            52700
+          ],
+          [
+            43080,
+            43155
+          ],
+          [
+            39609,
+            39618
+          ],
+          [
+            8343,
+            8347
+          ]
+        ],
+        "lib/utilsBundle.js": [
+          [
+            12985,
+            13007
+          ]
+        ]
+      },
+      "conclusion": "Client/channel/dispatcher close reaches synthetic browserProcess.close = doClose. doClose closes the CDP WebSocket and removes Playwright temporary directories. It sends no native Browser.close, no Chromium OS termination signal, and performs no external PID reap on this path."
+    },
+    {
+      "topic": "Explicit guest context.close",
+      "status": "established statically for returned newContext handles",
+      "locations": {
+        "lib/coreBundle.js": [
+          [
+            38379,
+            38396
+          ],
+          [
+            38749,
+            38764
+          ],
+          [
+            51904,
+            51932
+          ],
+          [
+            62620,
+            62629
+          ]
+        ],
+        "public-producer-r2/verify-human-wave-r3.mjs": [
+          [
+            297,
+            300
+          ],
+          [
+            449,
+            453
+          ],
+          [
+            537,
+            538
+          ]
+        ]
+      },
+      "conclusion": "newContext requests Target.createBrowserContext(disposeOnDetach:true) and receives an explicit browserContextId. close disposes only that ID and its pages/bookkeeping. Producer closes its two returned handles, then the attachment. Default CDP context has no ID and takes close-browser/disconnect disposition instead; it is not used as a guest context."
+    },
+    {
+      "topic": "Fixed owned launch",
+      "status": "direct-child request and conditional inheritance only",
+      "locations": {
+        "driver/run-minimal63-pidfd-r3.py": [
+          [
+            322,
+            343
+          ],
+          [
+            505,
+            509
+          ],
+          [
+            483,
+            485
+          ],
+          [
+            607,
+            612
+          ]
+        ],
+        "/usr/lib/python3.14/subprocess.py": [
+          [
+            1919,
+            1929
+          ]
+        ],
+        "/usr/share/man/man2/setsid.2.gz decompressed": [
+          [
+            19,
+            29
+          ],
+          [
+            53,
+            57
+          ]
+        ]
+      },
+      "conclusion": "Wrapper requests start_new_session=True for its direct Chromium child and checks its session ID equals its PID. Python passes that option into _fork_exec. Ordinary fork children inherit the parent's SID and exec preserves it. Flags alone do not establish whether this exact Chromium binary/helper implementation calls setsid or delegates elsewhere. Reviewed variant limits native closure evidence to direct roots and bound observed original-session descendants and keeps unobservedDescendantsExcluded=false."
+    }
+  ],
+  "chromiumArgv": [
+    "<bound chromiumExecutable.path>",
+    "--headless=new",
+    "--disable-dev-shm-usage",
+    "--disable-crash-reporter",
+    "--disable-breakpad",
+    "--disable-crashpad-for-testing",
+    "--remote-debugging-address=127.0.0.1",
+    "--remote-debugging-port=5374",
+    "--user-data-dir=<fresh PREFIX/browser-profile>",
+    "--no-first-run",
+    "--no-default-browser-check",
+    "about:blank"
+  ],
+  "practicalScope": "Source review resolves CDP disconnect and explicit context-only disposition for exact installed bytes. It does not prove native browser exit, every-helper SID behavior, protocol completion, wrapper runtime cleanup or an atomic absence of descendants.",
+  "unknowns": [
+    "Chromium executable/version is supplied through a later root-bound descriptor; binary implementation and flag recognition are not proved by these Playwright sources.",
+    "No runtime detach/context disposal or direct-child SID check was observed.",
+    "Handle-close events do not establish external PID or descendant exit.",
+    "Conclusion covers URL endpoint, no custom transport/internal onClose callback; it is not a general statement about chromium.launch cleanup."
+  ],
+  "independentReview": [
+    {
+      "path": "/tmp/ovf-feature63-cdp-close-static-_j3aix54/review.md",
+      "sha256": "ccef08800d7a55abbf04203d05b4d37712390465ada786877ffe0610880cfe11"
+    },
+    {
+      "path": "/tmp/ovf-feature63-cdp-close-static-_j3aix54/facts.json",
+      "sha256": "27d968048f635660f30bed6f0c4af78df5c36e99813894bdca529344ee4bf065"
+    },
+    {
+      "path": "/tmp/ovf-feature63-cdp-close-static-_j3aix54/source-excerpts.txt",
+      "sha256": "972f789fe156139bd0e9d0158dc62b692742d6be54cfa08227290f799b237301"
+    }
+  ],
+  "constraints": {
+    "dependencyOrToolRuntimeImported": false,
+    "launches": false,
+    "browserOrAttachment": false,
+    "tests": false,
+    "databaseReads": false,
+    "signals": false,
+    "cgroupWrites": false,
+    "rootOrPreparedCandidateEdits": false,
+    "freshExternalReviewOnly": true,
+    "atomicNoDescendantsClaim": false
+  }
+}
+

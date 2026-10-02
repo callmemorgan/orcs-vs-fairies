@@ -1,0 +1,276 @@
+--- /home/morgana/.codex/worktrees/assembled-allied-ai/feature63-dedicated-wrapper-readiness-r1/driver/run-minimal63-r1.py
++++ /home/morgana/.codex/worktrees/assembled-allied-ai/feature63-dedicated-wrapper-readiness-r1/driver/run-minimal63-r2.py
+@@ -111,20 +111,19 @@
+         return None
+ 
+ 
+-def parent_pid(pid):
++def process_state(pid):
+     try:
+         text = (Path('/proc') / str(pid) / 'stat').read_text()
+-        return int(text[text.rfind(')') + 2:].split()[1])
++        fields = text[text.rfind(')') + 2:].split()
++        return {'pid': pid, 'state': fields[0], 'parentPid': int(fields[1]),
++                'session': int(fields[3]), 'startTicks': int(fields[19])}
+     except (FileNotFoundError, ProcessLookupError):
+         return None
+ 
+ 
+ def session_id(pid):
+-    try:
+-        text = (Path('/proc') / str(pid) / 'stat').read_text()
+-        return int(text[text.rfind(')') + 2:].split()[3])
+-    except (FileNotFoundError, ProcessLookupError):
+-        return None
++    value = process_state(pid)
++    return None if value is None else value['session']
+ 
+ 
+ def sockets(pid):
+@@ -229,7 +228,8 @@
+             and browser['exclusiveSlotToken'] == slot['token'], 'Browser dependency binding differs')
+     require(browser['contextCount'] == 2 and browser['browserCount'] == 1 and browser['headless'] is True
+             and browser['nativeLifecycleOwner'] == 'dedicated-wrapper' and browser['reviewedCdpDisconnectHasNoNativeSignals'] is True
+-            and browser['cdpBaseUrl'] == 'http://127.0.0.1:5374' and browser['allDependencyBytesAuthenticated'] is True,
++            and browser['cdpBaseUrl'] == 'http://127.0.0.1:5374' and browser['allDependencyBytesAuthenticated'] is True
++            and browser['reviewedNativeChildrenRemainOwnedSession'] is True,
+             'External browser lifecycle/dependency review absent')
+     bound(browser['playwrightEntry'], MAX_RAW_BYTES)
+     bound(browser['chromiumExecutable'], MAX_RAW_BYTES)
+@@ -243,6 +243,8 @@
+         self.assignment = assignment
+         self.output = output
+         self.children = {}
++        self.roots = {}
++        self.closed_families = set()
+         self.resources = {}
+         self.logs = []
+ 
+@@ -263,25 +265,48 @@
+         self.resources[key] = {'identity': ident, 'family': family, 'pidfd': fd}
+         self.event('registered native resource', identity=ident, family=family)
+ 
++    def exited(self, family):
++        # Observing /proc never wait()s or reaps a child. The direct PID remains reserved.
++        process = self.children[family]
++        state = process_state(process.pid)
++        root = self.roots.get(family)
++        if root is not None and state is not None:
++            require(state['startTicks'] == root['startTicks'], 'Unreaped direct root start tick changed')
++        return state is None or state['state'] in ('Z', 'X')
++
+     def refresh(self):
+-        parents = {key[0]: value['family'] for key, value in self.resources.items() if identity(key[0]) == value['identity']}
+-        sessions = {process.pid: family for family, process in self.children.items()}
+-        changed = True
+-        while changed:
+-            changed = False
+-            for path in Path('/proc').iterdir():
+-                if not path.name.isdigit():
+-                    continue
+-                pid = int(path.name)
+-                ppid = parent_pid(pid)
+-                family = parents.get(ppid) or sessions.get(session_id(pid))
+-                if family is None or pid in parents:
+-                    continue
+-                ident = identity(pid)
+-                if ident is not None:
+-                    self.register(ident, family)
+-                    parents[pid] = family
+-                    changed = True
++        sessions = {}
++        for family, root in self.roots.items():
++            if family in self.closed_families:
++                continue
++            process = self.children[family]
++            require(process.returncode is None, 'Direct root was reaped before owned-session closure')
++            state = process_state(root['pid'])
++            require(state is not None and state['startTicks'] == root['startTicks']
++                    and state['session'] == root['pid'], 'Unreaped direct PID/session reservation changed')
++            sessions[root['pid']] = family
++        # Only kernel session membership admits descendants. Numeric PPID alone never does.
++        # The unreaped direct root reserves the session ID until the final scan and wait().
++        for path in Path('/proc').iterdir():
++            if not path.name.isdigit():
++                continue
++            pid = int(path.name)
++            state = process_state(pid)
++            family = None if state is None else sessions.get(state['session'])
++            if family is None or state['state'] in ('Z', 'X'):
++                continue
++            ident = identity(pid)
++            if ident is not None:
++                require(session_id(pid) == self.roots[family]['pid'], 'Resource left its admitted session')
++                self.register(ident, family)
++        for value in self.resources.values():
++            if value['family'] in self.closed_families:
++                continue
++            ident = value['identity']
++            live = identity(ident['pid'])
++            if live is not None:
++                require(live == ident and session_id(ident['pid']) == self.roots[value['family']]['pid'],
++                        'Managed process identity or owned session changed; no signal is permitted')
+ 
+     def start(self, label, command, env):
+         protected(self.assignment)
+@@ -292,7 +317,7 @@
+         self.children[label] = process
+         deadline = time.monotonic() + 2
+         ident = None
+-        while time.monotonic() < deadline and process.poll() is None:
++        while time.monotonic() < deadline:
+             candidate = identity(process.pid)
+             if candidate is not None and candidate['argv'] == command and candidate['cwd'] == str(CHECKOUT):
+                 ident = candidate
+@@ -301,6 +326,7 @@
+                 time.sleep(0.02)
+         require(ident is not None and ident['argv'] == command and ident['cwd'] == str(CHECKOUT), 'New child launch identity differs')
+         require(session_id(process.pid) == process.pid, 'New child must own a distinct kernel session')
++        self.roots[label] = ident
+         self.register(ident, label)
+         return ident
+ 
+@@ -315,35 +341,56 @@
+         self.event('sent signal through bound pidfd', target=ident, signal=signum, protectedSocketCheck=check)
+ 
+     def stop_family(self, family, grace):
++        if family not in self.children or family in self.closed_families:
++            return
++        require(family in self.roots, 'Failed launch has no authenticated native root; cleanup held')
+         self.refresh()
++        direct = self.children[family]
+         records = [v for v in self.resources.values() if v['family'] == family]
+-        # Native parent gets the graceful signal first, then remaining children after closure.
+-        direct = self.children.get(family)
+-        roots = [v for v in records if direct and v['identity']['pid'] == direct.pid]
+-        for record in roots:
+-            self.send(record, signal.SIGTERM)
++        for record in records:
++            if record['identity']['pid'] == direct.pid:
++                self.send(record, signal.SIGTERM)
+         deadline = time.monotonic() + grace
+-        while time.monotonic() < deadline and any(identity(v['identity']['pid']) == v['identity'] for v in records):
++        while time.monotonic() < deadline:
+             self.refresh()
+             records = [v for v in self.resources.values() if v['family'] == family]
++            if not any(identity(v['identity']['pid']) == v['identity'] for v in records):
++                break
+             time.sleep(0.1)
+-        survivors = [v for v in records if identity(v['identity']['pid']) == v['identity']]
+-        for record in survivors:
+-            self.send(record, signal.SIGTERM)
+-        end = time.monotonic() + 2
+-        while time.monotonic() < end and any(identity(v['identity']['pid']) == v['identity'] for v in survivors):
++        # Discover again after graceful parent exit; the direct root is still unreaped.
++        self.refresh()
++        for record in list(self.resources.values()):
++            if record['family'] == family and identity(record['identity']['pid']) == record['identity']:
++                self.send(record, signal.SIGTERM)
++        term_deadline = time.monotonic() + 2
++        while time.monotonic() < term_deadline:
++            self.refresh()
++            records = [v for v in self.resources.values() if v['family'] == family]
++            if not any(identity(v['identity']['pid']) == v['identity'] for v in records):
++                break
+             time.sleep(0.1)
+-        for record in survivors:
+-            if identity(record['identity']['pid']) == record['identity']:
++        kill_deadline = time.monotonic() + 3
++        while True:
++            self.refresh()
++            records = [v for v in self.resources.values() if v['family'] == family]
++            survivors = [v for v in records if identity(v['identity']['pid']) == v['identity']]
++            if not survivors:
++                # No live parent can fork after this point. Scan once more before reaping.
++                self.refresh()
++                records = [v for v in self.resources.values() if v['family'] == family]
++                survivors = [v for v in records if identity(v['identity']['pid']) == v['identity']]
++                if not survivors:
++                    break
++            require(time.monotonic() < kill_deadline, 'Owned-session cleanup deadline reached; no retry')
++            for record in survivors:
+                 self.send(record, signal.SIGKILL)
+-        end = time.monotonic() + 2
+-        while time.monotonic() < end and any(identity(v['identity']['pid']) == v['identity'] for v in records):
+             time.sleep(0.05)
+-        for record in records:
+-            require(identity(record['identity']['pid']) is None, 'Managed resource not confirmed closed')
+-        if direct is not None:
+-            direct.wait(timeout=2)
+-        self.event('resource family closed', family=family, identities=[v['identity'] for v in records])
++        require(self.exited(family), 'Direct child not confirmed exited')
++        protected(self.assignment)
++        direct.wait(timeout=2)  # First reap occurs only after both final owned-session scans.
++        self.closed_families.add(family)
++        self.event('resource family closed', family=family, exitCode=direct.returncode,
++                   identities=[v['identity'] for v in records], finalSessionScans=2)
+ 
+     def finish(self):
+         for handle in self.logs:
+@@ -371,7 +418,7 @@
+     while time.monotonic() < deadline:
+         children.refresh()
+         protected(children.assignment, owner)
+-        require(children.children[label].poll() is None, label + ' exited during startup')
++        require(not children.exited(label), label + ' exited during startup')
+         live = listeners(PORTS[label])
+         if live:
+             require(live <= sockets(owner['pid']), 'Owned port has another socket holder')
+@@ -381,7 +428,7 @@
+ 
+ 
+ def runtime_budget():
+-    for sub, cap in (('server-data', MAX_RAW_BYTES), ('native-collector', MAX_COLLECTOR_BYTES), ('public', MAX_RAW_BYTES)):
++    for sub, cap in (('server-data', MAX_RAW_BYTES), ('native-collector', MAX_COLLECTOR_BYTES), ('public', MAX_RAW_BYTES), ('lifecycle', 16 * 1024 * 1024)):
+         path = PREFIX / sub
+         if path.exists():
+             total = 0
+@@ -451,7 +498,7 @@
+         public_start = time.monotonic()
+         collector_started = None
+         match_identity = None
+-        while manager.children['public'].poll() is None:
++        while not manager.exited('public'):
+             manager.refresh()
+             protected(a)
+             runtime_budget()
+@@ -471,17 +518,21 @@
+                         collector = dict(a['collectorAssignmentTemplate'])
+                         require(collector['rootApproved'] is True and collector['sourcePin'] == a['sourcePin']
+                                 and collector['collectorSha256'] == a['collector']['sha256']
+-                                and collector['sourceInventory'] == a['sourceBinding'], 'Root collector template differs')
++                                and collector['sourceInventory'] == a['sourceBinding']
++                                and collector['heavySlot'] == {'assigned': True, 'exclusive': True, 'slotId': a['exclusiveHeavyApproval']['token']},
++                                'Root collector template or exclusive slot token differs')
+                         collector.update({'publicMatchIdentity': match_identity, 'ownedServer': server, 'freshDatabase': fresh_db})
+                         descriptor = write_new(lifecycle / 'collector-assignment.json', collector)
+                         manager.start('collector', [a['pythonExecutable']['path'], a['collector']['path'], descriptor['path']], env)
+                         collector_started = time.monotonic()
+                         result['matchId'] = value['matchId']
+-            elif manager.children['collector'].poll() is not None:
++            elif manager.exited('collector'):
++                manager.stop_family('collector', 0)
+                 require(manager.children['collector'].returncode == 0, 'Collector first failure')
+                 value = json.loads(raw_file(PREFIX / 'native-collector/collector-receipt.json', MAX_COLLECTOR_BYTES))
+                 require(value['status'] == 'PASS' and value['closed'] is True and value['activeQuery'] is None, 'Collector closure failed')
+             time.sleep(0.1)
++        manager.stop_family('public', 0)
+         require(manager.children['public'].returncode == 0 and collector_started is not None, 'Public first failure or collector never started')
+         public_result = json.loads(raw_file(PREFIX / 'public/public-results.json', MAX_PUBLIC_BYTES))
+         require(public_result['publicCandidatePassed'] is True and public_result['cleanupPassed'] is True
+@@ -546,11 +597,14 @@
+     try:
+         manager.start('native-audit', command, env)
+         deadline = time.monotonic() + 60
+-        while manager.children['native-audit'].poll() is None:
++        while not manager.exited('native-audit'):
+             manager.refresh()
+             protected(a)
+             require(time.monotonic() < deadline, 'Native audit timeout; one invocation only')
++            require(sum(p.stat().st_size for p in output.iterdir() if p.is_file()) <= 2 * 1024 * 1024,
++                    'Native audit output exceeded 2 MiB; original bytes preserved')
+             time.sleep(0.1)
++        manager.stop_family('native-audit', 0)
+         code = manager.children['native-audit'].returncode
+         require(code == 0, 'Native auditor first failure; preserve stdout/stderr, no retry')
+     except Exception as error:

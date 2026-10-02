@@ -1,0 +1,56 @@
+--- /home/morgana/.codex/worktrees/assembled-allied-ai/ai-online-only-retry-readiness-r1/feature63-human-wave-composition-r1/public-producer-r1/verify-human-wave-r2.mjs
++++ /home/morgana/.codex/worktrees/assembled-allied-ai/feature63-dedicated-wrapper-readiness-r1/public-producer-r2/verify-human-wave-r3.mjs
+@@ -115,7 +115,21 @@
+   assert.equal(dependencies.playwrightModulePath, dependencies.playwrightEntry.path);
+   assert.equal(dependencies.allDependencyBytesAuthenticated, true);
+   assert.ok(Number.isSafeInteger(assignment.maxRetainedBytes) && assignment.maxRetainedBytes > 0 && assignment.maxRetainedBytes <= 1_073_741_824);
+-  return {assignment, assignmentPath, assignmentSha256: sha256(assignmentBytes), head, build, launch, dependencies};
++  assert.equal(dependencies.nativeLifecycleOwner, 'dedicated-wrapper');
++  assert.equal(dependencies.cdpBaseUrl, 'http://127.0.0.1:5374');
++  assert.equal(dependencies.reviewedCdpDisconnectHasNoNativeSignals, true, 'Reviewed dependency must disconnect an attached browser without native signals.');
++  const nativeBrowser = checkedReceipt(assignment.externalBrowserOwnership, 'feature63-owned-browser-v1', head, 'wrapper-owned browser');
++  assert.equal(nativeBrowser.port, 5374);
++  assert.equal(nativeBrowser.cdpBaseUrl, dependencies.cdpBaseUrl);
++  assert.equal(nativeBrowser.exclusiveSlotToken, slot.token);
++  assert.equal(nativeBrowser.protectedRootPort, 4173);
++  assert.equal(nativeBrowser.protectedRootUnaffected, true);
++  assert.equal(nativeBrowser.executable, dependencies.chromiumExecutable.path);
++  assert.ok(Number.isSafeInteger(nativeBrowser.pid) && nativeBrowser.pid > 0 && nativeBrowser.pid !== 1063);
++  assert.ok(typeof nativeBrowser.startTicks === 'string' && /^\d+$/.test(nativeBrowser.startTicks));
++  const browserProc = readFileSync(`/proc/${nativeBrowser.pid}/stat`, 'utf8');
++  assert.equal(browserProc.slice(browserProc.lastIndexOf(')') + 2).trim().split(/\s+/)[19], nativeBrowser.startTicks, 'Wrapper-owned browser process identity changed.');
++  return {assignment, assignmentPath, assignmentSha256: sha256(assignmentBytes), head, build, launch, dependencies, nativeBrowser};
+ }
+ 
+ const binding = guard();
+@@ -414,8 +428,8 @@
+   const humanTargetOwners = [...new Set(humanEvents.map(e => e.targetSide))].sort();
+   const aiOwners = [...new Set(aiEvents.map(e => e.side))].sort();
+   const commandOwners = [...new Set(acceptedAttackMoves.map(c => c.side))].sort();
+-  // Scope r5: owner union and positive AI hits are corroboration, not predicates.
+-  const publicPredicatePassed = coveragePassed && bothHumansAliveThroughout && JSON.stringify(commandOwners) === '[0,1]' && JSON.stringify(humanOwners) === '[0,1]';
++  // Original feature 63 requires the human attack targets to cover both natural AI owners.
++  const publicPredicatePassed = coveragePassed && bothHumansAliveThroughout && JSON.stringify(commandOwners) === '[0,1]' && JSON.stringify(humanOwners) === '[0,1]' && JSON.stringify(humanTargetOwners) === '[2,3]';
+   const value = {startTick, endTick, maxTicks: WINDOW_TICKS, profileFrameRanges: ranges, coveragePassed, bothHumansAliveThroughout, acceptedAttackMoves, combatEvents, humanEventIds: humanEvents.map(e => e.eventId), aiEventIds: aiEvents.map(e => e.eventId), humanOwners, humanTargetOwners, aiOwners, publicPredicatePassed, nativeParticipantOverlapUnverified: true};
+   const signature = JSON.stringify([startTick, combatEvents.map(e => e.eventId), publicPredicatePassed]);
+   if (!candidateSignatures.has(signature)) { candidateSignatures.add(signature); candidates.push(value); }
+@@ -432,8 +446,8 @@
+   attemptTimer = setTimeout(() => beginStop(new Error('One public attempt reached its 300-second bound.'), 'timeout'), ATTEMPT_MS);
+   const {chromium} = await import(pathToFileURL(binding.dependencies.playwrightModulePath).href);
+   checkpoint();
+-  browser = await chromium.launch({headless: true, executablePath: binding.dependencies.chromiumExecutable.path, args: ['--disable-dev-shm-usage'], timeout: 15_000});
+-  save('browser-ownership.json', {schema: 'feature63-public-browser-ownership-v1', sourcePin: binding.head, browserCount: 1, contextCount: 2, executable: binding.dependencies.chromiumExecutable, browserVersion: browser.version(), owner: '/root/ai_modes', exclusiveSlotToken: binding.assignment.exclusiveHeavyApproval.token, cleanupMethod: 'close only returned browser/context objects', contexts: []});
++  browser = await chromium.connectOverCDP(binding.dependencies.cdpBaseUrl, {timeout: 15_000});
++  save('browser-ownership.json', {schema: 'feature63-public-browser-ownership-v1', sourcePin: binding.head, browserCount: 1, contextCount: 2, executable: binding.dependencies.chromiumExecutable, browserVersion: browser.version(), owner: '/root/ai_modes', exclusiveSlotToken: binding.assignment.exclusiveHeavyApproval.token, cleanupMethod: 'close only returned contexts and disconnect the attached CDP connection; dedicated wrapper closes the native Chromium child', contexts: []});
+   phase = 'opening two normal guest contexts';
+   const first = await guest('human-one', 0), second = await guest('human-two', 1);
+   assert.notEqual(first.username, second.username); assert.notEqual(first.contextId, second.contextId);
+@@ -534,7 +548,7 @@
+   result.retainedBytesBeforeFinalSummary = retainedBytes;
+   result.errors = errors; result.candidateCount = candidates.length;
+   result.acquisitionFailures = errors;
+-  result.limitations = ['Public pass is only a candidate. Native source/config/checkpoint/wave participant composition remains unverified.', 'Scope r5 stops after both commanded human attacks; positive AI hits and human target owner union are corroboration only.', 'Normal Save battle is unavailable online in the reference source; contemporaneous native wave retention remains pending.', 'No complete cooperative victory or continuous human input is claimed.', 'All exposed public payloads and frames are retained; resource breach stops new work without deleting or truncating evidence.', 'Current source-derived selectors, projection, elimination fields and four-tick snapshot cadence require review against the new root-assigned product source.'];
++  result.limitations = ['Public pass is only a candidate. Native source/config/checkpoint/wave participant composition remains unverified.', 'Original feature 63 stops after both commanded human attacks whose targets cover AI owners 2 and 3; native audit must authenticate membership in the same coordinated wave.', 'Normal Save battle is unavailable online in the reference source; contemporaneous native wave retention remains pending.', 'No complete cooperative victory or continuous human input is claimed.', 'All exposed public payloads and frames are retained; resource breach stops new work without deleting or truncating evidence.', 'Current source-derived selectors, projection, elimination fields and four-tick snapshot cadence require review against the new root-assigned product source.'];
+   save('public-cleanup.json', cleanup);
+   save('browser-ownership.json', {schema: 'feature63-public-browser-ownership-v1', sourcePin: binding.head, browserCount: browser ? 1 : 0, executable: binding.dependencies.chromiumExecutable, owner: '/root/ai_modes', exclusiveSlotToken: binding.assignment.exclusiveHeavyApproval.token, contexts: profiles.map(p => ({profile: p.name, side: p.side, contextId: p.contextId, sockets: p.sockets})), cleanup});
+   result.resourceFailure = resourceFailure;

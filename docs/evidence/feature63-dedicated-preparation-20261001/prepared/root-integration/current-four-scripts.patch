@@ -1,0 +1,2533 @@
+diff --git a/scripts/feature63/run-minimal63.py b/scripts/feature63/run-minimal63.py
+new file mode 100644
+--- /dev/null
++++ b/scripts/feature63/run-minimal63.py
+@@ -0,0 +1,685 @@
++#!/usr/bin/env python3
++"""Held dedicated feature 63 driver. Root admits capture and one-shot audit separately."""
++import datetime
++import hashlib
++import json
++import os
++import re
++import signal
++import stat
++import subprocess
++import sys
++import time
++import urllib.request
++from pathlib import Path
++
++CHECKOUT = Path('/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies')
++PREFIX_NAME = 'work/feature63-human-wave-composition-r1'
++PREFIX = CHECKOUT / PREFIX_NAME
++PROTECTED_ROOT = Path('/home/morgana/Projects/orcs-vs-Fairies')
++PORTS = {'server': 5373, 'browser': 5374, 'protected': 4173}
++REQUIRED_SOURCE = (
++    'src/core/team-ai.ts', 'src/core/simulation.ts', 'src/core/saves.ts',
++    'src/core/observation.ts', 'src/core/commands.ts', 'src/core/ally-directives.ts',
++    'src/server/server.ts', 'src/server/store.ts', 'src/server/views.ts',
++    'src/online/protocol.ts', 'src/online/render-state.ts', 'src/core/economy.ts',
++    'src/core/economy-types.ts', 'src/core/tactics.ts', 'src/game/GameScene.ts',
++    'src/game/Controls.ts', 'src/main.ts', 'src/ui/Hud.ts', 'src/ui/OnlineLobby.ts',
++    'src/core/types.ts', 'src/core/navigation.ts', 'src/ui/SessionTools.ts',
++)
++MAX_ATTEMPT = 300
++MAX_CLEANUP = 120
++MAX_RAW_BYTES = 1024 * 1024 * 1024
++MAX_PUBLIC_BYTES = 64 * 1024 * 1024
++MAX_COLLECTOR_BYTES = 8 * 1024 * 1024
++AUDIT_INPUTS = (
++    'public-results.json', 'public-identities.json', 'public-windows.json',
++    'public-cleanup.json', 'public-match-identity.json', 'human-one-wire.ndjson',
++    'human-two-wire.ndjson', 'human-one-ui-actions.ndjson', 'human-two-ui-actions.ndjson',
++)
++
++
++def require(ok, message):
++    if not ok:
++        raise RuntimeError(message)
++
++
++def now():
++    return datetime.datetime.now(datetime.timezone.utc).isoformat()
++
++
++def sha(raw):
++    return hashlib.sha256(raw).hexdigest()
++
++
++def raw_file(path, maximum):
++    path = Path(path)
++    require(path.is_absolute() and path.resolve() == path and not path.is_symlink(), 'Noncanonical file path')
++    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
++    try:
++        before = os.fstat(fd)
++        require(stat.S_ISREG(before.st_mode) and before.st_size <= maximum, 'Nonregular or oversized bound file')
++        chunks = []
++        remaining = before.st_size
++        while remaining:
++            chunk = os.read(fd, min(remaining, 1024 * 1024))
++            require(bool(chunk), 'Short read of bound file')
++            chunks.append(chunk)
++            remaining -= len(chunk)
++        require(not os.read(fd, 1), 'Bound file grew during read')
++        after = os.fstat(fd)
++        require((before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns, before.st_ctime_ns) ==
++                (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns, after.st_ctime_ns), 'Bound file changed during read')
++        return b''.join(chunks)
++    finally:
++        os.close(fd)
++
++
++def bound(descriptor, maximum=2 * 1024 * 1024):
++    raw = raw_file(descriptor['path'], maximum)
++    require(re.fullmatch('[0-9a-f]{64}', descriptor['sha256'] or '') and sha(raw) == descriptor['sha256'], 'Bound bytes differ')
++    require(descriptor.get('bytes', len(raw)) == len(raw), 'Bound byte count differs')
++    return raw
++
++
++def receipt(descriptor, schema, pin):
++    value = json.loads(bound(descriptor))
++    require(value['schema'] == schema and value['sourcePin'] == pin and value['approved'] is True, 'Unapproved or mismatched receipt')
++    return value
++
++
++def write_new(path, value):
++    raw = (json.dumps(value, indent=2, sort_keys=True) + '\n').encode()
++    with path.open('xb') as handle:
++        handle.write(raw)
++        handle.flush()
++        os.fsync(handle.fileno())
++    return {'path': str(path), 'bytes': len(raw), 'sha256': sha(raw)}
++
++
++def identity(pid):
++    p = Path('/proc') / str(pid)
++    try:
++        text = (p / 'stat').read_text()
++        fields = text[text.rfind(')') + 2:].split()
++        if fields[0] == 'Z':
++            return None
++        return {'pid': pid, 'startTicks': int(fields[19]), 'executable': os.readlink(p / 'exe'),
++                'cwd': os.readlink(p / 'cwd'),
++                'argv': [item.decode() for item in (p / 'cmdline').read_bytes().split(b'\0') if item]}
++    except (FileNotFoundError, ProcessLookupError):
++        return None
++
++
++def process_state(pid):
++    try:
++        text = (Path('/proc') / str(pid) / 'stat').read_text()
++        fields = text[text.rfind(')') + 2:].split()
++        return {'pid': pid, 'state': fields[0], 'parentPid': int(fields[1]),
++                'session': int(fields[3]), 'startTicks': int(fields[19])}
++    except (FileNotFoundError, ProcessLookupError):
++        return None
++
++
++def session_id(pid):
++    value = process_state(pid)
++    return None if value is None else value['session']
++
++
++def sockets(pid):
++    result = set()
++    for path in (Path('/proc') / str(pid) / 'fd').iterdir():
++        try:
++            link = os.readlink(path)
++            if link.startswith('socket:['):
++                result.add(link)
++        except FileNotFoundError:
++            pass
++    return result
++
++
++def listeners(port):
++    result = set()
++    for name in ('tcp', 'tcp6'):
++        for line in (Path('/proc/net') / name).read_text().splitlines()[1:]:
++            values = line.split()
++            if len(values) > 9 and values[3] == '0A' and int(values[1].rsplit(':', 1)[1], 16) == port:
++                result.add('socket:[' + values[9] + ']')
++    return result
++
++
++def protected(assignment, candidate=None):
++    expected = assignment['protectedProcess']
++    require(expected['pid'] == 1063 and expected['startTicks'] == 874 and expected['cwd'] == str(PROTECTED_ROOT), 'Protected identity not admitted')
++    require(identity(1063) == expected, 'Protected process identity changed')
++    namespace = os.readlink('/proc/self/ns/net')
++    require(os.readlink('/proc/1063/ns/net') == namespace, 'Protected network namespace differs')
++    live = listeners(PORTS['protected'])
++    require(live and live == set(assignment['protectedListenerSockets']) and live <= sockets(1063), 'Protected 4173 socket holder changed')
++    if candidate is not None:
++        require(candidate['pid'] != 1063 and identity(candidate['pid']) == candidate, 'Candidate identity changed before protected check')
++        require(os.readlink('/proc/' + str(candidate['pid']) + '/ns/net') == namespace, 'Candidate network namespace differs')
++        require(not (sockets(candidate['pid']) & live), 'Candidate holds a protected 4173 listening socket')
++    return {'at': now(), 'process': expected, 'listeningSockets': sorted(live), 'holderPid': 1063}
++
++
++def inventory(records, root, complete=False):
++    root = Path(root)
++    require(root.is_absolute() and root.resolve() == root and not root.is_symlink(), 'Inventory root is noncanonical')
++    seen = set()
++    for row in records:
++        relative = Path(row['path'])
++        require(not relative.is_absolute() and '..' not in relative.parts and row['path'] not in seen, 'Inventory path is invalid or duplicate')
++        path = root / relative
++        bound({'path': str(path), 'bytes': row['bytes'], 'sha256': row['sha256']}, MAX_RAW_BYTES)
++        require(stat.S_IMODE(path.stat().st_mode) == row['mode'], 'Inventory mode differs')
++        seen.add(row['path'])
++    if complete:
++        actual = set()
++        for path in root.rglob('*'):
++            require(not path.is_symlink(), 'Symlink in complete inventory')
++            if path.is_file():
++                actual.add(path.relative_to(root).as_posix())
++        require(actual == seen, 'Complete inventory filename set differs')
++    return seen
++
++
++def guard(path, phase):
++    raw = raw_file(path, 128 * 1024)
++    anchor = os.environ.get('OVF_FEATURE63_WRAPPER_ASSIGNMENT_SHA256', '')
++    require(re.fullmatch('[0-9a-f]{64}', anchor) and sha(raw) == anchor, 'Root must supply the external assignment digest')
++    a = json.loads(raw)
++    require(a['schema'] == 'feature63-dedicated-wrapper-assignment-v1' and a['approved'] is True and a['assignedBy'] == '/root', 'Dedicated wrapper is held')
++    require(a['phase'] == phase and a['sourceRoot'] == str(CHECKOUT) and a['freshPrefix'] == PREFIX_NAME, 'Phase/checkout/prefix differs')
++    require(Path.cwd().resolve() == CHECKOUT and CHECKOUT.resolve() == CHECKOUT, 'Use the owned checkout cwd')
++    pin = a['sourcePin']
++    require(re.fullmatch('[0-9a-f]{40}', pin or '') and a['productVersion'] == '4.0.2', 'Root source pin/version missing')
++    require(a['wrapperSha256'] == sha(Path(__file__).read_bytes()), 'Wrapper bytes differ')
++    require(subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=CHECKOUT, text=True).strip() == pin, 'Source HEAD differs')
++    require(subprocess.check_output(['git', 'status', '--porcelain', '--untracked-files=no'], cwd=CHECKOUT, text=True) == '', 'Tracked source is dirty')
++    slot = a['exclusiveHeavyApproval']
++    require(slot['approved'] is True and slot['holder'] == '/root/ai_modes' and len(slot['token']) >= 16, 'Exclusive slot absent')
++    until = datetime.datetime.fromisoformat(slot['validUntil'].replace('Z', '+00:00')).timestamp()
++    require(until > time.time() + MAX_ATTEMPT + MAX_CLEANUP + 90, 'Exclusive slot expires too soon')
++    protected(a)
++    source = receipt(a['sourceBinding'], 'feature63-new-source-binding-v1', pin)
++    require(source['authenticatedInputs'] is True and source['includesSourceConfigPublicBuildAndProof'] is True, 'Source binding scope incomplete')
++    paths = inventory(source['records'], CHECKOUT)
++    require(set(REQUIRED_SOURCE) <= paths and source['inputCount'] == len(paths), 'Required source paths absent')
++    require(source['requiredInputSetAuthenticatedByRoot'] is True, 'Root has not admitted the complete product/build/proof input set')
++    build = receipt(a['buildBinding'], 'feature63-build-binding-v1', pin)
++    require(build['productVersion'] == '4.0.2' and build['publicDriverSha256'] == a['wrapperSha256'], 'Build version/driver differs')
++    require(build['webDistPath'] == str(PREFIX / 'dist') and build['serverBuildPath'] == str(PREFIX / 'server'), 'Build paths differ')
++    inventory(build['webRecords'], PREFIX / 'dist', complete=True)
++    inventory(build['serverRecords'], PREFIX / 'server', complete=True)
++    require(build['testedBuildId'] == a['testedBuildId'] and bool(a['testedBuildId']), 'Tested build ID differs')
++    tests = receipt(a['testedBuildReceipt'], 'feature63-tested-build-v1', pin)
++    require(tests['testedBuildId'] == a['testedBuildId'] and tests['sourceAndBuiltBytesMatchTested402'] is True
++            and tests['fullSuitePassed'] is True and tests['buildPassed'] is True, 'Tested 4.0.2 binding absent')
++    review = receipt(a['reviewReceipt'], 'feature63-dedicated-wrapper-review-v1', pin)
++    require(review['status'] == 'PASS' and review['wrapperSha256'] == a['wrapperSha256']
++            and review['restoredBothOwnerHumanTargetUnion'] is True, 'Dedicated wrapper/scope review absent')
++    for key in ('publicProducer', 'collector', 'auditor', 'nodeExecutable', 'pythonExecutable'):
++        bound(a[key], MAX_RAW_BYTES)
++        require(review[key + 'Sha256'] == a[key]['sha256'], 'Review candidate/dependency differs')
++    require(build['producerSha256'] == a['publicProducer']['sha256'], 'Build producer binding differs')
++    browser = receipt(a['browserBinding'], 'feature63-browser-binding-v1', pin)
++    require(browser['producerSha256'] == a['publicProducer']['sha256'] and browser['buildBindingSha256'] == a['buildBinding']['sha256']
++            and browser['exclusiveSlotToken'] == slot['token'], 'Browser dependency binding differs')
++    require(browser['contextCount'] == 2 and browser['browserCount'] == 1 and browser['headless'] is True
++            and browser['nativeLifecycleOwner'] == 'dedicated-wrapper' and browser['reviewedCdpDisconnectHasNoNativeSignals'] is True
++            and browser['cdpBaseUrl'] == 'http://127.0.0.1:5374' and browser['allDependencyBytesAuthenticated'] is True
++            and browser['nativeLifetimeReviewRequiredByRoot'] is True,
++            'External browser lifecycle/dependency review absent')
++    bound(browser['playwrightEntry'], MAX_RAW_BYTES)
++    bound(browser['chromiumExecutable'], MAX_RAW_BYTES)
++    inventory(browser['dependencyRecords'], Path(browser['dependencyRoot']), complete=True)
++    require(browser['playwrightModulePath'] == browser['playwrightEntry']['path'], 'Playwright module differs')
++    return a, build, browser
++
++
++class Children:
++    def __init__(self, assignment, output):
++        self.assignment = assignment
++        self.output = output
++        self.children = {}
++        self.roots = {}
++        self.closed_families = set()
++        self.resources = {}
++        self.logs = []
++
++    def event(self, action, **values):
++        with (self.output / 'driver-events.ndjson').open('ab') as handle:
++            handle.write((json.dumps({'at': now(), 'action': action, **values}, sort_keys=True) + '\n').encode())
++            handle.flush()
++
++    def register(self, ident, family):
++        key = (ident['pid'], ident['startTicks'])
++        if key in self.resources:
++            require(self.resources[key]['identity'] == ident, 'Previously registered resource identity changed')
++            return
++        require(hasattr(os, 'pidfd_open') and hasattr(signal, 'pidfd_send_signal'), 'Kernel-bound pidfd signaling is required')
++        fd = os.pidfd_open(ident['pid'])
++        require(identity(ident['pid']) == ident, 'Process changed while opening pidfd')
++        protected(self.assignment, ident)
++        self.resources[key] = {'identity': ident, 'family': family, 'pidfd': fd}
++        self.event('registered native resource', identity=ident, family=family)
++
++    def exited(self, family):
++        # Observing /proc never wait()s or reaps a child. The direct PID remains reserved.
++        process = self.children[family]
++        state = process_state(process.pid)
++        root = self.roots.get(family)
++        if root is not None and state is not None:
++            require(state['startTicks'] == root['startTicks'], 'Unreaped direct root start tick changed')
++        return state is None or state['state'] in ('Z', 'X')
++
++    def refresh(self, selected_family=None):
++        sessions = {}
++        for family, root in self.roots.items():
++            if selected_family is not None and family != selected_family:
++                continue
++            if root is None:
++                continue
++            if family in self.closed_families:
++                continue
++            process = self.children[family]
++            require(process.returncode is None, 'Direct root was reaped before owned-session closure')
++            state = process_state(root['pid'])
++            require(state is not None and state['startTicks'] == root['startTicks']
++                    and state['session'] == root['pid'], 'Unreaped direct PID/session reservation changed')
++            sessions[root['pid']] = family
++        # Only kernel session membership admits descendants. Numeric PPID alone never does.
++        # The unreaped direct root reserves the session ID until the final scan and wait().
++        for path in Path('/proc').iterdir():
++            if not path.name.isdigit():
++                continue
++            pid = int(path.name)
++            state = process_state(pid)
++            family = None if state is None else sessions.get(state['session'])
++            if family is None or state['state'] in ('Z', 'X'):
++                continue
++            ident = identity(pid)
++            if ident is not None:
++                require(session_id(pid) == self.roots[family]['pid'], 'Resource left its admitted session')
++                self.register(ident, family)
++        for value in self.resources.values():
++            if selected_family is not None and value['family'] != selected_family:
++                continue
++            if value['family'] in self.closed_families:
++                continue
++            ident = value['identity']
++            live = identity(ident['pid'])
++            if live is not None:
++                require(live == ident and session_id(ident['pid']) == self.roots[value['family']]['pid'],
++                        'Managed process identity or owned session changed; no signal is permitted')
++
++    def start(self, label, command, env):
++        protected(self.assignment)
++        out = (self.output / (label + '.stdout')).open('xb')
++        err = (self.output / (label + '.stderr')).open('xb')
++        self.logs += [out, err]
++        process = subprocess.Popen(command, cwd=CHECKOUT, env=env, stdout=out, stderr=err, stdin=subprocess.DEVNULL, start_new_session=True)
++        self.children[label] = process
++        state = process_state(process.pid)
++        self.roots[label] = None if state is None else {'pid': process.pid, 'startTicks': state['startTicks']}
++        self.event('reserved direct child before launch authentication', family=label, pid=process.pid, processState=state, command=command)
++        deadline = time.monotonic() + 2
++        ident = None
++        while time.monotonic() < deadline:
++            candidate = identity(process.pid)
++            if candidate is not None:
++                # A Popen child stays unreaped; its numeric PID cannot be replaced during this binding.
++                # Retain its actual complete identity even if the intended command check will reject it.
++                self.register(candidate, label)
++                ident = candidate
++                break
++            if self.exited(label):
++                break
++            time.sleep(0.02)
++        protected(self.assignment)
++        require(ident is not None and ident['argv'] == command and ident['cwd'] == str(CHECKOUT), 'New child launch identity differs; reserved root retained for guarded cleanup')
++        require(session_id(process.pid) == process.pid, 'New child must own a distinct kernel session')
++        return ident
++
++    def send(self, record, signum):
++        ident = record['identity']
++        if identity(ident['pid']) is None:
++            return
++        require(identity(ident['pid']) == ident, 'Signal target PID/start/executable/cwd/argv changed')
++        check = protected(self.assignment, ident)
++        require(identity(ident['pid']) == ident, 'Signal target changed after socket check')
++        signal.pidfd_send_signal(record['pidfd'], signum)
++        self.event('sent signal through bound pidfd', target=ident, signal=signum, protectedSocketCheck=check)
++
++    def stop_family(self, family, grace):
++        if family not in self.children or family in self.closed_families:
++            return
++        require(family in self.roots and self.children[family].returncode is None, 'Direct launch reservation is missing or was prematurely reaped')
++        state = process_state(self.children[family].pid)
++        if self.roots[family] is None and state is not None:
++            self.roots[family] = {'pid': state['pid'], 'startTicks': state['startTicks']}
++        actual = identity(self.children[family].pid)
++        if actual is not None:
++            require(state is not None and self.roots[family] is not None and state['startTicks'] == self.roots[family]['startTicks'], 'Reserved direct root start ticks changed')
++            self.register(actual, family)
++        if state is None:
++            # A vanished own child needs no signal. Its Popen object has never been reaped here.
++            protected(self.assignment)
++            self.children[family].wait(timeout=2)
++            self.closed_families.add(family)
++            self.event('reserved direct child already exited', family=family, exitCode=self.children[family].returncode,
++                       unobservedDescendantsExcluded=False)
++            return
++        self.refresh(family)
++        direct = self.children[family]
++        records = [v for v in self.resources.values() if v['family'] == family]
++        for record in records:
++            if record['identity']['pid'] == direct.pid:
++                self.send(record, signal.SIGTERM)
++        deadline = time.monotonic() + grace
++        while time.monotonic() < deadline:
++            self.refresh(family)
++            records = [v for v in self.resources.values() if v['family'] == family]
++            if not any(identity(v['identity']['pid']) == v['identity'] for v in records):
++                break
++            time.sleep(0.1)
++        # Discover again after graceful parent exit; the direct root is still unreaped.
++        self.refresh(family)
++        for record in list(self.resources.values()):
++            if record['family'] == family and identity(record['identity']['pid']) == record['identity']:
++                self.send(record, signal.SIGTERM)
++        term_deadline = time.monotonic() + 2
++        while time.monotonic() < term_deadline:
++            self.refresh(family)
++            records = [v for v in self.resources.values() if v['family'] == family]
++            if not any(identity(v['identity']['pid']) == v['identity'] for v in records):
++                break
++            time.sleep(0.1)
++        kill_deadline = time.monotonic() + 3
++        while True:
++            self.refresh(family)
++            records = [v for v in self.resources.values() if v['family'] == family]
++            survivors = [v for v in records if identity(v['identity']['pid']) == v['identity']]
++            if not survivors:
++                # Repeat observed-session discovery; this is not an atomic global empty-membership proof.
++                self.refresh(family)
++                records = [v for v in self.resources.values() if v['family'] == family]
++                survivors = [v for v in records if identity(v['identity']['pid']) == v['identity']]
++                if not survivors:
++                    break
++            require(time.monotonic() < kill_deadline, 'Owned-session cleanup deadline reached; no retry')
++            for record in survivors:
++                self.send(record, signal.SIGKILL)
++            time.sleep(0.05)
++        require(self.exited(family), 'Direct child not confirmed exited')
++        protected(self.assignment)
++        direct.wait(timeout=2)  # First reap occurs only after both final owned-session scans.
++        self.closed_families.add(family)
++        self.event('resource family closed', family=family, exitCode=direct.returncode,
++                   identities=[v['identity'] for v in records], observedSessionScans=2, unobservedDescendantsExcluded=False)
++
++    def finish(self):
++        for handle in self.logs:
++            handle.close()
++        for value in self.resources.values():
++            os.close(value['pidfd'])
++
++
++def request_json(url, maximum=1024 * 1024):
++    with urllib.request.urlopen(url, timeout=1) as response:
++        raw = response.read(maximum + 1)
++        require(response.status == 200 and len(raw) <= maximum, 'Bound HTTP probe failed or exceeded limit')
++        return raw
++
++
++def final_protected_readback(assignment):
++    try:
++        return {'status': 'PASS', **protected(assignment)}
++    except Exception as error:
++        return {'status': 'FAIL', 'at': now(), 'error': str(error)}
++
++
++def await_listener(owner, label, children, seconds=20):
++    deadline = time.monotonic() + seconds
++    while time.monotonic() < deadline:
++        children.refresh()
++        protected(children.assignment, owner)
++        require(not children.exited(label), label + ' exited during startup')
++        live = listeners(PORTS[label])
++        if live:
++            require(live <= sockets(owner['pid']), 'Owned port has another socket holder')
++            return sorted(live)
++        time.sleep(0.1)
++    protected(children.assignment, owner)
++    raise RuntimeError(label + ' startup timeout; no retry')
++
++
++def runtime_budget():
++    for sub, cap in (('server-data', MAX_RAW_BYTES), ('native-collector', MAX_COLLECTOR_BYTES), ('public', MAX_RAW_BYTES), ('lifecycle', 16 * 1024 * 1024)):
++        path = PREFIX / sub
++        if path.exists():
++            total = 0
++            for item in path.rglob('*'):
++                require(not item.is_symlink(), 'Symlink in owned runtime output')
++                if item.is_file():
++                    total += item.stat().st_size
++            require(total <= cap, sub + ' byte budget exceeded; bytes preserved')
++    public = PREFIX / 'public'
++    if public.exists():
++        require(sum((public / name).stat().st_size for name in AUDIT_INPUTS if (public / name).exists()) <= MAX_PUBLIC_BYTES,
++                'Auditor public-input 64 MiB budget exceeded; bytes preserved')
++
++
++def capture(assignment_path):
++    a, build, browser = guard(assignment_path, 'capture')
++    require(not listeners(5373) and not listeners(5374), 'Owned ports must be unused before launch')
++    require(PREFIX.is_dir() and {p.name for p in PREFIX.iterdir()} == {'dist', 'server'}, 'Fresh prefix may contain only authenticated build directories')
++    lifecycle = PREFIX / 'lifecycle'
++    lifecycle.mkdir()
++    manager = Children(a, lifecycle)
++    failure = None
++    result = {'schema': 'feature63-dedicated-capture-result-v1', 'sourcePin': a['sourcePin'], 'testedBuildId': a['testedBuildId'],
++              'startedAt': now(), 'feature63Qualified': False, 'rootSealAndExtractionRequired': True, 'automaticRetries': 0,
++              'nativeClosureEvidenceScope': 'Direct unreaped roots and bound observed original-session descendants only',
++              'unobservedDescendantsExcluded': False, 'rootNativeLifetimeDispositionRequired': True}
++    env = {key: value for key, value in os.environ.items() if not key.startswith('RTS_') and key not in ('NODE_OPTIONS', 'PYTHONOPTIMIZE')}
++    try:
++        env.update({'RTS_HOST': '127.0.0.1', 'RTS_PORT': '5373', 'RTS_DATA_DIR': str(PREFIX / 'server-data'),
++                    'RTS_STATIC_DIR': str(PREFIX / 'dist'), 'RTS_ORIGIN': 'http://127.0.0.1:5373'})
++        server = manager.start('server', [a['nodeExecutable']['path'], str(PREFIX / 'server/rts-server.js')], env)
++        server_sockets = await_listener(server, 'server', manager)
++        health = json.loads(request_json('http://127.0.0.1:5373/api/health'))
++        require(health['ok'] is True and health['protocolVersion'] == 1, 'Owned server health differs')
++        served_index = request_json('http://127.0.0.1:5373/')
++        require(served_index == (PREFIX / 'dist/index.html').read_bytes(), 'Served index differs from authenticated build')
++        db = PREFIX / 'server-data/server.sqlite'
++        info = db.lstat()
++        require(stat.S_ISREG(info.st_mode) and info.st_nlink == 1 and db.resolve() == db and info.st_size <= MAX_RAW_BYTES, 'Fresh DB identity invalid')
++        fresh_db = {'path': str(db), 'device': info.st_dev, 'inode': info.st_ino}
++        server_receipt = write_new(lifecycle / 'server-ownership.json', {
++            'schema': 'feature63-owned-server-v1', 'approved': True, 'sourcePin': a['sourcePin'], 'pid': server['pid'],
++            'startTicks': str(server['startTicks']), 'port': 5373, 'baseUrl': 'http://127.0.0.1:5373', 'freshPrefix': PREFIX_NAME,
++            'exclusiveSlotToken': a['exclusiveHeavyApproval']['token'], 'protectedRootPort': 4173, 'protectedRootUnaffected': True,
++            'processIdentity': server, 'listenerSockets': server_sockets, 'freshDatabase': fresh_db})
++        browser_command = [browser['chromiumExecutable']['path'], '--headless=new', '--disable-dev-shm-usage',
++                           '--disable-crash-reporter', '--disable-breakpad', '--disable-crashpad-for-testing',
++                           '--remote-debugging-address=127.0.0.1', '--remote-debugging-port=5374',
++                           '--user-data-dir=' + str(PREFIX / 'browser-profile'), '--no-first-run', '--no-default-browser-check', 'about:blank']
++        chrome = manager.start('browser', browser_command, env)
++        browser_sockets = await_listener(chrome, 'browser', manager)
++        version = json.loads(request_json('http://127.0.0.1:5374/json/version'))
++        require(isinstance(version.get('webSocketDebuggerUrl'), str) and version['webSocketDebuggerUrl'].startswith('ws://127.0.0.1:5374/'), 'Owned CDP endpoint differs')
++        browser_receipt = write_new(lifecycle / 'browser-ownership.json', {
++            'schema': 'feature63-owned-browser-v1', 'approved': True, 'sourcePin': a['sourcePin'], 'pid': chrome['pid'],
++            'startTicks': str(chrome['startTicks']), 'executable': chrome['executable'], 'processIdentity': chrome,
++            'port': 5374, 'cdpBaseUrl': browser['cdpBaseUrl'], 'listenerSockets': browser_sockets,
++            'exclusiveSlotToken': a['exclusiveHeavyApproval']['token'], 'protectedRootPort': 4173, 'protectedRootUnaffected': True})
++        public = dict(a['publicAssignmentTemplate'])
++        require(public['schema'] == 'feature63-public-producer-assignment-v1' and public['sourcePin'] == a['sourcePin']
++                and public['approved'] is True and public['reviewedProducer'] == a['publicProducer']
++                and public['publicDriverSha256'] == a['wrapperSha256'] and public['maxRetainedBytes'] == MAX_RAW_BYTES
++                and public['sourceBinding'] == a['sourceBinding'] and public['buildBinding'] == a['buildBinding']
++                and public['browserBinding'] == a['browserBinding'] and public['exclusiveHeavyApproval'] == a['exclusiveHeavyApproval'], 'Root public template differs')
++        public.update({'serverOwnership': server_receipt, 'externalBrowserOwnership': browser_receipt})
++        public_descriptor = write_new(lifecycle / 'public-assignment.json', public)
++        public_env = dict(env, OVF_FEATURE63_PUBLIC_ASSIGNMENT=public_descriptor['path'])
++        manager.start('public', [a['nodeExecutable']['path'], a['publicProducer']['path']], public_env)
++        public_start = time.monotonic()
++        collector_started = None
++        match_identity = None
++        while not manager.exited('public'):
++            manager.refresh()
++            protected(a)
++            runtime_budget()
++            require(identity(server['pid']) == server and identity(chrome['pid']) == chrome, 'Owned server/browser exited or changed')
++            protected(a)
++            require(time.monotonic() - public_start <= MAX_ATTEMPT + 5, 'Public attempt exceeded wrapper bound')
++            if collector_started is None:
++                path = PREFIX / 'public/public-match-identity.json'
++                if path.exists():
++                    try:
++                        value = json.loads(raw_file(path, 1024 * 1024))
++                    except json.JSONDecodeError:
++                        value = None
++                    if value is not None:
++                        require(value['schema'] == 'feature63-public-match-identity-v1' and value['sourcePin'] == a['sourcePin']
++                                and bool(value['matchId']), 'Early public match identity differs')
++                        match_identity = {'path': str(path), 'bytes': path.stat().st_size, 'sha256': sha(path.read_bytes())}
++                        collector = dict(a['collectorAssignmentTemplate'])
++                        require(collector['rootApproved'] is True and collector['sourcePin'] == a['sourcePin']
++                                and collector['collectorSha256'] == a['collector']['sha256']
++                                and collector['sourceInventory'] == a['sourceBinding']
++                                and collector['heavySlot'] == {'assigned': True, 'exclusive': True, 'slotId': a['exclusiveHeavyApproval']['token']},
++                                'Root collector template or exclusive slot token differs')
++                        collector.update({'publicMatchIdentity': match_identity, 'ownedServer': server, 'freshDatabase': fresh_db})
++                        descriptor = write_new(lifecycle / 'collector-assignment.json', collector)
++                        manager.start('collector', [a['pythonExecutable']['path'], a['collector']['path'], descriptor['path']], env)
++                        collector_started = time.monotonic()
++                        result['matchId'] = value['matchId']
++            elif manager.exited('collector'):
++                manager.stop_family('collector', 0)
++                require(manager.children['collector'].returncode == 0, 'Collector first failure')
++                value = json.loads(raw_file(PREFIX / 'native-collector/collector-receipt.json', MAX_COLLECTOR_BYTES))
++                require(value['status'] == 'PASS' and value['closed'] is True and value['activeQuery'] is None, 'Collector closure failed')
++            time.sleep(0.1)
++        manager.stop_family('public', 0)
++        require(manager.children['public'].returncode == 0 and collector_started is not None, 'Public first failure or collector never started')
++        public_result = json.loads(raw_file(PREFIX / 'public/public-results.json', MAX_PUBLIC_BYTES))
++        require(public_result['publicCandidatePassed'] is True and public_result['cleanupPassed'] is True
++                and public_result['feature63Qualified'] is False and public_result['matchId'] == result['matchId'], 'Public capture did not pass')
++        require(sha(raw_file(match_identity['path'], 1024 * 1024)) == match_identity['sha256'], 'Public match identity changed after collector binding')
++        manager.stop_family('collector', 3)
++        collector_receipt = json.loads(raw_file(PREFIX / 'native-collector/collector-receipt.json', MAX_COLLECTOR_BYTES))
++        require(collector_receipt['status'] == 'PASS' and collector_receipt['closed'] is True
++                and collector_receipt['activeQuery'] is None and collector_receipt['matchId'] == result['matchId'], 'Final collector closure differs')
++        # Prompt owned-server closure preserves the ordinary final checkpoint where possible.
++        manager.stop_family('server', 3)
++        manager.stop_family('public', 0)
++        manager.stop_family('browser', 3)
++        runtime_budget()
++        require(not listeners(5373) and not listeners(5374), 'Owned listener remains after closure')
++        result['status'] = 'CAPTURE_PASS_ROOT_SEAL_AND_EXTRACTION_PENDING'
++    except Exception as error:
++        failure = {'type': type(error).__name__, 'message': str(error), 'at': now()}
++        result['status'] = 'FAIL_FIRST_FAILURE_NO_RETRY'
++        manager.event('first runtime failure; no retry', failure=failure)
++    finally:
++        cleanup_failures = []
++        for family in ('public', 'collector', 'server', 'browser'):
++            try:
++                manager.stop_family(family, 2)
++            except Exception as error:
++                cleanup_failures.append({'family': family, 'error': str(error), 'at': now()})
++        result.update({'firstFailure': failure, 'cleanupFailures': cleanup_failures, 'finishedAt': now(),
++                       'protectedFinalReadback': final_protected_readback(a), 'closedFreshDatabaseIdentity': result.get('matchId') and fresh_db})
++        if cleanup_failures or result['protectedFinalReadback']['status'] != 'PASS':
++            result['status'] = 'FAIL_CLEANUP_HELD_NO_UNVERIFIED_SIGNAL'
++        lifecycle_bytes = sum(p.stat().st_size for p in lifecycle.rglob('*') if p.is_file())
++        result_size = len((json.dumps(result, indent=2, sort_keys=True) + '\n').encode())
++        if lifecycle_bytes + result_size > 16 * 1024 * 1024:
++            result['status'] = 'FAIL_LIFECYCLE_OUTPUT_BUDGET_NO_RETRY'
++            result['firstFailure'] = result['firstFailure'] or {
++                'type': 'OutputBudget', 'message': 'Complete lifecycle output exceeded 16 MiB; bytes preserved', 'at': now()}
++            result['lifecycleBytesBeforeFinalResult'] = lifecycle_bytes
++        write_new(lifecycle / 'driver-result.json', result)
++        manager.finish()
++    return 0 if result['status'] == 'CAPTURE_PASS_ROOT_SEAL_AND_EXTRACTION_PENDING' else 1
++
++
++def audit(assignment_path):
++    a, _build, _browser = guard(assignment_path, 'audit')
++    require(not listeners(5373) and not listeners(5374), 'Capture resources must close before audit')
++    capture_result = json.loads(bound(a['captureResult']))
++    require(capture_result['status'] == 'CAPTURE_PASS_ROOT_SEAL_AND_EXTRACTION_PENDING' and capture_result['sourcePin'] == a['sourcePin'], 'Root has not admitted a passing closed capture')
++    # Root must seal/extract the fresh closed DB separately. This driver never reads SQLite.
++    ready = receipt(a['rootExtractionAdmission'], 'feature63-root-extraction-admission-v1', a['sourcePin'])
++    require(ready['closedFreshRawAuthenticated'] is True and ready['completeSelectedTextAndQueryMetadataAuthenticated'] is True
++            and ready['matchId'] == capture_result['matchId'] and ready['auditorSha256'] == a['auditor']['sha256']
++            and ready['ownedNativeLifetimeIndependentlyAdmitted'] is True, 'Root native extraction/seal/lifetime admission absent')
++    root_assignment = bound(a['nativeAuditAssignment'])
++    require(a['nativeAuditAssignment']['sha256'] == ready['rootAssignmentSha256'], 'External native root assignment trust anchor differs')
++    bundle = Path(a['nativeBundle'])
++    require(bundle.is_absolute() and bundle.resolve() == bundle and bundle.is_dir() and PROTECTED_ROOT not in bundle.parents, 'Native bundle is outside the owned extracted location')
++    require(str(bundle) == ready['bundlePath'], 'Root native bundle differs')
++    inventory(ready['bundleRecords'], bundle, complete=True)
++    output = PREFIX / 'native-audit'
++    output.mkdir()  # Existing output prohibits a second invocation.
++    write_new(output / 'one-shot-admission.json', {'schema': 'feature63-audit-one-shot-v1', 'at': now(), 'sourcePin': a['sourcePin'],
++        'rootAssignmentSha256': sha(root_assignment), 'auditorSha256': a['auditor']['sha256'], 'automaticRetries': 0})
++    manager = Children(a, output)
++    command = [a['pythonExecutable']['path'], a['auditor']['path'], '--bundle', str(bundle),
++               '--assignment-sha256', sha(root_assignment)]
++    env = {key: value for key, value in os.environ.items() if key not in ('PYTHONOPTIMIZE', 'PYTHONPATH')}
++    failure = None
++    code = 1
++    try:
++        manager.start('native-audit', command, env)
++        deadline = time.monotonic() + 60
++        while not manager.exited('native-audit'):
++            manager.refresh()
++            protected(a)
++            require(time.monotonic() < deadline, 'Native audit timeout; one invocation only')
++            require(sum(p.stat().st_size for p in output.iterdir() if p.is_file()) <= 2 * 1024 * 1024,
++                    'Native audit output exceeded 2 MiB; original bytes preserved')
++            time.sleep(0.1)
++        manager.stop_family('native-audit', 0)
++        code = manager.children['native-audit'].returncode
++        require(code == 0, 'Native auditor first failure; preserve stdout/stderr, no retry')
++    except Exception as error:
++        failure = {'type': type(error).__name__, 'message': str(error), 'at': now()}
++    finally:
++        try:
++            manager.stop_family('native-audit', 2)
++        except Exception as error:
++            failure = failure or {'type': type(error).__name__, 'message': str(error), 'at': now()}
++        manager.finish()
++        # Check final stdout/stderr/events before reporting success; preserve all produced bytes.
++        final_bytes = sum(p.stat().st_size for p in output.iterdir() if p.is_file())
++        if final_bytes > 2 * 1024 * 1024:
++            failure = failure or {'type': 'OutputBudget', 'message': 'Final native audit output exceeded 2 MiB; bytes preserved', 'at': now()}
++        # Complete stdout is kept byte-for-byte under the required native-audit.json name.
++        (output / 'native-audit.stdout').rename(output / 'native-audit.json')
++        (output / 'native-audit.stderr').rename(output / 'native-audit.stderr.txt')
++        audit_result = {'schema': 'feature63-audit-driver-result-v1', 'sourcePin': a['sourcePin'],
++            'status': 'PASS' if failure is None and code == 0 else 'FAIL_NO_RETRY', 'firstFailure': failure,
++            'auditorExitCode': code, 'nativeAuditInvocations': 1, 'protectedFinalReadback': final_protected_readback(a), 'finishedAt': now()}
++        if audit_result['protectedFinalReadback']['status'] != 'PASS':
++            failure = failure or {'type': 'ProtectedReadback', 'message': 'Final protected process/socket readback failed', 'at': now()}
++            audit_result.update({'status': 'FAIL_NO_RETRY', 'firstFailure': failure})
++        result_size = len((json.dumps(audit_result, indent=2, sort_keys=True) + '\n').encode())
++        if final_bytes + result_size > 2 * 1024 * 1024:
++            failure = failure or {'type': 'OutputBudget', 'message': 'Complete native audit output exceeded 2 MiB; bytes preserved', 'at': now()}
++            audit_result.update({'status': 'FAIL_NO_RETRY', 'firstFailure': failure})
++        write_new(output / 'driver-result.json', audit_result)
++    return 0 if failure is None and code == 0 else 1
++
++
++def main():
++    require(sys.flags.optimize == 0 and len(sys.argv) == 3 and sys.argv[1] in ('capture', 'audit'), 'Use explicit capture|audit plus root-bound assignment; no other CLI overrides')
++    assignment = Path(sys.argv[2])
++    return capture(assignment) if sys.argv[1] == 'capture' else audit(assignment)
++
++
++if __name__ == '__main__':
++    raise SystemExit(main())
+diff --git a/scripts/feature63/public-producer.mjs b/scripts/feature63/public-producer.mjs
+new file mode 100644
+--- /dev/null
++++ b/scripts/feature63/public-producer.mjs
+@@ -0,0 +1,560 @@
++import assert from 'node:assert/strict';
++import {createHash, randomUUID} from 'node:crypto';
++import {execFileSync} from 'node:child_process';
++import {appendFileSync, mkdirSync, readFileSync, realpathSync, statSync, writeFileSync} from 'node:fs';
++import {isAbsolute, join} from 'node:path';
++import {fileURLToPath, pathToFileURL} from 'node:url';
++
++// Static candidate. No browser/module import occurs before every launch guard passes.
++const SOURCE_ROOT = '/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies';
++const PREFIX = 'work/feature63-human-wave-composition-r1';
++const BASE_URL = 'http://127.0.0.1:5373';
++const ATTEMPT_MS = 300_000;
++const CLEANUP_MS = 120_000;
++const WINDOW_TICKS = 400;
++const FRAME_STEP = 4;
++const OUTPUT_ALLOWLIST = Object.freeze([
++  'public-results.json', 'public-identities.json', 'public-match-identity.json', 'public-windows.json',
++  'browser-ownership.json', 'public-cleanup.json', 'errors.ndjson', 'public-status.ndjson',
++  'human-one-wire.ndjson', 'human-two-wire.ndjson',
++  'human-one-public-frames.ndjson', 'human-two-public-frames.ndjson',
++  'human-one-hellos.ndjson', 'human-two-hellos.ndjson',
++  'human-one-commands.ndjson', 'human-two-commands.ndjson',
++  'human-one-acks.ndjson', 'human-two-acks.ndjson',
++  'human-one-ui-actions.ndjson', 'human-two-ui-actions.ndjson',
++  'human-one-latest-frame.json', 'human-two-latest-frame.json',
++]);
++const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
++const self = realpathSync(fileURLToPath(import.meta.url));
++const selfSha256 = sha256(readFileSync(self));
++
++function requireHash(value, label) {
++  assert.match(value ?? '', /^[a-f0-9]{64}$/, `${label} must be an explicit SHA-256.`);
++  return value;
++}
++function checkedFile(binding, label) {
++  assert.ok(binding && isAbsolute(binding.path ?? ''), `${label} needs an absolute path.`);
++  assert.equal(realpathSync(binding.path), binding.path, `${label} must use its real path.`);
++  assert.ok(statSync(binding.path).isFile(), `${label} must be a regular file.`);
++  const bytes = readFileSync(binding.path);
++  assert.equal(sha256(bytes), requireHash(binding.sha256, label), `${label} bytes changed.`);
++  return bytes;
++}
++function checkedReceipt(binding, schema, pin, label) {
++  const receipt = JSON.parse(checkedFile(binding, label).toString('utf8'));
++  assert.equal(receipt.schema, schema, `${label} schema mismatch.`);
++  assert.equal(receipt.sourcePin, pin, `${label} source mismatch.`);
++  assert.equal(receipt.approved, true, `${label} is pending.`);
++  return receipt;
++}
++function guard() {
++  assert.equal(process.argv.length, 2, 'No implicit command-line source, URL or output overrides.');
++  const assignmentPath = process.env.OVF_FEATURE63_PUBLIC_ASSIGNMENT;
++  assert.ok(assignmentPath && isAbsolute(assignmentPath), 'Root must assign OVF_FEATURE63_PUBLIC_ASSIGNMENT.');
++  assert.equal(realpathSync(assignmentPath), assignmentPath, 'Assignment must use its real path.');
++  const assignmentBytes = readFileSync(assignmentPath);
++  const assignment = JSON.parse(assignmentBytes.toString('utf8'));
++  assert.equal(assignment.schema, 'feature63-public-producer-assignment-v1');
++  assert.equal(assignment.approved, true, 'Launch is held; root has not approved this assignment.');
++  assert.equal(assignment.assignedBy, '/root');
++  assert.match(assignment.sourcePin ?? '', /^[a-f0-9]{40}$/, 'Root must assign a full source pin.');
++  assert.equal(assignment.sourceRoot, SOURCE_ROOT);
++  assert.equal(realpathSync(SOURCE_ROOT), SOURCE_ROOT);
++  assert.equal(realpathSync(process.cwd()), SOURCE_ROOT, 'Launch from the root-assigned owned checkout.');
++  assert.equal(assignment.freshPrefix, PREFIX);
++  assert.equal(assignment.baseUrl, BASE_URL);
++  assert.equal(assignment.outputRoot, join(SOURCE_ROOT, PREFIX, 'public'));
++  assert.equal(assignment.review?.approved, true, 'Producer review remains pending.');
++  assert.equal(assignment.review?.reviewedBy, '/root');
++  requireHash(assignment.publicDriverSha256, 'dedicated public driver');
++  assert.equal(assignment.reviewedProducer?.path, self);
++  assert.equal(requireHash(assignment.reviewedProducer?.sha256, 'producer'), selfSha256);
++  const slot = assignment.exclusiveHeavyApproval;
++  assert.equal(slot?.approved, true, 'Exclusive heavy slot remains pending.');
++  assert.equal(slot?.holder, '/root/ai_modes');
++  assert.ok(typeof slot?.token === 'string' && slot.token.length >= 16);
++  assert.ok(Number.isFinite(Date.parse(slot?.validUntil)), 'Heavy-slot expiry must be explicit.');
++  assert.ok(Date.parse(slot.validUntil) > Date.now() + ATTEMPT_MS + CLEANUP_MS, 'Heavy-slot approval expires too soon.');
++  const head = execFileSync('git', ['rev-parse', 'HEAD'], {cwd: SOURCE_ROOT, encoding: 'utf8'}).trim();
++  assert.equal(head, assignment.sourcePin, 'Owned source does not match root pin.');
++  assert.equal(execFileSync('git', ['status', '--porcelain', '--untracked-files=no'], {cwd: SOURCE_ROOT, encoding: 'utf8'}), '', 'Tracked source is dirty.');
++  const source = checkedReceipt(assignment.sourceBinding, 'feature63-new-source-binding-v1', head, 'source binding');
++  assert.equal(source.authenticatedInputs, true);
++  assert.ok(Number.isSafeInteger(source.inputCount) && source.inputCount > 0);
++  assert.equal(source.includesSourceConfigPublicBuildAndProof, true);
++  const build = checkedReceipt(assignment.buildBinding, 'feature63-build-binding-v1', head, 'build binding');
++  assert.equal(build.producerSha256, selfSha256);
++  assert.equal(build.publicDriverSha256, assignment.publicDriverSha256);
++  assert.equal(build.webDistPath, join(SOURCE_ROOT, PREFIX, 'dist'));
++  assert.equal(build.serverBuildPath, join(SOURCE_ROOT, PREFIX, 'server'));
++  assert.equal(assignment.productVersion, '4.0.2', 'The reviewed intended product version must be explicit.');
++  assert.equal(build.productVersion, assignment.productVersion);
++  const launch = checkedReceipt(assignment.serverOwnership, 'feature63-owned-server-v1', head, 'owned server');
++  assert.equal(launch.port, 5373);
++  assert.equal(launch.baseUrl, BASE_URL);
++  assert.equal(launch.freshPrefix, PREFIX);
++  assert.equal(launch.exclusiveSlotToken, slot.token);
++  assert.equal(launch.protectedRootPort, 4173);
++  assert.equal(launch.protectedRootUnaffected, true);
++  assert.ok(Number.isSafeInteger(launch.pid) && launch.pid > 0);
++  assert.ok(typeof launch.startTicks === 'string' && /^\d+$/.test(launch.startTicks));
++  const proc = readFileSync(`/proc/${launch.pid}/stat`, 'utf8');
++  assert.equal(proc.slice(proc.lastIndexOf(')') + 2).trim().split(/\s+/)[19], launch.startTicks, 'Owned server process identity changed.');
++  const dependencies = checkedReceipt(assignment.browserBinding, 'feature63-browser-binding-v1', head, 'browser binding');
++  assert.equal(dependencies.producerSha256, selfSha256);
++  assert.equal(dependencies.buildBindingSha256, assignment.buildBinding.sha256);
++  assert.equal(dependencies.exclusiveSlotToken, slot.token);
++  assert.equal(dependencies.contextCount, 2);
++  assert.equal(dependencies.browserCount, 1);
++  assert.equal(dependencies.headless, true);
++  const moduleBytes = checkedFile(dependencies.playwrightEntry, 'Playwright entry');
++  const executableBytes = checkedFile(dependencies.chromiumExecutable, 'Chromium executable');
++  assert.ok(moduleBytes.length > 0 && executableBytes.length > 0);
++  assert.ok(isAbsolute(dependencies.playwrightModulePath ?? ''));
++  assert.equal(realpathSync(dependencies.playwrightModulePath), dependencies.playwrightModulePath);
++  assert.equal(dependencies.playwrightModulePath, dependencies.playwrightEntry.path);
++  assert.equal(dependencies.allDependencyBytesAuthenticated, true);
++  assert.ok(Number.isSafeInteger(assignment.maxRetainedBytes) && assignment.maxRetainedBytes > 0 && assignment.maxRetainedBytes <= 1_073_741_824);
++  assert.equal(dependencies.nativeLifecycleOwner, 'dedicated-wrapper');
++  assert.equal(dependencies.cdpBaseUrl, 'http://127.0.0.1:5374');
++  assert.equal(dependencies.reviewedCdpDisconnectHasNoNativeSignals, true, 'Reviewed dependency must disconnect an attached browser without native signals.');
++  const nativeBrowser = checkedReceipt(assignment.externalBrowserOwnership, 'feature63-owned-browser-v1', head, 'wrapper-owned browser');
++  assert.equal(nativeBrowser.port, 5374);
++  assert.equal(nativeBrowser.cdpBaseUrl, dependencies.cdpBaseUrl);
++  assert.equal(nativeBrowser.exclusiveSlotToken, slot.token);
++  assert.equal(nativeBrowser.protectedRootPort, 4173);
++  assert.equal(nativeBrowser.protectedRootUnaffected, true);
++  assert.equal(nativeBrowser.executable, dependencies.chromiumExecutable.path);
++  assert.ok(Number.isSafeInteger(nativeBrowser.pid) && nativeBrowser.pid > 0 && nativeBrowser.pid !== 1063);
++  assert.ok(typeof nativeBrowser.startTicks === 'string' && /^\d+$/.test(nativeBrowser.startTicks));
++  const browserProc = readFileSync(`/proc/${nativeBrowser.pid}/stat`, 'utf8');
++  assert.equal(browserProc.slice(browserProc.lastIndexOf(')') + 2).trim().split(/\s+/)[19], nativeBrowser.startTicks, 'Wrapper-owned browser process identity changed.');
++  return {assignment, assignmentPath, assignmentSha256: sha256(assignmentBytes), head, build, launch, dependencies, nativeBrowser};
++}
++
++const binding = guard();
++const out = binding.assignment.outputRoot;
++// A fresh directory claim prevents mixing any previous attempt with this one.
++mkdirSync(out, {recursive: false});
++for (const name of OUTPUT_ALLOWLIST) writeFileSync(join(out, name), name.endsWith('.json') ? 'null\n' : '', {flag: 'wx', mode: 0o600});
++const sizes = new Map(OUTPUT_ALLOWLIST.map(name => [name, statSync(join(out, name)).size]));
++let retainedBytes = [...sizes.values()].reduce((a, b) => a + b, 0);
++let resourceFailure = null;
++let browser;
++let stopping = false;
++let firstFailure = null;
++let phase = 'loading reviewed browser dependency';
++let attemptTimer;
++let deadline;
++const profiles = [];
++const errors = [];
++const candidates = [];
++const candidateSignatures = new Set();
++const cleanup = {schema: 'feature63-public-cleanup-v1', startedAt: null, completedAt: null, contexts: [], browserClosed: false, failures: []};
++const result = {
++  schema: 'feature63-public-result-v1', status: 'candidate-running', publicCandidatePassed: false,
++  feature63Qualified: false, nativeCompositionAuditRequired: true,
++  sourcePin: binding.head, producerSha256: selfSha256, publicProducerSha256: selfSha256, publicDriverSha256: binding.assignment.publicDriverSha256, assignmentPath: binding.assignmentPath,
++  assignmentSha256: binding.assignmentSha256, baseUrl: BASE_URL, outputAllowlist: OUTPUT_ALLOWLIST,
++  startedAt: new Date().toISOString(), bounds: {attemptMs: ATTEMPT_MS, fightWindowTicks: WINDOW_TICKS, automaticRetries: 0, maxRetainedBytes: binding.assignment.maxRetainedBytes},
++  lobbyId: null, matchId: null, selectedCandidateIndex: null, firstFailure: null, cleanupPassed: false,
++};
++
++function beginStop(error, kind = 'acquisition') {
++  if (!firstFailure) firstFailure = {kind, phase, message: error instanceof Error ? error.message : String(error), capturedAt: new Date().toISOString()};
++  stopping = true;
++  if (browser) void browser.close().catch(closeError => errors.push({kind: 'emergency-browser-close', message: String(closeError)}));
++}
++function checkBudget() {
++  if (retainedBytes > binding.assignment.maxRetainedBytes && !resourceFailure) {
++    resourceFailure = {kind: 'resource', phase, retainedBytesAtBreach: retainedBytes, maximum: binding.assignment.maxRetainedBytes, capturedAt: new Date().toISOString(), message: 'Retained byte bound breached; existing bytes are preserved.'};
++    beginStop(new Error(resourceFailure.message), 'resource');
++    errorRecord('resource', resourceFailure.message, resourceFailure);
++  }
++}
++function append(name, value) {
++  assert.ok(OUTPUT_ALLOWLIST.includes(name));
++  const bytes = Buffer.from(`${JSON.stringify(value)}\n`);
++  appendFileSync(join(out, name), bytes);
++  sizes.set(name, sizes.get(name) + bytes.length); retainedBytes += bytes.length; checkBudget();
++}
++function save(name, value) {
++  assert.ok(OUTPUT_ALLOWLIST.includes(name));
++  const bytes = Buffer.from(`${JSON.stringify(value, null, 2)}\n`);
++  writeFileSync(join(out, name), bytes);
++  retainedBytes += bytes.length - sizes.get(name); sizes.set(name, bytes.length); checkBudget();
++}
++function errorRecord(kind, message, extra = {}) {
++  const value = {schema: 'feature63-public-error-v1', kind, phase, capturedAt: new Date().toISOString(), message: String(message), ...extra};
++  errors.push(value); append('errors.ndjson', value); return value;
++}
++function status(action, detail = {}) {
++  append('public-status.ndjson', {schema: 'feature63-public-status-v1', capturedAt: new Date().toISOString(), phase, action, ...detail});
++}
++function checkpoint() {
++  if (stopping) throw new Error(firstFailure?.message ?? 'Public acquisition stopped.');
++  if (Date.now() >= deadline) { beginStop(new Error('One public attempt reached its 300-second bound.'), 'timeout'); throw new Error(firstFailure.message); }
++}
++async function pause(ms) {
++  checkpoint(); await new Promise(done => setTimeout(done, Math.min(ms, Math.max(1, deadline - Date.now())))); checkpoint();
++}
++async function waitUntil(predicate, timeout, label) {
++  const ends = Math.min(deadline, Date.now() + timeout);
++  while (Date.now() < ends) { checkpoint(); const value = predicate(); if (value) return value; await pause(40); }
++  throw new Error(label);
++}
++function humanAlive(view) {
++  const resultFlags = view?.result?.eliminated;
++  const flags = view?.eliminated;
++  return Object.fromEntries([0, 1].map(side => [side, {
++    explicitNotEliminated: flags?.[side] === false && resultFlags?.[side] === false,
++    liveCompleteHqIds: (view?.entities ?? []).filter(e => e.side === side && e.kind === 'building' && e.role === 'hq' && e.hp > 0 && e.progress === 1).map(e => e.id),
++    liveCombatUnitIds: (view?.entities ?? []).filter(e => e.side === side && e.kind === 'unit' && e.role !== 'worker' && e.hp > 0 && e.owner === side).map(e => e.id),
++  }]));
++}
++function alivePass(alive) {
++  return [0, 1].every(side => alive[side].explicitNotEliminated && alive[side].liveCompleteHqIds.length > 0);
++}
++function topologyPass(message, side) {
++  const view = message.view;
++  return message.matchId === result.matchId && view.side === side && view.controller === 'external' && view.teamId === 0 && view.sharedVision === true && view.rules?.mode === 'annihilation'
++    && JSON.stringify(view.allies.map(p => [p.side, p.teamId])) === JSON.stringify([[1 - side, 0]])
++    && JSON.stringify(view.opponents.map(p => [p.side, p.teamId])) === JSON.stringify([[2, 1], [3, 1]]);
++}
++
++function capture(profile, socket, direction, event) {
++  try {
++    const capturedAt = new Date().toISOString();
++    const ordinal = ++profile.wireOrdinal;
++    const stringPayload = typeof event.payload === 'string';
++    const wire = {schema: 'feature63-public-wire-v1', profile: profile.name, socketId: socket.id, socketUrl: socket.url, ordinal, direction, capturedAt,
++      payloadType: stringPayload ? 'string' : 'binary', payload: stringPayload ? event.payload : null,
++      binaryBase64: stringPayload ? null : Buffer.from(event.payload).toString('base64')};
++    // Persist the complete exposed payload before attempting to parse it.
++    append(`${profile.name}-wire.ndjson`, wire);
++    if (!stringPayload) throw new Error('Binary public payload retained; JSON string attribution is unavailable.');
++    const message = JSON.parse(event.payload);
++    const row = {schema: 'feature63-public-message-v1', profile: profile.name, socketId: socket.id, wireOrdinal: ordinal, capturedAt, message};
++    if (direction === 'sent' && message.kind === 'command') { profile.commands.push(row); append(`${profile.name}-commands.ndjson`, row); }
++    if (direction !== 'received') return;
++    if (message.kind === 'hello') {
++      profile.hellos.push(row); append(`${profile.name}-hellos.ndjson`, row);
++      if (message.protocolVersion !== 1 || message.role !== 'player' || message.side !== profile.side || message.perspective === 'team' || !Number.isSafeInteger(message.generation)) throw new Error('Human hello must bind a normal own-side player view.');
++    }
++    if (message.kind === 'commandAck') { profile.acks.push(row); append(`${profile.name}-acks.ndjson`, row); }
++    if (message.kind === 'error') throw new Error(`Public server error ${message.code}: ${message.message}`);
++    if (message.kind !== 'snapshot') return;
++    assert.ok(Number.isSafeInteger(message.tick) && message.tick >= 0);
++    assert.equal(message.frameSeq, message.tick, 'Public frameSeq must equal its current source-derived authoritative tick.');
++    assert.equal(message.view.tick, message.tick);
++    assert.equal(message.view.side, profile.side);
++    const alive = humanAlive(message.view);
++    const frame = {schema: 'feature63-public-frame-v1', profile: profile.name, socketId: socket.id, wireOrdinal: ordinal, capturedAt, message, alive};
++    append(`${profile.name}-public-frames.ndjson`, frame);
++    save(`${profile.name}-latest-frame.json`, frame);
++    profile.latest = frame;
++    for (const entity of message.view.entities) profile.observedIds.set(entity.id, {side: entity.side, owner: entity.owner, kind: entity.kind, lastObservedTick: message.tick});
++    const combat = [];
++    for (const event of message.view.events) {
++      if (event.type !== 'attack' || !(event.amount > 0) || ![0, 1, 2, 3].includes(event.side)) continue;
++      if (typeof event.eventId !== 'string' || !Number.isSafeInteger(event.source) || !Number.isSafeInteger(event.target) || !Number.isSafeInteger(event.tick)) continue;
++      const source = message.view.entities.find(e => e.id === event.source);
++      const target = profile.observedIds.get(event.target);
++      // Redacted or unobserved attribution cannot be repaired with private state.
++      if (!source || source.side !== event.side || source.owner !== event.side || source.kind !== 'unit' || !target || target.owner !== target.side || target.kind !== 'unit') continue;
++      if (!([0, 1].includes(event.side) && [2, 3].includes(target.side)) && !([2, 3].includes(event.side) && [0, 1].includes(target.side))) continue;
++      combat.push({...event, profile: profile.name, wireOrdinal: ordinal, frameTick: message.tick, sourceKind: source.kind, sourceSide: source.side,
++        targetSide: target.side, targetKind: target.kind, targetObservedTick: target.lastObservedTick});
++    }
++    const economyIds = new Set((message.view.economy?.caravans ?? []).map(value => typeof value === 'number' ? value : value.entityId));
++    const eligibleOwnIds = message.view.entities.filter(entity => entity.owner === profile.side && entity.side === profile.side && entity.kind === 'unit' && entity.role !== 'worker' && entity.hp > 0 && entity.illusion === false && entity.definitionId !== 'economy:caravan' && !economyIds.has(entity.id) && entity.tactics?.siegeCrew?.uncrewed !== true).map(entity => entity.id).sort((a, b) => a - b);
++    profile.frameIndex.push({tick: message.tick, frameSeq: message.frameSeq, wireOrdinal: ordinal, socketId: socket.id, matchId: message.matchId, alive, combat, eligibleOwnIds});
++  } catch (error) {
++    try { errorRecord('capture', error instanceof Error ? error.message : String(error), {profile: profile.name, direction, socketId: socket.id}); } catch (writeError) { errors.push({kind: 'capture-write', message: String(writeError)}); }
++    beginStop(error, 'capture');
++  }
++}
++
++async function ui(profile, action, detail, perform) {
++  checkpoint();
++  const actionId = randomUUID();
++  const began = {schema: 'feature63-public-ui-action-v1', profile: profile.name, side: profile.side, actionId, action, state: 'began', capturedAt: new Date().toISOString(), detail};
++  append(`${profile.name}-ui-actions.ndjson`, began);
++  try {
++    const value = await perform(); checkpoint();
++    append(`${profile.name}-ui-actions.ndjson`, {...began, state: 'completed', capturedAt: new Date().toISOString()});
++    return {actionId, value};
++  } catch (error) {
++    append(`${profile.name}-ui-actions.ndjson`, {...began, state: 'failed', capturedAt: new Date().toISOString(), message: String(error)}); throw error;
++  }
++}
++async function clickRole(profile, name) {
++  return ui(profile, 'button', {role: 'button', name, exact: true}, () => profile.page.getByRole('button', {name, exact: true}).click());
++}
++async function refresh(profile) { await clickRole(profile, 'Refresh lobbies'); }
++async function guest(name, side) {
++  checkpoint();
++  const context = await browser.newContext({viewport: {width: 1440, height: 1000}});
++  const profile = {name, side, context, contextId: randomUUID(), page: null, sockets: [], wireOrdinal: 0, commands: [], acks: [], hellos: [], frameIndex: [], observedIds: new Map(), acceptedAttackMoves: [], latest: null, username: null, account: null};
++  profiles.push(profile);
++  const page = await context.newPage(); profile.page = page;
++  page.setDefaultTimeout(10_000); page.setDefaultNavigationTimeout(15_000);
++  page.on('pageerror', error => { errorRecord('page', error.message, {profile: name}); beginStop(error, 'page'); });
++  page.on('websocket', socket => {
++    const owned = {id: randomUUID(), url: socket.url(), openedAt: new Date().toISOString(), closedAt: null}; profile.sockets.push(owned);
++    const url = new URL(owned.url);
++    if (url.hostname !== '127.0.0.1' || url.port !== '5373' || url.pathname !== '/ws') { beginStop(new Error('Unexpected public socket origin.'), 'ownership'); return; }
++    socket.on('framesent', event => capture(profile, owned, 'sent', event));
++    socket.on('framereceived', event => capture(profile, owned, 'received', event));
++    socket.on('socketerror', value => { errorRecord('socket', value, {profile: name, socketId: owned.id}); beginStop(new Error(String(value)), 'socket'); });
++    socket.on('close', () => { owned.closedAt = new Date().toISOString(); status('owned-socket-closed', {profile: name, socketId: owned.id}); });
++  });
++  await ui(profile, 'navigation', {url: BASE_URL, waitUntil: 'domcontentloaded'}, () => page.goto(BASE_URL, {waitUntil: 'domcontentloaded'}));
++  profile.pageBuild = await page.evaluate(() => ({url: location.href, moduleScripts: Array.from(document.querySelectorAll('script[type="module"][src]'), n => n.src), stylesheets: Array.from(document.querySelectorAll('link[rel="stylesheet"][href]'), n => n.href)}));
++  await clickRole(profile, 'Online');
++  const guestResponsePromise = page.waitForResponse(response => response.url() === `${BASE_URL}/api/auth/guest` && response.request().method() === 'POST', {timeout: 10_000});
++  await clickRole(profile, 'Play as guest');
++  const guestResponse = await guestResponsePromise;
++  const guestPayload = await guestResponse.text();
++  profile.guestResponse = {url: guestResponse.url(), status: guestResponse.status(), payload: guestPayload};
++  profile.account = JSON.parse(guestPayload).account;
++  assert.equal(guestResponse.status(), 200); assert.ok(typeof profile.account?.id === 'string' && profile.account.id.length > 0);
++  status('normal-guest-response', {profile: name, ...profile.guestResponse});
++  await page.waitForFunction(() => !document.querySelector('.online-account')?.hidden && document.querySelector('.online-username')?.textContent?.startsWith('Guest'), {}, {timeout: 15_000});
++  profile.username = await page.locator('.online-username').textContent();
++  assert.equal(profile.account.username, profile.username);
++  return profile;
++}
++async function battlefield(profile) {
++  const page = profile.page;
++  await page.waitForSelector('.online-overlay[hidden]', {state: 'attached', timeout: 30_000});
++  await page.waitForSelector('.loading-battle[hidden]', {state: 'attached', timeout: 30_000});
++  await page.waitForFunction(side => { const rts = window.rts; return rts?.mode === 'online' && rts.viewSide === side && rts.state.explored[side].size > 0; }, profile.side, {timeout: 30_000});
++  const diagnostics = await page.evaluate(() => ({paused: window.rts.paused, readOnly: window.rts.readOnly, simulationEnabled: window.rts.simulationEnabled, teams: [...window.rts.state.teams]}));
++  assert.deepEqual(diagnostics, {paused: false, readOnly: false, simulationEnabled: false, teams: [0, 0, 1, 1]});
++  assert.equal(await page.locator('#game-canvas canvas').isVisible(), true);
++  await waitUntil(() => profile.latest && profile.hellos.length, 10_000, 'Missing hello or initial public frame.');
++}
++function sharedLatest() {
++  const a = profiles[0], b = profiles[1];
++  if (!a || !b) return null;
++  const second = new Map(b.frameIndex.map(f => [f.tick, f]));
++  return [...a.frameIndex].reverse().find(f => second.has(f.tick))?.tick ?? null;
++}
++function groundTarget(hq, hostile, entities, width, height) {
++  const dx = hostile ? hostile.x - hq.x : 1, dy = hostile ? hostile.y - hq.y : .6;
++  const length = Math.hypot(dx, dy) || 1;
++  const center = {x: hq.x + dx / length * 6, y: hq.y + dy / length * 6};
++  for (const [ox, oy] of [[0, 0], [2, 0], [-2, 0], [0, 2], [0, -2], [2, 2], [-2, -2]]) {
++    const target = {x: center.x + ox, y: center.y + oy};
++    if (target.x < .5 || target.y < .5 || target.x > width - .5 || target.y > height - .5 || Math.hypot(target.x - hq.x, target.y - hq.y) > 10) continue;
++    if (entities.every(e => Math.hypot(e.x - target.x, e.y - target.y) > 1.8)) return target;
++  }
++  throw new Error('No observed ground point near the common human HQ avoids entity clicks.');
++}
++async function attackMove(profile, target, commonHqId, reason) {
++  checkpoint();
++  const page = profile.page;
++  const selectionAction = await ui(profile, 'keyboard', {key: 'F2', purpose: 'select own combat army'}, () => page.keyboard.press('F2'));
++  await page.waitForFunction(side => window.rts.selected.length > 0 && window.rts.selected.every(id => window.rts.state.entities.some(e => e.id === id && e.side === side && e.kind === 'unit' && e.role !== 'worker' && e.hp > 0)), profile.side);
++  const display = await page.evaluate(() => {
++    const rts = window.rts;
++    return {tick: rts.state.tick, side: rts.viewSide, selectedIds: [...rts.selected], selectedUnits: rts.state.entities.filter(e => rts.selected.includes(e.id)).map(e => ({id: e.id, side: e.side, kind: e.kind, role: e.role, hp: e.hp, x: e.x, y: e.y})), dimensions: {width: rts.state.width, height: rts.state.height}};
++  });
++  assert.equal(display.side, profile.side); assert.ok(display.selectedIds.length > 0);
++  const eligibilityFrame = await waitUntil(() => profile.frameIndex.findLast(frame => frame.tick === display.tick), 2_000, 'Displayed own selection has no captured public eligibility frame.');
++  const eligibleCommandedIds = display.selectedIds.filter(id => eligibilityFrame.eligibleOwnIds.includes(id)).sort((a, b) => a - b);
++  assert.ok(eligibleCommandedIds.length > 0, 'The accepted command must contain an eligible owned combat actor.');
++  assert.deepEqual(eligibleCommandedIds, [...display.selectedIds].sort((a, b) => a - b), 'Selected illusions, crewless actors or economy units cannot qualify this command.');
++  const minimap = await page.locator('#minimap').boundingBox(); assert.ok(minimap);
++  const minimapPoint = {x: minimap.x + target.x / display.dimensions.width * minimap.width, y: minimap.y + target.y / display.dimensions.height * minimap.height};
++  const minimapAction = await ui(profile, 'minimap-left-click', {target, point: minimapPoint}, () => page.mouse.click(minimapPoint.x, minimapPoint.y));
++  const attackKeyAction = await ui(profile, 'keyboard', {key: 'a', purpose: 'ordinary attack-move input'}, () => page.keyboard.press('a'));
++  const canvas = await page.locator('#game-canvas canvas').boundingBox(); assert.ok(canvas);
++  const camera = await page.evaluate(() => ({...window.rts.camera}));
++  const projected = {x: 1600 + (target.x - target.y) * 32, y: 80 + (target.x + target.y) * 16};
++  const point = {x: canvas.x + (projected.x - camera.x) * camera.zoom * canvas.width / camera.width, y: canvas.y + (projected.y - camera.y) * camera.zoom * canvas.height / camera.height};
++  assert.ok(point.x >= canvas.x && point.x <= canvas.x + canvas.width && point.y >= canvas.y && point.y <= canvas.y + canvas.height, 'Projected ground click must be on the real canvas.');
++  const priorOrdinal = profile.wireOrdinal;
++  const {actionId} = await ui(profile, 'canvas-attack-move', {reason, commonHqId, target, selectedIds: display.selectedIds, selectedUnits: display.selectedUnits, displayedTick: display.tick, canvas, camera, projected, point, button: 'left', precedingKeys: ['F2', 'a']}, () => page.mouse.click(point.x, point.y));
++  const commandRow = await waitUntil(() => profile.commands.find(row => row.wireOrdinal > priorOrdinal), 5_000, 'Canvas action sent no command.');
++  const command = commandRow.message;
++  assert.equal(command.command.type, 'attackMove', 'The UI click must send an attackMove, rather than an entity-specific action.');
++  assert.deepEqual([...command.command.ids].sort((a, b) => a - b), [...display.selectedIds].sort((a, b) => a - b));
++  assert.ok(Math.abs(command.command.x - target.x) < .1 && Math.abs(command.command.y - target.y) < .1);
++  const ackRow = await waitUntil(() => profile.acks.find(row => row.socketId === commandRow.socketId && row.message.clientSeq === command.clientSeq), 10_000, `No commandAck for ${command.clientSeq}.`);
++  assert.equal(ackRow.message.accepted, true); assert.ok(Number.isSafeInteger(ackRow.message.appliedTick));
++  const accepted = {profile: profile.name, side: profile.side, uiActionId: actionId, id: actionId, kind: 'canvas-keyboard-attack-move', completed: true, socketId: commandRow.socketId, selectedIds: display.selectedIds, eligibleCommandedIds, eligibilityFrameTick: eligibilityFrame.tick, eligibilityWireOrdinal: eligibilityFrame.wireOrdinal, commandWireOrdinal: commandRow.wireOrdinal, ackWireOrdinal: ackRow.wireOrdinal, clientSeq: command.clientSeq, appliedTick: ackRow.message.appliedTick, command, ack: ackRow.message,
++    steps: [{kind: 'key-down', key: 'F2', actionId: selectionAction.actionId}, {kind: 'key-up', key: 'F2', actionId: selectionAction.actionId}, {kind: 'minimap-click', button: 'left', point: minimapPoint, actionId: minimapAction.actionId}, {kind: 'key-down', key: 'a', actionId: attackKeyAction.actionId}, {kind: 'key-up', key: 'a', actionId: attackKeyAction.actionId}, {kind: 'canvas-click', button: 'left', point, target, actionId}]};
++  profile.acceptedAttackMoves.push(accepted);
++  append(`${profile.name}-ui-actions.ndjson`, {schema: 'feature63-public-ui-action-v1', profile: profile.name, side: profile.side, actionId, action: 'canvas-attack-move', state: 'accepted', capturedAt: new Date().toISOString(), ...accepted});
++  return accepted;
++}
++
++function indexWindow() {
++  const endTick = sharedLatest();
++  if (endTick === null || profiles.some(p => !p.acceptedAttackMoves.length)) return null;
++  const firstCommandTick = Math.max(...profiles.map(p => p.acceptedAttackMoves[0].appliedTick));
++  const lower = Math.max(endTick - WINDOW_TICKS, Math.ceil(firstCommandTick / FRAME_STEP) * FRAME_STEP);
++  const firstFrames = profiles[0].frameIndex.filter(f => f.tick >= lower && f.tick <= endTick);
++  const secondTicks = new Set(profiles[1].frameIndex.map(f => f.tick));
++  const startTick = firstFrames.find(f => secondTicks.has(f.tick))?.tick;
++  if (startTick === undefined || startTick >= endTick) return null;
++  const ranges = {};
++  const allCombat = [];
++  let coveragePassed = true, bothHumansAliveThroughout = true;
++  for (const profile of profiles) {
++    const frames = profile.frameIndex.filter(f => f.tick >= startTick && f.tick <= endTick);
++    const prior = profile.frameIndex.findLast(f => f.tick < startTick);
++    const contiguous = frames.length === (endTick - startTick) / FRAME_STEP + 1 && frames[0]?.tick === startTick && frames.at(-1)?.tick === endTick
++      && frames.every((frame, i) => frame.frameSeq === frame.tick && frame.matchId === result.matchId && (!i || frame.tick - frames[i - 1].tick === FRAME_STEP) && frame.socketId === frames[0].socketId);
++    coveragePassed &&= contiguous;
++    bothHumansAliveThroughout &&= !!prior && alivePass(prior.alive) && frames.every(f => alivePass(f.alive));
++    ranges[profile.name] = {firstWireOrdinal: frames[0]?.wireOrdinal ?? null, lastWireOrdinal: frames.at(-1)?.wireOrdinal ?? null, firstFrameTick: frames[0]?.tick ?? null, lastFrameTick: frames.at(-1)?.tick ?? null, frameCount: frames.length, contiguous,
++      beforeWindow: prior ? {tick: prior.tick, wireOrdinal: prior.wireOrdinal, alive: prior.alive} : null};
++    allCombat.push(...frames.flatMap(f => f.combat).filter(e => e.tick > startTick && e.tick <= endTick));
++  }
++  const unique = new Map();
++  for (const event of allCombat) {
++    const previous = unique.get(event.eventId);
++    if (previous && ['tick', 'side', 'source', 'target', 'amount'].some(k => previous[k] !== event[k])) { coveragePassed = false; continue; }
++    if (!previous) unique.set(event.eventId, event);
++  }
++  const acceptedAttackMoves = profiles.flatMap(p => p.acceptedAttackMoves.filter(c => c.appliedTick <= startTick));
++  const combatEvents = [...unique.values()];
++  const humanEvents = combatEvents.filter(e => [0, 1].includes(e.side) && acceptedAttackMoves.some(c => c.side === e.side && c.eligibleCommandedIds.includes(e.source) && c.command.command.ids.includes(e.source)));
++  const aiEvents = combatEvents.filter(e => [2, 3].includes(e.side) && [0, 1].includes(e.targetSide));
++  const humanOwners = [...new Set(humanEvents.map(e => e.side))].sort();
++  const humanTargetOwners = [...new Set(humanEvents.map(e => e.targetSide))].sort();
++  const aiOwners = [...new Set(aiEvents.map(e => e.side))].sort();
++  const commandOwners = [...new Set(acceptedAttackMoves.map(c => c.side))].sort();
++  // Original feature 63 requires the human attack targets to cover both natural AI owners.
++  const publicPredicatePassed = coveragePassed && bothHumansAliveThroughout && JSON.stringify(commandOwners) === '[0,1]' && JSON.stringify(humanOwners) === '[0,1]' && JSON.stringify(humanTargetOwners) === '[2,3]';
++  const value = {startTick, endTick, maxTicks: WINDOW_TICKS, profileFrameRanges: ranges, coveragePassed, bothHumansAliveThroughout, acceptedAttackMoves, combatEvents, humanEventIds: humanEvents.map(e => e.eventId), aiEventIds: aiEvents.map(e => e.eventId), humanOwners, humanTargetOwners, aiOwners, publicPredicatePassed, nativeParticipantOverlapUnverified: true};
++  const signature = JSON.stringify([startTick, combatEvents.map(e => e.eventId), publicPredicatePassed]);
++  if (!candidateSignatures.has(signature)) { candidateSignatures.add(signature); candidates.push(value); }
++  save('public-windows.json', {schema: 'feature63-public-windows-v1', sourcePin: binding.head, matchId: result.matchId, maxTicks: WINDOW_TICKS, requiredFrameStep: FRAME_STEP, frameSeqRelation: 'equals tick', candidates, selectedCandidateIndex: publicPredicatePassed ? candidates.length - 1 : null});
++  return publicPredicatePassed ? candidates.length - 1 : null;
++}
++function identities() {
++  return {schema: 'feature63-public-identities-v1', sourcePin: binding.head, matchId: result.matchId, lobbyId: result.lobbyId, seatsText: result.seatsText ?? [], receivedRulesText: result.receivedRulesText ?? [], lobbyResponse: result.lobbyResponse ?? null, expectedTeams: [0, 0, 1, 1], expectedControllers: ['external', 'external', 'ai', 'ai'], humans: profiles.map(p => ({profile: p.name, side: p.side, account: p.account, guestResponse: p.guestResponse ?? null})), profiles: profiles.map(p => ({profile: p.name, side: p.side, contextId: p.contextId, username: p.username, pageBuild: p.pageBuild ?? null, helloMessages: p.hellos, latestTopology: p.latest ? {tick: p.latest.message.tick, side: p.latest.message.view.side, controller: p.latest.message.view.controller, teamId: p.latest.message.view.teamId, sharedVision: p.latest.message.view.sharedVision, rulesMode: p.latest.message.view.rules.mode, allies: p.latest.message.view.allies, opponents: p.latest.message.view.opponents} : null}))};
++}
++
++try {
++  // These imports are unreachable with the supplied pending assignment.
++  deadline = Date.now() + ATTEMPT_MS;
++  attemptTimer = setTimeout(() => beginStop(new Error('One public attempt reached its 300-second bound.'), 'timeout'), ATTEMPT_MS);
++  const {chromium} = await import(pathToFileURL(binding.dependencies.playwrightModulePath).href);
++  checkpoint();
++  browser = await chromium.connectOverCDP(binding.dependencies.cdpBaseUrl, {timeout: 15_000});
++  save('browser-ownership.json', {schema: 'feature63-public-browser-ownership-v1', sourcePin: binding.head, browserCount: 1, contextCount: 2, executable: binding.dependencies.chromiumExecutable, browserVersion: browser.version(), owner: '/root/ai_modes', exclusiveSlotToken: binding.assignment.exclusiveHeavyApproval.token, cleanupMethod: 'close only returned contexts and disconnect the attached CDP connection; dedicated wrapper closes the native Chromium child', contexts: []});
++  phase = 'opening two normal guest contexts';
++  const first = await guest('human-one', 0), second = await guest('human-two', 1);
++  assert.notEqual(first.username, second.username); assert.notEqual(first.contextId, second.contextId);
++  assert.notEqual(first.account.id, second.account.id);
++  phase = 'normal two-human versus two-AI annihilation lobby';
++  await ui(first, 'select', {label: 'Lobby player count', value: '4'}, () => first.page.getByLabel('Lobby player count', {exact: true}).selectOption('4'));
++  await ui(first, 'select', {label: 'Lobby map size', value: 'small'}, () => first.page.getByLabel('Lobby map size', {exact: true}).selectOption('small'));
++  await ui(first, 'select', {label: 'Lobby starting age', value: '1'}, () => first.page.getByLabel('Lobby starting age', {exact: true}).selectOption('1'));
++  for (let player = 1; player <= 4; player++) {
++    const team = player <= 2 ? '0' : '1', controller = player <= 2 ? 'human' : 'ai';
++    await ui(first, 'select', {label: `Lobby player ${player} team`, value: team}, () => first.page.getByLabel(`Lobby player ${player} team`, {exact: true}).selectOption(team));
++    await ui(first, 'select', {label: `Lobby player ${player} controller`, value: controller}, () => first.page.getByLabel(`Lobby player ${player} controller`, {exact: true}).selectOption(controller));
++  }
++  await ui(first, 'checkbox', {label: 'Lobby shared vision', value: true}, () => first.page.getByLabel('Lobby shared vision', {exact: true}).check());
++  await clickRole(first, 'Create lobby'); await first.page.waitForSelector('.online-current:not([hidden])');
++  result.lobbyId = (await first.page.locator('.online-lobby-id').textContent()).split(' · ', 1)[0].trim();
++  await refresh(second); await clickRole(second, `Join lobby ${result.lobbyId}`); await second.page.waitForSelector('.online-current:not([hidden])');
++  for (const profile of [first, second]) { await refresh(profile); await ui(profile, 'ready', {selector: '[data-online="ready"]'}, () => profile.page.locator('[data-online="ready"]').click()); await profile.page.waitForFunction(() => document.querySelector('[data-online="ready"]')?.getAttribute('aria-pressed') === 'true'); }
++  const lobbyResponsePromise = first.page.waitForResponse(response => response.url() === `${BASE_URL}/api/lobbies/${encodeURIComponent(result.lobbyId)}` && response.request().method() === 'GET', {timeout: 10_000});
++  await refresh(first);
++  const lobbyResponse = await lobbyResponsePromise;
++  const lobbyPayload = await lobbyResponse.text();
++  result.lobbyResponse = {url: lobbyResponse.url(), status: lobbyResponse.status(), payload: lobbyPayload};
++  const lobby = JSON.parse(lobbyPayload).lobby;
++  assert.equal(lobby.id, result.lobbyId); assert.equal(lobby.seats.length, 4);
++  for (const profile of profiles) { assert.equal(lobby.seats[profile.side].account.id, profile.account.id); assert.equal(lobby.seats[profile.side].account.username, profile.username); }
++  assert.deepEqual(lobby.settings.players.map(p => p.teamId), [0, 0, 1, 1]);
++  assert.deepEqual(lobby.settings.players.map(p => p.controller), ['human', 'human', 'ai', 'ai']);
++  status('normal-lobby-response', result.lobbyResponse);
++  result.seatsText = await first.page.locator('.online-seats li').allTextContents();
++  result.receivedRulesText = await first.page.locator('.online-received-rule-values').allTextContents();
++  assert.equal(result.seatsText.length, 4);
++  assert.ok(result.seatsText.slice(0, 2).every(text => /Guest.*Team 1/.test(text)) && result.seatsText.slice(2).every(text => /AI.*Team 2.*AI ready/.test(text)));
++  await clickRole(first, 'Start match'); await battlefield(first);
++  await refresh(second); await ui(second, 'rejoin', {selector: '.online-current [data-online="rejoin"]'}, () => second.page.locator('.online-current [data-online="rejoin"]').click()); await battlefield(second);
++  result.matchId = first.hellos.at(-1).message.matchId;
++  assert.equal(second.hellos.at(-1).message.matchId, result.matchId);
++  for (const profile of profiles) { assert.ok(topologyPass(profile.latest.message, profile.side)); assert.ok(alivePass(profile.latest.alive), 'Both human HQs must begin alive.'); }
++  // One early public identity allows a separate root-owned passive collector to bind
++  // the match. No native collector output is ever read by this UI producer.
++  save('public-match-identity.json', {schema: 'feature63-public-match-identity-v1', sourcePin: binding.head, matchId: result.matchId, lobbyId: result.lobbyId, capturedAt: new Date().toISOString(), expectedTeams: [0, 0, 1, 1], expectedControllers: ['external', 'external', 'ai', 'ai'], accounts: profiles.map(p => ({profile: p.name, side: p.side, account: p.account, guestResponse: p.guestResponse})), hellos: profiles.map(p => ({profile: p.name, side: p.side, socketId: p.hellos.at(-1).socketId, wireOrdinal: p.hellos.at(-1).wireOrdinal, message: p.hellos.at(-1).message}))});
++  save('public-identities.json', identities());
++  phase = 'bringing both combat armies near the same allied HQ';
++  const commonHq = first.latest.message.view.entities.find(e => e.side === 0 && e.kind === 'building' && e.role === 'hq' && e.hp > 0 && e.progress === 1);
++  assert.ok(commonHq);
++  result.commonHq = {id: commonHq.id, side: commonHq.side, x: commonHq.x, y: commonHq.y, observedAtTick: first.latest.message.tick};
++  let target = groundTarget(commonHq, null, first.latest.message.view.entities, first.latest.message.view.map.width, first.latest.message.view.map.height);
++  for (const profile of profiles) await attackMove(profile, target, commonHq.id, 'defend the same allied HQ');
++  phase = 'retaining a natural shared AI fight candidate';
++  let lastCommandAt = Date.now(), lastHostileId = null;
++  while (true) {
++    checkpoint();
++    for (const profile of profiles) { assert.ok(topologyPass(profile.latest.message, profile.side)); assert.ok(alivePass(profile.latest.alive), 'A human HQ was lost.'); }
++    const selected = indexWindow();
++    if (selected !== null) { result.selectedCandidateIndex = selected; result.publicCandidatePassed = true; break; }
++    const frame = first.latest.message;
++    const hq = frame.view.entities.find(e => e.id === commonHq.id && e.hp > 0); assert.ok(hq, 'Common human HQ is no longer observed alive.');
++    const hostile = frame.view.entities.filter(e => [2, 3].includes(e.side) && e.kind === 'unit' && e.hp > 0 && Math.hypot(e.x - hq.x, e.y - hq.y) <= 12).sort((a, b) => Math.hypot(a.x - hq.x, a.y - hq.y) - Math.hypot(b.x - hq.x, b.y - hq.y))[0];
++    if (hostile && Date.now() - lastCommandAt >= 4_000 && hostile.id !== lastHostileId) {
++      target = groundTarget(hq, hostile, frame.view.entities, frame.view.map.width, frame.view.map.height);
++      for (const profile of profiles) await attackMove(profile, target, commonHq.id, `visible hostile owner ${hostile.side} near common HQ`);
++      lastCommandAt = Date.now(); lastHostileId = hostile.id;
++    }
++    await pause(250);
++  }
++  assert.equal(errors.length, 0, 'Acquisition errors prevent public pass.');
++  result.status = 'candidate-public-pass';
++} catch (error) {
++  if (!firstFailure) firstFailure = {kind: 'acquisition', phase, message: error instanceof Error ? error.message : String(error), capturedAt: new Date().toISOString()};
++  try { errorRecord('attempt', firstFailure.message); } catch (writeError) { errors.push({kind: 'failure-write', message: String(writeError)}); }
++  result.status = 'candidate-public-fail'; result.publicCandidatePassed = false;
++} finally {
++  if (attemptTimer) clearTimeout(attemptTimer);
++  // Preserve partial evidence even when the attempt fails before a combat window exists.
++  try { if (profiles.length === 2 && !result.publicCandidatePassed) indexWindow(); } catch (error) { errorRecord('final-window', String(error)); }
++  save('public-identities.json', identities());
++  if (!candidates.length) save('public-windows.json', {schema: 'feature63-public-windows-v1', sourcePin: binding.head, matchId: result.matchId, maxTicks: WINDOW_TICKS, requiredFrameStep: FRAME_STEP, frameSeqRelation: 'equals tick', candidates: [], selectedCandidateIndex: null});
++  cleanup.startedAt = new Date().toISOString();
++  const cleanupDeadline = Date.now() + CLEANUP_MS;
++  async function closeOwned(label, action) {
++    const remaining = Math.max(1, cleanupDeadline - Date.now());
++    let timer;
++    try { await Promise.race([action(), new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('Owned cleanup bound reached.')), remaining); })]); return true; }
++    catch (error) { cleanup.failures.push({label, message: String(error)}); return false; }
++    finally { clearTimeout(timer); }
++  }
++  for (const profile of profiles) cleanup.contexts.push({profile: profile.name, contextId: profile.contextId, closed: await closeOwned(profile.name, () => profile.context.close()), sockets: profile.sockets});
++  if (browser) cleanup.browserClosed = await closeOwned('browser', () => browser.close());
++  else cleanup.browserClosed = true;
++  cleanup.completedAt = new Date().toISOString();
++  cleanup.matchId = result.matchId;
++  cleanup.allOwnedBrowsersClosed = cleanup.browserClosed && cleanup.contexts.every(c => c.closed) && cleanup.failures.length === 0;
++  cleanup.captureFailures = errors.filter(error => ['capture', 'capture-write', 'page', 'socket'].includes(error.kind));
++  result.cleanupPassed = cleanup.browserClosed && cleanup.contexts.every(c => c.closed) && cleanup.failures.length === 0;
++  if (!result.cleanupPassed || errors.length || firstFailure) { result.status = 'candidate-public-fail'; result.publicCandidatePassed = false; }
++  result.firstFailure = firstFailure;
++  result.completedAt = new Date().toISOString(); result.phaseAtStop = phase;
++  result.retainedBytesBeforeFinalSummary = retainedBytes;
++  result.errors = errors; result.candidateCount = candidates.length;
++  result.acquisitionFailures = errors;
++  result.limitations = ['Public pass is only a candidate. Native source/config/checkpoint/wave participant composition remains unverified.', 'Original feature 63 stops after both commanded human attacks whose targets cover AI owners 2 and 3; native audit must authenticate membership in the same coordinated wave.', 'Normal Save battle is unavailable online in the reference source; contemporaneous native wave retention remains pending.', 'No complete cooperative victory or continuous human input is claimed.', 'All exposed public payloads and frames are retained; resource breach stops new work without deleting or truncating evidence.', 'Current source-derived selectors, projection, elimination fields and four-tick snapshot cadence require review against the new root-assigned product source.'];
++  save('public-cleanup.json', cleanup);
++  save('browser-ownership.json', {schema: 'feature63-public-browser-ownership-v1', sourcePin: binding.head, browserCount: browser ? 1 : 0, executable: binding.dependencies.chromiumExecutable, owner: '/root/ai_modes', exclusiveSlotToken: binding.assignment.exclusiveHeavyApproval.token, contexts: profiles.map(p => ({profile: p.name, side: p.side, contextId: p.contextId, sockets: p.sockets})), cleanup});
++  result.resourceFailure = resourceFailure;
++  if (resourceFailure) { result.status = 'candidate-public-fail'; result.publicCandidatePassed = false; result.firstFailure = firstFailure; }
++  save('public-results.json', result);
++  if (resourceFailure && (!result.resourceFailure || result.publicCandidatePassed)) { result.status = 'candidate-public-fail'; result.publicCandidatePassed = false; result.resourceFailure = resourceFailure; result.firstFailure = firstFailure; save('public-results.json', result); }
++}
++if (!result.publicCandidatePassed) process.exitCode = 1;
++console.log(JSON.stringify({status: result.status, publicCandidatePassed: result.publicCandidatePassed, feature63Qualified: false, evidenceDirectory: out}));
+diff --git a/scripts/feature63/collect-launched-waves.py b/scripts/feature63/collect-launched-waves.py
+new file mode 100644
+--- /dev/null
++++ b/scripts/feature63/collect-launched-waves.py
+@@ -0,0 +1,305 @@
++#!/usr/bin/env python3
++"""Held candidate: retain ordinary launched-wave checkpoint TEXT without UI feedback."""
++import datetime
++import hashlib
++import json
++import os
++import signal
++import sqlite3
++import stat
++import sys
++import time
++from pathlib import Path
++
++CHECKOUT = Path('/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies')
++PREFIX = CHECKOUT / 'work/feature63-human-wave-composition-r1'
++DB = PREFIX / 'server-data/server.sqlite'
++OUTPUT = PREFIX / 'native-collector'
++PROTECTED = Path('/home/morgana/Projects/orcs-vs-Fairies')
++MAX_BYTES = 8 * 1024 * 1024
++METADATA_RESERVE_BYTES = 2 * 1024 * 1024
++MAX_QUERY_LOG_BYTES = 640 * 1024
++MAX_RECORDS = 4
++MAX_SECONDS = 300
++MAX_QUERIES = 300
++QUERY = """SELECT id,tick,checkpoint_tick,
++ length(CAST(checkpoint AS BLOB)) AS checkpoint_bytes,
++ CASE WHEN length(CAST(checkpoint AS BLOB))<=?
++ AND length(CAST(generation AS BLOB))<=4096 AND length(CAST(config AS BLOB))<=65536
++ THEN checkpoint ELSE NULL END AS checkpoint,
++ CASE WHEN length(CAST(generation AS BLOB))<=4096 THEN generation ELSE NULL END AS generation,
++ CASE WHEN length(CAST(config AS BLOB))<=65536 THEN config ELSE NULL END AS config
++ FROM matches WHERE id=? AND EXISTS (
++ SELECT 1 FROM json_each(json_extract(checkpoint,'$.runtime.teamAI.coordinator.waves')) AS w
++ WHERE json_extract(w.value,'$.launched')=1
++ AND json_extract(w.value,'$.id') NOT IN (SELECT value FROM json_each(?))
++ AND EXISTS (SELECT 1 FROM json_each(json_extract(w.value,'$.participants')) AS p WHERE json_extract(p.value,'$.side')=2)
++ AND EXISTS (SELECT 1 FROM json_each(json_extract(w.value,'$.participants')) AS p WHERE json_extract(p.value,'$.side')=3))"""
++STOP_REQUESTED = False
++
++
++def require(condition, message):
++    if not condition:
++        raise RuntimeError(message)
++
++
++def now():
++    return datetime.datetime.now(datetime.timezone.utc).isoformat()
++
++
++def sha(data):
++    return hashlib.sha256(data).hexdigest()
++
++
++def load_bound_file(descriptor, maximum=2 * 1024 * 1024):
++    path = Path(descriptor['path'])
++    require(path.is_absolute() and not path.is_symlink(), 'Bound receipt path must be absolute and not a symlink')
++    require(stat.S_ISREG(path.lstat().st_mode), 'Bound receipt is not regular')
++    require(path.stat().st_size <= maximum, 'Bound receipt exceeds its static byte limit')
++    data = path.read_bytes()
++    require(sha(data) == descriptor['sha256'], 'Bound receipt bytes changed: ' + path.name)
++    return json.loads(data), {'path': str(path), 'bytes': len(data), 'sha256': sha(data)}
++
++
++def process_identity(pid):
++    directory = Path('/proc') / str(pid)
++    try:
++        raw = (directory / 'stat').read_text()
++        fields = raw[raw.rfind(')') + 2:].split()
++        return {'pid': pid, 'startTicks': int(fields[19]), 'executable': os.readlink(directory / 'exe'),
++                'cwd': os.readlink(directory / 'cwd'),
++                'argv': [value.decode() for value in (directory / 'cmdline').read_bytes().split(b'\0') if value]}
++    except (FileNotFoundError, ProcessLookupError):
++        return None
++
++
++def listening_inodes(port):
++    result = set()
++    for name in ['tcp', 'tcp6']:
++        path = Path('/proc/net') / name
++        if not path.exists():
++            continue
++        for line in path.read_text().splitlines()[1:]:
++            columns = line.split()
++            if len(columns) > 9 and columns[3] == '0A' and int(columns[1].rsplit(':', 1)[1], 16) == port:
++                result.add('socket:[' + columns[9] + ']')
++    return result
++
++
++def process_fds(pid):
++    result = set()
++    for path in (Path('/proc') / str(pid) / 'fd').iterdir():
++        try:
++            result.add(os.readlink(path))
++        except FileNotFoundError:
++            continue
++    return result
++
++
++def check_owned(assignment):
++    server = assignment['ownedServer']
++    require(process_identity(server['pid']) == server, 'Assigned server identity changed or is absent')
++    protected = process_identity(1063)
++    require(protected is not None and protected['startTicks'] == 874, 'Protected root identity changed')
++    require(server['pid'] != 1063 and server['cwd'] == str(CHECKOUT), 'Server is outside the assigned owned checkout')
++    namespace = os.readlink('/proc/self/ns/net')
++    require(os.readlink('/proc/' + str(server['pid']) + '/ns/net') == namespace
++            and os.readlink('/proc/1063/ns/net') == namespace, 'Assigned processes have different network namespaces')
++    owned_listeners = listening_inodes(5373)
++    protected_listeners = listening_inodes(4173)
++    server_fds = process_fds(server['pid'])
++    protected_fds = process_fds(1063)
++    require(owned_listeners and owned_listeners <= server_fds, 'Assigned server does not exclusively own the observed5373 listener inodes')
++    require(protected_listeners and protected_listeners <= protected_fds and not (protected_listeners & server_fds),
++            'Protected4173 listener ownership changed or the assigned server holds it')
++    require(str(DB) in assignment['freshDatabase']['path'], 'Fresh DB path differs')
++    require(not DB.is_symlink() and DB.resolve() == DB, 'Fresh DB path must resolve directly without symlinks')
++    mode = DB.lstat().st_mode
++    require(stat.S_ISREG(mode), 'Fresh database is not regular')
++    info = DB.stat()
++    expected = assignment['freshDatabase']
++    require(expected['path'] == str(DB) and info.st_dev == expected['device'] and info.st_ino == expected['inode'],
++            'Fresh database inode differs from the admitted identity')
++    require(info.st_nlink == 1, 'Fresh database has an unexpected hardlink')
++    require(info.st_size <= 1024 * 1024 * 1024, 'Fresh raw DB byte budget exceeded')
++    require(PROTECTED not in DB.parents and '/ai-save401-final-83941bc-r1/' not in str(DB), 'Old or protected DB is prohibited')
++    return {'path': str(DB), 'device': info.st_dev, 'inode': info.st_ino, 'bytes': info.st_size, 'linkCount': info.st_nlink}
++
++
++def exclusive_bytes(path, data):
++    with path.open('xb') as handle:
++        handle.write(data)
++        handle.flush()
++        os.fsync(handle.fileno())
++
++
++def request_stop(_signum, _frame):
++    global STOP_REQUESTED
++    STOP_REQUESTED = True
++
++
++def validate_assignment(path):
++    require(sys.flags.optimize == 0, 'Python optimization is prohibited')
++    require(path.is_absolute() and not path.is_symlink(), 'Explicit assignment must be absolute and not a symlink')
++    raw = path.read_bytes()
++    require(len(raw) <= 65536, 'Assignment byte limit exceeded')
++    assignment = json.loads(raw)
++    require(assignment['kind'] == 'feature63-passive-wave-collector-assignment-v1', 'Assignment kind differs')
++    require(assignment['rootApproved'] is True and assignment['heavySlot']['assigned'] is True
++            and assignment['heavySlot']['exclusive'] is True and bool(assignment['heavySlot']['slotId']),
++            'Root approval and exclusive heavy-slot assignment are required')
++    pin = assignment['sourcePin']
++    require(isinstance(pin, str) and len(pin) == 40 and all(c in '0123456789abcdef' for c in pin), 'Root source pin is missing')
++    require(assignment['checkout'] == str(CHECKOUT) and assignment['outputPrefix'] == 'work/feature63-human-wave-composition-r1',
++            'Assignment checkout or prefix differs')
++    require(assignment['collectorSha256'] == sha(Path(__file__).read_bytes()), 'Collector candidate bytes differ')
++    inventory, inventory_id = load_bound_file(assignment['sourceInventory'])
++    require(inventory['sourcePin'] == pin and inventory['status'] == 'PASS', 'Current source byte-binding receipt is absent')
++    review, review_id = load_bound_file(assignment['reviewReceipt'])
++    require(review['status'] == 'PASS' and review['sourcePin'] == pin and review['collectorSha256'] == assignment['collectorSha256'],
++            'Fresh admitted collector review is absent')
++    public, public_id = load_bound_file(assignment['publicMatchIdentity'])
++    require(public['schema'] == 'feature63-public-match-identity-v1' and public['sourcePin'] == pin, 'Public identity source differs')
++    require(public['matchId'] and {row['side'] for row in public['hellos']} == {0, 1}, 'Both public player hellos are required')
++    require(len(public['accounts']) == 2 and len({row['account']['id'] for row in public['accounts']}) == 2,
++            'Distinct public account IDs are required')
++    for row in public['hellos']:
++        message = row['message']
++        require(message['kind'] == 'hello' and message['role'] == 'player' and message['side'] == row['side']
++                and message['matchId'] == public['matchId'], 'Public hello identity differs')
++    require(public['expectedTeams'] == [0, 0, 1, 1] and public['expectedControllers'] == ['external', 'external', 'ai', 'ai'],
++            'Public topology differs')
++    require(assignment['bounds'] == {'maxSeconds': MAX_SECONDS, 'pollIntervalSeconds': 1, 'maxQueries': MAX_QUERIES,
++                                    'maxRecords': MAX_RECORDS, 'maxCheckpointBytes': MAX_BYTES}, 'Admitted bounds differ')
++    return assignment, public, {'path': str(path), 'bytes': len(raw), 'sha256': sha(raw)}, inventory_id, review_id, public_id
++
++
++def main():
++    require(len(sys.argv) == 2, 'Supply exactly one explicit root-approved assignment path; pending specimen will fail')
++    assignment, public, assignment_id, inventory_id, review_id, public_id = validate_assignment(Path(sys.argv[1]))
++    database_before = check_owned(assignment)
++    require(not OUTPUT.exists() and OUTPUT.parent == PREFIX, 'Collector output must be fresh')
++    OUTPUT.mkdir()
++    signal.signal(signal.SIGTERM, request_stop)
++    signal.signal(signal.SIGINT, request_stop)
++    receipt = {'schema': 'feature63-passive-wave-collector-v1', 'sourcePin': assignment['sourcePin'],
++               'matchId': public['matchId'], 'startedAt': now(), 'closed': False, 'readOnly': True, 'noFeedback': True,
++               'assignmentIdentity': assignment_id, 'reviewIdentity': review_id, 'sourceInventory': inventory_id,
++               'publicMatchIdentity': public_id, 'dbIdentity': {'device': database_before['device'], 'inode': database_before['inode']},
++               'databaseBefore': database_before, 'rows': [], 'failure': None, 'activeQuery': None,
++               'limits': 'Complete selected checkpoint TEXT only. No DB hash/copy, engine writes or private state feedback to human controls.'}
++    connection = None
++    reason = None
++    retained = set()
++    total = 0
++    started = time.monotonic()
++    try:
++        connection = sqlite3.connect(DB.as_uri() + '?mode=ro', uri=True, timeout=1)
++        connection.set_progress_handler(lambda: 1 if STOP_REQUESTED or time.monotonic() - started >= MAX_SECONDS else 0, 1000)
++        connection.execute('PRAGMA query_only=ON')
++        require(connection.execute('PRAGMA query_only').fetchone()[0] == 1, 'Read-only query mode was not enabled')
++        for query_ordinal in range(1, MAX_QUERIES + 1):
++            if STOP_REQUESTED:
++                reason = 'owned_stop_signal'
++                break
++            if time.monotonic() - started >= MAX_SECONDS:
++                reason = 'lifetime_bound'
++                break
++            check_owned(assignment)
++            parameters = [MAX_BYTES - METADATA_RESERVE_BYTES - total, public['matchId'], json.dumps(sorted(retained), separators=(',', ':'))]
++            query_record = {'queryOrdinal': query_ordinal, 'at': now(), 'query': QUERY, 'parameters': parameters}
++            query_bytes = (json.dumps(query_record, separators=(',', ':'), ensure_ascii=False) + '\n').encode('utf-8')
++            require(len(query_bytes) <= 2048, 'Query metadata record byte limit exceeded')
++            query_path = OUTPUT / 'queries.ndjson'
++            require((query_path.stat().st_size if query_path.exists() else 0) + len(query_bytes) <= MAX_QUERY_LOG_BYTES,
++                    'Query metadata aggregate byte limit exceeded')
++            with query_path.open('ab') as queries:
++                queries.write(query_bytes)
++                queries.flush()
++                os.fsync(queries.fileno())
++            receipt['activeQuery'] = query_record
++            row = connection.execute(QUERY, parameters).fetchone()
++            query_record['returned'] = row is not None
++            receipt['activeQuery'] = None
++            if row is not None:
++                match_id, match_tick, checkpoint_tick, checkpoint_bytes, checkpoint_text, generation_text, config_text = row
++                receipt['lastReturnedMetadata'] = {'matchId': match_id, 'matchTick': match_tick, 'checkpointTick': checkpoint_tick,
++                                                   'checkpointBytes': checkpoint_bytes, 'generationText': generation_text,
++                                                   'configText': config_text, 'queryOrdinal': query_ordinal}
++                require(checkpoint_text is not None, 'Native TEXT exceeds remaining checkpoint/metadata bounds; SQL selected metadata/null only')
++                payload = checkpoint_text.encode('utf-8')
++                require(len(payload) == checkpoint_bytes and total + len(payload) <= MAX_BYTES - METADATA_RESERVE_BYTES,
++                        'Selected checkpoint byte count differs or exceeds reserved payload budget')
++                ordinal = len(receipt['rows']) + 1
++                filename = 'native-wave-checkpoint-' + str(ordinal).zfill(2) + '.json'
++                exclusive_bytes(OUTPUT / filename, payload)
++                total += len(payload)
++                receipt['lastReturnedMetadata'].update({'file': filename, 'bytes': len(payload), 'checkpointTextSha256': sha(payload)})
++                require(isinstance(generation_text, str) and isinstance(config_text, str), 'Native TEXT provenance columns are absent')
++                require(len(generation_text.encode('utf-8')) <= 4096 and len(config_text.encode('utf-8')) <= 65536
++                        and not any(ord(value) < 32 for value in generation_text + config_text),
++                        'Native generation/config TEXT exceeds reserved metadata bounds')
++                wave_ids = []
++                record = {'file': filename, 'bytes': len(payload), 'checkpointTextSha256': sha(payload),
++                          'query': QUERY, 'parameters': parameters, 'queryOrdinal': query_ordinal, 'collectorOrdinal': ordinal,
++                          'matchId': match_id, 'matchTick': match_tick, 'checkpointTick': checkpoint_tick,
++                          'generationText': generation_text, 'generationTextSha256': sha(generation_text.encode('utf-8')),
++                          'generation': None, 'configText': config_text,
++                          'configTextSha256': sha(config_text.encode('utf-8')), 'waveIds': wave_ids, 'observedAt': now()}
++                receipt['rows'].append(record)
++                record['generation'] = json.loads(generation_text)
++                save = json.loads(checkpoint_text)
++                require(save['format'] == 'orcs-vs-fairies-save' and save['version'] == 4
++                        and save['state']['tick'] == checkpoint_tick, 'Native checkpoint envelope/tick differs')
++                state = save['state']
++                require(state['controllers'] == ['external', 'external', 'ai', 'ai'] and state['teams'] == [0, 0, 1, 1], 'Native topology differs')
++                candidates = [wave for wave in save['runtime']['teamAI']['coordinator']['waves']
++                              if wave['launched'] is True and wave['id'] not in retained
++                              and {participant['side'] for participant in wave['participants']} == {2, 3}]
++                require(candidates and match_id == public['matchId'], 'SQL selection and native wave identities differ')
++                wave_ids = sorted(wave['id'] for wave in candidates)
++                require(len(retained | set(wave_ids)) <= MAX_RECORDS, 'Unique launched-wave cap exceeded')
++                record['waveIds'] = wave_ids
++                retained.update(wave_ids)
++                if len(receipt['rows']) >= MAX_RECORDS:
++                    reason = 'record_bound'
++                    break
++            # Require at least one full second after the preceding SELECT completes.
++            next_poll = time.monotonic() + 1
++            while not STOP_REQUESTED and time.monotonic() < next_poll and time.monotonic() - started < MAX_SECONDS:
++                time.sleep(max(0, min(0.1, next_poll - time.monotonic())))
++        else:
++            reason = 'query_bound'
++    except sqlite3.OperationalError as error:
++        interrupted = getattr(error, 'sqlite_errorcode', None) == sqlite3.SQLITE_INTERRUPT
++        if interrupted and (STOP_REQUESTED or time.monotonic() - started >= MAX_SECONDS):
++            reason = 'owned_stop_signal' if STOP_REQUESTED else 'lifetime_bound'
++            receipt['boundedQueryInterruption'] = {'query': receipt['activeQuery'], 'at': now()}
++            receipt['activeQuery'] = None
++        else:
++            receipt['failure'] = {'type': type(error).__name__, 'message': str(error), 'at': now()}
++            reason = 'first_failure'
++    except Exception as error:
++        receipt['failure'] = {'type': type(error).__name__, 'message': str(error), 'at': now()}
++        reason = 'first_failure'
++    finally:
++        if connection is not None:
++            connection.close()
++        receipt.update({'closed': True, 'closedAt': now(), 'stopReason': reason, 'records': len(receipt['rows']),
++                        'checkpointPayloadBytes': total, 'elapsedSeconds': time.monotonic() - started,
++                        'status': 'PASS' if receipt['failure'] is None else 'FAIL',
++                        'qualification': 'Collector retention status only; no feature63 qualification or human combat claim.'})
++        receipt['bounds'] = {'totalCollectorBytes': MAX_BYTES, 'metadataReserveBytes': METADATA_RESERVE_BYTES,
++                             'checkpointPayloadUpperBoundBytes': MAX_BYTES - METADATA_RESERVE_BYTES,
++                             'queryLogBytes': MAX_QUERY_LOG_BYTES, 'maxSeconds': MAX_SECONDS, 'pollSeconds': 1,
++                             'maxQueries': MAX_QUERIES, 'maxRecords': MAX_RECORDS}
++        receipt_bytes = (json.dumps(receipt, indent=2, sort_keys=True, ensure_ascii=False) + '\n').encode('utf-8')
++        existing_bytes = sum(path.stat().st_size for path in OUTPUT.iterdir() if path.is_file())
++        require(existing_bytes + len(receipt_bytes) <= MAX_BYTES, 'Complete collector output byte budget exceeded')
++        exclusive_bytes(OUTPUT / 'collector-receipt.json', receipt_bytes)
++    print('Owned passive collector closed; receipt retained.')
++    return 1 if receipt['failure'] else 0
++
++
++if __name__ == '__main__':
++    raise SystemExit(main())
+diff --git a/scripts/feature63/native-audit.py b/scripts/feature63/native-audit.py
+new file mode 100644
+--- /dev/null
++++ b/scripts/feature63/native-audit.py
+@@ -0,0 +1,963 @@
++#!/usr/bin/env python3
++"""Closed export auditor candidate. Reads literal JSON/NDJSON only, never SQLite.
++
++This file has not been executed or qualified. All checks use explicit branches,
++so Python -O cannot remove them. The root assignment digest is a trust anchor
++supplied separately by root, not a value accepted from the bundle being audited.
++"""
++import argparse
++import hashlib
++import json
++import math
++import os
++import re
++import stat
++import sys
++from pathlib import Path
++
++SCHEMA = "feature63-closed-native-audit-v1"
++PROFILES = {"human-one": 0, "human-two": 1}
++CONTROLLERS = ["external", "external", "ai", "ai"]
++TEAMS = [0, 0, 1, 1]
++MAX_NATIVE_BYTES = 8 * 1024 * 1024
++COLLECTOR_METADATA_RESERVE_BYTES = 2 * 1024 * 1024
++MAX_NATIVE_FRAMES = 16
++MAX_PUBLIC_BYTES = 64 * 1024 * 1024
++MAX_RECEIPT_BYTES = 1024 * 1024
++PUBLIC_NAMES = (
++    "public-results.json", "public-identities.json", "public-windows.json",
++    "public-cleanup.json", "public-match-identity.json", "human-one-wire.ndjson", "human-two-wire.ndjson",
++    "human-one-ui-actions.ndjson", "human-two-ui-actions.ndjson",
++)
++RECEIPT_NAMES = (
++    "root-assignment.json", "source-binding-receipt.json",
++    "closed-raw-receipt.json", "extraction-receipt.json", "collector-receipt.json",
++)
++FRAME_NAMES = tuple(f"native-frame-{n:02d}.json" for n in range(1, 17))
++WAVE_CHECKPOINT_NAMES = tuple(f"native-wave-checkpoint-{n:02d}.json" for n in range(1, 5))
++NATIVE_NAMES = ("match-row.json", "native-checkpoint.json") + FRAME_NAMES + WAVE_CHECKPOINT_NAMES
++SOURCE_PATHS = (
++    "src/core/team-ai.ts", "src/core/simulation.ts", "src/core/saves.ts",
++    "src/core/observation.ts", "src/core/commands.ts", "src/core/ally-directives.ts",
++    "src/server/server.ts", "src/server/store.ts", "src/server/views.ts",
++    "src/online/protocol.ts", "src/online/render-state.ts",
++    "src/core/economy.ts", "src/core/economy-types.ts", "src/core/tactics.ts",
++    "src/game/GameScene.ts", "src/game/Controls.ts", "src/main.ts",
++    "src/ui/Hud.ts", "src/ui/OnlineLobby.ts", "src/core/types.ts",
++    "src/core/navigation.ts", "src/ui/SessionTools.ts",
++)
++COLLECTOR_QUERY = "SELECT id,tick,checkpoint_tick,\n length(CAST(checkpoint AS BLOB)) AS checkpoint_bytes,\n CASE WHEN length(CAST(checkpoint AS BLOB))<=?\n AND length(CAST(generation AS BLOB))<=4096 AND length(CAST(config AS BLOB))<=65536\n THEN checkpoint ELSE NULL END AS checkpoint,\n CASE WHEN length(CAST(generation AS BLOB))<=4096 THEN generation ELSE NULL END AS generation,\n CASE WHEN length(CAST(config AS BLOB))<=65536 THEN config ELSE NULL END AS config\n FROM matches WHERE id=? AND EXISTS (\n SELECT 1 FROM json_each(json_extract(checkpoint,'$.runtime.teamAI.coordinator.waves')) AS w\n WHERE json_extract(w.value,'$.launched')=1\n AND json_extract(w.value,'$.id') NOT IN (SELECT value FROM json_each(?))\n AND EXISTS (SELECT 1 FROM json_each(json_extract(w.value,'$.participants')) AS p WHERE json_extract(p.value,'$.side')=2)\n AND EXISTS (SELECT 1 FROM json_each(json_extract(w.value,'$.participants')) AS p WHERE json_extract(p.value,'$.side')=3))"
++
++
++class Rejection(Exception):
++    pass
++
++
++def require(condition, reason):
++    if not condition:
++        raise Rejection(reason)
++
++
++def obj(value, name):
++    require(type(value) is dict, f"{name}: expected object")
++    return value
++
++
++def exact(value, fields, name):
++    value = obj(value, name)
++    require(set(value) == set(fields), f"{name}: missing or unexpected fields")
++    return value
++
++
++def integer(value, name, low=0, high=2**53 - 1):
++    require(type(value) is int and low <= value <= high, f"{name}: invalid integer")
++    return value
++
++
++def number(value, name, low=0):
++    require(type(value) in (int, float) and math.isfinite(value) and value >= low,
++            f"{name}: invalid finite number")
++    return value
++
++
++def text(value, name):
++    require(type(value) is str and 0 < len(value) <= 256 and
++            not any(ord(c) < 32 for c in value), f"{name}: invalid text")
++    return value
++
++
++def digest(value, name):
++    require(type(value) is str and re.fullmatch(r"[0-9a-f]{64}", value) is not None,
++            f"{name}: invalid SHA-256")
++    return value
++
++
++def pin(value, name):
++    require(type(value) is str and re.fullmatch(r"[0-9a-f]{40}", value) is not None,
++            f"{name}: root-assigned source pin is missing or invalid")
++    return value
++
++
++def ids(value, name, maximum=500):
++    require(type(value) is list and 0 < len(value) <= maximum, f"{name}: invalid IDs")
++    values = [integer(v, name, 1, 0x7fffffff) for v in value]
++    require(len(set(values)) == len(values), f"{name}: duplicate IDs")
++    return values
++
++
++def reject_duplicates(pairs):
++    value = {}
++    for key, item in pairs:
++        require(key not in value, f"duplicate JSON key: {key}")
++        value[key] = item
++    return value
++
++
++def parse(raw, name):
++    try:
++        value = json.loads(raw.decode("utf-8"), object_pairs_hook=reject_duplicates,
++                           parse_constant=lambda item: (_ for _ in ()).throw(
++                               Rejection(f"{name}: nonfinite JSON number {item}")))
++        pending = [value]
++        while pending:
++            item = pending.pop()
++            if type(item) is float:
++                require(math.isfinite(item), f"{name}: nonfinite JSON number")
++            elif type(item) is dict:
++                pending.extend(item.values())
++            elif type(item) is list:
++                pending.extend(item)
++        return value
++    except (UnicodeError, json.JSONDecodeError, RecursionError) as error:
++        raise Rejection(f"{name}: invalid UTF-8 JSON: {error}") from error
++
++
++def semantic(value):
++    return json.dumps(value, sort_keys=True, separators=(",", ":"),
++                      ensure_ascii=False, allow_nan=False).encode("utf-8")
++
++
++def sha(raw):
++    return hashlib.sha256(raw).hexdigest()
++
++
++class Bundle:
++    def __init__(self, directory):
++        self.directory = Path(directory)
++        require(self.directory.is_dir() and not self.directory.is_symlink(),
++                "bundle must be a real directory")
++        self.identities = []
++        self.byte_totals = {"native": 0, "public": 0, "receipt": 0}
++
++    def read(self, name, group, descriptor=None):
++        allowed = {"native": NATIVE_NAMES, "public": PUBLIC_NAMES,
++                   "receipt": RECEIPT_NAMES}[group]
++        require(name in allowed, "filename is outside literal input allowlist")
++        path = self.directory / name
++        try:
++            fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
++        except OSError as error:
++            raise Rejection(f"{name}: cannot open regular input: {error}") from error
++        try:
++            info = os.fstat(fd)
++            require(stat.S_ISREG(info.st_mode) and info.st_nlink >= 1,
++                    f"{name}: input is not a regular file")
++            cap = {"native": MAX_NATIVE_BYTES, "public": MAX_PUBLIC_BYTES,
++                   "receipt": MAX_RECEIPT_BYTES}[group]
++            require(info.st_size <= cap - self.byte_totals[group],
++                    f"{group} byte bound would be exceeded")
++            chunks, remaining = [], info.st_size
++            while remaining:
++                chunk = os.read(fd, min(remaining, 1024 * 1024))
++                require(bool(chunk), f"{name}: short read")
++                chunks.append(chunk)
++                remaining -= len(chunk)
++            require(not os.read(fd, 1), f"{name}: grew while reading")
++            after = os.fstat(fd)
++            require((info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns,
++                     info.st_ctime_ns) == (after.st_dev, after.st_ino,
++                     after.st_size, after.st_mtime_ns, after.st_ctime_ns),
++                    f"{name}: changed while reading")
++            raw = b"".join(chunks)
++        finally:
++            os.close(fd)
++        identity = {"file": name, "bytes": len(raw), "sha256": sha(raw), "group": group}
++        self.byte_totals[group] += len(raw)
++        self.identities.append(identity)
++        if descriptor is not None:
++            exact(descriptor, ["file", "bytes", "sha256"], f"{name} descriptor")
++            require(descriptor["file"] == name and
++                    integer(descriptor["bytes"], name) == len(raw) and
++                    digest(descriptor["sha256"], name) == identity["sha256"],
++                    f"{name}: authenticated byte identity differs")
++        return raw
++
++    def json(self, name, group, descriptor=None):
++        return parse(self.read(name, group, descriptor), name)
++
++
++def descriptor_map(values, allowed, name):
++    require(type(values) is list and len(values) <= len(allowed), f"{name}: invalid list")
++    result = {}
++    for value in values:
++        exact(value, ["file", "bytes", "sha256"], name)
++        require(value["file"] in allowed and value["file"] not in result,
++                f"{name}: duplicate or unexpected file")
++        integer(value["bytes"], name)
++        digest(value["sha256"], name)
++        result[value["file"]] = value
++    return result
++
++
++def entity_map(view, name):
++    require(type(view.get("entities")) is list, f"{name}: entities missing")
++    result = {}
++    for entity in view["entities"]:
++        obj(entity, name)
++        eid = integer(entity.get("id"), name, 1, 0x7fffffff)
++        require(eid not in result, f"{name}: duplicate entity")
++        integer(entity.get("side"), name, 0, 3)
++        number(entity.get("hp"), name)
++        result[eid] = entity
++    return result
++
++
++def alive(view, name):
++    eliminated = view.get("eliminated")
++    require(type(eliminated) is list and len(eliminated) == 4 and
++            all(type(x) is bool for x in eliminated), f"{name}: elimination state missing")
++    require(eliminated == obj(view.get("result"), name).get("eliminated"),
++            f"{name}: elimination views disagree")
++    require(eliminated[0] is False and eliminated[1] is False,
++            f"{name}: a human is eliminated")
++    entities = entity_map(view, name)
++    for side in (0, 1):
++        require(any(e["side"] == side and e.get("owner") == side and
++                    e.get("kind") == "building" and e.get("role") == "hq" and
++                    e["hp"] > 0 and e.get("progress") == 1 for e in entities.values()),
++                f"{name}: complete living human HQ {side} missing")
++    return entities
++
++
++def check_view(view, side, tick, name):
++    obj(view, name)
++    integer(view.get("side"), f"{name} side", 0, 3)
++    integer(view.get("teamId"), f"{name} team", 0, 1)
++    integer(view.get("tick"), f"{name} tick")
++    require(view.get("version") == 1 and view.get("side") == side and
++            view.get("tick") == tick and view.get("teamId") == TEAMS[side] and
++            view.get("controller") == CONTROLLERS[side] and
++            obj(view.get("rules"), name).get("mode") == "annihilation" and
++            view["rules"].get("standardDefeat") is True and
++            view.get("sharedVision") is True, f"{name}: native roster or mode differs")
++    number(view.get("time"), name)
++    roster = {x.get("side"): x.get("teamId") for x in
++              view.get("allies", []) + view.get("opponents", [])}
++    roster[side] = view["teamId"]
++    require(roster == dict(enumerate(TEAMS)), f"{name}: public team roster differs")
++    require(type(view.get("events")) is list, f"{name}: complete events missing")
++    entity_map(view, name)
++
++
++def ndjson(raw, name):
++    require(raw.endswith(b"\n") or not raw, f"{name}: incomplete final NDJSON line")
++    lines = raw.splitlines()
++    require(len(lines) <= 200000, f"{name}: row bound exceeded")
++    require(all(line.strip() for line in lines), f"{name}: empty NDJSON line")
++    return [obj(parse(line, name), name) for line in lines]
++
++
++def eligible_owned_ids(view, side):
++    entities = entity_map(view, "public command eligibility")
++    economy = view.get("economy") or {}
++    caravans = obj(economy, "public economy eligibility").get("caravans", [])
++    require(type(caravans) is list, "public caravan eligibility list is invalid")
++    economy_ids = {value if type(value) is int else obj(value, "public caravan").get("entityId") for value in caravans}
++    result = set()
++    for eid, entity in entities.items():
++        tactics = entity.get("tactics") or {}
++        crew = obj(tactics, "public eligibility tactics").get("siegeCrew") or {}
++        if (entity.get("owner") == side and entity["side"] == side and entity.get("kind") == "unit"
++                and entity.get("role") != "worker" and entity["hp"] > 0 and entity.get("illusion") is False
++                and entity.get("definitionId") != "economy:caravan" and eid not in economy_ids
++                and obj(crew, "public eligibility crew").get("uncrewed") is not True):
++            result.add(eid)
++    return result
++
++
++def public_wire(bundle, descriptors, profile, match_id):
++    name = f"{profile}-wire.ndjson"
++    rows = ndjson(bundle.read(name, "public", descriptors[name]), name)
++    wire, snapshots, hellos, commands, acknowledgements = {}, {}, [], {}, {}
++    previous = 0
++    sockets = set()
++    for row in rows:
++        require(row.get("schema") == "feature63-public-wire-v1" and
++                row.get("profile") == profile, f"{name}: wire schema differs")
++        ordinal = integer(row.get("ordinal"), name, 1)
++        require(ordinal == previous + 1, f"{name}: missing or reordered wire row")
++        previous = ordinal
++        text(row.get("capturedAt"), name)
++        sockets.add(text(row.get("socketId"), name))
++        require(row.get("payloadType") == "string" and type(row.get("payload")) is str
++                and row.get("binaryBase64") is None, f"{name}: binary or incomplete payload")
++        message = obj(parse(row["payload"].encode("utf-8"), name), name)
++        wire[ordinal] = (row, message, sha(row["payload"].encode("utf-8")))
++        direction = row.get("direction")
++        require(direction in ("sent", "received"), f"{name}: direction missing")
++        if direction == "sent" and message.get("kind") == "command":
++            require(message.get("protocolVersion") == 1, f"{name}: command protocol differs")
++            seq = integer(message.get("clientSeq"), name, 1)
++            integer(message.get("observedTick"), name)
++            require(seq not in commands, f"{name}: repeated command sequence")
++            require(obj(message.get("command"), name).get("type") not in
++                    ("allyDirective", "transferResources", "cancelAllyDirective"),
++                    f"{name}: natural AI was directed by a human")
++            commands[seq] = (ordinal, message)
++        if direction != "received":
++            continue
++        if message.get("kind") == "hello":
++            require(message.get("matchId") == match_id and message.get("side") == PROFILES[profile]
++                    and message.get("role") == "player" and message.get("protocolVersion") == 1
++                    and message.get("perspective") in (None, "player")
++                    and message.get("delayTicks") == 0, f"{name}: player hello binding differs")
++            hellos.append((ordinal, message))
++        elif message.get("kind") == "snapshot":
++            require(bool(hellos), f"{name}: snapshot precedes authenticated hello")
++            tick = integer(message.get("tick"), name)
++            require(message.get("matchId") == match_id and message.get("frameSeq") == tick,
++                    f"{name}: snapshot match or frame sequence differs")
++            require(tick not in snapshots, f"{name}: repeated snapshot tick")
++            check_view(message.get("view"), PROFILES[profile], tick, name)
++            snapshots[tick] = (ordinal, message)
++        elif message.get("kind") == "commandAck":
++            seq = integer(message.get("clientSeq"), name, 1)
++            require(seq not in acknowledgements, f"{name}: duplicate command acknowledgement")
++            integer(message.get("appliedTick"), name)
++            require(type(message.get("accepted")) is bool, f"{name}: ack acceptance missing")
++            acknowledgements[seq] = (ordinal, message)
++        elif message.get("kind") == "error":
++            raise Rejection(f"{name}: server error retained")
++    require(len(sockets) == 1 and bool(hellos) and bool(snapshots),
++            f"{name}: replacement socket or incomplete public capture")
++    return {"wire": wire, "snapshots": snapshots, "commands": commands,
++            "acks": acknowledgements, "hellos": hellos}
++
++
++def audit(bundle, anchor, report):
++    assignment_raw = bundle.read("root-assignment.json", "receipt")
++    require(sha(assignment_raw) == digest(anchor, "external root assignment digest"),
++            "root assignment does not match separately supplied root digest")
++    assignment = exact(parse(assignment_raw, "root-assignment.json"),
++                       ["schema", "scope", "sourcePin", "productVersion", "auditAuthorized",
++                        "auditorSha256", "publicProducerSha256", "publicDriverSha256",
++                        "sourceBindingReceipt", "closedRawReceipt", "extractionReceipt", "collectorReceipt"], "assignment")
++    require(assignment["schema"] == "feature63-root-audit-assignment-v1" and
++            assignment["scope"] == "original-feature63-closed-native-composition" and
++            assignment["productVersion"] == "4.0.2" and assignment["auditAuthorized"] is True,
++            "root assignment is absent, held, or for another scope")
++    source_pin = pin(assignment["sourcePin"], "assignment.sourcePin")
++    require(assignment["auditorSha256"] == sha(Path(__file__).read_bytes()),
++            "auditor bytes differ from root-frozen assignment")
++    digest(assignment["publicProducerSha256"], "public producer")
++    digest(assignment["publicDriverSha256"], "public driver")
++    report["sourcePin"] = source_pin
++    report["assignmentSha256"] = anchor
++    source = bundle.json("source-binding-receipt.json", "receipt", assignment["sourceBindingReceipt"])
++    require(source.get("schema") == "feature63-source-binding-v1" and
++            source.get("sourcePin") == source_pin and source.get("productVersion") == "4.0.2"
++            and source.get("allActualInputsAuthenticated") is True,
++            "source input binding is incomplete")
++    review = obj(source.get("schemaReview"), "source schema review")
++    require(review.get("status") == "approved" and
++            review.get("auditorSha256") == assignment["auditorSha256"] and
++            review.get("sourcePin") == source_pin,
++            "source-derived assumptions review is missing or for different bytes")
++    records = source.get("inputs")
++    require(type(records) is list and records, "source input identities missing")
++    paths = set()
++    for record in records:
++        obj(record, "source identity")
++        path = text(record.get("path"), "source path")
++        require(path not in paths and record.get("gitMode") in ("100644", "100755") and
++                re.fullmatch(r"[0-9a-f]{40}", str(record.get("gitBlob"))) is not None,
++                "source mode/blob identity missing or duplicated")
++        integer(record.get("bytes"), path)
++        digest(record.get("sha256"), path)
++        paths.add(path)
++    require(set(SOURCE_PATHS) <= paths, "source assumptions were not bound to all required files")
++    report["sourceInputs"] = records
++    digest(source.get("serverBuildSha256"), "bound server build")
++    closed = bundle.json("closed-raw-receipt.json", "receipt", assignment["closedRawReceipt"])
++    require(closed.get("schema") == "feature63-closed-raw-v1" and closed.get("sourcePin") == source_pin
++            and closed.get("producerClosed") is True and closed.get("ownedProcessesClosed") is True
++            and closed.get("rootSealed") is True and closed.get("sidecarsAbsent") is True,
++            "authenticated closed raw custody receipt is incomplete")
++    closed_id = text(closed.get("sealId"), "closed raw seal ID")
++    digest(closed.get("rawSha256"), "root-provided closed raw digest")
++    integer(closed.get("rawBytes"), "root-provided raw bytes", 1, 2 * 1024**3)
++    # The raw digest is retained as receipt data. No raw path is opened or hashed.
++    report["closedRawReference"] = {k: closed[k] for k in ("sealId", "rawSha256", "rawBytes")}
++    extraction = bundle.json("extraction-receipt.json", "receipt", assignment["extractionReceipt"])
++    require(extraction.get("schema") == "feature63-native-extraction-v1" and
++            extraction.get("sourcePin") == source_pin and extraction.get("sealId") == closed_id and
++            extraction.get("closedOnly") is True and extraction.get("rawUnchanged") is True and
++            extraction.get("noLivePrivateReadback") is True and extraction.get("noReplay") is True,
++            "native extraction receipt is incomplete or not bound to sealed raw")
++    match_id = text(extraction.get("matchId"), "native match ID")
++    lobby_id = text(extraction.get("lobbyId"), "native lobby ID")
++    require(closed.get("matchId") == match_id, "closed custody match differs")
++    native_descriptors = descriptor_map(extraction.get("nativeFiles"), NATIVE_NAMES, "native files")
++    public_descriptors = descriptor_map(extraction.get("publicFiles"), PUBLIC_NAMES, "public files")
++    require(set(PUBLIC_NAMES) == set(public_descriptors), "literal public inputs incomplete")
++    require({"match-row.json", "native-checkpoint.json"} <= set(native_descriptors),
++            "native match/checkpoint missing")
++    frame_names = sorted(set(native_descriptors) & set(FRAME_NAMES))
++    wave_checkpoint_names = sorted(set(native_descriptors) & set(WAVE_CHECKPOINT_NAMES))
++    require(2 <= len(frame_names) <= MAX_NATIVE_FRAMES and frame_names == list(FRAME_NAMES[:len(frame_names)]),
++            "native frame count or literal contiguous frame names invalid")
++    require(wave_checkpoint_names == list(WAVE_CHECKPOINT_NAMES[:len(wave_checkpoint_names)]),
++            "collector checkpoint names must be literal and contiguous")
++    require(sum(d["bytes"] for d in native_descriptors.values()) <= MAX_NATIVE_BYTES and
++            sum(d["bytes"] for d in public_descriptors.values()) <= MAX_PUBLIC_BYTES,
++            "authenticated input totals exceed bounds before content read")
++    row = bundle.json("match-row.json", "native", native_descriptors["match-row.json"])
++    checkpoint = bundle.json("native-checkpoint.json", "native", native_descriptors["native-checkpoint.json"])
++    require(row.get("id") == match_id and row.get("lobby_id") == lobby_id,
++            "native match/lobby row differs")
++    config = obj(row.get("config"), "native match config")
++    players = obj(config.get("matchConfig"), "native normalized match config").get("players")
++    require(type(players) is list and len(players) == 4 and
++            all(type(p.get("id")) is int and type(p.get("teamId")) is int for p in players) and
++            [p.get("id") for p in players] == [0, 1, 2, 3] and
++            [p.get("controller") for p in players] == CONTROLLERS and
++            [p.get("teamId") for p in players] == TEAMS,
++            "native config controllers or teams differ")
++    require(obj(config.get("rules"), "native rules").get("mode") == "annihilation" and
++            config["rules"].get("standardDefeat") is True and config.get("sharedVision") is True,
++            "native mode differs")
++    require(checkpoint.get("format") == "orcs-vs-fairies-save" and checkpoint.get("version") == 4,
++            "native checkpoint envelope differs")
++    state, runtime = obj(checkpoint.get("state"), "native state"), obj(checkpoint.get("runtime"), "native runtime")
++    cp_tick = integer(state.get("tick"), "checkpoint tick")
++    cp_time = number(state.get("time"), "checkpoint time")
++    require(row.get("checkpoint_tick") == cp_tick and integer(row.get("tick"), "match tick") >= cp_tick
++            and state.get("controllers") == CONTROLLERS and state.get("teams") == TEAMS
++            and all(type(team) is int for team in state["teams"]),
++            "native checkpoint row/roster binding differs")
++    digest(row.get("engine_hash"), "native engine hash")
++    digest(row.get("state_hash"), "native state hash")
++    require(row["engine_hash"] == source.get("serverBuildSha256"), "native engine build differs")
++    report["finalNativeCheckpoint"] = {"tick": cp_tick, "time": cp_time,
++                                        "sha256": native_descriptors["native-checkpoint.json"]["sha256"]}
++    selected_checkpoint = extraction.get("candidateCheckpointFile")
++    require(selected_checkpoint in ("native-checkpoint.json",) + WAVE_CHECKPOINT_NAMES,
++            "candidate checkpoint selector is outside literal allowlist")
++    collector_generation = None
++    if wave_checkpoint_names:
++        require(assignment["collectorReceipt"] is not None, "collector checkpoint lacks authenticated closure receipt")
++        collector = bundle.json("collector-receipt.json", "receipt", assignment["collectorReceipt"])
++        require(collector.get("schema") == "feature63-passive-wave-collector-v1" and
++                collector.get("sourcePin") == source_pin and collector.get("matchId") == match_id and
++                collector.get("closed") is True and collector.get("readOnly") is True and
++                collector.get("noFeedback") is True and collector.get("status") == "PASS" and
++                collector.get("failure") is None and collector.get("activeQuery") is None,
++                "passive collector is not closed, source-bound, read-only, and independent of UI feedback")
++        for key in ("sourceInventory", "publicMatchIdentity", "assignmentIdentity", "reviewIdentity"):
++            identity = obj(collector.get(key), f"collector {key}")
++            integer(identity.get("bytes"), f"collector {key} bytes", 1)
++            digest(identity.get("sha256"), f"collector {key} digest")
++        require(source.get("collectorSourceInventorySha256") == collector["sourceInventory"]["sha256"],
++                "root source binding does not authenticate the collector source inventory")
++        db_identity = exact(collector.get("dbIdentity"), ["device", "inode"], "collector database metadata identity")
++        integer(db_identity["device"], "collector device")
++        integer(db_identity["inode"], "collector inode", 1)
++        require(closed.get("dbIdentity") == db_identity, "collector watched a different raw database identity")
++        require(collector.get("bounds") == {"totalCollectorBytes": MAX_NATIVE_BYTES,
++                    "metadataReserveBytes": COLLECTOR_METADATA_RESERVE_BYTES,
++                    "checkpointPayloadUpperBoundBytes": MAX_NATIVE_BYTES - COLLECTOR_METADATA_RESERVE_BYTES,
++                    "queryLogBytes": 640 * 1024, "maxSeconds": 300, "pollSeconds": 1,
++                    "maxQueries": 300, "maxRecords": 4}, "collector complete-output bounds differ")
++        collector_rows = collector.get("rows")
++        references = extraction.get("waveCheckpointRows")
++        require(type(collector_rows) is list and len(collector_rows) == len(wave_checkpoint_names) <= 4 and
++                type(references) is list and len(references) == len(collector_rows),
++                "passive collector row count or export references differ")
++        collected = {}
++        prior_ordinal, observed_wave_ids, collector_bytes = 0, set(), 0
++        for name, record, reference in zip(wave_checkpoint_names, collector_rows, references):
++            obj(record, "collector row")
++            ordinal = integer(record.get("collectorOrdinal"), "collector ordinal", 1, 4)
++            require(ordinal == prior_ordinal + 1, "collector records are missing or reordered")
++            prior_ordinal = ordinal
++            integer(record.get("queryOrdinal"), "collector query ordinal", 1, 300)
++            require(record.get("file") == name and record.get("matchId") == match_id and
++                    record.get("query") == COLLECTOR_QUERY and
++                    record.get("parameters") == [MAX_NATIVE_BYTES - COLLECTOR_METADATA_RESERVE_BYTES - collector_bytes, match_id,
++                                                 json.dumps(sorted(observed_wave_ids), separators=(",", ":"))],
++                    "collector query/file/match provenance differs")
++            generation_text, config_text = record.get("generationText"), record.get("configText")
++            require(type(generation_text) is str and type(config_text) is str,
++                    "collector original config/generation TEXT is missing")
++            require(sha(generation_text.encode("utf-8")) == digest(record.get("generationTextSha256"), "collector generation digest")
++                    and sha(config_text.encode("utf-8")) == digest(record.get("configTextSha256"), "collector config digest"),
++                    "collector original config/generation text hashes differ")
++            generation = parse(generation_text.encode("utf-8"), "collector generation")
++            require(generation == record.get("generation") and type(generation) is list and len(generation) == 4
++                    and all(type(value) is int and value >= 0 for value in generation)
++                    and parse(config_text.encode("utf-8"), "collector config") == config,
++                    "collector config/generation differs from same native match")
++            exported = bundle.json(name, "native", native_descriptors[name])
++            require(record.get("bytes") == native_descriptors[name]["bytes"] and
++                    record.get("checkpointTextSha256") == native_descriptors[name]["sha256"],
++                    "collector checkpoint TEXT bytes were altered during export")
++            collector_bytes += native_descriptors[name]["bytes"]
++            require(exported.get("format") == "orcs-vs-fairies-save" and exported.get("version") == 4,
++                    "collector checkpoint envelope differs")
++            saved_state = obj(exported.get("state"), "collector checkpoint state")
++            saved_runtime = obj(exported.get("runtime"), "collector checkpoint runtime")
++            saved_tick = integer(saved_state.get("tick"), "collector checkpoint tick")
++            require(saved_tick == record.get("checkpointTick") and saved_tick <= integer(record.get("matchTick"), "collector match tick")
++                    and saved_state.get("controllers") == CONTROLLERS and saved_state.get("teams") == TEAMS
++                    and all(type(team) is int for team in saved_state["teams"]),
++                    "collector checkpoint row or roster binding differs")
++            retained_waves = obj(obj(saved_runtime.get("teamAI"), "collector team AI").get("coordinator"), "collector coordinator").get("waves")
++            require(type(retained_waves) is list, "collector launched waves missing")
++            launched_ids = sorted(integer(w.get("id"), "collector wave ID", 1) for w in retained_waves
++                                  if w.get("launched") is True and {p.get("side") for p in w.get("participants", [])} == {2, 3})
++            new_launched_ids = sorted(set(launched_ids) - observed_wave_ids)
++            require(record.get("waveIds") == new_launched_ids and bool(new_launched_ids),
++                    "collector has no newly observed authentic launched wave ID")
++            observed_wave_ids.update(new_launched_ids)
++            require(reference == {"file": name, "matchId": match_id, "tick": saved_tick, "collectorOrdinal": ordinal},
++                    "root collector export reference differs")
++            collected[name] = (exported, generation)
++        require(collector.get("records") == len(collector_rows) and collector.get("checkpointPayloadBytes") == collector_bytes,
++                "collector final count or retained byte total differs")
++        require(selected_checkpoint == "native-checkpoint.json" or selected_checkpoint in collected,
++                "selected launch checkpoint is not a retained collector record")
++        if selected_checkpoint in collected:
++            checkpoint, collector_generation = collected[selected_checkpoint]
++            state, runtime = checkpoint["state"], checkpoint["runtime"]
++            cp_tick, cp_time = state["tick"], number(state.get("time"), "selected collector checkpoint time")
++        report["passiveCollectorReference"] = collector
++    else:
++        require(assignment["collectorReceipt"] is None and extraction.get("waveCheckpointRows") == [] and
++                selected_checkpoint == "native-checkpoint.json", "unexpected collector selection or receipt")
++    frames = {}
++    frame_receipts = extraction.get("frameRows")
++    require(type(frame_receipts) is list and len(frame_receipts) == len(frame_names), "native frame row receipts missing")
++    for frame_name, receipt in zip(frame_names, frame_receipts):
++        exact(receipt, ["file", "matchId", "tick"], "native frame row")
++        require(receipt["file"] == frame_name and receipt["matchId"] == match_id,
++                "native frame row match/file differs")
++        tick = integer(receipt["tick"], "native frame tick")
++        views = bundle.json(frame_name, "native", native_descriptors[frame_name])
++        require(type(views) is list and len(views) == 4 and tick not in frames,
++                "native full four-view frame missing or duplicated")
++        for side, view in enumerate(views):
++            check_view(view, side, tick, frame_name)
++        require(len({v["time"] for v in views}) == 1, "native frame times disagree")
++        frames[tick] = views
++    require(list(frames) == sorted(frames), "native frames are not tick-ordered")
++    queries = extraction.get("queries")
++    expected_match_query = "SELECT id,lobby_id,config,tick,checkpoint_tick,checkpoint,engine_hash,state_hash FROM matches WHERE id=?"
++    expected_frame_query = ("SELECT tick,views FROM frames WHERE match_id=? AND tick IN (" +
++                            ",".join("?" for _ in frames) + ") ORDER BY tick")
++    require(queries == [{"kind": "match", "text": expected_match_query, "parameters": [match_id]},
++                        {"kind": "frames", "text": expected_frame_query,
++                         "parameters": [match_id] + list(frames)}],
++            "root extraction query text/parameters differ from bounded match-specific plan")
++    team_ai = obj(runtime.get("teamAI"), "checkpoint team AI")
++    require(team_ai.get("directives") == [] and team_ai.get("transfers") == [],
++            "natural AI checkpoint contains human directives or transfers")
++    coordinator = obj(team_ai.get("coordinator"), "checkpoint coordinator")
++    waves = coordinator.get("waves")
++    require(type(waves) is list and waves, "launch-era coordinator wave is absent; expiry cannot be reconstructed")
++    wave_id = integer(extraction.get("candidateWaveId"), "candidate wave ID", 1)
++    selected = [wave for wave in waves if obj(wave, "wave").get("id") == wave_id]
++    require(len(selected) == 1, "candidate coordinator wave is missing or ambiguous")
++    wave = exact(selected[0], ["id", "teamId", "target", "participants", "launchAt", "expiresAt", "launched"], "wave")
++    require(wave["teamId"] == 1 and wave["launched"] is True, "wave was not launched for AI team")
++    integer(wave["teamId"], "wave team", 1, 1)
++    require(integer(coordinator.get("nextWaveId"), "next wave ID", 1) > wave_id,
++            "selected wave does not precede coordinator nextWaveId")
++    target = obj(wave["target"], "planner target")
++    require(set(target) == {"key", "kind", "observer", "seenAt", "x", "y"} | ({"level"} if "level" in target else set()),
++            "planner target fields differ from source schema")
++    if "level" in target:
++        integer(target["level"], "planner target level", 0, 1)
++    require(target.get("kind") in ("hq", "building", "unit", "start") and target.get("observer") in (2, 3),
++            "planner target is invalid")
++    text(target.get("key"), "planner target key")
++    for key in ("x", "y", "seenAt"):
++        number(target.get(key), f"planner target {key}")
++    require(target["seenAt"] <= cp_time, "planner target was observed after checkpoint")
++    launch_at, expires_at = number(wave["launchAt"], "planned launch"), number(wave["expiresAt"], "wave expiry")
++    clocks = runtime.get("aiWave")
++    require(type(clocks) is list and len(clocks) == 4, "AI wave clocks missing")
++    wave_time = number(clocks[2], "AI owner 2 wave clock", 0.000000001)
++    require(clocks[3] == wave_time and launch_at <= wave_time <= cp_time < expires_at,
++            "wave clocks differ or launch-era coordinator timing is unavailable")
++    participants = wave["participants"]
++    require(type(participants) is list and len(participants) == 2 and
++            sorted(p.get("side") for p in participants) == [2, 3], "shared wave does not contain both AI owners")
++    owners, owner_ids = {}, {}
++    for participant in participants:
++        exact(participant, ["side", "ids"], "wave participant")
++        side = participant["side"]
++        integer(side, "wave participant owner", 2, 3)
++        owner_ids[side] = sorted(ids(participant["ids"], "wave participant IDs"))
++        for eid in owner_ids[side]:
++            require(eid not in owners, "duplicate shared wave participant ID")
++            owners[eid] = side
++    require(len(owners) >= 4, "shared wave has fewer than source minimum fighters")
++    before_tick = integer(extraction.get("launchBeforeTick"), "launch before tick")
++    after_tick = integer(extraction.get("launchAfterTick"), "launch after tick")
++    require(before_tick in frames and after_tick in frames and after_tick - before_tick == 4,
++            "adjacent native launch bracket frames missing")
++    before, after = frames[before_tick], frames[after_tick]
++    require(before[0]["time"] < wave_time <= after[0]["time"] <= cp_time,
++            "AI clocks are outside retained native launch bracket")
++    elapsed_launch_ticks = (wave_time - before[0]["time"]) * 20
++    launch_tick_offset = round(elapsed_launch_ticks)
++    require(1 <= launch_tick_offset <= 4 and abs(elapsed_launch_ticks - launch_tick_offset) <= 1e-7,
++            "shared AI clock cannot be mapped to source20Hz launch tick")
++    launch_tick = before_tick + launch_tick_offset
++    for label, views in (("before shared launch", before), ("after shared launch", after)):
++        for side in (0, 1):
++            alive(views[side], label)
++    width, height = number(state.get("width"), "map width", 1), number(state.get("height"), "map height", 1)
++    starts = state.get("starts")
++    require(type(starts) is list and len(starts) == 4, "native starts missing")
++    transitions = []
++    for side, intended in sorted(owner_ids.items()):
++        old, new = entity_map(before[side], "launch before owner"), entity_map(after[side], "launch after owner")
++        # Source sorts eligible owned IDs and batches launches in groups of 100.
++        for base in range(0, len(intended), 100):
++            chunk = intended[base:base + 100]
++            columns = math.ceil(math.sqrt(len(chunk)))
++            direction = 1 if number(starts[side].get("y"), "AI start y") < height / 2 else -1
++            for index, eid in enumerate(chunk):
++                require(eid in old and eid in new, "wave participant missing from launch bracket")
++                first, last = old[eid], new[eid]
++                require(first.get("owner") == last.get("owner") == side and first.get("side") == last.get("side") == side
++                        and first.get("kind") == last.get("kind") == "unit" and first.get("role") != "worker"
++                        and first["hp"] > 0 and last["hp"] > 0 and not first.get("illusion") and not last.get("illusion"),
++                        "wave participant ownership or live combat-unit identity differs")
++                require(not obj(first.get("tactics", {}), "participant tactics").get("formation") and
++                        not obj(last.get("tactics", {}), "participant tactics").get("formation"),
++                        "formation order semantics need separately reviewed support")
++                dx = 0 if len(chunk) == 1 else (index % columns - (columns - 1) / 2) * .8 * direction
++                dy = 0 if len(chunk) == 1 else (index // columns - (columns - 1) / 2) * .8 * direction
++                expected = {"type": "attackMove", "x": max(.6, min(width - .6, target["x"] + dx)),
++                            "y": max(.6, min(height - .6, target["y"] + dy))}
++                if "level" in target:
++                    expected["level"] = target["level"]
++                observed = obj(last.get("order"), "participant launch order")
++                require(first.get("order") != observed and observed.get("type") == "attackMove" and
++                        set(observed) == set(expected) and all(
++                            (abs(observed[key] - expected[key]) <= 1e-9 if key in ("x", "y") else observed[key] == expected[key])
++                            for key in expected), "participant lacks source-derived attackMove transition to common target")
++                transitions.append({"side": side, "id": eid, "beforeTick": before_tick, "afterTick": after_tick,
++                                    "beforeOrder": first.get("order"), "afterOrder": observed})
++    report["nativeWave"] = {"id": wave_id, "target": target, "plannedLaunchAt": launch_at,
++                            "committedDispatchDerived": True, "aiWaveTime": wave_time,
++                            "aiWaveTickDerived": launch_tick,
++                            "participantIdsByOwnerAtCheckpoint": owner_ids, "ownerOrderTransitions": transitions,
++                            "checkpointFile": selected_checkpoint, "checkpointTick": cp_tick, "checkpointTime": cp_time}
++    public = {name: bundle.json(name, "public", public_descriptors[name]) for name in PUBLIC_NAMES if name.endswith(".json")}
++    identities, result, windows, cleanup = [public[name] for name in
++                                            ("public-identities.json", "public-results.json", "public-windows.json", "public-cleanup.json")]
++    require(identities.get("schema") == "feature63-public-identities-v1" and identities.get("matchId") == match_id
++            and identities.get("lobbyId") == lobby_id and identities.get("sourcePin") == source_pin,
++            "public identity/source/match/lobby differs")
++    human_profiles = identities.get("profiles")
++    humans = identities.get("humans")
++    native_humans = config.get("participants")
++    require(type(humans) is list and len(humans) == 2 and type(human_profiles) is list and len(human_profiles) == 2
++            and type(native_humans) is list and len(native_humans) == 2,
++            "two real human account bindings missing")
++    accounts = {}
++    for human in humans:
++        side = integer(human.get("side"), "human side", 0, 1)
++        require(human.get("profile") == list(PROFILES)[side] and side not in accounts, "human profile/side differs")
++        account = obj(human.get("account"), "public human account")
++        username = text(account.get("username"), "human guest username")
++        require(username.startswith("Guest-"), "browser account is not a real guest")
++        matching = [p for p in native_humans if p.get("side") == side and
++                    obj(p.get("account"), "native account").get("username") == username]
++        require(len(matching) == 1, "public guest username differs from unique native participant")
++        account_id = text(account.get("id"), "public human account ID")
++        require(account == matching[0]["account"], "public guest account differs from native participant")
++        guest_response = obj(human.get("guestResponse"), "normal public guest response")
++        require(guest_response.get("url") == "http://127.0.0.1:5373/api/auth/guest" and
++                guest_response.get("status") == 200 and type(guest_response.get("payload")) is str and
++                obj(parse(guest_response["payload"].encode("utf-8"), "public guest response"), "guest response").get("account") == account,
++                "complete normal guest response does not bind the public account")
++        accounts[side] = account_id
++    require(accounts[0] != accounts[1], "human profiles use one account")
++    require(result.get("schema") == "feature63-public-result-v1" and result.get("matchId") == match_id
++            and result.get("sourcePin") == source_pin
++            and result.get("publicCandidatePassed") is True
++            and result.get("firstFailure") is None and result.get("errors") == [] and
++            result.get("cleanupPassed") is True and result.get("feature63Qualified") is False and
++            result.get("nativeCompositionAuditRequired") is True and
++            result.get("acquisitionFailures") == [] and result.get("producerSha256") == assignment["publicProducerSha256"]
++            and result.get("publicProducerSha256") == assignment["publicProducerSha256"]
++            and result.get("publicDriverSha256") == assignment["publicDriverSha256"],
++            "canonical public candidate result or producer binding failed")
++    require(cleanup.get("schema") == "feature63-public-cleanup-v1" and
++            cleanup.get("matchId") == match_id and cleanup.get("browserClosed") is True and cleanup.get("failures") == []
++            and cleanup.get("allOwnedBrowsersClosed") is True and cleanup.get("captureFailures") == [],
++            "public cleanup or capture receipt failed")
++    cleanup_contexts = cleanup.get("contexts")
++    require(type(cleanup_contexts) is list and len(cleanup_contexts) == 2 and
++            all(c.get("closed") is True for c in cleanup_contexts), "owned browser contexts did not close")
++    for human in human_profiles:
++        text(human.get("contextId"), "human browser context ID")
++        matching = [c for c in cleanup_contexts if c.get("profile") == human["profile"] and
++                    c.get("contextId") == human["contextId"]]
++        require(len(matching) == 1, "cleanup context differs from public human identity")
++    require(len({human["contextId"] for human in human_profiles}) == 2,
++            "human browser contexts are not distinct")
++    public_match_identity = public["public-match-identity.json"]
++    require(public_match_identity.get("schema") == "feature63-public-match-identity-v1" and
++            public_match_identity.get("matchId") == match_id and public_match_identity.get("lobbyId") == lobby_id and
++            public_match_identity.get("sourcePin") == source_pin and
++            public_match_identity.get("expectedControllers") == CONTROLLERS and
++            public_match_identity.get("expectedTeams") == TEAMS and
++            public_match_identity.get("accounts") == humans,
++            "early public match identity differs from final real-account binding")
++    if wave_checkpoint_names:
++        public_identity_reference = obj(collector.get("publicMatchIdentity"), "collector public identity reference")
++        require(public_identity_reference.get("bytes") == public_descriptors["public-match-identity.json"]["bytes"] and
++                public_identity_reference.get("sha256") == public_descriptors["public-match-identity.json"]["sha256"],
++                "passive collector was assigned a different early public match identity")
++    require(windows.get("schema") == "feature63-public-windows-v1" and windows.get("matchId") == match_id,
++            "public candidate window schema/match differs")
++    candidates = windows.get("candidates")
++    require(type(candidates) is list and 1 <= len(candidates) <= 2000, "public candidates missing or unbounded")
++    candidate_index = integer(windows.get("selectedCandidateIndex"), "selected public candidate", 0, len(candidates) - 1)
++    candidate = obj(candidates[candidate_index], "public candidate")
++    require(result.get("selectedCandidateIndex") == candidate_index, "canonical result and window indexes differ")
++    start, end = integer(candidate.get("startTick"), "fight start"), integer(candidate.get("endTick"), "fight end")
++    require(0 < end - start <= 400 and end > launch_tick and candidate.get("maxTicks") == 400
++            and candidate.get("publicPredicatePassed") is True and candidate.get("bothHumansAliveThroughout") is True,
++            "fight is outside shared launch or bounded alive window")
++    require(start in frames and end in frames, "native/public fight boundary identity frames missing")
++    wires = {profile: public_wire(bundle, public_descriptors, profile, match_id) for profile in PROFILES}
++    if collector_generation is not None:
++        for profile, side in PROFILES.items():
++            require(all(message.get("generation") == collector_generation[side] for _, message in wires[profile]["hellos"]),
++                    "public socket generation differs from retained collector match generation")
++    actions = {}
++    for profile in PROFILES:
++        name = f"{profile}-ui-actions.ndjson"
++        records = ndjson(bundle.read(name, "public", public_descriptors[name]), name)
++        actions[profile] = {}
++        for action in records:
++            require(action.get("schema") == "feature63-public-ui-action-v1" and action.get("profile") == profile,
++                    "public UI action schema differs")
++            action_id = text(action.get("actionId"), "UI action ID")
++            action_state = action.get("state")
++            require(action_state in ("began", "completed", "accepted"), "public UI action failed or has unknown state")
++            lifecycle = actions[profile].setdefault(action_id, {})
++            require(action_state not in lifecycle, "duplicate UI action lifecycle state")
++            lifecycle[action_state] = action
++    accepted = candidate.get("acceptedAttackMoves")
++    require(type(accepted) is list and 2 <= len(accepted) <= 32, "accepted UI attack commands missing or unbounded")
++    commanded = {0: set(), 1: set()}
++    command_evidence = []
++    for entry in accepted:
++        profile = entry.get("profile")
++        require(profile in PROFILES and entry.get("side") == PROFILES[profile], "accepted command profile/owner differs")
++        wire = wires[profile]
++        seq = integer(entry.get("clientSeq"), "accepted command client sequence", 1)
++        require(seq in wire["commands"] and seq in wire["acks"], "command/ack not retained as original wire payloads")
++        command_ordinal, message = wire["commands"][seq]
++        ack_ordinal, ack = wire["acks"][seq]
++        require(entry.get("commandWireOrdinal") == command_ordinal and entry.get("ackWireOrdinal") == ack_ordinal
++                and command_ordinal < ack_ordinal and entry.get("command") == message and entry.get("ack") == ack,
++                "window command/ack differs from native wire payload")
++        require(ack.get("accepted") is True and "reason" not in ack and ack["appliedTick"] == entry.get("appliedTick")
++                and ack["appliedTick"] <= start and message["observedTick"] < ack["appliedTick"],
++                "UI attack acknowledgement failed or applied after fight began")
++        command = message["command"]
++        require(command.get("type") == "attackMove" and not command.get("queued"), "required command is not direct UI attackMove")
++        selected_ids = ids(command.get("ids"), "commanded IDs", 100)
++        eligibility_tick = integer(entry.get("eligibilityFrameTick"), "public command eligibility tick")
++        require(eligibility_tick in wire["snapshots"], "command eligibility frame is not retained")
++        eligibility_ordinal, eligibility_message = wire["snapshots"][eligibility_tick]
++        require(entry.get("eligibilityWireOrdinal") == eligibility_ordinal and eligibility_ordinal < command_ordinal
++                and eligibility_tick < ack["appliedTick"], "command eligibility frame is not contemporaneous before command application")
++        eligible = sorted(set(selected_ids) & eligible_owned_ids(eligibility_message["view"], PROFILES[profile]))
++        require(eligible == sorted(selected_ids) and entry.get("eligibleCommandedIds") == eligible,
++                "accepted bulk command names ineligible or self-reported-only actors")
++        action_id = entry.get("uiActionId")
++        require(action_id in actions[profile], "UI action transcript missing")
++        lifecycle = actions[profile][action_id]
++        require(set(lifecycle) == {"began", "completed", "accepted"}, "canvas action lifecycle is incomplete")
++        began, completed, action = [lifecycle[k] for k in ("began", "completed", "accepted")]
++        detail = obj(began.get("detail"), "canvas action detail")
++        require(began.get("action") == completed.get("action") == action.get("action") == "canvas-attack-move"
++                and detail == completed.get("detail") and detail.get("precedingKeys") == ["F2", "a"]
++                and detail.get("button") == "left" and sorted(detail.get("selectedIds", [])) == sorted(selected_ids)
++                and sorted(action.get("selectedIds", [])) == sorted(selected_ids)
++                and action.get("commandWireOrdinal") == command_ordinal
++                and action.get("ackWireOrdinal") == ack_ordinal and action.get("clientSeq") == seq
++                and action.get("command") == message and action.get("ack") == ack
++                and action.get("eligibleCommandedIds") == eligible
++                and action.get("eligibilityFrameTick") == eligibility_tick and detail.get("displayedTick") == eligibility_tick
++                and action.get("eligibilityWireOrdinal") == eligibility_ordinal,
++                "accepted attack command is not bound to actual normal UI actions")
++        selected_units = detail.get("selectedUnits")
++        require(type(selected_units) is list and sorted(e.get("id") for e in selected_units) == sorted(selected_ids)
++                and all(e.get("side") == PROFILES[profile] and e.get("kind") == "unit" and
++                        e.get("role") != "worker" and number(e.get("hp"), "selected human HP") > 0 for e in selected_units),
++                "UI selected combat actors are not owned living units")
++        action_target = obj(detail.get("target"), "canvas observed ground target")
++        require(abs(number(command.get("x"), "attackMove x") - number(action_target.get("x"), "UI ground x")) < .1
++                and abs(number(command.get("y"), "attackMove y") - number(action_target.get("y"), "UI ground y")) < .1,
++                "sent attackMove differs from canvas ground target")
++        require(action.get("id") == action_id and action.get("kind") == "canvas-keyboard-attack-move" and
++                action.get("completed") is True and type(action.get("steps")) is list and len(action["steps"]) == 6,
++                "accepted UI action lacks complete normal key/minimap/canvas transcript")
++        steps = action["steps"]
++        require([s.get("kind") for s in steps] == ["key-down", "key-up", "minimap-click", "key-down", "key-up", "canvas-click"]
++                and [steps[i].get("key") for i in (0, 1, 3, 4)] == ["F2", "F2", "a", "a"]
++                and steps[5].get("actionId") == action_id and steps[5].get("target") == action_target,
++                "normal UI attack action transcript differs")
++        for index, expected_action in ((0, "keyboard"), (2, "minimap-left-click"), (3, "keyboard")):
++            prior_id = steps[index].get("actionId")
++            require(prior_id in actions[profile], "preceding real UI action was not retained")
++            previous_action = actions[profile][prior_id]
++            require(set(previous_action) == {"began", "completed"} and
++                    previous_action["began"].get("action") == previous_action["completed"].get("action") == expected_action,
++                    "preceding UI selection/minimap/attack-key action did not complete")
++            prior_detail = obj(previous_action["began"].get("detail"), "preceding UI action detail")
++            require(prior_detail == previous_action["completed"].get("detail"), "preceding UI action details changed")
++            if expected_action == "keyboard":
++                require(prior_detail.get("key") == steps[index].get("key"), "preceding actual UI key differs")
++            else:
++                require(prior_detail.get("point") == steps[index].get("point"), "preceding actual minimap click differs")
++        commanded[PROFILES[profile]].update(eligible)
++        command_evidence.append({"profile": profile, "side": PROFILES[profile], "clientSeq": seq,
++                                 "appliedTick": ack["appliedTick"], "ids": selected_ids,
++                                 "uiActionId": action_id, "commandWireOrdinal": command_ordinal,
++                                 "eligibleCommandedIds": eligible, "eligibilityFrameTick": eligibility_tick,
++                                 "eligibilityWireOrdinal": eligibility_ordinal,
++                                 "eligibilityPayloadSha256": wire["wire"][eligibility_ordinal][2],
++                                 "ackWireOrdinal": ack_ordinal,
++                                 "commandPayloadSha256": wire["wire"][command_ordinal][2],
++                                 "ackPayloadSha256": wire["wire"][ack_ordinal][2]})
++    require(all(commanded.values()), "both humans lack accepted UI attack commands")
++    event_records, payload_records = {}, []
++    for profile, side in PROFILES.items():
++        snapshots = wires[profile]["snapshots"]
++        selected_ticks = sorted(t for t in snapshots if start <= t <= end)
++        require(selected_ticks == list(range(start, end + 1, 4)), "public fight has a missing authoritative frame")
++        ranges = obj(candidate.get("profileFrameRanges"), "public frame ranges")
++        selected_range = obj(ranges.get(profile), "public profile range")
++        expected_range = {"firstWireOrdinal": snapshots[start][0], "lastWireOrdinal": snapshots[end][0],
++                          "firstFrameTick": start, "lastFrameTick": end, "frameCount": len(selected_ticks)}
++        require(all(selected_range.get(k) == v for k, v in expected_range.items()) and
++                selected_range.get("contiguous") is True,
++                "public selected frame range differs from actual wire capture")
++        prior_tick = start - 4
++        require(prior_tick in snapshots and obj(selected_range.get("beforeWindow"), "preceding public frame").get("tick") == prior_tick
++                and selected_range["beforeWindow"].get("wireOrdinal") == snapshots[prior_tick][0],
++                "preceding complete public frame is missing")
++        alive(snapshots[prior_tick][1]["view"], "before public fight")
++        for tick in selected_ticks:
++            ordinal, message = snapshots[tick]
++            view = message["view"]
++            entities = alive(view, "public fight")
++            if tick in frames:
++                require(view == frames[tick][side], "public snapshot differs from native same-tick owner view")
++                payload_records.append({"profile": profile, "tick": tick, "wireOrdinal": ordinal,
++                                        "payloadSha256": wires[profile]["wire"][ordinal][2],
++                                        "viewSemanticSha256": sha(semantic(view))})
++            for event in view["events"]:
++                if event.get("type") != "attack":
++                    continue
++                event_tick = integer(event.get("tick"), "attack event tick")
++                require(tick - 4 < event_tick <= tick, "public attack event is outside complete four-tick event buffer")
++                if not start < event_tick <= end:
++                    continue
++                event_id = text(event.get("eventId"), "attack event ID")
++                amount = number(event.get("amount"), "attack amount")
++                if amount <= 0 or event.get("source") is None or event.get("target") is None:
++                    continue
++                source_id, target_id = event["source"], event["target"]
++                if source_id not in entities or target_id not in entities:
++                    continue  # No retained contemporaneous owner identity, so it cannot qualify.
++                actor, victim = entities[source_id], entities[target_id]
++                if actor.get("kind") != "unit" or victim.get("kind") != "unit":
++                    continue
++                owner, victim_owner = actor.get("owner"), victim.get("owner")
++                if actor.get("side") != owner or victim.get("side") != victim_owner or event.get("side") != owner:
++                    continue
++                kind = None
++                if owner in (0, 1) and source_id in commanded[owner] and target_id in owners and owners[target_id] == victim_owner:
++                    kind = "human-to-wave-participant"
++                if kind is None:
++                    continue
++                require(view["time"] > wave_time and event_tick > launch_tick,
++                        "qualifying combat event does not follow committed launch bracket")
++                require(tick in frames and frames[tick][side] == view,
++                        "qualifying combat event lacks native/public same-frame identity")
++                core = {"eventId": event_id, "tick": event_tick, "side": owner,
++                        "source": source_id, "target": target_id, "amount": amount,
++                        "sourceOwner": owner, "targetOwner": victim_owner, "kind": kind}
++                existing = event_records.get(event_id)
++                if existing:
++                    require(existing["event"] == core, "duplicate attack event has conflicting identity or amount")
++                else:
++                    event_records[event_id] = {"event": core, "observations": []}
++                event_records[event_id]["observations"].append({"profile": profile, "wireOrdinal": ordinal, "frameTick": tick,
++                                                              "payloadSha256": wires[profile]["wire"][ordinal][2]})
++    human_events = [r for r in event_records.values() if r["event"]["kind"] == "human-to-wave-participant"]
++    require({r["event"]["sourceOwner"] for r in human_events} == {0, 1},
++            "both commanded humans do not attack the same shared-wave participant set")
++    require({r["event"]["targetOwner"] for r in human_events} == {2, 3},
++            "commanded human witnesses do not collectively target both AI owners in the same shared wave")
++    report["matchIdentity"] = {"matchId": match_id, "lobbyId": lobby_id, "humanAccounts": accounts,
++                               "controllers": CONTROLLERS, "teams": TEAMS}
++    report["publicFight"] = {"startTick": start, "endTick": end, "windowTicks": end - start,
++                             "bothHumansAliveInAllRetainedFrames": True, "authoritativeCadenceTicks": 4,
++                             "acceptedUIAttackCommands": command_evidence,
++                             "qualifiedEvents": list(event_records.values()), "nativePublicPayloadMatches": payload_records}
++    report["checks"] = {"rootBinding": True, "closedExtraction": True, "nativeBounds": True,
++                        "sharedPlannerTarget": True, "committedDispatchDerived": True,
++                        "sameParticipantCombat": True, "publicAliveCoverage": True,
++                        "bothHumanUICommands": True, "bothHumanAttacks": True, "bothNativeAIWaveOwners": True,
++                        "humanWitnessesTargetBothAIWaveOwners": True}
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--bundle", required=True, help="root-provided literal JSON export directory")
++    parser.add_argument("--assignment-sha256", required=True, help="root-authenticated digest supplied outside bundle")
++    args = parser.parse_args()
++    report = {"schema": SCHEMA, "status": "rejected", "passed": False,
++              "qualificationClaim": False, "failures": [], "sourcePin": None,
++              "sqliteOpened": False, "databaseContentHashed": False,
++              "runtimeOrReplayRun": False, "checksUseAssertions": False}
++    bundle = None
++    try:
++        bundle = Bundle(args.bundle)
++        audit(bundle, args.assignment_sha256, report)
++        report["status"] = "closed-native-composition-pass-pending-root-disposition"
++        report["passed"] = True
++    except (Rejection, OSError, ValueError, TypeError, KeyError, AttributeError, RecursionError) as error:
++        report["failures"].append(str(error))
++    if bundle is not None:
++        report["inputIdentities"] = bundle.identities
++        report["inputByteTotals"] = bundle.byte_totals
++    print(json.dumps(report, indent=2, sort_keys=True, allow_nan=False))
++    return 0 if report["passed"] else 1
++
++
++if __name__ == "__main__":
++    sys.exit(main())

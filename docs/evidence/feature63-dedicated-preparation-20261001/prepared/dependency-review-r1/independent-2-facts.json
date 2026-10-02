@@ -1,0 +1,248 @@
+{
+  "schema": 1,
+  "author": {
+    "harness": "Codex",
+    "model": "GPT-6",
+    "finerVariant": "not exposed"
+  },
+  "scope": "Bounded read-only review of the exact installed Playwright dependency: public URL-based chromium.connectOverCDP attachment, browser.close and context.close ownership.",
+  "package": {
+    "directory": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core",
+    "name": "playwright-core",
+    "version": "1.63.0",
+    "sourceFiles": [
+      {
+        "path": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/package.json",
+        "relativePath": "package.json",
+        "realPath": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/package.json",
+        "bytes": 876,
+        "sha256": "f061c58427e47e843e26d201f0a57076c734e57c734ecbbd87d4a23b7a20db9b"
+      },
+      {
+        "path": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/index.js",
+        "relativePath": "index.js",
+        "realPath": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/index.js",
+        "bytes": 697,
+        "sha256": "a58fb2cec4293e7dcf73c58a179898a4f3986666451a19da4e731fa3af63265b"
+      },
+      {
+        "path": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/index.mjs",
+        "relativePath": "index.mjs",
+        "realPath": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/index.mjs",
+        "bytes": 1063,
+        "sha256": "3d36e2132d3c8b62397d23f0bb4177336aaee503203ae2a2c90fbeb5bf3317dd"
+      },
+      {
+        "path": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/bootstrap.js",
+        "relativePath": "lib/bootstrap.js",
+        "realPath": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/bootstrap.js",
+        "bytes": 3481,
+        "sha256": "4637f4dbfef9cfc01baeb5f5d2cb63fa0901522c96915ea2227290558d27123e"
+      },
+      {
+        "path": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js",
+        "relativePath": "lib/coreBundle.js",
+        "realPath": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js",
+        "bytes": 3477183,
+        "sha256": "549070af3acabb3efcc4f55bfe6210f9f7c2fcf633cf7eaa59bfe60719969171"
+      },
+      {
+        "path": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/types/types.d.ts",
+        "relativePath": "types/types.d.ts",
+        "realPath": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/types/types.d.ts",
+        "bytes": 1131883,
+        "sha256": "2806f6d7810fba0306066d500cd716a6d1128d90af2c3cf71723e3ea0a8904c4"
+      }
+    ]
+  },
+  "findings": [
+    {
+      "topic": "module entry",
+      "lines": {
+        "index.mjs": [
+          17,
+          19
+        ],
+        "index.js": [
+          16,
+          17
+        ]
+      },
+      "fact": "Public package entry exports the in-process Playwright client from lib/coreBundle.js."
+    },
+    {
+      "topic": "CDP browser close",
+      "bundleLines": [
+        [
+          63361,
+          63400
+        ],
+        [
+          55513,
+          55521
+        ],
+        [
+          62666,
+          62677
+        ],
+        [
+          62784,
+          62795
+        ],
+        [
+          55437,
+          55440
+        ],
+        [
+          52689,
+          52700
+        ],
+        [
+          43075,
+          43155
+        ],
+        [
+          39609,
+          39619
+        ]
+      ],
+      "fact": "URL connectOverCDP creates a WebSocket transport and synthetic browserProcess.close/kill handler that disconnects transport and removes Playwright-owned temporary artifact directories. Public browser.close reaches this handler through the channel and dispatcher; it does not itself issue native Browser.close, send an OS termination signal or reap the externally launched Chromium process."
+    },
+    {
+      "topic": "default context close",
+      "bundleLines": [
+        [
+          43126,
+          43135
+        ],
+        [
+          38369,
+          38375
+        ],
+        [
+          51568,
+          51569
+        ],
+        [
+          62620,
+          62629
+        ],
+        [
+          54421,
+          54422
+        ],
+        [
+          38749,
+          38752
+        ],
+        [
+          51919,
+          51921
+        ]
+      ],
+      "fact": "CDP default context has no explicit browserContextId and is classified persistent. Its context.close routes to browser.close, disconnecting the entire attachment; it does not independently dispose the external default browser context."
+    },
+    {
+      "topic": "explicit context ownership",
+      "bundleLines": [
+        [
+          62685,
+          62713
+        ],
+        [
+          38379,
+          38396
+        ],
+        [
+          38749,
+          38764
+        ]
+      ],
+      "fact": "browser.newContext creates a distinct CDP browserContextId with disposeOnDetach:true. Closing that context sends Target.disposeBrowserContext for its id. This is a real browser context/page disposal request, separate from termination of the browser process."
+    },
+    {
+      "topic": "disconnect bookkeeping",
+      "bundleLines": [
+        [
+          34953,
+          34964
+        ],
+        [
+          38474,
+          38482
+        ],
+        [
+          52677,
+          52687
+        ],
+        [
+          51671,
+          51685
+        ],
+        [
+          55395,
+          55406
+        ],
+        [
+          62798,
+          62801
+        ]
+      ],
+      "fact": "Transport disconnect tears down Playwright sessions, page/context model objects and emits Browser.Disconnected. These are not observations of external Chromium PID exit."
+    },
+    {
+      "topic": "native shutdown distinction",
+      "bundleLines": [
+        [
+          43222,
+          43225
+        ],
+        [
+          43120,
+          43125
+        ]
+      ],
+      "fact": "The bundled Chromium launch shutdown hook sends native Browser.close, but URL-based CDP attachment installs its own transport-disconnect handler instead of that launch path."
+    },
+    {
+      "topic": "inherited target limits",
+      "bundleLines": [
+        [
+          13345,
+          13349
+        ],
+        [
+          38423,
+          38430
+        ],
+        [
+          38749,
+          38752
+        ]
+      ],
+      "fact": "Default context close may dismiss tracked beforeunload dialogs before disconnect. Targets with browserContextIds not in the attachment-created context map fall back to the default context model; appearance through that model is not evidence of caller ownership."
+    }
+  ],
+  "practicalScope": {
+    "browserClose": "Close the Playwright CDP attachment and Playwright-owned temporary artifacts.",
+    "explicitContextClose": "Request disposal of the created browser context/pages before attachment close.",
+    "externalLauncher": "Separate caller-owned process cleanup and bounded observation remain required for the externally launched Chromium process.",
+    "unknowns": [
+      "This source-only review does not observe Chromium context disposal response, browser PID exit, launcher process handling or descendant processes.",
+      "disposeOnDetach is a Chromium CDP request; no runtime detach or disposal was performed.",
+      "The conclusion covers the public URL endpoint path without a custom transport or internal onClose callback.",
+      "No atomic no-descendants claim follows from this dependency code."
+    ]
+  },
+  "constraintsObserved": {
+    "dependencyImported": false,
+    "runtimeExecuted": false,
+    "browserLaunchedOrAttached": false,
+    "testsRun": false,
+    "databaseRead": false,
+    "signalsSent": false,
+    "cgroupWrites": false,
+    "rootOrCandidateEdits": false,
+    "freshExternalNotesOnly": true
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "schema": "feature63-minimal-isolated-server-packaging-v1",
+  "futureSourcePin": null,
+  "runtimeAuthorized": false,
+  "commandExecuted": false,
+  "workingDirectory": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+  "serverBuildScript": {
+    "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/build-server.mjs",
+    "bytes": 992,
+    "sha256": "6f036a184206640a48f503915fa08d267109a7c408aa4e97837bb2eab8d137bd"
+  },
+  "minimalCommandArgv": [
+    "ABSOLUTE_BOUND_NODE",
+    "scripts/build-server.mjs",
+    "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r1/server"
+  ],
+  "equivalentCommand": "\"$OVF_F63_NODE\" scripts/build-server.mjs work/feature63-human-wave-composition-r1/server",
+  "testedBrowserBuildReuse": "Authenticate existing tested f7 web dist byte/mode/name inventory and tested 4.0.2 __OVF_BUILD_ID__; copy that exact tree once to fresh owned prefix/dist. Do not rebuild Vite merely for scripts-only import.",
+  "rootSelectsActualTestedWebDistPath": null,
+  "rootPackagesOnlyAfterExplicitSourceBuildAndSlotAdmission": true,
+  "scriptSemantics": "The current build-server.mjs accepts argv[2] outputdir; emits rts-server.js with packages external, canonical-campaign.mjs, and campaign-runtime.mjs if current src/core/campaign.ts exists. It does not build or change the browser dist.",
+  "requiredRuntimeWsBinding": "Because server rts-server.js uses packages external, root must bind the actual ws package and any selected optional native helpers in the future runtime dependency inventory. Prefer copying the already installed source-authenticated ws package under isolated server/node_modules/ws and include all of those actual bytes/modes in complete serverRecords; do not install or fetch new packages for this recipe.",
+  "serverOutputsMustInclude": [
+    "rts-server.js",
+    "canonical-campaign.mjs"
+  ],
+  "campaignRuntimeConditional": "Include emitted campaign-runtime.mjs when present; complete server inventory must match actual output filename set.",
+  "beforePackaging": [
+    "Root imports current four scripts; chooses full pin; moves owned checkout explicitly.",
+    "Root authenticates product src/config/public/build-script/lock/dependency inputs still equivalent to tested f7 product/build.",
+    "Fresh prefix is absent; root creates only server/dist packaging directories. No server-data/public/collector/lifecycle/profile/audit directory yet."
+  ],
+  "afterPackaging": [
+    "Read/hash/mode-authenticate complete server and reused web inventories.",
+    "Create root build/source/tested/dependency/review receipts with full pin and exact candidate hashes.",
+    "Release main15 heavy slot before admitting feature63 capture."
+  ],
+  "noDBOldRawCgroupRootCheckoutBuildOrRuntimeWorkPerformed": true
+}

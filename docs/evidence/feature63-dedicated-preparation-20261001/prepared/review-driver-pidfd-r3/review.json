@@ -1,0 +1,113 @@
+{
+  "schema": "feature63-dedicated-wrapper-review-v1",
+  "reviewedAt": "2026-10-01T19:58:33-07:00",
+  "status": "FAIL",
+  "approved": false,
+  "runtimeDisposition": "HELD",
+  "sourcePin": null,
+  "productVersion": "4.0.2",
+  "reviewer": {
+    "harness": "Codex",
+    "model": "GPT-6",
+    "providerIdentityVerified": false
+  },
+  "scope": "Static independent review of the bounded PIDFD R3 feature 63 wrapper contract",
+  "execution": {
+    "packetScriptsRun": false,
+    "nodeRun": false,
+    "testsRun": false,
+    "buildRun": false,
+    "browserRun": false,
+    "serverRun": false,
+    "sqliteRun": false,
+    "simulationRun": false,
+    "signalsSent": false,
+    "cgroupWrites": false,
+    "rootWrites": false
+  },
+  "wrapperSha256": "eabf3048df363f397275021886fcd831176d8de9e0e5bfc9f7fccc659a0a0fee",
+  "publicProducerSha256": "d661329136041f8ccb15dfb9e94ae0556c303a6f995304c7f08889698b5a5f0f",
+  "collectorSha256": "c6c768ad7d54696e5e1e8456881f038cd7b7bb70112cd9b8b17d86b0feaebd7f",
+  "auditorSha256": "4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb",
+  "nodeExecutableSha256": null,
+  "pythonExecutableSha256": null,
+  "restoredBothOwnerHumanTargetUnion": true,
+  "boundedNativeLifetimeContract": {
+    "directUnreapedRoots": true,
+    "boundObservedOriginalSessionDescendants": true,
+    "atomicGlobalDescendantEmptyClaim": false,
+    "unobservedDescendantsExcluded": false,
+    "rootNativeLifetimeDispositionRequired": true,
+    "auditRequiresIndependentRootAdmission": true
+  },
+  "checks": {
+    "directLaunchReservedBeforeIntendedCommandValidation": true,
+    "failedLaunchActualIdentityRetainedWhenObservable": true,
+    "registeredSignalTargetsUseExactIdentityAndPidfd": true,
+    "protected1063And4173CheckedImmediatelyBeforeEachSignal": true,
+    "cleanupRefreshIsolatedPerFamily": true,
+    "nonAtomicGlobalLimitDisclosed": true,
+    "rootNativeLifetimeAdmissionRequiredBeforeAudit": true,
+    "collectorSlotBoundToWrapperSlotToken": true,
+    "collectorStrictOneSecondMinimumPollInterval": true,
+    "nativeAuditCompletePassOutputBoundEnforced": true,
+    "captureCompletePassLifecycleBoundEnforced": false,
+    "currentPacketEntryPointsAndLifetimeContractConsistent": false,
+    "firstFailureAndNoRetryControlsPresent": true,
+    "bothHumanSourceOwnersRequired": true,
+    "bothAiTargetOwnersInSelectedNativeWaveRequired": true,
+    "cdpDisconnectNoNativeSignalsIndependentlyProven": false
+  },
+  "findings": [
+    {
+      "id": "F63-PIDFD-R3-001",
+      "severity": "medium",
+      "title": "Capture can pass after the final lifecycle-byte check and then exceed 16 MiB",
+      "file": "driver/run-minimal63-pidfd-r3.py",
+      "lines": [580, 600],
+      "reason": "The success path calls runtime_budget before assigning capture success, but finally writes driver-result.json afterward. The result bytes are neither reserved nor followed by another aggregate check. A lifecycle directory just below 16 MiB can therefore cross the advertised cap while the wrapper still returns success.",
+      "requiredChange": "Construct and size the final capture result before PASS, reserve its bytes in the lifecycle limit, then write it. If the complete directory would exceed 16 MiB, preserve the bytes and return a failed result."
+    },
+    {
+      "id": "F63-PIDFD-R3-002",
+      "severity": "medium",
+      "title": "The current README names R2 entry points and a stronger Chromium-session proof than PIDFD R3 requires",
+      "file": "README-r2.md",
+      "lines": [11, 13, 21],
+      "reason": "The current code and R3 specimens bind run-minimal63-pidfd-r3.py and the -r3.pending assignments. README-r2.md still directs root to the -r2.pending specimens. It also says root must authenticate that all Chromium children remain in the owned session, while PIDFD R3 intentionally discloses that unobserved descendants are not excluded and moves complete native-lifetime disposition to the root admission receipt.",
+      "requiredChange": "Publish a current PIDFD R3 README or manifest naming the R3 driver and specimens. Describe the finite evidence scope verbatim and require root native-lifetime disposition without claiming every Chromium helper remains observable in the session."
+    },
+    {
+      "id": "F63-PIDFD-R3-003",
+      "severity": "blocking-prerequisite",
+      "title": "The exact Playwright CDP disconnect behavior remains pending external review",
+      "file": "driver/run-minimal63-pidfd-r3.py",
+      "lines": [226, 238],
+      "related": [
+        {
+          "file": "public-producer-r2/verify-human-wave-r3.mjs",
+          "lines": [103, 120, 163, 166, 537, 539]
+        }
+      ],
+      "reason": "The guard still relies on reviewedCdpDisconnectHasNoNativeSignals, and the producer calls browser.close on a connectOverCDP browser during emergency and normal cleanup. No completed authenticated dependency receipt was present in this review packet.",
+      "requiredChange": "Bind the independent Playwright 1.63.0 source review and exact dependency hashes before runtime admission."
+    }
+  ],
+  "verifiedStaticProperties": [
+    "PIDFD R3 records the direct Popen PID/start-tick baseline before launch authentication and registers the first observable complete identity before validating the intended argv and cwd.",
+    "A failed intended-command check retains the authenticated resource for per-family guarded cleanup; unrelated-family identity failures no longer block that cleanup.",
+    "Every explicit signal to a registered resource uses the complete recorded identity, a fresh PID 1063/start 874/port 4173 ownership check, a post-check identity comparison, and pidfd_send_signal.",
+    "The capture receipt limits its native closure evidence to direct roots and bound observed original-session descendants, denies a global descendant-exclusion claim, and requires root native-lifetime disposition.",
+    "The audit phase requires ownedNativeLifetimeIndependentlyAdmitted in the root extraction admission before its one-shot invocation.",
+    "The audit result accounts for final stdout, stderr, driver events and result bytes before it can pass the 2 MiB bound.",
+    "Collector R7 retains the 300-second, 300-query, four-record and 8 MiB bounds and waits one full second after each SELECT completes.",
+    "The unchanged public R3 and native R6 candidates require both human source owners and targets belonging to AI owners 2 and 3 within one selected authenticated wave.",
+    "Capture and audit preserve the first recorded failure and contain no automatic retry path."
+  ],
+  "nativeLifetimeLimitation": "PIDFD R3 does not prove that no unobserved native descendant survives. It proves closure only for each direct unreaped root and each descendant whose complete identity was bound while it remained in the original session. This limitation is disclosed in the capture result and must receive independent root disposition before audit.",
+  "limitations": [
+    "This was a static review. No reviewed program or runtime dependency was executed.",
+    "The R3 pending assignments contain false approvals and null source, build, dependency, executable and slot bindings.",
+    "The model provider was not independently authenticated."
+  ]
+}

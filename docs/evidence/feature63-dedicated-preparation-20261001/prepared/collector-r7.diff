@@ -1,0 +1,12 @@
+--- /home/morgana/.codex/worktrees/assembled-allied-ai/ai-online-only-retry-readiness-r1/feature63-human-wave-composition-r1/passive-collector-r1/collect-launched-waves-r6.py
++++ /home/morgana/.codex/worktrees/assembled-allied-ai/feature63-dedicated-wrapper-readiness-r1/passive-collector-r2/collect-launched-waves-r7.py
+@@ -264,7 +264,8 @@
+                 if len(receipt['rows']) >= MAX_RECORDS:
+                     reason = 'record_bound'
+                     break
+-            next_poll = started + query_ordinal
++            # Require at least one full second after the preceding SELECT completes.
++            next_poll = time.monotonic() + 1
+             while not STOP_REQUESTED and time.monotonic() < next_poll and time.monotonic() - started < MAX_SECONDS:
+                 time.sleep(max(0, min(0.1, next_poll - time.monotonic())))
+         else:

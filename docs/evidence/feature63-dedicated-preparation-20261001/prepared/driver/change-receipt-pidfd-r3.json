@@ -1,0 +1,43 @@
+{
+  "schema": "feature63-pidfd-driver-bounded-correction-v1",
+  "createdAt": "2026-10-02T02:56:22.748365+00:00",
+  "futureSourcePin": null,
+  "runtimeAuthorized": false,
+  "candidate": {
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/feature63-dedicated-wrapper-readiness-r1/driver/run-minimal63-pidfd-r3.py",
+    "bytes": 40397,
+    "sha256": "eabf3048df363f397275021886fcd831176d8de9e0e5bfc9f7fccc659a0a0fee"
+  },
+  "preservedR2": {
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/feature63-dedicated-wrapper-readiness-r1/driver/run-minimal63-r2.py",
+    "bytes": 37033,
+    "sha256": "611715dfafc6d2b15c624f055b773b702a93a5b116e6d3a639c55ffa5d63f946"
+  },
+  "preservedCgroupOption": {
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/feature63-dedicated-wrapper-readiness-r1/driver/run-minimal63-r3.py",
+    "bytes": 42901,
+    "sha256": "1beff8cee2cd53b1c1aa15b3c4feb9e7c61b4de63c72ae20f4d91b8cec8785fa"
+  },
+  "cgroupOptionMandatory": false,
+  "rootInstruction": "Keep preparation bounded; do not introduce cgroup delegation as mandatory before availability. Reviewed CDP disconnect plus owned server/Chromium exact pidfd cleanup may suffice; protected4173 excluded.",
+  "changes": [
+    "Register/reserve direct Popen child before intended-command authentication; failed live launch can retain actual bound identity for guarded cleanup.",
+    "Scope discovery and cleanup checks per family, so an unrelated family failure does not block otherwise valid closure.",
+    "Keep original direct child unreaped before observed descendant discovery and PIDFD cleanup.",
+    "Explicitly limit closure evidence to bound direct roots and observed original-session descendants; no atomic global descendant-empty claim.",
+    "Require root independently admit native lifetime before the one-shot audit.",
+    "Check final complete audit output and result size before success; preserve exceeded bytes.",
+    "No mandatory cgroup delegation or every-helper session proof in PIDFD variant."
+  ],
+  "concreteClosureLimit": "Finite /proc observation cannot exclude an unobserved native descendant fork/reparent at final exit. Root assesses source-bound Chromium lifetime behavior and independent closure evidence.",
+  "readOnlyCgroupAvailability": [
+    "cgroup-readonly-availability.json",
+    "cgroup-readonly-ancestor-availability.json"
+  ],
+  "staticChecks": [
+    "Python AST parse",
+    "actual byte read/hash",
+    "no poll() calls"
+  ],
+  "candidateOrRuntimeExecuted": false
+}

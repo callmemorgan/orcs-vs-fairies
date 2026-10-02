@@ -1,0 +1,299 @@
+import { canObserveTacticalEntity, isCrewless } from '../core/tactics';
+import { technologyTree } from './TechnologyTree';
+import { researchRequirement, playerAge, buildingAgeRequired, AGE_NAMES, upgradeAppliesTo } from '../core/progression';
+import { observedHealth, PlayerView } from '../core/observation';
+import { isAllied } from '../core/simulation';
+import { scenarioSessionForState } from '../core/scenarios';
+import { ABILITIES, FACTIONS } from '../core/content';
+import { availableBuildings, availableUnits, buildingFor, contentAssetUrl, contentArt, entityDefinition, factionFor, isNormalBuildingDefinition, productionQueueKey, queuedUnitFor, unitFor, upgradeFor } from '../core/content-registry';
+import type { BuildingRole, Cost, Entity, FactionId, GameState, MapSize, UnitRole, UpgradeId, Side, Vec } from '../core/types';
+import './style.css';
+import { createTooltip } from './Tooltip';
+import { abilityTargetReason } from './availability';
+import { AppearancePreferences, appearancePreferences, markerPolygon, ownershipStyle } from '../game/Appearance';
+import { displaySettings } from './DisplaySettings';
+import { fogKey, levelOf } from '../core/world-map';
+import { terrainAt } from '../core/maps';
+import { MinimapAlerts, type MinimapAlertKind } from './MinimapAlerts';
+import { heroRecruitmentReason } from '../core/specialist-systems';
+import { ARTIFACTS, PROMOTIONS, RANK_THRESHOLDS, equipmentEligible, observedArtifacts, progressionStats, promotionChoices } from '../core/unit-progression';
+import type { Command } from '../core/types';
+import './minimap-alerts.css';
+import './specialist-ui.css';
+import { cosmeticImage, type CosmeticLoadout } from '../game/Cosmetics';
+
+export interface HudCallbacks {
+  economyReserved?:()=>number;
+  isReplay?:()=>boolean;
+  canCommand?:()=>boolean;canPause?:()=>boolean;isInspection?:()=>boolean;
+  resourceMemory?:()=>ReturnType<PlayerView['resourcesFor']>|undefined;
+  command?:(command:Command)=>boolean|void; engineerBuild?:(kind:'bridge'|'barricade')=>void; fieldRepair?:()=>void;
+  cosmetics?:()=>CosmeticLoadout;
+  build:(role:BuildingRole,definitionId?:string)=>void; train:(role:UnitRole,definitionId?:string)=>void; cancelTrain:(id:number,index:number,expectedQueue:string)=>void; research:(upgrade:UpgradeId,building?:number)=>void; ability:()=>void; clearRally:()=>void; toggleGate?:()=>void;
+  stop:()=>void; hold:()=>void; attackMove:()=>void; select:(ids:number[])=>void; pause:()=>void; restart:()=>void; center:(x:number,y:number,level?:number)=>void;
+  toggleMuted:()=>void; isMuted:()=>boolean; isPaused?:()=>boolean; side?:()=>Side;level?:()=>number; bindingLabel?:(action:string)=>string;
+  cameraCorners:()=>Array<{x:number;y:number}>; groups:()=>Record<string,number[]>; recallGroup:(group:string)=>void;
+}
+const traits:Record<FactionId,string>={orcs:'Armored troops • Battle momentum',fairies:'Swift archers • Illusions & healing',dwarves:'Engineers • Emplaced firepower',undead:'Expendable ranks • Raise the fallen',tideborn:'Amphibious troops • Healing surge',automata:'Recharging shields • Ward Engines'};
+const art=(id:string)=>`/assets/selection-${id}.png`;
+const costMarkup=(cost:Cost)=>`<span class="cost wood">${cost.wood}<i>wood</i></span><span class="cost ore">${cost.ore}<i>ore</i></span>${cost.crystal?`<span class="cost crystal">${cost.crystal}<i>crystal</i></span>`:''}`;
+const escape = (value:string) => value.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
+const costText = (cost:Cost) => `${cost.wood} wood · ${cost.ore} ore${cost.crystal?` · ${cost.crystal} crystal`:""}`;
+const rankName=(rank:number)=>['Recruit','Veteran','Elite','Champion'][rank]??'Recruit';
+function specialistControls(host:HTMLElement,s:GameState,own:Entity[],side:Side,paused:boolean,cb:HudCallbacks){
+  const panel=host.parentElement!.getBoundingClientRect();host.style.left=`${panel.left}px`;host.style.bottom=`${innerHeight-panel.top+8}px`;host.style.width=`${panel.width}px`;
+  const specialists=own.filter(e=>e.kind==='unit'&&equipmentEligible(s,e));
+  const artifactVisible=(p:Vec)=>s.visible[side].has((p.level??0)*s.width*s.height+Math.floor(p.y)*s.width+Math.floor(p.x)),artifactDistance=(e:Entity,p:Vec)=>(e.level??0)===(p.level??0)?Math.hypot(e.x-p.x,e.y-p.y):Infinity;
+  const artifacts=observedArtifacts(s,side),eligible=own.filter(e=>e.kind==='unit'&&!e.illusion&&!e.raised);
+  const key=JSON.stringify([eligible.map(e=>[e.id,unitFor(s,e).id,e.veteran?.pendingPromotion,e.equipment]),specialists.map(e=>[e.id,e.level]),artifacts.map(item=>[item.id,item.holder,item.owner,item.position,item.position&&artifactVisible(item.position),specialists.map(e=>item.position&&artifactDistance(e,item.position)<=2)]),s.players[side].faction,s.content?.hash,paused,!!cb.isReplay?.(),s.winner,s.draw,!!cb.command]);
+  if(host.dataset.key===key)return;host.dataset.key=key;
+  const focused=(document.activeElement as HTMLElement)?.dataset.specialistAction;host.replaceChildren();
+  const blocked=paused||!!cb.isReplay?.()||s.winner!==null||s.draw||!cb.command;
+  const add=(label:string,key:string,command:Command,reason='',description='')=>{const button=document.createElement('button');button.type='button';button.className='small-button';button.textContent=label;button.dataset.specialistAction=key;button.disabled=blocked||!!reason;button.title=reason||description;button.onclick=()=>cb.command?.(command);host.append(button);};
+  for(const e of eligible)for(const promotion of promotionChoices(s,e)){const def=PROMOTIONS[promotion];add(`Promote ${unitFor(s,e).name}: ${def.name}`,`promote:${e.id}:${promotion}`,{type:'promote',id:e.id,promotion},'',def.description);}
+  for(const e of specialists){
+    const held=artifacts.filter(item=>item.owner===side&&item.holder===e.id),ground=artifacts.filter(item=>item.position&&artifactVisible(item.position));
+    for(const item of ground){const def=ARTIFACTS[item.definitionId];const reason=item.owner!==undefined&&item.owner!==side?'Claimed by another player':held.length>=12?'Inventory full (12 artifacts)':artifactDistance(e,item.position!)>2?'Move within 2 tiles to recover':'';add(`Recover ${def.name}`,`recover:${e.id}:${item.id}`,{type:'recoverArtifact',id:e.id,artifact:item.id},reason,`Recover for ${unitFor(s,e).name}.`);}
+    for(const item of held){const def=ARTIFACTS[item.definitionId],equipped=e.equipment?.[def.slot]===item.id;const name=unitFor(s,e).name;
+      if(equipped)add(`Unequip ${def.name}`,`unequip:${e.id}:${def.slot}`,{type:'unequipArtifact',id:e.id,slot:def.slot},'',`${name}'s ${def.slot} slot.`);
+      else add(`Equip ${def.name}`,`equip:${e.id}:${item.id}`,{type:'equipArtifact',id:e.id,artifact:item.id},def.roles.includes(unitFor(s,e).role)?'':'This unit cannot equip this artifact',`${name}'s ${def.slot} slot.`);
+      add(`Drop ${def.name}`,`drop:${e.id}:${item.id}`,{type:'dropArtifact',id:e.id,artifact:item.id},'',`Drop beside ${name}.`);
+    }
+  }
+  host.hidden=!host.childElementCount;if(focused)host.querySelector<HTMLElement>(`[data-specialist-action="${focused}"]`)?.focus({preventScroll:true});
+}
+export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:FactionId,mapSize:MapSize,seed:number)=>void,appearance:AppearancePreferences=appearancePreferences) {
+  let faction:FactionId='orcs';
+  let callbacks:HudCallbacks|undefined;
+  let paused=false;
+  let state:GameState|undefined;
+  let localSide:Side=0;let playerView=new PlayerView(localSide);
+  let actionsKey='';
+  let actionMode:'build'|'recruit'|'orders'='build';
+  let noticeUntil=0;
+  const actions:Array<{button:HTMLButtonElement; cost?:Cost; train?:boolean; unitRole?:UnitRole; buildRole?:BuildingRole; definitionId?:string; entity?:Entity; ability?:boolean; upgrade?:UpgradeId; description:string; name:string; hotkey?:string}> = [];
+  root.innerHTML=`
+  <main class="war-shell">
+    <div id="game-canvas" aria-label="Skirmish battlefield"></div>
+    <section class="war-menu" aria-label="Start a skirmish">
+      <div class="menu-mist"></div><div class="menu-content">
+        <div class="eyebrow">THE BATTLE FOR THE ELDERWOOD</div>
+        <h1>Orcs <span>vs</span> Fairies</h1>
+        <p class="menu-intro">Choose your banner</p>
+        <div class="faction-grid">
+          ${Object.values(FACTIONS).map(f=>`<button class="faction-card ${f.id}-card ${f.id==='orcs'?'selected':''}" data-faction="${f.id}" aria-pressed="${f.id==='orcs'}"><img class="faction-portrait" src="/assets/portrait-${f.id}.png" alt="" /><span class="faction-type">${f.id}</span><strong>${escape(f.name)}</strong><span class="faction-trait">${escape(traits[f.id])}</span></button>`).join('')}
+        </div>
+        <div class="banner-brief"><strong id="banner-brief-name">Ironclad</strong><span id="banner-brief-description">${escape(FACTIONS.orcs.description)}</span></div><div class="match-settings"><label class="opponent-label" for="opponent">AI opponent</label>
+        <select id="opponent">${Object.values(FACTIONS).map(f=>`<option value="${f.id}" ${f.id==='fairies'?'selected':''}>${escape(f.id[0].toUpperCase()+f.id.slice(1))} · ${escape(f.name)}</option>`).join('')}</select>
+        <label for="map-size">Map size</label><select id="map-size"><option value="small">Small · 36 × 36</option><option value="medium" selected>Medium · 48 × 48</option><option value="large">Large · 64 × 64</option><option value="huge">Huge · 88 × 88</option></select><label for="map-seed">Seed</label><input id="map-seed" type="number" min="0" max="4294967295" step="1" value="4127" /></div>
+        <button class="primary begin-match">Begin skirmish <span>→</span></button>
+
+        <div class="menu-guide"><span><kbd>Drag</kbd> Select army</span><span><kbd>Right click</kbd> Give orders</span><span><kbd>A</kbd> Attack-move</span><span><kbd>Arrows</kbd> Pan camera</span></div>
+        <p class="menu-objective">Gather wood, ore and crystal, build your settlement, then destroy all enemy strongholds.</p>
+      </div>
+    </section>
+    <section class="war-hud" hidden aria-label="Game controls">
+      <header class="resource-bar panel"><div class="banner"><img class="banner-icon" id="banner-portrait" src="/assets/portrait-orcs.png" alt="" /><span class="cosmetic-banner" aria-label="Equipped faction banner"></span><div><small>YOUR FACTION</small><strong id="faction-name"></strong></div></div>
+        <div class="resource" title="Workers gather wood from trees"><span class="wood-symbol">♠</span><div><small>WOOD</small><b id="wood">0</b></div></div>
+        <div class="resource" title="Workers gather ore from deposits"><span class="ore-symbol">◆</span><div><small>ORE</small><b id="ore">0</b></div></div>
+        <div class="resource" title="Crystal funds advanced troops and defensive towers"><span class="crystal-symbol">◆</span><div><small>CRYSTAL</small><b id="crystal">0</b></div></div>
+        <div class="resource" title="Build a depot to raise your population limit"><span>⚑</span><div><small id="supply-label">SUPPLY</small><b id="population">0 / 0</b></div></div>
+        <div class="match-clock" id="clock">00:00</div><button id="display-button" class="small-button">Display</button><button id="technology-button" class="small-button">Technologies</button><button id="sound-button" class="small-button" aria-pressed="false">Mute sound</button><button id="pause-button" class="small-button">Pause</button><button id="restart-button" class="small-button">Restart</button>
+      </header>
+      <div class="objective-tag">Destroy all enemy strongholds</div>
+      <div class="notice" role="status" aria-live="polite" hidden></div>
+      <footer class="tactical-bar">
+        <section class="minimap-panel panel"><div class="panel-label">ELDERWOOD <span>TACTICAL MAP</span></div><canvas id="minimap" width="216" height="216" title="Click to move your camera" aria-label="Tactical map; click to center the camera"></canvas><div class="minimap-alert-list" aria-label="Tactical alerts" hidden></div><span class="minimap-alert-status" role="status" aria-live="polite"></span></section>
+        <section class="selection-panel panel"><div class="panel-label">SELECTION <span id="selection-count">NO UNITS</span></div><div class="selection-content"><div class="portrait" id="portrait">⚑</div><div class="selection-details"><h2 id="selection-name">Your command awaits</h2><div class="health-track" hidden><div id="health-fill"></div></div><div class="construction-track" hidden><i></i></div><p id="selection-status">Select a worker to gather resources or raise your first buildings.</p><p id="selection-description" hidden></p><div id="selection-stats"></div><p id="selection-veteran" hidden></p><p id="selection-beacon" role="status" hidden></p></div></div><div class="selection-roster" id="selection-roster"></div><div id="specialist-controls" role="group" aria-label="Promotions and equipment" hidden></div><div id="production-queue"></div><div class="saved-groups" id="saved-groups" aria-label="Control groups"></div><div class="key-guide"><span><kbd>F2</kbd> Army</span><span><kbd>Shift</kbd> Add selection</span><span><kbd>Ctrl + 1–9</kbd> Set group</span><span><kbd>1–9</kbd> Recall group</span><span><kbd>Space</kbd> Home</span></div></section>
+        <section class="command-panel panel"><div class="panel-label">ORDERS <span id="command-hint">SELECT A UNIT</span><nav id="command-tabs" aria-label="Command category" hidden><button data-mode="build">Build</button><button data-mode="recruit">Recruit</button><button data-mode="orders">Orders</button></nav></div><div id="action-buttons"></div><div class="command-note"><span id="order-hint">Right-click to give orders</span> <span><kbd>Esc</kbd> Cancel</span></div></section>
+      </footer>
+    </section>
+    <div class="loading-battle" role="status" hidden><span>Preparing the battlefield…</span></div>
+    <section class="game-overlay" hidden><div class="overlay-card panel"><div class="eyebrow" id="overlay-eyebrow">SKIRMISH</div><h2 id="overlay-title">Battle paused</h2><p id="overlay-description">Take a moment to plan your next move.</p><button id="resume-button" class="primary">Return to battle</button><button id="overlay-restart" class="small-button">New skirmish</button></div></section>
+  </main>`;
+  const tree=technologyTree(root,(id,building)=>callbacks?.research(id,building));
+  const display=displaySettings(root,appearance),minimapAlerts=new MinimapAlerts();
+  root.querySelector<HTMLButtonElement>('#display-button')!.onclick=()=>display.open();
+  root.querySelector<HTMLButtonElement>('#technology-button')!.onclick=()=>tree.open();
+  const el=<T extends HTMLElement=HTMLElement>(selector:string)=>root.querySelector<T>(selector)!;
+  const tooltip=createTooltip(root);
+  const menu=el('.war-menu'),hud=el('.war-hud'),overlay=el('.game-overlay');
+  const setText=(selector:string,text:string)=>{const node=el(selector);if(node.textContent!==text)node.textContent=text;};
+  const notice=(text:string)=>{setText('.notice',text);el('.notice').hidden=false;noticeUntil=performance.now()+4500;};
+  const reset=()=>{display.close();minimapAlerts.reset();tooltip.hide();el('.loading-battle').hidden=true;paused=false;overlay.hidden=true;actionsKey='';actionMode='build';el('#specialist-controls').dataset.key='';el('#specialist-controls').replaceChildren();el('#specialist-controls').hidden=true;el('#selection-roster').dataset.ids='';el('#selection-roster').replaceChildren();el('#production-queue').dataset.key='';el('#production-queue').replaceChildren();el('#saved-groups').replaceChildren();};
+  root.querySelectorAll<HTMLButtonElement>('[data-faction]').forEach(button=>button.addEventListener('click',()=>{
+    faction=button.dataset.faction as FactionId;
+    setText('#banner-brief-name',FACTIONS[faction].name);setText('#banner-brief-description',FACTIONS[faction].description);
+    root.querySelectorAll('[data-faction]').forEach(card=>{const active=(card as HTMLElement).dataset.faction===faction;card.classList.toggle('selected',active);card.setAttribute('aria-pressed',String(active));});
+  }));
+  root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach(button=>button.addEventListener('click',()=>{actionMode=button.dataset.mode as 'build'|'recruit'|'orders';actionsKey='';}));
+  el('.begin-match').addEventListener('click',()=>{
+    const input=el<HTMLInputElement>('#map-seed'),seed=Number(input.value);input.setCustomValidity('');
+    if(!input.value.trim()||!Number.isSafeInteger(seed)||seed<0||seed>4294967295){input.setCustomValidity('Enter a whole-number seed from 0 to 4294967295.');input.reportValidity();return;}
+    onStart(faction,el<HTMLSelectElement>('#opponent').value as FactionId,el<HTMLSelectElement>('#map-size').value as MapSize,seed);
+  });
+  const togglePause=()=>{if(!callbacks||callbacks.canPause?.()===false||(state?.winner!==null||state?.draw))return;paused=!paused;callbacks.pause();};
+  el('#pause-button').addEventListener('click',togglePause);
+  el('#sound-button').addEventListener('click',()=>callbacks?.toggleMuted());
+  el('#resume-button').addEventListener('click',togglePause);
+  el('#restart-button').addEventListener('click',()=>{reset();callbacks?.restart();});
+  el('#overlay-restart').addEventListener('click',()=>{reset();callbacks?.restart();});
+  const map=el<HTMLCanvasElement>('#minimap'),ctx=map.getContext('2d')!;
+  map.addEventListener('click',event=>{if(!state)return;const rect=map.getBoundingClientRect();callbacks?.center((event.clientX-rect.left)/rect.width*state.width,(event.clientY-rect.top)/rect.height*state.height);});
+  function drawMinimap(s:GameState) {
+    const cw=map.width/s.width,ch=map.height/s.height;
+    ctx.fillStyle='#070e10';ctx.fillRect(0,0,map.width,map.height);
+    const level=callbacks?.level?.()??0,area=s.width*s.height;
+    for(const i of s.explored[localSide]){if(Math.floor(i/area)!==level)continue;const tile=i%area;ctx.fillStyle=s.visible[localSide].has(i)?({grass:'#45654a',road:'#8e8058',mud:'#69593f',water:'#316579',shallows:'#609690',rock:'#7c8386',bridge:'#b49a6b',sand:'#c3a568',snow:'#c8d9db',forest:'#2e4931',ice:'#94c9d9'}[terrainAt(s,tile%s.width+.5,Math.floor(tile/s.width)+.5,level)]):'#22342d';ctx.fillRect((tile%s.width)*cw,Math.floor(tile/s.width)*ch,Math.ceil(cw),Math.ceil(ch));}
+    for(const r of callbacks?.resourceMemory?.()??playerView.resourcesFor(s)){const i=fogKey(s,r);if(levelOf(r)!==level||r.amount<=0||!s.explored[localSide].has(i))continue;ctx.fillStyle=r.kind==='wood'?'#688c53':r.kind==='crystal'?'#b497e7':'#b49c76';ctx.fillRect(r.x*cw-1,r.y*ch-1,2,2);}
+    const settings=appearance.value,teams=(s as GameState&{teams?:number[]}).teams;
+    for(const e of s.entities){
+      if(levelOf(e)!==level||e.hp<=0||!canObserveTacticalEntity(s,localSide,e))continue;
+      const style=ownershipStyle(e.side,localSide,settings,teams),size=e.kind==='building'?3.5:2.3,points=markerPolygon(settings.patterns?e.side:1,e.x*cw,e.y*ch,size);
+      ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.fillStyle=isCrewless(e)?'#aab4bd':style.css;ctx.fill();ctx.lineWidth=settings.outlines?1.1:.7;ctx.strokeStyle=settings.outlines?style.outlineCss:'#101820';ctx.stroke();
+    }
+    const alerts=minimapAlerts.update(s,localSide),pulse=.7+.3*Math.sin(s.time*5);
+    for(const alert of alerts){if(levelOf(alert)!==level)continue;
+      const x=alert.x*cw,y=alert.y*ch;ctx.strokeStyle=alert.kind==='idle'?'#f5de8c':alert.kind==='expansion'?'#78dfff':'#ffffff';ctx.lineWidth=2;ctx.globalAlpha=alert.kind==='idle'?1:pulse;ctx.beginPath();
+      if(alert.kind==='idle'){ctx.rect(x-5,y-5,10,10);ctx.moveTo(x-1.5,y-2.5);ctx.lineTo(x-1.5,y+2.5);ctx.moveTo(x+1.5,y-2.5);ctx.lineTo(x+1.5,y+2.5);}
+      else if(alert.kind==='expansion'){ctx.moveTo(x,y-8);ctx.lineTo(x+8,y);ctx.lineTo(x,y+8);ctx.lineTo(x-8,y);ctx.closePath();}
+      else{ctx.arc(x,y,7,0,Math.PI*2);ctx.moveTo(x,y-3);ctx.lineTo(x,y+1);ctx.moveTo(x,y+3);ctx.lineTo(x,y+3.5);}
+      ctx.stroke();ctx.globalAlpha=1;
+    }
+    const list=el('.minimap-alert-list'),labels:Record<MinimapAlertKind,string>={raid:'Raid',expansion:'Expansion',idle:'Idle'},key=JSON.stringify([s.world?.levels.map(level=>level.title),alerts.map(a=>[a.id,levelOf(a)])]);
+    if(list.dataset.alerts!==key){
+      list.dataset.alerts=key;list.replaceChildren();list.hidden=!alerts.length;
+      const announcements:string[]=[];
+      for(const kind of ['raid','expansion','idle'] as const){
+        const group=alerts.filter(a=>a.kind===kind);
+        for(const alertLevel of [...new Set(group.map(levelOf))].sort((a,b)=>a-b)){
+          const locations=group.filter(a=>levelOf(a)===alertLevel),levelTitle=s.world?(s.world.levels[alertLevel]?.title??(alertLevel===0?'Surface':`Level ${alertLevel+1}`)):'';
+          let index=0;const button=document.createElement('button');button.type='button';button.dataset.kind=kind;button.dataset.level=String(alertLevel);
+          button.textContent=`${labels[kind]} ${locations.length}${levelTitle?` · ${levelTitle}`:''}`;
+          const reason=kind==='raid'?'Under attack or a visible raid':kind==='expansion'?'An expansion is threatened':'Recruitment idle for 12 seconds';
+          button.title=`${reason}${levelTitle?` on ${levelTitle}`:''}`;button.setAttribute('aria-label',`${button.title}. Center camera; ${locations.length} ${locations.length===1?'location':'locations'}.`);
+          button.onclick=()=>{const current=minimapAlerts.current.filter(a=>a.kind===kind&&levelOf(a)===alertLevel);if(!current.length)return;const alert=current[index++%current.length];callbacks?.center(alert.x,alert.y,levelOf(alert));};list.append(button);
+          announcements.push(`${labels[kind]}${levelTitle?` on ${levelTitle}`:''}: ${locations.length}`);
+        }
+      }
+      el('.minimap-alert-status').textContent=announcements.join('. ');
+    }
+    const corners=callbacks?.cameraCorners()??[];if(corners.length){ctx.strokeStyle='#fff0b6';ctx.lineWidth=1.5;ctx.beginPath();corners.forEach((p,i)=>{if(i===0)ctx.moveTo(p.x*cw,p.y*ch);else ctx.lineTo(p.x*cw,p.y*ch);});ctx.closePath();ctx.stroke();}
+  }
+  return {
+    appearance,
+    minimapAlerts,
+    openDisplaySettings:()=>display.open(),
+    showMenu:()=>{tree.close();reset();menu.hidden=false;hud.hidden=true;},
+    showGame:()=>{reset();menu.hidden=true;hud.hidden=false;el('.loading-battle').hidden=false;},
+    ready:()=>{el('.loading-battle').hidden=true;},
+    battlefieldBounds:()=>({top:el('.resource-bar').getBoundingClientRect().bottom,bottom:el('.tactical-bar').getBoundingClientRect().top}),
+    notice,
+    activateActionSlot:(slot:number)=>{const action=actions.find(a=>a.hotkey===['Z','C','B','V','N','M'][slot-1]);if(!action||display.isOpen()||paused||!menu.hidden||document.querySelector('.session-overlay:not([hidden])'))return false;action.button.click();return true;},
+    update:(s:GameState,selected:number[],cb:HudCallbacks)=>{
+      if(cb.isReplay?.()&&state!==s)minimapAlerts.reset();state=s;callbacks=cb;paused=cb.isPaused?.()??paused;const nextSide=cb.side?.()??0;if(nextSide!==localSide){localSide=nextSide;playerView=new PlayerView(localSide);actionsKey='';}tree.update(s,paused,localSide,cb.canCommand?.()===false);if(!menu.hidden)return;const player=s.players[localSide],definition=factionFor(s,localSide);const art=(id:string)=>id.startsWith('economy:')?`/assets/selection-${id.replace(':','-')}.svg`:contentArt(s.content)[id]?contentAssetUrl(s,id):`/assets/selection-${id}.png`;
+      setText('#sound-button',cb.isMuted()?'Enable sound':'Mute sound');el('#sound-button').setAttribute('aria-pressed',String(cb.isMuted()));
+      setText('#faction-name',definition.name);const loadout=callbacks?.cosmetics?.()??{},portrait=el<HTMLImageElement>('#banner-portrait');portrait.src=loadout.portrait?cosmeticImage(loadout.portrait):player.faction.includes(':')?art(definition.units.melee.id):`/assets/portrait-${player.faction}.png`;portrait.alt=loadout.portrait?.name??'';const banner=el('.cosmetic-banner'),bannerId=loadout.banner?.id??'';if(banner.dataset.cosmetic!==bannerId){banner.dataset.cosmetic=bannerId;banner.innerHTML=loadout.banner?`<img src="${cosmeticImage(loadout.banner)}" alt="${escape(loadout.banner.name)}" width="32" height="32" />`:'';}setText('#wood',Math.floor(player.wood).toString());setText('#ore',Math.floor(player.ore).toString());setText('#crystal',Math.floor(player.crystal).toString());setText('#population',`${player.population} / ${player.cap}`);
+      el('.objective-tag').textContent=`${AGE_NAMES[playerAge(s.players[localSide])]} · ${s.scenario?.definition.title ?? (s.rules?.mode==='hill'?'Capture and defend the hill':s.rules?.mode==='relic'?'Collect and defend the relics':s.rules?.mode==='survival'?'Defeat every survival wave':s.rules?.mode==='scenario'?'Complete the scenario objectives':'Destroy all enemy strongholds')} · ${s.mapSize} · seed ${s.seed}`;
+      setText('#clock',`${Math.floor(s.time/60).toString().padStart(2,'0')}:${Math.floor(s.time%60).toString().padStart(2,'0')}`);
+      if(performance.now()>noticeUntil)el('.notice').hidden=true;
+      const entities=s.entities.filter(e=>selected.includes(e.id)&&e.hp>0&&canObserveTacticalEntity(s,localSide,e)).map(e=>e.side===localSide?e:{...e,...observedHealth(s,localSide,e)});const own=entities.filter(e=>e.side===localSide&&!isCrewless(e));const first=entities[0];
+      const entityDef=first?entityDefinition(s,first):null;
+      setText('#selection-count',entities.length?`${entities.length} SELECTED`:'NO UNITS');
+      setText('#selection-name',entities.length>1?`${entities.length} selected`:entityDef?.name??'Your command awaits');
+      const portraitId=entityDef?.id??'';if(el('#portrait').dataset.asset!==portraitId){el('#portrait').dataset.asset=portraitId;el('#portrait').innerHTML=portraitId?`<img src="${art(portraitId)}" alt="${escape(entityDef!.name)}" />`:'⚑';}
+      el('.health-track').hidden=!first;
+      if(first){el('#health-fill').style.width=`${Math.max(0,first.hp/first.maxHp)*100}%`;setText('#selection-status',`${Math.ceil(first.hp)} / ${first.maxHp} health${first.progress<1?` · Building ${Math.floor(first.progress*100)}%`:first.kind==='unit'?` · ${first.order.type==='idle'?'Ready':first.order.type==='hold'?'Holding position':first.order.type}`:''}${first.entrenchedAt!==undefined?(s.time-first.entrenchedAt>=3?' · Emplaced':' · Preparing emplacement'):''}${first.maxShield?` · Shield ${Math.ceil(first.shield??0)}/${first.maxShield}`:''}${(first.surgeUntil??0)>s.time?' · Surging':''}${first.raised?' · Raised'+(first.expires>s.time?' · '+Math.ceil(first.expires-s.time)+'s remaining':''):''}${first.rally?' · Rally set':''}${first.role==='gate'?(first.gateOpen?' · Gate open':' · Gate closed'):''}${first.research?` · Researching ${upgradeFor(s,first.side,first.research).name} ${Math.floor(first.researchProgress*100)}%`:''}${first.side!==localSide?(isAllied(s,localSide,first.side)?' · Ally':' · Enemy'):''}`);}
+      else setText('#selection-status','Select a worker to gather resources or raise your first buildings.');
+      const construction=el('.construction-track');construction.hidden=!first||(first.progress>=1&&!first.research);if(first)construction.querySelector<HTMLElement>('i')!.style.width=`${(first.progress<1?first.progress:first.researchProgress)*100}%`;
+      if(entities.length>1){const hp=entities.reduce((total,e)=>total+e.hp,0),maxHp=entities.reduce((total,e)=>total+e.maxHp,0);el('#health-fill').style.width=`${hp/maxHp*100}%`;setText('#selection-status',`${Math.ceil(hp)} / ${maxHp} group health`);construction.hidden=true;}
+      else if(first?.kind==='unit'){const gatherTarget=first.order.type==='gather'?first.order.target:undefined;const resource=s.resources.find(r=>r.id===gatherTarget);const status=resource?`Gathering ${resource.kind}`:({idle:'Ready',hold:'Holding position',move:'Moving',attackMove:'Advancing',attack:'Attacking',build:'Building'} as Record<string,string>)[first.order.type]??first.order.type;el('#selection-status').textContent=el('#selection-status').textContent!.replace(/ · (Ready|Holding position|idle|hold|move|attackMove|attack|gather|build)/,` · ${status}`);}
+      const groupHost=el('#saved-groups'),groups=cb.groups();const groupKey=JSON.stringify(groups);
+      if(groupHost.dataset.key!==groupKey){groupHost.dataset.key=groupKey;groupHost.replaceChildren();for(const [key,ids] of Object.entries(groups)){if(!ids.length)continue;const button=document.createElement('button');button.className='group-shortcut';button.dataset.group=key;button.setAttribute('aria-label',`Recall group ${key}`);button.dataset.tooltip=`<h3>Control group ${key}</h3><p>${ids.length} ${ids.length===1?'unit':'units'} • Click or press ${key} to recall. Ctrl + ${key} replaces this group with your selection.</p>`;button.innerHTML=`<kbd>${key}</kbd><span>${ids.length}</span>`;button.addEventListener('click',()=>callbacks?.recallGroup(key));groupHost.append(button);}}
+      for(const button of Array.from(groupHost.querySelectorAll<HTMLElement>('[data-group]'))){const ids=groups[button.dataset.group!]??[];button.classList.toggle('active',ids.length===selected.length&&ids.every(id=>selected.includes(id)));}
+
+      setText('#selection-description',entityDef?.description??'');el('#selection-description').hidden=!entityDef?.description;
+      el('#portrait').dataset.tooltip=entityDef?`<h3>${escape(entityDef.name)}</h3><p>${escape(entityDef.description)}</p>${first?.kind==='building'&&(first.role==='hq'||first.role==='barracks')?'<p>Right-click open ground to set a rally point for new units.</p>':''}`:'<h3>Select a unit</h3><p>Click a unit or drag across your army. Shift adds to your selection. F2 selects combat units.</p>';
+      el('#portrait').tabIndex=0;
+      const stats=el('#selection-stats');
+      const militaryTech=first?.side===localSide?player.upgrades.map(id=>upgradeFor(s,localSide,id)).filter(u=>first.kind==='unit'&&upgradeAppliesTo(u,unitFor(s,first))):[];
+      const damageFactor=militaryTech.reduce((factor,u)=>factor*(u.effects.damage??1),1),armorBonus=militaryTech.reduce((sum,u)=>sum+(u.effects.armor??0),0),speedFactor=militaryTech.reduce((factor,u)=>factor*(u.effects.speed??1),1);
+      const progression=first?.kind==='unit'&&first.side===localSide?progressionStats(s,first):{damageFactor:1,speedFactor:1,armor:0,range:0};
+      const statNumber=(value:number)=>Number(value.toFixed(1));
+      stats.innerHTML=first?.kind==='unit'&&entityDef&&'damage' in entityDef?`<span title="${first.side===localSide?'Attack damage with research, rank, promotions and equipment; combat bonuses apply separately':'Base attack damage; enemy research is private'}">ATK <b>${statNumber(entityDef.damage*damageFactor*progression.damageFactor)}</b></span><span title="${first.side===localSide?'Armor with research, rank, promotions and equipment':'Base armor; enemy research is private'}">ARM <b>${entityDef.armor+armorBonus+progression.armor}</b></span><span title="Weapon range">RNG <b>${entityDef.range+progression.range}</b></span><span title="${first.side===localSide?'Movement speed with research, promotions, equipment and active abilities; terrain applies separately':'Base movement speed; enemy research is private'}">SPD <b>${statNumber(entityDef.speed*speedFactor*progression.speedFactor)}</b></span>${first.carried?`<span>Carrying <b>${Math.floor(first.carried)} ${first.carriedKind}</b></span>`:''}`:'';
+      const veteran=el('#selection-veteran'),v=first?.kind==='unit'&&!first.illusion&&!first.raised?first.veteran:undefined;veteran.hidden=!v;
+      if(v){veteran.dataset.rank=String(v.rank);veteran.textContent=`${rankName(v.rank)} · Rank ${v.rank}${first.side===localSide?` · ${Math.floor(v.experience)} / ${RANK_THRESHOLDS[v.rank+1]??300} XP${v.pendingPromotion?' · Choose a promotion':''}${v.promotions.length?` · ${v.promotions.map(p=>PROMOTIONS[p.id].name).join(', ')}`:''}`:''}`;}
+      const beacon=el('#selection-beacon'),isBeacon=first?.kind==='building'&&buildingFor(s,first).tags?.includes('beacon');beacon.hidden=!isBeacon;
+      if(isBeacon)beacon.textContent=first.side===localSide?`${first.progress<1?'Beacon under construction':first.beacon?.connected?'Beacon connected · Team vision shared':'Beacon disconnected · Link within 12 tiles of a headquarters, depot or connected beacon'}${(first.beacon?.nextAlertAt??0)>s.time?' · Invasion alert':''}`:'Signal beacon';
+      el('#selection-description').hidden=!entityDef?.description||!!v||!!isBeacon;
+      specialistControls(el('#specialist-controls'),s,own,localSide,paused,cb);
+      const roster=el('#selection-roster');
+      const rosterKey=entities.length>1?entities.map(e=>e.id).join(','):'';
+      if(roster.dataset.ids!==rosterKey){roster.dataset.ids=rosterKey;roster.replaceChildren();if(entities.length>1)for(const e of entities){const d=entityDefinition(s,e);const button=document.createElement('button');button.className='roster-unit';button.dataset.id=String(e.id);button.setAttribute('aria-label',`Select ${d.name} ${e.id}`);button.innerHTML=`<img src="${art(d.id)}" alt=""/><span class="mini-health"><i></i></span>`;button.addEventListener('click',event=>callbacks?.select(event.shiftKey?entities.filter(x=>x.id!==e.id).map(x=>x.id):[e.id]));roster.append(button);}}
+      for(const button of Array.from(roster.querySelectorAll<HTMLElement>('.roster-unit'))){const e=entities.find(e=>e.id===Number(button.dataset.id));if(e){button.querySelector<HTMLElement>('i')!.style.width=`${e.hp/e.maxHp*100}%`;button.dataset.tooltip=`<h3>${escape((entityDefinition(s,e)).name)}</h3><p>${Math.ceil(e.hp)} / ${e.maxHp} health</p><p>Click to select. Shift-click to remove from this selection.</p>`;}}
+
+      const casters=own.filter(e=>e.kind==='unit'&&!e.illusion&&unitFor(s,e).ability);
+      const abilityIds=[...new Set(casters.map(e=>unitFor(s,e).ability!))];
+      const abilityName=abilityIds.length===1?ABILITIES[abilityIds[0]].name:'Use abilities';
+      const engineers=own.filter(e=>e.kind==='unit'&&!e.illusion&&unitFor(s,e).tags?.includes('engineer'));
+      const ordinaryUnit=(e:Entity)=>e.kind==='unit'&&!e.illusion&&e.definitionId!=='economy:caravan'&&!s.economy?.caravans.includes(e.id);
+      const hasWorkers=own.some(e=>ordinaryUnit(e)&&e.role==='worker');
+      const selectedProducer=own.find(e=>e.kind==='building'&&(e.role==='hq'||e.role==='barracks'));
+      const hasUnits=own.some(e=>e.kind==='unit');
+      if(actionMode==='build'&&!hasWorkers)actionMode=selectedProducer?'recruit':'orders';
+      if(actionMode==='recruit'&&!selectedProducer)actionMode=hasWorkers?'build':'orders';
+      if(actionMode==='orders'&&!hasUnits)actionMode=selectedProducer?'recruit':'build';
+      el('#command-tabs').hidden=!(hasWorkers||selectedProducer&&hasUnits);
+      root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach(b=>{b.hidden=b.dataset.mode==='build'?!hasWorkers:b.dataset.mode==='recruit'?!selectedProducer:!hasUnits;b.setAttribute('aria-pressed',String(b.dataset.mode===actionMode));});
+      const key=`${actionMode}:${player.faction}:${own.map(e=>`${e.id}/${e.progress>=1}/${!!e.rally}/${!!e.gateOpen}`).join(',')}:${abilityIds.join(',')}`;
+      if(key!==actionsKey){
+        actionsKey=key;actions.length=0;const container=el('#action-buttons');container.replaceChildren();
+        const add=(name:string,asset:string,description:string,run:()=>void,cost?:Cost,train=false,entity?:Entity,hotkey?:string)=>{const button=document.createElement('button');button.className='action-button';button.setAttribute('aria-label',name);button.innerHTML=`<img class="action-icon" src="${asset}" alt=""/>${hotkey?`<kbd>${hotkey}</kbd>`:''}<strong>${escape(name)}</strong>${cost?`<small>${costMarkup(cost)}</small>`:''}<span class="action-state"></span>`;button.addEventListener('click',()=>{if(button.getAttribute('aria-disabled')!=='true')run();});container.append(button);actions.push({button,cost,train,entity,description,name,hotkey});};
+        if(hasWorkers&&actionMode==='build')for(const [index,d] of availableBuildings(s,localSide).filter(isNormalBuildingDefinition).sort((a,b)=>['depot','barracks','tower','hq','wall','gate'].indexOf(a.role)-['depot','barracks','tower','hq','wall','gate'].indexOf(b.role)).entries()){const role=d.role;add(d.name,art(d.id),`${d.description} • ${d.buildTime}s construction`,()=>s.content||d.id!==definition.buildings[role].id?callbacks?.build(role,d.id):callbacks?.build(role),d.cost,false,undefined,['Z','C','B','V','N','M'][index]);actions[actions.length-1].buildRole=role;actions[actions.length-1].definitionId=d.id;}
+        const producer=selectedProducer;
+        if(producer&&actionMode==='recruit')for(const [index,d] of availableUnits(s,localSide).filter(d=>producer.role==='hq'?d.role==='worker':d.role!=='worker').entries()){const role=d.role;add(d.name,art(d.id),`${d.description} • ${d.trainTime}s recruitment`,()=>s.content||d.id!==definition.units[role].id?callbacks?.train(role,d.id):callbacks?.train(role),d.cost,true,producer,['Z','C','B','V','N','M'][index]);actions[actions.length-1].unitRole=role;actions[actions.length-1].definitionId=d.id;actions[actions.length-1].description+=` • ${AGE_NAMES[d.age??1]}`;}
+        if(own.some(e=>e.role==='gate'&&e.progress===1))add(own.some(e=>e.role==='gate'&&e.progress===1&&e.gateOpen)?'Close gate':'Open gate',art(definition.buildings.gate.id),'Open gates admit both friendly and enemy troops. Closing requires an empty doorway.',()=>callbacks?.toggleGate?.());
+        if(selectedProducer&&actionMode==='recruit'&&own.some(e=>e.rally))add('Clear rally','/assets/ui-halt.png','Remove the rally point. New recruits will wait outside this building.',()=>callbacks?.clearRally());
+        if(hasUnits&&actionMode==='orders'){if(own.some(ordinaryUnit))add('Attack move',art(definition.units.melee.id),'Move to a destination and fight enemies along the way. Click a destination after choosing this order.',()=>callbacks?.attackMove(),undefined,false,undefined,'A');add('Halt','/assets/ui-halt.png','Stop current orders. Units may pursue nearby enemies.',()=>callbacks?.stop(),undefined,false,undefined,'X');add('Hold position','/assets/ui-hold.png','Attack enemies in weapon range without pursuing.',()=>callbacks?.hold(),undefined,false,undefined,'H');if(casters.length){add(abilityName,art(unitFor(s,casters[0]).id),abilityIds.map(id=>`${ABILITIES[id].name}: ${ABILITIES[id].description} (${ABILITIES[id].cooldown}s cooldown)`).join(' • '),()=>callbacks?.ability(),undefined,false,undefined,'Q');actions[actions.length-1].ability=true;}}
+        if(engineers.length&&actionMode==='orders'){add('Temporary bridge',art(unitFor(s,engineers[0]).id),'Bridge three tiles for 60 seconds. Click visible ground within 4 tiles; the span must cross water.',()=>callbacks?.engineerBuild?.('bridge'),{wood:60,ore:0,crystal:0});add('Field barricade',art('core:field-barricade'),'Place a temporary obstacle for 60 seconds. Click open visible ground within 4 tiles.',()=>callbacks?.engineerBuild?.('barricade'),{wood:35,ore:15,crystal:0});add('Field repair','/assets/ui-hold.png','Click a damaged allied building or siege engine within 4 tiles. Restore up to 60 health for up to 6 ore.',()=>callbacks?.fieldRepair?.());}
+        setText('#command-hint',hasWorkers&&selectedProducer?'':own.length?'YOUR ORDERS':'SELECT A UNIT');
+      }
+      el('#order-hint').textContent=selectedProducer?'Right-click ground to set rally':'Right-click to give orders';
+      const reserved=s.entities.filter(e=>e.side===localSide&&e.hp>0).reduce((sum,e)=>sum+e.queue.length,0)+(cb.economyReserved?.()??s.economy?.recruits.filter(r=>r.side===localSide).length??0);
+      setText('#supply-label',reserved?`SUPPLY · +${reserved}`:'SUPPLY');el('#population').classList.toggle('supply-full',player.population+reserved>=player.cap);el('#population').parentElement!.parentElement!.dataset.tooltip=`<h3>Army supply</h3><p>${player.population} in the field • ${reserved} places reserved by recruitment • ${player.cap} capacity</p><p>Build a depot to increase capacity.</p>`;
+      for(const action of actions){
+        const producer=action.entity?own.find(e=>e.id===action.entity!.id&&e.kind==='building'):undefined;
+        const missing=action.cost?(['wood','ore','crystal'] as const).filter(kind=>player[kind]<action.cost![kind]).map(kind=>`${Math.ceil(action.cost![kind]-player[kind])} ${kind}`):[];
+        let reason=missing.length?`Need ${missing.join(', ')}`:'';
+        if(action.train){if(!producer)reason='Producer unavailable';else if(producer.progress<1)reason='Under construction';else if(producer!.queue.length>=5)reason='Queue full';else if(player.population+reserved>=player.cap)reason='Build a depot for supply';}
+        if(action.unitRole&&playerAge(player)<(unitFor(s,localSide,action.unitRole,action.definitionId).age??1))reason=`Requires ${AGE_NAMES[unitFor(s,localSide,action.unitRole,action.definitionId).age!]}`;
+        if(action.buildRole){const age=buildingAgeRequired(buildingFor(s,localSide,action.buildRole,action.definitionId));if(playerAge(player)<age)reason=`Requires ${AGE_NAMES[age]}`;}
+        if(action.train&&action.unitRole==='special'&&action.definitionId)reason=heroRecruitmentReason(s,localSide,action.definitionId)??reason;
+        if(action.upgrade){if(!producer)reason='Producer unavailable';else if(producer.progress<1)reason='Under construction';else if(producer.research)reason=`Researching ${upgradeFor(s,localSide,producer.research).name}`;else reason=researchRequirement(s,localSide,action.upgrade)??reason;}
+        if(action.ability){const remaining=Math.max(0,Math.ceil(Math.min(...casters.map(e=>(e.abilityReadyAt??0)-s.time))));if(remaining>0)reason=`${remaining}s cooldown`;else reason=abilityTargetReason(s,casters,reserved);action.button.style.setProperty('--cooldown',`${remaining?Math.min(100,remaining/Math.max(...abilityIds.map(id=>ABILITIES[id].cooldown))*100):0}%`);}
+        if(cb.canCommand?.()===false)reason=s.eliminated[localSide]?'Player eliminated':'Viewing match';if(paused)reason='Battle paused';if(s.winner!==null||s.draw)reason='Match ended';
+        action.button.setAttribute('aria-disabled',String(!!reason));action.button.classList.toggle('unavailable',!!reason);
+        action.button.querySelector<HTMLElement>('.action-state')!.textContent=action.ability?(reason.includes('cooldown')?reason.replace(' cooldown',''):reason?'Unavailable':'Ready'):reason?'×':'';
+        action.button.dataset.tooltip=`<h3>${escape(action.name)} ${action.hotkey?`<kbd>${action.hotkey}</kbd>`:''}</h3>${action.cost?`<div class="tooltip-cost">${costMarkup(action.cost)}</div>`:''}<p>${escape(action.description)}</p>${reason?`<p class="unavailable-reason">${escape(reason)}</p>`:'<p class="ready-reason">Ready</p>'}`;
+      }
+      const producers=own.filter(e=>e.queue.length>0);const queue=el('#production-queue');
+      const queueKey=producers.map(e=>`${e.id}:${productionQueueKey(e)}`).join(';');
+      if(queue.dataset.key!==queueKey){queue.dataset.key=queueKey;queue.innerHTML=producers.map(producer=>`<div class="queue-row" data-producer="${producer.id}"><span class="queue-label">RECRUITING</span>${producer.queue.map((role,i)=>`<button type="button" class="queue-item" data-index="${i}" aria-label="Cancel ${escape(queuedUnitFor(s,producer,i).name)} in queue slot ${i+1}" data-tooltip="${escape(`<h3>${queuedUnitFor(s,producer,i).name}</h3><p>${i===0?'In production':'Queued'} • ${queuedUnitFor(s,producer,i).trainTime}s recruitment</p><p>Click to cancel. Full refund: ${costText(queuedUnitFor(s,producer,i).cost)}.</p>`)}"><img src="${art(queuedUnitFor(s,producer,i).id)}" alt="${escape(queuedUnitFor(s,producer,i).name)}"/>${i===0?'<b></b><span class="queue-progress"><i></i></span>':`<em>${i+1}</em>`}</button>`).join('')}</div>`).join('');}
+      for(const producer of producers){const row=queue.querySelector<HTMLElement>(`[data-producer="${producer.id}"]`)!;for(const button of Array.from(row.querySelectorAll<HTMLButtonElement>('.queue-item'))){button.disabled=cb.canCommand?.()===false||paused||s.winner!==null||s.draw;const expected=productionQueueKey(producer);button.onclick=()=>callbacks?.cancelTrain(producer.id,Number(button.dataset.index),expected);}}
+      for(const producer of producers){const row=queue.querySelector<HTMLElement>(`[data-producer="${producer.id}"]`)!;row.querySelector('b')!.textContent=`${Math.max(0,Math.ceil((1-producer.trainProgress)*queuedUnitFor(s,producer,0).trainTime))}s`;row.querySelector<HTMLElement>('.queue-progress i')!.style.width=`${producer.trainProgress*100}%`;}
+      for(const action of actions){const slot=['Z','C','B','V','N','M'].indexOf(action.hotkey??'');const id=slot>=0?`action${slot+1}`:({A:'attackMove',X:'stop',H:'hold',Q:'ability'} as Record<string,string>)[action.hotkey??''];const label=id?cb.bindingLabel?.(id):undefined;if(label!==undefined){const key=action.button.querySelector('kbd');if(key)key.textContent=label;}}
+      tooltip.refresh();
+      overlay.hidden=!!cb.isInspection?.()||!!cb.isReplay?.()||!paused&&s.winner===null&&!s.draw;
+      if(!overlay.hidden){
+        const ended=s.winner!==null||s.draw,mission=scenarioSessionForState(s);
+        setText('#overlay-title',ended?s.draw?'Draw':s.winningTeam===s.teams[localSide]?'Victory':'Defeat':'Battle paused');
+        setText('#overlay-eyebrow',ended?mission?mission.runtime.outcome==='won'?'MISSION COMPLETE':'MISSION FAILED':'THE BATTLE IS OVER':mission?'MISSION':'SKIRMISH');
+        const description=mission&&ended?(mission.runtime.reason||(mission.runtime.outcome==='won'?mission.definition.successText:mission.definition.failureText)):
+          ended?s.draw?'Both sides lost their last stronghold in the same exchange.':s.winningTeam===s.teams[localSide]?'The last enemy stronghold has fallen. The Elderwood is yours.':'Your team has lost its last stronghold. Raise your banner and try again.':'Take a moment to plan your next move.';
+        setText('#overlay-description',description);
+        setText('#overlay-restart',mission?'Return to menu':'New skirmish');el('#resume-button').hidden=ended;
+      }
+      el<HTMLButtonElement>('#pause-button').disabled=cb.canPause?.()===false;setText('#pause-button',paused?'Resume':'Pause');drawMinimap(s);
+    }
+  };
+}

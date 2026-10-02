@@ -1,0 +1,6515 @@
+{
+  "schema": 1,
+  "sourceCommit": "8db0f2dd0b38302f0f588c80316db082bc49e9b3",
+  "saveVersion": 4,
+  "simulationRevision": "4.0.2",
+  "setup": "Fifteen declared initial encounters. Production main controls issue commands and advance every recorded tick.",
+  "scenarios": {
+    "formation-line": {
+      "group": "canonical",
+      "featureIds": [
+        1
+      ],
+      "file": "tactics/formation-line.json",
+      "sha256": "1b39e764f3984626abb899c146f4151283eac5d8b30453cfd5ecbea9bcac70d5",
+      "bytes": 595726,
+      "ids": {
+        "army": [
+          54,
+          55,
+          56,
+          57,
+          58,
+          59
+        ],
+        "roles": [
+          "melee",
+          "ranged",
+          "spear",
+          "cavalry",
+          "melee",
+          "ranged"
+        ],
+        "obstacle": 60,
+        "undergroundWorker": 6,
+        "formation": "line",
+        "spacing": 0.8,
+        "facing": 0,
+        "destination": {
+          "x": 30.5,
+          "y": 20.5,
+          "level": 0
+        }
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "orcs",
+      "authored": {
+        "map": "Validated seed-zero medium forest input, flat grass/elevation, generated entrances retained; resources and opening combat troops removed before recording.",
+        "calendar": "Clear daylight, day/season/weather lengths 1000000 seconds.",
+        "banks": "Side0 starts at age3 with 2000 wood,2000 ore,500 crystal.",
+        "passiveOrders": "HQs/workers and non-firing targets use hold and cooldown1000; encounter exceptions are listed below.",
+        "removedSites": [
+          {
+            "id": 1,
+            "x": 24.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "relic"
+          },
+          {
+            "id": 2,
+            "x": 19.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "monster"
+          },
+          {
+            "id": 3,
+            "x": 29.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "village"
+          }
+        ],
+        "removedActors": [
+          {
+            "id": 7,
+            "role": "melee",
+            "side": 0
+          },
+          {
+            "id": 14,
+            "role": "melee",
+            "side": 1
+          }
+        ],
+        "removedResources": [
+          {
+            "id": 15,
+            "kind": "wood",
+            "x": 4.5,
+            "y": 12.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 16,
+            "kind": "wood",
+            "x": 43.5,
+            "y": 35.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 17,
+            "kind": "wood",
+            "x": 6.5,
+            "y": 14.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 18,
+            "kind": "wood",
+            "x": 41.5,
+            "y": 33.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 19,
+            "kind": "wood",
+            "x": 3.5,
+            "y": 9.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 20,
+            "kind": "wood",
+            "x": 44.5,
+            "y": 38.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 21,
+            "kind": "ore",
+            "x": 13.5,
+            "y": 5.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 22,
+            "kind": "ore",
+            "x": 34.5,
+            "y": 42.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 23,
+            "kind": "ore",
+            "x": 14.5,
+            "y": 8.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 24,
+            "kind": "ore",
+            "x": 33.5,
+            "y": 39.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 25,
+            "kind": "crystal",
+            "x": 13.5,
+            "y": 12.5,
+            "level": 0,
+            "amount": 180
+          },
+          {
+            "id": 26,
+            "kind": "crystal",
+            "x": 34.5,
+            "y": 35.5,
+            "level": 0,
+            "amount": 180
+          },
+          {
+            "id": 27,
+            "kind": "wood",
+            "x": 13.5,
+            "y": 16.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 28,
+            "kind": "wood",
+            "x": 34.5,
+            "y": 31.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 29,
+            "kind": "ore",
+            "x": 15.5,
+            "y": 18.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 30,
+            "kind": "ore",
+            "x": 32.5,
+            "y": 29.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 31,
+            "kind": "crystal",
+            "x": 17.5,
+            "y": 16.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 32,
+            "kind": "crystal",
+            "x": 30.5,
+            "y": 31.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 33,
+            "kind": "ore",
+            "x": 16.5,
+            "y": 21.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 34,
+            "kind": "ore",
+            "x": 31.5,
+            "y": 26.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 35,
+            "kind": "crystal",
+            "x": 18.5,
+            "y": 19.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 36,
+            "kind": "crystal",
+            "x": 29.5,
+            "y": 28.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 37,
+            "kind": "wood",
+            "x": 22.5,
+            "y": 22.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 38,
+            "kind": "wood",
+            "x": 25.5,
+            "y": 25.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 39,
+            "kind": "crystal",
+            "x": 26.5,
+            "y": 22.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 40,
+            "kind": "crystal",
+            "x": 21.5,
+            "y": 25.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 41,
+            "kind": "crystal",
+            "x": 24.5,
+            "y": 19.5,
+            "level": 1,
+            "amount": 1800
+          },
+          {
+            "id": 42,
+            "kind": "ore",
+            "x": 20.5,
+            "y": 28.5,
+            "level": 1,
+            "amount": 3600
+          },
+          {
+            "id": 43,
+            "kind": "wood",
+            "x": 28.5,
+            "y": 28.5,
+            "level": 1,
+            "amount": 3000
+          }
+        ],
+        "retainedEntrances": [
+          {
+            "id": 1,
+            "from": {
+              "x": 8.5,
+              "y": 13.5,
+              "level": 0
+            },
+            "to": {
+              "x": 8.5,
+              "y": 13.5,
+              "level": 1
+            }
+          },
+          {
+            "id": 2,
+            "from": {
+              "x": 39.5,
+              "y": 34.5,
+              "level": 0
+            },
+            "to": {
+              "x": 39.5,
+              "y": 34.5,
+              "level": 1
+            }
+          }
+        ],
+        "description": "Six full-health mixed troops apply the requested shape and move around an owned depot. No wounded victim or hostile casualty order.",
+        "actors": [
+          {
+            "id": 1,
+            "side": 0,
+            "kind": "building",
+            "role": "hq",
+            "x": 6.5,
+            "y": 17.5,
+            "level": 0,
+            "hp": 1800,
+            "maxHp": 1800,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            }
+          },
+          {
+            "id": 2,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 5.5,
+            "y": 13.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 3,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 6.3,
+            "y": 13.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 4,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 7.1,
+            "y": 13.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 5,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 7.9,
+            "y": 13.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 6,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 10.5,
+            "y": 10.5,
+            "level": 1,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 8,
+            "side": 1,
+            "kind": "building",
+            "role": "hq",
+            "x": 42.5,
+            "y": 42.5,
+            "level": 0,
+            "hp": 1650,
+            "maxHp": 1650,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            }
+          },
+          {
+            "id": 9,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 39.5,
+            "y": 39.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 10,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 40.3,
+            "y": 39.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 11,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 41.1,
+            "y": 39.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 12,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 41.9,
+            "y": 39.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 13,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 42.7,
+            "y": 39.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 54,
+            "side": 0,
+            "kind": "unit",
+            "role": "melee",
+            "definitionId": "orc-melee",
+            "x": 18.5,
+            "y": 20.5,
+            "level": 0,
+            "hp": 175,
+            "maxHp": 175,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 55,
+            "side": 0,
+            "kind": "unit",
+            "role": "ranged",
+            "definitionId": "orc-ranged",
+            "x": 19.2,
+            "y": 20.5,
+            "level": 0,
+            "hp": 100,
+            "maxHp": 100,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 56,
+            "side": 0,
+            "kind": "unit",
+            "role": "spear",
+            "definitionId": "orc-spear",
+            "x": 19.9,
+            "y": 20.5,
+            "level": 0,
+            "hp": 125,
+            "maxHp": 125,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 57,
+            "side": 0,
+            "kind": "unit",
+            "role": "cavalry",
+            "definitionId": "orc-cavalry",
+            "x": 20.6,
+            "y": 20.5,
+            "level": 0,
+            "hp": 210,
+            "maxHp": 210,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 58,
+            "side": 0,
+            "kind": "unit",
+            "role": "melee",
+            "definitionId": "orc-melee",
+            "x": 21.3,
+            "y": 20.5,
+            "level": 0,
+            "hp": 175,
+            "maxHp": 175,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 59,
+            "side": 0,
+            "kind": "unit",
+            "role": "ranged",
+            "definitionId": "orc-ranged",
+            "x": 22,
+            "y": 20.5,
+            "level": 0,
+            "hp": 100,
+            "maxHp": 100,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 60,
+            "side": 0,
+            "kind": "building",
+            "role": "depot",
+            "definitionId": "orc-depot",
+            "x": 24.5,
+            "y": 20.5,
+            "level": 0,
+            "hp": 600,
+            "maxHp": 600,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            }
+          }
+        ]
+      }
+    },
+    "formation-wedge": {
+      "group": "canonical",
+      "featureIds": [
+        1
+      ],
+      "file": "tactics/formation-wedge.json",
+      "sha256": "1b39e764f3984626abb899c146f4151283eac5d8b30453cfd5ecbea9bcac70d5",
+      "bytes": 595726,
+      "ids": {
+        "army": [
+          54,
+          55,
+          56,
+          57,
+          58,
+          59
+        ],
+        "roles": [
+          "melee",
+          "ranged",
+          "spear",
+          "cavalry",
+          "melee",
+          "ranged"
+        ],
+        "obstacle": 60,
+        "undergroundWorker": 6,
+        "formation": "wedge",
+        "spacing": 0.8,
+        "facing": 0,
+        "destination": {
+          "x": 30.5,
+          "y": 20.5,
+          "level": 0
+        }
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "orcs",
+      "authored": {
+        "map": "Validated seed-zero medium forest input, flat grass/elevation, generated entrances retained; resources and opening combat troops removed before recording.",
+        "calendar": "Clear daylight, day/season/weather lengths 1000000 seconds.",
+        "banks": "Side0 starts at age3 with 2000 wood,2000 ore,500 crystal.",
+        "passiveOrders": "HQs/workers and non-firing targets use hold and cooldown1000; encounter exceptions are listed below.",
+        "removedSites": [
+          {
+            "id": 1,
+            "x": 24.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "relic"
+          },
+          {
+            "id": 2,
+            "x": 19.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "monster"
+          },
+          {
+            "id": 3,
+            "x": 29.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "village"
+          }
+        ],
+        "removedActors": [
+          {
+            "id": 7,
+            "role": "melee",
+            "side": 0
+          },
+          {
+            "id": 14,
+            "role": "melee",
+            "side": 1
+          }
+        ],
+        "removedResources": [
+          {
+            "id": 15,
+            "kind": "wood",
+            "x": 4.5,
+            "y": 12.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 16,
+            "kind": "wood",
+            "x": 43.5,
+            "y": 35.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 17,
+            "kind": "wood",
+            "x": 6.5,
+            "y": 14.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 18,
+            "kind": "wood",
+            "x": 41.5,
+            "y": 33.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 19,
+            "kind": "wood",
+            "x": 3.5,
+            "y": 9.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 20,
+            "kind": "wood",
+            "x": 44.5,
+            "y": 38.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 21,
+            "kind": "ore",
+            "x": 13.5,
+            "y": 5.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 22,
+            "kind": "ore",
+            "x": 34.5,
+            "y": 42.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 23,
+            "kind": "ore",
+            "x": 14.5,
+            "y": 8.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 24,
+            "kind": "ore",
+            "x": 33.5,
+            "y": 39.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 25,
+            "kind": "crystal",
+            "x": 13.5,
+            "y": 12.5,
+            "level": 0,
+            "amount": 180
+          },
+          {
+            "id": 26,
+            "kind": "crystal",
+            "x": 34.5,
+            "y": 35.5,
+            "level": 0,
+            "amount": 180
+          },
+          {
+            "id": 27,
+            "kind": "wood",
+            "x": 13.5,
+            "y": 16.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 28,
+            "kind": "wood",
+            "x": 34.5,
+            "y": 31.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 29,
+            "kind": "ore",
+            "x": 15.5,
+            "y": 18.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 30,
+            "kind": "ore",
+            "x": 32.5,
+            "y": 29.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 31,
+            "kind": "crystal",
+            "x": 17.5,
+            "y": 16.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 32,
+            "kind": "crystal",
+            "x": 30.5,
+            "y": 31.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 33,
+            "kind": "ore",
+            "x": 16.5,
+            "y": 21.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 34,
+            "kind": "ore",
+            "x": 31.5,
+            "y": 26.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 35,
+            "kind": "crystal",
+            "x": 18.5,
+            "y": 19.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 36,
+            "kind": "crystal",
+            "x": 29.5,
+            "y": 28.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 37,
+            "kind": "wood",
+            "x": 22.5,
+            "y": 22.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 38,
+            "kind": "wood",
+            "x": 25.5,
+            "y": 25.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 39,
+            "kind": "crystal",
+            "x": 26.5,
+            "y": 22.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 40,
+            "kind": "crystal",
+            "x": 21.5,
+            "y": 25.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 41,
+            "kind": "crystal",
+            "x": 24.5,
+            "y": 19.5,
+            "level": 1,
+            "amount": 1800
+          },
+          {
+            "id": 42,
+            "kind": "ore",
+            "x": 20.5,
+            "y": 28.5,
+            "level": 1,
+            "amount": 3600
+          },
+          {
+            "id": 43,
+            "kind": "wood",
+            "x": 28.5,
+            "y": 28.5,
+            "level": 1,
+            "amount": 3000
+          }
+        ],
+        "retainedEntrances": [
+          {
+            "id": 1,
+            "from": {
+              "x": 8.5,
+              "y": 13.5,
+              "level": 0
+            },
+            "to": {
+              "x": 8.5,
+              "y": 13.5,
+              "level": 1
+            }
+          },
+          {
+            "id": 2,
+            "from": {
+              "x": 39.5,
+              "y": 34.5,
+              "level": 0
+            },
+            "to": {
+              "x": 39.5,
+              "y": 34.5,
+              "level": 1
+            }
+          }
+        ],
+        "description": "Six full-health mixed troops apply the requested shape and move around an owned depot. No wounded victim or hostile casualty order.",
+        "actors": [
+          {
+            "id": 1,
+            "side": 0,
+            "kind": "building",
+            "role": "hq",
+            "x": 6.5,
+            "y": 17.5,
+            "level": 0,
+            "hp": 1800,
+            "maxHp": 1800,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            }
+          },
+          {
+            "id": 2,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 5.5,
+            "y": 13.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 3,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 6.3,
+            "y": 13.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 4,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 7.1,
+            "y": 13.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 5,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 7.9,
+            "y": 13.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 6,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 10.5,
+            "y": 10.5,
+            "level": 1,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 8,
+            "side": 1,
+            "kind": "building",
+            "role": "hq",
+            "x": 42.5,
+            "y": 42.5,
+            "level": 0,
+            "hp": 1650,
+            "maxHp": 1650,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            }
+          },
+          {
+            "id": 9,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 39.5,
+            "y": 39.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 10,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 40.3,
+            "y": 39.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 11,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 41.1,
+            "y": 39.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 12,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 41.9,
+            "y": 39.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 13,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 42.7,
+            "y": 39.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 54,
+            "side": 0,
+            "kind": "unit",
+            "role": "melee",
+            "definitionId": "orc-melee",
+            "x": 18.5,
+            "y": 20.5,
+            "level": 0,
+            "hp": 175,
+            "maxHp": 175,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 55,
+            "side": 0,
+            "kind": "unit",
+            "role": "ranged",
+            "definitionId": "orc-ranged",
+            "x": 19.2,
+            "y": 20.5,
+            "level": 0,
+            "hp": 100,
+            "maxHp": 100,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 56,
+            "side": 0,
+            "kind": "unit",
+            "role": "spear",
+            "definitionId": "orc-spear",
+            "x": 19.9,
+            "y": 20.5,
+            "level": 0,
+            "hp": 125,
+            "maxHp": 125,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 57,
+            "side": 0,
+            "kind": "unit",
+            "role": "cavalry",
+            "definitionId": "orc-cavalry",
+            "x": 20.6,
+            "y": 20.5,
+            "level": 0,
+            "hp": 210,
+            "maxHp": 210,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 58,
+            "side": 0,
+            "kind": "unit",
+            "role": "melee",
+            "definitionId": "orc-melee",
+            "x": 21.3,
+            "y": 20.5,
+            "level": 0,
+            "hp": 175,
+            "maxHp": 175,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 59,
+            "side": 0,
+            "kind": "unit",
+            "role": "ranged",
+            "definitionId": "orc-ranged",
+            "x": 22,
+            "y": 20.5,
+            "level": 0,
+            "hp": 100,
+            "maxHp": 100,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 60,
+            "side": 0,
+            "kind": "building",
+            "role": "depot",
+            "definitionId": "orc-depot",
+            "x": 24.5,
+            "y": 20.5,
+            "level": 0,
+            "hp": 600,
+            "maxHp": 600,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            }
+          }
+        ]
+      }
+    },
+    "formation-square": {
+      "group": "canonical",
+      "featureIds": [
+        1
+      ],
+      "file": "tactics/formation-square.json",
+      "sha256": "1b39e764f3984626abb899c146f4151283eac5d8b30453cfd5ecbea9bcac70d5",
+      "bytes": 595726,
+      "ids": {
+        "army": [
+          54,
+          55,
+          56,
+          57,
+          58,
+          59
+        ],
+        "roles": [
+          "melee",
+          "ranged",
+          "spear",
+          "cavalry",
+          "melee",
+          "ranged"
+        ],
+        "obstacle": 60,
+        "undergroundWorker": 6,
+        "formation": "square",
+        "spacing": 0.8,
+        "facing": 0,
+        "destination": {
+          "x": 30.5,
+          "y": 20.5,
+          "level": 0
+        }
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "orcs",
+      "authored": {
+        "map": "Validated seed-zero medium forest input, flat grass/elevation, generated entrances retained; resources and opening combat troops removed before recording.",
+        "calendar": "Clear daylight, day/season/weather lengths 1000000 seconds.",
+        "banks": "Side0 starts at age3 with 2000 wood,2000 ore,500 crystal.",
+        "passiveOrders": "HQs/workers and non-firing targets use hold and cooldown1000; encounter exceptions are listed below.",
+        "removedSites": [
+          {
+            "id": 1,
+            "x": 24.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "relic"
+          },
+          {
+            "id": 2,
+            "x": 19.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "monster"
+          },
+          {
+            "id": 3,
+            "x": 29.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "village"
+          }
+        ],
+        "removedActors": [
+          {
+            "id": 7,
+            "role": "melee",
+            "side": 0
+          },
+          {
+            "id": 14,
+            "role": "melee",
+            "side": 1
+          }
+        ],
+        "removedResources": [
+          {
+            "id": 15,
+            "kind": "wood",
+            "x": 4.5,
+            "y": 12.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 16,
+            "kind": "wood",
+            "x": 43.5,
+            "y": 35.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 17,
+            "kind": "wood",
+            "x": 6.5,
+            "y": 14.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 18,
+            "kind": "wood",
+            "x": 41.5,
+            "y": 33.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 19,
+            "kind": "wood",
+            "x": 3.5,
+            "y": 9.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 20,
+            "kind": "wood",
+            "x": 44.5,
+            "y": 38.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 21,
+            "kind": "ore",
+            "x": 13.5,
+            "y": 5.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 22,
+            "kind": "ore",
+            "x": 34.5,
+            "y": 42.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 23,
+            "kind": "ore",
+            "x": 14.5,
+            "y": 8.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 24,
+            "kind": "ore",
+            "x": 33.5,
+            "y": 39.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 25,
+            "kind": "crystal",
+            "x": 13.5,
+            "y": 12.5,
+            "level": 0,
+            "amount": 180
+          },
+          {
+            "id": 26,
+            "kind": "crystal",
+            "x": 34.5,
+            "y": 35.5,
+            "level": 0,
+            "amount": 180
+          },
+          {
+            "id": 27,
+            "kind": "wood",
+            "x": 13.5,
+            "y": 16.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 28,
+            "kind": "wood",
+            "x": 34.5,
+            "y": 31.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 29,
+            "kind": "ore",
+            "x": 15.5,
+            "y": 18.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 30,
+            "kind": "ore",
+            "x": 32.5,
+            "y": 29.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 31,
+            "kind": "crystal",
+            "x": 17.5,
+            "y": 16.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 32,
+            "kind": "crystal",
+            "x": 30.5,
+            "y": 31.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 33,
+            "kind": "ore",
+            "x": 16.5,
+            "y": 21.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 34,
+            "kind": "ore",
+            "x": 31.5,
+            "y": 26.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 35,
+            "kind": "crystal",
+            "x": 18.5,
+            "y": 19.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 36,
+            "kind": "crystal",
+            "x": 29.5,
+            "y": 28.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 37,
+            "kind": "wood",
+            "x": 22.5,
+            "y": 22.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 38,
+            "kind": "wood",
+            "x": 25.5,
+            "y": 25.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 39,
+            "kind": "crystal",
+            "x": 26.5,
+            "y": 22.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 40,
+            "kind": "crystal",
+            "x": 21.5,
+            "y": 25.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 41,
+            "kind": "crystal",
+            "x": 24.5,
+            "y": 19.5,
+            "level": 1,
+            "amount": 1800
+          },
+          {
+            "id": 42,
+            "kind": "ore",
+            "x": 20.5,
+            "y": 28.5,
+            "level": 1,
+            "amount": 3600
+          },
+          {
+            "id": 43,
+            "kind": "wood",
+            "x": 28.5,
+            "y": 28.5,
+            "level": 1,
+            "amount": 3000
+          }
+        ],
+        "retainedEntrances": [
+          {
+            "id": 1,
+            "from": {
+              "x": 8.5,
+              "y": 13.5,
+              "level": 0
+            },
+            "to": {
+              "x": 8.5,
+              "y": 13.5,
+              "level": 1
+            }
+          },
+          {
+            "id": 2,
+            "from": {
+              "x": 39.5,
+              "y": 34.5,
+              "level": 0
+            },
+            "to": {
+              "x": 39.5,
+              "y": 34.5,
+              "level": 1
+            }
+          }
+        ],
+        "description": "Six full-health mixed troops apply the requested shape and move around an owned depot. No wounded victim or hostile casualty order.",
+        "actors": [
+          {
+            "id": 1,
+            "side": 0,
+            "kind": "building",
+            "role": "hq",
+            "x": 6.5,
+            "y": 17.5,
+            "level": 0,
+            "hp": 1800,
+            "maxHp": 1800,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            }
+          },
+          {
+            "id": 2,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 5.5,
+            "y": 13.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 3,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 6.3,
+            "y": 13.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 4,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 7.1,
+            "y": 13.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 5,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 7.9,
+            "y": 13.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 6,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 10.5,
+            "y": 10.5,
+            "level": 1,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 8,
+            "side": 1,
+            "kind": "building",
+            "role": "hq",
+            "x": 42.5,
+            "y": 42.5,
+            "level": 0,
+            "hp": 1650,
+            "maxHp": 1650,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            }
+          },
+          {
+            "id": 9,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 39.5,
+            "y": 39.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 10,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 40.3,
+            "y": 39.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 11,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 41.1,
+            "y": 39.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 12,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 41.9,
+            "y": 39.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 13,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 42.7,
+            "y": 39.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 54,
+            "side": 0,
+            "kind": "unit",
+            "role": "melee",
+            "definitionId": "orc-melee",
+            "x": 18.5,
+            "y": 20.5,
+            "level": 0,
+            "hp": 175,
+            "maxHp": 175,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 55,
+            "side": 0,
+            "kind": "unit",
+            "role": "ranged",
+            "definitionId": "orc-ranged",
+            "x": 19.2,
+            "y": 20.5,
+            "level": 0,
+            "hp": 100,
+            "maxHp": 100,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 56,
+            "side": 0,
+            "kind": "unit",
+            "role": "spear",
+            "definitionId": "orc-spear",
+            "x": 19.9,
+            "y": 20.5,
+            "level": 0,
+            "hp": 125,
+            "maxHp": 125,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 57,
+            "side": 0,
+            "kind": "unit",
+            "role": "cavalry",
+            "definitionId": "orc-cavalry",
+            "x": 20.6,
+            "y": 20.5,
+            "level": 0,
+            "hp": 210,
+            "maxHp": 210,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 58,
+            "side": 0,
+            "kind": "unit",
+            "role": "melee",
+            "definitionId": "orc-melee",
+            "x": 21.3,
+            "y": 20.5,
+            "level": 0,
+            "hp": 175,
+            "maxHp": 175,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 59,
+            "side": 0,
+            "kind": "unit",
+            "role": "ranged",
+            "definitionId": "orc-ranged",
+            "x": 22,
+            "y": 20.5,
+            "level": 0,
+            "hp": 100,
+            "maxHp": 100,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 60,
+            "side": 0,
+            "kind": "building",
+            "role": "depot",
+            "definitionId": "orc-depot",
+            "x": 24.5,
+            "y": 20.5,
+            "level": 0,
+            "hp": 600,
+            "maxHp": 600,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            }
+          }
+        ]
+      }
+    },
+    "formation-loose": {
+      "group": "canonical",
+      "featureIds": [
+        1
+      ],
+      "file": "tactics/formation-loose.json",
+      "sha256": "1b39e764f3984626abb899c146f4151283eac5d8b30453cfd5ecbea9bcac70d5",
+      "bytes": 595726,
+      "ids": {
+        "army": [
+          54,
+          55,
+          56,
+          57,
+          58,
+          59
+        ],
+        "roles": [
+          "melee",
+          "ranged",
+          "spear",
+          "cavalry",
+          "melee",
+          "ranged"
+        ],
+        "obstacle": 60,
+        "undergroundWorker": 6,
+        "formation": "loose",
+        "spacing": 0.8,
+        "facing": 0,
+        "destination": {
+          "x": 30.5,
+          "y": 20.5,
+          "level": 0
+        }
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "orcs",
+      "authored": {
+        "map": "Validated seed-zero medium forest input, flat grass/elevation, generated entrances retained; resources and opening combat troops removed before recording.",
+        "calendar": "Clear daylight, day/season/weather lengths 1000000 seconds.",
+        "banks": "Side0 starts at age3 with 2000 wood,2000 ore,500 crystal.",
+        "passiveOrders": "HQs/workers and non-firing targets use hold and cooldown1000; encounter exceptions are listed below.",
+        "removedSites": [
+          {
+            "id": 1,
+            "x": 24.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "relic"
+          },
+          {
+            "id": 2,
+            "x": 19.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "monster"
+          },
+          {
+            "id": 3,
+            "x": 29.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "village"
+          }
+        ],
+        "removedActors": [
+          {
+            "id": 7,
+            "role": "melee",
+            "side": 0
+          },
+          {
+            "id": 14,
+            "role": "melee",
+            "side": 1
+          }
+        ],
+        "removedResources": [
+          {
+            "id": 15,
+            "kind": "wood",
+            "x": 4.5,
+            "y": 12.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 16,
+            "kind": "wood",
+            "x": 43.5,
+            "y": 35.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 17,
+            "kind": "wood",
+            "x": 6.5,
+            "y": 14.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 18,
+            "kind": "wood",
+            "x": 41.5,
+            "y": 33.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 19,
+            "kind": "wood",
+            "x": 3.5,
+            "y": 9.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 20,
+            "kind": "wood",
+            "x": 44.5,
+            "y": 38.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 21,
+            "kind": "ore",
+            "x": 13.5,
+            "y": 5.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 22,
+            "kind": "ore",
+            "x": 34.5,
+            "y": 42.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 23,
+            "kind": "ore",
+            "x": 14.5,
+            "y": 8.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 24,
+            "kind": "ore",
+            "x": 33.5,
+            "y": 39.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 25,
+            "kind": "crystal",
+            "x": 13.5,
+            "y": 12.5,
+            "level": 0,
+            "amount": 180
+          },
+          {
+            "id": 26,
+            "kind": "crystal",
+            "x": 34.5,
+            "y": 35.5,
+            "level": 0,
+            "amount": 180
+          },
+          {
+            "id": 27,
+            "kind": "wood",
+            "x": 13.5,
+            "y": 16.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 28,
+            "kind": "wood",
+            "x": 34.5,
+            "y": 31.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 29,
+            "kind": "ore",
+            "x": 15.5,
+            "y": 18.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 30,
+            "kind": "ore",
+            "x": 32.5,
+            "y": 29.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 31,
+            "kind": "crystal",
+            "x": 17.5,
+            "y": 16.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 32,
+            "kind": "crystal",
+            "x": 30.5,
+            "y": 31.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 33,
+            "kind": "ore",
+            "x": 16.5,
+            "y": 21.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 34,
+            "kind": "ore",
+            "x": 31.5,
+            "y": 26.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 35,
+            "kind": "crystal",
+            "x": 18.5,
+            "y": 19.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 36,
+            "kind": "crystal",
+            "x": 29.5,
+            "y": 28.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 37,
+            "kind": "wood",
+            "x": 22.5,
+            "y": 22.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 38,
+            "kind": "wood",
+            "x": 25.5,
+            "y": 25.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 39,
+            "kind": "crystal",
+            "x": 26.5,
+            "y": 22.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 40,
+            "kind": "crystal",
+            "x": 21.5,
+            "y": 25.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 41,
+            "kind": "crystal",
+            "x": 24.5,
+            "y": 19.5,
+            "level": 1,
+            "amount": 1800
+          },
+          {
+            "id": 42,
+            "kind": "ore",
+            "x": 20.5,
+            "y": 28.5,
+            "level": 1,
+            "amount": 3600
+          },
+          {
+            "id": 43,
+            "kind": "wood",
+            "x": 28.5,
+            "y": 28.5,
+            "level": 1,
+            "amount": 3000
+          }
+        ],
+        "retainedEntrances": [
+          {
+            "id": 1,
+            "from": {
+              "x": 8.5,
+              "y": 13.5,
+              "level": 0
+            },
+            "to": {
+              "x": 8.5,
+              "y": 13.5,
+              "level": 1
+            }
+          },
+          {
+            "id": 2,
+            "from": {
+              "x": 39.5,
+              "y": 34.5,
+              "level": 0
+            },
+            "to": {
+              "x": 39.5,
+              "y": 34.5,
+              "level": 1
+            }
+          }
+        ],
+        "description": "Six full-health mixed troops apply the requested shape and move around an owned depot. No wounded victim or hostile casualty order.",
+        "actors": [
+          {
+            "id": 1,
+            "side": 0,
+            "kind": "building",
+            "role": "hq",
+            "x": 6.5,
+            "y": 17.5,
+            "level": 0,
+            "hp": 1800,
+            "maxHp": 1800,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            }
+          },
+          {
+            "id": 2,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 5.5,
+            "y": 13.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 3,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 6.3,
+            "y": 13.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 4,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 7.1,
+            "y": 13.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 5,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 7.9,
+            "y": 13.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 6,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 10.5,
+            "y": 10.5,
+            "level": 1,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 8,
+            "side": 1,
+            "kind": "building",
+            "role": "hq",
+            "x": 42.5,
+            "y": 42.5,
+            "level": 0,
+            "hp": 1650,
+            "maxHp": 1650,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            }
+          },
+          {
+            "id": 9,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 39.5,
+            "y": 39.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 10,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 40.3,
+            "y": 39.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 11,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 41.1,
+            "y": 39.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 12,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 41.9,
+            "y": 39.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 13,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 42.7,
+            "y": 39.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 54,
+            "side": 0,
+            "kind": "unit",
+            "role": "melee",
+            "definitionId": "orc-melee",
+            "x": 18.5,
+            "y": 20.5,
+            "level": 0,
+            "hp": 175,
+            "maxHp": 175,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 55,
+            "side": 0,
+            "kind": "unit",
+            "role": "ranged",
+            "definitionId": "orc-ranged",
+            "x": 19.2,
+            "y": 20.5,
+            "level": 0,
+            "hp": 100,
+            "maxHp": 100,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 56,
+            "side": 0,
+            "kind": "unit",
+            "role": "spear",
+            "definitionId": "orc-spear",
+            "x": 19.9,
+            "y": 20.5,
+            "level": 0,
+            "hp": 125,
+            "maxHp": 125,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 57,
+            "side": 0,
+            "kind": "unit",
+            "role": "cavalry",
+            "definitionId": "orc-cavalry",
+            "x": 20.6,
+            "y": 20.5,
+            "level": 0,
+            "hp": 210,
+            "maxHp": 210,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 58,
+            "side": 0,
+            "kind": "unit",
+            "role": "melee",
+            "definitionId": "orc-melee",
+            "x": 21.3,
+            "y": 20.5,
+            "level": 0,
+            "hp": 175,
+            "maxHp": 175,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 59,
+            "side": 0,
+            "kind": "unit",
+            "role": "ranged",
+            "definitionId": "orc-ranged",
+            "x": 22,
+            "y": 20.5,
+            "level": 0,
+            "hp": 100,
+            "maxHp": 100,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 60,
+            "side": 0,
+            "kind": "building",
+            "role": "depot",
+            "definitionId": "orc-depot",
+            "x": 24.5,
+            "y": 20.5,
+            "level": 0,
+            "hp": 600,
+            "maxHp": 600,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            }
+          }
+        ]
+      }
+    },
+    "charge-pike-front": {
+      "group": "canonical",
+      "featureIds": [
+        8
+      ],
+      "file": "tactics/charge-pike-front.json",
+      "sha256": "a26f6220be4e1efd07575b250a6462016dec83406a7e8e7396b272c859cae86d",
+      "bytes": 588150,
+      "ids": {
+        "source": 54,
+        "target": 55,
+        "undergroundWorker": 6,
+        "direction": "front"
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "fairies",
+      "authored": {
+        "map": "Validated seed-zero medium forest input, flat grass/elevation, generated entrances retained; resources and opening combat troops removed before recording.",
+        "calendar": "Clear daylight, day/season/weather lengths 1000000 seconds.",
+        "banks": "Side0 starts at age3 with 2000 wood,2000 ore,500 crystal.",
+        "passiveOrders": "HQs/workers and non-firing targets use hold and cooldown1000; encounter exceptions are listed below.",
+        "removedSites": [
+          {
+            "id": 1,
+            "x": 24.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "relic"
+          },
+          {
+            "id": 2,
+            "x": 19.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "monster"
+          },
+          {
+            "id": 3,
+            "x": 29.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "village"
+          }
+        ],
+        "removedActors": [
+          {
+            "id": 7,
+            "role": "melee",
+            "side": 0
+          },
+          {
+            "id": 14,
+            "role": "melee",
+            "side": 1
+          }
+        ],
+        "removedResources": [
+          {
+            "id": 15,
+            "kind": "wood",
+            "x": 4.5,
+            "y": 12.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 16,
+            "kind": "wood",
+            "x": 43.5,
+            "y": 35.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 17,
+            "kind": "wood",
+            "x": 6.5,
+            "y": 14.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 18,
+            "kind": "wood",
+            "x": 41.5,
+            "y": 33.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 19,
+            "kind": "wood",
+            "x": 3.5,
+            "y": 9.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 20,
+            "kind": "wood",
+            "x": 44.5,
+            "y": 38.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 21,
+            "kind": "ore",
+            "x": 13.5,
+            "y": 5.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 22,
+            "kind": "ore",
+            "x": 34.5,
+            "y": 42.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 23,
+            "kind": "ore",
+            "x": 14.5,
+            "y": 8.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 24,
+            "kind": "ore",
+            "x": 33.5,
+            "y": 39.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 25,
+            "kind": "crystal",
+            "x": 13.5,
+            "y": 12.5,
+            "level": 0,
+            "amount": 180
+          },
+          {
+            "id": 26,
+            "kind": "crystal",
+            "x": 34.5,
+            "y": 35.5,
+            "level": 0,
+            "amount": 180
+          },
+          {
+            "id": 27,
+            "kind": "wood",
+            "x": 13.5,
+            "y": 16.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 28,
+            "kind": "wood",
+            "x": 34.5,
+            "y": 31.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 29,
+            "kind": "ore",
+            "x": 15.5,
+            "y": 18.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 30,
+            "kind": "ore",
+            "x": 32.5,
+            "y": 29.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 31,
+            "kind": "crystal",
+            "x": 17.5,
+            "y": 16.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 32,
+            "kind": "crystal",
+            "x": 30.5,
+            "y": 31.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 33,
+            "kind": "ore",
+            "x": 16.5,
+            "y": 21.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 34,
+            "kind": "ore",
+            "x": 31.5,
+            "y": 26.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 35,
+            "kind": "crystal",
+            "x": 18.5,
+            "y": 19.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 36,
+            "kind": "crystal",
+            "x": 29.5,
+            "y": 28.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 37,
+            "kind": "wood",
+            "x": 22.5,
+            "y": 22.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 38,
+            "kind": "wood",
+            "x": 25.5,
+            "y": 25.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 39,
+            "kind": "crystal",
+            "x": 26.5,
+            "y": 22.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 40,
+            "kind": "crystal",
+            "x": 21.5,
+            "y": 25.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 41,
+            "kind": "crystal",
+            "x": 24.5,
+            "y": 19.5,
+            "level": 1,
+            "amount": 1800
+          },
+          {
+            "id": 42,
+            "kind": "ore",
+            "x": 20.5,
+            "y": 28.5,
+            "level": 1,
+            "amount": 3600
+          },
+          {
+            "id": 43,
+            "kind": "wood",
+            "x": 28.5,
+            "y": 28.5,
+            "level": 1,
+            "amount": 3000
+          }
+        ],
+        "retainedEntrances": [
+          {
+            "id": 1,
+            "from": {
+              "x": 8.5,
+              "y": 13.5,
+              "level": 0
+            },
+            "to": {
+              "x": 8.5,
+              "y": 13.5,
+              "level": 1
+            }
+          },
+          {
+            "id": 2,
+            "from": {
+              "x": 39.5,
+              "y": 34.5,
+              "level": 0
+            },
+            "to": {
+              "x": 39.5,
+              "y": 34.5,
+              "level": 1
+            }
+          }
+        ],
+        "description": "Normal Stag Rider attacks a full-health held Pikejaw. Front/rear differs only in Pikejaw facing.",
+        "targetFacing": 4,
+        "targetOrder": "hold",
+        "targetCooldown": 1000,
+        "sourceCooldown": 0,
+        "actors": [
+          {
+            "id": 1,
+            "side": 0,
+            "kind": "building",
+            "role": "hq",
+            "x": 6.5,
+            "y": 17.5,
+            "level": 0,
+            "hp": 1650,
+            "maxHp": 1650,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            }
+          },
+          {
+            "id": 2,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 5.5,
+            "y": 13.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 3,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 6.3,
+            "y": 13.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 4,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 7.1,
+            "y": 13.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 5,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 7.9,
+            "y": 13.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 6,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 10.5,
+            "y": 10.5,
+            "level": 1,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 8,
+            "side": 1,
+            "kind": "building",
+            "role": "hq",
+            "x": 42.5,
+            "y": 42.5,
+            "level": 0,
+            "hp": 1800,
+            "maxHp": 1800,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            }
+          },
+          {
+            "id": 9,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 39.5,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 10,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 40.3,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 11,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 41.1,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 12,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 41.9,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 13,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 42.7,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 54,
+            "side": 0,
+            "kind": "unit",
+            "role": "cavalry",
+            "definitionId": "fairy-cavalry",
+            "x": 19.5,
+            "y": 24.5,
+            "level": 0,
+            "hp": 210,
+            "maxHp": 210,
+            "cooldown": 0,
+            "facing": 0,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 55,
+            "side": 1,
+            "kind": "unit",
+            "role": "spear",
+            "definitionId": "orc-spear",
+            "x": 26,
+            "y": 24.5,
+            "level": 0,
+            "hp": 125,
+            "maxHp": 125,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          }
+        ]
+      }
+    },
+    "charge-pike-rear": {
+      "group": "canonical",
+      "featureIds": [
+        8
+      ],
+      "file": "tactics/charge-pike-rear.json",
+      "sha256": "5c8c862329faa0f6564bb970e9218ae4502376814faef588ae902de5dae985f8",
+      "bytes": 588150,
+      "ids": {
+        "source": 54,
+        "target": 55,
+        "undergroundWorker": 6,
+        "direction": "rear"
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "fairies",
+      "authored": {
+        "map": "Validated seed-zero medium forest input, flat grass/elevation, generated entrances retained; resources and opening combat troops removed before recording.",
+        "calendar": "Clear daylight, day/season/weather lengths 1000000 seconds.",
+        "banks": "Side0 starts at age3 with 2000 wood,2000 ore,500 crystal.",
+        "passiveOrders": "HQs/workers and non-firing targets use hold and cooldown1000; encounter exceptions are listed below.",
+        "removedSites": [
+          {
+            "id": 1,
+            "x": 24.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "relic"
+          },
+          {
+            "id": 2,
+            "x": 19.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "monster"
+          },
+          {
+            "id": 3,
+            "x": 29.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "village"
+          }
+        ],
+        "removedActors": [
+          {
+            "id": 7,
+            "role": "melee",
+            "side": 0
+          },
+          {
+            "id": 14,
+            "role": "melee",
+            "side": 1
+          }
+        ],
+        "removedResources": [
+          {
+            "id": 15,
+            "kind": "wood",
+            "x": 4.5,
+            "y": 12.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 16,
+            "kind": "wood",
+            "x": 43.5,
+            "y": 35.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 17,
+            "kind": "wood",
+            "x": 6.5,
+            "y": 14.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 18,
+            "kind": "wood",
+            "x": 41.5,
+            "y": 33.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 19,
+            "kind": "wood",
+            "x": 3.5,
+            "y": 9.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 20,
+            "kind": "wood",
+            "x": 44.5,
+            "y": 38.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 21,
+            "kind": "ore",
+            "x": 13.5,
+            "y": 5.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 22,
+            "kind": "ore",
+            "x": 34.5,
+            "y": 42.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 23,
+            "kind": "ore",
+            "x": 14.5,
+            "y": 8.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 24,
+            "kind": "ore",
+            "x": 33.5,
+            "y": 39.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 25,
+            "kind": "crystal",
+            "x": 13.5,
+            "y": 12.5,
+            "level": 0,
+            "amount": 180
+          },
+          {
+            "id": 26,
+            "kind": "crystal",
+            "x": 34.5,
+            "y": 35.5,
+            "level": 0,
+            "amount": 180
+          },
+          {
+            "id": 27,
+            "kind": "wood",
+            "x": 13.5,
+            "y": 16.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 28,
+            "kind": "wood",
+            "x": 34.5,
+            "y": 31.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 29,
+            "kind": "ore",
+            "x": 15.5,
+            "y": 18.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 30,
+            "kind": "ore",
+            "x": 32.5,
+            "y": 29.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 31,
+            "kind": "crystal",
+            "x": 17.5,
+            "y": 16.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 32,
+            "kind": "crystal",
+            "x": 30.5,
+            "y": 31.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 33,
+            "kind": "ore",
+            "x": 16.5,
+            "y": 21.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 34,
+            "kind": "ore",
+            "x": 31.5,
+            "y": 26.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 35,
+            "kind": "crystal",
+            "x": 18.5,
+            "y": 19.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 36,
+            "kind": "crystal",
+            "x": 29.5,
+            "y": 28.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 37,
+            "kind": "wood",
+            "x": 22.5,
+            "y": 22.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 38,
+            "kind": "wood",
+            "x": 25.5,
+            "y": 25.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 39,
+            "kind": "crystal",
+            "x": 26.5,
+            "y": 22.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 40,
+            "kind": "crystal",
+            "x": 21.5,
+            "y": 25.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 41,
+            "kind": "crystal",
+            "x": 24.5,
+            "y": 19.5,
+            "level": 1,
+            "amount": 1800
+          },
+          {
+            "id": 42,
+            "kind": "ore",
+            "x": 20.5,
+            "y": 28.5,
+            "level": 1,
+            "amount": 3600
+          },
+          {
+            "id": 43,
+            "kind": "wood",
+            "x": 28.5,
+            "y": 28.5,
+            "level": 1,
+            "amount": 3000
+          }
+        ],
+        "retainedEntrances": [
+          {
+            "id": 1,
+            "from": {
+              "x": 8.5,
+              "y": 13.5,
+              "level": 0
+            },
+            "to": {
+              "x": 8.5,
+              "y": 13.5,
+              "level": 1
+            }
+          },
+          {
+            "id": 2,
+            "from": {
+              "x": 39.5,
+              "y": 34.5,
+              "level": 0
+            },
+            "to": {
+              "x": 39.5,
+              "y": 34.5,
+              "level": 1
+            }
+          }
+        ],
+        "description": "Normal Stag Rider attacks a full-health held Pikejaw. Front/rear differs only in Pikejaw facing.",
+        "targetFacing": 0,
+        "targetOrder": "hold",
+        "targetCooldown": 1000,
+        "sourceCooldown": 0,
+        "actors": [
+          {
+            "id": 1,
+            "side": 0,
+            "kind": "building",
+            "role": "hq",
+            "x": 6.5,
+            "y": 17.5,
+            "level": 0,
+            "hp": 1650,
+            "maxHp": 1650,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            }
+          },
+          {
+            "id": 2,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 5.5,
+            "y": 13.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 3,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 6.3,
+            "y": 13.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 4,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 7.1,
+            "y": 13.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 5,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 7.9,
+            "y": 13.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 6,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 10.5,
+            "y": 10.5,
+            "level": 1,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 8,
+            "side": 1,
+            "kind": "building",
+            "role": "hq",
+            "x": 42.5,
+            "y": 42.5,
+            "level": 0,
+            "hp": 1800,
+            "maxHp": 1800,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            }
+          },
+          {
+            "id": 9,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 39.5,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 10,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 40.3,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 11,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 41.1,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 12,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 41.9,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 13,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 42.7,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 54,
+            "side": 0,
+            "kind": "unit",
+            "role": "cavalry",
+            "definitionId": "fairy-cavalry",
+            "x": 19.5,
+            "y": 24.5,
+            "level": 0,
+            "hp": 210,
+            "maxHp": 210,
+            "cooldown": 0,
+            "facing": 0,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 55,
+            "side": 1,
+            "kind": "unit",
+            "role": "spear",
+            "definitionId": "orc-spear",
+            "x": 26,
+            "y": 24.5,
+            "level": 0,
+            "hp": 125,
+            "maxHp": 125,
+            "cooldown": 1000,
+            "facing": 0,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          }
+        ]
+      }
+    },
+    "siege-full-crew-capture": {
+      "group": "canonical",
+      "featureIds": [
+        9
+      ],
+      "file": "tactics/siege-full-crew-capture.json",
+      "sha256": "646ec57c302089ed5b4847e4c756dd23786f1d2cc65a7efbd282a5018ddf0c40",
+      "bytes": 627906,
+      "ids": {
+        "captor": 54,
+        "engine": 55,
+        "target": 56,
+        "observer": 2,
+        "undergroundWorker": 6,
+        "moveDestination": {
+          "x": 26.5,
+          "y": 20.5,
+          "level": 0
+        }
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "fairies",
+      "authored": {
+        "map": "Validated seed-zero medium forest input, flat grass/elevation, generated entrances retained; resources and opening combat troops removed before recording.",
+        "calendar": "Clear daylight, day/season/weather lengths 1000000 seconds.",
+        "banks": "Side0 starts at age3 with 2000 wood,2000 ore,500 crystal.",
+        "passiveOrders": "HQs/workers and non-firing targets use hold and cooldown1000; encounter exceptions are listed below.",
+        "removedSites": [
+          {
+            "id": 1,
+            "x": 24.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "relic"
+          },
+          {
+            "id": 2,
+            "x": 19.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "monster"
+          },
+          {
+            "id": 3,
+            "x": 29.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "village"
+          }
+        ],
+        "removedActors": [
+          {
+            "id": 7,
+            "role": "melee",
+            "side": 0
+          },
+          {
+            "id": 14,
+            "role": "melee",
+            "side": 1
+          }
+        ],
+        "removedResources": [
+          {
+            "id": 15,
+            "kind": "wood",
+            "x": 4.5,
+            "y": 12.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 16,
+            "kind": "wood",
+            "x": 43.5,
+            "y": 35.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 17,
+            "kind": "wood",
+            "x": 6.5,
+            "y": 14.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 18,
+            "kind": "wood",
+            "x": 41.5,
+            "y": 33.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 19,
+            "kind": "wood",
+            "x": 3.5,
+            "y": 9.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 20,
+            "kind": "wood",
+            "x": 44.5,
+            "y": 38.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 21,
+            "kind": "ore",
+            "x": 13.5,
+            "y": 5.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 22,
+            "kind": "ore",
+            "x": 34.5,
+            "y": 42.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 23,
+            "kind": "ore",
+            "x": 14.5,
+            "y": 8.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 24,
+            "kind": "ore",
+            "x": 33.5,
+            "y": 39.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 25,
+            "kind": "crystal",
+            "x": 13.5,
+            "y": 12.5,
+            "level": 0,
+            "amount": 180
+          },
+          {
+            "id": 26,
+            "kind": "crystal",
+            "x": 34.5,
+            "y": 35.5,
+            "level": 0,
+            "amount": 180
+          },
+          {
+            "id": 27,
+            "kind": "wood",
+            "x": 13.5,
+            "y": 16.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 28,
+            "kind": "wood",
+            "x": 34.5,
+            "y": 31.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 29,
+            "kind": "ore",
+            "x": 15.5,
+            "y": 18.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 30,
+            "kind": "ore",
+            "x": 32.5,
+            "y": 29.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 31,
+            "kind": "crystal",
+            "x": 17.5,
+            "y": 16.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 32,
+            "kind": "crystal",
+            "x": 30.5,
+            "y": 31.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 33,
+            "kind": "ore",
+            "x": 16.5,
+            "y": 21.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 34,
+            "kind": "ore",
+            "x": 31.5,
+            "y": 26.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 35,
+            "kind": "crystal",
+            "x": 18.5,
+            "y": 19.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 36,
+            "kind": "crystal",
+            "x": 29.5,
+            "y": 28.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 37,
+            "kind": "wood",
+            "x": 22.5,
+            "y": 22.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 38,
+            "kind": "wood",
+            "x": 25.5,
+            "y": 25.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 39,
+            "kind": "crystal",
+            "x": 26.5,
+            "y": 22.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 40,
+            "kind": "crystal",
+            "x": 21.5,
+            "y": 25.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 41,
+            "kind": "crystal",
+            "x": 24.5,
+            "y": 19.5,
+            "level": 1,
+            "amount": 1800
+          },
+          {
+            "id": 42,
+            "kind": "ore",
+            "x": 20.5,
+            "y": 28.5,
+            "level": 1,
+            "amount": 3600
+          },
+          {
+            "id": 43,
+            "kind": "wood",
+            "x": 28.5,
+            "y": 28.5,
+            "level": 1,
+            "amount": 3000
+          }
+        ],
+        "retainedEntrances": [
+          {
+            "id": 1,
+            "from": {
+              "x": 8.5,
+              "y": 13.5,
+              "level": 0
+            },
+            "to": {
+              "x": 8.5,
+              "y": 13.5,
+              "level": 1
+            }
+          },
+          {
+            "id": 2,
+            "from": {
+              "x": 39.5,
+              "y": 34.5,
+              "level": 0
+            },
+            "to": {
+              "x": 39.5,
+              "y": 34.5,
+              "level": 1
+            }
+          }
+        ],
+        "description": "Native Thornblade attacks full crew, captures the engine, then moves and fires it for its new owner.",
+        "engineCrewHealth": 42,
+        "engineHullHealth": 185,
+        "engineDefinitionId": "orc-siege",
+        "targetHealth": 600,
+        "engineCooldown": 1000,
+        "captorCooldown": 0,
+        "combatSuppression": "Hostile engine starts at cooldown1000; crew/hull retain production full health. Hostile workers are outside capture contest range.",
+        "actors": [
+          {
+            "id": 1,
+            "side": 0,
+            "kind": "building",
+            "role": "hq",
+            "x": 6.5,
+            "y": 17.5,
+            "level": 0,
+            "hp": 1650,
+            "maxHp": 1650,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            }
+          },
+          {
+            "id": 2,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 35.5,
+            "y": 23.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 3,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 6.3,
+            "y": 13.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 4,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 7.1,
+            "y": 13.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 5,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 7.9,
+            "y": 13.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 6,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 10.5,
+            "y": 10.5,
+            "level": 1,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 8,
+            "side": 1,
+            "kind": "building",
+            "role": "hq",
+            "x": 42.5,
+            "y": 42.5,
+            "level": 0,
+            "hp": 1800,
+            "maxHp": 1800,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            }
+          },
+          {
+            "id": 9,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 39.5,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 10,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 40.3,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 11,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 41.1,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 12,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 41.9,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 13,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 42.7,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 54,
+            "side": 0,
+            "kind": "unit",
+            "role": "melee",
+            "definitionId": "fairy-melee",
+            "x": 18.4,
+            "y": 20.5,
+            "level": 0,
+            "hp": 140,
+            "maxHp": 140,
+            "cooldown": 0,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 55,
+            "side": 1,
+            "kind": "unit",
+            "role": "siege",
+            "definitionId": "orc-siege",
+            "x": 20.5,
+            "y": 20.5,
+            "level": 0,
+            "hp": 185,
+            "maxHp": 185,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0,
+              "siegeCrew": {
+                "hp": 42,
+                "maxHp": 42,
+                "uncrewed": false
+              }
+            }
+          },
+          {
+            "id": 56,
+            "side": 1,
+            "kind": "building",
+            "role": "depot",
+            "definitionId": "orc-depot",
+            "x": 37.5,
+            "y": 20.5,
+            "level": 0,
+            "hp": 600,
+            "maxHp": 600,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            }
+          }
+        ]
+      }
+    },
+    "ambush-selected-trigger": {
+      "group": "canonical",
+      "featureIds": [
+        10
+      ],
+      "file": "tactics/ambush-selected-trigger.json",
+      "sha256": "052b2c1236e8244ecd38adb04feb43ada056c4dc5c838e18f00928ecfa262641",
+      "bytes": 596852,
+      "ids": {
+        "ambusher": 55,
+        "dryTroop": 54,
+        "wrongTarget": 56,
+        "trigger": 57,
+        "timber": 58,
+        "undergroundWorker": 6
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "fairies",
+      "authored": {
+        "map": "Validated seed-zero medium forest input, flat grass/elevation, generated entrances retained; resources and opening combat troops removed before recording.",
+        "calendar": "Clear daylight, day/season/weather lengths 1000000 seconds.",
+        "banks": "Side0 starts at age3 with 2000 wood,2000 ore,500 crystal.",
+        "passiveOrders": "HQs/workers and non-firing targets use hold and cooldown1000; encounter exceptions are listed below.",
+        "removedSites": [
+          {
+            "id": 1,
+            "x": 24.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "relic"
+          },
+          {
+            "id": 2,
+            "x": 19.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "monster"
+          },
+          {
+            "id": 3,
+            "x": 29.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "village"
+          }
+        ],
+        "removedActors": [
+          {
+            "id": 7,
+            "role": "melee",
+            "side": 0
+          },
+          {
+            "id": 14,
+            "role": "melee",
+            "side": 1
+          }
+        ],
+        "removedResources": [
+          {
+            "id": 15,
+            "kind": "wood",
+            "x": 4.5,
+            "y": 12.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 16,
+            "kind": "wood",
+            "x": 43.5,
+            "y": 35.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 17,
+            "kind": "wood",
+            "x": 6.5,
+            "y": 14.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 18,
+            "kind": "wood",
+            "x": 41.5,
+            "y": 33.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 19,
+            "kind": "wood",
+            "x": 3.5,
+            "y": 9.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 20,
+            "kind": "wood",
+            "x": 44.5,
+            "y": 38.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 21,
+            "kind": "ore",
+            "x": 13.5,
+            "y": 5.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 22,
+            "kind": "ore",
+            "x": 34.5,
+            "y": 42.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 23,
+            "kind": "ore",
+            "x": 14.5,
+            "y": 8.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 24,
+            "kind": "ore",
+            "x": 33.5,
+            "y": 39.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 25,
+            "kind": "crystal",
+            "x": 13.5,
+            "y": 12.5,
+            "level": 0,
+            "amount": 180
+          },
+          {
+            "id": 26,
+            "kind": "crystal",
+            "x": 34.5,
+            "y": 35.5,
+            "level": 0,
+            "amount": 180
+          },
+          {
+            "id": 27,
+            "kind": "wood",
+            "x": 13.5,
+            "y": 16.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 28,
+            "kind": "wood",
+            "x": 34.5,
+            "y": 31.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 29,
+            "kind": "ore",
+            "x": 15.5,
+            "y": 18.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 30,
+            "kind": "ore",
+            "x": 32.5,
+            "y": 29.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 31,
+            "kind": "crystal",
+            "x": 17.5,
+            "y": 16.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 32,
+            "kind": "crystal",
+            "x": 30.5,
+            "y": 31.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 33,
+            "kind": "ore",
+            "x": 16.5,
+            "y": 21.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 34,
+            "kind": "ore",
+            "x": 31.5,
+            "y": 26.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 35,
+            "kind": "crystal",
+            "x": 18.5,
+            "y": 19.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 36,
+            "kind": "crystal",
+            "x": 29.5,
+            "y": 28.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 37,
+            "kind": "wood",
+            "x": 22.5,
+            "y": 22.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 38,
+            "kind": "wood",
+            "x": 25.5,
+            "y": 25.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 39,
+            "kind": "crystal",
+            "x": 26.5,
+            "y": 22.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 40,
+            "kind": "crystal",
+            "x": 21.5,
+            "y": 25.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 41,
+            "kind": "crystal",
+            "x": 24.5,
+            "y": 19.5,
+            "level": 1,
+            "amount": 1800
+          },
+          {
+            "id": 42,
+            "kind": "ore",
+            "x": 20.5,
+            "y": 28.5,
+            "level": 1,
+            "amount": 3600
+          },
+          {
+            "id": 43,
+            "kind": "wood",
+            "x": 28.5,
+            "y": 28.5,
+            "level": 1,
+            "amount": 3000
+          }
+        ],
+        "retainedEntrances": [
+          {
+            "id": 1,
+            "from": {
+              "x": 8.5,
+              "y": 13.5,
+              "level": 0
+            },
+            "to": {
+              "x": 8.5,
+              "y": 13.5,
+              "level": 1
+            }
+          },
+          {
+            "id": 2,
+            "from": {
+              "x": 39.5,
+              "y": 34.5,
+              "level": 0
+            },
+            "to": {
+              "x": 39.5,
+              "y": 34.5,
+              "level": 1
+            }
+          }
+        ],
+        "description": "Standing timber enables the Mothbow; dry troop cannot ambush. Wrong-role worker starts inside radius. Full-health melee has an initial authored march.",
+        "radius": 2,
+        "target": "melee",
+        "ambusherCooldown": 6,
+        "timberAmount": 100,
+        "wrongTargetHealth": 85,
+        "triggerHealth": 175,
+        "exceptionalInitialOrder": {
+          "actor": 57,
+          "order": {
+            "type": "move",
+            "x": 21.8,
+            "y": 20.5,
+            "level": 0
+          }
+        },
+        "initialOrders": "The hostile move is accepted before the recorder exists. No opponent command is injected after import.",
+        "actors": [
+          {
+            "id": 1,
+            "side": 0,
+            "kind": "building",
+            "role": "hq",
+            "x": 6.5,
+            "y": 17.5,
+            "level": 0,
+            "hp": 1650,
+            "maxHp": 1650,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            }
+          },
+          {
+            "id": 2,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 5.5,
+            "y": 13.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 3,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 6.3,
+            "y": 13.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 4,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 7.1,
+            "y": 13.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 5,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 7.9,
+            "y": 13.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 6,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 10.5,
+            "y": 10.5,
+            "level": 1,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 8,
+            "side": 1,
+            "kind": "building",
+            "role": "hq",
+            "x": 42.5,
+            "y": 42.5,
+            "level": 0,
+            "hp": 1800,
+            "maxHp": 1800,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            }
+          },
+          {
+            "id": 9,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 39.5,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 10,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 40.3,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 11,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 41.1,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 12,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 41.9,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 13,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 42.7,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 54,
+            "side": 0,
+            "kind": "unit",
+            "role": "melee",
+            "definitionId": "fairy-melee",
+            "x": 8.5,
+            "y": 13.5,
+            "level": 0,
+            "hp": 140,
+            "maxHp": 140,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 55,
+            "side": 0,
+            "kind": "unit",
+            "role": "ranged",
+            "definitionId": "fairy-ranged",
+            "x": 20.5,
+            "y": 20.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 6,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 56,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "definitionId": "orc-worker",
+            "x": 22,
+            "y": 20.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 57,
+            "side": 1,
+            "kind": "unit",
+            "role": "melee",
+            "definitionId": "orc-melee",
+            "x": 40.5,
+            "y": 40.5,
+            "level": 0,
+            "hp": 175,
+            "maxHp": 175,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "move",
+              "x": 21.8,
+              "y": 20.5,
+              "level": 0
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          }
+        ]
+      }
+    },
+    "morale-supported-full-fight": {
+      "group": "canonical",
+      "featureIds": [
+        4
+      ],
+      "file": "tactics/morale-supported-full-fight.json",
+      "sha256": "36052160a291c270a8e3122df1f3c3cf8577344474f4557f62a8efc1dd7bcb29",
+      "bytes": 637858,
+      "ids": {
+        "siege": [
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60
+        ],
+        "primary": 61,
+        "support": 62,
+        "ranged": [
+          63,
+          64,
+          65,
+          66
+        ],
+        "squad": [
+          61,
+          62,
+          63,
+          64,
+          65,
+          66
+        ],
+        "undergroundWorker": 6
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "faction": "fairies",
+      "authored": {
+        "map": "Validated seed-zero medium forest input, flat grass/elevation, generated entrances retained; resources and opening combat troops removed before recording.",
+        "calendar": "Clear daylight, day/season/weather lengths 1000000 seconds.",
+        "banks": "Side0 starts at age3 with 2000 wood,2000 ore,500 crystal.",
+        "passiveOrders": "HQs/workers and non-firing targets use hold and cooldown1000; encounter exceptions are listed below.",
+        "removedSites": [
+          {
+            "id": 1,
+            "x": 24.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "relic"
+          },
+          {
+            "id": 2,
+            "x": 19.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "monster"
+          },
+          {
+            "id": 3,
+            "x": 29.5,
+            "y": 24.5,
+            "level": 1,
+            "kind": "village"
+          }
+        ],
+        "removedActors": [
+          {
+            "id": 7,
+            "role": "melee",
+            "side": 0
+          },
+          {
+            "id": 14,
+            "role": "melee",
+            "side": 1
+          }
+        ],
+        "removedResources": [
+          {
+            "id": 15,
+            "kind": "wood",
+            "x": 4.5,
+            "y": 12.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 16,
+            "kind": "wood",
+            "x": 43.5,
+            "y": 35.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 17,
+            "kind": "wood",
+            "x": 6.5,
+            "y": 14.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 18,
+            "kind": "wood",
+            "x": 41.5,
+            "y": 33.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 19,
+            "kind": "wood",
+            "x": 3.5,
+            "y": 9.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 20,
+            "kind": "wood",
+            "x": 44.5,
+            "y": 38.5,
+            "level": 0,
+            "amount": 2600
+          },
+          {
+            "id": 21,
+            "kind": "ore",
+            "x": 13.5,
+            "y": 5.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 22,
+            "kind": "ore",
+            "x": 34.5,
+            "y": 42.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 23,
+            "kind": "ore",
+            "x": 14.5,
+            "y": 8.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 24,
+            "kind": "ore",
+            "x": 33.5,
+            "y": 39.5,
+            "level": 0,
+            "amount": 2800
+          },
+          {
+            "id": 25,
+            "kind": "crystal",
+            "x": 13.5,
+            "y": 12.5,
+            "level": 0,
+            "amount": 180
+          },
+          {
+            "id": 26,
+            "kind": "crystal",
+            "x": 34.5,
+            "y": 35.5,
+            "level": 0,
+            "amount": 180
+          },
+          {
+            "id": 27,
+            "kind": "wood",
+            "x": 13.5,
+            "y": 16.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 28,
+            "kind": "wood",
+            "x": 34.5,
+            "y": 31.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 29,
+            "kind": "ore",
+            "x": 15.5,
+            "y": 18.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 30,
+            "kind": "ore",
+            "x": 32.5,
+            "y": 29.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 31,
+            "kind": "crystal",
+            "x": 17.5,
+            "y": 16.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 32,
+            "kind": "crystal",
+            "x": 30.5,
+            "y": 31.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 33,
+            "kind": "ore",
+            "x": 16.5,
+            "y": 21.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 34,
+            "kind": "ore",
+            "x": 31.5,
+            "y": 26.5,
+            "level": 0,
+            "amount": 2200
+          },
+          {
+            "id": 35,
+            "kind": "crystal",
+            "x": 18.5,
+            "y": 19.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 36,
+            "kind": "crystal",
+            "x": 29.5,
+            "y": 28.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 37,
+            "kind": "wood",
+            "x": 22.5,
+            "y": 22.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 38,
+            "kind": "wood",
+            "x": 25.5,
+            "y": 25.5,
+            "level": 0,
+            "amount": 3000
+          },
+          {
+            "id": 39,
+            "kind": "crystal",
+            "x": 26.5,
+            "y": 22.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 40,
+            "kind": "crystal",
+            "x": 21.5,
+            "y": 25.5,
+            "level": 0,
+            "amount": 400
+          },
+          {
+            "id": 41,
+            "kind": "crystal",
+            "x": 24.5,
+            "y": 19.5,
+            "level": 1,
+            "amount": 1800
+          },
+          {
+            "id": 42,
+            "kind": "ore",
+            "x": 20.5,
+            "y": 28.5,
+            "level": 1,
+            "amount": 3600
+          },
+          {
+            "id": 43,
+            "kind": "wood",
+            "x": 28.5,
+            "y": 28.5,
+            "level": 1,
+            "amount": 3000
+          }
+        ],
+        "retainedEntrances": [
+          {
+            "id": 1,
+            "from": {
+              "x": 8.5,
+              "y": 13.5,
+              "level": 0
+            },
+            "to": {
+              "x": 8.5,
+              "y": 13.5,
+              "level": 1
+            }
+          },
+          {
+            "id": 2,
+            "from": {
+              "x": 39.5,
+              "y": 34.5,
+              "level": 0
+            },
+            "to": {
+              "x": 39.5,
+              "y": 34.5,
+              "level": 1
+            }
+          }
+        ],
+        "description": "Seven ordinary Fairy engines attack a full-health, morale100 supported Orc squad. Actual wounds and nearby combat deaths must lead to a surviving supported cavalry retreat.",
+        "squadHealth": "Normal maximum health, cavalry210 and ranged100; no authored wounds.",
+        "squadMorale": 100,
+        "squadRecentLoss": 0,
+        "squadCooldown": 1000,
+        "attackerCooldown": 3.8,
+        "combatSuppression": "Targets begin at cooldown1000 to prevent return fire. Attackers start one normal weapon cooldown period from ready so the native attack input precedes their first volley. No morale/health edits, hit injection, artillery modification or cooldown reset follows recording.",
+        "predictedOutcome": "One volley may kill four ranged allies and leave both cavalry wounded, alive and close enough to support each other. This is an unexecuted prediction, not a generated result.",
+        "actors": [
+          {
+            "id": 1,
+            "side": 0,
+            "kind": "building",
+            "role": "hq",
+            "x": 6.5,
+            "y": 17.5,
+            "level": 0,
+            "hp": 1650,
+            "maxHp": 1650,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            }
+          },
+          {
+            "id": 2,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 5.5,
+            "y": 13.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 3,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 6.3,
+            "y": 13.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 4,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 7.1,
+            "y": 13.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 5,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 7.9,
+            "y": 13.5,
+            "level": 0,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 6,
+            "side": 0,
+            "kind": "unit",
+            "role": "worker",
+            "x": 10.5,
+            "y": 10.5,
+            "level": 1,
+            "hp": 65,
+            "maxHp": 65,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 8,
+            "side": 1,
+            "kind": "building",
+            "role": "hq",
+            "x": 42.5,
+            "y": 42.5,
+            "level": 0,
+            "hp": 1800,
+            "maxHp": 1800,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            }
+          },
+          {
+            "id": 9,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 39.5,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 10,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 40.3,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 11,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 41.1,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 12,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 41.9,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 13,
+            "side": 1,
+            "kind": "unit",
+            "role": "worker",
+            "x": 42.7,
+            "y": 39.5,
+            "level": 0,
+            "hp": 85,
+            "maxHp": 85,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 54,
+            "side": 0,
+            "kind": "unit",
+            "role": "siege",
+            "definitionId": "fairy-siege",
+            "x": 20.5,
+            "y": 21.5,
+            "level": 0,
+            "hp": 185,
+            "maxHp": 185,
+            "cooldown": 3.8,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0,
+              "siegeCrew": {
+                "hp": 42,
+                "maxHp": 42,
+                "uncrewed": false
+              }
+            }
+          },
+          {
+            "id": 55,
+            "side": 0,
+            "kind": "unit",
+            "role": "siege",
+            "definitionId": "fairy-siege",
+            "x": 20.5,
+            "y": 22.5,
+            "level": 0,
+            "hp": 185,
+            "maxHp": 185,
+            "cooldown": 3.8,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0,
+              "siegeCrew": {
+                "hp": 42,
+                "maxHp": 42,
+                "uncrewed": false
+              }
+            }
+          },
+          {
+            "id": 56,
+            "side": 0,
+            "kind": "unit",
+            "role": "siege",
+            "definitionId": "fairy-siege",
+            "x": 20.5,
+            "y": 23.5,
+            "level": 0,
+            "hp": 185,
+            "maxHp": 185,
+            "cooldown": 3.8,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0,
+              "siegeCrew": {
+                "hp": 42,
+                "maxHp": 42,
+                "uncrewed": false
+              }
+            }
+          },
+          {
+            "id": 57,
+            "side": 0,
+            "kind": "unit",
+            "role": "siege",
+            "definitionId": "fairy-siege",
+            "x": 20.5,
+            "y": 24.5,
+            "level": 0,
+            "hp": 185,
+            "maxHp": 185,
+            "cooldown": 3.8,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0,
+              "siegeCrew": {
+                "hp": 42,
+                "maxHp": 42,
+                "uncrewed": false
+              }
+            }
+          },
+          {
+            "id": 58,
+            "side": 0,
+            "kind": "unit",
+            "role": "siege",
+            "definitionId": "fairy-siege",
+            "x": 20.5,
+            "y": 25.5,
+            "level": 0,
+            "hp": 185,
+            "maxHp": 185,
+            "cooldown": 3.8,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0,
+              "siegeCrew": {
+                "hp": 42,
+                "maxHp": 42,
+                "uncrewed": false
+              }
+            }
+          },
+          {
+            "id": 59,
+            "side": 0,
+            "kind": "unit",
+            "role": "siege",
+            "definitionId": "fairy-siege",
+            "x": 20.5,
+            "y": 26.5,
+            "level": 0,
+            "hp": 185,
+            "maxHp": 185,
+            "cooldown": 3.8,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0,
+              "siegeCrew": {
+                "hp": 42,
+                "maxHp": 42,
+                "uncrewed": false
+              }
+            }
+          },
+          {
+            "id": 60,
+            "side": 0,
+            "kind": "unit",
+            "role": "siege",
+            "definitionId": "fairy-siege",
+            "x": 20.5,
+            "y": 27.5,
+            "level": 0,
+            "hp": 185,
+            "maxHp": 185,
+            "cooldown": 3.8,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0,
+              "siegeCrew": {
+                "hp": 42,
+                "maxHp": 42,
+                "uncrewed": false
+              }
+            }
+          },
+          {
+            "id": 61,
+            "side": 1,
+            "kind": "unit",
+            "role": "cavalry",
+            "definitionId": "orc-cavalry",
+            "x": 25.5,
+            "y": 24.5,
+            "level": 0,
+            "hp": 210,
+            "maxHp": 210,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 62,
+            "side": 1,
+            "kind": "unit",
+            "role": "cavalry",
+            "definitionId": "orc-cavalry",
+            "x": 25.5,
+            "y": 25.2,
+            "level": 0,
+            "hp": 210,
+            "maxHp": 210,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 63,
+            "side": 1,
+            "kind": "unit",
+            "role": "ranged",
+            "definitionId": "orc-ranged",
+            "x": 24.8,
+            "y": 24.5,
+            "level": 0,
+            "hp": 100,
+            "maxHp": 100,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 64,
+            "side": 1,
+            "kind": "unit",
+            "role": "ranged",
+            "definitionId": "orc-ranged",
+            "x": 26.2,
+            "y": 24.5,
+            "level": 0,
+            "hp": 100,
+            "maxHp": 100,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 65,
+            "side": 1,
+            "kind": "unit",
+            "role": "ranged",
+            "definitionId": "orc-ranged",
+            "x": 24.8,
+            "y": 25.2,
+            "level": 0,
+            "hp": 100,
+            "maxHp": 100,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          },
+          {
+            "id": 66,
+            "side": 1,
+            "kind": "unit",
+            "role": "ranged",
+            "definitionId": "orc-ranged",
+            "x": 26.2,
+            "y": 25.2,
+            "level": 0,
+            "hp": 100,
+            "maxHp": 100,
+            "cooldown": 1000,
+            "facing": 4,
+            "order": {
+              "type": "hold"
+            },
+            "tactics": {
+              "morale": 100,
+              "recentLoss": 0
+            }
+          }
+        ]
+      }
+    },
+    "ruin-control": {
+      "file": "ruins/ruin-control.json",
+      "group": "ruin",
+      "ids": {
+        "source": 50,
+        "target": 51,
+        "sites": [],
+        "expectedFirstDamage": 12,
+        "withdrawal": {
+          "x": 9.5,
+          "y": 24.5,
+          "level": 1
+        },
+        "returnPoint": {
+          "x": 20.5,
+          "y": 24.5,
+          "level": 1
+        }
+      },
+      "authored": {
+        "map": "Valid generated two-layer map flattened to grass and zero elevation before createMatch; generated starts/resources/transitions retained in input. Runtime resources and default combat troops removed; HQs and workers relocated away from the cavern firing lane before recording.",
+        "siteDefinitions": [],
+        "sourceCooldown": 3,
+        "targetCooldown": 1000,
+        "health": "Ordinary full definition health; neutral ruins; no owned-relic damage bonus.",
+        "postRecordingWrites": "Native UI/pointer/keyboard commands and normal engine ticks only."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "sha256": "c66cfd87242db90010d319f3be6b4cb86d279d769b2a073393d08c9bd842b0c4",
+      "inputMap": {
+        "file": "ruins/ruin-control-input-map.json",
+        "sha256": "c36ce457f1c1484cd45df5b3acc87e28bc65a6321a3e8d6a8015e0dfdd3a9056"
+      }
+    },
+    "ruin-covered": {
+      "file": "ruins/ruin-covered.json",
+      "group": "ruin",
+      "ids": {
+        "source": 51,
+        "target": 52,
+        "sites": [
+          1
+        ],
+        "expectedFirstDamage": 6.75,
+        "withdrawal": {
+          "x": 9.5,
+          "y": 24.5,
+          "level": 1
+        },
+        "returnPoint": {
+          "x": 20.5,
+          "y": 24.5,
+          "level": 1
+        }
+      },
+      "authored": {
+        "map": "Valid generated two-layer map flattened to grass and zero elevation before createMatch; generated starts/resources/transitions retained in input. Runtime resources and default combat troops removed; HQs and workers relocated away from the cavern firing lane before recording.",
+        "siteDefinitions": [
+          {
+            "x": 23.5,
+            "y": 24.5,
+            "level": 1
+          }
+        ],
+        "sourceCooldown": 3,
+        "targetCooldown": 1000,
+        "health": "Ordinary full definition health; neutral ruins; no owned-relic damage bonus.",
+        "postRecordingWrites": "Native UI/pointer/keyboard commands and normal engine ticks only."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "sha256": "ec3b1f54b524bf809f111b15ae5cd562b35d8324664e59e6ecfee9030aaa5f18",
+      "inputMap": {
+        "file": "ruins/ruin-covered-input-map.json",
+        "sha256": "e19a1755fba88bbd0484211c9ea53a136625e6edf45efc7385815da52a6103b3"
+      }
+    },
+    "ruin-other-level": {
+      "file": "ruins/ruin-other-level.json",
+      "group": "ruin",
+      "ids": {
+        "source": 51,
+        "target": 52,
+        "sites": [
+          1
+        ],
+        "expectedFirstDamage": 12,
+        "withdrawal": {
+          "x": 9.5,
+          "y": 24.5,
+          "level": 1
+        },
+        "returnPoint": {
+          "x": 20.5,
+          "y": 24.5,
+          "level": 1
+        }
+      },
+      "authored": {
+        "map": "Valid generated two-layer map flattened to grass and zero elevation before createMatch; generated starts/resources/transitions retained in input. Runtime resources and default combat troops removed; HQs and workers relocated away from the cavern firing lane before recording.",
+        "siteDefinitions": [
+          {
+            "x": 23.5,
+            "y": 24.5,
+            "level": 0
+          }
+        ],
+        "sourceCooldown": 3,
+        "targetCooldown": 1000,
+        "health": "Ordinary full definition health; neutral ruins; no owned-relic damage bonus.",
+        "postRecordingWrites": "Native UI/pointer/keyboard commands and normal engine ticks only."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "sha256": "f9eb9f5291e045f9320ed77ac8afb62dd8447d22822fd64479a98d52ded6865f",
+      "inputMap": {
+        "file": "ruins/ruin-other-level-input-map.json",
+        "sha256": "46bdda8412d18e70b85cef9407a79afee1c7673e4eb63aef0ce45ebef1829c36"
+      }
+    },
+    "ruin-beyond-victim": {
+      "file": "ruins/ruin-beyond-victim.json",
+      "group": "ruin",
+      "ids": {
+        "source": 51,
+        "target": 52,
+        "sites": [
+          1
+        ],
+        "expectedFirstDamage": 12,
+        "withdrawal": {
+          "x": 9.5,
+          "y": 24.5,
+          "level": 1
+        },
+        "returnPoint": {
+          "x": 20.5,
+          "y": 24.5,
+          "level": 1
+        }
+      },
+      "authored": {
+        "map": "Valid generated two-layer map flattened to grass and zero elevation before createMatch; generated starts/resources/transitions retained in input. Runtime resources and default combat troops removed; HQs and workers relocated away from the cavern firing lane before recording.",
+        "siteDefinitions": [
+          {
+            "x": 25.9,
+            "y": 24.5,
+            "level": 1
+          }
+        ],
+        "sourceCooldown": 3,
+        "targetCooldown": 1000,
+        "health": "Ordinary full definition health; neutral ruins; no owned-relic damage bonus.",
+        "postRecordingWrites": "Native UI/pointer/keyboard commands and normal engine ticks only."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "sha256": "d4f4bfcfaa21a719e555bebb1816f9c490593da6385376176fbd79b102919ae6",
+      "inputMap": {
+        "file": "ruins/ruin-beyond-victim-input-map.json",
+        "sha256": "aea074e84999b70df57e9cb2edbc5cc4500c98fd2e6d3d14bd012b46c77f902d"
+      }
+    },
+    "ruin-inside-near-victim": {
+      "file": "ruins/ruin-inside-near-victim.json",
+      "group": "ruin",
+      "ids": {
+        "source": 51,
+        "target": 52,
+        "sites": [
+          1
+        ],
+        "expectedFirstDamage": 6.75,
+        "withdrawal": {
+          "x": 9.5,
+          "y": 24.5,
+          "level": 1
+        },
+        "returnPoint": {
+          "x": 20.5,
+          "y": 24.5,
+          "level": 1
+        }
+      },
+      "authored": {
+        "map": "Valid generated two-layer map flattened to grass and zero elevation before createMatch; generated starts/resources/transitions retained in input. Runtime resources and default combat troops removed; HQs and workers relocated away from the cavern firing lane before recording.",
+        "siteDefinitions": [
+          {
+            "x": 25.1,
+            "y": 24.5,
+            "level": 1
+          }
+        ],
+        "sourceCooldown": 3,
+        "targetCooldown": 1000,
+        "health": "Ordinary full definition health; neutral ruins; no owned-relic damage bonus.",
+        "postRecordingWrites": "Native UI/pointer/keyboard commands and normal engine ticks only."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "sha256": "beae5f1365652db17c3f320243cb158ffbe25d8a34033818ae8699cc31999c11",
+      "inputMap": {
+        "file": "ruins/ruin-inside-near-victim-input-map.json",
+        "sha256": "d6ae6b603fae4fc986f1e1f401063b9ec2a9b1506cff867f20e61abf9ca10762"
+      }
+    },
+    "ruin-capture": {
+      "file": "ruins/ruin-capture.json",
+      "group": "ruin",
+      "ids": {
+        "worker": 51,
+        "site": 1,
+        "sitePoint": {
+          "x": 23.5,
+          "y": 24.5,
+          "level": 1
+        }
+      },
+      "authored": {
+        "map": "Same valid flat generated cavern input.",
+        "capture": "Neutral relic, zero progress and owner null; ordinary owned worker in capture range. Capture is started by the main World tools button, with no authored capture progress."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "sha256": "0cebdee65f6ccd2d1896bf40d6600397ed99b103df7b8955f823cfb1b114258e",
+      "inputMap": {
+        "file": "ruins/ruin-capture-input-map.json",
+        "sha256": "e19a1755fba88bbd0484211c9ea53a136625e6edf45efc7385815da52a6103b3"
+      }
+    }
+  }
+}

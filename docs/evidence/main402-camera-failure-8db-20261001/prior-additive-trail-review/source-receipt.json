@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "kind": "additive-cross-family-trail-review",
+  "scope": "f67 r2 formation selection failure and one-call F2 correction",
+  "priorReceiptsModified": false,
+  "requestedModel": "gpt-5.6-sol",
+  "actualProviderModel": null,
+  "modelQualification": "The sub-agent runtime exposed no provider model identifier. The exact requested model and finer family authenticity are not claimed.",
+  "baseCommit": "f67ee00f50b159a5e236abe72956b2938d567515",
+  "candidateCommitted": true,
+  "integrationCommit": "8db0f2dd0b38302f0f588c80316db082bc49e9b3",
+  "repositoryEdited": false,
+  "runtimeExecutedByReview": false,
+  "transcript": {
+    "path": "/home/morgana/.codex/sessions/2026/09/30/rollout-2026-09-30T22-54-08-01a0f606-ff76-7312-a274-41e17906a3bd.jsonl",
+    "bytesAtReview": 121559533,
+    "method": "bounded matching reads only",
+    "keyOrdinals": [21869, 21893, 21919, 21920, 21929, 21933, 21938, 21955, 21983, 22038, 22064, 22095, 22098, 22118, 22134, 22137]
+  },
+  "sources": [
+    {"path": "docs/features/decisions.tsv", "sha256": "c74d1ee7830deaf89f4cb0ee079a54ce27bd72ac744836fba54dd8f7f5d270ba"},
+    {"path": "scripts/acceptance/canonical-main-smoke.mjs", "sha256": "b08b45bd2d51278a599f453cd2a791a699d7ec4bb85d570ad1dc01060466899f"},
+    {"path": "docs/evidence/main402-formation-selection-failure-f67-20261001/root-selection-diagnosis.json", "sha256": "5224c1657d524ad904a0c8b42745f18efcdb5a26e1376ff978a7f47a35b867c1"},
+    {"path": "docs/evidence/main402-formation-selection-failure-f67-20261001/raw/browser/formation-line-failure-observations.json", "sha256": "ae82633130e88567db73a2ace345cb5df175c1502c20cb68642c08dc14ed12c4"},
+    {"path": "docs/evidence/main402-formation-selection-failure-f67-20261001/raw/browser/native-acceptance-first-failure.png", "sha256": "20fa1bc045221fef1f562d64e33b1561cb87ca2725c5380c9d217d700437d2ef"},
+    {"path": "docs/evidence/main402-formation-selection-failure-f67-20261001/raw/execution.json", "sha256": "dc5f1999664a89f9874e848c1f3aad6b25dfb33ebc51c65b0b9740e72b27d75b"},
+    {"path": "docs/evidence/main402-formation-selection-failure-f67-20261001/raw/run-artifact-manifest.json", "sha256": "7761b6bb3350ad5aafc87957c34a6601d5fb0340e93f3324c41a1d300d28d78e"},
+    {"path": "docs/evidence/main402-formation-selection-failure-f67-20261001/root-retention.json", "sha256": "2ead9315ec3678e7490174a352a8e23ead3b0be78ab0a3fa0cdacfe063fbfb4b"},
+    {"path": "docs/evidence/main402-formation-selection-failure-f67-20261001/root-retention-v2.json", "sha256": "ba71ee03f4987576d048077ce9ca9529bcf970f5977e6c81c5c9c36037dcfc45"},
+    {"path": "docs/evidence/main402-formation-selection-failure-f67-20261001/correction/root-correction.json", "sha256": "20c3fb9af8b436af8b15cf1360eacb09e4b83f309f2dcfb07062ad6eb619ecb9"},
+    {"path": "docs/evidence/main402-formation-selection-failure-f67-20261001/correction/root-formation-f2-correction.patch", "sha256": "13f616c9d8a2423898c256e44d87115a578286ff4b78e0ca06c1c0fd8c0753ef"},
+    {"path": "docs/evidence/main402-formation-selection-failure-f67-20261001/correction/root-corrected-canonical-main-smoke.mjs", "sha256": "b08b45bd2d51278a599f453cd2a791a699d7ec4bb85d570ad1dc01060466899f"},
+    {"path": "/tmp/ovf-main15-formation-f2-static-review-architecture-c9qtdz6g/static-review.json", "sha256": "4b78d4d8d7658a0583f72de09498fc5ef5b4a3cc75c7d31e9e0e6df0450a50c1"},
+    {"path": "/tmp/ovf-main15-formation-f2-static-review-architecture-c9qtdz6g/source-candidate-authentication.json", "sha256": "a01d5da7be44682f63ba5ad3a1d9738f9d73941a14b351cdd8cadb3c4e005c29"},
+    {"path": "/tmp/ovf-main15-formation-f2-static-review-architecture-c9qtdz6g/four-fixture-selection-readback.json", "sha256": "deeb59e19d0cfeff02d0480f7691c432a8ab8cfa1b3ed1345656c46e99130c54"}
+  ],
+  "findings": {
+    "failureStage": "first formation selection before authoring",
+    "expectedIds": [54, 55, 56, 57, 58, 59],
+    "selectedIds": [54, 55, 57, 58, 59],
+    "formationAccepted": false,
+    "packetOriginalFiles": 582,
+    "packetOriginalBytes": 93631927,
+    "committedPacketBlobsIncludingV2Metadata": 583,
+    "candidateSha256": "b08b45bd2d51278a599f453cd2a791a699d7ec4bb85d570ad1dc01060466899f",
+    "staticBlockers": [],
+    "runtimeSuccessVerified": false,
+    "verifiedCount": 94,
+    "pendingIds": [1, 4, 8, 9, 10, 63],
+    "newFeatureGates": []
+  }
+}

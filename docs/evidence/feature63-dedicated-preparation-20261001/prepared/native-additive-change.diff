@@ -1,0 +1,21 @@
+--- /home/morgana/.codex/worktrees/assembled-allied-ai/ai-online-only-retry-readiness-r1/feature63-human-wave-composition-r1/native-auditor-r1/audit-human-wave-r5.py
++++ /home/morgana/.codex/worktrees/assembled-allied-ai/feature63-dedicated-wrapper-readiness-r1/native-auditor-r2/audit-human-wave-r6.py
+@@ -920,6 +920,8 @@
+     human_events = [r for r in event_records.values() if r["event"]["kind"] == "human-to-wave-participant"]
+     require({r["event"]["sourceOwner"] for r in human_events} == {0, 1},
+             "both commanded humans do not attack the same shared-wave participant set")
++    require({r["event"]["targetOwner"] for r in human_events} == {2, 3},
++            "commanded human witnesses do not collectively target both AI owners in the same shared wave")
+     report["matchIdentity"] = {"matchId": match_id, "lobbyId": lobby_id, "humanAccounts": accounts,
+                                "controllers": CONTROLLERS, "teams": TEAMS}
+     report["publicFight"] = {"startTick": start, "endTick": end, "windowTicks": end - start,
+@@ -929,7 +931,8 @@
+     report["checks"] = {"rootBinding": True, "closedExtraction": True, "nativeBounds": True,
+                         "sharedPlannerTarget": True, "committedDispatchDerived": True,
+                         "sameParticipantCombat": True, "publicAliveCoverage": True,
+-                        "bothHumanUICommands": True, "bothHumanAttacks": True, "bothNativeAIWaveOwners": True}
++                        "bothHumanUICommands": True, "bothHumanAttacks": True, "bothNativeAIWaveOwners": True,
++                        "humanWitnessesTargetBothAIWaveOwners": True}
+ 
+ 
+ def main():

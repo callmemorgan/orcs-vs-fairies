@@ -1,0 +1,114 @@
+{
+  "method": "Static arithmetic from pinned native-context point projection and GameScene.centerOn. No browser or product execution.",
+  "r3RecordedDimensions": {
+    "devicePixelRatio": 1,
+    "camera": {
+      "x": 880,
+      "y": -9.5,
+      "zoom": 1,
+      "width": 1440,
+      "height": 1000
+    },
+    "canvas": {
+      "width": 1440,
+      "height": 1000,
+      "cssWidth": 1440,
+      "cssHeight": 1000
+    }
+  },
+  "r2PointerSource": "/tmp/ovf-main402-native15-f67ee00-r2/browser/browser-main-smoke402.json",
+  "r2PointerRecord": {
+    "kind": "entity",
+    "button": "left",
+    "target": 55,
+    "tick": 18,
+    "selected": [
+      54
+    ],
+    "viewSide": 0,
+    "viewLevelBefore": 0,
+    "targetWorld": {
+      "x": 19.2,
+      "y": 20.5,
+      "level": 0
+    },
+    "targetFogKey": 979,
+    "targetFogVisible": true,
+    "screen": {
+      "x": 742.4000000000001,
+      "y": 410.70000000000005,
+      "zoom": 1,
+      "scaleX": 1,
+      "scaleY": 1,
+      "camera": {
+        "x": 816,
+        "y": 274.5,
+        "zoom": 1,
+        "width": 1440,
+        "height": 1000
+      },
+      "canvas": {
+        "left": 0,
+        "top": 0,
+        "width": 1440,
+        "height": 1000
+      }
+    }
+  },
+  "r2ObservedCenteredCamera": {
+    "x": 816,
+    "y": 274.5,
+    "zoom": 1,
+    "width": 1440,
+    "height": 1000
+  },
+  "fixtureFirstTroop": {
+    "id": 54,
+    "x": 18.5,
+    "y": 20.5,
+    "level": 0
+  },
+  "fixtureHQ": {
+    "id": 1,
+    "x": 6.5,
+    "y": 17.5,
+    "level": 0
+  },
+  "destination": {
+    "x": 30.5,
+    "y": 20.5,
+    "level": 0
+  },
+  "centeredFirstTroopScreen": {
+    "x": 720.0,
+    "y": 429.5
+  },
+  "screenDestinationAfterRestoredCenter": {
+    "x": 1104.0,
+    "y": 621.5
+  },
+  "screenF2FocusAfterRestoredCenter": {
+    "x": 656.0,
+    "y": 429.5
+  },
+  "derivedHQCenteredCameraForSameViewportBounds": {
+    "x": 528.0,
+    "y": 34.5
+  },
+  "derivedHQCenteredDestinationForSameViewportBounds": {
+    "x": 1392.0,
+    "y": 861.5
+  },
+  "interpretation": "Restored center places destination1104,621.5 and F2 focus656,429.5 inside the battlefield. With the same bounds but HQ centering, destination1392,861.5 is below the tactical HUD top shown near816 in the sealed failure screenshot. These are static projections; r3 does not retain a failure-time camera object.",
+  "references": [
+    "src/ui/WorldTools.ts:36 public troop button selects and centers",
+    "src/main.ts:451 binds WorldTools center to GameScene.centerOn",
+    "src/game/GameScene.ts:225 public selectEntities may change current level",
+    "src/game/GameScene.ts:262 centerOn uses viewBounds",
+    "src/game/GameScene.ts:263 restart centers on player start",
+    "src/ui/Hud.ts:190 battlefield bounds are resource-bar bottom and tactical-bar top",
+    "scripts/acceptance/native-context.mjs:54\u201358 public list selection and exact single-ID wait",
+    "scripts/acceptance/native-context.mjs:74\u201377 former selectMany starts with selectTroop",
+    "scripts/acceptance/verify-main-smoke402.mjs:79\u201381 startup display precedes fixture groups"
+  ]
+}
