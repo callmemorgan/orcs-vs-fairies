@@ -1,0 +1,186 @@
+{
+  "schema": "feature63-public-identities-v1",
+  "sourcePin": "56804e8dc37dac029b5e114cbaea9cee80449561",
+  "matchId": "1069aa31-1b90-4ea9-9c27-d87f922110a2",
+  "lobbyId": "4d414abe-b223-47fa-8834-385de23f0bcb",
+  "seatsText": [
+    "Player 1: Guest-6e8bcf · Ironclad · Team 1 · Ready",
+    "Player 2: Guest-7d28ab · Wild Court · Team 1 · Ready",
+    "Player 3: AI · Ironclad · Team 2 · AI ready",
+    "Player 4: AI · Wild Court · Team 2 · AI ready"
+  ],
+  "receivedRulesText": [
+    "Server revision 4 · Map small · AnnihilationStarting age: Settlement Age (1) · Shared team vision: On · Friendly fire: OnHeadquarters defeat: On · Match starting resources: 420 wood, 220 ore, 0 crystalDisabled definitions: NoneArmy draft: OffPlayer 1 · Ironclad · Team 1 · Human · Starting resources: 420 wood, 220 ore, 0 crystal · Income ×1 · Population limit 100Player 2 · Wild Court · Team 1 · Human · Starting resources: 420 wood, 220 ore, 0 crystal · Income ×1 · Population limit 100Player 3 · Ironclad · Team 2 · Computer · Starting resources: 420 wood, 220 ore, 0 crystal · Income ×1 · Population limit 100Player 4 · Wild Court · Team 2 · Computer · Starting resources: 420 wood, 220 ore, 0 crystal · Income ×1 · Population limit 100"
+  ],
+  "lobbyResponse": {
+    "url": "http://127.0.0.1:5373/api/lobbies/4d414abe-b223-47fa-8834-385de23f0bcb",
+    "status": 200,
+    "payload": "{\"lobby\":{\"id\":\"4d414abe-b223-47fa-8834-385de23f0bcb\",\"hostId\":\"0dde1710-7c11-41e8-ab79-4218cb34caa1\",\"revision\":4,\"settings\":{\"rules\":{\"mode\":\"annihilation\",\"standardDefeat\":true,\"startingAge\":1,\"sharedVision\":true,\"friendlyFire\":true,\"startingResources\":{\"wood\":420,\"ore\":220,\"crystal\":0},\"disabledDefinitionIds\":[],\"hill\":{\"radius\":5,\"captureTicks\":100,\"holdTicks\":2400},\"relic\":{\"count\":3,\"required\":2,\"holdTicks\":2400,\"pickupRadius\":1.5},\"survival\":{\"defenderTeam\":0,\"waveCount\":5,\"intervalTicks\":1200,\"recoveryTicks\":400,\"unitsPerWave\":2,\"rewardPerWave\":{\"wood\":60,\"ore\":30,\"crystal\":0}},\"draft\":{\"enabled\":false,\"banRounds\":1,\"pickRounds\":3,\"turnTicks\":600}},\"mapSize\":\"small\",\"factions\":[\"orcs\",\"fairies\",\"orcs\",\"fairies\"],\"players\":[{\"factionId\":\"orcs\",\"teamId\":0,\"controller\":\"human\"},{\"factionId\":\"fairies\",\"teamId\":0,\"controller\":\"human\"},{\"factionId\":\"orcs\",\"teamId\":1,\"controller\":\"ai\"},{\"factionId\":\"fairies\",\"teamId\":1,\"controller\":\"ai\"}],\"sharedVision\":true,\"startingAge\":1},\"seats\":[{\"side\":0,\"account\":{\"id\":\"0dde1710-7c11-41e8-ab79-4218cb34caa1\",\"username\":\"Guest-6e8bcf\"},\"ready\":true,\"factionId\":\"orcs\",\"teamId\":0,\"controller\":\"human\"},{\"side\":1,\"account\":{\"id\":\"e0def813-ccf8-4e4e-8c83-f063908ccac6\",\"username\":\"Guest-7d28ab\"},\"ready\":true,\"factionId\":\"fairies\",\"teamId\":0,\"controller\":\"human\"},{\"side\":2,\"account\":null,\"ready\":false,\"factionId\":\"orcs\",\"teamId\":1,\"controller\":\"ai\"},{\"side\":3,\"account\":null,\"ready\":false,\"factionId\":\"fairies\",\"teamId\":1,\"controller\":\"ai\"}],\"matchId\":null,\"draft\":{\"status\":\"complete\",\"turn\":0,\"remainingTicks\":0,\"order\":[],\"banned\":[],\"picks\":[[],[],[],[]],\"pool\":[\"orc-melee\",\"orc-ranged\",\"orc-special\",\"orc-cavalry\",\"orc-spear\",\"orc-siege\",\"core:orcs-commander\",\"core:orcs-engineer\",\"forged-weapons\",\"tempered-armor\",\"veteran-arms\",\"core:ranged-arms\",\"core:cavalry-barding\",\"core:siege-gears\",\"core:ranged-focus\",\"core:ranged-mobility\",\"worker-harvest\",\"worker-speed\",\"fairy-melee\",\"fairy-ranged\",\"fairy-special\",\"fairy-cavalry\",\"fairy-spear\",\"fairy-siege\",\"core:fairies-commander\",\"core:fairies-engineer\"]}}}"
+  },
+  "expectedTeams": [
+    0,
+    0,
+    1,
+    1
+  ],
+  "expectedControllers": [
+    "external",
+    "external",
+    "ai",
+    "ai"
+  ],
+  "humans": [
+    {
+      "profile": "human-one",
+      "side": 0,
+      "account": {
+        "id": "0dde1710-7c11-41e8-ab79-4218cb34caa1",
+        "username": "Guest-6e8bcf"
+      },
+      "guestResponse": {
+        "url": "http://127.0.0.1:5373/api/auth/guest",
+        "status": 200,
+        "payload": "{\"account\":{\"id\":\"0dde1710-7c11-41e8-ab79-4218cb34caa1\",\"username\":\"Guest-6e8bcf\"},\"guest\":true}"
+      }
+    },
+    {
+      "profile": "human-two",
+      "side": 1,
+      "account": {
+        "id": "e0def813-ccf8-4e4e-8c83-f063908ccac6",
+        "username": "Guest-7d28ab"
+      },
+      "guestResponse": {
+        "url": "http://127.0.0.1:5373/api/auth/guest",
+        "status": 200,
+        "payload": "{\"account\":{\"id\":\"e0def813-ccf8-4e4e-8c83-f063908ccac6\",\"username\":\"Guest-7d28ab\"},\"guest\":true}"
+      }
+    }
+  ],
+  "profiles": [
+    {
+      "profile": "human-one",
+      "side": 0,
+      "contextId": "6a0dd4b2-fdc2-40d9-98ba-c1ec3af9dd0b",
+      "username": "Guest-6e8bcf",
+      "pageBuild": {
+        "url": "http://127.0.0.1:5373/",
+        "moduleScripts": [
+          "http://127.0.0.1:5373/assets/main-3vb5PXT5.js"
+        ],
+        "stylesheets": [
+          "http://127.0.0.1:5373/assets/main-CxCO6VnC.css"
+        ]
+      },
+      "helloMessages": [
+        {
+          "schema": "feature63-public-message-v1",
+          "profile": "human-one",
+          "socketId": "37615535-fb89-42dd-82e9-d774144de327",
+          "wireOrdinal": 1,
+          "capturedAt": "2026-10-02T06:45:02.501Z",
+          "message": {
+            "kind": "hello",
+            "protocolVersion": 1,
+            "matchId": "1069aa31-1b90-4ea9-9c27-d87f922110a2",
+            "role": "player",
+            "side": 0,
+            "generation": 1,
+            "perspective": "player",
+            "lastClientSeq": 0,
+            "delayTicks": 0
+          }
+        }
+      ],
+      "latestTopology": {
+        "tick": 88,
+        "side": 0,
+        "controller": "external",
+        "teamId": 0,
+        "sharedVision": true,
+        "rulesMode": "annihilation",
+        "allies": [
+          {
+            "side": 1,
+            "teamId": 0,
+            "faction": "fairies"
+          }
+        ],
+        "opponents": [
+          {
+            "side": 2,
+            "teamId": 1,
+            "faction": "orcs"
+          },
+          {
+            "side": 3,
+            "teamId": 1,
+            "faction": "fairies"
+          }
+        ]
+      }
+    },
+    {
+      "profile": "human-two",
+      "side": 1,
+      "contextId": "6211e114-570c-46bb-aa76-73be36bc81cc",
+      "username": "Guest-7d28ab",
+      "pageBuild": {
+        "url": "http://127.0.0.1:5373/",
+        "moduleScripts": [
+          "http://127.0.0.1:5373/assets/main-3vb5PXT5.js"
+        ],
+        "stylesheets": [
+          "http://127.0.0.1:5373/assets/main-CxCO6VnC.css"
+        ]
+      },
+      "helloMessages": [
+        {
+          "schema": "feature63-public-message-v1",
+          "profile": "human-two",
+          "socketId": "b17bfb30-0568-413f-a2c4-16adf3587a45",
+          "wireOrdinal": 1,
+          "capturedAt": "2026-10-02T06:45:03.936Z",
+          "message": {
+            "kind": "hello",
+            "protocolVersion": 1,
+            "matchId": "1069aa31-1b90-4ea9-9c27-d87f922110a2",
+            "role": "player",
+            "side": 1,
+            "generation": 1,
+            "perspective": "player",
+            "lastClientSeq": 0,
+            "delayTicks": 0
+          }
+        }
+      ],
+      "latestTopology": {
+        "tick": 88,
+        "side": 1,
+        "controller": "external",
+        "teamId": 0,
+        "sharedVision": true,
+        "rulesMode": "annihilation",
+        "allies": [
+          {
+            "side": 0,
+            "teamId": 0,
+            "faction": "orcs"
+          }
+        ],
+        "opponents": [
+          {
+            "side": 2,
+            "teamId": 1,
+            "faction": "orcs"
+          },
+          {
+            "side": 3,
+            "teamId": 1,
+            "faction": "fairies"
+          }
+        ]
+      }
+    }
+  ]
+}

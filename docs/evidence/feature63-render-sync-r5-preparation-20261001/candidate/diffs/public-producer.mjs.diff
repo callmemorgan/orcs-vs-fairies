@@ -1,0 +1,27 @@
+--- a/scripts/feature63/public-producer.mjs
++++ b/scripts/feature63/public-producer.mjs
+@@ -7,7 +7,7 @@
+ 
+ // Static candidate. No browser/module import occurs before every launch guard passes.
+ const SOURCE_ROOT = '/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies';
+-const PREFIX = 'work/feature63-human-wave-composition-r4';
++const PREFIX = 'work/feature63-human-wave-composition-r5';
+ const BASE_URL = 'http://127.0.0.1:5373';
+ const ATTEMPT_MS = 300_000;
+ const CLEANUP_MS = 120_000;
+@@ -355,6 +355,7 @@
+ async function attackMove(profile, target, commonHqId, reason) {
+   checkpoint();
+   const page = profile.page;
++  await page.bringToFront();
+   const selectionAction = await ui(profile, 'keyboard', {key: 'F2', purpose: 'select own combat army'}, () => page.keyboard.press('F2'));
+   await page.waitForFunction(side => window.rts.selected.length > 0 && window.rts.selected.every(id => window.rts.state.entities.some(e => e.id === id && e.side === side && e.kind === 'unit' && e.role !== 'worker' && e.hp > 0)), profile.side);
+   const display = await page.evaluate(() => {
+@@ -369,6 +370,7 @@
+   const minimap = await page.locator('#minimap').boundingBox(); assert.ok(minimap);
+   const minimapPoint = {x: minimap.x + target.x / display.dimensions.width * minimap.width, y: minimap.y + target.y / display.dimensions.height * minimap.height};
+   const minimapAction = await ui(profile, 'minimap-left-click', {target, point: minimapPoint}, () => page.mouse.click(minimapPoint.x, minimapPoint.y));
++  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+   const attackKeyAction = await ui(profile, 'keyboard', {key: 'a', purpose: 'ordinary attack-move input'}, () => page.keyboard.press('a'));
+   const canvas = await page.locator('#game-canvas canvas').boundingBox(); assert.ok(canvas);
+   const camera = await page.evaluate(() => ({...window.rts.camera}));

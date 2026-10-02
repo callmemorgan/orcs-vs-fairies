@@ -1,0 +1,56 @@
+{
+  "automaticRetries": 0,
+  "cleanupFailures": [
+    {
+      "at": "2026-10-02T06:45:07.515724+00:00",
+      "error": "Managed process snapshot unavailable while bound pidfd remains live; no signal is permitted; comparison={\"actualObservation\": null, \"admitted\": true, \"directRoot\": true, \"expectedRegisteredIdentity\": {\"cwd\": \"/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies\", \"executable\": \"/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome\", \"pid\": 1907360, \"session\": 1907360, \"startTicks\": 9939444}, \"family\": \"browser\", \"lifetimeIdentity\": {\"pid\": 1907360, \"startTicks\": 9939444}, \"originalAdmittedSession\": 1907360, \"pidfdLiveAfterObservation\": \"not checked because identity guard failed\", \"pidfdLiveBeforeObservation\": true}",
+      "family": "browser"
+    }
+  ],
+  "closedFreshDatabaseIdentity": {
+    "device": 52,
+    "inode": 42578360,
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r4/server-data/server.sqlite"
+  },
+  "feature63Qualified": false,
+  "finishedAt": "2026-10-02T06:45:07.515729+00:00",
+  "firstFailure": {
+    "at": "2026-10-02T06:45:07.197777+00:00",
+    "message": "Public first failure or collector never started",
+    "type": "RuntimeError"
+  },
+  "matchId": "1069aa31-1b90-4ea9-9c27-d87f922110a2",
+  "nativeClosureEvidenceScope": "Direct unreaped roots and bound observed original-session descendants only",
+  "protectedFinalReadback": {
+    "at": "2026-10-02T06:45:07.516863+00:00",
+    "holderPid": 1063,
+    "listeningSockets": [
+      "socket:[3783]"
+    ],
+    "process": {
+      "argv": [
+        "/home/morgana/.local/bin/node",
+        "/home/morgana/Projects/orcs-vs-Fairies/node_modules/vite/bin/vite.js",
+        "preview",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "4173",
+        "--strictPort"
+      ],
+      "cwd": "/home/morgana/Projects/orcs-vs-Fairies",
+      "executable": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+      "pid": 1063,
+      "startTicks": 874
+    },
+    "status": "PASS"
+  },
+  "rootNativeLifetimeDispositionRequired": true,
+  "rootSealAndExtractionRequired": true,
+  "schema": "feature63-dedicated-capture-result-v1",
+  "sourcePin": "56804e8dc37dac029b5e114cbaea9cee80449561",
+  "startedAt": "2026-10-02T06:45:00.687431+00:00",
+  "status": "FAIL_CLEANUP_HELD_NO_UNVERIFIED_SIGNAL",
+  "testedBuildId": "9c5d2f1ff26bd6849b1ad5e311300669fb5f02feebbe4d311b6f8d670df243e1",
+  "unobservedDescendantsExcluded": false
+}

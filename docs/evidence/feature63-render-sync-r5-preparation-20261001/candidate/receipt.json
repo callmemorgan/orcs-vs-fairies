@@ -1,0 +1,138 @@
+{
+  "schema": "feature63-r5-camera-candidate-receipt-v1",
+  "preparedBy": "/root/architecture",
+  "sourcePin": "56804e8dc37dac029b5e114cbaea9cee80449561",
+  "sourceRepository": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+  "newPrefix": "work/feature63-human-wave-composition-r5",
+  "allowedChanges": "All three files: literal r4-to-r5 prefix substitution. Producer only: bring page to front at attackMove start and await two nested requestAnimationFrame callbacks immediately after minimap click.",
+  "files": [
+    {
+      "sourcePath": "scripts/feature63/public-producer.mjs",
+      "original": {
+        "path": "/tmp/ovf-feature63-r5-camera-candidates-8hgodqnd/originals/public-producer.mjs",
+        "bytes": 48612,
+        "sha256": "de51dddc8cd5dba80c7c3897cddd8607333f9b8f669f0e490705531e352b6d0d",
+        "matchedR4CandidateSha256": true
+      },
+      "candidate": {
+        "path": "/tmp/ovf-feature63-r5-camera-candidates-8hgodqnd/candidates/public-producer.mjs",
+        "bytes": 48755,
+        "sha256": "88767f2423d3fa345dbdc3964d8efca5c4b43eb8a753a6a100c655f3981f1f01"
+      },
+      "diff": {
+        "path": "/tmp/ovf-feature63-r5-camera-candidates-8hgodqnd/diffs/public-producer.mjs.diff",
+        "bytes": 1943,
+        "sha256": "71d1824af2849f3154e9278cd8253eb0aa71c53b2d00a022c4c87089c8493a74"
+      },
+      "prefixReplacementCount": 1,
+      "additionalReplacements": [
+        {
+          "change": "foreground-page",
+          "count": 1
+        },
+        {
+          "change": "two-animation-frames-after-minimap",
+          "count": 1
+        }
+      ],
+      "inverseSubstitutionsReproduceOriginal": true
+    },
+    {
+      "sourcePath": "scripts/feature63/run-minimal63.py",
+      "original": {
+        "path": "/tmp/ovf-feature63-r5-camera-candidates-8hgodqnd/originals/run-minimal63.py",
+        "bytes": 54425,
+        "sha256": "6c57b25dc84f6307cfd64296089b4c7bb9e6ae55ee0fbc08c74b7106d9fd10f3",
+        "matchedR4CandidateSha256": true
+      },
+      "candidate": {
+        "path": "/tmp/ovf-feature63-r5-camera-candidates-8hgodqnd/candidates/run-minimal63.py",
+        "bytes": 54425,
+        "sha256": "19979813218b8369d1101318ebb066ba3e4e558a74f0d622be7cb661cdb6563b"
+      },
+      "diff": {
+        "path": "/tmp/ovf-feature63-r5-camera-candidates-8hgodqnd/diffs/run-minimal63.py.diff",
+        "bytes": 491,
+        "sha256": "7af68a39b74c51f98a84a702c28cad17025583e038e3709c603c354a7e437f90"
+      },
+      "prefixReplacementCount": 1,
+      "additionalReplacements": [],
+      "inverseSubstitutionsReproduceOriginal": true
+    },
+    {
+      "sourcePath": "scripts/feature63/collect-launched-waves.py",
+      "original": {
+        "path": "/tmp/ovf-feature63-r5-camera-candidates-8hgodqnd/originals/collect-launched-waves.py",
+        "bytes": 18600,
+        "sha256": "98c1837cf8685604baaf9259b0ac473ef139426e95691ebdda0ef3968e5044fd",
+        "matchedR4CandidateSha256": true
+      },
+      "candidate": {
+        "path": "/tmp/ovf-feature63-r5-camera-candidates-8hgodqnd/candidates/collect-launched-waves.py",
+        "bytes": 18600,
+        "sha256": "c617615b0cc55d5142d84136ed0eb9492b91864c8700f63b7c43f87326cb2b11"
+      },
+      "diff": {
+        "path": "/tmp/ovf-feature63-r5-camera-candidates-8hgodqnd/diffs/collect-launched-waves.py.diff",
+        "bytes": 1276,
+        "sha256": "b5a6f0ac9017ce3ba1887419d25b79aa432214192e48d9a2fbda694f0875cc10"
+      },
+      "prefixReplacementCount": 2,
+      "additionalReplacements": [],
+      "inverseSubstitutionsReproduceOriginal": true
+    }
+  ],
+  "combinedDiff": {
+    "path": "/tmp/ovf-feature63-r5-camera-candidates-8hgodqnd/candidate.diff",
+    "bytes": 3710,
+    "sha256": "2dd30b525d948c1385b53b4a6f237b725cbffd22bf55528cf0258ba15a706d6b"
+  },
+  "mechanismSourceExcerpts": {
+    "path": "/tmp/ovf-feature63-r5-camera-candidates-8hgodqnd/mechanism-source-excerpts.json",
+    "bytes": 20051,
+    "sha256": "4952998de61f7020d1a1bf7d3d27bba36ecee31ae01985445bc7d46dd0ff632a"
+  },
+  "diagnosis": {
+    "path": "/tmp/ovf-feature63-r5-camera-candidates-8hgodqnd/diagnosis.md",
+    "bytes": 2928,
+    "sha256": "a8af1c53a84a0e2fdd7562370e44fe455e0c83c5e3eeb37b087b713e6f161d1c"
+  },
+  "publicEvidenceReadOnly": [
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r4/public/public-results.json",
+      "bytes": 7719,
+      "sha256": "ea058deb47c688ac5fbc1a3044c645c887be7a9ec55086f0412c9a812d71c347"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r4/public/errors.ndjson",
+      "bytes": 322,
+      "sha256": "4c475cb0aeedee78f5dcf88a58c54259839ab1cddc1813c84603e3e3bd0bbd29"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r4/public/human-one-ui-actions.ndjson",
+      "bytes": 15104,
+      "sha256": "a5cc60acd6ef6e32402860423454085322ad938ad41544af5c6072903f14d90d"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r4/public/human-two-ui-actions.ndjson",
+      "bytes": 7984,
+      "sha256": "72436525b06cb68bd50285bbb6aafc2b8c12d1be1ec784fae47bc60b0b2eac88"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r4/public/human-one-commands.ndjson",
+      "bytes": 362,
+      "sha256": "91209f9b4137cb421fb5ae8d188d43e818219c36dfc06ef0299e31571d725342"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r4/public/human-two-commands.ndjson",
+      "bytes": 347,
+      "sha256": "38763a91b9927c884e9362b7672451d5a28e47c06e695599571b88b1f2ab54eb"
+    }
+  ],
+  "coordinateAssertionUnchanged": true,
+  "wavePredicateBodyByteIdentical": true,
+  "candidateExecution": false,
+  "checkoutEdits": false,
+  "dbAccess": false,
+  "approval": "Pending root review; receipt authenticates static bytes only."
+}

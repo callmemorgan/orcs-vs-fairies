@@ -1,0 +1,107 @@
+{
+  "schema": "feature63-public-result-v1",
+  "status": "candidate-public-fail",
+  "publicCandidatePassed": false,
+  "feature63Qualified": false,
+  "nativeCompositionAuditRequired": true,
+  "sourcePin": "56804e8dc37dac029b5e114cbaea9cee80449561",
+  "producerSha256": "de51dddc8cd5dba80c7c3897cddd8607333f9b8f669f0e490705531e352b6d0d",
+  "publicProducerSha256": "de51dddc8cd5dba80c7c3897cddd8607333f9b8f669f0e490705531e352b6d0d",
+  "publicDriverSha256": "6c57b25dc84f6307cfd64296089b4c7bb9e6ae55ee0fbc08c74b7106d9fd10f3",
+  "assignmentPath": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r4/lifecycle/public-assignment.json",
+  "assignmentSha256": "c3465a35d3914a5c9ec546c489ab475fa6078de01a8d13a07de3e8cb193dfdd6",
+  "baseUrl": "http://127.0.0.1:5373",
+  "outputAllowlist": [
+    "public-results.json",
+    "public-identities.json",
+    "public-match-identity.json",
+    "public-windows.json",
+    "browser-ownership.json",
+    "public-cleanup.json",
+    "errors.ndjson",
+    "public-status.ndjson",
+    "human-one-wire.ndjson",
+    "human-two-wire.ndjson",
+    "human-one-public-frames.ndjson",
+    "human-two-public-frames.ndjson",
+    "human-one-hellos.ndjson",
+    "human-two-hellos.ndjson",
+    "human-one-commands.ndjson",
+    "human-two-commands.ndjson",
+    "human-one-acks.ndjson",
+    "human-two-acks.ndjson",
+    "human-one-ui-actions.ndjson",
+    "human-two-ui-actions.ndjson",
+    "human-one-latest-frame.json",
+    "human-two-latest-frame.json"
+  ],
+  "startedAt": "2026-10-02T06:45:01.135Z",
+  "bounds": {
+    "attemptMs": 300000,
+    "fightWindowTicks": 400,
+    "automaticRetries": 0,
+    "maxRetainedBytes": 1073741824
+  },
+  "lobbyId": "4d414abe-b223-47fa-8834-385de23f0bcb",
+  "matchId": "1069aa31-1b90-4ea9-9c27-d87f922110a2",
+  "selectedCandidateIndex": null,
+  "firstFailure": {
+    "kind": "acquisition",
+    "phase": "bringing both combat armies near the same allied HQ",
+    "message": "The expression evaluated to a falsy value:\n\n  assert.ok(Math.abs(command.command.x - target.x) < .1 && Math.abs(command.command.y - target.y) < .1)\n",
+    "capturedAt": "2026-10-02T06:45:07.002Z"
+  },
+  "cleanupPassed": true,
+  "lobbyResponse": {
+    "url": "http://127.0.0.1:5373/api/lobbies/4d414abe-b223-47fa-8834-385de23f0bcb",
+    "status": 200,
+    "payload": "{\"lobby\":{\"id\":\"4d414abe-b223-47fa-8834-385de23f0bcb\",\"hostId\":\"0dde1710-7c11-41e8-ab79-4218cb34caa1\",\"revision\":4,\"settings\":{\"rules\":{\"mode\":\"annihilation\",\"standardDefeat\":true,\"startingAge\":1,\"sharedVision\":true,\"friendlyFire\":true,\"startingResources\":{\"wood\":420,\"ore\":220,\"crystal\":0},\"disabledDefinitionIds\":[],\"hill\":{\"radius\":5,\"captureTicks\":100,\"holdTicks\":2400},\"relic\":{\"count\":3,\"required\":2,\"holdTicks\":2400,\"pickupRadius\":1.5},\"survival\":{\"defenderTeam\":0,\"waveCount\":5,\"intervalTicks\":1200,\"recoveryTicks\":400,\"unitsPerWave\":2,\"rewardPerWave\":{\"wood\":60,\"ore\":30,\"crystal\":0}},\"draft\":{\"enabled\":false,\"banRounds\":1,\"pickRounds\":3,\"turnTicks\":600}},\"mapSize\":\"small\",\"factions\":[\"orcs\",\"fairies\",\"orcs\",\"fairies\"],\"players\":[{\"factionId\":\"orcs\",\"teamId\":0,\"controller\":\"human\"},{\"factionId\":\"fairies\",\"teamId\":0,\"controller\":\"human\"},{\"factionId\":\"orcs\",\"teamId\":1,\"controller\":\"ai\"},{\"factionId\":\"fairies\",\"teamId\":1,\"controller\":\"ai\"}],\"sharedVision\":true,\"startingAge\":1},\"seats\":[{\"side\":0,\"account\":{\"id\":\"0dde1710-7c11-41e8-ab79-4218cb34caa1\",\"username\":\"Guest-6e8bcf\"},\"ready\":true,\"factionId\":\"orcs\",\"teamId\":0,\"controller\":\"human\"},{\"side\":1,\"account\":{\"id\":\"e0def813-ccf8-4e4e-8c83-f063908ccac6\",\"username\":\"Guest-7d28ab\"},\"ready\":true,\"factionId\":\"fairies\",\"teamId\":0,\"controller\":\"human\"},{\"side\":2,\"account\":null,\"ready\":false,\"factionId\":\"orcs\",\"teamId\":1,\"controller\":\"ai\"},{\"side\":3,\"account\":null,\"ready\":false,\"factionId\":\"fairies\",\"teamId\":1,\"controller\":\"ai\"}],\"matchId\":null,\"draft\":{\"status\":\"complete\",\"turn\":0,\"remainingTicks\":0,\"order\":[],\"banned\":[],\"picks\":[[],[],[],[]],\"pool\":[\"orc-melee\",\"orc-ranged\",\"orc-special\",\"orc-cavalry\",\"orc-spear\",\"orc-siege\",\"core:orcs-commander\",\"core:orcs-engineer\",\"forged-weapons\",\"tempered-armor\",\"veteran-arms\",\"core:ranged-arms\",\"core:cavalry-barding\",\"core:siege-gears\",\"core:ranged-focus\",\"core:ranged-mobility\",\"worker-harvest\",\"worker-speed\",\"fairy-melee\",\"fairy-ranged\",\"fairy-special\",\"fairy-cavalry\",\"fairy-spear\",\"fairy-siege\",\"core:fairies-commander\",\"core:fairies-engineer\"]}}}"
+  },
+  "seatsText": [
+    "Player 1: Guest-6e8bcf · Ironclad · Team 1 · Ready",
+    "Player 2: Guest-7d28ab · Wild Court · Team 1 · Ready",
+    "Player 3: AI · Ironclad · Team 2 · AI ready",
+    "Player 4: AI · Wild Court · Team 2 · AI ready"
+  ],
+  "receivedRulesText": [
+    "Server revision 4 · Map small · AnnihilationStarting age: Settlement Age (1) · Shared team vision: On · Friendly fire: OnHeadquarters defeat: On · Match starting resources: 420 wood, 220 ore, 0 crystalDisabled definitions: NoneArmy draft: OffPlayer 1 · Ironclad · Team 1 · Human · Starting resources: 420 wood, 220 ore, 0 crystal · Income ×1 · Population limit 100Player 2 · Wild Court · Team 1 · Human · Starting resources: 420 wood, 220 ore, 0 crystal · Income ×1 · Population limit 100Player 3 · Ironclad · Team 2 · Computer · Starting resources: 420 wood, 220 ore, 0 crystal · Income ×1 · Population limit 100Player 4 · Wild Court · Team 2 · Computer · Starting resources: 420 wood, 220 ore, 0 crystal · Income ×1 · Population limit 100"
+  ],
+  "commonHq": {
+    "id": 1,
+    "side": 0,
+    "x": 16.5,
+    "y": 16.5,
+    "observedAtTick": 64
+  },
+  "completedAt": "2026-10-02T06:45:07.043Z",
+  "phaseAtStop": "bringing both combat armies near the same allied HQ",
+  "retainedBytesBeforeFinalSummary": 4230652,
+  "errors": [
+    {
+      "schema": "feature63-public-error-v1",
+      "kind": "attempt",
+      "phase": "bringing both combat armies near the same allied HQ",
+      "capturedAt": "2026-10-02T06:45:07.002Z",
+      "message": "The expression evaluated to a falsy value:\n\n  assert.ok(Math.abs(command.command.x - target.x) < .1 && Math.abs(command.command.y - target.y) < .1)\n"
+    }
+  ],
+  "candidateCount": 0,
+  "acquisitionFailures": [
+    {
+      "schema": "feature63-public-error-v1",
+      "kind": "attempt",
+      "phase": "bringing both combat armies near the same allied HQ",
+      "capturedAt": "2026-10-02T06:45:07.002Z",
+      "message": "The expression evaluated to a falsy value:\n\n  assert.ok(Math.abs(command.command.x - target.x) < .1 && Math.abs(command.command.y - target.y) < .1)\n"
+    }
+  ],
+  "limitations": [
+    "Public pass is only a candidate. Native source/config/checkpoint/wave participant composition remains unverified.",
+    "Original feature 63 stops after both commanded human attacks whose targets cover AI owners 2 and 3; native audit must authenticate membership in the same coordinated wave.",
+    "Normal Save battle is unavailable online in the reference source; contemporaneous native wave retention remains pending.",
+    "No complete cooperative victory or continuous human input is claimed.",
+    "All exposed public payloads and frames are retained; resource breach stops new work without deleting or truncating evidence.",
+    "Current source-derived selectors, projection, elimination fields and four-tick snapshot cadence require review against the new root-assigned product source."
+  ],
+  "resourceFailure": null
+}

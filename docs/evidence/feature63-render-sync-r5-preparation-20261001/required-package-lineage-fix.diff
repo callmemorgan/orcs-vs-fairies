@@ -1,0 +1,23 @@
+--- reviewed-original
++++ required-package-authentication
+@@ -28,6 +28,11 @@
+  assert desc(p)=={k:r[k] for k in ('path','bytes','sha256')} and stat.S_IMODE(p.stat().st_mode)==r['mode']
+  return json.loads(p.read_text())
+ assert sha(REVIEW)==REVIEW_SHA;review=json.loads(REVIEW.read_text());assert review['status']=='PASS_STATIC_R5_RENDER_SYNC_RUNTIME_HELD'
++R4_READBACK=Path('/tmp/ovf-root-feature63-r4-bindings-m9z4ndhm/root-binding-readback.json')
++assert R4_READBACK.stat().st_size==3548 and sha(R4_READBACK)=='daa6e000a7c0be6b1ad7d2320a46436feeaba75ee87741acfba03b29ca175328'
++R4_PACKAGE=R4_READBACK.parent/'root-fresh-package-result.json'
++r4_package_record=next(r for r in json.loads(R4_READBACK.read_text())['completeOutputRecords'] if r['path']==R4_PACKAGE.name)
++assert desc(R4_PACKAGE)=={'path':str(R4_PACKAGE),'bytes':r4_package_record['bytes'],'sha256':r4_package_record['sha256']} and stat.S_IMODE(R4_PACKAGE.stat().st_mode)==r4_package_record['mode']
+ for base in (ROOT,OWNED):
+  assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=base,text=True).strip()==PIN
+  assert not subprocess.check_output(['git','status','--porcelain','--untracked-files=no'],cwd=base,text=True)
+@@ -50,7 +55,7 @@
+ for n,rows in [('dist',build['webRecords']),('server',build['serverRecords'])]:
+  auth(PRIOR/n,rows,True);shutil.copytree(PRIOR/n,PREFIX/n,copy_function=shutil.copy2);auth(PREFIX/n,rows,True)
+ assert sorted(p.name for p in PREFIX.iterdir())==['dist','server']
+-package=put('root-fresh-package-result.json',{'schema':1,'status':'EXACT_WEB_AND_SERVER_COPY_PASSED','sourcePin':PIN,'sourcePrefix':str(PRIOR),'freshPrefix':str(PREFIX),'counts':{'dist':398,'server':22},'completeInventories':[{'directory':n,'files':inv(PREFIX/n)} for n in ('dist','server')],'priorPackagingReceipt':desc(Path('/tmp/ovf-root-feature63-r4-bindings-m9z4ndhm/root-fresh-package-result.json')),'productBuildExecuted':False,'serverBrowserDatabaseRuntimeExecuted':False,'databaseProfileOrOldDataCopied':False,'sourcePrefixRuntimeDataRead':False,'captureAuthorized':False})
++package=put('root-fresh-package-result.json',{'schema':1,'status':'EXACT_WEB_AND_SERVER_COPY_PASSED','sourcePin':PIN,'sourcePrefix':str(PRIOR),'freshPrefix':str(PREFIX),'counts':{'dist':398,'server':22},'completeInventories':[{'directory':n,'files':inv(PREFIX/n)} for n in ('dist','server')],'priorPackagingReceipt':desc(R4_PACKAGE),'productBuildExecuted':False,'serverBrowserDatabaseRuntimeExecuted':False,'databaseProfileOrOldDataCopied':False,'sourcePrefixRuntimeDataRead':False,'captureAuthorized':False})
+ slot={'approved':True,'holder':'/root/ai_modes','token':'heavy-runtime-1-feature63-r5-'+PIN[:12]+'-'+OUT.name.rsplit('-',1)[-1],'validUntil':(datetime.datetime.now(datetime.timezone.utc)+datetime.timedelta(hours=2)).isoformat()}
+ for value in (source,build,tests,runtime_review,browser):
+  value.update({'sourcePin':PIN,'createdAt':stamp})

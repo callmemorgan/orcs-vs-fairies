@@ -1,0 +1,91 @@
+{
+  "actualProviderIdentity": "unavailable",
+  "at": "2026-10-02T06:58:53.054769Z",
+  "bindingUtilityAssessment": {
+    "literalDelta": "Apart from the immediate prior product-copy receipt path, the supplied diff from the reviewed fixed R4 utility contains only R5 prefix, token, field-label, status, and launcher-name substitutions.",
+    "requiredFix": {
+      "finding": "fresh-r5-bindings.py records the mutable R4 root-fresh-package-result.json with desc() but does not authenticate it to the R4 root-binding-readback before calling it the prior packaging receipt. This repeats the prior review requirement for the now-immediate predecessor.",
+      "fix": "Authenticate /tmp/ovf-root-feature63-r4-bindings-m9z4ndhm/root-binding-readback.json as 3548 bytes with SHA-256 daa6e000a7c0be6b1ad7d2320a46436feeaba75ee87741acfba03b29ca175328, then require root-fresh-package-result.json to match its completeOutputRecords descriptor: 87569 bytes, mode 420, SHA-256 c1818280579128b916cbed8c6c8d2bd8d0b55511e2f8326f69d9cfff38d3cb3d. Use that authenticated descriptor as priorPackagingReceipt.",
+      "id": "authenticate-immediate-prior-package-receipt",
+      "impact": "The R5 dist and server copies are independently authenticated against bound inventories, so this does not require a candidate change. It must be fixed before the utility is used so its historical package lineage is authenticated."
+    },
+    "result": "REQUIRES_SOURCE_ONLY_FIX_BEFORE_EXECUTION",
+    "retainedFixes": "The R3 JSON loads are authenticated through the pinned R3 binding readback, all six advertised inventory counts are asserted, and the R5 review status comparison is exact."
+  },
+  "candidateAssessment": {
+    "collectorChange": "Two r4-to-r5 prefix substitutions only.",
+    "coordinateAssertion": "The existing 0.1 coordinate assertion is byte-identical.",
+    "inverseCheck": "Removing the two producer additions and substituting r5 back to r4 reproduced all three supplied originals byte for byte.",
+    "lifecycle": "The reviewed PIDFD and finite descendant-observation contracts are unchanged. unobservedDescendantsExcluded remains false.",
+    "mechanism": "The minimap path updates camera scroll immediately. Phaser getWorldPoint inverts matrixCombined, while Camera.preRender rebuilds matrixCombined from current scroll during the render loop. Bringing the page forward and waiting through the nested animation-frame callback gives the active Phaser loop a render opportunity after the minimap jump before A, camera sampling, and the ground click.",
+    "mechanismLimit": "The exact R4 matrixCombined value and page visibility state were not retained. The stale-matrix incident explanation remains an inference; only the deferred update mechanism and R5 ordering are established statically.",
+    "producerChange": "One r4-to-r5 prefix substitution, page.bringToFront() at attackMove entry, and a promise spanning two nested requestAnimationFrame callbacks immediately after the minimap click.",
+    "result": "PASS",
+    "sameWaveCriterion": "The same-wave predicate body is byte-identical.",
+    "wrapperChange": "One r4-to-r5 prefix substitution only."
+  },
+  "candidateImportedOrExecuted": false,
+  "databaseAccessed": false,
+  "feature63Qualified": false,
+  "freshClaudeRun": false,
+  "launcherFinalization": {
+    "approvedShape": "After the utility fix, retain the reviewed R3 launcher logic with literal r3-to-r5 prefix and slot-prefix substitutions, the same eight runtime anchors, and WRAPPER_SHA updated to 19979813218b8369d1101318ebb066ba3e4e558a74f0d622be7cb661cdb6563b.",
+    "closureQualification": "Finite remembered-resource evidence remains qualified; retain separate wrapper lifetime checks and unobservedDescendantsExcluded=false.",
+    "freshRequirements": "Fresh R5 token, private empty 0700 control directory, output, assignment, disposition, future full pin, and exact digests are required. Failed prior databases, browser profiles, assignments, slot authority, and runtime outputs provide no authority."
+  },
+  "noOtherStaticFindings": true,
+  "qualifications": [
+    "This review does not establish that the R5 ordering succeeds at runtime.",
+    "The binding utility has not run. Apply the required source-only prior-package authentication before root execution.",
+    "Actual provider identity is unavailable, and no fresh Claude review was run."
+  ],
+  "repositoryEditedByReviewer": false,
+  "requestedReviewerModel": "unspecified",
+  "reviewType": "bounded independent static R5 render-sync correction and fresh binding utility review",
+  "reviewed": [
+    {
+      "bytes": 48755,
+      "path": "/tmp/ovf-feature63-r5-camera-candidates-8hgodqnd/candidates/public-producer.mjs",
+      "sha256": "88767f2423d3fa345dbdc3964d8efca5c4b43eb8a753a6a100c655f3981f1f01"
+    },
+    {
+      "bytes": 54425,
+      "path": "/tmp/ovf-feature63-r5-camera-candidates-8hgodqnd/candidates/run-minimal63.py",
+      "sha256": "19979813218b8369d1101318ebb066ba3e4e558a74f0d622be7cb661cdb6563b"
+    },
+    {
+      "bytes": 18600,
+      "path": "/tmp/ovf-feature63-r5-camera-candidates-8hgodqnd/candidates/collect-launched-waves.py",
+      "sha256": "c617615b0cc55d5142d84136ed0eb9492b91864c8700f63b7c43f87326cb2b11"
+    },
+    {
+      "bytes": 3710,
+      "path": "/tmp/ovf-feature63-r5-camera-candidates-8hgodqnd/candidate.diff",
+      "sha256": "2dd30b525d948c1385b53b4a6f237b725cbffd22bf55528cf0258ba15a706d6b"
+    },
+    {
+      "bytes": 6118,
+      "path": "/tmp/ovf-feature63-r5-camera-candidates-8hgodqnd/receipt.json",
+      "sha256": "36417457a7ef373e4c0edefc344dd7f850549c4c6a0f2118c2d3805485f33580"
+    },
+    {
+      "bytes": 20051,
+      "path": "/tmp/ovf-feature63-r5-camera-candidates-8hgodqnd/mechanism-source-excerpts.json",
+      "sha256": "4952998de61f7020d1a1bf7d3d27bba36ecee31ae01985445bc7d46dd0ff632a"
+    },
+    {
+      "bytes": 10278,
+      "path": "/tmp/ovf-root-feature63-r3-preparation-551FgMyq/fresh-r5-bindings.py",
+      "sha256": "d2308b5a89911cc7459a70b2f0b2f5d6afaa6fd98e45a7144595f855348ac428"
+    },
+    {
+      "path": "/tmp/ovf-root-feature63-r3-preparation-551FgMyq/fresh-r5-binding-literal-delta.diff",
+      "sha256": "f9c751ee7dcd105627d303eb0cee2906c19bf4c9006c6b87b89f003e12643ca8"
+    }
+  ],
+  "runtimeAuthorized": false,
+  "schema": 1,
+  "sourcePin": "56804e8dc37dac029b5e114cbaea9cee80449561",
+  "status": "PASS_STATIC_R5_RENDER_SYNC_RUNTIME_HELD",
+  "transcriptScope": "No root transcript review. Assessment is limited to the supplied R5 candidates and receipt, their exact R4 diffs, supplied mechanism source excerpts authenticated against the present source files, and fresh-r5-bindings.py."
+}

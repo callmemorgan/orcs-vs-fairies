@@ -1,0 +1,178 @@
+{
+  "schema": "feature63-r5-camera-source-excerpts-v1",
+  "sourcePin": "56804e8dc37dac029b5e114cbaea9cee80449561",
+  "phaserVersion": "4.2.1",
+  "phaserPackageSha256": "dd57d55f092bc5093a8e38f786932966ace026a10a5f59d28dcfd675acb37a2c",
+  "sources": [
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/src/ui/Hud.ts",
+      "repositoryPath": "src/ui/Hud.ts",
+      "sourcePin": "56804e8dc37dac029b5e114cbaea9cee80449561",
+      "inputKind": "pinned-product-source",
+      "bytes": 46307,
+      "sha256": "827031c3c49dab942e00a11cd6531d633f351c9c2884ab1c704e187f81368828",
+      "excerpts": [
+        {
+          "start": 141,
+          "end": 142,
+          "text": "  const map=el<HTMLCanvasElement>('#minimap'),ctx=map.getContext('2d')!;\n  map.addEventListener('click',event=>{if(!state)return;const rect=map.getBoundingClientRect();callbacks?.center((event.clientX-rect.left)/rect.width*state.width,(event.clientY-rect.top)/rect.height*state.height);});\n"
+        }
+      ]
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/src/main.ts",
+      "repositoryPath": "src/main.ts",
+      "sourcePin": "56804e8dc37dac029b5e114cbaea9cee80449561",
+      "inputKind": "pinned-product-source",
+      "bytes": 47424,
+      "sha256": "4b3de6a2c62517819e56d81e20f96aa10c8bfde8cd58ea70aa516fd84f0abda7",
+      "excerpts": [
+        {
+          "start": 142,
+          "end": 145,
+          "text": " center:(x,y,level)=>{if(level!==undefined)scene?.setViewLevel(level);scene?.centerOn(x,y);},\n groups:()=>scene?.controlGroups()??{},\n recallGroup:group=>scene?.recallGroup(group),\n cameraCorners:()=>{if(!scene?.cameras?.main)return [];const c=scene.cameras.main;const {top,bottom}=shell.battlefieldBounds();return [[0,top],[innerWidth,top],[innerWidth,bottom],[0,bottom]].map(([x,y])=>{const p=c.getWorldPoint(x*renderDensity,y*renderDensity);return unproject(p.x,p.y);});}\n"
+        },
+        {
+          "start": 450,
+          "end": 453,
+          "text": "// Read-only diagnostics for repeatable performance and state inspection. Player actions stay in the UI.\nconst worldTools=mountWorldTools(root,{phase:()=>onlineRender?.worldPhase,state:()=>scene?.state,side:playerSide,level:()=>scene?.viewLevel??0,selected:()=>scene?.selected??[],canCommand:()=>!!scene&&scene.canIssueCommands,command:c=>scene?.command(c)??false,setLevel:level=>scene?.setViewLevel(level),select:ids=>scene?.selectEntities(ids),center:p=>scene?.centerOn(p.x,p.y),notice:shell.notice});\nsetInterval(()=>worldTools.update(),100);\nObject.defineProperty(window,'rts',{get:()=>scene?.cameras?.main?{state:scene.state,cosmetics:scene.cosmeticStatus,get activeScenario(){const session=scenarioSessionForState(scene!.state);return session?structuredClone({definition:session.definition,runtime:session.runtime,simulationRevision:session.simulationRevision}):null;},viewLevel:scene.viewLevel,viewSide:scene.viewSide,readOnly:scene.readOnly,selected:[...scene.selected],art:scene.artStatus,fps:game?.loop.actualFps,paused:scene.paused,mode:onlineConnection?'online':replay?'replay':'local',simulationEnabled:scene.simulationEnabled,online:onlineConnection?{status:onlineConnection.status,role:onlineRender?.role,side:playerSide(),delayTicks:onlineConnection.connectionInfo?.delayTicks,pendingCommands:onlineConnection.pendingCommands,privateSides:[...(onlineRender?.privateSides??[])]}:null,camera:{x:scene.cameras.main.scrollX,y:scene.cameras.main.scrollY,zoom:scene.cameras.main.zoom,width:scene.cameras.main.width,height:scene.cameras.main.height}}:null});\n"
+        }
+      ]
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/src/game/GameScene.ts",
+      "repositoryPath": "src/game/GameScene.ts",
+      "sourcePin": "56804e8dc37dac029b5e114cbaea9cee80449561",
+      "inputKind": "pinned-product-source",
+      "bytes": 62749,
+      "sha256": "7acb2668ec99d0805b13bb2ad68fa0094ff33671dd94556332d855c330068fdd",
+      "excerpts": [
+        {
+          "start": 28,
+          "end": 33,
+          "text": "const TILE_W = 64, TILE_H = 32, OX = 1600, OY = 80;\nconst CAMERA_TAP:Partial<Record<ControlAction,readonly [number,number]>> = {\n  cameraLeft:[-1,0],cameraRight:[1,0],cameraUp:[0,-1],cameraDown:[0,1],\n};\nexport function project(x:number,y:number) { return {x:OX+(x-y)*TILE_W/2,y:OY+(x+y)*TILE_H/2}; }\nexport function unproject(x:number,y:number) { return {x:((x-OX)/32+(y-OY)/16)/2,y:((y-OY)/16-(x-OX)/32)/2}; }\n"
+        },
+        {
+          "start": 178,
+          "end": 192,
+          "text": "    this.input.on('pointerup',(p:Phaser.Input.Pointer)=>{\n      if(p.button===1){this.pan=null;return;}\n      if(p.button!==0||!this.drag)return;\n      const drag=this.drag;this.drag=null;const world=this.cameras.main.getWorldPoint(p.x,p.y);\n      if(this.photoMode||this.inputSuppressed()||!this.controlContext.playable)return;\n      const pos=unproject(world.x,world.y);\n      if(this.placeBlueprint(pos))return;\n      if(this.completeTargetAt(world.x,world.y))return;\n      if(this.buildRole){\n        const role=this.buildRole;\n        if(this.command({type:'build',ids:this.selected,role,definitionId:this.buildDefinitionId,x:role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y:role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5,level:this.viewLevel})) {this.setBuildRole(null);this.options.onNotice('Construction ordered.');this.audio?.play('order');}\n        else this.options.onNotice('Cannot build here. Select a worker and check resources and space.');\n        return;\n      }\n      if(this.attackMode){this.attackMode=false;this.order(p,true);return;}\n"
+        },
+        {
+          "start": 262,
+          "end": 262,
+          "text": "  public centerOn(x:number,y:number){const q=project(x,y),camera=this.cameras.main;camera.centerOn(q.x,q.y);const bounds=this.photoMode?undefined:this.options.viewBounds?.();if(bounds)camera.scrollY+=(camera.height/2-(bounds.top+bounds.bottom)/2)/camera.zoom;}\n"
+        },
+        {
+          "start": 305,
+          "end": 326,
+          "text": "  private orderAt(x:number,y:number,attack=false,queued=false){\n    if(!this.canCommand)return;\n    if(this.blueprintPlacement){this.cancelBlueprintPlacement();return;}\n    if(this.buildRole||this.targetMode){this.setBuildRole(null);return;}\n    const world=this.cameras.main.getWorldPoint(x,y);const pos=unproject(world.x,world.y);const hit=this.hit(world.x,world.y);\n    let ok=false;\n    const own=this.state.entities.filter(e=>this.selected.includes(e.id)&&e.side===this.viewSide&&e.hp>0);\n    const producers=own.filter(e=>e.kind==='building'&&(e.role==='hq'||e.role==='barracks'));\n    if(producers.length&&!attack&&!own.some(e=>e.kind==='unit')){\n      ok=this.command({type:'setRally',ids:producers.map(e=>e.id),x:pos.x,y:pos.y,level:this.viewLevel});\n      this.options.onNotice(ok?'Rally point set. New units will move here.':'Choose open ground for the rally point.');\n      if(ok)this.audio?.play('order');\n      return;\n    }\n    if(hit&&(isHostile(this.state,this.viewSide,hit.side)||isCrewless(hit)))ok=this.command({type:'attack',ids:this.selected,target:hit.id,queued});\n    else if(hit&&hit.side===this.viewSide&&hit.kind==='building'&&hit.hp<hit.maxHp)ok=this.command({type:'repair',ids:this.selected,target:hit.id,queued});\n    else {\n      const resource=[...this.state.resources].sort((a,b)=>(b.x+b.y)-(a.x+a.y)).find(r=>{if(r.amount<=0||levelOf(r)!==this.viewLevel||!this.state.visible[this.viewSide].has(fogKey(this.state,r)))return false;const rendered=this.art.contains(`resource:${r.id}`,world.x,world.y);if(rendered!==null)return rendered;const q=project(r.x,r.y);return Math.abs(q.x-world.x)<24&&Math.abs(q.y-15-world.y)<30;});\n      if(resource&&!attack)ok=this.command({type:'gather',ids:this.selected,target:resource.id,queued});\n      else ok=this.command({type:attack?'attackMove':'move',ids:this.selected,x:Phaser.Math.Clamp(pos.x,.5,this.state.width-.5),y:Phaser.Math.Clamp(pos.y,.5,this.state.height-.5),level:this.viewLevel,queued});\n    }\n    if(ok){this.markers.push({...project(pos.x,pos.y),born:this.time.now,attack});this.audio?.play('order');}\n"
+        }
+      ]
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/node_modules/phaser/src/cameras/2d/BaseCamera.js",
+      "repositoryPath": "node_modules/phaser/src/cameras/2d/BaseCamera.js",
+      "sourcePin": null,
+      "inputKind": "installed-dependency-source",
+      "bytes": 64333,
+      "sha256": "499f7d875c305b01914ad3066f008df911c1aa649b8ee59283bdcccaca083e85",
+      "excerpts": [
+        {
+          "start": 680,
+          "end": 739,
+          "text": "    centerOnX: function (x)\r\n    {\r\n        var originX = this.width * 0.5;\r\n\r\n        this.midPoint.x = x;\r\n\r\n        this.scrollX = x - originX;\r\n\r\n        if (this.useBounds)\r\n        {\r\n            this.scrollX = this.clampX(this.scrollX);\r\n        }\r\n\r\n        return this;\r\n    },\r\n\r\n    /**\r\n     * Moves the Camera vertically so that it is centered on the given y coordinate, bounds allowing.\r\n     * Calling this does not change the scrollX value.\r\n     *\r\n     * @method Phaser.Cameras.Scene2D.BaseCamera#centerOnY\r\n     * @since 3.16.0\r\n     *\r\n     * @param {number} y - The vertical coordinate to center on.\r\n     *\r\n     * @return {this} This Camera instance.\r\n     */\r\n    centerOnY: function (y)\r\n    {\r\n        var originY = this.height * 0.5;\r\n\r\n        this.midPoint.y = y;\r\n\r\n        this.scrollY = y - originY;\r\n\r\n        if (this.useBounds)\r\n        {\r\n            this.scrollY = this.clampY(this.scrollY);\r\n        }\r\n\r\n        return this;\r\n    },\r\n\r\n    /**\r\n     * Moves the Camera so that it is centered on the given coordinates, bounds allowing.\r\n     *\r\n     * @method Phaser.Cameras.Scene2D.BaseCamera#centerOn\r\n     * @since 3.11.0\r\n     *\r\n     * @param {number} x - The horizontal coordinate to center on.\r\n     * @param {number} y - The vertical coordinate to center on.\r\n     *\r\n     * @return {this} This Camera instance.\r\n     */\r\n    centerOn: function (x, y)\r\n    {\r\n        this.centerOnX(x);\r\n        this.centerOnY(y);\r\n\r\n        return this;\r\n"
+        },
+        {
+          "start": 876,
+          "end": 914,
+          "text": "    getWorldPoint: function (x, y, output)\r\n    {\r\n        if (output === undefined) { output = new Vector2(); }\r\n\r\n        var cameraMatrix = this.matrixCombined.matrix;\r\n\r\n        var mva = cameraMatrix[0];\r\n        var mvb = cameraMatrix[1];\r\n        var mvc = cameraMatrix[2];\r\n        var mvd = cameraMatrix[3];\r\n        var mve = cameraMatrix[4];\r\n        var mvf = cameraMatrix[5];\r\n\r\n        //  Invert Matrix\r\n        var determinant = (mva * mvd) - (mvb * mvc);\r\n\r\n        if (!determinant)\r\n        {\r\n            output.x = x;\r\n            output.y = y;\r\n\r\n            return output;\r\n        }\r\n\r\n        determinant = 1 / determinant;\r\n\r\n        var ima = mvd * determinant;\r\n        var imb = -mvb * determinant;\r\n        var imc = -mvc * determinant;\r\n        var imd = mva * determinant;\r\n        var ime = (mvc * mvf - mvd * mve) * determinant;\r\n        var imf = (mvb * mve - mva * mvf) * determinant;\r\n\r\n        // Apply transform to point\r\n        output.x = (x * ima + y * imc) + ime;\r\n        output.y = (x * imb + y * imd) + imf;\r\n\r\n        return output;\r\n    },\r\n"
+        },
+        {
+          "start": 1762,
+          "end": 1776,
+          "text": "    scrollX: {\r\n\r\n        get: function ()\r\n        {\r\n            return this._scrollX;\r\n        },\r\n\r\n        set: function (value)\r\n        {\r\n            if (value !== this._scrollX)\r\n            {\r\n                this._scrollX = value;\r\n                this.dirty = true;\r\n            }\r\n        }\r\n"
+        },
+        {
+          "start": 1795,
+          "end": 1809,
+          "text": "    scrollY: {\r\n\r\n        get: function ()\r\n        {\r\n            return this._scrollY;\r\n        },\r\n\r\n        set: function (value)\r\n        {\r\n            if (value !== this._scrollY)\r\n            {\r\n                this._scrollY = value;\r\n                this.dirty = true;\r\n            }\r\n        }\r\n"
+        }
+      ]
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/node_modules/phaser/src/cameras/2d/Camera.js",
+      "repositoryPath": "node_modules/phaser/src/cameras/2d/Camera.js",
+      "sourcePin": null,
+      "inputKind": "installed-dependency-source",
+      "bytes": 40450,
+      "sha256": "56d6ac960080e2523c8e977d28d1b84be4a24c713996198eff5f8ebd5aad98cf",
+      "excerpts": [
+        {
+          "start": 522,
+          "end": 544,
+          "text": "    preRender: function ()\r\n    {\r\n        this.renderList.length = 0;\r\n\r\n        var width = this.width;\r\n        var height = this.height;\r\n\r\n        var halfWidth = width * 0.5;\r\n        var halfHeight = height * 0.5;\r\n\r\n        var zoomX = this.zoomX;\r\n        var zoomY = this.zoomY;\r\n\r\n        this.renderRoundPixels = (this.roundPixels && Number.isInteger(zoomX) && Number.isInteger(zoomY));\r\n\r\n        var originX = width * this.originX;\r\n        var originY = height * this.originY;\r\n\r\n        var follow = this._follow;\r\n        var deadzone = this.deadzone;\r\n\r\n        var sx = this.scrollX;\r\n        var sy = this.scrollY;\r\n"
+        },
+        {
+          "start": 589,
+          "end": 639,
+          "text": "        if (this.useBounds)\r\n        {\r\n            sx = this.clampX(sx);\r\n            sy = this.clampY(sy);\r\n        }\r\n\r\n        //  Values are in pixels and not impacted by zooming the Camera\r\n        this.scrollX = sx;\r\n        this.scrollY = sy;\r\n\r\n        var midX = sx + halfWidth;\r\n        var midY = sy + halfHeight;\r\n\r\n        //  The center of the camera, in world space, so taking zoom into account\r\n        //  Basically the pixel value of what it's looking at in the middle of the cam\r\n        this.midPoint.set(midX, midY);\r\n\r\n        var displayWidth = width / zoomX;\r\n        var displayHeight = height / zoomY;\r\n\r\n        var vwx = midX - (displayWidth / 2);\r\n        var vwy = midY - (displayHeight / 2);\r\n\r\n        this.worldView.setTo(vwx, vwy, displayWidth, displayHeight);\r\n\r\n        var matrix = this.matrix;\r\n        var matrixExternal = this.matrixExternal;\r\n\r\n        if (this.isObjectInversion)\r\n        {\r\n            // Game Object filter camera\r\n            matrix.loadIdentity();\r\n            matrix.translate(originX, originY);\r\n            matrix.scale(zoomX, zoomY);\r\n            matrix.rotate(this.rotation);\r\n            matrix.translate(-sx - originX, -sy - originY);\r\n        }\r\n        else\r\n        {\r\n            // Regular camera\r\n            // Apply view transforms in order ITRS.\r\n            matrix.applyITRS(originX, originY, this.rotation, zoomX, zoomY);\r\n            matrix.translate(-sx - originX, -sy - originY);\r\n        }\r\n\r\n\r\n        matrixExternal.applyITRS(this.x, this.y, 0, 1, 1);\r\n\r\n        this.shakeEffect.preRender();\r\n\r\n        matrixExternal.multiply(matrix, this.matrixCombined);\r\n"
+        }
+      ]
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/node_modules/phaser/src/cameras/2d/CameraManager.js",
+      "repositoryPath": "node_modules/phaser/src/cameras/2d/CameraManager.js",
+      "sourcePin": null,
+      "inputKind": "installed-dependency-source",
+      "bytes": 26973,
+      "sha256": "63084c8fb82272cc6e51cbf358e2b4ab78df64088a29f3a7c2d1bddb50e70fe1",
+      "excerpts": [
+        {
+          "start": 592,
+          "end": 610,
+          "text": "    render: function (renderer, displayList)\r\n    {\r\n        var scene = this.scene;\r\n        var cameras = this.cameras;\r\n\r\n        for (var i = 0; i < cameras.length; i++)\r\n        {\r\n            var camera = cameras[i];\r\n\r\n            if (camera.visible && camera.alpha > 0)\r\n            {\r\n                camera.preRender();\r\n\r\n                var visibleChildren = this.getVisibleChildren(displayList.getChildren(), camera);\r\n\r\n                renderer.render(scene, visibleChildren, camera);\r\n            }\r\n        }\r\n    },\r\n"
+        }
+      ]
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/node_modules/phaser/src/dom/RequestAnimationFrame.js",
+      "repositoryPath": "node_modules/phaser/src/dom/RequestAnimationFrame.js",
+      "sourcePin": null,
+      "inputKind": "installed-dependency-source",
+      "bytes": 5469,
+      "sha256": "590ff1167b3679de01ee2e1fd7048b1f49430cadfc2b3c0b44ea3ebd0c085a2c",
+      "excerpts": [
+        {
+          "start": 95,
+          "end": 103,
+          "text": "        this.step = function step (time)\r\n        {\r\n            _this.callback(time);\r\n\r\n            if (_this.isRunning)\r\n            {\r\n                _this.timeOutID = window.requestAnimationFrame(step);\r\n            }\r\n        };\r\n"
+        },
+        {
+          "start": 143,
+          "end": 151,
+          "text": "        this.callback = callback;\r\n\r\n        this.isSetTimeOut = forceSetTimeOut;\r\n\r\n        this.delay = delay;\r\n\r\n        this.isRunning = true;\r\n\r\n        this.timeOutID = (forceSetTimeOut) ? window.setTimeout(this.stepTimeout, 0) : window.requestAnimationFrame(this.step);\r\n"
+        }
+      ]
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/node_modules/phaser/src/core/Game.js",
+      "repositoryPath": "node_modules/phaser/src/core/Game.js",
+      "sourcePin": null,
+      "inputKind": "installed-dependency-source",
+      "bytes": 24840,
+      "sha256": "592649ab651693b367dbed86b87ff48684daef777212be01f95fda0ae7eb08a3",
+      "excerpts": [
+        {
+          "start": 470,
+          "end": 503,
+          "text": "        eventEmitter.emit(Events.PRE_STEP, time, delta);\r\n\r\n        //  This is mostly meant for user-land code and plugins\r\n\r\n        eventEmitter.emit(Events.STEP, time, delta);\r\n\r\n        //  Update the Scene Manager and all active Scenes\r\n\r\n        this.scene.update(time, delta);\r\n\r\n        //  Our final event before rendering starts\r\n\r\n        eventEmitter.emit(Events.POST_STEP, time, delta);\r\n\r\n        var renderer = this.renderer;\r\n\r\n        //  Run the Pre-render (clearing the canvas, setting background colors, etc)\r\n\r\n        renderer.preRender();\r\n\r\n        eventEmitter.emit(Events.PRE_RENDER, renderer, time, delta);\r\n\r\n        //  The main render loop. Iterates all Scenes and all Cameras in those scenes, rendering to the renderer instance.\r\n\r\n        this.scene.render(renderer);\r\n\r\n        //  The Post-Render call. Tidies up loose end, takes snapshots, etc.\r\n\r\n        renderer.postRender();\r\n\r\n        //  The final event before the step repeats. Your last chance to do anything to the canvas before it all starts again.\r\n\r\n        eventEmitter.emit(Events.POST_RENDER, renderer, time, delta);\r\n    },\r\n"
+        },
+        {
+          "start": 645,
+          "end": 665,
+          "text": "    onBlur: function ()\r\n    {\r\n        this.hasFocus = false;\r\n\r\n        this.loop.blur();\r\n    },\r\n\r\n    /**\r\n     * Called automatically by the Visibility Handler.\r\n     * This will set the main loop into a 'focused' state, which resumes it.\r\n     *\r\n     * @method Phaser.Game#onFocus\r\n     * @protected\r\n     * @since 3.0.0\r\n     */\r\n    onFocus: function ()\r\n    {\r\n        this.hasFocus = true;\r\n\r\n        this.loop.focus();\r\n    },\r\n"
+        }
+      ]
+    }
+  ]
+}
