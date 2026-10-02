@@ -1,0 +1,83 @@
+{
+  "schema": "feature63-public-match-identity-v1",
+  "sourcePin": "025fc8750a737af4beb63dceea6ffbcb975e2893",
+  "matchId": "b6b32303-c090-488d-a36d-62510020fef8",
+  "lobbyId": "d1398bfd-45e2-4cc4-8cfb-1e7a1097125a",
+  "capturedAt": "2026-10-02T07:05:21.669Z",
+  "expectedTeams": [
+    0,
+    0,
+    1,
+    1
+  ],
+  "expectedControllers": [
+    "external",
+    "external",
+    "ai",
+    "ai"
+  ],
+  "accounts": [
+    {
+      "profile": "human-one",
+      "side": 0,
+      "account": {
+        "id": "edea4846-a8c2-4afb-9c13-8107092a8b8a",
+        "username": "Guest-e2bb66"
+      },
+      "guestResponse": {
+        "url": "http://127.0.0.1:5373/api/auth/guest",
+        "status": 200,
+        "payload": "{\"account\":{\"id\":\"edea4846-a8c2-4afb-9c13-8107092a8b8a\",\"username\":\"Guest-e2bb66\"},\"guest\":true}"
+      }
+    },
+    {
+      "profile": "human-two",
+      "side": 1,
+      "account": {
+        "id": "be46960c-d3e8-46e5-a5ee-fadf4afb6580",
+        "username": "Guest-7734b1"
+      },
+      "guestResponse": {
+        "url": "http://127.0.0.1:5373/api/auth/guest",
+        "status": 200,
+        "payload": "{\"account\":{\"id\":\"be46960c-d3e8-46e5-a5ee-fadf4afb6580\",\"username\":\"Guest-7734b1\"},\"guest\":true}"
+      }
+    }
+  ],
+  "hellos": [
+    {
+      "profile": "human-one",
+      "side": 0,
+      "socketId": "b77379d9-5132-47de-a0f0-45a14e6fdc3e",
+      "wireOrdinal": 1,
+      "message": {
+        "kind": "hello",
+        "protocolVersion": 1,
+        "matchId": "b6b32303-c090-488d-a36d-62510020fef8",
+        "role": "player",
+        "side": 0,
+        "generation": 1,
+        "perspective": "player",
+        "lastClientSeq": 0,
+        "delayTicks": 0
+      }
+    },
+    {
+      "profile": "human-two",
+      "side": 1,
+      "socketId": "b546b45d-cc02-440e-a6de-22f781ab0946",
+      "wireOrdinal": 1,
+      "message": {
+        "kind": "hello",
+        "protocolVersion": 1,
+        "matchId": "b6b32303-c090-488d-a36d-62510020fef8",
+        "role": "player",
+        "side": 1,
+        "generation": 1,
+        "perspective": "player",
+        "lastClientSeq": 0,
+        "delayTicks": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "automaticRetries": 0,
+  "cleanupFailures": [
+    {
+      "at": "2026-10-02T07:07:08.557858+00:00",
+      "error": "Managed process snapshot unavailable while bound pidfd remains live; no signal is permitted; comparison={\"actualObservation\": null, \"admitted\": true, \"directRoot\": true, \"expectedRegisteredIdentity\": {\"cwd\": \"/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies\", \"executable\": \"/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome\", \"pid\": 1910789, \"session\": 1910789, \"startTicks\": 10061076}, \"family\": \"browser\", \"lifetimeIdentity\": {\"pid\": 1910789, \"startTicks\": 10061076}, \"originalAdmittedSession\": 1910789, \"pidfdLiveAfterObservation\": \"not checked because identity guard failed\", \"pidfdLiveBeforeObservation\": true}",
+      "family": "browser"
+    }
+  ],
+  "closedFreshDatabaseIdentity": {
+    "device": 52,
+    "inode": 42606865,
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r5/server-data/server.sqlite"
+  },
+  "feature63Qualified": false,
+  "finishedAt": "2026-10-02T07:07:08.557863+00:00",
+  "firstFailure": {
+    "at": "2026-10-02T07:07:08.174984+00:00",
+    "message": "Managed process snapshot unavailable while bound pidfd remains live; no signal is permitted; comparison={\"actualObservation\": null, \"admitted\": true, \"directRoot\": false, \"expectedRegisteredIdentity\": {\"cwd\": \"/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies\", \"executable\": \"/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome\", \"pid\": 1911049, \"session\": 1910789, \"startTicks\": 10061124}, \"family\": \"browser\", \"lifetimeIdentity\": {\"pid\": 1911049, \"startTicks\": 10061124}, \"originalAdmittedSession\": 1910789, \"pidfdLiveAfterObservation\": \"not checked because identity guard failed\", \"pidfdLiveBeforeObservation\": true}",
+    "type": "RuntimeError"
+  },
+  "matchId": "b6b32303-c090-488d-a36d-62510020fef8",
+  "nativeClosureEvidenceScope": "Direct unreaped roots and bound observed original-session descendants only",
+  "protectedFinalReadback": {
+    "at": "2026-10-02T07:07:08.559014+00:00",
+    "holderPid": 1063,
+    "listeningSockets": [
+      "socket:[3783]"
+    ],
+    "process": {
+      "argv": [
+        "/home/morgana/.local/bin/node",
+        "/home/morgana/Projects/orcs-vs-Fairies/node_modules/vite/bin/vite.js",
+        "preview",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "4173",
+        "--strictPort"
+      ],
+      "cwd": "/home/morgana/Projects/orcs-vs-Fairies",
+      "executable": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+      "pid": 1063,
+      "startTicks": 874
+    },
+    "status": "PASS"
+  },
+  "rootNativeLifetimeDispositionRequired": true,
+  "rootSealAndExtractionRequired": true,
+  "schema": "feature63-dedicated-capture-result-v1",
+  "sourcePin": "025fc8750a737af4beb63dceea6ffbcb975e2893",
+  "startedAt": "2026-10-02T07:05:17.002839+00:00",
+  "status": "FAIL_CLEANUP_HELD_NO_UNVERIFIED_SIGNAL",
+  "testedBuildId": "9c5d2f1ff26bd6849b1ad5e311300669fb5f02feebbe4d311b6f8d670df243e1",
+  "unobservedDescendantsExcluded": false
+}
