@@ -1,0 +1,150 @@
+{
+  "startedAt": "2026-10-02T03:11:01.804820+00:00",
+  "testedProductPin": "f7f3e187ea40079492589a6fce39f0b33f77f04a",
+  "integrationPin": "f5a9392bce8d817a02692c44dd8a2018defe3709",
+  "testedBuildId": "9c5d2f1ff26bd6849b1ad5e311300669fb5f02feebbe4d311b6f8d670df243e1",
+  "phases": [
+    {
+      "name": "fetch-admitted-script-pin",
+      "argv": [
+        "git",
+        "fetch",
+        "--no-tags",
+        "/home/morgana/Projects/orcs-vs-Fairies",
+        "f5a9392bce8d817a02692c44dd8a2018defe3709"
+      ],
+      "cwd": "/tmp/ovf-id6-integration-703fc-20261001",
+      "boundSeconds": 30,
+      "startedAt": "2026-10-02T03:11:02.554213+00:00",
+      "child": {
+        "pid": 1620533,
+        "ppid": 1620531,
+        "startTicks": 8655618,
+        "state": "R"
+      },
+      "exitCode": 0,
+      "finishedAt": "2026-10-02T03:11:02.562154+00:00"
+    },
+    {
+      "name": "checkout-admitted-script-pin",
+      "argv": [
+        "git",
+        "checkout",
+        "--detach",
+        "-f",
+        "f5a9392bce8d817a02692c44dd8a2018defe3709"
+      ],
+      "cwd": "/tmp/ovf-id6-integration-703fc-20261001",
+      "boundSeconds": 30,
+      "startedAt": "2026-10-02T03:11:02.562187+00:00",
+      "child": {
+        "pid": 1620538,
+        "ppid": 1620531,
+        "startTicks": 8655618,
+        "state": "R"
+      },
+      "exitCode": 0,
+      "finishedAt": "2026-10-02T03:11:02.768683+00:00"
+    },
+    {
+      "name": "build-focused-helpers",
+      "argv": [
+        "/home/morgana/.local/bin/node",
+        "--import",
+        "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/protected-signal-guard.v2.mjs",
+        "/tmp/ovf-id6-integration-703fc-20261001/scripts/acceptance/build-native-helpers.mjs",
+        "/tmp/ovf-id6-integration-703fc-20261001",
+        "/tmp/ovf-main402-native15-f5a9392-r1/helpers",
+        "f5a9392bce8d817a02692c44dd8a2018defe3709",
+        "main-smoke"
+      ],
+      "cwd": "/tmp/ovf-id6-integration-703fc-20261001",
+      "boundSeconds": 90,
+      "startedAt": "2026-10-02T03:11:03.516703+00:00",
+      "child": {
+        "pid": 1620561,
+        "ppid": 1620531,
+        "startTicks": 8655714,
+        "state": "R"
+      },
+      "exitCode": 1,
+      "finishedAt": "2026-10-02T03:11:04.555601+00:00"
+    }
+  ],
+  "status": "failed; first failure retained; no runtime retry",
+  "runtimeRetryCount": 0,
+  "browserExecuted": false,
+  "buildExecuted": false,
+  "artMode": "strict",
+  "previewPort": 4187,
+  "fallbackExecuted": false,
+  "main15BrowserCompleted": false,
+  "main15HistoryCompleted": false,
+  "fallbackCompleted": false,
+  "childDiscovery": {
+    "1620533": {
+      "boundIdentity": {
+        "pid": 1620533,
+        "ppid": 1620531,
+        "startTicks": 8655618,
+        "state": "R"
+      },
+      "scanCount": 0,
+      "skipCount": 1,
+      "lastLabel": "phase guarded rescan before polling/reaping direct parent",
+      "lastParentIdentity": {
+        "pid": 1620533,
+        "ppid": 1620531,
+        "startTicks": 8655618,
+        "state": "Z"
+      },
+      "lastAdoptedCount": 0,
+      "closureQualification": "Direct parent identity changed during discovery; candidates were discarded without ancestry adoption."
+    },
+    "1620538": {
+      "boundIdentity": {
+        "pid": 1620538,
+        "ppid": 1620531,
+        "startTicks": 8655618,
+        "state": "R"
+      },
+      "scanCount": 1,
+      "skipCount": 1,
+      "lastLabel": "phase guarded rescan before polling/reaping direct parent",
+      "lastParentIdentity": {
+        "pid": 1620538,
+        "ppid": 1620531,
+        "startTicks": 8655618,
+        "state": "Z"
+      },
+      "lastAdoptedCount": 0,
+      "closureQualification": "No ancestry adoption from a missing, reused, or terminated direct parent; cleanup uses only previously bound child identities."
+    },
+    "1620561": {
+      "boundIdentity": {
+        "pid": 1620561,
+        "ppid": 1620531,
+        "startTicks": 8655714,
+        "state": "R"
+      },
+      "scanCount": 5,
+      "skipCount": 1,
+      "lastLabel": "phase guarded rescan before polling/reaping direct parent",
+      "lastParentIdentity": {
+        "pid": 1620561,
+        "ppid": 1620531,
+        "startTicks": 8655714,
+        "state": "Z"
+      },
+      "lastAdoptedCount": 0,
+      "closureQualification": "No ancestry adoption from a missing, reused, or terminated direct parent; cleanup uses only previously bound child identities."
+    }
+  },
+  "failure": {
+    "message": "build-focused-helpers failed exit 1; no retry",
+    "traceback": "Traceback (most recent call last):\n  File \"/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/main15-bounded.v5.py\", line 232, in main\n    phase('build-focused-helpers',node+[str(OWNED/'scripts/acceptance/build-native-helpers.mjs'),str(OWNED),str(helpers),pin,'main-smoke'],90,env);invariant('helpers')\n    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/main15-bounded.v5.py\", line 138, in phase\n    if proc.returncode:raise RuntimeError(name+' failed exit '+str(proc.returncode)+'; no retry')\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: build-focused-helpers failed exit 1; no retry\n",
+    "at": "2026-10-02T03:11:04.556292+00:00"
+  },
+  "cleanupErrors": [],
+  "finishedAt": "2026-10-02T03:11:05.260880+00:00"
+}

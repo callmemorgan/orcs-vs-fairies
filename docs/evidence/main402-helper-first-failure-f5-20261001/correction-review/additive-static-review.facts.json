@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "scope": "main15 native event/history audit compile-readiness correction",
+  "approved": true,
+  "approvedChange": "Rename the siege-local launches binding and its three references to siegeLaunches while preserving the newOwnerAbilities output key and the morale-local launches binding.",
+  "failingPin": "f5a9392bce8d817a02692c44dd8a2018defe3709",
+  "compileReadyAtFailingPin": false,
+  "runtimeFeatureAffected": false,
+  "source": {
+    "path": "scripts/acceptance/main-smoke402-history-audit.ts",
+    "bytes": 31983,
+    "sha256": "5f4471498a48113a135207d9195cb9cf8b4504d56f448258812bdfe16e21389f"
+  },
+  "failure": {
+    "path": "/tmp/ovf-main402-native15-f5a9392-r1/build-focused-helpers.stderr.log",
+    "bytes": 1742,
+    "sha256": "a68b5bcb2cdd9b3eb7e7a694970b90208da1a60cfb780bf6e8a441d9546edc84",
+    "phase": "build-focused-helpers",
+    "message": "The symbol launches has already been declared at lines 299 and 335."
+  },
+  "changedLines": [299, 300, 301, 302],
+  "preservedOutputKey": "newOwnerAbilities",
+  "preservedMoraleBindingLine": 335,
+  "extraAdmissionGatesRequested": false,
+  "rootStateAtFinalReadback": {
+    "status": "unstaged exact reviewed rename present from another actor",
+    "changedPath": "scripts/acceptance/main-smoke402-history-audit.ts",
+    "worktreeSha256": "4897f625184615f55128b0d6b76fe7c40995d150763a71c242d1e5b8c253d393"
+  },
+  "runtimeExecutedByReview": false,
+  "rootEditedByReviewer": false,
+  "reviewer": "OpenAI GPT-6.1 Sol in Codex"
+}

@@ -1,0 +1,33 @@
+✘ [ERROR] The symbol "launches" has already been declared
+
+    scripts/acceptance/main-smoke402-history-audit.ts:335:10:
+      335 │     const launches = morale.ticks.flatMap(tick => tick.events.fil...
+          ╵           ~~~~~~~~
+
+  The symbol "launches" was originally declared here:
+
+    scripts/acceptance/main-smoke402-history-audit.ts:299:10:
+      299 │     const launches = siege.ticks.flatMap(tick => tick.events.filt...
+          ╵           ~~~~~~~~
+
+/tmp/ovf-id6-integration-703fc-20261001/node_modules/esbuild/lib/main.js:1752
+  let error = new Error(text);
+              ^
+
+Error: Build failed with 1 error:
+scripts/acceptance/main-smoke402-history-audit.ts:335:10: ERROR: The symbol "launches" has already been declared
+    at failureErrorWithLog (/tmp/ovf-id6-integration-703fc-20261001/node_modules/esbuild/lib/main.js:1752:15)
+    at /tmp/ovf-id6-integration-703fc-20261001/node_modules/esbuild/lib/main.js:1211:25
+    at /tmp/ovf-id6-integration-703fc-20261001/node_modules/esbuild/lib/main.js:1163:52
+    at buildResponseToResult (/tmp/ovf-id6-integration-703fc-20261001/node_modules/esbuild/lib/main.js:1209:7)
+    at /tmp/ovf-id6-integration-703fc-20261001/node_modules/esbuild/lib/main.js:1236:16
+    at responseCallbacks.<computed> (/tmp/ovf-id6-integration-703fc-20261001/node_modules/esbuild/lib/main.js:886:9)
+    at handleIncomingPacket (/tmp/ovf-id6-integration-703fc-20261001/node_modules/esbuild/lib/main.js:941:12)
+    at Socket.readFromStdout (/tmp/ovf-id6-integration-703fc-20261001/node_modules/esbuild/lib/main.js:864:7)
+    at Socket.emit (node:events:514:28)
+    at addChunk (node:internal/streams/readable:568:12) {
+  errors: [Getter/Setter],
+  warnings: [Getter/Setter]
+}
+
+Node.js v24.21.0

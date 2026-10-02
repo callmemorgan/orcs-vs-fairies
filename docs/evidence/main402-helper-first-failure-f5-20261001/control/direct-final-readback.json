@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "at": "2026-10-02T03:12:53.249083+00:00",
+  "integrationPin": "f5a9392bce8d817a02692c44dd8a2018defe3709",
+  "status": "failed; first failure retained; no runtime retry",
+  "wrapperExitCode": 1,
+  "rawManifest": {
+    "path": "/tmp/ovf-main402-native15-f5a9392-r1/run-artifact-manifest.json",
+    "bytes": 99670,
+    "sha256": "e3dc1b2aa3da69985c1fe3e5cf68fa2243692a1b4361349cc92407fa7c88fda0",
+    "artifactCount": 466,
+    "artifactBytes": 75644989
+  },
+  "allManifestArtifactsReauthenticated": true,
+  "directSourceAndDistReadbackCounts": {
+    "rootProduct": 570,
+    "ownedProduct": 570,
+    "helpers": 194,
+    "rootDist": 397,
+    "ownedDist": 398
+  },
+  "finalRootHead": "f5a9392bce8d817a02692c44dd8a2018defe3709",
+  "finalOwnedHead": "f5a9392bce8d817a02692c44dd8a2018defe3709",
+  "firstFailure": {
+    "message": "build-focused-helpers failed exit 1; no retry",
+    "traceback": "Traceback (most recent call last):\n  File \"/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/main15-bounded.v5.py\", line 232, in main\n    phase('build-focused-helpers',node+[str(OWNED/'scripts/acceptance/build-native-helpers.mjs'),str(OWNED),str(helpers),pin,'main-smoke'],90,env);invariant('helpers')\n    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/main15-bounded.v5.py\", line 138, in phase\n    if proc.returncode:raise RuntimeError(name+' failed exit '+str(proc.returncode)+'; no retry')\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: build-focused-helpers failed exit 1; no retry\n",
+    "at": "2026-10-02T03:11:04.556292+00:00"
+  },
+  "helperSourceSha256": "5f4471498a48113a135207d9195cb9cf8b4504d56f448258812bdfe16e21389f",
+  "fixturesExecuted": false,
+  "previewExecuted": false,
+  "browserExecuted": false,
+  "historyExecuted": false,
+  "placeholderExecuted": false,
+  "cleanupErrors": [],
+  "signals": [],
+  "wrapperClosed": true,
+  "rememberedOwnedChildrenClosed": true,
+  "closureQualification": "Only previously bound exact identities checked; no atomic unobserved-descendant exclusion claim.",
+  "protectedPreview": {
+    "pid": 1063,
+    "startTicks": 874,
+    "listenerInode": "3783",
+    "fd22": "socket:[3783]"
+  },
+  "owned4187Listeners": [],
+  "runtimeRetryCount": 0,
+  "visualAcceptance": "No browser/screenshot results in this failed run."
+}

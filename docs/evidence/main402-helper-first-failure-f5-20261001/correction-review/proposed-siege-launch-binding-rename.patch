@@ -1,0 +1,18 @@
+diff --git a/scripts/acceptance/main-smoke402-history-audit.ts b/scripts/acceptance/main-smoke402-history-audit.ts
+--- a/scripts/acceptance/main-smoke402-history-audit.ts
++++ b/scripts/acceptance/main-smoke402-history-audit.ts
+@@ -296,10 +296,10 @@ export function verifyMainSmoke402Artifacts({ evidenceDir, fixturesDir, manifest
+     assert.equal(actor(captured.after, siegeIds.engine).tactics?.siegeCrew?.hp, initialEngine.tactics.siegeCrew.maxHp);
+     const ownerHit = positiveHits(siege, siegeIds.engine, siegeIds.target).find(hit => hit.event.side === 0); assert(ownerHit && ownerHit.tick > captured.after.tick);
+     const ownerInput = nativeCommand(siege, 'attack', command => command.ids.includes(siegeIds.engine) && command.target === siegeIds.target);
+-    const launches = siege.ticks.flatMap(tick => tick.events.filter(event => event.type === 'ability' && event.source === siegeIds.engine && event.side === 0).map(event => ({ tick: tick.after.tick, event })));
+-    assert(launches.some(item => item.tick >= captured.after.tick && item.tick < ownerHit.tick));
+-    assert(launches.some(item => ownerInput.tick < item.tick && item.tick < ownerHit.tick));
+-    observations.siege = { nativeAttack: input, nativeCapture: captureInput, nativeNewOwnerAttack: ownerInput, initialEngine, crewDamage, defeatedTick: defeated.after.tick, captureTick: captured.after.tick, newOwnerAbilities: launches, newOwnerHit: ownerHit };
++    const siegeLaunches = siege.ticks.flatMap(tick => tick.events.filter(event => event.type === 'ability' && event.source === siegeIds.engine && event.side === 0).map(event => ({ tick: tick.after.tick, event })));
++    assert(siegeLaunches.some(item => item.tick >= captured.after.tick && item.tick < ownerHit.tick));
++    assert(siegeLaunches.some(item => ownerInput.tick < item.tick && item.tick < ownerHit.tick));
++    observations.siege = { nativeAttack: input, nativeCapture: captureInput, nativeNewOwnerAttack: ownerInput, initialEngine, crewDamage, defeatedTick: defeated.after.tick, captureTick: captured.after.tick, newOwnerAbilities: siegeLaunches, newOwnerHit: ownerHit };
+ 
+     const ambush = history('ambush-triggered', 'ambush-selected-trigger'), ambushIds = authoredByName.get(ambush.scenario)!.scenario.ids;
+     const ambushInput = nativeCommand(ambush, 'ambush', command => command.ids.includes(ambushIds.ambusher));
