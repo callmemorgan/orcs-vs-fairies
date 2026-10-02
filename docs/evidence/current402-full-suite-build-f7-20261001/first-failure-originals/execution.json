@@ -1,0 +1,46 @@
+{
+  "startedAt": "2026-10-02T01:45:29.698073+00:00",
+  "authorizedSourceCommit": "f7f3e187ea40079492589a6fce39f0b33f77f04a",
+  "ownedCheckout": "/tmp/ovf-id6-integration-703fc-20261001",
+  "rootCheckout": "/home/morgana/Projects/orcs-vs-Fairies",
+  "phases": [
+    {
+      "label": "owned-fetch",
+      "argv": [
+        "git",
+        "fetch",
+        "--no-tags",
+        "/home/morgana/Projects/orcs-vs-Fairies",
+        "f7f3e187ea40079492589a6fce39f0b33f77f04a"
+      ],
+      "cwd": "/tmp/ovf-id6-integration-703fc-20261001",
+      "startedAt": "2026-10-02T01:45:29.895550+00:00",
+      "exitCode": 0,
+      "completedAt": "2026-10-02T01:45:29.901607+00:00"
+    },
+    {
+      "label": "owned-checkout",
+      "argv": [
+        "git",
+        "checkout",
+        "--detach",
+        "-f",
+        "f7f3e187ea40079492589a6fce39f0b33f77f04a"
+      ],
+      "cwd": "/tmp/ovf-id6-integration-703fc-20261001",
+      "startedAt": "2026-10-02T01:45:29.901709+00:00",
+      "exitCode": 0,
+      "completedAt": "2026-10-02T01:45:29.919226+00:00"
+    }
+  ],
+  "status": "failed; stopped with no retry or fixes",
+  "retryCount": 0,
+  "buildExecuted": false,
+  "browserExecuted": false,
+  "serverLaunchedByWrapper": false,
+  "finishedAt": "2026-10-02T01:45:30.025280+00:00",
+  "failure": {
+    "message": "Owned executed input inventory differs from root frozen source",
+    "traceback": "Traceback (most recent call last):\n  File \"/tmp/ovf-id6-composed-full-build-f7-r1-w7q_z1jo/run-bound.py\", line 51, in <module>\n    owned_before=files(owned);write('owned-inputs-before.json',owned_before);assert owned_before==root_before,'Owned executed input inventory differs from root frozen source'\n                                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Owned executed input inventory differs from root frozen source\n"
+  }
+}

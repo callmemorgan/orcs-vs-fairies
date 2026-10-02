@@ -1,0 +1,968 @@
+{
+  "format": "orcs-vs-fairies-persistent-army-proof",
+  "version": 1,
+  "sourceCommit": "f7f3e187ea40079492589a6fce39f0b33f77f04a",
+  "sourceFiles": {
+    "src/core/campaign.ts": "a665195656aab067bdbe9ab8246a7e6c45e574e2fecdfa839d3eb5d32a975b4b",
+    "src/core/scenarios.ts": "b5b6910d0974cde13818d5c9ef72485451a1d73b3c48068bfbb3ec5144aca710",
+    "src/core/scenario-recordings.ts": "311652f4b4505849928efe4ed4bf7e4d9641ab71716ecb37cc3d363e5f8f2780",
+    "src/core/simulation.ts": "e301c65d0352ffe648a5bc4ee6acbda1f562164deacdfe60f8f3b03e7bdccf35",
+    "src/core/unit-progression.ts": "bd29a33226eac4122b63217904f13d40f17ce629d50e0c1f5eb56c443c72095a",
+    "src/core/saves.ts": "2059e49775401d44813a02c3628de3055c3d7d944d4f887cf7a3639c145197c7",
+    "src/scenarios/campaigns.ts": "5b651b94b6cbd30e7667e4745a65ceb53b7fde886754382a099a648588384c2a",
+    "scripts/scenarios/mission-strategy.ts": "22373eb3d432df6162710c2775f530775a0db44daaffec25b12ae68d423053b3",
+    "scripts/scenarios/puzzle-stealth-strategy.ts": "b0697b58728d09fe0c1c1bd3e82538b8a35cdc1f8ac1e1f41161ea85941016f1",
+    "scripts/scenarios/route-strategy.ts": "1f88f3900d878d0286d8f43f39531eafe79a3d6b888e389c04061c50e32f58fe",
+    "scripts/scenarios/prove-persistent-army.ts": "fd980ff78a1a283e583fad9ca887b3a391e5322c58ac90cf95b0368f41ecdf5a",
+    "scripts/scenarios/persistent-army/armor-effect-proof.ts": "1b3a5cc8b0a6543f2628a2c31e8b9cec9830609df1c9c4d9993cf5be73526b82",
+    "scripts/scenarios/persistent-army/artifact-allocation-proof.ts": "df48ad881aa45f77822404d043c9a619b417d35ec94dbd6410284aa1f01cbf4e"
+  },
+  "generatedAt": "2026-10-02T01:55:49.243Z",
+  "commandPath": "issueScenarioCommand",
+  "stepPath": "stepScenario",
+  "deterministicSha256": "3442fff0ce5860bc90b5557471959bae14164333165fce9862fd3655e2315c03",
+  "assertions": {
+    "native artifact adds four armor": true,
+    "chapter1-equipped: game save roundtrip": true,
+    "chapter1-equipped: journal replay": true,
+    "chapter1-equipped: resume state": true,
+    "equipped chapter was resumed": true,
+    "chapter1: victory": true,
+    "chapter1: verified final state": true,
+    "chapter1: result applied once": true,
+    "chapter1: profile reload": true,
+    "native artifact recovered and equipped by commands": true,
+    "cannon earned rank and promotion in combat": true,
+    "commander artifact has native ownership": true,
+    "chapter2: survivor 1 identity and earned progress": true,
+    "chapter2: survivor 1 rests": true,
+    "chapter2: survivor 2 identity and earned progress": true,
+    "chapter2: survivor 2 rests": true,
+    "chapter2 artifact uses a separate owned record": true,
+    "two ordinary reinforcements accepted": true,
+    "casualty was a carried deployed troop": true,
+    "casualty move accepted": true,
+    "deployed casualty died through hostile combat": true,
+    "chapter2-casualty: game save roundtrip": true,
+    "chapter2-casualty: journal replay": true,
+    "chapter2-casualty: resume state": true,
+    "chapter2: victory": true,
+    "chapter2: verified final state": true,
+    "chapter2: result applied once": true,
+    "chapter2: profile reload": true,
+    "deployed casualty removed from roster": true,
+    "trained survivor joins persisted army": true,
+    "reserve includes earned veteran and trained soldier": true,
+    "casualty absent from next mission": true,
+    "commander equipment persists into next mission": true,
+    "chapter3-reserves: game save roundtrip": true,
+    "chapter3-reserves: journal replay": true,
+    "chapter3-reserves: resume state": true,
+    "chapter3: victory": true,
+    "chapter3: verified final state": true,
+    "chapter3: result applied once": true,
+    "chapter3: profile reload": true,
+    "all reserves retain every recorded value": true,
+    "casualty remains removed after later victory": true
+  },
+  "chapters": [
+    {
+      "mission": "dwarves-1",
+      "tick": 1029,
+      "checksum": "06f33625",
+      "commands": 37,
+      "deployed": [],
+      "survivors": [
+        1,
+        2,
+        4,
+        5
+      ]
+    },
+    {
+      "mission": "dwarves-2",
+      "tick": 1500,
+      "checksum": "7860b294",
+      "commands": 75,
+      "deployed": [
+        1,
+        2,
+        4,
+        5
+      ],
+      "survivors": [
+        1,
+        2,
+        5,
+        12,
+        16,
+        21
+      ]
+    },
+    {
+      "mission": "dwarves-3-alt",
+      "tick": 688,
+      "checksum": "6d643e81",
+      "commands": 69,
+      "deployed": [
+        1,
+        16
+      ],
+      "survivors": [
+        1,
+        2,
+        5,
+        12,
+        16,
+        21
+      ]
+    }
+  ],
+  "continuations": [
+    {
+      "mission": "dwarves-1",
+      "tick": 226,
+      "checksum": "f97ad8df"
+    },
+    {
+      "mission": "dwarves-2",
+      "tick": 262,
+      "checksum": "dad45cae"
+    },
+    {
+      "mission": "dwarves-3-alt",
+      "tick": 1,
+      "checksum": "037cff31"
+    }
+  ],
+  "casualty": 4,
+  "recruited": [
+    21
+  ],
+  "reserves": [
+    2,
+    5,
+    12,
+    21
+  ],
+  "promotions": [
+    {
+      "mission": "dwarves-1",
+      "tick": 552,
+      "id": 2,
+      "before": {
+        "experience": 56.916,
+        "rank": 1,
+        "nextSurvivalAt": 37.30000000000018,
+        "lastCombatAt": 27.600000000000257,
+        "promotions": [],
+        "pendingPromotion": 1
+      },
+      "after": {
+        "experience": 56.916,
+        "rank": 1,
+        "nextSurvivalAt": 37.30000000000018,
+        "lastCombatAt": 27.600000000000257,
+        "promotions": [
+          {
+            "rank": 1,
+            "id": "bulwark"
+          }
+        ]
+      },
+      "statsBefore": {
+        "damageFactor": 1.05,
+        "speedFactor": 1,
+        "armor": 1,
+        "range": 0
+      },
+      "statsAfter": {
+        "damageFactor": 1.05,
+        "speedFactor": 1,
+        "armor": 4,
+        "range": 0
+      }
+    },
+    {
+      "mission": "dwarves-1",
+      "tick": 711,
+      "id": 2,
+      "before": {
+        "experience": 116.81279999999998,
+        "rank": 2,
+        "nextSurvivalAt": 37.30000000000018,
+        "lastCombatAt": 35.55000000000012,
+        "promotions": [
+          {
+            "rank": 1,
+            "id": "bulwark"
+          }
+        ],
+        "pendingPromotion": 2
+      },
+      "after": {
+        "experience": 116.81279999999998,
+        "rank": 2,
+        "nextSurvivalAt": 37.30000000000018,
+        "lastCombatAt": 35.55000000000012,
+        "promotions": [
+          {
+            "rank": 1,
+            "id": "bulwark"
+          },
+          {
+            "rank": 2,
+            "id": "bulwark"
+          }
+        ]
+      },
+      "statsBefore": {
+        "damageFactor": 1.1,
+        "speedFactor": 1,
+        "armor": 5,
+        "range": 0
+      },
+      "statsAfter": {
+        "damageFactor": 1.1,
+        "speedFactor": 1,
+        "armor": 8,
+        "range": 0
+      }
+    },
+    {
+      "mission": "dwarves-1",
+      "tick": 923,
+      "id": 2,
+      "before": {
+        "experience": 205.64960000000002,
+        "rank": 3,
+        "nextSurvivalAt": 67.35000000000002,
+        "lastCombatAt": 46.149999999999515,
+        "promotions": [
+          {
+            "rank": 1,
+            "id": "bulwark"
+          },
+          {
+            "rank": 2,
+            "id": "bulwark"
+          }
+        ],
+        "pendingPromotion": 3
+      },
+      "after": {
+        "experience": 205.64960000000002,
+        "rank": 3,
+        "nextSurvivalAt": 67.35000000000002,
+        "lastCombatAt": 46.149999999999515,
+        "promotions": [
+          {
+            "rank": 1,
+            "id": "bulwark"
+          },
+          {
+            "rank": 2,
+            "id": "bulwark"
+          },
+          {
+            "rank": 3,
+            "id": "bulwark"
+          }
+        ]
+      },
+      "statsBefore": {
+        "damageFactor": 1.15,
+        "speedFactor": 1,
+        "armor": 9,
+        "range": 0
+      },
+      "statsAfter": {
+        "damageFactor": 1.15,
+        "speedFactor": 1,
+        "armor": 12,
+        "range": 0
+      }
+    },
+    {
+      "mission": "dwarves-2",
+      "tick": 342,
+      "id": 5,
+      "before": {
+        "experience": 40.82,
+        "rank": 1,
+        "nextSurvivalAt": 60,
+        "lastCombatAt": 17.100000000000108,
+        "promotions": [],
+        "pendingPromotion": 1
+      },
+      "after": {
+        "experience": 40.82,
+        "rank": 1,
+        "nextSurvivalAt": 60,
+        "lastCombatAt": 17.100000000000108,
+        "promotions": [
+          {
+            "rank": 1,
+            "id": "sharpshooter"
+          }
+        ]
+      },
+      "statsBefore": {
+        "damageFactor": 1.05,
+        "speedFactor": 1,
+        "armor": 1,
+        "range": 0
+      },
+      "statsAfter": {
+        "damageFactor": 1.05,
+        "speedFactor": 1,
+        "armor": 1,
+        "range": 1
+      }
+    },
+    {
+      "mission": "dwarves-2",
+      "tick": 415,
+      "id": 12,
+      "before": {
+        "experience": 45.435,
+        "rank": 1,
+        "nextSurvivalAt": 32.30000000000011,
+        "lastCombatAt": 20.75000000000016,
+        "promotions": [],
+        "pendingPromotion": 1
+      },
+      "after": {
+        "experience": 45.435,
+        "rank": 1,
+        "nextSurvivalAt": 32.30000000000011,
+        "lastCombatAt": 20.75000000000016,
+        "promotions": [
+          {
+            "rank": 1,
+            "id": "bulwark"
+          }
+        ]
+      },
+      "statsBefore": {
+        "damageFactor": 1.05,
+        "speedFactor": 1,
+        "armor": 1,
+        "range": 0
+      },
+      "statsAfter": {
+        "damageFactor": 1.05,
+        "speedFactor": 1,
+        "armor": 4,
+        "range": 0
+      }
+    },
+    {
+      "mission": "dwarves-2",
+      "tick": 763,
+      "id": 1,
+      "before": {
+        "experience": 58.835,
+        "rank": 1,
+        "nextSurvivalAt": 60,
+        "lastCombatAt": 38.14999999999997,
+        "promotions": [],
+        "pendingPromotion": 1
+      },
+      "after": {
+        "experience": 58.835,
+        "rank": 1,
+        "nextSurvivalAt": 60,
+        "lastCombatAt": 38.14999999999997,
+        "promotions": [
+          {
+            "rank": 1,
+            "id": "bulwark"
+          }
+        ]
+      },
+      "statsBefore": {
+        "damageFactor": 1.05,
+        "speedFactor": 1,
+        "armor": 5,
+        "range": 0
+      },
+      "statsAfter": {
+        "damageFactor": 1.05,
+        "speedFactor": 1,
+        "armor": 8,
+        "range": 0
+      }
+    },
+    {
+      "mission": "dwarves-2",
+      "tick": 1229,
+      "id": 12,
+      "before": {
+        "experience": 102.81500000000001,
+        "rank": 2,
+        "nextSurvivalAt": 62.3000000000003,
+        "lastCombatAt": 61.449999999998646,
+        "promotions": [
+          {
+            "rank": 1,
+            "id": "bulwark"
+          }
+        ],
+        "pendingPromotion": 2
+      },
+      "after": {
+        "experience": 102.81500000000001,
+        "rank": 2,
+        "nextSurvivalAt": 62.3000000000003,
+        "lastCombatAt": 61.449999999998646,
+        "promotions": [
+          {
+            "rank": 1,
+            "id": "bulwark"
+          },
+          {
+            "rank": 2,
+            "id": "bulwark"
+          }
+        ]
+      },
+      "statsBefore": {
+        "damageFactor": 1.1,
+        "speedFactor": 1,
+        "armor": 9,
+        "range": 0
+      },
+      "statsAfter": {
+        "damageFactor": 1.1,
+        "speedFactor": 1,
+        "armor": 12,
+        "range": 0
+      }
+    }
+  ],
+  "equipment": [
+    {
+      "mission": "dwarves-1",
+      "tick": 225,
+      "id": 1,
+      "artifact": 1,
+      "before": {
+        "damageFactor": 1,
+        "speedFactor": 1,
+        "armor": 0,
+        "range": 0
+      },
+      "after": {
+        "damageFactor": 1,
+        "speedFactor": 1,
+        "armor": 4,
+        "range": 0
+      }
+    }
+  ],
+  "armorEffect": {
+    "artifact": "core:iron-aegis",
+    "armor": 4,
+    "hits": [
+      {
+        "tick": 261,
+        "source": 6,
+        "target": 1,
+        "equipped": 13,
+        "unequipped": 17
+      },
+      {
+        "tick": 289,
+        "source": 6,
+        "target": 1,
+        "equipped": 13,
+        "unequipped": 17
+      },
+      {
+        "tick": 317,
+        "source": 6,
+        "target": 1,
+        "equipped": 13,
+        "unequipped": 17
+      }
+    ],
+    "arms": [
+      {
+        "equipped": true,
+        "hits": [
+          {
+            "tick": 261,
+            "source": 6,
+            "target": 1,
+            "damage": 13
+          },
+          {
+            "tick": 289,
+            "source": 6,
+            "target": 1,
+            "damage": 13
+          },
+          {
+            "tick": 317,
+            "source": 6,
+            "target": 1,
+            "damage": 13
+          }
+        ],
+        "stats": {
+          "damageFactor": 1,
+          "speedFactor": 1,
+          "armor": 4,
+          "range": 0
+        },
+        "finalHp": 241,
+        "commands": [
+          {
+            "tick": 226,
+            "command": {
+              "type": "move",
+              "ids": [
+                2,
+                3,
+                4,
+                5
+              ],
+              "x": 10,
+              "y": 24
+            },
+            "accepted": true
+          },
+          {
+            "tick": 226,
+            "command": {
+              "type": "move",
+              "ids": [
+                1
+              ],
+              "x": 26,
+              "y": 20
+            },
+            "accepted": true
+          }
+        ]
+      },
+      {
+        "equipped": false,
+        "hits": [
+          {
+            "tick": 261,
+            "source": 6,
+            "target": 1,
+            "damage": 17
+          },
+          {
+            "tick": 289,
+            "source": 6,
+            "target": 1,
+            "damage": 17
+          },
+          {
+            "tick": 317,
+            "source": 6,
+            "target": 1,
+            "damage": 17
+          }
+        ],
+        "stats": {
+          "damageFactor": 1,
+          "speedFactor": 1,
+          "armor": 0,
+          "range": 0
+        },
+        "finalHp": 229,
+        "commands": [
+          {
+            "tick": 226,
+            "command": {
+              "type": "unequipArtifact",
+              "id": 1,
+              "slot": "armor"
+            },
+            "accepted": true
+          },
+          {
+            "tick": 226,
+            "command": {
+              "type": "move",
+              "ids": [
+                2,
+                3,
+                4,
+                5
+              ],
+              "x": 10,
+              "y": 24
+            },
+            "accepted": true
+          },
+          {
+            "tick": 226,
+            "command": {
+              "type": "move",
+              "ids": [
+                1
+              ],
+              "x": 26,
+              "y": 20
+            },
+            "accepted": true
+          }
+        ]
+      }
+    ]
+  },
+  "allocation": {
+    "scenarioId": "persistent-army-artifact-allocator",
+    "sourceCommanderId": 1,
+    "placeholderId": 105,
+    "nativeHeroId": 108,
+    "nativeDropTick": 1,
+    "nativeArtifact": {
+      "id": 1,
+      "definitionId": "core:ember-blade",
+      "position": {
+        "x": 9,
+        "y": 6
+      }
+    },
+    "sourceArtifactId": 1,
+    "allocatedArtifactId": 2,
+    "nextArtifactId": 3,
+    "armorEffect": 4,
+    "savedAtTick": 41,
+    "finalTick": 61,
+    "nativeCommandCount": 1,
+    "continuedCommandCount": 2,
+    "sourceArmyUnchanged": true,
+    "checkpointRoundtrip": true,
+    "genericSaveRoundtrip": true,
+    "recordingContinuation": true
+  },
+  "finalArmy": [
+    {
+      "entity": {
+        "id": 1,
+        "side": 0,
+        "kind": "unit",
+        "role": "special",
+        "x": 6.250000000000214,
+        "y": 27.079087136288404,
+        "hp": 280,
+        "maxHp": 280,
+        "order": {
+          "type": "move",
+          "x": 6,
+          "y": 29
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "walk",
+        "animTime": 34.40000000000018,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [
+          {
+            "x": 6.25,
+            "y": 27.75
+          },
+          {
+            "x": 6.25,
+            "y": 28.25
+          },
+          {
+            "x": 6.25,
+            "y": 28.75
+          }
+        ],
+        "definitionId": "core:dwarves-commander",
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "veteran": {
+          "experience": 82.87,
+          "rank": 1,
+          "nextSurvivalAt": 60,
+          "lastCombatAt": 0,
+          "promotions": [
+            {
+              "rank": 1,
+              "id": "bulwark"
+            }
+          ]
+        },
+        "equipment": {
+          "armor": 1
+        },
+        "shield": 0
+      },
+      "label": "commander",
+      "artifacts": [
+        {
+          "id": 1,
+          "definitionId": "core:iron-aegis",
+          "owner": 0,
+          "holder": 1
+        }
+      ]
+    },
+    {
+      "entity": {
+        "id": 2,
+        "side": 0,
+        "kind": "unit",
+        "role": "special",
+        "x": 16.797176227171647,
+        "y": 27.539379798901205,
+        "hp": 145,
+        "maxHp": 145,
+        "order": {
+          "type": "hold"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 3,
+        "animation": "idle",
+        "animTime": 15.700000000000088,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "veteran": {
+          "experience": 300,
+          "rank": 3,
+          "nextSurvivalAt": 90.04999999999873,
+          "lastCombatAt": 60.049999999998725,
+          "promotions": [
+            {
+              "rank": 1,
+              "id": "bulwark"
+            },
+            {
+              "rank": 2,
+              "id": "bulwark"
+            },
+            {
+              "rank": 3,
+              "id": "bulwark"
+            }
+          ]
+        },
+        "shield": 0,
+        "entrenchedAt": 65.49999999999842,
+        "abilityReadyAt": 65.49999999999842
+      },
+      "label": "cannon"
+    },
+    {
+      "entity": {
+        "id": 5,
+        "side": 0,
+        "kind": "unit",
+        "role": "ranged",
+        "x": 20.908716322469445,
+        "y": 25.528759838069274,
+        "hp": 95,
+        "maxHp": 95,
+        "order": {
+          "type": "hold"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 15.200000000000081,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "veteran": {
+          "experience": 90.56500000000001,
+          "rank": 1,
+          "nextSurvivalAt": 90.04999999999873,
+          "lastCombatAt": 60.049999999998725,
+          "promotions": [
+            {
+              "rank": 1,
+              "id": "sharpshooter"
+            }
+          ]
+        },
+        "shield": 0,
+        "entrenchedAt": 63.49999999999853,
+        "abilityReadyAt": 63.49999999999853
+      },
+      "label": "gun-b"
+    },
+    {
+      "entity": {
+        "id": 12,
+        "side": 0,
+        "kind": "unit",
+        "role": "melee",
+        "x": 19.697839695402774,
+        "y": 21.62704001511461,
+        "hp": 53.11463999999992,
+        "maxHp": 170,
+        "order": {
+          "type": "hold"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 1,
+        "animation": "idle",
+        "animTime": 13.550000000000058,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0,
+          "guard": {
+            "value": 40,
+            "max": 40,
+            "lastDamagedAt": 0
+          }
+        },
+        "entrenchedAt": 63.9999999999985,
+        "abilityReadyAt": 63.9999999999985,
+        "shield": 0,
+        "lastDamagedAt": 61.34999999999865,
+        "veteran": {
+          "experience": 107.81500000000001,
+          "rank": 2,
+          "nextSurvivalAt": 92.3499999999986,
+          "lastCombatAt": 62.349999999998595,
+          "promotions": [
+            {
+              "rank": 1,
+              "id": "bulwark"
+            },
+            {
+              "rank": 2,
+              "id": "bulwark"
+            }
+          ]
+        },
+        "lastAttacker": 23,
+        "specialistBuffs": []
+      },
+      "label": "shield"
+    },
+    {
+      "entity": {
+        "id": 16,
+        "side": 0,
+        "kind": "unit",
+        "role": "worker",
+        "x": 4,
+        "y": 29,
+        "hp": 80,
+        "maxHp": 80,
+        "order": {
+          "type": "idle"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 34.40000000000018,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "shield": 0
+      },
+      "label": "sena"
+    },
+    {
+      "entity": {
+        "id": 21,
+        "side": 0,
+        "kind": "unit",
+        "role": "ranged",
+        "x": 18.450141310181717,
+        "y": 23.957774718435868,
+        "hp": 95,
+        "maxHp": 95,
+        "order": {
+          "type": "hold"
+        },
+        "cooldown": 0,
+        "progress": 1,
+        "queue": [],
+        "trainProgress": 0,
+        "researchProgress": 0,
+        "facing": 2,
+        "animation": "idle",
+        "animTime": 14.850000000000076,
+        "momentum": 0,
+        "illusion": false,
+        "expires": 0,
+        "carried": 0,
+        "carriedKind": "wood",
+        "path": [],
+        "tactics": {
+          "morale": 100,
+          "recentLoss": 0
+        },
+        "entrenchedAt": 62.99999999999856,
+        "abilityReadyAt": 62.99999999999856,
+        "veteran": {
+          "experience": 21.2,
+          "rank": 0,
+          "nextSurvivalAt": 101.79999999999806,
+          "lastCombatAt": 71.79999999999806,
+          "promotions": []
+        }
+      },
+      "label": null
+    }
+  ]
+}

@@ -1,0 +1,148 @@
+{
+  "startedAt": "2026-10-02T01:52:25.160246+00:00",
+  "authorizedSourceCommit": "f7f3e187ea40079492589a6fce39f0b33f77f04a",
+  "ownedCheckout": "/tmp/ovf-id6-integration-703fc-20261001",
+  "rootCheckout": "/home/morgana/Projects/orcs-vs-Fairies",
+  "phases": [
+    {
+      "label": "owned-fetch",
+      "argv": [
+        "git",
+        "fetch",
+        "--no-tags",
+        "/home/morgana/Projects/orcs-vs-Fairies",
+        "f7f3e187ea40079492589a6fce39f0b33f77f04a"
+      ],
+      "cwd": "/tmp/ovf-id6-integration-703fc-20261001",
+      "startedAt": "2026-10-02T01:52:26.017827+00:00",
+      "exitCode": 0,
+      "completedAt": "2026-10-02T01:52:26.022485+00:00"
+    },
+    {
+      "label": "owned-checkout",
+      "argv": [
+        "git",
+        "checkout",
+        "--detach",
+        "-f",
+        "f7f3e187ea40079492589a6fce39f0b33f77f04a"
+      ],
+      "cwd": "/tmp/ovf-id6-integration-703fc-20261001",
+      "startedAt": "2026-10-02T01:52:26.022551+00:00",
+      "exitCode": 0,
+      "completedAt": "2026-10-02T01:52:26.034250+00:00"
+    },
+    {
+      "label": "node-version",
+      "argv": [
+        "/home/morgana/.local/bin/node",
+        "--version"
+      ],
+      "cwd": "/tmp/ovf-id6-integration-703fc-20261001",
+      "startedAt": "2026-10-02T01:52:26.770744+00:00",
+      "exitCode": 0,
+      "completedAt": "2026-10-02T01:52:26.775891+00:00"
+    },
+    {
+      "label": "npm-version",
+      "argv": [
+        "/home/morgana/.local/bin/npm",
+        "--version"
+      ],
+      "cwd": "/tmp/ovf-id6-integration-703fc-20261001",
+      "startedAt": "2026-10-02T01:52:26.775996+00:00",
+      "exitCode": 0,
+      "completedAt": "2026-10-02T01:52:26.813689+00:00"
+    },
+    {
+      "label": "composed",
+      "argv": [
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "90s",
+        "/home/morgana/.local/bin/npm",
+        "test",
+        "--",
+        "tests/faction-original-clause-composition.test.ts",
+        "tests/faction-fairy-supplemental-witness.test.ts",
+        "--maxWorkers=1",
+        "--testTimeout=15000",
+        "--reporter=default",
+        "--reporter=json",
+        "--outputFile=/tmp/ovf-id6-composed-full-build-f7-r2-o0w9akew/composed-tests.json"
+      ],
+      "cwd": "/tmp/ovf-id6-integration-703fc-20261001",
+      "startedAt": "2026-10-02T01:52:26.817553+00:00",
+      "exitCode": 0,
+      "completedAt": "2026-10-02T01:52:28.023115+00:00"
+    },
+    {
+      "label": "full-suite",
+      "argv": [
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "1800s",
+        "/home/morgana/.local/bin/npm",
+        "test",
+        "--",
+        "--maxWorkers=2",
+        "--reporter=default",
+        "--reporter=json",
+        "--outputFile=/tmp/ovf-id6-composed-full-build-f7-r2-o0w9akew/full-tests.json"
+      ],
+      "cwd": "/tmp/ovf-id6-integration-703fc-20261001",
+      "startedAt": "2026-10-02T01:52:28.179158+00:00",
+      "exitCode": 0,
+      "completedAt": "2026-10-02T02:07:50.284728+00:00"
+    },
+    {
+      "label": "build",
+      "argv": [
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "300s",
+        "/home/morgana/.local/bin/npm",
+        "run",
+        "build"
+      ],
+      "cwd": "/tmp/ovf-id6-integration-703fc-20261001",
+      "startedAt": "2026-10-02T02:07:50.447363+00:00",
+      "exitCode": 0,
+      "completedAt": "2026-10-02T02:07:57.097055+00:00"
+    }
+  ],
+  "status": "passed",
+  "retryCount": 0,
+  "attempt": "r2 fresh preflight after r1 inventory selection failure",
+  "priorAttemptDirectory": "/tmp/ovf-id6-composed-full-build-f7-r1-w7q_z1jo",
+  "runtimeRetryCount": 0,
+  "buildExecuted": true,
+  "browserExecuted": false,
+  "serverLaunchedByWrapper": false,
+  "composed": {
+    "files": 2,
+    "tests": 4,
+    "passed": 4,
+    "failed": 0,
+    "pending": 0,
+    "describeSuites": 4,
+    "success": true
+  },
+  "fullSuite": {
+    "files": 160,
+    "tests": 2942,
+    "passed": 2942,
+    "failed": 0,
+    "pending": 0,
+    "describeSuites": 383,
+    "success": true
+  },
+  "finishedAt": "2026-10-02T02:07:57.289907+00:00",
+  "sourceUnchanged": true,
+  "protectedPreviewAndDistUnchanged": true,
+  "buildId": "9c5d2f1ff26bd6849b1ad5e311300669fb5f02feebbe4d311b6f8d670df243e1",
+  "ownedBuildOutputFiles": 398
+}

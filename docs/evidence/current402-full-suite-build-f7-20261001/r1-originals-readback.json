@@ -1,0 +1,163 @@
+{
+  "directory": "/tmp/ovf-id6-composed-full-build-f7-r1-w7q_z1jo",
+  "files": [
+    {
+      "path": "admission.json",
+      "bytes": 491,
+      "sha256": "44ae802ad8a673e065d4c2ba6cbe8d6168001fcaea0dd1f37a6edb4c84be2f1e",
+      "mode": "0o644"
+    },
+    {
+      "path": "execution.json",
+      "bytes": 1889,
+      "sha256": "513e958ed8ea972c2ccaa4353c027f92606d6f01c16d13a679093ce6568ac2d1",
+      "mode": "0o644"
+    },
+    {
+      "path": "failure-owned-inputs-after.json",
+      "bytes": 169915,
+      "sha256": "8d4aee3032d10c13b7a4f2b34805567a95ea93ba7933f0ebea85f92fe80182d1",
+      "mode": "0o644"
+    },
+    {
+      "path": "failure-protected-after.json",
+      "bytes": 75928,
+      "sha256": "f38bac98fa4438cd002db8b5337181fb8dd2438d3f10b8beb30d3db96cab663a",
+      "mode": "0o644"
+    },
+    {
+      "path": "failure-root-inputs-after.json",
+      "bytes": 170109,
+      "sha256": "a1b4749b33d4ab2ca45c58dc011e60b02f990cd808934fba1804d443b390a146",
+      "mode": "0o644"
+    },
+    {
+      "path": "historical-hydration.json",
+      "bytes": 11197,
+      "sha256": "96127f997c6530316cf64432d0478fc14032dbd844990d7334aeeb69cf3c1b18",
+      "mode": "0o644"
+    },
+    {
+      "path": "owned-checkout.stderr.log",
+      "bytes": 159,
+      "sha256": "8a75d87887796ed0a45861e25ad838ef2fd19238f59ad5b2699f1a64839d886f",
+      "mode": "0o644"
+    },
+    {
+      "path": "owned-checkout.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o644"
+    },
+    {
+      "path": "owned-fetch.stderr.log",
+      "bytes": 120,
+      "sha256": "fa1bbd38a7e136fd8fcb9fa7addbcfdd47d0a5973df055e7650317e970ba6038",
+      "mode": "0o644"
+    },
+    {
+      "path": "owned-fetch.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o644"
+    },
+    {
+      "path": "owned-inputs-before.json",
+      "bytes": 169915,
+      "sha256": "8d4aee3032d10c13b7a4f2b34805567a95ea93ba7933f0ebea85f92fe80182d1",
+      "mode": "0o644"
+    },
+    {
+      "path": "previous-owned-dirty-inputs.json",
+      "bytes": 169347,
+      "sha256": "f1fc84e72a12ffed8d2d55b4c6e7808695f04e61649a65d2e932d7b3b91ae5d9",
+      "mode": "0o644"
+    },
+    {
+      "path": "previous-owned-dirty.patch",
+      "bytes": 56743,
+      "sha256": "f944ef9a86b06572b3a51321cddd3aadbce337f4316f609ce3e8cd8b8f81fe05",
+      "mode": "0o644"
+    },
+    {
+      "path": "previous-owned-status.txt",
+      "bytes": 661,
+      "sha256": "e39fcdfab52c93417bebfd018dc8eb110ece6359ff5bc8a085bbbcb44479987b",
+      "mode": "0o644"
+    },
+    {
+      "path": "prior-original-seal-readback.json",
+      "bytes": 190,
+      "sha256": "ddd061c8d11a8bb9a8ac8fbe5215151f431bd8945cbd198334910c1283cce0aa",
+      "mode": "0o644"
+    },
+    {
+      "path": "protected-before.json",
+      "bytes": 75928,
+      "sha256": "f38bac98fa4438cd002db8b5337181fb8dd2438d3f10b8beb30d3db96cab663a",
+      "mode": "0o644"
+    },
+    {
+      "path": "root-inputs-before.json",
+      "bytes": 170109,
+      "sha256": "a1b4749b33d4ab2ca45c58dc011e60b02f990cd808934fba1804d443b390a146",
+      "mode": "0o644"
+    },
+    {
+      "path": "run-bound.py",
+      "bytes": 11178,
+      "sha256": "a3b830506ab29e0ee422630f763987e90eeb15e775fe4c41b37e3adceb8365dc",
+      "mode": "0o644"
+    }
+  ],
+  "count": 18,
+  "execution": {
+    "startedAt": "2026-10-02T01:45:29.698073+00:00",
+    "authorizedSourceCommit": "f7f3e187ea40079492589a6fce39f0b33f77f04a",
+    "ownedCheckout": "/tmp/ovf-id6-integration-703fc-20261001",
+    "rootCheckout": "/home/morgana/Projects/orcs-vs-Fairies",
+    "phases": [
+      {
+        "label": "owned-fetch",
+        "argv": [
+          "git",
+          "fetch",
+          "--no-tags",
+          "/home/morgana/Projects/orcs-vs-Fairies",
+          "f7f3e187ea40079492589a6fce39f0b33f77f04a"
+        ],
+        "cwd": "/tmp/ovf-id6-integration-703fc-20261001",
+        "startedAt": "2026-10-02T01:45:29.895550+00:00",
+        "exitCode": 0,
+        "completedAt": "2026-10-02T01:45:29.901607+00:00"
+      },
+      {
+        "label": "owned-checkout",
+        "argv": [
+          "git",
+          "checkout",
+          "--detach",
+          "-f",
+          "f7f3e187ea40079492589a6fce39f0b33f77f04a"
+        ],
+        "cwd": "/tmp/ovf-id6-integration-703fc-20261001",
+        "startedAt": "2026-10-02T01:45:29.901709+00:00",
+        "exitCode": 0,
+        "completedAt": "2026-10-02T01:45:29.919226+00:00"
+      }
+    ],
+    "status": "failed; stopped with no retry or fixes",
+    "retryCount": 0,
+    "buildExecuted": false,
+    "browserExecuted": false,
+    "serverLaunchedByWrapper": false,
+    "finishedAt": "2026-10-02T01:45:30.025280+00:00",
+    "failure": {
+      "message": "Owned executed input inventory differs from root frozen source",
+      "traceback": "Traceback (most recent call last):\n  File \"/tmp/ovf-id6-composed-full-build-f7-r1-w7q_z1jo/run-bound.py\", line 51, in <module>\n    owned_before=files(owned);write('owned-inputs-before.json',owned_before);assert owned_before==root_before,'Owned executed input inventory differs from root frozen source'\n                                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Owned executed input inventory differs from root frozen source\n"
+    }
+  },
+  "protectedBeforeAfterIdentical": true,
+  "rootBeforeAfterIdentical": true,
+  "ownedBeforeAfterIdentical": true
+}

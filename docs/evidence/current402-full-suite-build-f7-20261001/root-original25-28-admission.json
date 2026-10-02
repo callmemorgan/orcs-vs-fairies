@@ -1,0 +1,58 @@
+{
+  "observedAt": "2026-10-02T02:14:50.340930+00:00",
+  "sourceCommit": "f7f3e187ea40079492589a6fce39f0b33f77f04a",
+  "features": [
+    {
+      "id": 25,
+      "status": "verified",
+      "witness": "Two paid underground tunnel foundations receive normal worker construction, two living troops receive accepted tunnelTravel, channel, and arrive near the constructed exit.",
+      "test": {
+        "file": "faction-original-clause-composition.test.ts",
+        "fullName": "original faction clause compositions through public commands ID25 transfers a two-troop squad between worker-constructed underground entrances",
+        "status": "passed",
+        "failureMessages": []
+      }
+    },
+    {
+      "id": 28,
+      "status": "verified",
+      "witness": "Troop captures opponent-owned relic ground, worker pays and constructs necropolis there, public Gravecaller ability raises a normal troop, then sustained ground keeps it alive beyond ordinary35-second expiry.",
+      "fixtureQualification": "A fresh corpse is inserted immediately before the public ability, after capture/construction, because ordinary ticks would otherwise auto-raise it. No later health, expiry, or support mutation.",
+      "test": {
+        "file": "faction-original-clause-composition.test.ts",
+        "fullName": "original faction clause compositions through public commands ID28 turns captured ground into a paid necropolis that sustains a public Gravecaller summon",
+        "status": "passed",
+        "failureMessages": []
+      }
+    }
+  ],
+  "sourcePaths": [
+    "tests/faction-original-clause-composition.test.ts",
+    "src/core/faction-systems.ts",
+    "src/core/faction-systems-content.ts",
+    "src/core/neutral-world.ts",
+    "src/core/simulation.ts",
+    "src/ui/FactionTools.ts"
+  ],
+  "supplementalExistingAdmissions": [
+    23,
+    24
+  ],
+  "ledgerBefore": {
+    "verified": 91,
+    "pending": 9
+  },
+  "ledgerAfter": {
+    "verified": 93,
+    "pending": 7
+  },
+  "pendingFeatureIds": [
+    1,
+    4,
+    6,
+    8,
+    9,
+    10,
+    63
+  ]
+}
