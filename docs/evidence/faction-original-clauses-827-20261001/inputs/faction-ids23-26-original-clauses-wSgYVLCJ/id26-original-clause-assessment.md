@@ -1,0 +1,39 @@
+# ID26 original-clause assessment
+
+At `5b954005e458b09578c47b87587c54e9ef759068`, ID26 is "Dwarf workshop modifications" and requires: "choose different ammunition or attachments for artillery."
+
+I recommend the existing executed evidence as sufficient for this original clause. It exercises all four production panel choices on selected artillery, checks per-engine payment and retained selection, and executes distinct ammunition or attachment effects through public commands. The unfinished main-app recipe does not remove that evidence or add a separate admission requirement.
+
+## Executed player choices
+
+Four literal passed cases in the saved JSON are `live faction powers panel fits stone to real selected artillery with per-engine payment`, `live faction powers panel fits grapeshot to real selected artillery with per-engine payment`, `live faction powers panel fits incendiary to real selected artillery with per-engine payment`, and `live faction powers panel fits reinforced to real selected artillery with per-engine payment`.
+
+Each mounts production `mountFactionTools`, selects the Dwarf special cannon, ordinary siege engine, and a worker, then clicks the named production button. The callback wrapper calls real `issueCommand`. The test checks both artillery fittings equal the choice, no fitting on the worker, payment of 50 wood and 40 ore for two engines, and the selected-unit detail text `Artillery fitted: <choice>` (`/home/morgana/Projects/orcs-vs-Fairies/tests/faction-tools.test.ts:69–73`). These cases directly prove that a player can choose among different artillery ammunition or attachments.
+
+## Executed effects and continuation
+
+The literal passed cases `faction mechanics through authoritative encounters stone modifications pay per artillery unit and affect real shots or movement`, the equivalent `grapeshot` case, and the equivalent `reinforced` case issue public fitting commands for both artillery roles. They assert fitting and payment. Stone and grapeshot retain the chosen modification in the native shot queue and damage a target after impact. The joint impact tests below verify the ammunition damage and splash differences. Reinforced changes native movement compared with an independently advanced unfitted siege engine (`/home/morgana/Projects/orcs-vs-Fairies/tests/faction-systems.test.ts:49–53`).
+
+`faction mechanics through authoritative encounters incendiary engines and fitted cannons pay ammunition at launch and retain payload after source removal` publicly fits both artillery roles and attacks. Each launch spends 15 wood and 5 ore, retains the incendiary modification after the source is removed, damages the target, and continues through native save/load with the same replay checksum (`/home/morgana/Projects/orcs-vs-Fairies/tests/faction-systems.test.ts:58–60`). The passed insufficient-ammunition case checks no projectile, no partial spending, and unchanged target HP at 14 wood (`:61–63`).
+
+The joint-combat JSON contains eight passed cases named `mixed authoritative weapon paths 'stone' applies the target multiplier once to a '<class>'` or the `grapeshot` equivalent, where the literal expanded classes are `unit`, `building`, `bridge`, and `creature`. They use public fitting commands, native shot launch, calculated per-target damage, and complete save equality after continuation (`/home/morgana/Projects/orcs-vs-Fairies/tests/joint-combat-integration.test.ts:134–144`). Three further passed cases named `mixed authoritative weapon paths a fitted special Siege Cannon retains its stone shell against a <class> through save/load` cover unit, bridge, and creature targets (`:157–166`). The splash case checks each victim's class when a building is the primary target (`:168–188`).
+
+Layered-world ignition tests publicly fit and fire Dwarf siege and special artillery on levels 0 and 1. They check fitting cost, launch cost and pending shot, no fire before impact, one fire on the target level, one ignition event, an unchanged mirror level, and complete native save equality. Continued fire consumes timber and deals fire damage (`/home/morgana/Projects/orcs-vs-Fairies/tests/joint-world-ignition.test.ts:76–146`). The two siege case names are `incendiary weapon impacts ignite the layered world through public commands 'fitted loaded Dwarf siege cannon' ignites level +0 timber once and continues through native saves` and the level-1 equivalent. The JSON reporter truncates the special-artillery label with an ellipsis; its literal names are preserved in the facts file rather than expanded here.
+
+Capture/save cases also publicly apply reinforced fittings and preserve them after ownership changes (`/home/morgana/Projects/orcs-vs-Fairies/tests/faction-save-semantics.test.ts:151–166`). This supports persistence; capture behavior is not part of the original clause.
+
+`/tmp/faction-ids23-26-original-clauses-wSgYVLCJ/id26-passed-assertions.json` contains the 29 supporting literal case names and their passed statuses. The authored-fitting damage-scaling test is effect support only; the production panel tests provide the player-choice evidence.
+
+## Production support and limits
+
+Production lists Stone, Grape, Incendiary, and Reinforce actions and drafts `modifyArtillery` for selected IDs (`/home/morgana/Projects/orcs-vs-Fairies/src/ui/FactionTools.ts:25,53,68–75,89`). Authority filters eligible engines, charges 25 wood and 20 ore per engine, and retains the chosen fitting (`/home/morgana/Projects/orcs-vs-Fairies/src/core/faction-systems.ts:58,80`). Native effects include target-class damage factors, reinforced armor and movement, and grapeshot splash (`:69–72`). Executed tests use those effects through real simulation paths.
+
+Mounted happy-dom panel tests are not main-app browser tests. These existing panel and engine executions are sufficient for choosing different artillery ammunition or attachments. No unresolved original-clause behavior gap was found, and no additional whole-recipe completion requirement is applied.
+
+## Evidence provenance
+
+The original clause comes from immutable Git commit `5b954005e458b09578c47b87587c54e9ef759068`. The saved full-suite execution packet at `/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json` records 2,920 passing tests in 157 files and exit code 0. Its recorded SHA-256 is `ced75e92e6e198d8bad063fc0e4b276bfd7ee1936bf1849830cafcd21f7a11a9`; I verified that hash and the before/after source-inventory hashes. The focused run at `827496b06bb660b6639257e5113ac2f199be29ba` records 367 passing tests in 21 files, exit code 0, unchanged source pin, clean post-run source status, and no retry. I verified both raw focused log hashes against its receipt. The default focused reporter supplies file-level passing results; the literal per-case names quoted in this report come from the full-suite JSON.
+
+`/tmp/faction-ids23-26-original-clauses-wSgYVLCJ/source-authentication.json` records direct comparison of 74 supporting files against the full-suite source-before inventory. Git blobs, SHA-256 hashes, and byte lengths agree across the executed full-suite commit `4a71cd07bacc12d214acaf5a0f95a7d9b486f52c`, the focused commit, the assessment commit, current root HEAD `703fc036c6327a830a79d5746eec805188cbbaa6`, and current working files. The comparison covers all core code, static imports outside core, the supporting faction/joint tests, FactionTools/CSS, Controls, fixture-state, package/lock, and Vite/Vitest configs. Main-app browser behavior is not inferred from this source comparison.
+
+No new runtime, tests, build, application imports, or native recipe were executed for this assessment. The partial native r2 attempt reached only ID21, so it supplies no native behavior evidence for this ID. All new files are under `/tmp`; no root source or ledger status was changed.

@@ -1,0 +1,3 @@
+Original features 21, 22, 23, 24, 26, 27, 29 and 30 are verified through retained executed authoritative encounters and current faction-panel paths. Root matched all 111 named references (110 unique passed assertions) against the actual full-suite JSON and read all 101 applicable source/test files. The 367-test focused pass is correctly attributed to its aggregate original log.
+
+The native r2 browser attempt remains failed at Fury equality after eight partial checks. Features 25 and 28 retain narrow direct composition gaps. The illusion swap uses owned doubles without exclusive originating-unit tracking; the Grove proof covers concealment and disguised moving scout decoys, with no hostile AI target-choice claim. No new game runtime occurred for this admission.

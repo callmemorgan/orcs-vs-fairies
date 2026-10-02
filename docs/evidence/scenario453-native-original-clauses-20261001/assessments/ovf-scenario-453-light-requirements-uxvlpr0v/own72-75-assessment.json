@@ -1,0 +1,400 @@
+{
+  "format": "ovf-scenario-453-original72-75-light-assessment",
+  "version": 1,
+  "reviewedAt": "2026-10-02T00:47:37.401263+00:00",
+  "productFreeze": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "execution": "Read-only actual artifact/source inspection after heavy-slot release. No runtime/build/test/fixture/browser/HTTP/repair/retry or root edits.",
+  "freshEvidence": {
+    "nativeAdmission": {
+      "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/native/native-admission.json",
+      "sha256": "67eb90a09626318b1abea8ab955405e90916b55184f21963e2e8c8c5e49459f0",
+      "bytes": 83781
+    },
+    "conquest": {
+      "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/native/conquest.json",
+      "sha256": "54eb902a6a620403dd24d4d4127cc8edbed31ce539249a4ba9352e5656d2fac5",
+      "bytes": 7545
+    },
+    "testsLog": {
+      "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/native/tests.log",
+      "sha256": "017dcddc07282d0c8c5c54ba3a1b0d3a9a6fcc4135f3b20d542b4ce8587098a9",
+      "bytes": 252
+    },
+    "testsTiming": {
+      "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/native/tests.timing.json",
+      "sha256": "a8093643e84d3bba180f8dec27249b42df5fa01ddd4451eac65f765814c49914",
+      "bytes": 1205
+    },
+    "freshTests": {
+      "files": 15,
+      "passed": 194,
+      "failed": 0,
+      "individualAssertionJsonEmitted": false,
+      "argv": [
+        "node_modules/.bin/vitest",
+        "run",
+        "--maxWorkers=1",
+        "--no-file-parallelism",
+        "tests/scenario-recording-compatibility.test.ts",
+        "tests/scenario-save4-wrapper-migration.test.ts",
+        "tests/scenario-historical-content.test.ts",
+        "tests/profile-rules-migration.test.ts",
+        "tests/session-scenario-profile.test.ts",
+        "tests/scenario-core-binding.test.ts",
+        "tests/scenario-content.test.ts",
+        "tests/scenario-tools-readonly.test.ts",
+        "tests/scenario-campaign-host.test.ts",
+        "tests/scenario-demo-compatibility.test.ts",
+        "tests/authored-commanders.test.ts",
+        "tests/campaign-persistent-army.test.ts",
+        "tests/campaign.test.ts",
+        "tests/conquest.test.ts",
+        "tests/scenario-campaign-reward.test.ts"
+      ]
+    },
+    "conquestAssertions": {
+      "historyAcceptsOnlyReloadableDecisions": true,
+      "expiredPassageCannotWin": true,
+      "aid-1-funding": true,
+      "aid-1-fresh-unit": true,
+      "aid-1-no-unfunded-treasury": true,
+      "aid-1-full-cost": true,
+      "aid-2-funding": true,
+      "aid-2-fresh-unit": true,
+      "aid-2-no-unfunded-treasury": true,
+      "aid-2-full-cost": true,
+      "aid-3-funding": true,
+      "aid-3-no-unfunded-treasury": true,
+      "aid-3-full-cost": true,
+      "multipleAidNoUnfundedTreasury": true,
+      "multipleAidChargesOnlyContributors": true,
+      "multipleAidLimit": true
+    },
+    "journalOutcomes": [
+      {
+        "id": "expired-passage",
+        "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/native/conquest-journals/expired-passage.json",
+        "sha256": "aa4357791e09fe9e2398d9c3852860f21fe4bcecb0029cf94f9c13f6ec54c8fd",
+        "finalTick": 3600,
+        "commands": 1983,
+        "outcome": "lost"
+      },
+      {
+        "id": "allied-passage-1",
+        "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/native/conquest-journals/allied-passage-1.json",
+        "sha256": "7bb9de2e2d3291ea9830881745db37ed695c89ca6d003e35f2c8801448c57437",
+        "finalTick": 159,
+        "commands": 1,
+        "outcome": "won"
+      },
+      {
+        "id": "allied-passage-2",
+        "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/native/conquest-journals/allied-passage-2.json",
+        "sha256": "4e3cd9e68a582e8d94ff3924d3a1e4872b363fa57cb06f82a49d8ec636447feb",
+        "finalTick": 159,
+        "commands": 1,
+        "outcome": "won"
+      },
+      {
+        "id": "allied-passage-3",
+        "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/native/conquest-journals/allied-passage-3.json",
+        "sha256": "10e25f7cc6ea638ea895d6398c82b12afa49a41a0c610034f1c96c883fcb0ae4",
+        "finalTick": 159,
+        "commands": 1,
+        "outcome": "won"
+      },
+      {
+        "id": "multiple-allies",
+        "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/native/conquest-journals/multiple-allies.json",
+        "sha256": "3d990684cc5dc907c2e6c138256916fccde8797b2ee9a6c9df457f3f7d727418",
+        "finalTick": 283,
+        "commands": 99,
+        "outcome": "won"
+      }
+    ]
+  },
+  "retainedEvidence": {
+    "tests": {
+      "path": "/home/morgana/.codex/worktrees/final-combat-proof/orcs-vs-Fairies/docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json",
+      "sha256": "ced75e92e6e198d8bad063fc0e4b276bfd7ee1936bf1849830cafcd21f7a11a9",
+      "bytes": 1017281
+    },
+    "passed": 2920,
+    "failed": 0,
+    "selectedResults": [
+      {
+        "file": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/conquest-ui.test.ts",
+        "status": "passed",
+        "assertions": [
+          {
+            "index": 0,
+            "fullName": "conquest decision controls shows connected roads, ownership, garrisons and supplies, and only submits reachable attacks",
+            "status": "passed"
+          },
+          {
+            "index": 1,
+            "fullName": "conquest decision controls offers protected passage and permits an attack through a real negotiated truce route",
+            "status": "passed"
+          },
+          {
+            "index": 2,
+            "fullName": "conquest decision controls validates proposal inputs and sends decisions to the host without modifying the realm",
+            "status": "passed"
+          },
+          {
+            "index": 3,
+            "fullName": "conquest decision controls disables new realms, diplomacy, waiting and region decisions during a real active battle",
+            "status": "passed"
+          },
+          {
+            "index": 4,
+            "fullName": "read-only conquest profile inspection displays the callback reason and blocks otherwise eligible battle and diplomacy decisions",
+            "status": "passed"
+          },
+          {
+            "index": 5,
+            "fullName": "read-only conquest profile inspection keeps export, import, saved-profile inspection and a new realm available for a recorded active battle",
+            "status": "passed"
+          },
+          {
+            "index": 6,
+            "fullName": "read-only conquest profile inspection refreshes only reason changes and guards decisions before the next UI update",
+            "status": "passed"
+          },
+          {
+            "index": 7,
+            "fullName": "conquest profile import lifecycle submits a selected profile file through the host import callback",
+            "status": "passed"
+          },
+          {
+            "index": 8,
+            "fullName": "conquest profile import lifecycle ignores delayed file text after new realm",
+            "status": "passed"
+          },
+          {
+            "index": 9,
+            "fullName": "conquest profile import lifecycle ignores delayed file text after host cancellation",
+            "status": "passed"
+          },
+          {
+            "index": 10,
+            "fullName": "conquest profile import lifecycle ignores delayed file text after destroy",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "file": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/conquest.test.ts",
+        "status": "passed",
+        "assertions": [
+          {
+            "index": 0,
+            "fullName": "connected conquest and negotiated diplomacy rejects malformed profile identities and non-null active placeholders",
+            "status": "passed"
+          },
+          {
+            "index": 1,
+            "fullName": "connected conquest and negotiated diplomacy rejects decisions before they exceed the reloadable history bound",
+            "status": "passed"
+          },
+          {
+            "index": 2,
+            "fullName": "connected conquest and negotiated diplomacy rejects aggregate journal growth before returning a profile that cannot reload",
+            "status": "passed"
+          },
+          {
+            "index": 3,
+            "fullName": "connected conquest and negotiated diplomacy captures connected regions through ordinary combat and reloads real surviving armies",
+            "status": "passed"
+          },
+          {
+            "index": 4,
+            "fullName": "connected conquest and negotiated diplomacy transfers tribute atomically, rejects weak proposals and applies passage, expiry and alliance aid",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "file": "/home/morgana/.codex/worktrees/assembled-rules401/orcs-vs-Fairies/tests/scenario-campaign-host.test.ts",
+        "status": "passed",
+        "assertions": [
+          {
+            "index": 0,
+            "fullName": "campaign controls in the canonical app host discards a campaign file read after another match clears strategic ownership",
+            "status": "passed"
+          },
+          {
+            "index": 1,
+            "fullName": "campaign controls in the canonical app host keeps the newer campaign when two file reads resolve out of order",
+            "status": "passed"
+          },
+          {
+            "index": 2,
+            "fullName": "campaign controls in the canonical app host ignores stale read errors and reports an admitted current read error",
+            "status": "passed"
+          },
+          {
+            "index": 3,
+            "fullName": "campaign controls in the canonical app host starts a campaign from the menu and retains normal commands in generic save ownership",
+            "status": "passed"
+          },
+          {
+            "index": 4,
+            "fullName": "campaign controls in the canonical app host continues an equipped SAVE4 campaign after ordinary save installation without replacing or duplicating its journal",
+            "status": "passed"
+          },
+          {
+            "index": 5,
+            "fullName": "campaign controls in the canonical app host opens an old saved campaign as an inspected checkpoint without starting or changing it",
+            "status": "passed"
+          },
+          {
+            "index": 6,
+            "fullName": "campaign controls in the canonical app host preserves a historical empty campaign and displays its compatibility reason",
+            "status": "passed"
+          },
+          {
+            "index": 7,
+            "fullName": "campaign controls in the canonical app host detects a bound historical generic save without a replay or profile",
+            "status": "passed"
+          },
+          {
+            "index": 8,
+            "fullName": "campaign controls in the canonical app host closes the mission modal when photo mode or another modal blocks it",
+            "status": "passed"
+          }
+        ]
+      }
+    ]
+  },
+  "sourceApplicability": {
+    "tests/conquest.test.ts": {
+      "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/tests/conquest.test.ts",
+      "sha256": "14185e0082a7313b3e952b60d2706748af5f77c30999d2d1f894cfbcc3c379af",
+      "bytes": 8973,
+      "suiteGitBlob": "f161d47a0edce555b79eee4eb43f48ec5654853e",
+      "freezeGitBlob": "f161d47a0edce555b79eee4eb43f48ec5654853e",
+      "entireBlobUnchanged": true,
+      "rootCurrentBytesEqual": true
+    },
+    "tests/conquest-ui.test.ts": {
+      "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/tests/conquest-ui.test.ts",
+      "sha256": "a434b6a352b37ef07563833e8c56950c0bd61be575aa184b80e8951e8b579a1c",
+      "bytes": 14551,
+      "suiteGitBlob": "ff091363cb9ba7bd2ec7ba5f92957bbfd5a5d019",
+      "freezeGitBlob": "ff091363cb9ba7bd2ec7ba5f92957bbfd5a5d019",
+      "entireBlobUnchanged": true,
+      "rootCurrentBytesEqual": true
+    },
+    "src/core/conquest.ts": {
+      "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/src/core/conquest.ts",
+      "sha256": "4c92201f8a238de44bd8122f7770c6b697b40bd32dfc31d4319f96dc8f8ed068",
+      "bytes": 30402,
+      "suiteGitBlob": "c9009cff827d4fc5fce39031236c270cb27de476",
+      "freezeGitBlob": "c9009cff827d4fc5fce39031236c270cb27de476",
+      "entireBlobUnchanged": true,
+      "rootCurrentBytesEqual": true
+    },
+    "src/scenarios/conquest-world.ts": {
+      "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/src/scenarios/conquest-world.ts",
+      "sha256": "b5a64d47ba13d5ed2b523a0ec781ac07f45bafbc1569d0bd3aed3d12cf74271c",
+      "bytes": 5295,
+      "suiteGitBlob": "82cf7bdc26291710da1d32213bbf8575da7e93e3",
+      "freezeGitBlob": "82cf7bdc26291710da1d32213bbf8575da7e93e3",
+      "entireBlobUnchanged": true,
+      "rootCurrentBytesEqual": true
+    },
+    "src/ui/ConquestTools.ts": {
+      "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/src/ui/ConquestTools.ts",
+      "sha256": "d0b34eec76c1744d7ffdd8de34b2fb1e294c6750e06e9ea831060d1743d143b3",
+      "bytes": 14303,
+      "suiteGitBlob": "e95c0755220ccd731a28771ce7c7394fbcd2f41c",
+      "freezeGitBlob": "e95c0755220ccd731a28771ce7c7394fbcd2f41c",
+      "entireBlobUnchanged": true,
+      "rootCurrentBytesEqual": true
+    },
+    "src/ui/ScenarioCampaignHost.ts": {
+      "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/src/ui/ScenarioCampaignHost.ts",
+      "sha256": "352725a6ba02836a0f6e95894dbbb17cf703ef68f6b5e53b0b6553187a4b4a53",
+      "bytes": 16640,
+      "suiteGitBlob": "0b6d1829f49adf9de8c103323ad9036cecc031a8",
+      "freezeGitBlob": "0b6d1829f49adf9de8c103323ad9036cecc031a8",
+      "entireBlobUnchanged": true,
+      "rootCurrentBytesEqual": true
+    },
+    "src/main.ts": {
+      "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/src/main.ts",
+      "sha256": "4b3de6a2c62517819e56d81e20f96aa10c8bfde8cd58ea70aa516fd84f0abda7",
+      "bytes": 47424,
+      "suiteGitBlob": "022a7b80cff3a185879dd11a0762808c8435d047",
+      "freezeGitBlob": "2035c932e7c2b9fc1bfa00c5881050ac7f036986",
+      "entireBlobUnchanged": false,
+      "rootCurrentBytesEqual": true,
+      "exactSuiteToFreezeDiff": "diff --git a/src/main.ts b/src/main.ts\nindex 022a7b8..2035c93 100644\n--- a/src/main.ts\n+++ b/src/main.ts\n@@ -148,7 +148,7 @@ const callbacks:HudCallbacks={\n function closeOnline(){onlineConnecting?.dispose();onlineConnecting=undefined;onlineConnection?.dispose();onlineConnection=undefined;onlineRender=undefined;}\n function applyCosmetics(){if(!scene)return;scene.setCosmeticLoadouts(onlineConnection?hostedLoadouts:replay?new Map():new Map([[playerSide(),accountLoadouts.get(scene.state.players[playerSide()].faction)??{}]]));}\n async function refreshHostedCosmetics(){const request=++hostedCosmeticRequest,connection=onlineConnection,generation=replacementGeneration;if(!connection)return;try{const result=await cosmeticApi.matchCosmetics(connection.matchId);if(request!==hostedCosmeticRequest||connection!==onlineConnection||generation!==replacementGeneration||!scene)return;hostedLoadouts=new Map(result.players.filter(player=>scene!.state.players[player.side]?.faction===player.factionId).map(player=>[player.side,resolveCosmeticLoadout(player.factionId,player.loadout)]));applyCosmetics();}catch{if(request===hostedCosmeticRequest&&connection===onlineConnection&&generation===replacementGeneration){hostedLoadouts.clear();applyCosmetics();}}}\n-function accountChanged(account:Account|null){const id=account?.id??null;if(cosmeticAccountId===id)return;cosmeticAccountId=id;cosmeticAccountEpoch++;campaignHost.resetCampaignReward();accountLoadouts.clear();applyCosmetics();cosmetics.reset();void cosmetics.refresh();}\n+function accountChanged(account:Account|null){const id=account?.id??null;if(cosmeticAccountId===id)return;cosmeticAccountId=id;cosmeticAccountEpoch++;campaignHost.resetCampaignReward();accountLoadouts.clear();applyCosmetics();cosmetics.reset();if(id)void cosmetics.refresh();}\n function setModal(source:string,open:boolean){\n  const wasOpen=!!openModals.size;\n  if(open)openModals.add(source);else openModals.delete(source);\n",
+      "relevantMountApplicability": "Only changed hunk is accountChanged: cosmetics.refresh is gated by signed-in id. ScenarioCampaignHost mount at330 and ordinary launch/menu/select/center/visibility callbacks are unchanged; the realm gameplay/persistence/negotiation mount has no suite-to-freeze difference. Campaign reward account reset remains separate from original72/75."
+    },
+    "scripts/scenarios/prove-conquest-review.ts": {
+      "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/scripts/scenarios/prove-conquest-review.ts",
+      "sha256": "141348944d5ac12f9d0dda56670a8903e5938170331a3634a78a33c63ea3f1c6",
+      "bytes": 9954,
+      "suiteGitBlob": "0c088317ce50478a353c05fa883676c8bc302b01",
+      "freezeGitBlob": "0c088317ce50478a353c05fa883676c8bc302b01",
+      "entireBlobUnchanged": true,
+      "rootCurrentBytesEqual": true
+    }
+  },
+  "features": [
+    {
+      "id": 72,
+      "originalSentence": "World conquest: fight connected battles on a persistent regional map.",
+      "recommendation": "admit original behavior; canonical browser workflow remains incomplete",
+      "clauses": [
+        {
+          "clause": "fight connected battles",
+          "proof": "Fresh tests argv includes unchanged tests/conquest.test.ts. Its executed case captures quarry then crossroads through ordinary issueScenarioCommand/stepScenario strategy, rejects keep before the captures, checks differing battlefield terrain and actual deployed survivor IDs, and after two wins unlocks keep. The retained2920 report independently records the full named assertion passed.",
+          "assertionFullName": "connected conquest and negotiated diplomacy captures connected regions through ordinary combat and reloads real surviving armies",
+          "testSource": "tests/conquest.test.ts:52"
+        },
+        {
+          "clause": "persistent regional map",
+          "proof": "Same case completeConquestBattle stores region owners, survives decodeConquestProfile(JSON.stringify(profile)) after each fight, retains real survivor identities, reaches turn2, and rejects a forged ownership edit. Fresh five conquest journals additionally enforce replay equality, duplicate-completion identity and decoded completed profile in producer finish().",
+          "testSource": "tests/conquest.test.ts:63",
+          "producerSource": "scripts/scenarios/prove-conquest-review.ts:30"
+        }
+      ],
+      "currentUi": "ConquestTools presents connected region map with roads/ownership/garrisons/supply and reachable-only battle buttons; ScenarioCampaignHost installs battle runs, checkpoints/completes into the same owner, persists local storage, imports/exports/resumes. Main mounts that host into the app. Retained UI assertions show reachable controls, real truce route, file import, active-battle decision blocking. Exact same source/test identities are recorded.",
+      "substantiveBehaviorGapsObserved": [],
+      "missingObservation": "This bounded attempt did not perform current CUA quarry/diplomacy/reload/crossroads downloads because its independent authored editor-map fixture failed earlier. That does not negate executed connected-region/native persistence facts.",
+      "usefulSupplement": "If root separately assigns a browser observation, use the already approved four realm raw downloads without requiring another complete victory or complete realm."
+    },
+    {
+      "id": 75,
+      "originalSentence": "Campaign diplomacy: negotiate alliances, tribute and temporary truces.",
+      "recommendation": "admit original behavior; canonical browser workflow remains incomplete",
+      "clauses": [
+        {
+          "clause": "tribute",
+          "proof": "Passed conquest assertion transfers100ore from player treasury to foreign treasury (player250/foreign200), refuses excessive301ore atomically. Fresh producer also funds alliance with250ore and reports contributor treasuries/full-cost flags.",
+          "testSource": "tests/conquest.test.ts:71"
+        },
+        {
+          "clause": "temporary truces",
+          "proof": "Same passed assertion negotiates one turn, permits protected passage and prevents attacks, resumes exact checkpoint, then changes hostility after15seconds and restores damage; strategic wait reaches truce expiry. Fresh expired-passage journal lost at tick3600 with truce-expiry event time15 and protection variable0, and expiredPassageCannotWin true.",
+          "testSource": "tests/conquest.test.ts:78"
+        },
+        {
+          "clause": "alliances",
+          "proof": "Same passed assertion negotiates alliance after tribute, creates actual allied aid, wins quarry combat, persists aid in army and alliance through decode. Fresh producer alliance passage wins all three recorded runs; exact alliance treasury costs and aid limits are observed, plus multiple allies actual combat.",
+          "testSource": "tests/conquest.test.ts:94"
+        }
+      ],
+      "assertionFullName": "connected conquest and negotiated diplomacy transfers tribute atomically, rejects weak proposals and applies passage, expiry and alliance aid",
+      "currentUi": "Offer tribute, Request truce and Request alliance submit ordinary proposed actions through ScenarioCampaignHost.proposeConquest and persist. UI validation rejects invalid inputs, strategic relations and duration/treasury are displayed. Retained UI test validates proposal input and sends all three host decisions; source and host wiring recorded.",
+      "substantiveBehaviorGapsObserved": [],
+      "interpretation": "The title Campaign diplomacy names the strategic game feature; the original sentence does not additionally require negotiations inside each six-faction narrative campaign. The mounted persistent realm supplies all named negotiations.",
+      "missingObservation": "Current native UI clicks/raw downloads were not reached in this stopped browser attempt.",
+      "usefulSupplement": "The already approved250ore/two-turn truce/alliance UI sequence and profile reload would supplement the retained current native behavior; it is not a new original acceptance gate."
+    }
+  ],
+  "fixtureFailure": "The failed makeMapPackage call belongs to generated authored editor-map input. Neither original72 nor75 requires that map, full20-role auditor completion, private campaign rewards, another whole realm or stress history matrix."
+}

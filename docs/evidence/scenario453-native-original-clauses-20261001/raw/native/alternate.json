@@ -1,0 +1,2303 @@
+{
+  "format": "orcs-vs-fairies-campaign-progression-proof",
+  "version": 2,
+  "route": "alternate",
+  "generatedAt": "2026-10-02T00:32:46.500Z",
+  "sourceCommit": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "sourceFiles": {
+    "src/core/campaign.ts": "a665195656aab067bdbe9ab8246a7e6c45e574e2fecdfa839d3eb5d32a975b4b",
+    "src/core/scenarios.ts": "b5b6910d0974cde13818d5c9ef72485451a1d73b3c48068bfbb3ec5144aca710",
+    "src/core/scenario-recordings.ts": "311652f4b4505849928efe4ed4bf7e4d9641ab71716ecb37cc3d363e5f8f2780",
+    "src/scenarios/campaigns.ts": "5b651b94b6cbd30e7667e4745a65ceb53b7fde886754382a099a648588384c2a",
+    "scripts/scenarios/mission-strategy.ts": "22373eb3d432df6162710c2775f530775a0db44daaffec25b12ae68d423053b3",
+    "scripts/scenarios/puzzle-stealth-strategy.ts": "b0697b58728d09fe0c1c1bd3e82538b8a35cdc1f8ac1e1f41161ea85941016f1",
+    "scripts/scenarios/route-strategy.ts": "1f88f3900d878d0286d8f43f39531eafe79a3d6b888e389c04061c50e32f58fe",
+    "scripts/scenarios/finale-strategy.ts": "4de76217c5570bce327a66e2546300ec405fcf5015a33db1311abdd4ff0a1145",
+    "scripts/scenarios/prove-alternate-profiles.ts": "f62fff3fd6d26798a58b53af427b1927879e73c07a82b9976bcd1d3ba5de9b1f"
+  },
+  "profiles": [
+    {
+      "campaignId": "campaign-orcs",
+      "profileId": "author-alternate-orcs",
+      "choiceId": "courier",
+      "assertions": {
+        "fourVerifiedChapters": true,
+        "selectedChapterUsed": true,
+        "choicePersisted": true,
+        "finished": true,
+        "chapterAssertions": true
+      },
+      "progress": {
+        "campaignId": "campaign-orcs",
+        "chapter": 4,
+        "choiceId": "courier",
+        "completed": [
+          "orcs-1",
+          "orcs-2",
+          "orcs-3-alt",
+          "orcs-4"
+        ],
+        "finished": true
+      },
+      "chapters": [
+        {
+          "missionId": "orcs-1",
+          "time": 22.300000000000182,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "deployedIds": [],
+          "reserveIds": [],
+          "carry": [],
+          "survivorIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/orcs-1.json",
+            "sha256": "905653b57e3998a0dbf23bbd5ddef6ef8bdaee5510f5934eec398ec3e55426d4",
+            "finalChecksum": "41d81d2f",
+            "commandCount": 200
+          },
+          "finalCheckpointSha256": "2f56011640094270a610888a00d0d33b72043863fcc1ad54e6d7cf0fdd414088"
+        },
+        {
+          "missionId": "orcs-2",
+          "time": 69.99999999999817,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            3,
+            4,
+            5,
+            6,
+            2
+          ],
+          "deployedIds": [
+            1,
+            3,
+            4,
+            5,
+            6,
+            2
+          ],
+          "reserveIds": [],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 280,
+              "newMaxHp": 280,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 3,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 175,
+              "newMaxHp": 175,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 4,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 175,
+              "newMaxHp": 175,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 5,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 100,
+              "newMaxHp": 100,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 6,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 100,
+              "newMaxHp": 100,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 2,
+              "role": "worker",
+              "oldRole": "worker",
+              "oldMaxHp": 85,
+              "newMaxHp": 85,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            1,
+            3,
+            4,
+            5,
+            6,
+            2,
+            24
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            24
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/orcs-2.json",
+            "sha256": "7ed0fbf0ff143c898ebee9110667ddafcb68b7b26cc20c8490b941d4539e429d",
+            "finalChecksum": "afecc754",
+            "commandCount": 84
+          },
+          "finalCheckpointSha256": "58c6f7717eff6f90f0816a4478ddc311bb5552b5ff779d4ace4a862bbc18154b"
+        },
+        {
+          "missionId": "orcs-3-alt",
+          "time": 28.45000000000027,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            2
+          ],
+          "deployedIds": [
+            1,
+            2
+          ],
+          "reserveIds": [
+            3,
+            4,
+            5,
+            6,
+            24
+          ],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 280,
+              "newMaxHp": 280,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 2,
+              "role": "worker",
+              "oldRole": "worker",
+              "oldMaxHp": 85,
+              "newMaxHp": 85,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            1,
+            2
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            24
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/orcs-3.json",
+            "sha256": "ec3d5b1882c6d5ef08b20bfc1ecd5b335632a59036e743852abb325a310e3420",
+            "finalChecksum": "d43b1f10",
+            "commandCount": 56
+          },
+          "finalCheckpointSha256": "63265e7da546b7382d075f0a849cede3e7db4a3db8f0766ebca075a8dd162d4a"
+        },
+        {
+          "missionId": "orcs-4",
+          "time": 33.650000000000226,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            3,
+            4,
+            5,
+            6
+          ],
+          "deployedIds": [
+            1,
+            3,
+            4,
+            5,
+            6
+          ],
+          "reserveIds": [
+            2,
+            24
+          ],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 280,
+              "newMaxHp": 280,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 3,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 175,
+              "newMaxHp": 175,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 4,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 175,
+              "newMaxHp": 175,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 5,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 100,
+              "newMaxHp": 100,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 6,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 100,
+              "newMaxHp": 100,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            1,
+            3,
+            4,
+            5,
+            6
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            24
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/orcs-4.json",
+            "sha256": "5b202ef3831e1cf0ac9e87921a335a614b841dbfcd52354fd49ce5c229f0941b",
+            "finalChecksum": "e1b095bd",
+            "commandCount": 50
+          },
+          "finalCheckpointSha256": "ef4ed2f2913ddf047cb92174c22159fdcec413bf23cd19d298b0e17116ad595e"
+        }
+      ],
+      "profilePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/orcs-profile.json",
+      "profileSha256": "511e42ad9e13807c3f966af3034a2b7bddd4791498378851f58389e86f074f04"
+    },
+    {
+      "campaignId": "campaign-fairies",
+      "profileId": "author-alternate-fairies",
+      "choiceId": "stockade",
+      "assertions": {
+        "fourVerifiedChapters": true,
+        "selectedChapterUsed": true,
+        "choicePersisted": true,
+        "finished": true,
+        "chapterAssertions": true
+      },
+      "progress": {
+        "campaignId": "campaign-fairies",
+        "chapter": 4,
+        "choiceId": "stockade",
+        "completed": [
+          "fairies-1",
+          "fairies-2",
+          "fairies-3-alt",
+          "fairies-4"
+        ],
+        "finished": true
+      },
+      "chapters": [
+        {
+          "missionId": "fairies-1",
+          "time": 32.950000000000266,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            2,
+            3
+          ],
+          "deployedIds": [],
+          "reserveIds": [],
+          "carry": [],
+          "survivorIds": [
+            1,
+            2,
+            3
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            3
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/fairies-1.json",
+            "sha256": "0286312f845737d7b4130489c9436f646355049ef7999a834a4f390cf58faa5f",
+            "finalChecksum": "75836918",
+            "commandCount": 130
+          },
+          "finalCheckpointSha256": "c11fc6e5f729e1482f05bb6f223d3e624fcf74bfd6ef23f8b052f3ae798676e2"
+        },
+        {
+          "missionId": "fairies-2",
+          "time": 19.800000000000146,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            3,
+            8,
+            9,
+            10,
+            11
+          ],
+          "deployedIds": [
+            1,
+            3
+          ],
+          "reserveIds": [
+            2
+          ],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 280,
+              "newMaxHp": 280,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 3,
+              "role": "worker",
+              "oldRole": "worker",
+              "oldMaxHp": 65,
+              "newMaxHp": 65,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            1,
+            3,
+            8,
+            9,
+            10,
+            11
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            3,
+            8,
+            9,
+            10,
+            11
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/fairies-2.json",
+            "sha256": "ba54b69074cb1954bae565d18ac9706b8c2e3ee002e34a5d4b1c58f70835b1b7",
+            "finalChecksum": "ff8c62bf",
+            "commandCount": 172
+          },
+          "finalCheckpointSha256": "17b2e97f65e2ffe7e2f3a903c11ce532fac108c17a007f98be89ff2fa839a220"
+        },
+        {
+          "missionId": "fairies-3-alt",
+          "time": 8.199999999999982,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            2,
+            8,
+            9,
+            10
+          ],
+          "deployedIds": [
+            1,
+            2,
+            8,
+            9,
+            10
+          ],
+          "reserveIds": [
+            3,
+            11
+          ],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 280,
+              "newMaxHp": 280,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 2,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 105,
+              "newMaxHp": 105,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 8,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 140,
+              "newMaxHp": 140,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 9,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 140,
+              "newMaxHp": 140,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 10,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 85,
+              "newMaxHp": 85,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            1,
+            2,
+            8,
+            9,
+            10
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            3,
+            8,
+            9,
+            10,
+            11
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/fairies-3.json",
+            "sha256": "e787b14453cc6628262ad85f0e25d0d71d9abd4224d4026abdcae74b34f936e1",
+            "finalChecksum": "2bb8566e",
+            "commandCount": 3
+          },
+          "finalCheckpointSha256": "72f1c66a023148309ba4a29a0e7b69133381bd69623a52fa3d1d3deb0b0b5f1b"
+        },
+        {
+          "missionId": "fairies-4",
+          "time": 29.500000000000284,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            2,
+            8,
+            9,
+            10,
+            11
+          ],
+          "deployedIds": [
+            1,
+            2,
+            8,
+            9,
+            10,
+            11
+          ],
+          "reserveIds": [
+            3
+          ],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 280,
+              "newMaxHp": 280,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 2,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 105,
+              "newMaxHp": 105,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 8,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 140,
+              "newMaxHp": 140,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 9,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 140,
+              "newMaxHp": 140,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 10,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 85,
+              "newMaxHp": 85,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 11,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 85,
+              "newMaxHp": 85,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            1,
+            2,
+            8,
+            9,
+            10,
+            11
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            3,
+            8,
+            9,
+            10,
+            11
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/fairies-4.json",
+            "sha256": "f82caa8368b8acd0b5fbd7b04e6cc1a8bf176159c5e75c1d3d4efa85413912ac",
+            "finalChecksum": "95bf8aa7",
+            "commandCount": 65
+          },
+          "finalCheckpointSha256": "fdf9ac86a567d3a784c0468b72668ee57fb0c54621b767eb6445558889129a06"
+        }
+      ],
+      "profilePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/fairies-profile.json",
+      "profileSha256": "4adf5a4e2d5460feb4eb816b8e8d3af91dc5baf4d0b0b4a9295ab81d57f913b7"
+    },
+    {
+      "campaignId": "campaign-dwarves",
+      "profileId": "author-alternate-dwarves",
+      "choiceId": "works",
+      "assertions": {
+        "fourVerifiedChapters": true,
+        "selectedChapterUsed": true,
+        "choicePersisted": true,
+        "finished": true,
+        "chapterAssertions": true
+      },
+      "progress": {
+        "campaignId": "campaign-dwarves",
+        "chapter": 4,
+        "choiceId": "works",
+        "completed": [
+          "dwarves-1",
+          "dwarves-2",
+          "dwarves-3-alt",
+          "dwarves-4"
+        ],
+        "finished": true
+      },
+      "chapters": [
+        {
+          "missionId": "dwarves-1",
+          "time": 51.39999999999922,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "deployedIds": [],
+          "reserveIds": [],
+          "carry": [],
+          "survivorIds": [
+            1,
+            2,
+            4,
+            5
+          ],
+          "casualtyIds": [
+            3
+          ],
+          "rosterIds": [
+            1,
+            2,
+            4,
+            5
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/dwarves-1.json",
+            "sha256": "e32e0c2d9d2ea3d801197a9990327cc74e3c8361271fd39ee91cd048c7a9d4bd",
+            "finalChecksum": "0b5fb8ee",
+            "commandCount": 32
+          },
+          "finalCheckpointSha256": "4be997110ebc3ce68241a04ae9712fa8ca0ebe1602c6c5b800a50044edf1108d"
+        },
+        {
+          "missionId": "dwarves-2",
+          "time": 74.99999999999788,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            12,
+            2,
+            4,
+            5,
+            16
+          ],
+          "deployedIds": [
+            1,
+            2,
+            4,
+            5
+          ],
+          "reserveIds": [],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 280,
+              "newMaxHp": 280,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 2,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 145,
+              "newMaxHp": 145,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 4,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 95,
+              "newMaxHp": 95,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 5,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 95,
+              "newMaxHp": 95,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            1,
+            12,
+            2,
+            4,
+            5,
+            16,
+            21
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            4,
+            5,
+            12,
+            16,
+            21
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/dwarves-2.json",
+            "sha256": "4dd1e99a3f6e42b7d0a180fec0c2af536f900f135e0d88920458b9572f77723a",
+            "finalChecksum": "8f6f6cc1",
+            "commandCount": 89
+          },
+          "finalCheckpointSha256": "2e28225ec12d73923aa28a0b77132caa4b1f388e413d0506ccb0f2339527b98e"
+        },
+        {
+          "missionId": "dwarves-3-alt",
+          "time": 34.40000000000018,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            16
+          ],
+          "deployedIds": [
+            1,
+            16
+          ],
+          "reserveIds": [
+            2,
+            4,
+            5,
+            12,
+            21
+          ],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 280,
+              "newMaxHp": 280,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 16,
+              "role": "worker",
+              "oldRole": "worker",
+              "oldMaxHp": 80,
+              "newMaxHp": 80,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            1,
+            16
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            4,
+            5,
+            12,
+            16,
+            21
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/dwarves-3.json",
+            "sha256": "7720a01a38aa1441796ba3b04971b0291621881ded85394269fdc91dafe9f9c1",
+            "finalChecksum": "a708a3cd",
+            "commandCount": 68
+          },
+          "finalCheckpointSha256": "8b24bb8db0a0db5a2f7a0a4a699a1a2808c386894d7565908e6581dae8159c88"
+        },
+        {
+          "missionId": "dwarves-4",
+          "time": 45.999999999999524,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            12,
+            2,
+            31,
+            4
+          ],
+          "deployedIds": [
+            1,
+            12,
+            2,
+            4
+          ],
+          "reserveIds": [
+            5,
+            16,
+            21
+          ],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 280,
+              "newMaxHp": 280,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 12,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 170,
+              "newMaxHp": 170,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 2,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 145,
+              "newMaxHp": 145,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 4,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 95,
+              "newMaxHp": 95,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            1,
+            12,
+            2,
+            31,
+            4
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            4,
+            5,
+            12,
+            16,
+            21,
+            31
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/dwarves-4.json",
+            "sha256": "476bb392dd69808ba39b7bee0dd66eb21edb931366afc248c4d80a4cac59c50b",
+            "finalChecksum": "6af83115",
+            "commandCount": 47
+          },
+          "finalCheckpointSha256": "152441316acd9d3a80f0b0355dc31f79daadd1eaf19b3b1b3e4fa40fbaa19ebd"
+        }
+      ],
+      "profilePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/dwarves-profile.json",
+      "profileSha256": "0889f5994aedc5d415c88e90727e9dec932b9192506aa14071bd89910f8df8fa"
+    },
+    {
+      "campaignId": "campaign-undead",
+      "profileId": "author-alternate-undead",
+      "choiceId": "burial",
+      "assertions": {
+        "fourVerifiedChapters": true,
+        "selectedChapterUsed": true,
+        "choicePersisted": true,
+        "finished": true,
+        "chapterAssertions": true
+      },
+      "progress": {
+        "campaignId": "campaign-undead",
+        "chapter": 4,
+        "choiceId": "burial",
+        "completed": [
+          "undead-1",
+          "undead-2",
+          "undead-3-alt",
+          "undead-4"
+        ],
+        "finished": true
+      },
+      "chapters": [
+        {
+          "missionId": "undead-1",
+          "time": 64.99999999999845,
+          "outcome": "won",
+          "initialIds": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "deployedIds": [],
+          "reserveIds": [],
+          "carry": [],
+          "survivorIds": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            16
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            16
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/undead-1.json",
+            "sha256": "d0ea497058e58bbbd110eb649a89e422095db51789069bf7dc7f0f5915a8247a",
+            "finalChecksum": "a4957288",
+            "commandCount": 115
+          },
+          "finalCheckpointSha256": "79378ad0b38d12e6af78e2a7a94dad7d2e6cb3ca76083798f95293bf52b76f43"
+        },
+        {
+          "missionId": "undead-2",
+          "time": 35.40000000000013,
+          "outcome": "won",
+          "initialIds": [
+            3,
+            10
+          ],
+          "deployedIds": [
+            3,
+            10
+          ],
+          "reserveIds": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            16
+          ],
+          "carry": [
+            {
+              "id": 3,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 280,
+              "newMaxHp": 280,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 10,
+              "role": "worker",
+              "oldRole": "worker",
+              "oldMaxHp": 60,
+              "newMaxHp": 60,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            3,
+            10
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            16
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/undead-2.json",
+            "sha256": "6f495f6d821cdd55465f331d4c247e86e213e58bd6eb6946b87aa280e28bf095",
+            "finalChecksum": "8c0d2754",
+            "commandCount": 69
+          },
+          "finalCheckpointSha256": "66a885fb01cc207653805ea9923121121f57bd0ea91f056bede7753994d753c3"
+        },
+        {
+          "missionId": "undead-3-alt",
+          "time": 7.299999999999982,
+          "outcome": "won",
+          "initialIds": [
+            3,
+            4,
+            5,
+            6,
+            8,
+            9
+          ],
+          "deployedIds": [
+            3,
+            4,
+            5,
+            6,
+            8,
+            9
+          ],
+          "reserveIds": [
+            7,
+            10,
+            16
+          ],
+          "carry": [
+            {
+              "id": 3,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 280,
+              "newMaxHp": 280,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 4,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 95,
+              "newMaxHp": 95,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 5,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 115,
+              "newMaxHp": 115,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 6,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 115,
+              "newMaxHp": 115,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 8,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 80,
+              "newMaxHp": 80,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 9,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 80,
+              "newMaxHp": 80,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            3,
+            4,
+            5,
+            6,
+            8,
+            9
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            16
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/undead-3.json",
+            "sha256": "c3d23dbca521e1beb73f1925dc6c6dc402f56ead48c05a4b6cc787e8bef15b77",
+            "finalChecksum": "1999161a",
+            "commandCount": 2
+          },
+          "finalCheckpointSha256": "3699959e869191359063e3843c105b2937d89c1c4eb5e1d7dea3ec99b78e1d1e"
+        },
+        {
+          "missionId": "undead-4",
+          "time": 26.150000000000237,
+          "outcome": "won",
+          "initialIds": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            16
+          ],
+          "deployedIds": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            16
+          ],
+          "reserveIds": [
+            10
+          ],
+          "carry": [
+            {
+              "id": 3,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 280,
+              "newMaxHp": 280,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 4,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 95,
+              "newMaxHp": 95,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 5,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 115,
+              "newMaxHp": 115,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 6,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 115,
+              "newMaxHp": 115,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 7,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 115,
+              "newMaxHp": 115,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 8,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 80,
+              "newMaxHp": 80,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 9,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 80,
+              "newMaxHp": 80,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 16,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 80,
+              "newMaxHp": 80,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            16
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            16
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/undead-4.json",
+            "sha256": "2f7eafaa00b3b5db835db897e8d947a0600776d44f1da6685e066546198370ac",
+            "finalChecksum": "816d3af9",
+            "commandCount": 78
+          },
+          "finalCheckpointSha256": "727004d4ef1c319da29ea1b05eb93f6e93b98667b8de182e8799b8d895c3b4b1"
+        }
+      ],
+      "profilePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/undead-profile.json",
+      "profileSha256": "7b9225aabec0d2dd64e82fdc39227828f3c97d613b2f3cd5c3ebf3acf8c0da74"
+    },
+    {
+      "campaignId": "campaign-tideborn",
+      "profileId": "author-alternate-tideborn",
+      "choiceId": "basin",
+      "assertions": {
+        "fourVerifiedChapters": true,
+        "selectedChapterUsed": true,
+        "choicePersisted": true,
+        "finished": true,
+        "chapterAssertions": true
+      },
+      "progress": {
+        "campaignId": "campaign-tideborn",
+        "chapter": 4,
+        "choiceId": "basin",
+        "completed": [
+          "tideborn-1",
+          "tideborn-2",
+          "tideborn-3-alt",
+          "tideborn-4"
+        ],
+        "finished": true
+      },
+      "chapters": [
+        {
+          "missionId": "tideborn-1",
+          "time": 22.700000000000188,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "deployedIds": [],
+          "reserveIds": [],
+          "carry": [],
+          "survivorIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/tideborn-1.json",
+            "sha256": "dae50446f2c4f3a78042f837064184d31dd8e9c21c0fd7b63e98e2fb94bbd83c",
+            "finalChecksum": "c1c25ea9",
+            "commandCount": 200
+          },
+          "finalCheckpointSha256": "4d75d4d82aed8a708fbf6a7017228c7e8b61b44c3ddfbeeaf413a08e218b8c61"
+        },
+        {
+          "missionId": "tideborn-2",
+          "time": 9.750000000000004,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            3,
+            4,
+            5,
+            6
+          ],
+          "deployedIds": [
+            1,
+            3,
+            4,
+            5,
+            6
+          ],
+          "reserveIds": [
+            2
+          ],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 280,
+              "newMaxHp": 280,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 3,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 170,
+              "newMaxHp": 170,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 4,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 170,
+              "newMaxHp": 170,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 5,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 90,
+              "newMaxHp": 90,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 6,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 90,
+              "newMaxHp": 90,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            1,
+            3,
+            4,
+            5,
+            6
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/tideborn-2.json",
+            "sha256": "b9eb59fa033c4f863f2a41407d008cffb50642bd432c202085d1ea39ef8a388e",
+            "finalChecksum": "772e387b",
+            "commandCount": 11
+          },
+          "finalCheckpointSha256": "e1c8d7049905df6aa5326f7705f5f0d7b54dc8937db74fe08c8b5553430e2b7d"
+        },
+        {
+          "missionId": "tideborn-3-alt",
+          "time": 74.99999999999788,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            22,
+            3,
+            4,
+            5,
+            6,
+            2
+          ],
+          "deployedIds": [
+            1,
+            3,
+            4,
+            5,
+            6,
+            2
+          ],
+          "reserveIds": [],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 280,
+              "newMaxHp": 280,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 3,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 170,
+              "newMaxHp": 170,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 4,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 170,
+              "newMaxHp": 170,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 5,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 90,
+              "newMaxHp": 90,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 6,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 90,
+              "newMaxHp": 90,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 2,
+              "role": "worker",
+              "oldRole": "worker",
+              "oldMaxHp": 70,
+              "newMaxHp": 70,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            1,
+            22,
+            3,
+            4,
+            5,
+            6,
+            32
+          ],
+          "casualtyIds": [
+            2
+          ],
+          "rosterIds": [
+            1,
+            3,
+            4,
+            5,
+            6,
+            22,
+            32
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/tideborn-3.json",
+            "sha256": "2829357a44bd9578a77cebf7c13f507522e748a0190548cad6f62746c8d61e6c",
+            "finalChecksum": "60a78863",
+            "commandCount": 119
+          },
+          "finalCheckpointSha256": "835a1b703e0b4d610b534b107bf71dca9d73e76b38af69bec466580c7001dcb2"
+        },
+        {
+          "missionId": "tideborn-4",
+          "time": 31.550000000000313,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            22,
+            3,
+            4,
+            5,
+            6
+          ],
+          "deployedIds": [
+            1,
+            22,
+            3,
+            4,
+            5,
+            6
+          ],
+          "reserveIds": [
+            32
+          ],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 280,
+              "newMaxHp": 280,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 22,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 115,
+              "newMaxHp": 115,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 3,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 170,
+              "newMaxHp": 170,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 4,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 170,
+              "newMaxHp": 170,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 5,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 90,
+              "newMaxHp": 90,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            },
+            {
+              "id": 6,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 90,
+              "newMaxHp": 90,
+              "healed": true,
+              "oldMaxShield": 0,
+              "newMaxShield": 0
+            }
+          ],
+          "survivorIds": [
+            1,
+            22,
+            3,
+            4,
+            5,
+            6
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            3,
+            4,
+            5,
+            6,
+            22,
+            32
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/tideborn-4.json",
+            "sha256": "7d1431817a65d9931bd911f7ecc9a934542122665cd9c384ccaabc9a24b9bd8c",
+            "finalChecksum": "289527cb",
+            "commandCount": 63
+          },
+          "finalCheckpointSha256": "44e2b3eb6aed020043f771b64b8b8aac86c4eb339e5dfd295b1f7d3c2c70bbeb"
+        }
+      ],
+      "profilePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/tideborn-profile.json",
+      "profileSha256": "f24ad428968b5c51d535adeb98bb13f0dfbd4fd51c315eb2e96961d1a8977e76"
+    },
+    {
+      "campaignId": "campaign-automata",
+      "profileId": "author-alternate-automata",
+      "choiceId": "repair",
+      "assertions": {
+        "fourVerifiedChapters": true,
+        "selectedChapterUsed": true,
+        "choicePersisted": true,
+        "finished": true,
+        "chapterAssertions": true
+      },
+      "progress": {
+        "campaignId": "campaign-automata",
+        "chapter": 4,
+        "choiceId": "repair",
+        "completed": [
+          "automata-1",
+          "automata-2",
+          "automata-3-alt",
+          "automata-4"
+        ],
+        "finished": true
+      },
+      "chapters": [
+        {
+          "missionId": "automata-1",
+          "time": 11.65000000000003,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "deployedIds": [],
+          "reserveIds": [],
+          "carry": [],
+          "survivorIds": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/automata-1.json",
+            "sha256": "36f746fd03cc64e2361327bb5250edb73a1a224f4a89a3c3cf2ba2c2faaa1600",
+            "finalChecksum": "2f5a5094",
+            "commandCount": 3
+          },
+          "finalCheckpointSha256": "3158a680c5719c09752392d8cd3c2b12ef6f219859a1b4697315a7aec187bd2b"
+        },
+        {
+          "missionId": "automata-2",
+          "time": 35.40000000000013,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            9
+          ],
+          "deployedIds": [
+            1
+          ],
+          "reserveIds": [
+            2,
+            3,
+            4,
+            5
+          ],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 280,
+              "newMaxHp": 280,
+              "healed": true,
+              "oldMaxShield": 45,
+              "newMaxShield": 45
+            }
+          ],
+          "survivorIds": [
+            1,
+            9
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            9
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/automata-2.json",
+            "sha256": "ae18818295830e947168f39d8f2292d07f56c8ef740ae7c655770ab0636206a1",
+            "finalChecksum": "be35a577",
+            "commandCount": 69
+          },
+          "finalCheckpointSha256": "13bac4a6962e8e6be272ae6991a86269b4b140695a050c50246f02f8bef6e475"
+        },
+        {
+          "missionId": "automata-3-alt",
+          "time": 24.35000000000021,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            9,
+            2,
+            3,
+            4,
+            5
+          ],
+          "deployedIds": [
+            1,
+            9,
+            2,
+            3,
+            4,
+            5
+          ],
+          "reserveIds": [],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 280,
+              "newMaxHp": 280,
+              "healed": true,
+              "oldMaxShield": 45,
+              "newMaxShield": 45
+            },
+            {
+              "id": 9,
+              "role": "worker",
+              "oldRole": "worker",
+              "oldMaxHp": 55,
+              "newMaxHp": 55,
+              "healed": true,
+              "oldMaxShield": 12,
+              "newMaxShield": 12
+            },
+            {
+              "id": 2,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 135,
+              "newMaxHp": 135,
+              "healed": true,
+              "oldMaxShield": 45,
+              "newMaxShield": 45
+            },
+            {
+              "id": 3,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 135,
+              "newMaxHp": 135,
+              "healed": true,
+              "oldMaxShield": 45,
+              "newMaxShield": 45
+            },
+            {
+              "id": 4,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 75,
+              "newMaxHp": 75,
+              "healed": true,
+              "oldMaxShield": 35,
+              "newMaxShield": 35
+            },
+            {
+              "id": 5,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 75,
+              "newMaxHp": 75,
+              "healed": true,
+              "oldMaxShield": 35,
+              "newMaxShield": 35
+            }
+          ],
+          "survivorIds": [
+            1,
+            9,
+            2,
+            3,
+            4,
+            5
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            9
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/automata-3.json",
+            "sha256": "ce83658f9310a9feacafab39529c8c18844678ca024ed71db08682f7677acd67",
+            "finalChecksum": "2f639040",
+            "commandCount": 229
+          },
+          "finalCheckpointSha256": "e4f678fe94e089f90a9201d78468b78ad9b3c3a630054f93a5bb5b077785db87"
+        },
+        {
+          "missionId": "automata-4",
+          "time": 32.75000000000028,
+          "outcome": "won",
+          "initialIds": [
+            1,
+            23,
+            2,
+            3,
+            4,
+            5
+          ],
+          "deployedIds": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "reserveIds": [
+            9
+          ],
+          "carry": [
+            {
+              "id": 1,
+              "role": "special",
+              "oldRole": "special",
+              "oldMaxHp": 280,
+              "newMaxHp": 280,
+              "healed": true,
+              "oldMaxShield": 45,
+              "newMaxShield": 45
+            },
+            {
+              "id": 2,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 135,
+              "newMaxHp": 135,
+              "healed": true,
+              "oldMaxShield": 45,
+              "newMaxShield": 45
+            },
+            {
+              "id": 3,
+              "role": "melee",
+              "oldRole": "melee",
+              "oldMaxHp": 135,
+              "newMaxHp": 135,
+              "healed": true,
+              "oldMaxShield": 45,
+              "newMaxShield": 45
+            },
+            {
+              "id": 4,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 75,
+              "newMaxHp": 75,
+              "healed": true,
+              "oldMaxShield": 35,
+              "newMaxShield": 35
+            },
+            {
+              "id": 5,
+              "role": "ranged",
+              "oldRole": "ranged",
+              "oldMaxHp": 75,
+              "newMaxHp": 75,
+              "healed": true,
+              "oldMaxShield": 35,
+              "newMaxShield": 35
+            }
+          ],
+          "survivorIds": [
+            1,
+            23,
+            2,
+            3,
+            4,
+            5
+          ],
+          "casualtyIds": [],
+          "rosterIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            9,
+            23
+          ],
+          "assertions": {
+            "journalRecomputed": true,
+            "carriedIdentityAndStats": true,
+            "casualtiesRemoved": true,
+            "reservesRetained": true,
+            "idempotentResult": true,
+            "profileRoundtrip": true
+          },
+          "journal": {
+            "archivePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/automata-4.json",
+            "sha256": "f8aa7fa811e3abe3343bebc2fb299a6357e758a4697fc104bdf3d316a6c98727",
+            "finalChecksum": "627061b4",
+            "commandCount": 46
+          },
+          "finalCheckpointSha256": "ab4776651ae59b8e71e84662c10d16d463a227f5148e7d1c4d50c3cd295ba429"
+        }
+      ],
+      "profilePath": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source/work/campaign-content/profiles/2026-10-02T00-32-34-498Z/automata-profile.json",
+      "profileSha256": "7401889247d98fb6e712cb193cc37fafb5edad3d08bb0fb222dca298565014e3"
+    }
+  ]
+}

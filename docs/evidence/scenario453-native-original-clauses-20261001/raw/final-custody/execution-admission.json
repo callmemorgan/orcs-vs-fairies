@@ -1,0 +1,66 @@
+{
+  "format": "ovf-scenario-453-bounded-execution-admission",
+  "version": 1,
+  "productFreeze": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "saveVersion": 4,
+  "simulationRevision": "4.0.1",
+  "status": "native-passed; first-canonical-phase-failed; stopped-without-retry",
+  "nativeStatus": "passed",
+  "nativeCounts": {
+    "missions": 30,
+    "routes": {
+      "primary": 24,
+      "alternate": 24
+    },
+    "conquestJournals": 5,
+    "persistentArmyChapters": 3,
+    "persistentArmyAssertions": 42,
+    "persistentArmyRegressionRepeats": 2
+  },
+  "nativeWallSeconds": 96.71553528599907,
+  "firstFailurePhase": "primary-fixture-generator",
+  "firstFailure": {
+    "name": "Error",
+    "message": "Invalid editor map at map: Start0 lacks nearbywood.; Start0 lacks nearbyore.; Start0 lacks nearbycrystal.; Start1 lacks nearbywood.; Start1 lacks nearbyore.; Start1 lacks nearbycrystal..",
+    "stack": "Error: Invalid editor map at map: Start0 lacks nearbywood.; Start0 lacks nearbyore.; Start0 lacks nearbycrystal.; Start1 lacks nearbywood.; Start1 lacks nearbyore.; Start1 lacks nearbycrystal..\n    at bad4 (file:///tmp/ovf-scenario-453-readiness.yqkz996z/execution/primary-fixtures/fixture-runtime.mjs:10940:9)\n    at makeMapPackage (file:///tmp/ovf-scenario-453-readiness.yqkz996z/execution/primary-fixtures/fixture-runtime.mjs:11127:26)\n    at Module.derive (file:///tmp/ovf-scenario-453-readiness.yqkz996z/execution/primary-fixtures/fixture-runtime.mjs:11725:22)\n    at async file:///tmp/ovf-scenario-rules401-readiness.UCDZqh/generate-browser-fixtures.mjs:105:2"
+  },
+  "followingPhasesAttempted": false,
+  "repairPerformed": false,
+  "retryPerformed": false,
+  "custodyCheckStatus": "passed",
+  "remainingOwnedMatchingLiveProcesses": [],
+  "heavySlotReleasedByThisRecord": false,
+  "artifacts": {
+    "check-custody.py": {
+      "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/final-custody/check-custody.py",
+      "sha256": "09a1cd25e4dd9a265d88016abb0b6c0090ec34aafdfe5f1d6c355e5ea5f182fd",
+      "bytes": 12229
+    },
+    "fixture-generator-tool-result.json": {
+      "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/final-custody/fixture-generator-tool-result.json",
+      "sha256": "7e89a2612f55e0c85fad767616db06eb585d9c23cb1e7022c385fc3493bf75ff",
+      "bytes": 1871
+    },
+    "fixture-generator-tool-output.log": {
+      "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/final-custody/fixture-generator-tool-output.log",
+      "sha256": "f631214f7734c04796c69f8b7dc546e69715d34cfcac866f358a382fdc85763b",
+      "bytes": 756
+    },
+    "custody-checks.json": {
+      "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/final-custody/custody-checks.json",
+      "sha256": "da21af888b1b035b060a51ec4841b101ab5ea74464f35719b474881570235c15",
+      "bytes": 5941
+    },
+    "native-origin-map.json": {
+      "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/final-custody/native-origin-map.json",
+      "sha256": "497b4046e63999f12de256f8925b22283f488e3423d4771583b32d2e286eba07",
+      "bytes": 111174
+    },
+    "complete-raw-inventory.json": {
+      "path": "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/final-custody/complete-raw-inventory.json",
+      "sha256": "cd8445331eb20ce8e03069b36acbdb76b5694c8ebd4e69e6e037d41528046a1f",
+      "bytes": 2854552
+    }
+  },
+  "preservation": "All originals, failed partial fixtures and full native packet stay intact. No root product/ledger/evidence edits or commits were made. Root owns imports, final decisions and subsequent dispatch."
+}

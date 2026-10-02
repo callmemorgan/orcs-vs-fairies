@@ -1,0 +1,125 @@
+#!/usr/bin/env python3
+"""Read retained statuses, current source bytes and native outputs; executes no game."""
+import datetime
+import hashlib
+import json
+import pathlib
+import subprocess
+
+ROOT = pathlib.Path(__file__).resolve().parents[3]
+PACKET = pathlib.Path(__file__).resolve().parent
+
+
+def require(condition, message):
+    if not condition:
+        raise ValueError(message)
+
+
+def digest(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def read(path):
+    return json.loads(path.read_bytes())
+
+
+def git(*args):
+    return subprocess.check_output(['git', '-C', str(ROOT), *args])
+
+
+def named_rows(value):
+    if isinstance(value, dict):
+        if 'fullName' in value and 'file' in value:
+            yield value
+        for child in value.values():
+            yield from named_rows(child)
+    elif isinstance(value, list):
+        for child in value:
+            yield from named_rows(child)
+
+
+assessment = read(PACKET / 'original71-80-final-assessment.json')
+applicability = read(PACKET / 'assessments/ovf-scenario-suite-453-applicability-9ezc79wl/review.json')
+suite = read(ROOT / 'docs/evidence/root-assembly-20261001/combined-rules401-passing-suite-4a71cd0/tests.json')
+actual = {}
+for file in suite['testResults']:
+    relative = 'tests/' + file['name'].split('/tests/', 1)[1]
+    for case in file['assertionResults']:
+        actual[(relative, case['fullName'])] = case
+checked = []
+for row in named_rows({'assessment': assessment, 'applicability': applicability}):
+    relative = 'tests/' + row['file'].split('/tests/', 1)[1]
+    case = actual.get((relative, row['fullName']))
+    require(case is not None and case['status'] == row['status'] == 'passed', f'No actual passed assertion: {relative}: {row["fullName"]}')
+    checked.append({'file': relative, 'fullName': row['fullName'], 'status': case['status']})
+source_rows = []
+for row in applicability['sourceApplicability']['selectedSourceTestChecks']:
+    path = row['relativePath']
+    raw = (ROOT / path).read_bytes()
+    declared = row['currentRoot']
+    require(len(raw) == declared['bytes'] and digest(raw) == declared['sha256'], f'Current bytes changed: {path}')
+    require(raw == git('show', 'HEAD:' + path), f'Working source differs from HEAD: {path}')
+    require(raw == git('show', assessment['productFreeze'] + ':' + path), f'Working source differs from freeze: {path}')
+    if path != 'src/main.ts':
+        require(raw == git('show', applicability['retainedSuite']['report']['head'] + ':' + path), f'Suite source differs: {path}')
+    source_rows.append({'path': path, 'bytes': len(raw), 'sha256': digest(raw)})
+main = (ROOT / 'src/main.ts').read_bytes().splitlines(keepends=True)
+for region in applicability['sourceApplicability']['mainRelevantRegions']:
+    raw = b''.join(main[region['startLine'] - 1:region['endLine']])
+    require(raw.decode() == region['exactExcerpt'] and digest(raw) == region['sha256'], f'Main region differs: {region["name"]}')
+
+native = PACKET / 'raw/native'
+missions = read(native / 'all30.json')
+require(missions['missionCount'] == len(missions['attempts']) == 30, 'Mission count differs')
+for attempt in missions['attempts']:
+    require(attempt['outcome'] == 'won' and all(attempt['assertions'].values()), f'Mission failed: {attempt["id"]}')
+routes = {}
+retention = read(PACKET / 'root-retention-v2.json')
+aliases = {source: ROOT / row['destination'] for row in retention['rows'] for source in row.get('allOriginalAbsolutePaths', [row['source']])}
+branch_profiles = []
+for route in ('primary', 'alternate'):
+    data = read(native / (route + '.json'))
+    require(len(data['profiles']) == 6, 'Faction count differs')
+    chapters = 0
+    for profile in data['profiles']:
+        require(all(profile['assertions'].values()) and profile['progress']['finished'], 'Route did not finish')
+        raw_profile = aliases[profile['profilePath']].read_bytes()
+        parsed = json.loads(raw_profile)
+        compact = json.dumps(parsed, separators=(',', ':'), ensure_ascii=False).encode()
+        require(digest(compact) == profile['profileSha256'], 'Producer compact profile hash differs')
+        branch_profiles.append({'route': route, 'campaignId': profile['campaignId'], 'choiceId': profile['choiceId'], 'rawProfileKeys': list(parsed)})
+        for chapter in profile['chapters']:
+            require(chapter['outcome'] == 'won' and all(chapter['assertions'].values()), 'Chapter failed')
+            chapters += 1
+    require(chapters == 24, 'Chapter count differs')
+    routes[route] = chapters
+conquest = read(native / 'conquest.json')
+require(all(conquest['assertions'].values()), 'Conquest assertion failed')
+persistent = read(native / 'persistent-army/report.json')
+require(all(persistent['assertions'].values()), 'Persistent army assertion failed')
+first = read(native / 'persistent-army/chapter1-final.json')['game']['state']
+second = read(native / 'persistent-army/chapter2-initial.json')['game']['state']
+cannon1 = next(entity for entity in first['entities'] if entity['id'] == 2)
+cannon2 = next(entity for entity in second['entities'] if entity['id'] == 2)
+carry = {key: cannon1['veteran'][key] for key in ('experience', 'rank', 'promotions')}
+require(all(cannon2['veteran'][key] == value for key, value in carry.items()), 'Cannon veteran carry differs')
+require(all(cannon1[key] == cannon2[key] for key in ('id', 'side', 'kind', 'role')), 'Cannon identity carry differs')
+require(carry['experience'] > 255 - 1e-9 and carry['rank'] == 3, 'Earned progression absent')
+result = {
+    'observedAt': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+    'producer': {'harness': 'Codex', 'model': 'GPT-6', 'agent': '/root'},
+    'rootHead': git('rev-parse', 'HEAD').decode().strip(),
+    'scriptSha256': digest(pathlib.Path(__file__).read_bytes()),
+    'statusReferencesChecked': len(checked),
+    'uniqueActualPassedAssertions': len({(row['file'], row['fullName']) for row in checked}),
+    'actualStatuses': checked,
+    'sourcePaths': source_rows,
+    'mainRegionsChecked': len(applicability['sourceApplicability']['mainRelevantRegions']),
+    'native': {'missionsWon': 30, 'routeChapters': routes, 'rawBranchProfilesRead': branch_profiles, 'conquestAssertions': len(conquest['assertions']), 'persistentArmyAssertions': len(persistent['assertions']), 'cannonCarry': carry},
+    'qualification': 'Data readback only. Named statuses come from the retained 2920-test suite; fresh194 remains aggregate-only. Current browser phases remain unstarted after fixture preparation failure. Native outputs are read and checked, not freshly recomputed.',
+    'status': 'passed'
+}
+output = PACKET / 'root-admission-readback.json'
+require(not output.exists(), 'Readback receipt already exists')
+output.write_text(json.dumps(result, indent=2) + '\n')
+print(json.dumps({key: result[key] for key in ('status', 'statusReferencesChecked', 'uniqueActualPassedAssertions', 'mainRegionsChecked')}))

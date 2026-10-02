@@ -1,0 +1,152 @@
+{
+  "format": "ovf-scenario-453-terminal-custody-checks",
+  "version": 1,
+  "checkedAt": "2026-10-02T00:42:37.033001+00:00",
+  "productFreeze": "453c2218af9973b9eca8fb78392435bd9d46a740",
+  "status": "passed",
+  "checks": {
+    "staticOriginalInputs": 44,
+    "rawByteOriginAliases": 1,
+    "historicalExternalInputs": 185,
+    "sealedPreflightBoundInputs": 11,
+    "frozenTrackedSource": 6922,
+    "protectedRootApplication": 557,
+    "sourceHead": "453c2218af9973b9eca8fb78392435bd9d46a740",
+    "sourceStatusPorcelain": "?? node_modules\n",
+    "dependencyMetadata": 5,
+    "executableEntry": 6,
+    "protectedPreviewDist": 397,
+    "packetInventory": 462,
+    "preparedInventory": 412,
+    "nativeArtifacts": 236,
+    "nativeSourceBeforeAfterEqual": true,
+    "nativeFirstFailureAbsent": true,
+    "nativeControllerFinal": {
+      "cancelSignal": null,
+      "cleanupSignals": [],
+      "command": [
+        "bash",
+        "/tmp/ovf-scenario-rules401-readiness.UCDZqh/run-native.sh",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/source",
+        "453c2218af9973b9eca8fb78392435bd9d46a740",
+        "4.0.1",
+        "/tmp/ovf-scenario-453-readiness.yqkz996z/execution/native"
+      ],
+      "failure": null,
+      "finishedAt": "2026-10-02T00:33:51.774765+00:00",
+      "format": "ovf-scenario-453-native-once-control-result",
+      "nativeExitCode": 0,
+      "observedOwnedProcesses": [
+        {
+          "pgid": 1539145,
+          "pid": 1539145,
+          "ppid": 1539144,
+          "startTimeTicks": 7702868,
+          "state": "S"
+        },
+        {
+          "pgid": 1540686,
+          "pid": 1540694,
+          "ppid": 1539144,
+          "startTimeTicks": 7706603,
+          "state": "Z"
+        }
+      ],
+      "reapedDescendants": [
+        {
+          "pid": 1540694,
+          "waitStatus": 0
+        }
+      ],
+      "remainingOwnedLiveProcesses": [],
+      "retryPerformed": false,
+      "signaling": "pidfd_send_signal",
+      "startedAt": "2026-10-02T00:32:15.059228+00:00",
+      "subreaperCustody": true,
+      "version": 1,
+      "wallSeconds": 96.71553528599907
+    },
+    "fixtureGenerationStatus": {
+      "sourceCommit": "453c2218af9973b9eca8fb78392435bd9d46a740",
+      "status": "failed",
+      "failure": {
+        "name": "Error",
+        "message": "Invalid editor map at map: Start0 lacks nearbywood.; Start0 lacks nearbyore.; Start0 lacks nearbycrystal.; Start1 lacks nearbywood.; Start1 lacks nearbyore.; Start1 lacks nearbycrystal..",
+        "stack": "Error: Invalid editor map at map: Start0 lacks nearbywood.; Start0 lacks nearbyore.; Start0 lacks nearbycrystal.; Start1 lacks nearbywood.; Start1 lacks nearbyore.; Start1 lacks nearbycrystal..\n    at bad4 (file:///tmp/ovf-scenario-453-readiness.yqkz996z/execution/primary-fixtures/fixture-runtime.mjs:10940:9)\n    at makeMapPackage (file:///tmp/ovf-scenario-453-readiness.yqkz996z/execution/primary-fixtures/fixture-runtime.mjs:11127:26)\n    at Module.derive (file:///tmp/ovf-scenario-453-readiness.yqkz996z/execution/primary-fixtures/fixture-runtime.mjs:11725:22)\n    at async file:///tmp/ovf-scenario-rules401-readiness.UCDZqh/generate-browser-fixtures.mjs:105:2"
+      }
+    },
+    "fixturesManifestAbsent": true,
+    "server-buildAbsent": true,
+    "browser-packageAbsent": true,
+    "exclusive-dbAbsent": true,
+    "unavailable-server-buildAbsent": true,
+    "supplemental-fixturesAbsent": true,
+    "browserOutputFiles": [
+      "production-inventory-before.json"
+    ],
+    "protectedPreviewProcess": {
+      "pid": 1063,
+      "startTimeTicks": 874,
+      "state": "S",
+      "ppid": 1023,
+      "pgid": 1063,
+      "cwd": "/home/morgana/Projects/orcs-vs-Fairies",
+      "cmdline": "/home/morgana/.local/bin/node /home/morgana/Projects/orcs-vs-Fairies/node_modules/vite/bin/vite.js preview --host 127.0.0.1 --port 4173 --strictPort "
+    },
+    "protectedPreviewIndex": {
+      "status": 200,
+      "sha256": "d2672045299ac96d459f9a404b7da721aca85b314a79fe01f13ab6f1ae86fece",
+      "bytes": 500,
+      "headers": {
+        "Vary": "Origin",
+        "Content-Length": "500",
+        "Content-Type": "text/html;charset=utf-8",
+        "Last-Modified": "Thu, 01 Oct 2026 16:47:11 GMT",
+        "ETag": "W/\"500-1790873231717\"",
+        "Cache-Control": "no-cache",
+        "Date": "Fri, 02 Oct 2026 00:42:37 GMT",
+        "Connection": "close"
+      }
+    },
+    "ownedMatchingProcesses": [],
+    "otherEsbuildProcessesNotClaimedOrSignaled": [
+      {
+        "pid": 1200,
+        "startTimeTicks": 895,
+        "state": "S",
+        "ppid": 1063,
+        "pgid": 1063,
+        "cwd": "/home/morgana/Projects/orcs-vs-Fairies",
+        "cmdline": "/home/morgana/Projects/orcs-vs-Fairies/node_modules/@esbuild/linux-x64/bin/esbuild --service=0.28.2 --ping "
+      },
+      {
+        "pid": 693291,
+        "startTimeTicks": 1572875,
+        "state": "S",
+        "ppid": 693283,
+        "pgid": 693249,
+        "cwd": "/home/morgana/Projects/orcs-vs-Fairies",
+        "cmdline": "/home/morgana/Projects/orcs-vs-Fairies/node_modules/@esbuild/linux-x64/bin/esbuild --service=0.28.2 --ping "
+      }
+    ],
+    "knownNativeControllerAndRunnerNow": [
+      null,
+      null
+    ],
+    "unlaunchedOwnedEndpoints": {
+      "5307": {
+        "connected": false
+      },
+      "37823": {
+        "connected": false
+      }
+    },
+    "retainedExternalRecipeFiles": 10
+  },
+  "errors": [],
+  "limits": [
+    "Generator used the direct exec tool, which returned exit1 with no persistent session; no generator descendant PID custody was assigned. The final direct process scan reports matching processes and leaves unrelated processes untouched.",
+    "Package metadata and executable entry bytes do not independently authenticate all dynamic libraries or transitive dependency files.",
+    "These custody checks run no simulation, fixture derivation, build, replay, gameplay or browser; failed canonical phase remains failed."
+  ]
+}
