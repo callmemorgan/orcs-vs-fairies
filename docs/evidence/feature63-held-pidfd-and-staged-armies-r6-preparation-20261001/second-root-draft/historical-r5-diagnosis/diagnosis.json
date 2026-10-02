@@ -1,0 +1,65 @@
+{
+  "schema": "feature63-r5-static-diagnosis-v1",
+  "scope": "Static inspection of original R5 public/lifecycle/control/operator logs and bound source. New external output only; originals preserved. No runtime, retry, signal, database access, database hash/copy/seal/query, extraction, native audit, product edit, import, commit, or ledger write performed.",
+  "sourcePin": "025fc8750a737af4beb63dceea6ffbcb975e2893",
+  "inspectedWrapperSha256": "19979813218b8369d1101318ebb066ba3e4e558a74f0d622be7cb661cdb6563b",
+  "firstFailure": {
+    "at": "2026-10-02T07:07:08.174984+00:00",
+    "message": "Managed process snapshot unavailable while bound pidfd remains live; no signal is permitted",
+    "family": "browser",
+    "directRoot": false,
+    "admitted": true,
+    "pid": 1911049,
+    "startTicks": 10061124,
+    "originalSession": 1910789,
+    "registeredType": "Chromium renderer",
+    "result": "FAIL_CLEANUP_HELD_NO_UNVERIFIED_SIGNAL"
+  },
+  "publicProgress": {
+    "matchId": "b6b32303-c090-488d-a36d-62510020fef8",
+    "candidateCount": 315,
+    "passingCandidateCount": 1,
+    "selectedCandidateIndex": 314,
+    "startTick": 1740,
+    "endTick": 2140,
+    "coveragePassed": true,
+    "bothHumansAliveThroughout": true,
+    "humanOwners": [0, 1],
+    "humanTargetOwners": [2, 3],
+    "aiOwners": [3],
+    "humanAttackEventCount": 21,
+    "aiAttackEventCount": 2,
+    "lastHumanOneFrameCapturedAt": "2026-10-02T07:07:08.118Z",
+    "publicResultsAndCleanup": "Both remain JSON null",
+    "publicErrors": "Empty errors.ndjson; public stdout/stderr also empty",
+    "qualification": "The producer reached a public fight candidate satisfying its original both-human/both-AI-target predicate. This remains a public candidate only; native participant composition and feature63 qualification are unverified."
+  },
+  "findings": [
+    "managed_process_observation.read_stat returns None for terminal Z/X state or missing/process-lookup errors, and the helper returns None when either stat read does so. owned_observation first sees a nonready held PIDFD, reads that snapshot, and immediately polls the same PIDFD again. If the snapshot is None and that second poll remains nonready, it raises the first failure. The source therefore makes a transient task-exit snapshot gap fatal even though the lifetime has a valid held PIDFD.",
+    "The retained independent monitor first confirms renderer PID 1911049's held PIDFD ready at 07:07:08.301276, 126 ms after wrapper firstFailure. It first confirms browser root PID 1910789 ready at 07:07:08.802888, 245 ms after the analogous wrapper cleanup failure at .557858. These are sampled readiness times, not measured exit delays. They support an exit-observation race. The source discarded whether the null snapshot came from Z/X state or missing stat, so the exact null cause cannot be recovered from R5 logs.",
+    "The selected public window was already retained before the wrapper error. The producer source breaks out after saving a passing window, then closes its contexts in finally. A renderer exit during that context shutdown is consistent with the first failing registered resource. The wrapper then sent SIGTERM to the public producer at 07:07:08.190759 and recorded exit code -15 at .238900, before its final summary and cleanup receipts were written.",
+    "Wrapper cleanup sent SIGTERM to the browser root at 07:07:08.550545, then hit the same unavailable-snapshot/nonready-PIDFD branch at .557858. Independent closure and the operator finite readback subsequently confirm all 25 registered lifetimes and the wrapper exited, private ports absent, and protected PID 1063/start 874/port 4173 unchanged. This preserves the bounded observed-lifetime scope; it does not prove absence of all possible unobserved descendants.",
+    "require_managed_identity hardcodes pidfdLiveAfterObservation as 'not checked because identity guard failed', but the null-snapshot branch at line 232 did perform an after-observation poll. The diagnostic hides that real result. R5 browser.stderr has ordinary Fontconfig/GPU/GCM messages and no retained FD-ownership crash; no launch-flag change is justified by this failure."
+  ],
+  "minimalCandidate": {
+    "file": "candidate-null-snapshot-grace.patch",
+    "status": "Unapplied and untested external candidate; not runtime authorization. The architecture agent owns the separately tested candidate; this report complements its work and does not edit any wrapper.",
+    "change": "On a null snapshot only, allow one fixed 500 ms poll on the same held PIDFD before escalating. Return None/exit only if the held PIDFD becomes ready. If it remains nonready, preserve the failure and no-signal rule. Record the real after-poll result in the comparison diagnostic.",
+    "preserved": "Initial admission, PID/start checks, direct-root session reservation, held-PIDFD ownership, protected-preview/socket checks, current family cleanup loops/deadlines, and no-signal behavior for unavailable live targets.",
+    "limit": "500 ms is a candidate bound that exceeds the retained 126/245 ms sample gaps; R5 does not prove that it covers every exit sequence. Each pending observation consumes phase time and may delay the next outer deadline check by 500 ms. This candidate neither adds an aggregate cleanup deadline nor claims that MAX_CLEANUP is currently enforced as one. This read-only task did not reproduce the Linux process transition or execute the candidate. Retaining the reason for a missing/terminal stat would improve later diagnostics, but is separate from the minimal race correction."
+  },
+  "sources": {
+    "wrapper": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/scripts/feature63/run-minimal63.py:135-153,156-202,226-248,519-550,583-590,832-842",
+    "producer": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/scripts/feature63/public-producer.mjs:396-439,501-507,524-555",
+    "publicWindow": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r5/public/public-windows.json:101838-102740",
+    "publicFrames": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r5/public/human-one-public-frames.ndjson (last row: capturedAt 07:07:08.118Z, message.tick/frameSeq 2140)",
+    "driverResult": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r5/lifecycle/driver-result.json",
+    "driverEvents": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r5/lifecycle/driver-events.ndjson:59-67",
+    "browserStderr": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r5/lifecycle/browser.stderr:1-9",
+    "independentReadiness": "/tmp/ovf-feature63-r5-capture-control-ucu87_19/independent-observations.ndjson:56,66",
+    "independentClosure": "/tmp/ovf-feature63-r5-capture-control-ucu87_19/independent-closure.json",
+    "operatorReadback": "/tmp/ovf-feature63-r5-capture-execution-m_grll52/finite-readback.json",
+    "originalDriverStreams": "/tmp/ovf-feature63-r5-capture-control-ucu87_19/driver.stdout and driver.stderr",
+    "originalOperatorStreams": "/tmp/ovf-feature63-r5-capture-execution-m_grll52/launcher.stdout and launcher.stderr"
+  }
+}

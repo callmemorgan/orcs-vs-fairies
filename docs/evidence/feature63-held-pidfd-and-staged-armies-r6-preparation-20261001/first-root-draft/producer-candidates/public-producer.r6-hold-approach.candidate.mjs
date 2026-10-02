@@ -441,7 +441,7 @@ function indexWindow() {
   const endTick = sharedLatest();
   if (endTick === null || profiles.some(p => !p.acceptedAttackMoves.length)) return null;
   const firstCommandTick = Math.max(...profiles.map(p => p.acceptedAttackMoves[0].appliedTick));
-  const lower = Math.max(endTick - WINDOW_TICKS, Math.ceil(firstCommandTick / FRAME_STEP) * FRAME_STEP, acquisitionStartTick ?? 0);
+  const lower = Math.max(endTick - WINDOW_TICKS, Math.ceil(firstCommandTick / FRAME_STEP) * FRAME_STEP);
   const firstFrames = profiles[0].frameIndex.filter(f => f.tick >= lower && f.tick <= endTick);
   const secondTicks = new Set(profiles[1].frameIndex.map(f => f.tick));
   const startTick = firstFrames.find(f => secondTicks.has(f.tick))?.tick;
@@ -508,9 +508,6 @@ try {
   await ui(first, 'select', {label: 'Lobby starting age', value: '1'}, () => first.page.getByLabel('Lobby starting age', {exact: true}).selectOption('1'));
   for (let player = 1; player <= 4; player++) {
     const team = player <= 2 ? '0' : '1', controller = player <= 2 ? 'human' : 'ai';
-    const faction = player === 2 ? 'fairies' : 'orcs';
-    const factionLabel = player === 1 ? 'First lobby faction' : player === 2 ? 'Second lobby faction' : `Lobby player ${player} faction`;
-    await ui(first, 'select', {label: factionLabel, value: faction}, () => first.page.getByLabel(factionLabel, {exact: true}).selectOption(faction));
     await ui(first, 'select', {label: `Lobby player ${player} team`, value: team}, () => first.page.getByLabel(`Lobby player ${player} team`, {exact: true}).selectOption(team));
     await ui(first, 'select', {label: `Lobby player ${player} controller`, value: controller}, () => first.page.getByLabel(`Lobby player ${player} controller`, {exact: true}).selectOption(controller));
   }
@@ -529,7 +526,6 @@ try {
   for (const profile of profiles) { assert.equal(lobby.seats[profile.side].account.id, profile.account.id); assert.equal(lobby.seats[profile.side].account.username, profile.username); }
   assert.deepEqual(lobby.settings.players.map(p => p.teamId), [0, 0, 1, 1]);
   assert.deepEqual(lobby.settings.players.map(p => p.controller), ['human', 'human', 'ai', 'ai']);
-  assert.deepEqual(lobby.settings.players.map(p => p.factionId), ['orcs', 'fairies', 'orcs', 'orcs']);
   status('normal-lobby-response', result.lobbyResponse);
   result.seatsText = await first.page.locator('.online-seats li').allTextContents();
   result.receivedRulesText = await first.page.locator('.online-received-rule-values').allTextContents();
@@ -581,6 +577,7 @@ try {
   const renewedAttackMoves = [];
   for (const profile of profiles) {
     renewedAttackMoves.push(await attackMove(profile, target, commonHq.id, 'public combat groups from both AI owners approach the common HQ'));
+    await holdArmy(profile, commonHq.id, 'remain near the common HQ after the genuine acknowledged attack-move');
   }
   acquisitionStartTick = Math.ceil(Math.max(...renewedAttackMoves.map(command => command.appliedTick)) / FRAME_STEP) * FRAME_STEP;
   status('public-approach-acquisition-latched', {startTick: acquisitionStartTick, renewedAttackAppliedTicks: renewedAttackMoves.map(command => command.appliedTick), nativeWaveMembershipUnverified: true});

@@ -1,0 +1,130 @@
+{
+  "schema": "feature63-r6-final-static-independent-review-v1",
+  "status": "PASS_STATIC_R6_HELD_PIDFD_EXIT_WAIT_RUNTIME_HELD",
+  "repository": "/home/morgana/Projects/orcs-vs-Fairies",
+  "reviewedHead": "d9cad98e2d8b96c53a6cd17c5f168f450b7c66bd",
+  "packet": "/tmp/ovf-root-feature63-r6-enforced-static-packet-4b2sdmb8",
+  "packetSeal": {
+    "path": "/tmp/ovf-root-feature63-r6-enforced-static-packet-4b2sdmb8/review-input-seal.json",
+    "sha256": "56a1b90d135e98f092fd098711d18eb44f163fbf20a78eed313a7dbc327cf626",
+    "recordCount": 64,
+    "authenticated": true
+  },
+  "requestedReviewerModel": "gpt-5.6-sol",
+  "actualProviderIdentity": "unverified",
+  "providerOrModelFamilyAuthenticated": false,
+  "claudeUsed": false,
+  "runtimeExecuted": false,
+  "repositoryModified": false,
+  "packetModified": false,
+  "reviewedFiles": [
+    {
+      "role": "wrapper",
+      "path": "/tmp/ovf-root-feature63-r6-enforced-static-packet-4b2sdmb8/scripts/run-minimal63.py",
+      "sha256": "04bd5e0f8ddeb9633324d72be1eeb7c266a73ec074cb287e1bd641f4cdf579db"
+    },
+    {
+      "role": "producer",
+      "path": "/tmp/ovf-root-feature63-r6-enforced-static-packet-4b2sdmb8/scripts/public-producer.mjs",
+      "sha256": "0161a7e480e931d95a13f6c36c5ead7b12c88b1884a2f60b4f68ad5de5edc13b"
+    },
+    {
+      "role": "collector",
+      "path": "/tmp/ovf-root-feature63-r6-enforced-static-packet-4b2sdmb8/scripts/collect-launched-waves.py",
+      "sha256": "c142cb705f7a781ec1dd7e949de8ea17d05134c8e7213627224936d634873824"
+    },
+    {
+      "role": "auditor",
+      "path": "/tmp/ovf-root-feature63-r6-enforced-static-packet-4b2sdmb8/scripts/native-audit.py",
+      "sha256": "4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb"
+    },
+    {
+      "role": "bindingUtility",
+      "path": "/tmp/ovf-root-feature63-r6-enforced-static-packet-4b2sdmb8/r6-binding-utility/fresh-r6-bindings.py",
+      "sha256": "380ead609814e326f40b2d2f85e9f6bf176855999d47fb7813ae0aae3ee429d6"
+    }
+  ],
+  "requiredFixes": [],
+  "enforcementFix": {
+    "priorReviewStatus": "FAIL_STATIC_R6_REVIEWED_BYTES_NOT_ENFORCED_RUNTIME_HELD",
+    "deltaPath": "/tmp/ovf-root-feature63-r6-enforced-static-packet-4b2sdmb8/binding-reviewed-bytes-enforcement.diff",
+    "deltaSha256": "20135c2fb7a4fa25ac5685a032e827c1666da2dff871c251677cccb7f73870da",
+    "deltaMatchesPreservedPriorUtility": true,
+    "requiredReviewSchemaChecked": true,
+    "runtimeFalseChecked": true,
+    "exactFiveRoleListChecked": true,
+    "uniqueExactRoleSetChecked": true,
+    "utilitySelfDigestChecked": true,
+    "rootImportedScriptDigestsChecked": true,
+    "ownedImportedScriptDigestsChecked": true,
+    "checksPrecedeFreshPrefixCreation": true,
+    "checksPrecedeBindingWrites": true
+  },
+  "exactDiffChecks": {
+    "wrapperMatchesR5ToR6Diff": true,
+    "producerMatchesR5ToR6Diff": true,
+    "collectorMatchesR5ToR6Diff": true,
+    "auditorMatchesR5": true,
+    "fourSelectedScriptsMatchFirstReview": true,
+    "enforcementBaselineMatchesFirstReviewedUtility": true,
+    "enforcementDeltaMatchesNewUtility": true
+  },
+  "staticFindings": {
+    "sourceCorrectFactionSelectors": true,
+    "lobbyFactionOrder": ["orcs", "fairies", "orcs", "orcs"],
+    "initialAttackMovesThenObservedHolds": true,
+    "holdRequiresAckAndOwnFrameReadback": true,
+    "publicApproachRequiresTwoCombatUnitsPerAiOwnerWithinTwelve": true,
+    "renewedAttackMovesAcknowledged": true,
+    "maximumAcceptedAttackMoves": 4,
+    "renewedAttackMovesImmediatelyHeld": false,
+    "candidateWindowStartsAtOrAfterRenewedAckLatch": true,
+    "candidateWindowPositiveAndAtMostFourHundredTicks": true,
+    "publicPredicateFormulaUnchanged": true,
+    "publicApproachUsedAsOperationalSelectionOnly": true,
+    "sameWaveMembershipStillRequiresNativeAudit": true,
+    "cameraProjectionMatchesSource": true,
+    "predictablePrelaunchSelectorFailureFound": false,
+    "extraFeatureAdmissionConditionFound": false,
+    "pidfdWaitOnlyOnMissingSnapshot": true,
+    "pidfdExitConclusionRequiresHeldDescriptorReadiness": true,
+    "perMissingObservationWaitMilliseconds": 500,
+    "strictAggregateObservationOrCleanupDeadlineProven": false,
+    "fullWrapperCleanupTested": false,
+    "exactR5RejectedProcStateKnown": false,
+    "publicRetentionWithinSixtyFourMiBGuaranteed": false
+  },
+  "bindingUtilityAssessment": {
+    "status": "STATIC_ELIGIBLE_RUNTIME_HELD",
+    "executed": false,
+    "freshPrefix": "work/feature63-human-wave-composition-r6",
+    "immediatePriorPrefix": "work/feature63-human-wave-composition-r5",
+    "copyDirectories": ["dist", "server"],
+    "preservedCounts": {
+      "source": 966,
+      "product": 570,
+      "protectedDist": 397,
+      "web": 398,
+      "server": 22,
+      "playwrightDependencies": 114,
+      "chromiumDependencies": 303
+    },
+    "historicalR3GuardsRetained": true,
+    "immediatePriorR5PackageAndReadbackRetained": true,
+    "launcherEightAnchorsRetained": true,
+    "wrapperDigestSubstitutionRetained": true
+  },
+  "zeroNativeRetentionDiagnosis": {
+    "path": "/tmp/ovf-root-feature63-r6-enforced-static-packet-4b2sdmb8/r5-zero-native-retention-diagnosis.txt",
+    "sha256": "202ccb45396b3df1d7a54af2f4100bd5a43fce78c1cf248f85d739d09db24a13",
+    "assessment": "The source paths for retained waves are consistent. A short launched-wave lifetime and one-second collector sampling make zero retained records plausible, while later human pursuit and threat handling are a qualified acquisition explanation. The retained public data does not prove either cause or prove that no wave launched."
+  },
+  "limitations": [
+    "No browser, server, database, capture, collector, extraction, audit, reproduction, import, or full wrapper run was performed.",
+    "The native exit proof supports the 500 millisecond held-PIDFD wait, but the exact R5 rejected process state was not retained.",
+    "The wait can accumulate across a batch of missing observations, and MAX_CLEANUP is not an aggregate enforced deadline.",
+    "The selected producer can still exceed the unchanged 64 MiB public retention bound during a real capture.",
+    "The zero-retention source diagnosis does not guarantee that the R6 capture will retain or qualify a coordinated wave.",
+    "This review does not authenticate the serving provider, model, or model family."
+  ]
+}

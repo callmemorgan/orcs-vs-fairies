@@ -1,0 +1,102 @@
+{
+  "schema": "feature63-r5-native-pidfd-exit-proof-receipt-v1",
+  "preparedBy": "/root/architecture",
+  "sourcePin": "025fc8750a737af4beb63dceea6ffbcb975e2893",
+  "originalWrapperSha256": "19979813218b8369d1101318ebb066ba3e4e558a74f0d622be7cb661cdb6563b",
+  "candidateWrapperSha256": "e104395c9eb3a26c14d645fe31b8f2493564f0737ea6718f266f30fdb9f52a80",
+  "artifacts": [
+    {
+      "path": "/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56/original-run-minimal63.py",
+      "bytes": 54425,
+      "sha256": "19979813218b8369d1101318ebb066ba3e4e558a74f0d622be7cb661cdb6563b"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56/candidate-run-minimal63.py",
+      "bytes": 54514,
+      "sha256": "e104395c9eb3a26c14d645fe31b8f2493564f0737ea6718f266f30fdb9f52a80"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56/candidate.diff",
+      "bytes": 1651,
+      "sha256": "33beecfe491f4eb7e3e60762a4d3ba55981b9707c9985b6bf961cd346a59a845"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56/leader-exit.c",
+      "bytes": 680,
+      "sha256": "e8870c9d72f7ad6325ef9cf44e7e9444005e01fd59f9ca77c39283f56e5bcf64"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56/leader-exit",
+      "bytes": 16384,
+      "sha256": "e3419fbc7471bf0da7fd0beb5a97d16f75ba782ac4bab2a9596963164efd2e3d"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56/prove-native-exit.py",
+      "bytes": 8693,
+      "sha256": "7ebda4f85da67a3c5085b1ed88665768a2e6552b5349ffbf173821270dfc05f8"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56/native-proof.json",
+      "bytes": 6512,
+      "sha256": "608024012f6c8d68072c7c2e47158062b9703f15482cf1f9f79d4c97db8e13c1"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56/native-build.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56/native-build.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56/diagnosis.md",
+      "bytes": 4085,
+      "sha256": "5081bf36762c1a0769c0d167c3d28d18889a3024d5e316779a8c2feb942be26c"
+    }
+  ],
+  "readOnlyHistoricalInputs": [
+    {
+      "path": "/tmp/ovf-feature63-r5-capture-control-ucu87_19/capture-assignment.actual.json",
+      "bytes": 6958,
+      "sha256": "f7b73ce52bba06a8f8e5bd8f0ab1439636a6d5569eb8c27ae30fd7ede5ae6e7c"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r5-capture-control-ucu87_19/independent-observations.ndjson",
+      "bytes": 271762,
+      "sha256": "cb911dcf1854553e1bcb7147d5f9a0cdd2fc9014e1b538a08befa1d2d3ac1228"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r5-capture-control-ucu87_19/independent-closure.json",
+      "bytes": 311157,
+      "sha256": "bde78400f0fdc3334dc83a6eb57e4f3e0957dc4c0f441a86aa9cb0ec55829465"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r5/lifecycle/driver-events.ndjson",
+      "bytes": 414541,
+      "sha256": "1646945864d4e914a336e29fcba980557ca5b659297a1c8a0f322dcd43fa363b"
+    },
+    {
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r5/lifecycle/driver-result.json",
+      "bytes": 3225,
+      "sha256": "5d4868da5d6acec5b885079ac6cab32b25eb051eec951354b9f2970cfd0f4f3a"
+    }
+  ],
+  "changedTopLevelDefinitions": [
+    "pidfd_live",
+    "require_managed_identity",
+    "owned_observation"
+  ],
+  "childrenClassAstIdentical": true,
+  "runtimeScope": "One isolated native pthread child and seven selected Python observation helpers; no wrapper entry point",
+  "proofStatus": "PASS",
+  "nativeChildrenStarted": 1,
+  "nativeExitCode": 0,
+  "signalsSent": 0,
+  "perMissingObservationWaitMilliseconds": 500,
+  "strictAggregateDeadlineEstablished": false,
+  "candidateQualification": "Minimal candidate only; full wrapper untested and aggregate deadline propagation remains a root decision",
+  "dbOperationsPerformed": false,
+  "checkoutEdits": false
+}

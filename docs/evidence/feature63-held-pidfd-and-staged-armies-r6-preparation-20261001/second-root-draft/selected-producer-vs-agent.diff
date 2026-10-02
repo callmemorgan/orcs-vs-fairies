@@ -1,0 +1,10 @@
+--- /tmp/ovf-feature63-r6-hold-approach-candidate-hytqhq_g/public-producer.r6-both-orcs-short-window.candidate.mjs
++++ selected/public-producer.mjs
+@@ -580,7 +580,6 @@
+   const renewedAttackMoves = [];
+   for (const profile of profiles) {
+     renewedAttackMoves.push(await attackMove(profile, target, commonHq.id, 'public combat groups from both AI owners approach the common HQ'));
+-    await holdArmy(profile, commonHq.id, 'remain near the common HQ after the genuine acknowledged attack-move');
+   }
+   acquisitionStartTick = Math.ceil(Math.max(...renewedAttackMoves.map(command => command.appliedTick)) / FRAME_STEP) * FRAME_STEP;
+   status('public-approach-acquisition-latched', {startTick: acquisitionStartTick, renewedAttackAppliedTicks: renewedAttackMoves.map(command => command.appliedTick), nativeWaveMembershipUnverified: true});

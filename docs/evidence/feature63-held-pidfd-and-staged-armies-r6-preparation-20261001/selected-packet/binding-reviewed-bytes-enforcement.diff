@@ -1,0 +1,18 @@
+--- previous/fresh-r6-bindings.py
++++ enforced/fresh-r6-bindings.py
+@@ -28,6 +28,15 @@
+  assert desc(p)=={k:r[k] for k in ('path','bytes','sha256')} and stat.S_IMODE(p.stat().st_mode)==r['mode']
+  return json.loads(p.read_text())
+ assert sha(REVIEW)==REVIEW_SHA;review=json.loads(REVIEW.read_text());assert review['status']=='PASS_STATIC_R6_HELD_PIDFD_EXIT_WAIT_RUNTIME_HELD'
++assert review['schema']=='feature63-r6-final-static-independent-review-v1' and review['runtimeExecuted'] is False
++reviewed_files=review['reviewedFiles']
++assert isinstance(reviewed_files,list) and len(reviewed_files)==5
++reviewed_roles={r['role']:r for r in reviewed_files}
++assert set(reviewed_roles)=={'wrapper','producer','collector','auditor','bindingUtility'}
++assert sha(Path(__file__))==reviewed_roles['bindingUtility']['sha256'], 'Binding utility differs from independently reviewed bytes'
++for role,name in [('wrapper','run-minimal63.py'),('producer','public-producer.mjs'),('collector','collect-launched-waves.py'),('auditor','native-audit.py')]:
++ for base in (ROOT,OWNED):
++  assert sha(base/'scripts/feature63'/name)==reviewed_roles[role]['sha256'], 'Imported script differs from independently reviewed bytes: '+role
+ R5_READBACK=Path('/tmp/ovf-root-feature63-r5-bindings-g55vxapa/root-binding-readback.json')
+ assert R5_READBACK.stat().st_size==3544 and sha(R5_READBACK)=='df736736860860301bb76d9b46a9de68fe463918cb58700495e787847f8a49fa'
+ R5_PACKAGE=R5_READBACK.parent/'root-fresh-package-result.json'

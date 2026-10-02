@@ -509,8 +509,7 @@ try {
   for (let player = 1; player <= 4; player++) {
     const team = player <= 2 ? '0' : '1', controller = player <= 2 ? 'human' : 'ai';
     const faction = player === 2 ? 'fairies' : 'orcs';
-    const factionLabel = player === 1 ? 'First lobby faction' : player === 2 ? 'Second lobby faction' : `Lobby player ${player} faction`;
-    await ui(first, 'select', {label: factionLabel, value: faction}, () => first.page.getByLabel(factionLabel, {exact: true}).selectOption(faction));
+    await ui(first, 'select', {label: `Lobby player ${player} faction`, value: faction}, () => first.page.getByLabel(`Lobby player ${player} faction`, {exact: true}).selectOption(faction));
     await ui(first, 'select', {label: `Lobby player ${player} team`, value: team}, () => first.page.getByLabel(`Lobby player ${player} team`, {exact: true}).selectOption(team));
     await ui(first, 'select', {label: `Lobby player ${player} controller`, value: controller}, () => first.page.getByLabel(`Lobby player ${player} controller`, {exact: true}).selectOption(controller));
   }

@@ -1,0 +1,89 @@
+{
+  "schema": "feature63-isolated-native-leader-exit-proof-v1",
+  "signalsSent": 0,
+  "nativeChildrenStarted": 1,
+  "wrapperEntryPointExecuted": false,
+  "databaseAccess": false,
+  "browserOrServerStarted": false,
+  "checks": [
+    {
+      "name": "live-lifetime-mismatch-fails-closed",
+      "error": "Managed PID/start changed; no signal is permitted; comparison={\"actualObservation\": {\"ambiguity\": {\"mutableContextChanged\": false, \"unavailableFields\": []}, \"cmdline\": {\"nulBytesHex\": \"2f746d702f6f76662d6665617475726536332d72352d70696466642d657869742d70726f6f662d6172636869746563747572652d317079656e6635362f6c65616465722d6578697400340035003700\", \"nulSeparatedArgv\": [\"/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56/leader-exit\", \"4\", \"5\", \"7\"]}, \"identity\": {\"argv\": [\"/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56/leader-exit\", \"4\", \"5\", \"7\"], \"cwd\": \"/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56\", \"executable\": \"/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56/leader-exit\", \"pid\": 1915490, \"startTicks\": 10143633}, \"immutableIdentity\": {\"cwd\": \"/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56\", \"executable\": \"/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56/leader-exit\", \"pid\": 1915490, \"session\": 1915490, \"startTicks\": 10143633}, \"kernelAfter\": {\"pid\": 1915490, \"startTicks\": 10143633}, \"kernelBefore\": {\"pid\": 1915490, \"startTicks\": 10143633}, \"mutableSnapshots\": {\"after\": {\"cwd\": \"/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56\", \"executable\": \"/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56/leader-exit\", \"session\": 1915490}, \"before\": {\"cwd\": \"/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56\", \"executable\": \"/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56/leader-exit\", \"session\": 1915490}}, \"observedAt\": \"2026-10-02T07:19:02.706326+00:00\"}, \"admitted\": true, \"directRoot\": true, \"expectedRegisteredIdentity\": {\"cwd\": \"/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56\", \"executable\": \"/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56/leader-exit\", \"pid\": 1915490, \"session\": 1915490, \"startTicks\": 10143633}, \"family\": \"isolated-native\", \"latestCompletedPidfdPollReportedLive\": true, \"lifetimeIdentity\": {\"pid\": 1915490, \"startTicks\": 10143634}, \"originalAdmittedSession\": 1915490, \"pidfdLiveBeforeObservation\": true}",
+      "signalsSent": 0
+    },
+    {
+      "name": "original-direct-root-observation-reproduces-failure",
+      "error": "Managed process snapshot unavailable while bound pidfd remains live; no signal is permitted; comparison={\"actualObservation\": null, \"admitted\": true, \"directRoot\": true, \"expectedRegisteredIdentity\": {\"cwd\": \"/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56\", \"executable\": \"/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56/leader-exit\", \"pid\": 1915490, \"session\": 1915490, \"startTicks\": 10143633}, \"family\": \"isolated-native\", \"lifetimeIdentity\": {\"pid\": 1915490, \"startTicks\": 10143633}, \"originalAdmittedSession\": 1915490, \"pidfdLiveAfterObservation\": \"not checked because identity guard failed\", \"pidfdLiveBeforeObservation\": true}"
+    },
+    {
+      "name": "original-descendant-observation-reproduces-failure",
+      "error": "Managed process snapshot unavailable while bound pidfd remains live; no signal is permitted; comparison={\"actualObservation\": null, \"admitted\": true, \"directRoot\": false, \"expectedRegisteredIdentity\": {\"cwd\": \"/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56\", \"executable\": \"/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56/leader-exit\", \"pid\": 1915490, \"session\": 1915490, \"startTicks\": 10143633}, \"family\": \"isolated-native\", \"lifetimeIdentity\": {\"pid\": 1915490, \"startTicks\": 10143633}, \"originalAdmittedSession\": 1915490, \"pidfdLiveAfterObservation\": \"not checked because identity guard failed\", \"pidfdLiveBeforeObservation\": true}"
+    },
+    {
+      "name": "unknown-live-snapshot-still-fails-closed-after-bound",
+      "seconds": 0.5005641030002153,
+      "error": "Managed process snapshot unavailable while bound pidfd remains live; no signal is permitted; comparison={\"actualObservation\": null, \"admitted\": true, \"directRoot\": false, \"expectedRegisteredIdentity\": {\"cwd\": \"/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56\", \"executable\": \"/tmp/ovf-feature63-r5-pidfd-exit-proof-architecture-1pyenf56/leader-exit\", \"pid\": 1915490, \"session\": 1915490, \"startTicks\": 10143633}, \"family\": \"isolated-native\", \"latestCompletedPidfdPollReportedLive\": true, \"lifetimeIdentity\": {\"pid\": 1915490, \"startTicks\": 10143633}, \"originalAdmittedSession\": 1915490, \"pidfdLiveBeforeObservation\": true}",
+      "heldPidfdReady": false,
+      "signalsSent": 0
+    },
+    {
+      "name": "last-thread-natural-exit-accepted-only-after-held-pidfd-readiness",
+      "seconds": 0.050152443000115454,
+      "observation": null,
+      "heldPidfdReady": true,
+      "unreapedDirectRoot": {
+        "pid": 1915490,
+        "state": "Z",
+        "session": 1915490,
+        "startTicks": 10143633
+      },
+      "links": {
+        "exe": {
+          "error": "FileNotFoundError",
+          "errno": 2
+        },
+        "cwd": {
+          "error": "FileNotFoundError",
+          "errno": 2
+        }
+      },
+      "signalsSent": 0
+    },
+    {
+      "name": "unadmitted-direct-root-exit-has-held-pidfd-proof",
+      "observation": null,
+      "heldPidfdReady": true
+    }
+  ],
+  "initialState": {
+    "pid": 1915490,
+    "state": "S",
+    "session": 1915490,
+    "startTicks": 10143633
+  },
+  "leaderZombieWhileHeldPidfdLive": {
+    "state": {
+      "pid": 1915490,
+      "state": "Z",
+      "session": 1915490,
+      "startTicks": 10143633
+    },
+    "links": {
+      "exe": {
+        "error": "FileNotFoundError",
+        "errno": 2
+      },
+      "cwd": {
+        "error": "FileNotFoundError",
+        "errno": 2
+      }
+    },
+    "heldPidfdReady": false,
+    "popenReturncode": null
+  },
+  "nativeExitCode": 0,
+  "nativeChildReapedAfterExitProof": true,
+  "status": "PASS",
+  "candidateSha256": "e104395c9eb3a26c14d645fe31b8f2493564f0737ea6718f266f30fdb9f52a80",
+  "originalSha256": "19979813218b8369d1101318ebb066ba3e4e558a74f0d622be7cb661cdb6563b"
+}

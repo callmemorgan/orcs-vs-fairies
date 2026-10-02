@@ -1,0 +1,34 @@
+--- a/scripts/feature63/run-minimal63.py
++++ b/scripts/feature63/run-minimal63.py
+@@ -132,10 +132,10 @@
+     return None if value is None else value['identity']
+ 
+ 
+-def pidfd_live(fd):
++def pidfd_live(fd, wait_ms=0):
+     poller = select.poll()
+     poller.register(fd, select.POLLIN | select.POLLHUP | select.POLLERR | select.POLLNVAL)
+-    ready = poller.poll(0)
++    ready = poller.poll(wait_ms)
+     require(not any(flags & (select.POLLERR | select.POLLNVAL) for _fd, flags in ready),
+             'Bound pidfd is invalid')
+     return not ready
+@@ -149,7 +149,7 @@
+                'originalAdmittedSession': record['originalAdmittedSession'],
+                'expectedRegisteredIdentity': record['immutableIdentity'],
+                'actualObservation': observed, 'pidfdLiveBeforeObservation': True,
+-               'pidfdLiveAfterObservation': 'not checked because identity guard failed'}
++               'latestCompletedPidfdPollReportedLive': True}
+     raise RuntimeError(message + '; comparison=' + json.dumps(details, sort_keys=True))
+ 
+ 
+@@ -229,7 +229,8 @@
+     value = (process_observation(record['immutableIdentity']['pid'])
+              if record['directRoot'] and not record['admitted'] else managed_process_observation(record))
+     if value is None:
+-        if not pidfd_live(record['pidfd']):
++        # Leader /proc can be terminal before the held process PIDFD reports last-thread exit.
++        if not pidfd_live(record['pidfd'], 500):
+             return None
+         require_managed_identity(False, record, None,
+             'Managed process snapshot unavailable while bound pidfd remains live; no signal is permitted')

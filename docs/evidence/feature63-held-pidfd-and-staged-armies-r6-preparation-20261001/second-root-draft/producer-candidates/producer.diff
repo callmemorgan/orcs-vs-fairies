@@ -1,0 +1,142 @@
+--- public-producer.r5-original.mjs
++++ public-producer.r6-hold-approach.candidate.mjs
+@@ -7,7 +7,7 @@
+ 
+ // Static candidate. No browser/module import occurs before every launch guard passes.
+ const SOURCE_ROOT = '/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies';
+-const PREFIX = 'work/feature63-human-wave-composition-r5';
++const PREFIX = 'work/feature63-human-wave-composition-r6';
+ const BASE_URL = 'http://127.0.0.1:5373';
+ const ATTEMPT_MS = 300_000;
+ const CLEANUP_MS = 120_000;
+@@ -150,6 +150,7 @@
+ const errors = [];
+ const candidates = [];
+ const candidateSignatures = new Set();
++let acquisitionStartTick = null;
+ const cleanup = {schema: 'feature63-public-cleanup-v1', startedAt: null, completedAt: null, contexts: [], browserClosed: false, failures: []};
+ const result = {
+   schema: 'feature63-public-result-v1', status: 'candidate-running', publicCandidatePassed: false,
+@@ -393,6 +394,49 @@
+   return accepted;
+ }
+ 
++function ownedCombatActors(profile) {
++  const frame = profile.latest;
++  if (!frame) return [];
++  const eligibility = profile.frameIndex.findLast(value => value.tick === frame.message.tick);
++  const eligibleIds = new Set(eligibility?.eligibleOwnIds ?? []);
++  return frame.message.view.entities.filter(entity => eligibleIds.has(entity.id));
++}
++function armyAtCommonHq(profile, hq) {
++  const army = ownedCombatActors(profile);
++  return army.length > 0 && army.every(entity => (entity.level ?? 0) === (hq.level ?? 0) && Math.hypot(entity.x - hq.x, entity.y - hq.y) <= 8);
++}
++async function holdArmy(profile, commonHqId, reason) {
++  const page = profile.page;
++  await page.bringToFront();
++  await ui(profile, 'keyboard', {key: 'F2', purpose: 'select own combat army for ordinary hold'}, () => page.keyboard.press('F2'));
++  const selectedIds = await page.evaluate(() => [...window.rts.selected]);
++  assert.ok(selectedIds.length > 0, 'Ordinary hold needs a selected owned combat army.');
++  const eligibleIds = new Set(ownedCombatActors(profile).map(entity => entity.id));
++  assert.ok(selectedIds.every(id => eligibleIds.has(id)), 'Ordinary hold selection must be observed eligible owned combat actors.');
++  const priorOrdinal = profile.wireOrdinal;
++  await ui(profile, 'keyboard', {key: 'h', purpose: 'ordinary hold position', commonHqId, reason, selectedIds}, () => page.keyboard.press('h'));
++  const commandRow = await waitUntil(() => profile.commands.find(row => row.wireOrdinal > priorOrdinal), 5_000, 'Hold key sent no command.');
++  const command = commandRow.message;
++  assert.equal(command.command.type, 'hold', 'The ordinary Hold key must send a genuine hold command.');
++  assert.deepEqual([...command.command.ids].sort((a, b) => a - b), [...selectedIds].sort((a, b) => a - b));
++  const ackRow = await waitUntil(() => profile.acks.find(row => row.socketId === commandRow.socketId && row.message.clientSeq === command.clientSeq), 10_000, 'Hold command has no acknowledgement.');
++  assert.equal(ackRow.message.accepted, true); assert.ok(Number.isSafeInteger(ackRow.message.appliedTick));
++  const frame = await waitUntil(() => {
++    const current = profile.latest;
++    if (!current || current.message.tick < ackRow.message.appliedTick) return null;
++    const living = current.message.view.entities.filter(entity => selectedIds.includes(entity.id) && entity.side === profile.side && entity.hp > 0);
++    return living.every(entity => entity.order?.type === 'hold') ? current : null;
++  }, 5_000, 'Acknowledged hold was not observed for surviving selected own actors.');
++  status('ordinary-hold-observed', {profile: profile.name, side: profile.side, reason, selectedIds, clientSeq: command.clientSeq, commandWireOrdinal: commandRow.wireOrdinal, ackWireOrdinal: ackRow.wireOrdinal, appliedTick: ackRow.message.appliedTick, observedTick: frame.message.tick});
++}
++function publicApproach(profile, commonHqId) {
++  const frame = profile.latest;
++  const hq = frame?.message.view.entities.find(entity => entity.id === commonHqId && entity.hp > 0);
++  if (!hq) return null;
++  const groups = [2, 3].map(side => frame.message.view.entities.filter(entity => entity.side === side && entity.owner === side && entity.kind === 'unit' && entity.role !== 'worker' && entity.hp > 0 && (entity.level ?? 0) === (hq.level ?? 0) && Math.hypot(entity.x - hq.x, entity.y - hq.y) <= 12));
++  return groups.every(group => group.length >= 2) ? {frame, hq, groups} : null;
++}
++
+ function indexWindow() {
+   const endTick = sharedLatest();
+   if (endTick === null || profiles.some(p => !p.acceptedAttackMoves.length)) return null;
+@@ -435,8 +479,12 @@
+   const value = {startTick, endTick, maxTicks: WINDOW_TICKS, profileFrameRanges: ranges, coveragePassed, bothHumansAliveThroughout, acceptedAttackMoves, combatEvents, humanEventIds: humanEvents.map(e => e.eventId), aiEventIds: aiEvents.map(e => e.eventId), humanOwners, humanTargetOwners, aiOwners, publicPredicatePassed, nativeParticipantOverlapUnverified: true};
+   const signature = JSON.stringify([startTick, combatEvents.map(e => e.eventId), publicPredicatePassed]);
+   if (!candidateSignatures.has(signature)) { candidateSignatures.add(signature); candidates.push(value); }
+-  save('public-windows.json', {schema: 'feature63-public-windows-v1', sourcePin: binding.head, matchId: result.matchId, maxTicks: WINDOW_TICKS, requiredFrameStep: FRAME_STEP, frameSeqRelation: 'equals tick', candidates, selectedCandidateIndex: publicPredicatePassed ? candidates.length - 1 : null});
+-  return publicPredicatePassed ? candidates.length - 1 : null;
++  const candidateIndex = candidates.findIndex(candidate => JSON.stringify([candidate.startTick, candidate.combatEvents.map(event => event.eventId), candidate.publicPredicatePassed]) === signature);
++  assert.ok(candidateIndex >= 0, 'The candidate must be retained before operational selection.');
++  const selectionEligible = acquisitionStartTick !== null && candidates[candidateIndex].startTick >= acquisitionStartTick;
++  const selectedCandidateIndex = publicPredicatePassed && selectionEligible ? candidateIndex : null;
++  save('public-windows.json', {schema: 'feature63-public-windows-v1', sourcePin: binding.head, matchId: result.matchId, maxTicks: WINDOW_TICKS, requiredFrameStep: FRAME_STEP, frameSeqRelation: 'equals tick', candidates, selectedCandidateIndex});
++  return selectedCandidateIndex;
+ }
+ function identities() {
+   return {schema: 'feature63-public-identities-v1', sourcePin: binding.head, matchId: result.matchId, lobbyId: result.lobbyId, seatsText: result.seatsText ?? [], receivedRulesText: result.receivedRulesText ?? [], lobbyResponse: result.lobbyResponse ?? null, expectedTeams: [0, 0, 1, 1], expectedControllers: ['external', 'external', 'ai', 'ai'], humans: profiles.map(p => ({profile: p.name, side: p.side, account: p.account, guestResponse: p.guestResponse ?? null})), profiles: profiles.map(p => ({profile: p.name, side: p.side, contextId: p.contextId, username: p.username, pageBuild: p.pageBuild ?? null, helloMessages: p.hellos, latestTopology: p.latest ? {tick: p.latest.message.tick, side: p.latest.message.view.side, controller: p.latest.message.view.controller, teamId: p.latest.message.view.teamId, sharedVision: p.latest.message.view.sharedVision, rulesMode: p.latest.message.view.rules.mode, allies: p.latest.message.view.allies, opponents: p.latest.message.view.opponents} : null}))};
+@@ -498,21 +546,47 @@
+   result.commonHq = {id: commonHq.id, side: commonHq.side, x: commonHq.x, y: commonHq.y, observedAtTick: first.latest.message.tick};
+   let target = groundTarget(commonHq, null, first.latest.message.view.entities, first.latest.message.view.map.width, first.latest.message.view.map.height);
+   for (const profile of profiles) await attackMove(profile, target, commonHq.id, 'defend the same allied HQ');
+-  phase = 'retaining a natural shared AI fight candidate';
+-  let lastCommandAt = Date.now(), lastHostileId = null;
++  phase = 'holding both staged armies near the common human HQ';
++  const stagedOwners = new Set();
++  while (stagedOwners.size < profiles.length) {
++    checkpoint();
++    for (const profile of profiles) {
++      assert.ok(topologyPass(profile.latest.message, profile.side)); assert.ok(alivePass(profile.latest.alive), 'A human HQ was lost.');
++      if (!stagedOwners.has(profile.side) && armyAtCommonHq(profile, commonHq)) {
++        await holdArmy(profile, commonHq.id, 'stage near the common HQ without pursuing an early scout');
++        stagedOwners.add(profile.side);
++      }
++    }
++    indexWindow(); // Retain early candidates; the operational acquisition latch is still closed.
++    if (stagedOwners.size < profiles.length) await pause(250);
++  }
++  phase = 'waiting for public combat groups from both AI owners near the common HQ';
++  let approaches;
++  while (true) {
++    checkpoint();
++    for (const profile of profiles) { assert.ok(topologyPass(profile.latest.message, profile.side)); assert.ok(alivePass(profile.latest.alive), 'A human HQ was lost.'); }
++    indexWindow();
++    approaches = profiles.map(profile => publicApproach(profile, commonHq.id));
++    if (approaches.every(Boolean)) break;
++    await pause(250);
++  }
++  const approach = approaches[0];
++  status('public-combat-groups-observed', {observedTicks: approaches.map(value => value.frame.message.tick), commonHqId: commonHq.id, groups: approach.groups.map(group => ({side: group[0].side, ids: group.map(entity => entity.id)})), nativeWaveMembershipUnverified: true});
++  const hostile = approach.groups.flat().sort((a, b) => Math.hypot(a.x - approach.hq.x, a.y - approach.hq.y) - Math.hypot(b.x - approach.hq.x, b.y - approach.hq.y))[0];
++  target = groundTarget(approach.hq, hostile, approach.frame.message.view.entities, approach.frame.message.view.map.width, approach.frame.message.view.map.height);
++  const renewedAttackMoves = [];
++  for (const profile of profiles) {
++    renewedAttackMoves.push(await attackMove(profile, target, commonHq.id, 'public combat groups from both AI owners approach the common HQ'));
++    await holdArmy(profile, commonHq.id, 'remain near the common HQ after the genuine acknowledged attack-move');
++  }
++  acquisitionStartTick = Math.ceil(Math.max(...renewedAttackMoves.map(command => command.appliedTick)) / FRAME_STEP) * FRAME_STEP;
++  status('public-approach-acquisition-latched', {startTick: acquisitionStartTick, renewedAttackAppliedTicks: renewedAttackMoves.map(command => command.appliedTick), nativeWaveMembershipUnverified: true});
++  phase = 'retaining a natural shared AI fight candidate after the public approach';
+   while (true) {
+     checkpoint();
+     for (const profile of profiles) { assert.ok(topologyPass(profile.latest.message, profile.side)); assert.ok(alivePass(profile.latest.alive), 'A human HQ was lost.'); }
+     const selected = indexWindow();
+     if (selected !== null) { result.selectedCandidateIndex = selected; result.publicCandidatePassed = true; break; }
+-    const frame = first.latest.message;
+-    const hq = frame.view.entities.find(e => e.id === commonHq.id && e.hp > 0); assert.ok(hq, 'Common human HQ is no longer observed alive.');
+-    const hostile = frame.view.entities.filter(e => [2, 3].includes(e.side) && e.kind === 'unit' && e.hp > 0 && Math.hypot(e.x - hq.x, e.y - hq.y) <= 12).sort((a, b) => Math.hypot(a.x - hq.x, a.y - hq.y) - Math.hypot(b.x - hq.x, b.y - hq.y))[0];
+-    if (hostile && Date.now() - lastCommandAt >= 4_000 && hostile.id !== lastHostileId) {
+-      target = groundTarget(hq, hostile, frame.view.entities, frame.view.map.width, frame.view.map.height);
+-      for (const profile of profiles) await attackMove(profile, target, commonHq.id, `visible hostile owner ${hostile.side} near common HQ`);
+-      lastCommandAt = Date.now(); lastHostileId = hostile.id;
+-    }
+     await pause(250);
+   }
+   assert.equal(errors.length, 0, 'Acquisition errors prevent public pass.');

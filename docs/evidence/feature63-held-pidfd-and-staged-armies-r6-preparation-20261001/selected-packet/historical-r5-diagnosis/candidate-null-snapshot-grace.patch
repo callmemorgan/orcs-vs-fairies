@@ -1,0 +1,47 @@
+--- a/scripts/feature63/run-minimal63.py
++++ b/scripts/feature63/run-minimal63.py
+@@ -135,12 +135,12 @@
+-def pidfd_live(fd):
++def pidfd_live(fd, timeout_ms=0):
+     poller = select.poll()
+     poller.register(fd, select.POLLIN | select.POLLHUP | select.POLLERR | select.POLLNVAL)
+-    ready = poller.poll(0)
++    ready = poller.poll(timeout_ms)
+     require(not any(flags & (select.POLLERR | select.POLLNVAL) for _fd, flags in ready),
+             'Bound pidfd is invalid')
+     return not ready
+ 
+ 
+-def require_managed_identity(ok, record, observed, message):
++def require_managed_identity(ok, record, observed, message, pidfd_live_after=None):
+     if ok:
+         return
+@@ -149,7 +149,9 @@
+                'originalAdmittedSession': record['originalAdmittedSession'],
+                'expectedRegisteredIdentity': record['immutableIdentity'],
+                'actualObservation': observed, 'pidfdLiveBeforeObservation': True,
+-               'pidfdLiveAfterObservation': 'not checked because identity guard failed'}
++               'pidfdLiveAfterObservation': (
++                   'not checked because identity guard failed'
++                   if pidfd_live_after is None else pidfd_live_after)}
+     raise RuntimeError(message + '; comparison=' + json.dumps(details, sort_keys=True))
+ 
+ 
+@@ -228,11 +230,15 @@
+         return None
+     value = (process_observation(record['immutableIdentity']['pid'])
+              if record['directRoot'] and not record['admitted'] else managed_process_observation(record))
+     if value is None:
+-        if not pidfd_live(record['pidfd']):
++        # A terminal/missing proc snapshot can precede process PIDFD readiness.
++        # Do not signal or conclude exit while the same held PIDFD is nonready.
++        remains_live = pidfd_live(record['pidfd'], timeout_ms=500)
++        if not remains_live:
+             return None
+         require_managed_identity(False, record, None,
+-            'Managed process snapshot unavailable while bound pidfd remains live; no signal is permitted')
++            'Managed process snapshot unavailable while bound pidfd remains live; no signal is permitted',
++            pidfd_live_after=remains_live)
+     if record['directRoot'] and not record['admitted']:
+         require_managed_identity(value['immutableIdentity'] == record['immutableIdentity'], record, value,
+             'Managed PID/start/session/executable/cwd changed during initial binding; no signal is permitted')

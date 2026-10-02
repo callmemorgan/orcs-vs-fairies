@@ -12,7 +12,7 @@ import time
 from pathlib import Path
 
 CHECKOUT = Path('/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies')
-PREFIX = CHECKOUT / 'work/feature63-human-wave-composition-r6'
+PREFIX = CHECKOUT / 'work/feature63-human-wave-composition-r5'
 DB = PREFIX / 'server-data/server.sqlite'
 OUTPUT = PREFIX / 'native-collector'
 PROTECTED = Path('/home/morgana/Projects/orcs-vs-Fairies')
@@ -150,7 +150,7 @@ def validate_assignment(path):
             'Root approval and exclusive heavy-slot assignment are required')
     pin = assignment['sourcePin']
     require(isinstance(pin, str) and len(pin) == 40 and all(c in '0123456789abcdef' for c in pin), 'Root source pin is missing')
-    require(assignment['checkout'] == str(CHECKOUT) and assignment['outputPrefix'] == 'work/feature63-human-wave-composition-r6',
+    require(assignment['checkout'] == str(CHECKOUT) and assignment['outputPrefix'] == 'work/feature63-human-wave-composition-r5',
             'Assignment checkout or prefix differs')
     require(assignment['collectorSha256'] == sha(Path(__file__).read_bytes()), 'Collector candidate bytes differ')
     inventory, inventory_id = load_bound_file(assignment['sourceInventory'])

@@ -15,7 +15,7 @@ import urllib.request
 from pathlib import Path
 
 CHECKOUT = Path('/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies')
-PREFIX_NAME = 'work/feature63-human-wave-composition-r6'
+PREFIX_NAME = 'work/feature63-human-wave-composition-r5'
 PREFIX = CHECKOUT / PREFIX_NAME
 PROTECTED_ROOT = Path('/home/morgana/Projects/orcs-vs-Fairies')
 PORTS = {'server': 5373, 'browser': 5374, 'protected': 4173}
@@ -132,10 +132,10 @@ def identity(pid):
     return None if value is None else value['identity']
 
 
-def pidfd_live(fd, wait_ms=0):
+def pidfd_live(fd):
     poller = select.poll()
     poller.register(fd, select.POLLIN | select.POLLHUP | select.POLLERR | select.POLLNVAL)
-    ready = poller.poll(wait_ms)
+    ready = poller.poll(0)
     require(not any(flags & (select.POLLERR | select.POLLNVAL) for _fd, flags in ready),
             'Bound pidfd is invalid')
     return not ready
@@ -149,7 +149,7 @@ def require_managed_identity(ok, record, observed, message):
                'originalAdmittedSession': record['originalAdmittedSession'],
                'expectedRegisteredIdentity': record['immutableIdentity'],
                'actualObservation': observed, 'pidfdLiveBeforeObservation': True,
-               'latestCompletedPidfdPollReportedLive': True}
+               'pidfdLiveAfterObservation': 'not checked because identity guard failed'}
     raise RuntimeError(message + '; comparison=' + json.dumps(details, sort_keys=True))
 
 
@@ -229,8 +229,7 @@ def owned_observation(record):
     value = (process_observation(record['immutableIdentity']['pid'])
              if record['directRoot'] and not record['admitted'] else managed_process_observation(record))
     if value is None:
-        # Leader /proc can be terminal before the held process PIDFD reports last-thread exit.
-        if not pidfd_live(record['pidfd'], 500):
+        if not pidfd_live(record['pidfd']):
             return None
         require_managed_identity(False, record, None,
             'Managed process snapshot unavailable while bound pidfd remains live; no signal is permitted')

@@ -1,0 +1,7 @@
+# Feature63 R5 failure trail review
+
+Requested reviewer model: `gpt-5.6-sol`. The serving provider, model, and model family were not independently authenticated. No Claude tooling was used.
+
+The last decision row is supported except for one causal phrase. The evidence proves that the driver failed when a managed process snapshot was unavailable while its bound pidfd remained live, then signaled the public producer about 16 milliseconds later, while `public-results.json` and `public-cleanup.json` remained JSON `null`. It does not record the public producer's internal state at shutdown, so saying both files "were interrupted" by the snapshot failure is an inference. A tighter explanation is: "The driver failed when a managed process snapshot was unavailable while its bound pidfd remained live; public result and cleanup remained JSON null."
+
+The other central claims hold. The retained public data contains one match and selects candidate 314 of 315 with the public predicate passed, but the native collector retained zero records and the run stayed unqualified. Independent closure covers the wrapper and all 25 registered resources with held-pidfd exit evidence, and finite readback finds all 26 known lifetimes absent. Every relevant receipt keeps `unobservedDescendantsExcluded` false, so this remains a bounded registered-resource result rather than an all-descendants claim. The release receipt records the slot as released, with no audit invocation and no feature63 qualification.
