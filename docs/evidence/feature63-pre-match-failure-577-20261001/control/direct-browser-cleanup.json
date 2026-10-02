@@ -1,0 +1,147 @@
+{
+  "schema": "feature63-root-authorized-direct-browser-pidfd-cleanup-v1",
+  "startedAt": "2026-10-02T04:24:15.741609+00:00",
+  "rootAuthorizedPid": 1804106,
+  "rootAuthorizedStartTicks": 9074516,
+  "initialRegisteredIdentity": {
+    "argv": [
+      "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+      "--headless=new",
+      "--disable-dev-shm-usage",
+      "--disable-crash-reporter",
+      "--disable-breakpad",
+      "--disable-crashpad-for-testing",
+      "--remote-debugging-address=127.0.0.1",
+      "--remote-debugging-port=5374",
+      "--user-data-dir=/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r1/browser-profile",
+      "--no-first-run",
+      "--no-default-browser-check",
+      "about:blank"
+    ],
+    "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+    "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+    "pid": 1804106,
+    "startTicks": 9074516
+  },
+  "actions": [],
+  "signalsSent": [
+    {
+      "signal": "SIGTERM",
+      "method": "pidfd_send_signal",
+      "boundIdentity": {
+        "pid": 1804106,
+        "startTicks": 9074516,
+        "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+        "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+        "argv": [
+          "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome --headless=new --disable-dev-shm-usage --disable-crash-reporter --disable-breakpad --disable-crashpad-for-testing --remote-debugging-address=127.0.0.1 --remote-debugging-port=5374 --user-data-dir=/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r1/browser-profile --no-first-run --no-default-browser-check --noerrdialogs --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl about:blank"
+        ]
+      },
+      "at": "2026-10-02T04:24:15.745755+00:00"
+    }
+  ],
+  "currentBeforePidfd": {
+    "identity": {
+      "pid": 1804106,
+      "startTicks": 9074516,
+      "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+      "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+      "argv": [
+        "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome --headless=new --disable-dev-shm-usage --disable-crash-reporter --disable-breakpad --disable-crashpad-for-testing --remote-debugging-address=127.0.0.1 --remote-debugging-port=5374 --user-data-dir=/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r1/browser-profile --no-first-run --no-default-browser-check --noerrdialogs --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl about:blank"
+      ]
+    },
+    "state": "S",
+    "parentPid": 1023,
+    "session": 1804106
+  },
+  "identityDifferences": {
+    "argv": {
+      "initial": [
+        "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+        "--headless=new",
+        "--disable-dev-shm-usage",
+        "--disable-crash-reporter",
+        "--disable-breakpad",
+        "--disable-crashpad-for-testing",
+        "--remote-debugging-address=127.0.0.1",
+        "--remote-debugging-port=5374",
+        "--user-data-dir=/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r1/browser-profile",
+        "--no-first-run",
+        "--no-default-browser-check",
+        "about:blank"
+      ],
+      "current": [
+        "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome --headless=new --disable-dev-shm-usage --disable-crash-reporter --disable-breakpad --disable-crashpad-for-testing --remote-debugging-address=127.0.0.1 --remote-debugging-port=5374 --user-data-dir=/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r1/browser-profile --no-first-run --no-default-browser-check --noerrdialogs --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl about:blank"
+      ]
+    }
+  },
+  "protectedBeforeSignal": {
+    "process": {
+      "identity": {
+        "pid": 1063,
+        "startTicks": 874,
+        "executable": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+        "cwd": "/home/morgana/Projects/orcs-vs-Fairies",
+        "argv": [
+          "/home/morgana/.local/bin/node",
+          "/home/morgana/Projects/orcs-vs-Fairies/node_modules/vite/bin/vite.js",
+          "preview",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "4173",
+          "--strictPort"
+        ]
+      },
+      "state": "S",
+      "parentPid": 1023,
+      "session": 1063
+    },
+    "listeningSockets": [
+      "socket:[3783]"
+    ]
+  },
+  "owned5374ListenersBefore": [
+    "socket:[28794462]"
+  ],
+  "directBrowserHeld5374": [
+    "socket:[28794462]"
+  ],
+  "pidfdExitedAfterTerm": true,
+  "currentAfter": null,
+  "protectedAfter": {
+    "process": {
+      "identity": {
+        "pid": 1063,
+        "startTicks": 874,
+        "executable": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+        "cwd": "/home/morgana/Projects/orcs-vs-Fairies",
+        "argv": [
+          "/home/morgana/.local/bin/node",
+          "/home/morgana/Projects/orcs-vs-Fairies/node_modules/vite/bin/vite.js",
+          "preview",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "4173",
+          "--strictPort"
+        ]
+      },
+      "state": "S",
+      "parentPid": 1023,
+      "session": 1063
+    },
+    "listeningSockets": [
+      "socket:[3783]"
+    ]
+  },
+  "listenersAfter": {
+    "4173": [
+      "socket:[3783]"
+    ],
+    "5373": [],
+    "5374": []
+  },
+  "status": "DIRECT_BROWSER_EXITED",
+  "finishedAt": "2026-10-02T04:24:15.760064+00:00"
+}

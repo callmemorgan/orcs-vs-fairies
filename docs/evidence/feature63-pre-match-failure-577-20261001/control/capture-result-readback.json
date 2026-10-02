@@ -1,0 +1,95 @@
+{
+  "schema": "feature63-capture-first-attempt-control-result-v1",
+  "at": "2026-10-02T04:25:48.160140+00:00",
+  "captureInvocations": 1,
+  "wrapperExitCode": 1,
+  "captureStatus": "FAIL_CLEANUP_HELD_NO_UNVERIFIED_SIGNAL",
+  "firstFailure": {
+    "at": "2026-10-02T04:20:51.551760+00:00",
+    "message": "Previously registered resource identity changed",
+    "type": "RuntimeError"
+  },
+  "cleanupFailures": [
+    {
+      "at": "2026-10-02T04:20:51.714550+00:00",
+      "error": "Previously registered resource identity changed",
+      "family": "browser"
+    }
+  ],
+  "wrapperDriverPid": 1804065,
+  "wrapperDriverCurrent": null,
+  "serverDirectPid": 1804095,
+  "serverDirectCurrent": null,
+  "browserDirectPid": 1804106,
+  "browserDirectCurrent": null,
+  "registeredResourcesReadback": [
+    {
+      "registeredIdentity": {
+        "argv": [
+          "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+          "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r1/server/rts-server.js"
+        ],
+        "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+        "executable": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+        "pid": 1804095,
+        "startTicks": 9074503
+      },
+      "currentProcessState": null
+    },
+    {
+      "registeredIdentity": {
+        "argv": [
+          "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+          "--headless=new",
+          "--disable-dev-shm-usage",
+          "--disable-crash-reporter",
+          "--disable-breakpad",
+          "--disable-crashpad-for-testing",
+          "--remote-debugging-address=127.0.0.1",
+          "--remote-debugging-port=5374",
+          "--user-data-dir=/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r1/browser-profile",
+          "--no-first-run",
+          "--no-default-browser-check",
+          "about:blank"
+        ],
+        "cwd": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+        "executable": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+        "pid": 1804106,
+        "startTicks": 9074516
+      },
+      "currentProcessState": null
+    }
+  ],
+  "observedLiveOriginalBrowserSessionMembers": [],
+  "observationIsFiniteNotGlobalDescendantAbsenceProof": true,
+  "publicDirectoryCreated": false,
+  "collectorDirectoryCreated": false,
+  "failedPrefixPreservedInPlace": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r1",
+  "oldDatabaseReadCopySealExtractionAudit": false,
+  "directBrowserCleanupReceipt": "/tmp/ovf-feature63-capture-control-G4kXp7dd/direct-browser-cleanup.json",
+  "protectedFinalReadbackFromWrapper": {
+    "at": "2026-10-02T04:20:51.715696+00:00",
+    "holderPid": 1063,
+    "listeningSockets": [
+      "socket:[3783]"
+    ],
+    "process": {
+      "argv": [
+        "/home/morgana/.local/bin/node",
+        "/home/morgana/Projects/orcs-vs-Fairies/node_modules/vite/bin/vite.js",
+        "preview",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "4173",
+        "--strictPort"
+      ],
+      "cwd": "/home/morgana/Projects/orcs-vs-Fairies",
+      "executable": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+      "pid": 1063,
+      "startTicks": 874
+    },
+    "status": "PASS"
+  },
+  "nativeLifetimeDispositionStillRootOwned": true
+}
