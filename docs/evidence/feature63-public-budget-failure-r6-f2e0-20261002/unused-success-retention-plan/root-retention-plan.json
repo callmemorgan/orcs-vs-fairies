@@ -1,0 +1,334 @@
+{
+  "schema": "feature63-r6-success-retention-plan-v1",
+  "preparedBy": "/root/architecture",
+  "sourcePin": "f2e0025937b8caf5dc8f6f9f3de134d92a2d547a",
+  "status": "PLAN_ONLY_FUTURE_RUNTIME_GROUPS_UNRESOLVED",
+  "recommendedDestination": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-shared-ai-wave-r6-f2e0-20261002",
+  "groups": [
+    {
+      "id": "bindings",
+      "source": "/tmp/ovf-root-feature63-r6-bindings-xyvt_n02",
+      "destination": "bindings",
+      "selection": "All original flat files, including the root prelaunch readback and any root postrun readback.",
+      "requiredFiles": [
+        "browser-binding.json",
+        "build-binding.json",
+        "capture-assignment.json",
+        "launch-capture.r6.py",
+        "root-binding-readback.json",
+        "root-capture-disposition.json",
+        "root-fresh-package-result.json",
+        "root-independent-prelaunch-readback.json",
+        "root-review.json",
+        "source-binding.json",
+        "tested-build.json"
+      ],
+      "extraFiles": "Preserve added root readbacks/descriptors; freeze exact complete file set after run."
+    },
+    {
+      "id": "control",
+      "source": "/tmp/ovf-feature63-r6-capture-control-2crngtsw",
+      "destination": "control",
+      "selection": "Whole original CONTROL tree; no regenerated summaries.",
+      "requiredFiles": [
+        "browserBinding.actual.json",
+        "buildBinding.actual.json",
+        "capture-assignment.actual.json",
+        "capture-launch-consumed.json",
+        "command.json",
+        "driver.stderr",
+        "driver.stdout",
+        "independent-closure.json",
+        "independent-observations.ndjson",
+        "launch.json",
+        "reviewReceipt.actual.json",
+        "root-disposition.actual.json",
+        "sourceBinding.actual.json",
+        "testedBuildReceipt.actual.json"
+      ],
+      "extraFiles": "Preserve every original added control artifact."
+    },
+    {
+      "id": "execution",
+      "source": {
+        "path": null,
+        "resolveFrom": "The root R6 launcher-execution output directory recorded by its dispatch/command result.",
+        "requiredAfterSuccessfulRun": true
+      },
+      "destination": "execution",
+      "selection": "Whole original root execution tree.",
+      "requiredFiles": [
+        "preflight.json",
+        "launcher.stdout",
+        "launcher.stderr",
+        "finite-readback.json",
+        "slot-release.json"
+      ],
+      "requiredRecords": "Root invocation command and terminal result; release receipt only after root separately admits native and wrapper closure."
+    },
+    {
+      "id": "lifecycle",
+      "source": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r6/lifecycle",
+      "destination": "lifecycle",
+      "selection": "Whole original flat lifecycle tree, including all empty stdout/stderr files.",
+      "requiredFiles": [
+        "browser-ownership.json",
+        "browser.stderr",
+        "browser.stdout",
+        "collector-assignment.json",
+        "collector.stderr",
+        "collector.stdout",
+        "driver-events.ndjson",
+        "driver-result.json",
+        "public-assignment.json",
+        "public.stderr",
+        "public.stdout",
+        "server-ownership.json",
+        "server.stderr",
+        "server.stdout"
+      ],
+      "maximumPayloadBytes": 16777216
+    },
+    {
+      "id": "public",
+      "source": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r6/public",
+      "destination": "public",
+      "selection": "All 22 producer-allowlisted original files, including both complete wire/frame streams and empty files.",
+      "requiredFiles": [
+        "browser-ownership.json",
+        "errors.ndjson",
+        "human-one-acks.ndjson",
+        "human-one-commands.ndjson",
+        "human-one-hellos.ndjson",
+        "human-one-latest-frame.json",
+        "human-one-public-frames.ndjson",
+        "human-one-ui-actions.ndjson",
+        "human-one-wire.ndjson",
+        "human-two-acks.ndjson",
+        "human-two-commands.ndjson",
+        "human-two-hellos.ndjson",
+        "human-two-latest-frame.json",
+        "human-two-public-frames.ndjson",
+        "human-two-ui-actions.ndjson",
+        "human-two-wire.ndjson",
+        "public-cleanup.json",
+        "public-identities.json",
+        "public-match-identity.json",
+        "public-results.json",
+        "public-status.ndjson",
+        "public-windows.json"
+      ],
+      "maximumPayloadBytes": 1073741824,
+      "selectedAuditorInputMaximumBytes": 67108864
+    },
+    {
+      "id": "native-collector",
+      "source": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r6/native-collector",
+      "destination": "native-collector",
+      "selection": "Whole original collector output tree.",
+      "requiredFiles": [
+        "collector-receipt.json",
+        "queries.ndjson"
+      ],
+      "maximumPayloadBytes": 8388608
+    },
+    {
+      "id": "native-audit",
+      "source": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r6/native-audit",
+      "destination": "native-audit",
+      "selection": "Whole original one-shot audit output tree; preserve leftovers and errors if present rather than reconstructing a pass.",
+      "requiredFiles": [
+        "one-shot-admission.json",
+        "driver-events.ndjson",
+        "driver-result.json",
+        "native-audit.json",
+        "native-audit.stderr.txt"
+      ],
+      "maximumPayloadBytes": 2097152
+    },
+    {
+      "id": "closure-preparation",
+      "source": "/tmp/ovf-feature63-r6-success-closure-preparation-architecture-1nt6jj06",
+      "destination": "closure-preparation",
+      "selection": "Whole external static preparation tree.",
+      "requiredFiles": [
+        "admit-r6-closure-and-seal.py",
+        "candidate.diff",
+        "original-admit-r5-closure-and-seal.py",
+        "receipt.json",
+        "static-checks.json"
+      ]
+    },
+    {
+      "id": "root-closure-seal",
+      "source": {
+        "path": null,
+        "resolveFrom": "rootOutput printed by the authenticated R6 admit-r6-closure-and-seal.py invocation, bound by its root execution record.",
+        "requiredAfterSuccessfulRun": true
+      },
+      "destination": "root-closure-seal",
+      "selection": "Whole root closure/seal receipt output tree; fresh raw bytes are not in this tree.",
+      "requiredFiles": [
+        "root-independent-native-closure.json",
+        "root-native-lifetime.json",
+        "closed-raw.json",
+        "root-custody.json",
+        "native-schema-review.json"
+      ],
+      "requiredRecords": "Also preserve the root invocation command, exact utility SHA, stdout/stderr and terminal result wherever root saved them."
+    },
+    {
+      "id": "first-unapproved-extraction",
+      "source": {
+        "path": null,
+        "resolveFrom": "The first output packet directory recorded by the frozen extractor invocation before root approval/promotion.",
+        "requiredAfterSuccessfulRun": true
+      },
+      "destination": "extraction-first-unapproved",
+      "selection": "Whole first packet, including its original unapproved assignments, extraction receipt, manifests, source/config/checkpoint/wave data, query/error/log records and any original failed attempt records.",
+      "requiredFiles": "Use the frozen extractor complete file-set manifest; require full path-set equality, no hand-selected subset.",
+      "approvalQualification": "Retain original approved=false bytes; success of a later approved packet must not rewrite this original."
+    },
+    {
+      "id": "approved-extraction-copy",
+      "source": {
+        "path": null,
+        "resolveFrom": "The whole approved packet copy recorded by root promotion and subsequently authenticated by the native audit assignment.",
+        "requiredAfterSuccessfulRun": true
+      },
+      "destination": "extraction-approved",
+      "selection": "Whole approved packet as audited, including every source/config/checkpoint/wave/public input and both manifests and receipts.",
+      "requiredFiles": "Use the whole approved copy manifest and native audit input record set; preserve complete path-set equality.",
+      "comparison": "Compare original and approved packet maps. Record every added, removed or changed path and exact bytes; only root-authorized approval/binding changes may differ."
+    },
+    {
+      "id": "extraction-promotion",
+      "source": {
+        "path": null,
+        "resolveFrom": "Root extraction/promotion preparation and result artifacts referenced by the extraction and native audit assignments.",
+        "requiredAfterSuccessfulRun": true
+      },
+      "destination": "extraction-promotion",
+      "selection": "Preserve all original promotion utilities/candidates, exact diffs, input/output manifests, digest readbacks, approval dispositions, extraction commands/stdout/stderr/results, audit assignment, readiness receipt and promotion receipts.",
+      "requiredFiles": "Resolve the exact artifact paths from root receipts; preserve whole designated trees, including first failures and corrections."
+    },
+    {
+      "id": "operator-artifacts",
+      "source": {
+        "path": null,
+        "resolveFrom": "Every original operator artifact root designated for the R6 run and final human-facing feature-63 proof.",
+        "requiredAfterSuccessfulRun": true
+      },
+      "destination": "operator-artifacts",
+      "selection": "Whole designated operator evidence trees: original plans/notes, command records, reports, screenshots, recordings, exports and accompanying provenance/receipts when produced.",
+      "requiredFiles": "Resolve from root/operator artifact manifests; keep originals and any unsuccessful preparation attempts or limitations. Do not create substitute operator evidence."
+    },
+    {
+      "id": "root-dispositions",
+      "source": {
+        "path": null,
+        "resolveFrom": "Root success/admission, closure, custody, postruntime source/build readback, extraction approval, audit assignment and slot-release artifact paths recorded by root final disposition.",
+        "requiredAfterSuccessfulRun": true
+      },
+      "destination": "root-dispositions",
+      "selection": "All original root dispositions/readbacks and final retention record; include references to canonical originals already copied in bindings/closure/execution/promotion groups.",
+      "requiredRecords": [
+        "capture disposition",
+        "independent wrapper/native lifetime admission",
+        "fresh raw custody and closed-raw descriptor",
+        "postruntime source/build/dependency authentication readback",
+        "extraction promotion approval",
+        "one-shot audit readiness and assignment",
+        "final feature63 qualification/admission decision",
+        "slot release after root closure",
+        "final root retention manifest"
+      ]
+    }
+  ],
+  "excludedFromGitCopies": {
+    "directoryComponents": [
+      "server-data",
+      "browser-profile",
+      "node_modules",
+      ".cache",
+      "dependencies",
+      "dependency-runtime"
+    ],
+    "filePatterns": [
+      "*.sqlite",
+      "*.sqlite-*",
+      "*.db",
+      "*.db-*",
+      "*-wal",
+      "*-shm",
+      "*-journal"
+    ],
+    "scope": "Never traverse or copy these raw/profile/build/dependency trees into Git. Reject unexpected raw files inside an allowed packet group. Keep only their existing metadata/digest descriptors in receipts.",
+    "exactDirectoryRoots": [
+      "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r6/server-data",
+      "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r6/browser-profile",
+      "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r6/dist",
+      "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r6/server",
+      "/home/morgana/Projects/orcs-vs-Fairies/dist",
+      "/home/morgana/Projects/orcs-vs-Fairies/node_modules",
+      "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/dist",
+      "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/node_modules"
+    ],
+    "sourceDirectoryQualification": "Exclude the assigned build/runtime directory roots, not source directories merely named server. Pinned src/server source required by an extracted proof packet remains included."
+  },
+  "boundedFileSetChecks": [
+    "Apply this success retention plan only after root authenticates passing capture, independent wrapper closure, finite native lifetime closure, fresh seal/custody, approved extraction and one-shot native audit for the same sourcePin and matchId. Preserve earlier failures regardless of this gate.",
+    "Resolve future paths from root-created authenticated descriptors; no glob-based choice of the newest /tmp directory. The manifest is incomplete until every required resolver has a concrete original path.",
+    "Enumerate only the 14 declared packet groups, never the whole runtime prefix or dependency/build/profile/raw directories. Require regular files and reject symlinks, sockets, FIFOs and device entries. Record a bounded complete relative path set for each group.",
+    "Require each group required-file set, including zero-byte logs. Unexpected files must be recorded and classified, not silently omitted. Raw/database/profile/build/dependency matches are excluded before any content read or copy.",
+    "After runtime closure, create source records for each nonraw file with relative path, byte count, SHA256 and mode. Preserve original bytes/modes. Compare complete sorted source/destination path sets and every file record, then recheck sources for mutation.",
+    "Use the authoritative runtime caps for lifecycle/public/collector/audit groups. An exceeded cap is a preservation/import qualification; never truncate, prune or fabricate passing records. Future extraction/operator group bounds come from their exact declared manifests and reported byte totals.",
+    "Retain the first unapproved extraction whole, and the approved copy whole. Keep promotion receipts and exact diff; no overwrite or loss of the initial authority state.",
+    "Validate that raw custody remains external, mode0444, under the root custody descriptor. This plan never opens, hashes, queries, copies, seals or extracts raw and never imports itself.",
+    "Retain all original finite-closure qualifiers including unobservedDescendantsExcluded=false. Separate wrapper closure from native lifetime closure, and retain the earlier R5 rejected-proc-state and causal-wording qualifications.",
+    "Keep existing preparation and failure evidence in place. Reference their original root manifests and commits; do not revise historical pass/fail fields or infer a verified count until root final admission is retained."
+  ],
+  "historicalEvidenceToPreserve": [
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-lifetime-monitor-failure-r5-025f-20261001/root-retention.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-held-pidfd-and-staged-armies-r6-preparation-20261001/root-import.json",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-pre-match-failure-577-20261001",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-second-pre-match-failure-1257-20261001",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-lobby-response-failure-r3-ef8f-20261001",
+    "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-render-sync-failure-r4-5680-20261001"
+  ],
+  "historicalQualifications": {
+    "oldFailureCausalWordingQualification": "R5 driver recorded missing snapshot/live PIDFD, then terminated public producer; null summary/cleanup are observed, attribution to internal producer state remains inferred. Original row is preserved.",
+    "rejectedR5ProcStateNotRecorded": true,
+    "nativeLeaderExitProofPassedOneChildZeroSignals": true,
+    "strictAggregateObservationDeadlineProven": false,
+    "public64MiBSuccessGuaranteed": false,
+    "actualProviderIdentity": "unverified",
+    "freshClaudeRun": false
+  },
+  "preparationCheckReceipt": {
+    "path": "/tmp/ovf-feature63-r6-success-retention-plan-architecture-xo83qx1h/preparation-file-set-checks.json",
+    "bytes": 10945,
+    "sha256": "430505a8e639e7fcbcbfba888f4c938e703fc5fe6059b84e292e5d031d7bf1ad"
+  },
+  "methodInputs": [
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-lifetime-monitor-failure-r5-025f-20261001/root-retention.json",
+      "bytes": 19064,
+      "sha256": "4a5a5489ab301d65669290c1d27fe7b47baa388ee3d79acb3384fda960defde2"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-held-pidfd-and-staged-armies-r6-preparation-20261001/root-import.json",
+      "bytes": 43489,
+      "sha256": "50ee5398d95f0dae2c40b9bacf9eda7f36dc67236f46b62015ebed364b004050"
+    },
+    {
+      "path": "/tmp/ovf-root-feature63-r3-preparation-551FgMyq/retain-and-import.py",
+      "bytes": 6606,
+      "sha256": "123e3ef3d43568308cfdd6735e5d87e19409fbfa076b1558528baae50beeb5a1"
+    }
+  ],
+  "planExecuted": false,
+  "copyImportOrRepositoryEdits": false,
+  "rawAccess": false,
+  "futureSuccessNotClaimed": true
+}

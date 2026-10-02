@@ -1,0 +1,146 @@
+{
+  "schema": "ovf-r6-retention-trail-rereview-v1",
+  "status": "PASS_WITH_ATTENTION_NO_REQUIRED_FIXES",
+  "requiredFixes": [],
+  "scope": {
+    "decisionRowsReviewed": 3,
+    "decisionRows": [
+      "feature63-r6-public-budget-failure",
+      "feature63-r6-failed-custody-input-authentication",
+      "feature63-r6-custody-trail-qualification"
+    ],
+    "newReadback": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/root-retention-readback.json",
+    "preservedFirstReview": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/trail-review/first/review.json",
+    "repositoryModifiedByReview": false,
+    "databaseNativeCheckpointProcessOrRuntimeReadByReview": false
+  },
+  "reviewerQualification": {
+    "requestedModel": "gpt-5.6-sol",
+    "actualServingProviderIdentity": "not independently authenticated",
+    "actualServingModelIdentity": "not independently authenticated",
+    "actualServingModelFamily": "not independently authenticated",
+    "claudeUsed": false
+  },
+  "rowAssessments": [
+    {
+      "id": "feature63-r6-public-budget-failure",
+      "lineSha256WithLf": "7d8f807bb60eca7c9015997ed882e1e5381b1149b9c1ff978d746b2432fcfb1d",
+      "unchangedFromFirstReview": true,
+      "assessment": "SUPPORTED_WHEN_READ_WITH_ADDITIVE_QUALIFICATION_ROW"
+    },
+    {
+      "id": "feature63-r6-failed-custody-input-authentication",
+      "lineSha256WithLf": "07c5f84ee540a6d80821e0e1e44bac822ca39ffc846b631ea6613068e001a709",
+      "unchangedFromFirstReview": true,
+      "assessment": "SUPPORTED_WHEN_READ_WITH_ADDITIVE_QUALIFICATION_ROW"
+    },
+    {
+      "id": "feature63-r6-custody-trail-qualification",
+      "lineSha256WithLf": "87e87a5fc07a65f847a2d1ca25395fc4e1696a114f6ec4e6b6f2db58e5417445",
+      "assessment": "PASS",
+      "citedEvidence": [
+        "docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/root-custody-execution/execution.json",
+        "docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/root-retention-readback.json",
+        "docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/trail-review/first/review.json"
+      ]
+    }
+  ],
+  "firstReviewDisposition": {
+    "preservedUnchanged": true,
+    "jsonSha256": "a780caa10df3deece51ffdf6fc0fd963ead254952bf7403486bd0e1a600da434",
+    "markdownSha256": "ec55778f85c053a10fec11c0b64d749eca80eb723e4cfc98a0cb5dba1b3f34fa",
+    "originalRequiredFixCount": 2,
+    "executionEvidenceFixResolved": true,
+    "wrapperAndNativeCountWordingFixResolved": true,
+    "postCopyReceiptAttentionResolved": true
+  },
+  "evidenceChecks": {
+    "execution": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/root-custody-execution/execution.json",
+      "bytes": 357,
+      "sha256": "dfd5555a60e4b33c221ab118d3926c8ab9ef706761ec8e9533a1227ae83c78a7",
+      "executions": 1,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "candidateSha256": "69f96b73f080e9175f4b3f9a51847e16db65e238e8f5f40ebab99a2ee5e1afba"
+    },
+    "retentionReadback": {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/root-retention-readback.json",
+      "bytes": 1511,
+      "sha256": "7434c0f81f8690e277568e5e40c97195712c092e303b57c05a5bdc6089cd0a54",
+      "rootRetentionSha256": "ec2fc3aedc357ef079d3c3317173b9983e7e8b6853ccbf3ecb97da30380984a4",
+      "completeOriginalsAndCopiesAuthenticated": true,
+      "originalFileCount": 137,
+      "originalBytes": 129359461,
+      "allPreservedRowsModeSizeDigestEqualAtReadback": true,
+      "registeredNativeRecordCount": 25,
+      "wrapperLifetimeClosedSeparately": true,
+      "rememberedLifetimeReadbackCount": 27,
+      "allRememberedLifetimesAbsentAtFiniteReadback": true,
+      "keyUniquenessSeparatelyAssertedByCustodyScript": false,
+      "unobservedDescendantsExcluded": false,
+      "inventoryAuthenticationSequentialRequiresQuiescence": true,
+      "nativeCheckpointUnaudited": true,
+      "feature63Qualified": false,
+      "ledgerVerified": 99,
+      "ledgerInProgress": 1
+    }
+  },
+  "resolvedRequiredFixes": [
+    {
+      "id": "second-row-execution-evidence",
+      "resolution": "The additive row directly cites the retained execution receipt, which proves one execution and exit code 0, and also cites the preserved first review for the static eligibility finding."
+    },
+    {
+      "id": "wrapper-and-native-records-conflated",
+      "resolution": "The additive row states 25 held-PIDFD native exits, a separately closed wrapper, and 27 finite absent readbacks. The new readback records the same separation."
+    }
+  ],
+  "attention": [
+    {
+      "id": "append-only-reader-context",
+      "detail": "The original two rows retain their terse wording under the append-only policy. Readers or tools that display either row alone will miss the qualification; the three rows must be read together."
+    },
+    {
+      "id": "plain-wording",
+      "detail": "The additive row's 137 original copies verified phrase should be understood as 137 originals and their retained copies verified. The 99/1 phrase means 99 verified, 1 in progress, with feature 63 unqualified."
+    },
+    {
+      "id": "finite-closure",
+      "detail": "The new readback preserves the limitation that remembered lifetime checks do not exclude unobserved descendants, missed forks, or reparenting."
+    },
+    {
+      "id": "record-uniqueness",
+      "detail": "The 25 value is a registered-record count. The custody script did not separately assert key uniqueness."
+    },
+    {
+      "id": "sequential-inventories",
+      "detail": "The seven inventory checks were sequential and required the checked trees to remain quiescent."
+    },
+    {
+      "id": "bounded-rereview",
+      "detail": "This re-review checked the retained readback and cited receipts. It did not repeat the 137 source-and-copy reads because the assigned scope prohibited additional repository, runtime, database, native-checkpoint, and process reads."
+    },
+    {
+      "id": "temporary-paths-inside-execution-receipt",
+      "detail": "The retained execution receipt still names temporary candidate and review paths internally. The preserved packet resolves those bytes by matching digests, but the receipt itself does not name the retained equivalents."
+    }
+  ],
+  "finalState": {
+    "r6Result": "failed",
+    "feature63Qualified": false,
+    "feature63Status": "in-progress",
+    "nativeCheckpointAudited": false,
+    "ledgerVerified": 99,
+    "ledgerInProgress": 1,
+    "readyForRootCommitFromTrailReviewPerspective": true
+  },
+  "reviewedArtifactDescriptors": [
+    {"path": "/home/morgana/Projects/orcs-vs-Fairies/docs/features/decisions.tsv", "bytes": 137214, "sha256": "bc0fcbb7c64d4e6d0def46e50a134e3a29929b9b9a96a904b941e308ed25585e"},
+    {"path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/root-retention-readback.json", "bytes": 1511, "sha256": "7434c0f81f8690e277568e5e40c97195712c092e303b57c05a5bdc6089cd0a54"},
+    {"path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/root-custody-execution/execution.json", "bytes": 357, "sha256": "dfd5555a60e4b33c221ab118d3926c8ab9ef706761ec8e9533a1227ae83c78a7"},
+    {"path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/trail-review/first/review.json", "bytes": 10557, "sha256": "a780caa10df3deece51ffdf6fc0fd963ead254952bf7403486bd0e1a600da434"},
+    {"path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/trail-review/first/review.md", "bytes": 4170, "sha256": "ec55778f85c053a10fec11c0b64d749eca80eb723e4cfc98a0cb5dba1b3f34fa"},
+    {"path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/root-retention.json", "bytes": 36799, "sha256": "ec2fc3aedc357ef079d3c3317173b9983e7e8b6853ccbf3ecb97da30380984a4"}
+  ]
+}

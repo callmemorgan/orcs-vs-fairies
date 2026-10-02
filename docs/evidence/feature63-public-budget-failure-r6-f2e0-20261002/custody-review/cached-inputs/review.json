@@ -1,0 +1,175 @@
+{
+  "schema": "feature63-r6-failure-closure-independent-static-review-v3",
+  "status": "FAIL_STATIC_R6_FAILURE_OUTPUT_CAPTURE_RECEIPT_MISBOUND_RUNTIME_HELD",
+  "requestedReviewerModel": "gpt-5.6-sol",
+  "actualProviderIdentity": "unverified",
+  "providerOrModelFamilyAuthenticated": false,
+  "claudeUsed": false,
+  "runtimeExecuted": false,
+  "processOrPortProbesPerformed": false,
+  "runtimeInputsRead": false,
+  "rawDatabaseAccessed": false,
+  "sqlQueryExtractionOrAuditPerformed": false,
+  "repositoryLedgerOrTrailModified": false,
+  "reviewedCandidate": {
+    "path": "/tmp/ovf-root-feature63-r6-failure-final-preparation-otz4rhbu/failed-r6-closure-and-custody.py",
+    "bytes": 17154,
+    "lines": 161,
+    "sha256": "ad630635a64adb90a4c7cef46b67804ee8a45fa034cfc0e69cc32032a6ccb54f",
+    "digestAndSizeVerifiedByStaticRead": true
+  },
+  "previousReview": {
+    "path": "/tmp/ovf-feature63-r6-failure-authenticated-static-review-lTU4mknl/review.json",
+    "status": "FAIL_STATIC_R6_FAILURE_BOUND_INPUT_READS_UNSTABLE_RUNTIME_HELD"
+  },
+  "verdict": {
+    "stableBoundInputReads": "PASS_STATIC",
+    "allFifteenRootInputAnchors": "PASS_STATIC",
+    "singleParseAndCachedRetainedBytes": "PASS_STATIC",
+    "failureResultSchema": "PASS_STATIC",
+    "sameRunControlCaptureClosureAndRawIdentityChain": "PASS_STATIC",
+    "closureAndRawSealOrdering": "PASS_STATIC",
+    "outputCaptureResultDescriptor": "REQUIRED_FIX",
+    "overall": "NOT_ELIGIBLE_TO_EXECUTE"
+  },
+  "requiredFixes": [
+    {
+      "id": "capture-result-path-variable-overwritten",
+      "file": "/tmp/ovf-root-feature63-r6-failure-final-preparation-otz4rhbu/failed-r6-closure-and-custody.py",
+      "lines": [73, 99, 100, 145],
+      "finding": "Line 73 assigns p to the driver-result path. The module-level loop at lines 99-100 reuses p and leaves it set to protected_path. Python for-loop variables remain in the surrounding scope, so desc(p) at line 145 describes /tmp/ovf-main402-remaining-2e5-r1/protected-before.json rather than lifecycle/driver-result.json. The generated root-native-lifetime-disposition.json would therefore put the protected-inventory descriptor in its captureResult field.",
+      "requiredChange": "Give the driver result a dedicated name such as capture_path, use a different loop variable for the product and protected inventories, and write desc(capture_path) at line 145. Keep the retained capture object and all existing guards unchanged."
+    }
+  ],
+  "resolvedPriorBlockers": {
+    "stableReader": {
+      "status": "PASS_STATIC",
+      "canonicalAbsolutePathRequired": true,
+      "symlinkRejectedBeforeOpen": true,
+      "openUsesONoFollow": true,
+      "regularFileAndSingleLinkRequired": true,
+      "fdBeforeAndAfterIdentityCompared": true,
+      "pathLstatIdentityComparedWithFd": true,
+      "identityFields": [
+        "device",
+        "inode",
+        "size",
+        "mtime_ns",
+        "ctime_ns",
+        "mode",
+        "link_count"
+      ],
+      "readLengthRequiredEqualStatSize": true,
+      "descriptorIncludesPathBytesAndSha256": true,
+      "anchoredBytesCached": true,
+      "jsonParsedFromVerifiedBytes": true,
+      "parsedObjectsCached": true,
+      "unanchoredInventoryMembersReopenedForFreshHash": true
+    },
+    "rootInputAnchors": {
+      "status": "PASS_STATIC",
+      "count": 15,
+      "roles": [
+        "capture assignment",
+        "root independent prelaunch readback",
+        "independent closure",
+        "launch record",
+        "actual capture assignment",
+        "command record",
+        "capture launch consumed record",
+        "driver result",
+        "server ownership",
+        "driver events",
+        "tested product inventory",
+        "protected inventory",
+        "source binding",
+        "build binding",
+        "browser binding"
+      ]
+    },
+    "repeatedReads": {
+      "status": "PASS_STATIC",
+      "launchReusesCachedObject": true,
+      "serverOwnershipReusesCachedObject": true,
+      "prelaunchBaselineReusesCachedObject": true,
+      "productAndProtectedInventoriesReuseCachedBytes": true,
+      "driverEventsParsedFromAnchoredStableBytes": true
+    },
+    "failureResultSchema": {
+      "status": "PASS_STATIC",
+      "requiredValue": "feature63-dedicated-capture-result-v1"
+    }
+  },
+  "sameRunChain": {
+    "assignmentDigestAnchored": true,
+    "actualAssignmentRequiredEqualAnchoredAssignment": true,
+    "sourceBuildBrowserCapturePinsRequiredEqualAssignmentPin": true,
+    "rootAndOwnedHeadsRequiredAtAssignmentPin": true,
+    "rootAndOwnedTrackedStatusRequiredClean": true,
+    "commandSourceCwdWrapperSlotAndExactInvocationBound": true,
+    "consumedAssignmentDigestBound": true,
+    "captureInvocationsRequiredOne": true,
+    "automaticRetriesRequiredZero": true,
+    "protectedBeforeAfterIdentityBound": true,
+    "launchWrapperRequiredEqualIndependentClosureWrapper": true,
+    "serverOwnershipSchemaPinPrefixAndSlotBound": true,
+    "captureDatabaseIdentityRequiredEqualServerOwnershipDatabase": true,
+    "registeredRecordCountRequiredTwentyFive": true,
+    "registeredKeySetRequiredEqualClosureKeySet": true,
+    "prelaunchSourcePinBound": true
+  },
+  "inventoryAuthentication": {
+    "status": "PASS_STATIC",
+    "categories": [
+      "source records in root and owned checkouts",
+      "tested product records in root and owned checkouts",
+      "protected root dist complete inventory",
+      "R6 web dist complete inventory",
+      "R6 server build complete inventory",
+      "Playwright dependency complete inventory",
+      "Chromium dependency complete inventory"
+    ],
+    "expectedCounts": {
+      "source": 966,
+      "web": 398,
+      "server": 22,
+      "playwright": 114,
+      "chromium": 303
+    },
+    "testedProductAndProtectedBytesComparedWithPinnedCommit": true
+  },
+  "closureAndSeal": {
+    "exactFailureStatusAnd64MiBMessageRequired": true,
+    "cleanupFailuresRequiredEmpty": true,
+    "wrapperExitCodeRequiredOne": true,
+    "rememberedResourceCountRequiredTwentyFive": true,
+    "heldPidfdExitEvidenceRequiredForEveryRememberedRecord": true,
+    "rememberedLauncherAndWrapperLifetimesReobserved": true,
+    "protectedProcessAndSocketsCheckedBeforeRawOpen": true,
+    "oldCustodyCheckedByMetadataOnly": true,
+    "freshRawIdentitySingleLinkSidecarsAndHoldersCheckedBeforeRawOpen": true,
+    "rawOpenedOnlyAfterClosureGuards": true,
+    "rawChangedTo0444HashedHardlinkedAndRehashed": true,
+    "sqlExtractionOrAuditAbsent": true,
+    "finiteClosureLimitationRetained": true,
+    "unobservedDescendantsExcluded": false
+  },
+  "qualifications": [
+    "The candidate checks inventory members one at a time rather than taking an atomic snapshot of all files. The root and owned trees must remain quiescent through the inventory pass.",
+    "The code requires 25 registration records and equality of registration and closure key sets, but does not separately require 25 unique keys.",
+    "The closure is finite. It covers remembered PID/start lifetimes and does not exclude missed forks or reparenting.",
+    "The utility creates its output directory before its guards, so a failed run can leave an empty external directory.",
+    "Sealing is a one-shot action that changes the original raw inode to mode 0444 and creates a second hardlink.",
+    "The failed capture remains unqualified. No success closure, extraction fill, SQL extraction, or audit follows from this review."
+  ],
+  "suppliedRuntimeFactsNotIndependentlyRead": {
+    "driverStatus": "FAIL_FIRST_FAILURE_NO_RETRY",
+    "firstFailure": "Auditor public-input 64 MiB budget exceeded; bytes preserved",
+    "cleanupFailures": [],
+    "independentWrapperExitCode": 1,
+    "rememberedIndependentPidfdExits": 25,
+    "privatePortsClear": true,
+    "automaticRetries": 0,
+    "feature63Status": "99/1"
+  }
+}

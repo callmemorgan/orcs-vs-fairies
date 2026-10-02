@@ -1,0 +1,111 @@
+{
+  "schema": "feature63-r6-failure-closure-independent-static-review-v1",
+  "status": "FAIL_STATIC_R6_FAILURE_INVENTORY_TRUST_CHAIN_INCOMPLETE_RUNTIME_HELD",
+  "requestedReviewerModel": "gpt-5.6-sol",
+  "actualProviderIdentity": "unverified",
+  "providerOrModelFamilyAuthenticated": false,
+  "claudeUsed": false,
+  "runtimeExecuted": false,
+  "processOrPortProbesPerformed": false,
+  "rawDatabaseAccessed": false,
+  "sqlQueryExtractionOrAuditPerformed": false,
+  "repositoryLedgerOrTrailModified": false,
+  "reviewedCandidate": {
+    "path": "/tmp/ovf-root-feature63-r6-failure-preparation-q_1lebsy/failed-r6-closure-and-custody.py",
+    "bytes": 8785,
+    "sha256": "7d7fd9d63c5b0ad602f187d32b8f69234faae6de86c5de7914521e656a3eaa28"
+  },
+  "baseline": {
+    "path": "/tmp/ovf-root-feature63-r3-preparation-551FgMyq/failed-r5-closure-and-custody.py",
+    "bytes": 6967,
+    "sha256": "6db88a3714baf8b70875e7dfe745e1a76a738635b7a1caed6f08988f171ce3e6"
+  },
+  "verdict": {
+    "closureAndRawSealOrdering": "PASS_STATIC",
+    "protectedPreviewProtection": "PASS_STATIC",
+    "oldCustodyMetadataLimit": "PASS_STATIC",
+    "failureIdentity": "REQUIRED_FIX",
+    "sevenInventoryAuthentication": "REQUIRED_FIX",
+    "overall": "NOT_ELIGIBLE_TO_EXECUTE"
+  },
+  "requiredFixes": [
+    {
+      "id": "inventory-definitions-not-bound",
+      "file": "/tmp/ovf-root-feature63-r6-failure-preparation-q_1lebsy/failed-r6-closure-and-custody.py",
+      "lines": [50, 51, 52, 53, 54, 55, 56, 57, 58, 59],
+      "finding": "The candidate authenticates files against inventory rows, but it obtains the source, build, and browser rows by reading paths from the capture assignment without checking those JSON files against the assignment's path/bytes/sha256 descriptors. It also reads the tested-product and protected inventories from fixed paths without a pinned descriptor or digest. A changed inventory definition can therefore redefine the accepted file hashes and modes while every auth() call still passes.",
+      "requiredChange": "Use one stable bound-file reader for each inventory definition. Require the source, build, and browser binding bytes to equal the descriptors in the authenticated capture assignment. Pin and verify the tested-product and protected inventory bytes before using their rows. Only then run the seven inventory checks."
+    },
+    {
+      "id": "failure-result-not-bound-to-assignment-pin",
+      "file": "/tmp/ovf-root-feature63-r6-failure-preparation-q_1lebsy/failed-r6-closure-and-custody.py",
+      "lines": [40, 41, 42, 47, 48, 61, 62, 69, 70, 97],
+      "finding": "The exact-pin guard checks only capture-assignment.sourcePin. The candidate never requires driver-result.sourcePin to equal that pin and does not bind the independent closure, launch record, or server-ownership receipt to the same capture identity before it seals and labels the raw database with the assignment pin.",
+      "requiredChange": "Require the failure result schema and sourcePin to match the authenticated capture assignment, and authenticate the independent closure, launch, and server-ownership files through retained descriptors or stable pinned bytes that identify the same capture. Reject mixed-run inputs before process observations or raw metadata access."
+    }
+  ],
+  "passedStaticChecks": {
+    "candidateDigestMatchesSupplied": true,
+    "r6AnchorsAndFailureLabelsAreVisibleInDelta": true,
+    "captureAssignmentDigestLiteralUpdated": true,
+    "failureStatusRequiresFailFirstFailureNoRetry": true,
+    "firstFailureRequiresRuntimeErrorAndExact64MiBMessage": true,
+    "cleanupFailuresRequiredEmpty": true,
+    "wrapperExitCodeRequiredOne": true,
+    "wrapperLifetimeRequiredNotLiveWithoutObservationFailure": true,
+    "rememberedResourceCountRequiredTwentyFive": true,
+    "everyRememberedResourceRequiresIndependentLiveOpenedPidfdAndReadyExitEvidence": true,
+    "launcherAndWrapperPidStartLifetimesReobserved": true,
+    "privatePorts5373And5374RequiredAbsent": true,
+    "protected4173ProcessIdentityAndSocketRequiredUnchanged": true,
+    "rawSidecarsRequiredAbsent": true,
+    "rawOpenHoldersRequiredAbsent": true,
+    "rawRequiredSingleLinkBeforeSeal": true,
+    "rawContentsOpenedAfterClosureProtectedAndMetadataChecks": true,
+    "rawModeChangedTo0444": true,
+    "custodyHardlinkCreatedAndRehashed": true,
+    "sqlQueryExtractionAndAuditAbsent": true,
+    "oldCustodyPathsOnlyReceiveMetadataStatChecks": true,
+    "finiteClosureLimitationRetained": true,
+    "unobservedDescendantsExcluded": false
+  },
+  "guardAndSealOrder": [
+    "Authenticate the capture-assignment file digest, then read the assignment, failure result, and independent closure.",
+    "Require failure status, match ID, and passing protected final readback.",
+    "Require wrapper exit code one and completed wrapper lifetime closure.",
+    "Require finite registered-resource closure, completed observations, absent private listeners, and 25 independently held PIDFD exits.",
+    "Require the intended source pin, exact 64 MiB failure, no cleanup failures, and the seven inventory checks.",
+    "Reobserve remembered resources, launcher, and wrapper; validate the protected preview; check old metadata, fresh raw identity, sidecars, and open holders.",
+    "Only then open the fresh raw database, set mode 0444, hash it, create a hardlink in external evidence custody, and verify the hardlink digest."
+  ],
+  "inventoryCategoriesIntended": [
+    "source records in root and owned checkouts",
+    "tested product records in root and owned checkouts",
+    "protected root dist complete inventory",
+    "R6 web dist complete inventory",
+    "R6 server build complete inventory",
+    "Playwright dependency complete inventory",
+    "Chromium dependency complete inventory"
+  ],
+  "qualifications": [
+    "The finite closure proves only remembered PID/start lifetimes. It explicitly does not exclude missed forks or reparenting.",
+    "The candidate reads active control and lifecycle files directly and later computes descriptors from their paths. Those inputs must be immutable and stable, but the required fix should make that custody explicit in code.",
+    "The output fields captureInvocations=1, automaticRetries=0, and slotReleased=false are asserted as root disposition facts rather than derived from authenticated runtime receipts in this candidate.",
+    "The reported native collector record count of one and null public result and cleanup files are not checked or claimed by this candidate.",
+    "Sealing changes the original fresh raw inode to mode 0444 and adds a second hardlink. This must remain a one-shot root action.",
+    "The failed run remains unqualified. No success closure, extraction fill, SQL extraction, or audit follows from this review."
+  ],
+  "suppliedRuntimeFactsNotIndependentlyRead": {
+    "driverStatus": "FAIL_FIRST_FAILURE_NO_RETRY",
+    "firstFailure": "Auditor public-input 64 MiB budget exceeded; bytes preserved",
+    "cleanupFailures": [],
+    "independentWrapperExitCode": 1,
+    "rememberedIndependentPidfdExits": 25,
+    "privatePortsClear": true,
+    "nativeCollectorRecords": 1,
+    "publicResultsNull": true,
+    "publicCleanupNull": true,
+    "automaticRetries": 0,
+    "feature63Status": "99/1"
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "schema": "feature63-r6-failure-closure-independent-static-review-v2",
+  "status": "FAIL_STATIC_R6_FAILURE_BOUND_INPUT_READS_UNSTABLE_RUNTIME_HELD",
+  "requestedReviewerModel": "gpt-5.6-sol",
+  "actualProviderIdentity": "unverified",
+  "providerOrModelFamilyAuthenticated": false,
+  "claudeUsed": false,
+  "runtimeExecuted": false,
+  "processOrPortProbesPerformed": false,
+  "rawDatabaseAccessed": false,
+  "sqlQueryExtractionOrAuditPerformed": false,
+  "repositoryLedgerOrTrailModified": false,
+  "reviewedCandidate": {
+    "path": "/tmp/ovf-root-feature63-r6-failure-authenticated-preparation-yt2b_6ah/failed-r6-closure-and-custody.py",
+    "bytes": 12001,
+    "sha256": "3bb5a588c5f088d8617b2e01bbb3a1912e137633c3dcb0031032cca5c1b0c0c8"
+  },
+  "previousCandidate": {
+    "path": "/tmp/ovf-root-feature63-r6-failure-preparation-q_1lebsy/failed-r6-closure-and-custody.py",
+    "sha256": "7d7fd9d63c5b0ad602f187d32b8f69234faae6de86c5de7914521e656a3eaa28"
+  },
+  "priorReview": {
+    "path": "/tmp/ovf-feature63-r6-failure-static-review-GyiPFki4/review.json",
+    "status": "FAIL_STATIC_R6_FAILURE_INVENTORY_TRUST_CHAIN_INCOMPLETE_RUNTIME_HELD"
+  },
+  "verdict": {
+    "inventoryDefinitionDigestsAdded": "PASS_STATIC",
+    "sourcePinAndInvocationLinksAdded": "PASS_STATIC",
+    "registeredResourceSetLinkAdded": "PASS_STATIC",
+    "stableBoundReads": "REQUIRED_FIX",
+    "runtimeReceiptSingleReadCustody": "REQUIRED_FIX",
+    "failureResultSchema": "REQUIRED_FIX",
+    "closureAndRawSealOrdering": "PASS_STATIC",
+    "overall": "NOT_ELIGIBLE_TO_EXECUTE"
+  },
+  "requiredFixes": [
+    {
+      "id": "bound-files-hashed-then-reread",
+      "file": "/tmp/ovf-root-feature63-r6-failure-authenticated-preparation-yt2b_6ah/failed-r6-closure-and-custody.py",
+      "lines": [10, 54, 55, 56, 62, 63, 64, 65, 66, 80, 81, 83, 84, 85],
+      "finding": "auth_descriptor() computes a descriptor with stat plus read_bytes(), then parses a separate read_text(). The tested-product and protected inventories are also descriptor-checked and compared with committed bytes, then read again to obtain the rows used by auth(). The prelaunch file follows the same pattern. A file changed between those reads can supply rows or metadata that were not the bytes whose digest passed the guard. This does not satisfy the prior review's requirement for one stable bound-file reader.",
+      "requiredChange": "Open each bound JSON with no symlink following, read its bytes once from that descriptor, verify path, size, digest, and stable before/after file identity, and parse that same byte buffer. Retain and reuse the parsed value for every later check. Apply this to the assignment and every inventory or prelaunch definition used by the utility."
+    },
+    {
+      "id": "runtime-receipts-reread-after-identity-links",
+      "file": "/tmp/ovf-root-feature63-r6-failure-authenticated-preparation-yt2b_6ah/failed-r6-closure-and-custody.py",
+      "lines": [41, 67, 68, 73, 74, 75, 76, 79, 89, 90, 95, 97, 98],
+      "finding": "The first launch object is linked to independent-closure.wrapperInitial at line 73, but launch.json is parsed again at line 89 and the second object supplies the launcher and wrapper lifetimes that are reobserved. The first server-ownership object is linked to capture.closedFreshDatabaseIdentity at line 75, but server-ownership.json is parsed again at line 97 and the second object supplies the fresh database identity accepted before sealing. A change between reads can therefore detach the reobserved lifetimes or sealed inode from the values that passed the earlier same-capture checks. The command, consumed-launch, closure, event, and result records are also direct unpinned reads rather than authenticated retained bytes.",
+      "requiredChange": "Authenticate each runtime receipt through a retained descriptor or fixed digest, read and parse it once, and reuse that parsed object. In particular, do not overwrite launch before deriving lifetimes and use the already linked server freshDatabase value for the raw identity check. Bind the independent closure and registered-event bytes to the same capture before any live observation or raw metadata access."
+    },
+    {
+      "id": "failure-result-schema-not-required",
+      "file": "/tmp/ovf-root-feature63-r6-failure-authenticated-preparation-yt2b_6ah/failed-r6-closure-and-custody.py",
+      "lines": [41, 42, 47, 48, 58],
+      "finding": "The candidate now requires driver-result.sourcePin to match the assignment, but it never requires the failure result schema. The prior review explicitly required both schema and source pin before accepting the failure result as the result for this capture.",
+      "requiredChange": "Require the expected driver-result schema on the same authenticated, single-read result object before using any failure or database fields."
+    }
+  ],
+  "passedStaticChecks": {
+    "candidateDigestMatchesPreparationRecord": true,
+    "correctionConfinedToTrustChainGuardBlock": true,
+    "assignmentSourcePinRequired": "f2e0025937b8caf5dc8f6f9f3de134d92a2d547a",
+    "sourceBuildBrowserAndCapturePinsRequiredEqual": true,
+    "rootAndOwnedHeadsRequiredAtAssignmentPin": true,
+    "trackedFilesRequiredClean": true,
+    "testedProductDigestLiteralAdded": "582f809d9a4e0180dd3d59147b7edfd881b091334f715d86bd56ea93c9db4a06",
+    "protectedInventoryDigestLiteralAdded": "ed80088ef418debe90883929c364a588521815d14dbdd9703d8c6927c5855a5b",
+    "inventoryBytesComparedWithCommittedPin": true,
+    "sevenInventoryCategoriesChecked": true,
+    "actualAssignmentRequiredEqual": true,
+    "commandSourceCwdWrapperSlotAndExactCommandBound": true,
+    "captureInvocationCountRequiredOne": true,
+    "automaticRetriesRequiredZero": true,
+    "protectedBeforeAfterIdentityBound": true,
+    "serverOwnershipPinPrefixAndSlotTokenBound": true,
+    "registeredResourceCountRequiredTwentyFive": true,
+    "registeredResourceSetRequiredEqualIndependentClosureSet": true,
+    "prelaunchDigestLiteralAdded": "20e3702a8e1386a1cd110317b1c147542fa7f986ad94a7875c0240d8fef3813c",
+    "exactFailureStatusAnd64MiBMessageRequired": true,
+    "cleanupFailuresRequiredEmpty": true,
+    "wrapperExitCodeRequiredOne": true,
+    "rememberedResourceCountRequiredTwentyFive": true,
+    "heldPidfdExitEvidenceRequiredForEveryRememberedResource": true,
+    "launcherWrapperAndRememberedLifetimesReobserved": true,
+    "protectedProcessAndSocketsCheckedBeforeRawOpen": true,
+    "rawIdentitySingleLinkSidecarsAndHoldersCheckedBeforeRawOpen": true,
+    "rawOpenedOnlyAfterClosureGuards": true,
+    "rawChangedTo0444HashedHardlinkedAndRehashed": true,
+    "sqlExtractionOrAuditAbsent": true,
+    "oldCustodyContentsNotRead": true,
+    "finiteClosureLimitationRetained": true,
+    "unobservedDescendantsExcluded": false
+  },
+  "inventoryCategories": [
+    "source records in root and owned checkouts",
+    "tested product records in root and owned checkouts",
+    "protected root dist complete inventory",
+    "R6 web dist complete inventory",
+    "R6 server build complete inventory",
+    "Playwright dependency complete inventory",
+    "Chromium dependency complete inventory"
+  ],
+  "qualifications": [
+    "The closure remains finite. It covers remembered PID/start lifetimes and does not exclude missed forks or reparenting.",
+    "The utility creates its output directory before its guards, so a failed run can leave an empty external directory.",
+    "Sealing is a one-shot action that changes the original raw inode to mode 0444 and creates a second hardlink.",
+    "The failed capture remains unqualified. No success closure, extraction fill, SQL extraction, or audit follows from this review."
+  ],
+  "suppliedRuntimeFactsNotIndependentlyRead": {
+    "driverStatus": "FAIL_FIRST_FAILURE_NO_RETRY",
+    "firstFailure": "Auditor public-input 64 MiB budget exceeded; bytes preserved",
+    "cleanupFailures": [],
+    "independentWrapperExitCode": 1,
+    "rememberedIndependentPidfdExits": 25,
+    "privatePortsClear": true,
+    "automaticRetries": 0,
+    "feature63Status": "99/1"
+  }
+}

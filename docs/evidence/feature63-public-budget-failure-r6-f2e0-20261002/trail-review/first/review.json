@@ -1,0 +1,170 @@
+{
+  "schema": "ovf-r6-retention-trail-review-v1",
+  "status": "NEEDS_TRAIL_CORRECTION",
+  "scope": {
+    "decisionRows": "Only the last two rows of /home/morgana/Projects/orcs-vs-Fairies/docs/features/decisions.tsv",
+    "evidencePacket": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002",
+    "transcript": "/home/morgana/.codex/sessions/2026/09/30/rollout-2026-09-30T22-54-08-01a0f606-ff76-7312-a274-41e17906a3bd.jsonl",
+    "transcriptRecordsAtOrAfter": "2026-10-02T08:07:00Z",
+    "repositoryModifiedByReview": false,
+    "runtimeOrProtectedStateReadByReview": false
+  },
+  "reviewerQualification": {
+    "requestedModel": "gpt-5.6-sol",
+    "actualServingProviderIdentity": "not independently authenticated",
+    "actualServingModelIdentity": "not independently authenticated",
+    "actualServingModelFamily": "not independently authenticated",
+    "claudeUsed": false,
+    "qualification": "This review cannot authenticate its serving provider, model, or model family and does not upgrade the packet's unverified reviewer-identity claim."
+  },
+  "reviewedRows": [
+    {
+      "id": "feature63-r6-public-budget-failure",
+      "lineSha256WithLf": "7d8f807bb60eca7c9015997ed882e1e5381b1149b9c1ff978d746b2432fcfb1d",
+      "assessment": "SUPPORTED_WITH_WORDING_FIX",
+      "citedEvidence": "docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/root-retention.json"
+    },
+    {
+      "id": "feature63-r6-failed-custody-input-authentication",
+      "lineSha256WithLf": "07c5f84ee540a6d80821e0e1e44bac822ca39ffc846b631ea6613068e001a709",
+      "assessment": "SUPPORTED_BY_PACKET_BUT_CITED_EVIDENCE_IS_INCOMPLETE",
+      "citedEvidence": "docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/custody-review/selected/review.json"
+    }
+  ],
+  "requiredFixes": [
+    {
+      "id": "second-row-execution-evidence",
+      "row": "feature63-r6-failed-custody-input-authentication",
+      "problem": "The cited selected static review says runtimeExecuted is false, so it cannot prove the row's claim that the selected script ran once and exited 0.",
+      "evidence": {
+        "staticReviewPath": "docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/custody-review/selected/review.json",
+        "staticReviewSha256": "8be9f2da254358ffb10116ae24db8862a3684b98faa608cb1122b63853281044",
+        "executionPath": "docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/root-custody-execution/execution.json",
+        "executionSha256": "dfd5555a60e4b33c221ab118d3926c8ab9ef706761ec8e9533a1227ae83c78a7",
+        "executionFacts": {
+          "exitCode": 0,
+          "executions": 1,
+          "automaticRetries": 0,
+          "candidateSha256": "69f96b73f080e9175f4b3f9a51847e16db65e238e8f5f40ebab99a2ee5e1afba"
+        }
+      },
+      "fix": "Cite both the selected static review and root-custody-execution/execution.json, or cite a retained combined receipt that contains both the review decision and execution result."
+    },
+    {
+      "id": "wrapper-and-native-records-conflated",
+      "row": "feature63-r6-public-budget-failure",
+      "problem": "The phrase wrapper25heldPIDFDclosed can be read as saying the wrapper was one of the 25 held-PIDFD records. The evidence has 25 registered native records, plus a separately authenticated wrapper, plus the concrete launcher, for 27 finite absent readbacks.",
+      "evidence": {
+        "finiteReadbackPath": "docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/execution/finite-readback.json",
+        "finiteReadbackSha256": "99be379c466f6271bb8d8be3acb73d0d05e3372a703f1bd19849d4f40e3e59af",
+        "registeredNativeCount": 25,
+        "managedLifetimeCountIncludingWrapper": 26,
+        "rootFiniteAbsentReadbacks": 27,
+        "wrapperClosureRequiredSeparately": true
+      },
+      "fix": "Replace the phrase with 25 held-PIDFD native exits; wrapper separately closed; 27 finite absent readbacks."
+    }
+  ],
+  "verifiedFacts": {
+    "sourcePin": "f2e0025937b8caf5dc8f6f9f3de134d92a2d547a",
+    "captureInvocations": 1,
+    "automaticRetries": 0,
+    "publicInputBytes": 67178035,
+    "publicInputLimit": 67108864,
+    "excessBytes": 69171,
+    "publicPredicatePassingWindows": 0,
+    "publicApproachGateOpened": false,
+    "nativeCheckpointCount": 1,
+    "nativeCheckpointAudited": false,
+    "registeredNativeHeldPidfdRecords": 25,
+    "wrapperAuthenticatedSeparately": true,
+    "finiteAbsentReadbacks": 27,
+    "rawCustody": {
+      "sha256": "4869210d07efbc2a94402958c8924800bb5cd867f9ff57b10af479f1b1a38e29",
+      "bytes": 129224704,
+      "modeOctal": "0444",
+      "linkCount": 2,
+      "sidecarsAbsent": true,
+      "sqlExtractionOrAudit": false
+    },
+    "protectedReadback": {
+      "pid": 1063,
+      "startTicks": 874,
+      "session": 1063,
+      "fd": 22,
+      "socketInode": 3783,
+      "protectedDistFileCount": 397,
+      "unchangedWithinRecordedChecks": true
+    },
+    "slotReleased": true,
+    "feature63Qualified": false,
+    "ledger": {
+      "verified": 99,
+      "inProgress": 1,
+      "feature63StillPending": true
+    },
+    "custodyReviewSequence": {
+      "failedStaticReviews": 3,
+      "selectedStaticReviewPassed": true,
+      "selectedScriptExecutions": 1,
+      "selectedScriptExitCode": 0
+    },
+    "retention": {
+      "preservedTreeCount": 21,
+      "manifestRecordCount": 137,
+      "manifestRecordBytes": 129359461,
+      "postCopyOriginalAndCopyCheckPassed": true,
+      "postCopyTranscriptTimestamp": "2026-10-02T08:45:23.955Z",
+      "packetFileCount": 139
+    }
+  },
+  "attention": [
+    {
+      "id": "finite-closure-limit",
+      "detail": "The 27 absent readbacks cover remembered PID and start-time identities. The packet says this finite check does not exclude missed forks or reparenting."
+    },
+    {
+      "id": "record-key-uniqueness",
+      "detail": "The selected review says the custody utility requires 25 registration records and equal registration and closure key sets, but does not separately require 25 unique keys. Treat 25 as a checked record count, not an extra uniqueness guarantee."
+    },
+    {
+      "id": "inventory-snapshot-limit",
+      "detail": "The selected review says inventory members were checked one at a time rather than as one atomic snapshot, so the root and owned trees had to remain quiescent during the successful pass."
+    },
+    {
+      "id": "post-copy-receipt-only-in-transcript",
+      "detail": "The 137-original-and-copy verification passed after retention, but that compact result is present in the permitted transcript rather than as a separate retained packet receipt. A retained receipt would make the packet easier to audit after temporary source trees disappear."
+    },
+    {
+      "id": "temporary-paths-in-execution-record",
+      "detail": "root-custody-execution/execution.json points to temporary candidate and review paths. The packet contains retained copies with matching SHA-256 values, but the execution record does not name those retained paths."
+    },
+    {
+      "id": "terse-status-wording",
+      "detail": "The first row's protected unchanged and 99/1 phrases are accurate only at the recorded scope. Clearer wording would say protected 4173 identity, socket, and 397-file dist unchanged; ledger 99 verified and 1 in progress; feature 63 pending."
+    }
+  ],
+  "reviewedArtifactDescriptors": [
+    {"path": "/home/morgana/Projects/orcs-vs-Fairies/docs/features/decisions.tsv", "bytes": 136488, "sha256": "51ddf4cba0cc4a3cbf83f90b87cbceb927bb562c62316ea733cdba82a6ca6110"},
+    {"path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/root-retention.json", "bytes": 36799, "sha256": "ec2fc3aedc357ef079d3c3317173b9983e7e8b6853ccbf3ecb97da30380984a4"},
+    {"path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/root-readback/root-failure-disposition.json", "bytes": 1245, "sha256": "cfefa2d4acd4e363e38f2f9e86ee130d6ddd9b7e9b4824ec18193b63a9b66e57"},
+    {"path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/root-readback/root-native-lifetime-disposition.json", "bytes": 7253, "sha256": "7c40001a6ab4d131292bd25f8319f099185f8590586950dcf126a40bc89cfdc4"},
+    {"path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/custody-review/selected/review.json", "bytes": 7809, "sha256": "8be9f2da254358ffb10116ae24db8862a3684b98faa608cb1122b63853281044"},
+    {"path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/public-diagnosis/diagnosis.json", "bytes": 80109, "sha256": "1967150152cb579a56d7cfd7f4f42cda5c8fb31b200a0492ee64f31b62b87281"},
+    {"path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/execution/finite-readback.json", "bytes": 7723, "sha256": "99be379c466f6271bb8d8be3acb73d0d05e3372a703f1bd19849d4f40e3e59af"},
+    {"path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/execution/slot-release.json", "bytes": 3313, "sha256": "3b25e7b6be8ac2758a3795d8a82afc2f3c481840ff1073b42c577645b6922b39"},
+    {"path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/root-custody-execution/execution.json", "bytes": 357, "sha256": "dfd5555a60e4b33c221ab118d3926c8ab9ef706761ec8e9533a1227ae83c78a7"},
+    {"path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/root-custody-execution/stdout", "bytes": 1357, "sha256": "4014ffd3d2506f34e65d6ca0fce676aa929b1f8df5b770740eaec2ee37fd3671"},
+    {"path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/root-custody-execution/stderr", "bytes": 0, "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"},
+    {"path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-public-budget-failure-r6-f2e0-20261002/custody-preparation/selected/failed-r6-closure-and-custody.py", "bytes": 17226, "sha256": "69f96b73f080e9175f4b3f9a51847e16db65e238e8f5f40ebab99a2ee5e1afba"}
+  ],
+  "finalState": {
+    "r6Result": "failed",
+    "passingPublicCandidate": false,
+    "nativeCheckpointAudited": false,
+    "feature63Status": "in-progress",
+    "ledgerVerified": 99,
+    "ledgerInProgress": 1,
+    "additionalCaptureOrRetryAuthorized": false
+  }
+}
