@@ -1,0 +1,33 @@
+{
+  "schema": "feature63-static-launch-diagnosis-v1",
+  "scope": "Read-only diagnosis of the retained r1 failure and installed launch defaults; external report only. No product, wrapper, database, browser, process, environment, or repository mutation performed by this diagnosis.",
+  "attemptDisposition": "R1 remains failed and feature63 unqualified. Its files remain in place. The root-authorized cleanup receipt reports direct browser exit and empty 5373/5374 listeners. Public producer and collector never launched. No retry is authorized by this report.",
+  "findings": [
+    "The initial native browser command matched the submitted command and registered at 2026-10-02T04:20:51.543494+00:00. At 04:20:51.551760, repeated registration rejected the same resource with 'Previously registered resource identity changed'. run-minimal63.py compares the whole identity dictionary, including argv, at lines 258-259. Cleanup re-enters that comparison through register(actual, family) at line 365.",
+    "The retained root cleanup receipt reports identical PID 1804106, start tick 9074516, executable, cwd, and session 1804106. argv was its only recorded identity difference. Chromium had replaced the original NUL-separated argument vector with one space-joined process-title string and added --noerrdialogs, --ozone-platform=headless, --ozone-override-screen-size=800,600, and --use-angle=swiftshader-webgl. This observation explains the wrapper's identity rejection without evidence of PID reuse or a different executable.",
+    "browser.stderr separately records 'Crashing due to FD ownership violation', a working DevTools listening endpoint, and repeated network-service crashes/restarts. The log establishes a startup problem in the browser child services. It does not identify a causal launch flag. The wrapper failed before its CDP admission and before the public producer or collector started.",
+    "Feature63 and the retained main15 launch both bind the same installed Playwright Core 1.63.0 package and chromium-1243 executable. Main15's browser receipt reports Chromium 153.0.8010.12, reached native formation cases, and completed browser cleanup. Its later charge-distance assertion failure means this is evidence of a working browser launch, not a passing complete acceptance run.",
+    "The complete admitted Playwright Chromium switches and argument builder contain no --single-process, --no-zygote, NetworkService, or NetworkServiceInProcess switch. Native feature63's submitted command contains none either. Adding those switches has no support as a change toward the known Playwright launch."
+  ],
+  "minimalCandidatePlan": [
+    "For a reviewed fresh r2 preparation, separate managed ownership fields (PID, start tick, executable, cwd, original kernel session, and bound PIDFD) from command-line observations. Preserve the submitted Popen command and timestamped raw /proc/cmdline bytes plus the observed NUL-separated vector. Record later observations when they differ; do not split a process-title string on spaces or require argv immutability.",
+    "Use the managed ownership fields consistently for repeat registration, PIDFD opening checks, owned-session refresh, protected-socket candidate checks, signal checks, survivor detection, and the server/browser capture loop. Keep the unreaped direct-root reservation, PIDFD signaling, existing session membership rules, protected 4173 checks, bounded cleanup, and the existing explicit limit on closure evidence. The submitted launch command and executable binding remain reviewable inputs.",
+    "The smallest supported launch-parity candidates are --no-sandbox and --enable-unsafe-swiftshader, because the known working Playwright launch applies them by default while the native command omits them. --disable-background-networking and --disable-component-update also match that launch's documented startup behavior. These are candidates based on observed launch differences, not a verified fix for the FD crash.",
+    "Native-only --disable-crash-reporter and --disable-crashpad-for-testing have no matching Playwright default. Root can review whether to remove them along with the chosen parity changes. Retain external loopback CDP TCP and the owned profile; Playwright's pipe/no-startup-window defaults belong to its native-launch connection and should not replace the reviewed external attach design.",
+    "Prepare the r2 candidate only after root's cleanup disposition. Preserve r1, use the fresh root-approved prefix and bindings, and return concrete changed command and ownership checks for review. Original feature63 remains pending; this report adds no runtime, build, test, DB operation, automatic retry, or new global descendant-proof gate."
+  ],
+  "sources": {
+    "wrapper": "/home/morgana/Projects/orcs-vs-Fairies/scripts/feature63/run-minimal63.py:100-119,160,256-266,277-315,317-353,355-420,505-508,535,583-607",
+    "driverEvents": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r1/lifecycle/driver-events.ndjson:3-7",
+    "driverResult": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r1/lifecycle/driver-result.json",
+    "browserStderr": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r1/lifecycle/browser.stderr:1-38",
+    "rootCleanup": "/tmp/ovf-feature63-capture-control-G4kXp7dd/direct-browser-cleanup.json",
+    "browserBinding": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/feature63-root-binding-preparation-20261001/bindings-success/bindings/browser-binding.json:2522,2532",
+    "main15Launch": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/main402-formations-charge-witness-7e-20261001/control/launch-command.json:17-20",
+    "main15Browser": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/main402-formations-charge-witness-7e-20261001/raw/browser/browser-main-smoke402.json:6156-6187,6408-6410,21094-21095",
+    "smokeRunner": "/home/morgana/Projects/orcs-vs-Fairies/scripts/acceptance/verify-main-smoke402.mjs:46-48",
+    "admittedPlaywrightPackage": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/package.json:3",
+    "admittedPlaywrightDefaults": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/lib/coreBundle.js:34821-34902,43317-43365"
+  },
+  "verification": "Directly inspected the retained event/result/stderr/root-cleanup receipts and actual admitted Playwright source. Checked delegated launch-default findings against that source. No runtime verification of the candidate is claimed."
+}

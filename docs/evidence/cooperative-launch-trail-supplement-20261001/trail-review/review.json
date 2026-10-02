@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "head": "f929063c13be4cdc188329d5e958b39bf8997757",
+  "commitsReviewed": [
+    "5777335a41c46d66ee70eeee499a3ed8ae8c9fba",
+    "2b6eb946cd2f27873db4c7fcdde00b90e49458a7",
+    "f929063c13be4cdc188329d5e958b39bf8997757"
+  ],
+  "verdict": "supported_with_one_wording_correction",
+  "blockingFindings": [],
+  "feature63Qualified": false,
+  "verifiedCount": 96,
+  "remainingFeatureIds": [4, 9, 10, 63],
+  "chronologyValid": true,
+  "historicalR2ReviewLimitValid": true,
+  "captureReachedMatch": false,
+  "humanPublicActionLaunched": false,
+  "collectorLaunched": false,
+  "cleanupScope": {
+    "directRootsAbsent": true,
+    "ownedPortsClear": [5373, 5374],
+    "protectedPortUnchanged": 4173,
+    "unobservedDescendantsExcluded": false,
+    "globalAbsenceClaimSupported": false
+  },
+  "wordingFinding": {
+    "trailText": "prevented wrapper cleanup",
+    "problem": "Wrapper cleanup closed the server; only browser-family cleanup was held.",
+    "recommendedText": "prevented browser cleanup"
+  },
+  "database": {
+    "rawDatabaseReadByThisReview": false,
+    "newCustodyReceiptRetained": true,
+    "existingCustodyFilesModified": false
+  },
+  "limits": "Static file and Git reads only; no runtime, generator, build, test, browser, database, simulation, signals, or repository writes.",
+  "modelDisclosure": "reviewed by requested gpt-5.6-sol; actual provider model family unverified"
+}
