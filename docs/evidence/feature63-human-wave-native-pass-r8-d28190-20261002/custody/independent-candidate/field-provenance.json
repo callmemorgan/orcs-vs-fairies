@@ -1,0 +1,194 @@
+{
+  "schema": "feature63-r8-custody-expectation-field-provenance-v1",
+  "status": "PASS_NON_AUTHORIZING_CANDIDATE",
+  "candidateApproval": false,
+  "outputParentSelection": {
+    "value": "/tmp",
+    "selectedBy": "/root"
+  },
+  "authority": {
+    "captureAssignment": {
+      "derivation": "stable single-FD read of completed metadata bytes",
+      "source": "/tmp/ovf-root-feature63-r8-bindings-8v654jsk/capture-assignment.json",
+      "comparisons": [
+        "descriptor bytes and SHA-256 reauthenticated"
+      ]
+    },
+    "prelaunchReadback": {
+      "derivation": "stable single-FD read of completed metadata bytes",
+      "source": "/tmp/ovf-feature63-r8-prelaunch-report-16s9_ezc/root-independent-prelaunch-readback.json",
+      "comparisons": [
+        "descriptor bytes and SHA-256 reauthenticated"
+      ]
+    },
+    "independentClosure": {
+      "derivation": "stable single-FD read of completed metadata bytes",
+      "source": "/tmp/ovf-feature63-r8-capture-control-hsx9sgil/independent-closure.json",
+      "comparisons": [
+        "descriptor bytes and SHA-256 reauthenticated"
+      ]
+    },
+    "launch": {
+      "derivation": "stable single-FD read of completed metadata bytes",
+      "source": "/tmp/ovf-feature63-r8-capture-control-hsx9sgil/launch.json",
+      "comparisons": [
+        "descriptor bytes and SHA-256 reauthenticated"
+      ]
+    },
+    "captureAssignmentActual": {
+      "derivation": "stable single-FD read of completed metadata bytes",
+      "source": "/tmp/ovf-feature63-r8-capture-control-hsx9sgil/capture-assignment.actual.json",
+      "comparisons": [
+        "descriptor bytes and SHA-256 reauthenticated"
+      ]
+    },
+    "command": {
+      "derivation": "stable single-FD read of completed metadata bytes",
+      "source": "/tmp/ovf-feature63-r8-capture-control-hsx9sgil/command.json",
+      "comparisons": [
+        "descriptor bytes and SHA-256 reauthenticated"
+      ]
+    },
+    "captureLaunchConsumed": {
+      "derivation": "stable single-FD read of completed metadata bytes",
+      "source": "/tmp/ovf-feature63-r8-capture-control-hsx9sgil/capture-launch-consumed.json",
+      "comparisons": [
+        "descriptor bytes and SHA-256 reauthenticated"
+      ]
+    },
+    "captureResult": {
+      "derivation": "stable single-FD read of completed metadata bytes",
+      "source": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8/lifecycle/driver-result.json",
+      "comparisons": [
+        "descriptor bytes and SHA-256 reauthenticated"
+      ]
+    },
+    "serverOwnership": {
+      "derivation": "stable single-FD read of completed metadata bytes",
+      "source": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8/lifecycle/server-ownership.json",
+      "comparisons": [
+        "descriptor bytes and SHA-256 reauthenticated"
+      ]
+    },
+    "driverEvents": {
+      "derivation": "stable single-FD read of completed metadata bytes",
+      "source": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8/lifecycle/driver-events.ndjson",
+      "comparisons": [
+        "descriptor bytes and SHA-256 reauthenticated"
+      ]
+    },
+    "sourceBinding": {
+      "derivation": "stable single-FD read of completed metadata bytes",
+      "source": "/tmp/ovf-root-feature63-r8-bindings-8v654jsk/source-binding.json",
+      "comparisons": [
+        "descriptor bytes and SHA-256 reauthenticated"
+      ]
+    },
+    "buildBinding": {
+      "derivation": "stable single-FD read of completed metadata bytes",
+      "source": "/tmp/ovf-root-feature63-r8-bindings-8v654jsk/build-binding.json",
+      "comparisons": [
+        "descriptor bytes and SHA-256 reauthenticated"
+      ]
+    },
+    "browserBinding": {
+      "derivation": "stable single-FD read of completed metadata bytes",
+      "source": "/tmp/ovf-root-feature63-r8-bindings-8v654jsk/browser-binding.json",
+      "comparisons": [
+        "descriptor bytes and SHA-256 reauthenticated"
+      ]
+    },
+    "productInventory": {
+      "derivation": "stable single-FD read of completed metadata bytes",
+      "source": "/tmp/ovf-main402-remaining-2e5-r1/tested-product-before.json",
+      "comparisons": [
+        "descriptor bytes and SHA-256 reauthenticated"
+      ]
+    },
+    "protectedInventory": {
+      "derivation": "stable single-FD read of completed metadata bytes",
+      "source": "/tmp/ovf-main402-remaining-2e5-r1/protected-before.json",
+      "comparisons": [
+        "descriptor bytes and SHA-256 reauthenticated"
+      ]
+    }
+  },
+  "expected": {
+    "matchId": {
+      "value": "290ede87-8469-42d7-bb74-0fb730e584e2",
+      "sources": [
+        "captureResult.matchId"
+      ]
+    },
+    "wrapperExitCode": {
+      "value": 0,
+      "sources": [
+        "independentClosure.wrapperExitCode"
+      ]
+    },
+    "firstFailure": {
+      "value": null,
+      "sources": [
+        "captureResult.firstFailure",
+        "captureResult.status"
+      ]
+    },
+    "registeredNativeKeys": {
+      "count": 25,
+      "sources": [
+        "driverEvents registered native resource rows",
+        "independentClosure.rememberedResources"
+      ],
+      "comparison": "ordered lists and unique key sets equal"
+    },
+    "launcherLifetime": {
+      "value": {
+        "pid": 1957316,
+        "startTicks": 11606863
+      },
+      "sources": [
+        "launch.launcher.identity"
+      ]
+    },
+    "wrapperLifetime": {
+      "value": {
+        "pid": 1957341,
+        "startTicks": 11606865
+      },
+      "sources": [
+        "launch.wrapper.identity",
+        "independentClosure.wrapperInitial.identity"
+      ]
+    },
+    "rawIdentity": {
+      "value": {
+        "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8/server-data/server.sqlite",
+        "device": 52,
+        "inode": 43333851
+      },
+      "sources": [
+        "captureResult.closedFreshDatabaseIdentity",
+        "serverOwnership.freshDatabase",
+        "raw database lstat"
+      ],
+      "databaseContentRead": false
+    }
+  },
+  "static": {
+    "schema": {
+      "path": "/tmp/feature63-r8-custody-candidate.HXh6JaEg/expectation-schema.json",
+      "bytes": 3719,
+      "sha256": "22fcf623fffd8509cbc2e0c11e36ee6a12fbd376fd286d796b678661cc7b0e03"
+    },
+    "utility": {
+      "path": "/tmp/feature63-r8-custody-candidate.HXh6JaEg/fresh-r8-custody.py",
+      "bytes": 39374,
+      "sha256": "8d913e9e3936170156162c23b917eeaa5c2e2a03ea48a0e136ab0a88a8b52939"
+    },
+    "independentReview": {
+      "path": "/tmp/feature63-r8-custody-static-review-autosave-repair-admission-6sjliizz/review.json",
+      "bytes": 7591,
+      "sha256": "68efd3b01dc2203393953d1ddb65451f514e80c5ceaef83c5bfa9a27d071c328"
+    }
+  }
+}

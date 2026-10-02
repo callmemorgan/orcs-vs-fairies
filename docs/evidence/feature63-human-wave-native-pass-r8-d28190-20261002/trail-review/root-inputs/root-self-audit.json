@@ -1,0 +1,177 @@
+{
+  "actualAuditFailed": false,
+  "actualNativeAuditChecks": {
+    "bothHumanAttacks": true,
+    "bothHumanUICommands": true,
+    "bothNativeAIWaveOwners": true,
+    "closedExtraction": true,
+    "committedDispatchDerived": true,
+    "humanWitnessesTargetBothAIWaveOwners": true,
+    "nativeBounds": true,
+    "publicAliveCoverage": true,
+    "rootBinding": true,
+    "sameParticipantCombat": true,
+    "sharedPlannerTarget": true
+  },
+  "checks": [
+    {
+      "evidence": [
+        {
+          "bytes": 963,
+          "path": "docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/capture/operator/operator-result.json",
+          "sha256": "90fd7a2fa3cb919739ad08b3ca7bbaec888764ba8c86fcecb880ac5d1f7c8dd7"
+        },
+        {
+          "bytes": 311670,
+          "path": "docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/capture/metadata-handoff/control/independent-closure.json",
+          "sha256": "6a88075ce715da26cf2f5c307d3c926d8cda2028b30fa6513cf84bd20a2cb9fd"
+        }
+      ],
+      "evidencePointersResolve": true,
+      "line": 314,
+      "phase": "feature63-r8-completed-capture"
+    },
+    {
+      "evidence": [
+        {
+          "bytes": 8863,
+          "path": "docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/custody/root-input/root-metadata-readback.complete.json",
+          "sha256": "5876c7425dfb56d928efd3e645d39e21d060114e22777bf4af75b7976fbad2af"
+        }
+      ],
+      "evidencePointersResolve": true,
+      "line": 315,
+      "phase": "feature63-r8-public-input-count"
+    },
+    {
+      "evidence": [
+        {
+          "bytes": 1303,
+          "path": "docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/custody/execution/root-invocation.json",
+          "sha256": "80937243adafa109e9321e6b46e7c13a230b2e0ff5762e638434ce82351a2923"
+        },
+        {
+          "bytes": 1317,
+          "path": "docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/custody/receipts/root-custody-result.json",
+          "sha256": "90a6bbc81ffed700764a5c7d877cda875cf31bdc3c35dc5438a67af7e74b5964"
+        }
+      ],
+      "evidencePointersResolve": true,
+      "line": 316,
+      "phase": "feature63-r8-closed-raw-custody"
+    },
+    {
+      "evidence": [
+        {
+          "bytes": 193,
+          "path": "docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/extraction/original/native-schema-review.json",
+          "sha256": "322e7423df4c6dc8e53547f2f42c893531b3c33b0d67a15ada68c1994a7f1259"
+        },
+        {
+          "bytes": 1053,
+          "path": "docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/extraction/original/original-extraction/raw-verification-receipt.json",
+          "sha256": "b18806a22645ec64f246e60ad67cbfe5b658c3d39c932a83128443e53b6bfb1d"
+        },
+        {
+          "bytes": 8784,
+          "path": "docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/extraction/original/original-extraction/selection-receipt.json",
+          "sha256": "7c27578b1ec793af568057bab8c8334912d9980976ac52210707082e5a799dcf"
+        }
+      ],
+      "evidencePointersResolve": true,
+      "line": 317,
+      "phase": "feature63-r8-closed-extraction"
+    },
+    {
+      "evidence": [
+        {
+          "bytes": 12486,
+          "path": "docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/extraction/approved/root-promotion-readback.json",
+          "sha256": "aa439467c0389e4f6d4f3e9d980e83c0595a11bee74c329bdc8ac6626d80c0ef"
+        }
+      ],
+      "evidencePointersResolve": true,
+      "line": 318,
+      "phase": "feature63-r8-approved-copy"
+    },
+    {
+      "evidence": [
+        {
+          "bytes": 1113,
+          "path": "docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/audit/execution/root-invocation.json",
+          "sha256": "7215da1f9fc037ebed36dad1fb0717bf6ff544f239b79b8b2eecf700878cf25a"
+        },
+        {
+          "bytes": 45678,
+          "path": "docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/audit/actual/native-audit.json",
+          "sha256": "54acd6cac8cf3580df6462056973d23dcf4c273c6f1444934d0a279e49819f81"
+        },
+        {
+          "bytes": 906,
+          "path": "docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/audit/actual/driver-result.json",
+          "sha256": "3189f3e08330ee36a928b740c8e1814c1ff16cb3f62c9f5d8cfe3cd7dad01a04"
+        }
+      ],
+      "evidencePointersResolve": true,
+      "line": 319,
+      "phase": "feature63-r8-native-audit"
+    },
+    {
+      "evidence": [
+        {
+          "bytes": 10612,
+          "path": "docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/root-feature63-admission.json",
+          "sha256": "4af842e4ae7aee4f59c7172f800cdcc41f1d3d2674ae5c1c9b0fd132a0005570"
+        },
+        {
+          "bytes": 71824,
+          "path": "docs/features/requirements.json",
+          "sha256": "c2213602b78e7350ecb630e61cdfdb9f55b23c198ac2596d3749694518d48d7d"
+        },
+        {
+          "bytes": 1731,
+          "path": "docs/features/README.md",
+          "sha256": "4fddfffb35ef80b84cc57cfedc71f301ecf41f3e1dc7532dfed3842d61a2a839"
+        }
+      ],
+      "evidencePointersResolve": true,
+      "line": 320,
+      "phase": "feature63-r8-original-clause-admission"
+    },
+    {
+      "evidence": [
+        {
+          "bytes": 52497,
+          "path": "docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/manifest.json",
+          "sha256": "8dd6802974f058fff5954c43c6a2546508b84150645cbae7921f5240fd67050a"
+        },
+        {
+          "bytes": 1649,
+          "path": "docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/root-retention.json",
+          "sha256": "fa3d72df12bfeebcb554ddff0ec6a1eaebd1c4f9ae73e0d5711a18e620384323"
+        }
+      ],
+      "evidencePointersResolve": true,
+      "line": 321,
+      "phase": "feature63-r8-literal-retention"
+    }
+  ],
+  "decisionLines": [
+    314,
+    321
+  ],
+  "reviewModelProviderIdentityAuthenticated": false,
+  "schema": "feature63-r8-root-trail-self-audit-v1",
+  "scope": "Current root segment and actual retained receipts checked; separate capture-turn literal export accompanies it. This snapshot excludes its own output and later release, review import and commit work.",
+  "status": "PASS_WITH_FINITE_TRANSCRIPT_SCOPE",
+  "transcript": {
+    "bytes": 2748467,
+    "completeWithinExplicitFiniteInterval": true,
+    "jsonlLines": 417,
+    "outputResponseItems": 53,
+    "path": "/tmp/ovf-root-feature63-r8-trail-review-input-jjqan14_/root-current-segment.jsonl",
+    "sha256": "4d4360deba10ffe1204f7a702cb3a79502645c7a013cd366747dd4b13684bcce"
+  },
+  "unobservedDescendantsExcluded": false,
+  "verifiedFeatureCount": 100
+}

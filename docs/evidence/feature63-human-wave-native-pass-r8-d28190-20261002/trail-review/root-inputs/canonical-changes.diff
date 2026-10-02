@@ -1,0 +1,57 @@
+diff --git a/docs/features/README.md b/docs/features/README.md
+index b0ff2b5..7aa973a 100644
+--- a/docs/features/README.md
++++ b/docs/features/README.md
+@@ -2,8 +2,8 @@
+ 
+ The full scope is the 100 entries in `requirements.json`. The list preserves the user’s requested behavior. A file, option, or passing unit test alone does not make a feature complete: it must be reachable through the game, work through its real simulation or service path, and have evidence covering its stated behavior.
+ 
+-The ledger records 99 verified features. Cooperative skirmishes (63) remain in progress. The latest retained capture contains accepted ordinary attack-move orders from both human profiles, but all fully attributed commanded-human targets were AI owner 3; one human-two event lacked target attribution. It exceeded the frozen public-evidence limit and does not qualify the feature. The failed capture and its closed-process and database-retention evidence are in `../evidence/feature63-public-budget-failure-r7-a815-20261002/`.
++The ledger records all 100 features as verified. The final cooperative skirmish proof (63) passed all 11 frozen native-audit checks at `d28190fcd376156d6af016cd62fab8915d719fa7`. Two distinct human profiles issued accepted ordinary UI attack-move orders and each landed six positive attacks against participants of one committed coordinated AI wave. Their targets collectively covered AI owners 2 and 3. The capture, sealed database receipts, unchanged extraction, literal audit inputs and passing report are retained in `../evidence/feature63-human-wave-native-pass-r8-d28190-20261002/`. Earlier failed attempts remain preserved.
+ 
+-The assembled 4.0.2 product passed 2,942 tests across 160 files and built successfully at `f7f3e187ea40079492589a6fce39f0b33f77f04a`. The latest capture authenticated the same 570 product files. Regression and build evidence is retained in `../evidence/current402-full-suite-build-f7-20261001/`; those checks do not replace the remaining cooperative fight proof.
++The assembled 4.0.2 product passed 2,942 tests across 160 files and built successfully at `f7f3e187ea40079492589a6fce39f0b33f77f04a`. The final capture authenticated the same 570 product files. Regression and build evidence is retained in `../evidence/current402-full-suite-build-f7-20261001/`. The build retains its existing chunk-size warning. Process closure evidence covers the recorded identities and does not exclude unobserved descendants.
+ 
+ `decisions.tsv` records implementation choices and verification. `HUNDRED_FEATURE_ARCHITECTURE.md` describes the simulation, content, campaign and server changes. Each retained proof identifies its tested source; an isolated feature proof does not establish that its later integration works.
+diff --git a/docs/features/decisions.tsv b/docs/features/decisions.tsv
+index 0eaaf7f..4938d43 100644
+--- a/docs/features/decisions.tsv
++++ b/docs/features/decisions.tsv
+@@ -311,3 +311,11 @@ ts	phase	decision	why	evidence	result
+ 2026-10-02T10:26:30Z	feature-ledger-readme-current99	Updated the feature index to the current99 verified and63 pending status	The old README still described completed integration and regression work as unfinished	docs/evidence/feature63-public-budget-failure-r7-a815-20261002/root-retention.json;docs/evidence/current402-full-suite-build-f7-20261001/root-current-result-readback.json	2942 tests passed on retained tested product; latest failed proof does not admit63; no product edits
+ 2026-10-02T10:43:32.639987+00:00	feature63-r7-public-budget-failure	Qualified line 308 after independent trail review	All fully attributed commanded-human targets were owner 3; one human-two event lacked target attribution	docs/evidence/feature63-public-budget-failure-r7-a815-20261002/trail-review/first/review.json;docs/evidence/feature63-public-budget-failure-r7-a815-20261002/public-diagnosis/positional-followup/positional-diagnosis.json	Supersedes line308 target claim only; zero passing public windows and99/1 unchanged
+ 2026-10-02T10:54:08.344700+00:00	feature63-r8-undead-deferred-window-preparation	Imported reviewed ordinary Undead AI setup and deferred pre-latch candidate summaries	R7 exceeded the public input limit and did not produce a passing window; faster normal AI recruitment is a new capture hypothesis	docs/evidence/feature63-undead-deferred-windows-r8-preparation-20261002/root-import.json	Exact three reviewed scripts imported; frozen audit, literal public record and public fight predicate unchanged; no binding or runtime;99/1
++2026-10-02T11:50:46.164267+00:00	feature63-r8-completed-capture	Retained the one-shot R8 prelaunch, capture and independent process-closure records	The public candidate passed on the authenticated 4.0.2 product; capture success alone does not establish native wave membership	docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/capture/operator/operator-result.json;docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/capture/metadata-handoff/control/independent-closure.json	Operator, launcher and wrapper exit0; public window1928-2328;25 registered held-PIDFD ready exits plus wrapper; no retry; finite closure does not exclude unobserved descendants
++2026-10-02T11:50:46.164287+00:00	feature63-r8-public-input-count	Checked the nine literal files required by the frozen extractor	The handoff summary counted command and acknowledgement files in place of four required public metadata files	docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/custody/root-input/root-metadata-readback.complete.json	Actual frozen public inputs65760445 bytes;1348419 bytes below64MiB; all literal inputs unchanged
++2026-10-02T11:50:46.164294+00:00	feature63-r8-closed-raw-custody	Compared independent and root expectations, then ran reviewed custody once	The exact15 authority descriptors and25 registered identities agreed before the utility sealed or hashed raw content	docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/custody/execution/root-invocation.json;docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/custody/receipts/root-custody-result.json	Exit0; fresh raw130916352 bytes, nlink1, mode0444; native schema review and extraction still separate; no DB query
++2026-10-02T11:50:46.164300+00:00	feature63-r8-closed-extraction	Issued the separate native schema approval and ran the frozen extractor once	The completed capture and independently admitted closure permit bounded reads of the sealed database	docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/extraction/original/native-schema-review.json;docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/extraction/original/original-extraction/raw-verification-receipt.json;docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/extraction/original/original-extraction/selection-receipt.json	Exit0; raw before equals after; native3540877/public65760445 bytes; wave1 launch2022; original audit and extraction admission remain unapproved
++2026-10-02T11:50:46.164306+00:00	feature63-r8-approved-copy	Authenticated a separate copy and changed only its audit authorization	Preserve the first unapproved extraction while giving the native auditor an independently bound approved input	docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/extraction/approved/root-promotion-readback.json	Original30-file bundle unchanged; copied root-assignment auditAuthorized false to true; fresh external admission and27-field wrapper assignment approved
++2026-10-02T11:50:46.164310+00:00	feature63-r8-native-audit	Invoked the unchanged frozen native auditor once through the owned wrapper	Public appearance must agree with authentic coordinated wave participants and same-tick native frames	docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/audit/execution/root-invocation.json;docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/audit/actual/native-audit.json;docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/audit/actual/driver-result.json	Exit0; all11 checks true; no failures; no SQLite, DB hash, runtime or replay in auditor; protected preview readbackPASS
++2026-10-02T11:50:46.164315+00:00	feature63-r8-original-clause-admission	Marked cooperative skirmishes63 verified and updated the feature index to100 verified	Both distinct human profiles issued accepted ordinary UI attack-moves and each made six positive attacks against participants of one committed wave covering AI owners2 and3	docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/root-feature63-admission.json;docs/features/requirements.json;docs/features/README.md	100 verified/0 in progress; criterion unchanged; no victory, retaliation, simultaneous-hit,4v4 or end-of-fight requirement added
++2026-10-02T11:50:46.164320+00:00	feature63-r8-literal-retention	Imported and authenticated157 literal evidence members with source provenance	The passing conclusion needs the actual capture, custody, extraction, promotion and audit artifacts	docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/manifest.json;docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/root-retention.json	72399479 literal-copy bytes; original ignored prefix and unapproved bundle preserved; sealed raw not copied or reopened by retention
+diff --git a/docs/features/requirements.json b/docs/features/requirements.json
+index d02fc7e..6f93c4c 100644
+--- a/docs/features/requirements.json
++++ b/docs/features/requirements.json
+@@ -916,7 +916,7 @@
+       "id": 63,
+       "title": "Cooperative skirmishes",
+       "requirement": "human teammates fight coordinated computer opponents.",
+-      "status": "in-progress",
++      "status": "verified",
+       "evidence": [
+         "docs/evidence/assembled-allied-ai-83941bc-runtime-r1/root-feature63-admission.json",
+         "docs/evidence/assembled-allied-ai-83941bc-runtime-r1/root-retention.json",
+@@ -929,7 +929,11 @@
+         "tests/allied-ai.test.ts",
+         "docs/evidence/claude-admissions-review-703fc-20261001/root-reconciliation.json",
+         "docs/evidence/feature63-public-budget-failure-r7-a815-20261002/root-retention.json",
+-        "docs/evidence/feature63-public-budget-failure-r7-a815-20261002/public-diagnosis/positional-followup/positional-diagnosis.json"
++        "docs/evidence/feature63-public-budget-failure-r7-a815-20261002/public-diagnosis/positional-followup/positional-diagnosis.json",
++        "docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/root-feature63-admission.json",
++        "docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/audit/actual/native-audit.json",
++        "docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/extraction/approved/root-promotion-readback.json",
++        "docs/evidence/feature63-human-wave-native-pass-r8-d28190-20261002/root-retention.json"
+       ]
+     },
+     {

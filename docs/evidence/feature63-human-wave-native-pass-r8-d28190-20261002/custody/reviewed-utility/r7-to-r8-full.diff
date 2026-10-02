@@ -1,0 +1,198 @@
+--- originals/fresh-r7-custody.py
++++ fresh-r8-custody.py
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env python3
+-"""Authenticate and seal one completed R7 capture. Root supplies an exact post-capture expectation."""
++"""Authenticate and seal one completed R8 capture. Root supplies an exact post-capture expectation."""
+ from pathlib import Path
+ import datetime
+ import hashlib
+@@ -299,7 +299,7 @@
+ 
+ def validate_expectation(value):
+     exact(value, TOP_LEVEL_NAMES, 'Expectation')
+-    require(value['schema'] == 'feature63-r7-custody-expectation-v1' and value['approved'] is True
++    require(value['schema'] == 'feature63-r8-custody-expectation-v1' and value['approved'] is True
+             and value['assignedBy'] == '/root', 'Expectation is not root-approved')
+     require(value['branch'] in ('success', 'failure'), 'Expectation branch differs')
+     require(type(value['sourcePin']) is str and re.fullmatch('[0-9a-f]{40}', value['sourcePin']),
+@@ -310,7 +310,7 @@
+     exact(value['paths'], PATH_NAMES, 'Expectation paths')
+     exact(value['authority'], AUTHORITY_NAMES, 'Expectation authority')
+     exact(value['expected'], EXPECTED_NAMES, 'Expectation actual values')
+-    require(value['paths']['freshPrefix'] == 'work/feature63-human-wave-composition-r7', 'R7 prefix differs')
++    require(value['paths']['freshPrefix'] == 'work/feature63-human-wave-composition-r8', 'R8 prefix differs')
+     expected = value['expected']
+     require(type(expected['matchId']) is str and bool(expected['matchId']), 'Expected match ID differs')
+     require(type(expected['wrapperExitCode']) is int, 'Expected wrapper exit differs')
+@@ -338,7 +338,7 @@
+ 
+ def main():
+     require(sys.flags.optimize == 0, 'Python optimization is prohibited')
+-    require(len(sys.argv) == 3, 'Usage: fresh-r7-custody.py EXPECTATION_JSON EXPECTATION_SHA256')
++    require(len(sys.argv) == 3, 'Usage: fresh-r8-custody.py EXPECTATION_JSON EXPECTATION_SHA256')
+     expectation_path = canonical_existing(sys.argv[1], 'Expectation path')
+     expectation_sha = digest(sys.argv[2], 'Expectation command-line digest')
+     expectation_raw, _info = stable_read(expectation_path, 1024 * 1024)
+@@ -350,7 +350,7 @@
+     paths = expectation['paths']
+     bindings = canonical_existing(paths['bindingsRoot'], 'Bindings root')
+     control = canonical_existing(paths['controlRoot'], 'Control root')
+-    prefix = canonical_existing(OWNED / paths['freshPrefix'], 'R7 prefix')
++    prefix = canonical_existing(OWNED / paths['freshPrefix'], 'R8 prefix')
+     output_parent = canonical_existing(expectation['outputParent'], 'Output parent')
+     require(output_parent.is_dir() and not path_is_within(output_parent, ROOT)
+             and not path_is_within(output_parent, OWNED), 'Output parent is not external')
+@@ -409,7 +409,7 @@
+     slot = assignment.get('exclusiveHeavyApproval')
+     require(type(slot) is dict and slot.get('approved') is True and slot.get('holder') == '/root/ai_modes'
+             and type(slot.get('token')) is str
+-            and slot['token'].startswith('heavy-runtime-1-feature63-r7-'), 'Capture slot differs')
++            and slot['token'].startswith('heavy-runtime-1-feature63-r8-'), 'Capture slot differs')
+ 
+     for value, label in ((source, 'source'), (build, 'build'), (browser, 'browser'), (capture, 'capture')):
+         require(value.get('sourcePin') == source_pin, label + ' source pin differs')
+@@ -420,7 +420,7 @@
+             and build.get('schema') == 'feature63-build-binding-v1'
+             and build.get('approved') is True, 'Source/build schema or approval differs')
+     require(build.get('webDistPath') == str(prefix / 'dist')
+-            and build.get('serverBuildPath') == str(prefix / 'server'), 'R7 build paths differ')
++            and build.get('serverBuildPath') == str(prefix / 'server'), 'R8 build paths differ')
+     require(capture.get('schema') == 'feature63-dedicated-capture-result-v1'
+             and capture.get('matchId') == expected['matchId']
+             and capture.get('cleanupFailures') == []
+@@ -547,7 +547,7 @@
+     require(ports == {'4173': ['socket:[3783]'], '5373': [], '5374': []}
+             and os.readlink('/proc/1063/fd/22') == 'socket:[3783]', 'Protected/private listener state differs')
+ 
+-    raw = canonical_existing(expected['rawIdentity']['path'], 'Fresh R7 raw path')
++    raw = canonical_existing(expected['rawIdentity']['path'], 'Fresh R8 raw path')
+     require(raw == prefix / 'server-data/server.sqlite', 'Fresh raw path differs')
+     before = raw.lstat()
+     require(stat.S_ISREG(before.st_mode) and before.st_dev == expected['rawIdentity']['device']
+@@ -583,7 +583,7 @@
+         raw_record = {'path': str(raw), 'bytes': sealed.st_size, 'sha256': hasher.hexdigest(),
+                       'device': sealed.st_dev, 'inode': sealed.st_ino}
+ 
+-        output = Path(tempfile.mkdtemp(prefix='ovf-root-feature63-r7-' + branch + '-custody-',
++        output = Path(tempfile.mkdtemp(prefix='ovf-root-feature63-r8-' + branch + '-custody-',
+                                       dir=str(output_parent)))
+         require(stat.S_IMODE(output.stat().st_mode) == 0o700 and not list(output.iterdir()),
+                 'Fresh custody output is not empty and private')
+@@ -618,7 +618,7 @@
+                     'Passing raw lost single-link custody')
+             independent = put(output, 'root-independent-native-closure.json', {
+                 'schema': 'feature63-root-independent-native-closure-v1',
+-                'status': 'ROOT_R7_PASSING_CAPTURE_LIFETIMES_CLOSED',
++                'status': 'ROOT_R8_PASSING_CAPTURE_LIFETIMES_CLOSED',
+                 **common_closure,
+             })
+             lifetime = put(output, 'root-native-lifetime.json', {
+@@ -636,7 +636,7 @@
+                 'schema': 'feature63-closed-raw-v1',
+                 'sourcePin': source_pin,
+                 'matchId': expected['matchId'],
+-                'sealId': 'feature63-r7-' + source_pin[:12] + '-' + output.name.rsplit('-', 1)[-1],
++                'sealId': 'feature63-r8-' + source_pin[:12] + '-' + output.name.rsplit('-', 1)[-1],
+                 'producerClosed': True,
+                 'ownedProcessesClosed': True,
+                 'rootSealed': True,
+@@ -664,8 +664,8 @@
+             })
+             final_raw_expected = sealed
+             report = {
+-                'schema': 'feature63-r7-custody-result-v1',
+-                'status': 'PASSING_R7_RAW_SEALED_SINGLE_LINK_EXTRACTION_INPUTS_PENDING',
++                'schema': 'feature63-r8-custody-result-v1',
++                'status': 'PASSING_R8_RAW_SEALED_SINGLE_LINK_EXTRACTION_INPUTS_PENDING',
+                 'sourcePin': source_pin,
+                 'branch': branch,
+                 'rootOutput': str(output),
+@@ -687,14 +687,14 @@
+             retained_record = {'path': str(retained), 'bytes': linked.st_size, 'sha256': raw_record['sha256'],
+                                'device': linked.st_dev, 'inode': linked.st_ino, 'mode': 0o444, 'links': 2}
+             lifetime = put(output, 'root-native-lifetime-disposition.json', {
+-                'schema': 'feature63-r7-failed-native-lifetime-disposition-v1',
+-                'status': 'ROOT_R7_FAILED_CAPTURE_REGISTERED_LIFETIMES_CLOSED',
++                'schema': 'feature63-r8-failed-native-lifetime-disposition-v1',
++                'status': 'ROOT_R8_FAILED_CAPTURE_REGISTERED_LIFETIMES_CLOSED',
+                 **common_closure,
+                 'helperCompatibleApprovalIssued': False,
+             })
+             failure = put(output, 'root-failure-disposition.json', {
+-                'schema': 'feature63-r7-failure-custody-v1',
+-                'status': 'FAILED_R7_RAW_RETAINED_NO_EXTRACTION',
++                'schema': 'feature63-r8-failure-custody-v1',
++                'status': 'FAILED_R8_RAW_RETAINED_NO_EXTRACTION',
+                 'sourcePin': source_pin,
+                 'matchId': expected['matchId'],
+                 'captureResult': capture_record,
+@@ -713,8 +713,8 @@
+             })
+             final_raw_expected = linked
+             report = {
+-                'schema': 'feature63-r7-custody-result-v1',
+-                'status': 'FAILED_R7_RAW_SEALED_AND_RETAINED_NO_EXTRACTION',
++                'schema': 'feature63-r8-custody-result-v1',
++                'status': 'FAILED_R8_RAW_SEALED_AND_RETAINED_NO_EXTRACTION',
+                 'sourcePin': source_pin,
+                 'branch': branch,
+                 'rootOutput': str(output),
+--- originals/expectation-schema.json
++++ expectation-schema.json
+@@ -1,9 +1,9 @@
+ {
+-  "schema": "feature63-r7-custody-expectation-schema-v1",
+-  "utilityExpectationSchema": "feature63-r7-custody-expectation-v1",
++  "schema": "feature63-r8-custody-expectation-schema-v1",
++  "utilityExpectationSchema": "feature63-r8-custody-expectation-v1",
+   "cli": [
+     "python",
+-    "/ABSOLUTE/REVIEWED/fresh-r7-custody.py",
++    "/ABSOLUTE/REVIEWED/fresh-r8-custody.py",
+     "/ABSOLUTE/ROOT_FILLED/expectation.json",
+     "EXPECTATION_SHA256"
+   ],
+@@ -22,18 +22,18 @@
+     "outputParent"
+   ],
+   "fixedValues": {
+-    "schema": "feature63-r7-custody-expectation-v1",
++    "schema": "feature63-r8-custody-expectation-v1",
+     "approved": true,
+     "assignedBy": "/root",
+     "roots": {
+       "root": "/home/morgana/Projects/orcs-vs-Fairies",
+       "owned": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies"
+     },
+-    "freshPrefix": "work/feature63-human-wave-composition-r7"
++    "freshPrefix": "work/feature63-human-wave-composition-r8"
+   },
+   "rootFilledScalars": {
+     "branch": "success or failure, selected from the actual completed capture",
+-    "sourcePin": "the actual full lowercase pin in the generated R7 capture assignment; never the pre-import HEAD by inference",
++    "sourcePin": "the actual full lowercase pin in the generated R8 capture assignment; never the pre-import HEAD by inference",
+     "utilitySha256": "SHA-256 of the independently reviewed utility bytes",
+     "outputParent": "an existing canonical external directory outside both checkouts; for failure it must be on the fresh raw inode's filesystem so the retained hardlink is possible"
+   },
+@@ -72,9 +72,9 @@
+     "captureAssignmentActual": "<controlRoot>/capture-assignment.actual.json",
+     "command": "<controlRoot>/command.json",
+     "captureLaunchConsumed": "<controlRoot>/capture-launch-consumed.json",
+-    "captureResult": "<owned>/work/feature63-human-wave-composition-r7/lifecycle/driver-result.json",
+-    "serverOwnership": "<owned>/work/feature63-human-wave-composition-r7/lifecycle/server-ownership.json",
+-    "driverEvents": "<owned>/work/feature63-human-wave-composition-r7/lifecycle/driver-events.ndjson"
++    "captureResult": "<owned>/work/feature63-human-wave-composition-r8/lifecycle/driver-result.json",
++    "serverOwnership": "<owned>/work/feature63-human-wave-composition-r8/lifecycle/server-ownership.json",
++    "driverEvents": "<owned>/work/feature63-human-wave-composition-r8/lifecycle/driver-events.ndjson"
+   },
+   "expectedExactKeys": [
+     "matchId",
+@@ -105,6 +105,6 @@
+     "success": "wrapperExitCode is zero and firstFailure is null",
+     "failure": "wrapperExitCode is nonzero and firstFailure is the complete actual nonempty failure object"
+   },
+-  "fillTiming": "Root fills and separately hashes this object only after the R7 capture, launcher closure, and all exact authority files exist.",
++  "fillTiming": "Root fills and separately hashes this object only after the R8 capture, launcher closure, and all exact authority files exist.",
+   "executionStatus": "This schema is preparation only and grants no authority to run the utility."
+ }

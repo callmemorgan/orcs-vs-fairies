@@ -1,0 +1,341 @@
+{
+  "boundedDiscoveryQueries": [
+    {
+      "kind": "bounded-selection",
+      "parameters": [
+        "290ede87-8469-42d7-bb74-0fb730e584e2"
+      ],
+      "returnedRows": 1,
+      "text": "SELECT length(CAST(config AS BLOB)),length(CAST(checkpoint AS BLOB)) FROM matches WHERE id=?"
+    },
+    {
+      "kind": "bounded-selection",
+      "parameters": [
+        "290ede87-8469-42d7-bb74-0fb730e584e2",
+        2020,
+        2024
+      ],
+      "returnedRows": 2,
+      "text": "SELECT tick,json_extract(views,'$[0].time'),length(CAST(views AS BLOB)) FROM frames WHERE match_id=? AND tick IN (?,?) ORDER BY tick"
+    },
+    {
+      "kind": "bounded-selection",
+      "parameters": [
+        "290ede87-8469-42d7-bb74-0fb730e584e2",
+        1928,
+        2020,
+        2024,
+        2200,
+        2204,
+        2224,
+        2244,
+        2248,
+        2268,
+        2288,
+        2292,
+        2324,
+        2328
+      ],
+      "returnedRows": 13,
+      "text": "SELECT tick,length(CAST(views AS BLOB)) FROM frames WHERE match_id=? AND tick IN (?,?,?,?,?,?,?,?,?,?,?,?,?) ORDER BY tick"
+    }
+  ],
+  "completeQualifyingHumanFramesRetained": true,
+  "inputAssignmentSha256": "4b0ad40a9561044589265c2a2d5775a52c1fed3192f079ae61d086bdfc96f018",
+  "matchId": "290ede87-8469-42d7-bb74-0fb730e584e2",
+  "schema": "feature63-root-native-selection-v1",
+  "selectedCandidateIndex": 58,
+  "selection": {
+    "checkpointFile": "native-wave-checkpoint-01.json",
+    "checkpointTick": 2040,
+    "checkpointTime": 101.99999999999635,
+    "frameTicks": [
+      1928,
+      2020,
+      2024,
+      2200,
+      2204,
+      2224,
+      2244,
+      2248,
+      2268,
+      2288,
+      2292,
+      2324,
+      2328
+    ],
+    "humanObservations": [
+      {
+        "eventId": "aeea8d20-c12b-4509-b34a-3c4d078c51e6",
+        "eventTick": 2199,
+        "frameTick": 2200,
+        "profile": "human-one",
+        "source": 7,
+        "sourceOwner": 0,
+        "target": 28,
+        "targetOwner": 3,
+        "wireOrdinal": 558
+      },
+      {
+        "eventId": "00c391d4-ea21-4e44-afc6-f1b607cff81c",
+        "eventTick": 2203,
+        "frameTick": 2204,
+        "profile": "human-one",
+        "source": 14,
+        "sourceOwner": 1,
+        "target": 28,
+        "targetOwner": 3,
+        "wireOrdinal": 559
+      },
+      {
+        "eventId": "67603a65-15b7-4129-8900-a32824974b5a",
+        "eventTick": 2222,
+        "frameTick": 2224,
+        "profile": "human-one",
+        "source": 7,
+        "sourceOwner": 0,
+        "target": 28,
+        "targetOwner": 3,
+        "wireOrdinal": 564
+      },
+      {
+        "eventId": "6f91b5f7-2715-47f4-93b4-0dd359467c4b",
+        "eventTick": 2223,
+        "frameTick": 2224,
+        "profile": "human-one",
+        "source": 14,
+        "sourceOwner": 1,
+        "target": 28,
+        "targetOwner": 3,
+        "wireOrdinal": 564
+      },
+      {
+        "eventId": "3aef4a29-e483-4e73-837b-2063d4f08ca5",
+        "eventTick": 2243,
+        "frameTick": 2244,
+        "profile": "human-one",
+        "source": 14,
+        "sourceOwner": 1,
+        "target": 28,
+        "targetOwner": 3,
+        "wireOrdinal": 569
+      },
+      {
+        "eventId": "6d50d213-a751-4e47-993d-f21791df0405",
+        "eventTick": 2245,
+        "frameTick": 2248,
+        "profile": "human-one",
+        "source": 7,
+        "sourceOwner": 0,
+        "target": 28,
+        "targetOwner": 3,
+        "wireOrdinal": 570
+      },
+      {
+        "eventId": "08e59402-84d1-491b-adee-79f9e7a221c9",
+        "eventTick": 2267,
+        "frameTick": 2268,
+        "profile": "human-one",
+        "source": 14,
+        "sourceOwner": 1,
+        "target": 94,
+        "targetOwner": 3,
+        "wireOrdinal": 575
+      },
+      {
+        "eventId": "979dd386-67f8-4c0b-9532-27cb98151877",
+        "eventTick": 2268,
+        "frameTick": 2268,
+        "profile": "human-one",
+        "source": 7,
+        "sourceOwner": 0,
+        "target": 94,
+        "targetOwner": 3,
+        "wireOrdinal": 575
+      },
+      {
+        "eventId": "2fc70325-8df2-4e12-a26f-561083a063f2",
+        "eventTick": 2287,
+        "frameTick": 2288,
+        "profile": "human-one",
+        "source": 14,
+        "sourceOwner": 1,
+        "target": 94,
+        "targetOwner": 3,
+        "wireOrdinal": 580
+      },
+      {
+        "eventId": "c63a8fb0-8c94-4ae4-acf3-0a67e6569c41",
+        "eventTick": 2290,
+        "frameTick": 2292,
+        "profile": "human-one",
+        "source": 7,
+        "sourceOwner": 0,
+        "target": 94,
+        "targetOwner": 3,
+        "wireOrdinal": 581
+      },
+      {
+        "eventId": "18acea1d-cd3f-4fcf-bd1c-abcc1a5316c1",
+        "eventTick": 2322,
+        "frameTick": 2324,
+        "profile": "human-one",
+        "source": 7,
+        "sourceOwner": 0,
+        "target": 21,
+        "targetOwner": 2,
+        "wireOrdinal": 589
+      },
+      {
+        "eventId": "aabb21ad-ab3e-41a6-8bcc-d73ad890778e",
+        "eventTick": 2327,
+        "frameTick": 2328,
+        "profile": "human-one",
+        "source": 14,
+        "sourceOwner": 1,
+        "target": 21,
+        "targetOwner": 2,
+        "wireOrdinal": 590
+      },
+      {
+        "eventId": "aeea8d20-c12b-4509-b34a-3c4d078c51e6",
+        "eventTick": 2199,
+        "frameTick": 2200,
+        "profile": "human-two",
+        "source": 7,
+        "sourceOwner": 0,
+        "target": 28,
+        "targetOwner": 3,
+        "wireOrdinal": 550
+      },
+      {
+        "eventId": "00c391d4-ea21-4e44-afc6-f1b607cff81c",
+        "eventTick": 2203,
+        "frameTick": 2204,
+        "profile": "human-two",
+        "source": 14,
+        "sourceOwner": 1,
+        "target": 28,
+        "targetOwner": 3,
+        "wireOrdinal": 551
+      },
+      {
+        "eventId": "67603a65-15b7-4129-8900-a32824974b5a",
+        "eventTick": 2222,
+        "frameTick": 2224,
+        "profile": "human-two",
+        "source": 7,
+        "sourceOwner": 0,
+        "target": 28,
+        "targetOwner": 3,
+        "wireOrdinal": 556
+      },
+      {
+        "eventId": "6f91b5f7-2715-47f4-93b4-0dd359467c4b",
+        "eventTick": 2223,
+        "frameTick": 2224,
+        "profile": "human-two",
+        "source": 14,
+        "sourceOwner": 1,
+        "target": 28,
+        "targetOwner": 3,
+        "wireOrdinal": 556
+      },
+      {
+        "eventId": "3aef4a29-e483-4e73-837b-2063d4f08ca5",
+        "eventTick": 2243,
+        "frameTick": 2244,
+        "profile": "human-two",
+        "source": 14,
+        "sourceOwner": 1,
+        "target": 28,
+        "targetOwner": 3,
+        "wireOrdinal": 561
+      },
+      {
+        "eventId": "6d50d213-a751-4e47-993d-f21791df0405",
+        "eventTick": 2245,
+        "frameTick": 2248,
+        "profile": "human-two",
+        "source": 7,
+        "sourceOwner": 0,
+        "target": 28,
+        "targetOwner": 3,
+        "wireOrdinal": 562
+      },
+      {
+        "eventId": "08e59402-84d1-491b-adee-79f9e7a221c9",
+        "eventTick": 2267,
+        "frameTick": 2268,
+        "profile": "human-two",
+        "source": 14,
+        "sourceOwner": 1,
+        "target": 94,
+        "targetOwner": 3,
+        "wireOrdinal": 567
+      },
+      {
+        "eventId": "979dd386-67f8-4c0b-9532-27cb98151877",
+        "eventTick": 2268,
+        "frameTick": 2268,
+        "profile": "human-two",
+        "source": 7,
+        "sourceOwner": 0,
+        "target": 94,
+        "targetOwner": 3,
+        "wireOrdinal": 567
+      },
+      {
+        "eventId": "2fc70325-8df2-4e12-a26f-561083a063f2",
+        "eventTick": 2287,
+        "frameTick": 2288,
+        "profile": "human-two",
+        "source": 14,
+        "sourceOwner": 1,
+        "target": 94,
+        "targetOwner": 3,
+        "wireOrdinal": 572
+      },
+      {
+        "eventId": "c63a8fb0-8c94-4ae4-acf3-0a67e6569c41",
+        "eventTick": 2290,
+        "frameTick": 2292,
+        "profile": "human-two",
+        "source": 7,
+        "sourceOwner": 0,
+        "target": 94,
+        "targetOwner": 3,
+        "wireOrdinal": 573
+      },
+      {
+        "eventId": "18acea1d-cd3f-4fcf-bd1c-abcc1a5316c1",
+        "eventTick": 2322,
+        "frameTick": 2324,
+        "profile": "human-two",
+        "source": 7,
+        "sourceOwner": 0,
+        "target": 21,
+        "targetOwner": 2,
+        "wireOrdinal": 581
+      },
+      {
+        "eventId": "aabb21ad-ab3e-41a6-8bcc-d73ad890778e",
+        "eventTick": 2327,
+        "frameTick": 2328,
+        "profile": "human-two",
+        "source": 14,
+        "sourceOwner": 1,
+        "target": 21,
+        "targetOwner": 2,
+        "wireOrdinal": 582
+      }
+    ],
+    "launchAfterTick": 2024,
+    "launchBeforeTick": 2020,
+    "launchTick": 2022,
+    "waveId": 1,
+    "waveTime": 101.0999999999964
+  },
+  "sourcePin": "d28190fcd376156d6af016cd62fab8915d719fa7",
+  "truncated": false
+}

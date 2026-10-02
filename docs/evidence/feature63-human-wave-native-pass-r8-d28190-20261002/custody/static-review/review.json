@@ -1,0 +1,219 @@
+{
+  "author": "autosave_repair_admission",
+  "blockingFindings": [],
+  "candidateManifest": {
+    "bytes": 1591,
+    "mode": "0444",
+    "path": "/tmp/feature63-r8-custody-candidate.HXh6JaEg/manifest.json",
+    "sha256": "361c39e1f35262467f7b4459266f0eef15e08dc8858e5d4cab4d5b3092c19051"
+  },
+  "exactTransform": {
+    "forwardMatchesSavedCandidate": true,
+    "inverseMatchesReviewedR7Originals": true,
+    "originalSchemaSha256": "18d1444377e49c14120e7a9c399459de54e5757a889599a24ca4ef4b2c7862f2",
+    "originalUtilitySha256": "da53c2865998eb6a6851eeb99a4b7e3cae85ef0b474baffc90059a5c5623e824",
+    "otherBytesChanged": false,
+    "schema": {
+      "R7ToR8": 2,
+      "r7ToR8": 8,
+      "total": 10
+    },
+    "script": {
+      "R7ToR8": 10,
+      "r7ToR8": 10,
+      "total": 20
+    }
+  },
+  "feature63Qualified": false,
+  "frozenExtractorCompatibility": {
+    "attemptRegex": "feature63-human-wave-composition-r[1-9][0-9]*",
+    "closedRawSchema": "feature63-closed-raw-v1",
+    "custodySchema": "feature63-root-raw-custody-v1",
+    "failureRetainedRawCannotMeetHelperSingleLinkGate": true,
+    "firstExtractionInputFieldCount": 30,
+    "firstExtractionInputFields": [
+      "approved",
+      "assignedBy",
+      "auditor",
+      "buildBinding",
+      "captureAssignment",
+      "captureResult",
+      "closedRawReceipt",
+      "collector",
+      "collectorAssignment",
+      "collectorFiles",
+      "extractAuthorized",
+      "freshPrefix",
+      "helperSha256",
+      "nativeAuditAuthorized",
+      "nativeSchemaReview",
+      "outputRoot",
+      "ownedNativeLifetimeIndependentlyAdmitted",
+      "productVersion",
+      "publicDriver",
+      "publicFiles",
+      "publicProducer",
+      "rawDatabase",
+      "rootCustodyReceipt",
+      "rootExtractionAdmissionApproved",
+      "rootNativeLifetimeReceipt",
+      "schema",
+      "serverBuild",
+      "sourceInventory",
+      "sourcePin",
+      "sourceRoot"
+    ],
+    "helperBytes": 54321,
+    "helperRawSingleLinkLine": 476,
+    "helperSha256": "fccd7ba02a92c2496b56699cb8fbb323f16cb2a817596093951b10a72446e7d8",
+    "helperUnmodified": true,
+    "lifetimeSchema": "feature63-root-native-lifetime-disposition-v1",
+    "prefixSourceLine": 580,
+    "r8PrefixAccepted": true,
+    "receiptChecksHelperLines": [
+      600,
+      616
+    ],
+    "separateNativeSchemaReviewStillRequiredHelperLines": [
+      192,
+      194
+    ],
+    "successSchemaAndFieldCompatibilityPreserved": true,
+    "thirtyFieldsMatchUnchangedGuide": true
+  },
+  "fullDiff": {
+    "bytes": 11646,
+    "mode": "0444",
+    "path": "/tmp/feature63-r8-custody-candidate.HXh6JaEg/r7-to-r8-full.diff",
+    "sha256": "6522a52237ee2a0f299fbbc1c47eb143b64958c186fa9481320c6373b1959b8f"
+  },
+  "futureSourcePin": null,
+  "independentStaticChecks": {
+    "bytes": 15383,
+    "mode": "0400",
+    "path": "/tmp/feature63-r8-custody-static-review-autosave-repair-admission-6sjliizz/independent-static-checks.json",
+    "sha256": "f2e3339095060844de8d9f0febf8afabf3e570acb3df07c578e20d1e5cebeb14"
+  },
+  "passedR8CaptureExists": false,
+  "preservedChecks": [
+    {
+      "candidateLines": [
+        94,
+        117,
+        135,
+        142,
+        375,
+        381,
+        525,
+        529
+      ],
+      "claim": "Authority definitions are each authenticated by stable canonical single-FD reads and parsed from those same verified cached bytes. Duplicate authority-path loads are rejected; driver events parse verified raw cached bytes."
+    },
+    {
+      "candidateLines": [
+        300,
+        336,
+        339,
+        360,
+        398,
+        536,
+        550,
+        581
+      ],
+      "claim": "All expectation/hash/script/Git/inventory/command/lifetime/holder/sidecar gates precede the raw seal and first raw-content hash read. Root must separately supply the post-capture expectation and digest; the schema file grants no execution authority.",
+      "schemaExecutionStatus": "This schema is preparation only and grants no authority to run the utility."
+    },
+    {
+      "candidateLines": [
+        569,
+        573,
+        616,
+        664,
+        728,
+        735
+      ],
+      "claim": "Success keeps the fresh raw inode at nlink1/mode0444 and issues unchanged closed-raw/root-custody/root-native-lifetime success receipt schemas. Final identity checks retain the link-count invariant."
+    },
+    {
+      "candidateLines": [
+        680,
+        726,
+        728,
+        735
+      ],
+      "claim": "Only failure creates the external hardlink; both paths must identify the same inode at nlink2/mode0444. Failure emits dispositions with no helper-compatible approval, extraction, SQL, audit, qualification, slot release, or retry."
+    },
+    {
+      "candidateLines": [
+        663,
+        676,
+        677,
+        678,
+        709,
+        711,
+        724,
+        725
+      ],
+      "claim": "Both success nativeSchemaReviewIssued values remain false; custody generates no native schema review, extraction input, or extraction admission."
+    },
+    {
+      "candidateLines": [
+        201,
+        222,
+        501,
+        536,
+        594,
+        614,
+        624,
+        634
+      ],
+      "claim": "Registered resource keys must be unique and match expectation, closure, and driver-event records. Held PIDFD evidence is required per registered record; wrapper and launcher receive separate bounded PID/start observations. Finite observations do not exclude missed forks or reparenting.",
+      "unobservedDescendantsExcluded": false
+    }
+  ],
+  "qualifications": [
+    "This review covers static phase substitution and preserved custody contracts only. It approves no execution, expectation, authority, slot, capture, custody, extraction, or native audit.",
+    "Root reports current source a8152d0dc83dff49fb93f09606e7bbf2c3510894 with R7 correction in progress and no passed R8 capture. No checkout or Git probe was performed here and no future pin was inferred.",
+    "No live lifetime or filesystem custody state is established by this source review. Finite PID/start evidence does not prove complete descendant enumeration. Feature63 remains unqualified."
+  ],
+  "reviewedFiles": [
+    {
+      "bytes": 39374,
+      "mode": "0444",
+      "path": "/tmp/feature63-r8-custody-candidate.HXh6JaEg/fresh-r8-custody.py",
+      "role": "custodyUtility",
+      "sha256": "8d913e9e3936170156162c23b917eeaa5c2e2a03ea48a0e136ab0a88a8b52939"
+    },
+    {
+      "bytes": 3719,
+      "mode": "0444",
+      "path": "/tmp/feature63-r8-custody-candidate.HXh6JaEg/expectation-schema.json",
+      "role": "expectationSchema",
+      "sha256": "22fcf623fffd8509cbc2e0c11e36ee6a12fbd376fd286d796b678661cc7b0e03"
+    },
+    {
+      "bytes": 54321,
+      "mode": "0644",
+      "path": "/tmp/feature63-root-extraction-candidate-r2-LSZWmJUg/extract-closed63.py",
+      "role": "frozenExtractor",
+      "sha256": "fccd7ba02a92c2496b56699cb8fbb323f16cb2a817596093951b10a72446e7d8"
+    }
+  ],
+  "schema": "feature63-r8-custody-independent-static-review-v1",
+  "scope": {
+    "candidateExecuted": false,
+    "candidateImported": false,
+    "canonicalEditPerformed": false,
+    "custodyOrExtractionExecuted": false,
+    "databaseCheckpointProfileOrWireRead": false,
+    "expectationOrAuthorityOrSlotCreated": false,
+    "helperExecuted": false,
+    "helperImported": false,
+    "processProcOrPortProbePerformed": false,
+    "rawSealedOrHardlinked": false,
+    "runtimeExecuted": false
+  },
+  "sourcePinSuppliedByRoot": "a8152d0dc83dff49fb93f09606e7bbf2c3510894",
+  "status": "PASS_STATIC_R8_CUSTODY_PREPARATION_RUNTIME_HELD",
+  "unobservedDescendantsExcluded": false
+}

@@ -1,0 +1,562 @@
+{
+  "approvalIssued": false,
+  "assignmentIssued": false,
+  "auditAssignment": {
+    "bundleReceiptDescriptors": {
+      "closedRawReceipt": "closed-raw-receipt.json",
+      "collectorReceipt": "collector-receipt.json",
+      "extractionReceipt": "extraction-receipt.json",
+      "sourceBindingReceipt": "source-binding-receipt.json"
+    },
+    "exact12Fields": [
+      "schema",
+      "scope",
+      "sourcePin",
+      "productVersion",
+      "auditAuthorized",
+      "auditorSha256",
+      "publicProducerSha256",
+      "publicDriverSha256",
+      "sourceBindingReceipt",
+      "closedRawReceipt",
+      "extractionReceipt",
+      "collectorReceipt"
+    ],
+    "firstGeneratedAuditAuthorized": false,
+    "independentAuthorizationGate": "Root inspects extraction before separately approved audit assignment copy, auditAuthorized:true and externally authenticated assignment digest. Preserve original extracted bytes and provenance.",
+    "literalFilename": "root-assignment.json",
+    "nativeAuditorLines348to361": "Exact12 fields, external digest matching complete assignment bytes, fixed schema/scope/version, full pin,auditAuthorized:true,self frozen auditor hash.",
+    "nativeAuditorLines366to412": "Authenticated approved schema review, actual source binding, closed and sealed custody, closedOnly/rawUnchanged/noLivePrivateReadback/noReplay extraction flags.",
+    "productVersion": "4.0.2",
+    "rootExtractionAdmissionConsumedByAuditor": false,
+    "schema": "feature63-root-audit-assignment-v1",
+    "scope": "original-feature63-closed-native-composition",
+    "sourcePin": "d28190fcd376156d6af016cd62fab8915d719fa7",
+    "successDoesNotQualifyFeature": true,
+    "successQualificationClaim": false,
+    "successStatus": "closed-native-composition-pass-pending-root-disposition"
+  },
+  "auditorExecuted": false,
+  "author": "/root/architecture",
+  "authorityIssued": false,
+  "captureMetadata": {
+    "cleanupFailures": [],
+    "closedFreshDatabaseIdentity": {
+      "device": 52,
+      "inode": 43333851,
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8/server-data/server.sqlite"
+    },
+    "feature63Qualified": false,
+    "firstFailure": null,
+    "resultDescriptor": {
+      "bytes": 1640,
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8/lifecycle/driver-result.json",
+      "sha256": "b637ccd3643e7fc0ef010c12ada0a7f891938b8167086ff254d2b62a808e8500"
+    },
+    "status": "CAPTURE_PASS_ROOT_SEAL_AND_EXTRACTION_PENDING"
+  },
+  "collectorInputs": {
+    "bounds": {
+      "checkpointPayloadUpperBoundBytes": 6291456,
+      "maxQueries": 300,
+      "maxRecords": 4,
+      "maxSeconds": 300,
+      "metadataReserveBytes": 2097152,
+      "pollSeconds": 1,
+      "queryLogBytes": 655360,
+      "totalCollectorBytes": 8388608
+    },
+    "checkpointCount": 1,
+    "checkpointDescriptorsCopiedMetadataOnly": [
+      {
+        "bytes": 113124,
+        "checkpointTextSha256": "813743504f372dbd00506681edf017caf1ffbd4683551a1895ea6363c28b4c4e",
+        "checkpointTick": 2040,
+        "file": "native-wave-checkpoint-01.json",
+        "matchTick": 2048,
+        "queryOrdinal": 101
+      }
+    ],
+    "checkpointPayloadUnverifiedHere": true,
+    "completeFileSetRule": "N=1..4 contiguous checkpoints01..N plus receipt and queries; directory filenames must equal descriptor set.",
+    "literalPaths": {
+      "collector-receipt.json": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8/native-collector/collector-receipt.json",
+      "native-wave-checkpoint-01.json": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8/native-collector/native-wave-checkpoint-01.json",
+      "queries.ndjson": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8/native-collector/queries.ndjson"
+    },
+    "queryFileUnreadUnhashedHere": true,
+    "receiptDescriptor": {
+      "bytes": 10735,
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8/native-collector/collector-receipt.json",
+      "sha256": "c61d34bab76a6753e48ef246c20b1626d3f5a4e7f6fb2d3f71e713aef439bac9"
+    },
+    "records": 1,
+    "reviewIdentity": {
+      "bytes": 5656,
+      "path": "/tmp/ovf-root-feature63-r8-bindings-8v654jsk/root-review.json",
+      "sha256": "c004f6d1354a88096c85eb4f2f35b1207ef0a847c314612eed805d6a08645bf5"
+    },
+    "sourceInventory": {
+      "bytes": 183345,
+      "path": "/tmp/ovf-root-feature63-r8-bindings-8v654jsk/source-binding.json",
+      "sha256": "3b18aa710daf0e979db1c22038d0ab686d33730711b2eda488bd531dfda9d7dc"
+    }
+  },
+  "descriptorShapes": {
+    "bundleExactKeys": [
+      "file",
+      "bytes",
+      "sha256"
+    ],
+    "externalExactKeys": [
+      "path",
+      "bytes",
+      "sha256"
+    ],
+    "rawExactKeys": [
+      "path",
+      "bytes",
+      "sha256",
+      "device",
+      "inode"
+    ]
+  },
+  "equalities": [
+    "All sourcePin values equal actual future captureAssignment.sourcePin.",
+    "All matchId values equal actual passing captureResult.matchId.",
+    "captureResult.closedFreshDatabaseIdentity == {path,device,inode} from rawDatabase.",
+    "closedRaw.dbIdentity == collectorReceipt.dbIdentity == {device,inode} from rawDatabase.",
+    "closedRaw.rawBytes == rawDatabase.bytes; closedRaw.rawSha256 == rawDatabase.sha256.",
+    "custody.rawDatabase == input.rawDatabase; custody.captureResult == input.captureResult; custody.closedRawReceipt == input.closedRawReceipt.",
+    "lifetime.captureResult == input.captureResult; lifetime.ownedNativeLifetimeIndependentlyAdmitted == input.ownedNativeLifetimeIndependentlyAdmitted == true.",
+    "input.sourceInventory == captureAssignment.sourceBinding == collectorAssignment.sourceInventory == collectorReceipt.sourceInventory.",
+    "input.buildBinding == captureAssignment.buildBinding; input.publicProducer/collector/auditor == matching captureAssignment descriptors.",
+    "input.publicDriver.sha256 == captureAssignment.wrapperSha256.",
+    "collectorReceipt.assignmentIdentity == input.collectorAssignment; collectorReceipt.publicMatchIdentity == collectorAssignment.publicMatchIdentity == input.publicFiles[public-match-identity.json].",
+    "nativeSchemaReview.sourcePin == input.sourcePin; nativeSchemaReview.auditorSha256 == input.auditor.sha256."
+  ],
+  "exact30ExtractionFields": [
+    "approved",
+    "assignedBy",
+    "auditor",
+    "buildBinding",
+    "captureAssignment",
+    "captureResult",
+    "closedRawReceipt",
+    "collector",
+    "collectorAssignment",
+    "collectorFiles",
+    "extractAuthorized",
+    "freshPrefix",
+    "helperSha256",
+    "nativeAuditAuthorized",
+    "nativeSchemaReview",
+    "outputRoot",
+    "ownedNativeLifetimeIndependentlyAdmitted",
+    "productVersion",
+    "publicDriver",
+    "publicFiles",
+    "publicProducer",
+    "rawDatabase",
+    "rootCustodyReceipt",
+    "rootExtractionAdmissionApproved",
+    "rootNativeLifetimeReceipt",
+    "schema",
+    "serverBuild",
+    "sourceInventory",
+    "sourcePin",
+    "sourceRoot"
+  ],
+  "extractionFieldMap": [
+    {
+      "field": "approved",
+      "rootAuthorityPending": true,
+      "rootFill": "Root supplies true only in a concrete approved extraction assignment after actual custody. This guide issues no approval."
+    },
+    {
+      "field": "assignedBy",
+      "knownMetadataValue": "/root",
+      "rootFill": "Fixed extraction assigner."
+    },
+    {
+      "field": "auditor",
+      "knownMetadataValue": {
+        "bytes": 64185,
+        "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/scripts/feature63/native-audit.py",
+        "sha256": "4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb"
+      },
+      "rootFill": "Copy authenticated actual capture-assignment descriptor unchanged. Source bytes were read and matched here; utility was not executed or imported."
+    },
+    {
+      "field": "buildBinding",
+      "knownMetadataValue": {
+        "bytes": 151039,
+        "path": "/tmp/ovf-root-feature63-r8-bindings-8v654jsk/build-binding.json",
+        "sha256": "580215bbeaebb9f91f3c5349bd2b25fb55863f6f427288b74dda1f3cfb7bf279"
+      },
+      "rootFill": "Copy authenticated actual capture-assignment build binding unchanged."
+    },
+    {
+      "field": "captureAssignment",
+      "knownMetadataValue": {
+        "bytes": 6958,
+        "path": "/tmp/ovf-root-feature63-r8-bindings-8v654jsk/capture-assignment.json",
+        "sha256": "7b41320eb1f25651e5c73ad208159e9cdf705bd3cdf96d05da657a62eb6641ff"
+      },
+      "rootFill": "Bind the actual R8 capture assignment complete bytes."
+    },
+    {
+      "field": "captureResult",
+      "knownMetadataValue": {
+        "bytes": 1640,
+        "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8/lifecycle/driver-result.json",
+        "sha256": "b637ccd3643e7fc0ef010c12ada0a7f891938b8167086ff254d2b62a808e8500"
+      },
+      "rootFill": "Bind the actual passing lifecycle/driver-result.json complete bytes."
+    },
+    {
+      "field": "closedRawReceipt",
+      "rootAuthorityPending": true,
+      "rootFill": "Root creates after actual owned closure and seal. Bind complete receipt bytes; use phase-neutral feature63-closed-raw-v1 schema."
+    },
+    {
+      "field": "collector",
+      "knownMetadataValue": {
+        "bytes": 18600,
+        "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/scripts/feature63/collect-launched-waves.py",
+        "sha256": "abc1c9e156521feb1674b876b51abb5b8b8371f35bbf9026006ccaaf5d721392"
+      },
+      "rootFill": "Copy authenticated actual capture-assignment descriptor unchanged. Source bytes were read and matched here; utility was not executed or imported."
+    },
+    {
+      "field": "collectorAssignment",
+      "knownMetadataValue": {
+        "bytes": 2040,
+        "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8/lifecycle/collector-assignment.json",
+        "sha256": "dbccb80707123fbc4ec389ba198047b06ed36ebd8e9b57020d8980df012ca7c3"
+      },
+      "rootFill": "Bind actual lifecycle/collector-assignment.json. Its descriptor equals collector receipt.assignmentIdentity."
+    },
+    {
+      "field": "collectorFiles",
+      "rootFill": "Bind all original bytes for the exact current three-file set: collector-receipt.json, queries.ndjson, native-wave-checkpoint-01.json. Receipt hash is metadata-read here; checkpoint digest is copied metadata only, payload unverified; query file was not read or hashed here."
+    },
+    {
+      "field": "extractAuthorized",
+      "rootAuthorityPending": true,
+      "rootFill": "Root supplies true only when authorizing concrete closed extraction. This guide issues no authorization."
+    },
+    {
+      "field": "freshPrefix",
+      "knownMetadataValue": "work/feature63-human-wave-composition-r8",
+      "rootFill": "Actual R8 relative capture prefix; preserve original raw path."
+    },
+    {
+      "field": "helperSha256",
+      "knownMetadataValue": "fccd7ba02a92c2496b56699cb8fbb323f16cb2a817596093951b10a72446e7d8",
+      "rootFill": "Frozen helper source digest, checked by source-byte read; no execution or import."
+    },
+    {
+      "field": "nativeAuditAuthorized",
+      "firstExtractionHeldValue": false,
+      "rootFill": "Keep false for first extraction. After inspecting its result, root separately authenticates an approved audit-assignment copy with auditAuthorized:true."
+    },
+    {
+      "field": "nativeSchemaReview",
+      "rootAuthorityPending": true,
+      "rootFill": "Root separately creates actual-pin/auditor review. Require approved:true, status:\"approved\", sourcePin equal actual P, auditorSha256 equal frozen auditor. Prelaunch static review is not this receipt."
+    },
+    {
+      "field": "outputRoot",
+      "rootAuthorityPending": true,
+      "rootFill": "Root selects a canonical absent external output path. Parent must exist; path must be outside protected checkout and owned checkout. Do not precreate the extraction directory."
+    },
+    {
+      "field": "ownedNativeLifetimeIndependentlyAdmitted",
+      "rootAuthorityPending": true,
+      "rootFill": "Supply true only from separate actual root lifetime disposition, with nonempty independent closure-evidence descriptors. Capture and collector reports do not establish it."
+    },
+    {
+      "field": "productVersion",
+      "knownMetadataValue": "4.0.2",
+      "rootFill": "Frozen criteria version."
+    },
+    {
+      "field": "publicDriver",
+      "knownMetadataValue": {
+        "bytes": 54514,
+        "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/scripts/feature63/run-minimal63.py",
+        "sha256": "c3bbf9b829b4f48f531d5bd2ee29a13bcd2ce23b7cc445815d3d2c90204c60e6"
+      },
+      "rootFill": "Bind actual invoked wrapper source; digest must equal capture.wrapperSha256."
+    },
+    {
+      "field": "publicFiles",
+      "rootFill": "Bind original complete bytes for all nine literal public paths. Aggregate limit 67,108,864 bytes. Early identity descriptor must equal collector assignment and receipt publicMatchIdentity."
+    },
+    {
+      "field": "publicProducer",
+      "knownMetadataValue": {
+        "bytes": 54601,
+        "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/scripts/feature63/public-producer.mjs",
+        "sha256": "cc70fa74b115a2195dbc1e350b98e715db1f4c0ca2fe4612d691923d84bed9f3"
+      },
+      "rootFill": "Copy authenticated actual capture-assignment descriptor unchanged. Source bytes were read and matched here; utility was not executed or imported."
+    },
+    {
+      "field": "rawDatabase",
+      "rootAuthorityPending": true,
+      "rootFill": "Bind only original PREFIX/server-data/server.sqlite after actual custody. Exact keys path,bytes,sha256,device,inode; SHA and sealed bytes are root-only pending. Prior stat is an observation, not custody."
+    },
+    {
+      "field": "rootCustodyReceipt",
+      "rootAuthorityPending": true,
+      "rootFill": "Root creates separate approved /root custody receipt binding rawDatabase, captureResult and closedRawReceipt objects. Bind receipt complete bytes after custody."
+    },
+    {
+      "field": "rootExtractionAdmissionApproved",
+      "firstExtractionHeldValue": false,
+      "rootFill": "Keep false for first extraction. Generated admission remains unapproved until separate root inspection and promotion."
+    },
+    {
+      "field": "rootNativeLifetimeReceipt",
+      "rootAuthorityPending": true,
+      "rootFill": "Root creates separate approved /root lifetime disposition binding capture result and nonempty independent closure evidence. Bind receipt complete bytes."
+    },
+    {
+      "field": "schema",
+      "knownMetadataValue": "feature63-root-closed-extraction-assignment-v1",
+      "rootFill": "Frozen extraction assignment schema; this guide uses a different guide-only schema."
+    },
+    {
+      "field": "serverBuild",
+      "knownMetadataValue": {
+        "bytes": 830791,
+        "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8/server/rts-server.js",
+        "sha256": "06305132854cc0317eac95d8d7412a7e985ac0e8b3e591cf1e891e5306f072e9"
+      },
+      "rootFill": "Convert actual build.serverRecords rts-server.js row to external descriptor; omit mode. This guide copied the row; built server bytes were not read here."
+    },
+    {
+      "field": "sourceInventory",
+      "knownMetadataValue": {
+        "bytes": 183345,
+        "path": "/tmp/ovf-root-feature63-r8-bindings-8v654jsk/source-binding.json",
+        "sha256": "3b18aa710daf0e979db1c22038d0ab686d33730711b2eda488bd531dfda9d7dc"
+      },
+      "rootFill": "Copy authenticated actual capture-assignment sourceBinding unchanged."
+    },
+    {
+      "field": "sourcePin",
+      "knownMetadataValue": "d28190fcd376156d6af016cd62fab8915d719fa7",
+      "rootFill": "Actual full R8 capture pin; no HEAD inference."
+    },
+    {
+      "field": "sourceRoot",
+      "knownMetadataValue": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+      "rootFill": "Canonical owned checkout path from actual capture assignment."
+    }
+  ],
+  "extractionGates": {
+    "lines192to194": "Separate nativeSchemaReview requires approved:true,status:\"approved\",actual P and frozen auditor digest.",
+    "lines476to490": "Actual raw regular/single-link/no write bits, exact size/device/inode/hash, unchanged identity and sidecars absent; these checks are not executed here.",
+    "lines568to574": "Approved /root extraction assignment, extractAuthorized:true, full pin,4.0.2,self source hash, independent native lifetime true and both downstream flags typed bool.",
+    "lines576to586": "Canonical owned source, R8-capable fresh-prefix regex, original raw path, absent external output.",
+    "lines589to616": "Actual capture admitted passing, raw identity matches, separate root closed/custody/lifetime receipts and authenticated nonempty independent closure evidence.",
+    "lines624to658": "Complete collector literal files and metadata/payload equality, all nine public bytes at most64MiB, early identity equality.",
+    "lines778to786": "Externally authenticate complete extraction assignment bytes via separate --assignment-sha256; assignment at most128KiB."
+  },
+  "extractionPerformed": false,
+  "extractorExecuted": false,
+  "generatedOutputs": {
+    "F": "Unknown until authorized native selection; no checkpoint selection or wave interpretation here.",
+    "bundle": "Nine public files, match-row.json,native-checkpoint.json,N collector checkpoints,F native frames,5 receipts.",
+    "bundleFileCountFormula": "16+N+F",
+    "currentN": 1,
+    "directoryMode": "0700",
+    "fileMode": "0444",
+    "firstAuditorExecuted": false,
+    "firstFeature63Qualified": false,
+    "firstStatus": "EXTRACTED_PENDING_ROOT_REVIEW",
+    "fiveBundleReceiptAggregateMaximumBytes": 1048576,
+    "topLevel": [
+      "selection-receipt.json",
+      "raw-verification-receipt.json",
+      "root-extraction-input.json",
+      "root-extraction-admission.json",
+      "extraction-result.json"
+    ]
+  },
+  "helperExecuted": false,
+  "helperImported": false,
+  "historicalReferencesAreShapesOnly": true,
+  "matchId": "290ede87-8469-42d7-bb74-0fb730e584e2",
+  "prefix": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8",
+  "productVersion": "4.0.2",
+  "publicInputs": {
+    "earlyPublicIdentityCopiedMetadata": {
+      "bytes": 2148,
+      "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8/public/public-match-identity.json",
+      "sha256": "e444b98997069b530d13648271970ad41f0ec2db3feb780682d296955e969e62"
+    },
+    "literalPaths": {
+      "human-one-ui-actions.ndjson": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8/public/human-one-ui-actions.ndjson",
+      "human-one-wire.ndjson": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8/public/human-one-wire.ndjson",
+      "human-two-ui-actions.ndjson": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8/public/human-two-ui-actions.ndjson",
+      "human-two-wire.ndjson": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8/public/human-two-wire.ndjson",
+      "public-cleanup.json": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8/public/public-cleanup.json",
+      "public-identities.json": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8/public/public-identities.json",
+      "public-match-identity.json": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8/public/public-match-identity.json",
+      "public-results.json": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8/public/public-results.json",
+      "public-windows.json": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8/public/public-windows.json"
+    },
+    "maximumAggregateBytes": 67108864,
+    "observationProvenance": "Root correction received in collaboration message; this guide did not stat or read these files.",
+    "rootReportedStatOnlyAggregateBytes": 65760445,
+    "rootReportedStatOnlyRemainingBytes": 1348419,
+    "wholeBytesStillNeedRootAuthentication": true
+  },
+  "qualificationClaim": false,
+  "rawObservation": {
+    "authority": "Prior raw stat only, before custody; not current seal or custody evidence.",
+    "bytes": 130916352,
+    "device": 52,
+    "inode": 43333851,
+    "links": 1,
+    "modeObservedBeforeCustody": "0644",
+    "path": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies/work/feature63-human-wave-composition-r8/server-data/server.sqlite",
+    "rawSha256": "Root obtains only after actual closure/seal; not read or calculated here."
+  },
+  "readbackCheck": {
+    "actualPinPrefixMatchVerifiedFromMetadata": true,
+    "frozenSourceASTParsedOnly": true,
+    "literalNinePublicNamesVerified": true,
+    "sourceReferencedKeysPresentInTemplate": true,
+    "templateExact30FieldsVerified": true
+  },
+  "receiptShapesAndGates": {
+    "closedRawReceipt": {
+      "fields": [
+        "schema",
+        "sourcePin",
+        "matchId",
+        "sealId",
+        "producerClosed",
+        "ownedProcessesClosed",
+        "rootSealed",
+        "sidecarsAbsent",
+        "dbIdentity",
+        "rawBytes",
+        "rawSha256"
+      ],
+      "schema": "feature63-closed-raw-v1",
+      "trueGates": [
+        "producerClosed",
+        "ownedProcessesClosed",
+        "rootSealed",
+        "sidecarsAbsent"
+      ]
+    },
+    "nativeSchemaReview": {
+      "historicalMinimalFields": [
+        "approved",
+        "status",
+        "sourcePin",
+        "auditorSha256"
+      ],
+      "requiredValues": {
+        "approved": true,
+        "auditorSha256": "4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb",
+        "sourcePin": "d28190fcd376156d6af016cd62fab8915d719fa7",
+        "status": "approved"
+      }
+    },
+    "rootCustodyReceipt": {
+      "assignedBy": "/root",
+      "custodyImplementationAdds": [
+        "links:1",
+        "mode:0444",
+        "nativeSchemaReviewIssued:false"
+      ],
+      "fields": [
+        "schema",
+        "approved",
+        "assignedBy",
+        "sourcePin",
+        "matchId",
+        "rawDatabase",
+        "captureResult",
+        "closedRawReceipt",
+        "freshDatabaseAuthenticated",
+        "oldRawNeverReadOrReused",
+        "rootSealed",
+        "noLivePrivateReadback"
+      ],
+      "schema": "feature63-root-raw-custody-v1",
+      "trueGates": [
+        "approved",
+        "freshDatabaseAuthenticated",
+        "oldRawNeverReadOrReused",
+        "rootSealed",
+        "noLivePrivateReadback"
+      ]
+    },
+    "rootNativeLifetimeReceipt": {
+      "assignedBy": "/root",
+      "closureEvidenceDescriptors": "Nonempty list of authenticated external descriptors; capture reports cannot replace independent evidence.",
+      "custodyImplementationAdds": [
+        "unobservedDescendantsExcluded:false"
+      ],
+      "fields": [
+        "schema",
+        "approved",
+        "assignedBy",
+        "sourcePin",
+        "matchId",
+        "captureResult",
+        "ownedNativeLifetimeIndependentlyAdmitted",
+        "closureEvidenceDescriptors"
+      ],
+      "schema": "feature63-root-native-lifetime-disposition-v1",
+      "trueGates": [
+        "approved",
+        "ownedNativeLifetimeIndependentlyAdmitted"
+      ]
+    }
+  },
+  "referenceDescriptors": {
+    "frozenExtractor": {
+      "bytes": 54321,
+      "path": "/tmp/feature63-root-extraction-candidate-r2-LSZWmJUg/extract-closed63.py",
+      "sha256": "fccd7ba02a92c2496b56699cb8fbb323f16cb2a817596093951b10a72446e7d8"
+    },
+    "historical30FieldTemplate": {
+      "bytes": 3067,
+      "path": "/tmp/feature63-r3-extraction-input-map-nfNB1jVK/root-extraction-input-r3.pending.json",
+      "sha256": "5dfca2438ffceb1cc2a763caa0552d69aacf96ca3e0f91450da5b6dfcb5b1ce5"
+    },
+    "historicalFieldMap": {
+      "bytes": 10414,
+      "path": "/tmp/feature63-r3-extraction-input-map-nfNB1jVK/field-map.json",
+      "sha256": "08f1483941731d719f8764bb8ecf5a86af33e640a55189a880637794c999843e"
+    },
+    "historicalR7Guide": {
+      "bytes": 39331,
+      "path": "/tmp/ovf-feature63-r7-extraction-schema-guide-_2ix4h_c/guide.json",
+      "sha256": "2ce110c4cbc630ccdc2a71d359a71d63908bc8c8e916462b0db2f9b4c7e72c4e"
+    }
+  },
+  "remainingRootOnlyWork": [
+    "Finish actual independent lifetime and raw custody disposition.",
+    "Bind three root receipts, raw sealed bytes/hash, and separate actual-pin/auditor nativeSchemaReview.",
+    "Authenticate original collector query/checkpoint bytes and all nine original public inputs.",
+    "Select an absent external outputRoot, create concrete approved30-field assignment and authenticate its complete-byte digest separately.",
+    "First extraction holds nativeAuditAuthorized and rootExtractionAdmissionApproved false.",
+    "Inspect extraction, separately authenticate approved audit assignment, run native audit, then issue root disposition."
+  ],
+  "schema": "feature63-r8-static-extraction-audit-guide-v1",
+  "scope": "Named frozen source and receipt metadata only. No raw database body read/hash/query; no checkpoint body interpretation, query-log or public-wire/action read/hash; no process or port probes; no repository changes.",
+  "sourcePin": "d28190fcd376156d6af016cd62fab8915d719fa7",
+  "sourceRoot": "/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies",
+  "status": "GUIDE_ONLY_ACTUAL_R8_ROOT_AUTHORITY_PENDING"
+}
