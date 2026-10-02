@@ -1,0 +1,10 @@
+--- main15-bounded.v4.py
++++ main15-bounded.v5.py
+@@ -275,6 +275,7 @@
+   assert fallback['completed']==True and fallback['cleanup']['completed']==True and fallback['scenarioCount']==1
+   assert fallback['artMode']=='placeholder' and fallback['source']['commit']==pin and fallback['buildReport']['buildId']==TESTED_ID
+   assert fallback['finalReadiness']['artEnabled']==False and fallback['finalReadiness']['artLoaded']==False
++  assert len(fallback['photoCaptures'])==3 and all(r['capture']['photoMode']==True and r['completeNativeGameAndRuntimeUnchanged']==True and r['priorPaused']==r['restoredPaused']==True for r in fallback['photoCaptures'])
+   assert full_files(fixtures)==fixture_before and full_files(helpers)==helper_outputs_before
+   assert sha(reviewed_path.read_bytes())==sha(reviewed_bytes) and sha(review_path.read_bytes())==sha(review_bytes)
+   observe_children(preview,'final guarded preview rescan after placeholder phase');invariant('placeholder')

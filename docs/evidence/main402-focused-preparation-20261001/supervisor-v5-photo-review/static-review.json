@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "reviewedAt": "2026-10-02T03:01:40.750432+00:00",
+  "status": "v4-photo-overlay-blocker-closed-no-additional-concrete-blocker",
+  "scope": "Only v5 Photo mode delta, updated source binding and v4 preservation reviewed. Static reads/hashes only; no execution, source imports, signals, tests, builds, browser, DB operations, root or candidate edits, or runtime authorization.",
+  "testedProductPin": "f7f3e187ea40079492589a6fce39f0b33f77f04a",
+  "integrationPin": null,
+  "runtimeAdmitted": false,
+  "executed": false,
+  "priorReview": "/tmp/ovf-main15-v4-static-review-architecture-7ditpaj3/static-review.json",
+  "deltaInventory": "/tmp/ovf-main15-v5-photo-review-architecture-467u8sg8/delta-file-inventory.json",
+  "closedFinding": {
+    "title": "Paused overlay no longer obscures intended captures",
+    "references": [
+      "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/placeholder-single-capture.mjs:163",
+      "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/placeholder-single-capture.mjs:171",
+      "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/placeholder-single-capture.mjs:186",
+      "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/placeholder-single-capture.mjs:190",
+      "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/placeholder-single-capture.mjs:200",
+      "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/main15-bounded.v5.py:278"
+    ],
+    "result": "Each of the three intended screenshots uses public Photo mode entry and public Exit photo mode. The helper requires paused state, computed overlay invisibility, visible exit control, same tick/level/perspective, and nested cleanup with prior pause restoration. Complete native before/after .game envelopes are compared and failures prevent completion. The wrapper requires all three photo capture records."
+  },
+  "sourceBindingChecks": [
+    "Four active external-source rows match current bytes, hashes and modes.",
+    "Supporting Photo control source rows match tested f7 Git bytes and are required to match the frozen committed source inventory at runtime.",
+    "Actual driver/wrapper diffs match the retained patch artifacts.",
+    "Preserved v4 files and retained root-level v4 wrapper/metadata match prior authenticated inventory.",
+    "Guard/history bridge bytes are unchanged; previous cleanup review remains applicable."
+  ],
+  "blockers": [],
+  "remainingLimits": [
+    "These are static assertions, not executed evidence of unchanged ticks or readable screenshots.",
+    "Strict main15 artwork readiness, SAVE4/rules4.0.2 fixture, one placeholder capture and 120-second bound remain unchanged.",
+    "Root still owns runtime admission, process lifecycle and post-run screenshot review."
+  ]
+}

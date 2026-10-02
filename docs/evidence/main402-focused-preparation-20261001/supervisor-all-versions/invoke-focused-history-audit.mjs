@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {readFile,writeFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+const [,,rootArg,pin,bundleArg,evidenceArg,fixturesArg]=process.argv;
+assert(rootArg&&/^[0-9a-f]{40}$/.test(pin??'')&&bundleArg&&evidenceArg&&fixturesArg);
+const root=resolve(rootArg),evidenceDir=resolve(evidenceArg),fixturesDir=resolve(fixturesArg);
+const {loadPinnedHelper}=await import(pathToFileURL(resolve(root,'scripts/acceptance/helper-provenance.mjs')).href);
+const {module:helper,provenance}=await loadPinnedHelper(root,pin,resolve(bundleArg),'scripts/acceptance/main-smoke402-history-audit.ts');
+assert.equal(typeof helper.verifyMainSmoke402Artifacts,'function');
+const manifest=JSON.parse(await readFile(resolve(fixturesDir,'manifest.json'),'utf8'));
+const receipt=JSON.parse(await readFile(resolve(evidenceDir,'browser-main-smoke402.json'),'utf8'));
+assert.equal(manifest.sourceCommit,pin);assert.equal(receipt.completed,true);
+const result=await helper.verifyMainSmoke402Artifacts({evidenceDir,fixturesDir,manifest,receipt,sourceCommit:pin});
+await readFile(resolve(evidenceDir,'main-smoke402-history-checks.json'));
+await writeFile(resolve(evidenceDir,'focused-history-helper-provenance.json'),JSON.stringify({sourceCommit:pin,entry:'scripts/acceptance/main-smoke402-history-audit.ts',provenance,result},null,2)+'\n',{flag:'wx'});
+console.log('Focused main15 event/history audit completed; visual acceptance remains separate.');

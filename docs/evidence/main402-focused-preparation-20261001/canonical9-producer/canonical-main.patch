@@ -1,0 +1,235 @@
+diff --git a/scripts/acceptance/canonical-main-fixtures.ts b/scripts/acceptance/canonical-main-fixtures.ts
+new file mode 100644
+--- /dev/null
++++ b/scripts/acceptance/canonical-main-fixtures.ts
+@@ -0,0 +1,102 @@
++import assert from 'node:assert/strict';
++import { createHash } from 'node:crypto';
++import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
++import { resolve } from 'node:path';
++import { FACTIONS } from '../../src/core/content';
++import { environmentPhase } from '../../src/core/environment';
++import { initializeFactionSystems } from '../../src/core/faction-systems';
++import { MatchRecorder } from '../../src/core/replays';
++import { SAVE_VERSION, saveGame } from '../../src/core/saves';
++import { createSessionFile, decodeSessionFile } from '../../src/core/session-storage';
++import { createMatch, issueCommand, refreshVisibility, spawnDefinition } from '../../src/core/simulation';
++import { canAmbush, initializeTactics, TACTICS } from '../../src/core/tactics';
++import { SIMULATION_REVISION } from '../../src/core/versions';
++import { generateWorldMap, validateWorldMap } from '../../src/core/world-map';
++import type { FormationKind } from '../../src/core/tactics';
++import type { BuildingRole, BuiltinFactionId, Entity, GameState, Side, UnitRole } from '../../src/core/types';
++
++/** Setup only. Never advances the simulation; a recorder starts after all authoring. */
++export function buildCanonicalMainFixtures(outDirectory:string,sourceCommit:string) {
++ assert.match(sourceCommit,/^[0-9a-f]{40}$/);assert.equal(SAVE_VERSION,4);assert.equal(SIMULATION_REVISION,'4.0.2');
++ const out=resolve(outDirectory);assert(outDirectory&&!existsSync(out),'Use a new fixture directory');mkdirSync(out,{recursive:true});
++ const scenarios:Record<string,any>={};
++ const place=(e:Entity,x:number,y:number,level=0,cooldown=1000)=>{
++  Object.assign(e,{x,y,level,cooldown,order:{type:'hold'},path:[],facing:4,animation:'idle',animTime:0,momentum:0});delete e.orderQueue;return e;
++ };
++ function base(faction:BuiltinFactionId,opponent:BuiltinFactionId='orcs') {
++  const map=generateWorldMap(0,'medium',2,'forest'),removedSites=structuredClone(map.sites);
++  for(const layer of map.levels){layer.terrain.fill('grass');layer.elevation.fill(0);}map.sites=[];
++  assert(validateWorldMap(map).valid,'Flattened authored input retains valid resources, starts and entrances');
++  const s=createMatch({map:{seed:map.seed,size:map.size,world:map,biome:'forest'},rules:{startingAge:3,friendlyFire:false},players:[
++   {id:0,teamId:0,factionId:faction,controller:'human',handicap:{startingResources:{wood:2000,ore:2000,crystal:500}}},
++   {id:1,teamId:1,factionId:opponent,controller:'external'}]});
++  const removedActors=s.entities.filter(e=>e.kind==='unit'&&e.role!=='worker').map(e=>({id:e.id,role:e.role,side:e.side,definitionId:e.definitionId}));
++  const removedResources=s.resources.map(r=>({id:r.id,kind:r.kind,x:r.x,y:r.y,level:r.level??0,amount:r.amount}));
++  s.entities=s.entities.filter(e=>e.role==='hq'||e.kind==='unit'&&e.role==='worker');s.resources=[];
++  Object.assign(s.world!,{dayLength:1_000_000,seasonLength:1_000_000,weatherLength:1_000_000,bridges:[],fires:[],iceTiles:[]});
++  for(const side of [0,1] as Side[]){
++   const hq=s.entities.find(e=>e.side===side&&e.role==='hq')!;place(hq,side?42.5:6.5,side?42.5:17.5);s.starts[side]={x:hq.x,y:hq.y,level:0};
++   s.entities.filter(e=>e.side===side&&e.role==='worker').forEach((e,i)=>place(e,side?39.5+i*.8:5.5+i*.8,side?39.5:13.5));
++  }
++  const workers=s.entities.filter(e=>e.side===0&&e.role==='worker'),underground=workers.at(-1)!;place(underground,10.5,10.5,1);
++  initializeFactionSystems(s);assert.equal(environmentPhase(s).weather,'clear');assert.equal(environmentPhase(s).day,'day');
++  return {s,workers,underground:underground.id,setup:{removedSites,removedActors,removedResources,retainedEntrances:structuredClone(s.world!.transitions)}};
++ }
++ function unit(s:GameState,side:Side,role:UnitRole,x:number,y:number,cooldown=1000){
++  const e=place(spawnDefinition(s,side,'unit',FACTIONS[s.players[side].faction].units[role].id,x,y),x,y,0,cooldown);initializeTactics(s,e);return e;
++ }
++ const building=(s:GameState,side:Side,role:BuildingRole,x:number,y:number)=>place(spawnDefinition(s,side,'building',FACTIONS[s.players[side].faction].buildings[role].id,x,y),x,y);
++ function write(name:string,s:GameState,ids:Record<string,unknown>,authored:Record<string,unknown>){
++  s.events=[];refreshVisibility(s);assert.equal(s.tick,0);assert.equal(s.time,0);
++  const recorder=new MatchRecorder(s);let file:ReturnType<typeof createSessionFile>;try{file=createSessionFile(s,recorder.export());}finally{recorder.dispose();}
++  const decoded=decodeSessionFile(file);assert.deepEqual(saveGame(decoded.state),file.game);assert.deepEqual(decoded.file,file);
++  assert.equal(file.replay!.simulationRevision,SIMULATION_REVISION);assert.equal(file.replay!.checksumVersion,4);assert.equal(file.replay!.actions.length,0);assert.equal(file.replay!.finalTick,0);
++  assert(decoded.state.entities.some(e=>e.side===0&&e.level===1));
++  const bytes=Buffer.from(`${JSON.stringify(file,null,2)}\n`);writeFileSync(resolve(out,`${name}.json`),bytes,{flag:'wx'});
++  scenarios[name]={group:'canonical',featureIds:[name.startsWith('formation-')?1:name.startsWith('charge-')?8:name.startsWith('siege-')?9:name.startsWith('ambush-')?10:4],file:`${name}.json`,sha256:createHash('sha256').update(bytes).digest('hex'),bytes:bytes.length,ids,initialTick:0,initialTime:0,faction:s.players[0].faction,authored:{
++   map:'Validated seed-zero medium forest input, flat grass/elevation, generated entrances retained; resources and opening combat troops removed before recording.',
++   calendar:'Clear daylight, day/season/weather lengths 1000000 seconds.',
++   banks:'Side0 starts at age3 with 2000 wood,2000 ore,500 crystal.',
++   passiveOrders:'HQs/workers and non-firing targets use hold and cooldown1000; encounter exceptions are listed below.',
++   ...authored,actors:s.entities.map(e=>({id:e.id,side:e.side,kind:e.kind,role:e.role,definitionId:e.definitionId,definitionFaction:e.definitionFaction,x:e.x,y:e.y,level:e.level??0,hp:e.hp,maxHp:e.maxHp,cooldown:e.cooldown,facing:e.facing,order:structuredClone(e.order),tactics:structuredClone(e.tactics)}))}};
++ }
++ for(const kind of ['line','wedge','square','loose'] as FormationKind[]){
++  const {s,underground,setup}=base('orcs','fairies'),roles:UnitRole[]=['melee','ranged','spear','cavalry','melee','ranged'];
++  const army=roles.map((role,i)=>unit(s,0,role,18.5+i*.7,20.5)),obstacle=building(s,0,'depot',24.5,20.5);
++  write(`formation-${kind}`,s,{army:army.map(e=>e.id),roles,obstacle:obstacle.id,undergroundWorker:underground,formation:kind,spacing:.8,facing:0,destination:{x:30.5,y:20.5,level:0}},
++   {...setup,description:'Six full-health mixed troops apply the requested shape and move around an owned depot. No wounded victim or hostile casualty order.'});
++ }
++ for(const direction of ['front','rear']){
++  const {s,underground,setup}=base('fairies'),source=unit(s,0,'cavalry',19.5,24.5,0),target=unit(s,1,'spear',26,24.5);
++  source.facing=0;target.facing=direction==='front'?4:0;
++  write(`charge-pike-${direction}`,s,{source:source.id,target:target.id,undergroundWorker:underground,direction},
++   {...setup,description:'Normal Stag Rider attacks a full-health held Pikejaw. Front/rear differs only in Pikejaw facing.',targetFacing:target.facing,targetOrder:'hold',targetCooldown:1000,sourceCooldown:0});
++ }
++ {
++  const {s,workers,underground,setup}=base('fairies'),captor=unit(s,0,'melee',18.4,20.5,0),engine=unit(s,1,'siege',20.5,20.5),target=building(s,1,'depot',37.5,20.5);
++  place(workers[0],35.5,23.5);assert.deepEqual(engine.tactics!.siegeCrew,{hp:42,maxHp:42,uncrewed:false});assert.equal(engine.hp,engine.maxHp);
++  write('siege-full-crew-capture',s,{captor:captor.id,engine:engine.id,target:target.id,observer:workers[0].id,undergroundWorker:underground,moveDestination:{x:26.5,y:20.5,level:0}},
++   {...setup,description:'Native Thornblade attacks full crew, captures the engine, then moves and fires it for its new owner.',engineCrewHealth:TACTICS.crewHp,engineHullHealth:engine.hp,engineDefinitionId:engine.definitionId,targetHealth:target.hp,engineCooldown:1000,captorCooldown:0,
++    combatSuppression:'Hostile engine starts at cooldown1000; crew/hull retain production full health. Hostile workers are outside capture contest range.'});
++ }
++ {
++  const {s,underground,setup}=base('fairies'),dryTroop=unit(s,0,'melee',8.5,13.5),ambusher=unit(s,0,'ranged',20.5,20.5,6),wrongTarget=unit(s,1,'worker',22,20.5),trigger=unit(s,1,'melee',40.5,40.5);
++  const timber={id:s.nextId++,kind:'wood' as const,x:20.5,y:21.5,level:0,amount:100,maxAmount:100};s.resources.push(timber);
++  refreshVisibility(s);assert(issueCommand(s,1,{type:'move',ids:[trigger.id],x:21.8,y:20.5,level:0}));assert(canAmbush(s,ambusher));assert(!canAmbush(s,dryTroop));
++  write('ambush-selected-trigger',s,{ambusher:ambusher.id,dryTroop:dryTroop.id,wrongTarget:wrongTarget.id,trigger:trigger.id,timber:timber.id,undergroundWorker:underground},
++   {...setup,description:'Standing timber enables the Mothbow; dry troop cannot ambush. Wrong-role worker starts inside radius. Full-health melee has an initial authored march.',radius:2,target:'melee',ambusherCooldown:6,timberAmount:100,wrongTargetHealth:wrongTarget.hp,triggerHealth:trigger.hp,
++    exceptionalInitialOrder:{actor:trigger.id,order:structuredClone(trigger.order)},initialOrders:'The hostile move is accepted before the recorder exists. No opponent command is injected after import.'});
++ }
++ {
++  const {s,underground,setup}=base('fairies'),attackerCooldown=FACTIONS.fairies.units.siege.cooldown,siege=Array.from({length:7},(_,i)=>unit(s,0,'siege',20.5,21.5+i,attackerCooldown));
++  const primary=unit(s,1,'cavalry',25.5,24.5),support=unit(s,1,'cavalry',25.5,25.2),ranged=[[24.8,24.5],[26.2,24.5],[24.8,25.2],[26.2,25.2]].map(([x,y])=>unit(s,1,'ranged',x,y));
++  for(const e of [primary,support,...ranged]){assert.equal(e.hp,e.maxHp);assert.equal(e.tactics!.morale,100);assert.equal(e.tactics!.recentLoss,0);assert.equal(e.cooldown,1000);}
++  assert.equal(primary.maxHp,210);assert.equal(support.maxHp,210);assert(ranged.every(e=>e.maxHp===100));
++  for(const e of siege){assert.equal(e.hp,e.maxHp);assert.deepEqual(e.tactics!.siegeCrew,{hp:42,maxHp:42,uncrewed:false});assert.equal(e.factionState?.artillery,undefined);}
++  write('morale-supported-full-fight',s,{siege:siege.map(e=>e.id),primary:primary.id,support:support.id,ranged:ranged.map(e=>e.id),squad:[primary.id,support.id,...ranged.map(e=>e.id)],undergroundWorker:underground},
++   {...setup,description:'Seven ordinary Fairy engines attack a full-health, morale100 supported Orc squad. Actual wounds and nearby combat deaths must lead to a surviving supported cavalry retreat.',squadHealth:'Normal maximum health, cavalry210 and ranged100; no authored wounds.',squadMorale:100,squadRecentLoss:0,squadCooldown:1000,attackerCooldown,
++    combatSuppression:'Targets begin at cooldown1000 to prevent return fire. Attackers start one normal weapon cooldown period from ready so the native attack input precedes their first volley. No morale/health edits, hit injection, artillery modification or cooldown reset follows recording.',predictedOutcome:'One volley may kill four ranged allies and leave both cavalry wounded, alive and close enough to support each other. This is an unexecuted prediction, not a generated result.'});
++ }
++ const manifest={schema:1,sourceCommit,saveVersion:SAVE_VERSION,simulationRevision:SIMULATION_REVISION,setup:'Nine bounded canonical-main encounters. Complete authoring precedes a zero-action/zero-tick current-rule recorder; native UI and ordinary ticks produce every later result.',scenarios};
++ writeFileSync(resolve(out,'canonical-main-manifest.json'),`${JSON.stringify(manifest,null,2)}\n`,{flag:'wx'});return manifest;
++}
+diff --git a/scripts/acceptance/canonical-main-smoke.mjs b/scripts/acceptance/canonical-main-smoke.mjs
+new file mode 100644
+--- /dev/null
++++ b/scripts/acceptance/canonical-main-smoke.mjs
+@@ -0,0 +1,123 @@
++import assert from 'node:assert/strict';
++import { writeFile } from 'node:fs/promises';
++import { resolve } from 'node:path';
++import { assertSessionIdentity } from './native-contract.mjs';
++
++export const CANONICAL_CASES=['formation-line','formation-wedge','formation-square','formation-loose','charge-pike-front','charge-pike-rear','siege-full-crew-capture','ambush-selected-trigger','morale-supported-full-fight'];
++const entity=(s,id)=>{const e=s.entities.find(e=>e.id===id);assert(e,`Entity #${id}`);return e;};
++const hp=(s,id)=>s.entities.find(e=>e.id===id)?.hp??0;
++const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
++const sameIds=(a,b)=>a.length===b.length&&[...a].sort((a,b)=>a-b).every((id,i)=>id===[...b].sort((a,b)=>a-b)[i]);
++const commands=file=>file.replay.actions.filter(a=>a.type==='command');
++const commandRecord=(file,type,predicate)=>{let tick=file.replay.initial.state.tick;for(const [actionIndex,action]of file.replay.actions.entries()){if(action.type==='advance')tick+=action.ticks;else if(action.type==='command'&&action.side===0&&action.command.type===type&&predicate(action.command))return{actionIndex,tick,side:action.side,command:action.command};}assert.fail(`Accepted native side0 ${type}`);};
++const command=(file,type,predicate)=>commandRecord(file,type,predicate).command;
++const offset=(kind,slot,count,spacing)=>{
++ if(kind==='line')return{x:0,y:(slot-(count-1)/2)*spacing};
++ if(kind==='wedge'){if(!slot)return{x:0,y:0};const row=Math.ceil(slot/2);return{x:-row*spacing,y:(slot%2?-1:1)*row*spacing*.75};}
++ const columns=Math.ceil(Math.sqrt(count)),rows=Math.ceil(count/columns),row=Math.floor(slot/columns),inRow=Math.min(columns,count-row*columns),scale=kind==='loose'?1.8:1;
++ return{x:(row-(rows-1)/2)*spacing*scale,y:(slot%columns-(inRow-1)/2)*spacing*scale};
++};
++
++/** Native input and read-only observations. No issueCommand/stepGame/browser state writes. */
++export async function runCanonicalTacticsSmoke(ctx){
++ assert.equal(ctx.identity.saveVersion,4);assert.equal(ctx.identity.simulationRevision,'4.0.2');
++ assert.equal(ctx.manifest.simulationRevision,'4.0.2');assert.equal(ctx.manifest.sourceCommit,ctx.evidence.source.commit);
++ const exports=[],continuations=[],results={},traces={},requiredEventAudits=[];
++ let active,tracked=[];const progress={activeCase:null,completedCases:[],exports,continuations,results,requiredEventAudits};ctx.evidence.canonicalProgress=progress;
++ function collect(s){
++  const trace=traces[active];if(!trace||trace.seen.has(s.tick))return;trace.seen.add(s.tick);
++  trace.samples.push({tick:s.tick,time:s.time,actors:tracked.map(id=>{const e=s.entities.find(e=>e.id===id);return e?{id,side:e.side,x:e.x,y:e.y,level:e.level??0,hp:e.hp,maxHp:e.maxHp,cooldown:e.cooldown,facing:e.facing,order:e.order,tactics:e.tactics}:{id,missing:true,hp:0};}),projectiles:s.projectiles??[]});
++  trace.events.push(...(s.events??[]).map(event=>({tick:s.tick,time:s.time,event})));
++ }
++ async function load(name){active=name;progress.activeCase=name;tracked=[];traces[name]={seen:new Set(),samples:[],events:[]};const fixture=await ctx.loadScenario(name);await ctx.pause();assert.equal((await ctx.snap()).mode,'local');return fixture;}
++ async function until(predicate,label,timeout=30000){return ctx.runUntil(s=>{collect(s);return predicate(s);},{label,timeout});}
++ async function verified(name){const file=await ctx.exportAndVerify(name);await ctx.pause();assertSessionIdentity(file,name,ctx.identity,true);assert(commands(file).every(a=>a.side===0),'No opponent command injected after authoring');exports.push({name,file:`${name}-save.json`,tick:file.game.state.tick});return file;}
++ function continuation(from,a,to,b){assert(b.game.state.tick>a.game.state.tick);assert.deepEqual(a.replay.initial,b.replay.initial);continuations.push({checkpoint:`${from}-save.json`,final:`${to}-save.json`,checkpointTick:a.game.state.tick,finalTick:b.game.state.tick,scope:'Complete native saved game and runtime; later source-bound audit must execute the retained command/tick suffix.'});}
++ async function selectEntireOwnedArmy(ids){await ctx.resume();await ctx.ground({x:17.5,y:21.5,level:0},'left');await ctx.page.keyboard.press('F2');await ctx.wait(ids=>window.rts.selected.length===ids.length&&ids.every(id=>window.rts.selected.includes(id)),ids);}
++ async function hold(ids){await ctx.pause();await ctx.selectTroop(ids[0]);await ctx.closePanels();if(ids.length===1)await ctx.resume();else await selectEntireOwnedArmy(ids);await ctx.page.getByRole('button',{name:/^Hold position(?:\s|$)/}).click();await ctx.pause();}
++ async function attack(ids,target){await ctx.resume();await ctx.selectMany(ids);await ctx.entityClick(target,'right');await ctx.wait(({ids,target})=>ids.every(id=>{const o=window.rts.state.entities.find(e=>e.id===id)?.order;return o?.type==='attack'&&o.target===target;}),{ids,target});}
++ async function finishTrace(name){const trace=traces[name];delete trace.seen;await writeFile(resolve(ctx.out,`${name}-observations.json`),`${JSON.stringify(trace,null,2)}\n`,{flag:'wx'});progress.completedCases.push(name);}
++ try{
++ for(const kind of ['line','wedge','square','loose']){
++  const name=`formation-${kind}`,{ids}=await load(name);tracked=ids.army;const initial=await ctx.snap();assert(ids.army.every(id=>hp(initial,id)===entity(initial,id).maxHp));collect(initial);
++  await ctx.resume();await ctx.selectMany(ids.army);const panel=await ctx.openTactics();await panel.getByLabel('Troop facing',{exact:true}).selectOption('0');await panel.getByLabel('Formation spacing',{exact:true}).fill('.8');
++  await panel.getByRole('button',{name:kind[0].toUpperCase()+kind.slice(1),exact:true}).click();await ctx.wait(({army,kind})=>army.every(id=>window.rts.state.entities.find(e=>e.id===id)?.tactics?.formation?.kind===kind),{army:ids.army,kind});
++  assert.equal(await panel.getByRole('status').innerText(),`${kind[0].toUpperCase()+kind.slice(1)} applied to 6 units.`);await ctx.pause();await ctx.screenshot(`${name}-panel`);await ctx.closePanels();await ctx.resume();await ctx.ground(ids.destination,'right');
++  await ctx.wait(({army,destination})=>army.every(id=>{const f=window.rts.state.entities.find(e=>e.id===id)?.tactics?.formation;return f&&Math.hypot(f.anchor.x-destination.x,f.anchor.y-destination.y)<.05;}),{army:ids.army,destination:ids.destination});const actualAnchor=entity(await ctx.snap(),ids.army[0]).tactics.formation.anchor;
++  const settled=await until(s=>ids.army.slice().sort((a,b)=>a-b).every((id,slot)=>{
++   const troop=entity(s,id),f=troop.tactics?.formation,o=offset(kind,slot,6,.8);
++   return troop.hp>0&&f?.kind===kind&&f.slot===slot&&f.count===6&&f.spacing===.8&&f.facing===0&&f.phase==='formed'&&f.anchor.x===actualAnchor.x&&f.anchor.y===actualAnchor.y&&troop.facing===0&&troop.order.type==='hold'&&Math.hypot(troop.x-actualAnchor.x-o.x,troop.y-actualAnchor.y-o.y)<.7;
++  }),`${name} six living troops settle`);
++  assert.equal(new Set(ids.army.map(id=>entity(settled,id).tactics.formation.group)).size,1);
++  assert(traces[name].samples.some(sample=>sample.actors.some(e=>e.x>23&&e.x<26&&Math.abs(e.y-20.5)>=1.27)),'Observed detour around the owned depot');
++  await ctx.screenshot(`${name}-settled`);const file=await verified(`${name}-settled`);
++  command(file,'formation',c=>sameIds(c.ids,ids.army)&&c.formation===kind&&c.spacing===.8&&c.facing===0);const acceptedMove=command(file,'move',c=>sameIds(c.ids,ids.army)&&Math.hypot(c.x-ids.destination.x,c.y-ids.destination.y)<.05);assert.equal(acceptedMove.x,actualAnchor.x);assert.equal(acceptedMove.y,actualAnchor.y);
++  results[name]={tick:settled.tick,army:ids.army,requestedDestination:ids.destination,acceptedMove,actualAnchor,group:entity(settled,ids.army[0]).tactics.formation.group};ctx.record(`${name} applies through main Tactics, moves and persists six living troops`,results[name]);await finishTrace(name);
++ }
++ for(const direction of ['front','rear']){
++  const name=`charge-pike-${direction}`,{ids}=await load(name);tracked=[ids.source,ids.target];const before=await ctx.snap();assert.equal(hp(before,ids.source),entity(before,ids.source).maxHp);assert.equal(hp(before,ids.target),entity(before,ids.target).maxHp);collect(before);
++  await attack([ids.source],ids.target);const moving=await until(s=>(entity(s,ids.source).tactics?.charge?.distance??0)>=4&&hp(s,ids.target)===hp(before,ids.target),`${name} charged before first hit`);collect(moving);
++  const movingName=`${name}-moving`,movingFile=await verified(movingName);command(movingFile,'attack',c=>sameIds(c.ids,[ids.source])&&c.target===ids.target);assert((entity(movingFile.game.state,ids.source).tactics?.charge?.distance??0)>=4);assert.equal(hp(movingFile.game.state,ids.target),hp(before,ids.target));
++  const impact=await until(s=>hp(s,ids.target)<hp(before,ids.target),`${name} first hit`);collect(impact);
++  const result={tick:impact.tick,targetLoss:hp(before,ids.target)-hp(impact,ids.target),riderLoss:hp(before,ids.source)-hp(impact,ids.source),chargeAfter:entity(impact,ids.source).tactics?.charge?.distance??0,targetFacing:entity(impact,ids.target).facing,targetOrder:entity(impact,ids.target).order};
++  assert.equal(result.targetOrder.type,'hold');assert.equal(result.targetFacing,direction==='front'?4:0);
++  if(direction==='front'){assert(Math.abs(result.targetLoss-17)<=1e-6);assert(result.riderLoss>10);assert.equal(result.chargeAfter,0);}else{assert.equal(result.riderLoss,0);assert(result.targetLoss>results['charge-pike-front'].targetLoss*1.5);}
++  // Preserve the first-hit snapshot; native Hold still defends in range, so pause before another cooldown.
++  await hold([ids.source]);await ctx.screenshot(`${name}-impact`);const impactName=`${name}-impact`,impactFile=await verified(impactName);command(impactFile,'attack',c=>c.ids.includes(ids.source)&&c.target===ids.target);assert.equal(hp(impactFile.game.state,ids.target),hp(impact,ids.target),'Impact checkpoint retains first-hit HP; Hold still defends in range');continuation(movingName,movingFile,impactName,impactFile);
++  requiredEventAudits.push({scenario:name,kind:'first-cavalry-hit',source:ids.source,target:ids.target,observedFirstTick:impact.tick,observedEvents:traces[name].events.filter(item=>item.event.type==='attack')});
++  results[name]=result;ctx.record(`${name} first impact and return damage`,result);await finishTrace(name);
++ }
++ {
++  const name='siege-full-crew-capture',{ids,authored}=await load(name);tracked=[ids.captor,ids.engine,ids.target];const before=await ctx.snap(),initial=entity(before,ids.engine);
++  assert.equal(initial.side,1);assert.equal(initial.hp,initial.maxHp);assert.deepEqual(initial.tactics.siegeCrew,{hp:42,maxHp:42,uncrewed:false});collect(before);
++  await attack([ids.captor],ids.engine);const defeated=await until(s=>entity(s,ids.engine).tactics.siegeCrew.uncrewed,'Real full crew defeated',20000);collect(defeated);assert.equal(entity(defeated,ids.engine).tactics.siegeCrew.hp,0);assert.equal(hp(defeated,ids.engine),authored.engineHullHealth);
++  await hold([ids.captor]);await ctx.screenshot('siege-crew-defeated');const crewless=await verified('siege-crew-defeated');command(crewless,'attack',c=>c.ids.includes(ids.captor)&&c.target===ids.engine);assert.equal(hp(crewless.game.state,ids.engine),authored.engineHullHealth);
++  await ctx.selectTroop(ids.captor);await ctx.resume();const panel=await ctx.openTactics();await panel.getByLabel('Abandoned siege engine',{exact:true}).selectOption(String(ids.engine));assert(await panel.getByRole('button',{name:'Capture siege engine',exact:true}).isEnabled());await panel.getByRole('button',{name:'Capture siege engine',exact:true}).click();
++  await until(s=>{const c=entity(s,ids.captor).tactics?.capture;return c?.target===ids.engine&&c.progress>=.35&&c.progress<.75;},'Incomplete ordinary capture channel',15000);await ctx.screenshot('siege-mid-capture');const partial=await verified('siege-mid-capture');command(partial,'captureSiege',c=>c.ids.includes(ids.captor)&&c.target===ids.engine);assert.equal(entity(partial.game.state,ids.engine).side,1);assert(entity(partial.game.state,ids.engine).tactics.siegeCrew.uncrewed);
++  await until(s=>entity(s,ids.engine).side===0&&!entity(s,ids.engine).tactics.siegeCrew.uncrewed,'Capture completes after native reimport',15000);await ctx.screenshot('siege-new-owner');const captured=await verified('siege-new-owner'),owned=entity(captured.game.state,ids.engine);
++  assert.equal(owned.definitionFaction,'orcs');assert.equal(owned.definitionId,authored.engineDefinitionId);assert.equal(owned.hp,authored.engineHullHealth);assert.equal(owned.maxHp,authored.engineHullHealth);assert.deepEqual(owned.tactics.siegeCrew,{hp:42,maxHp:42,uncrewed:false});assert.equal(entity(captured.game.state,ids.captor).tactics.capture,undefined);
++  await ctx.selectTroop(ids.engine);await ctx.resume();await ctx.ground(ids.moveDestination,'right');await until(s=>distance(entity(s,ids.engine),ids.moveDestination)<.8&&entity(s,ids.engine).order.type!=='move','New owner moves engine',20000);const moved=await verified('siege-new-owner-moved');command(moved,'move',c=>c.ids.includes(ids.engine)&&Math.hypot(c.x-ids.moveDestination.x,c.y-ids.moveDestination.y)<.05);
++  await attack([ids.engine],ids.target);await until(s=>(s.projectiles??[]).some(p=>p.source===ids.engine&&p.side===0),'New-owner pending shell',20000);const pending=await verified('siege-new-owner-pending-shot'),shell=pending.game.state.projectiles.find(p=>p.source===ids.engine);assert.equal(shell.side,0);assert.equal(shell.faction,'orcs');assert.equal(hp(pending.game.state,ids.target),authored.targetHealth);
++  await until(s=>hp(s,ids.target)<authored.targetHealth,'Reimported shell impacts',15000);const impact=await verified('siege-new-owner-impact');command(impact,'attack',c=>c.ids.includes(ids.engine)&&c.target===ids.target);continuation('siege-mid-capture',partial,'siege-new-owner-impact',impact);continuation('siege-new-owner-pending-shot',pending,'siege-new-owner-impact',impact);
++  requiredEventAudits.push({scenario:name,kind:'real-full-crew-defeat-and-new-owner-shot',captor:ids.captor,engine:ids.engine,target:ids.target,nativeAttack:commandRecord(crewless,'attack',c=>sameIds(c.ids,[ids.captor])&&c.target===ids.engine),requiredChronology:'Native attack is recorded before the first actual crew hit; ordinary full-crew damage precedes capture, new ownership and the new-owner shell impact.',observedEvents:traces[name].events.filter(item=>['attack','message'].includes(item.event.type))});
++  results[name]={initialCrew:initial.tactics.siegeCrew,defeatedTick:defeated.tick,capturedTick:captured.game.state.tick,targetLoss:authored.targetHealth-hp(impact.game.state,ids.target)};ctx.record('Full crew defeat, ordinary capture and new-owner movement/firing',results[name]);await finishTrace(name);
++ }
++ {
++  const name='ambush-selected-trigger',{ids,authored}=await load(name);tracked=[ids.ambusher,ids.wrongTarget,ids.trigger];await ctx.selectTroop(ids.dryTroop);await ctx.resume();let panel=await ctx.openTactics();assert(!(await panel.getByRole('button',{name:'Set ambush',exact:true}).isEnabled()));assert.match(await panel.innerText(),/Move selected troops into woodland or beside standing trees first/);await ctx.pause();ctx.record('Main Tactics disables ambush on dry ground',{dryTroop:ids.dryTroop});
++  await ctx.selectTroop(ids.ambusher);await ctx.resume();panel=await ctx.openTactics();await panel.getByLabel('Ambush trigger radius',{exact:true}).fill('2');await panel.getByLabel('Ambush target',{exact:true}).selectOption('melee');assert(await panel.getByRole('button',{name:'Set ambush',exact:true}).isEnabled());await panel.getByRole('button',{name:'Set ambush',exact:true}).click();await ctx.wait(id=>window.rts.state.entities.find(e=>e.id===id)?.tactics?.ambush?.concealed,ids.ambusher);
++  const ready=await until(s=>entity(s,ids.ambusher).cooldown===0&&entity(s,ids.ambusher).tactics?.ambush?.concealed&&distance(entity(s,ids.trigger),entity(s,ids.ambusher))>2.5,'Ambusher ready before selected-role approach',15000);
++  const held=await until(s=>s.tick>=ready.tick+20&&entity(s,ids.ambusher).cooldown===0&&entity(s,ids.ambusher).tactics?.ambush?.concealed&&distance(entity(s,ids.trigger),entity(s,ids.ambusher))>2.5,'Ready fire withheld for20 real ticks',5000);assert.equal(hp(held,ids.wrongTarget),authored.wrongTargetHealth);assert.equal(hp(held,ids.trigger),authored.triggerHealth);assert(distance(entity(held,ids.wrongTarget),entity(held,ids.ambusher))<2);
++  panel=await ctx.openTactics();assert.match(await panel.getByLabel('Selected unit tactics',{exact:true}).innerText(),/Ambush concealed.*melee within 2/);await ctx.screenshot('ambush-concealed-panel');const concealed=await verified('ambush-concealed');command(concealed,'ambush',c=>sameIds(c.ids,[ids.ambusher])&&c.radius===2&&c.target==='melee');
++  const triggered=await until(s=>!entity(s,ids.ambusher).tactics?.ambush?.concealed&&hp(s,ids.trigger)<authored.triggerHealth,'Authored melee march triggers actual ambush',25000);assert(distance(entity(triggered,ids.trigger),entity(triggered,ids.ambusher))<=2);assert.equal(hp(triggered,ids.wrongTarget),authored.wrongTargetHealth);assert.equal(entity(triggered,ids.ambusher).tactics.ambush.radius,2);assert.equal(entity(triggered,ids.ambusher).tactics.ambush.target,'melee');
++  await ctx.screenshot('ambush-triggered');const final=await verified('ambush-triggered');continuation('ambush-concealed',concealed,'ambush-triggered',final);requiredEventAudits.push({scenario:name,kind:'selected-role-ambush-hit',source:ids.ambusher,target:ids.trigger,wrongRoleTarget:ids.wrongTarget,nativeAmbush:commandRecord(concealed,'ambush',c=>sameIds(c.ids,[ids.ambusher])&&c.radius===2&&c.target==='melee'),requiredChronology:'Native selected-role ambush is recorded while both hostile actors are full health; the ready concealed archer withholds fire against the worker, then attacks the authored melee approach.',observedEvents:traces[name].events.filter(item=>item.event.type==='attack')});
++  results[name]={readyTick:ready.tick,concealedTick:held.tick,triggeredTick:triggered.tick,wrongTargetHp:hp(triggered,ids.wrongTarget),targetHp:hp(triggered,ids.trigger)};ctx.record('Ready concealed archer ignores worker and fires on authored melee approach',results[name]);await finishTrace(name);
++ }
++ {
++  const name='morale-supported-full-fight',{ids}=await load(name);tracked=[...ids.siege,...ids.squad];const initial=await ctx.snap();
++  assert.equal((initial.projectiles??[]).length,0,'No volley before native input');collect(initial);for(const id of ids.squad){const e=entity(initial,id);assert.equal(e.hp,e.maxHp);assert.equal(e.tactics.morale,100);assert.equal(e.tactics.recentLoss,0);}
++  await ctx.selectTroop(ids.siege[0]);const panel=await ctx.openTactics();assert.match(await panel.getByLabel('Selected unit tactics',{exact:true}).innerText(),/Morale 100%/);await ctx.screenshot('morale-full-baseline-panel');await ctx.closePanels();await selectEntireOwnedArmy(ids.siege);await ctx.entityClick(ids.primary,'right');await ctx.wait(({siege,primary})=>siege.every(id=>{const o=window.rts.state.entities.find(e=>e.id===id)?.order;return o?.type==='attack'&&o.target===primary;}),ids);
++  await ctx.pause();const beforeVolleyName='morale-native-attack-before-volley',beforeVolley=await verified(beforeVolleyName),beforeVolleyState=beforeVolley.game.state;collect(beforeVolleyState);
++  const nativeAttack=commandRecord(beforeVolley,'attack',c=>sameIds(c.ids,ids.siege)&&c.target===ids.primary);assert(nativeAttack.tick<=beforeVolleyState.tick);
++  assert.equal((beforeVolleyState.projectiles??[]).length,0,'Native attack is retained before any pending volley');for(const id of ids.squad){const e=entity(beforeVolleyState,id);assert.equal(e.hp,e.maxHp,'Squad remains full health after accepted native attack');assert.equal(e.tactics.morale,100);assert.equal(e.tactics.recentLoss,0);}assert(ids.siege.every(id=>{const o=entity(beforeVolleyState,id).order;return o.type==='attack'&&o.target===ids.primary;}));
++  let wounded;
++  const retreat=await until(s=>{
++   const a=entity(s,ids.primary),b=entity(s,ids.support);if(a.hp>0&&b.hp>0&&(a.hp<a.maxHp||b.hp<b.maxHp)&&!wounded)wounded={tick:s.tick,primary:a,support:b};
++   if(!(a.hp>0&&b.hp>0&&ids.ranged.some(id=>hp(s,id)===0)))return false;
++   return [a,b].some(e=>e.tactics?.retreat&&e.tactics.morale<22&&distance(a,b)<4.5&&(a.level??0)===(b.level??0)&&s.teams[a.side]===s.teams[b.side]);
++  },'Combat wounds/casualties cause a surviving supported retreat',20000);collect(retreat);
++  const retreater=[entity(retreat,ids.primary),entity(retreat,ids.support)].find(e=>e.tactics?.retreat&&e.tactics.morale<22),support=entity(retreat,retreater.id===ids.primary?ids.support:ids.primary),deadAllies=ids.ranged.filter(id=>hp(retreat,id)===0);assert(deadAllies.length>0);assert(wounded);assert(retreater.hp>0&&retreater.hp<retreater.maxHp);assert(support.hp>0);assert(distance(retreater,support)<4.5);
++  const threat=ids.siege.map(id=>entity(retreat,id)).find(e=>e.hp>0&&distance(e,retreater)<5.5&&retreat.visible[retreater.side].includes((e.level??0)*retreat.width*retreat.height+Math.floor(e.y)*retreat.width+Math.floor(e.x)));assert(threat,'A live visible threat exists at retreat');assert.equal(retreater.side,1);
++  // Native reimport clears selection. Resume for F2; it must select exactly the seven engines.
++  await hold(ids.siege);await ctx.screenshot('morale-supported-retreat');const activeSave=await verified('morale-supported-retreat');command(activeSave,'attack',c=>sameIds(c.ids,ids.siege)&&c.target===ids.primary);continuation(beforeVolleyName,beforeVolley,'morale-supported-retreat',activeSave);
++  const origin={x:entity(activeSave.game.state,retreater.id).x,y:entity(activeSave.game.state,retreater.id).y};const moved=await until(s=>s.tick>=activeSave.game.state.tick+20&&hp(s,retreater.id)>0&&distance(entity(s,retreater.id),origin)>.3,'Saved automatic retreat continues moving',10000);const movedSave=await verified('morale-supported-retreat-moved');continuation('morale-supported-retreat',activeSave,'morale-supported-retreat-moved',movedSave);
++  // Inspect the damaged squad's owned morale through native replay perspective.
++  await ctx.openSessions('replay');await ctx.sessions.getByLabel('Import replay JSON',{exact:true}).setInputFiles(resolve(ctx.out,'morale-supported-retreat-replay.json'));await ctx.sessions.getByRole('button',{name:'Import replay',exact:true}).click();await ctx.wait(()=>window.rts.mode==='replay');await ctx.ready();await ctx.sessions.getByLabel('Replay tick',{exact:true}).press('End');await ctx.wait(tick=>window.rts.state.tick===tick,activeSave.game.state.tick);await ctx.sessions.getByLabel('Replay perspective',{exact:true}).selectOption('1');await ctx.wait(()=>window.rts.viewSide===1);await ctx.closeSessions();await ctx.selectTroop(retreater.id);const stats=await ctx.openTactics();assert((await stats.getByLabel('Selected unit tactics',{exact:true}).innerText()).includes(`Morale ${Math.round(entity(activeSave.game.state,retreater.id).tactics.morale)}%`));await ctx.screenshot('morale-retreater-owned-panel');await ctx.importSave(resolve(ctx.out,'morale-supported-retreat-moved-save.json'),'Restore native morale continuation');await ctx.closeSessions();await ctx.pause();
++  requiredEventAudits.push({scenario:name,kind:'full-morale-combat-causal-chain',attackerIds:ids.siege,squadIds:ids.squad,deadAllies,retreater:retreater.id,nativeAttackTick:nativeAttack.tick,beforeVolleyTick:beforeVolleyState.tick,requiredChronology:'Accepted native attack precedes the first ordinary launch, actual damage, nearby allied death and morale retreat; derive hit amounts and casualty count from replay rather than an exact predicted gate.',observedEvents:traces[name].events.filter(item=>['attack','death','message'].includes(item.event.type))});
++  results[name]={initialSquad:ids.squad.map(id=>entity(initial,id)),nativeAttack,beforeVolleyTick:beforeVolleyState.tick,deadAllies,wounded,retreat:{tick:retreat.tick,retreater,support,supportDistance:distance(retreater,support),visibleThreat:threat.id},movedTick:moved.tick,movement:distance(entity(moved,retreater.id),origin)};ctx.record('Full-health morale100 squad suffers real wounds/deaths and retreats with a live close ally',results[name]);await finishTrace(name);
++ }
++ return{completed:true,scope:'Nine bounded canonical production-main encounters; no full39-case or stress certification',caseNames:CANONICAL_CASES,exports,continuations,results,requiredEventAudits,status:'Native observations and complete browser persistence only. Root must inspect transient event/replay continuation evidence before admission.'};
++ }catch(error){
++  progress.failure={case:active,message:String(error.stack??error)};const trace=traces[active];if(trace)try{await writeFile(resolve(ctx.out,`${active}-failure-observations.json`),`${JSON.stringify({samples:trace.samples,events:trace.events},null,2)}\n`,{flag:'wx'});}catch(captureError){progress.failure.traceCaptureError=String(captureError.stack??captureError);}throw error;
++ }
++}
++

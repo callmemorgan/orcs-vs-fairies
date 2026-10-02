@@ -1,0 +1,14 @@
+--- a/scripts/acceptance/build-native-helpers.mjs
++++ b/scripts/acceptance/build-native-helpers.mjs
+@@ -20,7 +20,10 @@
+ const initial = await committedHelperInventory(root,pin);
+ for (const input of initial) assert.deepEqual(await readFile(safePath(root, input.path)), execFileSync('git', ['show', `${pin}:${input.path}`], { cwd: root, maxBuffer: 32 * 1024 * 1024 }));
+ const {esbuild,identity:compiler} = await configuredCompiler(root);
+-for (const [name, entry] of [['fixtures', 'scripts/acceptance/native-fixtures.ts'], ['audit', 'scripts/acceptance/native-audit.ts']]) {
++const mode = process.argv[5] ?? 'full';
++assert(['full', 'main-smoke'].includes(mode), 'Known helper selection');
++const entries = mode === 'main-smoke' ? [['fixtures', 'scripts/acceptance/main-smoke-fixtures.ts'], ['audit', 'scripts/acceptance/native-audit.ts']] : [['fixtures', 'scripts/acceptance/native-fixtures.ts'], ['audit', 'scripts/acceptance/native-audit.ts']];
++for (const [name, entry] of entries) {
+   const bundlePath = resolve(out, `${name}.mjs`);
+   const result = await esbuild.build(helperBuildOptions(root,entry,bundlePath));
+   assert.equal(result.outputFiles.length, 1);

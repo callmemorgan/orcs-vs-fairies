@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "reviewedAt": "2026-10-02T02:54:44.392829+00:00",
+  "status": "one-concrete-visual-blocker",
+  "testedProductPin": "f7f3e187ea40079492589a6fce39f0b33f77f04a",
+  "preparationVersion": 4,
+  "integrationPin": null,
+  "runtimeAdmitted": false,
+  "executed": false,
+  "scope": "Static source/file reads only; no runtime, signals, source imports, DB operations, tests, builds, browser, candidate edits or root writes.",
+  "inventory": "/tmp/ovf-main15-v4-static-review-architecture-7ditpaj3/file-inventory.json",
+  "blockers": [
+    {
+      "title": "Paused overlay obscures the intended placeholder screenshots",
+      "sourceReferences": [
+        "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/placeholder-single-capture.mjs:147",
+        "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/placeholder-single-capture.mjs:159",
+        "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/placeholder-single-capture.mjs:166",
+        "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/placeholder-single-capture.mjs:169",
+        "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/placeholder-single-capture.mjs:182",
+        "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/placeholder-single-capture.mjs:187",
+        "/home/morgana/Projects/orcs-vs-Fairies/scripts/acceptance/native-context.mjs:85",
+        "/home/morgana/Projects/orcs-vs-Fairies/src/ui/Hud.ts:286",
+        "/home/morgana/Projects/orcs-vs-Fairies/src/ui/style.css:9"
+      ],
+      "evidence": "Neutral screenshot follows explicit pause. runUntil pauses before returning for progress and final screenshots. Paused local game exposes a full-size game-overlay with dark background and backdrop blur, obscuring pillar/glyph/bar/ownership evidence. Product Hud/style/GameScene/main files have no Git diff from tested f7.",
+      "boundedCorrection": "Use the existing public Photo mode control around each visual capture while preserving the paused state. Exit through the public Exit photo mode control before capture/resume/export. Change only external driver and its preparation seal; preserve v4.",
+      "correctionReferences": [
+        "/home/morgana/Projects/orcs-vs-Fairies/src/ui/SessionTools.ts:107",
+        "/home/morgana/Projects/orcs-vs-Fairies/src/game/GameScene.ts:126",
+        "/home/morgana/Projects/orcs-vs-Fairies/src/ui/style.css:54",
+        "/home/morgana/Projects/orcs-vs-Fairies/src/game/GameScene.ts:538",
+        "/home/morgana/Projects/orcs-vs-Fairies/src/main.ts:432"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "scope": "Source/helper binding",
+      "result": "Active external four-file contract, preparation fingerprints and retained snapshots authenticate. Wrapper demands a future committed integration pin, complete committed helper seal, exact tested product/source build identity and owned dist, plus source-bound fixture/audit/history helpers. No concrete blocker found in this bounded review."
+    },
+    {
+      "scope": "Fixture/artwork/public controls",
+      "result": "Strict main15 keeps art.loaded readiness. Separate one-case placeholder phase uses explicit art=placeholder, validates disabled/unloaded art, imports SAVE4/rules4.0.2 zero-tick fixture through Session tools, checks complete native game envelope, and performs Capture relic through World tools. The pause overlay is the concrete blocker."
+    },
+    {
+      "scope": "Scoped teardown",
+      "result": "Supervisor signals only remembered owned positive PIDs through pidfd after identity/start checks and immediate protected preview checks. Node preload rejects protected, group/negative and unrelated signal targets. Normal browser/context close precedes supervisor cleanup. Bounded TERM/KILL escalation and bound-child closure evidence are retained. No concrete cleanup blocker found."
+    }
+  ],
+  "protectedPreview": {
+    "port": 4173,
+    "pid": 1063,
+    "startTicks": 874,
+    "listenerInode": "3783",
+    "fd": "22",
+    "qualification": "These exact values are checked by prepared code before signals. This review did not execute the protection checks or any signals."
+  },
+  "cleanupQualifications": [
+    "Observed/remembered owned child identities are the cleanup scope; no complete process-family discovery claim or added gate is required.",
+    "Missing, reused or terminated direct parent cannot adopt new descendants.",
+    "Changing protected identity blocks signals and retains cleanup error.",
+    "Node normal protocol close and authenticated supervisor pidfd escalation suffice for actual owned processes."
+  ],
+  "remainingCoordination": "Root owns prospective scripts commit, review/seal, serial runtime release, server/process supervision and post-run visual review. Those expected admission inputs are not additional code blockers."
+}

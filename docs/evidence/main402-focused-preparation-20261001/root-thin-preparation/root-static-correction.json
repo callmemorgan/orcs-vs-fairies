@@ -1,0 +1,12 @@
+{
+  "observedAt": "2026-10-02T01:56:36.738961+00:00",
+  "scope": "Unexecuted proof producer import guard",
+  "originalPin": "f7f3e187ea40079492589a6fce39f0b33f77f04a",
+  "finding": "Independent delegate found unguarded ruin CLI tail executes when imported by the bundled focused helper. CLI argv would be misread as output/sourcepin.",
+  "correction": "Require own entry identity before CLI invocation; library imports remain inert. Candidate patch is external; frozen source untouched.",
+  "runtimeOccurred": false,
+  "patchSha256": "017375d346bc6a3fdbece4744d63fcb5b78b45977febcb2ac5da9fd57d001ecc",
+  "cleanupCorrection": "Attempt browser.close in nested finally even if context.close rejects. Retain distinct cleanup errors and mark overall incomplete without overwriting primary failed data.",
+  "reviewerReportSha256": "3c43bd197f76e384e76cc32e2238f37cf886d6cc6a6b5b25d24557a4ac6a8170",
+  "updatedAt": "2026-10-02T01:59:04.510631+00:00"
+}

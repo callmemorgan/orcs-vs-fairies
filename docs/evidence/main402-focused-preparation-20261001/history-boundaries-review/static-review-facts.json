@@ -1,0 +1,361 @@
+{
+  "schema": 1,
+  "author": {
+    "harness": "Codex",
+    "model": "GPT-6",
+    "finerVariant": "not exposed"
+  },
+  "scope": "Independent static review of the external rules-4.0.2 focused native history audit; no runtime or feature admission.",
+  "reviewedCandidate": {
+    "originalPath": "/tmp/ovf-main402-history-audit-0fgcdkf8/candidate/scripts/acceptance/main-smoke402-history-audit.ts",
+    "snapshotPath": "/tmp/ovf-main402-history-static-import-boundaries-odteb5c8/reviewed-main-smoke402-history-audit.ts",
+    "bytes": 31983,
+    "lines": 369,
+    "sha256": "5f4471498a48113a135207d9195cb9cf8b4504d56f448258812bdfe16e21389f",
+    "liveBytesMatchSnapshotAtReadback": true
+  },
+  "sourceApplicability": {
+    "designPin": "f7f3e187ea40079492589a6fce39f0b33f77f04a",
+    "currentHead": "b65df28c73656465c5be5a02829fa68b87e24f35",
+    "expectedCurrentHead": "b65df28c73656465c5be5a02829fa68b87e24f35",
+    "committedDifferencesAcrossTrackedCoreAcceptanceUi": [],
+    "workingDifferencesAcrossTrackedCoreAcceptanceUi": [
+      "scripts/acceptance/build-native-helpers.mjs",
+      "scripts/acceptance/ruin-cover-fixtures.ts"
+    ],
+    "reviewedPreparedFilesAbsentAtBothPins": [
+      "scripts/acceptance/verify-main-smoke402.mjs",
+      "scripts/acceptance/canonical-main-smoke.mjs",
+      "scripts/acceptance/main-smoke-fixtures.ts",
+      "scripts/acceptance/canonical-main-fixtures.ts",
+      "scripts/acceptance/main-smoke-freeze.mjs"
+    ],
+    "sourceFiles": [
+      {
+        "path": "src/core/history-hooks.ts",
+        "workingBytes": 1158,
+        "workingSha256": "56a53b84aa389f3ccf189f72df2ecf2d632677f8a664b49fc16865e46bdf6f82",
+        "designPinSha256": "56a53b84aa389f3ccf189f72df2ecf2d632677f8a664b49fc16865e46bdf6f82",
+        "headSha256": "56a53b84aa389f3ccf189f72df2ecf2d632677f8a664b49fc16865e46bdf6f82",
+        "presentAtDesignPin": true,
+        "presentAtHead": true,
+        "sameAtPins": true,
+        "workingEqualsHead": true
+      },
+      {
+        "path": "src/core/replays.ts",
+        "workingBytes": 16630,
+        "workingSha256": "c7d57a1df6536dee13fbbb35c58f4128fac1589e46f7fd62b296ce11804f1c17",
+        "designPinSha256": "c7d57a1df6536dee13fbbb35c58f4128fac1589e46f7fd62b296ce11804f1c17",
+        "headSha256": "c7d57a1df6536dee13fbbb35c58f4128fac1589e46f7fd62b296ce11804f1c17",
+        "presentAtDesignPin": true,
+        "presentAtHead": true,
+        "sameAtPins": true,
+        "workingEqualsHead": true
+      },
+      {
+        "path": "src/core/saves.ts",
+        "workingBytes": 48856,
+        "workingSha256": "2059e49775401d44813a02c3628de3055c3d7d944d4f887cf7a3639c145197c7",
+        "designPinSha256": "2059e49775401d44813a02c3628de3055c3d7d944d4f887cf7a3639c145197c7",
+        "headSha256": "2059e49775401d44813a02c3628de3055c3d7d944d4f887cf7a3639c145197c7",
+        "presentAtDesignPin": true,
+        "presentAtHead": true,
+        "sameAtPins": true,
+        "workingEqualsHead": true
+      },
+      {
+        "path": "src/core/session-storage.ts",
+        "workingBytes": 12012,
+        "workingSha256": "c3a9f04a0abc7bc29338b08bc1f7e65e7669002908ada7ba18836481b1f47c7e",
+        "designPinSha256": "c3a9f04a0abc7bc29338b08bc1f7e65e7669002908ada7ba18836481b1f47c7e",
+        "headSha256": "c3a9f04a0abc7bc29338b08bc1f7e65e7669002908ada7ba18836481b1f47c7e",
+        "presentAtDesignPin": true,
+        "presentAtHead": true,
+        "sameAtPins": true,
+        "workingEqualsHead": true
+      },
+      {
+        "path": "src/core/simulation.ts",
+        "workingBytes": 106228,
+        "workingSha256": "e301c65d0352ffe648a5bc4ee6acbda1f562164deacdfe60f8f3b03e7bdccf35",
+        "designPinSha256": "e301c65d0352ffe648a5bc4ee6acbda1f562164deacdfe60f8f3b03e7bdccf35",
+        "headSha256": "e301c65d0352ffe648a5bc4ee6acbda1f562164deacdfe60f8f3b03e7bdccf35",
+        "presentAtDesignPin": true,
+        "presentAtHead": true,
+        "sameAtPins": true,
+        "workingEqualsHead": true
+      },
+      {
+        "path": "src/core/tactics.ts",
+        "workingBytes": 18834,
+        "workingSha256": "c211c0f9e592d00fed035589fc62c41ec2aa329ce9906a62a0d71c7ed3495b2d",
+        "designPinSha256": "c211c0f9e592d00fed035589fc62c41ec2aa329ce9906a62a0d71c7ed3495b2d",
+        "headSha256": "c211c0f9e592d00fed035589fc62c41ec2aa329ce9906a62a0d71c7ed3495b2d",
+        "presentAtDesignPin": true,
+        "presentAtHead": true,
+        "sameAtPins": true,
+        "workingEqualsHead": true
+      },
+      {
+        "path": "src/core/types.ts",
+        "workingBytes": 8433,
+        "workingSha256": "9f2c6c337d2dd6669c1cd8dbee30c01c89c41de3d9caf962d57854310fe8dd33",
+        "designPinSha256": "9f2c6c337d2dd6669c1cd8dbee30c01c89c41de3d9caf962d57854310fe8dd33",
+        "headSha256": "9f2c6c337d2dd6669c1cd8dbee30c01c89c41de3d9caf962d57854310fe8dd33",
+        "presentAtDesignPin": true,
+        "presentAtHead": true,
+        "sameAtPins": true,
+        "workingEqualsHead": true
+      },
+      {
+        "path": "src/core/versions.ts",
+        "workingBytes": 346,
+        "workingSha256": "57023377ade74d193b0397fb8fbaf71da39bed7d48d4187fc3e7a466c1fd433b",
+        "designPinSha256": "57023377ade74d193b0397fb8fbaf71da39bed7d48d4187fc3e7a466c1fd433b",
+        "headSha256": "57023377ade74d193b0397fb8fbaf71da39bed7d48d4187fc3e7a466c1fd433b",
+        "presentAtDesignPin": true,
+        "presentAtHead": true,
+        "sameAtPins": true,
+        "workingEqualsHead": true
+      },
+      {
+        "path": "scripts/acceptance/native-audit.ts",
+        "workingBytes": 11320,
+        "workingSha256": "d7462afe5edc5a1abcebe44591a6a8f409573583814870baa62ef895c2bd9fd2",
+        "designPinSha256": "d7462afe5edc5a1abcebe44591a6a8f409573583814870baa62ef895c2bd9fd2",
+        "headSha256": "d7462afe5edc5a1abcebe44591a6a8f409573583814870baa62ef895c2bd9fd2",
+        "presentAtDesignPin": true,
+        "presentAtHead": true,
+        "sameAtPins": true,
+        "workingEqualsHead": true
+      },
+      {
+        "path": "scripts/acceptance/native-downloads.ts",
+        "workingBytes": 1657,
+        "workingSha256": "e1424495056d9965f5804e151d16e424840d9d69e8f182d3b912e71ee131b6fa",
+        "designPinSha256": "e1424495056d9965f5804e151d16e424840d9d69e8f182d3b912e71ee131b6fa",
+        "headSha256": "e1424495056d9965f5804e151d16e424840d9d69e8f182d3b912e71ee131b6fa",
+        "presentAtDesignPin": true,
+        "presentAtHead": true,
+        "sameAtPins": true,
+        "workingEqualsHead": true
+      },
+      {
+        "path": "scripts/acceptance/native-context.mjs",
+        "workingBytes": 10832,
+        "workingSha256": "f205338dd00ec7d8f75dcc0dc3c0415a31bac6b47b3e1dfbe45f5b9e517447dd",
+        "designPinSha256": "f205338dd00ec7d8f75dcc0dc3c0415a31bac6b47b3e1dfbe45f5b9e517447dd",
+        "headSha256": "f205338dd00ec7d8f75dcc0dc3c0415a31bac6b47b3e1dfbe45f5b9e517447dd",
+        "presentAtDesignPin": true,
+        "presentAtHead": true,
+        "sameAtPins": true,
+        "workingEqualsHead": true
+      },
+      {
+        "path": "scripts/acceptance/verify-main-smoke402.mjs",
+        "workingBytes": 11204,
+        "workingSha256": "1e0758ad72de4b40eb65a725676596d77fe142f5040ed7215932bd93ee6dd40c",
+        "designPinSha256": null,
+        "headSha256": null,
+        "presentAtDesignPin": false,
+        "presentAtHead": false,
+        "sameAtPins": null,
+        "workingEqualsHead": null
+      },
+      {
+        "path": "scripts/acceptance/canonical-main-smoke.mjs",
+        "workingBytes": 24993,
+        "workingSha256": "428d5dfa74cd7ddcafaa9a54b6d5bda8bc80bff14debd67c8cd9de96021cd439",
+        "designPinSha256": null,
+        "headSha256": null,
+        "presentAtDesignPin": false,
+        "presentAtHead": false,
+        "sameAtPins": null,
+        "workingEqualsHead": null
+      },
+      {
+        "path": "scripts/acceptance/ruin-cover-main-smoke.mjs",
+        "workingBytes": 6741,
+        "workingSha256": "152cda61bfcdc825fc2b1bd14ab4afd4739267f6225dff2b3f45dad5f71285fc",
+        "designPinSha256": "152cda61bfcdc825fc2b1bd14ab4afd4739267f6225dff2b3f45dad5f71285fc",
+        "headSha256": "152cda61bfcdc825fc2b1bd14ab4afd4739267f6225dff2b3f45dad5f71285fc",
+        "presentAtDesignPin": true,
+        "presentAtHead": true,
+        "sameAtPins": true,
+        "workingEqualsHead": true
+      },
+      {
+        "path": "scripts/acceptance/main-smoke-fixtures.ts",
+        "workingBytes": 2129,
+        "workingSha256": "13b3f0770de577f3902697006b5f8d0b73f12d279db92ef4b75add6838747188",
+        "designPinSha256": null,
+        "headSha256": null,
+        "presentAtDesignPin": false,
+        "presentAtHead": false,
+        "sameAtPins": null,
+        "workingEqualsHead": null
+      },
+      {
+        "path": "scripts/acceptance/canonical-main-fixtures.ts",
+        "workingBytes": 11669,
+        "workingSha256": "340bcf7d6066a95fdd5532c2086031525fb1ecb6ede4c4783b11dde176cc8a3f",
+        "designPinSha256": null,
+        "headSha256": null,
+        "presentAtDesignPin": false,
+        "presentAtHead": false,
+        "sameAtPins": null,
+        "workingEqualsHead": null
+      },
+      {
+        "path": "scripts/acceptance/main-smoke-freeze.mjs",
+        "workingBytes": 5349,
+        "workingSha256": "d8adc36e4edaea5ea8d5f1361f592116e8fc02419de3f20c168b833f7eba0478",
+        "designPinSha256": null,
+        "headSha256": null,
+        "presentAtDesignPin": false,
+        "presentAtHead": false,
+        "sameAtPins": null,
+        "workingEqualsHead": null
+      },
+      {
+        "path": "scripts/acceptance/build-native-helpers.mjs",
+        "workingBytes": 3856,
+        "workingSha256": "7ba069179c6a2e3f2c644f1a3fd3c2b05df434cb3ac70509d8c27424e7306a98",
+        "designPinSha256": "1e2a4861f14a4fe54b6a816b8b03d12918dcf47ae22986c1953dbe17088ac49a",
+        "headSha256": "1e2a4861f14a4fe54b6a816b8b03d12918dcf47ae22986c1953dbe17088ac49a",
+        "presentAtDesignPin": true,
+        "presentAtHead": true,
+        "sameAtPins": true,
+        "workingEqualsHead": false
+      },
+      {
+        "path": "scripts/acceptance/ruin-cover-fixtures.ts",
+        "workingBytes": 5995,
+        "workingSha256": "799c5bc13d4f6233e40de3d4f66b8441f1fe2d09212d4fb3bb73a40029f24525",
+        "designPinSha256": "69c8787bf7875c2329810f8fb04bad6966bd80d5a8161f043c72233f963e06b6",
+        "headSha256": "69c8787bf7875c2329810f8fb04bad6966bd80d5a8161f043c72233f963e06b6",
+        "presentAtDesignPin": true,
+        "presentAtHead": true,
+        "sameAtPins": true,
+        "workingEqualsHead": false
+      },
+      {
+        "path": "docs/features/requirements.json",
+        "workingBytes": 68942,
+        "workingSha256": "02e79ba65d037c4096f7cc5e1f68b26e6daef6174769be609a4f92814e62cab6",
+        "designPinSha256": "d5d96917ffb624be456983903c30507ac38d1ff169dfbea4e9cd761eb6243589",
+        "headSha256": "02e79ba65d037c4096f7cc5e1f68b26e6daef6174769be609a4f92814e62cab6",
+        "presentAtDesignPin": true,
+        "presentAtHead": true,
+        "sameAtPins": false,
+        "workingEqualsHead": true
+      }
+    ]
+  },
+  "execution": {
+    "candidateExecuted": false,
+    "applicationImports": false,
+    "testsRun": false,
+    "simulationsRun": false,
+    "buildsRun": false,
+    "browserOrServerStarted": false,
+    "rootOrCandidateWrites": false,
+    "externalReviewArtifactsWritten": true,
+    "rawReceiptOrDownloadOutcomesVerified": false
+  },
+  "blockers": [],
+  "conclusions": [
+    {
+      "topic": "step event capture",
+      "candidateLines": [
+        161,
+        186
+      ],
+      "source": "src/core/history-hooks.ts:25-29; src/core/replays.ts:173-196; src/core/simulation.ts:515-525",
+      "result": "Copies completed-step snapshots before same-tick trailing commands; observer failures rethrown outside swallowing hook; observer count bound to tick advancement."
+    },
+    {
+      "topic": "complete saves and runtime",
+      "candidateLines": [
+        143,
+        185
+      ],
+      "source": "src/core/session-storage.ts:59-67; src/core/simulation.ts:60-68",
+      "result": "Every authenticated original save is decoded, round-tripped, independently rederived, and compared as complete game envelope plus runtime. Checksum is additional evidence."
+    },
+    {
+      "topic": "standalone association",
+      "candidateLines": [
+        195,
+        208
+      ],
+      "source": "src/core/replays.ts:126-185; scripts/acceptance/verify-main-smoke402.mjs:82-89",
+      "result": "Matching basename save required, playback fields compared, standalone archive independently replayed to complete saved game/runtime; report session similarly replayed."
+    },
+    {
+      "topic": "checkpoint continuation",
+      "candidateLines": [
+        65,
+        85,
+        210,
+        245
+      ],
+      "source": "scripts/acceptance/native-audit.ts:20-40; scripts/acceptance/canonical-main-smoke.mjs:35; src/core/replays.ts:139-144",
+      "result": "Validated decoded prefixes, cloned suffix, merged/split advances and same-tick command boundaries handled; checkpoint state loaded independently and compared completely at final endpoint."
+    },
+    {
+      "topic": "original clause scope",
+      "candidateLines": [
+        276,
+        347,
+        349,
+        363
+      ],
+      "source": "docs/features/requirements.json; scripts/acceptance/canonical-main-smoke.mjs:71-118; scripts/acceptance/ruin-cover-main-smoke.mjs:20-59",
+      "result": "No extra isolation, surrender, exact casualty-count, support-distance or all-material gate introduced; concrete baseline and chronology assertions follow retained recipe witness."
+    }
+  ],
+  "limitations": [
+    {
+      "candidateLines": [
+        167,
+        170
+      ],
+      "text": "Step histories begin after constructor settles initial commands. Archive-derived commands preserve those inputs; command-generated events are outside ordinary tick history."
+    },
+    {
+      "candidateLines": [
+        19,
+        199,
+        201
+      ],
+      "text": "Standalone equality checks playback fields and complete resulting game/runtime. Analysis and technologies are decoded but not compared or authenticated as recomputed chart values."
+    },
+    {
+      "candidateLines": [
+        43,
+        50,
+        347
+      ],
+      "text": "visibleHostiles uses raw side tile visibility, without tactical concealment; closeLivingAllies is drawn from declared actor IDs and does not reproduce all production support filters. Both are descriptive data, not gates."
+    },
+    {
+      "candidateLines": [
+        363,
+        365
+      ],
+      "text": "Complete original save/runtime verification concerns the game envelope; optional outer session planning/scenario-profile equality, visual acceptance, and original-feature admission remain outside this audit."
+    }
+  ],
+  "workingTreeQualifications": [
+    {
+      "path": "scripts/acceptance/build-native-helpers.mjs",
+      "change": "Adds full/main-smoke helper selection. Does not alter reviewed core APIs or native receipt fields."
+    },
+    {
+      "path": "scripts/acceptance/ruin-cover-fixtures.ts",
+      "change": "Adds fileURLToPath direct-entry guard to prevent imported fixture CLI authoring. Does not alter scenario authoring bodies or receipt fields."
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "format": "ovf-main-smoke402-static-review",
+  "observedAt": "2026-10-02T01:57:46.999685+00:00",
+  "productPin": "f7f3e187ea40079492589a6fce39f0b33f77f04a",
+  "scope": "Read-only static review of focused15-case external preparation against current helper provenance, native context/contracts, Vite identity and committed ruin producer/driver. No producer/helper/application/test/build/browser/server/SQLite execution and no root edits.",
+  "inputFiles": [
+    {
+      "path": "/tmp/ovf-root-main-smoke402-preparation/main-smoke-freeze.mjs",
+      "bytes": 5349,
+      "sha256": "d8adc36e4edaea5ea8d5f1361f592116e8fc02419de3f20c168b833f7eba0478"
+    },
+    {
+      "path": "/tmp/ovf-root-main-smoke402-preparation/main-smoke-fixtures.ts",
+      "bytes": 1840,
+      "sha256": "4bf29869475f16c3acc06ae555f04a1b4418f9125d0c73f2906b8470fbbd106c"
+    },
+    {
+      "path": "/tmp/ovf-root-main-smoke402-preparation/verify-main-smoke402.mjs",
+      "bytes": 10617,
+      "sha256": "34491a11118a0725106e83a6401e39ee38aa558e7a1915ab7b7719e889fe1f93"
+    },
+    {
+      "path": "/tmp/ovf-root-main-smoke402-preparation/builder-selector.patch",
+      "bytes": 1168,
+      "sha256": "9b51f533a90a65cb49e62bb968b13af32e550638b2cab91aa465a2af34d4aa23"
+    },
+    {
+      "path": "/tmp/ovf-root-main-smoke402-preparation/build-native-helpers.main-smoke.candidate.mjs",
+      "bytes": 3790,
+      "sha256": "cf2946a6ce86d3e833ba3a0fecf36956d65d015656e00cffc3f397a913100ae2"
+    }
+  ],
+  "findings": [
+    {
+      "priority": 1,
+      "file": "/home/morgana/Projects/orcs-vs-Fairies/scripts/acceptance/ruin-cover-fixtures.ts",
+      "line": 57,
+      "trigger": "main-smoke-fixtures imports ruin-cover-fixtures; loadPinnedHelper dynamically imports the bundled focused producer during main-smoke-freeze.mjs --generate ROOT FIXTURES PIN HELPER.",
+      "effect": "Unconditional argv-present CLI branch calls buildRuinCoverFixtures with output --generate and sourceCommit ROOT. Its40-hex assertion fails during module import before the composed factory can be called.",
+      "repair": "Remove the library-side CLI branch or guard direct entrypoint execution; also inspect the pending canonical producer for the same pattern.",
+      "status": "Static blocker; not executed."
+    },
+    {
+      "priority": 2,
+      "file": "/tmp/ovf-root-main-smoke402-preparation/verify-main-smoke402.mjs",
+      "line": 101,
+      "trigger": "context.close rejects in finally.",
+      "effect": "Sequential finally skips browser.close and may replace the original thrown failure; retained failure receipt remains but browser teardown is not guaranteed.",
+      "repair": "Use try/finally around context close so browser close always runs, and preserve cleanup failures separately from the first recorded failure.",
+      "status": "Inherited source-level cleanup weakness; no runtime failure observed."
+    }
+  ],
+  "minorScopeWording": {
+    "file": "/tmp/ovf-root-main-smoke402-preparation/verify-main-smoke402.mjs",
+    "line": 80,
+    "fact": "Pixel-insignia proof assertion label is inherited from the broader native runner; this focused run declares canonical tactics and ruins."
+  },
+  "checks": {
+    "buildIdAlgorithm": "Matches Vite: lexically sorted src-relative .ts/.css paths followed by raw bytes. Inventory sorting occurs before later receipt localeCompare sorting.",
+    "sourceBinding": "Committed complete src/acceptance/config bytes, locked compilerJS/native fingerprints, rebuilt helper bytes/metafile and input graph are bound to one final integration pin.",
+    "fixtureBinding": "Generation receipt fingerprints all generated files; freeze checks main manifest identity, each session byte hash, SAVE4/replay4.0.2, zero game ticks/time and empty replay actions.",
+    "servedBuildBinding": "Runner compares actual HTML/executable response bytes to frozen dist and later downloads a native bug report with expected source-derived buildID and complete checkpoint game equality.",
+    "builderSelector": "ROOT OUT PIN MAIN-SMOKE argument indexes are consistent; full default remains available.",
+    "knownPending": "Canonical9-case producer/driver are absent and integrationPin is null as disclosed. End-to-end static compatibility of those files remains outside this review; the final proof files must be committed before helper inventory/load passes.",
+    "visualLimit": "completed true is machine-run completion; visualReviewRequired true remains and screenshot inspection is separate."
+  },
+  "rootWrites": false,
+  "executed": false
+}

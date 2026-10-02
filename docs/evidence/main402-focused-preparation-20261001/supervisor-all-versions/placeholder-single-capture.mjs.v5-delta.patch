@@ -1,0 +1,116 @@
+--- versioned/v4/placeholder-single-capture.mjs
++++ placeholder-single-capture.mjs
+@@ -17,7 +17,9 @@
+ base.searchParams.set('art', 'placeholder');
+ assert(out !== fixtures && !out.startsWith(`${fixtures}${sep}`));
+ assert(out !== mainEvidence && !out.startsWith(`${mainEvidence}${sep}`));
+-const sourcePaths = ['native-contract.mjs', 'native-context.mjs', 'main-smoke-freeze.mjs'];
++const sourcePaths = ['scripts/acceptance/native-contract.mjs', 'scripts/acceptance/native-context.mjs',
++  'scripts/acceptance/main-smoke-freeze.mjs'];
++const photoSourcePaths = ['src/ui/SessionTools.ts', 'src/main.ts', 'src/game/GameScene.ts', 'src/ui/style.css'];
+ const { assertAssetBytes, assertSessionIdentity, comparePersisted, digest, fingerprints,
+   freshArtifact, htmlAssets, regularFiles, safePath } = await import(pathToFileURL(resolve(root, 'scripts/acceptance/native-contract.mjs')).href);
+ const { createNativeContext } = await import(pathToFileURL(resolve(root, 'scripts/acceptance/native-context.mjs')).href);
+@@ -51,19 +53,21 @@
+ assertSessionIdentity(initialSession, 'frozen placeholder capture fixture', identity, true);
+ assert.equal(initialSession.game.state.tick, 0); assert.equal(initialSession.game.state.time, 0);
+ assert.deepEqual(initialSession.replay.actions, []); assert.equal(initialSession.replay.finalTick, 0);
+-const importedSources = await fingerprints(root, sourcePaths.map(path => `scripts/acceptance/${path}`));
+-for (const file of importedSources) assert.deepEqual(file, frozen.source.files.find(row => row.path === file.path));
++const importedSources = await fingerprints(root, sourcePaths);
++const photoControlSources = await fingerprints(root, photoSourcePaths);
++for (const file of [...importedSources, ...photoControlSources])
++  assert.deepEqual(file, frozen.source.files.find(row => row.path === file.path));
+ const distHtml = await readFile(resolve(root, 'dist/index.html'));
+ const declaredAssets = htmlAssets(distHtml.toString(), base.href);
+ await freshArtifact(out); await mkdir(out, { recursive: true });
+ const evidence = { schema: 1, completed: false, phase: 'launch separate placeholder browser',
+   startedAt: new Date().toISOString(), base: base.href, artMode: 'placeholder', scenarioCount: 1,
+   source: { ...frozen.source, sealedContractSha256: digest(freezeBytes),
+-    driver: { path: entry, bytes: driverBytes.length, sha256: digest(driverBytes) }, importedSources,
++    driver: { path: entry, bytes: driverBytes.length, sha256: digest(driverBytes) }, importedSources, photoControlSources,
+     distHtmlSha256: digest(distHtml) },
+   priorCompletion: { mainReceiptSha256: digest(mainReceiptBytes), historyReceiptSha256: digest(historyBytes) },
+   fixture: { name: 'ruin-capture', file: fixture.file, sha256: digest(fixtureBytes), ids: fixture.ids, authored: fixture.authored },
+-  checks: [], downloads: {}, servedAssets: [], assetFailures: [], errors: [],
++  checks: [], downloads: {}, servedAssets: [], assetFailures: [], errors: [], photoCaptures: [],
+   scope: 'One separate placeholder capture visual check; root visual review and feature admission remain separate.' };
+ const receiptPath = resolve(out, 'fallback-single-capture.json');
+ const writeReceipt = () => writeFile(receiptPath, `${JSON.stringify(evidence, null, 2)}\n`);
+@@ -156,7 +160,55 @@
+   evidence.visualLocation = { site: ids.sitePoint, screen, fogKey, viewLevel: selected.viewLevel, viewSide: selected.viewSide };
+   const closeWorld = async () => { const world = page.locator('.world-tools');
+     if (await world.getAttribute('open') !== null) await world.locator(':scope > summary').click(); };
+-  await closeWorld(); await ctx.screenshot('fallback-neutral-pillar-glyph');
++  const photoScreenshot = async (name, nativeSaveName) => {
++    const prior = await ctx.snap(); assert.equal(prior.paused, true, 'Photo evidence starts at a paused native checkpoint');
++    assert.equal(await page.evaluate(() => document.querySelector('#app').classList.contains('photo-mode')), false);
++    const nativeBefore = await ctx.exportSave(`${nativeSaveName}-photo-before`);
++    await ctx.closeSessions(); assert.equal((await ctx.snap()).paused, prior.paused);
++    let photoError, captureFacts;
++    try {
++      // The public toolbar enters Photo mode; product CSS hides the pause overlay.
++      await page.locator('.session-toolbar').getByRole('button', { name: 'Photo mode', exact: true }).click();
++      await ctx.wait(() => document.querySelector('#app').classList.contains('photo-mode') && window.rts.paused &&
++        [...document.querySelectorAll('#app .game-overlay')].every(overlay => {
++          const style = getComputedStyle(overlay); return overlay.hidden || style.display === 'none' || style.visibility === 'hidden';
++        }), null, 10000);
++      await fallbackReady(); assert(await page.getByRole('button', { name: 'Exit photo mode', exact: true }).isVisible());
++      captureFacts = await page.evaluate(() => ({ photoMode: document.querySelector('#app').classList.contains('photo-mode'),
++        paused: window.rts.paused, tick: window.rts.state.tick, viewLevel: window.rts.viewLevel, viewSide: window.rts.viewSide,
++        overlays: [...document.querySelectorAll('#app .game-overlay')].map(overlay => {
++          const style = getComputedStyle(overlay); return { hidden: overlay.hidden, display: style.display,
++            visibility: style.visibility, backdropFilter: style.backdropFilter }; }) }));
++      assert.equal(captureFacts.photoMode, true); assert.equal(captureFacts.paused, true);
++      assert.equal(captureFacts.tick, nativeBefore.game.state.tick); assert(captureFacts.overlays.length > 0);
++      assert(captureFacts.overlays.every(overlay => overlay.hidden || overlay.display === 'none' || overlay.visibility === 'hidden'));
++      assert.equal(captureFacts.viewLevel, prior.viewLevel); assert.equal(captureFacts.viewSide, prior.viewSide);
++      await ctx.screenshot(name);
++    } catch (error) { photoError = error; }
++    finally {
++      try {
++        if (await page.evaluate(() => document.querySelector('#app').classList.contains('photo-mode')))
++          await page.getByRole('button', { name: 'Exit photo mode', exact: true }).click();
++        await ctx.wait(paused => !document.querySelector('#app').classList.contains('photo-mode') && window.rts.paused === paused,
++          prior.paused, 10000);
++      } catch (cleanupError) {
++        (evidence.photoCleanupErrors ??= []).push({ name, message: String(cleanupError.stack ?? cleanupError) });
++        if (!photoError) photoError = cleanupError;
++      }
++    }
++    if (photoError) throw photoError;
++    const nativeAfter = await ctx.exportSave(nativeSaveName);
++    comparePersisted(nativeAfter.game, nativeBefore.game, `${name} Photo mode preserves complete native game and runtime`);
++    await ctx.closeSessions(); const restored = await ctx.snap(); assert.equal(restored.paused, prior.paused);
++    assert.equal(restored.tick, prior.tick); assert.equal(restored.viewLevel, prior.viewLevel); assert.equal(restored.viewSide, prior.viewSide);
++    const facts = { name, publicControls: ['Photo mode', 'Exit photo mode'], priorPaused: prior.paused,
++      capture: captureFacts, restoredPaused: restored.paused, restoredTick: restored.tick,
++      nativeBefore: `${nativeSaveName}-photo-before-save.json`, nativeAfter: `${nativeSaveName}-save.json`,
++      completeNativeGameAndRuntimeUnchanged: true };
++    evidence.photoCaptures.push(facts); ctx.record(`${name} public Photo mode hides overlay and restores pause without game/runtime changes`, facts);
++    return nativeAfter;
++  };
++  await closeWorld(); await photoScreenshot('fallback-neutral-pillar-glyph', 'fallback-neutral-photo');
+   evidence.phase = 'normal World tools capture button'; await writeReceipt();
+   await ctx.resume(); const world = await ctx.openWorld();
+   await world.getByRole('button', { name: 'Capture relic', exact: true }).click();
+@@ -166,8 +218,7 @@
+   const progressing = await ctx.runUntil(state => site(state, ids.site).progress >= .3 && site(state, ids.site).progress < .8,
+     { timeout: 15000, label: 'single placeholder native capture progress' });
+   assert.equal(site(progressing, ids.site).owner, null); assert.equal(site(progressing, ids.site).capturing, 0);
+-  await fallbackReady(); await ctx.screenshot('fallback-capture-progress-pillar-glyph-bar');
+-  const progressSave = await ctx.exportSave('fallback-progress');
++  await fallbackReady(); const progressSave = await photoScreenshot('fallback-capture-progress-pillar-glyph-bar', 'fallback-progress');
+   assert.deepEqual(site(progressSave.game.state, ids.site), site(progressing, ids.site));
+   const captureCommands = progressSave.replay.actions.filter(action => action.type === 'command');
+   assert.equal(captureCommands.length, 1);
+@@ -184,8 +235,7 @@
+   const finalSite = site(captured, ids.site), initialSite = site(before, ids.site);
+   for (const key of ['id', 'kind', 'x', 'y', 'level']) assert.equal(finalSite[key], initialSite[key]);
+   assert.equal(finalSite.progress, 0); assert.equal(finalSite.capturing, null);
+-  await fallbackReady(); await ctx.screenshot('fallback-captured-pillar-ownership-marker');
+-  const capturedSave = await ctx.exportSave('fallback-captured');
++  await fallbackReady(); const capturedSave = await photoScreenshot('fallback-captured-pillar-ownership-marker', 'fallback-captured');
+   assert.deepEqual(site(capturedSave.game.state, ids.site), finalSite);
+   assert.deepEqual(capturedSave.replay.actions.filter(action => action.type === 'command'), captureCommands);
+   evidence.capture.final = finalSite; evidence.capture.finalTick = captured.tick;

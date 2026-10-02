@@ -1,0 +1,38 @@
+{
+  "feature": 6,
+  "ordinaryAttackRoute": [
+    "src/game/GameScene.ts:319 hostile click emits attack",
+    "src/main.ts:161 dispatchCommand routes local orders to shared simulation",
+    "src/core/simulation.ts:405 ordinary ranged weapon hit applies rangedCoverFactor before armor",
+    "src/core/tactics.ts:108 completed living buildings",
+    "src/core/tactics.ts:109 relic ruin pillars",
+    "src/core/tactics.ts:110 rock terrain near victim"
+  ],
+  "sourceApplicability": [
+    {
+      "path": "src/main.ts",
+      "bytes": 47424,
+      "sha256": "4b3de6a2c62517819e56d81e20f96aa10c8bfde8cd58ea70aa516fd84f0abda7",
+      "equalsTestedF7": true
+    },
+    {
+      "path": "src/game/GameScene.ts",
+      "bytes": 62749,
+      "sha256": "7acb2668ec99d0805b13bb2ad68fa0094ff33671dd94556332d855c330068fdd",
+      "equalsTestedF7": true
+    },
+    {
+      "path": "src/core/simulation.ts",
+      "bytes": 106228,
+      "sha256": "e301c65d0352ffe648a5bc4ee6acbda1f562164deacdfe60f8f3b03e7bdccf35",
+      "equalsTestedF7": true
+    },
+    {
+      "path": "src/core/tactics.ts",
+      "bytes": 18834,
+      "sha256": "c211c0f9e592d00fed035589fc62c41ec2aa329ce9906a62a0d71c7ed3495b2d",
+      "equalsTestedF7": true
+    }
+  ],
+  "verification": "Source route readback plus actual previously executed accepted-command tests; not a new browser claim."
+}

@@ -1,0 +1,34 @@
+diff --git a/scripts/acceptance/build-native-helpers.mjs b/scripts/acceptance/build-native-helpers.mjs
+index 2e9c273..7645572 100644
+--- a/scripts/acceptance/build-native-helpers.mjs
++++ b/scripts/acceptance/build-native-helpers.mjs
+@@ -20,7 +20,10 @@ assert.deepEqual(paths, tracked, 'Complete source and acceptance inventories mat
+ const initial = await committedHelperInventory(root,pin);
+ for (const input of initial) assert.deepEqual(await readFile(safePath(root, input.path)), execFileSync('git', ['show', `${pin}:${input.path}`], { cwd: root, maxBuffer: 32 * 1024 * 1024 }));
+ const {esbuild,identity:compiler} = await configuredCompiler(root);
+-for (const [name, entry] of [['fixtures', 'scripts/acceptance/native-fixtures.ts'], ['audit', 'scripts/acceptance/native-audit.ts']]) {
++const mode = process.argv[5] ?? 'full';
++assert(['full', 'main-smoke'].includes(mode), 'Known helper selection');
++const entries = mode === 'main-smoke' ? [['fixtures', 'scripts/acceptance/main-smoke-fixtures.ts'], ['audit', 'scripts/acceptance/native-audit.ts'], ['history', 'scripts/acceptance/main-smoke402-history-audit.ts']] : [['fixtures', 'scripts/acceptance/native-fixtures.ts'], ['audit', 'scripts/acceptance/native-audit.ts']];
++for (const [name, entry] of entries) {
+   const bundlePath = resolve(out, `${name}.mjs`);
+   const result = await esbuild.build(helperBuildOptions(root,entry,bundlePath));
+   assert.equal(result.outputFiles.length, 1);
+diff --git a/scripts/acceptance/ruin-cover-fixtures.ts b/scripts/acceptance/ruin-cover-fixtures.ts
+index 7fcaee1..f9b88cb 100644
+--- a/scripts/acceptance/ruin-cover-fixtures.ts
++++ b/scripts/acceptance/ruin-cover-fixtures.ts
+@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
+ import { createHash } from 'node:crypto';
+ import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
+ import { resolve } from 'node:path';
++import { fileURLToPath } from 'node:url';
+ import { FACTIONS } from '../../src/core/content';
+ import { MatchRecorder } from '../../src/core/replays';
+ import { SAVE_VERSION, saveGame } from '../../src/core/saves';
+@@ -54,4 +55,4 @@ export function buildRuinCoverFixtures(output:string,sourceCommit:string) {
+  writeFileSync(resolve(out,'manifest.json'),JSON.stringify(manifest,null,2)+'\n',{flag:'wx'});return manifest;
+ }
+ 
+-if(process.argv[2]&&process.argv[3])console.log(JSON.stringify(buildRuinCoverFixtures(process.argv[2],process.argv[3]),null,2));
++if(process.argv[1]&&fileURLToPath(import.meta.url)===resolve(process.argv[1])&&process.argv[2]&&process.argv[3])console.log(JSON.stringify(buildRuinCoverFixtures(process.argv[2],process.argv[3]),null,2));

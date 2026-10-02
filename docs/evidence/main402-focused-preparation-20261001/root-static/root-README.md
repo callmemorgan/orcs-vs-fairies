@@ -1,0 +1,5 @@
+This packet preserves the preparation for fifteen native encounters on simulation 4.0.2: four formations, two charge directions, siege capture, ambush, morale, five ruin-cover comparisons and one relic capture. It also preserves a separate single placeholder capture visual check. Feature admission remains with root after runtime, complete native download and history readback, and screenshot inspection.
+
+The product, public assets and twelve configuration inputs still match the tested f7f3e187 build. Only acceptance scripts are changed. The passing 2,942-test and build packet remains the regression basis; no repeat full suite or product rebuild is planned for these proof changes. Original drafts, blocked static reviews and additive corrections are retained.
+
+The existing root preview at port 4173 and its 397 files are protected. The planned runtime uses the independently owned checkout and its tested 398-file build on port 4187. Protocol cleanup and guarded signals address authenticated owned processes; this packet does not claim a proof that every possible unobserved descendant is absent.

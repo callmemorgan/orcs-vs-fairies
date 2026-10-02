@@ -22,7 +22,7 @@ for (const input of initial) assert.deepEqual(await readFile(safePath(root, inpu
 const {esbuild,identity:compiler} = await configuredCompiler(root);
 const mode = process.argv[5] ?? 'full';
 assert(['full', 'main-smoke'].includes(mode), 'Known helper selection');
-const entries = mode === 'main-smoke' ? [['fixtures', 'scripts/acceptance/main-smoke-fixtures.ts'], ['audit', 'scripts/acceptance/native-audit.ts'], ['history', 'scripts/acceptance/main-smoke402-history-audit.ts']] : [['fixtures', 'scripts/acceptance/native-fixtures.ts'], ['audit', 'scripts/acceptance/native-audit.ts']];
+const entries = mode === 'main-smoke' ? [['fixtures', 'scripts/acceptance/main-smoke-fixtures.ts'], ['audit', 'scripts/acceptance/native-audit.ts']] : [['fixtures', 'scripts/acceptance/native-fixtures.ts'], ['audit', 'scripts/acceptance/native-audit.ts']];
 for (const [name, entry] of entries) {
   const bundlePath = resolve(out, `${name}.mjs`);
   const result = await esbuild.build(helperBuildOptions(root,entry,bundlePath));

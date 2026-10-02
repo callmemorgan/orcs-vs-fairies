@@ -1,0 +1,117 @@
+{
+  "schema": 1,
+  "integrationPin": null,
+  "runtimeAdmitted": false,
+  "executed": false,
+  "preparedAt": "2026-10-02T02:58:24.727178+00:00",
+  "externalSources": [
+    {
+      "path": "main15-bounded.v5.py",
+      "bytes": 25659,
+      "sha256": "007081653f9eccc67a058b452c8cc92154e450d15e01d88f5742282d55595409",
+      "mode": "0o644"
+    },
+    {
+      "path": "protected-signal-guard.v2.mjs",
+      "bytes": 2837,
+      "sha256": "65d10cfa6a398d814813ec350d3e4e468230bea21ce41107f81b4d621c2c6e2b",
+      "mode": "0o644"
+    },
+    {
+      "path": "invoke-focused-history-audit.v2.mjs",
+      "bytes": 2281,
+      "sha256": "f2057fd8f45c026248b33bb22d72183c0f2aae21f3d5dad7c1171ae5e1482aa7",
+      "mode": "0o644"
+    },
+    {
+      "path": "placeholder-single-capture.mjs",
+      "bytes": 23637,
+      "sha256": "519ad8048c1fb597df4bb22c22a9ec7ccacf19afe5dd7ec11008412fbd694672",
+      "mode": "0o644"
+    }
+  ],
+  "placeholder": {
+    "entry": "placeholder-single-capture.mjs",
+    "maxSeconds": 120,
+    "requiredPriorCompletion": [
+      "browser-main-smoke402.json completed and cleanup.completed",
+      "main-smoke402-history-checks.json completeOriginalSaveAndRuntimeVerification and original receipt hash"
+    ],
+    "scenario": "ruin-capture",
+    "scenarioCount": 1,
+    "artQuery": "art=placeholder",
+    "readiness": "loading-battle hidden + mounted canvas + camera + local mode + art.enabled false + art.loaded false",
+    "nativeWrites": [
+      "Session tools file input and Import save",
+      "World tools declared owned worker",
+      "normal Capture relic button",
+      "native save/report downloads",
+      "SessionTools toolbar Photo mode button",
+      "public Exit photo mode button"
+    ],
+    "prohibitedContextMethods": [
+      "ready",
+      "importSave",
+      "persistence",
+      "exportAndVerify"
+    ],
+    "retained": [
+      "fallback-before-save.json",
+      "fallback-progress-save.json",
+      "fallback-captured-save.json",
+      "fallback-production-build-report.json",
+      "fallback-neutral-pillar-glyph.png",
+      "fallback-capture-progress-pillar-glyph-bar.png",
+      "fallback-captured-pillar-ownership-marker.png",
+      "fallback-single-capture.json",
+      "fallback-neutral-photo-photo-before-save.json",
+      "fallback-neutral-photo-save.json",
+      "fallback-progress-photo-before-save.json",
+      "fallback-captured-photo-before-save.json"
+    ],
+    "reviewBoundary": "Separate visual check; no feature admission claim.",
+    "screenshots": {
+      "mode": "public Photo mode around each of the three intended battlefield captures",
+      "requiredFacts": [
+        "#app .photo-mode class set by product callback",
+        "public Exit photo mode button visible",
+        "all #app .game-overlay elements hidden by attribute/computed display/visibility",
+        "same prior pause restored",
+        "complete native game and runtime before/after equal without additional engine ticks"
+      ],
+      "cameraWrites": "None; screenshot helper retains current view."
+    }
+  },
+  "sourceBinding": "Root reviewed-source-seal must contain these exact four relative externalSources rows and all admitted committed acceptance helpers. Source/frozen fixture/dist checks bind dynamically imported functions to that same committed pin.",
+  "version": 5,
+  "preservedVersion4": "versioned/v4/preserved-source-manifest.json",
+  "photoControlSourceContract": {
+    "sourceFiles": [
+      {
+        "path": "src/ui/SessionTools.ts",
+        "bytes": 47196,
+        "sha256": "e1e36fec742ba8fb0533abdb6a908ab2a8c9574649e435068efbf5d53575db1a"
+      },
+      {
+        "path": "src/main.ts",
+        "bytes": 47424,
+        "sha256": "4b3de6a2c62517819e56d81e20f96aa10c8bfde8cd58ea70aa516fd84f0abda7"
+      },
+      {
+        "path": "src/game/GameScene.ts",
+        "bytes": 62749,
+        "sha256": "7acb2668ec99d0805b13bb2ad68fa0094ff33671dd94556332d855c330068fdd"
+      },
+      {
+        "path": "src/ui/style.css",
+        "bytes": 25034,
+        "sha256": "c38377862db672c6b40cdb2859ced14837ca166a42d327c285d45f44da0a3f9d"
+      }
+    ],
+    "entryControl": "SessionTools.ts photo button closes any dialog then calls normal photo callback.",
+    "pauseAndExit": "GameScene.setPhotoMode stores prior pause on enter and restores it on exit; main.ts public Exit photo mode uses that method.",
+    "overlay": "style.css hides .game-overlay under .photo-mode via visibility:hidden.",
+    "rendering": "GameScene.drawWorldObjects relic pillar/glyph/progress bar has no photoMode exclusion.",
+    "runtimeAssertion": "Each supporting source row must match the same frozen committed source inventory before launch."
+  }
+}

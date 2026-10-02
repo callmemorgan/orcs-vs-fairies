@@ -1,0 +1,161 @@
+{
+  "observedAt": "2026-10-02T03:03:27.946041+00:00",
+  "feature": {
+    "id": 6,
+    "requirement": "rocks, ruins and buildings reduce incoming ranged damage.",
+    "status": "verified"
+  },
+  "executedProductPin": "f7f3e187ea40079492589a6fce39f0b33f77f04a",
+  "currentRootHead": "b65df28c73656465c5be5a02829fa68b87e24f35",
+  "sourceEqualExecutedPin": [
+    {
+      "path": "tests/combat-tactics.test.ts",
+      "bytes": 16841,
+      "sha256": "930e2db43072914103ae6ca8bed0b44a615e8f805d669abc7b211dfd589dc75d",
+      "mode": "0o644",
+      "gitBlob": "30aa05a184aeff9446e0d578ec4ed3154bdbe362"
+    },
+    {
+      "path": "tests/ruin-cover.test.ts",
+      "bytes": 11077,
+      "sha256": "5bb2d3df210ede97888a8ab9e83b2dc795425e86d9869d089eb5877836f9fa9d",
+      "mode": "0o644",
+      "gitBlob": "933590556ebc31cb2a6554f19a7eebbffa3085b7"
+    },
+    {
+      "path": "src/core/tactics.ts",
+      "bytes": 18834,
+      "sha256": "c211c0f9e592d00fed035589fc62c41ec2aa329ce9906a62a0d71c7ed3495b2d",
+      "mode": "0o644",
+      "gitBlob": "683b0c5c2ba513ce8f4aff9eb311c74b06e951e6"
+    },
+    {
+      "path": "src/core/ruins.ts",
+      "bytes": 497,
+      "sha256": "96a1db3473a35388e2f87104eb0966b32d468a7a2716915aeb1ba467f04632a2",
+      "mode": "0o644",
+      "gitBlob": "78814eae3a0fb1a0475e78aa55d4d16cbf659f16"
+    },
+    {
+      "path": "src/core/simulation.ts",
+      "bytes": 106228,
+      "sha256": "e301c65d0352ffe648a5bc4ee6acbda1f562164deacdfe60f8f3b03e7bdccf35",
+      "mode": "0o644",
+      "gitBlob": "66bd44db02798f07467f888ab1193b06b52f364d"
+    },
+    {
+      "path": "src/core/versions.ts",
+      "bytes": 346,
+      "sha256": "57023377ade74d193b0397fb8fbaf71da39bed7d48d4187fc3e7a466c1fd433b",
+      "mode": "0o644",
+      "gitBlob": "adfcea93b6214412789fb6bdadfa91a5f7aa73c7"
+    }
+  ],
+  "actualPassingAssertions": [
+    {
+      "testFile": "tests/combat-tactics.test.ts",
+      "testReportFile": "/tmp/ovf-id6-integration-703fc-20261001/tests/combat-tactics.test.ts",
+      "assertionIndex": 10,
+      "fullName": "combat tactics encounters buildings and rocks reduce ranged hits; cover does not reduce melee damage",
+      "status": "passed"
+    },
+    {
+      "testFile": "tests/ruin-cover.test.ts",
+      "testReportFile": "/tmp/ovf-id6-integration-703fc-20261001/tests/ruin-cover.test.ts",
+      "assertionIndex": 0,
+      "fullName": "relic ruin cover through real attacks reduces a neutral ruin lane hit before armor without changing the saved geometry",
+      "status": "passed"
+    }
+  ],
+  "actualRuinAttackValues": {
+    "covered": {
+      "tick": 1,
+      "hpBefore": 175,
+      "hpAfter": 168.25,
+      "loss": 6.75,
+      "attacks": [
+        {
+          "type": "attack",
+          "x": 20.5,
+          "y": 24.5,
+          "level": 1,
+          "side": 0,
+          "target": 52,
+          "source": 51,
+          "amount": 6.75
+        }
+      ],
+      "source": {
+        "id": 51,
+        "x": 20.5,
+        "y": 24.5,
+        "level": 1,
+        "facing": 0
+      },
+      "target": {
+        "id": 52,
+        "x": 25.5,
+        "y": 24.5,
+        "level": 1,
+        "facing": 4
+      },
+      "geometry": [
+        {
+          "site": 1,
+          "x": 23.5,
+          "y": 24.5,
+          "level": 1,
+          "radius": 0.45
+        }
+      ]
+    },
+    "uncovered": {
+      "tick": 1,
+      "hpBefore": 175,
+      "hpAfter": 163,
+      "loss": 12,
+      "attacks": [
+        {
+          "type": "attack",
+          "x": 20.5,
+          "y": 24.5,
+          "level": 1,
+          "side": 0,
+          "target": 51,
+          "source": 50,
+          "amount": 12
+        }
+      ],
+      "source": {
+        "id": 50,
+        "x": 20.5,
+        "y": 24.5,
+        "level": 1,
+        "facing": 0
+      },
+      "target": {
+        "id": 51,
+        "x": 25.5,
+        "y": 24.5,
+        "level": 1,
+        "facing": 4
+      },
+      "geometry": []
+    }
+  },
+  "testReport": {
+    "path": "/home/morgana/Projects/orcs-vs-Fairies/docs/evidence/current402-full-suite-build-f7-20261001/full-tests.json",
+    "bytes": 1021107,
+    "sha256": "12883cfc398fcbbebdcb140b129748a6a2c57afec3f04d68198f9ce55359125e",
+    "manifestFingerprintMatched": true,
+    "passedTests": 2942,
+    "failedTests": 0
+  },
+  "reason": "Actual accepted attack commands and ordinary steps reduce damage for all three named cover materials. The original sentence does not require a screenshot or additional browser batch.",
+  "qualifications": [
+    "Synthetic declared encounters; neutral ruin real-hit artifacts retained. Rock/building values come from actual passing assertions, not separate per-trial downloaded saves.",
+    "Main15 and the Photo mode visual check remain unexecuted supplemental checks.",
+    "Requested cross-family reviewer gpt-5.6-sol; actual provider model identity unexposed."
+  ],
+  "browserExecutionClaim": false
+}

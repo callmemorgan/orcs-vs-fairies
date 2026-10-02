@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "status": "prepared-unexecuted",
+  "executionSourcePin": null,
+  "owner": "root",
+  "entry": "scripts/acceptance/main-smoke402-history-audit.ts",
+  "export": "verifyMainSmoke402Artifacts",
+  "apiArguments": [
+    "evidenceDir",
+    "fixturesDir",
+    "manifest",
+    "receipt",
+    "sourceCommit"
+  ],
+  "thirdHelperSelection": {
+    "mode": "main-smoke",
+    "appendEntry": [
+      "history",
+      "scripts/acceptance/main-smoke402-history-audit.ts"
+    ],
+    "bundleName": "history.mjs",
+    "defaultFullSelectionChanged": false
+  },
+  "requiredProvenance": {
+    "loader": "loadPinnedHelper",
+    "expectedEntry": "scripts/acceptance/main-smoke402-history-audit.ts",
+    "sourcePin": "admitted future committed pin, currently null",
+    "rebuildBeforeImport": true
+  },
+  "browserReceipt": "browser-main-smoke402.json",
+  "machineCompletion": "Keep browser completed/cleanup completed separate from supervisor history completion. Execute history only after the original completed browser receipt is retained.",
+  "inputPolicy": "Authenticate every original browser download through native-downloads.ts. Read declared original fixtures without regenerating them. Keep all retained failures unchanged.",
+  "integrateInOrder": [
+    "Root reviews final source and exact additive patch.",
+    "Root adds source and appends third history entry only to the main-smoke helper selection; default full entries remain unchanged.",
+    "Root commits the prepared integration, records one full admitted source pin, and separately authorizes execution.",
+    "Only after admission, root builds source-bound helpers, runs the previously bounded focused browser preparation/run, and retains completed browser receipt/cleanup.",
+    "Root loads the authenticated third history bundle, invokes verifyMainSmoke402Artifacts with the actual parsed manifest and receipt, retains the fresh history result and helper provenance.",
+    "Root decides original feature admission and visual acceptance from actual artifacts."
+  ],
+  "proposedBound": {
+    "historyProcesses": 1,
+    "concurrency": 1,
+    "wallSeconds": 300,
+    "termGraceSeconds": 10,
+    "automaticRetries": 0,
+    "limitScope": "All original downloads and declared checkpoint continuations from the single completed focused receipt. ReplayPlayer retains its existing decoded tick/action limits. No full39 recipe or unrelated scenarios.",
+    "runtimeAdmissionGranted": false
+  },
+  "outputs": {
+    "success": "main-smoke402-history-checks.json (wx; only after all checks)",
+    "failure": "Supervisor-owned first-failure/provenance receipt; preserve originals and do not retry automatically."
+  },
+  "preparationChecksAllowed": [
+    "Read source/data/Git metadata.",
+    "Write only fresh external candidate artifacts.",
+    "TypeScript parser syntax diagnostics without executing or importing candidate/application.",
+    "Read-only git apply --check for the exact additive patch."
+  ],
+  "notPerformed": [
+    "Application imports",
+    "Simulation or replay runtime",
+    "Tests",
+    "Builds or bundling",
+    "Browser/server operations",
+    "Root/product/Git writes",
+    "Feature status or ledger/trail changes"
+  ]
+}

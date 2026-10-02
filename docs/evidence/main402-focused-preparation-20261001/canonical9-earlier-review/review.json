@@ -1,0 +1,109 @@
+{
+  "format": "ovf-main-smoke402-canonical9-static-review",
+  "observedAt": "2026-10-02T02:17:57.819061+00:00",
+  "scope": "Read-only source review. Candidate files may remain mutable until owner final seal. No producer/helper/application/test/build/browser/server/SQLite execution, no root or Git writes.",
+  "inputFiles": [
+    {
+      "path": "/tmp/ovf-canonical-main-smoke-candidate-6101-20261001-871uji5p/candidate/scripts/acceptance/canonical-main-fixtures.ts",
+      "bytes": 11669,
+      "sha256": "340bcf7d6066a95fdd5532c2086031525fb1ecb6ede4c4783b11dde176cc8a3f"
+    },
+    {
+      "path": "/tmp/ovf-canonical-main-smoke-candidate-6101-20261001-871uji5p/candidate/scripts/acceptance/canonical-main-smoke.mjs",
+      "bytes": 24954,
+      "sha256": "adc8abb95a19738e3c694ca5249f9f212be6144f8c053027382f2e6db2f9644e"
+    },
+    {
+      "path": "/tmp/ovf-root-main-smoke402-preparation/main-smoke-fixtures.ts",
+      "bytes": 2129,
+      "sha256": "13b3f0770de577f3902697006b5f8d0b73f12d279db92ef4b75add6838747188"
+    },
+    {
+      "path": "/tmp/ovf-root-main-smoke402-preparation/main-smoke-freeze.mjs",
+      "bytes": 5349,
+      "sha256": "d8adc36e4edaea5ea8d5f1361f592116e8fc02419de3f20c168b833f7eba0478"
+    },
+    {
+      "path": "/tmp/ovf-root-main-smoke402-preparation/verify-main-smoke402.mjs",
+      "bytes": 11204,
+      "sha256": "1e0758ad72de4b40eb65a725676596d77fe142f5040ed7215932bd93ee6dd40c"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/scripts/acceptance/native-context.mjs",
+      "bytes": 10832,
+      "sha256": "f205338dd00ec7d8f75dcc0dc3c0415a31bac6b47b3e1dfbe45f5b9e517447dd"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/game/GameScene.ts",
+      "bytes": 62749,
+      "sha256": "7acb2668ec99d0805b13bb2ad68fa0094ff33671dd94556332d855c330068fdd"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/game/Controls.ts",
+      "bytes": 12074,
+      "sha256": "1efe5f374a6a662ea24fb26b91dec35acabcd7b958b791d859628b6a25df9c03"
+    },
+    {
+      "path": "/home/morgana/Projects/orcs-vs-Fairies/src/core/simulation.ts",
+      "bytes": 106228,
+      "sha256": "e301c65d0352ffe648a5bc4ee6acbda1f562164deacdfe60f8f3b03e7bdccf35"
+    }
+  ],
+  "candidateDeclaredSeals": [
+    {
+      "path": "/tmp/ovf-canonical-main-smoke-candidate-6101-20261001-871uji5p/candidate/scripts/acceptance/canonical-main-fixtures.ts",
+      "bytesMatch": true,
+      "sha256Match": true
+    },
+    {
+      "path": "/tmp/ovf-canonical-main-smoke-candidate-6101-20261001-871uji5p/candidate/scripts/acceptance/canonical-main-smoke.mjs",
+      "bytesMatch": false,
+      "sha256Match": false
+    }
+  ],
+  "findings": [
+    {
+      "priority": 1,
+      "file": "/tmp/ovf-canonical-main-smoke-candidate-6101-20261001-871uji5p/candidate/scripts/acceptance/canonical-main-smoke.mjs",
+      "lines": [
+        36,
+        37,
+        42,
+        97,
+        110
+      ],
+      "problem": "Native multi-selection and F2 are issued while the local match is paused.",
+      "trigger": "load() pauses; formation line42 selectsMany before resume; hold line36 pauses then selectsMany; morale line97 ground click and F2 precede resume.",
+      "sourceProof": "native-context.mjs:74-78 selects first unit through WorldTools, then remaining units using Shift entityClick. GameScene.ts:136 sets playable false for paused local play; pointerdown/up at169/182 ignore input. Controls.ts:12 and73 bind F2 to playable context.",
+      "effect": "First formation cannot finish its six-unit selection; later morale army selection/hold can fail as well. Single-unit selectMany is unaffected because WorldTools does that first selection.",
+      "repair": "Resume before actual battlefield multi-selection/F2 and account for native auto-fire windows using disclosed starting cooldowns or an existing supported native selector. Do not write selection/state directly."
+    },
+    {
+      "priority": 2,
+      "file": "/tmp/ovf-canonical-main-smoke-candidate-6101-20261001-871uji5p/candidate/scripts/acceptance/canonical-main-smoke.mjs",
+      "lines": [
+        36,
+        64,
+        65,
+        110
+      ],
+      "problem": "Hold does not prevent firing at in-range hostiles.",
+      "sourceProof": "simulation.ts:563 acquires and fights enemies under hold order.",
+      "effect": "The rider can hit again after its1.3-second cooldown, and held engines may launch again if ready before targets withdraw. Pausing and endpoint HP assertions detect some drift; Hold alone does not establish first-hit isolation.",
+      "repair": "Preserve the paused first-hit endpoint directly; if a later native command is needed, describe Hold accurately and verify timing/extra hits from retained replay. An actual native withdrawal can suppress combat if needed."
+    }
+  ],
+  "positiveChecks": {
+    "fixtureAuthoring": "Factory is a library without CLI import side effects. Construction, authored orders and visibility writes occur before MatchRecorder; no stepGame/advance path appears. Authored side1 march is disclosed and later exported command histories are restricted to side0.",
+    "selectors": "Tactics facing/spacing/formation, ambush target/radius, selected stats, abandoned-engine capture and Replay perspective names match current UI.",
+    "firstAttackAuthoring": "Charge rider and captor begin outside passive melee firing range. Ambusher cooldown6 and morale engine cooldown3.8 disclose their initial firing windows; native-input-before-impact assertions remain necessary.",
+    "sourceBuild": "Updated wrapper uses canonical-main-smoke.mjs. Source/fixture/helper/build binding retains previous reviewed design. Combined unknown scenario shape is now asserted/type-cast.",
+    "cleanup": "Updated wrapper always attempts owned browser close, records context/browser cleanup errors separately, and changes completed to false if cleanup fails."
+  },
+  "evidenceLimits": [
+    "Browser transient samples may miss ticks/events; driver states that retained source-bound event/suffix audits remain before admission. Existing native-audit.verifyNativeAcceptanceArtifacts rejects canonical/ruins groups, so root must use or prepare a separate narrow auditor rather than call that broad verifier unchanged.",
+    "No fresh runtime result is claimed. The exact supported squad retreat/damage outcome remains an unexecuted prediction."
+  ],
+  "rootWrites": false,
+  "executed": false
+}

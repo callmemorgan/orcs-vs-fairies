@@ -1,0 +1,110 @@
+{
+  "schema": 1,
+  "version": 5,
+  "at": "2026-10-02T03:02:40.654971+00:00",
+  "integrationPin": null,
+  "runtimeAdmitted": false,
+  "executed": false,
+  "externalSourcesUnchangedAfterIndependentReview": true,
+  "reviews": [
+    {
+      "path": "/tmp/ovf-main15-v5-supervisor-delta-review-ZiShHsZk/static-delta-review.facts.json",
+      "bytes": 1984,
+      "sha256": "bccd8c1a416d813ba6d74e29a4f88715c1c6abeb0cd160129864d80e4d92e3d0",
+      "facts": {
+        "schema": 1,
+        "scope": "main15 v5 supervisor and external source-binding delta",
+        "approved": true,
+        "integrationPin": null,
+        "runtimeAdmitted": false,
+        "executed": false,
+        "findingCount": 0,
+        "reviewed": [
+          {
+            "path": "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/main15-bounded.v5.py",
+            "bytes": 25659,
+            "sha256": "007081653f9eccc67a058b452c8cc92154e450d15e01d88f5742282d55595409"
+          },
+          {
+            "path": "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/main15-bounded.v5.py.v5-delta.patch",
+            "bytes": 966,
+            "sha256": "25a5cd94842012508a9910e2759f3c7609937735c54a70be61f57ec567dfdb30"
+          },
+          {
+            "path": "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/placeholder-single-capture.mjs",
+            "bytes": 23637,
+            "sha256": "519ad8048c1fb597df4bb22c22a9ec7ccacf19afe5dd7ec11008412fbd694672"
+          },
+          {
+            "path": "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/placeholder-single-capture.mjs.v5-delta.patch",
+            "bytes": 9664,
+            "sha256": "c3b5dd871a572fcecd6623791000d125360a7e9776db1208872b87dc7e18448c"
+          },
+          {
+            "path": "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/external-driver-source-contract.v5.json",
+            "bytes": 4672,
+            "sha256": "08c7761d3e57ab8f8c0203bdc1b010db27e91c62b3017b18d922978f7a4027e2"
+          },
+          {
+            "path": "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/preparation.v5.json",
+            "bytes": 8724,
+            "sha256": "8b5e5a94e2a344317cc66108235f371d1f9758bd70ee2f6356979926f2ba42b3"
+          },
+          {
+            "path": "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/main15-static-recipe.v5.md",
+            "bytes": 12024,
+            "sha256": "78a138a014284ebdb92ac942afc6fd2543570c1cc2b481f2947c3e999cdbd8ca"
+          }
+        ],
+        "preservedV4WrapperSha256": "934ee65ef3de116274d4cdef9a709262496d194aa550c27c06171c7f2a0736fb",
+        "testedProductPin": "f7f3e187ea40079492589a6fce39f0b33f77f04a",
+        "rootEdited": false,
+        "sealedSourcesEdited": false,
+        "reviewer": "OpenAI GPT-6.1 Sol in Codex"
+      }
+    },
+    {
+      "path": "/tmp/ovf-main15-v5-photo-review-architecture-467u8sg8/static-review.json",
+      "bytes": 2713,
+      "sha256": "696118641779285972fc66faf7d8b0474725545e51245f6cca0e6fe610622936",
+      "facts": {
+        "schema": 1,
+        "reviewedAt": "2026-10-02T03:01:40.750432+00:00",
+        "status": "v4-photo-overlay-blocker-closed-no-additional-concrete-blocker",
+        "scope": "Only v5 Photo mode delta, updated source binding and v4 preservation reviewed. Static reads/hashes only; no execution, source imports, signals, tests, builds, browser, DB operations, root or candidate edits, or runtime authorization.",
+        "testedProductPin": "f7f3e187ea40079492589a6fce39f0b33f77f04a",
+        "integrationPin": null,
+        "runtimeAdmitted": false,
+        "executed": false,
+        "priorReview": "/tmp/ovf-main15-v4-static-review-architecture-7ditpaj3/static-review.json",
+        "deltaInventory": "/tmp/ovf-main15-v5-photo-review-architecture-467u8sg8/delta-file-inventory.json",
+        "closedFinding": {
+          "title": "Paused overlay no longer obscures intended captures",
+          "references": [
+            "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/placeholder-single-capture.mjs:163",
+            "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/placeholder-single-capture.mjs:171",
+            "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/placeholder-single-capture.mjs:186",
+            "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/placeholder-single-capture.mjs:190",
+            "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/placeholder-single-capture.mjs:200",
+            "/tmp/ovf-main15-bounded-preparation-f7-kyew2suh/main15-bounded.v5.py:278"
+          ],
+          "result": "Each of the three intended screenshots uses public Photo mode entry and public Exit photo mode. The helper requires paused state, computed overlay invisibility, visible exit control, same tick/level/perspective, and nested cleanup with prior pause restoration. Complete native before/after .game envelopes are compared and failures prevent completion. The wrapper requires all three photo capture records."
+        },
+        "sourceBindingChecks": [
+          "Four active external-source rows match current bytes, hashes and modes.",
+          "Supporting Photo control source rows match tested f7 Git bytes and are required to match the frozen committed source inventory at runtime.",
+          "Actual driver/wrapper diffs match the retained patch artifacts.",
+          "Preserved v4 files and retained root-level v4 wrapper/metadata match prior authenticated inventory.",
+          "Guard/history bridge bytes are unchanged; previous cleanup review remains applicable."
+        ],
+        "blockers": [],
+        "remainingLimits": [
+          "These are static assertions, not executed evidence of unchanged ticks or readable screenshots.",
+          "Strict main15 artwork readiness, SAVE4/rules4.0.2 fixture, one placeholder capture and 120-second bound remain unchanged.",
+          "Root still owns runtime admission, process lifecycle and post-run screenshot review."
+        ]
+      }
+    }
+  ],
+  "scope": "Read-only authentication of independent v5 static reviews; no runtime or feature admission."
+}
