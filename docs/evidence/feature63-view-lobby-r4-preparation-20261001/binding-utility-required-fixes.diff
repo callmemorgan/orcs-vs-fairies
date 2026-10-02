@@ -1,0 +1,28 @@
+--- reviewed-original
++++ required-fixes
+@@ -20,8 +20,14 @@
+  p=OUT/n
+  with p.open('x') as f:json.dump(v,f,indent=2,sort_keys=True);f.write('\n')
+  p.chmod(0o644);return desc(p)
+-def load(n):return json.loads((PREVIOUS/n).read_text())
+-assert sha(REVIEW)==REVIEW_SHA;review=json.loads(REVIEW.read_text());assert review['status'].startswith('PASS')
++R3_READBACK=PREVIOUS/'binding-readback.json'
++assert sha(R3_READBACK)=='510f81922a5987163247eb9623b138068cdcb1d727d5389582607cfc8195cb7f'
++R3_RECORDS={Path(r['path']).name:r for r in json.loads(R3_READBACK.read_text())['generated']}
++def load(n):
++ p=PREVIOUS/n;r=R3_RECORDS[n]
++ assert desc(p)=={k:r[k] for k in ('path','bytes','sha256')} and stat.S_IMODE(p.stat().st_mode)==r['mode']
++ return json.loads(p.read_text())
++assert sha(REVIEW)==REVIEW_SHA;review=json.loads(REVIEW.read_text());assert review['status']=='PASS_STATIC_R4_MINIMAL_CORRECTION_WITH_BINDING_UTILITY_FIXES_RUNTIME_HELD'
+ for base in (ROOT,OWNED):
+  assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=base,text=True).strip()==PIN
+  assert not subprocess.check_output(['git','status','--porcelain','--untracked-files=no'],cwd=base,text=True)
+@@ -31,6 +37,8 @@
+ protected=json.loads(Path('/tmp/ovf-main402-remaining-2e5-r1/protected-before.json').read_text())['dist']
+ for base in (ROOT,OWNED):auth(base,product)
+ auth(ROOT/'dist',protected,True);assert len(product)==570 and len(protected)==397
++assert len(browser['dependencyRecords'])==114 and len(browser['chromiumDependencyRecords'])==303
++assert len(build['webRecords'])==398 and len(build['serverRecords'])==22
+ for key in ('dependencyRecords','chromiumDependencyRecords'):auth(Path(browser['dependencyRoot' if key=='dependencyRecords' else 'chromiumDependencyRoot']),browser[key],True)
+ for r in source['records']:
+  p=ROOT/r['path'];r.update({'bytes':p.stat().st_size,'sha256':sha(p),'mode':stat.S_IMODE(p.stat().st_mode)})

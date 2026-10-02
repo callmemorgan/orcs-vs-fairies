@@ -7,7 +7,7 @@ import {fileURLToPath, pathToFileURL} from 'node:url';
 
 // Static candidate. No browser/module import occurs before every launch guard passes.
 const SOURCE_ROOT = '/home/morgana/.codex/worktrees/assembled-allied-ai/orcs-vs-Fairies';
-const PREFIX = 'work/feature63-human-wave-composition-r4';
+const PREFIX = 'work/feature63-human-wave-composition-r3';
 const BASE_URL = 'http://127.0.0.1:5373';
 const ATTEMPT_MS = 300_000;
 const CLEANUP_MS = 120_000;
@@ -467,7 +467,7 @@ try {
   await refresh(second); await clickRole(second, `Join lobby ${result.lobbyId}`); await second.page.waitForSelector('.online-current:not([hidden])');
   for (const profile of [first, second]) { await refresh(profile); await ui(profile, 'ready', {selector: '[data-online="ready"]'}, () => profile.page.locator('[data-online="ready"]').click()); await profile.page.waitForFunction(() => document.querySelector('[data-online="ready"]')?.getAttribute('aria-pressed') === 'true'); }
   const lobbyResponsePromise = first.page.waitForResponse(response => response.url() === `${BASE_URL}/api/lobbies/${encodeURIComponent(result.lobbyId)}` && response.request().method() === 'GET', {timeout: 10_000});
-  await clickRole(first, `View lobby ${result.lobbyId}`);
+  await refresh(first);
   const lobbyResponse = await lobbyResponsePromise;
   const lobbyPayload = await lobbyResponse.text();
   result.lobbyResponse = {url: lobbyResponse.url(), status: lobbyResponse.status(), payload: lobbyPayload};

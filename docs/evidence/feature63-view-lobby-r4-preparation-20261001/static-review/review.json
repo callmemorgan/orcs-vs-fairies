@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "reviewType": "bounded independent static R4 minimal correction and binding utility review",
+  "status": "PASS_STATIC_R4_MINIMAL_CORRECTION_WITH_BINDING_UTILITY_FIXES_RUNTIME_HELD",
+  "at": "2026-10-02T06:38:12Z",
+  "rootHead": "ef8fbf18caccd8c596579c67c56b6eb8d2ac5c53",
+  "requestedReviewerModel": "gpt-5.6-sol",
+  "actualProviderIdentity": "unavailable",
+  "freshClaudeRun": false,
+  "runtimeAuthorized": false,
+  "feature63Qualified": false,
+  "candidateImportedOrExecuted": false,
+  "databaseAccessed": false,
+  "rootEditedByReviewer": false,
+  "transcriptScope": "No root transcript review. Assessment is limited to the supplied R4 candidates, their exact R3 diffs, the checked-in UI source at ef8fbf18caccd8c596579c67c56b6eb8d2ac5c53, and fresh-r4-bindings.py.",
+  "reviewed": [
+    {
+      "path": "/tmp/ovf-feature63-r4-minimal-candidates-2o_r76g2/candidates/public-producer.mjs",
+      "bytes": 48612,
+      "sha256": "de51dddc8cd5dba80c7c3897cddd8607333f9b8f669f0e490705531e352b6d0d"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r4-minimal-candidates-2o_r76g2/candidates/run-minimal63.py",
+      "bytes": 54425,
+      "sha256": "6c57b25dc84f6307cfd64296089b4c7bb9e6ae55ee0fbc08c74b7106d9fd10f3"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r4-minimal-candidates-2o_r76g2/candidates/collect-launched-waves.py",
+      "bytes": 18600,
+      "sha256": "98c1837cf8685604baaf9259b0ac473ef139426e95691ebdda0ef3968e5044fd"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r4-minimal-candidates-2o_r76g2/candidate.diff",
+      "bytes": 3286,
+      "sha256": "e31d4faa4e43800e5a5a79e09e58782f7242bc5f57118d31ab31a25ec794da1f"
+    },
+    {
+      "path": "/tmp/ovf-feature63-r4-minimal-candidates-2o_r76g2/receipt.json",
+      "sha256": "6eb23cc31de972f64581223767b2b418cdcc68cd67457919a19571d5e435c71b"
+    },
+    {
+      "path": "/tmp/ovf-root-feature63-r3-preparation-551FgMyq/fresh-r4-bindings.py",
+      "bytes": 9720,
+      "sha256": "18dfa3ad6fe34c1f7b3506aa69d90b4759c097ce446a8f8dad0c69c674c84c6a"
+    }
+  ],
+  "candidateAssessment": {
+    "result": "PASS",
+    "producerChange": "One r3-to-r4 prefix substitution and one replacement directly below the existing GET-by-id response waiter: Refresh lobbies becomes the exact View lobby <id> button click.",
+    "normalUiPath": "OnlineLobby renders View lobby <id> for an account that owns a seat. Its click handler runs api.lobby(lobby.id), so it produces the awaited GET /api/lobbies/<id> response and retains the response shape consumed by the producer.",
+    "wrapperChange": "One r3-to-r4 prefix substitution only.",
+    "collectorChange": "Two r3-to-r4 prefix substitutions only.",
+    "nativeAuditor": "Unchanged SHA-256 4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb.",
+    "sameWaveCriterion": "Unchanged by byte comparison outside the declared producer line and prefix edits.",
+    "lifecycle": "The reviewed PIDFD and finite descendant-observation contracts are unchanged. unobservedDescendantsExcluded remains false."
+  },
+  "requiredUtilityFixes": [
+    {
+      "id": "authenticate-r3-binding-inputs",
+      "finding": "fresh-r4-bindings.py loads six mutable R3 JSON files from /tmp and uses them as schemas, record sets, and assignment templates without first authenticating them to the R3 binding readback.",
+      "requiredFix": "Before load(), authenticate binding-readback.json as 5665 bytes with SHA-256 510f81922a5987163247eb9623b138068cdcb1d727d5389582607cfc8195cb7f, then require each of source-binding.json, build-binding.json, tested-build.json, root-review.json, browser-binding.json, and capture-assignment.json to match its exact descriptor in that readback. Also authenticate root-fresh-package-result.json as 87656 bytes with SHA-256 c5d493f0540327d91afbe5fca3fb7e126c106f82aacb15d77cfd644c0f1cea58 before using it as priorPackagingReceipt."
+    },
+    {
+      "id": "assert-advertised-inventory-counts",
+      "finding": "The utility authenticates the selected inventories but emits fixed claims for 114 Playwright, 303 Chromium, 398 web, and 22 server records without asserting those lengths.",
+      "requiredFix": "Require len(browser.dependencyRecords)==114, len(browser.chromiumDependencyRecords)==303, len(build.webRecords)==398, and len(build.serverRecords)==22 before copying or emitting the disposition. Keep the existing 570 product, 397 protected dist, and 966 source assertions."
+    },
+    {
+      "id": "exact-review-status",
+      "finding": "The utility accepts any review status beginning with PASS.",
+      "requiredFix": "Require the exact status PASS_STATIC_R4_MINIMAL_CORRECTION_WITH_BINDING_UTILITY_FIXES_RUNTIME_HELD together with the separately supplied exact review SHA-256."
+    }
+  ],
+  "launcherFinalization": {
+    "approvedShape": "Use the unchanged reviewed R3 launcher logic with literal r3-to-r4 prefix and slot-prefix substitutions, the same eight runtime anchors, and WRAPPER_SHA updated to 6c57b25dc84f6307cfd64296089b4c7bb9e6ae55ee0fbc08c74b7106d9fd10f3.",
+    "freshRequirements": "Fresh R4 token, private empty 0700 control directory, output, assignment, disposition, future full pin, and exact digests are required. R3 database, browser profile, assignment, slot token, and runtime output provide no authority.",
+    "closureQualification": "Finite remembered-resource evidence remains qualified; root must retain the separate wrapper lifetime checks and unobservedDescendantsExcluded=false."
+  },
+  "qualifications": [
+    "This review does not establish that the one-line UI correction succeeds at runtime.",
+    "The binding utility has not run. The three required source-only fixes must be applied before root execution; no product candidate change is requested.",
+    "Actual provider identity is unavailable, and no fresh Claude review was run."
+  ],
+  "noOtherStaticFindings": true
+}
