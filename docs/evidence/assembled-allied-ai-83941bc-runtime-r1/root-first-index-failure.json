@@ -1,0 +1,24 @@
+{
+  "observedAt": "2026-10-02T00:19:03.874506+00:00",
+  "producer": {
+    "harness": "Codex",
+    "model": "GPT-6",
+    "agent": "/root"
+  },
+  "phase": "initial Git-index readback",
+  "originalFailure": {
+    "exitCode": 1,
+    "command": "git show :docs/evidence/assembled-allied-ai-83941bc-runtime-r1/actual/dist/assets/main-BxMb13AF.js",
+    "stderr": "fatal: path 'docs/evidence/assembled-allied-ai-83941bc-runtime-r1/actual/dist/assets/main-BxMb13AF.js' exists on disk, but not in the index"
+  },
+  "cause": "Generic git add respected ignore rules for packaged dist and dist-server directories. All253 destination bytes had passed full-byte filesystem readback, but these originals were absent from the first commit.",
+  "initialCommit": "b7fde8c0b21ac525ba75757bf7cebb559e78f83d",
+  "missingIndexPaths": [
+    "docs/evidence/assembled-allied-ai-83941bc-runtime-r1/actual/dist/assets/main-BxMb13AF.js",
+    "docs/evidence/assembled-allied-ai-83941bc-runtime-r1/actual/dist/assets/main-CxCO6VnC.css",
+    "docs/evidence/assembled-allied-ai-83941bc-runtime-r1/actual/dist/editor.html",
+    "docs/evidence/assembled-allied-ai-83941bc-runtime-r1/actual/dist/index.html"
+  ],
+  "rootExecutionMistake": "The root orchestration continued into commit after the index validator failed. Corrective retention follows in a separate commit; initial failure is preserved.",
+  "correction": "Explicit force-add of the exact missing allowlisted paths, then full-byte readback of all253 Git-index blobs. No runtime rerun or original byte changes."
+}
