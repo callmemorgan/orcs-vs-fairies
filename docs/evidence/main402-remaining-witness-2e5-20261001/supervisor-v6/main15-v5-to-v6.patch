@@ -1,0 +1,85 @@
+--- preserved-v5/main15-bounded.v5.py
++++ main15-bounded.v6.py
+@@ -10,6 +10,7 @@
+ TESTED_MANIFEST_SHA='7439266f468c658d419b2c801b6a741a20b202aa8459169c96b47532640d3ec2'
+ NODE='/home/morgana/.local/bin/node'
+ CONFIGS=['package.json','package-lock.json','tsconfig.json','vite.config.ts','vitest.config.ts','vitest.ladder.config.ts','vitest.ai.config.ts','vitest.ai-team.config.ts','vitest.ai-recovery.config.ts','index.html','editor.html','scenario-demo.html']
++REMAINING_COMBAT_CASES=['siege-full-crew-capture','ambush-selected-trigger','morale-supported-full-fight']
+ REQUIRED_HELPERS=['build-native-helpers.mjs','main-smoke-fixtures.ts','main-smoke-freeze.mjs','verify-main-smoke402.mjs','canonical-main-fixtures.ts','canonical-main-smoke.mjs','ruin-cover-fixtures.ts','ruin-cover-main-smoke.mjs','native-context.mjs','native-contract.mjs','native-audit.ts','main-smoke402-history-audit.ts','helper-provenance.mjs']
+ sha=lambda b:hashlib.sha256(b).hexdigest()
+ now=lambda:datetime.datetime.now(datetime.timezone.utc).isoformat()
+@@ -72,7 +73,7 @@
+  out=Path(args.out).resolve();assert str(out).startswith('/tmp/') and not out.exists()
+  assert not str(out).startswith(str(OWNED)+'/') and not str(out).startswith(str(TESTED)+'/')
+  out.mkdir();write=lambda n,v:(out/n).write_text(json.dumps(v,indent=2)+'\n')
+- state={'startedAt':now(),'testedProductPin':TESTED_PIN,'integrationPin':pin,'testedBuildId':TESTED_ID,'phases':[],'status':'preflight','runtimeRetryCount':0,'browserExecuted':False,'buildExecuted':False,'artMode':'strict','previewPort':args.port,'fallbackExecuted':False,'main15BrowserCompleted':False,'main15HistoryCompleted':False,'fallbackCompleted':False,'childDiscovery':{}}
++ state={'startedAt':now(),'testedProductPin':TESTED_PIN,'integrationPin':pin,'testedBuildId':TESTED_ID,'phases':[],'status':'preflight','runtimeRetryCount':0,'browserExecuted':False,'buildExecuted':False,'artMode':'strict','previewPort':args.port,'browserGroup':'remaining-combat','plannedCaseNames':REMAINING_COMBAT_CASES,'plannedFixtureCount':15,'remainingCombatBrowserCompleted':False,'remainingCombatHistoryCompleted':False,'childDiscovery':{}}
+  write('execution.json',state);children={};preview=None;primary=None;baseline=None;root_dist=None;product_before=None;helper_before=None;generated_before=None;dependency_before=None;browser_runtime_before=None;external_before=None;external_paths=None
+  def remember(proc):
+   identity=stat(proc.pid);assert identity;children[proc.pid]=identity
+@@ -160,10 +161,10 @@
+   reviewed_path=Path(args.reviewed_source_seal).resolve();reviewed_bytes=reviewed_path.read_bytes();reviewed=json.loads(reviewed_bytes)
+   assert reviewed['integrationPin']==pin and reviewed['runtimeAdmitted']==True
+   preparation_dir=Path(__file__).parent.resolve()
+-  external_paths=[Path(__file__).name,'protected-signal-guard.v2.mjs','invoke-focused-history-audit.v2.mjs','placeholder-single-capture.mjs']
++  external_paths=[Path(__file__).name,'protected-signal-guard.v2.mjs','invoke-focused-history-audit.v2.mjs']
+   external_before=inventory(preparation_dir,external_paths)
+   external_review={r['path']:r for r in reviewed['externalSources']}
+-  assert set(external_review)==set(external_paths),'Review must seal exactly the active external supervisor/preload/history/placeholder sources'
++  assert set(external_review)==set(external_paths),'Review must seal exactly the active external supervisor/preload/history sources'
+   for r in external_before:assert all(r[k]==external_review[r['path']][k] for k in ('bytes','sha256','mode')),'External source differs from reviewed seal'
+   write('reviewed-external-source-before.json',external_before)
+   for r in external_before:
+@@ -247,39 +248,31 @@
+   else:raise RuntimeError('Owned preview did not hold its distinct port within20seconds')
+   state.update(status='browser running',browserExecuted=True);write('execution.json',state)
+   base=f'http://127.0.0.1:{args.port}/index.html' # Strict art mode; no placeholder query/override.
+-  phase('main15-strict-art-browser',node+[str(OWNED/'scripts/acceptance/verify-main-smoke402.mjs'),base,str(OWNED),str(browser_out),str(fixtures),str(freeze),str(helpers/'audit.mjs'),'canonical,ruins'],900,env)
++  phase('remaining-combat-strict-art-browser',node+[str(OWNED/'scripts/acceptance/verify-main-smoke402.mjs'),base,str(OWNED),str(browser_out),str(fixtures),str(freeze),str(helpers/'audit.mjs'),'remaining-combat'],900,env)
+   receipt=json.loads((browser_out/'browser-main-smoke402.json').read_text());assert receipt['completed']==True and receipt['cleanup']['completed']==True
+-  state['main15BrowserCompleted']=True;write('execution.json',state)
+-  assert receipt['groups']['canonical']['completed']==True and len(receipt['groups']['canonical']['caseNames'])==9
+-  assert len(receipt['groups']['ruins']['results'])==5 and 'capture' in receipt['groups']['ruins']
++  assert receipt['selectedGroups']==['remaining-combat'] and set(receipt['groups'])=={'remaining-combat'}
++  remaining=receipt['groups']['remaining-combat']
++  assert remaining['completed']==True and remaining['caseNames']==REMAINING_COMBAT_CASES
++  assert len(remaining['exports'])==11 and len(remaining['continuations'])==5
++  state['remainingCombatBrowserCompleted']=True;write('execution.json',state)
+   assert full_files(fixtures)==fixture_before and full_files(helpers)==helper_outputs_before
+   assert sha(reviewed_path.read_bytes())==sha(reviewed_bytes) and sha(review_path.read_bytes())==sha(review_bytes)
+   assert guard.read_bytes()==guard_bytes and bridge_source.read_bytes()==bridge_bytes
+   invariant('browser')
+   # The separate focused event/history audit has no observeNative or implicit producer entry.
+   history_bridge=Path(__file__).with_name('invoke-focused-history-audit.v2.mjs')
+-  phase('focused-main15-history-audit',node+[str(history_bridge),str(OWNED),pin,str(helpers/'history.mjs'),str(browser_out),str(fixtures)],300,env)
++  phase('focused-remaining-combat-history-audit',node+[str(history_bridge),str(OWNED),pin,str(helpers/'history.mjs'),str(browser_out),str(fixtures)],300,env)
+   assert (browser_out/'main-smoke402-history-checks.json').is_file(),'No successful focused history audit receipt'
+   assert full_files(fixtures)==fixture_before and full_files(helpers)==helper_outputs_before
+   history_result=json.loads((browser_out/'main-smoke402-history-checks.json').read_text())
+   assert history_result['sourceCommit']==pin and history_result['completeOriginalSaveAndRuntimeVerification']==True
+   assert history_result['completedReceiptSha256']==sha((browser_out/'browser-main-smoke402.json').read_bytes())
+-  state.update(main15HistoryCompleted=True,status='main15 data/history passed; separate placeholder phase next');write('execution.json',state);invariant('history-audit')
+-  # Separate one-capture visual check. It uses one fresh browser/context and the same frozen fixture/build.
+-  placeholder=preparation_dir/'placeholder-single-capture.mjs';placeholder_bytes=placeholder.read_bytes()
+-  write('placeholder-driver-source.json',{'path':str(placeholder),'bytes':len(placeholder_bytes),'sha256':sha(placeholder_bytes),'scope':'one separate placeholder ruin capture; no feature admission'})
+-  fallback_out=out/'fallback';fallback_env=dict(env);fallback_env['OVF_PLACEHOLDER_DRIVER_SHA256']=sha(placeholder_bytes)
+-  state.update(fallbackExecuted=True,status='separate single-capture placeholder running');write('execution.json',state)
+-  phase('single-capture-placeholder-browser',node+[str(placeholder),base,str(OWNED),str(fallback_out),str(fixtures),str(freeze),str(browser_out)],120,fallback_env)
+-  fallback=json.loads((fallback_out/'fallback-single-capture.json').read_text())
+-  assert fallback['completed']==True and fallback['cleanup']['completed']==True and fallback['scenarioCount']==1
+-  assert fallback['artMode']=='placeholder' and fallback['source']['commit']==pin and fallback['buildReport']['buildId']==TESTED_ID
+-  assert fallback['finalReadiness']['artEnabled']==False and fallback['finalReadiness']['artLoaded']==False
+-  assert len(fallback['photoCaptures'])==3 and all(r['capture']['photoMode']==True and r['completeNativeGameAndRuntimeUnchanged']==True and r['priorPaused']==r['restoredPaused']==True for r in fallback['photoCaptures'])
+-  assert full_files(fixtures)==fixture_before and full_files(helpers)==helper_outputs_before
+-  assert sha(reviewed_path.read_bytes())==sha(reviewed_bytes) and sha(review_path.read_bytes())==sha(review_bytes)
+-  observe_children(preview,'final guarded preview rescan after placeholder phase');invariant('placeholder')
+-  state.update(status='main15 data/history and separate placeholder data passed; visual reviews remain',main15CaseCount=15,fallbackCompleted=True,fallbackCaseCount=1,completedAt=now(),visualReviewRequired=True)
++  assert set(history_result['observations'])=={'siege','ambush','morale'}
++  assert len(history_result['continuations'])==5 and all(r['completeNativeContinuation']==True and r['completeRuntimeEquality']==True for r in history_result['continuations'])
++  assert len(history_result['ordinaryTickHistories'])==3 and {r['scenario'] for r in history_result['ordinaryTickHistories']}==set(REMAINING_COMBAT_CASES)
++  state.update(remainingCombatHistoryCompleted=True,status='remaining combat data/history passed; visual reviews remain');write('execution.json',state);invariant('history-audit')
++  observe_children(preview,'final guarded preview rescan after focused history phase');invariant('remaining-combat')
++  state.update(status='remaining combat data/history passed; visual reviews remain',remainingCombatCaseCount=3,completedAt=now(),visualReviewRequired=True)
+  except Exception as error:
+   primary=error;state.update(status='failed; first failure retained; no runtime retry',failure={'message':str(error),'traceback':traceback.format_exc(),'at':now()})
+  finally:

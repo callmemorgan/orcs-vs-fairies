@@ -1,0 +1,5 @@
+V6 preparation is in `/tmp/ovf-main15-v6-remaining-preparation-vqmzug09`. It is unexecuted and has no admitted integration pin. Root alone supplies the final pin, reviewed seals/history approval and runtime slot.
+
+Read `external-driver-source-contract.v6.json` for the active three-source seal, `main15-v5-to-v6.patch` for the narrow supervisor changes, `main15-static-recipe.v6.md` for the deferred phases, and `preparation-static-readback.v6.json` for AST/baseline/guard/bridge verification. The active wrapper executes `remaining-combat` only, with three named cases, eleven native exports, five complete continuations and three full ordinary combat histories. The original fifteen-fixture producer/freeze remains unchanged. V5, including its inactive placeholder, is preserved under `preserved-v5`.
+
+Independent static review has been requested from the existing architecture reviewer. Its receipt will be appended to this packet. Browser/history success and feature admission remain unverified until the admitted future run.

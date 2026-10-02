@@ -1,0 +1,241 @@
+{
+  "schema": 1,
+  "group": "ruin",
+  "sourceCommit": "2e5d8780565ede9432e3950052e7a5c4fc635570",
+  "saveVersion": 4,
+  "simulationRevision": "4.0.2",
+  "setup": "Six authored starting conditions. The generator performs no simulation ticks. Production main UI owns all attacks, movement, capture and native exports.",
+  "scenarios": {
+    "ruin-control": {
+      "file": "ruin-control.json",
+      "group": "ruin",
+      "ids": {
+        "source": 50,
+        "target": 51,
+        "sites": [],
+        "expectedFirstDamage": 12,
+        "withdrawal": {
+          "x": 9.5,
+          "y": 24.5,
+          "level": 1
+        },
+        "returnPoint": {
+          "x": 20.5,
+          "y": 24.5,
+          "level": 1
+        }
+      },
+      "authored": {
+        "map": "Valid generated two-layer map flattened to grass and zero elevation before createMatch; generated starts/resources/transitions retained in input. Runtime resources and default combat troops removed; HQs and workers relocated away from the cavern firing lane before recording.",
+        "siteDefinitions": [],
+        "sourceCooldown": 3,
+        "targetCooldown": 1000,
+        "health": "Ordinary full definition health; neutral ruins; no owned-relic damage bonus.",
+        "postRecordingWrites": "Native UI/pointer/keyboard commands and normal engine ticks only."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "sha256": "c66cfd87242db90010d319f3be6b4cb86d279d769b2a073393d08c9bd842b0c4",
+      "inputMap": {
+        "file": "ruin-control-input-map.json",
+        "sha256": "c36ce457f1c1484cd45df5b3acc87e28bc65a6321a3e8d6a8015e0dfdd3a9056"
+      }
+    },
+    "ruin-covered": {
+      "file": "ruin-covered.json",
+      "group": "ruin",
+      "ids": {
+        "source": 51,
+        "target": 52,
+        "sites": [
+          1
+        ],
+        "expectedFirstDamage": 6.75,
+        "withdrawal": {
+          "x": 9.5,
+          "y": 24.5,
+          "level": 1
+        },
+        "returnPoint": {
+          "x": 20.5,
+          "y": 24.5,
+          "level": 1
+        }
+      },
+      "authored": {
+        "map": "Valid generated two-layer map flattened to grass and zero elevation before createMatch; generated starts/resources/transitions retained in input. Runtime resources and default combat troops removed; HQs and workers relocated away from the cavern firing lane before recording.",
+        "siteDefinitions": [
+          {
+            "x": 23.5,
+            "y": 24.5,
+            "level": 1
+          }
+        ],
+        "sourceCooldown": 3,
+        "targetCooldown": 1000,
+        "health": "Ordinary full definition health; neutral ruins; no owned-relic damage bonus.",
+        "postRecordingWrites": "Native UI/pointer/keyboard commands and normal engine ticks only."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "sha256": "ec3b1f54b524bf809f111b15ae5cd562b35d8324664e59e6ecfee9030aaa5f18",
+      "inputMap": {
+        "file": "ruin-covered-input-map.json",
+        "sha256": "e19a1755fba88bbd0484211c9ea53a136625e6edf45efc7385815da52a6103b3"
+      }
+    },
+    "ruin-other-level": {
+      "file": "ruin-other-level.json",
+      "group": "ruin",
+      "ids": {
+        "source": 51,
+        "target": 52,
+        "sites": [
+          1
+        ],
+        "expectedFirstDamage": 12,
+        "withdrawal": {
+          "x": 9.5,
+          "y": 24.5,
+          "level": 1
+        },
+        "returnPoint": {
+          "x": 20.5,
+          "y": 24.5,
+          "level": 1
+        }
+      },
+      "authored": {
+        "map": "Valid generated two-layer map flattened to grass and zero elevation before createMatch; generated starts/resources/transitions retained in input. Runtime resources and default combat troops removed; HQs and workers relocated away from the cavern firing lane before recording.",
+        "siteDefinitions": [
+          {
+            "x": 23.5,
+            "y": 24.5,
+            "level": 0
+          }
+        ],
+        "sourceCooldown": 3,
+        "targetCooldown": 1000,
+        "health": "Ordinary full definition health; neutral ruins; no owned-relic damage bonus.",
+        "postRecordingWrites": "Native UI/pointer/keyboard commands and normal engine ticks only."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "sha256": "f9eb9f5291e045f9320ed77ac8afb62dd8447d22822fd64479a98d52ded6865f",
+      "inputMap": {
+        "file": "ruin-other-level-input-map.json",
+        "sha256": "46bdda8412d18e70b85cef9407a79afee1c7673e4eb63aef0ce45ebef1829c36"
+      }
+    },
+    "ruin-beyond-victim": {
+      "file": "ruin-beyond-victim.json",
+      "group": "ruin",
+      "ids": {
+        "source": 51,
+        "target": 52,
+        "sites": [
+          1
+        ],
+        "expectedFirstDamage": 12,
+        "withdrawal": {
+          "x": 9.5,
+          "y": 24.5,
+          "level": 1
+        },
+        "returnPoint": {
+          "x": 20.5,
+          "y": 24.5,
+          "level": 1
+        }
+      },
+      "authored": {
+        "map": "Valid generated two-layer map flattened to grass and zero elevation before createMatch; generated starts/resources/transitions retained in input. Runtime resources and default combat troops removed; HQs and workers relocated away from the cavern firing lane before recording.",
+        "siteDefinitions": [
+          {
+            "x": 25.9,
+            "y": 24.5,
+            "level": 1
+          }
+        ],
+        "sourceCooldown": 3,
+        "targetCooldown": 1000,
+        "health": "Ordinary full definition health; neutral ruins; no owned-relic damage bonus.",
+        "postRecordingWrites": "Native UI/pointer/keyboard commands and normal engine ticks only."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "sha256": "d4f4bfcfaa21a719e555bebb1816f9c490593da6385376176fbd79b102919ae6",
+      "inputMap": {
+        "file": "ruin-beyond-victim-input-map.json",
+        "sha256": "aea074e84999b70df57e9cb2edbc5cc4500c98fd2e6d3d14bd012b46c77f902d"
+      }
+    },
+    "ruin-inside-near-victim": {
+      "file": "ruin-inside-near-victim.json",
+      "group": "ruin",
+      "ids": {
+        "source": 51,
+        "target": 52,
+        "sites": [
+          1
+        ],
+        "expectedFirstDamage": 6.75,
+        "withdrawal": {
+          "x": 9.5,
+          "y": 24.5,
+          "level": 1
+        },
+        "returnPoint": {
+          "x": 20.5,
+          "y": 24.5,
+          "level": 1
+        }
+      },
+      "authored": {
+        "map": "Valid generated two-layer map flattened to grass and zero elevation before createMatch; generated starts/resources/transitions retained in input. Runtime resources and default combat troops removed; HQs and workers relocated away from the cavern firing lane before recording.",
+        "siteDefinitions": [
+          {
+            "x": 25.1,
+            "y": 24.5,
+            "level": 1
+          }
+        ],
+        "sourceCooldown": 3,
+        "targetCooldown": 1000,
+        "health": "Ordinary full definition health; neutral ruins; no owned-relic damage bonus.",
+        "postRecordingWrites": "Native UI/pointer/keyboard commands and normal engine ticks only."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "sha256": "beae5f1365652db17c3f320243cb158ffbe25d8a34033818ae8699cc31999c11",
+      "inputMap": {
+        "file": "ruin-inside-near-victim-input-map.json",
+        "sha256": "d6ae6b603fae4fc986f1e1f401063b9ec2a9b1506cff867f20e61abf9ca10762"
+      }
+    },
+    "ruin-capture": {
+      "file": "ruin-capture.json",
+      "group": "ruin",
+      "ids": {
+        "worker": 51,
+        "site": 1,
+        "sitePoint": {
+          "x": 23.5,
+          "y": 24.5,
+          "level": 1
+        }
+      },
+      "authored": {
+        "map": "Same valid flat generated cavern input.",
+        "capture": "Neutral relic, zero progress and owner null; ordinary owned worker in capture range. Capture is started by the main World tools button, with no authored capture progress."
+      },
+      "initialTick": 0,
+      "initialTime": 0,
+      "sha256": "0cebdee65f6ccd2d1896bf40d6600397ed99b103df7b8955f823cfb1b114258e",
+      "inputMap": {
+        "file": "ruin-capture-input-map.json",
+        "sha256": "e19a1755fba88bbd0484211c9ea53a136625e6edf45efc7385815da52a6103b3"
+      }
+    }
+  }
+}

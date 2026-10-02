@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "at": "2026-10-02T04:40:23.706212+00:00",
+  "reviewType": "Independent bounded static v6 supervisor review",
+  "preparationDirectory": "/tmp/ovf-main15-v6-remaining-preparation-vqmzug09",
+  "wrapperSha256": "2af181b80fcf7e4975a46e667fd40a22b1ff3bc0c0780f2c3ab326e5aa0e5dfc",
+  "contractSha256": "ada47a3b08b4910d7c2a7fee506117d6a178c1e4fb8a3f170d7b0c0dbf617d1c",
+  "referenceCandidateRootPin": "a989d876b45d37c26a7549ef400bf3246ff74fbb",
+  "integrationPin": null,
+  "runtimeAdmitted": false,
+  "executed": false,
+  "assessment": "No static compatibility blocker found for the reviewed final v6 bytes. This review does not admit or execute a runtime run.",
+  "scope": {
+    "browserGroup": "remaining-combat",
+    "orderedCases": [
+      "siege-full-crew-capture",
+      "ambush-selected-trigger",
+      "morale-supported-full-fight"
+    ],
+    "plannedCases": 3,
+    "retainedSourceBoundFixtures": 15,
+    "declaredExports": 11,
+    "completeContinuations": 5,
+    "ordinaryTickHistories": 3,
+    "observationKeys": [
+      "siege",
+      "ambush",
+      "morale"
+    ]
+  },
+  "findings": [
+    "Final wrapper and active external contract match the supplied final SHA-256 hashes and current source bytes/modes. Preparation, contract and static readback all retain null integrationPin and false runtimeAdmitted/executed.",
+    "The wrapper passes remaining-combat as its sole explicit browser argument and requires that same sole group, ordered3 case names, browser/cleanup completion,11 exports and5 continuations. Its focused source snapshots byte-equal imported Git objects at reference pin a989d876b45d37c26a7549ef400bf3246ff74fbb.",
+    "The focused canonical runner skips formation and charge loops, executes siege then ambush then morale, and declares6+2+3 exports and2+1+2 continuation pairs. The verifier selects its focused runner for the remaining-combat argument.",
+    "The unchanged history bridge authenticates the committed helper and completed original browser receipt. The focused audit supports remaining-combat, rederives complete original game/runtime and replay game/runtime, executes command suffixes, and retains exactly the three combat endpoint histories for this run. Wrapper checks source pin, raw receipt hash, full-verification flag, observation keys,5 complete continuations and3 matching histories.",
+    "The15 zero-tick fixture producer/freeze remains scheduled and checked after actual generation. Preflight metadata uses plannedFixtureCount, so it does not claim fixtures were already generated. Source-bound fixture/helper hashes and build identity checks remain.",
+    "All15 named non-main Python functions are AST-identical to preservedv5, including protected_socket, guarded descendant discovery, remembered exact process identity, pidfd signaling, stop_owned, phase and invariant. The entire exception handler and finally body are unchanged. The guard and history bridge are byte-identical to preservedv5.",
+    "The active external seal contains only supervisor, guard and history bridge. No active placeholder file or phase remains. All8 v5 preservation rows match their retained bytes/modes, including the inactive placeholder.",
+    "Scope completion fields now report only remaining combat browser/history and3 cases. Strict art, no retry, no product build, retained tested build/product/dist/runtime checks, protected preview identity and guarded cleanup remain unchanged."
+  ],
+  "limitations": [
+    "This static review does not demonstrate native input timing, browser completion, history success, screenshots, feature admission or future process state.",
+    "Root must supply the final full integration pin, approved source/helper/external seal and history review, explicit retained browser runtime paths, and one admitted runtime slot before execution."
+  ],
+  "allowedChecksPerformed": [
+    "Read external files, scoped Git objects and reviewed source snapshots.",
+    "Parsed Python AST and compiled source to a code object without executing or importing the prepared module.",
+    "Compared exact patches, AST functions/final cleanup, file hashes/modes, preservedv5 and candidate source bytes.",
+    "Wrote this fresh external review packet."
+  ],
+  "notPerformed": [
+    "No Node parsing/import, helper/build/test/browser/server runtime, DB action, signal, checkout or root write."
+  ]
+}

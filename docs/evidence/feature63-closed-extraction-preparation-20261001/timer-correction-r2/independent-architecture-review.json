@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "at": "2026-10-02T04:53:22.605939+00:00",
+  "reviewType": "Independent exact r2 extraction timer correction review",
+  "candidateDirectory": "/tmp/feature63-root-extraction-candidate-r2-LSZWmJUg",
+  "helperSha256": "fccd7ba02a92c2496b56699cb8fbb323f16cb2a817596093951b10a72446e7d8",
+  "helperBytes": 54321,
+  "deltaSha256": "a7b09241c96b994e98fc84ddeec76a38d836559aba1e363b09de645d0270b373",
+  "baselineReviewPath": "/tmp/feature63-extraction-static-review-architecture-r1-l8ojlnwi/static-review.json",
+  "baselineReviewSha256": "9a114fd3573c27c98000ca22050ab5e0bb3054893e046d4e61492867f670cd51",
+  "frozenAuditorSha256": "4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb",
+  "assessment": "Original query-timer finding is resolved by the authenticated one-line insertion. No remaining concrete static blocker found within the reviewed custody/TEXT/match-wave/schema/default-approval scope. Runtime is unverified and not authorized by this review.",
+  "resolvedFinding": {
+    "id": "query-deadline-includes-initial-hash",
+    "change": "self.started = time.monotonic() at514 after initial full verify and authorizer setup, immediately before progress-handler installation",
+    "effect": "Initial full raw hashing no longer consumes the60-second SQLite query-phase budget. The unchanged progress callback reads the reset value.",
+    "verification": "Direct byte equality with original helper plus one added assignment; static control-flow inspection only."
+  },
+  "unchangedContracts": [
+    "Canonical fresh raw path and source/capture/match/inode/size/hash/mode/sidecar custody enforcement.",
+    "Separate root-native lifetime disposition and bound closure evidence before any database open.",
+    "Original checkpoint/views bytes and complete reversible configText retention; complete collector/public input copies.",
+    "Fixed match-specific SQL forms/parameters, authorizer allowlist, frame count/byte budgets, deterministic wave selection, native/public match and launch checks.",
+    "Exact frozen native auditor assignment schema, filename/descriptor/query interfaces and required22 source paths.",
+    "Explicit false/unknown pending audit/admission/lifetime defaults; no PASS-derived approval.",
+    "Fresh private output publication only after database close and second raw verification; pending review status and no feature63 qualification claim."
+  ],
+  "futureSourcePin": null,
+  "runtimeAuthorized": false,
+  "helperExecuted": false,
+  "helperImported": false,
+  "databaseRead": false,
+  "candidateASTParsedByThisReviewer": false,
+  "actionsPerformed": [
+    "Read/hash original and r2 candidate source/diff/specimens and original immutable review.",
+    "Verify r2 helper is only the one added timer reset and original candidate manifest bytes remain unchanged.",
+    "Write this independent fresh external review packet."
+  ],
+  "actionsNotPerformed": [
+    "No candidate imports/execution, SQLite or raw DB reads/hash, process inspection, runtime, builds/tests/browser/server/signals/checkout/root writes."
+  ],
+  "limitations": [
+    "Actual SQLite FD URI/authorizer behavior and future captured payloads are untested.",
+    "Root must authenticate the future r2 helper digest, actual assignment and custody/lifetime inputs. Native audit and admission booleans remain false until concrete output review.",
+    "This receipt authenticates the supplied r2 helper and timer delta. The preparation agent is still assembling its final r2 packet manifest; this receipt does not claim a not-yet-present final manifest hash."
+  ]
+}

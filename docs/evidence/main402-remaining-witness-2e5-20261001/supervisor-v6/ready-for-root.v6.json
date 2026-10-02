@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "at": "2026-10-02T04:41:50.857532+00:00",
+  "status": "External v6 prepared and independently reviewed; execution remains deferred",
+  "integrationPin": null,
+  "runtimeAdmitted": false,
+  "executed": false,
+  "browserGroup": "remaining-combat",
+  "caseNames": [
+    "siege-full-crew-capture",
+    "ambush-selected-trigger",
+    "morale-supported-full-fight"
+  ],
+  "plannedCaseCount": 3,
+  "sourceBoundFixtureCount": 15,
+  "activeExternalSources": [
+    {
+      "path": "main15-bounded.v6.py",
+      "bytes": 24612,
+      "sha256": "2af181b80fcf7e4975a46e667fd40a22b1ff3bc0c0780f2c3ab326e5aa0e5dfc",
+      "mode": "0o644"
+    },
+    {
+      "path": "protected-signal-guard.v2.mjs",
+      "bytes": 2837,
+      "sha256": "65d10cfa6a398d814813ec350d3e4e468230bea21ce41107f81b4d621c2c6e2b",
+      "mode": "0o644"
+    },
+    {
+      "path": "invoke-focused-history-audit.v2.mjs",
+      "bytes": 2281,
+      "sha256": "f2057fd8f45c026248b33bb22d72183c0f2aae21f3d5dad7c1171ae5e1482aa7",
+      "mode": "0o644"
+    }
+  ],
+  "independentStaticReview": {
+    "receipt": "independent-review/static-review.json",
+    "sha256": "865fb8188cef1db2921bf29910cd20e7d19e300f2bffdbdd0d46a573ba468172",
+    "assessment": "No static compatibility blocker found for the reviewed final v6 bytes. This review does not admit or execute a runtime run."
+  },
+  "resolvesHistoricalPending": [
+    "preparation.v6.json independent static supervisor review",
+    "preparation-static-readback.v6.json independentReview",
+    "handoff.md independent static review request"
+  ],
+  "remaining": [
+    "Root supplies final full execution pin and admitted complete source/helper/external seal.",
+    "Root supplies approved history review at that same pin.",
+    "Root authenticates previous cleanup/release and assigns one heavy runtime slot.",
+    "Future native run must prove browser/history behavior and preserve cleanup/artifacts; root separately reviews screenshots/admission."
+  ],
+  "forbiddenPreparationActionsPerformed": false
+}

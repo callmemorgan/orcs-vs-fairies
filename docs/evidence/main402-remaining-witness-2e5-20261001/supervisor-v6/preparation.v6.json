@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "version": 6,
+  "createdAt": "2026-10-02T04:35:33.336685+00:00",
+  "integrationPin": null,
+  "runtimeAdmitted": false,
+  "executed": false,
+  "referenceCandidateRootPin": "a989d876b45d37c26a7549ef400bf3246ff74fbb",
+  "referenceCandidateDirectory": "/tmp/ovf-remaining-combat-preparation-7e-20261001-hcjileau",
+  "testedProductPin": "f7f3e187ea40079492589a6fce39f0b33f77f04a",
+  "testedBuildId": "9c5d2f1ff26bd6849b1ad5e311300669fb5f02feebbe4d311b6f8d670df243e1",
+  "activeExternalSources": [
+    {
+      "path": "main15-bounded.v6.py",
+      "bytes": 24612,
+      "sha256": "2af181b80fcf7e4975a46e667fd40a22b1ff3bc0c0780f2c3ab326e5aa0e5dfc",
+      "mode": "0o644"
+    },
+    {
+      "path": "protected-signal-guard.v2.mjs",
+      "bytes": 2837,
+      "sha256": "65d10cfa6a398d814813ec350d3e4e468230bea21ce41107f81b4d621c2c6e2b",
+      "mode": "0o644"
+    },
+    {
+      "path": "invoke-focused-history-audit.v2.mjs",
+      "bytes": 2281,
+      "sha256": "f2057fd8f45c026248b33bb22d72183c0f2aae21f3d5dad7c1171ae5e1482aa7",
+      "mode": "0o644"
+    }
+  ],
+  "candidateSourceSnapshots": [
+    {
+      "path": "scripts/acceptance/canonical-main-smoke.mjs",
+      "bytes": 26531,
+      "sha256": "30302db2b09027326dfe811b924085580dfbf3ca7a3d24979e83b3c8d1329216",
+      "mode": "0o644"
+    },
+    {
+      "path": "scripts/acceptance/verify-main-smoke402.mjs",
+      "bytes": 11432,
+      "sha256": "4f6899905515d0df832b24902bb3ad3c49074abb0d0cfc0a2b5e4b81cb2cac42",
+      "mode": "0o644"
+    },
+    {
+      "path": "scripts/acceptance/main-smoke402-history-audit.ts",
+      "bytes": 32466,
+      "sha256": "5acb76c728b0fb400eb38c97241cd3f6b706679c51cc82f4b666e34db0302533",
+      "mode": "0o644"
+    }
+  ],
+  "browserGroup": "remaining-combat",
+  "caseNames": [
+    "siege-full-crew-capture",
+    "ambush-selected-trigger",
+    "morale-supported-full-fight"
+  ],
+  "plannedCases": 3,
+  "fixtureCount": 15,
+  "artMode": "strict",
+  "boundsSeconds": {
+    "fetch": 30,
+    "checkout": 30,
+    "helperBuild": 90,
+    "fixtures": 90,
+    "freeze": 90,
+    "previewReady": 20,
+    "browserRemainingCombat": 900,
+    "historyAudit": 300,
+    "terminateGrace": 5,
+    "killWait": 5
+  },
+  "protectedPreview": {
+    "pid": 1063,
+    "startTicks": 874,
+    "port": 4173,
+    "listenerInode": "3783",
+    "fd": "22"
+  },
+  "preparationChecks": {
+    "pythonASTParsed": true,
+    "pythonCompileOnly": true,
+    "nodeInvoked": false,
+    "helpersBuilt": false,
+    "testsRun": false,
+    "browserRun": false,
+    "serverStarted": false,
+    "signalsSent": false,
+    "checkoutChanged": false,
+    "rootWrites": false
+  },
+  "pending": [
+    "Independent static supervisor review.",
+    "Root supplies a final full execution pin, reviewed source/helper/external seal and history review.",
+    "Root allocates one runtime slot and supplies explicit retained Playwright/Chromium paths."
+  ],
+  "browserRuntimePaths": {
+    "playwrightModule": "/home/morgana/.t3/worktrees/orcs-vs-Fairies/t3code-f8849e6c/work/faction-assets/browser/node_modules/playwright-core/index.mjs",
+    "chromium": "/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome"
+  },
+  "updatedAt": "2026-10-02T04:37:23.250162+00:00"
+}

@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "version": 6,
+  "preparedAt": "2026-10-02T04:35:33.336685+00:00",
+  "integrationPin": null,
+  "runtimeAdmitted": false,
+  "executed": false,
+  "externalSources": [
+    {
+      "path": "main15-bounded.v6.py",
+      "bytes": 24612,
+      "sha256": "2af181b80fcf7e4975a46e667fd40a22b1ff3bc0c0780f2c3ab326e5aa0e5dfc",
+      "mode": "0o644"
+    },
+    {
+      "path": "protected-signal-guard.v2.mjs",
+      "bytes": 2837,
+      "sha256": "65d10cfa6a398d814813ec350d3e4e468230bea21ce41107f81b4d621c2c6e2b",
+      "mode": "0o644"
+    },
+    {
+      "path": "invoke-focused-history-audit.v2.mjs",
+      "bytes": 2281,
+      "sha256": "f2057fd8f45c026248b33bb22d72183c0f2aae21f3d5dad7c1171ae5e1482aa7",
+      "mode": "0o644"
+    }
+  ],
+  "preservedVersion5": "preserved-v5-manifest.json",
+  "browserGroup": "remaining-combat",
+  "caseNames": [
+    "siege-full-crew-capture",
+    "ambush-selected-trigger",
+    "morale-supported-full-fight"
+  ],
+  "plannedCaseCount": 3,
+  "fixtureCount": 15,
+  "sourceBinding": "Root reviewed-source-seal must contain these exact three relative externalSources rows and all admitted committed acceptance helpers. Source/frozen fixture/dist checks bind imported functions to the same committed pin. Placeholder is preserved under preserved-v5 and is absent from the active seal and execution.",
+  "historyAudit": {
+    "entry": "scripts/acceptance/main-smoke402-history-audit.ts",
+    "bridge": "invoke-focused-history-audit.v2.mjs",
+    "reviewScope": "main15 native event/history audit",
+    "receipt": "browser/browser-main-smoke402.json",
+    "output": "browser/main-smoke402-history-checks.json",
+    "completedOriginalReceiptRequired": true,
+    "exactSelectedGroups": [
+      "remaining-combat"
+    ],
+    "declaredCheckpointExports": 11,
+    "completeCommandSuffixContinuations": 5,
+    "ordinaryCombatTickHistories": 3,
+    "observationKeys": [
+      "siege",
+      "ambush",
+      "morale"
+    ],
+    "retainedChecks": [
+      "complete original native game/runtime round trips",
+      "complete replay game/runtime equality",
+      "source-bound ordinary event histories for siege, ambush and morale",
+      "command-suffix continuation with complete saved game/runtime equality",
+      "original completed receipt SHA-256 binding"
+    ]
+  },
+  "inactiveExecution": [
+    "formation",
+    "charge",
+    "ruins",
+    "placeholder"
+  ],
+  "unchangedSignalGuardSha256": "65d10cfa6a398d814813ec350d3e4e468230bea21ce41107f81b4d621c2c6e2b",
+  "unchangedHistoryBridgeSha256": "f2057fd8f45c026248b33bb22d72183c0f2aae21f3d5dad7c1171ae5e1482aa7",
+  "updatedAt": "2026-10-02T04:37:23.250162+00:00"
+}

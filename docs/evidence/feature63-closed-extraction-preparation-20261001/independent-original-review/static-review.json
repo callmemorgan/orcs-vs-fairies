@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "at": "2026-10-02T04:51:19.477077+00:00",
+  "reviewType": "Independent static extraction candidate review",
+  "candidateDirectory": "/tmp/feature63-root-extraction-candidate-MMGhTuvE",
+  "helperSha256": "20ca0f59682d214f0ea2e9d75fd887d599365fb63a2da13356a6616afc33a047",
+  "candidateManifestSha256": "87dc512801318e3dd9699a2d1f897a7379eb3a323f3c7f81105d1f2b58f43851",
+  "frozenAuditorSha256": "4862672ef96aba39799d3ef9c6280be9fbeaa8194391b3f2b5acefb5e7cd76fb",
+  "futureSourcePin": null,
+  "runtimeAuthorized": false,
+  "helperExecuted": false,
+  "databaseRead": false,
+  "assessment": "One concrete query-timer edge failure requires a narrow correction. No additional custody, literal payload retention, frozen auditor interface or approval-default blocker found by source inspection.",
+  "findings": [
+    {
+      "id": "query-deadline-includes-initial-hash",
+      "file": "extract-closed63.py",
+      "line": 467,
+      "relatedLines": [
+        500,
+        514
+      ],
+      "severity": "medium",
+      "problem": "ClosedDatabase.started is set before initial full raw verification/hash; the SQLite progress handler uses that same clock. README states that full before/after raw hashing is outside the60-second query deadline.",
+      "trigger": "An otherwise valid sealed raw whose first full hash consumes more than60seconds reaches SELECTs with an expired timer; the first progress callback can interrupt the query before it has received its intended query budget.",
+      "fix": "Reset started when the SQLite query phase begins, after initial full verification/hash and before installing the progress handler. Root has requested a minimal preserved external r2; original candidate is unchanged.",
+      "status": "Pending r2 source re-review"
+    }
+  ],
+  "verifiedStaticProperties": [
+    {
+      "area": "Custody and path enforcement",
+      "evidence": [
+        "extract-closed63.py:103\u2013140 canonical exact descriptors, one-link regular files, O_NOFOLLOW and before/after identity/hash checks",
+        "extract-closed63.py:565\u2013615 separate assignment digest/helper pin/approved extraction gates, fresh canonical prefix, actual capture, closed raw, root custody and independent lifetime evidence required",
+        "extract-closed63.py:458\u2013515 exact fresh DB path, inode/device/size/hash/mode/link count, absent sidecars and read-only immutable SQLite path",
+        "extract-closed63.py:544\u2013550 connection closes before after-verification; output starts only at744"
+      ],
+      "assessment": "Root authenticates actual lifetime facts. The helper does not infer native lifetime from capture or collector PASS."
+    },
+    {
+      "area": "Original SQL TEXT retention",
+      "evidence": [
+        "extract-closed63.py:503 text_factory=bytes",
+        "extract-closed63.py:668\u2013677 full final checkpoint copied as bytes; configText stores original UTF-8 text reversibly alongside parsed config",
+        "extract-closed63.py:694\u2013705 full four-view frame bytes copied unchanged",
+        "extract-closed63.py:628\u2013652 all declared collector checkpoints hash/read as complete original files;655 reads all9 public literal inputs"
+      ],
+      "assessment": "Parsing supports validation; it does not replace retained checkpoint/views payloads. Config is not a separate raw file but configText recovers the complete original UTF-8 logical TEXT."
+    },
+    {
+      "area": "Match/wave identity and frame selection",
+      "evidence": [
+        "extract-closed63.py:250\u2013316 public match/source, native wire/ack, selected candidate and eligible commanded human actors",
+        "extract-closed63.py:320\u2013379 humans alive and source-derived participant launch transition",
+        "extract-closed63.py:382\u2013453 deterministic wave selection retains both human attack owners and both AI target owners, complete qualifying event-frame union and adjacent launch bracket",
+        "extract-closed63.py:670\u2013706 native match/lobby/build, checkpoint tick,20Hz bracket mapping and same-tick full public/native view equality"
+      ],
+      "assessment": "Selection remains within the producer-selected public window and authenticated collector checkpoints. It retains all qualifying human attack frames for the selected same wave, not a sample."
+    },
+    {
+      "area": "Frozen auditor interface",
+      "evidence": [
+        "helper733\u2013740 generated native root assignment versus frozen auditor351\u2013354 exact12 fields",
+        "helper719\u2013724 literal native/public descriptor sets and only exact match/frames extraction queries versus auditor410\u2013422/548\u2013570",
+        "helper163\u2013208 source receipt versus auditor366\u2013390; both required source tuples match22 paths",
+        "helper647\u2013651 collector rows/references versus auditor488\u2013542; collector query provenance and normal UI lifecycle remain the auditor responsibility"
+      ],
+      "assessment": "Generated fields, filenames, descriptors and exact query shapes are compatible. Supplementary custody/lifetime/selection descriptors are accepted as additional extraction-receipt fields; the native assignment itself has the exact required field set."
+    },
+    {
+      "area": "Approval defaults",
+      "evidence": [
+        "helper567\u2013573 explicit approved/extractAuthorized/lifetime True and explicit audit/admission boolean type checks",
+        "helper734/755 copies supplied audit/admission booleans without deriving them from PASS",
+        "helper763\u2013768 extracted-pending-review, feature63Qualified=False and auditorExecuted=False",
+        "pending extraction/custody/native lifetime/audit/admission/schema specimens retain false or unknown approvals"
+      ],
+      "assessment": "Pending specimens cannot open SQLite. For a first concrete extraction, audit/admission booleans should remain false until root inspects the result; later approval requires reauthenticated assignment/bundle/admission hashes."
+    }
+  ],
+  "concreteHeldEdges": [
+    "Duplicate JSON keys, nonfinite numbers, invalid descriptor fields, symlinks/hardlinks, changed input bytes, raw mode/write bits, missing or existing sidecars, changed raw inode/hash or source binding all reject.",
+    "Missing collector files, noncontiguous checkpoints, mismatched raw/match/lobby/source identity, incomplete public4-tick cadence or missing eligibility/accepted UI command bindings reject.",
+    "Required qualifying frame union over16, native bytes over8MiB, public bytes over64MiB, auditor receipts over1MiB or missing exact database rows reject without truncation.",
+    "A deterministic chosen wave whose native launch transition fails stays held; the helper does not select a different public candidate or retry another wave.",
+    "A file-write failure may leave a private incomplete output directory; no successful final extraction result is emitted. Root must treat that directory as a failed packet."
+  ],
+  "limitations": [
+    "No SQLite FD URI, authorizer, runtime query or concrete native/public payload was executed or read. Static compatibility does not establish future runtime success.",
+    "Custody and independent native lifetime receipt substance remain root dispositions over actual closure evidence.",
+    "The frozen native auditor still must check complete normal UI lifecycle, account/source identity, collector query provenance and full native predicates. A helper result does not qualify feature63."
+  ],
+  "actionsPerformed": [
+    "Static candidate, README, retained review, manifest and pending JSON reads.",
+    "Exact candidate file hashes and frozen auditor file/interface comparisons.",
+    "Independent read-only child review of custody/TEXT/defaults.",
+    "Fresh external review writes and reviewed file snapshots."
+  ],
+  "actionsNotPerformed": [
+    "No candidate imports or execution, DB access/hash, process inspection, runtime, builds, tests, browser/server, signals, checkout/root writes or original candidate changes."
+  ]
+}

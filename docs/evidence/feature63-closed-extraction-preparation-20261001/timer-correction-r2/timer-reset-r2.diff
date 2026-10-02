@@ -1,0 +1,10 @@
+--- /tmp/feature63-root-extraction-candidate-MMGhTuvE/extract-closed63.py	2026-10-01 21:34:12.812651682 -0700
++++ /tmp/feature63-root-extraction-candidate-r2-LSZWmJUg/extract-closed63.py	2026-10-01 21:50:00.889662163 -0700
+@@ -511,6 +511,7 @@
+                     admitted = second in ('length','json_extract')
+                 return sqlite3.SQLITE_OK if admitted else sqlite3.SQLITE_DENY
+             self.connection.set_authorizer(authorize)
++            self.started = time.monotonic()
+             self.connection.set_progress_handler(lambda: 1 if time.monotonic()-self.started>60 else 0,1000)
+             self.connection.setlimit(sqlite3.SQLITE_LIMIT_LENGTH,MAX_NATIVE)
+             return self

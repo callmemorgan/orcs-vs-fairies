@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-02T04:57:51Z",
+  "scope": {
+    "clauses": [
+      4,
+      9,
+      10
+    ],
+    "testedProductPin": "f7f3e187ea40079492589a6fce39f0b33f77f04a",
+    "admittedScriptsPin": "2e5d8780565ede9432e3950052e7a5c4fc635570",
+    "assessmentMethod": "static reads only"
+  },
+  "decisions": [
+    {
+      "id": 4,
+      "requirement": "isolated or badly damaged squads can retreat or surrender.",
+      "decision": "supported",
+      "basis": "The retained native last state shows two badly damaged cavalry units with low morale, active retreat state, and move orders toward their HQ. Unchanged passing tests cover isolated wounded retreat and surrounded broken surrender."
+    },
+    {
+      "id": 9,
+      "requirement": "defeat their crews and claim the equipment.",
+      "decision": "supported",
+      "basis": "The completed native case starts with a full crew, defeats it through ordinary attacks while preserving the hull, captures the abandoned engine through the public Tactics command, and moves and fires it under the new owner. Six checkpoints have complete native round-trip and replay endpoint equality."
+    },
+    {
+      "id": 10,
+      "requirement": "conceal troops and set conditions for revealing them.",
+      "decision": "supported",
+      "basis": "The completed native case uses the public Tactics panel to conceal an archer with radius 2 and a melee-only trigger, withholds fire from a wrong-role worker inside the radius, and reveals and attacks when the selected melee target enters. Both checkpoints have complete native round-trip and replay endpoint equality."
+    }
+  ],
+  "receiptFailure": {
+    "qualified": true,
+    "explanation": "The morale recipe timed out while waiting for every selected siege unit to retain an attack order. The receipt still retained a later native state with two badly damaged units retreating.",
+    "effectOnClause4": "none; the retained last state directly proves the retreat branch and unchanged passing tests prove retreat and surrender",
+    "effectOnClause9": "none; the siege case completed first with six authenticated checkpoints",
+    "effectOnClause10": "none; the ambush case completed first with two authenticated checkpoints"
+  },
+  "excludedAsAdmissionConditions": [
+    "overall browser receipt completion",
+    "normal history phase completion",
+    "a downloaded pre-volley morale checkpoint",
+    "the supplemental all-siege attack-order wait",
+    "the later morale recipe chronology",
+    "overall remaining-combat batch completion"
+  ],
+  "partialHistoryAudit": {
+    "needed": false,
+    "reason": "No concrete part of the original clauses remains unproved by the retained native states, commands, checkpoint equality, observer traces, and unchanged passing tests."
+  },
+  "evidenceIndexes": {
+    "artifactSnapshot": "/tmp/ovf-original4-9-10-2e5-clause-assessment-XvX2zhvC/artifact-snapshot.json",
+    "sourceReadback": "/tmp/ovf-original4-9-10-2e5-clause-assessment-XvX2zhvC/source-readback.json"
+  },
+  "limits": "No runtime, source imports, builds, tests, browser, simulation, database, root edits, or signals. Root alone may admit after direct authentication and closure."
+}
