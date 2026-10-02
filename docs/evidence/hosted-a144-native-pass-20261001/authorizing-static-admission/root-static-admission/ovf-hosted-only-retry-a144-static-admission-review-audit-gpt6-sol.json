@@ -1,0 +1,250 @@
+{
+  "formatVersion": 1,
+  "reviewer": {
+    "harness": "Codex",
+    "model": "GPT-6 Sol"
+  },
+  "subject": {
+    "packet": "/tmp/ovf-hosted-only-retry-a144-readiness-jmgrn3ta",
+    "planSha256": "7d58d49e2dbde08e6d42180cdd35ec3068f57de62a2731d0d5385323d69cac1d",
+    "targetPin": "a144ad3f3dddd0003f9553541908e2254f2444c6",
+    "productFreeze": "453c2218af9973b9eca8fb78392435bd9d46a740",
+    "originalFailedPin": "473ab17642211c3610aed648ae5f813b7680edc1"
+  },
+  "verdict": {
+    "status": "admitted-for-one-hosted-only-execution",
+    "finalClauseAdmission": false,
+    "reason": "Static identities, bounds, cleanup rules, preserved evidence, runtime bytes, source bytes, and the narrow helper change authenticate. Fresh runtime evidence remains required for clauses 63 and 64."
+  },
+  "method": {
+    "allowed": [
+      "static file reads",
+      "SHA-256 hashing",
+      "JSON parsing",
+      "Python AST parsing",
+      "immutable Git tree, blob, diff, and commit reads"
+    ],
+    "performedCounts": {
+      "builds": 0,
+      "tests": 0,
+      "servers": 0,
+      "browserLaunches": 0,
+      "simulations": 0,
+      "projectModuleExecutions": 0,
+      "checkoutMoves": 0,
+      "repositoryWrites": 0
+    }
+  },
+  "authentication": {
+    "packetManifest": {
+      "sha256": "cafc3dd6187338d964dd67431ec4831265e9dc8c34101d8d86c3b2b1a60ad6c7",
+      "sealedFiles": 8,
+      "sealedBytes": 341112,
+      "allRegularMode0644": true,
+      "verificationJsonOutsideSealedManifest": true,
+      "verificationJsonSha256": "58796ec4c110191eb4925a66978304d2c631f6c66847c8495af944fde2225f34"
+    },
+    "targetSource": {
+      "tree": "ff0690aeb2fc5096180ab4e600fe4f378fb2ed87",
+      "selectedFiles": 748,
+      "allPathsModesBlobIdsSizesAndHashesMatchedGit": true,
+      "sourceSha256": "dbcd5071f68d2d00a6a20c27a366389202c2354e752f7c5d38b16cfd7e998c8d",
+      "buildId": "5e49e689af13d4eef08c0760f904ad0bce2c2eebaa1144dea5d89cadecf310c0",
+      "saveVersion": 4,
+      "simulationRevision": "4.0.1"
+    },
+    "productFreeze": {
+      "unchanged": true,
+      "scope": [
+        "src",
+        "public",
+        "tests",
+        "package.json",
+        "package-lock.json",
+        "tsconfig.json",
+        "tsconfig.node.json",
+        "vite.config.ts",
+        "index.html",
+        "editor.html",
+        "Dockerfile.server",
+        ".dockerignore"
+      ]
+    },
+    "reviewedChange": {
+      "commit": "a144ad3f3dddd0003f9553541908e2254f2444c6",
+      "file": "scripts/server/verify-hosted-teams-browser.mjs",
+      "hunk": "@@ -54,41 +54,43 @@",
+      "targetLines": "74-76",
+      "gitBlob": "ce0de6437f8d6b53526e7cd24dd24805eed03c38",
+      "bytes": 48361,
+      "sha256": "6c7757471a8435ef8ec3459e10a2114d7dd4e7d5907712c0cf2f1ab8fd650b8e",
+      "savedDiffSha256": "0ec16ca71c9a6064e738b2eb86471f0440b9a708e7cfbc30f3e309378ecb8309",
+      "savedDiffMatchesGit": true,
+      "addedLines": 3,
+      "removedLines": 1,
+      "getObservedRequestRule": ">= 1",
+      "postObservedRequestRule": "== 1",
+      "responseStatusDataAndLobbyGuardsRetained": true
+    },
+    "runtime": {
+      "authenticatedFiles": 10,
+      "playwrightVersion": "1.62.1",
+      "playwrightCoreVersion": "1.62.1",
+      "headlessShellRevision": "1234",
+      "headlessShellVersion": "151.0.7922.34",
+      "headlessExecutable": "/home/morgana/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell",
+      "headlessExecutableBytes": 196975952,
+      "headlessExecutableSha256": "e11fc9ce65c96313476f7ee9844b6fb6a9220fb048693cfe9eee00acf4170a9f",
+      "fullChromiumRevision1234Absent": true,
+      "versionEvidence": "The packet records a prior authorized default headless launch/version/close. This review authenticated its files and registry mapping without launching it."
+    },
+    "supervisor": {
+      "sha256": "5883fb1c63a6f2d85bc1947bfb1eec15ada00097d408e7c51d7bc9090a3a6781",
+      "copiedBytesEqualRetainedOriginal": true,
+      "freshPackageIdentityCapture": true,
+      "generationOneServedByteCapture": [
+        "index.html",
+        "favicon.ico",
+        "JavaScript assets",
+        "CSS assets"
+      ],
+      "twoServerGenerationRecordsRequired": true,
+      "packageRehashAfterVerification": true
+    },
+    "dispatcher": {
+      "pythonAstParsed": true,
+      "explicitReleaseArgumentRequired": true,
+      "pinSpecificReleaseEnvironmentRequired": true,
+      "targetHeadAndTrackedCleanRequired": true,
+      "freshPathsRequired": true,
+      "preparedAndPreservedBytesRehashedBeforeDispatch": true,
+      "hostedOnlyInvocation": true,
+      "canonicalOrDailyInvocation": false,
+      "supervisorBoundSeconds": 1200,
+      "dispatcherChildBoundSeconds": 1260,
+      "cleanupBoundsSeconds": {
+        "term": 8,
+        "kill": 5,
+        "reap": 1
+      },
+      "totalWallClockBoundClaimed": false,
+      "cleanupUsesPidAndStartTime": true,
+      "protectedPid1063Forbidden": true,
+      "globalNameOrPortSweep": false
+    },
+    "freshPaths": {
+      "hostedOutputExists": false,
+      "auditExists": false,
+      "externalSupervisorLogExists": false,
+      "externalExecutionReceiptExists": false
+    },
+    "preservedOriginal473": {
+      "artifacts": 7,
+      "allSizeAndHashesMatched": true,
+      "resultStatus": "failed",
+      "failure": "GET /api/lobbies had mutations=2 while the original helper required exactly one observed request",
+      "failureWireGzipSha256": "6d1954af04651220996b3e5335c1b2f67749078ef24169ed31dfe5243c379af4",
+      "failureWireUncompressedSha256": "19646963634768b2cbf4795fe758cbd346208f0e0c1ca959503ccf7e2b7a6959",
+      "sqliteBytes": 378163200,
+      "sqliteSha256": "c2240e5d1482c09d637f3664388b7add6969e0dc1d036375fb8b8d9bb9b9111e",
+      "historicalPackagesEqualResultAndAudit": true,
+      "historicalPackageFileCounts": {
+        "server": 3,
+        "browser": 398
+      },
+      "retryReusesHistoricalPackages": false
+    },
+    "protectedRoot": {
+      "priorBaselineSha256": "7b5a72514815ec968654e0e569579d4868d1ecd415af92357035fa4c27b14ba9",
+      "pid": 1063,
+      "port": 4173,
+      "distFiles": 397,
+      "semanticFieldsEqualAcrossSchemas": [
+        "pid",
+        "cmdline",
+        "cwd",
+        "port4173",
+        "rootDist",
+        "distFiles"
+      ]
+    }
+  },
+  "commits": [
+    {
+      "commit": "33d08ab0b2ae630a92cac1fa95576ea719733a1e",
+      "subject": "Retain hosted preparation and survival admission review",
+      "files": 17,
+      "addedLines": 9429,
+      "removedLines": 0,
+      "selectedSourceChange": false
+    },
+    {
+      "commit": "663f640cd7d7c5ff4f8c2160264378fdf7940398",
+      "subject": "Record the installed hosted headless browser selection",
+      "files": 6,
+      "addedLines": 4113,
+      "removedLines": 0,
+      "selectedSourceChange": false
+    },
+    {
+      "commit": "4b829cfe9c12c98c97419d25a8573e634df1b25d",
+      "subject": "Retain independent hosted preparation reviews",
+      "files": 11,
+      "addedLines": 1344,
+      "removedLines": 0,
+      "selectedSourceChange": false
+    },
+    {
+      "commit": "a144ad3f3dddd0003f9553541908e2254f2444c6",
+      "subject": "Allow overlapping lobby reads in hosted verification",
+      "files": 1,
+      "addedLines": 3,
+      "removedLines": 1,
+      "selectedSourceChange": true
+    }
+  ],
+  "behavioralInterrogation": {
+    "ordering": "None. The change adds no concurrency and reorders no operation.",
+    "failurePaths": "A GET still fails when no matching request is observed; one or more matching GETs pass. POST remains exactly one. No promise, retry, or early return changed.",
+    "observability": "The helper still records response status and observed request count. No log or telemetry emission changed and no event order changed.",
+    "staleWrites": "None. The helper adds no durable write or state mutation.",
+    "testDelta": "No focused automated regression test was added. The held hosted browser retry is the direct regression exercise."
+  },
+  "findings": [
+    {
+      "severity": "non-blocking-execution-risk",
+      "id": "supplemental-4v4-precedes-runtime-targets",
+      "evidence": "scripts/server/verify-hosted-teams-browser.mjs defines layouts [2,3,4], iterates [...layouts, cooperativeLayout], and rethrows a layout error. The cooperative and restart/spectator work comes after 4v4.",
+      "impact": "A 4v4-only failure stops the run before clauses 63/64 produce evidence, making the retry inconclusive.",
+      "requiredInterpretation": "Human 4v4 remains supplemental and cannot become a new admission requirement."
+    },
+    {
+      "severity": "non-blocking-test-gap",
+      "id": "no-focused-helper-regression-test",
+      "evidence": "Commit a144 changes only the helper assertion and adds no test file.",
+      "impact": "Static inspection cannot prove the mounted UI path now completes.",
+      "requiredInterpretation": "Use the single held hosted run as the direct regression exercise and inspect its actual evidence."
+    }
+  ],
+  "scope": {
+    "runtimeTargets": [
+      "63: cooperative coordinated opponents",
+      "64: delayed player/team spectators, zero-delay live spectator, and restart persistence"
+    ],
+    "supplemental": [
+      "human 4v4"
+    ],
+    "canonicalOrDailyRerun": false,
+    "newAcceptanceGate": false,
+    "ledgerOrStatusPromotion": false
+  },
+  "postRunRequirements": [
+    "Inspect the fresh result, audit, native browser evidence, and controller configuration for clauses 63 and 64.",
+    "Authenticate fresh server and browser package hashes, served static bytes, browser version, source identity, and two server generations.",
+    "Inspect the execution receipt, owned-process cleanup, owned ports, protected-root comparison, tracked cleanliness, and preserved original473 artifact rehashes.",
+    "Treat a supplemental 4v4-only failure as an inconclusive run for clauses 63/64, not a new acceptance failure.",
+    "Do not run canonical or daily proof, promote status, or add gates from this packet."
+  ],
+  "checker": "/tmp/ovf-hosted-only-retry-a144-static-admission-checker-gpt6-sol.py",
+  "checkerResult": "/tmp/ovf-hosted-only-retry-a144-static-admission-checker-result-gpt6-sol.json"
+}

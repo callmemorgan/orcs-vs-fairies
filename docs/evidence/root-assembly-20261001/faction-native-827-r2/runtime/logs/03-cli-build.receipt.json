@@ -1,0 +1,51 @@
+{
+  "kind": "supervised-original-faction-phase",
+  "phase": "03-cli-build",
+  "sourcePin": "827496b06bb660b6639257e5113ac2f199be29ba",
+  "cwd": "/home/morgana/.codex/worktrees/faction-economy-cleanup/orcs-vs-Fairies",
+  "argv": [
+    "/usr/bin/systemd-run",
+    "--user",
+    "--wait",
+    "--pipe",
+    "--collect",
+    "--unit=ovf-faction-827-r2-03-cli-build",
+    "--working-directory=/home/morgana/.codex/worktrees/faction-economy-cleanup/orcs-vs-Fairies",
+    "--property=Type=exec",
+    "--property=RuntimeMaxSec=300s",
+    "--property=TimeoutStartSec=30s",
+    "--property=TimeoutStopSec=10s",
+    "--property=KillMode=control-group",
+    "--setenv=PATH=/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin:/home/morgana/.local/bin:/usr/bin:/bin",
+    "--setenv=OVF_PLAYWRIGHT_MODULE=/home/morgana/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs",
+    "--setenv=OVF_CHROMIUM_EXECUTABLE=/home/morgana/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome",
+    "--",
+    "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+    "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/lib/node_modules/npm/bin/npm-cli.js",
+    "run",
+    "build:cli"
+  ],
+  "command": [
+    "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+    "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/lib/node_modules/npm/bin/npm-cli.js",
+    "run",
+    "build:cli"
+  ],
+  "unit": "ovf-faction-827-r2-03-cli-build.service",
+  "activeRuntimeCapSeconds": 300,
+  "startupCapSeconds": 30,
+  "stopGraceSeconds": 10,
+  "start": "2026-10-01T23:53:12.831810+00:00",
+  "end": "2026-10-01T23:53:12.929402+00:00",
+  "observedWallSeconds": 0.097591,
+  "exitCode": 0,
+  "stdout": "/home/morgana/.codex/worktrees/faction-economy-cleanup/faction-native-827-20261001-r2/logs/03-cli-build.stdout.log",
+  "stderr": "/home/morgana/.codex/worktrees/faction-economy-cleanup/faction-native-827-20261001-r2/logs/03-cli-build.stderr.log",
+  "sourcePinAfter": "827496b06bb660b6639257e5113ac2f199be29ba",
+  "sourceStatusAfter": "",
+  "rawLogHashes": {
+    "stdout": "78f0ca461edd0869647593ffb24ef73446035ecc18a6a10b4ca5b71373badf84",
+    "stderr": "ba06aa4250f921bed3ec60351328c0a2cf3ff02c6bb9d47b327446167fc07a45"
+  },
+  "retryPerformed": false
+}

@@ -1,0 +1,147 @@
+{
+  "kind": "exact-owned-cgroup-and-all-associated-process-observation",
+  "capturedAt": "2026-10-01T23:58:53.755986+00:00",
+  "executionPin": "827496b06bb660b6639257e5113ac2f199be29ba",
+  "mode": "capture",
+  "units": [
+    {
+      "unit": "ovf-faction-827-r2-01-focused-tests.service",
+      "stateExitCode": 0,
+      "stateStdout": "LoadState=not-found\nActiveState=inactive\nSubState=dead\nMainPID=0\nControlGroup=\n",
+      "stateStderr": "",
+      "controlGroupPath": "/user.slice/user-1000.slice/user@1000.service/app.slice/ovf-faction-827-r2-01-focused-tests.service",
+      "cgroupExists": false,
+      "membership": {}
+    },
+    {
+      "unit": "ovf-faction-827-r2-02-client-build.service",
+      "stateExitCode": 0,
+      "stateStdout": "LoadState=not-found\nActiveState=inactive\nSubState=dead\nMainPID=0\nControlGroup=\n",
+      "stateStderr": "",
+      "controlGroupPath": "/user.slice/user-1000.slice/user@1000.service/app.slice/ovf-faction-827-r2-02-client-build.service",
+      "cgroupExists": false,
+      "membership": {}
+    },
+    {
+      "unit": "ovf-faction-827-r2-03-cli-build.service",
+      "stateExitCode": 0,
+      "stateStdout": "LoadState=not-found\nActiveState=inactive\nSubState=dead\nMainPID=0\nControlGroup=\n",
+      "stateStderr": "",
+      "controlGroupPath": "/user.slice/user-1000.slice/user@1000.service/app.slice/ovf-faction-827-r2-03-cli-build.service",
+      "cgroupExists": false,
+      "membership": {}
+    },
+    {
+      "unit": "ovf-faction-827-r2-04-helpers.service",
+      "stateExitCode": 0,
+      "stateStdout": "LoadState=not-found\nActiveState=inactive\nSubState=dead\nMainPID=0\nControlGroup=\n",
+      "stateStderr": "",
+      "controlGroupPath": "/user.slice/user-1000.slice/user@1000.service/app.slice/ovf-faction-827-r2-04-helpers.service",
+      "cgroupExists": false,
+      "membership": {}
+    },
+    {
+      "unit": "ovf-faction-827-r2-05-fixtures.service",
+      "stateExitCode": 0,
+      "stateStdout": "LoadState=not-found\nActiveState=inactive\nSubState=dead\nMainPID=0\nControlGroup=\n",
+      "stateStderr": "",
+      "controlGroupPath": "/user.slice/user-1000.slice/user@1000.service/app.slice/ovf-faction-827-r2-05-fixtures.service",
+      "cgroupExists": false,
+      "membership": {}
+    },
+    {
+      "unit": "ovf-faction-827-r2-06-freeze.service",
+      "stateExitCode": 0,
+      "stateStdout": "LoadState=not-found\nActiveState=inactive\nSubState=dead\nMainPID=0\nControlGroup=\n",
+      "stateStderr": "",
+      "controlGroupPath": "/user.slice/user-1000.slice/user@1000.service/app.slice/ovf-faction-827-r2-06-freeze.service",
+      "cgroupExists": false,
+      "membership": {}
+    },
+    {
+      "unit": "ovf-faction-827-r2-07-faction-browser.service",
+      "stateExitCode": 0,
+      "stateStdout": "LoadState=not-found\nActiveState=inactive\nSubState=dead\nMainPID=0\nControlGroup=\n",
+      "stateStderr": "",
+      "controlGroupPath": "/user.slice/user-1000.slice/user@1000.service/app.slice/ovf-faction-827-r2-07-faction-browser.service",
+      "cgroupExists": false,
+      "membership": {}
+    },
+    {
+      "unit": "ovf-faction-827-r2-08-native-history.service",
+      "stateExitCode": 0,
+      "stateStdout": "LoadState=not-found\nActiveState=inactive\nSubState=dead\nMainPID=0\nControlGroup=\n",
+      "stateStderr": "",
+      "controlGroupPath": "/user.slice/user-1000.slice/user@1000.service/app.slice/ovf-faction-827-r2-08-native-history.service",
+      "cgroupExists": false,
+      "membership": {}
+    },
+    {
+      "unit": "ovf-faction-827-r2-preview.service",
+      "stateExitCode": 0,
+      "stateStdout": "LoadState=loaded\nActiveState=active\nSubState=running\nMainPID=1513471\nControlGroup=/user.slice/user-1000.slice/user@1000.service/app.slice/ovf-faction-827-r2-preview.service\n",
+      "stateStderr": "",
+      "controlGroupPath": "/user.slice/user-1000.slice/user@1000.service/app.slice/ovf-faction-827-r2-preview.service",
+      "cgroupExists": true,
+      "membership": {
+        "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/ovf-faction-827-r2-preview.service/cgroup.procs": [
+          1513471,
+          1513480
+        ]
+      }
+    }
+  ],
+  "associatedProcesses": [
+    {
+      "pid": 1513471,
+      "exe": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+      "cwd": "/home/morgana/.codex/worktrees/faction-economy-cleanup/orcs-vs-Fairies",
+      "command": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node node_modules/vite/bin/vite.js preview --host 127.0.0.1 --port 5298 --strictPort ",
+      "cgroups": "0::/user.slice/user-1000.slice/user@1000.service/app.slice/ovf-faction-827-r2-preview.service\n",
+      "currentProofObserverOrAncestor": false
+    },
+    {
+      "pid": 1513480,
+      "exe": "/home/morgana/Projects/orcs-vs-Fairies/node_modules/@esbuild/linux-x64/bin/esbuild",
+      "cwd": "/home/morgana/.codex/worktrees/faction-economy-cleanup/orcs-vs-Fairies",
+      "command": "/home/morgana/Projects/orcs-vs-Fairies/node_modules/@esbuild/linux-x64/bin/esbuild --service=0.28.2 --ping ",
+      "cgroups": "0::/user.slice/user-1000.slice/user@1000.service/app.slice/ovf-faction-827-r2-preview.service\n",
+      "currentProofObserverOrAncestor": false
+    },
+    {
+      "pid": 1519391,
+      "exe": "/home/linuxbrew/.linuxbrew/Cellar/python@3.14/3.14.7/bin/python3.14",
+      "cwd": "/home/morgana/.codex/worktrees/faction-economy-cleanup/orcs-vs-Fairies",
+      "command": "python3 /home/morgana/.codex/worktrees/faction-economy-cleanup/faction-native-827-20261001-r2/logs/owned-process-cgroup-observer.py capture ",
+      "cgroups": "0::/user.slice/user-1000.slice/user@1000.service/app.slice/app-org.chromium.Chromium-10644.scope\n",
+      "currentProofObserverOrAncestor": true
+    }
+  ],
+  "observerAndAncestorPids": [
+    1519391,
+    452720,
+    10644,
+    1023,
+    1
+  ],
+  "nonObserverAssociatedProcesses": [
+    {
+      "pid": 1513471,
+      "exe": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+      "cwd": "/home/morgana/.codex/worktrees/faction-economy-cleanup/orcs-vs-Fairies",
+      "command": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node node_modules/vite/bin/vite.js preview --host 127.0.0.1 --port 5298 --strictPort ",
+      "cgroups": "0::/user.slice/user-1000.slice/user@1000.service/app.slice/ovf-faction-827-r2-preview.service\n",
+      "currentProofObserverOrAncestor": false
+    },
+    {
+      "pid": 1513480,
+      "exe": "/home/morgana/Projects/orcs-vs-Fairies/node_modules/@esbuild/linux-x64/bin/esbuild",
+      "cwd": "/home/morgana/.codex/worktrees/faction-economy-cleanup/orcs-vs-Fairies",
+      "command": "/home/morgana/Projects/orcs-vs-Fairies/node_modules/@esbuild/linux-x64/bin/esbuild --service=0.28.2 --ping ",
+      "cgroups": "0::/user.slice/user-1000.slice/user@1000.service/app.slice/ovf-faction-827-r2-preview.service\n",
+      "currentProofObserverOrAncestor": false
+    }
+  ],
+  "executableNameFilterApplied": false,
+  "sourceSha256": "fe3e07406c258fd2af1a44034b38f0afb06970867b47aa0a335a9393c5c2840b"
+}

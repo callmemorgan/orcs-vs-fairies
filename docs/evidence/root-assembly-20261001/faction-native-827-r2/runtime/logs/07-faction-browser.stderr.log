@@ -1,0 +1,27 @@
+Running as unit: ovf-faction-827-r2-07-faction-browser.service
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ 52.09508
+- 49.97288
+
+    at Object.runFactionPowers [as factions] (file:///home/morgana/.codex/worktrees/faction-economy-cleanup/orcs-vs-Fairies/scripts/acceptance/faction-powers.mjs:41:71)
+    at async file:///home/morgana/.codex/worktrees/faction-economy-cleanup/orcs-vs-Fairies/scripts/acceptance/verify-native-acceptance.mjs:84:88 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 52.09508,
+  expected: 49.97288,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.21.0
+          Finished with result: exit-code
+Main processes terminated with: code=exited, status=1/FAILURE
+               Service runtime: 1min 2.015s
+             CPU time consumed: 9min 36.786s
+                   Memory peak: 1.7G (swap: 0B)

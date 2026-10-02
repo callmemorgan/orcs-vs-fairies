@@ -1,0 +1,3 @@
+Original feature 64 is verified by the passed native delayed spectator run and advancing zero-delay player spectator after restart. Delayed player and team views are read-only; server probes reject spectator commands. At ticks 1768 and 1772, the retained compressed live-player and spectator originals match byte for byte.
+
+All 185 planned originals, totaling 27,607,138 bytes, passed source, destination and Git-index readback. The original failed 473 attempt remains distinct. The hosted database has independent local hardlink custody, with no fresh content hash; see the Claude-review packet custody receipt. Zero-delay team viewing and public deployment are outside this result.

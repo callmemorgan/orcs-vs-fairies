@@ -1,0 +1,40 @@
+{
+  "scriptSha256": "8980143a326de3216ee0dbfbb2e0e9d2ec5547939cbb2e4e8e3769e8507a634e",
+  "directory": "/tmp/ovf-importer-operational-check-qu37q5uh",
+  "cases": [
+    {
+      "case": "ignored-original",
+      "passed": true,
+      "exitCode": 0,
+      "stdout": "/tmp/ovf-importer-operational-check-qu37q5uh/ignored-original/docs/evidence/packet/root-retention-v2.json\n",
+      "stderr": "",
+      "successReceiptExists": true
+    },
+    {
+      "case": "wrong-hash-optimized",
+      "passed": true,
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "Retention failed: Original bytes differ: /tmp/ovf-importer-operational-check-qu37q5uh/wrong-hash-optimized.bin\n",
+      "successReceiptExists": false
+    },
+    {
+      "case": "unsafe-path-optimized",
+      "passed": true,
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "Retention failed: Unsafe destination: docs/evidence/packet/../../../../escape.bin\n",
+      "successReceiptExists": false
+    },
+    {
+      "case": "symlink-optimized",
+      "passed": true,
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "Retention failed: Symlink in destination: /tmp/ovf-importer-operational-check-qu37q5uh/symlink-optimized/docs/evidence/packet/dist\n",
+      "successReceiptExists": false
+    }
+  ],
+  "allPassed": true,
+  "scope": "External temporary Git repositories only. No game runtime or root edits."
+}

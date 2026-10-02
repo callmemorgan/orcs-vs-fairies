@@ -1,0 +1,11 @@
+--- a/scripts/acceptance/faction-powers.mjs
++++ b/scripts/acceptance/faction-powers.mjs
+@@ -37,7 +37,7 @@
+   s=await ctx.runUntil(s=>s.factionSystems.fury[0]>=50,{timeout:120000,label:'50 Fury earned from actual hostile damage'});
+   const earned=await checkpoint('factions-orcs-earned-fury',[21],scenario);assert(actor(earned.game.state,ids.bankTarget).hp<actor(earned.replay.initial.state,ids.bankTarget).hp);
+   for(const id of ids.earners){const original=actor(earned.replay.initial.state,id);await move(id,{x:original.x,y:original.y,level:original.level??0});await stop(id);}
+-  const baseline=await hit(ids.soldier,ids.target);await stop(ids.soldier);await checkpoint('factions-orcs-baseline-hit',[21],scenario);await checkpoint('factions-orcs-before-assault',[21],scenario);const beforeAssault=await ctx.snap();
++  const baseline=await hit(ids.soldier,ids.target);await stop(ids.soldier);await checkpoint('factions-orcs-baseline-hit',[21],scenario);await move(ids.soldier,ids.startingPoint);await stop(ids.soldier);await checkpoint('factions-orcs-before-assault',[21],scenario);const beforeAssault=await ctx.snap();
+   await action('Assault chant',ids.soldier);s=await ctx.snap();assert.equal(s.factionSystems.fury[0],beforeAssault.factionSystems.fury[0]-25);assert.equal(actor(s,ids.soldier).factionState.chant.kind,'assault');await checkpoint('factions-orcs-assault-paid',[21],scenario);
+   const assault=await hit(ids.soldier,ids.target);assert(assault.damage>baseline.damage,'Assault changes actual damage');await stop(ids.soldier);
+   await checkpoint('factions-orcs-assault-active',[21],scenario);record('Earned Fury buys Assault and increases an actual hit',[21],{baselineDamage:baseline.damage,assaultDamage:assault.damage,paidFury:25});

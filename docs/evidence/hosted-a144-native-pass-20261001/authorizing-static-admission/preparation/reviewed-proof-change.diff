@@ -1,0 +1,15 @@
+diff --git a/scripts/server/verify-hosted-teams-browser.mjs b/scripts/server/verify-hosted-teams-browser.mjs
+index 32e5ae7..ce0de64 100644
+--- a/scripts/server/verify-hosted-teams-browser.mjs
++++ b/scripts/server/verify-hosted-teams-browser.mjs
+@@ -71,7 +71,9 @@ async function uiResponse(page, method, path, action, preparatoryPath) {
+       evidence.requested = true;
+       const response = await bounded(captured.response(), 30000, `${method} ${path} response`);
+       assert(response); evidence.status = response.status();
+-      const data = await response.json(); evidence.mutations = mutations; assert.equal(mutations, 1);
++      const data = await response.json(); evidence.mutations = mutations;
++      if (method === 'GET') assert(mutations >= 1, 'Native GET action must issue at least one observed request');
++      else assert.equal(mutations, 1);
+       return { status: response.status(), data };
+     } finally { page.off('request', capture); }
+   }

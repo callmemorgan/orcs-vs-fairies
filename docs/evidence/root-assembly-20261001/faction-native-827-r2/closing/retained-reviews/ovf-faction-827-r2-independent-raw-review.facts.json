@@ -1,0 +1,485 @@
+{
+  "kind": "independent-data-only-r2-lossless-review",
+  "attribution": "Codex / GPT-6; finer variant not exposed",
+  "runPath": "/home/morgana/.codex/worktrees/faction-economy-cleanup/faction-native-827-20261001-r2",
+  "executionPin": "827496b06bb660b6639257e5113ac2f199be29ba",
+  "plan": {
+    "bytes": 28393,
+    "sha256": "53feafc6b5d9bee15dd2c20ae0b85e2485410b5e8e88666ee49e9b45f8469893"
+  },
+  "scripts": {
+    "runtime-support.py": {
+      "bytes": 14440,
+      "sha256": "7d0d491f6b4dc74fa23462cf3b241e47788170ecabbbe39f15b0dbb6f56f6618"
+    },
+    "phase-runner.py": {
+      "bytes": 2498,
+      "sha256": "abcaccac5d29e35390bcf9b29deb9acc1c0a22abbb4f14b904af0c64c4f323c9"
+    },
+    "owned-process-cgroup-observer.py": {
+      "bytes": 3944,
+      "sha256": "fe3e07406c258fd2af1a44034b38f0afb06970867b47aa0a335a9393c5c2840b"
+    }
+  },
+  "start": {
+    "bytes": 954,
+    "sha256": "f8312f1c37c22b61c02ef9f5475a9325ddb6fef1cee74fb4c230f8dd7cd4d250"
+  },
+  "planMatchesReviewedHash": true,
+  "scriptsMatchStartReceipt": true,
+  "preflightMatchesStartReceipt": true,
+  "phases": [
+    {
+      "phase": "01-focused-tests",
+      "receipt": {
+        "bytes": 4018,
+        "sha256": "f50d59a5c019cbaad0110fb7fdda002f63fffc473f2a25d71f55609ffb31aced"
+      },
+      "rawLogs": {
+        "stdout": {
+          "bytes": 4149,
+          "sha256": "e523ef71ee900d8f7c44d49069d7f4834cabbbf982a67dde35a8dc50b383cf01"
+        },
+        "stderr": {
+          "bytes": 293,
+          "sha256": "801e32d24c695cfc37948aa2f61ad8a715ecc9211cd10d7cd63c9444af5ffbc3"
+        }
+      },
+      "argvAndCapsMatchPlan": true,
+      "rawLogHashesMatchReceipt": true,
+      "exitCode": 0,
+      "start": "2026-10-01T23:51:52.211819+00:00",
+      "end": "2026-10-01T23:52:19.570224+00:00",
+      "observedWallSeconds": 27.358411,
+      "sourceAfterCleanAndPinned": true,
+      "retryPerformed": false
+    },
+    {
+      "phase": "02-client-build",
+      "receipt": {
+        "bytes": 2280,
+        "sha256": "7a6089da34d51d2393f514ff58536f15fcde278d0f38356442d85c06df0a48d6"
+      },
+      "rawLogs": {
+        "stdout": {
+          "bytes": 478,
+          "sha256": "ab646de86b300121f07d7f95b7f9226b7ede4b3616fb53706b582b5208ade878"
+        },
+        "stderr": {
+          "bytes": 620,
+          "sha256": "c1d6924a493b241d499f08d5f21aa75b7e1c121199bc822e22bd67e1eb9bafa5"
+        }
+      },
+      "argvAndCapsMatchPlan": true,
+      "rawLogHashesMatchReceipt": true,
+      "exitCode": 0,
+      "start": "2026-10-01T23:52:50.561643+00:00",
+      "end": "2026-10-01T23:52:57.093439+00:00",
+      "observedWallSeconds": 6.531804,
+      "sourceAfterCleanAndPinned": true,
+      "retryPerformed": false
+    },
+    {
+      "phase": "03-cli-build",
+      "receipt": {
+        "bytes": 2273,
+        "sha256": "ddc758d7fefa20a9feeee927b455c03e2fa7f991b27b4fd4a8d7b2de94146861"
+      },
+      "rawLogs": {
+        "stdout": {
+          "bytes": 126,
+          "sha256": "78f0ca461edd0869647593ffb24ef73446035ecc18a6a10b4ca5b71373badf84"
+        },
+        "stderr": {
+          "bytes": 329,
+          "sha256": "ba06aa4250f921bed3ec60351328c0a2cf3ff02c6bb9d47b327446167fc07a45"
+        }
+      },
+      "argvAndCapsMatchPlan": true,
+      "rawLogHashesMatchReceipt": true,
+      "exitCode": 0,
+      "start": "2026-10-01T23:53:12.831810+00:00",
+      "end": "2026-10-01T23:53:12.929402+00:00",
+      "observedWallSeconds": 0.097591,
+      "sourceAfterCleanAndPinned": true,
+      "retryPerformed": false
+    },
+    {
+      "phase": "04-helpers",
+      "receipt": {
+        "bytes": 2576,
+        "sha256": "ff071e6d3b9bdda33939746fc94cf0c5a9de39b75b08be8367715102686a1e00"
+      },
+      "rawLogs": {
+        "stdout": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr": {
+          "bytes": 283,
+          "sha256": "24a33393c26a6da72b952a609d9aa093293e4831f66580eec10b0e37ed55158f"
+        }
+      },
+      "argvAndCapsMatchPlan": true,
+      "rawLogHashesMatchReceipt": true,
+      "exitCode": 0,
+      "start": "2026-10-01T23:53:21.454114+00:00",
+      "end": "2026-10-01T23:53:22.212390+00:00",
+      "observedWallSeconds": 0.75828,
+      "sourceAfterCleanAndPinned": true,
+      "retryPerformed": false
+    },
+    {
+      "phase": "05-fixtures",
+      "receipt": {
+        "bytes": 2820,
+        "sha256": "96c922fa47aacdc9daba6af413570342e10a1ec51f31a47b4adfee04b6e2e3aa"
+      },
+      "rawLogs": {
+        "stdout": {
+          "bytes": 309,
+          "sha256": "efe578e50f6e6f19ecaa905c66843404192acb1893a20c0914530d18f07e12db"
+        },
+        "stderr": {
+          "bytes": 286,
+          "sha256": "7eac2a5b9cbfadd17f1ebf88dbef268e4ae3474c5193639ad67b0d9928e45229"
+        }
+      },
+      "argvAndCapsMatchPlan": true,
+      "rawLogHashesMatchReceipt": true,
+      "exitCode": 0,
+      "start": "2026-10-01T23:53:37.119032+00:00",
+      "end": "2026-10-01T23:53:39.371128+00:00",
+      "observedWallSeconds": 2.252102,
+      "sourceAfterCleanAndPinned": true,
+      "retryPerformed": false
+    },
+    {
+      "phase": "06-freeze",
+      "receipt": {
+        "bytes": 2824,
+        "sha256": "b6a7320dd843bd80eff8df2d2e07628e924caa7ae4a01714459b6fd7db56d38a"
+      },
+      "rawLogs": {
+        "stdout": {
+          "bytes": 347,
+          "sha256": "ee987f1ee8f47aab21f88202247847b9621f77cadefef636ae8e800d34d7537c"
+        },
+        "stderr": {
+          "bytes": 284,
+          "sha256": "6fe7deb1fa49ad06a789da1a29e726e68ed74c82740ee01dfee7d861feeb321f"
+        }
+      },
+      "argvAndCapsMatchPlan": true,
+      "rawLogHashesMatchReceipt": true,
+      "exitCode": 0,
+      "start": "2026-10-01T23:54:35.244606+00:00",
+      "end": "2026-10-01T23:54:37.742772+00:00",
+      "observedWallSeconds": 2.498171,
+      "sourceAfterCleanAndPinned": true,
+      "retryPerformed": false
+    },
+    {
+      "phase": "07-faction-browser",
+      "receipt": {
+        "bytes": 3258,
+        "sha256": "c979584abef04eb1bbf78f64be5a82623819d9fb1c350ac0f6c055d5836f98f8"
+      },
+      "rawLogs": {
+        "stdout": {
+          "bytes": 715,
+          "sha256": "28fa1784421113ccff422490a1baf402acdec83918ff05acf8205d46196269ed"
+        },
+        "stderr": {
+          "bytes": 963,
+          "sha256": "92186a1c9ba88195b773a8e092db28d0f5b21cc7303947bb48324bd22bbb9d3c"
+        }
+      },
+      "argvAndCapsMatchPlan": true,
+      "rawLogHashesMatchReceipt": true,
+      "exitCode": 1,
+      "start": "2026-10-01T23:55:03.617203+00:00",
+      "end": "2026-10-01T23:56:05.637393+00:00",
+      "observedWallSeconds": 62.020189,
+      "sourceAfterCleanAndPinned": true,
+      "retryPerformed": false
+    }
+  ],
+  "phase08RecordedPathsAbsent": true,
+  "browserReceipt": {
+    "bytes": 296828,
+    "sha256": "ef8c4017873dfc2b3b375e9505f9ecfb6b31492596dae43f9e668d01899c4154"
+  },
+  "browserOutcome": {
+    "completed": false,
+    "selectedGroups": [
+      "factions"
+    ],
+    "failure": {
+      "phase": "native factions encounters",
+      "message": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 52.09508\n- 49.97288\n\n    at Object.runFactionPowers [as factions] (file:///home/morgana/.codex/worktrees/faction-economy-cleanup/orcs-vs-Fairies/scripts/acceptance/faction-powers.mjs:41:71)\n    at async file:///home/morgana/.codex/worktrees/faction-economy-cleanup/orcs-vs-Fairies/scripts/acceptance/verify-native-acceptance.mjs:84:88"
+    },
+    "checks": [
+      {
+        "name": "Native import preserves factions-orcs-earned"
+      },
+      {
+        "name": "Insufficient Fury disables a chant without spending",
+        "featureIds": [
+          21
+        ]
+      },
+      {
+        "name": "factions-orcs-earned-fury complete native round trip",
+        "gameSha256": "f70ce9f07cbabdebdc209ccb940689714641594ac66a23d7db98e98484edd60a"
+      },
+      {
+        "name": "factions-orcs-earned-fury complete replay endpoint",
+        "tick": 338,
+        "checksum": "f58e1bb3"
+      },
+      {
+        "name": "factions-orcs-baseline-hit complete native round trip",
+        "gameSha256": "b6edd1617e36e098d1ceb037135d1adc99149f0e70fbadf0b415c034185776fd"
+      },
+      {
+        "name": "factions-orcs-baseline-hit complete replay endpoint",
+        "tick": 577,
+        "checksum": "9a0730c8"
+      },
+      {
+        "name": "factions-orcs-before-assault complete native round trip",
+        "gameSha256": "bd70246dd65fa8bb8d7e1dfcd772a0d00ed4ada84c2d1598da1ca104f5d94b1e"
+      },
+      {
+        "name": "factions-orcs-before-assault complete replay endpoint",
+        "tick": 579,
+        "checksum": "69c8a595"
+      }
+    ],
+    "groups": {},
+    "assetFailures": [],
+    "errors": [],
+    "lastState": {
+      "tick": 606,
+      "time": 30.300000000000296,
+      "paused": true,
+      "factionSystems": {
+        "version": 1,
+        "fury": [
+          52.09508,
+          3.6025596
+        ],
+        "terrainEffects": []
+      }
+    }
+  },
+  "downloads": {
+    "native-import-1-save.json": {
+      "bytes": 433757,
+      "sha256": "c709560599eda1ee9186e7bdba77c77c1165e58f721a9d72def43b1b1db8248b",
+      "matchesBrowserReceipt": true
+    },
+    "factions-orcs-earned-fury-save.json": {
+      "bytes": 439988,
+      "sha256": "ef243fa9dee929826a9302d9c3f317dbe5626ded30251c69c4b5bf84b0325e04",
+      "matchesBrowserReceipt": true
+    },
+    "native-import-2-save.json": {
+      "bytes": 439988,
+      "sha256": "ef243fa9dee929826a9302d9c3f317dbe5626ded30251c69c4b5bf84b0325e04",
+      "matchesBrowserReceipt": true
+    },
+    "factions-orcs-earned-fury-replay.json": {
+      "bytes": 209591,
+      "sha256": "95e2a70e78267f4d48782a8be4799438324aa12e8315a73ce12263861c364a3c",
+      "matchesBrowserReceipt": true
+    },
+    "factions-orcs-earned-fury-replay-endpoint-save.json": {
+      "bytes": 439988,
+      "sha256": "ef243fa9dee929826a9302d9c3f317dbe5626ded30251c69c4b5bf84b0325e04",
+      "matchesBrowserReceipt": true
+    },
+    "native-import-3-save.json": {
+      "bytes": 439988,
+      "sha256": "ef243fa9dee929826a9302d9c3f317dbe5626ded30251c69c4b5bf84b0325e04",
+      "matchesBrowserReceipt": true
+    },
+    "factions-orcs-baseline-hit-save.json": {
+      "bytes": 442367,
+      "sha256": "5f53d49403f9845f3282ebed8533e82b0d4304c26c357f8dc8442d352afb2694",
+      "matchesBrowserReceipt": true
+    },
+    "native-import-4-save.json": {
+      "bytes": 442367,
+      "sha256": "5f53d49403f9845f3282ebed8533e82b0d4304c26c357f8dc8442d352afb2694",
+      "matchesBrowserReceipt": true
+    },
+    "factions-orcs-baseline-hit-replay.json": {
+      "bytes": 213347,
+      "sha256": "822ecc496b9bcec786c90507a389a320ef80979d826b981eb30a9d6b961edc16",
+      "matchesBrowserReceipt": true
+    },
+    "factions-orcs-baseline-hit-replay-endpoint-save.json": {
+      "bytes": 442367,
+      "sha256": "5f53d49403f9845f3282ebed8533e82b0d4304c26c357f8dc8442d352afb2694",
+      "matchesBrowserReceipt": true
+    },
+    "native-import-5-save.json": {
+      "bytes": 442367,
+      "sha256": "5f53d49403f9845f3282ebed8533e82b0d4304c26c357f8dc8442d352afb2694",
+      "matchesBrowserReceipt": true
+    },
+    "factions-orcs-before-assault-save.json": {
+      "bytes": 442353,
+      "sha256": "e4cc3d7db9b89ed2598afe0c0f8ed377bdc90151715c31d94a963eac8b4a773c",
+      "matchesBrowserReceipt": true
+    },
+    "native-import-6-save.json": {
+      "bytes": 442353,
+      "sha256": "e4cc3d7db9b89ed2598afe0c0f8ed377bdc90151715c31d94a963eac8b4a773c",
+      "matchesBrowserReceipt": true
+    },
+    "factions-orcs-before-assault-replay.json": {
+      "bytes": 213347,
+      "sha256": "5f4e66940cedc806f15a5e3b8b93157337c75b08d28057962578d0fbb8983dde",
+      "matchesBrowserReceipt": true
+    },
+    "factions-orcs-before-assault-replay-endpoint-save.json": {
+      "bytes": 442353,
+      "sha256": "e4cc3d7db9b89ed2598afe0c0f8ed377bdc90151715c31d94a963eac8b4a773c",
+      "matchesBrowserReceipt": true
+    },
+    "native-import-7-save.json": {
+      "bytes": 442353,
+      "sha256": "e4cc3d7db9b89ed2598afe0c0f8ed377bdc90151715c31d94a963eac8b4a773c",
+      "matchesBrowserReceipt": true
+    }
+  },
+  "allDownloadFingerprintsMatch": true,
+  "downloadBytesRead": 6368874,
+  "checkpointByteEquality": {
+    "earned-fury": true,
+    "baseline-hit": true,
+    "before-assault": true
+  },
+  "firstFailurePng": {
+    "bytes": 359747,
+    "sha256": "cc79ee7ce1262127569594943ba5e794838b853a7376bc9638a7dd3a606a2fe8"
+  },
+  "retainedPowersSourceMatchesBrowserRow": true,
+  "builtRecord": {
+    "bytes": 179861,
+    "sha256": "572e96281b3dd75518efa9b86e5ecbe502576de9782b4d7304a3e6f8371771df"
+  },
+  "builtInventory": {
+    "entries": 401,
+    "files": 398,
+    "publicAssets": 394,
+    "savedFinalDistEqualsBuiltDist": true,
+    "publicInputsEqualPreflight": true,
+    "allRecordedPublicCopiesMatch": true,
+    "noDistSymlinks": true,
+    "separateFromHtmlJsCssFreeze": true
+  },
+  "earlyServedAssetRecordsMatchBuiltInventory": true,
+  "earlyServedHtmlRecordsMatchBuiltInventory": true,
+  "cleanupReceipt": {
+    "bytes": 94193,
+    "sha256": "9bcb0c6a0fcba8c12251e375ec192bc28a96e7fddbeabd8b593f803342664f4c"
+  },
+  "cleanup": {
+    "verifiedOwnedInputFiles": 615,
+    "ownedSourceStatus": "",
+    "ownedRuntimeProcesses": [],
+    "ports": "State  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\nLISTEN 0      511        127.0.0.1:4173      0.0.0.0:*    users:((\"MainThread\",pid=1063,fd=22))\n",
+    "sourceAndHistoricalInputsUnchanged": true,
+    "installedDependenciesMatchCompleteBaseline": true,
+    "installedDependencyEntries": 8852,
+    "rootDistMatchesCompleteBaseline": true,
+    "rootDistEntries": 400,
+    "protectedPidIdentityUnchanged": true,
+    "privateDependencyDirectoryAbsent": true,
+    "retryPerformed": false,
+    "dependencyCountEqualsBaseline": true,
+    "rootDistCountEqualsBaseline": true,
+    "supportHashMatchesSource": true,
+    "ownedDependencyPathCurrentlyAbsent": true
+  },
+  "privateDependencyArchiveMatchesReceipt": true,
+  "preview": {
+    "receipt": {
+      "bytes": 1904,
+      "sha256": "4ab1676b9a5e24afa3f483ce183aa8041aa1d5e33849be8b81a0b4cde8040e0c"
+    },
+    "argvMatchesPlan": true,
+    "readiness": true,
+    "exitCode": 0,
+    "htmlMatchesBuiltRecord": true,
+    "supportHashMatchesSource": true
+  },
+  "observer": {
+    "before": {
+      "receipt": {
+        "bytes": 7059,
+        "sha256": "632f866e1f95c5ca6247ec5494ed7cc52b21a1c4bb88425eae74ee771e7c29a1"
+      },
+      "sourceHashMatches": true,
+      "unitsMatchPlan": true,
+      "capturedAt": "2026-10-01T23:58:53.755986+00:00",
+      "mode": "capture",
+      "allCgroupsAbsent": false,
+      "allMembershipEmpty": false,
+      "allMainPidsZeroAndUnitsInactive": false,
+      "nonObserverAssociatedProcesses": [
+        {
+          "pid": 1513471,
+          "exe": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node",
+          "cwd": "/home/morgana/.codex/worktrees/faction-economy-cleanup/orcs-vs-Fairies",
+          "command": "/home/linuxbrew/.linuxbrew/Cellar/node@24/24.21.0/bin/node node_modules/vite/bin/vite.js preview --host 127.0.0.1 --port 5298 --strictPort ",
+          "cgroups": "0::/user.slice/user-1000.slice/user@1000.service/app.slice/ovf-faction-827-r2-preview.service\n",
+          "currentProofObserverOrAncestor": false
+        },
+        {
+          "pid": 1513480,
+          "exe": "/home/morgana/Projects/orcs-vs-Fairies/node_modules/@esbuild/linux-x64/bin/esbuild",
+          "cwd": "/home/morgana/.codex/worktrees/faction-economy-cleanup/orcs-vs-Fairies",
+          "command": "/home/morgana/Projects/orcs-vs-Fairies/node_modules/@esbuild/linux-x64/bin/esbuild --service=0.28.2 --ping ",
+          "cgroups": "0::/user.slice/user-1000.slice/user@1000.service/app.slice/ovf-faction-827-r2-preview.service\n",
+          "currentProofObserverOrAncestor": false
+        }
+      ],
+      "observerAndAncestorPids": [
+        1519391,
+        452720,
+        10644,
+        1023,
+        1
+      ],
+      "executableNameFilterApplied": false
+    },
+    "after": {
+      "receipt": {
+        "bytes": 4715,
+        "sha256": "1eaed2ec06429f4a456e33e3fbc3030c87015e85bc84559777a74edc9b0c38ad"
+      },
+      "sourceHashMatches": true,
+      "unitsMatchPlan": true,
+      "capturedAt": "2026-10-01T23:58:54.315467+00:00",
+      "mode": "drain",
+      "allCgroupsAbsent": true,
+      "allMembershipEmpty": true,
+      "allMainPidsZeroAndUnitsInactive": true,
+      "nonObserverAssociatedProcesses": [],
+      "observerAndAncestorPids": [
+        1519457,
+        452720,
+        10644,
+        1023,
+        1
+      ],
+      "executableNameFilterApplied": false
+    }
+  },
+  "dataConsistencyChecksPass": true
+}

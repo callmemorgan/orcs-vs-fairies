@@ -1,0 +1,3188 @@
+{
+  "passed": false,
+  "expectedBuildId": "5e49e689af13d4eef08c0760f904ad0bce2c2eebaa1144dea5d89cadecf310c0",
+  "buildIdentityMethod": "SHA-256 of actual native navigation and script response bytes compared with output/app package; expectedBuildId is source metadata, not a diagnostics value.",
+  "layouts": [
+    {
+      "name": "2v2",
+      "fixture": {
+        "name": "2v2",
+        "mapSize": "huge",
+        "startingAge": 1,
+        "sharedVision": true,
+        "players": [
+          {
+            "factionId": "orcs",
+            "teamId": 0,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1000,
+                "ore": 700,
+                "crystal": 43
+              },
+              "incomeFactor": 0
+            }
+          },
+          {
+            "factionId": "orcs",
+            "teamId": 0,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1137,
+                "ore": 731,
+                "crystal": 50
+              },
+              "incomeFactor": 0
+            }
+          },
+          {
+            "factionId": "fairies",
+            "teamId": 1,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1274,
+                "ore": 762,
+                "crystal": 57
+              },
+              "incomeFactor": 0
+            }
+          },
+          {
+            "factionId": "fairies",
+            "teamId": 1,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1411,
+                "ore": 793,
+                "crystal": 64
+              },
+              "incomeFactor": 0
+            }
+          }
+        ]
+      },
+      "commands": {
+        "nativeStops": [
+          {
+            "side": 0,
+            "sent": {
+              "kind": "command",
+              "protocolVersion": 1,
+              "clientSeq": 1,
+              "observedTick": 268,
+              "command": {
+                "type": "stop",
+                "ids": [
+                  7
+                ]
+              }
+            },
+            "ack": {
+              "kind": "commandAck",
+              "clientSeq": 1,
+              "appliedTick": 275,
+              "accepted": true
+            }
+          },
+          {
+            "side": 1,
+            "sent": {
+              "kind": "command",
+              "protocolVersion": 1,
+              "clientSeq": 1,
+              "observedTick": 280,
+              "command": {
+                "type": "stop",
+                "ids": [
+                  14
+                ]
+              }
+            },
+            "ack": {
+              "kind": "commandAck",
+              "clientSeq": 1,
+              "appliedTick": 288,
+              "accepted": true
+            }
+          },
+          {
+            "side": 2,
+            "sent": {
+              "kind": "command",
+              "protocolVersion": 1,
+              "clientSeq": 1,
+              "observedTick": 292,
+              "command": {
+                "type": "stop",
+                "ids": [
+                  21
+                ]
+              }
+            },
+            "ack": {
+              "kind": "commandAck",
+              "clientSeq": 1,
+              "appliedTick": 301,
+              "accepted": true
+            }
+          },
+          {
+            "side": 3,
+            "sent": {
+              "kind": "command",
+              "protocolVersion": 1,
+              "clientSeq": 1,
+              "observedTick": 300,
+              "command": {
+                "type": "stop",
+                "ids": [
+                  28
+                ]
+              }
+            },
+            "ack": {
+              "kind": "commandAck",
+              "clientSeq": 1,
+              "appliedTick": 307,
+              "accepted": true
+            }
+          }
+        ],
+        "rejectedOwnership": {
+          "sent": {
+            "kind": "command",
+            "protocolVersion": 1,
+            "clientSeq": 2,
+            "observedTick": 312,
+            "command": {
+              "type": "move",
+              "ids": [
+                14
+              ],
+              "x": 70.5,
+              "y": 21.5
+            }
+          },
+          "ack": {
+            "kind": "commandAck",
+            "clientSeq": 2,
+            "appliedTick": 317,
+            "accepted": false,
+            "reason": "ownership"
+          }
+        },
+        "transfer": {
+          "sent": {
+            "kind": "command",
+            "protocolVersion": 1,
+            "clientSeq": 3,
+            "observedTick": 320,
+            "command": {
+              "type": "transferResources",
+              "recipient": 1,
+              "resources": {
+                "wood": 10,
+                "ore": 0,
+                "crystal": 0
+              }
+            }
+          },
+          "ack": {
+            "kind": "commandAck",
+            "clientSeq": 3,
+            "appliedTick": 326,
+            "accepted": true
+          }
+        },
+        "rejectedEnemyTransfer": {
+          "sent": {
+            "kind": "command",
+            "protocolVersion": 1,
+            "clientSeq": 4,
+            "observedTick": 328,
+            "command": {
+              "type": "transferResources",
+              "recipient": 2,
+              "resources": {
+                "wood": 1,
+                "ore": 0,
+                "crystal": 0
+              }
+            }
+          },
+          "ack": {
+            "kind": "commandAck",
+            "clientSeq": 4,
+            "appliedTick": 334,
+            "accepted": false,
+            "reason": "unavailable"
+          }
+        }
+      },
+      "spectators": [
+        {
+          "mode": "player",
+          "hello": {
+            "kind": "hello",
+            "protocolVersion": 1,
+            "matchId": "35c60e4a-c5eb-4e7a-83c5-4d6b665c17f8",
+            "role": "spectator",
+            "side": 1,
+            "generation": 0,
+            "perspective": "player",
+            "lastClientSeq": 0,
+            "delayTicks": 20
+          },
+          "frame": {
+            "path": "native-browser/2v2-spectator-player.json.gz",
+            "sha256": "a593e397b62d5e90e4cf98d30eac7ad77578b47cfdbdabbcbbdfc89a8194cff6",
+            "bytes": 66667,
+            "gzipSha256": "c457352872368f678838692bb35dce933b13b20738b2e741bc96a0cd5d57f34d",
+            "gzipBytes": 7364,
+            "tick": 424,
+            "side": 1
+          },
+          "rendered": {
+            "tick": 424,
+            "side": 1,
+            "privateSides": [
+              1
+            ],
+            "hud": {
+              "wood": "1147",
+              "ore": "731",
+              "crystal": "50"
+            },
+            "readOnly": true,
+            "banks": [
+              {
+                "wood": 0,
+                "ore": 0,
+                "crystal": 0
+              },
+              {
+                "wood": 1147,
+                "ore": 731,
+                "crystal": 50
+              },
+              {
+                "wood": 0,
+                "ore": 0,
+                "crystal": 0
+              },
+              {
+                "wood": 0,
+                "ore": 0,
+                "crystal": 0
+              }
+            ]
+          },
+          "liveTickAfterFrame": 502
+        },
+        {
+          "mode": "team",
+          "hello": {
+            "kind": "hello",
+            "protocolVersion": 1,
+            "matchId": "35c60e4a-c5eb-4e7a-83c5-4d6b665c17f8",
+            "role": "spectator",
+            "side": 1,
+            "generation": 0,
+            "perspective": "team",
+            "lastClientSeq": 0,
+            "delayTicks": 20
+          },
+          "frame": {
+            "path": "native-browser/2v2-spectator-team.json.gz",
+            "sha256": "413f1c0432061b6db6ef6df11c3d0af8abcb1208e632b6ddd88414544ecf5698",
+            "bytes": 67826,
+            "gzipSha256": "8cf7e7bec68a51a3b6940a3ca5bc9ec67f1c78045e65f80c176672fb4542e0d1",
+            "gzipBytes": 7401,
+            "tick": 760,
+            "side": 1
+          },
+          "rendered": {
+            "tick": 760,
+            "side": 1,
+            "privateSides": [
+              1,
+              0
+            ],
+            "hud": {
+              "wood": "1147",
+              "ore": "731",
+              "crystal": "50"
+            },
+            "readOnly": true,
+            "banks": [
+              {
+                "wood": 990,
+                "ore": 700,
+                "crystal": 43
+              },
+              {
+                "wood": 1147,
+                "ore": 731,
+                "crystal": 50
+              },
+              {
+                "wood": 0,
+                "ore": 0,
+                "crystal": 0
+              },
+              {
+                "wood": 0,
+                "ore": 0,
+                "crystal": 0
+              }
+            ]
+          },
+          "liveTickAfterFrame": 859
+        }
+      ],
+      "spectatorRestrictions": {
+        "player": {
+          "probe": {
+            "kind": "command",
+            "protocolVersion": 1,
+            "clientSeq": 1,
+            "observedTick": 536,
+            "command": {
+              "type": "stop",
+              "ids": [
+                1
+              ]
+            }
+          },
+          "rejection": {
+            "kind": "error",
+            "code": "spectator",
+            "message": "Spectators cannot issue commands."
+          },
+          "uiEmittedCommands": 0,
+          "disabledProduction": true
+        },
+        "team": {
+          "probe": {
+            "kind": "command",
+            "protocolVersion": 1,
+            "clientSeq": 1,
+            "observedTick": 940,
+            "command": {
+              "type": "stop",
+              "ids": [
+                1
+              ]
+            }
+          },
+          "rejection": {
+            "kind": "error",
+            "code": "spectator",
+            "message": "Spectators cannot issue commands."
+          },
+          "uiEmittedCommands": 0,
+          "disabledProduction": true
+        }
+      },
+      "assets": [
+        {
+          "actor": "2v2-side-0",
+          "loaded": [
+            {
+              "path": "/assets/main-BxMb13AF.js",
+              "sha256": "2066a3347ad2ff3ffb6a1bcc39255f8c54bd91771a243e2c662645a155925902",
+              "bytes": 2454689,
+              "resourceType": "script"
+            },
+            {
+              "path": "/",
+              "sha256": "353c0f8eeb0eb9e7707b470a151c2852148179ee4604fe49dc65f25d07e56a39",
+              "bytes": 500,
+              "resourceType": "document"
+            }
+          ]
+        },
+        {
+          "actor": "2v2-side-1",
+          "loaded": [
+            {
+              "path": "/assets/main-BxMb13AF.js",
+              "sha256": "2066a3347ad2ff3ffb6a1bcc39255f8c54bd91771a243e2c662645a155925902",
+              "bytes": 2454689,
+              "resourceType": "script"
+            },
+            {
+              "path": "/",
+              "sha256": "353c0f8eeb0eb9e7707b470a151c2852148179ee4604fe49dc65f25d07e56a39",
+              "bytes": 500,
+              "resourceType": "document"
+            }
+          ]
+        },
+        {
+          "actor": "2v2-side-2",
+          "loaded": [
+            {
+              "path": "/assets/main-BxMb13AF.js",
+              "sha256": "2066a3347ad2ff3ffb6a1bcc39255f8c54bd91771a243e2c662645a155925902",
+              "bytes": 2454689,
+              "resourceType": "script"
+            },
+            {
+              "path": "/",
+              "sha256": "353c0f8eeb0eb9e7707b470a151c2852148179ee4604fe49dc65f25d07e56a39",
+              "bytes": 500,
+              "resourceType": "document"
+            }
+          ]
+        },
+        {
+          "actor": "2v2-side-3",
+          "loaded": [
+            {
+              "path": "/assets/main-BxMb13AF.js",
+              "sha256": "2066a3347ad2ff3ffb6a1bcc39255f8c54bd91771a243e2c662645a155925902",
+              "bytes": 2454689,
+              "resourceType": "script"
+            },
+            {
+              "path": "/",
+              "sha256": "353c0f8eeb0eb9e7707b470a151c2852148179ee4604fe49dc65f25d07e56a39",
+              "bytes": 500,
+              "resourceType": "document"
+            }
+          ]
+        },
+        {
+          "actor": "2v2-watcher",
+          "loaded": [
+            {
+              "path": "/assets/main-BxMb13AF.js",
+              "sha256": "2066a3347ad2ff3ffb6a1bcc39255f8c54bd91771a243e2c662645a155925902",
+              "bytes": 2454689,
+              "resourceType": "script"
+            },
+            {
+              "path": "/",
+              "sha256": "353c0f8eeb0eb9e7707b470a151c2852148179ee4604fe49dc65f25d07e56a39",
+              "bytes": 500,
+              "resourceType": "document"
+            }
+          ]
+        }
+      ],
+      "frames": {
+        "initial": [
+          {
+            "path": "native-browser/2v2-initial-side-0.json.gz",
+            "sha256": "95c0f639e5d7ca28fc6215262e38bcebcf8fefb63e7c0a559055c6bb56c6bf13",
+            "bytes": 66537,
+            "gzipSha256": "08b5e92a9788c0549dfb285ec28f1facbfad123125af1db80f2098a65020bed4",
+            "gzipBytes": 7317,
+            "tick": 260,
+            "side": 0
+          },
+          {
+            "path": "native-browser/2v2-initial-side-1.json.gz",
+            "sha256": "365221ccfd95194bdeb290931b2453f63fd23bfea590bfe387c8a26b3041bbce",
+            "bytes": 66537,
+            "gzipSha256": "35fd9ef6852235dbe0f6d1dd6e01214c1342d74be33f77aaa6a038113b1c619a",
+            "gzipBytes": 7326,
+            "tick": 260,
+            "side": 1
+          },
+          {
+            "path": "native-browser/2v2-initial-side-2.json.gz",
+            "sha256": "738b38105a2fa353e09936b40bb527783075c198a7b64c62412af0e09346bec6",
+            "bytes": 66627,
+            "gzipSha256": "5e8d4bd62303f4c04fdc44e56d79eaf2487a6955018588cf43bf5fdfd44e7a62",
+            "gzipBytes": 7382,
+            "tick": 260,
+            "side": 2
+          },
+          {
+            "path": "native-browser/2v2-initial-side-3.json.gz",
+            "sha256": "d721c9afbb99a076a91a8738e12d5e29d9307112b1fa6b9356738d2708761eaf",
+            "bytes": 66627,
+            "gzipSha256": "8d09211d1189590d57f735e449eed42ea98dbe3ac86f3d0b530556fb883e0477",
+            "gzipBytes": 7384,
+            "tick": 260,
+            "side": 3
+          }
+        ],
+        "beforeTransfer": [
+          {
+            "path": "native-browser/2v2-before-transfer-side-0.json.gz",
+            "sha256": "0c57efb333877d667f485525444f5a53941edc33fc4d9b0781c12a0e96110fdd",
+            "bytes": 66564,
+            "gzipSha256": "4aa79909d4f543e3c011d191dc7655c3ad9e584b965e9c4aa5e53fa882d5d8fd",
+            "gzipBytes": 7319,
+            "tick": 320,
+            "side": 0
+          },
+          {
+            "path": "native-browser/2v2-before-transfer-side-1.json.gz",
+            "sha256": "390fd5063ed82cb0e10226a7cfea29f410a53575c2eac96cbb1d9a712b3f9290",
+            "bytes": 66564,
+            "gzipSha256": "3063c098651a76f85d4140efb230d764e9fa103ba3eff4893056b09c3119d782",
+            "gzipBytes": 7327,
+            "tick": 320,
+            "side": 1
+          },
+          {
+            "path": "native-browser/2v2-before-transfer-side-2.json.gz",
+            "sha256": "ae22e5c1981d6869eaf5140a833c29672c868a29636cb32528ebd227889f9bcb",
+            "bytes": 66654,
+            "gzipSha256": "8eb888d6c6d4a0d481395ab5f24b36cf1389a6a79658662c176a44f1ee733d62",
+            "gzipBytes": 7382,
+            "tick": 320,
+            "side": 2
+          },
+          {
+            "path": "native-browser/2v2-before-transfer-side-3.json.gz",
+            "sha256": "1aa17205636c8e30946909d56b8f94c843d0d2d14c128054d151081645b6257c",
+            "bytes": 66654,
+            "gzipSha256": "4eeee30f56db707e0d6b998325eafc91e90e3c9a41b3a2716f66f9d690c6f7a7",
+            "gzipBytes": 7384,
+            "tick": 320,
+            "side": 3
+          }
+        ],
+        "afterTransfer": [
+          {
+            "path": "native-browser/2v2-after-transfer-side-0.json.gz",
+            "sha256": "065173a2dc0dbf98c21d5c57d9861b1f492c4cad1f4707cb086df2da53cb6d90",
+            "bytes": 66666,
+            "gzipSha256": "9fa2bc521d982f257332cdb530e0d17fab278cdef4483e390ed78b4c9b44f48e",
+            "gzipBytes": 7356,
+            "tick": 328,
+            "side": 0
+          },
+          {
+            "path": "native-browser/2v2-after-transfer-side-1.json.gz",
+            "sha256": "c591e7f659e14a0f0a492abfec2a958a17bb8c17c70eb6335848d20e231524da",
+            "bytes": 66667,
+            "gzipSha256": "3aa0970c29912b2975704f55b23f3f3dbbeb601ff999687358c070874c605148",
+            "gzipBytes": 7364,
+            "tick": 328,
+            "side": 1
+          },
+          {
+            "path": "native-browser/2v2-after-transfer-side-2.json.gz",
+            "sha256": "3f90dcaa387fcb08637a7163283c6fdedea1b689956ff703322e1c54773842fc",
+            "bytes": 66654,
+            "gzipSha256": "e13bfa5998ef543e88d1a88067754d88d7c4c268547f0e4da3e02b7d96feedb2",
+            "gzipBytes": 7385,
+            "tick": 328,
+            "side": 2
+          },
+          {
+            "path": "native-browser/2v2-after-transfer-side-3.json.gz",
+            "sha256": "e74cf3ad2d7a96ad411434d98e4addd11decee77faa16725d9c05deb14ede128",
+            "bytes": 66654,
+            "gzipSha256": "aa54ec17611e1f6819ae7e313aa0f1264044a941c02e4b0f3f1c43b156bc47cb",
+            "gzipBytes": 7387,
+            "tick": 328,
+            "side": 3
+          }
+        ],
+        "spectatorCommon": [
+          {
+            "path": "native-browser/2v2-spectator-common-0.json.gz",
+            "sha256": "130a269f049491be4d8e3730a7cf01feb5f41590546f0de6efde63f1325025b1",
+            "bytes": 66639,
+            "gzipSha256": "bce5094481e8f2e8c6200d63a08ff2b04cb4eed1d5a8c13af0d836f34fc1badb",
+            "gzipBytes": 7357,
+            "tick": 872,
+            "side": 0
+          },
+          {
+            "path": "native-browser/2v2-spectator-common-1.json.gz",
+            "sha256": "0b633a8aac37cedb7277e94eced319cdb84ad6a5071a0b0fd01634c4bfd413ec",
+            "bytes": 66640,
+            "gzipSha256": "2f426fbd8f58c4a2daa8657d4bb47eebe331d5083481bf1475bfa788d38bc6cc",
+            "gzipBytes": 7365,
+            "tick": 872,
+            "side": 1
+          },
+          {
+            "path": "native-browser/2v2-spectator-common-2.json.gz",
+            "sha256": "7fe91f0f079fd27cef37fdb484392005e6dc1849ddae19445de9d437c68b74de",
+            "bytes": 67826,
+            "gzipSha256": "ade4108d2a3754e38871b23acdd181b8152608b5cb9ea81d07328b0e2cb53e60",
+            "gzipBytes": 7402,
+            "tick": 872,
+            "side": 1
+          }
+        ]
+      },
+      "screenshots": [
+        {
+          "actor": "2v2-side-0",
+          "phase": "native-match-entry",
+          "path": "native-browser/native-match-entry-2v2-side-0.png"
+        },
+        {
+          "actor": "2v2-watcher",
+          "phase": "spectator-player",
+          "path": "native-browser/spectator-player-2v2-watcher.png"
+        },
+        {
+          "actor": "2v2-watcher",
+          "phase": "spectator-team",
+          "path": "native-browser/spectator-team-2v2-watcher.png"
+        },
+        {
+          "actor": "2v2-side-0",
+          "phase": "completed-host",
+          "path": "native-browser/completed-host-2v2-side-0.png"
+        },
+        {
+          "actor": "2v2-watcher",
+          "phase": "completed-spectator",
+          "path": "native-browser/completed-spectator-2v2-watcher.png"
+        }
+      ],
+      "lobby": {
+        "id": "d4075310-e70f-43dc-9a40-15ac3f0847bb",
+        "hostId": "0f8076d5-63d4-46ad-a7e9-498a1ae99613",
+        "revision": 9,
+        "settings": {
+          "rules": {
+            "mode": "annihilation",
+            "standardDefeat": true,
+            "startingAge": 1,
+            "sharedVision": true,
+            "friendlyFire": true,
+            "startingResources": {
+              "wood": 420,
+              "ore": 220,
+              "crystal": 0
+            },
+            "disabledDefinitionIds": [],
+            "hill": {
+              "radius": 5,
+              "captureTicks": 100,
+              "holdTicks": 2400
+            },
+            "relic": {
+              "count": 3,
+              "required": 2,
+              "holdTicks": 2400,
+              "pickupRadius": 1.5
+            },
+            "survival": {
+              "defenderTeam": 0,
+              "waveCount": 5,
+              "intervalTicks": 1200,
+              "recoveryTicks": 400,
+              "unitsPerWave": 2,
+              "rewardPerWave": {
+                "wood": 60,
+                "ore": 30,
+                "crystal": 0
+              }
+            },
+            "draft": {
+              "enabled": false,
+              "banRounds": 1,
+              "pickRounds": 3,
+              "turnTicks": 600
+            }
+          },
+          "mapSize": "huge",
+          "factions": [
+            "orcs",
+            "orcs",
+            "fairies",
+            "fairies"
+          ],
+          "players": [
+            {
+              "factionId": "orcs",
+              "teamId": 0,
+              "controller": "human",
+              "handicap": {
+                "startingResources": {
+                  "wood": 1000,
+                  "ore": 700,
+                  "crystal": 43
+                },
+                "incomeFactor": 0
+              }
+            },
+            {
+              "factionId": "orcs",
+              "teamId": 0,
+              "controller": "human",
+              "handicap": {
+                "startingResources": {
+                  "wood": 1137,
+                  "ore": 731,
+                  "crystal": 50
+                },
+                "incomeFactor": 0
+              }
+            },
+            {
+              "factionId": "fairies",
+              "teamId": 1,
+              "controller": "human",
+              "handicap": {
+                "startingResources": {
+                  "wood": 1274,
+                  "ore": 762,
+                  "crystal": 57
+                },
+                "incomeFactor": 0
+              }
+            },
+            {
+              "factionId": "fairies",
+              "teamId": 1,
+              "controller": "human",
+              "handicap": {
+                "startingResources": {
+                  "wood": 1411,
+                  "ore": 793,
+                  "crystal": 64
+                },
+                "incomeFactor": 0
+              }
+            }
+          ],
+          "sharedVision": true,
+          "startingAge": 1
+        },
+        "seats": [
+          {
+            "side": 0,
+            "account": {
+              "id": "0f8076d5-63d4-46ad-a7e9-498a1ae99613",
+              "username": "Guest-00c3b5"
+            },
+            "ready": true,
+            "factionId": "orcs",
+            "teamId": 0,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1000,
+                "ore": 700,
+                "crystal": 43
+              },
+              "incomeFactor": 0
+            }
+          },
+          {
+            "side": 1,
+            "account": {
+              "id": "618958f9-8243-42d6-a509-68ab6f3e10e5",
+              "username": "Guest-871a38"
+            },
+            "ready": true,
+            "factionId": "orcs",
+            "teamId": 0,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1137,
+                "ore": 731,
+                "crystal": 50
+              },
+              "incomeFactor": 0
+            }
+          },
+          {
+            "side": 2,
+            "account": {
+              "id": "c11271fe-3b49-4565-b32d-7bb8ff75ae4a",
+              "username": "Guest-8b29f5"
+            },
+            "ready": true,
+            "factionId": "fairies",
+            "teamId": 1,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1274,
+                "ore": 762,
+                "crystal": 57
+              },
+              "incomeFactor": 0
+            }
+          },
+          {
+            "side": 3,
+            "account": {
+              "id": "d2bc03d1-ef98-43cb-8e74-37fcfee14607",
+              "username": "Guest-162daa"
+            },
+            "ready": true,
+            "factionId": "fairies",
+            "teamId": 1,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1411,
+                "ore": 793,
+                "crystal": 64
+              },
+              "incomeFactor": 0
+            }
+          }
+        ],
+        "matchId": "35c60e4a-c5eb-4e7a-83c5-4d6b665c17f8",
+        "draft": {
+          "status": "complete",
+          "turn": 0,
+          "remainingTicks": 0,
+          "order": [],
+          "banned": [],
+          "picks": [
+            [],
+            [],
+            [],
+            []
+          ],
+          "pool": [
+            "orc-melee",
+            "orc-ranged",
+            "orc-special",
+            "orc-cavalry",
+            "orc-spear",
+            "orc-siege",
+            "core:orcs-commander",
+            "core:orcs-engineer",
+            "forged-weapons",
+            "tempered-armor",
+            "veteran-arms",
+            "core:ranged-arms",
+            "core:cavalry-barding",
+            "core:siege-gears",
+            "core:ranged-focus",
+            "core:ranged-mobility",
+            "worker-harvest",
+            "worker-speed",
+            "fairy-melee",
+            "fairy-ranged",
+            "fairy-special",
+            "fairy-cavalry",
+            "fairy-spear",
+            "fairy-siege",
+            "core:fairies-commander",
+            "core:fairies-engineer"
+          ]
+        }
+      },
+      "matchId": "35c60e4a-c5eb-4e7a-83c5-4d6b665c17f8",
+      "initial": {
+        "tick": 260,
+        "players": [
+          {
+            "side": 0,
+            "tick": 260,
+            "bank": {
+              "wood": 1000,
+              "ore": 700,
+              "crystal": 43
+            },
+            "controller": "external",
+            "allies": [
+              {
+                "side": 1,
+                "teamId": 0,
+                "faction": "orcs"
+              }
+            ],
+            "visibleTiles": 570,
+            "exploredTiles": 570
+          },
+          {
+            "side": 1,
+            "tick": 260,
+            "bank": {
+              "wood": 1137,
+              "ore": 731,
+              "crystal": 50
+            },
+            "controller": "external",
+            "allies": [
+              {
+                "side": 0,
+                "teamId": 0,
+                "faction": "orcs"
+              }
+            ],
+            "visibleTiles": 570,
+            "exploredTiles": 570
+          },
+          {
+            "side": 2,
+            "tick": 260,
+            "bank": {
+              "wood": 1274,
+              "ore": 762,
+              "crystal": 57
+            },
+            "controller": "external",
+            "allies": [
+              {
+                "side": 3,
+                "teamId": 1,
+                "faction": "fairies"
+              }
+            ],
+            "visibleTiles": 570,
+            "exploredTiles": 570
+          },
+          {
+            "side": 3,
+            "tick": 260,
+            "bank": {
+              "wood": 1411,
+              "ore": 793,
+              "crystal": 64
+            },
+            "controller": "external",
+            "allies": [
+              {
+                "side": 2,
+                "teamId": 1,
+                "faction": "fairies"
+              }
+            ],
+            "visibleTiles": 570,
+            "exploredTiles": 570
+          }
+        ]
+      },
+      "renderers": [
+        {
+          "tick": 260,
+          "side": 0,
+          "privateSides": [
+            0
+          ],
+          "hud": {
+            "wood": "1000",
+            "ore": "700",
+            "crystal": "43"
+          },
+          "readOnly": false,
+          "banks": [
+            {
+              "wood": 1000,
+              "ore": 700,
+              "crystal": 43
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            }
+          ]
+        },
+        {
+          "tick": 260,
+          "side": 1,
+          "privateSides": [
+            1
+          ],
+          "hud": {
+            "wood": "1137",
+            "ore": "731",
+            "crystal": "50"
+          },
+          "readOnly": false,
+          "banks": [
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 1137,
+              "ore": 731,
+              "crystal": 50
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            }
+          ]
+        },
+        {
+          "tick": 264,
+          "side": 2,
+          "privateSides": [
+            2
+          ],
+          "hud": {
+            "wood": "1274",
+            "ore": "762",
+            "crystal": "57"
+          },
+          "readOnly": false,
+          "banks": [
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 1274,
+              "ore": 762,
+              "crystal": 57
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            }
+          ]
+        },
+        {
+          "tick": 264,
+          "side": 3,
+          "privateSides": [
+            3
+          ],
+          "hud": {
+            "wood": "1411",
+            "ore": "793",
+            "crystal": "64"
+          },
+          "readOnly": false,
+          "banks": [
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 1411,
+              "ore": 793,
+              "crystal": 64
+            }
+          ]
+        }
+      ],
+      "banks": {
+        "before": [
+          {
+            "side": 0,
+            "bank": {
+              "wood": 1000,
+              "ore": 700,
+              "crystal": 43
+            }
+          },
+          {
+            "side": 1,
+            "bank": {
+              "wood": 1137,
+              "ore": 731,
+              "crystal": 50
+            }
+          },
+          {
+            "side": 2,
+            "bank": {
+              "wood": 1274,
+              "ore": 762,
+              "crystal": 57
+            }
+          },
+          {
+            "side": 3,
+            "bank": {
+              "wood": 1411,
+              "ore": 793,
+              "crystal": 64
+            }
+          }
+        ],
+        "after": [
+          {
+            "side": 0,
+            "bank": {
+              "wood": 990,
+              "ore": 700,
+              "crystal": 43
+            }
+          },
+          {
+            "side": 1,
+            "bank": {
+              "wood": 1147,
+              "ore": 731,
+              "crystal": 50
+            }
+          },
+          {
+            "side": 2,
+            "bank": {
+              "wood": 1274,
+              "ore": 762,
+              "crystal": 57
+            }
+          },
+          {
+            "side": 3,
+            "bank": {
+              "wood": 1411,
+              "ore": 793,
+              "crystal": 64
+            }
+          }
+        ],
+        "beforeTick": 320,
+        "afterTick": 328
+      },
+      "spectatorCommonTick": 872,
+      "wire": {
+        "path": "native-browser/2v2-wire.json.gz",
+        "sha256": "1e1fdb2a271252233b9a7595674bec8941bd0f0961d8c3cba32684f58b6bc113",
+        "bytes": 6896,
+        "gzipSha256": "6d869b61693c2629c9e5bcec3904995e61c3557c79fa841eed8cb0ffcc136ef9",
+        "gzipBytes": 791
+      }
+    },
+    {
+      "name": "3v3",
+      "fixture": {
+        "name": "3v3",
+        "mapSize": "huge",
+        "startingAge": 1,
+        "sharedVision": true,
+        "players": [
+          {
+            "factionId": "orcs",
+            "teamId": 0,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1000,
+                "ore": 700,
+                "crystal": 43
+              },
+              "incomeFactor": 0
+            }
+          },
+          {
+            "factionId": "orcs",
+            "teamId": 0,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1137,
+                "ore": 731,
+                "crystal": 50
+              },
+              "incomeFactor": 0
+            }
+          },
+          {
+            "factionId": "orcs",
+            "teamId": 0,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1274,
+                "ore": 762,
+                "crystal": 57
+              },
+              "incomeFactor": 0
+            }
+          },
+          {
+            "factionId": "fairies",
+            "teamId": 1,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1411,
+                "ore": 793,
+                "crystal": 64
+              },
+              "incomeFactor": 0
+            }
+          },
+          {
+            "factionId": "fairies",
+            "teamId": 1,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1548,
+                "ore": 824,
+                "crystal": 71
+              },
+              "incomeFactor": 0
+            }
+          },
+          {
+            "factionId": "fairies",
+            "teamId": 1,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1685,
+                "ore": 855,
+                "crystal": 78
+              },
+              "incomeFactor": 0
+            }
+          }
+        ]
+      },
+      "commands": {
+        "nativeStops": [
+          {
+            "side": 0,
+            "sent": {
+              "kind": "command",
+              "protocolVersion": 1,
+              "clientSeq": 1,
+              "observedTick": 624,
+              "command": {
+                "type": "stop",
+                "ids": [
+                  7
+                ]
+              }
+            },
+            "ack": {
+              "kind": "commandAck",
+              "clientSeq": 1,
+              "appliedTick": 633,
+              "accepted": true
+            }
+          },
+          {
+            "side": 1,
+            "sent": {
+              "kind": "command",
+              "protocolVersion": 1,
+              "clientSeq": 1,
+              "observedTick": 640,
+              "command": {
+                "type": "stop",
+                "ids": [
+                  14
+                ]
+              }
+            },
+            "ack": {
+              "kind": "commandAck",
+              "clientSeq": 1,
+              "appliedTick": 649,
+              "accepted": true
+            }
+          },
+          {
+            "side": 2,
+            "sent": {
+              "kind": "command",
+              "protocolVersion": 1,
+              "clientSeq": 1,
+              "observedTick": 656,
+              "command": {
+                "type": "stop",
+                "ids": [
+                  21
+                ]
+              }
+            },
+            "ack": {
+              "kind": "commandAck",
+              "clientSeq": 1,
+              "appliedTick": 665,
+              "accepted": true
+            }
+          },
+          {
+            "side": 3,
+            "sent": {
+              "kind": "command",
+              "protocolVersion": 1,
+              "clientSeq": 1,
+              "observedTick": 672,
+              "command": {
+                "type": "stop",
+                "ids": [
+                  28
+                ]
+              }
+            },
+            "ack": {
+              "kind": "commandAck",
+              "clientSeq": 1,
+              "appliedTick": 682,
+              "accepted": true
+            }
+          },
+          {
+            "side": 4,
+            "sent": {
+              "kind": "command",
+              "protocolVersion": 1,
+              "clientSeq": 1,
+              "observedTick": 692,
+              "command": {
+                "type": "stop",
+                "ids": [
+                  35
+                ]
+              }
+            },
+            "ack": {
+              "kind": "commandAck",
+              "clientSeq": 1,
+              "appliedTick": 695,
+              "accepted": true
+            }
+          },
+          {
+            "side": 5,
+            "sent": {
+              "kind": "command",
+              "protocolVersion": 1,
+              "clientSeq": 1,
+              "observedTick": 700,
+              "command": {
+                "type": "stop",
+                "ids": [
+                  42
+                ]
+              }
+            },
+            "ack": {
+              "kind": "commandAck",
+              "clientSeq": 1,
+              "appliedTick": 709,
+              "accepted": true
+            }
+          }
+        ],
+        "rejectedOwnership": {
+          "sent": {
+            "kind": "command",
+            "protocolVersion": 1,
+            "clientSeq": 2,
+            "observedTick": 716,
+            "command": {
+              "type": "move",
+              "ids": [
+                14
+              ],
+              "x": 55.5,
+              "y": 12.5
+            }
+          },
+          "ack": {
+            "kind": "commandAck",
+            "clientSeq": 2,
+            "appliedTick": 723,
+            "accepted": false,
+            "reason": "ownership"
+          }
+        },
+        "transfer": {
+          "sent": {
+            "kind": "command",
+            "protocolVersion": 1,
+            "clientSeq": 3,
+            "observedTick": 732,
+            "command": {
+              "type": "transferResources",
+              "recipient": 1,
+              "resources": {
+                "wood": 10,
+                "ore": 0,
+                "crystal": 0
+              }
+            }
+          },
+          "ack": {
+            "kind": "commandAck",
+            "clientSeq": 3,
+            "appliedTick": 736,
+            "accepted": true
+          }
+        },
+        "rejectedEnemyTransfer": {
+          "sent": {
+            "kind": "command",
+            "protocolVersion": 1,
+            "clientSeq": 4,
+            "observedTick": 740,
+            "command": {
+              "type": "transferResources",
+              "recipient": 3,
+              "resources": {
+                "wood": 1,
+                "ore": 0,
+                "crystal": 0
+              }
+            }
+          },
+          "ack": {
+            "kind": "commandAck",
+            "clientSeq": 4,
+            "appliedTick": 744,
+            "accepted": false,
+            "reason": "unavailable"
+          }
+        }
+      },
+      "spectators": [
+        {
+          "mode": "player",
+          "hello": {
+            "kind": "hello",
+            "protocolVersion": 1,
+            "matchId": "199ebb5c-3b09-4a44-8686-405d4fbdfada",
+            "role": "spectator",
+            "side": 1,
+            "generation": 0,
+            "perspective": "player",
+            "lastClientSeq": 0,
+            "delayTicks": 20
+          },
+          "frame": {
+            "path": "native-browser/3v3-spectator-player.json.gz",
+            "sha256": "472a04c296bbddec9dd32b5f4d055f5ee1b967c534db6c178c8227730702a669",
+            "bytes": 72465,
+            "gzipSha256": "bdf61dd746a1439a19b801128eeec95850edac054ad48fe983a3df591ecb9a39",
+            "gzipBytes": 8367,
+            "tick": 836,
+            "side": 1
+          },
+          "rendered": {
+            "tick": 836,
+            "side": 1,
+            "privateSides": [
+              1
+            ],
+            "hud": {
+              "wood": "1147",
+              "ore": "731",
+              "crystal": "50"
+            },
+            "readOnly": true,
+            "banks": [
+              {
+                "wood": 0,
+                "ore": 0,
+                "crystal": 0
+              },
+              {
+                "wood": 1147,
+                "ore": 731,
+                "crystal": 50
+              },
+              {
+                "wood": 0,
+                "ore": 0,
+                "crystal": 0
+              },
+              {
+                "wood": 0,
+                "ore": 0,
+                "crystal": 0
+              },
+              {
+                "wood": 0,
+                "ore": 0,
+                "crystal": 0
+              },
+              {
+                "wood": 0,
+                "ore": 0,
+                "crystal": 0
+              }
+            ]
+          },
+          "liveTickAfterFrame": 1053
+        },
+        {
+          "mode": "team",
+          "hello": {
+            "kind": "hello",
+            "protocolVersion": 1,
+            "matchId": "199ebb5c-3b09-4a44-8686-405d4fbdfada",
+            "role": "spectator",
+            "side": 1,
+            "generation": 0,
+            "perspective": "team",
+            "lastClientSeq": 0,
+            "delayTicks": 20
+          },
+          "frame": {
+            "path": "native-browser/3v3-spectator-team.json.gz",
+            "sha256": "caefa57cce63bdf17cb929c0738d6c3c364bd073c040594bb403fd9491cb8a31",
+            "bytes": 74690,
+            "gzipSha256": "689566872f0f3bb1d5d315e413403389afa026e9f3f118e75f563c9fec7a7b8c",
+            "gzipBytes": 8427,
+            "tick": 1464,
+            "side": 1
+          },
+          "rendered": {
+            "tick": 1464,
+            "side": 1,
+            "privateSides": [
+              1,
+              0,
+              2
+            ],
+            "hud": {
+              "wood": "1147",
+              "ore": "731",
+              "crystal": "50"
+            },
+            "readOnly": true,
+            "banks": [
+              {
+                "wood": 990,
+                "ore": 700,
+                "crystal": 43
+              },
+              {
+                "wood": 1147,
+                "ore": 731,
+                "crystal": 50
+              },
+              {
+                "wood": 1274,
+                "ore": 762,
+                "crystal": 57
+              },
+              {
+                "wood": 0,
+                "ore": 0,
+                "crystal": 0
+              },
+              {
+                "wood": 0,
+                "ore": 0,
+                "crystal": 0
+              },
+              {
+                "wood": 0,
+                "ore": 0,
+                "crystal": 0
+              }
+            ]
+          },
+          "liveTickAfterFrame": 1682
+        }
+      ],
+      "spectatorRestrictions": {
+        "player": {
+          "probe": {
+            "kind": "command",
+            "protocolVersion": 1,
+            "clientSeq": 1,
+            "observedTick": 1036,
+            "command": {
+              "type": "stop",
+              "ids": [
+                1
+              ]
+            }
+          },
+          "rejection": {
+            "kind": "error",
+            "code": "spectator",
+            "message": "Spectators cannot issue commands."
+          },
+          "uiEmittedCommands": 0,
+          "disabledProduction": true
+        },
+        "team": {
+          "probe": {
+            "kind": "command",
+            "protocolVersion": 1,
+            "clientSeq": 1,
+            "observedTick": 1832,
+            "command": {
+              "type": "stop",
+              "ids": [
+                1
+              ]
+            }
+          },
+          "rejection": {
+            "kind": "error",
+            "code": "spectator",
+            "message": "Spectators cannot issue commands."
+          },
+          "uiEmittedCommands": 0,
+          "disabledProduction": true
+        }
+      },
+      "assets": [
+        {
+          "actor": "3v3-side-0",
+          "loaded": [
+            {
+              "path": "/assets/main-BxMb13AF.js",
+              "sha256": "2066a3347ad2ff3ffb6a1bcc39255f8c54bd91771a243e2c662645a155925902",
+              "bytes": 2454689,
+              "resourceType": "script"
+            },
+            {
+              "path": "/",
+              "sha256": "353c0f8eeb0eb9e7707b470a151c2852148179ee4604fe49dc65f25d07e56a39",
+              "bytes": 500,
+              "resourceType": "document"
+            }
+          ]
+        },
+        {
+          "actor": "3v3-side-1",
+          "loaded": [
+            {
+              "path": "/assets/main-BxMb13AF.js",
+              "sha256": "2066a3347ad2ff3ffb6a1bcc39255f8c54bd91771a243e2c662645a155925902",
+              "bytes": 2454689,
+              "resourceType": "script"
+            },
+            {
+              "path": "/",
+              "sha256": "353c0f8eeb0eb9e7707b470a151c2852148179ee4604fe49dc65f25d07e56a39",
+              "bytes": 500,
+              "resourceType": "document"
+            }
+          ]
+        },
+        {
+          "actor": "3v3-side-2",
+          "loaded": [
+            {
+              "path": "/assets/main-BxMb13AF.js",
+              "sha256": "2066a3347ad2ff3ffb6a1bcc39255f8c54bd91771a243e2c662645a155925902",
+              "bytes": 2454689,
+              "resourceType": "script"
+            },
+            {
+              "path": "/",
+              "sha256": "353c0f8eeb0eb9e7707b470a151c2852148179ee4604fe49dc65f25d07e56a39",
+              "bytes": 500,
+              "resourceType": "document"
+            }
+          ]
+        },
+        {
+          "actor": "3v3-side-3",
+          "loaded": [
+            {
+              "path": "/assets/main-BxMb13AF.js",
+              "sha256": "2066a3347ad2ff3ffb6a1bcc39255f8c54bd91771a243e2c662645a155925902",
+              "bytes": 2454689,
+              "resourceType": "script"
+            },
+            {
+              "path": "/",
+              "sha256": "353c0f8eeb0eb9e7707b470a151c2852148179ee4604fe49dc65f25d07e56a39",
+              "bytes": 500,
+              "resourceType": "document"
+            }
+          ]
+        },
+        {
+          "actor": "3v3-side-4",
+          "loaded": [
+            {
+              "path": "/assets/main-BxMb13AF.js",
+              "sha256": "2066a3347ad2ff3ffb6a1bcc39255f8c54bd91771a243e2c662645a155925902",
+              "bytes": 2454689,
+              "resourceType": "script"
+            },
+            {
+              "path": "/",
+              "sha256": "353c0f8eeb0eb9e7707b470a151c2852148179ee4604fe49dc65f25d07e56a39",
+              "bytes": 500,
+              "resourceType": "document"
+            }
+          ]
+        },
+        {
+          "actor": "3v3-side-5",
+          "loaded": [
+            {
+              "path": "/assets/main-BxMb13AF.js",
+              "sha256": "2066a3347ad2ff3ffb6a1bcc39255f8c54bd91771a243e2c662645a155925902",
+              "bytes": 2454689,
+              "resourceType": "script"
+            },
+            {
+              "path": "/",
+              "sha256": "353c0f8eeb0eb9e7707b470a151c2852148179ee4604fe49dc65f25d07e56a39",
+              "bytes": 500,
+              "resourceType": "document"
+            }
+          ]
+        },
+        {
+          "actor": "3v3-watcher",
+          "loaded": [
+            {
+              "path": "/assets/main-BxMb13AF.js",
+              "sha256": "2066a3347ad2ff3ffb6a1bcc39255f8c54bd91771a243e2c662645a155925902",
+              "bytes": 2454689,
+              "resourceType": "script"
+            },
+            {
+              "path": "/",
+              "sha256": "353c0f8eeb0eb9e7707b470a151c2852148179ee4604fe49dc65f25d07e56a39",
+              "bytes": 500,
+              "resourceType": "document"
+            }
+          ]
+        }
+      ],
+      "frames": {
+        "initial": [
+          {
+            "path": "native-browser/3v3-initial-side-0.json.gz",
+            "sha256": "8d224b0887373701995e32ea941ebf72da6bb9fdbd5286819d5a50bc38e3f6ec",
+            "bytes": 72363,
+            "gzipSha256": "e041496e6aedf9edb4af7b92f67c23241644326436331e79148bec301e1ce36f",
+            "gzipBytes": 8329,
+            "tick": 596,
+            "side": 0
+          },
+          {
+            "path": "native-browser/3v3-initial-side-1.json.gz",
+            "sha256": "e454f2eaaee0bae14774bd111c4473e6b5f3dcfa52969a76a52cc21e72c749b0",
+            "bytes": 72363,
+            "gzipSha256": "625ee182ac80c7a08dac2df49beb3c14967a6ef287d68d5db76de62f96ab5c0a",
+            "gzipBytes": 8332,
+            "tick": 596,
+            "side": 1
+          },
+          {
+            "path": "native-browser/3v3-initial-side-2.json.gz",
+            "sha256": "2527a947cbcfe7a4bd858c3f7266d4614dabd1a345edf63bdba8ee68d7be1f29",
+            "bytes": 72363,
+            "gzipSha256": "2bef56a0d280cedca7947be119c7b3905db643e96633cce030be5dc88b79ef80",
+            "gzipBytes": 8330,
+            "tick": 596,
+            "side": 2
+          },
+          {
+            "path": "native-browser/3v3-initial-side-3.json.gz",
+            "sha256": "f7624c26cf53c7db5031eea9c6ef091c422910130131f8d8f18fe1f1b526764b",
+            "bytes": 72688,
+            "gzipSha256": "46635ebd388cb0fa5db2d2580d0933f36f41c00f2009c40b14d5ed4819aabb25",
+            "gzipBytes": 8331,
+            "tick": 596,
+            "side": 3
+          },
+          {
+            "path": "native-browser/3v3-initial-side-4.json.gz",
+            "sha256": "f4ebcfee812a935496730b397190de9a80014f5233f68b2a0aaab03273325ed3",
+            "bytes": 72688,
+            "gzipSha256": "6b9877c548060177316085cbddf783d41bbd42cbad115871f926c1d066a27cec",
+            "gzipBytes": 8338,
+            "tick": 596,
+            "side": 4
+          },
+          {
+            "path": "native-browser/3v3-initial-side-5.json.gz",
+            "sha256": "ec8d91bf3e3869c9a232790243bf6d45365b460ce130f1f21314f49b3d67ca19",
+            "bytes": 72688,
+            "gzipSha256": "e85d5f4ddfb4f27befcdd12cd4aba605f28d177e4d7cabe9feb4fa26a1ee08cb",
+            "gzipBytes": 8333,
+            "tick": 596,
+            "side": 5
+          }
+        ],
+        "beforeTransfer": [
+          {
+            "path": "native-browser/3v3-before-transfer-side-0.json.gz",
+            "sha256": "40d41dc8d7e417d4d914591cefddb0939f29db09a1f8734adf55ff8494613af6",
+            "bytes": 72363,
+            "gzipSha256": "037d62d98c3ac397c40cef9488514ae3713dbeab39fb1639a1c5e12514ccc192",
+            "gzipBytes": 8328,
+            "tick": 728,
+            "side": 0
+          },
+          {
+            "path": "native-browser/3v3-before-transfer-side-1.json.gz",
+            "sha256": "e46d0bcf669fba2b4531afe9bbf07d36b86aa57088f92cc3532ba0613dba9e8b",
+            "bytes": 72363,
+            "gzipSha256": "dcb71dce889fc9e5595137f83cf679d8d5138a31265d2a9aa1842e8c84cae3c1",
+            "gzipBytes": 8331,
+            "tick": 728,
+            "side": 1
+          },
+          {
+            "path": "native-browser/3v3-before-transfer-side-2.json.gz",
+            "sha256": "eaa34edf49c3f23a15fdc30f0b756461649367d20c3b461bea559bcacf3cb751",
+            "bytes": 72363,
+            "gzipSha256": "cf4daca1571b69b84d111e1eccb4b261d899f9f9a214ede2152d4b771f7e8280",
+            "gzipBytes": 8329,
+            "tick": 728,
+            "side": 2
+          },
+          {
+            "path": "native-browser/3v3-before-transfer-side-3.json.gz",
+            "sha256": "1fe091f1d81e5fac4abccba72221bb725baffe6f1df976802c85db3f657a9784",
+            "bytes": 72688,
+            "gzipSha256": "9be8fea950fe31aae8b7187cd131b5f8a8e79c7f5e2c59306032ca93505513ed",
+            "gzipBytes": 8328,
+            "tick": 728,
+            "side": 3
+          },
+          {
+            "path": "native-browser/3v3-before-transfer-side-4.json.gz",
+            "sha256": "76a6bbd8400f4bbc91e7d7858d306df7c8f8e72bbc4851d0effc4171922c9b06",
+            "bytes": 72688,
+            "gzipSha256": "dd0594a44f636ba3dfef840523dd4933b439e55b2a42a457ad8e41365aecf7bd",
+            "gzipBytes": 8336,
+            "tick": 728,
+            "side": 4
+          },
+          {
+            "path": "native-browser/3v3-before-transfer-side-5.json.gz",
+            "sha256": "99b5bead5f71a0db02eb9d2c615fa787c6f2c1bad77f8817eaf5040e59a1d0a2",
+            "bytes": 72688,
+            "gzipSha256": "ce9aa05dc350faeb3867da70ef6d41d1e89187dc5ae0d6ce42d6ab08c841ef6e",
+            "gzipBytes": 8331,
+            "tick": 728,
+            "side": 5
+          }
+        ],
+        "afterTransfer": [
+          {
+            "path": "native-browser/3v3-after-transfer-side-0.json.gz",
+            "sha256": "21e5d06b0df93bde5b4fcd4b46460fcd23b01550cb1b66abdee27462e3c32617",
+            "bytes": 72464,
+            "gzipSha256": "519b7e3742f4d256f7f9c641ffc785134dcee20ffe048d91a834edfd02ebca98",
+            "gzipBytes": 8359,
+            "tick": 736,
+            "side": 0
+          },
+          {
+            "path": "native-browser/3v3-after-transfer-side-1.json.gz",
+            "sha256": "1af6aa29213d266f30f4d5ffd221a1e5a3189fa8a2f5c57175bb0dbfd96764dd",
+            "bytes": 72465,
+            "gzipSha256": "8ffbf2a1c9ca869c4c08ed30a21d7d4a6db3aa7511861a6d666d1b5ffe53276a",
+            "gzipBytes": 8361,
+            "tick": 736,
+            "side": 1
+          },
+          {
+            "path": "native-browser/3v3-after-transfer-side-2.json.gz",
+            "sha256": "d11a6f8291161221743491a39f8879817849b91e763639444520de51c9719c5f",
+            "bytes": 72465,
+            "gzipSha256": "76643d9ad1139d00cb6cfdf1bd824e2c163ccfe1754bfd4c0163433b76c72955",
+            "gzipBytes": 8360,
+            "tick": 736,
+            "side": 2
+          },
+          {
+            "path": "native-browser/3v3-after-transfer-side-3.json.gz",
+            "sha256": "ff2d0875d7198e21ee6ca1b3a5dde7f2ca0750ae44216c872607ab1acd7ce0cd",
+            "bytes": 72688,
+            "gzipSha256": "c3948ce312307393b2928c90ac5e2dfcd8d66d66420e4e96728a349f00158f98",
+            "gzipBytes": 8328,
+            "tick": 736,
+            "side": 3
+          },
+          {
+            "path": "native-browser/3v3-after-transfer-side-4.json.gz",
+            "sha256": "01cbf8a935952a2bfecef327dcc9abbcc31e467d0b8df0233f61872d05fea825",
+            "bytes": 72688,
+            "gzipSha256": "46c8cc5f1975eec45659ec49737be463f4a7148aefd947505101ca767786171b",
+            "gzipBytes": 8335,
+            "tick": 736,
+            "side": 4
+          },
+          {
+            "path": "native-browser/3v3-after-transfer-side-5.json.gz",
+            "sha256": "dc93b7eaf97ca9d259fe767090c2a91c4bf9c3a7a25563c8a6368bed89854a21",
+            "bytes": 72688,
+            "gzipSha256": "bc8dc3ccff6463cbfc4e43cfac220757aeb49800754cbfaefe2c74394014213c",
+            "gzipBytes": 8331,
+            "tick": 736,
+            "side": 5
+          }
+        ],
+        "spectatorCommon": [
+          {
+            "path": "native-browser/3v3-spectator-common-0.json.gz",
+            "sha256": "be0e9cee5ee14551f394576583840c096730944000d4106720d973ca943fb204",
+            "bytes": 72467,
+            "gzipSha256": "745d9c56758f7bc1f2cd8c1f44dd34156112aade7b5fdce9156fe33ff338e657",
+            "gzipBytes": 8366,
+            "tick": 1696,
+            "side": 0
+          },
+          {
+            "path": "native-browser/3v3-spectator-common-1.json.gz",
+            "sha256": "9059b4d5ba3760d249b63ea060801dcb1d174b95f6d016cd420dd31bce12906e",
+            "bytes": 72468,
+            "gzipSha256": "d50684d640f7dffae6a3f5b1299ed8bf3828364a8659b0bfe37f496f81d1bc4f",
+            "gzipBytes": 8368,
+            "tick": 1696,
+            "side": 1
+          },
+          {
+            "path": "native-browser/3v3-spectator-common-2.json.gz",
+            "sha256": "27eb3c78d9045d3d228433b18183a4952d658aada4ac41e055686041ea91b883",
+            "bytes": 72468,
+            "gzipSha256": "6f7c526a845aeb3dbdfb39d45df4db5ff268a86f1898cad1697c718c0efc0427",
+            "gzipBytes": 8367,
+            "tick": 1696,
+            "side": 2
+          },
+          {
+            "path": "native-browser/3v3-spectator-common-3.json.gz",
+            "sha256": "05a6d70abdaf78a0ecd5ad800316f5f944fd857c8d33d0a1ff151f7b80adb2d4",
+            "bytes": 74690,
+            "gzipSha256": "ee347f7333be03486f5c41228e5e037ed27b9f5dd0286c48bdbeb01694bd2475",
+            "gzipBytes": 8426,
+            "tick": 1696,
+            "side": 1
+          }
+        ]
+      },
+      "screenshots": [
+        {
+          "actor": "3v3-side-0",
+          "phase": "native-match-entry",
+          "path": "native-browser/native-match-entry-3v3-side-0.png"
+        },
+        {
+          "actor": "3v3-watcher",
+          "phase": "spectator-player",
+          "path": "native-browser/spectator-player-3v3-watcher.png"
+        },
+        {
+          "actor": "3v3-watcher",
+          "phase": "spectator-team",
+          "path": "native-browser/spectator-team-3v3-watcher.png"
+        },
+        {
+          "actor": "3v3-side-0",
+          "phase": "completed-host",
+          "path": "native-browser/completed-host-3v3-side-0.png"
+        },
+        {
+          "actor": "3v3-watcher",
+          "phase": "completed-spectator",
+          "path": "native-browser/completed-spectator-3v3-watcher.png"
+        }
+      ],
+      "lobby": {
+        "id": "a92f7477-ba14-4d79-ab99-6e15ff4422e8",
+        "hostId": "676a2337-c9e5-4e7b-9314-c3d4d463a3ad",
+        "revision": 13,
+        "settings": {
+          "rules": {
+            "mode": "annihilation",
+            "standardDefeat": true,
+            "startingAge": 1,
+            "sharedVision": true,
+            "friendlyFire": true,
+            "startingResources": {
+              "wood": 420,
+              "ore": 220,
+              "crystal": 0
+            },
+            "disabledDefinitionIds": [],
+            "hill": {
+              "radius": 5,
+              "captureTicks": 100,
+              "holdTicks": 2400
+            },
+            "relic": {
+              "count": 3,
+              "required": 2,
+              "holdTicks": 2400,
+              "pickupRadius": 1.5
+            },
+            "survival": {
+              "defenderTeam": 0,
+              "waveCount": 5,
+              "intervalTicks": 1200,
+              "recoveryTicks": 400,
+              "unitsPerWave": 2,
+              "rewardPerWave": {
+                "wood": 60,
+                "ore": 30,
+                "crystal": 0
+              }
+            },
+            "draft": {
+              "enabled": false,
+              "banRounds": 1,
+              "pickRounds": 3,
+              "turnTicks": 600
+            }
+          },
+          "mapSize": "huge",
+          "factions": [
+            "orcs",
+            "orcs",
+            "orcs",
+            "fairies",
+            "fairies",
+            "fairies"
+          ],
+          "players": [
+            {
+              "factionId": "orcs",
+              "teamId": 0,
+              "controller": "human",
+              "handicap": {
+                "startingResources": {
+                  "wood": 1000,
+                  "ore": 700,
+                  "crystal": 43
+                },
+                "incomeFactor": 0
+              }
+            },
+            {
+              "factionId": "orcs",
+              "teamId": 0,
+              "controller": "human",
+              "handicap": {
+                "startingResources": {
+                  "wood": 1137,
+                  "ore": 731,
+                  "crystal": 50
+                },
+                "incomeFactor": 0
+              }
+            },
+            {
+              "factionId": "orcs",
+              "teamId": 0,
+              "controller": "human",
+              "handicap": {
+                "startingResources": {
+                  "wood": 1274,
+                  "ore": 762,
+                  "crystal": 57
+                },
+                "incomeFactor": 0
+              }
+            },
+            {
+              "factionId": "fairies",
+              "teamId": 1,
+              "controller": "human",
+              "handicap": {
+                "startingResources": {
+                  "wood": 1411,
+                  "ore": 793,
+                  "crystal": 64
+                },
+                "incomeFactor": 0
+              }
+            },
+            {
+              "factionId": "fairies",
+              "teamId": 1,
+              "controller": "human",
+              "handicap": {
+                "startingResources": {
+                  "wood": 1548,
+                  "ore": 824,
+                  "crystal": 71
+                },
+                "incomeFactor": 0
+              }
+            },
+            {
+              "factionId": "fairies",
+              "teamId": 1,
+              "controller": "human",
+              "handicap": {
+                "startingResources": {
+                  "wood": 1685,
+                  "ore": 855,
+                  "crystal": 78
+                },
+                "incomeFactor": 0
+              }
+            }
+          ],
+          "sharedVision": true,
+          "startingAge": 1
+        },
+        "seats": [
+          {
+            "side": 0,
+            "account": {
+              "id": "676a2337-c9e5-4e7b-9314-c3d4d463a3ad",
+              "username": "Guest-3e4308"
+            },
+            "ready": true,
+            "factionId": "orcs",
+            "teamId": 0,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1000,
+                "ore": 700,
+                "crystal": 43
+              },
+              "incomeFactor": 0
+            }
+          },
+          {
+            "side": 1,
+            "account": {
+              "id": "3aaf9923-7807-498f-99e0-2d89008db7d0",
+              "username": "Guest-4ec2f8"
+            },
+            "ready": true,
+            "factionId": "orcs",
+            "teamId": 0,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1137,
+                "ore": 731,
+                "crystal": 50
+              },
+              "incomeFactor": 0
+            }
+          },
+          {
+            "side": 2,
+            "account": {
+              "id": "63f5c4f7-9505-4ac0-be9a-005d003d2cfa",
+              "username": "Guest-08c0e4"
+            },
+            "ready": true,
+            "factionId": "orcs",
+            "teamId": 0,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1274,
+                "ore": 762,
+                "crystal": 57
+              },
+              "incomeFactor": 0
+            }
+          },
+          {
+            "side": 3,
+            "account": {
+              "id": "7d2eee51-f918-4a9b-a173-e87a2d368781",
+              "username": "Guest-f129c1"
+            },
+            "ready": true,
+            "factionId": "fairies",
+            "teamId": 1,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1411,
+                "ore": 793,
+                "crystal": 64
+              },
+              "incomeFactor": 0
+            }
+          },
+          {
+            "side": 4,
+            "account": {
+              "id": "33bbe101-de0a-4e99-98e5-4cd9504466e9",
+              "username": "Guest-5019f5"
+            },
+            "ready": true,
+            "factionId": "fairies",
+            "teamId": 1,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1548,
+                "ore": 824,
+                "crystal": 71
+              },
+              "incomeFactor": 0
+            }
+          },
+          {
+            "side": 5,
+            "account": {
+              "id": "aad5d5c1-0392-432c-a62b-188e091b743f",
+              "username": "Guest-b09234"
+            },
+            "ready": true,
+            "factionId": "fairies",
+            "teamId": 1,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1685,
+                "ore": 855,
+                "crystal": 78
+              },
+              "incomeFactor": 0
+            }
+          }
+        ],
+        "matchId": "199ebb5c-3b09-4a44-8686-405d4fbdfada",
+        "draft": {
+          "status": "complete",
+          "turn": 0,
+          "remainingTicks": 0,
+          "order": [],
+          "banned": [],
+          "picks": [
+            [],
+            [],
+            [],
+            [],
+            [],
+            []
+          ],
+          "pool": [
+            "orc-melee",
+            "orc-ranged",
+            "orc-special",
+            "orc-cavalry",
+            "orc-spear",
+            "orc-siege",
+            "core:orcs-commander",
+            "core:orcs-engineer",
+            "forged-weapons",
+            "tempered-armor",
+            "veteran-arms",
+            "core:ranged-arms",
+            "core:cavalry-barding",
+            "core:siege-gears",
+            "core:ranged-focus",
+            "core:ranged-mobility",
+            "worker-harvest",
+            "worker-speed",
+            "fairy-melee",
+            "fairy-ranged",
+            "fairy-special",
+            "fairy-cavalry",
+            "fairy-spear",
+            "fairy-siege",
+            "core:fairies-commander",
+            "core:fairies-engineer"
+          ]
+        }
+      },
+      "matchId": "199ebb5c-3b09-4a44-8686-405d4fbdfada",
+      "initial": {
+        "tick": 596,
+        "players": [
+          {
+            "side": 0,
+            "tick": 596,
+            "bank": {
+              "wood": 1000,
+              "ore": 700,
+              "crystal": 43
+            },
+            "controller": "external",
+            "allies": [
+              {
+                "side": 1,
+                "teamId": 0,
+                "faction": "orcs"
+              },
+              {
+                "side": 2,
+                "teamId": 0,
+                "faction": "orcs"
+              }
+            ],
+            "visibleTiles": 855,
+            "exploredTiles": 855
+          },
+          {
+            "side": 1,
+            "tick": 596,
+            "bank": {
+              "wood": 1137,
+              "ore": 731,
+              "crystal": 50
+            },
+            "controller": "external",
+            "allies": [
+              {
+                "side": 0,
+                "teamId": 0,
+                "faction": "orcs"
+              },
+              {
+                "side": 2,
+                "teamId": 0,
+                "faction": "orcs"
+              }
+            ],
+            "visibleTiles": 855,
+            "exploredTiles": 855
+          },
+          {
+            "side": 2,
+            "tick": 596,
+            "bank": {
+              "wood": 1274,
+              "ore": 762,
+              "crystal": 57
+            },
+            "controller": "external",
+            "allies": [
+              {
+                "side": 0,
+                "teamId": 0,
+                "faction": "orcs"
+              },
+              {
+                "side": 1,
+                "teamId": 0,
+                "faction": "orcs"
+              }
+            ],
+            "visibleTiles": 855,
+            "exploredTiles": 855
+          },
+          {
+            "side": 3,
+            "tick": 596,
+            "bank": {
+              "wood": 1411,
+              "ore": 793,
+              "crystal": 64
+            },
+            "controller": "external",
+            "allies": [
+              {
+                "side": 4,
+                "teamId": 1,
+                "faction": "fairies"
+              },
+              {
+                "side": 5,
+                "teamId": 1,
+                "faction": "fairies"
+              }
+            ],
+            "visibleTiles": 855,
+            "exploredTiles": 855
+          },
+          {
+            "side": 4,
+            "tick": 596,
+            "bank": {
+              "wood": 1548,
+              "ore": 824,
+              "crystal": 71
+            },
+            "controller": "external",
+            "allies": [
+              {
+                "side": 3,
+                "teamId": 1,
+                "faction": "fairies"
+              },
+              {
+                "side": 5,
+                "teamId": 1,
+                "faction": "fairies"
+              }
+            ],
+            "visibleTiles": 855,
+            "exploredTiles": 855
+          },
+          {
+            "side": 5,
+            "tick": 596,
+            "bank": {
+              "wood": 1685,
+              "ore": 855,
+              "crystal": 78
+            },
+            "controller": "external",
+            "allies": [
+              {
+                "side": 3,
+                "teamId": 1,
+                "faction": "fairies"
+              },
+              {
+                "side": 4,
+                "teamId": 1,
+                "faction": "fairies"
+              }
+            ],
+            "visibleTiles": 855,
+            "exploredTiles": 855
+          }
+        ]
+      },
+      "renderers": [
+        {
+          "tick": 616,
+          "side": 0,
+          "privateSides": [
+            0
+          ],
+          "hud": {
+            "wood": "1000",
+            "ore": "700",
+            "crystal": "43"
+          },
+          "readOnly": false,
+          "banks": [
+            {
+              "wood": 1000,
+              "ore": 700,
+              "crystal": 43
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            }
+          ]
+        },
+        {
+          "tick": 616,
+          "side": 1,
+          "privateSides": [
+            1
+          ],
+          "hud": {
+            "wood": "1137",
+            "ore": "731",
+            "crystal": "50"
+          },
+          "readOnly": false,
+          "banks": [
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 1137,
+              "ore": 731,
+              "crystal": 50
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            }
+          ]
+        },
+        {
+          "tick": 616,
+          "side": 2,
+          "privateSides": [
+            2
+          ],
+          "hud": {
+            "wood": "1274",
+            "ore": "762",
+            "crystal": "57"
+          },
+          "readOnly": false,
+          "banks": [
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 1274,
+              "ore": 762,
+              "crystal": 57
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            }
+          ]
+        },
+        {
+          "tick": 616,
+          "side": 3,
+          "privateSides": [
+            3
+          ],
+          "hud": {
+            "wood": "1411",
+            "ore": "793",
+            "crystal": "64"
+          },
+          "readOnly": false,
+          "banks": [
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 1411,
+              "ore": 793,
+              "crystal": 64
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            }
+          ]
+        },
+        {
+          "tick": 620,
+          "side": 4,
+          "privateSides": [
+            4
+          ],
+          "hud": {
+            "wood": "1548",
+            "ore": "824",
+            "crystal": "71"
+          },
+          "readOnly": false,
+          "banks": [
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 1548,
+              "ore": 824,
+              "crystal": 71
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            }
+          ]
+        },
+        {
+          "tick": 620,
+          "side": 5,
+          "privateSides": [
+            5
+          ],
+          "hud": {
+            "wood": "1685",
+            "ore": "855",
+            "crystal": "78"
+          },
+          "readOnly": false,
+          "banks": [
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 0,
+              "ore": 0,
+              "crystal": 0
+            },
+            {
+              "wood": 1685,
+              "ore": 855,
+              "crystal": 78
+            }
+          ]
+        }
+      ],
+      "banks": {
+        "before": [
+          {
+            "side": 0,
+            "bank": {
+              "wood": 1000,
+              "ore": 700,
+              "crystal": 43
+            }
+          },
+          {
+            "side": 1,
+            "bank": {
+              "wood": 1137,
+              "ore": 731,
+              "crystal": 50
+            }
+          },
+          {
+            "side": 2,
+            "bank": {
+              "wood": 1274,
+              "ore": 762,
+              "crystal": 57
+            }
+          },
+          {
+            "side": 3,
+            "bank": {
+              "wood": 1411,
+              "ore": 793,
+              "crystal": 64
+            }
+          },
+          {
+            "side": 4,
+            "bank": {
+              "wood": 1548,
+              "ore": 824,
+              "crystal": 71
+            }
+          },
+          {
+            "side": 5,
+            "bank": {
+              "wood": 1685,
+              "ore": 855,
+              "crystal": 78
+            }
+          }
+        ],
+        "after": [
+          {
+            "side": 0,
+            "bank": {
+              "wood": 990,
+              "ore": 700,
+              "crystal": 43
+            }
+          },
+          {
+            "side": 1,
+            "bank": {
+              "wood": 1147,
+              "ore": 731,
+              "crystal": 50
+            }
+          },
+          {
+            "side": 2,
+            "bank": {
+              "wood": 1274,
+              "ore": 762,
+              "crystal": 57
+            }
+          },
+          {
+            "side": 3,
+            "bank": {
+              "wood": 1411,
+              "ore": 793,
+              "crystal": 64
+            }
+          },
+          {
+            "side": 4,
+            "bank": {
+              "wood": 1548,
+              "ore": 824,
+              "crystal": 71
+            }
+          },
+          {
+            "side": 5,
+            "bank": {
+              "wood": 1685,
+              "ore": 855,
+              "crystal": 78
+            }
+          }
+        ],
+        "beforeTick": 728,
+        "afterTick": 736
+      },
+      "spectatorCommonTick": 1696,
+      "wire": {
+        "path": "native-browser/3v3-wire.json.gz",
+        "sha256": "0ce75e628598bb26f04562e28019eae4ac57920fa744fd4258e36ceb92206011",
+        "bytes": 9494,
+        "gzipSha256": "1d44e723b8f332408208bb765fcf3f611a148c48714381e6a470df2e4ae0b907",
+        "gzipBytes": 852
+      }
+    },
+    {
+      "name": "4v4",
+      "fixture": {
+        "name": "4v4",
+        "mapSize": "huge",
+        "startingAge": 1,
+        "sharedVision": true,
+        "players": [
+          {
+            "factionId": "orcs",
+            "teamId": 0,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1000,
+                "ore": 700,
+                "crystal": 43
+              },
+              "incomeFactor": 0
+            }
+          },
+          {
+            "factionId": "orcs",
+            "teamId": 0,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1137,
+                "ore": 731,
+                "crystal": 50
+              },
+              "incomeFactor": 0
+            }
+          },
+          {
+            "factionId": "orcs",
+            "teamId": 0,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1274,
+                "ore": 762,
+                "crystal": 57
+              },
+              "incomeFactor": 0
+            }
+          },
+          {
+            "factionId": "orcs",
+            "teamId": 0,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1411,
+                "ore": 793,
+                "crystal": 64
+              },
+              "incomeFactor": 0
+            }
+          },
+          {
+            "factionId": "fairies",
+            "teamId": 1,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1548,
+                "ore": 824,
+                "crystal": 71
+              },
+              "incomeFactor": 0
+            }
+          },
+          {
+            "factionId": "fairies",
+            "teamId": 1,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1685,
+                "ore": 855,
+                "crystal": 78
+              },
+              "incomeFactor": 0
+            }
+          },
+          {
+            "factionId": "fairies",
+            "teamId": 1,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1822,
+                "ore": 886,
+                "crystal": 85
+              },
+              "incomeFactor": 0
+            }
+          },
+          {
+            "factionId": "fairies",
+            "teamId": 1,
+            "controller": "human",
+            "handicap": {
+              "startingResources": {
+                "wood": 1959,
+                "ore": 917,
+                "crystal": 92
+              },
+              "incomeFactor": 0
+            }
+          }
+        ]
+      },
+      "commands": {},
+      "spectators": [],
+      "spectatorRestrictions": {},
+      "assets": [
+        {
+          "actor": "4v4-side-0",
+          "loaded": [
+            {
+              "path": "/assets/main-BxMb13AF.js",
+              "sha256": "2066a3347ad2ff3ffb6a1bcc39255f8c54bd91771a243e2c662645a155925902",
+              "bytes": 2454689,
+              "resourceType": "script"
+            },
+            {
+              "path": "/",
+              "sha256": "353c0f8eeb0eb9e7707b470a151c2852148179ee4604fe49dc65f25d07e56a39",
+              "bytes": 500,
+              "resourceType": "document"
+            }
+          ]
+        },
+        {
+          "actor": "4v4-side-1",
+          "loaded": [
+            {
+              "path": "/assets/main-BxMb13AF.js",
+              "sha256": "2066a3347ad2ff3ffb6a1bcc39255f8c54bd91771a243e2c662645a155925902",
+              "bytes": 2454689,
+              "resourceType": "script"
+            },
+            {
+              "path": "/",
+              "sha256": "353c0f8eeb0eb9e7707b470a151c2852148179ee4604fe49dc65f25d07e56a39",
+              "bytes": 500,
+              "resourceType": "document"
+            }
+          ]
+        },
+        {
+          "actor": "4v4-side-2",
+          "loaded": [
+            {
+              "path": "/assets/main-BxMb13AF.js",
+              "sha256": "2066a3347ad2ff3ffb6a1bcc39255f8c54bd91771a243e2c662645a155925902",
+              "bytes": 2454689,
+              "resourceType": "script"
+            },
+            {
+              "path": "/",
+              "sha256": "353c0f8eeb0eb9e7707b470a151c2852148179ee4604fe49dc65f25d07e56a39",
+              "bytes": 500,
+              "resourceType": "document"
+            }
+          ]
+        },
+        {
+          "actor": "4v4-side-3",
+          "loaded": [
+            {
+              "path": "/assets/main-BxMb13AF.js",
+              "sha256": "2066a3347ad2ff3ffb6a1bcc39255f8c54bd91771a243e2c662645a155925902",
+              "bytes": 2454689,
+              "resourceType": "script"
+            },
+            {
+              "path": "/",
+              "sha256": "353c0f8eeb0eb9e7707b470a151c2852148179ee4604fe49dc65f25d07e56a39",
+              "bytes": 500,
+              "resourceType": "document"
+            }
+          ]
+        },
+        {
+          "actor": "4v4-side-4",
+          "loaded": [
+            {
+              "path": "/assets/main-BxMb13AF.js",
+              "sha256": "2066a3347ad2ff3ffb6a1bcc39255f8c54bd91771a243e2c662645a155925902",
+              "bytes": 2454689,
+              "resourceType": "script"
+            },
+            {
+              "path": "/",
+              "sha256": "353c0f8eeb0eb9e7707b470a151c2852148179ee4604fe49dc65f25d07e56a39",
+              "bytes": 500,
+              "resourceType": "document"
+            }
+          ]
+        },
+        {
+          "actor": "4v4-side-5",
+          "loaded": [
+            {
+              "path": "/assets/main-BxMb13AF.js",
+              "sha256": "2066a3347ad2ff3ffb6a1bcc39255f8c54bd91771a243e2c662645a155925902",
+              "bytes": 2454689,
+              "resourceType": "script"
+            },
+            {
+              "path": "/",
+              "sha256": "353c0f8eeb0eb9e7707b470a151c2852148179ee4604fe49dc65f25d07e56a39",
+              "bytes": 500,
+              "resourceType": "document"
+            }
+          ]
+        },
+        {
+          "actor": "4v4-side-6",
+          "loaded": [
+            {
+              "path": "/assets/main-BxMb13AF.js",
+              "sha256": "2066a3347ad2ff3ffb6a1bcc39255f8c54bd91771a243e2c662645a155925902",
+              "bytes": 2454689,
+              "resourceType": "script"
+            },
+            {
+              "path": "/",
+              "sha256": "353c0f8eeb0eb9e7707b470a151c2852148179ee4604fe49dc65f25d07e56a39",
+              "bytes": 500,
+              "resourceType": "document"
+            }
+          ]
+        },
+        {
+          "actor": "4v4-side-7",
+          "loaded": [
+            {
+              "path": "/assets/main-BxMb13AF.js",
+              "sha256": "2066a3347ad2ff3ffb6a1bcc39255f8c54bd91771a243e2c662645a155925902",
+              "bytes": 2454689,
+              "resourceType": "script"
+            },
+            {
+              "path": "/",
+              "sha256": "353c0f8eeb0eb9e7707b470a151c2852148179ee4604fe49dc65f25d07e56a39",
+              "bytes": 500,
+              "resourceType": "document"
+            }
+          ]
+        },
+        {
+          "actor": "4v4-watcher",
+          "loaded": [
+            {
+              "path": "/assets/main-BxMb13AF.js",
+              "sha256": "2066a3347ad2ff3ffb6a1bcc39255f8c54bd91771a243e2c662645a155925902",
+              "bytes": 2454689,
+              "resourceType": "script"
+            },
+            {
+              "path": "/",
+              "sha256": "353c0f8eeb0eb9e7707b470a151c2852148179ee4604fe49dc65f25d07e56a39",
+              "bytes": 500,
+              "resourceType": "document"
+            }
+          ]
+        }
+      ],
+      "frames": {},
+      "screenshots": [
+        {
+          "actor": "4v4-side-2",
+          "phase": "failure",
+          "path": "native-browser/failure-4v4-side-2.png"
+        },
+        {
+          "actor": "4v4-side-6",
+          "phase": "failure",
+          "path": "native-browser/failure-4v4-side-6.png"
+        },
+        {
+          "actor": "4v4-side-7",
+          "phase": "failure",
+          "path": "native-browser/failure-4v4-side-7.png"
+        },
+        {
+          "actor": "4v4-side-5",
+          "phase": "failure",
+          "path": "native-browser/failure-4v4-side-5.png"
+        },
+        {
+          "actor": "4v4-side-1",
+          "phase": "failure",
+          "path": "native-browser/failure-4v4-side-1.png"
+        },
+        {
+          "actor": "4v4-side-4",
+          "phase": "failure",
+          "path": "native-browser/failure-4v4-side-4.png"
+        },
+        {
+          "actor": "4v4-side-0",
+          "phase": "failure",
+          "path": "native-browser/failure-4v4-side-0.png"
+        },
+        {
+          "actor": "4v4-watcher",
+          "phase": "failure",
+          "path": "native-browser/failure-4v4-watcher.png"
+        },
+        {
+          "actor": "4v4-side-3",
+          "phase": "failure",
+          "path": "native-browser/failure-4v4-side-3.png"
+        }
+      ],
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n2 !== 1\n\n    at uiResponse (file:///home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/scripts/server/verify-hosted-teams-browser.mjs:74:82)\n    at async refresh (file:///home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/scripts/server/verify-hosted-teams-browser.mjs:170:18)\n    at async mutate (file:///home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/scripts/server/verify-hosted-teams-browser.mjs:200:5)\n    at async verifyBrowser (file:///home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/scripts/server/verify-hosted-teams-browser.mjs:361:60)\n    at async file:///home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/scripts/server/verify-hosted-teams.mjs:114:40",
+      "failureWire": {
+        "path": "native-browser/4v4-failure-wire.json.gz",
+        "sha256": "19646963634768b2cbf4795fe758cbd346208f0e0c1ca959503ccf7e2b7a6959",
+        "bytes": 2778,
+        "gzipSha256": "6d1954af04651220996b3e5335c1b2f67749078ef24169ed31dfe5243c379af4",
+        "gzipBytes": 292
+      }
+    }
+  ],
+  "errors": [],
+  "limits": [
+    "No natural victory is claimed.",
+    "Public AI frames prove a shared 200 ms attack interval; exact same-step coordinator attribution needs separate checkpoint evidence."
+  ],
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n2 !== 1\n\n    at uiResponse (file:///home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/scripts/server/verify-hosted-teams-browser.mjs:74:82)\n    at async refresh (file:///home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/scripts/server/verify-hosted-teams-browser.mjs:170:18)\n    at async mutate (file:///home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/scripts/server/verify-hosted-teams-browser.mjs:200:5)\n    at async verifyBrowser (file:///home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/scripts/server/verify-hosted-teams-browser.mjs:361:60)\n    at async file:///home/morgana/.codex/worktrees/hosted-team-proof/orcs-vs-Fairies/scripts/server/verify-hosted-teams.mjs:114:40"
+}

@@ -1,0 +1,19 @@
+{
+  "observedAt": "2026-10-02T01:09:10.106751+00:00",
+  "producer": {
+    "harness": "Codex",
+    "model": "GPT-6",
+    "agent": "/root"
+  },
+  "phase": "final precommit payload readback",
+  "firstCheckExitCode": 1,
+  "observedFailure": "Original index bytes differ",
+  "identifiedPath": "docs/evidence/hosted-a144-native-pass-20261001/README.md",
+  "originalBytes": 1630,
+  "overwrittenSummaryBytes": 684,
+  "cause": "Root wrote its new admission summary over the mapped retained derived README instead of using a new root control filename.",
+  "correction": "Restored original README from sealed source; new summary lives in root-README.md. No commit followed the failed readback.",
+  "originalSha256": "9232a5729380f6dad9292d9fbe169d8cc1a0b4b42a3a24c719cf480cab40d60b",
+  "preservedSummarySha256": "f807ed8904f316e25c8a49509e1c6b3b11e64093dd365db95b84b155b5fc2ce8",
+  "rule": "Authored control metadata uses separate filenames and final payload readback covers every original before commit."
+}

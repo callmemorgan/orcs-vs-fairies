@@ -1,0 +1,5 @@
+All four original 1440×1000 PNGs were viewed at original resolution. The earned-Fury replay shows the battle map, the three selected-model outlines near the damaged enemy building, intact HUD and a paused replay at 00:16. The baseline-hit and before-Assault replays show the later Boltspitter/target encounter at 00:28 with visible target health bars, intact HUD and World controls. They show neither the exact fractional Fury bank nor a post-cast transaction.
+
+The first-failure image shows the native pause overlay, the Ironclad panel with Fury 52/100, the notice "Assault chant ordered.", and Boltspitter #55 with "assault chant · 12s left". Its chant buttons are disabled with "Faction commands are unavailable in this view." This matches the paused lastState and the source permission gate. No image proves the exact debit independently. No later feature scenario, full continuation set or completed offline-history audit is pictured.
+
+The original images remain unchanged. Their sizes, dimensions and SHA-256 values are recorded in the light trace-facts JSON. This inspection grants no feature acceptance credit.

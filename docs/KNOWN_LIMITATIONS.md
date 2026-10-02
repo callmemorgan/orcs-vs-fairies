@@ -1,3 +1,11 @@
+# Current verification record
+
+The current 100-feature implementation and its verification status are recorded in [the feature ledger](features/requirements.json). Its retained combined regression run passed 2,920 tests at the recorded unchanged product revision. Focused combat and cooperative-match checks remain pending after review; newer proof packets preserve their individual outcomes.
+
+The milestone records below describe earlier builds and their limits. Claims in those records about absent features or a current production build apply to their historical revision.
+
+## Three-age milestone (historical)
+
 # Known limitations
 
 The three-age build passed the 237-test complete suite and 15 focused progression/interface tests after its final HUD change, including 36 complete AI matches covering all ordered faction pairings on the default map and seed. Additional full matches cover small, large and huge maps on different seeds. Every faction reached Citadel Age and used all combat roles across the main regression sample. This verifies progression and completion, not competitive balance. Orcs won all ten cross-faction games in that sample; Automata and Dwarves each won one of ten. More seeds and human play are needed before tuning around those results.

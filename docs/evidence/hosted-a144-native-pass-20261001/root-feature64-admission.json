@@ -1,0 +1,69 @@
+{
+  "observedAt": "2026-10-02T01:06:49.144267+00:00",
+  "producer": {
+    "harness": "Codex",
+    "model": "GPT-6",
+    "agent": "/root"
+  },
+  "id": 64,
+  "requirement": "watch matches with optional delayed viewing.",
+  "decision": "verified",
+  "executionPin": "a144ad3f3dddd0003f9553541908e2254f2444c6",
+  "rootPreAdmissionHead": "703fc036c6327a830a79d5746eec805188cbbaa6",
+  "nativeRun": "passed8checks",
+  "delayedSpectators": [
+    {
+      "perspective": "player",
+      "delayTicks": 20,
+      "frameTick": 164,
+      "liveTickAfterFrame": 187,
+      "readOnly": true
+    },
+    {
+      "perspective": "team",
+      "delayTicks": 20,
+      "frameTick": 356,
+      "liveTickAfterFrame": 379,
+      "readOnly": true
+    }
+  ],
+  "zeroDelay": {
+    "perspective": "player",
+    "delayTicks": 0,
+    "readOnly": true,
+    "initialTick": 1768,
+    "advancingTick": 1772,
+    "rawPairReadback": [
+      {
+        "capture": "first",
+        "tick": 1768,
+        "compressedOriginalsByteEqual": true,
+        "compressedBytes": 8246,
+        "gzipSha256": "32cd656f8b56060ca858dddf32fff972e97385f750b7998760edc8b03e2190b7",
+        "paths": [
+          "native-browser/restart-live-first-spectator.json.gz",
+          "native-browser/restart-live-first-player.json.gz"
+        ]
+      },
+      {
+        "capture": "advancing",
+        "tick": 1772,
+        "compressedOriginalsByteEqual": true,
+        "compressedBytes": 8186,
+        "gzipSha256": "af1ddf52ddfcd77f764736591c55bebd134b66c618da635ef0e7ac756690c0bb",
+        "paths": [
+          "native-browser/restart-live-advancing-spectator.json.gz",
+          "native-browser/restart-live-advancing-player.json.gz"
+        ]
+      }
+    ]
+  },
+  "productSourceDiffEmpty": true,
+  "rootReadback": "Read actual original result, native summary, restart and restrictions; compared complete original compressed player/spectator pair bytes without codec rerun. Viewed saved screenshot; its disconnect banner means the still image is not independent ongoing-live proof. Advancing frames and executed renderer checks supply that proof.",
+  "limits": [
+    "Zero-delay player perspective proved; zero-delay team perspective not separately claimed.",
+    "Recorded decompressed descriptor seals remain producer claims; no fresh codecs or large database hash.",
+    "Local execution only; no public deployment.",
+    "Human co-op combat original63 remains held for focused composition proof."
+  ]
+}

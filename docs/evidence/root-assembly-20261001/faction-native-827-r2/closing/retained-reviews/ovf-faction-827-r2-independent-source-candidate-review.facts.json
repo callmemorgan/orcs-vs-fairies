@@ -1,0 +1,372 @@
+{
+  "kind": "independent-data-only-source-trace-candidate-review",
+  "attribution": "Codex / GPT-6; finer variant not exposed",
+  "executionPin": "827496b06bb660b6639257e5113ac2f199be29ba",
+  "sources": {
+    "scripts/acceptance/faction-powers.mjs": {
+      "bytes": 32686,
+      "sha256": "c8fd9d2ba5539cc41b69d7e1ff527a4c8251188101ba8bb76c9e9e137a6c1c31",
+      "matchesPreflight": true
+    },
+    "scripts/acceptance/faction-powers-fixtures.ts": {
+      "bytes": 32193,
+      "sha256": "2b5fd7f2ba39431ff834b4a06a7f4fc8cc1dd5e22e8c3d99ca5ebbcc023230a7",
+      "matchesPreflight": true
+    },
+    "scripts/acceptance/native-context.mjs": {
+      "bytes": 10832,
+      "sha256": "f205338dd00ec7d8f75dcc0dc3c0415a31bac6b47b3e1dfbe45f5b9e517447dd",
+      "matchesPreflight": true
+    },
+    "scripts/acceptance/audit-faction-powers.ts": {
+      "bytes": 39834,
+      "sha256": "59da16b471d3b73727cfedaedfe34b09e91dc0be13fa0dc986513c0acdbb2fd1",
+      "matchesPreflight": true
+    },
+    "src/game/GameScene.ts": {
+      "bytes": 62102,
+      "sha256": "2f6372937635cdb54367445eb22355d79f33a94ff75604180ff9b2848422cdec",
+      "matchesPreflight": true
+    },
+    "src/main.ts": {
+      "bytes": 47424,
+      "sha256": "4b3de6a2c62517819e56d81e20f96aa10c8bfde8cd58ea70aa516fd84f0abda7",
+      "matchesPreflight": true
+    },
+    "src/ui/FactionTools.ts": {
+      "bytes": 24097,
+      "sha256": "452c9964d4cae1495412811fc6ee5f600cea30675cfac234efe9d2b8e9648b7b",
+      "matchesPreflight": true
+    },
+    "src/core/faction-systems.ts": {
+      "bytes": 23438,
+      "sha256": "6ab56f94a7d2dc1ac33e866caad29e1ab9b97914150fdf99cc737e79c21dd9fa",
+      "matchesPreflight": true
+    },
+    "src/core/simulation.ts": {
+      "bytes": 106228,
+      "sha256": "e301c65d0352ffe648a5bc4ee6acbda1f562164deacdfe60f8f3b03e7bdccf35",
+      "matchesPreflight": true
+    },
+    "src/core/content.ts": {
+      "bytes": 19805,
+      "sha256": "4495966583a38f122f23f40c8cfbc0c7655b00cc463b37efdf26a0c9b0a86160",
+      "matchesPreflight": true
+    },
+    "src/core/unit-progression.ts": {
+      "bytes": 8821,
+      "sha256": "bd29a33226eac4122b63217904f13d40f17ce629d50e0c1f5eb56c443c72095a",
+      "matchesPreflight": true
+    },
+    "src/core/world-map.ts": {
+      "bytes": 14404,
+      "sha256": "51af55ec2bd0cee6e7dc7caf2f934e60e9a7a046daeb1d3d71e478c8be7c0dd2",
+      "matchesPreflight": true
+    },
+    "src/core/environment.ts": {
+      "bytes": 17025,
+      "sha256": "5d27a76df2284a776606cefed781f4e8cfa44fbf5f14c869c450da66ce64f8dd",
+      "matchesPreflight": true
+    }
+  },
+  "primaryFacts": {
+    "bytes": 6641,
+    "sha256": "f59c372b3606946c9094b8251966bcac34429fc7792975703052527b35584e14"
+  },
+  "primaryArtifacts": {
+    "source-trace-diagnosis.md": {
+      "bytes": 5938,
+      "sha256": "a0b245fa2c9847ef476317595ea17192c334ec1cbd43a52d20dc4ca584e03bf2"
+    },
+    "first-failure-qualification.md": {
+      "bytes": 2271,
+      "sha256": "26ea13348157030ad0f1de2191a135f26a1451b2b141f160ade871055980c74b"
+    },
+    "candidate-construction-receipt.json": {
+      "bytes": 1456,
+      "sha256": "bb80e7fe4b5354f1f4cb6f0bdb6e48ec603f50f4eb9ba763c4eae54f9d44db95"
+    },
+    "faction-powers.unexecuted-candidate.mjs": {
+      "bytes": 32752,
+      "sha256": "246b00cdfb87a072676662c9554a81b3e52a91a8d4d78c679fc8210e9f7725ec"
+    },
+    "faction-powers.unexecuted-candidate.patch": {
+      "bytes": 1753,
+      "sha256": "670036325665be42ef66ace647798d69d583b51748a72b3858cce71670ce0107"
+    }
+  },
+  "candidate": {
+    "insert": "await move(ids.soldier,ids.startingPoint);await stop(ids.soldier);",
+    "bytesAdded": 66,
+    "removingInsertionReproducesAllOriginalBytes": true,
+    "patchMatchesGeneratedDataOnlyDiff": true,
+    "applied": false,
+    "executed": false
+  },
+  "rawArtifacts": {
+    "browser/factions-orcs-before-assault-save.json": {
+      "bytes": 442353,
+      "sha256": "e4cc3d7db9b89ed2598afe0c0f8ed377bdc90151715c31d94a963eac8b4a773c"
+    },
+    "browser/factions-orcs-before-assault-replay.json": {
+      "bytes": 213347,
+      "sha256": "5f4e66940cedc806f15a5e3b8b93157337c75b08d28057962578d0fbb8983dde"
+    },
+    "browser/browser-native-acceptance.json": {
+      "bytes": 296828,
+      "sha256": "ef8c4017873dfc2b3b375e9505f9ecfb6b31492596dae43f9e668d01899c4154"
+    }
+  },
+  "endpoints": {
+    "retainedBeforeTick": 579,
+    "lastTick": 606,
+    "elapsedSavedEndpointTicks": 27,
+    "elapsedSavedEndpointSeconds": "1.350000000000020",
+    "liveBeforeAssaultTickRetained": false,
+    "furyBefore": "74.97288",
+    "furyLast": "52.09508",
+    "target56HpLoss": "17.685",
+    "extraFuryAboveBeforeMinus25": "2.12220",
+    "target56DamageCreditAtPoint12": "2.12220",
+    "target56LastAttacker": 55,
+    "target56LastDamagedAt": "30.200000000000294",
+    "beforeEvents": [],
+    "lastEvents": [],
+    "beforeProjectiles": [],
+    "lastProjectiles": [],
+    "beforeRuntimeHits": [],
+    "postCastReplayRetained": false,
+    "instantaneousHistoricalDebitProved": false
+  },
+  "replay": {
+    "reconstructedPrefix": [
+      {
+        "index": 0,
+        "tickBefore": 0,
+        "type": "advance",
+        "dt": 0.05,
+        "ticks": 71
+      },
+      {
+        "index": 1,
+        "tickBefore": 71,
+        "type": "command",
+        "side": 0,
+        "command": {
+          "type": "attack",
+          "ids": [
+            51,
+            52,
+            53
+          ],
+          "target": 54,
+          "queued": false
+        }
+      },
+      {
+        "index": 2,
+        "tickBefore": 71,
+        "type": "advance",
+        "dt": 0.05,
+        "ticks": 291
+      },
+      {
+        "index": 3,
+        "tickBefore": 362,
+        "type": "command",
+        "side": 0,
+        "command": {
+          "type": "move",
+          "ids": [
+            51
+          ],
+          "x": 16.470366954803467,
+          "y": 13.48067045211792,
+          "level": 0,
+          "queued": false
+        }
+      },
+      {
+        "index": 4,
+        "tickBefore": 362,
+        "type": "advance",
+        "dt": 0.05,
+        "ticks": 28
+      },
+      {
+        "index": 5,
+        "tickBefore": 390,
+        "type": "command",
+        "side": 0,
+        "command": {
+          "type": "hold",
+          "ids": [
+            51
+          ]
+        }
+      },
+      {
+        "index": 6,
+        "tickBefore": 390,
+        "type": "advance",
+        "dt": 0.05,
+        "ticks": 24
+      },
+      {
+        "index": 7,
+        "tickBefore": 414,
+        "type": "command",
+        "side": 0,
+        "command": {
+          "type": "move",
+          "ids": [
+            52
+          ],
+          "x": 16.484375,
+          "y": 14.484375,
+          "level": 0,
+          "queued": false
+        }
+      },
+      {
+        "index": 8,
+        "tickBefore": 414,
+        "type": "advance",
+        "dt": 0.05,
+        "ticks": 30
+      },
+      {
+        "index": 9,
+        "tickBefore": 444,
+        "type": "command",
+        "side": 0,
+        "command": {
+          "type": "hold",
+          "ids": [
+            52
+          ]
+        }
+      },
+      {
+        "index": 10,
+        "tickBefore": 444,
+        "type": "advance",
+        "dt": 0.05,
+        "ticks": 22
+      },
+      {
+        "index": 11,
+        "tickBefore": 466,
+        "type": "command",
+        "side": 0,
+        "command": {
+          "type": "move",
+          "ids": [
+            53
+          ],
+          "x": 16.485991954803467,
+          "y": 15.503703594207764,
+          "level": 0,
+          "queued": false
+        }
+      },
+      {
+        "index": 12,
+        "tickBefore": 466,
+        "type": "advance",
+        "dt": 0.05,
+        "ticks": 30
+      },
+      {
+        "index": 13,
+        "tickBefore": 496,
+        "type": "command",
+        "side": 0,
+        "command": {
+          "type": "hold",
+          "ids": [
+            53
+          ]
+        }
+      },
+      {
+        "index": 14,
+        "tickBefore": 496,
+        "type": "advance",
+        "dt": 0.05,
+        "ticks": 26
+      },
+      {
+        "index": 15,
+        "tickBefore": 522,
+        "type": "command",
+        "side": 0,
+        "command": {
+          "type": "attack",
+          "ids": [
+            55
+          ],
+          "target": 56,
+          "queued": false
+        }
+      },
+      {
+        "index": 16,
+        "tickBefore": 522,
+        "type": "advance",
+        "dt": 0.05,
+        "ticks": 49
+      },
+      {
+        "index": 17,
+        "tickBefore": 571,
+        "type": "command",
+        "side": 0,
+        "command": {
+          "type": "hold",
+          "ids": [
+            55
+          ]
+        }
+      },
+      {
+        "index": 18,
+        "tickBefore": 571,
+        "type": "advance",
+        "dt": 0.05,
+        "ticks": 8
+      }
+    ],
+    "sumAdvanceTicks": 579,
+    "finalTick": 579,
+    "commandCount": 9,
+    "containsWarChant": false
+  },
+  "geometry": {
+    "startingPoint": {
+      "x": 16.5,
+      "y": 20.5,
+      "level": 0
+    },
+    "startingPointToTarget56": 8.54400374531753,
+    "arrivalToleranceExclusive": 0.8,
+    "minimumTargetDistanceExclusive": 7.7440037453175306,
+    "baseRange": 6.5,
+    "elevationValuesByLayer": [
+      [
+        0
+      ],
+      [
+        0
+      ]
+    ],
+    "bankTarget54Present": false
+  },
+  "qualifications": [
+    "Native pause blocks native casting.",
+    "Accepted core warChant subtracts 25 synchronously, but retained original replay ends before that command.",
+    "The strict assertion and all original source bytes other than the native preparation insertion remain unchanged.",
+    "The audit checks the 1.25 multiplier at assault-paid, not at the later measured hit; no observed expiry or new gate.",
+    "Candidate runtime success unverified; original IDs 21\u201330 remain pending with no history or late asset credit."
+  ]
+}
