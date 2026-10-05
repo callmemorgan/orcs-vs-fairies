@@ -4,6 +4,7 @@ import { observedHealth, PlayerView } from '../core/observation';
 import { ABILITIES, FACTIONS, UPGRADES } from '../core/content';
 import type { BuildingRole, Cost, Entity, FactionId, GameState, MapSize, UnitRole, UpgradeId } from '../core/types';
 import './style.css';
+import './factionChrome.css';
 import { createTooltip } from './Tooltip';
 import { abilityTargetReason } from './availability';
 
@@ -19,6 +20,7 @@ const costMarkup=(cost:Cost)=>`<span class="cost wood">${cost.wood}<i>wood</i></
 const escape = (value:string) => value.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
 const costText = (cost:Cost) => `${cost.wood} wood · ${cost.ore} ore${cost.crystal?` · ${cost.crystal} crystal`:""}`;
 export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:FactionId,mapSize:MapSize,seed:number)=>void) {
+  delete root.dataset.uiFaction;
   let faction:FactionId='orcs';
   let callbacks:HudCallbacks|undefined;
   let paused=false;
@@ -73,6 +75,13 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
   const tooltip=createTooltip(root);
   const menu=el('.war-menu'),hud=el('.war-hud'),overlay=el('.game-overlay');
   const setText=(selector:string,text:string)=>{const node=el(selector);if(node.textContent!==text)node.textContent=text;};
+  // The host also owns the tooltip and native technology dialog.
+  const applyFaction=(id:FactionId)=>{
+    if(root.dataset.uiFaction===id)return;
+    root.dataset.uiFaction=id;
+    setText('#faction-name',FACTIONS[id].name);
+    el<HTMLImageElement>('#banner-portrait').src=`/assets/portrait-${id}.png`;
+  };
   const notice=(text:string)=>{setText('.notice',text);el('.notice').hidden=false;noticeUntil=performance.now()+4500;};
   const reset=()=>{tooltip.hide();el('.loading-battle').hidden=true;paused=false;overlay.hidden=true;actionsKey='';actionMode='build';el('#selection-roster').dataset.ids='';el('#selection-roster').replaceChildren();el('#production-queue').dataset.key='';el('#production-queue').replaceChildren();el('#saved-groups').replaceChildren();};
   root.querySelectorAll<HTMLButtonElement>('[data-faction]').forEach(button=>button.addEventListener('click',()=>{
@@ -104,15 +113,16 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
     const corners=callbacks?.cameraCorners()??[];if(corners.length){ctx.strokeStyle='#fff0b6';ctx.lineWidth=1.5;ctx.beginPath();corners.forEach((p,i)=>{if(i===0)ctx.moveTo(p.x*cw,p.y*ch);else ctx.lineTo(p.x*cw,p.y*ch);});ctx.closePath();ctx.stroke();}
   }
   return {
-    showMenu:()=>{tree.close();reset();menu.hidden=false;hud.hidden=true;},
-    showGame:()=>{reset();menu.hidden=true;hud.hidden=false;el('.loading-battle').hidden=false;},
+    showMenu:()=>{tree.close();reset();delete root.dataset.uiFaction;menu.hidden=false;hud.hidden=true;},
+    showGame:(id:FactionId=faction)=>{reset();applyFaction(id);menu.hidden=true;hud.hidden=false;el('.loading-battle').hidden=false;},
     ready:()=>{el('.loading-battle').hidden=true;},
     battlefieldBounds:()=>({top:el('.resource-bar').getBoundingClientRect().bottom,bottom:el('.tactical-bar').getBoundingClientRect().top}),
     notice,
     update:(s:GameState,selected:number[],cb:HudCallbacks)=>{
-      state=s;callbacks=cb;tree.update(s,paused);if(!menu.hidden)return;const player=s.players[0],definition=FACTIONS[player.faction];
+      state=s;callbacks=cb;if(!menu.hidden)return;const player=s.players[0],definition=FACTIONS[player.faction];
+      applyFaction(player.faction);tree.update(s,paused);
       setText('#sound-button',cb.isMuted()?'Enable sound':'Mute sound');el('#sound-button').setAttribute('aria-pressed',String(cb.isMuted()));
-      setText('#faction-name',definition.name);el<HTMLImageElement>('#banner-portrait').src=`/assets/portrait-${player.faction}.png`;setText('#wood',Math.floor(player.wood).toString());setText('#ore',Math.floor(player.ore).toString());setText('#crystal',Math.floor(player.crystal).toString());setText('#population',`${player.population} / ${player.cap}`);
+      setText('#wood',Math.floor(player.wood).toString());setText('#ore',Math.floor(player.ore).toString());setText('#crystal',Math.floor(player.crystal).toString());setText('#population',`${player.population} / ${player.cap}`);
       el('.objective-tag').textContent=`${AGE_NAMES[playerAge(s.players[0])]} · Destroy all enemy strongholds · ${s.mapSize} · seed ${s.seed}`;
       setText('#clock',`${Math.floor(s.time/60).toString().padStart(2,'0')}:${Math.floor(s.time%60).toString().padStart(2,'0')}`);
       if(performance.now()>noticeUntil)el('.notice').hidden=true;

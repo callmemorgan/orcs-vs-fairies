@@ -1,0 +1,210 @@
+/* Gameplay chrome lives on the host so tooltips and modal dialogs inherit it.
+   Textures and ornaments are decorative; resource and health colors stay semantic. */
+[data-ui-faction] {
+  --chrome-text: #f4e8d3;
+  --chrome-muted: #c7baaa;
+  --chrome-radius: 2px;
+  --chrome-control-radius: 1px;
+  --chrome-texture: none;
+  color: var(--chrome-text);
+  --gold: var(--chrome-accent);
+  --line: var(--chrome-line);
+  --muted: var(--chrome-muted);
+}
+
+/* Iron plates, scorched timber and rivets. */
+[data-ui-faction='orcs'] {
+  --chrome-accent: #efb16e;
+  --chrome-line: #9e7250;
+  --chrome-panel: #241d18;
+  --chrome-deep: #130f0c;
+  --chrome-raised: #463024;
+  --chrome-glow: #845235;
+  --chrome-text: #f5e5cd;
+  --chrome-muted: #cabbab;
+  --chrome-mark: url('/assets/chrome/orcs.svg');
+  --chrome-texture: radial-gradient(circle at 7px 7px, #cf986170 0 1.5px, #0b080880 2px 3px, transparent 3.5px), repeating-linear-gradient(0deg, transparent 0 23px, #bd86510a 24px, #0003 25px, transparent 26px 48px);
+}
+
+/* Curved leafwork and pale woodland silver. */
+[data-ui-faction='fairies'] {
+  --chrome-accent: #a7ead2;
+  --chrome-line: #659c87;
+  --chrome-panel: #18332c;
+  --chrome-deep: #0b1e1b;
+  --chrome-raised: #284d3e;
+  --chrome-glow: #426f5b;
+  --chrome-text: #e3f4e8;
+  --chrome-muted: #b9d4c6;
+  --chrome-radius: 18px 3px 18px 3px;
+  --chrome-control-radius: 10px 2px 10px 2px;
+  --chrome-mark: url('/assets/chrome/fairies.svg');
+  --chrome-texture: repeating-radial-gradient(ellipse at 0 100%, transparent 0 22px, #a7ead20b 23px 24px, transparent 25px 48px);
+}
+
+/* Masonry courses, brass inlays and square forge fittings. */
+[data-ui-faction='dwarves'] {
+  --chrome-accent: #f2c66f;
+  --chrome-line: #aa8954;
+  --chrome-panel: #302d28;
+  --chrome-deep: #191a18;
+  --chrome-raised: #514638;
+  --chrome-glow: #7c603a;
+  --chrome-text: #f6e9cc;
+  --chrome-muted: #cec4af;
+  --chrome-radius: 0px;
+  --chrome-control-radius: 0px;
+  --chrome-mark: url('/assets/chrome/dwarves.svg');
+  --chrome-texture: repeating-linear-gradient(0deg, transparent 0 31px, #e8c3860c 32px, #0004 33px 34px), repeating-linear-gradient(90deg, transparent 0 79px, #c7ad780c 80px, #0003 81px 82px);
+}
+
+/* Sepulchral arches, bone edging and violet fissures. */
+[data-ui-faction='undead'] {
+  --chrome-accent: #d4b5f3;
+  --chrome-line: #97829f;
+  --chrome-panel: #292332;
+  --chrome-deep: #14111c;
+  --chrome-raised: #44364c;
+  --chrome-glow: #69527b;
+  --chrome-text: #efe4f1;
+  --chrome-muted: #c5b8cd;
+  --chrome-radius: 18px 18px 2px 2px;
+  --chrome-control-radius: 9px 9px 1px 1px;
+  --chrome-mark: url('/assets/chrome/undead.svg');
+  --chrome-texture: repeating-linear-gradient(116deg, transparent 0 66px, #b88ddd12 67px, #0004 68px 69px, transparent 70px 110px);
+}
+
+/* Shell rims, patinated sea metal and etched waves. */
+[data-ui-faction='tideborn'] {
+  --chrome-accent: #edc3a0;
+  --chrome-line: #6ba8aa;
+  --chrome-panel: #173438;
+  --chrome-deep: #0a2029;
+  --chrome-raised: #28525a;
+  --chrome-glow: #437f82;
+  --chrome-text: #e2f2ef;
+  --chrome-muted: #b4d1d0;
+  --chrome-radius: 16px 16px 5px 5px;
+  --chrome-control-radius: 7px;
+  --chrome-mark: url('/assets/chrome/tideborn.svg');
+  --chrome-texture: repeating-radial-gradient(ellipse at 50% -60%, transparent 0 18px, #8be0d712 19px 20px, transparent 21px 36px);
+}
+
+/* Glazed ceramic, inset crystal and a regular circuit grid. */
+[data-ui-faction='automata'] {
+  --chrome-accent: #d7c0ff;
+  --chrome-line: #a69bb5;
+  --chrome-panel: #34343f;
+  --chrome-deep: #1d1e29;
+  --chrome-raised: #4c4b5d;
+  --chrome-glow: #726681;
+  --chrome-text: #f3eedd;
+  --chrome-muted: #d0cbd9;
+  --chrome-radius: 5px;
+  --chrome-control-radius: 3px;
+  --chrome-mark: url('/assets/chrome/automata.svg');
+  --chrome-texture: linear-gradient(90deg, #d7c0ff09 1px, transparent 1px), linear-gradient(#d7c0ff09 1px, transparent 1px);
+}
+
+[data-ui-faction] .resource-bar,
+[data-ui-faction] .tactical-bar > .panel,
+[data-ui-faction] .overlay-card,
+[data-ui-faction] .command-tooltip,
+[data-ui-faction] .technology-tree,
+[data-ui-faction] .loading-battle > span {
+  color: var(--chrome-text);
+  border-color: var(--chrome-line);
+  border-radius: var(--chrome-radius);
+  background: var(--chrome-texture), linear-gradient(145deg, var(--chrome-panel), var(--chrome-deep));
+  box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--chrome-line) 14%, transparent), inset 0 1px 0 color-mix(in srgb, var(--chrome-accent) 35%, transparent), 0 4px 14px #0008;
+}
+[data-ui-faction='automata'] :is(.resource-bar, .tactical-bar > .panel, .overlay-card, .command-tooltip, .technology-tree, .loading-battle > span) {
+  background-size: 28px 28px, 28px 28px, auto;
+}
+[data-ui-faction] .resource-bar {
+  border-radius: 0;
+  border-bottom: 2px solid var(--chrome-line);
+}
+[data-ui-faction] .banner { border-color: var(--chrome-line); }
+[data-ui-faction] :is(.banner strong, .selection-details h2, .command-tooltip h3, .overlay-card h2, .technology-tree h2, .age-columns h3) { color: var(--chrome-text); }
+[data-ui-faction] :is(.banner small, .resource small, .panel-label span, .selection-details p, #selection-stats, .key-guide, .command-note, .overlay-card p, .technology-tree p, .tooltip-cost i) { color: var(--chrome-muted); }
+[data-ui-faction] #selection-stats b { color: var(--chrome-text); }
+[data-ui-faction] :is(.panel-label, .queue-label) { color: var(--chrome-accent); }
+[data-ui-faction] .panel-label {
+  gap: 6px;
+  border-color: color-mix(in srgb, var(--chrome-line) 60%, transparent);
+  background: linear-gradient(90deg, var(--chrome-raised), transparent);
+}
+[data-ui-faction] .panel-label::before {
+  content: '';
+  flex: 0 0 16px;
+  height: 16px;
+  background: var(--chrome-accent);
+  mask: var(--chrome-mark) center / contain no-repeat;
+  pointer-events: none;
+}
+[data-ui-faction] .panel-label > span { margin-left: auto; }
+/* Saved groups use the space immediately after the selection label. */
+[data-ui-faction] .selection-panel:has(.group-shortcut) > .panel-label::before { display: none; }
+[data-ui-faction] .minimap-panel .panel-label {
+  background: var(--chrome-panel);
+  border-color: var(--chrome-line);
+  border-radius: var(--chrome-radius);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+[data-ui-faction] #minimap { border-color: var(--chrome-line); }
+[data-ui-faction] .portrait {
+  border-color: var(--chrome-accent);
+  border-radius: var(--chrome-control-radius);
+  background: radial-gradient(ellipse at 50% 15%, var(--chrome-glow), var(--chrome-deep));
+  box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--chrome-line) 25%, transparent);
+  color: var(--chrome-accent);
+}
+[data-ui-faction] :is(.action-button, .small-button, .roster-unit, .queue-item, .group-shortcut, .technology-tree button),
+[data-ui-faction] #command-tabs button {
+  border-color: var(--chrome-line);
+  border-radius: var(--chrome-control-radius);
+  color: var(--chrome-text);
+  background: linear-gradient(145deg, var(--chrome-raised), var(--chrome-panel));
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--chrome-line) 15%, transparent);
+}
+[data-ui-faction] :is(.action-button.unavailable, .technology-tree button:disabled) {
+  background: var(--chrome-deep);
+  border-color: color-mix(in srgb, var(--chrome-line) 55%, var(--chrome-deep));
+}
+[data-ui-faction] .action-button.unavailable strong { color: var(--chrome-muted); }
+[data-ui-faction] .group-shortcut.active,
+[data-ui-faction] #command-tabs button[aria-pressed=true] {
+  border-color: var(--chrome-accent);
+  background: var(--chrome-glow);
+}
+[data-ui-faction] :is(button, input, select, [tabindex]):focus-visible { outline-color: var(--chrome-accent); }
+[data-ui-faction] button:hover,
+[data-ui-faction] #command-tabs button:hover { border-color: var(--chrome-accent); }
+[data-ui-faction] kbd { color: var(--chrome-text); background: var(--chrome-deep); border-color: var(--chrome-line); }
+[data-ui-faction] .primary {
+  background: linear-gradient(var(--chrome-accent), color-mix(in srgb, var(--chrome-accent) 65%, var(--chrome-glow)));
+  border-color: var(--chrome-accent);
+  border-radius: var(--chrome-control-radius);
+  color: var(--chrome-deep);
+}
+[data-ui-faction] :is(.objective-tag, .notice) { color: var(--chrome-text); background: var(--chrome-panel); border-color: var(--chrome-accent); }
+[data-ui-faction] .notice { border-radius: var(--chrome-control-radius); }
+[data-ui-faction] .key-guide { border-color: var(--chrome-line); }
+[data-ui-faction] .construction-track i { background: var(--chrome-accent); }
+[data-ui-faction] .age-columns section { border-color: var(--chrome-line); }
+[data-ui-faction] .age-columns .age-reached { border-color: var(--chrome-accent); }
+[data-ui-faction] .age-columns button small { color: var(--chrome-accent); }
+[data-ui-faction] .tactical-bar * { scrollbar-color: var(--chrome-line) var(--chrome-deep); }
+
+/* Faction-specific fittings use borders and shadows, leaving hit areas intact. */
+[data-ui-faction='orcs'] .panel-label { border-bottom: 3px double var(--chrome-line); }
+[data-ui-faction='orcs'] .portrait { box-shadow: inset 0 0 0 3px #20130d, inset 0 0 0 5px #9e725050; }
+[data-ui-faction='dwarves'] .panel-label { border-bottom: 3px double var(--chrome-line); background: linear-gradient(90deg, #715330, var(--chrome-panel)); }
+[data-ui-faction='dwarves'] .portrait { border-width: 3px; box-shadow: inset 0 0 0 2px #171714, inset 0 0 0 4px #aa895480; }
+[data-ui-faction='undead'] .panel-label { background: linear-gradient(90deg, #55405f, var(--chrome-deep)); }
+[data-ui-faction='undead'] .portrait { border-radius: 40% 40% 2px 2px; }
+[data-ui-faction='tideborn'] .portrait { border-radius: 26px 26px 8px 8px; box-shadow: inset 0 0 0 3px #edc3a026; }
+[data-ui-faction='automata'] .panel-label { background: linear-gradient(90deg, #57515e, var(--chrome-panel)); border-bottom: 1px solid var(--chrome-accent); }
+[data-ui-faction='automata'] .portrait { box-shadow: inset 0 0 0 3px #e2d8be33, inset 0 0 18px #d7c0ff26; }
