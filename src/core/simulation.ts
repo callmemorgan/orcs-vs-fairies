@@ -1,6 +1,6 @@
 import { commandImprovement, startImprovements, stepImprovements } from './improvements';
 import '../improvements/rules';
-import { playerAge, researchRequirement } from './progression';
+import { playerAge, researchRequirement, upgradeEffects } from './progression';
 import { ECONOMY, FACTIONS, UPGRADES } from './content';
 import { walkable, segmentWalkable, openDestination, route } from './navigation';
 import { generateMap, terrainAt, TERRAIN } from './maps';
@@ -153,7 +153,7 @@ function walkTo(e:Entity,x:number,y:number):void{
  e.x=x;e.y=y;e.animation='walk';
 }
 function upgradeFactor(s:GameState,e:Entity,effect:'gather'|'speed'|'damage'):number{
- let factor=1;for(const id of s.players[e.side].upgrades){const u=UPGRADES[id];if(u.appliesTo===e.role)factor*=u.effects[effect]??1;}return factor;
+ return upgradeEffects(s.players[e.side],e.role)[effect];
 }
 function movementSpeed(s:GameState,e:Entity):number{
  const terrain=terrainAt(s,e.x,e.y);
@@ -176,7 +176,7 @@ function move(s:GameState,e:Entity,to:Vec,dt:number,reach=.45):boolean{
 function emplaced(s:GameState,e:Entity):boolean{return e.entrenchedAt!==undefined&&s.time-e.entrenchedAt>=3;}
 function weaponRange(s:GameState,e:Entity):number{return e.kind==='building'?7:unitDef(s,e).range+(emplaced(s,e)&&e.role==='special'?3:0);}
 function damage(s:GameState,a:Entity,b:Entity):void{
- const d=a.kind==='unit'?unitDef(s,a):null;const armor=(b.kind==='unit'?unitDef(s,b).armor:3)+(emplaced(s,b)?2:0)+s.players[b.side].upgrades.reduce((sum,id)=>sum+(UPGRADES[id].appliesTo===b.role?(UPGRADES[id].effects.armor??0):0),0);
+ const d=a.kind==='unit'?unitDef(s,a):null;const armor=(b.kind==='unit'?unitDef(s,b).armor:3)+(emplaced(s,b)?2:0)+upgradeEffects(s.players[b.side],b.role).armor;
  const base=d?d.damage*upgradeFactor(s,a,'damage'):19;const bonus=d?.ability==='momentum'?1+a.momentum*.40:emplaced(s,a)?1.15:1;const hit=Math.max(1,base*bonus*(b.kind==='building'?(d?.buildingDamageMultiplier??1):(d?.bonusAgainst?.[b.role as UnitRole]??1))-armor)*(a.illusion?.25:1);
  a.cooldown=(d?.cooldown??1.4)/(d?.ability==='momentum'?1+a.momentum*.15:1);if(d?.ability==='momentum')a.momentum=Math.min(1,a.momentum+.15);a.animation='attack';a.animTime=0;const event=emit(s,'attack',a,b.id);runtime(s).hits.push({source:a,target:b,amount:hit,event});
 }

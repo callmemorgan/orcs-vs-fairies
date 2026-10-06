@@ -10,10 +10,10 @@ export type UnitRole = 'worker' | 'melee' | 'ranged' | 'special' | 'cavalry' | '
 export type BuildingRole = 'hq' | 'depot' | 'barracks' | 'tower' | 'wall' | 'gate';
 export type ResourceKind = 'wood' | 'ore' | 'crystal';
 export type Age = 1 | 2 | 3;
-export type UpgradeId = 'worker-harvest' | 'worker-speed' | 'town-age' | 'citadel-age' | 'forged-weapons' | 'tempered-armor' | 'veteran-arms';
+export type UpgradeId = 'worker-harvest' | 'worker-speed' | 'town-age' | 'citadel-age' | 'forged-weapons' | 'tempered-armor' | 'veteran-arms' | 'ranged-drills' | 'pike-drills' | 'cavalry-drills' | 'specialist-drills' | 'siege-drills';
 export interface Vec { x:number; y:number }
 export interface Cost { wood:number; ore:number; crystal:number }
-export interface UpgradeDef { id:UpgradeId; name:string; description:string; cost:Cost; researchTime:number; building:BuildingRole; appliesTo:UnitRole; age?:Age; requires?:UpgradeId[]; advancesTo?:Age; effects:{gather?:number;speed?:number;damage?:number;armor?:number} }
+export interface UpgradeDef { id:UpgradeId; name:string; description:string; cost:Cost; researchTime:number; building:BuildingRole; appliesTo:UnitRole; improvement?:string; age?:Age; requires?:UpgradeId[]; advancesTo?:Age; effects:{gather?:number;speed?:number;damage?:number;armor?:number} }
 export interface UnitDef { id:string; name:string; role:UnitRole; cost:Cost; hp:number; shield?:number; damage:number; buildingDamageMultiplier?:number; age?:Age; bonusAgainst?:Partial<Record<UnitRole,number>>; armor:number; range:number; speed:number; cooldown:number; trainTime:number; sight:number; ability?:'momentum'|'illusion'|'heal'|'entrench'|'raise'|'surge'|'ward'; description:string }
 export interface BuildingDef { age?:Age; id:string; name:string; role:BuildingRole; cost:Cost; hp:number; size:number; buildTime:number; sight:number; description:string; ability?:'heal' }
 export interface FactionDef { id:FactionId; name:string; subtitle:string; color:number; accent:string; description:string; terrainSpeeds?:Partial<Record<TerrainKind,number>>; units:Record<UnitRole,UnitDef>; buildings:Record<BuildingRole,BuildingDef>; ai:{aggression:number; armySize:number; composition?:Partial<Record<Exclude<UnitRole,'worker'>,number>>} }
