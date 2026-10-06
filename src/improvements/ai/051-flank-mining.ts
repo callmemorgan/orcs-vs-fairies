@@ -3,7 +3,7 @@ import { isVisible, issueCommand } from '../../core/simulation';
 import type { GameState, JsonValue, ResourceNode, Side } from '../../core/types';
 import { buildNear, computer, distance, moveTo, owned, seen } from './shared';
 
-interface Expedition {memory:ResourceNode[];deposit:number|null;crew:number[];dropoff:number|null;delivered:number}
+interface Expedition {memory:ResourceNode[];deposit:number|null;crew:number[];dropoff:number|null;delivered:number;retryAt:number;placementAttempts:number}
 export interface State {sides:Expedition[]}
 function workFlank(game:GameState,side:Side,state:Expedition):void {
   const ours=owned(game,side),hq=ours.find(e=>e.role==='hq');if(!hq)return;
@@ -17,7 +17,7 @@ function workFlank(game:GameState,side:Side,state:Expedition):void {
   const enemies=seen(game,side);
   if(!deposit&&workers.length>=5){
     deposit=state.memory.filter(n=>n.amount>300&&distance(n,hq)>18&&!enemies.some(e=>distance(e,n)<9)).sort((a,b)=>distance(a,hq)-distance(b,hq)||a.id-b.id)[0];
-    if(deposit)state.deposit=deposit.id;
+    if(deposit){state.deposit=deposit.id;state.retryAt=0;}
   }
   if(!deposit)return;
   if(enemies.some(e=>e.kind==='unit'&&e.role!=='worker'&&distance(e,deposit)<8)){
@@ -30,15 +30,20 @@ function workFlank(game:GameState,side:Side,state:Expedition):void {
   state.dropoff=dropoff?.id??null;
   for(const [index,id] of state.crew.entries()){
     const worker=workers.find(w=>w.id===id)!;
-    if(index===0&&!dropoff){if(!buildNear(game,side,worker,'depot',deposit))moveTo(game,side,worker,deposit);continue;}
+    if(index===0&&!dropoff&&worker.carried===0&&game.time>=state.retryAt){
+      state.retryAt=game.time+4;state.placementAttempts++;
+      if(buildNear(game,side,worker,'depot',deposit))continue;
+      // Failed placement still leaves the crew lead productive at the observed camp.
+    }
     if(index===0&&dropoff&&dropoff.progress<1){if(worker.order.type!=='build'||worker.order.target!==dropoff.id)issueCommand(game,side,{type:'repair',ids:[id],target:dropoff.id});continue;}
-    if(isVisible(game,side,deposit.x,deposit.y)){
-      if(worker.order.type!=='gather'||worker.order.target!==deposit.id)issueCommand(game,side,{type:'gather',ids:[id],target:deposit.id});
-    }else moveTo(game,side,worker,deposit);
+    // A gather order includes its return trip, even when the deposit leaves vision.
+    if(worker.order.type==='gather'&&worker.order.target===deposit.id)continue;
+    if(isVisible(game,side,deposit.x,deposit.y))issueCommand(game,side,{type:'gather',ids:[id],target:deposit.id});
+    else moveTo(game,side,worker,deposit);
   }
 }
 registerGameImprovement({
-  id:'feature-051',initialState:()=>({sides:[0,1].map(()=>({memory:[],deposit:null,crew:[],dropoff:null,delivered:0}))}),
+  id:'feature-051',initialState:()=>({sides:[0,1].map(()=>({memory:[],deposit:null,crew:[],dropoff:null,delivered:0,retryAt:0,placementAttempts:0}))}),
   step(game,_dt,json){const state=json as unknown as State;for(const side of [0,1] as Side[])if(computer(game,side)){
     const expedition=state.sides[side];for(const event of game.events)if(event.type==='gather'&&event.side===side&&event.source!==undefined&&expedition.crew.includes(event.source))expedition.delivered+=event.amount??0;
     workFlank(game,side,expedition);

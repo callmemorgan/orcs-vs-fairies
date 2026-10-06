@@ -23,8 +23,11 @@ export function buildNear(game:GameState,side:Side,worker:Entity,role:BuildingRo
   // An unaffordable build fails at every slot, so skip the placement scan.
   const player=game.players[side],cost=FACTIONS[player.faction].buildings[role]?.cost;
   if(!cost||player.wood<cost.wood||player.ore<cost.ore||player.crystal<cost.crystal)return false;
-  for(let radius=3;radius<=6;radius++)for(let i=0;i<16;i++){
-    const x=Math.floor(point.x+Math.cos(i*Math.PI/8)*radius)+.5,y=Math.floor(point.y+Math.sin(i*Math.PI/8)*radius)+.5;
+  // Every half-tile center in the bounded ring, including narrow buildable patches.
+  const cx=Math.floor(point.x)+.5,cy=Math.floor(point.y)+.5;
+  for(let dy=-6;dy<=6;dy++)for(let dx=-6;dx<=6;dx++){
+    const r=Math.hypot(dx,dy);if(r<3||r>6.5)continue;
+    const x=cx+dx,y=cy+dy;
     if(canPlace(game,side,role,x,y)&&issueCommand(game,side,{type:'build',ids:[worker.id],role,x,y}))return true;
   }
   return false;

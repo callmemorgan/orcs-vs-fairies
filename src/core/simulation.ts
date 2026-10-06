@@ -273,7 +273,7 @@ export function runAI(s:GameState,side:Side=1):void{
  if(workers.length+ hq.queue.filter(r=>r==='worker').length<(age===1?13:age===2?19:24)&&hq.queue.length<2)issueCommand(s,side,{type:'train',id:hq.id,role:'worker'});
  if(hq.progress===1&&!hq.research&&workers.length>=7)for(const id of ['worker-harvest','worker-speed','town-age','citadel-age'] as UpgradeId[]){const u=UPGRADES[id];if(u.building==='hq'&&!researchRequirement(s,side,id)&&p.wood>=u.cost.wood+120&&p.ore>=u.cost.ore+80&&p.crystal>=u.cost.crystal){issueCommand(s,side,{type:'research',id:hq.id,upgrade:id});break;}}
  // Claim an observed outer deposit with a new production/drop-off center.
- if(age>=2&&workers.length>=13&&buildings.filter(b=>b.role==='hq').length<2&&!workers.some(w=>w.order.type==='build')&&p.wood>=400&&p.ore>=220){
+ if(age>=2&&workers.length>=13&&buildings.filter(b=>b.role==='hq').length<2&&!availableWorkers.some(w=>w.order.type==='build')&&p.wood>=400&&p.ore>=220){
   const deposit=available.filter(n=>n.amount>300&&distance(n,hq)>14&&!buildings.some(b=>(b.role==='hq'||b.role==='depot')&&distance(b,n)<8)).sort((a,b)=>distance(a,hq)-distance(b,hq))[0];
   if(deposit){const builder=availableWorkers.filter(w=>w.order.type==='gather'||w.order.type==='idle').sort((a,b)=>distance(a,deposit)-distance(b,deposit))[0];
    if(builder){let placed=false;for(let r=4;r<=7&&!placed;r++)for(let i=0;i<12&&!placed;i++){const x=Math.floor(deposit.x+Math.cos(i*Math.PI/6)*r)+.5,y=Math.floor(deposit.y+Math.sin(i*Math.PI/6)*r)+.5;if(canPlace(s,side,'hq',x,y))placed=issueCommand(s,side,{type:'build',ids:[builder.id],role:'hq',x,y});}}
@@ -281,9 +281,9 @@ export function runAI(s:GameState,side:Side=1):void{
  }
  const queued=reserved(s,side);let buildRole:BuildingRole|undefined;
  if(!buildings.some(b=>b.role==='barracks'))buildRole='barracks';else if(p.cap-p.population-queued<5&&p.cap<100&&!buildings.some(b=>b.role==='depot'&&b.progress<1))buildRole='depot';else if(s.time>100&&!buildings.some(b=>b.role==='tower'))buildRole='tower';else if(s.time>180&&buildings.filter(b=>b.role==='barracks').length<(age===3&&p.wood>700&&p.ore>300?5:(age>=2||s.time>420)&&p.wood>400?3:2))buildRole='barracks';
- if(buildRole&&!workers.some(e=>e.order.type==='build')){const builder=availableWorkers[0];if(builder){const dir=side===0?1:-1;let placed=false;for(let r=5;r<=10&&!placed;r+=2)for(let i=0;i<16&&!placed;i++){const angle=i*Math.PI/8;const x=hq.x+Math.round(Math.cos(angle)*r)*dir,y=hq.y+Math.round(Math.sin(angle)*r)*dir;if(canPlace(s,side,buildRole,x,y))placed=issueCommand(s,side,{type:'build',ids:[builder.id],role:buildRole,x,y});}}}
+ if(buildRole&&!availableWorkers.some(e=>e.order.type==='build')){const builder=availableWorkers[0];if(builder){const dir=side===0?1:-1;let placed=false;for(let r=5;r<=10&&!placed;r+=2)for(let i=0;i<16&&!placed;i++){const angle=i*Math.PI/8;const x=hq.x+Math.round(Math.cos(angle)*r)*dir,y=hq.y+Math.round(Math.sin(angle)*r)*dir;if(canPlace(s,side,buildRole,x,y))placed=issueCommand(s,side,{type:'build',ids:[builder.id],role:buildRole,x,y});}}}
  // A short defensive screen beside the tower leaves a gate in the army's route.
- if(age>=2&&p.wood>220&&p.ore>160&&!workers.some(w=>w.order.type==='build')){
+ if(age>=2&&p.wood>220&&p.ore>160&&!availableWorkers.some(w=>w.order.type==='build')){
   const tower=buildings.find(b=>b.role==='tower'&&b.progress===1),builder=availableWorkers.find(w=>w.order.type==='gather'||w.order.type==='idle');
   if(tower&&builder){const dir=side===0?1:-1;const slots:[BuildingRole,number,number][]=[['gate',0,3.5],['wall',-1.5,3.5],['wall',1.5,3.5],['wall',-2.5,3.5],['wall',2.5,3.5]];
    for(const [role,dx,dy] of slots){const x=tower.x+dx*dir,y=tower.y+dy*dir;if(buildings.some(b=>Math.hypot(b.x-x,b.y-y)<.4))continue;if(canPlace(s,side,role,x,y)&&issueCommand(s,side,{type:'build',ids:[builder.id],role,x,y}))break;}
