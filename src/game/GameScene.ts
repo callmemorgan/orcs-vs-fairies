@@ -8,6 +8,7 @@ import { PlayerView } from '../core/observation';
 import { FACTIONS } from '../core/content';
 import { dispatchPlayerCommand } from './commands';
 import { CONTROL_ACTIONS, CONTROL_BY_ID, controls, inputIsSuppressed } from '../improvements/controls/bindings';
+import { drawTeamMarking } from '../improvements/art/teamMarkings';
 import { captureDigitHotkeys } from '../ui/availability';
 
 const TILE_W = 64, TILE_H = 32, OX = 1600, OY = 80;
@@ -136,6 +137,7 @@ export default class GameScene extends Phaser.Scene {
     if(group!==undefined){if(assign){this.groups[group]=[...this.selected];this.options.onNotice(`Group ${group} assigned.`);}else this.recallGroup(String(group));}
   }
   private visible(e:Entity){return e.side===0||this.state.visible[0].has(Math.floor(e.y)*this.state.width+Math.floor(e.x));}
+  private visualTop(e:Entity,y:number){return this.art.top(`entity:${e.id}`)??y-(e.kind==='building'?89:40);}
   private hit(x:number,y:number){return [...this.state.entities].sort((a,b)=>(b.x+b.y)-(a.x+a.y)||b.id-a.id).find(e=>{if(e.hp<=0||!this.visible(e))return false;const rendered=this.art.contains(`entity:${e.id}`,x,y);if(rendered!==null)return rendered;const q=project(e.x,e.y);const r=e.kind==='building'?35:14;return Math.abs(x-q.x)<r&&y>q.y-(e.kind==='building'?65:35)&&y<q.y+12;});}
   private order(p:Phaser.Input.Pointer,attack=false){
     if(this.buildRole){this.setBuildRole(null);return;}
@@ -288,7 +290,7 @@ export default class GameScene extends Phaser.Scene {
       if(unit.hp<=0||!this.visible(unit))continue;
       const c=project(unit.x,unit.y);
       // Ownership stays readable when both armies have the same faction artwork.
-      g.fillStyle(unit.side===0?0xb9e493:0xf08572,.95).fillTriangle(c.x-3,c.y+6,c.x+3,c.y+6,c.x,c.y+11);
+      drawTeamMarking(g,unit,c,this.visualTop(unit,c.y));
       if((unit.shield??0)>0){g.lineStyle(1,0xb59af0,.35+.45*(unit.shield!/unit.maxShield!)).strokeEllipse(c.x,c.y-14,35,39);}
       if((unit.surgeUntil??0)>this.state.time){g.lineStyle(2,0x83d5cf,.7).strokeEllipse(c.x,c.y+2,36,16);}
       if(unit.entrenchedAt!==undefined){
@@ -305,7 +307,7 @@ export default class GameScene extends Phaser.Scene {
     for(const f of this.combatEffects){const t=Math.min(1,(this.state.time-f.born)/.35),x=f.from.x+(f.to.x-f.from.x)*t,y=f.from.y-24+(f.to.y-f.from.y)*t-Math.sin(t*Math.PI)*(f.heavy?25:5);g.fillStyle(f.color,1-t*.6).fillCircle(x,y,f.heavy?4:2);if(t>=1)g.lineStyle(2,f.color,.5).strokeCircle(f.to.x,f.to.y-20,8);}
     for(const e of this.state.entities){
       if(e.hp<=0||!this.visible(e)||!(this.selected.includes(e.id)||e.hp<e.maxHp))continue;
-      const q=project(e.x,e.y),w=e.kind==='building'?54:30,y=(this.art.top(`entity:${e.id}`)??(q.y-(e.kind==='building'?89:40)))-6;
+      const q=project(e.x,e.y),w=e.kind==='building'?54:30,y=this.visualTop(e,q.y)-6;
       g.fillStyle(0x182426,.9).fillRect(q.x-w/2-1,y-1,w+2,5);g.fillStyle(e.side===0?0xa8cc85:0xd87560).fillRect(q.x-w/2,y,w*Math.max(0,e.hp/e.maxHp),3);
       if(e.kind==='building'&&e.progress<1){g.fillStyle(0x182b2a,.8).fillRect(q.x-27,y+7,54,4);g.fillStyle(0xe4c578).fillRect(q.x-27,y+7,54*e.progress,4);}
     }
