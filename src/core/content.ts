@@ -1,4 +1,5 @@
 import { MILITARY_UPGRADES } from '../improvements/settlement/military';
+import { ROLE_PROFILES } from '../improvements/combat/roleProfiles';
 import type { FactionId, FactionDef, UnitDef, UnitRole, BuildingDef, BuildingRole, UpgradeDef } from './types';
 export const ECONOMY = { harvestPerSecond: 2.28 } as const;
 
@@ -64,7 +65,7 @@ const BASE_FACTIONS:Record<FactionId,BaseFaction>={
 
 };
 
-// The three shared battlefield roles have faction-specific names and materials in art.
+// Expanded battlefield roles share counters and costs; faction profiles set their jobs.
 const expansionNames:Record<FactionId,[string,string,string]>={
  orcs:['Boar Rider','Pikejaw','Iron Catapult'],fairies:['Stag Rider','Briar Pike','Thorn Trebuchet'],
  dwarves:['Mountain Rider','Deep Pike','Stone Thrower'],undead:['Dread Rider','Bone Pike','Grave Catapult'],
@@ -76,9 +77,9 @@ export const FACTIONS:Record<FactionId,FactionDef>=Object.fromEntries(Object.ent
   wall:{...building(`${prefix}-wall`,'Stone Wall','wall',30,25,1100,1,15,'A durable barrier. Siege engines break walls quickly.'),age:2},
   gate:{...building(`${prefix}-gate`,'Town Gate','gate',90,65,1400,2,28,'Open to let armies pass. An open gate also admits enemies. Cannot close on a unit.'),age:2},
  },units:{...base.units,special:{...base.units.special,age:2},
-  cavalry:{...unit(`${prefix}-cavalry`,names[0],'cavalry',100,65,210,18,2,1.5,3.5,1.3,42,undefined,'Fast raider. Strong against ranged troops; vulnerable to pikes.'),age:2,bonusAgainst:{ranged:1.7}},
-  spear:{...unit(`${prefix}-spear`,names[1],'spear',55,25,125,11,1,1.9,2.1,1.25,28,undefined,'Long pike infantry. Deals triple damage to cavalry.'),age:1,bonusAgainst:{cavalry:3}},
-  siege:{...unit(`${prefix}-siege`,names[2],'siege',180,140,185,28,2,8.5,1.05,3.8,65,undefined,'Long-range siege engine. Deals quadruple damage to buildings. Protect it from raiders.'),age:3,cost:{wood:180,ore:140,crystal:25},buildingDamageMultiplier:4,sight:11},
+  cavalry:{...unit(`${prefix}-cavalry`,names[0],'cavalry',100,65,210,18,2,1.5,3.5,1.3,42,undefined,'Fast raider. Strong against ranged troops; vulnerable to pikes.'),age:2,bonusAgainst:{ranged:1.7},...ROLE_PROFILES[faction].cavalry},
+  spear:{...unit(`${prefix}-spear`,names[1],'spear',55,25,125,11,1,1.9,2.1,1.25,28,undefined,'Long pike infantry. Deals triple damage to cavalry.'),age:1,bonusAgainst:{cavalry:3},...ROLE_PROFILES[faction].spear},
+  siege:{...unit(`${prefix}-siege`,names[2],'siege',180,140,185,28,2,8.5,1.05,3.8,65,undefined,'Long-range siege engine. Deals quadruple damage to buildings. Protect it from raiders.'),age:3,cost:{wood:180,ore:140,crystal:25},buildingDamageMultiplier:4,sight:11,...ROLE_PROFILES[faction].siege},
  }}];
 })) as Record<FactionId,FactionDef>;
 
