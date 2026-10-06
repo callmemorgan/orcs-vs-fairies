@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { isJsonValue } from '../core/improvements';
+import { isEntityIds, isJsonValue } from '../core/improvements';
 import { FACTIONS, UPGRADES } from '../core/content';
 import { PlayerView } from '../core/observation';
 import { createGame, isGameOver, issueCommand, stepGame } from '../core/simulation';
@@ -10,7 +10,7 @@ const record=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&
 const integer=(v:unknown):v is number=>Number.isSafeInteger(v);
 const finite=(v:unknown):v is number=>typeof v==='number'&&Number.isFinite(v);
 const keys=(o:Record<string,unknown>,allowed:string[])=>Object.keys(o).every(k=>allowed.includes(k));
-const idList=(v:unknown,min:number)=>Array.isArray(v)&&v.length>=min&&v.length<=100&&v.every(integer);
+const idList=(v:unknown,min:number)=>Array.isArray(v)&&v.length>=min&&v.length<=100&&isEntityIds(v);
 function validateCommand(v:unknown):v is Command{
  if(!record(v)||typeof v.type!=='string')return false;
  if(v.type==='improvement')return keys(v,['type','improvement','action','ids','payload'])&&typeof v.improvement==='string'&&typeof v.action==='string'&&idList(v.ids,0)&&(v.payload===undefined||isJsonValue(v.payload));

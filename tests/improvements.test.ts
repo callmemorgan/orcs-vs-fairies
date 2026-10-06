@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { registerGameImprovement } from '../src/core/improvements';
 import { createGame, issueCommand, refreshVisibility, stepGame } from '../src/core/simulation';
 import { PlayerView } from '../src/core/observation';
-import { TerminalSession } from '../src/cli/session';
+import { replayMatch, stateHash, TerminalSession } from '../src/cli/session';
 import type { JsonValue } from '../src/core/types';
 
 const cleanup:Array<()=>void>=[];
@@ -62,8 +62,7 @@ describe('optional headless rules',()=>{
   });
 });
 
-it('uses the same rule order and state hash for reordered browser and terminal options',async()=>{
-  const {stateHash}=await import('../src/cli/session');
+it('uses the same rule order and state hash for reordered browser and terminal options',()=>{
   const calls:string[]=[];
   for(const id of ['order-z','order-a'])cleanup.push(registerGameImprovement({id,initialState:()=>null,start:()=>{calls.push(`start:${id}`);},step:()=>{calls.push(`step:${id}`);},observe:()=>{calls.push(`observe:${id}`);return null;}}));
   const first=createGame('orcs',4127,'fairies',{controllers:['external','external'],improvements:{'order-z':null,'order-a':null}});
@@ -101,4 +100,44 @@ it('rejects sparse array options, initial state and custom command payloads befo
   expect(apply).not.toHaveBeenCalled();expect(s.improvements!['test-counter'].state).toEqual({count:0});
   expect(issueCommand(s,0,{type:'improvement',improvement:'test-counter',action:'increment',ids:[],payload:[null,1]})).toBe(true);
   expect(s.improvements!['test-counter'].state).toEqual({count:1});
+});
+
+it.each([
+  {name:'leading hole',ids:(id:number)=>{const ids=Array<number>(2);ids[1]=id;return ids;}},
+  {name:'trailing hole',ids:(id:number)=>{const ids=Array<number>(2);ids[0]=id;return ids;}},
+  {name:'all holes',ids:()=>Array<number>(1)},
+  {name:'undefined',ids:(id:number)=>[id,undefined]},
+  {name:'NaN',ids:(id:number)=>[id,NaN]},
+  {name:'infinity',ids:(id:number)=>[id,Infinity]},
+  {name:'negative infinity',ids:(id:number)=>[id,-Infinity]},
+  {name:'fraction',ids:(id:number)=>[id,id+.5]},
+  {name:'unsafe integer',ids:(id:number)=>[id,Number.MAX_SAFE_INTEGER+1]}
+])('rejects $name command IDs in core and terminal without mutation or replay entries',({ids})=>{
+  const apply=register(),s=game(),session=new TerminalSession();
+  session.handle({op:'start',side:0,seed:4127,improvements:options.improvements});
+  const owned=s.entities.find(e=>e.side===0&&e.role==='worker')!;
+  const command={type:'improvement' as const,improvement:'test-counter',action:'increment',ids:ids(owned.id) as number[]};
+  const coreHash=stateHash(s),terminalHash=stateHash(session.state!);
+  expect(issueCommand(s,0,command)).toBe(false);
+  expect(()=>session.handle({op:'command',command})).toThrow('Malformed command');
+  expect(()=>session.handle({op:'command',command:{type:'hold',ids:command.ids}})).toThrow('Malformed command');
+  expect(apply).not.toHaveBeenCalled();expect(stateHash(s)).toBe(coreHash);expect(stateHash(session.state!)).toBe(terminalHash);expect(session.replay).toHaveLength(1);
+});
+it('accepts dense and empty custom IDs consistently in core, terminal and serialized replay',()=>{
+  register();const session=new TerminalSession();
+  session.handle({op:'start',side:0,seed:4127,improvements:options.improvements});
+  const s=createGame('orcs',4127,'fairies',{controllers:['external','ai'],improvements:options.improvements});
+  const worker=s.entities.find(e=>e.side===0&&e.role==='worker')!;
+  for(const ids of [[worker.id],[]]){
+    const command={type:'improvement' as const,improvement:'test-counter',action:'increment',ids};
+    expect(issueCommand(s,0,command)).toBe(true);
+    expect(session.handle({op:'command',command})).toEqual({ok:true,result:{accepted:true,tick:0}});
+    expect(stateHash(s)).toBe(stateHash(session.state!));
+  }
+  const hold={type:'hold' as const,ids:[worker.id]};
+  expect(issueCommand(s,0,hold)).toBe(true);expect(session.handle({op:'command',command:hold})).toEqual({ok:true,result:{accepted:true,tick:0}});
+  expect(stateHash(s)).toBe(stateHash(session.state!));
+  const saved=JSON.parse(JSON.stringify(session.replay));
+  expect(replayMatch(saved)).toEqual({verified:4,response:{ok:true,result:{accepted:true,tick:0}}});
+  expect(s.improvements!['test-counter'].state).toEqual({count:2});
 });
