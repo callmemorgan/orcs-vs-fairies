@@ -57,7 +57,7 @@ function retireGame(onDestroyed?:()=>void){
 }
 function start(next:FactionId,nextOpponent:FactionId=opponent,mapSize:MapSize="medium",seed=4127){
  if(game||retiring){retireGame(()=>start(next,nextOpponent,mapSize,seed));return;}
- faction=next;opponent=nextOpponent;shell.showGame();
+ faction=next;opponent=nextOpponent;shell.showGame(faction);
  const state=benchmark?createPerformanceGame():createGame(faction,seed,opponent,{mapSize});
  if(benchmark){collector=new FrameCollector();benchmarkCentered=false;}
  // Phaser scales the canvas in CSS; use a physical-pixel game size and
