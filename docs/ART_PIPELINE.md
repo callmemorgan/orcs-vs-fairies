@@ -12,8 +12,8 @@ Use the IDs in `src/core/content.ts` as manifest keys. These IDs connect present
 | orc-melee / Ironjaw | Axe infantry: broad plated shoulders, horned helmet, forward tusks, axe and round iron-bound shield. |
 | orc-ranged / Boltspitter | Crossbow skirmisher: hunched torso, red hood, wide horizontal crossbow, bolt quiver. |
 | orc-special / Wardrum | Drum berserker: largest body, large strapped drum, two beaters, shoulder spikes, red cloth. Keep the drum visible in side and rear views. |
-| fairy-worker / Tender | Gardener: short leafy dress, watering vessel and hand tool, small swept wings, leaf crown. |
-| fairy-melee / Thornblade | Spear guardian: long upright spear, pointed leaf armor, tall thin silhouette, long narrow wings. |
+| fairy-worker / Tender | Gardener: short leafy dress, watering vessel and hand tool, low rounded wings, broad gardener hat and wicker basket. |
+| fairy-melee / Thornblade | Spear guardian: long upright spear, pointed leaf armor, tall crested helmet, broad pointed shield and long narrow wings. |
 | fairy-ranged / Mothbow | Moth archer: curved bow, amber moth wings with segmented veins, pale hair and layered skirt. |
 | fairy-special / Veilweaver | Illusion-weaver: purple trailing cape, wide violet wings, crown and floating hand lights. |
 | orc-hq / Iron Hall | Great hall: layered red roofs, timber framing, iron braces, porch, chimney, horn finials and banners. |

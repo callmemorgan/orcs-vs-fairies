@@ -193,6 +193,11 @@ def make_fairy(asset,m):
             a=j*2*math.pi/9;start=(.10*math.cos(a),.16*math.sin(a),.92);end=(.24*math.cos(a),.32*math.sin(a),.47+(j%3)*.065)
             o=leaf_panel('overlapping pointed skirt petal',start,end,.10,cloth if j%2 else (m['purple'] if caster else m['leafLight']),.04)
         C.uv('waist amber jewel',(.146,0,.91),(.035,.055,.067),m['gold'])
+        if asset=='fairy-worker':
+            C.uv('gardener broad wicker backpack',(-.29,0,1.01),(.16,.28,.29),m['wood'])
+            for j in range(5):
+                y=(j-2)*.10
+                C.curve('basket vertical wicker rib',[(-.37,y,.76),(-.44,y,1.0),(-.37,y,1.27)],.014,m['amber'])
         if caster:
             for j in range(7):
                 y=(j-3)*.09
@@ -230,13 +235,20 @@ def make_fairy(asset,m):
             C.uv('crown crystal',(x+.01,y*1.2,1.88+(.06 if j==2 else 0)),(.022,.022,.038),m['magic'] if caster else m['amber'])
             if asset=='fairy-worker':
                 leaf_panel('gardener crown pointed leaf',(x,y,1.76),(x-.035,y*1.5,1.92+(.04 if j==2 else 0)),.034,m['leafLight'])
+        if asset=='fairy-worker':
+            C.cone('gardener broad straw hat brim',(-.025,0,1.80),.43,.40,.045,m['amber'],32)
+            C.cone('gardener rounded hat crown',(-.04,0,1.91),.21,.10,.22,m['wood'],20)
+            C.curve('gardener green hat band',[(.15,-.10,1.87),(.18,0,1.87),(.15,.10,1.87)],.025,m['leafLight'])
+        elif asset=='fairy-melee':
+            C.cone('sentinel gold helmet',(-.025,0,1.79),.15,.035,.23,m['gold'])
+            profile('sentinel tall leaf helmet crest',[(-.17,1.90),(-.20,2.14),(.02,2.23),(.13,1.95)],.07,m['leafLight'])
     rig['head']=group('POSE expressive head',(0,0,1.4),rig['torso'],face)
     for s in (-1,1):
         def wing(s=s):
             # Membrane fans sit behind the shoulders; each has a ridge and branched veins.
             specs=[(.89,2.32,.40),(.94,1.54,.37),(.63,.99,.22)] if caster else [(.62,2.1,.26),(.78,1.48,.28)]
             if asset=='fairy-melee':specs=[(.58,2.35,.18),(.66,1.65,.18)]
-            if asset=='fairy-worker':specs=[(.54,1.94,.22),(.57,1.38,.20)]
+            if asset=='fairy-worker':specs=[(.44,1.68,.32),(.45,1.12,.25)]
             for j,(spread,z,width) in enumerate(specs):
                 b=Vector((-.12,s*.13,1.25));t=Vector((-.26,s*spread,z));v=t-b
                 pts=[b,b+v*.25+Vector((-.02,s*width,.03)),b+v*.72+Vector((-.01,s*width*.75,.02)),t,b+v*.65+Vector((.01,-s*width*.43,0)),b+v*.23+Vector((0,-s*width*.28,0))]
@@ -263,6 +275,12 @@ def make_fairy(asset,m):
                 C.beam('long spear shaft',(.23,s*.33,.25),(.23,s*.33,2.08),.019,m['wood'])
                 tip=profile('leaf spear blade',[(.23,2.35),(.12,2.10),(.23,1.98),(.34,2.10)],.025,m['gold']);tip.location.y=s*.33
                 C.beam('spear blade spine',(.23,s*.35,2.02),(.23,s*.35,2.28),.010,m['ivory'])
+            if s==1 and asset=='fairy-melee':
+                outline=[(.23,1.50),(-.02,1.26),(-.01,.82),(.23,.54),(.49,.82),(.48,1.26)]
+                shield=profile('sentinel broad pointed leaf shield',outline,.085,m['leaf'])
+                shield.location.y=s*.47
+                C.curve('sentinel shield gold edge',[(x,s*.525,z) for x,z in outline+outline[:1]],.022,m['gold'])
+                C.beam('sentinel shield bright spine',(.23,s*.535,.65),(.23,s*.535,1.38),.025,m['ivory'])
             if s==-1 and asset=='fairy-ranged':
                 C.curve('carved tall bow',[(.23,s*.33,.40),(.41,s*.33,.60),(.46,s*.33,.9),(.40,s*.33,1.22),(.22,s*.33,1.43)],.023,m['gold'])
                 C.beam('taut bow string',(.23,s*.33,.40),(.22,s*.33,1.43),.006,m['ivory']);C.beam('nocked arrow',(.04,s*.33,.92),(.77,s*.33,.92),.009,m['wood'])
