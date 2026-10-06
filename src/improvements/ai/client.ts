@@ -1,3 +1,3 @@
 import type { ClientImprovement } from '../host';
-// Add this lane's independently mounted client improvements here.
-export default [] satisfies ClientImprovement[];
+import { aiToggle } from './options';
+export default [aiToggle('feature-051','AI mines scouted flank camps')] satisfies ClientImprovement[];
