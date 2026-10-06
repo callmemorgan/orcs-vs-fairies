@@ -1,4 +1,5 @@
 import { observeImprovements } from './improvements';
+import { upgradeEnabled } from './progression';
 import { ABILITIES, FACTIONS, UPGRADES } from './content';
 import { isGameOver, isVisible } from './simulation';
 import type { Entity, GameEvent, GameState, ResourceNode, Side, UnitRole } from './types';
@@ -37,7 +38,7 @@ export class PlayerView {
    resources:this.resourcesFor(s),
    corpses:s.corpses.filter(c=>isVisible(s,side,c.x,c.y)).map(c=>({...c})),
    visible:[...s.visible[side]].sort((a,b)=>a-b),explored:[...s.explored[side]].sort((a,b)=>a-b),
-   content:{faction:FACTIONS[s.players[side].faction],abilities:ABILITIES,upgrades:UPGRADES},
+   content:{faction:FACTIONS[s.players[side].faction],abilities:ABILITIES,upgrades:Object.fromEntries(Object.entries(UPGRADES).filter(([,def])=>upgradeEnabled(s,def)))},
    result:{finished:isGameOver(s),winner:s.winner,draw:s.draw}
   };
  }
