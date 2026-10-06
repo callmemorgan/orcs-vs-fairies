@@ -1,4 +1,4 @@
-import type { MapSize, ResourceKind, ResourceNode, TerrainKind, Vec } from './types';
+import type { JsonValue, MapSize, ResourceKind, ResourceNode, TerrainKind, Vec } from './types';
 
 export const MAP_SIZES:Record<MapSize,number>={small:36,medium:48,large:64,huge:88};
 export const MAP_VERSION=2;
@@ -22,7 +22,14 @@ export function terrainAt(map:Pick<GeneratedMap,'width'|'height'|'terrain'>,x:nu
  return map.terrain[Math.floor(y)*map.width+Math.floor(x)]??'grass';
 }
 
-export function generateMap(seed:number,size:MapSize='medium'):GeneratedMap{
+const mapTransforms=new Map<string,(map:GeneratedMap,options:JsonValue)=>void>();
+/** Registered opt-in map rules also run when generating the menu preview. */
+export function registerMapTransform(id:string,transform:(map:GeneratedMap,options:JsonValue)=>void):()=>void{
+ if(mapTransforms.has(id))throw new Error(`Duplicate map transform: ${id}`);
+ mapTransforms.set(id,transform);
+ return ()=>{if(mapTransforms.get(id)===transform)mapTransforms.delete(id);};
+}
+export function generateMap(seed:number,size:MapSize='medium',improvements:Record<string,JsonValue>={}):GeneratedMap{
  if(!Number.isSafeInteger(seed)||seed<0||seed>0xffffffff)throw new Error('Map seed must be an integer from 0 to 4294967295.');
  if(!(size in MAP_SIZES))throw new Error('Map size must be small, medium, large or huge.');
  const width=MAP_SIZES[size],height=width,rng=seededRandom(seed),terrain:TerrainKind[]=Array(width*height).fill('grass');
@@ -91,6 +98,12 @@ export function generateMap(seed:number,size:MapSize='medium'):GeneratedMap{
  for(let i=0;i<width;i++){set(i,0,'rock');set(0,i,'rock');}
  const validation=validateMap(map);
  if(!validation.valid)throw new Error(`Invalid generated map ${size}/${seed}: ${validation.issues.join('; ')}`);
+ const transformed=Object.keys(improvements).filter(id=>mapTransforms.has(id)).sort();
+ for(const id of transformed)mapTransforms.get(id)!(map,improvements[id]);
+ if(transformed.length){
+  const extended=validateMap(map);
+  if(!extended.valid)throw new Error(`Invalid selected map: ${extended.issues.join('; ')}`);
+ }
  return map;
 }
 

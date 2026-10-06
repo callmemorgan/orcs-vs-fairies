@@ -22,7 +22,7 @@ function spawn(s:GameState,side:Side,kind:Entity['kind'],role:UnitRole|BuildingR
  const e:Entity={id:s.nextId++,side,kind,role,x,y,hp:progress===1?def.hp:Math.max(1,def.hp*.1),maxHp:def.hp,order:{type:'idle'},cooldown:0,progress,queue:[],trainProgress:0,researchProgress:0,facing:2,animation:'idle',animTime:0,momentum:0,illusion:false,expires:0,carried:0,carriedKind:'wood',path:[]};if(kind==='unit'&&(def as UnitDef).shield){e.maxShield=(def as UnitDef).shield;e.shield=e.maxShield;}s.entities.push(e);return e;
 }
 export function createGame(faction:FactionId,seed=1977,opponent:FactionId=faction==='orcs'?'fairies':'orcs',options:GameOptions={}):GameState{
- const map=generateMap(seed,options.mapSize??'medium');
+ const map=generateMap(seed,options.mapSize??'medium',options.improvements);
  const s:GameState={controllers:options.controllers??['human','ai'],mapSize:map.size,mapVersion:map.version,terrain:map.terrain,starts:map.starts,draw:false,tick:0,corpses:[],time:0,seed,width:map.width,height:map.height,entities:[],resources:[],players:[{faction,wood:420,ore:220,crystal:0,population:0,cap:12,upgrades:[]},{faction:opponent,wood:420,ore:220,crystal:0,population:0,cap:12,upgrades:[]}],winner:null,events:[],explored:[new Set(),new Set()],visible:[new Set(),new Set()],nextId:1};
  for(const side of [0,1] as Side[]){const {x,y}=s.starts[side],dir=side===0?1:-1;spawn(s,side,'building','hq',x,y);for(let i=0;i<5;i++)spawn(s,side,'unit','worker',x+(-2+i*.85)*dir,y+3*dir);spawn(s,side,'unit','melee',x+3*dir,y+dir);}
  for(const resource of map.resources)s.resources.push({...resource,id:s.nextId++});

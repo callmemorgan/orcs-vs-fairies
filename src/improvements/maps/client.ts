@@ -1,3 +1,3 @@
 import type { ClientImprovement } from '../host';
-// Add this lane's independently mounted client improvements here.
-export default [] satisfies ClientImprovement[];
+import layouts from './layout-client';
+export default [layouts] satisfies ClientImprovement[];
