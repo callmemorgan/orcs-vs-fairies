@@ -1,9 +1,11 @@
+import { dispatchPlayerCommand } from './commands';
+import { observeFactionCommands } from '../improvements/accessibility/factionAcknowledgments';
 import { weaponSound } from '../improvements/accessibility/weaponAudio';
 import Phaser from 'phaser';
 import ArtRuntime from './ArtRuntime';
 import GameAudio from './GameAudio';
 import type { GameState, BuildingRole, Entity, UnitRole } from '../core/types';
-import { canPlace, isVisible, issueCommand, stepGame } from '../core/simulation';
+import { canPlace, isVisible, stepGame } from '../core/simulation';
 import { PlayerView } from '../core/observation';
 import { FACTIONS } from '../core/content';
 import { captureDigitHotkeys } from '../ui/availability';
@@ -52,7 +54,9 @@ export default class GameScene extends Phaser.Scene {
   preload(){this.art=new ArtRuntime(this,new URLSearchParams(location.search).get('art')!=='placeholder');this.art.preload(this.state.players.map(p=>p.faction));}
   create() {
     this.audio=new GameAudio();
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN,()=>this.audio?.dispose());
+    const teardown=observeFactionCommands(this,this.audio);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN,teardown);
+    this.events.once(Phaser.Scenes.Events.DESTROY,teardown);
     this.art.ready();
     if(this.art.enabled&&!this.art.loaded)this.options.onNotice('Artwork could not load. Check that the local server is running, then restart the match.');
     this.cameras.main.setBackgroundColor('#131f22');
@@ -82,7 +86,7 @@ export default class GameScene extends Phaser.Scene {
       const pos=unproject(world.x,world.y);
       if(this.buildRole){
         const role=this.buildRole;
-        if(issueCommand(this.state,0,{type:'build',ids:this.selected,role,x:role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y:role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5})) {this.setBuildRole(null);this.options.onNotice('Construction ordered.');this.audio?.play('order');}
+        if(dispatchPlayerCommand(this,{type:'build',ids:this.selected,role,x:role==='gate'?Math.round(pos.x):Math.floor(pos.x)+.5,y:role==='gate'?Math.round(pos.y):Math.floor(pos.y)+.5})) {this.setBuildRole(null);this.options.onNotice('Construction ordered.');}
         else this.options.onNotice('Cannot build here. Select a worker and check resources and space.');
         return;
       }
@@ -113,8 +117,8 @@ export default class GameScene extends Phaser.Scene {
   public setBuildRole(role:BuildingRole|null){this.buildRole=role;this.attackMode=false;}
   public centerOn(x:number,y:number){const q=project(x,y),camera=this.cameras.main;camera.centerOn(q.x,q.y);const bounds=this.options.viewBounds?.();if(bounds)camera.scrollY+=(camera.height/2-(bounds.top+bounds.bottom)/2)/camera.zoom;}
   public restart(state:GameState){this.audio?.reset();this.resultSoundPlayed=false;this.art.reset();this.state=state;this.playerView=new PlayerView(0);this.paused=false;this.accumulated=0;this.attackedNoticeAt.clear();this.buildingAlertAt=-Infinity;this.workerAlertAt=-Infinity;this.groups={};this.markers=[];this.combatEffects=[];this.setBuildRole(null);this.select([]);this.drawGround();this.drawFog();this.centerOn(this.state.starts[0].x,this.state.starts[0].y);}
-  public holdPosition(){if(this.paused||(this.state.winner!==null||this.state.draw)||!issueCommand(this.state,0,{type:'hold',ids:this.selected}))return false;this.attackMode=false;this.setBuildRole(null);this.audio?.play('order');this.options.onNotice('Holding position: attack in range without pursuing.');return true;}
-  private select(ids:number[],audible=true){const changed=ids.length!==this.selected.length||ids.some((id,index)=>id!==this.selected[index]);this.selected=ids;this.options.onSelection(ids);if(audible&&changed&&ids.length)this.audio?.play('selection');}
+  public holdPosition(){if(this.paused||(this.state.winner!==null||this.state.draw)||!dispatchPlayerCommand(this,{type:'hold',ids:this.selected}))return false;this.attackMode=false;this.setBuildRole(null);this.options.onNotice('Holding position: attack in range without pursuing.');return true;}
+  private select(ids:number[],audible=true){const changed=ids.length!==this.selected.length||ids.some((id,index)=>id!==this.selected[index]);this.selected=ids;this.options.onSelection(ids);if(audible&&changed&&ids.length&&this.state.entities.some(e=>e.side===0&&ids.includes(e.id)))this.audio?.playAcknowledgment(this.state.players[0].faction,'selection');}
   private key(e:KeyboardEvent){
     if(document.querySelector('dialog[open]'))return;
     if((e.target as HTMLElement)?.closest('input,textarea,select'))return;
@@ -137,8 +141,8 @@ export default class GameScene extends Phaser.Scene {
     if(e.code==='KeyA'&&!e.ctrlKey&&!e.metaKey&&this.selected.length){this.attackMode=true;this.buildRole=null;this.options.onNotice('Attack move: click a destination.');}
     if(e.code==='Space'){e.preventDefault();const hq=this.state.entities.find(v=>v.side===0&&v.role==='hq');if(hq)this.centerOn(hq.x,hq.y);}
     if(e.code==='KeyH'&&!e.ctrlKey&&!e.metaKey&&!e.altKey)this.holdPosition();
-    if(e.code==='KeyX'&&issueCommand(this.state,0,{type:'stop',ids:this.selected}))this.audio?.play('order');
-    if((e.code==='KeyQ'||e.code==='KeyF')&&issueCommand(this.state,0,{type:'ability',ids:this.selected}))this.audio?.play('order');
+    if(e.code==='KeyX')dispatchPlayerCommand(this,{type:'stop',ids:this.selected});
+    if(e.code==='KeyQ'||e.code==='KeyF')dispatchPlayerCommand(this,{type:'ability',ids:this.selected});
     if(/^Digit[0-9]$/.test(e.code)){
       e.preventDefault();const n=e.code.slice(-1);
       if(e.ctrlKey||e.metaKey){this.groups[n]=[...this.selected];this.options.onNotice(`Group ${n} assigned.`);}
@@ -154,19 +158,18 @@ export default class GameScene extends Phaser.Scene {
     const own=this.state.entities.filter(e=>this.selected.includes(e.id)&&e.side===0&&e.hp>0);
     const producers=own.filter(e=>e.kind==='building'&&(e.role==='hq'||e.role==='barracks'));
     if(producers.length&&!attack&&!own.some(e=>e.kind==='unit')){
-      ok=issueCommand(this.state,0,{type:'setRally',ids:producers.map(e=>e.id),x:pos.x,y:pos.y});
+      ok=dispatchPlayerCommand(this,{type:'setRally',ids:producers.map(e=>e.id),x:pos.x,y:pos.y});
       this.options.onNotice(ok?'Rally point set. New units will move here.':'Choose open ground for the rally point.');
-      if(ok)this.audio?.play('order');
       return;
     }
-    if(hit&&hit.side===1)ok=issueCommand(this.state,0,{type:'attack',ids:this.selected,target:hit.id});
-    else if(hit&&hit.side===0&&hit.kind==='building'&&hit.hp<hit.maxHp)ok=issueCommand(this.state,0,{type:'repair',ids:this.selected,target:hit.id});
+    if(hit&&hit.side===1)ok=dispatchPlayerCommand(this,{type:'attack',ids:this.selected,target:hit.id});
+    else if(hit&&hit.side===0&&hit.kind==='building'&&hit.hp<hit.maxHp)ok=dispatchPlayerCommand(this,{type:'repair',ids:this.selected,target:hit.id});
     else {
       const resource=[...this.state.resources].sort((a,b)=>(b.x+b.y)-(a.x+a.y)).find(r=>{if(r.amount<=0||!this.state.visible[0].has(Math.floor(r.y)*this.state.width+Math.floor(r.x)))return false;const rendered=this.art.contains(`resource:${r.id}`,world.x,world.y);if(rendered!==null)return rendered;const q=project(r.x,r.y);return Math.abs(q.x-world.x)<24&&Math.abs(q.y-15-world.y)<30;});
-      if(resource&&!attack)ok=issueCommand(this.state,0,{type:'gather',ids:this.selected,target:resource.id});
-      else ok=issueCommand(this.state,0,{type:attack?'attackMove':'move',ids:this.selected,x:Phaser.Math.Clamp(pos.x,.5,this.state.width-.5),y:Phaser.Math.Clamp(pos.y,.5,this.state.height-.5)});
+      if(resource&&!attack)ok=dispatchPlayerCommand(this,{type:'gather',ids:this.selected,target:resource.id});
+      else ok=dispatchPlayerCommand(this,{type:attack?'attackMove':'move',ids:this.selected,x:Phaser.Math.Clamp(pos.x,.5,this.state.width-.5),y:Phaser.Math.Clamp(pos.y,.5,this.state.height-.5)});
     }
-    if(ok){this.markers.push({...project(pos.x,pos.y),born:this.time.now,attack});this.audio?.play('order');}
+    if(ok)this.markers.push({...project(pos.x,pos.y),born:this.time.now,attack});
   }
   update(_time:number,delta:number){
     if(!this.actors)return;

@@ -1,3 +1,5 @@
+import { FACTION_ACKNOWLEDGMENTS, type Acknowledgment } from '../improvements/accessibility/factionVoice';
+import type { FactionId } from '../core/types';
 import { WEAPON_SOUNDS, type AudioTone, type WeaponSound } from '../improvements/accessibility/weaponAudio';
 export type GameCue = 'selection' | 'order' | 'build' | 'train' | 'victory' | 'defeat';
 type Note = readonly [frequency:number, offset:number, duration:number, volume:number];
@@ -21,6 +23,7 @@ export default class GameAudio {
   private voices = new Set<OscillatorNode>();
   private lastCue = new Map<readonly AudioTone[],number>();
   private scheduledCues:Partial<Record<GameCue,number>> = {};
+  private scheduledAcknowledgments:Partial<Record<`${FactionId}-${Acknowledgment}`,number>> = {};
   private scheduledWeapons:Partial<Record<WeaponSound,number>> = {};
   private unavailable = false;
   private disposed = false;
@@ -72,6 +75,8 @@ export default class GameAudio {
   play(cue:GameCue){this.emit(cue==='selection'?.075:cue==='order'?.10:.3,CUES[cue],this.scheduledCues,cue);}
   playWeapon(weapon:WeaponSound){this.emit(.10,WEAPON_SOUNDS[weapon],this.scheduledWeapons,weapon);}
 
+  playAcknowledgment(faction:FactionId,cue:Acknowledgment){this.emit(cue==='selection'?.09:.10,FACTION_ACKNOWLEDGMENTS[faction][cue],this.scheduledAcknowledgments,`${faction}-${cue}`);}
+
   private emit<K extends string>(interval:number,tones:readonly AudioTone[],counts:Partial<Record<K,number>>,name:K){
     const context=this.context,master=this.master;
     if(this.disposed||this._muted||!context||context.state!=='running'||!master)return;
@@ -79,13 +84,15 @@ export default class GameAudio {
     if(now-(this.lastCue.get(tones)??-Infinity)<interval)return;
     this.lastCue.set(tones,now);
     try{
-      for(const {frequency,offset,duration,volume,wave,endFrequency} of tones){
+      for(const {frequency,offset,duration,volume,wave,endFrequency,formant} of tones){
         const oscillator=context.createOscillator(),gain=context.createGain();
         oscillator.type=wave;oscillator.frequency.setValueAtTime(frequency,now+offset);
         if(endFrequency)oscillator.frequency.exponentialRampToValueAtTime(endFrequency,now+offset+duration);
         gain.gain.setValueAtTime(0,now+offset);gain.gain.linearRampToValueAtTime(volume,now+offset+.008);gain.gain.exponentialRampToValueAtTime(.0001,now+offset+duration);
-        oscillator.connect(gain);gain.connect(master);this.voices.add(oscillator);
-        oscillator.onended=()=>{this.voices.delete(oscillator);oscillator.disconnect();gain.disconnect();};
+        let filter:BiquadFilterNode|undefined;
+        if(formant){filter=context.createBiquadFilter();filter.type='bandpass';filter.frequency.value=formant;filter.Q.value=2;filter.connect(gain);}
+        oscillator.connect(filter??gain);gain.connect(master);this.voices.add(oscillator);
+        oscillator.onended=()=>{this.voices.delete(oscillator);oscillator.disconnect();filter?.disconnect();gain.disconnect();};
         oscillator.start(now+offset);oscillator.stop(now+offset+duration+.015);
       }
       counts[name]=(counts[name]??0)+1;
@@ -118,7 +125,7 @@ export default class GameAudio {
     this.measure();
     return {
       state:this.context?.state??(this.unavailable?'unavailable':this.disposed?'closed':'locked'),
-      muted:this._muted,scheduledWeapons:{...this.scheduledWeapons},scheduledCues:{...this.scheduledCues},activeVoices:this.voices.size,
+      muted:this._muted,scheduledAcknowledgments:{...this.scheduledAcknowledgments},scheduledWeapons:{...this.scheduledWeapons},scheduledCues:{...this.scheduledCues},activeVoices:this.voices.size,
       currentPeak:this.currentPeak,currentRms:this.currentRms,
       lastSignalPeak:this.lastSignalPeak,lastSignalRms:this.lastSignalRms,lastSignalAt:this.lastSignalAt,
     };

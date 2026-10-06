@@ -1,7 +1,7 @@
 import type { Entity, FactionId } from '../../core/types';
 
 export type WeaponSound = 'blade'|'pike'|'bow'|'bolt'|'musket'|'cannon'|'stone'|'magic'|'beam'|'impact';
-export interface AudioTone { frequency:number; offset:number; duration:number; volume:number; wave:OscillatorType; endFrequency?:number }
+export interface AudioTone { frequency:number; offset:number; duration:number; volume:number; wave:OscillatorType; endFrequency?:number; formant?:number }
 const tone=(frequency:number,offset:number,duration:number,volume:number,wave:OscillatorType,endFrequency?:number):AudioTone=>({frequency,offset,duration,volume,wave,endFrequency});
 /** Launch transient followed by a short impact; no downloaded audio or speech voices required. */
 export const WEAPON_SOUNDS:Record<WeaponSound,readonly AudioTone[]>={

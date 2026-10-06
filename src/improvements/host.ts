@@ -1,5 +1,6 @@
+import { dispatchPlayerCommand } from '../game/commands';
 import { PlayerView } from '../core/observation';
-import { isGameOver, issueCommand } from '../core/simulation';
+import { isGameOver } from '../core/simulation';
 import type { Command, GameEvent, GameOptions, GameState, JsonValue } from '../core/types';
 
 export type PlayerObservation=ReturnType<PlayerView['observe']> & {events:GameEvent[]};
@@ -55,7 +56,7 @@ export function mountImprovementHost(root:HTMLElement,extensions:ClientImproveme
       get state(){return observation;},
       get selected(){return [...(actions.current()?.selected??[])];},
       get paused(){return actions.current()?.paused??false;},
-      command:command=>{const scene=actions.current();return !!scene&&!scene.paused&&issueCommand(scene.state,0,command);},
+      command:command=>{const scene=actions.current();return !!scene&&!scene.paused&&dispatchPlayerCommand(scene,command);},
       select:ids=>actions.current()?.selectEntities(ids),
       center:(x,y)=>{if(Number.isFinite(x)&&Number.isFinite(y))actions.current()?.centerOn(x,y);},
       setPaused:paused=>{const scene=actions.current();if(scene&&!isGameOver(scene.state))actions.setPaused(paused);},
