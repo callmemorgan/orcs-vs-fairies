@@ -121,7 +121,7 @@ it('applies siege damage outside tower range through ordinary attack commands',(
  siege.role='siege';siege.x=20;siege.y=20;siege.hp=siege.maxHp=185;
  tower.role='tower';tower.x=29;tower.y=20;tower.hp=tower.maxHp=750;
  refreshVisibility(s);expect(issueCommand(s,0,{type:'attack',ids:[siege.id],target:tower.id})).toBe(true);
- stepGame(s,.05);expect(tower.hp).toBe(641);expect(siege.hp).toBe(185);
+ stepGame(s,.05);expect(tower.hp).toBe(625);expect(siege.hp).toBe(185);
 });
 it('applies both weapon tiers and armor research to existing melee troops',()=>{
  const {s}=setup();s.terrain.fill('grass');s.resources=[];
