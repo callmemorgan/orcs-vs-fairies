@@ -238,7 +238,7 @@ export default class GameScene extends Phaser.Scene {
   }
   private drawActors(){
     const g=this.actors;g.clear();this.art.begin();
-    const remembered=this.playerView.resourcesFor(this.state);
+    const remembered=this.playerView.resourcesFor(this.state),selectedUnits:number[]=[];
     const objects=[...remembered.filter(r=>r.amount>0).map(r=>({sort:r.x+r.y,r})),...this.state.entities.filter(e=>this.visible(e)).map(e=>({sort:e.x+e.y,e}))].sort((a,b)=>a.sort-b.sort);
     for(const obj of objects){
       if('r' in obj){const r=obj.r,p=project(r.x,r.y);if(!this.state.explored[0].has(Math.floor(r.y)*this.state.width+Math.floor(r.x)))continue;
@@ -249,6 +249,7 @@ export default class GameScene extends Phaser.Scene {
         else{g.fillStyle(0x53616a).fillTriangle(p.x-19,p.y+1,p.x-9,p.y-22,p.x+13,p.y-2);g.fillStyle(0x92adad).fillTriangle(p.x-9,p.y-22,p.x+3,p.y-25,p.x+13,p.y-2);g.fillStyle(0xb8cfba).fillTriangle(p.x+2,p.y-4,p.x+8,p.y-18,p.x+21,p.y+1);}continue;
       }
       const e=obj.e,p=project(e.x,e.y);const faction=this.state.players[e.side].faction;const orc=faction==='orcs';const color=FACTIONS[faction].color;const selected=this.selected.includes(e.id);const dead=e.hp<=0;const alpha=dead?.35:e.illusion&&e.side===this.playerView.side?.5:1;
+      if(selected&&e.kind==='unit'&&e.hp>0)selectedUnits.push(e.id);
       g.fillStyle(0x14201c,.38).fillEllipse(p.x+4,p.y+4,e.kind==='building'?70:27,e.kind==='building'?30:12);
       if(selected){g.lineStyle(2,e.side===0?0xe5d98e:0xec7269,1).strokeEllipse(p.x,p.y+2,e.kind==='building'?82:35,e.kind==='building'?39:17);}
       if(this.art.entity(e,this.state,p.x,p.y,this.playerView.side))continue;
@@ -283,6 +284,7 @@ export default class GameScene extends Phaser.Scene {
     }
     for(let i=0;i<this.state.terrain.length;i++)if(this.state.terrain[i]==='shallows'&&i%7===0&&this.state.explored[0].has(i)){const p=project(i%this.state.width+.5,Math.floor(i/this.state.width)+.5);this.art.environment(`reeds:${i}`,'reeds',p.x,p.y);}
     for(const r of remembered)if(r.kind==='wood'&&r.amount<=0&&this.state.explored[0].has(Math.floor(r.y)*this.state.width+Math.floor(r.x))){const p=project(r.x,r.y);this.art.environment(`resource:${r.id}`,'stump',p.x,p.y);}
+    this.art.fadeOccluders(selectedUnits);
     this.art.end();
   }
   private drawFog(){const g=this.fog;g.clear();for(let y=0;y<this.state.height;y++)for(let x=0;x<this.state.width;x++){const i=y*this.state.width+x;if(this.state.visible[0].has(i))continue;const p=project(x+.5,y+.5);this.diamond(g,p.x,p.y,65,33,0x102022,this.state.explored[0].has(i)?.48:.98);}}
