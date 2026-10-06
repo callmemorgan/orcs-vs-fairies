@@ -1,3 +1,3 @@
+import remapping from './remapping';
 import type { ClientImprovement } from '../host';
-// Add this lane's independently mounted client improvements here.
-export default [] satisfies ClientImprovement[];
+export default [remapping] satisfies ClientImprovement[];
