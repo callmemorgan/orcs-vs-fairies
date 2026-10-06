@@ -8,8 +8,8 @@ type BaseFaction=Omit<FactionDef,'units'|'buildings'> & {units:Record<'worker'|'
 const BASE_FACTIONS:Record<FactionId,BaseFaction>={
  orcs:{id:'orcs',name:'Ironclad',subtitle:'Strength in the struggle',color:0xd07745,accent:'#dba35d',description:'Armored warbands gather fury as they fight. Hold the line, build momentum, and break the enemy stronghold.',ai:{aggression:1,armySize:9,composition:{melee:.45,ranged:.35,special:.20}},units:{
  worker:unit('orc-worker','Scrapper','worker',50,0,85,5,1,1.3,2.1,1.4,12,undefined,'Harvest timber, ore and crystal. Raise and repair your settlement.'),
- melee:unit('orc-melee','Ironjaw','melee',70,25,175,15,3,1.4,1.8,1.15,36,'momentum','Armored front line. Sustained attacks build Fury, granting up to 40% damage and 15% attack speed.'),
- ranged:unit('orc-ranged','Boltspitter','ranged',85,35,100,15,1,6.5,2,1.5,40,'momentum','Crossbow volleys punish exposed enemies. Builds Fury with each hit.'),
+ melee:unit('orc-melee','Ironjaw','melee',70,25,165,15,3,1.4,1.8,1.15,36,'momentum','Armored front line. Sustained attacks build Fury, granting up to 40% damage and 15% attack speed.'),
+ ranged:unit('orc-ranged','Boltspitter','ranged',85,35,100,15,1,6.5,2,1.4,40,'momentum','Crossbow volleys punish exposed enemies. Builds Fury with each hit.'),
  special:unit('orc-special','Wardrum','special',120,70,190,21,3,1.6,1.65,1.65,56,'momentum','Heavy shock infantry. Fury makes prolonged brawls devastating.')},buildings:{
  hq:building('orc-hq','Iron Hall','hq',240,120,1800,3,55,'Your stronghold. Trains Scrappers and supports 12 population.'),
  depot:building('orc-depot','Timber Yard','depot',100,0,600,2,22,'Resource drop-off. Adds 10 population capacity.'),
