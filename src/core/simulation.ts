@@ -1,5 +1,6 @@
 import { commandImprovement, startImprovements, stepImprovements } from './improvements';
 import '../improvements/rules';
+import { reservedWorkers } from '../improvements/ai/shared';
 import { playerAge, researchRequirement } from './progression';
 import { ECONOMY, FACTIONS, UPGRADES } from './content';
 import { walkable, segmentWalkable, openDestination, route } from './navigation';
@@ -248,12 +249,13 @@ export function stepGame(s:GameState,dt:number):void{
 export function runAI(s:GameState,side:Side=1):void{
  if(isGameOver(s))return;const owned=s.entities.filter(e=>e.side===side&&alive(e)),workers=owned.filter(e=>e.kind==='unit'&&e.role==='worker'),buildings=owned.filter(e=>e.kind==='building'),hq=buildings.find(e=>e.role==='hq');if(!hq)return;
  const f=FACTIONS[s.players[side].faction],p=s.players[side],age=playerAge(p);
+ const reservedCrew=reservedWorkers(s,side),availableWorkers=workers.filter(w=>!reservedCrew.has(w.id));
  const available=s.resources.filter(n=>n.amount>0&&isVisible(s,side,n.x,n.y));
  const wantCrystal=buildings.some(b=>b.role==='barracks')&&available.some(n=>n.kind==='crystal')?(p.crystal<40?2:p.crystal<100?1:0):0;
  const desired={wood:Math.max(1,Math.ceil((workers.length-wantCrystal)*.6)),ore:Math.max(1,workers.length-wantCrystal-Math.ceil((workers.length-wantCrystal)*.6)),crystal:wantCrystal};
  const assigned={wood:0,ore:0,crystal:0};
  for(const worker of workers){if(worker.order.type==='gather'){const n=s.resources.find(n=>n.id===(worker.order as {target:number}).target);if(n&&n.amount>0)assigned[n.kind]++;}}
- for(const worker of workers.filter(e=>e.order.type==='idle'||e.order.type==='gather')){
+ for(const worker of availableWorkers.filter(e=>e.order.type==='idle'||e.order.type==='gather')){
   const current=worker.order.type==='gather'?s.resources.find(n=>n.id===(worker.order as {target:number}).target):undefined;
   if(current&&current.amount>0&&assigned[current.kind]<=desired[current.kind])continue;
   const kinds=(['wood','ore','crystal'] as const).filter(k=>available.some(n=>n.kind===k)).sort((a,b)=>(desired[b]-assigned[b])-(desired[a]-assigned[a]));
@@ -265,7 +267,7 @@ export function runAI(s:GameState,side:Side=1):void{
  // Resume paid foundations before committing workers to additional buildings.
  for(const site of buildings.filter(b=>b.progress<1)){
   if(workers.some(w=>w.order.type==='build'&&w.order.target===site.id))continue;
-  const builder=workers.filter(w=>w.order.type==='idle'||w.order.type==='gather').sort((a,b)=>distance(a,site)-distance(b,site))[0];
+  const builder=availableWorkers.filter(w=>w.order.type==='idle'||w.order.type==='gather').sort((a,b)=>distance(a,site)-distance(b,site))[0];
   if(builder)issueCommand(s,side,{type:'repair',ids:[builder.id],target:site.id});
  }
  if(workers.length+ hq.queue.filter(r=>r==='worker').length<(age===1?13:age===2?19:24)&&hq.queue.length<2)issueCommand(s,side,{type:'train',id:hq.id,role:'worker'});
@@ -273,16 +275,16 @@ export function runAI(s:GameState,side:Side=1):void{
  // Claim an observed outer deposit with a new production/drop-off center.
  if(age>=2&&workers.length>=13&&buildings.filter(b=>b.role==='hq').length<2&&!workers.some(w=>w.order.type==='build')&&p.wood>=400&&p.ore>=220){
   const deposit=available.filter(n=>n.amount>300&&distance(n,hq)>14&&!buildings.some(b=>(b.role==='hq'||b.role==='depot')&&distance(b,n)<8)).sort((a,b)=>distance(a,hq)-distance(b,hq))[0];
-  if(deposit){const builder=workers.filter(w=>w.order.type==='gather'||w.order.type==='idle').sort((a,b)=>distance(a,deposit)-distance(b,deposit))[0];
+  if(deposit){const builder=availableWorkers.filter(w=>w.order.type==='gather'||w.order.type==='idle').sort((a,b)=>distance(a,deposit)-distance(b,deposit))[0];
    if(builder){let placed=false;for(let r=4;r<=7&&!placed;r++)for(let i=0;i<12&&!placed;i++){const x=Math.floor(deposit.x+Math.cos(i*Math.PI/6)*r)+.5,y=Math.floor(deposit.y+Math.sin(i*Math.PI/6)*r)+.5;if(canPlace(s,side,'hq',x,y))placed=issueCommand(s,side,{type:'build',ids:[builder.id],role:'hq',x,y});}}
   }
  }
  const queued=reserved(s,side);let buildRole:BuildingRole|undefined;
  if(!buildings.some(b=>b.role==='barracks'))buildRole='barracks';else if(p.cap-p.population-queued<5&&p.cap<100&&!buildings.some(b=>b.role==='depot'&&b.progress<1))buildRole='depot';else if(s.time>100&&!buildings.some(b=>b.role==='tower'))buildRole='tower';else if(s.time>180&&buildings.filter(b=>b.role==='barracks').length<(age===3&&p.wood>700&&p.ore>300?5:(age>=2||s.time>420)&&p.wood>400?3:2))buildRole='barracks';
- if(buildRole&&!workers.some(e=>e.order.type==='build')){const builder=workers[0];if(builder){const dir=side===0?1:-1;let placed=false;for(let r=5;r<=10&&!placed;r+=2)for(let i=0;i<16&&!placed;i++){const angle=i*Math.PI/8;const x=hq.x+Math.round(Math.cos(angle)*r)*dir,y=hq.y+Math.round(Math.sin(angle)*r)*dir;if(canPlace(s,side,buildRole,x,y))placed=issueCommand(s,side,{type:'build',ids:[builder.id],role:buildRole,x,y});}}}
+ if(buildRole&&!workers.some(e=>e.order.type==='build')){const builder=availableWorkers[0];if(builder){const dir=side===0?1:-1;let placed=false;for(let r=5;r<=10&&!placed;r+=2)for(let i=0;i<16&&!placed;i++){const angle=i*Math.PI/8;const x=hq.x+Math.round(Math.cos(angle)*r)*dir,y=hq.y+Math.round(Math.sin(angle)*r)*dir;if(canPlace(s,side,buildRole,x,y))placed=issueCommand(s,side,{type:'build',ids:[builder.id],role:buildRole,x,y});}}}
  // A short defensive screen beside the tower leaves a gate in the army's route.
  if(age>=2&&p.wood>220&&p.ore>160&&!workers.some(w=>w.order.type==='build')){
-  const tower=buildings.find(b=>b.role==='tower'&&b.progress===1),builder=workers.find(w=>w.order.type==='gather'||w.order.type==='idle');
+  const tower=buildings.find(b=>b.role==='tower'&&b.progress===1),builder=availableWorkers.find(w=>w.order.type==='gather'||w.order.type==='idle');
   if(tower&&builder){const dir=side===0?1:-1;const slots:[BuildingRole,number,number][]=[['gate',0,3.5],['wall',-1.5,3.5],['wall',1.5,3.5],['wall',-2.5,3.5],['wall',2.5,3.5]];
    for(const [role,dx,dy] of slots){const x=tower.x+dx*dir,y=tower.y+dy*dir;if(buildings.some(b=>Math.hypot(b.x-x,b.y-y)<.4))continue;if(canPlace(s,side,role,x,y)&&issueCommand(s,side,{type:'build',ids:[builder.id],role,x,y}))break;}
   }
