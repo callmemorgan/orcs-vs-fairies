@@ -22,9 +22,10 @@ export function terrainAt(map:Pick<GeneratedMap,'width'|'height'|'terrain'>,x:nu
  return map.terrain[Math.floor(y)*map.width+Math.floor(x)]??'grass';
 }
 
-const mapTransforms=new Map<string,(map:GeneratedMap,options:JsonValue)=>void>();
+type MapTransform=(map:GeneratedMap,options:JsonValue)=>void;
+const mapTransforms=new Map<string,MapTransform>();
 /** Registered opt-in map rules also run when generating the menu preview. */
-export function registerMapTransform(id:string,transform:(map:GeneratedMap,options:JsonValue)=>void):()=>void{
+export function registerMapTransform(id:string,transform:MapTransform):()=>void{
  if(mapTransforms.has(id))throw new Error(`Duplicate map transform: ${id}`);
  mapTransforms.set(id,transform);
  return ()=>{if(mapTransforms.get(id)===transform)mapTransforms.delete(id);};

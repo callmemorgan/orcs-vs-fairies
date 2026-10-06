@@ -7,14 +7,16 @@ export const LAYOUT_FEATURE_ID='feature-061';
 export const LAYOUT_NAMES:Record<MapLayout,string>={plains:'Open plains',river:'River crossings',mountain:'Mountain passes'};
 export function selectedLayout(options:JsonValue):MapLayout{
  const layout=typeof options==='object'&&options!==null&&!Array.isArray(options)?options.layout:undefined;
- if(layout!=='plains'&&layout!=='river'&&layout!=='mountain')throw new Error('Choose plains, river or mountain layout.');
- return layout;
+ if(typeof layout!=='string'||!Object.hasOwn(LAYOUT_NAMES,layout))throw new Error('Choose plains, river or mountain layout.');
+ return layout as MapLayout;
 }
 /** All painting is rotationally paired; original seeded deposits stay in place. */
 export function applyLayout(map:GeneratedMap,layout:MapLayout):void{
  const {width,height,starts}=map,mid=width/2;
  const nearest=(values:number[],v:number)=>values.reduce((a,b)=>Math.abs(b-v)<Math.abs(a-v)?b:a);
- map.terrain=Array(width*height).fill('grass');
+ // set only paints interior tiles, so the rock border stays fixed.
+ map.terrain=Array(width*height).fill('rock');
+ for(let y=1;y<height-1;y++)map.terrain.fill('grass',y*width+1,(y+1)*width-1);
  const set=(x:number,y:number,kind:TerrainKind)=>{
   if(x<1||y<1||x>=width-1||y>=height-1)return;
   map.terrain[y*width+x]=kind;map.terrain[(height-1-y)*width+width-1-x]=kind;
@@ -50,8 +52,6 @@ export function applyLayout(map:GeneratedMap,layout:MapLayout):void{
   }
   for(const r of map.resources)if(Math.abs(r.x-mid)<3.5)line(r,{x:r.x,y:nearest(passes,r.y)},1.8,'road');
  }
- for(let x=0;x<width;x++){map.terrain[x]='rock';map.terrain[(height-1)*width+x]='rock';}
- for(let y=0;y<height;y++){map.terrain[y*width]='rock';map.terrain[y*width+width-1]='rock';}
 }
 registerMapTransform(LAYOUT_FEATURE_ID,(map,options)=>applyLayout(map,selectedLayout(options)));
 registerGameImprovement({id:LAYOUT_FEATURE_ID,initialState:options=>({layout:selectedLayout(options)}),observe:(_game,_side,state)=>state});
