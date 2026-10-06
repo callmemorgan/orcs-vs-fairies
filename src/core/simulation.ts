@@ -90,7 +90,7 @@ export function issueCommand(s:GameState,side:Side,c:Command):boolean{
  if(c.type==='research'){
  const e=s.entities.find(e=>e.id===c.id&&e.side===side&&alive(e)&&e.kind==='building'&&e.progress===1);const d=UPGRADES[c.upgrade];
  if(!e||!d||d.building!==e.role||e.research||researchRequirement(s,side,c.upgrade)||p.wood<d.cost.wood||p.ore<d.cost.ore||p.crystal<d.cost.crystal)return false;
- p.wood-=d.cost.wood;p.ore-=d.cost.ore;p.crystal-=d.cost.crystal;e.research=c.upgrade;e.researchProgress=0;emit(s,'research',e,undefined,`${d.name} started`);return true;
+ p.wood-=d.cost.wood;p.ore-=d.cost.ore;p.crystal-=d.cost.crystal;if(d.branch)(p.researchChoices??={})[d.branch]=d.id;e.research=c.upgrade;e.researchProgress=0;emit(s,'research',e,undefined,`${d.name} started`);return true;
  }
  const units=s.entities.filter(e=>c.ids.includes(e.id)&&e.side===side&&alive(e)&&e.kind==='unit'&&!e.illusion);
  if(!units.length)return false;

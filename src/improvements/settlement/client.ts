@@ -1,3 +1,4 @@
 import type { ClientImprovement } from '../host';
 import military from './militaryClient';
-export default [military] satisfies ClientImprovement[];
+import branches from './branchesClient';
+export default [military,branches] satisfies ClientImprovement[];
