@@ -1,0 +1,18 @@
+import { FACTIONS } from '../../core/content';
+import type { ClientImprovement } from '../host';
+import { PRACTICE, practiceStage, type PracticeProgress } from './practice-rule';
+import './learning.css';
+const practice:ClientImprovement={id:PRACTICE,mount(context){
+ const mode=context.root.querySelector<HTMLSelectElement>('#learning-mode')!;
+ const option=document.createElement('option');option.value='practice';option.textContent='Faction practice';mode.add(option);
+ context.hud.innerHTML='<section class="learning-card" hidden aria-label="Faction practice"><strong></strong><p role="status"></p><button class="small-button practice-focus">Select mission troops</button><button class="small-button practice-battle" hidden>Start practice fight</button><button class="small-button practice-restart" hidden>Choose another mission</button></section>';
+ const card=context.hud.querySelector<HTMLElement>('section')!,title=card.querySelector<HTMLElement>('strong')!,text=card.querySelector<HTMLElement>('p')!,focus=card.querySelector<HTMLButtonElement>('.practice-focus')!,battle=card.querySelector<HTMLButtonElement>('.practice-battle')!,restart=card.querySelector<HTMLButtonElement>('.practice-restart')!;
+ const progress=()=>context.state?.improvements?.[PRACTICE] as PracticeProgress|undefined;
+ const instructions={orcs:'Select your Ironjaw and press Q to use War Cry. Fury boosts attacks while it lasts.',fairies:'Select your Veilweaver and press Q to make temporary doubles. Doubles draw attacks and deal reduced damage.',dwarves:'Select your Siege Cannon and press Q to emplace it. Wait three seconds; moving will pack it up.',undead:'Attack the nearby enemy with your Boneguard. Then move your Gravecaller beside the corpse; it raises a temporary warrior automatically or with Q. Leave population free.',tideborn:'Your Shellguard is wounded. Select the nearby Tidecaller and press Q to heal allies and give them a movement surge.',automata:'Your Sentinel has lost its shield. Right-click safe ground at least two tiles away. After six seconds without damage, wait for its shield to recharge before returning.'};
+ focus.onclick=()=>{const state=progress(),view=context.state;if(!state||!view)return;const ids=state.mechanic?[...new Set([state.actor,state.fighter])]:[view.entities.some(e=>e.id===state.initialTarget)?state.fighter:state.actor];context.select(ids);const first=view.entities.find(e=>e.id===ids[0]);if(first)context.center(first.x,first.y);};
+ battle.onclick=()=>{if(!context.command({type:'improvement',improvement:PRACTICE,action:'battle',ids:[]}))context.notice('Complete the faction mechanic before starting the fight.');};
+ restart.onclick=()=>context.root.querySelector<HTMLButtonElement>('#restart-button')?.click();
+ let shown='';
+ return {readOptions:()=>mode.value==='practice'?{}:undefined,update(){const state=progress(),view=context.state;card.hidden=!state;if(!state||!view)return;const faction=view.player.faction,stage=practiceStage(state),key=`${faction}:${stage}`;if(key!==shown){shown=key;title.textContent=stage===4?'Mission needs another try':stage===3?'Practice complete':`${FACTIONS[faction].name} practice`;text.textContent=[instructions[faction],'Mechanic learned. Start the practice fight when you are ready.','Select your mission troops and defeat the nearby enemy. Use your faction mechanic to help.','You used your faction mechanic and won the practice fight. Choose another mission or begin a skirmish.','A mission troop was lost. Choose another mission to try again.'][stage];}battle.hidden=stage!==1;battle.disabled=context.paused;focus.hidden=stage>2;restart.hidden=stage<3;},menu(){card.hidden=true;}};
+}};
+export default practice;
