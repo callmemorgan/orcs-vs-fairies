@@ -187,17 +187,16 @@ export default class GameScene extends Phaser.Scene {
     const state=this.state, faction=FACTIONS[state.players[0].faction];
     let buildingAlert:Entity|undefined,workerAlert:Entity|undefined;
     for(const event of state.events){
-      if(event.type==='attack'&&isVisible(state,0,event.x,event.y)){
-        const source=state.entities.find(e=>e.id===event.source),target=state.entities.find(e=>e.id===event.target);
-        if(source&&target&&this.visible(target)){
+      if(event.type==='attack'){
+        const seen=isVisible(state,0,event.x,event.y),source=state.entities.find(e=>e.id===event.source),target=state.entities.find(e=>e.id===event.target);
+        if(seen&&source&&target&&this.visible(target)){
           const def=source.kind==='unit'?FACTIONS[state.players[source.side].faction].units[source.role as UnitRole]:undefined;
           if(source.kind==='building'||(def?.range??0)>3)this.combatEffects.push({from:project(source.x,source.y),to:project(target.x,target.y),born:state.time,color:FACTIONS[state.players[source.side].faction].color,heavy:!!def?.buildingDamageMultiplier});
         }
-        const heard=source&&this.visible(source)?source:undefined;
-        this.audio?.playWeapon(weaponSound(heard,state.players[heard?.side??0].faction));
-      }
-      if(event.type==='attack'){
-        const target=state.entities.find(e=>e.id===event.target);
+        if(seen||target&&this.visible(target)){
+          const heard=source&&this.visible(source)?source:undefined;
+          this.audio?.playWeapon(weaponSound(heard,state.players[heard?.side??0].faction));
+        }
         // An own target is known even if its attacker is outside vision. Never reveal the attacker.
         if(!target||target.side!==0)continue;
         if(target.kind==='building'&&state.time-(this.attackedNoticeAt.get(target.id)??-Infinity)>=12)buildingAlert??=target;
