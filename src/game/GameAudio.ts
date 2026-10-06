@@ -1,14 +1,15 @@
-export type GameCue = 'selection' | 'order' | 'attack' | 'build' | 'train' | 'victory' | 'defeat';
+import { WEAPON_SOUNDS, type AudioTone, type WeaponSound } from '../improvements/accessibility/weaponAudio';
+export type GameCue = 'selection' | 'order' | 'build' | 'train' | 'victory' | 'defeat';
 type Note = readonly [frequency:number, offset:number, duration:number, volume:number];
 const PREFERENCE = 'orcs-vs-fairies.audio-muted';
-const CUES:Record<GameCue,readonly Note[]> = {
-  selection:[[520,0,.055,.14]],
-  order:[[350,0,.065,.14],[465,.055,.07,.11]],
-  attack:[[145,0,.07,.18],[92,.025,.065,.12]],
-  build:[[392,0,.13,.15],[494,.08,.13,.13],[587,.16,.16,.12]],
-  train:[[523,0,.10,.14],[698,.09,.17,.13]],
-  victory:[[392,0,.20,.14],[494,.12,.20,.13],[587,.24,.30,.13]],
-  defeat:[[330,0,.20,.14],[294,.14,.20,.13],[220,.28,.28,.13]],
+const sine = (...notes:Note[]) => notes.map(([frequency,offset,duration,volume]):AudioTone=>({frequency,offset,duration,volume,wave:'sine'}));
+const CUES:Record<GameCue,readonly AudioTone[]> = {
+  selection:sine([520,0,.055,.14]),
+  order:sine([350,0,.065,.14],[465,.055,.07,.11]),
+  build:sine([392,0,.13,.15],[494,.08,.13,.13],[587,.16,.16,.12]),
+  train:sine([523,0,.10,.14],[698,.09,.17,.13]),
+  victory:sine([392,0,.20,.14],[494,.12,.20,.13],[587,.24,.30,.13]),
+  defeat:sine([330,0,.20,.14],[294,.14,.20,.13],[220,.28,.28,.13]),
 };
 
 /** Quiet procedural cues. A trusted input gesture must create/resume the graph. */
@@ -18,8 +19,9 @@ export default class GameAudio {
   private analyser?:AnalyserNode;
   private waveform = new Float32Array(256);
   private voices = new Set<OscillatorNode>();
-  private lastCue = new Map<GameCue,number>();
+  private lastCue = new Map<readonly AudioTone[],number>();
   private scheduledCues:Partial<Record<GameCue,number>> = {};
+  private scheduledWeapons:Partial<Record<WeaponSound,number>> = {};
   private unavailable = false;
   private disposed = false;
   private animationFrame:number|undefined;
@@ -67,27 +69,26 @@ export default class GameAudio {
     }catch{this.unavailable=true;}
   }
 
-  play(cue:GameCue){
-    const context=this.context;
-    if(this.disposed||this._muted||!context||context.state!=='running'||!this.master)return;
+  play(cue:GameCue){this.emit(cue==='selection'?.075:cue==='order'?.10:.3,CUES[cue],this.scheduledCues,cue);}
+  playWeapon(weapon:WeaponSound){this.emit(.10,WEAPON_SOUNDS[weapon],this.scheduledWeapons,weapon);}
+
+  private emit<K extends string>(interval:number,tones:readonly AudioTone[],counts:Partial<Record<K,number>>,name:K){
+    const context=this.context,master=this.master;
+    if(this.disposed||this._muted||!context||context.state!=='running'||!master)return;
     const now=context.currentTime;
-    const interval=cue==='attack'?.18:cue==='selection'?.075:cue==='order'?.10:.3;
-    if(now-(this.lastCue.get(cue)??-Infinity)<interval)return;
-    this.lastCue.set(cue,now);
+    if(now-(this.lastCue.get(tones)??-Infinity)<interval)return;
+    this.lastCue.set(tones,now);
     try{
-      for(const [frequency,offset,duration,volume] of CUES[cue]){
+      for(const {frequency,offset,duration,volume,wave,endFrequency} of tones){
         const oscillator=context.createOscillator(),gain=context.createGain();
-        oscillator.type=cue==='attack'?'triangle':'sine';
-        oscillator.frequency.setValueAtTime(frequency,now+offset);
-        if(cue==='attack')oscillator.frequency.exponentialRampToValueAtTime(frequency*.65,now+offset+duration);
-        gain.gain.setValueAtTime(0,now+offset);
-        gain.gain.linearRampToValueAtTime(volume,now+offset+.008);
-        gain.gain.exponentialRampToValueAtTime(.0001,now+offset+duration);
-        oscillator.connect(gain);gain.connect(this.master);this.voices.add(oscillator);
+        oscillator.type=wave;oscillator.frequency.setValueAtTime(frequency,now+offset);
+        if(endFrequency)oscillator.frequency.exponentialRampToValueAtTime(endFrequency,now+offset+duration);
+        gain.gain.setValueAtTime(0,now+offset);gain.gain.linearRampToValueAtTime(volume,now+offset+.008);gain.gain.exponentialRampToValueAtTime(.0001,now+offset+duration);
+        oscillator.connect(gain);gain.connect(master);this.voices.add(oscillator);
         oscillator.onended=()=>{this.voices.delete(oscillator);oscillator.disconnect();gain.disconnect();};
         oscillator.start(now+offset);oscillator.stop(now+offset+duration+.015);
       }
-      this.scheduledCues[cue]=(this.scheduledCues[cue]??0)+1;
+      counts[name]=(counts[name]??0)+1;
       this.monitor();
     }catch{/* Audio failure must not interrupt the game. */}
   }
@@ -117,7 +118,7 @@ export default class GameAudio {
     this.measure();
     return {
       state:this.context?.state??(this.unavailable?'unavailable':this.disposed?'closed':'locked'),
-      muted:this._muted,scheduledCues:{...this.scheduledCues},activeVoices:this.voices.size,
+      muted:this._muted,scheduledWeapons:{...this.scheduledWeapons},scheduledCues:{...this.scheduledCues},activeVoices:this.voices.size,
       currentPeak:this.currentPeak,currentRms:this.currentRms,
       lastSignalPeak:this.lastSignalPeak,lastSignalRms:this.lastSignalRms,lastSignalAt:this.lastSignalAt,
     };

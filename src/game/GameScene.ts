@@ -1,3 +1,4 @@
+import { weaponSound } from '../improvements/accessibility/weaponAudio';
 import Phaser from 'phaser';
 import ArtRuntime from './ArtRuntime';
 import GameAudio from './GameAudio';
@@ -192,8 +193,9 @@ export default class GameScene extends Phaser.Scene {
           const def=source.kind==='unit'?FACTIONS[state.players[source.side].faction].units[source.role as UnitRole]:undefined;
           if(source.kind==='building'||(def?.range??0)>3)this.combatEffects.push({from:project(source.x,source.y),to:project(target.x,target.y),born:state.time,color:FACTIONS[state.players[source.side].faction].color,heavy:!!def?.buildingDamageMultiplier});
         }
+        const heard=source&&this.visible(source)?source:undefined;
+        this.audio?.playWeapon(weaponSound(heard,state.players[heard?.side??0].faction));
       }
-      if(event.type==='attack'&&state.visible[0].has(Math.floor(event.y)*state.width+Math.floor(event.x)))this.audio?.play('attack');
       if(event.type==='attack'){
         const target=state.entities.find(e=>e.id===event.target);
         // An own target is known even if its attacker is outside vision. Never reveal the attacker.
