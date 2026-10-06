@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { registerGameImprovement } from '../src/core/improvements';
-import { createGame, issueCommand, stepGame } from '../src/core/simulation';
+import { createGame, issueCommand, refreshVisibility, stepGame } from '../src/core/simulation';
 import { PlayerView } from '../src/core/observation';
 import { TerminalSession } from '../src/cli/session';
 import type { JsonValue } from '../src/core/types';
@@ -73,4 +73,32 @@ it('uses the same rule order and state hash for reordered browser and terminal o
   first.improvements={'order-z':first.improvements!['order-z'],'order-a':first.improvements!['order-a']};
   calls.length=0;stepGame(first,.05);new PlayerView(0).observe(first);
   expect(calls).toEqual(['step:order-a','step:order-z','observe:order-a','observe:order-z']);
+});
+
+it('records the final HQ death in the accepted tick and rejects ticks after completion',()=>{
+  cleanup.push(registerGameImprovement({id:'final-events',initialState:()=>({ticks:0,deaths:[],winner:null}),step:(s,_dt,state)=>{
+    const saved=state as {ticks:number;deaths:number[];winner:number|null};saved.ticks++;saved.winner=s.winner;
+    saved.deaths.push(...s.events.filter(e=>e.type==='death').map(e=>e.source!));
+  }}));
+  const s=createGame('orcs',4127,'fairies',{controllers:['external','external'],improvements:{'final-events':null}});
+  const attacker=s.entities.find(e=>e.side===0&&e.role==='melee')!,hq=s.entities.find(e=>e.side===1&&e.role==='hq')!;
+  attacker.x=hq.x+2;attacker.y=hq.y;hq.hp=1;refreshVisibility(s);
+  expect(issueCommand(s,0,{type:'attack',ids:[attacker.id],target:hq.id})).toBe(true);
+  stepGame(s,.05);
+  expect(s.winner).toBe(0);expect(hq.hp).toBe(0);
+  expect(s.improvements!['final-events'].state).toEqual({ticks:1,deaths:[hq.id],winner:0});
+  const tick=s.tick,time=s.time;stepGame(s,.05);
+  expect(s.tick).toBe(tick);expect(s.time).toBe(time);
+  expect(s.improvements!['final-events'].state).toEqual({ticks:1,deaths:[hq.id],winner:0});
+});
+it('rejects sparse array options, initial state and custom command payloads before mutation',()=>{
+  const apply=register(),hole=Array<JsonValue>(2);hole[1]=1;
+  expect(()=>createGame('orcs',4127,'fairies',{improvements:{'test-counter':{nested:hole}}})).toThrow('options must be JSON');
+  cleanup.push(registerGameImprovement({id:'sparse-state',initialState:()=>hole}));
+  expect(()=>createGame('orcs',4127,'fairies',{improvements:{'sparse-state':null}})).toThrow('state must be JSON');
+  const s=game();
+  expect(issueCommand(s,0,{type:'improvement',improvement:'test-counter',action:'increment',ids:[],payload:hole})).toBe(false);
+  expect(apply).not.toHaveBeenCalled();expect(s.improvements!['test-counter'].state).toEqual({count:0});
+  expect(issueCommand(s,0,{type:'improvement',improvement:'test-counter',action:'increment',ids:[],payload:[null,1]})).toBe(true);
+  expect(s.improvements!['test-counter'].state).toEqual({count:1});
 });

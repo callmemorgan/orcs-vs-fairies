@@ -242,7 +242,7 @@ export function stepGame(s:GameState,dt:number):void{
  }
  resolveHits(s);
  s.corpses=s.corpses.filter(c=>c.expires>s.time);
- separateUnits(s);s.entities=s.entities.filter(e=>alive(e)||e.animTime<1.2);updatePopulation(s);if(!isGameOver(s))stepImprovements(s,dt);
+ separateUnits(s);s.entities=s.entities.filter(e=>alive(e)||e.animTime<1.2);updatePopulation(s);stepImprovements(s,dt);
 }
 /** AI issues exactly the commands accepted for humans, using current visibility only. */
 export function runAI(s:GameState,side:Side=1):void{

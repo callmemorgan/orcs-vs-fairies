@@ -19,7 +19,10 @@ export function registerGameImprovement(rule:GameImprovement):()=>void {
 export function isJsonValue(value:unknown):value is JsonValue {
   if(value===null||typeof value==='string'||typeof value==='boolean')return true;
   if(typeof value==='number')return Number.isFinite(value);
-  if(Array.isArray(value))return value.every(isJsonValue);
+  if(Array.isArray(value)){
+    for(let i=0;i<value.length;i++)if(!Object.hasOwn(value,i)||!isJsonValue(value[i]))return false;
+    return true;
+  }
   return typeof value==='object'&&Object.getPrototypeOf(value)===Object.prototype&&Object.values(value).every(isJsonValue);
 }
 export function startImprovements(game:GameState,options:Record<string,JsonValue>={}):void {
