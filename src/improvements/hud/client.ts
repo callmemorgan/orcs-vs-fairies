@@ -1,3 +1,3 @@
 import type { ClientImprovement } from '../host';
-// Add this lane's independently mounted client improvements here.
-export default [] satisfies ClientImprovement[];
+import workers from './workers';
+export default [workers] satisfies ClientImprovement[];
