@@ -1,3 +1,4 @@
+import { MILITARY_UPGRADES } from '../improvements/settlement/military';
 import type { FactionId, FactionDef, UnitDef, UnitRole, BuildingDef, BuildingRole, UpgradeDef } from './types';
 export const ECONOMY = { harvestPerSecond: 2.28 } as const;
 
@@ -92,6 +93,7 @@ export const ABILITIES={
 } as const;
 
 export const UPGRADES:Record<UpgradeDef['id'],UpgradeDef>={
+ ...Object.fromEntries(MILITARY_UPGRADES.map(def=>[def.id,def])) as Record<UpgradeDef['id'],UpgradeDef>,
  'town-age':{id:'town-age',name:'Town Age',description:'Unlock advanced troops, fortifications and expansion strongholds.',cost:{wood:260,ore:180,crystal:0},researchTime:65,building:'hq',appliesTo:'worker',advancesTo:2,effects:{}},
  'citadel-age':{id:'citadel-age',name:'Citadel Age',description:'Unlock siege engines and veteran military technology.',cost:{wood:420,ore:320,crystal:60},researchTime:90,building:'hq',appliesTo:'worker',age:2,requires:['town-age'],advancesTo:3,effects:{}},
  'forged-weapons':{id:'forged-weapons',name:'Forged Weapons',description:'Melee troops deal 20% more damage.',cost:{wood:100,ore:130,crystal:0},researchTime:35,building:'barracks',appliesTo:'melee',age:2,effects:{damage:1.2}},
