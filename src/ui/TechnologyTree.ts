@@ -1,5 +1,5 @@
 import { FACTIONS, UPGRADES } from '../core/content';
-import { AGE_NAMES, playerAge, researchRequirement } from '../core/progression';
+import { AGE_NAMES, playerAge, researchRequirement, upgradeEnabled } from '../core/progression';
 import type { Age, GameState, UpgradeId } from '../core/types';
 
 /** Native modal keeps battlefield pointer and keyboard input out of the tree. */
@@ -22,7 +22,7 @@ export function technologyTree(host:HTMLElement,research:(id:UpgradeId,building:
    const title=document.createElement('h3');title.textContent=`${age}. ${AGE_NAMES[age]}`;section.append(title);
    const units=document.createElement('p');units.textContent=`Units: ${Object.values(f.units).filter(u=>(u.age??1)===age).map(u=>u.name).join(', ')}`;section.append(units);
    const unlocks=document.createElement('p');unlocks.textContent=age===1?'Build: depots, barracks and towers':age===2?'Build: expansion headquarters, stone walls and gates':'Train siege engines at your barracks';section.append(unlocks);
-   for(const def of Object.values(UPGRADES).filter(u=>(u.advancesTo??u.age??1)===age)){
+   for(const def of Object.values(UPGRADES).filter(u=>(u.advancesTo??u.age??1)===age&&upgradeEnabled(s,u))){
     const buildings=s.entities.filter(e=>e.side===0&&e.kind==='building'&&e.role===def.building&&e.hp>0&&e.progress===1);
     const active=buildings.find(e=>e.research===def.id),producer=buildings.find(e=>!e.research);
     let reason=researchRequirement(s,0,def.id);
