@@ -3,7 +3,9 @@ export type Side = 0 | 1;
 export type Controller = 'human' | 'ai' | 'external';
 export type MapSize = 'small' | 'medium' | 'large' | 'huge';
 export type TerrainKind = 'grass' | 'road' | 'mud' | 'shallows' | 'water' | 'rock' | 'bridge';
-export interface GameOptions { controllers?:[Controller,Controller]; mapSize?:MapSize }
+export type JsonValue = null | boolean | number | string | JsonValue[] | {[key:string]:JsonValue};
+export interface GameOptions { controllers?:[Controller,Controller]; mapSize?:MapSize; improvements?:Record<string,JsonValue> }
+export interface ImprovementCommand { type:'improvement'; improvement:string; action:string; ids:number[]; payload?:JsonValue }
 export type UnitRole = 'worker' | 'melee' | 'ranged' | 'special' | 'cavalry' | 'spear' | 'siege';
 export type BuildingRole = 'hq' | 'depot' | 'barracks' | 'tower' | 'wall' | 'gate';
 export type ResourceKind = 'wood' | 'ore' | 'crystal';
@@ -21,5 +23,5 @@ export interface ResourceNode extends Vec {id:number;kind:ResourceKind;amount:nu
 export interface Player { faction:FactionId; wood:number; ore:number; crystal:number; population:number; cap:number; upgrades:UpgradeId[] }
 export interface GameEvent {type:'attack'|'death'|'build'|'train'|'gather'|'message'|'ability'|'research';x:number;y:number;side:Side;text?:string;target?:number; source?:number;amount?:number;resource?:ResourceKind}
 export interface Corpse extends Vec { id:number; expires:number }
-export interface GameState { controllers:[Controller,Controller]; mapSize:MapSize; mapVersion:number; terrain:TerrainKind[]; starts:[Vec,Vec]; draw:boolean; tick:number; corpses:Corpse[]; time:number; seed:number; width:number; height:number; entities:Entity[]; resources:ResourceNode[]; players:[Player,Player]; winner:Side|null; events:GameEvent[]; explored:[Set<number>,Set<number>]; visible:[Set<number>,Set<number>]; nextId:number }
-export type Command = {type:'move'|'attackMove';ids:number[];x:number;y:number} | {type:'attack'|'gather'|'repair';ids:number[];target:number} | {type:'build';ids:number[];role:BuildingRole;x:number;y:number} | {type:'train';id:number;role:UnitRole} | {type:'cancelTrain';id:number;index:number} | {type:'research';id:number;upgrade:UpgradeId} | {type:'stop'|'hold';ids:number[]} | {type:'ability';ids:number[]} | {type:'setRally';ids:number[];x:number;y:number} | {type:'clearRally';ids:number[]} | {type:'toggleGate';ids:number[]};
+export interface GameState { improvements?:Record<string,{options:JsonValue;state:JsonValue}>; controllers:[Controller,Controller]; mapSize:MapSize; mapVersion:number; terrain:TerrainKind[]; starts:[Vec,Vec]; draw:boolean; tick:number; corpses:Corpse[]; time:number; seed:number; width:number; height:number; entities:Entity[]; resources:ResourceNode[]; players:[Player,Player]; winner:Side|null; events:GameEvent[]; explored:[Set<number>,Set<number>]; visible:[Set<number>,Set<number>]; nextId:number }
+export type Command = ImprovementCommand | {type:'move'|'attackMove';ids:number[];x:number;y:number} | {type:'attack'|'gather'|'repair';ids:number[];target:number} | {type:'build';ids:number[];role:BuildingRole;x:number;y:number} | {type:'train';id:number;role:UnitRole} | {type:'cancelTrain';id:number;index:number} | {type:'research';id:number;upgrade:UpgradeId} | {type:'stop'|'hold';ids:number[]} | {type:'ability';ids:number[]} | {type:'setRally';ids:number[];x:number;y:number} | {type:'clearRally';ids:number[]} | {type:'toggleGate';ids:number[]};

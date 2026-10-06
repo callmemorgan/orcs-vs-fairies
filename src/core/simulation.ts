@@ -1,3 +1,5 @@
+import { commandImprovement, startImprovements, stepImprovements } from './improvements';
+import '../improvements/rules';
 import { playerAge, researchRequirement } from './progression';
 import { ECONOMY, FACTIONS, UPGRADES } from './content';
 import { walkable, segmentWalkable, openDestination, route } from './navigation';
@@ -24,7 +26,7 @@ export function createGame(faction:FactionId,seed=1977,opponent:FactionId=factio
  const s:GameState={controllers:options.controllers??['human','ai'],mapSize:map.size,mapVersion:map.version,terrain:map.terrain,starts:map.starts,draw:false,tick:0,corpses:[],time:0,seed,width:map.width,height:map.height,entities:[],resources:[],players:[{faction,wood:420,ore:220,crystal:0,population:0,cap:12,upgrades:[]},{faction:opponent,wood:420,ore:220,crystal:0,population:0,cap:12,upgrades:[]}],winner:null,events:[],explored:[new Set(),new Set()],visible:[new Set(),new Set()],nextId:1};
  for(const side of [0,1] as Side[]){const {x,y}=s.starts[side],dir=side===0?1:-1;spawn(s,side,'building','hq',x,y);for(let i=0;i<5;i++)spawn(s,side,'unit','worker',x+(-2+i*.85)*dir,y+3*dir);spawn(s,side,'unit','melee',x+3*dir,y+dir);}
  for(const resource of map.resources)s.resources.push({...resource,id:s.nextId++});
- refreshVisibility(s);updatePopulation(s);return s;
+ refreshVisibility(s);updatePopulation(s);startImprovements(s,options.improvements);return s;
 }
 export function isGameOver(s:GameState):boolean{return s.winner!==null||s.draw;}
 export function isVisible(s:GameState,side:Side,x:number,y:number):boolean{return x>=0&&y>=0&&x<s.width&&y<s.height&&s.visible[side].has(Math.floor(y)*s.width+Math.floor(x));}
@@ -56,7 +58,7 @@ export function canPlace(s:GameState,side:Side,role:BuildingRole,x:number,y:numb
 }
 function assign(s:GameState,e:Entity,order:Entity['order']):void{if(order.type!=='hold')e.entrenchedAt=undefined;e.order=order;e.path=[];runtime(s).routes.delete(e.id);runtime(s).returning.delete(e.id);}
 export function issueCommand(s:GameState,side:Side,c:Command):boolean{
- if(isGameOver(s))return false;const p=s.players[side],f=FACTIONS[p.faction];
+ if(isGameOver(s)||(side!==0&&side!==1))return false;if(c.type==='improvement')return commandImprovement(s,side,c);const p=s.players[side],f=FACTIONS[p.faction];
  if(c.type==='toggleGate'){
   let changed=false;
   for(const gate of s.entities.filter(e=>c.ids.includes(e.id)&&e.side===side&&alive(e)&&e.role==='gate'&&e.progress===1)){
@@ -240,7 +242,7 @@ export function stepGame(s:GameState,dt:number):void{
  }
  resolveHits(s);
  s.corpses=s.corpses.filter(c=>c.expires>s.time);
- separateUnits(s);s.entities=s.entities.filter(e=>alive(e)||e.animTime<1.2);updatePopulation(s);
+ separateUnits(s);s.entities=s.entities.filter(e=>alive(e)||e.animTime<1.2);updatePopulation(s);if(!isGameOver(s))stepImprovements(s,dt);
 }
 /** AI issues exactly the commands accepted for humans, using current visibility only. */
 export function runAI(s:GameState,side:Side=1):void{

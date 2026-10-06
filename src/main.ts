@@ -5,7 +5,9 @@ import { createGame, issueCommand } from './core/simulation';
 import { UPGRADES } from './core/content';
 import { mountShell } from './ui/Hud';
 import type { HudCallbacks } from './ui/Hud';
-import type { FactionId, MapSize } from './core/types';
+import { mountImprovementHost } from './improvements/host';
+import type { ClientImprovement } from './improvements/host';
+import type { FactionId, GameOptions, MapSize } from './core/types';
 import './ui/style.css';
 
 let game:Phaser.Game|undefined;
@@ -18,7 +20,12 @@ let collector=new FrameCollector();
 let benchmarkCentered=false;
 let renderDensity=1;
 const root=document.querySelector<HTMLElement>('#app')!;
-const shell=mountShell(root,start);
+const clients=import.meta.glob<{default:ClientImprovement|ClientImprovement[]}>('./improvements/*/client.ts',{eager:true});
+const shell=mountShell(root,start,()=>improvements.options());
+const improvements=mountImprovementHost(root,Object.keys(clients).sort().flatMap(path=>clients[path].default),{
+ current:()=>scene,notice:text=>shell.notice(text),setPaused:value=>{if(scene){scene.paused=value;shell.setPaused(value);}}
+});
+improvements.showMenu();
 const callbacks:HudCallbacks={
  build:role=>{scene?.setBuildRole(role);shell.notice('Choose a clear location on explored ground. Right-click to cancel.');},
  train:role=>{if(!scene)return;const id=scene.selected.find(id=>scene!.state.entities.some(e=>e.id===id&&e.side===0&&e.kind==='building'&&e.role===(role==='worker'?'hq':'barracks')));if(id===undefined||!issueCommand(scene.state,0,{type:'train',id,role}))shell.notice('Cannot recruit: check resources, population, and production building.');},
@@ -38,7 +45,7 @@ const callbacks:HudCallbacks={
  select:ids=>scene?.selectEntities(ids),
  stop:()=>{if(scene)issueCommand(scene.state,0,{type:'stop',ids:scene.selected});},
  pause:()=>{if(scene)scene.paused=!scene.paused;},
- restart:()=>{retireGame();shell.showMenu();},
+ restart:()=>{retireGame();shell.showMenu();improvements.showMenu();},
  toggleMuted:()=>scene?.toggleMuted(),
  isMuted:()=>scene?.muted??false,
  center:(x,y)=>scene?.centerOn(x,y),
@@ -55,15 +62,16 @@ function retireGame(onDestroyed?:()=>void){
  previous.events.once(Phaser.Core.Events.DESTROY,()=>{if(retiring===previous)retiring=undefined;onDestroyed?.();});
  previous.destroy(true);
 }
-function start(next:FactionId,nextOpponent:FactionId=opponent,mapSize:MapSize="medium",seed=4127){
- if(game||retiring){retireGame(()=>start(next,nextOpponent,mapSize,seed));return;}
- faction=next;opponent=nextOpponent;shell.showGame(faction);
- const state=benchmark?createPerformanceGame():createGame(faction,seed,opponent,{mapSize});
+function start(next:FactionId,nextOpponent:FactionId=opponent,mapSize:MapSize="medium",seed=4127,options:GameOptions={}){
+ if(game||retiring){retireGame(()=>start(next,nextOpponent,mapSize,seed,options));return;}
+ faction=next;opponent=nextOpponent;
+ const state=benchmark?createPerformanceGame():createGame(faction,seed,opponent,{...options,mapSize});
+ shell.showGame(faction);
  if(benchmark){collector=new FrameCollector();benchmarkCentered=false;}
  // Phaser scales the canvas in CSS; use a physical-pixel game size and
  // matching camera zoom so high-DPI displays do not stretch a low-res buffer.
  renderDensity=Math.min(2,Math.max(1,window.devicePixelRatio||1));
- scene=new GameScene({state,pixelDensity:renderDensity,onSelection:ids=>shell.update(scene!.state,ids,callbacks),onNotice:text=>shell.notice(text),onReady:()=>shell.ready(),viewBounds:()=>{const b=shell.battlefieldBounds();return {top:b.top*renderDensity,bottom:b.bottom*renderDensity};}});
+ scene=new GameScene({state,pixelDensity:renderDensity,onSelection:ids=>{shell.update(scene!.state,ids,callbacks);improvements.update();},onNotice:text=>shell.notice(text),onReady:()=>{shell.ready();improvements.matchStart();},viewBounds:()=>{const b=shell.battlefieldBounds();return {top:b.top*renderDensity,bottom:b.bottom*renderDensity};}});
  game=new Phaser.Game({type:Phaser.AUTO,parent:'game-canvas',backgroundColor:'#14201e',antialias:true,roundPixels:false,scale:{mode:Phaser.Scale.FIT,width:Math.round(innerWidth*renderDensity),height:Math.round(innerHeight*renderDensity)},scene:[scene],render:{pixelArt:false,smoothPixelArt:true},fps:{target:60}});
  const currentGame=game,density=renderDensity;
  const resize=()=>currentGame.scale.setGameSize(Math.round(innerWidth*density),Math.round(innerHeight*density));
@@ -84,7 +92,7 @@ function start(next:FactionId,nextOpponent:FactionId=opponent,mapSize:MapSize="m
  });
  shell.update(state,[],callbacks);
 }
-setInterval(()=>{if(scene)shell.update(scene.state,scene.selected,callbacks);},100);
+setInterval(()=>{if(scene){shell.update(scene.state,scene.selected,callbacks);improvements.update();}},100);
 // Read-only diagnostics for repeatable performance and state inspection. Player actions stay in the UI.
 Object.defineProperty(window,'rts',{get:()=>scene?{state:scene.state,selected:[...scene.selected],fps:game?.loop.actualFps,paused:scene.paused,camera:{x:scene.cameras.main.scrollX,y:scene.cameras.main.scrollY,zoom:scene.cameras.main.zoom}}:null});
 if(location.hostname==='127.0.0.1'&&new URLSearchParams(location.search).has('qa'))setInterval(()=>{

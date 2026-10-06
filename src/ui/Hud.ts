@@ -2,7 +2,7 @@ import { technologyTree } from './TechnologyTree';
 import { researchRequirement, playerAge, AGE_NAMES } from '../core/progression';
 import { observedHealth, PlayerView } from '../core/observation';
 import { ABILITIES, FACTIONS, UPGRADES } from '../core/content';
-import type { BuildingRole, Cost, Entity, FactionId, GameState, MapSize, UnitRole, UpgradeId } from '../core/types';
+import type { BuildingRole, Cost, Entity, FactionId, GameOptions, GameState, MapSize, UnitRole, UpgradeId } from '../core/types';
 import './style.css';
 import './factionChrome.css';
 import { createTooltip } from './Tooltip';
@@ -19,7 +19,7 @@ const art=(id:string)=>`/assets/selection-${id}.png`;
 const costMarkup=(cost:Cost)=>`<span class="cost wood">${cost.wood}<i>wood</i></span><span class="cost ore">${cost.ore}<i>ore</i></span>${cost.crystal?`<span class="cost crystal">${cost.crystal}<i>crystal</i></span>`:''}`;
 const escape = (value:string) => value.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
 const costText = (cost:Cost) => `${cost.wood} wood · ${cost.ore} ore${cost.crystal?` · ${cost.crystal} crystal`:""}`;
-export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:FactionId,mapSize:MapSize,seed:number)=>void) {
+export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:FactionId,mapSize:MapSize,seed:number,options?:GameOptions)=>void,matchOptions?:()=>GameOptions) {
   delete root.dataset.uiFaction;
   let faction:FactionId='orcs';
   let callbacks:HudCallbacks|undefined;
@@ -93,7 +93,8 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
   el('.begin-match').addEventListener('click',()=>{
     const input=el<HTMLInputElement>('#map-seed'),seed=Number(input.value);input.setCustomValidity('');
     if(!input.value.trim()||!Number.isSafeInteger(seed)||seed<0||seed>4294967295){input.setCustomValidity('Enter a whole-number seed from 0 to 4294967295.');input.reportValidity();return;}
-    onStart(faction,el<HTMLSelectElement>('#opponent').value as FactionId,el<HTMLSelectElement>('#map-size').value as MapSize,seed);
+    const opponent=el<HTMLSelectElement>('#opponent').value as FactionId,mapSize=el<HTMLSelectElement>('#map-size').value as MapSize;
+    if(matchOptions)onStart(faction,opponent,mapSize,seed,matchOptions());else onStart(faction,opponent,mapSize,seed);
   });
   const togglePause=()=>{if(!callbacks||(state?.winner!==null||state?.draw))return;paused=!paused;callbacks.pause();};
   el('#pause-button').addEventListener('click',togglePause);
@@ -118,6 +119,7 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
     ready:()=>{el('.loading-battle').hidden=true;},
     battlefieldBounds:()=>({top:el('.resource-bar').getBoundingClientRect().bottom,bottom:el('.tactical-bar').getBoundingClientRect().top}),
     notice,
+    setPaused:(value:boolean)=>{paused=value;},
     update:(s:GameState,selected:number[],cb:HudCallbacks)=>{
       state=s;callbacks=cb;if(!menu.hidden)return;const player=s.players[0],definition=FACTIONS[player.faction];
       applyFaction(player.faction);tree.update(s,paused);

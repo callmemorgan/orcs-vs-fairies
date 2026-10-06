@@ -1,3 +1,4 @@
+import { observeImprovements } from './improvements';
 import { ABILITIES, FACTIONS, UPGRADES } from './content';
 import { isGameOver, isVisible } from './simulation';
 import type { Entity, GameEvent, GameState, ResourceNode, Side, UnitRole } from './types';
@@ -22,8 +23,9 @@ export class PlayerView {
  resourcesFor(s:GameState){this.update(s);return [...this.resources.values()].map(r=>({...r,visible:isVisible(s,this.side,r.x,r.y)}));}
  events(s:GameState):GameEvent[]{return s.events.filter(e=>e.side===this.side||isVisible(s,this.side,e.x,e.y)).map(e=>({...e}));}
  observe(s:GameState){
-  this.update(s);const side=this.side;
+  this.update(s);const side=this.side,improvements=observeImprovements(s,side);
   return {
+   ...(Object.keys(improvements).length?{improvements}:{}),
    version:1,tick:s.tick,time:s.time,side,controller:s.controllers[side],
    map:{size:s.mapSize,width:s.width,height:s.height,version:s.mapVersion,seed:s.seed,starts:s.starts.map(p=>({...p})),terrain:s.terrain.map((t,i)=>s.explored[side].has(i)?t:null)},
    player:{...s.players[side]},opponent:{side:1-side,faction:s.players[side===0?1:0].faction},
