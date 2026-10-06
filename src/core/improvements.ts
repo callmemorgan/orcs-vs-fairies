@@ -16,14 +16,19 @@ export function registerGameImprovement(rule:GameImprovement):()=>void {
   rules.set(rule.id,rule);
   return ()=>{if(rules.get(rule.id)===rule)rules.delete(rule.id);};
 }
+function everyDense(value:unknown[],test:(item:unknown)=>boolean):boolean {
+  for(let i=0;i<value.length;i++)if(!Object.hasOwn(value,i)||!test(value[i]))return false;
+  return true;
+}
 export function isJsonValue(value:unknown):value is JsonValue {
   if(value===null||typeof value==='string'||typeof value==='boolean')return true;
   if(typeof value==='number')return Number.isFinite(value);
-  if(Array.isArray(value)){
-    for(let i=0;i<value.length;i++)if(!Object.hasOwn(value,i)||!isJsonValue(value[i]))return false;
-    return true;
-  }
+  if(Array.isArray(value))return everyDense(value,isJsonValue);
   return typeof value==='object'&&Object.getPrototypeOf(value)===Object.prototype&&Object.values(value).every(isJsonValue);
+}
+/** Command IDs must be dense so ownership checks cannot skip array holes. */
+export function isEntityIds(value:unknown):value is number[] {
+  return Array.isArray(value)&&everyDense(value,Number.isSafeInteger);
 }
 export function startImprovements(game:GameState,options:Record<string,JsonValue>={}):void {
   for(const id of Object.keys(options).sort()){
@@ -38,7 +43,7 @@ export function startImprovements(game:GameState,options:Record<string,JsonValue
 }
 export function commandImprovement(game:GameState,side:Side,command:ImprovementCommand):boolean {
   const rule=rules.get(command.improvement),entry=game.improvements?.[command.improvement];
-  if(!rule?.validate||!rule.command||!entry||typeof command.action!=='string'||!Array.isArray(command.ids)||!command.ids.every(id=>game.entities.some(e=>e.id===id&&e.side===side&&e.hp>0))||command.payload!==undefined&&!isJsonValue(command.payload))return false;
+  if(!rule?.validate||!rule.command||!entry||typeof command.action!=='string'||!isEntityIds(command.ids)||!command.ids.every(id=>game.entities.some(e=>e.id===id&&e.side===side&&e.hp>0))||command.payload!==undefined&&!isJsonValue(command.payload))return false;
   return rule.validate(game,side,command,entry.state)&&rule.command(game,side,command,entry.state);
 }
 export function stepImprovements(game:GameState,dt:number):void {
