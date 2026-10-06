@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import type { Entity, GameState, FactionId, BuildingRole, UnitRole, Side } from '../core/types';
 import { FACTIONS } from '../core/content';
+import { obscuresSelection, occlusionEnabled } from '../improvements/art/occlusion';
 
 interface Animation {frames:number;fps:number;loop:boolean;directions:Record<string,string[]>}
 interface Asset {kind:'unit'|'building'|'environment';width:number;height:number;anchor:[number,number];visualTop?:number;pages?:string[];animations?:Record<string,Animation>;image?:string}
@@ -10,6 +11,7 @@ export default class ArtRuntime {
   manifest:Manifest|null=null;
   private sprites=new Map<string,Phaser.GameObjects.Image>();
   private seen=new Set<string>();
+  private occluders=new Set<string>();
   private frames=new Map<string,string>();
   private terrain:Phaser.GameObjects.RenderTexture|null=null;
   private complete=false;
@@ -41,7 +43,7 @@ export default class ArtRuntime {
   get decodedAtlasMiB(){return (this.manifest?.atlases.reduce((sum,a)=>{if(!this.scene.textures.exists(a.key))return sum;const source=this.scene.textures.get(a.key).source[0];return sum+source.width*source.height*4;},0)??0)/1048576;}
   get assetCount(){return this.manifest?Object.keys(this.manifest.assets).length:0;}
   hasEnvironment(id:string){return this.manifest?.assets[id]?.kind==='environment'&&this.scene.textures.exists(`env:${id}`);}
-  begin(){this.seen.clear();this.renderedUnits=0;}
+  begin(){this.seen.clear();this.occluders.clear();this.renderedUnits=0;}
   end(){for(const [key,sprite] of this.sprites)if(!this.seen.has(key)){sprite.destroy();this.sprites.delete(key);}}
   reset(){for(const sprite of this.sprites.values())sprite.destroy();this.sprites.clear();}
   top(key:string):number|null{const sprite=this.sprites.get(key);return sprite&&sprite.getData('visualTop')!==undefined?sprite.y-sprite.displayOriginY+sprite.getData('visualTop'):null;}
@@ -53,7 +55,7 @@ export default class ArtRuntime {
     if(px<0||py<0||px>=sprite.width||py>=sprite.height)return false;
     return (this.scene.textures.getPixelAlpha(px,py,sprite.texture.key,sprite.frame.name)??0)>32;
   }
-  private place(key:string,asset:Asset,texture:string,frame:string|undefined,x:number,y:number,depth:number,alpha=1){
+  private place(key:string,asset:Asset,texture:string,frame:string|undefined,x:number,y:number,depth:number,alpha=1,occluder=false){
     let sprite=this.sprites.get(key);
     if(!sprite){sprite=this.scene.add.image(x,y,texture,frame);this.sprites.set(key,sprite);}
     else if(sprite.texture.key!==texture||sprite.frame.name!==(frame??sprite.texture.firstFrame))sprite.setTexture(texture,frame);
@@ -64,11 +66,12 @@ export default class ArtRuntime {
     if(sprite.depth!==depth)sprite.setDepth(depth);
     if(sprite.alpha!==alpha)sprite.setAlpha(alpha);
     if(asset.visualTop!==undefined&&sprite.getData('visualTop')!==asset.visualTop)sprite.setData('visualTop',asset.visualTop);
+    if(occluder)this.occluders.add(key);else this.occluders.delete(key);
     this.seen.add(key);return true;
   }
   environment(key:string,id:string,x:number,y:number){
     const asset=this.manifest?.assets[id];if(!asset||!this.hasEnvironment(id))return false;
-    return this.place(key,asset,`env:${id}`,undefined,x,y,y);
+    return this.place(key,asset,`env:${id}`,undefined,x,y,y,1,id==='tree-pine'||id==='tree-oak');
   }
   entity(e:Entity,state:GameState,x:number,y:number,viewSide:Side=0){
     const faction=FACTIONS[state.players[e.side].faction];
@@ -87,7 +90,21 @@ export default class ArtRuntime {
     else {const tick=Math.floor(e.animTime*Math.max(1,animation.fps));const working=name==='attack'&&e.role==='worker'&&['gather','build','repair'].includes(e.order.type);index=animation.loop||working?tick%frames.length:Math.min(tick,frames.length-1);}
     const frame=frames[index],texture=this.frames.get(frame);if(!texture)return false;
     if(e.kind==='unit'&&e.hp>0)this.renderedUnits++;
-    return this.place(`entity:${e.id}`,asset,texture,frame,x,y,y,e.illusion&&e.side===viewSide?.55:1);
+    return this.place(`entity:${e.id}`,asset,texture,frame,x,y,y,e.illusion&&e.side===viewSide?.55:1,e.kind==='building'&&e.hp>0);
+  }
+  /** Call after this frame's place() calls; the next frame's place() restores each sprite's alpha. */
+  fadeOccluders(selectedIds:readonly number[]){
+    if(!occlusionEnabled())return;
+    const points=selectedIds.flatMap(id=>{
+      const key=`entity:${id}`,sprite=this.sprites.get(key);if(!sprite||!this.seen.has(key))return [];
+      return [{x:sprite.x,y:(this.top(key)??sprite.y-sprite.displayOriginY)+30,depth:sprite.depth}];
+    });
+    if(!points.length)return;
+    for(const key of this.occluders){
+      const sprite=this.sprites.get(key)!,left=sprite.x-sprite.displayOriginX;
+      const covered=obscuresSelection({left,right:left+sprite.width,top:this.top(key)??sprite.y-sprite.displayOriginY,bottom:sprite.y-12,depth:sprite.depth},points);
+      if(covered&&points.some(p=>p.depth<sprite.depth&&this.contains(key,p.x,p.y)))sprite.setAlpha(.28);
+    }
   }
   ground(state:GameState,project:(x:number,y:number)=>{x:number;y:number}){
     this.terrain?.destroy();this.terrain=null;
