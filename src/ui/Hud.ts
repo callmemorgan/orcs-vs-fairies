@@ -1,5 +1,5 @@
 import { technologyTree } from './TechnologyTree';
-import { researchRequirement, playerAge, AGE_NAMES } from '../core/progression';
+import { researchRequirement, playerAge, AGE_NAMES, effectiveUnitStats } from '../core/progression';
 import { observedHealth, PlayerView } from '../core/observation';
 import { ABILITIES, FACTIONS, UPGRADES } from '../core/content';
 import type { BuildingRole, Cost, Entity, FactionId, GameOptions, GameState, MapSize, UnitRole, UpgradeId } from '../core/types';
@@ -147,10 +147,9 @@ export function mountShell(root:HTMLElement,onStart:(faction:FactionId,opponent:
       el('#portrait').dataset.tooltip=entityDef?`<h3>${escape(entityDef.name)}</h3><p>${escape(entityDef.description)}</p>${first?.kind==='building'&&(first.role==='hq'||first.role==='barracks')?'<p>Right-click open ground to set a rally point for new units.</p>':''}`:'<h3>Select a unit</h3><p>Click a unit or drag across your army. Shift adds to your selection. F2 selects combat units.</p>';
       el('#portrait').tabIndex=0;
       const stats=el('#selection-stats');
-      const militaryTech=first?.side===0?player.upgrades.map(id=>UPGRADES[id]).filter(u=>u.appliesTo===first.role):[];
-      const damageFactor=militaryTech.reduce((factor,u)=>factor*(u.effects.damage??1),1),armorBonus=militaryTech.reduce((sum,u)=>sum+(u.effects.armor??0),0);
+      const shown=first?.kind==='unit'&&first.side===0&&entityDef?effectiveUnitStats(player,first.role as UnitRole):entityDef;
       const statNumber=(value:number)=>Number(value.toFixed(1));
-      stats.innerHTML=first?.kind==='unit'&&entityDef&&'damage' in entityDef?`<span title="${first.side===0?'Attack damage with researched upgrades; combat bonuses apply separately':'Base attack damage; enemy research is private'}">ATK <b>${statNumber(entityDef.damage*damageFactor)}</b></span><span title="${first.side===0?'Armor with researched upgrades':'Base armor; enemy research is private'}">ARM <b>${entityDef.armor+armorBonus}</b></span><span title="Weapon range">RNG <b>${entityDef.range}</b></span>${first.carried?`<span>Carrying <b>${Math.floor(first.carried)} ${first.carriedKind}</b></span>`:''}`:'';
+      stats.innerHTML=first?.kind==='unit'&&shown&&'damage' in shown?`<span title="${first.side===0?'Attack damage with researched upgrades; combat bonuses apply separately':'Base attack damage; enemy research is private'}">ATK <b>${statNumber(shown.damage)}</b></span><span title="${first.side===0?'Armor with researched upgrades':'Base armor; enemy research is private'}">ARM <b>${shown.armor}</b></span><span title="Weapon range">RNG <b>${shown.range}</b></span>${first.carried?`<span>Carrying <b>${Math.floor(first.carried)} ${first.carriedKind}</b></span>`:''}`:'';
       const roster=el('#selection-roster');
       const rosterKey=entities.length>1?entities.map(e=>e.id).join(','):'';
       if(roster.dataset.ids!==rosterKey){roster.dataset.ids=rosterKey;roster.replaceChildren();if(entities.length>1)for(const e of entities){const d=e.kind==='unit'?FACTIONS[s.players[e.side].faction].units[e.role as UnitRole]:FACTIONS[s.players[e.side].faction].buildings[e.role as BuildingRole];const button=document.createElement('button');button.className='roster-unit';button.dataset.id=String(e.id);button.setAttribute('aria-label',`Select ${d.name} ${e.id}`);button.innerHTML=`<img src="${art(d.id)}" alt=""/><span class="mini-health"><i></i></span>`;button.addEventListener('click',event=>callbacks?.select(event.shiftKey?entities.filter(x=>x.id!==e.id).map(x=>x.id):[e.id]));roster.append(button);}}
